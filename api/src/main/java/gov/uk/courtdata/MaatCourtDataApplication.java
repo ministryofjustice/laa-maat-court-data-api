@@ -8,7 +8,7 @@ class MaatCourtDataApplication {
 
 	public static void main(String[] args) {
 
-		SpringApplication.run(CourtdataApplication.class, args);
+		SpringApplication.run(MaatCourtDataApplication.class, args);
 	}
 
 }

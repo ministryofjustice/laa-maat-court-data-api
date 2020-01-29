@@ -1,1 +1,25 @@
 .env
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+#IDEA IDE
+.idea/
+*.eml
+*.iml
+out/
+
+
+
+# Gradle
+/.gradle/
+.gradle
+
+
+
+
+
+

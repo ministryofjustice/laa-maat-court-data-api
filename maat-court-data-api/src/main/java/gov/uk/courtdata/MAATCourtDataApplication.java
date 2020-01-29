@@ -4,11 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-class MaatCourtDataApplication {
+class MAATCourtDataApplication {
 
 	public static void main(String[] args) {
 
-		SpringApplication.run(MaatCourtDataApplication.class, args);
+		SpringApplication.run(MAATCourtDataApplication.class, args);
 	}
 
 }

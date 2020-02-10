@@ -1,0 +1,12 @@
+version: "3.2"
+
+services:
+  app:
+    build:
+      context: .
+    environment:
+    - DATASOURCE_URL=jdbc:oracle:thin:@host.docker.internal:1521:maatdb
+    - DATASOURCE_USERNAME=mla
+    ports:
+    - 8081:8080
+    - 8001:8000

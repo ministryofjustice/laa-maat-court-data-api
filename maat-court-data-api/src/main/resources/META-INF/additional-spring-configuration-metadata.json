@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "spring.datasource.seconddatasource.username",
+      "type": "java.lang.String",
+      "description": "Description for spring.datasource.seconddatasource.username."
+  }
+] }

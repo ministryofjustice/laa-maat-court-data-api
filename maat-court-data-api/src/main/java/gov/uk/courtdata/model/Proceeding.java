@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 public class Proceeding {
 
-    private Integer maatId;
+
     private Integer proceedingId;
     private Integer createdTxid;
     private String createdUser;

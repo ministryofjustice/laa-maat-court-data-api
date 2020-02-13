@@ -15,15 +15,15 @@ public class CaseDetails {
 
     private Integer caseId;
     private Integer txId;
+    private Integer maatId;
     private String asn;
     private String docLanguage;
     private String caseCreationDate;
     private String cjsAreaCode;
-    private Number proceedingId;
-    private List<Defendant> defendantList;
+    private Integer proceedingId;
+    private Defendant defendant;
     private RepOrder repOrder;
-    private Session session;
+    private List<Session> sessionlist;
     private Solicitor solicitor;
-    private Result result;
     private Proceeding proceeding;
 }

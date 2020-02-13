@@ -1,24 +1,23 @@
 package gov.uk.courtdata.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "XXMLA_WQ_CORE", schema = "MLA")
 public class WqCoreEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "CASE_ID")
-    private Integer caseId;
     @Column(name = "TX_ID")
     private Integer txId;
+    @Column(name = "CASE_ID")
+    private Integer caseId;
     @Column(name = "WQ_TYPE")
     private Integer wqType;
     @Column(name = "WQ_STATUS")
@@ -41,6 +40,6 @@ public class WqCoreEntity {
     private Integer extendedProcessing;
     @Column(name = "RETRY_FLAG")
     private Integer retryFlag;
-    @Column(name = "MAAT_UPDATE_FLAG")
-    private Integer maatUpdateFlag;
+    @Column(name = "MAAT_UPDATE_STATUS")
+    private Integer maatUpdateStatus;
 }

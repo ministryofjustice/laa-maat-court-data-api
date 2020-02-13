@@ -1,29 +1,29 @@
 package gov.uk.courtdata.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "XXMLA_SOLICITOR", schema = "MLA")
 public class SolicitorEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(name = "CASE_ID")
-    private Integer caseId;
+    @Id
     @Column(name = "TX_ID")
     private Integer txId;
+    @Column(name = "CASE_ID")
+    private Integer caseId;
     @Column(name = "FIRST_NAME")
     private String firstName;
     @Column(name = "CONTACT_NAME")
     private String contactName;
-    @Column(name = "LAST_OFFICE_ACCOUNT")
-    private String lastOfficeAccount;
+    @Column(name = "LAA_OFFICE_ACCOUNT")
+    private String laaOfficeAccount;
     @Column(name = "ADDRESS_LINE1")
     private String address_line1;
     @Column(name = "ADDRESS_LINE2")

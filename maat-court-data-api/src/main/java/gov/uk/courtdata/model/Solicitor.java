@@ -14,7 +14,7 @@ public class Solicitor {
 
     private String firstName;
     private String contactName;
-    private String lastOfficeAccount;
+    private String laaOfficeAccount;
     private String address_line1;
     private String address_line2;
     private String address_line3;

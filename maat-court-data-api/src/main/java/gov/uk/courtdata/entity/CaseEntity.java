@@ -6,23 +6,21 @@ import lombok.*;
 import javax.persistence.*;
 
 
-@Builder
+
 @Getter
 @Setter
-@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "XXMLA_CASE", schema = "MLA")
 public class CaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(name = "CASE_ID")
-    private Integer caseId;
+    @Id
     @Column(name = "TX_ID")
-    private Integer txId;
+    private int txId;
+    @Column(name = "CASE_ID")
+    private int caseId;
     @Column(name = "ASN")
     private String asn;
     @Column(name = "DOC_LANGUAGE")
@@ -32,7 +30,7 @@ public class CaseEntity {
     @Column(name = "CJS_AREA_CODE")
     private String cjsAreaCode;
     @Column(name = "PROCEEDING_ID")
-    private Number proceedingId;
+    private int proceedingId;
 
 
 }

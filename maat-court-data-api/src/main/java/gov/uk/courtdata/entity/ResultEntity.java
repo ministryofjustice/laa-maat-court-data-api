@@ -1,25 +1,24 @@
 package gov.uk.courtdata.entity;
 
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "XXMLA_RESULT", schema = "MLA")
 public class ResultEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "CASE_ID")
-    private Integer caseId;
     @Column(name = "TX_ID")
     private Integer txId;
+    @Column(name = "CASE_ID")
+    private Integer caseId;
     @Column(name = "ASN")
     private String asn;
     @Column(name = "ASN_SEQ")
@@ -33,15 +32,15 @@ public class ResultEntity {
     @Column(name = "RESULT_CODE_QUALIFIERS")
     private String resultCodeQualifiers;
     @Column(name = "NEXT_HEARING_DATE")
-    private String nextHearingDate;
+    private LocalDate nextHearingDate;
     @Column(name = "NEXT_HEARING_LOCATION")
     private String nextHearingLocation;
     @Column(name = "FIRST_NAME")
     private String firstName;
     @Column(name = "CONTACT_NAME")
     private String contactName;
-    @Column(name = "LAST_OFFICE_ACCOUNT")
-    private String lastOfficeAccount;
+    @Column(name = "LAA_OFFICE_ACCOUNT")
+    private String laaOfficeAccount;
     @Column(name = "LEGAL_AID_WITHDRAWAL_DATE")
     private LocalDate legalAidWithdrawalDate;
     @Column(name = "WQ_RESULT")

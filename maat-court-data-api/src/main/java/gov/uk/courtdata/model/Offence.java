@@ -24,12 +24,6 @@ public class Offence {
     private String legalAidReason;
     private String iojDecision;
     private String applicationFlag;
+    private Result result;
 
-   // private String wqOffence; constant set to 2 always
-    // Set to Null Always
-   /* private String attribute1;
-    private String attribute2;
-    private String attribute3;
-    private String attribute4;
-    private String attribute5; */
 }

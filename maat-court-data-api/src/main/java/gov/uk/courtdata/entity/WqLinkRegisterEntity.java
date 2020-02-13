@@ -1,23 +1,24 @@
 package gov.uk.courtdata.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "XXMLA_WQ_LINK_REGISTER", schema = "MLA")
 public class WqLinkRegisterEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "CREATED_TX_ID")
     private Integer createdTxId;
+    @Column(name = "CASE_ID")
+    private Integer caseId;
     @Column(name = "CREATED_DATE")
     private LocalDate createdDate;
     @Column(name = "CREATED_USER_ID")

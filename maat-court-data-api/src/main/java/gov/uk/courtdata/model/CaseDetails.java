@@ -13,17 +13,16 @@ import java.util.List;
 @AllArgsConstructor
 public class CaseDetails {
 
-    private Integer caseId;
-    private Integer txId;
+    private String caseUrn;
     private Integer maatId;
     private String asn;
     private String docLanguage;
     private String caseCreationDate;
     private String cjsAreaCode;
-    private Integer proceedingId;
+    private String createdUser;
     private Defendant defendant;
     private RepOrder repOrder;
     private List<Session> sessionlist;
     private Solicitor solicitor;
-    private Proceeding proceeding;
+
 }

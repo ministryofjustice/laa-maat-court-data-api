@@ -3,6 +3,7 @@ package gov.uk.courtdata.model;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -24,6 +25,6 @@ public class Offence {
     private String legalAidReason;
     private String iojDecision;
     private String applicationFlag;
-    private Result result;
+    private List<Result> result;
 
 }

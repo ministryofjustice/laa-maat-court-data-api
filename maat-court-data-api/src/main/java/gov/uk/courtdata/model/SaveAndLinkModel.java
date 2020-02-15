@@ -12,6 +12,9 @@ import lombok.*;
 @AllArgsConstructor
 public class SaveAndLinkModel {
 
+    private Integer caseId;
+    private Integer txId;
+    private Integer proceedingId;
     private CaseDetails caseDetails;
     private SolicitorMAATDataEntity solicitorMAATDataEntity;
     private DefendantMAATDataEntity defendantMAATDataEntity;

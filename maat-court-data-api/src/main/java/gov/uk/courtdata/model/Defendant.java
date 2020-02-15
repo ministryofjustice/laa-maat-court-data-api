@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Defendant {
 
-
+    private String defendantId;
     private String forename;
     private String surname;
     private String organization;

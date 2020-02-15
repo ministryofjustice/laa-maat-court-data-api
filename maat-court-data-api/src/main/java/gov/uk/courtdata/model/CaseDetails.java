@@ -21,7 +21,6 @@ public class CaseDetails {
     private String cjsAreaCode;
     private String createdUser;
     private Defendant defendant;
-    private RepOrder repOrder;
     private List<Session> sessionlist;
     private Solicitor solicitor;
 

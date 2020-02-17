@@ -25,6 +25,6 @@ public class Offence {
     private String legalAidReason;
     private String iojDecision;
     private String applicationFlag;
-    private List<Result> result;
+    private List<Result> results;
 
 }

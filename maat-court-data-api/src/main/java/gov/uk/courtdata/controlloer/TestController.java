@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 // This class should be deleted.
 
-
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("maatApi")

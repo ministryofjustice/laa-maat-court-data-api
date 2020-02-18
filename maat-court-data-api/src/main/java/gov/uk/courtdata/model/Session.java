@@ -2,6 +2,8 @@ package gov.uk.courtdata.model;
 
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @Getter

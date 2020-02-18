@@ -67,4 +67,5 @@ public class DefendantMAATDataEntity {
     private String pcountry;
     @Column(name = "USE_SOL")
     private String useSol;
+
 }

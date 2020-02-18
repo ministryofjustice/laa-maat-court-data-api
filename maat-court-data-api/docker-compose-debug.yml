@@ -1,0 +1,14 @@
+version: "3.2"
+
+services:
+  app:
+    build:
+      context: .
+    environment:
+      - DATASOURCE_URL=jdbc:oracle:thin:@host.docker.internal:1521:maatdb
+      - DATASOURCE_USERNAME=admin
+      - DATASOURCE_PASSWORD=fpx4gy6rw9de
+    ports:
+      - 8080:8080
+      - 8000:8000
+    command: java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -jar app.jar

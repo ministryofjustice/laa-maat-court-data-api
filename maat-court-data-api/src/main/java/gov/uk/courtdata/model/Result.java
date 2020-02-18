@@ -19,14 +19,14 @@ public class Result {
     private String resultShortTitle;
     private String resultText;
     private String resultCodeQualifiers;
-    private LocalDate nextHearingDate;
+    private String nextHearingDate;
     private String nextHearingLocation;
     private String firstName;
     private String contactName;
     private String laaOfficeAccount;
-    private LocalDate legalAidWithdrawalDate;
+    private String legalAidWithdrawalDate;
     private Integer receivedDate;
-    private LocalDate dateOfHearing;
+    private String dateOfHearing;
     private String courtLocation;
-    private LocalDate sessionValidateDate;
+    private String sessionValidateDate;
 }

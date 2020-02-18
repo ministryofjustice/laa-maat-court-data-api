@@ -29,22 +29,22 @@ public class OffenceEntity {
     private LocalDate offenceDate;
     @Column(name = "OFFENCE_WORDING")
     private String offenceWording;
-    @Column(name = "MODE_OF_TRAIL")
-    private Integer modeOfTrail;
+    @Column(name = "MODE_OF_TRIAL")
+    private Integer modeOfTrial;
     @Column(name = "LEGAL_AID_STATUS")
     private String legalAidStatus;
     @Column(name = "LEGAL_AID_STATUS_DATE")
     private String legalAidStatusDate;
     @Column(name = "OFFENCE_CODE")
     private String offenceCode;
-    @Column(name = "LEGAL_AID_REASON")
+    @Column(name = "LEGALAID_REASON")
     private String legalaidReason;
     @Column(name = "IOJ_DECISION")
-    private String iojDecision;
+    private Integer iojDecision;
     @Column(name = "WQ_OFFENCE")
-    private String wqOffence;
+    private Integer wqOffence;
     @Column(name = "APPLICATION_FLAG")
-    private String applicationFlag;
+    private Integer applicationFlag;
     @Column(name = "ATTRIBUTE1")
     private String attribute1;
     @Column(name = "ATTRIBUTE2")

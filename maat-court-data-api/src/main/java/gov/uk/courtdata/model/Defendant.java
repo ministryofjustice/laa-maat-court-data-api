@@ -18,7 +18,7 @@ public class Defendant {
     private String forename;
     private String surname;
     private String organization;
-    private LocalDate dateOfBirth;
+    private String dateOfBirth;
     private String address_line1;
     private String address_line2;
     private String address_line3;
@@ -31,15 +31,5 @@ public class Defendant {
     private String telephoneMobile;
     private String email1;
     private String email2;
-    private String searchType;
-    private String useSol;
-    private String pline1;
-    private String pline2;
-    private String pline3;
-    private String pcity;
-    private String ppostcode;
-    private String pcounty;
-    private String pcountry;
-    private String datasource;
-    private List<Offence> offenceList;
+    private List<Offence> offences;
 }

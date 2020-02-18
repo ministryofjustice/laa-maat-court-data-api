@@ -23,8 +23,8 @@ public class DefendantEntity {
     private String forename;
     @Column(name = "SURNAME")
     private String surname;
-    @Column(name = "ORGANIZATION")
-    private String organization;
+    @Column(name = "ORGANISATION")
+    private String organisation;
     @Column(name = "DATE_OF_BIRTH")
     private LocalDate dateOfBirth;
     @Column(name = "ADDRESS_LINE1")
@@ -37,8 +37,8 @@ public class DefendantEntity {
     private String address_line4;
     @Column(name = "ADDRESS_LINE5")
     private String address_line5;
-    @Column(name = "POSTCODE")
-    private String postcode;
+    @Column(name = "POST_CODE")
+    private String postCode;
     @Column(name = "NINO")
     private String nino;
     @Column(name = "TELEPHONE_HOME")

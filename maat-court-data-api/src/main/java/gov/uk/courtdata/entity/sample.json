@@ -1,0 +1,70 @@
+{
+  "maatId": 2643082,
+  "caseUrn":"Dummy Case URN",
+  "asn": "123456754",
+  "docLanguage": "EN",
+  "caseCreationDate": "2019-08-16",
+  "cjsAreaCode": "16",
+  "createdUser": "testUser",
+  "cjsLocation": "B16BG",
+  "isActive" : true,
+  "defendant": {
+    "defendantId" : "Dummy Def ID",
+    "forename": "Test FName",
+    "surname": "Test LName",
+    "organization": null,
+    "dateOfBirth": null,
+    "address_line1": null,
+    "address_line2": null,
+    "address_line3": null,
+    "address_line4": null,
+    "address_line5": null,
+    "postcode": "UB83HW",
+    "nino": "ABCNINUM",
+    "telephoneHome": null,
+    "telephoneWork": null,
+    "telephoneMobile": null,
+    "email1": null,
+    "email2": null,
+    "offences": [
+      {
+        "offenceCode": null,
+        "asnSeq": "001",
+        "offenceShortTitle": null,
+        "offenceClassification": null,
+        "offenceDate": null,
+        "offenceWording": null,
+        "modeOfTrail": null,
+        "legalAidStatus": null,
+        "legalAidStatusDate": null,
+        "legalAidReason": null,
+        "results": [
+          {
+            "resultCode": 3026,
+            "asnSeq" : "001",
+            "resultShortTitle": null,
+            "resultText": null,
+            "resultCodeQualifiers": null,
+            "nextHearingDate": null,
+            "nextHearingLocation": null,
+            "firstName": null,
+            "contactName": null,
+            "laaOfficeAccount": null,
+            "legalAidWithdrawalDate": null,
+            "dateOfHearing": null,
+            "courtLocation": null,
+            "sessionValidateDate": null
+          }
+        ]
+      }
+    ]
+  },
+  "sessions": [
+    {
+      "courtLocation": "B16BG",
+      "dateOfHearing": "2020-08-16",
+      "postHearingCustody" :  "R",
+      "sessionvalidateddate": null
+    }
+  ]
+}

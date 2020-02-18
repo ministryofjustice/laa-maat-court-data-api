@@ -35,8 +35,8 @@ public class ResultEntity {
     private LocalDate nextHearingDate;
     @Column(name = "NEXT_HEARING_LOCATION")
     private String nextHearingLocation;
-    @Column(name = "FIRST_NAME")
-    private String firstName;
+    @Column(name = "FIRM_NAME")
+    private String firmName;
     @Column(name = "CONTACT_NAME")
     private String contactName;
     @Column(name = "LAA_OFFICE_ACCOUNT")

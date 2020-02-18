@@ -39,7 +39,7 @@ public class WqLinkRegisterEntity {
     private String cjsLocation;
     @Column(name = "MAAT_CAT")
     private Integer maatCat;
-    @Column(name = "PROCEDDING_ID")
+    @Column(name = "PROCEEDING_ID")
     private Integer proceedingId;
     @Column(name = "MLR_CAT")
     private Integer mlrCat;

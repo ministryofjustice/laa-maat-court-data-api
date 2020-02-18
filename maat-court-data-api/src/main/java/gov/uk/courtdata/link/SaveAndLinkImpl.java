@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.*;
@@ -25,6 +26,7 @@ public class SaveAndLinkImpl {
     private final SessionRepository sessionRepository;
     private final OffenceRepository offenceRepository;
     private final ResultRepository resultRepository;
+    private final RepOrderDataRepository repOrderDataRepository;
 
 
     public void execute(SaveAndLinkModel saveAndLinkModel) {
@@ -38,6 +40,16 @@ public class SaveAndLinkImpl {
         processSessionInfo(saveAndLinkModel);
         processOffences(saveAndLinkModel);
         processResults(saveAndLinkModel);
+        processRepOrders(saveAndLinkModel);
+    }
+
+    private void processRepOrders(SaveAndLinkModel saveAndLinkModel) {
+        Optional<RepOrderEntity> repOrderEntity = repOrderDataRepository.findBycaseUrn(saveAndLinkModel.getCaseDetails().getCaseUrn());
+        if (repOrderEntity.isPresent()) {
+            RepOrderEntity repOrder = repOrderEntity.get();
+            repOrder.setDefendantId(saveAndLinkModel.getCaseDetails().getDefendant().getDefendantId());
+            repOrderDataRepository.save(repOrder);
+        }
     }
 
     private void processResults(SaveAndLinkModel saveAndLinkModel) {

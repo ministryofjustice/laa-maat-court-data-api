@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProceedingRepository extends JpaRepository<ProceedingEntity,Integer> {
+
 }

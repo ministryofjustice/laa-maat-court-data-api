@@ -1,0 +1,7 @@
+version: "3.2"
+
+services:
+  app:
+    environment:
+      DATASOURCE_USERNAME: admin
+      DATASOURCE_PASSWORD: fpx4gy6rw9de

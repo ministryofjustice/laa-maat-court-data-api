@@ -7,8 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 
-@Getter
-@Setter
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

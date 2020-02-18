@@ -26,8 +26,4 @@ public class CaseDetails {
     private List<Session> sessions;
     private Solicitor solicitor;
 
-
-    public String toString() {
-        return "CaseDetails";
-    }
 }

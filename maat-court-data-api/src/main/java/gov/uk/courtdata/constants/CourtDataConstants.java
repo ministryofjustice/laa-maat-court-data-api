@@ -11,4 +11,5 @@ public interface CourtDataConstants {
     String YES = "Y";
     String NO = "N";
     String DEFAULT_HEARING_CUS_STATUS = "D";
+    String COMMON_PLATFORM = "CP";
 }

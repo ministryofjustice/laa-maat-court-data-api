@@ -60,6 +60,7 @@ public class SaveAndLinkProcessor {
         saveAndLinkModel.setCaseId(defendantMAATDataRepository.getCaseID());
         saveAndLinkModel.setTxId(defendantMAATDataRepository.getTxnID());
         saveAndLinkModel.setProceedingId(defendantMAATDataRepository.getProceedingID());
+        saveAndLinkModel.setLibraId(defendantMAATDataRepository.getLibraID());
     }
 
     private void mapSolicitorMAATDataInfo(Integer maatId, SaveAndLinkModel saveAndLinkModel) {

@@ -15,6 +15,7 @@ public class SaveAndLinkModel {
     private Integer caseId;
     private Integer txId;
     private Integer proceedingId;
+    private Integer libraId;
     private CaseDetails caseDetails;
     private SolicitorMAATDataEntity solicitorMAATDataEntity;
     private DefendantMAATDataEntity defendantMAATDataEntity;

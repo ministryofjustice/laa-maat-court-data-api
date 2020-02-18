@@ -226,7 +226,7 @@ public class SaveAndLinkImpl {
                 .createdDate(LocalDate.now())
                 .createdUserId(caseDetails.getCreatedUser())
                 .caseId(saveAndLinkModel.getCaseId())
-                .libraId("123456")
+                .libraId(COMMON_PLATFORM + saveAndLinkModel.getLibraId())
                 .maatId(caseDetails.getMaatId())
                 .cjsAreaCode(caseDetails.getCjsAreaCode())
                 .cjsLocation(caseDetails.getCjsLocation())

@@ -19,4 +19,5 @@ public class SaveAndLinkModel {
     private CaseDetails caseDetails;
     private SolicitorMAATDataEntity solicitorMAATDataEntity;
     private DefendantMAATDataEntity defendantMAATDataEntity;
+
 }

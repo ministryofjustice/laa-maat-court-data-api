@@ -28,5 +28,4 @@ public class RepOrderEntity {
     private LocalDateTime dateModified;
     @Column(name = "USER_MODIFIED")
     private String userModified;
-
 }

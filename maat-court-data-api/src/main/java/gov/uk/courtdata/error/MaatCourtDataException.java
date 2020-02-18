@@ -10,4 +10,5 @@ public class MaatCourtDataException extends RuntimeException{
         super(aMessage);
     }
 
+
 }

@@ -14,7 +14,9 @@ public class Session {
 
 
     private String courtLocation;
-    private LocalDate dateOfHearing;
+    private String dateOfHearing;
     private String postHearingCustody;
-    private LocalDate sessionvalidateddate;
+    private String sessionvalidateddate;
+
+
 }

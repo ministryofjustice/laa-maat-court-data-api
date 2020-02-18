@@ -18,8 +18,8 @@ public class SolicitorEntity {
     private Integer txId;
     @Column(name = "CASE_ID")
     private Integer caseId;
-    @Column(name = "FIRST_NAME")
-    private String firstName;
+    @Column(name = "FIRM_NAME")
+    private String firmName;
     @Column(name = "CONTACT_NAME")
     private String contactName;
     @Column(name = "LAA_OFFICE_ACCOUNT")
@@ -34,8 +34,8 @@ public class SolicitorEntity {
     private String address_line4;
     @Column(name = "ADDRESS_LINE5")
     private String address_line5;
-    @Column(name = "POSTCODE")
-    private String postcode;
+    @Column(name = "POST_CODE")
+    private String postCode;
     @Column(name = "TELEPHONE")
     private String telephone;
     @Column(name = "EMAIL")

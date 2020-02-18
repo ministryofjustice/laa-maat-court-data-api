@@ -41,7 +41,7 @@ public class SaveAndLinkImpl {
     }
 
     private void processResults(SaveAndLinkModel saveAndLinkModel) {
-        saveAndLinkModel.getCaseDetails().getDefendant().getOffenceList()
+        saveAndLinkModel.getCaseDetails().getDefendant().getOffences()
                 .forEach(offence -> buildResultsList(offence.getResults(), saveAndLinkModel));
     }
 
@@ -61,24 +61,26 @@ public class SaveAndLinkImpl {
                 .txId(saveAndLinkModel.getTxId())
                 .asn(saveAndLinkModel.getCaseDetails().getAsn())
                 .courtLocation(result.getCourtLocation())
+                .asnSeq(result.getAsnSeq())
                 .contactName(result.getContactName())
-                .firstName(result.getFirstName())
+                .firmName(result.getFirstName())
                 .laaOfficeAccount(result.getLaaOfficeAccount())
-                .legalAidWithdrawalDate(result.getLegalAidWithdrawalDate())
-                .nextHearingDate(result.getNextHearingDate())
+                .legalAidWithdrawalDate(getDate(result.getLegalAidWithdrawalDate()))
+                .nextHearingDate(getDate(result.getNextHearingDate()))
                 .nextHearingLocation(result.getNextHearingLocation())
                 .receivedDate(result.getReceivedDate())
                 .resultCode(result.getResultCode())
                 .resultCodeQualifiers(result.getResultCodeQualifiers())
                 .resultShortTitle(result.getResultShortTitle())
-                .sessionValidateDate(result.getSessionValidateDate())
-                .legalAidWithdrawalDate(result.getLegalAidWithdrawalDate())
-                .dateOfHearing(result.getDateOfHearing())
+                .sessionValidateDate(getDate(result.getSessionValidateDate()))
+                .legalAidWithdrawalDate(getDate(result.getLegalAidWithdrawalDate()))
+                .dateOfHearing(getDate(result.getDateOfHearing()))
+                .wqResult(G_NO)
                 .build();
     }
 
     private void processOffences(SaveAndLinkModel saveAndLinkModel) {
-        List<OffenceEntity> offenceEntityList = saveAndLinkModel.getCaseDetails().getDefendant().getOffenceList()
+        List<OffenceEntity> offenceEntityList = saveAndLinkModel.getCaseDetails().getDefendant().getOffences()
                 .stream()
                 .map(offence -> buildOffences(offence, saveAndLinkModel))
                 .collect(Collectors.toList());
@@ -90,23 +92,27 @@ public class SaveAndLinkImpl {
         return OffenceEntity.builder()
                 .caseId(saveAndLinkModel.getCaseId())
                 .txId(saveAndLinkModel.getTxId())
+                .asnSeq(offence.getAsnSeq())
                 .offenceCode(offence.getOffenceCode())
                 .offenceClassification(offence.getOffenceClassification())
                 .legalAidStatus(offence.getLegalAidStatus())
                 .legalAidStatusDate(offence.getLegalAidStatusDate())
                 .legalaidReason(offence.getLegalAidReason())
-                .offenceDate(offence.getOffenceDate())
+                .offenceDate(getDate(offence.getOffenceDate()))
                 .offenceShortTitle(offence.getOffenceShortTitle())
-                .modeOfTrail(offence.getModeOfTrail())
+                .modeOfTrial(offence.getModeOfTrail())
                 .offenceWording(offence.getOffenceWording())
+                .iojDecision(PENDING_IOJ_DECISION)
+                .wqOffence(G_NO)
+                .applicationFlag(0) // Needs to check
                 .build();
     }
 
     private void processSessionInfo(SaveAndLinkModel saveAndLinkModel) {
 
-        List<SessionEntity> sessionEntityList = saveAndLinkModel.getCaseDetails().getSessionlist()
+        List<SessionEntity> sessionEntityList = saveAndLinkModel.getCaseDetails().getSessions()
                 .stream()
-                .map(session -> buildSession(session, saveAndLinkModel))
+                .map(s -> buildSession(s, saveAndLinkModel))
                 .collect(Collectors.toList());
         sessionRepository.saveAll(sessionEntityList);
     }
@@ -115,12 +121,13 @@ public class SaveAndLinkImpl {
         return SessionEntity.builder()
                 .caseId(saveAndLinkModel.getCaseId())
                 .txId(saveAndLinkModel.getTxId())
-                .dateOfHearing(session.getDateOfHearing())
+                .dateOfHearing(LocalDate.parse(session.getDateOfHearing()))
                 .courtLocation(session.getCourtLocation())
-                .postHearingCustody(session.getPostHearingCustody() != null ? session.getPostHearingCustody() : "D")
-                .sessionvalidateddate(session.getSessionvalidateddate())
+                .postHearingCustody(session.getPostHearingCustody() != null ? session.getPostHearingCustody() : DEFAULT_HEARING_CUS_STATUS)
+                .sessionvalidatedate(getDate(session.getSessionvalidateddate()))
                 .build();
     }
+
 
     private void processDefendant(SaveAndLinkModel saveAndLinkModel) {
         DefendantMAATDataEntity defendantMAATDataEntity = saveAndLinkModel.getDefendantMAATDataEntity();
@@ -132,14 +139,14 @@ public class SaveAndLinkImpl {
                 .txId(saveAndLinkModel.getTxId())
                 .forename(defendant.getForename())
                 .surname(defendant.getSurname())
-                .organization(defendant.getOrganization())
-                .dateOfBirth(defendant.getDateOfBirth())
+                .organisation(defendant.getOrganization())
+                .dateOfBirth(getDate(defendant.getDateOfBirth()))
                 .address_line1(defendant.getAddress_line1())
                 .address_line2(defendant.getAddress_line2())
                 .address_line3(defendant.getAddress_line3())
                 .address_line4(defendant.getAddress_line4())
                 .address_line5(defendant.getAddress_line5())
-                .postcode(defendant.getPostcode())
+                .postCode(defendant.getPostcode())
                 .nino(defendant.getNino())
                 .telephoneHome(defendant.getTelephoneHome())
                 .telephoneWork(defendant.getTelephoneWork())
@@ -181,7 +188,7 @@ public class SaveAndLinkImpl {
         SolicitorEntity solicitorEntity = SolicitorEntity.builder()
                 .caseId(saveAndLinkModel.getCaseId())
                 .txId(saveAndLinkModel.getTxId())
-                .firstName(solicitorMAATDataEntity.getAccountName())
+                .firmName(solicitorMAATDataEntity.getAccountName())
                 .contactName(solicitorMAATDataEntity.getSolicitorName())
                 .address_line1(solicitorMAATDataEntity.getLine1())
                 .address_line2(solicitorMAATDataEntity.getLine2())
@@ -190,7 +197,7 @@ public class SaveAndLinkImpl {
                 .address_line5(solicitorMAATDataEntity.getCounty())
                 .email(solicitorMAATDataEntity.getEmail())
                 .adminEmail(solicitorMAATDataEntity.getAdminEmail())
-                .postcode(solicitorMAATDataEntity.getPostcode())
+                .postCode(solicitorMAATDataEntity.getPostcode())
                 .laaOfficeAccount(solicitorMAATDataEntity.getAccountCode())
                 .telephone(solicitorMAATDataEntity.getPhone())
                 .build();
@@ -201,18 +208,19 @@ public class SaveAndLinkImpl {
     private void processWQLinkRegister(SaveAndLinkModel saveAndLinkModel) {
 
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
+        int maatCat = saveAndLinkModel.getSolicitorMAATDataEntity().getCmuId();
         final WqLinkRegisterEntity wqLinkRegisterEntity = WqLinkRegisterEntity.builder()
                 .createdTxId(saveAndLinkModel.getTxId())
                 .createdDate(LocalDate.now())
                 .createdUserId(caseDetails.getCreatedUser())
                 .caseId(saveAndLinkModel.getCaseId())
-                .libraId("CP" + "??")
+                .libraId("123456")
                 .maatId(caseDetails.getMaatId())
                 .cjsAreaCode(caseDetails.getCjsAreaCode())
-                .cjsLocation("Derive this")
+                .cjsLocation(caseDetails.getCjsLocation())
                 .proceedingId(saveAndLinkModel.getProceedingId())
-                .maatCat(1) // Derive this
-                .mlrCat(1) // should be passed in by UI
+                .maatCat(maatCat)
+                .mlrCat(maatCat)
                 .build();
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
     }
@@ -224,7 +232,7 @@ public class SaveAndLinkImpl {
                 .txId(saveAndLinkModel.getTxId())
                 .caseId(saveAndLinkModel.getCaseId())
                 .createdTime(LocalDate.now())
-                .createdUserId(caseDetails.getCreatedUser()) // This should be validated upfront
+                .createdUserId(caseDetails.getCreatedUser())
                 .wqType(WQ_CREATION_EVENT)
                 .wqStatus(WQ_WAITING_STATUS)
                 .build();
@@ -239,7 +247,8 @@ public class SaveAndLinkImpl {
                 .caseId(saveAndLinkModel.getCaseId())
                 .asn(caseDetails.getAsn())
                 .cjsAreaCode(caseDetails.getCjsAreaCode())
-                .libraCreationDate(caseDetails.getCaseCreationDate())
+                .inactive(caseDetails.isActive() ? NO : YES)
+                .libraCreationDate(LocalDate.parse(caseDetails.getCaseCreationDate()))
                 .docLanguage(caseDetails.getDocLanguage())
                 .proceedingId(saveAndLinkModel.getProceedingId())
                 .build();
@@ -247,4 +256,7 @@ public class SaveAndLinkImpl {
         caseRepository.save(caseEntity);
     }
 
+    private LocalDate getDate(String date) {
+        return date != null ? LocalDate.parse(date) : null;
+    }
 }

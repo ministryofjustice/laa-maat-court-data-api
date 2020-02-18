@@ -19,9 +19,15 @@ public class CaseDetails {
     private String docLanguage;
     private String caseCreationDate;
     private String cjsAreaCode;
+    private String cjsLocation;
     private String createdUser;
     private Defendant defendant;
-    private List<Session> sessionlist;
+    private boolean isActive;
+    private List<Session> sessions;
     private Solicitor solicitor;
 
+
+    public String toString() {
+        return "CaseDetails";
+    }
 }

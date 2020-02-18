@@ -1,0 +1,70 @@
+{
+  "maatId": null,
+  "caseUrn": null,
+  "asn": null,
+  "docLanguage": null,
+  "caseCreationDate": null,
+  "cjsAreaCode": null,
+  "cjsLocation": null,
+  "createdUser": null,
+  "isActive": true,
+  "defendant": {
+    "defendantId": null,
+    "forename": null,
+    "surname": null,
+    "organization": null,
+    "dateOfBirth": null,
+    "address_line1": null,
+    "address_line2": null,
+    "address_line3": null,
+    "address_line4": null,
+    "address_line5": null,
+    "postcode": null,
+    "nino": null,
+    "telephoneHome": null,
+    "telephoneWork": null,
+    "telephoneMobile": null,
+    "email1": null,
+    "email2": null,
+    "offence": [
+      {
+        "offenceCode": null,
+        "asnSeq": null,
+        "offenceShortTitle": null,
+        "offenceClassification": null,
+        "offenceDate": null,
+        "offenceWording": null,
+        "modeOfTrail": null,
+        "legalAidStatus": null,
+        "legalAidStatusDate": null,
+        "legalAidReason": null,
+        "result": [
+          {
+            "resultCode": null,
+            "asnSeq": null,
+            "resultShortTitle": null,
+            "resultText": null,
+            "resultCodeQualifiers": null,
+            "nextHearingDate": null,
+            "nextHearingLocation": null,
+            "firstName": null,
+            "contactName": null,
+            "laaOfficeAccount": null,
+            "legalAidWithdrawalDate": null,
+            "dateOfHearing": null,
+            "courtLocation": null,
+            "sessionValidateDate": null
+          }
+        ]
+      }
+    ]
+  },
+  "session": [
+    {
+      "courtLocation": null,
+      "dateOfHearing": null,
+      "postHearingCustody": null,
+      "sessionvalidateddate": null
+    }
+  ]
+}

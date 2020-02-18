@@ -17,14 +17,12 @@ public class Offence {
     private String offenceCode;
     private String offenceShortTitle;
     private String offenceClassification;
-    private LocalDate offenceDate;
+    private String offenceDate;
     private String offenceWording;
     private Integer modeOfTrail;
     private String legalAidStatus;
     private String legalAidStatusDate;
     private String legalAidReason;
-    private String iojDecision;
-    private String applicationFlag;
     private List<Result> results;
 
 }

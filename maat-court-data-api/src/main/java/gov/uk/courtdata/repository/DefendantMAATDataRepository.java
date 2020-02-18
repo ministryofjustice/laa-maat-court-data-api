@@ -21,4 +21,7 @@ public interface DefendantMAATDataRepository extends JpaRepository<DefendantMAAT
 
     @Query(value = "select MLA.PROCEDING.nextval from dual", nativeQuery = true)
     Integer getProceedingID();
+
+    @Query(value = "select MLA.LIBRAID.nextval from dual", nativeQuery = true)
+    Integer getLibraID();
 }

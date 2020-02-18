@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 public class RepOrderEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "REP_ORDER_ID")
     private Integer repOrderId;
     @Column(name = "CASE_URN")

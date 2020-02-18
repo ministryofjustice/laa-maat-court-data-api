@@ -9,7 +9,6 @@ import java.util.Optional;
 @Repository
 public interface SolicitorMAATDataRepository extends JpaRepository<SolicitorMAATDataEntity, Integer> {
 
-
     Optional<SolicitorMAATDataEntity> findBymaatId(Integer maatId);
 
 }

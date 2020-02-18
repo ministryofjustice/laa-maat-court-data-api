@@ -11,6 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 public class Solicitor {
 
+
     private String firstName;
     private String contactName;
     private String laaOfficeAccount;

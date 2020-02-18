@@ -4,6 +4,7 @@ spring:
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: oracle.jdbc.OracleDriver
+
   jpa:
     database-platform: org.hibernate.dialect.Oracle10gDialect
     show-sql: true

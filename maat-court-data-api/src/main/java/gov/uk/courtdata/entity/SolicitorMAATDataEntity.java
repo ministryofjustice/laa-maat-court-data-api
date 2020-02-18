@@ -43,4 +43,6 @@ public class SolicitorMAATDataEntity {
     private String email;
     @Column(name = "ADMIN_EMAIL")
     private String adminEmail;
+
+
 }

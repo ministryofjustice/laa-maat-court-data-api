@@ -2,7 +2,6 @@ package gov.uk.courtdata.model;
 
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -26,8 +25,4 @@ public class CaseDetails {
     private List<Session> sessions;
     private Solicitor solicitor;
 
-
-    public String toString() {
-        return "CaseDetails";
-    }
 }

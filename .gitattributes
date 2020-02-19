@@ -1,0 +1,4 @@
+# don't mess with Windows batch files (gradlew.bat, for example)
+*.bat text eol=crlf
+docker-compose.override.yml filter=git-crypt diff=git-crypt
+docker-compose-debug.yml filter=git-crypt diff=git-crypt

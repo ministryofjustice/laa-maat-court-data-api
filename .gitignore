@@ -41,3 +41,5 @@ out/
 .gradle
 
 .DS_Store
+
+docker-compose-debug.yml

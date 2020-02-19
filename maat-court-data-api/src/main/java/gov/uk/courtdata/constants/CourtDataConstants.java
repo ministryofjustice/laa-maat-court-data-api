@@ -12,4 +12,5 @@ public interface CourtDataConstants {
     String NO = "N";
     String DEFAULT_HEARING_CUS_STATUS = "D";
     String COMMON_PLATFORM = "CP";
+    Integer WQ_UNLINK_EVENT = 24;
 }

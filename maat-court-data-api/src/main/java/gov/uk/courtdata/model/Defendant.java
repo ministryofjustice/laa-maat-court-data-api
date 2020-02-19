@@ -2,8 +2,6 @@ package gov.uk.courtdata.model;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import java.time.LocalDate;
 import java.util.List;
 
 @Data

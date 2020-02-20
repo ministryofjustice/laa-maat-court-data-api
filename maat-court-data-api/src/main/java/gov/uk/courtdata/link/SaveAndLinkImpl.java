@@ -246,7 +246,7 @@ public class SaveAndLinkImpl {
                 .createdTime(LocalDate.now())
                 .createdUserId(caseDetails.getCreatedUser())
                 .wqType(WQ_CREATION_EVENT)
-                .wqStatus(WQ_WAITING_STATUS)
+                .wqStatus(WQ_SUCCESS_STATUS)
                 .build();
         wqCoreRepository.save(wqCoreEntity);
 

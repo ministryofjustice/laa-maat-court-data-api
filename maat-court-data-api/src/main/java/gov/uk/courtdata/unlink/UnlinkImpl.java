@@ -60,7 +60,7 @@ public class UnlinkImpl {
         WqCoreEntity wqCoreEntity = WqCoreEntity.builder()
                 .txId(unlinkModel.getTxId())
                 .wqType(WQ_UNLINK_EVENT)
-                .wqStatus(WQ_WAITING_STATUS)
+                .wqStatus(WQ_SUCCESS_STATUS)
                 .createdUserId(unlink.getUserId())
                 .createdTime(LocalDate.now())
                 .caseId(wqLinkRegisterEntity.getCaseId())

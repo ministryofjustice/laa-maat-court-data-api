@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RepOrderDataRepository extends JpaRepository<RepOrderEntity, String> {
+public interface RepOrderDataRepository extends JpaRepository<RepOrderEntity, Integer> {
 
-    Optional<RepOrderEntity> findBycaseUrn(String caseURN);
+    Optional<RepOrderEntity> findByrepOrderId(Integer repOrderId);
 
 
 }

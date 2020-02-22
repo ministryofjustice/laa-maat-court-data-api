@@ -5,11 +5,14 @@ import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
+import gov.uk.courtdata.repository.IdentifierRepository;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -18,17 +21,24 @@ import static gov.uk.courtdata.constants.CourtDataConstants.*;
 
 @Component
 @RequiredArgsConstructor
-public class UnlinkImpl {
+public class UnLinkImpl {
 
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
     private final WqCoreRepository wqCoreRepository;
     private final UnlinkReasonRepository unlinkReasonRepository;
+    private final IdentifierRepository identifierRepository;
 
+    @Transactional
     public void execute(UnlinkModel unlinkModel) {
 
+        mapTxnID(unlinkModel);
         processWqCore(unlinkModel);
         processUnlinkReason(unlinkModel);
         processUnLinkWQRegister(unlinkModel);
+    }
+
+    private void mapTxnID(UnlinkModel unlinkModel) {
+        unlinkModel.setTxId(identifierRepository.getTxnID());
     }
 
     private void processUnLinkWQRegister(UnlinkModel unlinkModel) {

@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface WqLinkRegisterRepository extends JpaRepository<WqLinkRegisterEntity, Integer> {
 
-    @Query(value = "select * from XXMLA_WQ_LINK_REGISTER wl where wl.MAAT_ID =?1 and wl.REMOVED_TX_ID is null", nativeQuery = true)
+    @Query(value = "select * from MLA.XXMLA_WQ_LINK_REGISTER wl where wl.MAAT_ID =?1 and wl.REMOVED_TX_ID is null", nativeQuery = true)
     List<WqLinkRegisterEntity> findBymaatId(Integer maatID);
 }

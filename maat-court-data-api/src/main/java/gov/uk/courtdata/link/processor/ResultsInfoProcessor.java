@@ -22,6 +22,7 @@ public class ResultsInfoProcessor implements Process {
 
     @Override
     public void process(SaveAndLinkModel saveAndLinkModel) {
+
         saveAndLinkModel.getCaseDetails().getDefendant().getOffences()
                 .forEach(offence -> buildResultsList(offence.getResults(), saveAndLinkModel));
     }

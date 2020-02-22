@@ -10,7 +10,8 @@ import gov.uk.courtdata.util.CourtDataUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import static gov.uk.courtdata.constants.CourtDataConstants.CREATE_LINK;
+import static gov.uk.courtdata.constants.CourtDataConstants.SEARCH_TYPE_0;
 
 
 @Component
@@ -22,6 +23,7 @@ public class DefendantInfoProcessor implements Process {
 
     @Override
     public void process(SaveAndLinkModel saveAndLinkModel) {
+
         DefendantMAATDataEntity defendantMAATDataEntity = saveAndLinkModel.getDefendantMAATDataEntity();
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
         Defendant defendant = caseDetails.getDefendant();

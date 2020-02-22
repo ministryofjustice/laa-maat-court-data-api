@@ -116,7 +116,7 @@ public class TestEntityDataBuilder {
                 .cjsAreaCode("16")
                 .maatCat(1)
                 .mlrCat(1)
-                .maatId(232)
+                .maatId(1234)
                 .build();
     }
 

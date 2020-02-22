@@ -10,8 +10,10 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
     hibernate:
       ddl-auto: create
     properties:
+      hibernate.jdbc.lob.non_contextual_creation: true
       hibernate:
         defaulat_schema: mla

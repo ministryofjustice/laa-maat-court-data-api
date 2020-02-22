@@ -15,6 +15,7 @@ public class SolicitorInfoProcessor implements Process {
 
     @Override
     public void process(SaveAndLinkModel saveAndLinkModel) {
+
         SolicitorMAATDataEntity solicitorMAATDataEntity = saveAndLinkModel.getSolicitorMAATDataEntity();
 
         SolicitorEntity solicitorEntity = SolicitorEntity.builder()

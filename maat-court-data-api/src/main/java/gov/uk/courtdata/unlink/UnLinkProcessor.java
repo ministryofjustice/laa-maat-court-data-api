@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
-import gov.uk.courtdata.repository.DefendantMAATDataRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.unlink.validate.UnlinkValidator;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +13,14 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class UnlinkProcessor {
+public class UnLinkProcessor {
 
     private final Gson gson;
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
     private final UnlinkValidator unlinkValidator;
-    private final DefendantMAATDataRepository defendantMAATDataRepository;
-    private final UnlinkImpl unlinkImpl;
+    private final UnLinkImpl unlinkImpl;
 
-    public void process(String unlinkJson) {
+    public UnlinkModel process(String unlinkJson) {
 
         UnlinkModel unlinkModel = new UnlinkModel();
         Unlink unlink = gson.fromJson(unlinkJson, Unlink.class);
@@ -30,6 +28,7 @@ public class UnlinkProcessor {
         unlinkModel.setUnlink(unlink);
         mapWqLinkRegister(unlinkModel);
         unlinkImpl.execute(unlinkModel);
+        return unlinkModel;
     }
 
     private void mapWqLinkRegister(UnlinkModel unlinkModel) {
@@ -38,6 +37,5 @@ public class UnlinkProcessor {
                 .findBymaatId(maatId);
         unlinkValidator.validateWQLinkRegister(wqLinkRegisterEntityList, maatId);
         unlinkModel.setWqLinkRegisterEntity(wqLinkRegisterEntityList.get(0));
-        unlinkModel.setTxId(defendantMAATDataRepository.getTxnID());
     }
 }

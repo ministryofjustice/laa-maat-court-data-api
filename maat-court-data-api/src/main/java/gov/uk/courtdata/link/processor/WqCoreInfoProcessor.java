@@ -20,6 +20,7 @@ public class WqCoreInfoProcessor implements Process {
 
     @Override
     public void process(SaveAndLinkModel saveAndLinkModel) {
+
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
         WqCoreEntity wqCoreEntity = WqCoreEntity.builder()
                 .txId(saveAndLinkModel.getTxId())

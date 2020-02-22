@@ -19,6 +19,7 @@ public class WqLinkRegisterProcessor implements Process {
 
     @Override
     public void process(SaveAndLinkModel saveAndLinkModel) {
+
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
         int maatCat = saveAndLinkModel.getSolicitorMAATDataEntity().getCmuId();
         final WqLinkRegisterEntity wqLinkRegisterEntity = WqLinkRegisterEntity.builder()

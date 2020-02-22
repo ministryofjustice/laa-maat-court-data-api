@@ -23,6 +23,7 @@ public class OffenceInfoProcessor implements Process {
 
     @Override
     public void process(SaveAndLinkModel saveAndLinkModel) {
+
         List<OffenceEntity> offenceEntityList = saveAndLinkModel.getCaseDetails().getDefendant().getOffences()
                 .stream()
                 .map(offence -> buildOffences(offence, saveAndLinkModel))
@@ -46,7 +47,7 @@ public class OffenceInfoProcessor implements Process {
                 .offenceWording(offence.getOffenceWording())
                 .iojDecision(PENDING_IOJ_DECISION)
                 .wqOffence(G_NO)
-                .applicationFlag(0) // Needs to check
+                .applicationFlag(G_NO)
                 .build();
     }
 }

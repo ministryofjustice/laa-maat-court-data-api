@@ -2,6 +2,7 @@ package gov.uk.courtdata.link;
 
 
 import gov.uk.MAATCourtDataApplication;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.model.SaveAndLinkModel;
@@ -42,13 +43,17 @@ public class SaveAndLinkImplTest {
     private ResultRepository resultRepository;
     @Autowired
     private RepOrderDataRepository repOrderDataRepository;
+    @Autowired
+    private TestEntityDataBuilder testEntityDataBuilder;
+
 
 
     @Test
     public void givenSaveAndLinkModel_whenSaveAndImplIsInvoked_thenLinkEstablished() {
 
         //given
-        SaveAndLinkModel saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
+        SaveAndLinkModel saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModelRaw();
+        repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
 
         //when
         saveAndLinkImp.execute(saveAndLinkModel);
@@ -68,7 +73,7 @@ public class SaveAndLinkImplTest {
     }
 
     private void verifyRepOrder(SaveAndLinkModel saveAndLinkModel) {
-        // Verify Result Record is created
+        // Verify Rep Order Record is created
         Optional<RepOrderEntity> retrievedRepOrderEntity = repOrderDataRepository.findById(saveAndLinkModel.getCaseDetails().getMaatId());
         RepOrderEntity repOrderEntity = retrievedRepOrderEntity.orElse(null);
         assert repOrderEntity != null;

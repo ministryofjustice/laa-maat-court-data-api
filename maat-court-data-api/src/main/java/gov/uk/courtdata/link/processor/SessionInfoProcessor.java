@@ -23,6 +23,7 @@ public class SessionInfoProcessor implements Process {
 
     @Override
     public void process(SaveAndLinkModel saveAndLinkModel) {
+
         List<SessionEntity> sessionEntityList = saveAndLinkModel.getCaseDetails().getSessions()
                 .stream()
                 .map(s -> buildSession(s, saveAndLinkModel))

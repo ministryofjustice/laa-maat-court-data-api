@@ -1,7 +1,7 @@
 package gov.uk.courtdata.controlloer;
 
 import gov.uk.courtdata.link.SaveAndLinkProcessor;
-import gov.uk.courtdata.unlink.UnlinkProcessor;
+import gov.uk.courtdata.unlink.UnLinkProcessor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     private final SaveAndLinkProcessor saveAndLinkProcessor;
-    private final UnlinkProcessor unlinkProcessor;
+    private final UnLinkProcessor unlinkProcessor;
 
     @PostMapping("/saveAndLink")
     public String saveAndLink(@RequestBody String jsonPayload) {

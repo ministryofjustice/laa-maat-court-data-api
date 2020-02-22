@@ -14,6 +14,15 @@ public class TestModelDataBuilder {
     @Autowired
     Gson gson;
 
+    public SaveAndLinkModel getSaveAndLinkModelRaw() {
+        return SaveAndLinkModel.builder()
+
+                .caseDetails(getCaseDetails())
+                .defendantMAATDataEntity(testEntityDataBuilder.getDefendantMAATDataEntity())
+                .solicitorMAATDataEntity(testEntityDataBuilder.getSolicitorMAATDataEntity())
+                .build();
+    }
+
     public SaveAndLinkModel getSaveAndLinkModel() {
         return SaveAndLinkModel.builder()
                 .caseId(123456)
@@ -27,11 +36,11 @@ public class TestModelDataBuilder {
     }
 
     private CaseDetails getCaseDetails() {
-        String jsonString = getJSONString();
+        String jsonString = getSaveAndLinkString();
         return gson.fromJson(jsonString, CaseDetails.class);
     }
 
-    private String getJSONString() {
+    private String getSaveAndLinkString() {
         return "{\n" +
                 "  \"maatId\": 1234,\n" +
                 "  \"caseUrn\":\"caseurn1\",\n" +
@@ -101,6 +110,16 @@ public class TestModelDataBuilder {
                 "      \"sessionvalidateddate\": null\n" +
                 "    }\n" +
                 "  ]\n" +
+                "}";
+    }
+
+
+    public String getUnLinkString() {
+        return "{\n" +
+                " \"maatId\": 1234,\n" +
+                "  \"userId\": \"testUser\",\n" +
+                "  \"reasonId\": 1,\n" +
+                "  \"reasonText\" : \"Test Data\"\n" +
                 "}";
     }
 }

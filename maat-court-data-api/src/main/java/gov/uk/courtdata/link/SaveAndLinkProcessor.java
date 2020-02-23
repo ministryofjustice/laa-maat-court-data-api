@@ -25,6 +25,7 @@ public class SaveAndLinkProcessor {
     private final DefendantMAATDataRepository defendantMAATDataRepository;
 
 
+
     public void process(String linkRequestPayload) {
 
         mapRequestPayload(linkRequestPayload);
@@ -52,15 +53,9 @@ public class SaveAndLinkProcessor {
         Optional<DefendantMAATDataEntity> defendantDetails = defendantMAATDataRepository.findBymaatId(maatId);
         DefendantMAATDataEntity defendantMAATDataEntity = defendantDetails.orElse(null);
         saveAndLinkModel.setDefendantMAATDataEntity(defendantMAATDataEntity);
-        mapIdentifiers(saveAndLinkModel);
+
     }
 
-    private void mapIdentifiers(SaveAndLinkModel saveAndLinkModel) {
-        saveAndLinkModel.setCaseId(defendantMAATDataRepository.getCaseID());
-        saveAndLinkModel.setTxId(defendantMAATDataRepository.getTxnID());
-        saveAndLinkModel.setProceedingId(defendantMAATDataRepository.getProceedingID());
-        saveAndLinkModel.setLibraId(defendantMAATDataRepository.getLibraID());
-    }
 
     private void mapSolicitorMAATDataInfo(Integer maatId, SaveAndLinkModel saveAndLinkModel) {
         Optional<SolicitorMAATDataEntity> solicitorDetails = solicitorMAATDataRepository.findBymaatId(maatId);

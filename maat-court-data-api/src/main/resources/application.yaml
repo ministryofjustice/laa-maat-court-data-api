@@ -14,8 +14,8 @@ spring:
 aws:
   sqs:
     region: eu-west-2
-    accesskey: AKIA27HJSWAHIV46Q6GP
-    secretkey: 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
+    accesskey: ${ACCESS_KEY}
+    secretkey: ${SECRET_KEY}
     queue:
       link: crimeapps-development-cp-test-queue
       unlink:

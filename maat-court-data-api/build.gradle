@@ -44,4 +44,6 @@ dependencies {
 
 }
 
-
+test {
+	dependsOn 'cleanTest'
+}

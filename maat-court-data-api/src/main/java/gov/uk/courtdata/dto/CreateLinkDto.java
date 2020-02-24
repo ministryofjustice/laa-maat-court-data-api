@@ -1,16 +1,18 @@
-package gov.uk.courtdata.model;
+package gov.uk.courtdata.dto;
 
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
+import gov.uk.courtdata.model.CaseDetails;
 import lombok.*;
 
+@ToString
 @Data
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaveAndLinkModel {
+public class CreateLinkDto {
 
     private Integer caseId;
     private Integer txId;

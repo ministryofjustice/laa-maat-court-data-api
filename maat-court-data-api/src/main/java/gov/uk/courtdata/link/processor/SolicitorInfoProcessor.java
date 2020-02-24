@@ -1,8 +1,8 @@
 package gov.uk.courtdata.link.processor;
 
+import gov.uk.courtdata.dto.CreateLinkDto;
 import gov.uk.courtdata.entity.SolicitorEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
-import gov.uk.courtdata.model.SaveAndLinkModel;
 import gov.uk.courtdata.repository.SolicitorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ public class SolicitorInfoProcessor implements Process {
     private final SolicitorRepository solicitorRepository;
 
     @Override
-    public void process(SaveAndLinkModel saveAndLinkModel) {
+    public void process(CreateLinkDto saveAndLinkModel) {
 
         SolicitorMAATDataEntity solicitorMAATDataEntity = saveAndLinkModel.getSolicitorMAATDataEntity();
 

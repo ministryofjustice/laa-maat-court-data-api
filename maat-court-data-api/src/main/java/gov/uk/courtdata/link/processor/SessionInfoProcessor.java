@@ -1,7 +1,7 @@
 package gov.uk.courtdata.link.processor;
 
+import gov.uk.courtdata.dto.CreateLinkDto;
 import gov.uk.courtdata.entity.SessionEntity;
-import gov.uk.courtdata.model.SaveAndLinkModel;
 import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.repository.SessionRepository;
 import gov.uk.courtdata.util.CourtDataUtil;
@@ -22,7 +22,7 @@ public class SessionInfoProcessor implements Process {
     private final SessionRepository sessionRepository;
 
     @Override
-    public void process(SaveAndLinkModel saveAndLinkModel) {
+    public void process(CreateLinkDto saveAndLinkModel) {
 
         List<SessionEntity> sessionEntityList = saveAndLinkModel.getCaseDetails().getSessions()
                 .stream()
@@ -31,7 +31,7 @@ public class SessionInfoProcessor implements Process {
         sessionRepository.saveAll(sessionEntityList);
     }
 
-    private SessionEntity buildSession(Session session, SaveAndLinkModel saveAndLinkModel) {
+    private SessionEntity buildSession(Session session, CreateLinkDto saveAndLinkModel) {
         return SessionEntity.builder()
                 .caseId(saveAndLinkModel.getCaseId())
                 .txId(saveAndLinkModel.getTxId())

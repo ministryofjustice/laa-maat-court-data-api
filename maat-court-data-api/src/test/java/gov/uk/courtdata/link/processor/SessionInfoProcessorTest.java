@@ -2,9 +2,9 @@ package gov.uk.courtdata.link.processor;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.dto.CreateLinkDto;
 import gov.uk.courtdata.entity.SessionEntity;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.SaveAndLinkModel;
 import gov.uk.courtdata.repository.SessionRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +31,7 @@ public class SessionInfoProcessorTest {
     public void givenSaveAndLinkModel_whenProcessIsInvoked_thenSessionRecordIsCreated() {
 
         // given
-        SaveAndLinkModel saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
+        CreateLinkDto saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
 
         // when
@@ -45,7 +45,6 @@ public class SessionInfoProcessorTest {
         assertThat(found.getTxId()).isEqualTo(saveAndLinkModel.getTxId());
         assertThat(found.getCaseId()).isEqualTo(saveAndLinkModel.getCaseId());
         assertThat(found.getPostHearingCustody()).isEqualTo(caseDetails.getSessions().get(0).getPostHearingCustody());
-        ;
 
 
     }

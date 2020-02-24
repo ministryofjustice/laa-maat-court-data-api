@@ -1,8 +1,8 @@
 package gov.uk.courtdata.link.processor;
 
+import gov.uk.courtdata.dto.CreateLinkDto;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.model.Offence;
-import gov.uk.courtdata.model.SaveAndLinkModel;
 import gov.uk.courtdata.repository.OffenceRepository;
 import gov.uk.courtdata.util.CourtDataUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class OffenceInfoProcessor implements Process {
     private final OffenceRepository offenceRepository;
 
     @Override
-    public void process(SaveAndLinkModel saveAndLinkModel) {
+    public void process(CreateLinkDto saveAndLinkModel) {
 
         List<OffenceEntity> offenceEntityList = saveAndLinkModel.getCaseDetails().getDefendant().getOffences()
                 .stream()
@@ -31,7 +31,7 @@ public class OffenceInfoProcessor implements Process {
         offenceRepository.saveAll(offenceEntityList);
     }
 
-    private OffenceEntity buildOffences(Offence offence, SaveAndLinkModel saveAndLinkModel) {
+    private OffenceEntity buildOffences(Offence offence, CreateLinkDto saveAndLinkModel) {
         return OffenceEntity.builder()
                 .caseId(saveAndLinkModel.getCaseId())
                 .txId(saveAndLinkModel.getTxId())

@@ -3,9 +3,9 @@ package gov.uk.courtdata.link.processor;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.dto.CreateLinkDto;
 import gov.uk.courtdata.entity.DefendantEntity;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.SaveAndLinkModel;
 import gov.uk.courtdata.repository.DefendantRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +15,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import static gov.uk.courtdata.constants.CourtDataConstants.CREATE_LINK;
+import static gov.uk.courtdata.constants.CourtDataConstants.SEARCH_TYPE_0;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -32,7 +33,7 @@ public class DefendantInfoProcessorTest {
     @Test
     public void givenSaveAndLinkModel_whenProcessIsInvoked_thenDefendantRecordIsCreated() {
         // given
-        SaveAndLinkModel saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
+        CreateLinkDto saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
 
         // when

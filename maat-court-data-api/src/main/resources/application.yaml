@@ -10,3 +10,12 @@ spring:
     show-sql: true
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
+
+aws:
+  sqs:
+    region: eu-west-2
+    accesskey: AKIA27HJSWAHIV46Q6GP
+    secretkey: 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
+    queue:
+      link: crimeapps-development-cp-test-queue
+      unlink:

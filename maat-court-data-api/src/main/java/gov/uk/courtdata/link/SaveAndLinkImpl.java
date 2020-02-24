@@ -1,7 +1,7 @@
 package gov.uk.courtdata.link;
 
+import gov.uk.courtdata.dto.CreateLinkDto;
 import gov.uk.courtdata.link.processor.*;
-import gov.uk.courtdata.model.SaveAndLinkModel;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class SaveAndLinkImpl {
     private final IdentifierRepository identifierRepository;
 
     @Transactional
-    public void execute(SaveAndLinkModel saveAndLinkModel) {
+    public void execute(CreateLinkDto saveAndLinkModel) {
 
         mapIdentifiers(saveAndLinkModel);
         caseInfoProcessor.process(saveAndLinkModel);
@@ -40,7 +40,7 @@ public class SaveAndLinkImpl {
 
     }
 
-    private void mapIdentifiers(SaveAndLinkModel saveAndLinkModel) {
+    private void mapIdentifiers(CreateLinkDto saveAndLinkModel) {
         saveAndLinkModel.setTxId(identifierRepository.getTxnID());
         saveAndLinkModel.setLibraId(identifierRepository.getLibraID());
         saveAndLinkModel.setProceedingId(identifierRepository.getProceedingID());

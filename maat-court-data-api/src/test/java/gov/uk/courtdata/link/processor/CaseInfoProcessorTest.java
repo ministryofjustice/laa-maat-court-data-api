@@ -2,9 +2,9 @@ package gov.uk.courtdata.link.processor;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.dto.CreateLinkDto;
 import gov.uk.courtdata.entity.CaseEntity;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.SaveAndLinkModel;
 import gov.uk.courtdata.repository.CaseRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +31,7 @@ public class CaseInfoProcessorTest {
     @Test
     public void givenSaveAndLinkModel_whenProcessIsInvoked_theCaseRecordIsCreated() {
         // given
-        SaveAndLinkModel saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
+        CreateLinkDto saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
 
         //when

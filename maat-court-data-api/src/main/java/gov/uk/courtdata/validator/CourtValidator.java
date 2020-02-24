@@ -30,7 +30,7 @@ public class CourtValidator implements IValidator<Void, CaseDetails> {
         //TODO: No clarity yet on cjsCode at case level & multiple court location within sessions
         // to revisit and implement court/case area mismatch
 
-        caseDetailsJson.getSessions().stream().forEach(s -> {
+        caseDetailsJson.getSessions().forEach(s -> {
             Optional.ofNullable(s.getCourtLocation())
                     .orElseThrow(() -> new ValidationException("Court Location is missing from session "));
         });

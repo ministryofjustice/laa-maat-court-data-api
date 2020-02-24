@@ -1,7 +1,7 @@
 package gov.uk.courtdata.link;
 
 import gov.uk.courtdata.dto.CreateLinkDto;
-import gov.uk.courtdata.error.MaatCourtDataException;
+import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.validator.ValidationProcessor;

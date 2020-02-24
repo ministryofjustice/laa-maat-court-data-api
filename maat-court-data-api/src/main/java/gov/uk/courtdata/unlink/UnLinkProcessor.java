@@ -4,7 +4,7 @@ import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import gov.uk.courtdata.unlink.validate.UnlinkValidator;
+import gov.uk.courtdata.validator.UnlinkValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

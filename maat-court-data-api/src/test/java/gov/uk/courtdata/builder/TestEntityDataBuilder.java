@@ -40,8 +40,8 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public RepOrderCommonPlatformDataEntity getRepOrderEntity() {
-        return RepOrderCommonPlatformDataEntity.builder()
+    public RepOrderCPDataEntity getRepOrderEntity() {
+        return RepOrderCPDataEntity.builder()
                 .repOrderId(1234)
                 .caseUrn("caseurn1")
                 .dateCreated(LocalDate.now())

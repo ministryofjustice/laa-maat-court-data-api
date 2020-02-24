@@ -4,9 +4,9 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CreateLinkDto;
-import gov.uk.courtdata.entity.RepOrderCommonPlatformDataEntity;
+import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.repository.RepOrderCommonPlatformDataRepository;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class RepOrderInfoProcessorTest {
     @Autowired
     private RepOrderInfoProcessor repOrderInfoProcessor;
     @Autowired
-    private RepOrderCommonPlatformDataRepository repOrderDataRepository;
+    private RepOrderCPDataRepository repOrderDataRepository;
     @Autowired
     private TestModelDataBuilder testModelDataBuilder;
     @Autowired
@@ -38,8 +38,8 @@ public class RepOrderInfoProcessorTest {
         repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
         // when
         repOrderInfoProcessor.process(saveAndLinkModel);
-        Optional<RepOrderCommonPlatformDataEntity> foundOptionalRepOrder = repOrderDataRepository.findByrepOrderId(caseDetails.getMaatId());
-        RepOrderCommonPlatformDataEntity found = foundOptionalRepOrder.orElse(null);
+        Optional<RepOrderCPDataEntity> foundOptionalRepOrder = repOrderDataRepository.findByrepOrderId(caseDetails.getMaatId());
+        RepOrderCPDataEntity found = foundOptionalRepOrder.orElse(null);
 
 
         // then

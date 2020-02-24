@@ -1,7 +1,7 @@
-package gov.uk.courtdata.unlink.validate;
+package gov.uk.courtdata.validator;
 
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.error.MaatCourtDataException;
+import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.model.Unlink;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 package gov.uk.courtdata.jms;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.error.MaatCourtDataException;
+import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.link.CreateLinkService;
 import gov.uk.courtdata.model.CaseDetails;

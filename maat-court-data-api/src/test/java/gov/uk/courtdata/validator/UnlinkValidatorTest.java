@@ -1,11 +1,12 @@
-package gov.uk.courtdata.unlink.validate;
+package gov.uk.courtdata.validator;
 
 import com.google.gson.Gson;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.error.MaatCourtDataException;
+import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.model.Unlink;
+import gov.uk.courtdata.validator.UnlinkValidator;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

@@ -1,14 +1,13 @@
 package gov.uk.courtdata.jms;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.error.MaatCourtDataException;
+import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.unlink.UnLinkProcessor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.JmsException;
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 

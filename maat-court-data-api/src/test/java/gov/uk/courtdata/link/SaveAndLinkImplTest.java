@@ -42,7 +42,7 @@ public class SaveAndLinkImplTest {
     @Autowired
     private ResultRepository resultRepository;
     @Autowired
-    private RepOrderCommonPlatformDataRepository repOrderDataRepository;
+    private RepOrderCPDataRepository repOrderDataRepository;
     @Autowired
     private TestEntityDataBuilder testEntityDataBuilder;
 
@@ -52,7 +52,7 @@ public class SaveAndLinkImplTest {
 
         //given
         CreateLinkDto saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModelRaw();
-        // repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
+         repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
 
         //when
         saveAndLinkImp.execute(saveAndLinkModel);
@@ -73,8 +73,8 @@ public class SaveAndLinkImplTest {
 
     private void verifyRepOrder(CreateLinkDto CreateLinkDto) {
         // Verify Rep Order Record is created
-        Optional<RepOrderCommonPlatformDataEntity> retrievedRepOrderEntity = repOrderDataRepository.findByrepOrderId(CreateLinkDto.getCaseDetails().getMaatId());
-        RepOrderCommonPlatformDataEntity repOrderEntity = retrievedRepOrderEntity.orElse(null);
+        Optional<RepOrderCPDataEntity> retrievedRepOrderEntity = repOrderDataRepository.findByrepOrderId(CreateLinkDto.getCaseDetails().getMaatId());
+        RepOrderCPDataEntity repOrderEntity = retrievedRepOrderEntity.orElse(null);
         assert repOrderEntity != null;
     }
 

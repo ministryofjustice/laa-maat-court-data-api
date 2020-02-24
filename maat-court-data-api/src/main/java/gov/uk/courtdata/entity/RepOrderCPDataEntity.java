@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "REP_ORDER_COMMON_PLATFORM_DATA", schema = "TOGDATA")
-public class RepOrderCommonPlatformDataEntity {
+public class RepOrderCPDataEntity {
 
     @Id
     @Column(name = "REP_ORDER_ID")

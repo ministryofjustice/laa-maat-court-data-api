@@ -1,10 +1,10 @@
 package gov.uk.courtdata.link.processor;
 
+import gov.uk.courtdata.dto.CreateLinkDto;
 import gov.uk.courtdata.entity.DefendantEntity;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Defendant;
-import gov.uk.courtdata.model.SaveAndLinkModel;
 import gov.uk.courtdata.repository.DefendantRepository;
 import gov.uk.courtdata.util.CourtDataUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class DefendantInfoProcessor implements Process {
     private final CourtDataUtil courtDataUtil;
 
     @Override
-    public void process(SaveAndLinkModel saveAndLinkModel) {
+    public void process(CreateLinkDto saveAndLinkModel) {
 
         DefendantMAATDataEntity defendantMAATDataEntity = saveAndLinkModel.getDefendantMAATDataEntity();
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();

@@ -20,13 +20,13 @@ public class TestController {
 
     @PostMapping("/saveAndLink")
     public String saveAndLink(@RequestBody String jsonPayload) {
-        saveAndLinkProcessor.process(jsonPayload);
+    //    saveAndLinkProcessor.process(jsonPayload);
         return "Transaction has been linked successfully";
     }
 
     @PostMapping("/unLink")
     public String unLink(@RequestBody String jsonPayload) {
-        unlinkProcessor.process(jsonPayload);
+    //    unlinkProcessor.process(jsonPayload);
         return "Transaction has been unlinked successfully";
     }
 }

@@ -1,15 +1,16 @@
 package gov.uk.courtdata.link.processor;
 
+import gov.uk.courtdata.dto.CreateLinkDto;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.SaveAndLinkModel;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import static gov.uk.courtdata.constants.CourtDataConstants.WQ_CREATION_EVENT;
+import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
 
 
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class WqCoreInfoProcessor implements Process {
     private final WqCoreRepository wqCoreRepository;
 
     @Override
-    public void process(SaveAndLinkModel saveAndLinkModel) {
+    public void process(CreateLinkDto saveAndLinkModel) {
 
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
         WqCoreEntity wqCoreEntity = WqCoreEntity.builder()

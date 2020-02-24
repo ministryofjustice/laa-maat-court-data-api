@@ -1,15 +1,18 @@
 package gov.uk.courtdata.unlink;
 
+import com.google.gson.Gson;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,8 @@ public class UnLinkProcessorTest {
     private WqCoreRepository wqCoreRepository;
     @Autowired
     private UnlinkReasonRepository unlinkReasonRepository;
+    @Autowired
+    private Gson gson;
 
 
 
@@ -46,7 +51,7 @@ public class UnLinkProcessorTest {
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
 
         //when
-       UnlinkModel unlinkModel =  unlinkProcessor.process(unLinkJson);
+       UnlinkModel unlinkModel =  unlinkProcessor.process(gson.fromJson(unLinkJson, Unlink.class));
 
         //then
         verifyWQUnLinkRegister(unlinkModel);

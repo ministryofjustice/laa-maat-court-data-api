@@ -2,10 +2,10 @@ package gov.uk.courtdata.link.processor;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.dto.CreateLinkDto;
 import gov.uk.courtdata.entity.ResultEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Result;
-import gov.uk.courtdata.model.SaveAndLinkModel;
 import gov.uk.courtdata.repository.ResultRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +35,7 @@ public class ResultsInfoProcessorTest {
     public void givenSaveAndLinkModel_whenProcessIsInvoked_thenResultRecordIsCreated() {
 
         // given
-        SaveAndLinkModel saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
+        CreateLinkDto saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
         Result result = caseDetails.getDefendant().getOffences().get(0).getResults().get(0);
         // when
@@ -50,7 +50,6 @@ public class ResultsInfoProcessorTest {
         assertThat(found.getCaseId()).isEqualTo(saveAndLinkModel.getCaseId());
         assertThat(found.getResultShortTitle()).isEqualTo(result.getResultShortTitle());
         assertThat(found.getWqResult()).isEqualTo(G_NO);
-        ;
 
 
     }

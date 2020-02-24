@@ -1,6 +1,5 @@
 package gov.uk.courtdata.unlink;
 
-import com.google.gson.Gson;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
@@ -15,17 +14,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UnLinkProcessor {
 
-    private final Gson gson;
+
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
     private final UnlinkValidator unlinkValidator;
     private final UnLinkImpl unlinkImpl;
 
-    public UnlinkModel process(String unlinkJson) {
+    public UnlinkModel process(Unlink unlinkJson) {
 
         UnlinkModel unlinkModel = new UnlinkModel();
-        Unlink unlink = gson.fromJson(unlinkJson, Unlink.class);
-        unlinkValidator.validateRequest(unlink);
-        unlinkModel.setUnlink(unlink);
+        unlinkValidator.validateRequest(unlinkJson);
+        unlinkModel.setUnlink(unlinkJson);
         mapWqLinkRegister(unlinkModel);
         unlinkImpl.execute(unlinkModel);
         return unlinkModel;

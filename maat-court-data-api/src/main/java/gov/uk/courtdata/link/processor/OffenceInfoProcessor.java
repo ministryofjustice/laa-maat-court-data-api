@@ -39,7 +39,7 @@ public class OffenceInfoProcessor implements Process {
                 .offenceCode(offence.getOffenceCode())
                 .offenceClassification(offence.getOffenceClassification())
                 .legalAidStatus(offence.getLegalAidStatus())
-                .legalAidStatusDate(offence.getLegalAidStatusDate())
+                .legalAidStatusDate(courtDataUtil.getDate(offence.getLegalAidStatusDate()))
                 .legalaidReason(offence.getLegalAidReason())
                 .offenceDate(courtDataUtil.getDate(offence.getOffenceDate()))
                 .offenceShortTitle(offence.getOffenceShortTitle())

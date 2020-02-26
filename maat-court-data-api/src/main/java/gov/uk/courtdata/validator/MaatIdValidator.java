@@ -1,6 +1,7 @@
 package gov.uk.courtdata.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,8 +17,10 @@ import java.util.Optional;
 public class MaatIdValidator implements IValidator<Void, Integer> {
 
 
+    private RepOrderCPDataRepository repOrderCPDataRepository;
+
+
     /**
-     *
      * @param maatId
      * @return
      * @throws ValidationException

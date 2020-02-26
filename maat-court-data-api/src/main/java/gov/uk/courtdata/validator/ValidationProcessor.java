@@ -45,7 +45,7 @@ public class ValidationProcessor {
         final Optional<SolicitorMAATDataEntity> solicitorMAATDataEntity
                 = solicitorValidator.validate(caseDetails);
         final Optional<DefendantMAATDataEntity> defendantMAATDataEntity
-                = defendantValidator.validate(caseDetails);
+                = defendantValidator.validate(caseDetails.getMaatId());
 
 
         return CreateLinkDto.builder().caseDetails(caseDetails)

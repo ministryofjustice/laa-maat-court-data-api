@@ -1,7 +1,7 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.LaaModelManager;
 import gov.uk.courtdata.model.CaseDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,8 +14,8 @@ public class TestModelDataBuilder {
     @Autowired
     Gson gson;
 
-    public CreateLinkDto getSaveAndLinkModelRaw() {
-        return CreateLinkDto.builder()
+    public LaaModelManager getSaveAndLinkModelRaw() {
+        return LaaModelManager.builder()
 
                 .caseDetails(getCaseDetails())
                 .defendantMAATDataEntity(testEntityDataBuilder.getDefendantMAATDataEntity())
@@ -23,8 +23,8 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public CreateLinkDto getSaveAndLinkModel() {
-        return CreateLinkDto.builder()
+    public LaaModelManager getSaveAndLinkModel() {
+        return LaaModelManager.builder()
                 .caseId(123456)
                 .libraId(25467)
                 .proceedingId(12123231)

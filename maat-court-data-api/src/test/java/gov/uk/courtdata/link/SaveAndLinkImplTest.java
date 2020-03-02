@@ -4,8 +4,9 @@ package gov.uk.courtdata.link;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.LaaModelManager;
 import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.repository.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +52,7 @@ public class SaveAndLinkImplTest {
     public void givenSaveAndLinkModel_whenSaveAndImplIsInvoked_thenLinkEstablished() {
 
         //given
-        CreateLinkDto saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModelRaw();
+        LaaModelManager saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModelRaw();
          repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
 
         //when
@@ -71,72 +72,72 @@ public class SaveAndLinkImplTest {
 
     }
 
-    private void verifyRepOrder(CreateLinkDto CreateLinkDto) {
+    private void verifyRepOrder(LaaModelManager LaaModelManager) {
         // Verify Rep Order Record is created
-        Optional<RepOrderCPDataEntity> retrievedRepOrderEntity = repOrderDataRepository.findByrepOrderId(CreateLinkDto.getCaseDetails().getMaatId());
+        Optional<RepOrderCPDataEntity> retrievedRepOrderEntity = repOrderDataRepository.findByrepOrderId(LaaModelManager.getCaseDetails().getMaatId());
         RepOrderCPDataEntity repOrderEntity = retrievedRepOrderEntity.orElse(null);
         assert repOrderEntity != null;
     }
 
-    private void verifyResult(CreateLinkDto CreateLinkDto) {
+    private void verifyResult(LaaModelManager LaaModelManager) {
         // Verify Result Record is created
-        Optional<ResultEntity> retrievedResultEntity = resultRepository.findById(CreateLinkDto.getTxId());
+        Optional<ResultEntity> retrievedResultEntity = resultRepository.findById(LaaModelManager.getTxId());
         ResultEntity resultEntity = retrievedResultEntity.orElse(null);
         assert resultEntity != null;
     }
 
-    private void verifyOffence(CreateLinkDto CreateLinkDto) {
+    private void verifyOffence(LaaModelManager LaaModelManager) {
         // Verify Offence Record is created
-        Optional<OffenceEntity> retrievedOffenceEntity = offenceRepository.findById(CreateLinkDto.getTxId());
+        Optional<OffenceEntity> retrievedOffenceEntity = offenceRepository.findById(LaaModelManager.getTxId());
         OffenceEntity offenceEntity = retrievedOffenceEntity.orElse(null);
         assert offenceEntity != null;
     }
 
-    private void verifySession(CreateLinkDto CreateLinkDto) {
+    private void verifySession(LaaModelManager LaaModelManager) {
         // Verify Session Record is created
-        Optional<SessionEntity> retrievedSessionEntity = sessionRepository.findById(CreateLinkDto.getTxId());
+        Optional<SessionEntity> retrievedSessionEntity = sessionRepository.findById(LaaModelManager.getTxId());
         SessionEntity sessionEntity = retrievedSessionEntity.orElse(null);
         assert sessionEntity != null;
     }
 
-    private void verifyDefendant(CreateLinkDto CreateLinkDto) {
+    private void verifyDefendant(LaaModelManager LaaModelManager) {
         // Verify Defendant Record is created
-        Optional<DefendantEntity> retrievedDefendantEntity = defendantRepository.findById(CreateLinkDto.getTxId());
+        Optional<DefendantEntity> retrievedDefendantEntity = defendantRepository.findById(LaaModelManager.getTxId());
         DefendantEntity defendantEntity = retrievedDefendantEntity.orElse(null);
         assert defendantEntity != null;
     }
 
-    private void verifyProceeding(CreateLinkDto CreateLinkDto) {
+    private void verifyProceeding(LaaModelManager LaaModelManager) {
         // Verify Proceeding Record is created
-        Optional<ProceedingEntity> retrievedProceedingEntity = proceedingRepository.findById(CreateLinkDto.getTxId());
+        Optional<ProceedingEntity> retrievedProceedingEntity = proceedingRepository.findById(LaaModelManager.getTxId());
         ProceedingEntity proceedingEntity = retrievedProceedingEntity.orElse(null);
         assert proceedingEntity != null;
     }
 
-    private void verifySolicitor(CreateLinkDto CreateLinkDto) {
+    private void verifySolicitor(LaaModelManager LaaModelManager) {
         // Verify WQCore Link register Record is created
-        Optional<SolicitorEntity> retrievedSolicitorEntity = solicitorRepository.findById(CreateLinkDto.getTxId());
+        Optional<SolicitorEntity> retrievedSolicitorEntity = solicitorRepository.findById(LaaModelManager.getTxId());
         SolicitorEntity solicitorEntity = retrievedSolicitorEntity.orElse(null);
         assert solicitorEntity != null;
     }
 
-    private void verifyWqLinkRegister(CreateLinkDto CreateLinkDto) {
+    private void verifyWqLinkRegister(LaaModelManager LaaModelManager) {
         // Verify WQCore Link register Record is created
-        Optional<WqLinkRegisterEntity> retrievedWqLinkRegisterEntity = wqLinkRegisterRepository.findById(CreateLinkDto.getTxId());
+        Optional<WqLinkRegisterEntity> retrievedWqLinkRegisterEntity = wqLinkRegisterRepository.findById(LaaModelManager.getTxId());
         WqLinkRegisterEntity wqLinkRegisterEntity = retrievedWqLinkRegisterEntity.orElse(null);
         assert wqLinkRegisterEntity != null;
     }
 
-    private void verifyWqCore(CreateLinkDto CreateLinkDto) {
+    private void verifyWqCore(LaaModelManager LaaModelManager) {
         // Verify WQCore Record is created
-        Optional<WqCoreEntity> retrievedWqCoreEntity = wqCoreRepository.findById(CreateLinkDto.getTxId());
+        Optional<WqCoreEntity> retrievedWqCoreEntity = wqCoreRepository.findById(LaaModelManager.getTxId());
         WqCoreEntity wqCoreEntity = retrievedWqCoreEntity.orElse(null);
         assert wqCoreEntity != null;
     }
 
-    private void verifyCase(CreateLinkDto CreateLinkDto) {
+    private void verifyCase(LaaModelManager LaaModelManager) {
         // Verify Case record is created
-        Optional<CaseEntity> retrievedCaseEntity = caseRepository.findById(CreateLinkDto.getTxId());
+        Optional<CaseEntity> retrievedCaseEntity = caseRepository.findById(LaaModelManager.getTxId());
         CaseEntity caseEntity = retrievedCaseEntity.orElse(null);
         assert caseEntity != null;
     }

@@ -3,9 +3,11 @@ package gov.uk.courtdata.constants;
 public interface CourtDataConstants {
 
     Integer WQ_CREATION_EVENT = 20;
+    Integer WQ_UPDATE_CASE_EVENT = 22;
     Integer WQ_SUCCESS_STATUS = 0;
     String SEARCH_TYPE_0 = "0";
     String CREATE_LINK = "createlink";
+    String SAVE_MLR = "savemlr";
     Integer PENDING_IOJ_DECISION = 2;
     Integer G_NO = 0;
     String YES = "Y";

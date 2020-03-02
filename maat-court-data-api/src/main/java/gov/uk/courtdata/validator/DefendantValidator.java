@@ -22,15 +22,15 @@ public class DefendantValidator implements IValidator<DefendantMAATDataEntity, C
     private final DefendantMAATDataRepository defendantMAATDataRepository;
 
     /**
-     * @param caseDetailsJson
+     * @param caseDetails
      * @return
      * @throws ValidationException
      */
     @Override
-    public Optional<DefendantMAATDataEntity> validate(CaseDetails caseDetailsJson) throws ValidationException {
+    public Optional<DefendantMAATDataEntity> validate(CaseDetails caseDetails) {
 
         final Optional<DefendantMAATDataEntity> defendantViewEntity =
-                defendantMAATDataRepository.findBymaatId(caseDetailsJson.getMaatId());
+                defendantMAATDataRepository.findBymaatId(caseDetails.getMaatId());
 
         defendantViewEntity.orElseThrow(() -> new ValidationException("MAAT Defendant details not available."));
 

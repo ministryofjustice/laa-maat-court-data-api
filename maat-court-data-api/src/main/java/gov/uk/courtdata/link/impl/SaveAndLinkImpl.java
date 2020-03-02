@@ -1,6 +1,6 @@
-package gov.uk.courtdata.link;
+package gov.uk.courtdata.link.impl;
 
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.LaaModelManager;
 import gov.uk.courtdata.link.processor.*;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class SaveAndLinkImpl {
     private final IdentifierRepository identifierRepository;
 
     @Transactional
-    public void execute(CreateLinkDto saveAndLinkModel) {
+    public void execute(LaaModelManager saveAndLinkModel) {
 
         mapIdentifiers(saveAndLinkModel);
         caseInfoProcessor.process(saveAndLinkModel);
@@ -40,7 +40,7 @@ public class SaveAndLinkImpl {
 
     }
 
-    private void mapIdentifiers(CreateLinkDto saveAndLinkModel) {
+    private void mapIdentifiers(LaaModelManager saveAndLinkModel) {
         saveAndLinkModel.setTxId(identifierRepository.getTxnID());
         saveAndLinkModel.setLibraId(identifierRepository.getLibraID());
         saveAndLinkModel.setProceedingId(identifierRepository.getProceedingID());

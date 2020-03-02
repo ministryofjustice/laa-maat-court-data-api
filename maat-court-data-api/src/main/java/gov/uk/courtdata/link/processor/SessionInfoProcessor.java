@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.LaaModelManager;
 import gov.uk.courtdata.entity.SessionEntity;
 import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.repository.SessionRepository;
@@ -22,16 +22,16 @@ public class SessionInfoProcessor implements Process {
     private final SessionRepository sessionRepository;
 
     @Override
-    public void process(CreateLinkDto saveAndLinkModel) {
+    public void process(LaaModelManager laaModelManager) {
 
-        List<SessionEntity> sessionEntityList = saveAndLinkModel.getCaseDetails().getSessions()
+        List<SessionEntity> sessionEntityList = laaModelManager.getCaseDetails().getSessions()
                 .stream()
-                .map(s -> buildSession(s, saveAndLinkModel))
+                .map(s -> buildSession(s, laaModelManager))
                 .collect(Collectors.toList());
         sessionRepository.saveAll(sessionEntityList);
     }
 
-    private SessionEntity buildSession(Session session, CreateLinkDto saveAndLinkModel) {
+    private SessionEntity buildSession(Session session, LaaModelManager saveAndLinkModel) {
         return SessionEntity.builder()
                 .caseId(saveAndLinkModel.getCaseId())
                 .txId(saveAndLinkModel.getTxId())

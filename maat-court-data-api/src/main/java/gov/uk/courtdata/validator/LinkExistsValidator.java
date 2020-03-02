@@ -21,17 +21,17 @@ public class LinkExistsValidator implements IValidator<Void, CaseDetails> {
 
 
     /**
-     * @param caseDetailsJson
+     * @param caseDetails
      * @return
      * @throws ValidationException
      */
     @Override
-    public Optional<Void> validate(CaseDetails caseDetailsJson) throws ValidationException {
+    public Optional<Void> validate(CaseDetails caseDetails){
 
         /**
          * The Maat Id is not linked already.
          */
-        final int linkCount = wqLinkRegisterRepository.getCountByMaatId(caseDetailsJson.getMaatId());
+        final int linkCount = wqLinkRegisterRepository.getCountByMaatId(caseDetails.getMaatId());
 
         if (linkCount > 0)
             throw new ValidationException("MaatId already linked to the application.");

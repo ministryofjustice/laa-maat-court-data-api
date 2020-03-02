@@ -1,9 +1,11 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.LaaModelManager;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,23 +20,27 @@ public class WqLinkRegisterProcessor implements Process {
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
 
     @Override
-    public void process(CreateLinkDto saveAndLinkModel) {
+    public void process(LaaModelManager laaModelManager) {
 
-        CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
-        int maatCat = saveAndLinkModel.getSolicitorMAATDataEntity().getCmuId();
+        CaseDetails caseDetails = laaModelManager.getCaseDetails();
+        int maatCat = geCategory(laaModelManager);
         final WqLinkRegisterEntity wqLinkRegisterEntity = WqLinkRegisterEntity.builder()
-                .createdTxId(saveAndLinkModel.getTxId())
+                .createdTxId(laaModelManager.getTxId())
                 .createdDate(LocalDate.now())
                 .createdUserId(caseDetails.getCreatedUser())
-                .caseId(saveAndLinkModel.getCaseId())
-                .libraId(COMMON_PLATFORM + saveAndLinkModel.getLibraId())
+                .caseId(laaModelManager.getCaseId())
+                .libraId(COMMON_PLATFORM + laaModelManager.getLibraId())
                 .maatId(caseDetails.getMaatId())
                 .cjsAreaCode(caseDetails.getCjsAreaCode())
                 .cjsLocation(caseDetails.getCjsLocation())
-                .proceedingId(saveAndLinkModel.getProceedingId())
+                .proceedingId(laaModelManager.getProceedingId())
                 .maatCat(maatCat)
                 .mlrCat(maatCat)
                 .build();
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
+    }
+
+    protected int geCategory(LaaModelManager laaModelManager) {
+        return laaModelManager.getSolicitorMAATDataEntity().getCmuId();
     }
 }

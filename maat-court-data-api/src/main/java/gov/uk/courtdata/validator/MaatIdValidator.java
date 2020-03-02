@@ -23,7 +23,7 @@ public class MaatIdValidator implements IValidator<Void, Integer> {
      * @throws ValidationException
      */
     @Override
-    public Optional<Void> validate(final Integer maatId) throws ValidationException {
+    public Optional<Void> validate(final Integer maatId) {
 
         Optional.ofNullable(maatId).orElseThrow(() -> new ValidationException("MAAT id is missing."));
 

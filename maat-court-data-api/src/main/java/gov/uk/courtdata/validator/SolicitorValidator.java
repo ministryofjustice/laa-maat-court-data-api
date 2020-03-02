@@ -26,7 +26,7 @@ public class SolicitorValidator implements IValidator<SolicitorMAATDataEntity, C
      * @throws ValidationException
      */
     @Override
-    public Optional<SolicitorMAATDataEntity> validate(CaseDetails caseDetailsJson) throws ValidationException {
+    public Optional<SolicitorMAATDataEntity> validate(CaseDetails caseDetailsJson)  {
 
         // Get the solicitor details.
 

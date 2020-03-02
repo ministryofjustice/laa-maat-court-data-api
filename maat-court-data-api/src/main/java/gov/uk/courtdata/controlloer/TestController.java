@@ -1,6 +1,8 @@
 package gov.uk.courtdata.controlloer;
 
+import com.google.gson.Gson;
 import gov.uk.courtdata.link.SaveAndLinkProcessor;
+import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.unlink.UnLinkProcessor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,16 +19,18 @@ public class TestController {
 
     private final SaveAndLinkProcessor saveAndLinkProcessor;
     private final UnLinkProcessor unlinkProcessor;
+    private final Gson gson;
 
     @PostMapping("/saveAndLink")
     public String saveAndLink(@RequestBody String jsonPayload) {
-    //    saveAndLinkProcessor.process(jsonPayload);
+        saveAndLinkProcessor.process(jsonPayload);
         return "Transaction has been linked successfully";
     }
 
     @PostMapping("/unLink")
     public String unLink(@RequestBody String jsonPayload) {
-    //    unlinkProcessor.process(jsonPayload);
+        Unlink unlink = gson.fromJson(jsonPayload, Unlink.class);
+        unlinkProcessor.process(unlink);
         return "Transaction has been unlinked successfully";
     }
 }

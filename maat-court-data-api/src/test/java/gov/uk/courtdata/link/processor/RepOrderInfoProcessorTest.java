@@ -3,7 +3,7 @@ package gov.uk.courtdata.link.processor;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.LaaModelManager;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
@@ -33,7 +33,7 @@ public class RepOrderInfoProcessorTest {
     @Test
     public void givenSaveAndLinkModel_whenProcessIsInvoked_thenRepOrderRecordIsCreated() {
         // given
-        CreateLinkDto saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
+        LaaModelManager saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
         repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
         // when

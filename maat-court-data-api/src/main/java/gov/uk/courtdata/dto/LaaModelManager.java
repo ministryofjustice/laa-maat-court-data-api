@@ -12,7 +12,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateLinkDto {
+public class LaaModelManager {
 
     private Integer caseId;
     private Integer txId;

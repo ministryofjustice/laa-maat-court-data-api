@@ -27,7 +27,7 @@ public class ReferenceDataValidator implements IValidator<Void, CaseDetails> {
      * @throws ValidationException
      */
     @Override
-    public Optional<Void> validate(final CaseDetails caseDetailsJson) throws ValidationException {
+    public Optional<Void> validate(final CaseDetails caseDetailsJson) {
 
 
         //TODO: is it to validate all the court location in the session list exists?

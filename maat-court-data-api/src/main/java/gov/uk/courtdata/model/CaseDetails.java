@@ -25,5 +25,6 @@ public class CaseDetails {
     private boolean isActive;
     private List<Session> sessions;
     private Solicitor solicitor;
+    private Integer category;
 
 }

@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.LaaModelManager;
 import gov.uk.courtdata.entity.SolicitorEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.repository.SolicitorRepository;
@@ -14,13 +14,13 @@ public class SolicitorInfoProcessor implements Process {
     private final SolicitorRepository solicitorRepository;
 
     @Override
-    public void process(CreateLinkDto saveAndLinkModel) {
+    public void process(LaaModelManager laaModelManager) {
 
-        SolicitorMAATDataEntity solicitorMAATDataEntity = saveAndLinkModel.getSolicitorMAATDataEntity();
+        SolicitorMAATDataEntity solicitorMAATDataEntity = laaModelManager.getSolicitorMAATDataEntity();
 
         SolicitorEntity solicitorEntity = SolicitorEntity.builder()
-                .caseId(saveAndLinkModel.getCaseId())
-                .txId(saveAndLinkModel.getTxId())
+                .caseId(laaModelManager.getCaseId())
+                .txId(laaModelManager.getTxId())
                 .firmName(solicitorMAATDataEntity.getAccountName())
                 .contactName(solicitorMAATDataEntity.getSolicitorName())
                 .address_line1(solicitorMAATDataEntity.getLine1())

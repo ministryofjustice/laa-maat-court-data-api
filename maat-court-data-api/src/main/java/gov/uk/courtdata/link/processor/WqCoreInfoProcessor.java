@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.LaaModelManager;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqCoreRepository;
@@ -17,20 +17,24 @@ import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
 @Component
 public class WqCoreInfoProcessor implements Process {
 
-    private final WqCoreRepository wqCoreRepository;
+    protected final WqCoreRepository wqCoreRepository;
 
     @Override
-    public void process(CreateLinkDto saveAndLinkModel) {
+    public void process(LaaModelManager laaModelManager) {
 
-        CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
+        CaseDetails caseDetails = laaModelManager.getCaseDetails();
         WqCoreEntity wqCoreEntity = WqCoreEntity.builder()
-                .txId(saveAndLinkModel.getTxId())
-                .caseId(saveAndLinkModel.getCaseId())
+                .txId(laaModelManager.getTxId())
+                .caseId(laaModelManager.getCaseId())
                 .createdTime(LocalDate.now())
                 .createdUserId(caseDetails.getCreatedUser())
-                .wqType(WQ_CREATION_EVENT)
+                .wqType(getWQEvent())
                 .wqStatus(WQ_SUCCESS_STATUS)
                 .build();
         wqCoreRepository.save(wqCoreEntity);
+    }
+
+    protected Integer getWQEvent() {
+        return WQ_CREATION_EVENT;
     }
 }

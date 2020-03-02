@@ -3,7 +3,7 @@ package gov.uk.courtdata.link.processor;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.LaaModelManager;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.repository.OffenceRepository;
@@ -33,7 +33,7 @@ public class OffenceInfoProcessorTest {
     @Test
     public void givenSaveAndLinkModel_whenProcessIsInvoked_thenOffenceRecordIsCreated() {
         // given
-        CreateLinkDto saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
+        LaaModelManager saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
         Offence offence = saveAndLinkModel.getCaseDetails().getDefendant().getOffences().get(0);
 
         // when

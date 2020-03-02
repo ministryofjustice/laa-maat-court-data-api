@@ -2,7 +2,10 @@ package gov.uk.courtdata.entity;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
 
 @Getter
@@ -34,7 +37,7 @@ public class OffenceEntity {
     @Column(name = "LEGAL_AID_STATUS")
     private String legalAidStatus;
     @Column(name = "LEGAL_AID_STATUS_DATE")
-    private String legalAidStatusDate;
+    private LocalDate legalAidStatusDate;
     @Column(name = "OFFENCE_CODE")
     private String offenceCode;
     @Column(name = "LEGALAID_REASON")

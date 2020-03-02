@@ -26,6 +26,6 @@ public interface WqLinkRegisterRepository extends JpaRepository<WqLinkRegisterEn
      * @param cjsAreaCode
      * @return
      */
-    @Query(value = "SELECT count(*)  FROM MLA.XXMLA_WQ_LINK_REGISTER WHERE libra_id = ?1 and cjs_area_code  = ?2 and removed_tx_id   is null",nativeQuery = true)
-    Integer getCountByIdAndCjsCourt(final String commonPlatformLibraId,final String cjsAreaCode);
+   /* @Query(value = "SELECT count(*)  FROM MLA.XXMLA_WQ_LINK_REGISTER WHERE libra_id = ?1 and cjs_area_code  = ?2 and removed_tx_id   is null",nativeQuery = true)
+    Integer getCountByIdAndCjsCourt(final String commonPlatformLibraId,final String cjsAreaCode);*/
 }

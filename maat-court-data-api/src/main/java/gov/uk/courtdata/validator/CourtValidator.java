@@ -28,9 +28,6 @@ public class CourtValidator implements IValidator<Void, CaseDetails> {
         Optional.ofNullable(caseDetailsJson.getCjsAreaCode()).filter(StringUtils::isNotBlank)
                 .orElseThrow(() -> new ValidationException("cjs area code not found."));
 
-        //TODO: No clarity yet on cjsCode at case level & multiple court location within sessions
-        // to revisit and implement court/case area mismatch
-
         Optional.ofNullable(caseDetailsJson.getSessions())
                 .orElseThrow(() -> new ValidationException("Sessions not available."));
 

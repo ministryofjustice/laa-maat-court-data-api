@@ -39,13 +39,14 @@ public class ValidationProcessor {
 
 
         maatIdValidator.validate(caseDetails.getMaatId());
-        linkExistsValidator.validate(caseDetails);
+        linkExistsValidator.validate(caseDetails.getMaatId());
         courtValidator.validate(caseDetails);
         referenceDataValidator.validate(caseDetails);
+
         final Optional<SolicitorMAATDataEntity> solicitorMAATDataEntity
                 = solicitorValidator.validate(caseDetails);
         final Optional<DefendantMAATDataEntity> defendantMAATDataEntity
-                = defendantValidator.validate(caseDetails);
+                = defendantValidator.validate(caseDetails.getMaatId());
 
 
         return LaaModelManager.builder().caseDetails(caseDetails)

@@ -15,9 +15,7 @@ import java.util.Optional;
 @Component
 public class MaatIdValidator implements IValidator<Void, Integer> {
 
-
     /**
-     *
      * @param maatId
      * @return
      * @throws ValidationException

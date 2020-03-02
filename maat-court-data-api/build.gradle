@@ -19,6 +19,7 @@ dependencies {
 	implementation 'com.amazonaws:aws-java-sdk-sqs'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'com.google.code.gson:gson:2.8.6'
+	implementation 'org.apache.commons:commons-lang3:3.9'
 	compile group: 'com.amazonaws', name: 'amazon-sqs-java-messaging-lib', version: '1.0.6'
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-web')

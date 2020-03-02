@@ -10,7 +10,6 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
@@ -22,7 +21,7 @@ import javax.jms.Session;
 
 
 /**
- * <Class>JmsConfig</Class> for SQS hosted on clouds platform.
+ * <Class>JmsConfig</Class> for SQS hosted on clouds platform with .
  */
 @Slf4j
 @AllArgsConstructor
@@ -35,7 +34,7 @@ public class JmsConfig {
     private final SqsProperties sqsProperties;
 
     /**
-     *  Use the default container configured.
+     * Use the default container configured.
      *
      * @return
      */
@@ -56,6 +55,7 @@ public class JmsConfig {
 
     /**
      * Create the jms template with provider config for the SQS client.
+     *
      * @return
      */
     @Bean
@@ -91,9 +91,9 @@ public class JmsConfig {
      * @param region
      * @return
      */
-    private AmazonSQS awsSqsDlqClient(@Value("#{access.key}") final String accessKey,
-                                      @Value("#{secret.key}") final String secretKey,
-                                      @Value("#{region}") final String region) {
+    private AmazonSQS awsSqsDlqClient(final String accessKey,
+                                      final String secretKey,
+                                      final String region) {
         return AmazonSQSClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
                 .withRegion(region)

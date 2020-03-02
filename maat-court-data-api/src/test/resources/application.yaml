@@ -17,11 +17,12 @@ spring:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate:
         defaulat_schema: mla
+
 aws:
   sqs:
     region: eu-west-2
-    accesskey: dummy
-    secretkey: dummy
+    accesskey: ${ACCESS_KEY}
+    secretkey: ${SECRET_KEY}
     queue:
-      link: crimeapps-development-cp-test-queue
-      unlink:
+      link: crime-apps-dev-create-link-queue-m
+      unlink: crime-apps-dev-unlink-queue-m

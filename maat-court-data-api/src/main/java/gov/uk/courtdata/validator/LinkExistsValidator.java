@@ -9,43 +9,33 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static java.lang.String.format;
+
 /**
- *<code>LinkExistsValidator</code> validate maatid has no link established.
+ * <code>LinkExistsValidator</code> validate maatid has no link established.
  */
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class LinkExistsValidator implements IValidator<Void, CaseDetails> {
+public class LinkExistsValidator implements IValidator<Void, Integer> {
 
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
 
 
     /**
-     * @param caseDetailsJson
+     *  Validate
+     *
+     * @param maatId
      * @return
      * @throws ValidationException
      */
     @Override
-    public Optional<Void> validate(CaseDetails caseDetailsJson) throws ValidationException {
+    public Optional<Void> validate(Integer maatId) throws ValidationException {
 
-        /**
-         * The Maat Id is not linked already.
-         */
-        final int linkCount = wqLinkRegisterRepository.getCountByMaatId(caseDetailsJson.getMaatId());
+        final int linkCount = wqLinkRegisterRepository.getCountByMaatId(maatId);
 
         if (linkCount > 0)
-            throw new ValidationException("MaatId already linked to the application.");
-
-        /**
-         * The case must have not registry entries or none if wasn't previously removed
-         */
-//        final int cpLibraIdCount = wqLinkRegisterRepository
-//                .getCountByIdAndCjsCourt(caseDetailsJson.getCpLibraId(),
-//                        String.valueOf(caseDetailsJson.getCjsAreaCode()));
-//
-//        if (cpLibraIdCount > 0) {
-//            throw new ValidationException("The case was'nt unlinked");
-//        }
+            throw new ValidationException(format("%s: MaatId already linked to the application.", maatId));
 
         return Optional.empty();
     }

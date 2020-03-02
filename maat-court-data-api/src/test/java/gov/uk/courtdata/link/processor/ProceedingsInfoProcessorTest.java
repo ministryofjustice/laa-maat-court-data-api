@@ -2,7 +2,7 @@ package gov.uk.courtdata.link.processor;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.dto.LaaModelManager;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.ProceedingEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.ProceedingRepository;
@@ -30,7 +30,7 @@ public class ProceedingsInfoProcessorTest {
     @Test
     public void givenSaveAndLinkModel_whenProcessIsInvoked_thenProceedingRecordIsCreated() {
         // given
-        LaaModelManager saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
+        CourtDataDTO saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
 
         // when

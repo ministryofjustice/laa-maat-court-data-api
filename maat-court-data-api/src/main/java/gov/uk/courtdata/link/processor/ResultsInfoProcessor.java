@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.LaaModelManager;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.ResultEntity;
 import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.repository.ResultRepository;
@@ -21,13 +21,13 @@ public class ResultsInfoProcessor implements Process {
     private final CourtDataUtil courtDataUtil;
 
     @Override
-    public void process(LaaModelManager laaModelManager) {
+    public void process(CourtDataDTO courtDataDTO) {
 
-        laaModelManager.getCaseDetails().getDefendant().getOffences()
-                .forEach(offence -> buildResultsList(offence.getResults(), laaModelManager));
+        courtDataDTO.getCaseDetails().getDefendant().getOffences()
+                .forEach(offence -> buildResultsList(offence.getResults(), courtDataDTO));
     }
 
-    private void buildResultsList(List<Result> resultList, LaaModelManager saveAndLinkModel) {
+    private void buildResultsList(List<Result> resultList, CourtDataDTO saveAndLinkModel) {
 
         List<ResultEntity> resultEntityList = resultList
                 .stream()
@@ -37,7 +37,7 @@ public class ResultsInfoProcessor implements Process {
 
     }
 
-    private ResultEntity buildResult(Result result, LaaModelManager saveAndLinkModel) {
+    private ResultEntity buildResult(Result result, CourtDataDTO saveAndLinkModel) {
         return ResultEntity.builder()
                 .caseId(saveAndLinkModel.getCaseId())
                 .txId(saveAndLinkModel.getTxId())

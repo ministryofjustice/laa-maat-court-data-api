@@ -1,11 +1,9 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.LaaModelManager;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,27 +18,27 @@ public class WqLinkRegisterProcessor implements Process {
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
 
     @Override
-    public void process(LaaModelManager laaModelManager) {
+    public void process(CourtDataDTO courtDataDTO) {
 
-        CaseDetails caseDetails = laaModelManager.getCaseDetails();
-        int maatCat = geCategory(laaModelManager);
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+        int maatCat = geCategory(courtDataDTO);
         final WqLinkRegisterEntity wqLinkRegisterEntity = WqLinkRegisterEntity.builder()
-                .createdTxId(laaModelManager.getTxId())
+                .createdTxId(courtDataDTO.getTxId())
                 .createdDate(LocalDate.now())
                 .createdUserId(caseDetails.getCreatedUser())
-                .caseId(laaModelManager.getCaseId())
-                .libraId(COMMON_PLATFORM + laaModelManager.getLibraId())
+                .caseId(courtDataDTO.getCaseId())
+                .libraId(COMMON_PLATFORM + courtDataDTO.getLibraId())
                 .maatId(caseDetails.getMaatId())
                 .cjsAreaCode(caseDetails.getCjsAreaCode())
                 .cjsLocation(caseDetails.getCjsLocation())
-                .proceedingId(laaModelManager.getProceedingId())
+                .proceedingId(courtDataDTO.getProceedingId())
                 .maatCat(maatCat)
                 .mlrCat(maatCat)
                 .build();
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
     }
 
-    protected int geCategory(LaaModelManager laaModelManager) {
-        return laaModelManager.getSolicitorMAATDataEntity().getCmuId();
+    protected int geCategory(CourtDataDTO courtDataDTO) {
+        return courtDataDTO.getSolicitorMAATDataEntity().getCmuId();
     }
 }

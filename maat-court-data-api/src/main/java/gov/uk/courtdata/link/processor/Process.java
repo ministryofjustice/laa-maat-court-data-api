@@ -1,8 +1,8 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.LaaModelManager;
+import gov.uk.courtdata.dto.CourtDataDTO;
 
 public interface Process {
 
-      void process(LaaModelManager saveAndLinkModel);
+      void process(CourtDataDTO saveAndLinkModel);
 }

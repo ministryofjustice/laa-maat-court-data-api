@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.LaaModelManager;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.ProceedingEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.ProceedingRepository;
@@ -14,13 +14,13 @@ public class ProceedingsInfoProcessor implements Process {
     private final ProceedingRepository proceedingRepository;
 
     @Override
-    public void process(LaaModelManager laaModelManager) {
+    public void process(CourtDataDTO courtDataDTO) {
 
-        final CaseDetails caseDetails = laaModelManager.getCaseDetails();
+        final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         ProceedingEntity proceedingEntity = ProceedingEntity.builder()
                 .maatId(caseDetails.getMaatId())
-                .proceedingId(laaModelManager.getProceedingId())
-                .createdTxid(laaModelManager.getTxId())
+                .proceedingId(courtDataDTO.getProceedingId())
+                .createdTxid(courtDataDTO.getTxId())
                 .createdUser(caseDetails.getCreatedUser())
                 .build();
         proceedingRepository.save(proceedingEntity);

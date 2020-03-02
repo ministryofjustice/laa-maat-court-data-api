@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.LaaModelManager;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantEntity;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
@@ -22,15 +22,15 @@ public class DefendantInfoProcessor implements Process {
     private final CourtDataUtil courtDataUtil;
 
     @Override
-    public void process(LaaModelManager laaModelManager) {
+    public void process(CourtDataDTO courtDataDTO) {
 
-        DefendantMAATDataEntity defendantMAATDataEntity = laaModelManager.getDefendantMAATDataEntity();
-        CaseDetails caseDetails = laaModelManager.getCaseDetails();
+        DefendantMAATDataEntity defendantMAATDataEntity = courtDataDTO.getDefendantMAATDataEntity();
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         Defendant defendant = caseDetails.getDefendant();
 
         DefendantEntity defendantEntity = DefendantEntity.builder()
-                .caseId(laaModelManager.getCaseId())
-                .txId(laaModelManager.getTxId())
+                .caseId(courtDataDTO.getCaseId())
+                .txId(courtDataDTO.getTxId())
                 .forename(defendant.getForename())
                 .surname(defendant.getSurname())
                 .organisation(defendant.getOrganization())

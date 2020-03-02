@@ -1,6 +1,6 @@
 package gov.uk.courtdata.laaStatus.processor;
 
-import gov.uk.courtdata.dto.LaaModelManager;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.link.processor.WqLinkRegisterProcessor;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
@@ -18,19 +18,19 @@ public class UpdateWqLinkRegisterProcessor extends WqLinkRegisterProcessor {
     }
 
     @Override
-    public void process(LaaModelManager laaModelManager) {
+    public void process(CourtDataDTO courtDataDTO) {
         WqLinkRegisterEntity wqLinkRegisterEntity = wqLinkRegisterRepository
-                .findBymaatId(laaModelManager.getCaseDetails()
+                .findBymaatId(courtDataDTO.getCaseDetails()
                         .getMaatId()).get(0);
-        if (wqLinkRegisterEntity.getMlrCat() != geCategory(laaModelManager)) {
-            super.process(laaModelManager);
+        if (wqLinkRegisterEntity.getMlrCat() != geCategory(courtDataDTO)) {
+            super.process(courtDataDTO);
         }
     }
 
 
     @Override
-    protected int geCategory(LaaModelManager laaModelManager) {
-        return laaModelManager.getCaseDetails().getCategory();
+    protected int geCategory(CourtDataDTO courtDataDTO) {
+        return courtDataDTO.getCaseDetails().getCategory();
     }
 
     @Autowired

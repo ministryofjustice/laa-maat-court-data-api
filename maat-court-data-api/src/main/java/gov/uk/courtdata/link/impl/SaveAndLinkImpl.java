@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.impl;
 
-import gov.uk.courtdata.dto.LaaModelManager;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.link.processor.*;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,27 +24,27 @@ public class SaveAndLinkImpl {
     private final IdentifierRepository identifierRepository;
 
     @Transactional
-    public void execute(LaaModelManager saveAndLinkModel) {
+    public void execute(CourtDataDTO courtDataDTO) {
 
-        mapIdentifiers(saveAndLinkModel);
-        caseInfoProcessor.process(saveAndLinkModel);
-        wqCoreInfoProcessor.process(saveAndLinkModel);
-        wqLinkRegisterProcessor.process(saveAndLinkModel);
-        solicitorInfoProcessor.process(saveAndLinkModel);
-        proceedingsInfoProcessor.process(saveAndLinkModel);
-        defendantInfoProcessor.process(saveAndLinkModel);
-        sessionInfoProcessor.process(saveAndLinkModel);
-        offenceInfoProcessor.process(saveAndLinkModel);
-        resultsInfoProcessor.process(saveAndLinkModel);
-        repOrderInfoProcessor.process(saveAndLinkModel);
+        mapIdentifiers(courtDataDTO);
+        caseInfoProcessor.process(courtDataDTO);
+        wqCoreInfoProcessor.process(courtDataDTO);
+        wqLinkRegisterProcessor.process(courtDataDTO);
+        solicitorInfoProcessor.process(courtDataDTO);
+        proceedingsInfoProcessor.process(courtDataDTO);
+        defendantInfoProcessor.process(courtDataDTO);
+        sessionInfoProcessor.process(courtDataDTO);
+        offenceInfoProcessor.process(courtDataDTO);
+        resultsInfoProcessor.process(courtDataDTO);
+        repOrderInfoProcessor.process(courtDataDTO);
 
     }
 
-    private void mapIdentifiers(LaaModelManager saveAndLinkModel) {
-        saveAndLinkModel.setTxId(identifierRepository.getTxnID());
-        saveAndLinkModel.setLibraId(identifierRepository.getLibraID());
-        saveAndLinkModel.setProceedingId(identifierRepository.getProceedingID());
-        saveAndLinkModel.setCaseId(identifierRepository.getCaseID());
+    private void mapIdentifiers(CourtDataDTO courtDataDTO) {
+        courtDataDTO.setTxId(identifierRepository.getTxnID());
+        courtDataDTO.setLibraId(identifierRepository.getLibraID());
+        courtDataDTO.setProceedingId(identifierRepository.getProceedingID());
+        courtDataDTO.setCaseId(identifierRepository.getCaseID());
     }
 
 }

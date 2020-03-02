@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.LaaModelManager;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.repository.OffenceRepository;
@@ -22,19 +22,19 @@ public class OffenceInfoProcessor implements Process {
     private final OffenceRepository offenceRepository;
 
     @Override
-    public void process(LaaModelManager laaModelManager) {
+    public void process(CourtDataDTO courtDataDTO) {
 
-        List<OffenceEntity> offenceEntityList = laaModelManager.getCaseDetails().getDefendant().getOffences()
+        List<OffenceEntity> offenceEntityList = courtDataDTO.getCaseDetails().getDefendant().getOffences()
                 .stream()
-                .map(offence -> buildOffences(offence, laaModelManager))
+                .map(offence -> buildOffences(offence, courtDataDTO))
                 .collect(Collectors.toList());
         offenceRepository.saveAll(offenceEntityList);
     }
 
-    protected OffenceEntity buildOffences(Offence offence, LaaModelManager laaModelManager) {
+    protected OffenceEntity buildOffences(Offence offence, CourtDataDTO courtDataDTO) {
         return OffenceEntity.builder()
-                .caseId(laaModelManager.getCaseId())
-                .txId(laaModelManager.getTxId())
+                .caseId(courtDataDTO.getCaseId())
+                .txId(courtDataDTO.getTxId())
                 .asnSeq(offence.getAsnSeq())
                 .offenceCode(offence.getOffenceCode())
                 .offenceClassification(offence.getOffenceClassification())

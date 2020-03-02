@@ -3,7 +3,7 @@ package gov.uk.courtdata.link;
 
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.dto.LaaModelManager;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
@@ -36,14 +36,14 @@ public class SaveAndLinkProcessor {
 
 
     private void mapRequestPayload(String linkRequestPayload) {
-        LaaModelManager saveAndLinkModel = new LaaModelManager();
+        CourtDataDTO saveAndLinkModel = new CourtDataDTO();
         CaseDetails caseDetails = gson.fromJson(linkRequestPayload, CaseDetails.class);
         mapSaveAndLinkModel(saveAndLinkModel, caseDetails);
         saveAndLinkImpl.execute(saveAndLinkModel);
 
     }
 
-    private void mapSaveAndLinkModel(LaaModelManager saveAndLinkModel, CaseDetails caseDetails) {
+    private void mapSaveAndLinkModel(CourtDataDTO saveAndLinkModel, CaseDetails caseDetails) {
         Integer maatId = caseDetails.getMaatId();
         saveAndLinkModel.setCaseDetails(caseDetails);
         mapSolicitorMAATDataInfo(maatId, saveAndLinkModel);
@@ -51,7 +51,7 @@ public class SaveAndLinkProcessor {
 
     }
 
-    private void mapDefendantMAATDataInfo(Integer maatId, LaaModelManager saveAndLinkModel) {
+    private void mapDefendantMAATDataInfo(Integer maatId, CourtDataDTO saveAndLinkModel) {
         Optional<DefendantMAATDataEntity> defendantDetails = defendantMAATDataRepository.findBymaatId(maatId);
         DefendantMAATDataEntity defendantMAATDataEntity = defendantDetails.orElse(null);
         saveAndLinkModel.setDefendantMAATDataEntity(defendantMAATDataEntity);
@@ -59,7 +59,7 @@ public class SaveAndLinkProcessor {
     }
 
 
-    private void mapSolicitorMAATDataInfo(Integer maatId, LaaModelManager saveAndLinkModel) {
+    private void mapSolicitorMAATDataInfo(Integer maatId, CourtDataDTO saveAndLinkModel) {
         Optional<SolicitorMAATDataEntity> solicitorDetails = solicitorMAATDataRepository.findBymaatId(maatId);
         SolicitorMAATDataEntity solicitorMAATData = solicitorDetails.orElse(null);
         saveAndLinkModel.setSolicitorMAATDataEntity(solicitorMAATData);

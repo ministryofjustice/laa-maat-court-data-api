@@ -1,6 +1,7 @@
 package gov.uk.courtdata.laaStatus.controller;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.laaStatus.service.LaaStatusUpdateService;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
@@ -25,13 +26,16 @@ public class LaaStatusUpdateController {
     @PostMapping("/laaStatus")
     public MessageCollection updateLAAStatus(@RequestBody String jsonPayload) {
 
-        log.info("LAA Status Update Request received. Message :  {}", jsonPayload);
-        MessageCollection messageCollection = MessageCollection.builder().build();
+        log.debug("LAA Status Update Request received. Message :  {}", jsonPayload);
+
         CaseDetails caseDetails = gson.fromJson(jsonPayload, CaseDetails.class);
 
-        laaStatusValidationProcessor.validate(caseDetails, messageCollection);
+        CourtDataDTO courtDataDTO = laaStatusValidationProcessor.validate(caseDetails);
+        MessageCollection messageCollection = courtDataDTO.getMessageCollection();
         if (!messageCollection.getMessages().isEmpty()) {
-            laaStatusUpdateService.execute(caseDetails);
+            laaStatusUpdateService.execute(courtDataDTO);
+        } else {
+            log.debug("LAA Status Update Validation Failed - {}", messageCollection.getMessages());
         }
         return messageCollection;
     }

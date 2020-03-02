@@ -1,17 +1,19 @@
 package gov.uk.courtdata.laaStatus.impl;
 
-import gov.uk.courtdata.dto.LaaModelManager;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.laaStatus.processor.UpdateDefendantInfoProcessor;
 import gov.uk.courtdata.laaStatus.processor.UpdateWqCoreInfoProcessor;
 import gov.uk.courtdata.link.processor.*;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LaaStatusUpdateImpl {
 
     private final IdentifierRepository identifierRepository;
@@ -26,23 +28,24 @@ public class LaaStatusUpdateImpl {
 
 
     @Transactional
-    public void execute(LaaModelManager laaModelManager) {
+    public void execute(CourtDataDTO courtDataDTO) {
 
-        mapTxnID(laaModelManager);
-        caseInfoProcessor.process(laaModelManager);
-        updateWqCoreInfoProcessor.process(laaModelManager);
-        wqLinkRegisterProcessor.process(laaModelManager);
-        solicitorInfoProcessor.process(laaModelManager);
-        proceedingsInfoProcessor.process(laaModelManager);
-        updateDefendantInfoProcessor.process(laaModelManager);
-        sessionInfoProcessor.process(laaModelManager);
-        offenceInfoProcessor.process(laaModelManager);
-
+        log.debug("Table Update Transaction Process - Start");
+        mapTxnID(courtDataDTO);
+        caseInfoProcessor.process(courtDataDTO);
+        updateWqCoreInfoProcessor.process(courtDataDTO);
+        wqLinkRegisterProcessor.process(courtDataDTO);
+        solicitorInfoProcessor.process(courtDataDTO);
+        proceedingsInfoProcessor.process(courtDataDTO);
+        updateDefendantInfoProcessor.process(courtDataDTO);
+        sessionInfoProcessor.process(courtDataDTO);
+        offenceInfoProcessor.process(courtDataDTO);
+        log.debug("Table Update Transaction Process - End");
     }
 
-    private void mapTxnID(LaaModelManager laaModelManager) {
+    private void mapTxnID(CourtDataDTO courtDataDTO) {
 
-        laaModelManager.setTxId(identifierRepository.getTxnID());
+        courtDataDTO.setTxId(identifierRepository.getTxnID());
 
     }
 }

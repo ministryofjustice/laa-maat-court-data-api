@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.LaaModelManager;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqCoreRepository;
@@ -20,12 +20,12 @@ public class WqCoreInfoProcessor implements Process {
     protected final WqCoreRepository wqCoreRepository;
 
     @Override
-    public void process(LaaModelManager laaModelManager) {
+    public void process(CourtDataDTO courtDataDTO) {
 
-        CaseDetails caseDetails = laaModelManager.getCaseDetails();
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         WqCoreEntity wqCoreEntity = WqCoreEntity.builder()
-                .txId(laaModelManager.getTxId())
-                .caseId(laaModelManager.getCaseId())
+                .txId(courtDataDTO.getTxId())
+                .caseId(courtDataDTO.getCaseId())
                 .createdTime(LocalDate.now())
                 .createdUserId(caseDetails.getCreatedUser())
                 .wqType(getWQEvent())

@@ -40,21 +40,22 @@ public class DefendantValidatorTest {
     @Test
     public void testWhenDefendantDetailsExists_returnsEntity() {
 
-        Integer maatId = 1000;
-
-        Mockito.when(maatDataRepository.findBymaatId(Mockito.anyInt()))
-                .thenReturn(Optional.of(DefendantMAATDataEntity.builder().maatId(1000).build()));
+        Integer testId = 1000;
+        Mockito.when(maatDataRepository.findBymaatId(testId))
+                .thenReturn(Optional.of(DefendantMAATDataEntity.builder().maatId(testId).build()));
         Optional<DefendantMAATDataEntity> defendantEntity =
-                defendantValidator.validate(Mockito.anyInt());
+                defendantValidator.validate(testId);
 
         Assert.assertTrue(defendantEntity.isPresent());
-        Assert.assertEquals(maatId, defendantEntity.get().getMaatId());
+        Assert.assertEquals(testId, defendantEntity.get().getMaatId());
+
     }
 
     @Test
     public void testWhenDefendantDetailsNotFound_throwsException() {
+
         thrown.expect(ValidationException.class);
-        thrown.expectMessage("MAAT Defendant details not available.");
+        thrown.expectMessage("MAAT Defendant details not found.");
         defendantValidator.validate(Mockito.anyInt());
     }
 

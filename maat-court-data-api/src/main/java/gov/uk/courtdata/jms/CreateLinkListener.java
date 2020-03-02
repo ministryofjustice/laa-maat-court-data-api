@@ -13,7 +13,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 /**
- * <code>CreateLinkListener</code> a JMS listener to consume messages from link queue.
+ * <code>CreateLinkListener</code> a JMS listener to consume create link messages from queue.
  */
 @Slf4j
 @AllArgsConstructor
@@ -35,7 +35,7 @@ public class CreateLinkListener {
 
             log.info("Received JSON Message  {}", message);
             CaseDetails linkMessage = gson.fromJson(message, CaseDetails.class);
-            log.info("Message converted {} ", linkMessage);
+            log.debug("Message converted {} ", linkMessage);
             createLinkService.saveAndLink(linkMessage);
 
         } catch (ValidationException vex) {

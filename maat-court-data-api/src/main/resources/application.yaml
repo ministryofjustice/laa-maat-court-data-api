@@ -17,5 +17,5 @@ aws:
     accesskey: ${ACCESS_KEY}
     secretkey: ${SECRET_KEY}
     queue:
-      link: crimeapps-development-cp-test-queue
-      unlink:
+      link: crime-apps-dev-create-link-queue-m
+      unlink: crime-apps-dev-unlink-queue-m

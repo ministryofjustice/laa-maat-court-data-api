@@ -6,9 +6,12 @@ import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+
+import static java.lang.String.format;
 
 /**
  *
@@ -33,11 +36,13 @@ public class SolicitorValidator implements IValidator<SolicitorMAATDataEntity, C
         Optional<SolicitorMAATDataEntity> solicitorViewEntity =
                 solicitorMAATDataRepository.findBymaatId(caseDetailsJson.getMaatId());
 
-        solicitorViewEntity.orElseThrow(() -> new ValidationException("Solicitor not found."));
+        solicitorViewEntity.orElseThrow(
+                () -> new ValidationException(format("Solicitor not found for maatId %s",
+                        caseDetailsJson.getMaatId())));
 
 
-        Optional.ofNullable(solicitorViewEntity.get().getAccountCode())
-                .orElseThrow(() -> new ValidationException("Solicitor account code is null."));
+        Optional.ofNullable(solicitorViewEntity.get().getAccountCode()).filter(StringUtils::isNotBlank)
+                .orElseThrow(() -> new ValidationException(format("Solicitor account code not available for maatId %s.", caseDetailsJson.getMaatId())));
 
         return solicitorViewEntity;
     }

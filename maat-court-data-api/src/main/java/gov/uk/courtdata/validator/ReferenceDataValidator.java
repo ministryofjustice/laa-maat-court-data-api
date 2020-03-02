@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static java.lang.String.format;
+
 
 /**
- *<code>ReferenceDataValidator</code>
+ * <code>ReferenceDataValidator</code>
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -30,16 +32,15 @@ public class ReferenceDataValidator implements IValidator<Void, CaseDetails> {
     public Optional<Void> validate(final CaseDetails caseDetailsJson) throws ValidationException {
 
 
-        //TODO: is it to validate all the court location in the session list exists?
-        String courtLocation = caseDetailsJson.getSessions().iterator().next().getCourtLocation();
+        caseDetailsJson.getSessions().forEach(ses ->
+        {
+            final int count = courtHouseCodesRepository.getCount(ses.getCourtLocation());
 
-        log.info(caseDetailsJson.getSessions().iterator().toString());
+            if (count == 0) {
+                throw new ValidationException(format("Court location not found %s", ses.getCourtLocation()));
+            }
+        });
 
-        final int count = courtHouseCodesRepository.getCount(courtLocation);
-
-        if (count == 0) {
-            throw new ValidationException("Court code not found.");
-        }
 
         return Optional.empty();
     }

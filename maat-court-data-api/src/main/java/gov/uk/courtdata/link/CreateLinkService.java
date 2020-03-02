@@ -31,7 +31,7 @@ public class CreateLinkService {
         try {
 
             final CreateLinkDto createLinkDto = validationProcessor.validate(linkMessage);
-            log.info("Validation success!!!");
+            log.info("Validation completed!!!");
             saveAndLinkImpl.execute(createLinkDto);
             log.info("Create link success!!!");
 

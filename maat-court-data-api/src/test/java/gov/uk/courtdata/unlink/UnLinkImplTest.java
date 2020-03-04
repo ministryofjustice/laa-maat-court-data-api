@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
@@ -37,11 +39,14 @@ public class UnLinkImplTest {
     @Autowired
     private UnlinkReasonRepository unlinkReasonRepository;
     @Autowired
+    private RepOrderCPDataRepository repOrderCPDataRepository;
+    @Autowired
     private Gson gson;
     @Autowired
     private TestModelDataBuilder testModelDataBuilder;
     @Autowired
     private TestEntityDataBuilder testEntityDataBuilder;
+
 
     @Test
     public void givenUnlinkLinkModel_whenUnlinkProcessorIsInvoked_thenCaseIsUnlinked() {
@@ -51,6 +56,8 @@ public class UnLinkImplTest {
         UnlinkModel unlinkModel = UnlinkModel.builder().unlink(unlink).build();
         WqLinkRegisterEntity wqLinkRegisterEntity = testEntityDataBuilder.getWqLinkRegisterEntity();
         unlinkModel.setWqLinkRegisterEntity(wqLinkRegisterEntity);
+        RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderCPDataEntity();
+        unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity);
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
 
         //when

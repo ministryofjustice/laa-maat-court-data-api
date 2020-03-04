@@ -1,22 +1,21 @@
 package gov.uk.courtdata.unlink;
 
+import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
-import gov.uk.courtdata.repository.IdentifierRepository;
-import gov.uk.courtdata.repository.UnlinkReasonRepository;
-import gov.uk.courtdata.repository.WqCoreRepository;
-import gov.uk.courtdata.repository.WqLinkRegisterRepository;
+import gov.uk.courtdata.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
+import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UNLINK_EVENT;
 
 
 @Component
@@ -27,6 +26,7 @@ public class UnLinkImpl {
     private final WqCoreRepository wqCoreRepository;
     private final UnlinkReasonRepository unlinkReasonRepository;
     private final IdentifierRepository identifierRepository;
+    private final RepOrderCPDataRepository repOrderCPDataRepository;
 
     @Transactional
     public void execute(UnlinkModel unlinkModel) {
@@ -35,6 +35,7 @@ public class UnLinkImpl {
         processWqCore(unlinkModel);
         processUnlinkReason(unlinkModel);
         processUnLinkWQRegister(unlinkModel);
+        processCPData(unlinkModel);
     }
 
     private void mapTxnID(UnlinkModel unlinkModel) {
@@ -76,5 +77,12 @@ public class UnLinkImpl {
                 .caseId(wqLinkRegisterEntity.getCaseId())
                 .build();
         wqCoreRepository.save(wqCoreEntity);
+    }
+
+    private void processCPData(UnlinkModel unlinkModel) {
+
+        RepOrderCPDataEntity repOrderCPData = unlinkModel.getRepOrderCPDataEntity();
+        repOrderCPData.setDefendantId(null);
+        repOrderCPDataRepository.save(repOrderCPData);
     }
 }

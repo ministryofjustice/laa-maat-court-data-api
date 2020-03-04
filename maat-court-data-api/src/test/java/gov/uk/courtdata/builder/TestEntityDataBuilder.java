@@ -129,12 +129,20 @@ public class TestEntityDataBuilder {
                 .dob("07041960")
                 .build();
     }
+
     public SolicitorMAATDataEntity getSolicitorMAATDataEntity() {
         return SolicitorMAATDataEntity.builder()
                 .maatId(1234)
                 .accountCode("Acc")
                 .accountName("Acc Name")
                 .cmuId(123)
+                .build();
+    }
+
+    public RepOrderCPDataEntity getRepOrderCPDataEntity() {
+        return RepOrderCPDataEntity.builder()
+                .repOrderId(1234)
+                .caseUrn("testCaseURN")
                 .build();
     }
 

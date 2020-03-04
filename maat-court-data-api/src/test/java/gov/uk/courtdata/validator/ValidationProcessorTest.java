@@ -36,6 +36,8 @@ public class ValidationProcessorTest {
     private CourtValidator courtValidator;
     @Mock
     private ReferenceDataValidator referenceDataValidator;
+    @Mock
+    private CPDataValidator CPDataValidator;
 
     @InjectMocks
     private ValidationProcessor validationProcessor;
@@ -83,6 +85,8 @@ public class ValidationProcessorTest {
         when(referenceDataValidator.validate(CaseDetails.builder().maatId(testMaatId).build()))
                 .thenReturn(
                         Optional.empty());
+        when(CPDataValidator.validate(CaseDetails.builder().maatId(testMaatId).build()))
+                .thenReturn(Optional.empty());
 
         validationProcessor.validate(CaseDetails.builder().maatId(testMaatId).build());
 

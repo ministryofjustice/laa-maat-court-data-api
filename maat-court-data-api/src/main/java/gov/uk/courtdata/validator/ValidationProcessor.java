@@ -23,6 +23,8 @@ public class ValidationProcessor {
 
     private final LinkExistsValidator linkExistsValidator;
 
+    private final CPDataValidator cpDataValidator;
+
     private final DefendantValidator defendantValidator;
 
     private final SolicitorValidator solicitorValidator;
@@ -39,6 +41,7 @@ public class ValidationProcessor {
 
 
         maatIdValidator.validate(caseDetails.getMaatId());
+        cpDataValidator.validate(caseDetails);
         linkExistsValidator.validate(caseDetails.getMaatId());
         courtValidator.validate(caseDetails);
         referenceDataValidator.validate(caseDetails);

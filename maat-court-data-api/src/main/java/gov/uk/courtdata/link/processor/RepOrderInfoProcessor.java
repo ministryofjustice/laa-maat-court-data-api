@@ -18,10 +18,10 @@ public class RepOrderInfoProcessor implements Process {
     public void process(CreateLinkDto saveAndLinkModel) {
 
         Optional<RepOrderCPDataEntity> repOrderEntity = repOrderDataRepository.findByrepOrderId(saveAndLinkModel.getCaseDetails().getMaatId());
-        if (repOrderEntity.isPresent()) {
-            RepOrderCPDataEntity repOrder = repOrderEntity.get();
-            repOrder.setDefendantId(saveAndLinkModel.getCaseDetails().getDefendant().getDefendantId());
-            repOrderDataRepository.save(repOrder);
-        }
+
+        RepOrderCPDataEntity repOrder = repOrderEntity.get();
+        repOrder.setDefendantId(saveAndLinkModel.getCaseDetails().getDefendant().getDefendantId());
+        repOrderDataRepository.save(repOrder);
+
     }
 }

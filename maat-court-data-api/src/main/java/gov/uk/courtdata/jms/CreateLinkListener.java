@@ -35,11 +35,10 @@ public class CreateLinkListener {
 
             log.info("Received JSON Message  {}", message);
             CaseDetails linkMessage = gson.fromJson(message, CaseDetails.class);
-            log.debug("Message converted {} ", linkMessage);
+            log.info("Message converted {} ", linkMessage);
             createLinkService.saveAndLink(linkMessage);
 
         } catch (ValidationException vex) {
-            //TODO: Generate SNS to notify to slack channel.
             log.warn("validation failed.");
             log.error("Validation error {}", vex);
         } catch (MaatCourtDataException mex) {

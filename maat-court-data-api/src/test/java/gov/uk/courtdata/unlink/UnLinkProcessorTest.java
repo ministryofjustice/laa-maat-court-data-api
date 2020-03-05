@@ -9,6 +9,7 @@ import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
@@ -34,6 +35,8 @@ public class UnLinkProcessorTest {
     private WqLinkRegisterRepository wqLinkRegisterRepository;
     @Autowired
     private WqCoreRepository wqCoreRepository;
+    @Autowired
+    private RepOrderCPDataRepository repOrderCPDataRepository;
     @Autowired
     private UnlinkReasonRepository unlinkReasonRepository;
     @Autowired

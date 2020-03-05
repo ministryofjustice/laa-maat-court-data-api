@@ -41,8 +41,8 @@ public class UnlinkListener {
             log.warn("validation failed.");
             log.error("Validation error {}", vex);
         } catch (MaatCourtDataException mex) {
-            log.warn("Create link failed.");
-            log.error("MaatCourtDataExceptiontion  {}", mex);
+            log.warn("Unlink failed.");
+            log.error("MaatCourtDataException  {}", mex);
             mex.printStackTrace();
         }
     }

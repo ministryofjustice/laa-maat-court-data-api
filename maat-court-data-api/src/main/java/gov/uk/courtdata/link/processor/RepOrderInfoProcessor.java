@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.CourtDataDTO;
+import gov.uk.courtdata.dto.CreateLinkDto;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +15,13 @@ public class RepOrderInfoProcessor implements Process {
     private final RepOrderCPDataRepository repOrderDataRepository;
 
     @Override
-    public void process(CourtDataDTO courtDataDTO) {
+    public void process(CreateLinkDto saveAndLinkModel) {
 
-        Optional<RepOrderCPDataEntity> repOrderEntity = repOrderDataRepository.findByrepOrderId(courtDataDTO.getCaseDetails().getMaatId());
-        if (repOrderEntity.isPresent()) {
-            RepOrderCPDataEntity repOrder = repOrderEntity.get();
-            repOrder.setDefendantId(courtDataDTO.getCaseDetails().getDefendant().getDefendantId());
-            repOrderDataRepository.save(repOrder);
-        }
+        Optional<RepOrderCPDataEntity> repOrderEntity = repOrderDataRepository.findByrepOrderId(saveAndLinkModel.getCaseDetails().getMaatId());
+
+        RepOrderCPDataEntity repOrder = repOrderEntity.get();
+        repOrder.setDefendantId(saveAndLinkModel.getCaseDetails().getDefendant().getDefendantId());
+        repOrderDataRepository.save(repOrder);
+
     }
 }

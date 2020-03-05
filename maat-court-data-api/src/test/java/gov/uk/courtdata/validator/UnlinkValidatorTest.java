@@ -25,7 +25,7 @@ public class UnlinkValidatorTest {
     public ExpectedException exceptionRule = ExpectedException.none();
 
     @Before
-    public void buildU() {
+    public void build() {
         TestModelDataBuilder  testModelDataBuilder = new TestModelDataBuilder();
         unlinkValidator = new UnlinkValidator();
         Gson   gson = new Gson();

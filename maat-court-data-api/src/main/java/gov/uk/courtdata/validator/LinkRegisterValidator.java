@@ -17,9 +17,9 @@ public class LinkRegisterValidator {
         final int linkCount = wqLinkRegisterRepository.getCountByMaatId(maatId);
 
         if (linkCount == 0) {
-            throw new ValidationException("There No Link Available for MAAT ID : " + maatId);
+            throw new ValidationException("There No Link Available for this MAAT ID : " + maatId);
         } else if (linkCount > 1) {
-            throw new ValidationException("There are multiple Links found for MAAT ID : " + maatId);
+            throw new ValidationException("There are multiple Links found for this MAAT ID : " + maatId);
         }
 
     }

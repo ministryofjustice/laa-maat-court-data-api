@@ -1,5 +1,8 @@
 package gov.uk.courtdata.constants;
 
+import java.util.Arrays;
+import java.util.List;
+
 public interface CourtDataConstants {
 
     Integer WQ_CREATION_EVENT = 20;
@@ -15,4 +18,11 @@ public interface CourtDataConstants {
     String DEFAULT_HEARING_CUS_STATUS = "D";
     String COMMON_PLATFORM = "CP";
     Integer WQ_UNLINK_EVENT = 24;
+
+    List<Integer> FAIL_IOJ_DECISION = Arrays.asList(0, 2);
+    int PASS_IOJ_DECISION = 1;
+    int NA_IOJ_DECISION = 3;
+
+    List<String> GRANTED_LAA_STATUS = Arrays.asList("GR", "G2", "GQ");
+    List<String> FAILED_LAA_STATUS = Arrays.asList("FJ", "FB");
 }

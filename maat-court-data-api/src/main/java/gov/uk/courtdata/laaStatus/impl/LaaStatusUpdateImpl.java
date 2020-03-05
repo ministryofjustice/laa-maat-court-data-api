@@ -30,7 +30,7 @@ public class LaaStatusUpdateImpl {
     @Transactional
     public void execute(CourtDataDTO courtDataDTO) {
 
-        log.debug("Table Update Transaction Process - Start");
+        log.debug("LAA Status Update - Transaction Processing - Start");
         mapTxnID(courtDataDTO);
         caseInfoProcessor.process(courtDataDTO);
         updateWqCoreInfoProcessor.process(courtDataDTO);
@@ -40,7 +40,7 @@ public class LaaStatusUpdateImpl {
         updateDefendantInfoProcessor.process(courtDataDTO);
         sessionInfoProcessor.process(courtDataDTO);
         offenceInfoProcessor.process(courtDataDTO);
-        log.debug("Table Update Transaction Process - End");
+        log.debug("LAA Status Update -  Transaction Processing - End");
     }
 
     private void mapTxnID(CourtDataDTO courtDataDTO) {

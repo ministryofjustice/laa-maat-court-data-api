@@ -24,7 +24,7 @@ public class Offence {
     private String legalAidStatusDate;
     private String legalAidReason;
     private List<Result> results;
-    private Integer iojDecision;
-    private Integer wqOffence;
+    private int iojDecision;
+    private int wqOffence;
 
 }

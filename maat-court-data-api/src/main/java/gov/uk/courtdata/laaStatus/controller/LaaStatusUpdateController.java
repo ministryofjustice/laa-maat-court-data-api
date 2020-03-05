@@ -1,8 +1,7 @@
 package gov.uk.courtdata.laaStatus.controller;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.laaStatus.service.LaaStatusUpdateService;
+import gov.uk.courtdata.laaStatus.service.LaaStatusPublisher;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
 import gov.uk.courtdata.validator.LaaStatusValidationProcessor;
@@ -21,7 +20,7 @@ public class LaaStatusUpdateController {
 
     private final LaaStatusValidationProcessor laaStatusValidationProcessor;
     private final Gson gson;
-    private final LaaStatusUpdateService laaStatusUpdateService;
+    private final LaaStatusPublisher laaStatusPublisher;
 
     @PostMapping("/laaStatus")
     public MessageCollection updateLAAStatus(@RequestBody String jsonPayload) {
@@ -30,10 +29,11 @@ public class LaaStatusUpdateController {
 
         CaseDetails caseDetails = gson.fromJson(jsonPayload, CaseDetails.class);
 
-        CourtDataDTO courtDataDTO = laaStatusValidationProcessor.validate(caseDetails);
-        MessageCollection messageCollection = courtDataDTO.getMessageCollection();
-        if (!messageCollection.getMessages().isEmpty()) {
-            laaStatusUpdateService.execute(courtDataDTO);
+        MessageCollection messageCollection = laaStatusValidationProcessor.validate(caseDetails);
+
+        if (messageCollection.getMessages().isEmpty()) {
+            log.debug("Request Validation is successfully completed");
+            laaStatusPublisher.publish(caseDetails);
         } else {
             log.debug("LAA Status Update Validation Failed - {}", messageCollection.getMessages());
         }

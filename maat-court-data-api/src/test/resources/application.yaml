@@ -26,3 +26,4 @@ aws:
     queue:
       link: crime-apps-dev-create-link-queue-m
       unlink: crime-apps-dev-unlink-queue-m
+      laaStatus:

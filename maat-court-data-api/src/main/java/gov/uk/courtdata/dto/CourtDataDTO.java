@@ -22,5 +22,4 @@ public class CourtDataDTO {
     private CaseDetails caseDetails;
     private SolicitorMAATDataEntity solicitorMAATDataEntity;
     private DefendantMAATDataEntity defendantMAATDataEntity;
-    private MessageCollection messageCollection;
 }

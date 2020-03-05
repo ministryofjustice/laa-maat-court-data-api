@@ -2,7 +2,9 @@ package gov.uk.courtdata.laaStatus.impl;
 
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.laaStatus.processor.UpdateDefendantInfoProcessor;
+import gov.uk.courtdata.laaStatus.processor.UpdateOffenceInfoProcessor;
 import gov.uk.courtdata.laaStatus.processor.UpdateWqCoreInfoProcessor;
+import gov.uk.courtdata.laaStatus.processor.UpdateWqLinkRegisterProcessor;
 import gov.uk.courtdata.link.processor.*;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +21,12 @@ public class LaaStatusUpdateImpl {
     private final IdentifierRepository identifierRepository;
     private final CaseInfoProcessor caseInfoProcessor;
     private final UpdateWqCoreInfoProcessor updateWqCoreInfoProcessor;
-    private final WqLinkRegisterProcessor wqLinkRegisterProcessor;
+    private final UpdateWqLinkRegisterProcessor updateWqLinkRegisterProcessor;
     private final SolicitorInfoProcessor solicitorInfoProcessor;
     private final ProceedingsInfoProcessor proceedingsInfoProcessor;
     private final UpdateDefendantInfoProcessor updateDefendantInfoProcessor;
     private final SessionInfoProcessor sessionInfoProcessor;
-    private final OffenceInfoProcessor offenceInfoProcessor;
+    private final UpdateOffenceInfoProcessor updateOffenceInfoProcessor;
 
 
     @Transactional
@@ -34,12 +36,12 @@ public class LaaStatusUpdateImpl {
         mapTxnID(courtDataDTO);
         caseInfoProcessor.process(courtDataDTO);
         updateWqCoreInfoProcessor.process(courtDataDTO);
-        wqLinkRegisterProcessor.process(courtDataDTO);
+        updateWqLinkRegisterProcessor.process(courtDataDTO);
         solicitorInfoProcessor.process(courtDataDTO);
         proceedingsInfoProcessor.process(courtDataDTO);
         updateDefendantInfoProcessor.process(courtDataDTO);
         sessionInfoProcessor.process(courtDataDTO);
-        offenceInfoProcessor.process(courtDataDTO);
+        updateOffenceInfoProcessor.process(courtDataDTO);
         log.debug("LAA Status Update -  Transaction Processing - End");
     }
 

@@ -1,7 +1,6 @@
 package gov.uk.courtdata.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

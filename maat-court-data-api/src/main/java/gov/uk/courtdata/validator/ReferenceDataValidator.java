@@ -29,7 +29,7 @@ public class ReferenceDataValidator implements IValidator<Void, CaseDetails> {
      * @throws ValidationException
      */
     @Override
-    public Optional<Void> validate(final CaseDetails caseDetailsJson) {
+    public Optional<Void> validate(final CaseDetails caseDetailsJson) throws ValidationException {
 
 
         caseDetailsJson.getSessions().forEach(ses ->

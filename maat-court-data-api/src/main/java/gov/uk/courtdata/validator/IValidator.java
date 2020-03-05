@@ -20,6 +20,6 @@ public interface IValidator<T, V> {
      * @return
      * @throws ValidationException
      */
-    Optional<T> validate(final V value);
+    Optional<T> validate(final V value) throws ValidationException;
 
 }

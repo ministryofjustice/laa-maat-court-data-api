@@ -1,40 +1,34 @@
 package gov.uk.courtdata.validator;
 
 import com.google.gson.Gson;
-import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.model.Unlink;
-import gov.uk.courtdata.validator.UnlinkValidator;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = MAATCourtDataApplication.class)
+@RunWith(MockitoJUnitRunner.class)
 public class UnlinkValidatorTest {
-    @Autowired
+
     private UnlinkValidator unlinkValidator;
-    @Autowired
-    private Gson gson;
-    @Autowired
-    private TestModelDataBuilder testModelDataBuilder;
 
     private Unlink unlink;
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
     @Before
-    public void buildUnlinkModel() {
+    public void build() {
+        TestModelDataBuilder  testModelDataBuilder = new TestModelDataBuilder();
+        unlinkValidator = new UnlinkValidator();
+        Gson   gson = new Gson();
         unlink = gson.fromJson(testModelDataBuilder.getUnLinkString(), Unlink.class);
     }
 

@@ -1,8 +1,9 @@
-package gov.uk.courtdata.link;
+package gov.uk.courtdata.link.service;
 
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.validator.ValidationProcessor;
 import lombok.AllArgsConstructor;
@@ -30,9 +31,9 @@ public class CreateLinkService {
 
         try {
 
-            final CreateLinkDto createLinkDto = validationProcessor.validate(linkMessage);
+            final CourtDataDTO courtDataDTO = validationProcessor.validate(linkMessage);
             log.info("Validation completed!!!");
-            saveAndLinkImpl.execute(createLinkDto);
+            saveAndLinkImpl.execute(courtDataDTO);
             log.info("Create link success!!!");
 
         } catch (ValidationException vex) {

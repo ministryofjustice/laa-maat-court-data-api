@@ -2,7 +2,7 @@ package gov.uk.courtdata.link.processor;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqCoreRepository;
@@ -33,7 +33,7 @@ public class WqCoreInfoProcessorTest {
     public void givenSaveAndLinkModel_whenProcessIsInvoked_thenWQCoreRecordIsCreated() {
 
         // given
-        CreateLinkDto saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
+        CourtDataDTO saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
         CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
 
         // when

@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.SolicitorEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.repository.SolicitorRepository;
@@ -14,13 +14,13 @@ public class SolicitorInfoProcessor implements Process {
     private final SolicitorRepository solicitorRepository;
 
     @Override
-    public void process(CreateLinkDto saveAndLinkModel) {
+    public void process(CourtDataDTO courtDataDTO) {
 
-        SolicitorMAATDataEntity solicitorMAATDataEntity = saveAndLinkModel.getSolicitorMAATDataEntity();
+        SolicitorMAATDataEntity solicitorMAATDataEntity = courtDataDTO.getSolicitorMAATDataEntity();
 
         SolicitorEntity solicitorEntity = SolicitorEntity.builder()
-                .caseId(saveAndLinkModel.getCaseId())
-                .txId(saveAndLinkModel.getTxId())
+                .caseId(courtDataDTO.getCaseId())
+                .txId(courtDataDTO.getTxId())
                 .firmName(solicitorMAATDataEntity.getAccountName())
                 .contactName(solicitorMAATDataEntity.getSolicitorName())
                 .address_line1(solicitorMAATDataEntity.getLine1())

@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.repository.OffenceRepository;
@@ -22,19 +22,19 @@ public class OffenceInfoProcessor implements Process {
     private final OffenceRepository offenceRepository;
 
     @Override
-    public void process(CreateLinkDto saveAndLinkModel) {
+    public void process(CourtDataDTO courtDataDTO) {
 
-        List<OffenceEntity> offenceEntityList = saveAndLinkModel.getCaseDetails().getDefendant().getOffences()
+        List<OffenceEntity> offenceEntityList = courtDataDTO.getCaseDetails().getDefendant().getOffences()
                 .stream()
-                .map(offence -> buildOffences(offence, saveAndLinkModel))
+                .map(offence -> buildOffences(offence, courtDataDTO))
                 .collect(Collectors.toList());
         offenceRepository.saveAll(offenceEntityList);
     }
 
-    private OffenceEntity buildOffences(Offence offence, CreateLinkDto saveAndLinkModel) {
+    protected OffenceEntity buildOffences(Offence offence, CourtDataDTO courtDataDTO) {
         return OffenceEntity.builder()
-                .caseId(saveAndLinkModel.getCaseId())
-                .txId(saveAndLinkModel.getTxId())
+                .caseId(courtDataDTO.getCaseId())
+                .txId(courtDataDTO.getTxId())
                 .asnSeq(offence.getAsnSeq())
                 .offenceCode(offence.getOffenceCode())
                 .offenceClassification(offence.getOffenceClassification())
@@ -45,9 +45,17 @@ public class OffenceInfoProcessor implements Process {
                 .offenceShortTitle(offence.getOffenceShortTitle())
                 .modeOfTrial(offence.getModeOfTrail())
                 .offenceWording(offence.getOffenceWording())
-                .iojDecision(PENDING_IOJ_DECISION)
-                .wqOffence(G_NO)
+                .iojDecision(getIojDecision(offence))
+                .wqOffence(getWQOffence(offence))
                 .applicationFlag(G_NO)
                 .build();
+    }
+
+    protected Integer getWQOffence(Offence offence) {
+        return G_NO;
+    }
+
+    protected Integer getIojDecision(Offence offence) {
+        return PENDING_IOJ_DECISION;
     }
 }

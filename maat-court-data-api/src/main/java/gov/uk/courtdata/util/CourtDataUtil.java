@@ -10,4 +10,6 @@ public class CourtDataUtil {
     public LocalDate getDate(String date) {
         return date != null ? LocalDate.parse(date) : null;
     }
+
+
 }

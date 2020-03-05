@@ -1,4 +1,4 @@
-package gov.uk.courtdata.unlink;
+package gov.uk.courtdata.integrationTest.unlink;
 
 import com.google.gson.Gson;
 import gov.uk.MAATCourtDataApplication;
@@ -14,6 +14,7 @@ import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
+import gov.uk.courtdata.unlink.UnLinkImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,26 +31,18 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest(classes = MAATCourtDataApplication.class)
 public class UnLinkImplTest {
 
-    @Autowired
+
     private UnLinkImpl unLinkImpl;
-    @Autowired
     private WqLinkRegisterRepository wqLinkRegisterRepository;
-    @Autowired
     private WqCoreRepository wqCoreRepository;
-    @Autowired
     private UnlinkReasonRepository unlinkReasonRepository;
-    @Autowired
-    private RepOrderCPDataRepository repOrderCPDataRepository;
-    @Autowired
     private Gson gson;
-    @Autowired
     private TestModelDataBuilder testModelDataBuilder;
-    @Autowired
     private TestEntityDataBuilder testEntityDataBuilder;
 
 
     @Test
-    public void givenUnlinkLinkModel_whenUnlinkProcessorIsInvoked_thenCaseIsUnlinked() {
+    public void givenUnlinkLinkModel_whenUnlinkImplIsInvoked_thenCaseIsUnlinked() {
 
         //given
         Unlink unlink = gson.fromJson(testModelDataBuilder.getUnLinkString(), Unlink.class);
@@ -103,6 +96,35 @@ public class UnLinkImplTest {
         assertThat(unLinkReason.getCaseId()).isEqualTo(unlinkModel.getWqLinkRegisterEntity().getCaseId());
         assertThat(unLinkReason.getReasonId()).isEqualTo(unlinkModel.getUnlink().getReasonId());
         assertThat(unLinkReason.getOtherReason()).isEqualTo(unlinkModel.getUnlink().getReasonText());
+    }
+
+    @Autowired
+    public void setUnLinkImpl(UnLinkImpl unLinkImpl) {
+        this.unLinkImpl = unLinkImpl;
+    }
+    @Autowired
+    public void setWqLinkRegisterRepository(WqLinkRegisterRepository wqLinkRegisterRepository) {
+        this.wqLinkRegisterRepository = wqLinkRegisterRepository;
+    }
+    @Autowired
+    public void setWqCoreRepository(WqCoreRepository wqCoreRepository) {
+        this.wqCoreRepository = wqCoreRepository;
+    }
+    @Autowired
+    public void setUnlinkReasonRepository(UnlinkReasonRepository unlinkReasonRepository) {
+        this.unlinkReasonRepository = unlinkReasonRepository;
+    }
+    @Autowired
+    public void setGson(Gson gson) {
+        this.gson = gson;
+    }
+    @Autowired
+    public void setTestModelDataBuilder(TestModelDataBuilder testModelDataBuilder) {
+        this.testModelDataBuilder = testModelDataBuilder;
+    }
+    @Autowired
+    public void setTestEntityDataBuilder(TestEntityDataBuilder testEntityDataBuilder) {
+        this.testEntityDataBuilder = testEntityDataBuilder;
     }
 
 }

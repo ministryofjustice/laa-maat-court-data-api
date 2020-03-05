@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantEntity;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
@@ -22,15 +22,15 @@ public class DefendantInfoProcessor implements Process {
     private final CourtDataUtil courtDataUtil;
 
     @Override
-    public void process(CreateLinkDto saveAndLinkModel) {
+    public void process(CourtDataDTO courtDataDTO) {
 
-        DefendantMAATDataEntity defendantMAATDataEntity = saveAndLinkModel.getDefendantMAATDataEntity();
-        CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
+        DefendantMAATDataEntity defendantMAATDataEntity = courtDataDTO.getDefendantMAATDataEntity();
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         Defendant defendant = caseDetails.getDefendant();
 
         DefendantEntity defendantEntity = DefendantEntity.builder()
-                .caseId(saveAndLinkModel.getCaseId())
-                .txId(saveAndLinkModel.getTxId())
+                .caseId(courtDataDTO.getCaseId())
+                .txId(courtDataDTO.getTxId())
                 .forename(defendant.getForename())
                 .surname(defendant.getSurname())
                 .organisation(defendant.getOrganization())
@@ -56,10 +56,14 @@ public class DefendantInfoProcessor implements Process {
                 .pcountry(defendantMAATDataEntity.getPcountry())
                 .useSol(defendantMAATDataEntity.getUseSol())
                 .searchType(SEARCH_TYPE_0)
-                .datasource(CREATE_LINK)
+                .datasource(getDataSource())
                 .build();
         defendantRepository.save(defendantEntity);
 
 
+    }
+
+    protected String getDataSource() {
+        return CREATE_LINK;
     }
 }

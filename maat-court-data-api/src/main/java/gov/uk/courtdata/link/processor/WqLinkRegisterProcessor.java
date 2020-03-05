@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
@@ -18,23 +18,27 @@ public class WqLinkRegisterProcessor implements Process {
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
 
     @Override
-    public void process(CreateLinkDto saveAndLinkModel) {
+    public void process(CourtDataDTO courtDataDTO) {
 
-        CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
-        int maatCat = saveAndLinkModel.getSolicitorMAATDataEntity().getCmuId();
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+        int maatCat = geCategory(courtDataDTO);
         final WqLinkRegisterEntity wqLinkRegisterEntity = WqLinkRegisterEntity.builder()
-                .createdTxId(saveAndLinkModel.getTxId())
+                .createdTxId(courtDataDTO.getTxId())
                 .createdDate(LocalDate.now())
                 .createdUserId(caseDetails.getCreatedUser())
-                .caseId(saveAndLinkModel.getCaseId())
-                .libraId(COMMON_PLATFORM + saveAndLinkModel.getLibraId())
+                .caseId(courtDataDTO.getCaseId())
+                .libraId(COMMON_PLATFORM + courtDataDTO.getLibraId())
                 .maatId(caseDetails.getMaatId())
                 .cjsAreaCode(caseDetails.getCjsAreaCode())
                 .cjsLocation(caseDetails.getCjsLocation())
-                .proceedingId(saveAndLinkModel.getProceedingId())
+                .proceedingId(courtDataDTO.getProceedingId())
                 .maatCat(maatCat)
                 .mlrCat(maatCat)
                 .build();
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
+    }
+
+    protected int geCategory(CourtDataDTO courtDataDTO) {
+        return courtDataDTO.getSolicitorMAATDataEntity().getCmuId();
     }
 }

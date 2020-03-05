@@ -1,6 +1,6 @@
 package gov.uk.courtdata.validator;
 
-import gov.uk.courtdata.dto.CreateLinkDto;
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
@@ -37,7 +37,7 @@ public class ValidationProcessor {
     /**
      * @param caseDetails
      */
-    public CreateLinkDto validate(CaseDetails caseDetails) {
+    public CourtDataDTO validate(CaseDetails caseDetails) {
 
 
         maatIdValidator.validate(caseDetails.getMaatId());
@@ -52,7 +52,7 @@ public class ValidationProcessor {
                 = defendantValidator.validate(caseDetails.getMaatId());
 
 
-        return CreateLinkDto.builder().caseDetails(caseDetails)
+        return CourtDataDTO.builder().caseDetails(caseDetails)
                 .solicitorMAATDataEntity(solicitorMAATDataEntity.get())
                 .defendantMAATDataEntity(defendantMAATDataEntity.get()).build();
     }

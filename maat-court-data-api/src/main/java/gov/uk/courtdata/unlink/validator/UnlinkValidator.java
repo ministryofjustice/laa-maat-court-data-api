@@ -1,4 +1,4 @@
-package gov.uk.courtdata.validator;
+package gov.uk.courtdata.unlink.validator;
 
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.MaatCourtDataException;

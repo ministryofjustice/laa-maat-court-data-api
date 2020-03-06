@@ -1,7 +1,10 @@
-package gov.uk.courtdata.validator;
+package gov.uk.courtdata.laaStatus.validator;
 
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
+import gov.uk.courtdata.validator.DefendantValidator;
+import gov.uk.courtdata.validator.MaatIdValidator;
+import gov.uk.courtdata.validator.SolicitorValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +23,7 @@ public class LaaStatusValidationProcessor {
 
         Integer maatId = caseDetails.getMaatId();
         maatIdValidator.validate(maatId);
-        // TODO Validate CJS + Libra ID Combination here.
-        linkRegisterValidator.validateMAATId(maatId);
+        linkRegisterValidator.validate(maatId);
         solicitorValidator.validate(caseDetails);
         defendantValidator.validate(maatId);
 

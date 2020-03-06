@@ -4,7 +4,7 @@ package gov.uk.courtdata.controlloer;
 import com.google.gson.Gson;
 import gov.uk.courtdata.link.SaveAndLinkProcessor;
 import gov.uk.courtdata.model.Unlink;
-import gov.uk.courtdata.unlink.UnLinkProcessor;
+import gov.uk.courtdata.unlink.processor.UnLinkProcessor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -5,7 +5,7 @@ import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.validator.ValidationProcessor;
+import gov.uk.courtdata.link.validator.ValidationProcessor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

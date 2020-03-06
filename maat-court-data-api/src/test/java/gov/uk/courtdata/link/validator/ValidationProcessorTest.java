@@ -1,9 +1,13 @@
-package gov.uk.courtdata.validator;
+package gov.uk.courtdata.link.validator;
 
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.validator.DefendantValidator;
+import gov.uk.courtdata.validator.MaatIdValidator;
+import gov.uk.courtdata.validator.ReferenceDataValidator;
+import gov.uk.courtdata.validator.SolicitorValidator;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +20,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ValidationProcessorTest {
@@ -37,7 +41,7 @@ public class ValidationProcessorTest {
     @Mock
     private ReferenceDataValidator referenceDataValidator;
     @Mock
-    private CPDataValidator CPDataValidator;
+    private gov.uk.courtdata.link.validator.CPDataValidator CPDataValidator;
 
     @InjectMocks
     private ValidationProcessor validationProcessor;
@@ -66,8 +70,11 @@ public class ValidationProcessorTest {
     @Test
     public void testWhenAllValidatorsSuccess_validationPasses() {
 
+        //given
         final int testMaatId = 1000;
+        final CaseDetails caseDetails = CaseDetails.builder().maatId(testMaatId).build();
 
+        // when
         when(maatIdValidator.validate(testMaatId))
                 .thenReturn(Optional.empty());
         when(linkExistsValidator.validate(testMaatId))
@@ -76,19 +83,30 @@ public class ValidationProcessorTest {
         when(defendantValidator.validate(testMaatId))
                 .thenReturn(
                         Optional.of(DefendantMAATDataEntity.builder().maatId(testMaatId).build()));
-        when(solicitorValidator.validate(CaseDetails.builder().maatId(testMaatId).build()))
+
+        when(solicitorValidator.validate(caseDetails))
                 .thenReturn(
                         Optional.of(SolicitorMAATDataEntity.builder().maatId(testMaatId).build()));
-        when(courtValidator.validate(CaseDetails.builder().maatId(testMaatId).build()))
+        when(courtValidator.validate(caseDetails))
                 .thenReturn(
                         Optional.empty());
-        when(referenceDataValidator.validate(CaseDetails.builder().maatId(testMaatId).build()))
+        when(referenceDataValidator.validate(caseDetails))
                 .thenReturn(
                         Optional.empty());
-        when(CPDataValidator.validate(CaseDetails.builder().maatId(testMaatId).build()))
+        when(CPDataValidator.validate(caseDetails))
                 .thenReturn(Optional.empty());
 
-        validationProcessor.validate(CaseDetails.builder().maatId(testMaatId).build());
+
+        validationProcessor.validate(caseDetails);
+
+        //then
+        verify(maatIdValidator, times(1)).validate(testMaatId);
+        verify(linkExistsValidator, times(1)).validate(testMaatId);
+        verify(defendantValidator, times(1)).validate(testMaatId);
+        verify(solicitorValidator, times(1)).validate(caseDetails);
+        verify(courtValidator, times(1)).validate(caseDetails);
+        verify(referenceDataValidator, times(1)).validate(caseDetails);
+        verify(CPDataValidator, times(1)).validate(caseDetails);
 
     }
 

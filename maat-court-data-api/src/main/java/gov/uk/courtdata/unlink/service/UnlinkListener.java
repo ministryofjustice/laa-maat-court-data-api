@@ -1,10 +1,10 @@
-package gov.uk.courtdata.jms;
+package gov.uk.courtdata.unlink.service;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.Unlink;
-import gov.uk.courtdata.unlink.UnLinkProcessor;
+import gov.uk.courtdata.unlink.processor.UnLinkProcessor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.JmsException;

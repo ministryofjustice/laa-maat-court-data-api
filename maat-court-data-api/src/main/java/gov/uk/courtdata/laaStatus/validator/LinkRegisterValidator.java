@@ -1,6 +1,6 @@
-package gov.uk.courtdata.validator;
+package gov.uk.courtdata.laaStatus.validator;
 
-import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,14 +11,14 @@ public class LinkRegisterValidator {
 
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
 
-    public void validateMAATId(Integer maatId) {
+    public void validate(Integer maatId) {
 
         final int linkCount = wqLinkRegisterRepository.getCountByMaatId(maatId);
 
         if (linkCount == 0) {
-            throw new ValidationException("There No Link Available for this MAAT ID : " + maatId);
+            throw new MaatCourtDataException("There is No Link Available for this MAAT ID : " + maatId);
         } else if (linkCount > 1) {
-            throw new ValidationException("There are multiple Links found for this MAAT ID : " + maatId);
+            throw new MaatCourtDataException("There are multiple Links found for this MAAT ID : " + maatId);
         }
 
     }

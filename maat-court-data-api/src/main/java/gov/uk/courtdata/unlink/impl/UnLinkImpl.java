@@ -1,4 +1,4 @@
-package gov.uk.courtdata.unlink;
+package gov.uk.courtdata.unlink.impl;
 
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;

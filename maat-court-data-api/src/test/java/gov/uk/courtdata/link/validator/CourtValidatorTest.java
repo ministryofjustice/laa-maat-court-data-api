@@ -1,4 +1,4 @@
-package gov.uk.courtdata.validator;
+package gov.uk.courtdata.link.validator;
 
 
 import gov.uk.courtdata.exception.ValidationException;

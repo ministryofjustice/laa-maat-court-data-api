@@ -1,4 +1,4 @@
-package gov.uk.courtdata.validator;
+package gov.uk.courtdata.link.validator;
 
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
@@ -27,7 +27,7 @@ public class CPDataValidatorTest {
     private RepOrderCPDataRepository repOrderCPDataRepository;
 
     @InjectMocks
-    private CPDataValidator CPDataValidator;
+    private gov.uk.courtdata.link.validator.CPDataValidator CPDataValidator;
 
     @BeforeEach
     public void setUp() {

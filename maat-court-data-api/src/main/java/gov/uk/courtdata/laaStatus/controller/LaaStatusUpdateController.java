@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.laaStatus.service.LaaStatusPublisher;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
-import gov.uk.courtdata.validator.LaaStatusValidationProcessor;
+import gov.uk.courtdata.laaStatus.validator.LaaStatusValidationProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,17 +25,17 @@ public class LaaStatusUpdateController {
     @PostMapping("/laaStatus")
     public MessageCollection updateLAAStatus(@RequestBody String jsonPayload) {
 
-        log.debug("LAA Status Update Request received. Message :  {}", jsonPayload);
+        log.info("LAA Status Update Request received. Message :  {}", jsonPayload);
 
         CaseDetails caseDetails = gson.fromJson(jsonPayload, CaseDetails.class);
 
         MessageCollection messageCollection = laaStatusValidationProcessor.validate(caseDetails);
 
         if (messageCollection.getMessages().isEmpty()) {
-            log.debug("Request Validation is successfully completed");
+            log.info("Request Validation is successfully completed");
             laaStatusPublisher.publish(caseDetails);
         } else {
-            log.debug("LAA Status Update Validation Failed - {}", messageCollection.getMessages());
+            log.info("LAA Status Update Validation Failed - {}", messageCollection.getMessages());
         }
         return messageCollection;
     }

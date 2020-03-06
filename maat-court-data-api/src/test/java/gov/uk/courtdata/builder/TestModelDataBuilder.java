@@ -40,7 +40,7 @@ public class TestModelDataBuilder {
         return gson.fromJson(jsonString, CaseDetails.class);
     }
 
-    private String getSaveAndLinkString() {
+    public String getSaveAndLinkString() {
         return "{\n" +
                 "  \"maatId\": 1234,\n" +
                 "  \"caseUrn\":\"caseurn1\",\n" +

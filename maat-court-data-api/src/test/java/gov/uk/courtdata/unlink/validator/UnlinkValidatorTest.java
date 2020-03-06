@@ -1,4 +1,4 @@
-package gov.uk.courtdata.validator;
+package gov.uk.courtdata.unlink.validator;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.builder.TestModelDataBuilder;

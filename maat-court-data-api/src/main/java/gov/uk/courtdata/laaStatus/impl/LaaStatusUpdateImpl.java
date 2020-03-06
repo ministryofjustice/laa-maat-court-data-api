@@ -38,7 +38,6 @@ public class LaaStatusUpdateImpl {
         updateWqCoreInfoProcessor.process(courtDataDTO);
         updateWqLinkRegisterProcessor.process(courtDataDTO);
         solicitorInfoProcessor.process(courtDataDTO);
-        proceedingsInfoProcessor.process(courtDataDTO);
         updateDefendantInfoProcessor.process(courtDataDTO);
         sessionInfoProcessor.process(courtDataDTO);
         updateOffenceInfoProcessor.process(courtDataDTO);

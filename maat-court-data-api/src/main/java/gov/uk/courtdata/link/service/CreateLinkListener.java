@@ -1,4 +1,4 @@
-package gov.uk.courtdata.jms;
+package gov.uk.courtdata.link.service;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.exception.MaatCourtDataException;

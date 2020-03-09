@@ -1,52 +1,60 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.MAATCourtDataApplication;
+import com.google.gson.Gson;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
-import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.*;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = MAATCourtDataApplication.class)
+@RunWith(MockitoJUnitRunner.class)
 public class RepOrderInfoProcessorTest {
 
-    @Autowired
+    @InjectMocks
     private RepOrderInfoProcessor repOrderInfoProcessor;
-    @Autowired
+    @Spy
     private RepOrderCPDataRepository repOrderDataRepository;
-    @Autowired
+
     private TestModelDataBuilder testModelDataBuilder;
-    @Autowired
-    private TestEntityDataBuilder testEntityDataBuilder;
+    @Captor
+    ArgumentCaptor<RepOrderCPDataEntity> repOrderCaptor;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
+    }
+
 
     @Test
-    public void givenSaveAndLinkModel_whenProcessIsInvoked_thenRepOrderRecordIsCreated() {
+    public void givenRepOrderData_whenProcessIsInvoked_thenRepOrderRecordIsUpdatedWithDefendantId() {
+
         // given
-        CourtDataDTO saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
-        CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
-        repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        Defendant defendant = courtDataDTO.getCaseDetails().getDefendant();
         // when
-        repOrderInfoProcessor.process(saveAndLinkModel);
-        Optional<RepOrderCPDataEntity> foundOptionalRepOrder = repOrderDataRepository.findByrepOrderId(caseDetails.getMaatId());
-        RepOrderCPDataEntity found = foundOptionalRepOrder.orElse(null);
+        when(repOrderDataRepository.findByrepOrderId(Mockito.anyInt()))
+                .thenReturn(Optional.of(RepOrderCPDataEntity.builder().repOrderId(123).caseUrn("caseUrn").build()));
+        repOrderInfoProcessor.process(courtDataDTO);
 
 
         // then
-        assert found != null;
-        assertThat(found.getCaseUrn()).isEqualTo(caseDetails.getCaseUrn());
-        assertThat(found.getRepOrderId()).isEqualTo(caseDetails.getMaatId());
-        assertThat(found.getDefendantId()).isEqualTo(caseDetails.getDefendant().getDefendantId());
+        verify(repOrderDataRepository).save(repOrderCaptor.capture());
+        assertThat(repOrderCaptor.getValue().getCaseUrn()).isEqualTo("caseUrn");
+        assertThat(repOrderCaptor.getValue().getRepOrderId()).isEqualTo(123);
+        assertThat(repOrderCaptor.getValue().getDefendantId()).isEqualTo(defendant.getDefendantId());
 
 
     }

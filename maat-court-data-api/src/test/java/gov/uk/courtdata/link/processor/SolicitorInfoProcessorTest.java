@@ -1,51 +1,56 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.MAATCourtDataApplication;
+import com.google.gson.Gson;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.SolicitorEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.repository.SolicitorRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Optional;
+import org.mockito.*;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = MAATCourtDataApplication.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SolicitorInfoProcessorTest {
 
-    @Autowired
+    @InjectMocks
     private SolicitorInfoProcessor solicitorInfoProcessor;
-    @Autowired
+    @Spy
     private SolicitorRepository solicitorRepository;
-    @Autowired
+
     private TestModelDataBuilder testModelDataBuilder;
+
+    @Captor
+    private ArgumentCaptor<SolicitorEntity> solicitorCaptor;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
+    }
 
     @Test
     public void givenSaveAndLinkModel_whenProcessIsInvoked_thenSolicitorRecordIsCreated() {
 
         // given
-        CourtDataDTO saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
-        SolicitorMAATDataEntity solicitorMAATDataEntity = saveAndLinkModel.getSolicitorMAATDataEntity();
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        SolicitorMAATDataEntity solicitorMAATDataEntity = courtDataDTO.getSolicitorMAATDataEntity();
 
         // when
-        solicitorInfoProcessor.process(saveAndLinkModel);
-        Optional<SolicitorEntity> foundOptionalSolicitor = solicitorRepository.findById(saveAndLinkModel.getTxId());
-        SolicitorEntity found = foundOptionalSolicitor.orElse(null);
-
+        solicitorInfoProcessor.process(courtDataDTO);
 
         // then
-        assert found != null;
-        assertThat(found.getTxId()).isEqualTo(saveAndLinkModel.getTxId());
-        assertThat(found.getCaseId()).isEqualTo(saveAndLinkModel.getCaseId());
-        assertThat(found.getLaaOfficeAccount()).isEqualTo(solicitorMAATDataEntity.getAccountCode());
-        assertThat(found.getFirmName()).isEqualTo(solicitorMAATDataEntity.getAccountName());
+        verify(solicitorRepository).save(solicitorCaptor.capture());
+        assertThat(solicitorCaptor.getValue().getTxId()).isEqualTo(courtDataDTO.getTxId());
+        assertThat(solicitorCaptor.getValue().getCaseId()).isEqualTo(courtDataDTO.getCaseId());
+        assertThat(solicitorCaptor.getValue().getLaaOfficeAccount()).isEqualTo(solicitorMAATDataEntity.getAccountCode());
+        assertThat(solicitorCaptor.getValue().getFirmName()).isEqualTo(solicitorMAATDataEntity.getAccountName());
 
 
     }

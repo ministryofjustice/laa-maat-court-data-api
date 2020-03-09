@@ -1,55 +1,60 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.MAATCourtDataApplication;
+import com.google.gson.Gson;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Optional;
+import org.mockito.*;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.COMMON_PLATFORM;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = MAATCourtDataApplication.class)
+@RunWith(MockitoJUnitRunner.class)
 public class WqLinkRegisterProcessorTest {
 
-    @Autowired
+    @InjectMocks
     private WqLinkRegisterProcessor wqLinkRegisterProcessor;
-    @Autowired
+    @Spy
     private WqLinkRegisterRepository wqLinkRegisterRepository;
-    @Autowired
+
     private TestModelDataBuilder testModelDataBuilder;
 
+    @Captor
+    private ArgumentCaptor<WqLinkRegisterEntity> wqLinkRegisterCaptor;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
+    }
+
     @Test
-    public void givenSaveAndLinkModel_whenProcessIsInvoked_thenWQCoreRecordIsCreated() {
+    public void givenWQLinkRegisterModel_whenProcessIsInvoked_thenWQCoreRecordIsCreated() {
 
         // given
-        CourtDataDTO saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
-        CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
-        SolicitorMAATDataEntity solicitorMAATDataEntity = saveAndLinkModel.getSolicitorMAATDataEntity();
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+        SolicitorMAATDataEntity solicitorMAATDataEntity = courtDataDTO.getSolicitorMAATDataEntity();
 
         // when
-        wqLinkRegisterProcessor.process(saveAndLinkModel);
-        Optional<WqLinkRegisterEntity> foundOptionalWqLinkRegister = wqLinkRegisterRepository.findById(saveAndLinkModel.getTxId());
-        WqLinkRegisterEntity found = foundOptionalWqLinkRegister.orElse(null);
-
+        wqLinkRegisterProcessor.process(courtDataDTO);
 
         // then
-        assert found != null;
-        assertThat(found.getCreatedTxId()).isEqualTo(saveAndLinkModel.getTxId());
-        assertThat(found.getCaseId()).isEqualTo(saveAndLinkModel.getCaseId());
-        assertThat(found.getMaatCat()).isEqualTo(solicitorMAATDataEntity.getCmuId());
-        assertThat(found.getMlrCat()).isEqualTo(solicitorMAATDataEntity.getCmuId());
-        assertThat(found.getLibraId()).isEqualTo(COMMON_PLATFORM + saveAndLinkModel.getLibraId());
-        assertThat(found.getMaatId()).isEqualTo(caseDetails.getMaatId());
+        verify(wqLinkRegisterRepository).save(wqLinkRegisterCaptor.capture());
+        assertThat(wqLinkRegisterCaptor.getValue().getCreatedTxId()).isEqualTo(courtDataDTO.getTxId());
+        assertThat(wqLinkRegisterCaptor.getValue().getCaseId()).isEqualTo(courtDataDTO.getCaseId());
+        assertThat(wqLinkRegisterCaptor.getValue().getMaatCat()).isEqualTo(solicitorMAATDataEntity.getCmuId());
+        assertThat(wqLinkRegisterCaptor.getValue().getMlrCat()).isEqualTo(solicitorMAATDataEntity.getCmuId());
+        assertThat(wqLinkRegisterCaptor.getValue().getLibraId()).isEqualTo(COMMON_PLATFORM + courtDataDTO.getLibraId());
+        assertThat(wqLinkRegisterCaptor.getValue().getMaatId()).isEqualTo(caseDetails.getMaatId());
     }
 }

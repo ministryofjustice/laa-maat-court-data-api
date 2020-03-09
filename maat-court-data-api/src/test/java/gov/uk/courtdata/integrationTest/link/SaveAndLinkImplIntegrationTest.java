@@ -23,7 +23,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MAATCourtDataApplication.class)
-public class SaveAndLinkImplTest {
+public class SaveAndLinkImplIntegrationTest {
 
 
     private SaveAndLinkImpl saveAndLinkImp;

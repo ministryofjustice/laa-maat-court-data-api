@@ -1,6 +1,7 @@
 package gov.uk.courtdata.laaStatus.validator;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
@@ -20,11 +21,9 @@ public class LaaStatusValidatorTest {
 
     @Before
     public void build() {
-        TestModelDataBuilder testModelDataBuilder = new TestModelDataBuilder();
+        TestModelDataBuilder testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(),new Gson());
         laaStatusValidator = new LaaStatusValidator();
-        Gson gson = new Gson();
-        caseDetails = gson.fromJson(testModelDataBuilder.getSaveAndLinkString(), CaseDetails.class);
-
+        caseDetails =  testModelDataBuilder.getCaseDetails();
     }
 
     @Test

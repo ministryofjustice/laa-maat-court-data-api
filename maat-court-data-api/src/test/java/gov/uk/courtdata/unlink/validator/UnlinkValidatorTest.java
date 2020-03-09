@@ -1,6 +1,7 @@
 package gov.uk.courtdata.unlink.validator;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.MaatCourtDataException;
@@ -26,7 +27,7 @@ public class UnlinkValidatorTest {
 
     @Before
     public void build() {
-        TestModelDataBuilder  testModelDataBuilder = new TestModelDataBuilder();
+        TestModelDataBuilder  testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(),new Gson());
         unlinkValidator = new UnlinkValidator();
         Gson   gson = new Gson();
         unlink = gson.fromJson(testModelDataBuilder.getUnLinkString(), Unlink.class);

@@ -1,51 +1,56 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.MAATCourtDataApplication;
+import com.google.gson.Gson;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.CaseEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.CaseRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.*;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Optional;
-
-import static gov.uk.courtdata.constants.CourtDataConstants.NO;
+import static org.mockito.Mockito.verify;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = MAATCourtDataApplication.class)
+@RunWith(MockitoJUnitRunner.class)
 public class CaseInfoProcessorTest {
 
-    @Autowired
-    private TestModelDataBuilder testModelDataBuilder;
-    @Autowired
+
+    @InjectMocks
     private CaseInfoProcessor caseInfoProcessor;
-    @Autowired
+
+    @Spy
     private CaseRepository caseRepository;
+    private TestModelDataBuilder testModelDataBuilder;
+    @Captor
+    private ArgumentCaptor<CaseEntity> caseInfoCaptor;
 
-    @Test
-    public void givenSaveAndLinkModel_whenProcessIsInvoked_theCaseRecordIsCreated() {
-        // given
-        CourtDataDTO saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
-        CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
-
-        //when
-        caseInfoProcessor.process(saveAndLinkModel);
-        Optional<CaseEntity> foundCaseOptionalEntity = caseRepository.findById(saveAndLinkModel.getTxId());
-        CaseEntity foundCase = foundCaseOptionalEntity.orElse(null);
-
-        // then
-        assert foundCase != null;
-        assertThat(foundCase.getCaseId()).isEqualTo(saveAndLinkModel.getCaseId());
-        assertThat(foundCase.getTxId()).isEqualTo(saveAndLinkModel.getTxId());
-        assertThat(foundCase.getAsn()).isEqualTo(caseDetails.getAsn());
-        assertThat(foundCase.getDocLanguage()).isEqualTo(caseDetails.getDocLanguage());
-        assertThat(foundCase.getInactive()).isEqualTo(NO);
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 
+    @Test
+    public void givenCaseDetails_whenProcessIsInvoked_theCaseRecordIsCreated() {
+
+        // given
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+
+        //when
+        caseInfoProcessor.process(courtDataDTO);
+
+        // then
+        verify(caseRepository).save(caseInfoCaptor.capture());
+        assertThat(caseInfoCaptor.getValue().getTxId()).isEqualTo(courtDataDTO.getTxId());
+        assertThat(caseInfoCaptor.getValue().getCaseId()).isEqualTo(courtDataDTO.getCaseId());
+        assertThat(caseInfoCaptor.getValue().getDocLanguage()).isEqualTo(caseDetails.getDocLanguage());
+        assertThat(caseInfoCaptor.getValue().getInactive()).isEqualTo("N");
+        assertThat(caseInfoCaptor.getValue().getProceedingId()).isEqualTo(courtDataDTO.getProceedingId());
+    }
 }

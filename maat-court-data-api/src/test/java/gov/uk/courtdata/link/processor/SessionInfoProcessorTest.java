@@ -1,50 +1,61 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.MAATCourtDataApplication;
+import com.google.gson.Gson;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.SessionEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.SessionRepository;
+import gov.uk.courtdata.util.CourtDataUtil;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.*;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = MAATCourtDataApplication.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SessionInfoProcessorTest {
 
-    @Autowired
+    @InjectMocks
     private SessionInfoProcessor sessionInfoProcessor;
-    @Autowired
+    @Spy
     private SessionRepository sessionRepository;
-    @Autowired
+
     private TestModelDataBuilder testModelDataBuilder;
 
+    @Captor
+    private ArgumentCaptor<List<SessionEntity>> sessionsCaptor;
+
+    @Mock
+    private CourtDataUtil courtDataUtil;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
+    }
+
     @Test
-    public void givenSaveAndLinkModel_whenProcessIsInvoked_thenSessionRecordIsCreated() {
+    public void givenSessionModel_whenProcessIsInvoked_thenSessionRecordIsCreated() {
 
         // given
-        CourtDataDTO saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
-        CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
 
         // when
-        sessionInfoProcessor.process(saveAndLinkModel);
-        Optional<SessionEntity> foundOptionalSession = sessionRepository.findById(saveAndLinkModel.getTxId());
-        SessionEntity found = foundOptionalSession.orElse(null);
-
+        sessionInfoProcessor.process(courtDataDTO);
 
         // then
-        assert found != null;
-        assertThat(found.getTxId()).isEqualTo(saveAndLinkModel.getTxId());
-        assertThat(found.getCaseId()).isEqualTo(saveAndLinkModel.getCaseId());
-        assertThat(found.getPostHearingCustody()).isEqualTo(caseDetails.getSessions().get(0).getPostHearingCustody());
+        verify(sessionRepository).saveAll(sessionsCaptor.capture());
+        assertThat(sessionsCaptor.getValue().get(0).getTxId()).isEqualTo(courtDataDTO.getTxId());
+        assertThat(sessionsCaptor.getValue().get(0).getCaseId()).isEqualTo(courtDataDTO.getCaseId());
+        assertThat(sessionsCaptor.getValue().get(0).getPostHearingCustody()).isEqualTo(caseDetails.getSessions().get(0).getPostHearingCustody());
 
 
     }

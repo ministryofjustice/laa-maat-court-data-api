@@ -3,16 +3,20 @@ package gov.uk.courtdata.builder;
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.model.CaseDetails;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+
 public class TestModelDataBuilder {
 
-    @Autowired
     TestEntityDataBuilder testEntityDataBuilder;
-    @Autowired
     Gson gson;
+
+    public TestModelDataBuilder(TestEntityDataBuilder testEntityDataBuilder, Gson gson) {
+        this.gson = gson;
+        this.testEntityDataBuilder = testEntityDataBuilder;
+    }
+
 
     public CourtDataDTO getSaveAndLinkModelRaw() {
         return CourtDataDTO.builder()
@@ -23,7 +27,7 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public CourtDataDTO getSaveAndLinkModel() {
+    public CourtDataDTO getCourtDataDTO() {
         return CourtDataDTO.builder()
                 .caseId(123456)
                 .libraId(25467)
@@ -35,7 +39,7 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    private CaseDetails getCaseDetails() {
+    public CaseDetails getCaseDetails() {
         String jsonString = getSaveAndLinkString();
         return gson.fromJson(jsonString, CaseDetails.class);
     }

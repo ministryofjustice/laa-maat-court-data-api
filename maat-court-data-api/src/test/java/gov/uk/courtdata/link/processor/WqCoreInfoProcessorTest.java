@@ -1,52 +1,55 @@
 package gov.uk.courtdata.link.processor;
 
-import gov.uk.MAATCourtDataApplication;
+import com.google.gson.Gson;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqCoreEntity;
-import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqCoreRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Optional;
+import org.mockito.*;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_CREATION_EVENT;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = MAATCourtDataApplication.class)
+@RunWith(MockitoJUnitRunner.class)
 public class WqCoreInfoProcessorTest {
 
-    @Autowired
+    @InjectMocks
     private WqCoreInfoProcessor wqCoreInfoProcessor;
-    @Autowired
+   @Spy
     private WqCoreRepository wqCoreRepository;
-    @Autowired
+
     private TestModelDataBuilder testModelDataBuilder;
 
+    @Captor
+    private ArgumentCaptor<WqCoreEntity> wqCoreCaptor;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
+    }
+
     @Test
-    public void givenSaveAndLinkModel_whenProcessIsInvoked_thenWQCoreRecordIsCreated() {
+    public void givenWQCoreModel_whenProcessIsInvoked_thenWQCoreRecordIsCreated() {
 
         // given
-        CourtDataDTO saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
-        CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
 
         // when
-        wqCoreInfoProcessor.process(saveAndLinkModel);
-        Optional<WqCoreEntity> foundOptionalWqCore = wqCoreRepository.findById(saveAndLinkModel.getTxId());
-        WqCoreEntity found = foundOptionalWqCore.orElse(null);
-
+        wqCoreInfoProcessor.process(courtDataDTO);
 
         // then
-        assert found != null;
-        assertThat(found.getTxId()).isEqualTo(saveAndLinkModel.getTxId());
-        assertThat(found.getCaseId()).isEqualTo(saveAndLinkModel.getCaseId());
-        assertThat(found.getWqStatus()).isEqualTo(WQ_SUCCESS_STATUS);
-        assertThat(found.getWqType()).isEqualTo(WQ_CREATION_EVENT);
+        verify(wqCoreRepository).save(wqCoreCaptor.capture());
+        assertThat(wqCoreCaptor.getValue().getTxId()).isEqualTo(courtDataDTO.getTxId());
+        assertThat(wqCoreCaptor.getValue().getCaseId()).isEqualTo(courtDataDTO.getCaseId());
+        assertThat(wqCoreCaptor.getValue().getWqStatus()).isEqualTo(WQ_SUCCESS_STATUS);
+        assertThat(wqCoreCaptor.getValue().getWqType()).isEqualTo(WQ_CREATION_EVENT);
     }
 }

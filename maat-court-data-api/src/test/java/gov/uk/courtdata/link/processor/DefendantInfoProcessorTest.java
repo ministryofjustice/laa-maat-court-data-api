@@ -1,53 +1,60 @@
 package gov.uk.courtdata.link.processor;
 
 
-import gov.uk.MAATCourtDataApplication;
+import com.google.gson.Gson;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantEntity;
-import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.DefendantRepository;
+import gov.uk.courtdata.util.CourtDataUtil;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Optional;
+import org.mockito.*;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.CREATE_LINK;
 import static gov.uk.courtdata.constants.CourtDataConstants.SEARCH_TYPE_0;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = MAATCourtDataApplication.class)
+@RunWith(MockitoJUnitRunner.class)
 public class DefendantInfoProcessorTest {
 
-    @Autowired
+    @InjectMocks
     private DefendantInfoProcessor defendantInfoProcessor;
-    @Autowired
+    @Spy
     private DefendantRepository defendantRepository;
-    @Autowired
+    @Mock
+    private CourtDataUtil courtDataUtil;
+
     private TestModelDataBuilder testModelDataBuilder;
+    @Captor
+    private ArgumentCaptor<DefendantEntity> defendantCaptor;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
+    }
 
     @Test
-    public void givenSaveAndLinkModel_whenProcessIsInvoked_thenDefendantRecordIsCreated() {
-        // given
-        CourtDataDTO saveAndLinkModel = testModelDataBuilder.getSaveAndLinkModel();
-        CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
+    public void givenDefendantDetails_whenProcessIsInvoked_thenDefendantRecordIsCreated() {
 
-        // when
-        defendantInfoProcessor.process(saveAndLinkModel);
-        Optional<DefendantEntity> foundDefendantOptional = defendantRepository.findById(saveAndLinkModel.getTxId());
-        DefendantEntity foundDefendant = foundDefendantOptional.orElse(null);
+        // given
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+
+        //when
+        defendantInfoProcessor.process(courtDataDTO);
+
 
         // then
-        assert foundDefendant != null;
-        assertThat(foundDefendant.getCaseId()).isEqualTo(saveAndLinkModel.getCaseId());
-        assertThat(foundDefendant.getTxId()).isEqualTo(saveAndLinkModel.getTxId());
-        assertThat(foundDefendant.getDateOfBirth()).isEqualTo(caseDetails.getDefendant().getDateOfBirth());
-        assertThat(foundDefendant.getDatasource()).isEqualTo(CREATE_LINK);
-        assertThat(foundDefendant.getSearchType()).isEqualTo(SEARCH_TYPE_0);
+        verify(defendantRepository).save(defendantCaptor.capture());
+        assertThat(defendantCaptor.getValue().getCaseId()).isEqualTo(courtDataDTO.getCaseId());
+        assertThat(defendantCaptor.getValue().getTxId()).isEqualTo(courtDataDTO.getTxId());
+        assertThat(defendantCaptor.getValue().getDatasource()).isEqualTo(CREATE_LINK);
+        assertThat(defendantCaptor.getValue().getSearchType()).isEqualTo(SEARCH_TYPE_0);
 
     }
 }

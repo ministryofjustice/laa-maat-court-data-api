@@ -30,7 +30,7 @@ public class UpdateWqLinkRegisterProcessor extends WqLinkRegisterProcessor {
 
     @Override
     protected int geCategory(CourtDataDTO courtDataDTO) {
-        return courtDataDTO.getCaseDetails().getCategory();
+        return courtDataDTO.getCaseDetails().getCategory() != null ? courtDataDTO.getCaseDetails().getCategory() : super.geCategory(courtDataDTO);
     }
 
     @Autowired

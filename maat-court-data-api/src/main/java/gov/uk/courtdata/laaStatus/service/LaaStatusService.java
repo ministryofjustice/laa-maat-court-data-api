@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class LaaStatusUpdateService {
+public class LaaStatusService {
 
 
     private final LaaStatusUpdateImpl laaStatusUpdateImpl;
@@ -38,7 +38,7 @@ public class LaaStatusUpdateService {
         return CourtDataDTO.builder()
                 .caseDetails(caseDetails)
                 .caseId(wqLinkRegisterEntity.getCaseId())
-                .libraId(Integer.parseInt(wqLinkRegisterEntity.getLibraId()))
+                .libraId(Integer.parseInt(wqLinkRegisterEntity.getLibraId().substring(2)))
                 .proceedingId(wqLinkRegisterEntity.getProceedingId())
                 .defendantMAATDataEntity(defendantMAATDataEntity)
                 .solicitorMAATDataEntity(solicitorMAATDataEntity)

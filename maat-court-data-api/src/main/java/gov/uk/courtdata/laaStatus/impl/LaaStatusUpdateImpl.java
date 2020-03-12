@@ -23,7 +23,6 @@ public class LaaStatusUpdateImpl {
     private final UpdateWqCoreInfoProcessor updateWqCoreInfoProcessor;
     private final UpdateWqLinkRegisterProcessor updateWqLinkRegisterProcessor;
     private final SolicitorInfoProcessor solicitorInfoProcessor;
-    private final ProceedingsInfoProcessor proceedingsInfoProcessor;
     private final UpdateDefendantInfoProcessor updateDefendantInfoProcessor;
     private final SessionInfoProcessor sessionInfoProcessor;
     private final UpdateOffenceInfoProcessor updateOffenceInfoProcessor;
@@ -32,16 +31,23 @@ public class LaaStatusUpdateImpl {
     @Transactional
     public void execute(CourtDataDTO courtDataDTO) {
 
-        log.debug("LAA Status Update - Transaction Processing - Start");
+        log.info("LAA Status Update - Transaction Processing - Start");
         mapTxnID(courtDataDTO);
         caseInfoProcessor.process(courtDataDTO);
+        log.info("LAA Status Update - Case Details are processed- Start");
         updateWqCoreInfoProcessor.process(courtDataDTO);
+        log.info("LAA Status Update - WQ Core details are processed - Start");
         updateWqLinkRegisterProcessor.process(courtDataDTO);
+        log.info("LAA Status Update - WQ Link Register Details are processed - Start");
         solicitorInfoProcessor.process(courtDataDTO);
+        log.info("LAA Status Update - Solicitor Details are processed- Start");
         updateDefendantInfoProcessor.process(courtDataDTO);
+        log.info("LAA Status Update - Defendant Details are processed - Start");
         sessionInfoProcessor.process(courtDataDTO);
+        log.info("LAA Status Update - Session Details are processed - Start");
         updateOffenceInfoProcessor.process(courtDataDTO);
-        log.debug("LAA Status Update -  Transaction Processing - End");
+        log.info("LAA Status Update - Offence Details are processed - Start");
+        log.info("LAA Status Update -  Transaction Processing - End");
     }
 
     private void mapTxnID(CourtDataDTO courtDataDTO) {

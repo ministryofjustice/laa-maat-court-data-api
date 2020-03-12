@@ -1,3 +1,5 @@
+server:
+  port : 8090
 spring:
   datasource:
     url: ${DATASOURCE_URL}

@@ -20,7 +20,4 @@ public interface WqLinkRegisterRepository extends JpaRepository<WqLinkRegisterEn
     @Query(value = "SELECT count(*)  FROM MLA.XXMLA_WQ_LINK_REGISTER WHERE maat_id  = ?1 and removed_tx_id  is null ", nativeQuery = true)
     Integer getCountByMaatId(final Integer maatId);
 
-
-    @Query(value = "UPDATE MLA.XXMLA_WQ_LINK_REGISTER link SET link.mlr_cat = ?1 where link.CASE_ID = ?2", nativeQuery = true)
-    void updateCategory(Integer category,Integer caseId);
 }

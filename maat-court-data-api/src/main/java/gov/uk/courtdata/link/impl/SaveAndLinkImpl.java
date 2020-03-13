@@ -1,6 +1,7 @@
 package gov.uk.courtdata.link.impl;
 
 import gov.uk.courtdata.dto.CourtDataDTO;
+import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.link.processor.*;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class SaveAndLinkImpl {
     private final RepOrderInfoProcessor repOrderInfoProcessor;
     private final IdentifierRepository identifierRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = MaatCourtDataException.class)
     public void execute(CourtDataDTO courtDataDTO) {
         log.info("Create Link - Transaction Processing - Start");
         mapIdentifiers(courtDataDTO);

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.laaStatus.controller;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.laaStatus.service.LaaStatusPublisher;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
@@ -27,15 +28,20 @@ public class LaaStatusUpdateController {
 
         log.info("LAA Status Update Request received. Message :  {}", jsonPayload);
 
-        CaseDetails caseDetails = gson.fromJson(jsonPayload, CaseDetails.class);
-
-        MessageCollection messageCollection = laaStatusValidationProcessor.validate(caseDetails);
-
-        if (messageCollection.getMessages().isEmpty()) {
-            log.info("Request Validation is successfully completed");
-            laaStatusPublisher.publish(caseDetails);
-        } else {
-            log.info("LAA Status Update Validation Failed - {}", messageCollection.getMessages());
+        MessageCollection messageCollection = null;
+        try {
+            CaseDetails caseDetails = gson.fromJson(jsonPayload, CaseDetails.class);
+            messageCollection = laaStatusValidationProcessor.validate(caseDetails);
+            if (messageCollection.getMessages().isEmpty()) {
+                log.info("Request Validation is successfully completed");
+                laaStatusPublisher.publish(caseDetails);
+            } else {
+                log.info("LAA Status Update Validation Failed - {}", messageCollection.getMessages());
+            }
+        } catch (Exception exception) {
+            assert messageCollection != null;
+            messageCollection.getMessages().add(exception.getMessage());
+            throw new MaatCourtDataException("MAAT APT Call failed" + exception.getMessage());
         }
         return messageCollection;
     }

@@ -36,7 +36,7 @@ public class LaaStatusListener {
             CaseDetails laaStatusUpdate = gson.fromJson(message, CaseDetails.class);
             log.info("Message converted {} ", laaStatusUpdate);
             laaStatusUpdateService.execute(laaStatusUpdate);
-
+            log.info("LAA Status has been successfully Updated ");
         } catch (MaatCourtDataException mex) {
             log.warn("Laa status update failed.");
             log.error("MaatCourtDataException  {}", mex);

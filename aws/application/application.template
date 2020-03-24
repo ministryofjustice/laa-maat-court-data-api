@@ -1,0 +1,825 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: LAA Application Load Balancer stack
+Parameters:
+  # Environment parameters
+  pEnvironment:
+    Description: Environment (only development, test, staging, uat, production are allowable values)
+    Type: String
+  pLaunchType:
+    Type: String
+    Default: FARGATE
+    Description: Type of ECS to Launch. EC2 or FARGATE
+  pECSRepositoryURL:
+    Type: String
+  pDockerImageTag:
+    Type: String
+    Default: ''
+  SharedServicesAccount:
+    Description: AWS AccountNumber for shared services
+    Type: Number
+    Default: 902837325998
+  pSev5SnsTopicArn:
+    Description: ARN of Sev5 SNS topic for alerting
+    Type: String
+
+  # Application specific parameters
+  pAppName:
+    Type: String
+    Default: ''
+  pAppCertificateArn:
+    Type: String
+    Default: ''
+  pDatasourceUrl:
+    Type: String
+    Default: ''
+  pCloudPlatformQueueRegion:
+    Type: String
+    Default: ''
+  pCreateLinkQueue:
+    Type: String
+    Default: ''
+  pUnlinkQueue:
+    Type: String
+    Default: ''
+  pLaaStatusUpdateQueue:
+    Type: String
+    Default: ''
+  pHearingsUpdateQueue:
+    Type: String
+    Default: ''
+  pCdaOauthUrl:
+    Type: String
+    Default: ''
+  pCdaLaaStatusUrl:
+    Type: String
+    Default: ''
+
+  # Monitoring parameters
+  pECSCPUAlarmThreshold:
+    Description: ECS CPU Alarm Threshold
+    Type: Number
+    Default: '75'
+  pECSMemoryAlarmThreshold:
+    Description: ECS Memory Alarm Threshold
+    Type: Number
+    Default: '75'
+  pASGCPUAlarmThreshold:
+    Description: ASG CPU Alarm Threshold
+    Type: Number
+    Default: '85'
+  pASGStatusFailureAlarmThreshold:
+    Description: ASG Status Check Failures Alarm Threshold
+    Type: Number
+    Default: '1'
+  pALBUnhealthyAlarmThreshold:
+    Description: ALB Unhealthy Hosts Alarm Threshold
+    Type: Number
+    Default: '0'
+  pALBRejectedAlarmThreshold:
+    Description: ALB Rejected Requests Alarm Threshold
+    Type: Number
+    Default: '10'
+  pALB5xxAlarmThreshold:
+    Description: ALB Originiating 5xx Alarm Threshold
+    Type: Number
+    Default: '10'
+  pALBTarget5xxAlarmThreshold:
+    Description: ALB Target Originiating 5xx Alarm Threshold
+    Type: Number
+    Default: '10'
+  pALB4xxAlarmThreshold:
+    Description: ALB Originiating 4xx Alarm Threshold
+    Type: Number
+    Default: '10'
+  pALBTarget4xxAlarmThreshold:
+    Description: ALB Target Originiating 4xx Alarm Threshold
+    Type: Number
+    Default: '10'
+  pALBTargetResponseTimeThreshold:
+    Description: ALB Target Response Time Alarm Threshold
+    Type: Number
+    Default: '10'
+  pALBTargetResponseTimeThresholdMaximum:
+    Description: ALB Target Response Time Alarm Threshold Maximum
+    Type: Number
+    Default: '60'
+
+
+Conditions:
+  cDevTest:
+    !Or
+      - !Equals [ !Ref pEnvironment, "development" ]
+      - !Equals [ !Ref pEnvironment, "test" ]
+  cUATStg:
+    !Or
+      - !Equals [ !Ref pEnvironment, "uat" ]
+      - !Equals [ !Ref pEnvironment, "staging" ]
+  cPrd:
+    !Equals [ !Ref pEnvironment, "production" ]
+  cUATStgProd:
+    !Or
+      - !Equals [ !Ref pEnvironment, "uat" ]
+      - !Equals [ !Ref pEnvironment, "staging" ]
+      - !Equals [ !Ref pEnvironment, "production" ]
+  cNonProd:
+    !Or
+      - !Condition cDevTest
+      - !Condition cUATStg
+
+Resources:
+
+  ##############################################################################
+  #
+  # Security groups
+  #
+  ##############################################################################
+  AppEcsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: App ECS Security Group
+      VpcId: !ImportValue "env-VpcId"
+  AppEcsSecurityGroup1ALBport:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref 'AppEcsSecurityGroup'
+      IpProtocol: tcp
+      FromPort: 8090
+      ToPort: 8090
+      SourceSecurityGroupId: !Ref AppAlbSecurityGroup
+
+  AppAlbSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: App ALB Security Group
+      VpcId: !ImportValue "env-VpcId"
+
+  ##############################################################################
+  #
+  # Application
+  #
+  ##############################################################################
+  AppEcsCluster:
+    Type: "AWS::ECS::Cluster"
+    Properties:
+      ClusterName: !Ref pAppName
+
+  EcsService:
+    Type: AWS::ECS::Service
+    DependsOn: AlbHTTPSListener
+    Properties:
+      Cluster: !Ref AppEcsCluster
+      LaunchType : !Ref pLaunchType
+      DesiredCount: !If [ cDevTest, 1, 2 ]
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: DISABLED
+          SecurityGroups:
+            - !Ref AppEcsSecurityGroup
+          Subnets:
+            - !ImportValue env-AppPrivateSubnetA
+            - !ImportValue env-AppPrivateSubnetB
+            - !ImportValue env-AppPrivateSubnetC
+      LoadBalancers:
+        - ContainerName: !Ref pAppName
+          ContainerPort: 8090
+          TargetGroupArn: !Ref 'TargetGroup'
+      TaskDefinition: !Ref 'TaskDefinition'
+  ServiceScalingTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      MaxCapacity: 5
+      MinCapacity: !If [ cDevTest, 1, 2 ]
+      ResourceId: !Join ['', [service/, !Ref AppEcsCluster, /, !GetAtt EcsService.Name]]
+      RoleARN: !GetAtt AutoscalingRole.Arn
+      ScalableDimension: ecs:service:DesiredCount
+      ServiceNamespace: ecs
+  ScalingUpPolicyService:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: !Sub ${EcsService}-ScalingUpPolicy
+      PolicyType: StepScaling
+      ScalingTargetId: !Ref ServiceScalingTarget
+      StepScalingPolicyConfiguration:
+        AdjustmentType: ChangeInCapacity
+        Cooldown: 60
+        StepAdjustments:
+          - ScalingAdjustment: 1
+            MetricIntervalLowerBound: 0
+  ScalingDownPolicyService:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: !Sub ${EcsService}-ScalingDownPolicy
+      PolicyType: StepScaling
+      ScalingTargetId: !Ref ServiceScalingTarget
+      StepScalingPolicyConfiguration:
+        AdjustmentType: ChangeInCapacity
+        Cooldown: 60
+        StepAdjustments:
+        - ScalingAdjustment: -1
+          MetricIntervalUpperBound: 0
+  HighCPUServiceAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: CPUUtilization exceeding threshold. Triggers scale up
+      ActionsEnabled: true
+      Namespace: AWS/ECS
+      MetricName: CPUUtilization
+      Unit: Percent
+      Dimensions:
+      - Name: ClusterName
+        Value: !Ref AppEcsCluster
+      - Name: ServiceName
+        Value: !GetAtt EcsService.Name
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 3
+      Threshold: 70
+      AlarmActions: [!Ref ScalingUpPolicyService]
+      ComparisonOperator: GreaterThanThreshold
+  LowCPUServiceAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: CPUUtilization lower than threshold. Triggers scale down
+      ActionsEnabled: true
+      Namespace: AWS/ECS
+      MetricName: CPUUtilization
+      Unit: Percent
+      Dimensions:
+      - Name: ClusterName
+        Value: !Ref AppEcsCluster
+      - Name: ServiceName
+        Value: !GetAtt EcsService.Name
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 3
+      Threshold: 20
+      AlarmActions: [!Ref ScalingDownPolicyService]
+      ComparisonOperator: LessThanThreshold
+  AlbHTTPSListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+        - CertificateArn: !Ref pAppCertificateArn
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref 'TargetGroup'
+      LoadBalancerArn: !Ref 'LoadBalancer'
+      Port: 443
+      Protocol: HTTPS
+  EcsAlbHTTPSListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref 'TargetGroup'
+      Conditions:
+        - Field: path-pattern
+          Values: [/]
+      ListenerArn: !Ref 'AlbHTTPSListener'
+      Priority: 1
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: LoadBalancer
+    Properties:
+      HealthCheckIntervalSeconds: 15
+      HealthCheckPath: /swagger-ui.html
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      TargetType: ip
+      Name: !Sub '${pAppName}-TargetGroup'
+      Port: 8090
+      Protocol: HTTP
+      UnhealthyThresholdCount: 3
+      VpcId: !ImportValue 'env-VpcId'
+      TargetGroupAttributes:
+        - Key: 'stickiness.enabled'
+          Value: 'false'
+        - Key: 'deregistration_delay.timeout_seconds'
+          Value: '30'
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub '${pAppName}-LoadBalancer'
+      Scheme: internal
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: '65'
+      Subnets: [ !ImportValue env-AppPrivateSubnetA, !ImportValue env-AppPrivateSubnetB, !ImportValue env-AppPrivateSubnetC ]
+      SecurityGroups:
+        - !Ref AppAlbSecurityGroup
+
+  MAATCDADNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue "dns-AwsHostedZoneId"
+      Comment: Domain CNAME record for External Application LoadBalancer
+      Name: !Join ['.', [!Ref 'pAppName', !ImportValue 'dns-AwsHostedZoneDomainName']]
+      Type: CNAME
+      TTL: '60'
+      ResourceRecords:
+      - !GetAtt LoadBalancer.DNSName
+
+  ECSTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [ecs-tasks.amazonaws.com]
+          Action: ['sts:AssumeRole']
+      Path: /
+      Policies:
+        - PolicyName: !Sub '${pAppName}-ecs-TaskExecutionRolePolicy'
+          PolicyDocument:
+            Statement:
+            - Effect: Allow
+              Action:
+                # Allow the ECS Tasks to download images from ECR
+                - 'ecr:BatchCheckLayerAvailability'
+                - 'ecr:GetDownloadUrlForLayer'
+                - 'ecr:BatchGetImage'
+              Resource: !Sub 'arn:aws:ecr:${AWS::Region}:${SharedServicesAccount}:repository/${pAppName}'
+            - Effect: Allow
+              Action:
+                # Allow the ECS tasks to get an Get Authorization Token
+                - 'ecr:GetAuthorizationToken'
+                # Allow the ECS tasks to upload logs to CloudWatch
+                - 'logs:CreateLogStream'
+                - 'logs:PutLogEvents'
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                # Allow ECS to access specific secrets from Parameter Store
+                - 'ssm:GetParameters'
+              Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/*'
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Join [ '', [ !Ref pAppName, '-app' ] ]
+      Cpu: !If [ cNonProd, 512, 512 ]
+      Memory: !If [ cNonProd, 1024, 2048 ]
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - !Ref pLaunchType
+      ExecutionRoleArn: !Ref ECSTaskExecutionRole
+      ContainerDefinitions:
+        - Name: !Ref pAppName
+          Cpu: !If [ cNonProd, 512, 512 ]
+          Essential: true
+          Image: !Join [':', [!Ref pECSRepositoryURL, !Ref pDockerImageTag ]]
+          Memory: !If [ cNonProd, 1024, 2048 ]
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref 'CloudwatchLogsGroup'
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: !Sub '${pAppName}-app'
+          PortMappings:
+            - ContainerPort: 8090
+          Secrets:
+            - Name: DATASOURCE_USERNAME
+              ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/DATASOURCE_USERNAME'
+            - Name: DATASOURCE_PASSWORD
+              ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/DATASOURCE_PASSWORD'
+            - Name: CLOUD_PLATFORM_QUEUE_ACCESS_KEY
+              ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/CLOUD_PLATFORM_QUEUE_ACCESS_KEY'
+            - Name: CLOUD_PLATFORM_QUEUE_SECRET_KEY
+              ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/CLOUD_PLATFORM_QUEUE_SECRET_KEY'
+            - Name: CDA_OAUTH_CLIENT_ID
+              ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/CDA_OAUTH_CLIENT_ID'
+            - Name: CDA_OAUTH_CLIENT_SECRET
+              ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/CDA_OAUTH_CLIENT_SECRET'
+          Environment:
+            - Name: DATASOURCE_URL
+              Value: !Ref "${pDatasourceUrl}"
+            - Name: CLOUD_PLATFORM_QUEUE_REGION
+              Value: !Ref "${pCloudPlatformQueueRegion}"
+            - Name: CREATE_LINK_QUEUE
+              Value: !Ref "${pCreateLink_Queue}"
+            - Name: UNLINK_QUEUE
+              Value: !Ref "${pUnlinkQueue}"
+            - Name: LAA_STATUS_UPDATE_QUEUE
+              Value: !Ref "${pLaaStatusUpdateQueue}"
+            - Name: HEARINGS_UPDATE_QUEUE
+              Value: !Ref "${pHearingsUpdateQueue}"
+            - Name: CDA_OAUTH_URL
+              Value: !Ref "${pCdaOauthUrl}"
+            - Name: CDA_LAA_STATUS_URL
+              Value: !Ref "${pCdaLaaStatusUrl}"
+
+  CloudwatchLogsGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '${pAppName}-ECS'
+      RetentionInDays: 90
+
+  # Encrypt the Cloudwatch Logs
+  # Custom resource as cfn doesn't (yet) support associating KMS keys with log groups
+  CloudwatchLogsGroupKeyAssociation:
+    Type: AWS::CloudFormation::CustomResource
+    Properties:
+      ServiceToken: !ImportValue security-LogGroupLambdaArn
+      KeyArn: !ImportValue "security-LogGroupKeyArn"
+      LogGroupName: !Ref CloudwatchLogsGroup
+
+  AutoscalingRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'application-autoscaling.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: service-autoscaling
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'application-autoscaling:*'
+                  - 'cloudwatch:DescribeAlarms'
+                  - 'cloudwatch:PutMetricAlarm'
+                  - 'ecs:DescribeServices'
+                  - 'ecs:UpdateService'
+                Resource: '*'
+
+
+  ##############################################################################
+  #
+  # Monitoring
+  #
+  ##############################################################################
+# ECS cluster alerting
+  EcsCPUoverThreshold:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Join
+        - " | "
+        - - !Ref pAppName
+          - ECS-CPU-high-threshold-alarm1
+      AlarmDescription: >-
+        If the CPU exceeds the predefined threshold, this alarm will trigger.
+        Please investigate.
+      Namespace: AWS/ECS
+      MetricName: CPUUtilization
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 5
+      Threshold: !Ref pECSCPUAlarmThreshold
+      TreatMissingData: breaching
+      AlarmActions:
+        - !Ref pSev5SnsTopicArn
+      OKActions:
+        - !Ref pSev5SnsTopicArn
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref AppEcsCluster
+      ComparisonOperator: GreaterThanThreshold
+
+  EcsMemoryOverThreshold:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Join
+        - " | "
+        - - !Ref pAppName
+          - ECS-Memory-high-threshold-alarm
+      AlarmDescription: >-
+        If the memory util exceeds the predefined threshold, this alarm will trigger.
+        Please investigate.
+      Namespace: AWS/ECS
+      MetricName: MemoryUtilization
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 5
+      Threshold: !Ref pECSMemoryAlarmThreshold
+      TreatMissingData: breaching
+      AlarmActions:
+        - !Ref pSev5SnsTopicArn
+      OKActions:
+        - !Ref pSev5SnsTopicArn
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref AppEcsCluster
+      ComparisonOperator: GreaterThanThreshold
+
+# Application Load Balancer Alerting
+  TargetResponseTime:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Join
+        - " | "
+        - - !Ref pAppName
+          - alb-target-response-time-alarm
+      AlarmDescription: >-
+        The time elapsed, in seconds, after the request leaves the load balancer until a response from the target is received
+      Namespace: AWS/ApplicationELB
+      MetricName: TargetResponseTime
+      ExtendedStatistic: p99
+      Period: 60
+      EvaluationPeriods: 5
+      Threshold: !Ref pALBTargetResponseTimeThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref pSev5SnsTopicArn
+      OKActions:
+        - !Ref pSev5SnsTopicArn
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !GetAtt LoadBalancer.LoadBalancerFullName
+      ComparisonOperator: GreaterThanThreshold
+
+  TargetResponseTimeMaximum:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Join
+        - " | "
+        - - !Ref pAppName
+          - alb-target-response-time-alarm-maximum
+      AlarmDescription: >-
+        The time elapsed, in seconds, after the request leaves the load balancer until a response from the target is received. Triggered if response is longer than 60s.
+      Namespace: AWS/ApplicationELB
+      MetricName: TargetResponseTime
+      Statistic: Maximum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: !Ref pALBTargetResponseTimeThresholdMaximum
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref pSev5SnsTopicArn
+      OKActions:
+        - !Ref pSev5SnsTopicArn
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !GetAtt LoadBalancer.LoadBalancerFullName
+      ComparisonOperator: GreaterThanThreshold
+
+  UnHealthyHosts:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Join
+        - " | "
+        - - !Ref pAppName
+          - unhealthy-hosts-alarm
+      AlarmDescription: >-
+        The unhealthy hosts alarm triggers if your load balancer recognises there is an unhealthy host and has been there for over 15 minutes.
+      Namespace: AWS/ApplicationELB
+      MetricName: UnHealthyHostCount
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 5
+      Threshold: !Ref pALBUnhealthyAlarmThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref pSev5SnsTopicArn
+      OKActions:
+        - !Ref pSev5SnsTopicArn
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !GetAtt LoadBalancer.LoadBalancerFullName
+        - Name: TargetGroup
+          Value: !GetAtt TargetGroup.TargetGroupFullName
+      ComparisonOperator: GreaterThanThreshold
+
+  RejectedConnectionCount:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Join
+        - " | "
+        - - !Ref pAppName
+          - RejectedConnectionCount-alarm
+      AlarmDescription: >-
+        There is no surge queue on ALB's. Alert triggers in ALB rejects too many requests, usually due to backend being busy.
+      Namespace: AWS/ApplicationELB
+      MetricName: RejectedConnectionCount
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 5
+      Threshold: !Ref pALBRejectedAlarmThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref pSev5SnsTopicArn
+      OKActions:
+        - !Ref pSev5SnsTopicArn
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !GetAtt LoadBalancer.LoadBalancerFullName
+      ComparisonOperator: GreaterThanThreshold
+
+  http5xxError:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Join
+        - " | "
+        - - !Ref pAppName
+          - http-5xx-error-alarm
+      AlarmDescription: >-
+        This alarm will trigger if we receive 4 5XX http alerts in a 5 minute period.
+      Namespace: AWS/ApplicationELB
+      MetricName: HTTPCode_Target_5XX_Count
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 5
+      Threshold: !Ref pALBTarget5xxAlarmThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref pSev5SnsTopicArn
+      OKActions:
+        - !Ref pSev5SnsTopicArn
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !GetAtt LoadBalancer.LoadBalancerFullName
+      ComparisonOperator: GreaterThanThreshold
+
+  ApplicationELB5xxError:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Join
+        - " | "
+        - - !Ref pAppName
+          - elb-5xx-error-alarm
+      AlarmDescription: >-
+        This alarm will trigger if we receive 4 5XX elb alerts in a 5 minute period.
+      Namespace: AWS/ApplicationELB
+      MetricName: HTTPCode_ELB_5XX_Count
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 5
+      Threshold: !Ref pALB5xxAlarmThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref pSev5SnsTopicArn
+      OKActions:
+        - !Ref pSev5SnsTopicArn
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !GetAtt LoadBalancer.LoadBalancerFullName
+      ComparisonOperator: GreaterThanThreshold
+
+  http4xxError:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Join
+        - " | "
+        - - !Ref pAppName
+          - http-4xx-error-alarm
+      AlarmDescription: >-
+        This alarm will trigger if we receive 4 4XX http alerts in a 5 minute period.
+      Namespace: AWS/ApplicationELB
+      MetricName: HTTPCode_Target_4XX_Count
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 5
+      Threshold: !Ref pALBTarget4xxAlarmThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref pSev5SnsTopicArn
+      OKActions:
+        - !Ref pSev5SnsTopicArn
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !GetAtt LoadBalancer.LoadBalancerFullName
+      ComparisonOperator: GreaterThanThreshold
+
+  ApplicationELB4xxError:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Join
+        - " | "
+        - - !Ref pAppName
+          - elb-4xx-error-alarm
+      AlarmDescription: >-
+        This alarm will trigger if we receive 4 4XX elb alerts in a 5 minute period.
+      Namespace: AWS/ApplicationELB
+      MetricName: HTTPCode_ELB_4XX_Count
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 5
+      Threshold: !Ref pALB4xxAlarmThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref pSev5SnsTopicArn
+      OKActions:
+        - !Ref pSev5SnsTopicArn
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !GetAtt LoadBalancer.LoadBalancerFullName
+      ComparisonOperator: GreaterThanThreshold
+
+# Dashboard creation and configuration
+  CCMSPDADashboard:
+    DependsOn: [ApplicationELB4xxError, TargetResponseTime, http4xxError, ApplicationELB5xxError, http5xxError, RejectedConnectionCount, UnHealthyHosts, EcsMemoryOverThreshold, EcsCPUoverThreshold]
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: !Join
+          - '-'
+          - - !Ref pAppName
+            - Dashboard
+      DashboardBody: !Sub |
+        {
+          "widgets" : [
+            {
+              "type" : "metric",
+              "x" : 0,
+              "y" : 0,
+              "width" : 8,
+              "height" : 6,
+              "properties" : {
+                  "title" : "Application ELB 5xx Error",
+                  "annotations": {
+                    "alarms": [
+                      "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:${ApplicationELB5xxError}"
+                    ]
+                  },
+                  "view": "timeSeries",
+                  "region": "${AWS::Region}",
+                  "stacked": false
+              }
+            },
+            {
+              "type" : "metric",
+              "x" : 8,
+              "y" : 0,
+              "width" : 8,
+              "height" : 6,
+              "properties" : {
+                  "title" : "Application ELB 4xx Error",
+                  "annotations": {
+                    "alarms": [
+                      "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:${ApplicationELB4xxError}"
+                    ]
+                  },
+                  "view": "timeSeries",
+                  "region": "${AWS::Region}",
+                  "stacked": false
+              }
+            },
+            {
+              "type" : "metric",
+              "x" : 16,
+              "y" : 0,
+              "width" : 8,
+              "height" : 6,
+              "properties" : {
+                  "title" : "Application ELB Target Response Time",
+                  "annotations": {
+                    "alarms": [
+                      "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:${TargetResponseTime}"
+                    ]
+                  },
+                  "view": "timeSeries",
+                  "region": "${AWS::Region}",
+                  "stacked": false
+              }
+            },
+            {
+              "type" : "metric",
+              "x" : 0,
+              "y" : 12,
+              "width" : 12,
+              "height" : 6,
+              "properties" : {
+                  "title" : "ECS CPU",
+                  "annotations": {
+                    "alarms": [
+                      "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:${EcsCPUoverThreshold}"
+                    ]
+                  },
+                  "view": "timeSeries",
+                  "region": "${AWS::Region}",
+                  "stacked": false
+              }
+            },
+            {
+              "type" : "metric",
+              "x" : 12,
+              "y" : 12,
+              "width" : 12,
+              "height" : 6,
+              "properties" : {
+                  "title" : "ECS Memory",
+                  "annotations": {
+                    "alarms": [
+                      "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:${EcsMemoryOverThreshold}"
+                    ]
+                  },
+                  "view": "timeSeries",
+                  "region": "${AWS::Region}",
+                  "stacked": false
+              }
+            }
+          ]
+        }
+
+Outputs:
+  LoadBalancerDNSName:
+    Description: Your ALB DNS URL
+    Value: !GetAtt LoadBalancer.DNSName
+    Export:
+      Name: !Sub "${pAppName}-LoadBalancerDNSName"

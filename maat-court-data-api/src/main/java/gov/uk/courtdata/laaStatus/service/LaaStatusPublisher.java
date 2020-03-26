@@ -19,8 +19,8 @@ public class LaaStatusPublisher {
     public void publish(CaseDetails caseDetails) {
 
         String laaStatusUpdateJSON = gson.toJson(caseDetails);
-        defaultJmsTemplate.convertAndSend("${aws.sqs.queue.laaStatusUpdate}", laaStatusUpdateJSON);
-        log.info("A JSON Message {} has been published to the Queue {}", laaStatusUpdateJSON, "${aws.sqs.queue.laaStatusUpdate}");
+        defaultJmsTemplate.convertAndSend("${cloud-platform.aws.sqs.queue.laaStatus}", laaStatusUpdateJSON);
+        log.info("A JSON Message {} has been published to the Queue {}", laaStatusUpdateJSON, "${aws.sqs.queue.laaStatus}");
 
     }
 }

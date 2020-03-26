@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @AllArgsConstructor
-@Service
 public class CreateLinkListener {
 
     private final CreateLinkService createLinkService;
@@ -28,7 +27,7 @@ public class CreateLinkListener {
      * @param message
      * @throws JmsException
      */
-    @JmsListener(destination = "${aws.sqs.queue.link}")
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.link}")
     public void receive(@Payload final String message) throws JmsException {
 
         try {

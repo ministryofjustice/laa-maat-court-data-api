@@ -4,6 +4,7 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.*;
@@ -28,7 +29,7 @@ public class UnLinkImpl {
     private final IdentifierRepository identifierRepository;
     private final RepOrderCPDataRepository repOrderCPDataRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = MaatCourtDataException.class)
     public void execute(UnlinkModel unlinkModel) {
 
         mapTxnID(unlinkModel);

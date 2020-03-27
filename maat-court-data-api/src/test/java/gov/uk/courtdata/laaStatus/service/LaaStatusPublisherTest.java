@@ -29,10 +29,11 @@ public class LaaStatusPublisherTest {
         CaseDetails caseDetails = CaseDetails.builder().build();
 
         //when
+        String sqsQueue = null;
         when(gson.toJson(caseDetails)).thenReturn("Case Details");
         laaStatusPublisher.publish(caseDetails);
 
         //then
-        verify(defaultJmsTemplate, times(1)).convertAndSend("${cloud-platform.aws.sqs.queue.laaStatus}", "Case Details");
+        verify(defaultJmsTemplate, times(1)).convertAndSend(sqsQueue, "Case Details");
     }
 }

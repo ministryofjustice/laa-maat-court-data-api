@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class LaaStatusListener {
 
-    private final LaaStatusUpdateService laaStatusUpdateService;
+    private final LaaStatusService laaStatusUpdateService;
 
     private final LaaStatusPostCDAService laaStatusPostCDAService;
 

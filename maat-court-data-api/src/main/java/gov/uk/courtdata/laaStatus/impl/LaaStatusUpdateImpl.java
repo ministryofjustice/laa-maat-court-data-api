@@ -1,6 +1,7 @@
 package gov.uk.courtdata.laaStatus.impl;
 
 import gov.uk.courtdata.dto.CourtDataDTO;
+import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.laaStatus.processor.UpdateDefendantInfoProcessor;
 import gov.uk.courtdata.laaStatus.processor.UpdateOffenceInfoProcessor;
 import gov.uk.courtdata.laaStatus.processor.UpdateWqCoreInfoProcessor;
@@ -23,25 +24,31 @@ public class LaaStatusUpdateImpl {
     private final UpdateWqCoreInfoProcessor updateWqCoreInfoProcessor;
     private final UpdateWqLinkRegisterProcessor updateWqLinkRegisterProcessor;
     private final SolicitorInfoProcessor solicitorInfoProcessor;
-    private final ProceedingsInfoProcessor proceedingsInfoProcessor;
     private final UpdateDefendantInfoProcessor updateDefendantInfoProcessor;
     private final SessionInfoProcessor sessionInfoProcessor;
     private final UpdateOffenceInfoProcessor updateOffenceInfoProcessor;
 
 
-    @Transactional
+    @Transactional(rollbackFor = MaatCourtDataException.class)
     public void execute(CourtDataDTO courtDataDTO) {
 
-        log.debug("LAA Status Update - Transaction Processing - Start");
+        log.info("LAA Status Update - Transaction Processing - Start");
         mapTxnID(courtDataDTO);
         caseInfoProcessor.process(courtDataDTO);
+        log.info("LAA Status Update - Case Details are processed");
         updateWqCoreInfoProcessor.process(courtDataDTO);
+        log.info("LAA Status Update - WQ Core details are processed");
         updateWqLinkRegisterProcessor.process(courtDataDTO);
+        log.info("LAA Status Update - WQ Link Register Details are processed");
         solicitorInfoProcessor.process(courtDataDTO);
+        log.info("LAA Status Update - Solicitor Details are processed");
         updateDefendantInfoProcessor.process(courtDataDTO);
+        log.info("LAA Status Update - Defendant Details are processed");
         sessionInfoProcessor.process(courtDataDTO);
+        log.info("LAA Status Update - Session Details are processed");
         updateOffenceInfoProcessor.process(courtDataDTO);
-        log.debug("LAA Status Update -  Transaction Processing - End");
+        log.info("LAA Status Update - Offence Details are processed");
+        log.info("LAA Status Update -  Transaction Processing - End");
     }
 
     private void mapTxnID(CourtDataDTO courtDataDTO) {

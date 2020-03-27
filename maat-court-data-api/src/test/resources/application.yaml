@@ -35,3 +35,4 @@ cda:
     clientId: ${CDA_OAUTH_CLIENT_ID}
     clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
   laastatus:
+    url: ${CDA_LAA_STATUS_URL}

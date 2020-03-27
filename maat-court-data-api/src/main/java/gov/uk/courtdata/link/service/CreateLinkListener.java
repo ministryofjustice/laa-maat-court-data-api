@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @AllArgsConstructor
+@Service
 public class CreateLinkListener {
 
     private final CreateLinkService createLinkService;

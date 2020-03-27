@@ -16,7 +16,7 @@ public class LaaStatusPublisher {
     private final JmsTemplate defaultJmsTemplate;
     private final Gson gson;
 
-    @Value("${aws.sqs.queue.laaStatus}")
+    @Value("${cloud-platform.aws.sqs.queue.laaStatus}")
     private String sqsQueueName;
 
     public void publish(CaseDetails caseDetails) {

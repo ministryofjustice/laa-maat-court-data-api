@@ -1,6 +1,4 @@
-FROM openjdk:9-jdk
-
+FROM openjdk:11-jdk
 VOLUME /tmp
-ADD ./build/libs/maat-courtdata-api.jar app.jar
-EXPOSE 8090 8091
-CMD java -jar app.jar
+COPY ./build/libs/maat-courtdata-api.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]

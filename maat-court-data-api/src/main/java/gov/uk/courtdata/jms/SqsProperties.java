@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "aws.sqs")
+@ConfigurationProperties(prefix = "cloud-platform.aws.sqs")
 public class SqsProperties {
 
     private String region;

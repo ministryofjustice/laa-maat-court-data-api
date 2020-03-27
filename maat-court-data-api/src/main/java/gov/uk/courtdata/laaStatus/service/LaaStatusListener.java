@@ -21,22 +21,27 @@ public class LaaStatusListener {
 
     private final LaaStatusService laaStatusUpdateService;
 
+    private final LaaStatusPostCDAService laaStatusPostCDAService;
+
     private final Gson gson;
 
     /**
      * @param message
      * @throws JmsException
      */
-    @JmsListener(destination = "${aws.sqs.queue.laaStatus}")
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.laaStatus}")
     public void receive(@Payload final String message) throws JmsException {
 
         try {
 
-            log.info("Received JSON Message  {}", message);
+            log.debug("Received JSON Message  {}", message);
             CaseDetails laaStatusUpdate = gson.fromJson(message, CaseDetails.class);
-            log.info("Message converted {} ", laaStatusUpdate);
-            laaStatusUpdateService.execute(laaStatusUpdate);
-            log.info("LAA Status has been successfully Updated ");
+            log.debug("Message converted {} ", laaStatusUpdate);
+            log.info("POST to CDA");
+            laaStatusPostCDAService.process(laaStatusUpdate);
+            log.info("After laa update");
+          //  laaStatusUpdateService.execute(laaStatusUpdate);
+
         } catch (MaatCourtDataException mex) {
             log.warn("Laa status update failed.");
             log.error("MaatCourtDataException  {}", mex);

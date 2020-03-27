@@ -10,6 +10,7 @@ import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.repository.*;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public class SaveAndLinkImplIntegrationTest {
     private TestEntityDataBuilder testEntityDataBuilder;
 
     @Test
+    @Ignore
     public void givenSaveAndLinkModel_whenSaveAndImplIsInvoked_thenLinkEstablished() {
 
         //given

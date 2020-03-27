@@ -33,6 +33,6 @@ public class LaaStatusPublisherTest {
         laaStatusPublisher.publish(caseDetails);
 
         //then
-        verify(defaultJmsTemplate, times(1)).convertAndSend("${aws.sqs.queue.laaStatusUpdate}", "Case Details");
+        verify(defaultJmsTemplate, times(1)).convertAndSend("${cloud-platform.aws.sqs.queue.laaStatus}", "Case Details");
     }
 }

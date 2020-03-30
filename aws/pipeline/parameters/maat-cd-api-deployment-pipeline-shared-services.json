@@ -1,0 +1,18 @@
+[
+  {
+    "ParameterKey"    : "ApplicationName",
+    "ParameterValue"    : "maat-cd-api"
+  },
+  {
+    "ParameterKey"    : "GitHubBranch",
+    "ParameterValue"    : "master"
+  },
+  {
+    "ParameterKey"    : "pIsRouteToLive",
+    "ParameterValue"  : "true"
+  },
+  {
+    "ParameterKey"    : "ECRRepositoryName",
+    "ParameterValue"  : "maat-cd-api"
+  }
+]

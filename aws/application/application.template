@@ -394,21 +394,21 @@ Resources:
               ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/CDA_OAUTH_CLIENT_SECRET'
           Environment:
             - Name: DATASOURCE_URL
-              Value: !Ref "${pDatasourceUrl}"
+              Value: !Ref pDatasourceUrl
             - Name: CLOUD_PLATFORM_QUEUE_REGION
-              Value: !Ref "${pCloudPlatformQueueRegion}"
+              Value: !Ref pCloudPlatformQueueRegion
             - Name: CREATE_LINK_QUEUE
-              Value: !Ref "${pCreateLink_Queue}"
+              Value: !Ref pCreateLinkQueue
             - Name: UNLINK_QUEUE
-              Value: !Ref "${pUnlinkQueue}"
+              Value: !Ref pUnlinkQueue
             - Name: LAA_STATUS_UPDATE_QUEUE
-              Value: !Ref "${pLaaStatusUpdateQueue}"
+              Value: !Ref pLaaStatusUpdateQueue
             - Name: HEARINGS_UPDATE_QUEUE
-              Value: !Ref "${pHearingsUpdateQueue}"
+              Value: !Ref pHearingsUpdateQueue
             - Name: CDA_OAUTH_URL
-              Value: !Ref "${pCdaOauthUrl}"
+              Value: !Ref pCdaOauthUrl
             - Name: CDA_LAA_STATUS_URL
-              Value: !Ref "${pCdaLaaStatusUrl}"
+              Value: !Ref pCdaLaaStatusUrl
 
   CloudwatchLogsGroup:
     Type: AWS::Logs::LogGroup

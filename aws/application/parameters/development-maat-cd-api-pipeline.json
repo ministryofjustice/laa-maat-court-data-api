@@ -6,7 +6,7 @@
     "pDockerImageTag" : "",
     "pAppCertificateArn" : "arn:aws:acm:eu-west-2:411213865113:certificate/0184743f-c424-4d2e-bd87-f2ac439c38ad",
     "pSev5SnsTopicArn" : "arn:aws:sns:eu-west-2:902837325998:sns-topic-devel-severity_5",
-    "pDatasourceUrl" : "rds.maat.aws.dev.legalservices.gov.uk:1521:MAATDB",
+    "pDatasourceUrl" : "jdbc:oracle:thin:@rds.maat.aws.dev.legalservices.gov.uk:1521:MAATDB",
     "pCloudPlatformQueueRegion" : "eu-west-2",
     "pCreateLinkQueue" : "crime-apps-dev-create-link-queue-m",
     "pUnlinkQueue" : "crime-apps-dev-unlink-queue-m",

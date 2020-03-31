@@ -283,7 +283,7 @@ Resources:
     DependsOn: LoadBalancer
     Properties:
       HealthCheckIntervalSeconds: 15
-      HealthCheckPath: /swagger-ui.html
+      HealthCheckPath: /actuator/info
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2

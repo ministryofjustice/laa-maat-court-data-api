@@ -5,7 +5,8 @@
     "pECSRepositoryURL" : "902837325998.dkr.ecr.eu-west-2.amazonaws.com/maat-cd-api",
     "pDockerImageTag" : "",
     "pAppCertificateArn" : "arn:aws:acm:eu-west-2:484221692666:certificate/152f7407-fdbd-4ce7-b63e-1b9f2c6a5c89",
-    "pSev5SnsTopicArn" : "arn:aws:sns:eu-west-2:902837325998:sns-topic-devel-severity_5"
+    "pSev5SnsTopicArn" : "arn:aws:sns:eu-west-2:902837325998:sns-topic-devel-severity_5",
+    "pMlraAppSecurityGroupId": "sg-9fc086f4"
   },
   "Tags" : {
     "business-unit" : "LAA",

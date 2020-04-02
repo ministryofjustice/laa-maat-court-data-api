@@ -130,9 +130,9 @@ Conditions:
     !Or
       - !Condition cDevTest
       - !Condition cUATStg
-+ cAddMlraAppSecurityGroupId:
-+   !Not [ !Equals [ !Ref   pMlraAppSecurityGroupId, "" ] ]
-+
+  cAddMlraAppSecurityGroupId:
+    !Not [ !Equals [ !Ref   pMlraAppSecurityGroupId, "" ] ]
+
 Resources:
 
   ##############################################################################

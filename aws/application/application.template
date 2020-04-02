@@ -22,6 +22,10 @@ Parameters:
   pSev5SnsTopicArn:
     Description: ARN of Sev5 SNS topic for alerting
     Type: String
+  pMlraAppSecurityGroupId:
+    Type: String
+    Description: The Security Group Id of the AWS-hosted MLRA application
+    Default: ''
 
   # Application specific parameters
   pAppName:
@@ -126,7 +130,9 @@ Conditions:
     !Or
       - !Condition cDevTest
       - !Condition cUATStg
-
++ cAddMlraAppSecurityGroupId:
++   !Not [ !Equals [ !Ref   pMlraAppSecurityGroupId, "" ] ]
++
 Resources:
 
   ##############################################################################
@@ -153,6 +159,16 @@ Resources:
     Properties:
       GroupDescription: App ALB Security Group
       VpcId: !ImportValue "env-VpcId"
+  AppAlbSecurityGroupMlraAppInbound:
+    Condition: cAddMlraAppSecurityGroupId
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref AppAlbSecurityGroup
+      IpProtocol: tcp
+      FromPort: '443'
+      ToPort: '443'
+      SourceSecurityGroupId: !Ref pMlraAppSecurityGroupId
+
 
   ##############################################################################
   #

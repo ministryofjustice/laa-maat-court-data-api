@@ -1,0 +1,30 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      java: openjdk11
+      docker: 18
+
+  pre_build:
+    commands: |
+      chmod +x scripts/*build.sh
+      . scripts/pre_build.sh
+
+  build:
+    commands:
+      scripts/build.sh
+
+  post_build:
+    commands:
+      scripts/post_build.sh
+
+artifacts:
+  files:
+    - build_tag.json
+    - application-packaged.template
+    - development.json
+    - test.json
+    - uat.json
+    - staging.json
+    - production.json
+  discard-paths: yes

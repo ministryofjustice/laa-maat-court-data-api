@@ -19,7 +19,7 @@ public class Offence {
     private String offenceClassification;
     private String offenceDate;
     private String offenceWording;
-    private Integer modeOfTrail;
+    private Integer modeOfTrial;
     private String legalAidStatus;
     private String legalAidStatusDate;
     private String legalAidReason;

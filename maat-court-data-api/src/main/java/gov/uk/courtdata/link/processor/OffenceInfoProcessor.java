@@ -43,7 +43,7 @@ public class OffenceInfoProcessor implements Process {
                 .legalaidReason(offence.getLegalAidReason())
                 .offenceDate(courtDataUtil.getDate(offence.getOffenceDate()))
                 .offenceShortTitle(offence.getOffenceShortTitle())
-                .modeOfTrial(offence.getModeOfTrail())
+                .modeOfTrial(offence.getModeOfTrial())
                 .offenceWording(offence.getOffenceWording())
                 .iojDecision(getIojDecision(offence))
                 .wqOffence(getWQOffence(offence))

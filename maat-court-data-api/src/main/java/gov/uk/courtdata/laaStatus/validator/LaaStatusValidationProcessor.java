@@ -3,6 +3,7 @@ package gov.uk.courtdata.laaStatus.validator;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
 import gov.uk.courtdata.validator.DefendantValidator;
+import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import gov.uk.courtdata.validator.SolicitorValidator;
 import lombok.RequiredArgsConstructor;

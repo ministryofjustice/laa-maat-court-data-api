@@ -85,7 +85,7 @@ public class LaaStatusPostCDAService {
                 .offenceCode(offence.getOffenceCode())
                 .offenceShortTitle(offence.getOffenceShortTitle())
                 .offenceClassification(offence.getOffenceClassification())
-                .modeOfTrial(offence.getModeOfTrail())
+                .modeOfTrial(offence.getModeOfTrial())
                 .offenceDate(offence.getOffenceDate())
                 .legalAid(LegalAid.builder()
                         .status(offence.getLegalAidStatus())

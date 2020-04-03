@@ -1,8 +1,9 @@
-package gov.uk.courtdata.laaStatus.validator;
+package gov.uk.courtdata.validator;
 
 
 import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
+import gov.uk.courtdata.validator.LinkRegisterValidator;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,7 @@ public class LinkRegisterValidatorTest {
         when(wqLinkRegisterRepository.getCountByMaatId(Mockito.anyInt()))
                 .thenReturn(0);
         exceptionRule.expect(MaatCourtDataException.class);
-        exceptionRule.expectMessage("There is No Link Available for this MAAT ID : " + 10);
+        exceptionRule.expectMessage("There is No Link Available for  MAAT ID : " + 10);
         linkRegisterValidator.validate(10);
     }
 
@@ -50,7 +51,7 @@ public class LinkRegisterValidatorTest {
         when(wqLinkRegisterRepository.getCountByMaatId(Mockito.anyInt()))
                 .thenReturn(2);
         exceptionRule.expect(MaatCourtDataException.class);
-        exceptionRule.expectMessage("There are multiple Links found for this MAAT ID : " + 10);
+        exceptionRule.expectMessage("There are multiple Links found for  MAAT ID : " + 10);
         linkRegisterValidator.validate(10);
     }
 }

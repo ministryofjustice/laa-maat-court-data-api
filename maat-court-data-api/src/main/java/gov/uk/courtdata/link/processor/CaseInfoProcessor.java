@@ -29,11 +29,15 @@ public class CaseInfoProcessor implements Process {
                 .asn(caseDetails.getAsn())
                 .cjsAreaCode(caseDetails.getCjsAreaCode())
                 .inactive(caseDetails.isActive() ? NO : YES)
-                .libraCreationDate(LocalDate.parse(caseDetails.getCaseCreationDate()))
+                .libraCreationDate(getCaseCreationDate(caseDetails.getCaseCreationDate()))
                 .docLanguage(caseDetails.getDocLanguage())
                 .proceedingId(courtDataDTO.getProceedingId())
                 .build();
 
         caseRepository.save(caseEntity);
+    }
+
+    protected LocalDate getCaseCreationDate(String  caseCreationDate) {
+        return caseCreationDate != null ? LocalDate.parse(caseCreationDate) : null;
     }
 }

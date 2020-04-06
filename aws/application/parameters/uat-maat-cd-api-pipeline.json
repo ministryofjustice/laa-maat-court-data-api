@@ -1,0 +1,22 @@
+{
+  "Parameters" : {
+    "pAppName" : "maat-cd-api",
+    "pEnvironment" : "uat",
+    "pECSRepositoryURL" : "902837325998.dkr.ecr.eu-west-2.amazonaws.com/maat-cd-api",
+    "pDockerImageTag" : "",
+    "pAppCertificateArn" : "arn:aws:acm:eu-west-2:140455166311:certificate/be7fff7d-935d-4d35-8225-0d1fd9c07c78",
+    "pSev5SnsTopicArn" : "arn:aws:sns:eu-west-2:902837325998:sns-topic-devel-severity_5",
+    "pMlraAppSecurityGroupId": "sg-f0adeb9b"
+  },
+  "Tags" : {
+    "business-unit" : "LAA",
+    "application" : "MAAT Court Details API - maat-cd-api",
+    "component" : "app-server",
+    "is-production" : "true",
+    "environment-name" : "uat",
+    "owner" : "laa-crime-apps@digital.justice.gov.uk",
+    "infrastructure-support" : "laa-role-sre@digital.justice.gov.uk",
+    "runbook" : "https://dsdmoj.atlassian.net/wiki/spaces/LM/pages/760545284/Runbooks",
+    "source-code" : "https://github.com/ministryofjustice/laa-maat-court-data-api"
+  }
+}

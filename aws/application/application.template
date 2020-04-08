@@ -165,8 +165,8 @@ Resources:
     Properties:
       GroupId: !Ref AppAlbSecurityGroup
       IpProtocol: tcp
-      FromPort: '443'
-      ToPort: '443'
+      FromPort: '80'
+      ToPort: '80'
       SourceSecurityGroupId: !Ref pMlraAppSecurityGroupId
 
 
@@ -182,7 +182,7 @@ Resources:
 
   EcsService:
     Type: AWS::ECS::Service
-    DependsOn: AlbHTTPSListener
+    DependsOn: AlbHTTPListener
     Properties:
       Cluster: !Ref AppEcsCluster
       LaunchType : !Ref pLaunchType
@@ -272,18 +272,39 @@ Resources:
       Threshold: 20
       AlarmActions: [!Ref ScalingDownPolicyService]
       ComparisonOperator: LessThanThreshold
-  AlbHTTPSListener:
+  # AlbHTTPSListener:
+  #   Type: AWS::ElasticLoadBalancingV2::Listener
+  #   Properties:
+  #     Certificates:
+  #       - CertificateArn: !Ref pAppCertificateArn
+  #     DefaultActions:
+  #       - Type: forward
+  #         TargetGroupArn: !Ref 'TargetGroup'
+  #     LoadBalancerArn: !Ref 'LoadBalancer'
+  #     Port: 443
+  #     Protocol: HTTPS
+  # EcsAlbHTTPSListenerRule:
+  #   Type: AWS::ElasticLoadBalancingV2::ListenerRule
+  #   Properties:
+  #     Actions:
+  #       - Type: forward
+  #         TargetGroupArn: !Ref 'TargetGroup'
+  #     Conditions:
+  #       - Field: path-pattern
+  #         Values: [/]
+  #     ListenerArn: !Ref 'AlbHTTPSListener'
+  #     Priority: 1
+
+  AlbHTTPListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-      Certificates:
-        - CertificateArn: !Ref pAppCertificateArn
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref 'TargetGroup'
       LoadBalancerArn: !Ref 'LoadBalancer'
-      Port: 443
-      Protocol: HTTPS
-  EcsAlbHTTPSListenerRule:
+      Port: 80
+      Protocol: HTTP
+  EcsAlbHTTPListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
       Actions:
@@ -292,7 +313,7 @@ Resources:
       Conditions:
         - Field: path-pattern
           Values: [/]
-      ListenerArn: !Ref 'AlbHTTPSListener'
+      ListenerArn: !Ref 'AlbHTTPListener'
       Priority: 1
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup

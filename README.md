@@ -85,11 +85,11 @@ Make sure Remote Debug Option is set up on your preferred Editor.
 
 ### Deployment 
 
-The Deployment requirement and integration of laa-maat-court-data-api can be found here.  It is a CI/CD process using AWS Code Pipeline Service. 
+The Deployment requirements and all integrations of laa-maat-court-data-api can be found here. https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1889992851/MAAT+Court+Data+API+Deployment+Requirements
 
-https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1889992851/MAAT+Court+Data+API+Deployment+Requirements
+We practice CI/CD approach and this is being done using AWS Code Pipeline Service.
 
-laa-maat-court-data-api  is being deployed on AWS environment  & the infrastructure and pipelines are using created using Cloud Formation Scripts.
+laa-maat-court-data-api  is being deployed on AWS environment  & the infrastructure and pipelines are created using AWS Cloud Formation.
 
 Cloud formation scripts can be found at laa-maat-court-data-api /aws
 

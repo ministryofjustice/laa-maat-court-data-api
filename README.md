@@ -1,6 +1,13 @@
 ## laa-maat-court-data-api
 
-This is a Java based Spring Boot Application which will be hosted on AWS Environment. This is a Facade application to the existing legacy Applications MAAT/MLRA. laa-maat-court-data-api orchestrates the traffic between Court Data Adaptor/Common Platform and MAAT/MLRA.
+This is a Java based Spring Boot Application which will be hosted on AWS Environment. This is a Facade application to the existing legacy Applications MAAT/MLRA. laa-maat-court-data-api orchestrates the traffics between Court Data Adaptor/Common Platform and MAAT/MLRA.
+
+This Application mainly supports 4 user Journeys. The Details of the journeys can be found on the following links
+
+1. Linking Cases between MAAT and Common Platform.  - https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1647771901/Search+and+Link+Sequence+Diagram
+2. Unlinking a Linked case from Common Platform - https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1858994261/Unlinking+Sequence+Diagrams
+3. LAA Status Update . - https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1711210653/Rep+Order+Results+Sequence+Diagram
+4. Hearing Notifications Resulted - https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1660387451/MLRA+MAAT+-+CDA+Integration
 
 
 ## Developer setup
@@ -8,9 +15,9 @@ This is a Java based Spring Boot Application which will be hosted on AWS Environ
 ### Pre-requisites
 
 1. Docker
-1. SSH
-1. An editor/IDE of some sort - preferably Intellij/Ecilipse 
-1. Gradle
+2. SSH
+3. An editor/IDE of some sort - preferably Intellij/Ecilipse 
+4. Gradle
 
 We're using [Gradle](https://gradle.org/) to build the application. This also includes plugins for generating IntelliJ configuration.
 
@@ -30,7 +37,7 @@ Once this has been merged you can decrypt your local copy of the repository by r
 
 ### Configuration
 
-1. Database  needs to be up and running before the application runs
+Database  needs to be up and running before the application runs
 
 Database: You will need to have the relevant database accessible on port 1521 locally. This can be provided by an SSH tunnel to an RDS instance in AWS. Here is the command to tunnel to Dev (add your user Bastion user name):
 
@@ -38,24 +45,53 @@ Database: You will need to have the relevant database accessible on port 1521 lo
 ssh -L 1521:rds.maat.aws.dev.legalservices.gov.uk:1521 <username>@35.176.251.101 -i ~/.ssh/id_rsa
 ```
 
-2. Clone Repository
+Clone Repository
 
 ```sh
 git clone git@github.com:ministryofjustice/laa-maat-court-data-api.git
 
 cd maat-court-data-api
 ```
-3. You will need to build the artifacts for the source code, using `gradle`.
+Makesure tests all testes are passed by running following ‘gradle’ Command  
+
+```sh
+./gradlew clean test
+```
+ You will need to build the artifacts for the source code, using `gradle`.
 
 ```sh
 ./gradlew clean build
 ```
-4. The apps should then startup cleanly if you run
+The apps should then startup cleanly if you run
 
 ```sh
 docker-compose build
 docker-compose up
 ```
 
-5. laa-maat-court-data-api application will be running on http://localhost:8080 
+laa-maat-court-data-api application will be running on http://localhost:8090 
+
+
+### Debugging Application
+
+Speak to one of the team member and get the docker-compose-debug.yml which will have  relevant credentials  to run the application on remote Debug Mode.
+
+Run the following command  
+```sh
+ docker-compose -f docker-compose-debug.yml up
+```
+
+Make sure Remote Debug Option is set up on your preferred Editor.
+
+### Deployment 
+
+The Deployment requirement and integration of laa-maat-court-data-api can be found here.  It is a CI/CD process using AWS Code Pipeline Service. 
+
+https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1889992851/MAAT+Court+Data+API+Deployment+Requirements
+
+laa-maat-court-data-api  is being deployed on AWS environment  & the infrastructure and pipelines are using created using Cloud Formation Scripts.
+
+Cloud formation scripts can be found at laa-maat-court-data-api /aws
+
+
 

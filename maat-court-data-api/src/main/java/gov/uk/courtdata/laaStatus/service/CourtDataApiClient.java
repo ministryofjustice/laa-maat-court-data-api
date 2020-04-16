@@ -1,14 +1,17 @@
 package gov.uk.courtdata.laaStatus.service;
 
 import com.google.gson.GsonBuilder;
-import gov.uk.courtdata.model.Token;
+import feign.Feign;
+import feign.Logger;
+import feign.RequestInterceptor;
+import feign.gson.GsonDecoder;
+import feign.gson.GsonEncoder;
+import feign.okhttp.OkHttpClient;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import reactivefeign.webclient.WebReactiveFeign;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -16,6 +19,7 @@ public class CourtDataApiClient {
 
     @Autowired
     private GsonBuilder gsonBuilder;
+
     @Value("${cda.oauth.url}")
     private String tokenURL;
     @Value("${cda.oauth.clientId}")
@@ -25,36 +29,41 @@ public class CourtDataApiClient {
     @Value("${cda.laastatus.url}")
     private String laaUpdateUrl;
 
+    @Autowired
+    private RequestInterceptor oauth2FeignRequestInterceptor;
+
+    private static Throwable handleAuthTokenError(Throwable e) {
+        log.error("Exception caught trying to process authentication token. ", e);
+        return null;
+    }
+
+    private static Throwable handleCDAError(Throwable e) {
+        log.error("Exception caught trying to post CDA. ", e);
+        return null;
+    }
+
     public void invoke(LaaStatusUpdate laaStatusUpdate) {
 
         log.info("Get oauth token");
         log.info("JSON=" + gsonBuilder.create().toJson(laaStatusUpdate));
 
-        CourtDataApiService client =
-                WebReactiveFeign
-                        .<CourtDataApiService>builder()
-                        .target(CourtDataApiService.class, tokenURL);
 
-        Mono<Token> oAuthToken = client.getOAuthToken(oauthClientId, oauthSecret)
-                .onErrorMap(CourtDataApiClient::handleAuthTokenError);
+        CourtDataAdaptorClient cdaClient = Feign.builder()
+                .client(new OkHttpClient())
+                .encoder(new GsonEncoder())
+                .decoder(new GsonDecoder())
+                .requestInterceptor(oauth2FeignRequestInterceptor)
+                //       .logger(new Slf4jLogger(CourtDataAdaptorClient.class))
+                .logLevel(Logger.Level.FULL)
+                .target(CourtDataAdaptorClient.class, tokenURL);
 
 
-        Token token = oAuthToken.block();
+        //    ResponseEntity<Token> oAuthToken = cdaClient.getOAuthToken(oauthClientId, oauthSecret);
 
-        Mono<Void>  laaStatus = client.postLaaStatusUpdate(laaStatusUpdate)
-                .onErrorMap(CourtDataApiClient::handleCDAError);
+        cdaClient.postLaaStatusUpdate(laaStatusUpdate);
 
-        laaStatus.block();
+
+//        laaStatus.block();
         log.info("After update to LAA status update");
-    }
-
-    private static Throwable handleAuthTokenError(Throwable e) {
-        log.error("Exception caught trying to process authentication token. ",e);
-        return null;
-    }
-
-    private static Throwable handleCDAError(Throwable e) {
-        log.error("Exception caught trying to post CDA. ",e);
-        return null;
     }
 }

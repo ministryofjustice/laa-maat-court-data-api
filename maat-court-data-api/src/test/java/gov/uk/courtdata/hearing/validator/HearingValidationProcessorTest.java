@@ -1,13 +1,9 @@
 package gov.uk.courtdata.hearing.validator;
 
-import gov.uk.courtdata.entity.DefendantMAATDataEntity;
-import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.validator.DefendantValidator;
+import gov.uk.courtdata.model.hearing.HearingDetails;
 import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
-import gov.uk.courtdata.validator.SolicitorValidator;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,11 +25,6 @@ public class HearingValidationProcessorTest {
     private MaatIdValidator maatIdValidator;
     @Mock
     private LinkRegisterValidator linkRegisterValidator;
-
-    @Mock
-    private DefendantValidator defendantValidator;
-    @Mock
-    private SolicitorValidator solicitorValidator;
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -58,7 +49,7 @@ public class HearingValidationProcessorTest {
                 .thenThrow(
                         new ValidationException("MAAT id is missing."));
 
-        hearingValidationProcessor.validate(CaseDetails.builder().maatId(testMaatId).build());
+        hearingValidationProcessor.validate(HearingDetails.builder().maatId(testMaatId).build());
 
     }
 
@@ -67,20 +58,13 @@ public class HearingValidationProcessorTest {
 
         //given
         final int testMaatId = 1000;
-        final CaseDetails caseDetails = CaseDetails.builder().maatId(testMaatId).build();
+        final HearingDetails hearingDetails = HearingDetails.builder().maatId(testMaatId).build();
 
         // when
         when(maatIdValidator.validate(testMaatId))
                 .thenReturn(Optional.empty());
 
-        when(defendantValidator.validate(testMaatId))
-                .thenReturn(
-                        Optional.of(DefendantMAATDataEntity.builder().maatId(testMaatId).build()));
-
-        when(solicitorValidator.validate(caseDetails))
-                .thenReturn(
-                        Optional.of(SolicitorMAATDataEntity.builder().maatId(testMaatId).build()));
-        hearingValidationProcessor.validate(caseDetails);
+        hearingValidationProcessor.validate(hearingDetails);
 
         //then
         verify(maatIdValidator, times(1)).validate(testMaatId);

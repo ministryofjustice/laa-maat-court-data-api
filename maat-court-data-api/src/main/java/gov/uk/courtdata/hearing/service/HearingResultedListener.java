@@ -1,7 +1,3 @@
-
-
-
-
 package gov.uk.courtdata.hearing.service;
 
 import com.google.gson.Gson;

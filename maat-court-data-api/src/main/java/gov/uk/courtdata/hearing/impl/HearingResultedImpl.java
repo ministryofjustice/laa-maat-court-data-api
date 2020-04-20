@@ -1,14 +1,23 @@
 package gov.uk.courtdata.hearing.impl;
 
-import gov.uk.courtdata.dto.CourtDataDTO;
+import gov.uk.courtdata.hearing.crowncourt.CrownCourtProcessingImpl;
+import gov.uk.courtdata.model.hearing.HearingDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import static gov.uk.courtdata.constants.CourtDataConstants.CROWN_COURT;
 
 @Component
 @RequiredArgsConstructor
 public class HearingResultedImpl {
 
-    public void execute(CourtDataDTO courtDataDTO){
-        //TODO
+    private final CrownCourtProcessingImpl crownCourtProcessingImpl;
+
+    public void execute(HearingDetails hearingDetails) {
+
+
+        if (CROWN_COURT.equalsIgnoreCase(hearingDetails.getJurisdictionType())) {
+            crownCourtProcessingImpl.execute(hearingDetails);
+        }
     }
 }

@@ -2,7 +2,6 @@ package gov.uk.courtdata.validator;
 
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,7 +43,7 @@ public class SolicitorValidatorTest {
         thrown.expect(ValidationException.class);
         thrown.expectMessage(format("Solicitor not found for maatId %s", testMaatId));
         when(solicitorMAATDataRepository.findBymaatId(testMaatId)).thenReturn(Optional.empty());
-        solicitorValidator.validate(CaseDetails.builder().maatId(testMaatId).build());
+        solicitorValidator.validate(testMaatId);
 
 
     }
@@ -57,7 +56,7 @@ public class SolicitorValidatorTest {
         thrown.expectMessage(format("Solicitor account code not available for maatId %s.", testMaatId));
         when(solicitorMAATDataRepository.findBymaatId(testMaatId))
                 .thenReturn(Optional.of(SolicitorMAATDataEntity.builder().maatId(testMaatId).accountCode("  ").build()));
-        solicitorValidator.validate(CaseDetails.builder().maatId(testMaatId).build());
+        solicitorValidator.validate(testMaatId);
 
 
     }
@@ -67,6 +66,6 @@ public class SolicitorValidatorTest {
         final int testMaatId = 1000;
         when(solicitorMAATDataRepository.findBymaatId(testMaatId))
                 .thenReturn(Optional.of(SolicitorMAATDataEntity.builder().maatId(testMaatId).accountCode("SOC1212").build()));
-        solicitorValidator.validate(CaseDetails.builder().maatId(testMaatId).build());
+        solicitorValidator.validate(testMaatId);
     }
 }

@@ -17,7 +17,7 @@ public class HearingResultedListener {
     private final Gson gson;
     private final HearingResultedService hearingResultedService;
 
-    @JmsListener(destination = "${aws.sqs.queue.unlink}")
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.unlink}")
     public void receive(@Payload final String message) throws JmsException {
 
         log.info("Received JSON Message for Hearing Resulted {}", message);

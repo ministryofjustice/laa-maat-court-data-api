@@ -25,7 +25,7 @@ public class LaaStatusValidationProcessor {
         Integer maatId = caseDetails.getMaatId();
         maatIdValidator.validate(maatId);
         linkRegisterValidator.validate(maatId);
-        solicitorValidator.validate(caseDetails);
+        solicitorValidator.validate(maatId);
         defendantValidator.validate(maatId);
 
         return laaStatusValidator.validate(caseDetails);

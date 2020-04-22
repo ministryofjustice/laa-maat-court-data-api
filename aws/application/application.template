@@ -494,9 +494,12 @@ Resources:
         - !Ref pSev5SnsTopicArn
       OKActions:
         - !Ref pSev5SnsTopicArn
+      Unit: Percent
       Dimensions:
         - Name: ClusterName
           Value: !Ref AppEcsCluster
+        - Name: ServiceName
+          Value: !GetAtt EcsService.Name
       ComparisonOperator: GreaterThanThreshold
 
   EcsMemoryOverThreshold:
@@ -520,9 +523,12 @@ Resources:
         - !Ref pSev5SnsTopicArn
       OKActions:
         - !Ref pSev5SnsTopicArn
+      Unit: Percent
       Dimensions:
         - Name: ClusterName
           Value: !Ref AppEcsCluster
+        - Name: ServiceName
+          Value: !GetAtt EcsService.Name
       ComparisonOperator: GreaterThanThreshold
 
 # Application Load Balancer Alerting

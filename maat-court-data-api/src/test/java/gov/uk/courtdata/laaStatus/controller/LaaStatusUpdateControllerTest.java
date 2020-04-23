@@ -1,3 +1,4 @@
+/*
 package gov.uk.courtdata.laaStatus.controller;
 
 import com.google.gson.Gson;
@@ -77,3 +78,4 @@ public class LaaStatusUpdateControllerTest {
 
     }
 }
+*/

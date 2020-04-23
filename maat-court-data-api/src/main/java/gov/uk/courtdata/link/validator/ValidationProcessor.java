@@ -41,16 +41,17 @@ public class ValidationProcessor {
     public CourtDataDTO validate(CaseDetails caseDetails) {
 
 
-        maatIdValidator.validate(caseDetails.getMaatId());
+        final Integer maatId = caseDetails.getMaatId();
+        maatIdValidator.validate(maatId);
         cpDataValidator.validate(caseDetails);
-        linkExistsValidator.validate(caseDetails.getMaatId());
+        linkExistsValidator.validate(maatId);
         courtValidator.validate(caseDetails);
         referenceDataValidator.validate(caseDetails);
 
         final Optional<SolicitorMAATDataEntity> solicitorMAATDataEntity
-                = solicitorValidator.validate(caseDetails);
+                = solicitorValidator.validate(maatId);
         final Optional<DefendantMAATDataEntity> defendantMAATDataEntity
-                = defendantValidator.validate(caseDetails.getMaatId());
+                = defendantValidator.validate(maatId);
 
 
         return CourtDataDTO.builder().caseDetails(caseDetails)

@@ -440,7 +440,7 @@ Resources:
               Value: !Ref pUnlinkQueue
             - Name: LAA_STATUS_UPDATE_QUEUE
               Value: !Ref pLaaStatusUpdateQueue
-            - Name: HEARINGS_UPDATE_QUEUE
+            - Name: HEARING_RESULTED_QUEUE
               Value: !Ref pHearingsUpdateQueue
             - Name: CDA_OAUTH_URL
               Value: !Ref pCdaOauthUrl

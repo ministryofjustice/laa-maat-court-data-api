@@ -104,7 +104,7 @@ Now you can test the applications by firing Messages on AWS Queue.
 
 More detail can be found on https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/edit-v2/1756201359.
 
-The terraform scripts for the SQS can be found on https://github.com/ministryofjustice/cloud-platform-environments/tree/master/namespaces/live-1.cloud-platform.service.justice.gov.uk/laa-court-data-adaptor-*
+The terraform scripts for the SQS can be found on https://github.com/ministryofjustice/cloud-platform-environments/tree/master/namespaces/live-1.cloud-platform.service.justice.gov.uk/laa-court-data-adaptor-dev
 
 
 ### Deployment 
@@ -116,6 +116,9 @@ We practice CI/CD approach and this is being done using AWS Code Pipeline Servic
 laa-maat-court-data-api  is being deployed on AWS Environment (Legacy Account) & the infrastructure and pipelines are created using AWS Cloud Formation.
 
 Cloud formation scripts can be found at laa-maat-court-data-api /aws
+
+Database releases are managed by Liquid Base DB migration tool and the Scripts can be found on the following location.
+https://github.com/ministryofjustice/laa-maat-court-data-api/tree/master/maat-court-data-api/src/main/resources/db/changelog
 
 ### Debugging Application
 

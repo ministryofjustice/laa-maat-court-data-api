@@ -17,12 +17,13 @@ public class HearingResultedListener {
     private final Gson gson;
     private final HearingResultedService hearingResultedService;
 
-    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.unlink}")
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.hearingResulted}")
     public void receive(@Payload final String message) throws JmsException {
 
         log.info("Received JSON Message for Hearing Resulted {}", message);
         HearingDetails laaHearingDetails = gson.fromJson(message, HearingDetails.class);
         hearingResultedService.process(laaHearingDetails);
+        log.info("Crown Court Hearing Processing has been completed for MAAT ID:  {}", laaHearingDetails.getMaatId());
     }
 }
 

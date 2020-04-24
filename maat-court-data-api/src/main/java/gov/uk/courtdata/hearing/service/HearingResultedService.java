@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 public class HearingResultedService {
 
     private final HearingValidationProcessor hearingValidationProcessor;
-    private  final HearingResultedImpl hearingResultedImpl;
+    private final HearingResultedImpl hearingResultedImpl;
 
     public void process(final HearingDetails hearingDetails) {
 
-  hearingValidationProcessor.validate(hearingDetails);
-
+        hearingValidationProcessor.validate(hearingDetails);
+        log.info("Validation Completed successfully for MAAT ID: {}", hearingDetails.getMaatId());
         hearingResultedImpl.execute(hearingDetails);
     }
 }

@@ -1,0 +1,18 @@
+databaseChangeLog:
+
+  - includeAll:
+      path: db/changelog/changes/
+
+  # Detect invalid objects. Oracle will allow objects to be created but mark them as created.
+  # We want the migrations to show an error in this case so we can fix it as soon as possible.
+  - changeSet:
+      id: compileInvalidObjects
+      author: mla
+      runAlways: true
+      runOnChange: true
+      preConditions:
+        - onFail: HALT
+        - onFailMessage: "Invalid objects exist in the schema: select * from all_objects where status='invalid'"
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT count(*) FROM all_objects WHERE status = 'INVALID'"

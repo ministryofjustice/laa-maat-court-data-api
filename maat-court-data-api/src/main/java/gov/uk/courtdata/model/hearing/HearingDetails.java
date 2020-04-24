@@ -15,7 +15,6 @@ public class HearingDetails   {
     private int maatId;
     private String caseUrn;
     private String ccooOutcome;
-    private String ccooOutcomeDate;
     private String crownCourtCode;
     private String jurisdictionType;
     private String benchWarrantIssuedYn;

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.hearing.impl;
 
-import gov.uk.courtdata.dto.CourtDataDTO;
+import gov.uk.courtdata.hearing.magistrate.service.MagistrateCourtService;
+import gov.uk.courtdata.hearing.model.HearingResulted;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +9,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class HearingResultedImpl {
 
-    public void execute(CourtDataDTO courtDataDTO){
-        //TODO
+    private final MagistrateCourtService magistrateCourtService;
+
+    public void execute(final HearingResulted hearingResulted){
+        magistrateCourtService.execute(hearingResulted);
+
     }
+
+
+
 }

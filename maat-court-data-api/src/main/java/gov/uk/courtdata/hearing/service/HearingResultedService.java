@@ -18,8 +18,17 @@ public class HearingResultedService {
 
     public void process(final CaseDetails caseDetails) {
 
-        CourtDataDTO courtDataDTO = hearingValidationProcessor.validate(caseDetails);
+     //   CourtDataDTO courtDataDTO = hearingValidationProcessor.validate(caseDetails);
 
-        hearingResultedImpl.execute(courtDataDTO);
+     //   hearingResultedImpl.execute(courtDataDTO);
+
+
+
     }
+
+
+    /**
+     *   Steps
+     *     1 -
+     */
 }

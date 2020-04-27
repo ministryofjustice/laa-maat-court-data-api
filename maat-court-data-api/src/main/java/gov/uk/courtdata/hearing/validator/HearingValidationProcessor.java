@@ -22,6 +22,7 @@ public class HearingValidationProcessor {
     private final DefendantValidator defendantValidator;
     private final SolicitorValidator solicitorValidator;
 
+    //TODO: Refactor to remove duplicate solicitor and defendant details.
     public CourtDataDTO validate(CaseDetails caseDetails) {
 
         Integer maatId = caseDetails.getMaatId();

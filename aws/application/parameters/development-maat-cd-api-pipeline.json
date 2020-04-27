@@ -12,7 +12,7 @@
     "pCreateLinkQueue" : "crime-apps-dev-create-link-queue-m",
     "pUnlinkQueue" : "crime-apps-dev-unlink-queue-m",
     "pLaaStatusUpdateQueue" : "crime-apps-dev-laa-status-update-queue",
-    "pHearingsUpdateQueue" : "crime-apps-dev-hearing-resulted-queue",
+    "pHearingsResultedQueue" : "crime-apps-dev-hearing-resulted-queue",
     "pCdaOauthUrl" : "https://laa-court-data-adaptor-dev.apps.live-1.cloud-platform.service.justice.gov.uk",
     "pCdaLaaStatusUrl" : "https://laa-court-data-adaptor-dev.apps.live-1.cloud-platform.service.justice.gov.uk"
   },

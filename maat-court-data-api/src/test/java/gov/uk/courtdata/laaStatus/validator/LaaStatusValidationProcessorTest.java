@@ -53,7 +53,7 @@ public class LaaStatusValidationProcessorTest {
         verify(maatIdValidator, times(1)).validate(testMaatId);
         verify(linkRegisterValidator, times(1)).validate(testMaatId);
         verify(defendantValidator, times(1)).validate(testMaatId);
-        verify(solicitorValidator, times(1)).validate(caseDetails);
+        verify(solicitorValidator, times(1)).validate(testMaatId);
         verify(laaStatusValidator, times(1)).validate(caseDetails);
 
     }

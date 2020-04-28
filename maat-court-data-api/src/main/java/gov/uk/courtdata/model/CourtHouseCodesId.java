@@ -1,4 +1,4 @@
-package gov.uk.courtdata.entity;
+package gov.uk.courtdata.model;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

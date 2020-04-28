@@ -9,6 +9,7 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.Oracle10gDialect
+    open-in-view: false
     show-sql: false
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true

@@ -25,4 +25,5 @@ public interface CourtDataConstants {
 
     List<String> GRANTED_LAA_STATUS = Arrays.asList("GR", "G2", "GQ");
     List<String> FAILED_LAA_STATUS = Arrays.asList("FJ", "FB");
+    String CROWN_COURT = "CROWN";
 }

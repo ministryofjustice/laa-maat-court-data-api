@@ -1,10 +1,8 @@
 package gov.uk.courtdata.hearing.service;
 
-import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
-import gov.uk.courtdata.model.CaseDetails;
-import org.junit.Ignore;
+import gov.uk.courtdata.model.hearing.HearingDetails;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -13,10 +11,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-@Ignore
 public class HearingResultedServiceTest {
 
     @InjectMocks
@@ -38,15 +36,11 @@ public class HearingResultedServiceTest {
     public void givenACaseDetail_whenHearingServiceIsInvoked_thenMessageIsPublished() {
 
         //given
-        CaseDetails caseDetails = CaseDetails.builder().build();
-        CourtDataDTO courtDataDTO = CourtDataDTO.builder().build();
-
+        HearingDetails hearingDetails = HearingDetails.builder().build();
         //when
-        when(hearingValidationProcessor.validate(caseDetails)).thenReturn(courtDataDTO);
-        hearingResultedService.process(caseDetails);
-
+        hearingResultedService.process(hearingDetails);
         //then
-    //    verify(hearingResultedImpl, times(1)).execute(courtDataDTO);
+        verify(hearingResultedImpl, times(1)).execute(hearingDetails);
 
     }
 }

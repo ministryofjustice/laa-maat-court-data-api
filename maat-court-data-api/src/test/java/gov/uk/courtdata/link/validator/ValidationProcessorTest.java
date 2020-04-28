@@ -84,7 +84,7 @@ public class ValidationProcessorTest {
                 .thenReturn(
                         Optional.of(DefendantMAATDataEntity.builder().maatId(testMaatId).build()));
 
-        when(solicitorValidator.validate(caseDetails))
+        when(solicitorValidator.validate(testMaatId))
                 .thenReturn(
                         Optional.of(SolicitorMAATDataEntity.builder().maatId(testMaatId).build()));
         when(courtValidator.validate(caseDetails))
@@ -103,7 +103,7 @@ public class ValidationProcessorTest {
         verify(maatIdValidator, times(1)).validate(testMaatId);
         verify(linkExistsValidator, times(1)).validate(testMaatId);
         verify(defendantValidator, times(1)).validate(testMaatId);
-        verify(solicitorValidator, times(1)).validate(caseDetails);
+        verify(solicitorValidator, times(1)).validate(testMaatId);
         verify(courtValidator, times(1)).validate(caseDetails);
         verify(referenceDataValidator, times(1)).validate(caseDetails);
         verify(CPDataValidator, times(1)).validate(caseDetails);

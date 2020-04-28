@@ -28,6 +28,7 @@ cloud-platform:
         link: ${CREATE_LINK_QUEUE}
         unlink: ${UNLINK_QUEUE}
         laaStatus: ${LAA_STATUS_UPDATE_QUEUE}
+        hearingResulted: ${HEARING_RESULTED_QUEUE}
 
 cda:
   oauth:

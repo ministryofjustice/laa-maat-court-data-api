@@ -319,10 +319,10 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: LoadBalancer
     Properties:
-      HealthCheckIntervalSeconds: 20
+      HealthCheckIntervalSeconds: 25
       HealthCheckPath: /actuator/info
       HealthCheckProtocol: HTTP
-      HealthCheckTimeoutSeconds: 10
+      HealthCheckTimeoutSeconds: 15
       HealthyThresholdCount: 2
       TargetType: ip
       Name: !Sub '${pAppName}-TargetGroup'

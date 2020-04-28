@@ -319,10 +319,10 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: LoadBalancer
     Properties:
-      HealthCheckIntervalSeconds: 20
+      HealthCheckIntervalSeconds: 15
       HealthCheckPath: /actuator/info
       HealthCheckProtocol: HTTP
-      HealthCheckTimeoutSeconds: 10
+      HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
       TargetType: ip
       Name: !Sub '${pAppName}-TargetGroup'
@@ -396,18 +396,18 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: !Join [ '', [ !Ref pAppName, '-app' ] ]
-      Cpu: !If [ cNonProd, 512, 512 ]
-      Memory: !If [ cNonProd, 1024, 2048 ]
+      Cpu: !If [ cNonProd, 1024, 1024 ]
+      Memory: !If [ cNonProd, 2048, 2048 ]
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - !Ref pLaunchType
       ExecutionRoleArn: !Ref ECSTaskExecutionRole
       ContainerDefinitions:
         - Name: !Ref pAppName
-          Cpu: !If [ cNonProd, 512, 512 ]
+          Cpu: !If [ cNonProd, 1024, 1024 ]
           Essential: true
           Image: !Join [':', [!Ref pECSRepositoryURL, !Ref pDockerImageTag ]]
-          Memory: !If [ cNonProd, 1024, 2048 ]
+          Memory: !If [ cNonProd, 2048, 2048 ]
           LogConfiguration:
             LogDriver: awslogs
             Options:

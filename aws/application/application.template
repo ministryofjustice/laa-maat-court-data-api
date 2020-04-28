@@ -49,7 +49,7 @@ Parameters:
   pLaaStatusUpdateQueue:
     Type: String
     Default: ''
-  pHearingsUpdateQueue:
+  pHearingsResultedQueue:
     Type: String
     Default: ''
   pCdaOauthUrl:
@@ -319,10 +319,10 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: LoadBalancer
     Properties:
-      HealthCheckIntervalSeconds: 15
+      HealthCheckIntervalSeconds: 20
       HealthCheckPath: /actuator/info
       HealthCheckProtocol: HTTP
-      HealthCheckTimeoutSeconds: 5
+      HealthCheckTimeoutSeconds: 10
       HealthyThresholdCount: 2
       TargetType: ip
       Name: !Sub '${pAppName}-TargetGroup'
@@ -441,7 +441,7 @@ Resources:
             - Name: LAA_STATUS_UPDATE_QUEUE
               Value: !Ref pLaaStatusUpdateQueue
             - Name: HEARING_RESULTED_QUEUE
-              Value: !Ref pHearingsUpdateQueue
+              Value: !Ref pHearingsResultedQueue
             - Name: CDA_OAUTH_URL
               Value: !Ref pCdaOauthUrl
             - Name: CDA_LAA_STATUS_URL

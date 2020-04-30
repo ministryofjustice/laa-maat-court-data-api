@@ -391,7 +391,9 @@ Resources:
               Action:
                 # Allow ECS to access specific secrets from Parameter Store
                 - 'ssm:GetParameters'
-              Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/*'
+              Resource:
+                - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/*'
+                - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/APP_MAATDB_DBPASSWORD_MLA1'
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -420,7 +422,7 @@ Resources:
             - Name: DATASOURCE_USERNAME
               ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/DATASOURCE_USERNAME'
             - Name: DATASOURCE_PASSWORD
-              ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/DATASOURCE_PASSWORD'
+              ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/APP_MAATDB_DBPASSWORD_MLA1'
             - Name: CLOUD_PLATFORM_QUEUE_ACCESS_KEY
               ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/CLOUD_PLATFORM_QUEUE_ACCESS_KEY'
             - Name: CLOUD_PLATFORM_QUEUE_SECRET_KEY
@@ -493,7 +495,7 @@ Resources:
   # Monitoring
   #
   ##############################################################################
-# ECS cluster alerting
+  # ECS cluster alerting
   EcsCPUoverThreshold:
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
@@ -552,7 +554,7 @@ Resources:
           Value: !GetAtt EcsService.Name
       ComparisonOperator: GreaterThanThreshold
 
-# Application Load Balancer Alerting
+  # Application Load Balancer Alerting
   TargetResponseTime:
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
@@ -755,7 +757,7 @@ Resources:
           Value: !GetAtt LoadBalancer.LoadBalancerFullName
       ComparisonOperator: GreaterThanThreshold
 
-# Dashboard creation and configuration
+  # Dashboard creation and configuration
   CCMSPDADashboard:
     DependsOn: [ApplicationELB4xxError, TargetResponseTime, http4xxError, ApplicationELB5xxError, http5xxError, RejectedConnectionCount, UnHealthyHosts, EcsMemoryOverThreshold, EcsCPUoverThreshold]
     Type: AWS::CloudWatch::Dashboard

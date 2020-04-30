@@ -6,7 +6,15 @@
     "pDockerImageTag" : "",
     "pAppCertificateArn" : "arn:aws:acm:eu-west-2:484221692666:certificate/152f7407-fdbd-4ce7-b63e-1b9f2c6a5c89",
     "pSev5SnsTopicArn" : "arn:aws:sns:eu-west-2:902837325998:sns-topic-devel-severity_5",
-    "pMlraAppSecurityGroupId": "sg-9fc086f4"
+    "pMlraAppSecurityGroupId": "sg-9fc086f4",
+    "pDatasourceUrl" : "jdbc:oracle:thin:@rds.maat.aws.stg.legalservices.gov.uk:1521:MAATDB",
+    "pCloudPlatformQueueRegion" : "eu-west-2",
+    "pCreateLinkQueue" : "crime-apps-staging-create-link-queue-m",
+    "pUnlinkQueue" : "crime-apps-staging-unlink-queue-m",
+    "pLaaStatusUpdateQueue" : "crime-apps-staging-laa-status-update-queue",
+    "pHearingsResultedQueue" : "crime-apps-staging-hearing-resulted-queue",
+    "pCdaOauthUrl" : "https://laa-court-data-adaptor-stage.apps.live-1.cloud-platform.service.justice.gov.uk",
+    "pCdaLaaStatusUrl" : "https://laa-court-data-adaptor-stage.apps.live-1.cloud-platform.service.justice.gov.uk"
   },
   "Tags" : {
     "business-unit" : "LAA",

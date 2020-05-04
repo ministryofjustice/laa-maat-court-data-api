@@ -2,8 +2,6 @@ package gov.uk.courtdata.laaStatus.controller;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.exception.MaatCourtDataException;
-import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
-import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.laaStatus.service.LaaStatusPublisher;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;

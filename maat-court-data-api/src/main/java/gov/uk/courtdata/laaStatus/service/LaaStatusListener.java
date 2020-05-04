@@ -29,7 +29,7 @@ public class LaaStatusListener {
      * @param message
      * @throws JmsException
      */
-//    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.laaStatus}")
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.laaStatus}")
     public void receive(@Payload final String message) throws JmsException {
 
         try {

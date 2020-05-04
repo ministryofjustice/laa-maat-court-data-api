@@ -1,15 +1,18 @@
-package gov.uk.courtdata.hearing.magistrate.dto;
+package gov.uk.courtdata.model.hearing;
 
+import gov.uk.courtdata.model.hearing.Offence;
 import lombok.*;
+
+import java.util.List;
 
 @ToString
 @Data
 @Builder
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class DefendantDTO {
+@NoArgsConstructor
+public class Defendant {
 
     private String forename;
     private String surname;
@@ -26,4 +29,5 @@ public class DefendantDTO {
     private String telephoneMobile;
     private String email1;
     private String email2;
+    private List<Offence> offences;
 }

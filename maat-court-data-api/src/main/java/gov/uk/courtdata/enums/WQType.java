@@ -5,7 +5,8 @@ package gov.uk.courtdata.enums;
  */
 public enum WQType {
 
-    PRE_STEERING(17);
+    PRE_STEERING(17),
+    USER_INTERVENTIONS_QUEUE(8);
 
     private int value;
 

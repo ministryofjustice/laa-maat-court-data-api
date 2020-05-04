@@ -33,7 +33,7 @@ public class MagistrateCourtImpl {
     @Transactional(rollbackFor = MaatCourtDataException.class)
     public void execute(final MagistrateCourtDTO magistrateCourtDTO) {
 
-        log.info("create wqcase");
+        log.info("create wq case");
         wqCaseProcessor.process(magistrateCourtDTO);
         log.info("create wq session");
         wqSessionProcessor.process(magistrateCourtDTO);
@@ -45,6 +45,6 @@ public class MagistrateCourtImpl {
         wqResultProcessor.process(magistrateCourtDTO);
         log.info("create wq core ");
         wqCoreProcessor.process(magistrateCourtDTO);
-        log.info("completed");
+        log.info("WQ tables created.");
     }
 }

@@ -7,12 +7,19 @@ import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 @Component
 @RequiredArgsConstructor
 public class WQSessionProcessor {
 
     private final WQSessionRepository wqSessionRepository;
 
+    /**
+     * @param magsCourtDTO
+     */
     public void process(MagistrateCourtDTO magsCourtDTO) {
 
         WQSession wqSession = WQSession.builder()
@@ -21,11 +28,22 @@ public class WQSessionProcessor {
                 .dateOfHearing(DateUtil.toDate(magsCourtDTO.getSession().getDateOfHearing()))
                 .courtLocation(magsCourtDTO.getSession().getCourtLocation())
                 .postHearingCustody(magsCourtDTO.getSession().getPostHearingCustody())
-                .sessionvalidatedate(DateUtil.toDate(magsCourtDTO.getSession().getSessionvalidateddate()))
+                .sessionvalidatedate(getSessionDate(magsCourtDTO.getSession().getSessionValidatedDate()))
                 .build();
 
         wqSessionRepository.save(wqSession);
 
+    }
+
+    /**
+     * If the session date is in request format to standard  else return system date.
+     *
+     * @param sessionDate the given date
+     * @return
+     */
+    private LocalDate getSessionDate(final String sessionDate) {
+        return
+                isNotEmpty(sessionDate) ? DateUtil.toDate(sessionDate) : LocalDate.now();
     }
 
 }

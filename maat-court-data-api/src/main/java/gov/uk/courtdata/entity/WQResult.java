@@ -27,7 +27,7 @@ public class WQResult {
     @Column(name = "ASN_SEQ")
     private String asnSeq;
     @Column(name = "RESULT_CODE")
-    private String resultCode;
+    private Integer resultCode;
     @Column(name = "RESULT_SHORT_TITLE")
     private String resultShortTitle;
     @Column(name = "RESULT_TEXT")

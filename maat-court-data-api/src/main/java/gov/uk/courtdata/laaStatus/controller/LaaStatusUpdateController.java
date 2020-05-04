@@ -3,7 +3,7 @@ package gov.uk.courtdata.laaStatus.controller;
 import com.google.gson.Gson;
 import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
-import gov.uk.courtdata.hearing.model.HearingResulted;
+import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.laaStatus.service.LaaStatusPublisher;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
@@ -24,7 +24,6 @@ public class LaaStatusUpdateController {
     private final LaaStatusValidationProcessor laaStatusValidationProcessor;
     private final Gson gson;
     private final LaaStatusPublisher laaStatusPublisher;
-    private final HearingResultedImpl hearingResulted;
 
     @PostMapping("/laaStatus")
     public MessageCollection updateLAAStatus(@RequestBody String jsonPayload) {
@@ -47,11 +46,5 @@ public class LaaStatusUpdateController {
             throw new MaatCourtDataException("MAAT APT Call failed" + exception.getMessage());
         }
         return messageCollection;
-    }
-
-    @PostMapping("/mags")
-    public String unLink(@RequestBody String jsonPayload) {
-        hearingResulted.execute(gson.fromJson(jsonPayload, HearingResulted.class));
-        return "Mags created.";
     }
 }

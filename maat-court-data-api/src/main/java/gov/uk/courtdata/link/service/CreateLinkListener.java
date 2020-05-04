@@ -28,7 +28,7 @@ public class CreateLinkListener {
      * @param message
      * @throws JmsException
      */
-//    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.link}")
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.link}")
     public void receive(@Payload final String message) throws JmsException {
 
         try {

@@ -1,5 +1,4 @@
-package gov.uk.courtdata.hearing.magistrate.dto;
-
+package gov.uk.courtdata.model.hearing;
 
 import lombok.*;
 
@@ -10,11 +9,11 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SessionDTO {
+public class Session {
 
     private String courtLocation;
     private String dateOfHearing;
     private String postHearingCustody;
-    private String sessionValidatedDate;
+    private String sessionValidateDate;
 
 }

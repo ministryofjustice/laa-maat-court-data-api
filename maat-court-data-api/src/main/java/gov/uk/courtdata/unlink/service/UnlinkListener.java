@@ -25,7 +25,7 @@ public class UnlinkListener {
     /**
      *
      */
-//    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.unlink}")
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.unlink}")
     public void receive(@Payload final String message) throws JmsException {
 
         try {

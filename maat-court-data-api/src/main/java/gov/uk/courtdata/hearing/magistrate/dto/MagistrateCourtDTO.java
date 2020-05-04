@@ -20,12 +20,10 @@ public class MagistrateCourtDTO {
     private String docLanguage;
     private String caseCreationDate;
     private String cjsAreaCode;
-    private String cjsLocation;
-    private String createdUser;
+    private String inActive;
     private DefendantDTO defendant;
     private OffenceDTO offence;
     private ResultDTO result;
     private SessionDTO session;
-    private String isActive;
 
 }

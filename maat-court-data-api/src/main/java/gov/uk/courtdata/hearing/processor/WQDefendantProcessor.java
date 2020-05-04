@@ -23,7 +23,6 @@ public class WQDefendantProcessor {
                 .txId(magsCourtDTO.getTxId())
                 .forename(defendantDTO.getForename())
                 .surname(defendantDTO.getSurname())
-                .organisation(defendantDTO.getOrganization())
                 .dateOfBirth(DateUtil.toDate(defendantDTO.getDateOfBirth()))
                 .address_line1(defendantDTO.getAddress_line1())
                 .address_line2(defendantDTO.getAddress_line2())

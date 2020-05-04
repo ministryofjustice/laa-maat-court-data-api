@@ -42,7 +42,6 @@ public class CreateLinkService {
             throw new MaatCourtDataException(ex.getMessage());
         }
 
-
     }
 
 }

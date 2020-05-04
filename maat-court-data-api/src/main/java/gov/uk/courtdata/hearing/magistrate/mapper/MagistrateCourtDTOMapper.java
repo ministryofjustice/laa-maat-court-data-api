@@ -1,11 +1,11 @@
 package gov.uk.courtdata.hearing.magistrate.mapper;
 
 import gov.uk.courtdata.hearing.magistrate.dto.*;
-import gov.uk.courtdata.hearing.model.HearingResulted;
-import gov.uk.courtdata.model.Defendant;
-import gov.uk.courtdata.model.Offence;
-import gov.uk.courtdata.model.Result;
-import gov.uk.courtdata.model.Session;
+import gov.uk.courtdata.model.hearing.HearingResulted;
+import gov.uk.courtdata.model.hearing.Defendant;
+import gov.uk.courtdata.model.hearing.Offence;
+import gov.uk.courtdata.model.hearing.Result;
+import gov.uk.courtdata.model.hearing.Session;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -15,6 +15,7 @@ import org.mapstruct.ReportingPolicy;
  */
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface MagistrateCourtDTOMapper {
+
     /***
      *  Map from hearing resulted to mags court dto
      * @param hearingResulted

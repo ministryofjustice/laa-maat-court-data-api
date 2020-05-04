@@ -1,9 +1,7 @@
-/*
-
 package gov.uk.courtdata.hearing.service;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.model.hearing.HearingDetails;
+import gov.uk.courtdata.model.hearing.HearingResulted;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.JmsException;
@@ -17,15 +15,18 @@ import org.springframework.stereotype.Service;
 public class HearingResultedListener {
 
     private final Gson gson;
-    private final HearingResultedImpl hearingResultedImpl;
+
+    private final HearingResultedService hearingResultedService;
 
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.hearingResulted}")
     public void receive(@Payload final String message) throws JmsException {
 
         log.info("Received JSON Message for Hearing Resulted {}", message);
-        HearingDetails laaHearingDetails = gson.fromJson(message, HearingDetails.class);
+        HearingResulted laaHearingDetails = gson.fromJson(message, HearingResulted.class);
+        log.info("Start hearing resulted processing");
+        log.info(laaHearingDetails.toString());
         hearingResultedService.process(laaHearingDetails);
-        log.info("Crown Court Hearing Processing has been completed for MAAT ID:  {}", laaHearingDetails.getMaatId());
+        log.info("Hearing Processing has been completed for MAAT ID:  {}", laaHearingDetails.getMaatId());
     }
 }
 

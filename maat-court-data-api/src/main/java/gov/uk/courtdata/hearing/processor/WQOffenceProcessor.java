@@ -19,8 +19,6 @@ public class WQOffenceProcessor {
     public void process(final MagistrateCourtDTO magsCourtDTO) {
 
 
-        //TODO: xlat offence related
-
         WQOffence wqOffence = WQOffence.builder()
                 .caseId(magsCourtDTO.getCaseId())
                 .txId(magsCourtDTO.getTxId())

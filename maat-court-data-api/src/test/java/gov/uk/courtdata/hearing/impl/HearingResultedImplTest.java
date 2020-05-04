@@ -1,7 +1,8 @@
 package gov.uk.courtdata.hearing.impl;
 
+import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.hearing.crowncourt.CrownCourtProcessingImpl;
-import gov.uk.courtdata.model.hearing.HearingDetails;
+import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -31,7 +32,7 @@ public class HearingResultedImplTest {
     @Test
     public void givenACaseDetailForCrownCourt_whenHearingResultedImplIsInvoked_thenCrownCourtProcessingImplIsInvoked() {
         //given
-        HearingDetails laaHearingDetails = HearingDetails.builder().jurisdictionType("CROWN").build();
+        HearingResulted laaHearingDetails = HearingResulted.builder().jurisdictionType(JurisdictionType.CROWN).build();
         //when
         hearingResultedImpl.execute(laaHearingDetails);
         //then

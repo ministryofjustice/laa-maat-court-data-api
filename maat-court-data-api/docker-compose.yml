@@ -10,4 +10,3 @@ services:
     ports:
     - 8090:8090
     - 8091:8091
-    command: java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8091 -jar app.jar

@@ -2,6 +2,7 @@ package gov.uk.courtdata.laaStatus.validator;
 
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.validator.DefendantValidator;
+import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import gov.uk.courtdata.validator.SolicitorValidator;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class LaaStatusValidationProcessorTest {
         verify(maatIdValidator, times(1)).validate(testMaatId);
         verify(linkRegisterValidator, times(1)).validate(testMaatId);
         verify(defendantValidator, times(1)).validate(testMaatId);
-        verify(solicitorValidator, times(1)).validate(caseDetails);
+        verify(solicitorValidator, times(1)).validate(testMaatId);
         verify(laaStatusValidator, times(1)).validate(caseDetails);
 
     }

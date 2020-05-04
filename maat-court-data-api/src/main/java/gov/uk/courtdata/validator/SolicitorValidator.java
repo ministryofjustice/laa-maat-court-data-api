@@ -19,30 +19,30 @@ import static java.lang.String.format;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class SolicitorValidator implements IValidator<SolicitorMAATDataEntity, CaseDetails> {
+public class SolicitorValidator implements IValidator<SolicitorMAATDataEntity, Integer> {
 
     private final SolicitorMAATDataRepository solicitorMAATDataRepository;
 
     /**
-     * @param caseDetailsJson
+     * @param maatId
      * @return
      * @throws ValidationException
      */
     @Override
-    public Optional<SolicitorMAATDataEntity> validate(CaseDetails caseDetailsJson) throws ValidationException {
+    public Optional<SolicitorMAATDataEntity> validate(Integer maatId) throws ValidationException {
 
         // Get the solicitor details.
 
         Optional<SolicitorMAATDataEntity> solicitorViewEntity =
-                solicitorMAATDataRepository.findBymaatId(caseDetailsJson.getMaatId());
+                solicitorMAATDataRepository.findBymaatId(maatId);
 
         solicitorViewEntity.orElseThrow(
                 () -> new ValidationException(format("Solicitor not found for maatId %s",
-                        caseDetailsJson.getMaatId())));
+                        maatId)));
 
 
         Optional.ofNullable(solicitorViewEntity.get().getAccountCode()).filter(StringUtils::isNotBlank)
-                .orElseThrow(() -> new ValidationException(format("Solicitor account code not available for maatId %s.", caseDetailsJson.getMaatId())));
+                .orElseThrow(() -> new ValidationException(format("Solicitor account code not available for maatId %s.", maatId)));
 
         return solicitorViewEntity;
     }

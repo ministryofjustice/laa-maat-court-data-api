@@ -6,9 +6,12 @@ spring:
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: oracle.jdbc.OracleDriver
+  liquibase:
+    enabled: false
 
   jpa:
     database-platform: org.hibernate.dialect.Oracle10gDialect
+    open-in-view: false
     show-sql: false
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
@@ -23,6 +26,8 @@ cloud-platform:
         link: ${CREATE_LINK_QUEUE}
         unlink: ${UNLINK_QUEUE}
         laaStatus: ${LAA_STATUS_UPDATE_QUEUE}
+        hearingResulted: ${HEARING_RESULTED_QUEUE}
+
 
 cda:
   oauth:

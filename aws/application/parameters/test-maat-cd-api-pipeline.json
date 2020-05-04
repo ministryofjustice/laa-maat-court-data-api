@@ -1,0 +1,30 @@
+{
+  "Parameters" : {
+    "pAppName" : "maat-cd-api",
+    "pEnvironment" : "test",
+    "pECSRepositoryURL" : "902837325998.dkr.ecr.eu-west-2.amazonaws.com/maat-cd-api",
+    "pDockerImageTag" : "",
+    "pAppCertificateArn" : "arn:aws:acm:eu-west-2:013163512034:certificate/3f5ffd24-0805-475a-80ad-8bc0f1330e83",
+    "pSev5SnsTopicArn" : "arn:aws:sns:eu-west-2:902837325998:sns-topic-devel-severity_5",
+    "pMlraAppSecurityGroupId": "sg-2e6d2a45",
+    "pDatasourceUrl" : "jdbc:oracle:thin:@rds.maat.aws.tst.legalservices.gov.uk:1521:MAATDB",
+    "pCloudPlatformQueueRegion" : "eu-west-2",
+    "pCreateLinkQueue" : "crime-apps-test-create-link-queue",
+    "pUnlinkQueue" : "crime-apps-test-unlink-queue",
+    "pLaaStatusUpdateQueue" : "crime-apps-test-laa-status-update-queue",
+    "pHearingsResultedQueue" : "crime-apps-test-hearing-resulted-queue",
+    "pCdaOauthUrl" : "https://laa-court-data-adaptor-test.apps.live-1.cloud-platform.service.justice.gov.uk",
+    "pCdaLaaStatusUrl" : "https://laa-court-data-adaptor-test.apps.live-1.cloud-platform.service.justice.gov.uk"
+  },
+  "Tags" : {
+    "business-unit" : "LAA",
+    "application" : "MAAT Court Details API - maat-cd-api",
+    "component" : "app-server",
+    "is-production" : "false",
+    "environment-name" : "test",
+    "owner" : "laa-crime-apps@digital.justice.gov.uk",
+    "infrastructure-support" : "laa-role-sre@digital.justice.gov.uk",
+    "runbook" : "https://dsdmoj.atlassian.net/wiki/spaces/LM/pages/760545284/Runbooks",
+    "source-code" : "https://github.com/ministryofjustice/laa-maat-court-data-api"
+  }
+}

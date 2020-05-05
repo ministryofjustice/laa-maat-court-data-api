@@ -43,10 +43,10 @@ public class HearingResultedListenerTest {
     @Test
     public void givenJSONMessageIsReceived_whenHearingResultedListenerMAATIdNull() {
         //given
-        HearingDetails laaHearingDetails = HearingDetails.builder().build();
+        HearingResulted hearingResulted = HearingResulted.builder().build();
         String message = "Test JSON";
         //when
-        when(gson.fromJson(message, HearingDetails.class)).thenReturn(laaHearingDetails);
+        when(gson.fromJson(message, HearingResulted.class)).thenReturn(hearingResulted);
         hearingResultedListener.receive(message);
         //then
 

@@ -2,7 +2,7 @@ package gov.uk.courtdata.hearing.service;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.exception.GlobalAppLoggingHandler;
-import gov.uk.courtdata.model.hearing.HearingDetails;
+import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class HearingResultedListenerAspectTest {
         thrown.expect(RuntimeException.class);
 
         //given
-        HearingDetails laaHearingDetails = HearingDetails.builder().build();
+        HearingResulted laaHearingDetails = HearingResulted.builder().build();
         String message = "{\"laaTransactionId\":\"c77c96ff-7cad-44cc-9e12-5bc80f5f2d9e\" ,\n" +
                 "  \"caseUrn\":\"CASNUM-ABC123\",\n" +
                 "  \"maatId\": \"0\"}";

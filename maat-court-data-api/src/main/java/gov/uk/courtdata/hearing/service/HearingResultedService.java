@@ -18,7 +18,8 @@ public class HearingResultedService {
     public void process(final HearingDetails hearingDetails) {
 
         hearingValidationProcessor.validate(hearingDetails);
-        log.info("Validation Completed successfully for MAAT ID: {}", hearingDetails.getMaatId());
+        log.info("Validation Completed successfully for MAAT ID: {0},and LaaTransactionId: {1}",
+                hearingDetails.getMaatId(),hearingDetails.getLaaTransactionId());
         hearingResultedImpl.execute(hearingDetails);
     }
 }

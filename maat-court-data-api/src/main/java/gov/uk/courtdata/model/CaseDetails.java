@@ -3,6 +3,7 @@ package gov.uk.courtdata.model;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @ToString
 @Data
@@ -26,5 +27,5 @@ public class CaseDetails {
     private List<Session> sessions;
     private Solicitor solicitor;
     private Integer category;
-
+    private UUID laaTransactionId;
 }

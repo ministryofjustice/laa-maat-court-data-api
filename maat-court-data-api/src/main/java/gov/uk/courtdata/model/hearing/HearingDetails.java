@@ -3,6 +3,7 @@ package gov.uk.courtdata.model.hearing;
 
 import lombok.*;
 
+import java.util.UUID;
 @ToString
 @Data
 @Builder
@@ -19,6 +20,7 @@ public class HearingDetails   {
     private String jurisdictionType;
     private String benchWarrantIssuedYn;
     private String ccImprisioned;
-    private String appealType;;
+    private String appealType;
+    private UUID laaTransactionId;
 
 }

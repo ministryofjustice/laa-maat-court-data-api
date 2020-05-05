@@ -39,4 +39,16 @@ public class HearingResultedListenerTest {
         //then
         verify(hearingResultedService, times(1)).process(laaHearingDetails);
     }
+
+    @Test
+    public void givenJSONMessageIsReceived_whenHearingResultedListenerMAATIdNull() {
+        //given
+        HearingDetails laaHearingDetails = HearingDetails.builder().build();
+        String message = "Test JSON";
+        //when
+        when(gson.fromJson(message, HearingDetails.class)).thenReturn(laaHearingDetails);
+        hearingResultedListener.receive(message);
+        //then
+
+    }
 }

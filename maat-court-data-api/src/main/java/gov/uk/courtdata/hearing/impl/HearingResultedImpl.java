@@ -17,7 +17,6 @@ public class HearingResultedImpl {
 
     public void execute(HearingDetails hearingDetails) {
 
-
         if (CROWN_COURT.equalsIgnoreCase(hearingDetails.getJurisdictionType())) {
             crownCourtProcessingImpl.execute(hearingDetails);
         }

@@ -1,8 +1,6 @@
 package gov.uk.courtdata.validator;
 
-import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,8 +23,10 @@ public class MaatIdValidator implements IValidator<Void, Integer> {
     @Override
     public Optional<Void> validate(final Integer maatId) throws ValidationException {
 
-        Optional.ofNullable(maatId).orElseThrow(() -> new ValidationException("MAAT id is missing."));
-
-        return Optional.empty();
+        if (maatId!=null && maatId > 0) {
+            return Optional.empty();
+        } else {
+            throw new ValidationException("MAAT id is missing.");
+        }
     }
 }

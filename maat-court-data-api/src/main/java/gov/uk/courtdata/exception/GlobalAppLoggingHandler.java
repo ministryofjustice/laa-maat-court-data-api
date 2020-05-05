@@ -16,7 +16,8 @@ import org.springframework.stereotype.Component;
 public class GlobalAppLoggingHandler {
 
     /**
-     * This method will execute whenever a exception occour in any of the following package.
+     * This method will execute whenever a exception occour in any of the following (service) package and a class has method name receive.
+     * If we are adding new queue listener then we should follow the same existing pattern.
      * @param joinPoint
      * @param ex
      */
@@ -26,9 +27,9 @@ public class GlobalAppLoggingHandler {
         Gson gson = new Gson();
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(MDC.get("message"), LaaTransactionLogging.class);
 
-        log.error("Logs - " + laaTransactionLogging.toString());
+        log.info("Failed: Exception occur  - " + laaTransactionLogging.toString());
         log.error("Exception str "+ ex.toString());
-//        log.warn("validation failed.");
+
     }
 
     /**

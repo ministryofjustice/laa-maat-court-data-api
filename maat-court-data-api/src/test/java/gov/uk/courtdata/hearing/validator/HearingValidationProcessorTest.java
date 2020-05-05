@@ -1,7 +1,7 @@
 package gov.uk.courtdata.hearing.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.model.hearing.HearingDetails;
+import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.Rule;
@@ -30,7 +30,7 @@ public class HearingValidationProcessorTest {
     public ExpectedException exception = ExpectedException.none();
 
     @InjectMocks
-    private HearingValidationProcessor hearingValidationProcessor;
+    private CrownCourtValidationProcessor hearingValidationProcessor;
 
     @BeforeEach
     public void setUp() {
@@ -49,7 +49,7 @@ public class HearingValidationProcessorTest {
                 .thenThrow(
                         new ValidationException("MAAT id is missing."));
 
-        hearingValidationProcessor.validate(HearingDetails.builder().maatId(testMaatId).build());
+        hearingValidationProcessor.validate(HearingResulted.builder().maatId(testMaatId).build());
 
     }
 
@@ -58,7 +58,7 @@ public class HearingValidationProcessorTest {
 
         //given
         final int testMaatId = 1000;
-        final HearingDetails hearingDetails = HearingDetails.builder().maatId(testMaatId).build();
+        final HearingResulted hearingDetails = HearingResulted.builder().maatId(testMaatId).build();
 
         // when
         when(maatIdValidator.validate(testMaatId))

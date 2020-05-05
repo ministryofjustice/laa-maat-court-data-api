@@ -1,6 +1,6 @@
 package gov.uk.courtdata.hearing.crowncourt;
 
-import gov.uk.courtdata.model.hearing.HearingDetails;
+import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ public class CrownCourtProcessingImplTest {
     public void givenCCMessageIsReceived_whenCrownCourtProcessingImplIsInvoked_thenCrownCourtProcessingRepositoryIsCalled() {
 
         //given
-        HearingDetails hearingDetails = HearingDetails.builder()
+        HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .ccooOutcome("OutCome")
                 .build();

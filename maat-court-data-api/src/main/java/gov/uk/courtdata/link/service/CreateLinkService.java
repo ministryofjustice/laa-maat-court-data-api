@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * <code>CreateLinkService</code> front handler for save and link with transaction boundry.
+ * <code>CreateLinkService</code> front handler for save and link with transaction boundary.
  */
 @Slf4j
 @AllArgsConstructor
@@ -27,21 +27,11 @@ public class CreateLinkService {
      * @throws ValidationException
      * @throws MaatCourtDataException
      */
-    public void saveAndLink(final CaseDetails linkMessage) throws ValidationException, MaatCourtDataException {
+    public void saveAndLink(final CaseDetails linkMessage) {
 
-        try {
-
-            final CourtDataDTO courtDataDTO = validationProcessor.validate(linkMessage);
-            log.info("Validation completed!!!");
-            saveAndLinkImpl.execute(courtDataDTO);
-            log.info("Create link success!!!");
-
-        } catch (ValidationException vex) {
-            throw vex;
-        } catch (Exception ex) {
-            throw new MaatCourtDataException(ex.getMessage());
-        }
-
+        final CourtDataDTO courtDataDTO = validationProcessor.validate(linkMessage);
+        log.info("Validation completed!!!");
+        saveAndLinkImpl.execute(courtDataDTO);
+        log.info("Create link success!!!");
     }
-
 }

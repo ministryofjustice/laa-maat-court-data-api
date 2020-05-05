@@ -3,6 +3,8 @@ package gov.uk.courtdata.model.hearing;
 import gov.uk.courtdata.enums.JurisdictionType;
 import lombok.*;
 
+import java.util.UUID;
+
 @ToString
 @Data
 @Builder
@@ -27,4 +29,5 @@ public class HearingResulted {
     private Defendant defendant;
     private String inActive;
     private Session session;
+    private UUID laaTransactionId;
 }

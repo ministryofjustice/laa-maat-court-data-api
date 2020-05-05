@@ -1,8 +1,10 @@
 package gov.uk.courtdata.hearing.service;
 
+import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.hearing.crowncourt.CrownCourtProcessingImpl;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
-import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
-import gov.uk.courtdata.model.hearing.HearingDetails;
+import gov.uk.courtdata.hearing.validator.CrownCourtValidationProcessor;
+import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -21,9 +23,9 @@ public class HearingResultedServiceTest {
     private HearingResultedService hearingResultedService;
 
     @Mock
-    private HearingValidationProcessor hearingValidationProcessor;
+    private CrownCourtValidationProcessor hearingValidationProcessor;
     @Mock
-    private HearingResultedImpl hearingResultedImpl;
+    private CrownCourtProcessingImpl hearingResultedImpl;
 
 
     @BeforeEach
@@ -36,7 +38,7 @@ public class HearingResultedServiceTest {
     public void givenACaseDetail_whenHearingServiceIsInvoked_thenMessageIsPublished() {
 
         //given
-        HearingDetails hearingDetails = HearingDetails.builder().build();
+        HearingResulted hearingDetails = HearingResulted.builder().jurisdictionType(JurisdictionType.CROWN).build();
         //when
         hearingResultedService.process(hearingDetails);
         //then

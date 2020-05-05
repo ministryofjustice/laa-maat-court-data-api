@@ -1,7 +1,7 @@
 package gov.uk.courtdata.hearing.service;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.model.hearing.HearingDetails;
+import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -31,10 +31,10 @@ public class HearingResultedListenerTest {
     @Test
     public void givenJSONMessageIsReceived_whenHearingResultedListenerIsInvoked_thenHearingResultedServiceIsCalled() {
         //given
-        HearingDetails laaHearingDetails = HearingDetails.builder().build();
+        HearingResulted laaHearingDetails = HearingResulted.builder().build();
         String message = "Test JSON";
         //when
-        when(gson.fromJson(message, HearingDetails.class)).thenReturn(laaHearingDetails);
+        when(gson.fromJson(message, HearingResulted.class)).thenReturn(laaHearingDetails);
         hearingResultedListener.receive(message);
         //then
         verify(hearingResultedService, times(1)).process(laaHearingDetails);

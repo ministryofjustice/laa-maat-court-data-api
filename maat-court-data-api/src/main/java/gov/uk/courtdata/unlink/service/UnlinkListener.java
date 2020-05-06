@@ -29,6 +29,4 @@ public class UnlinkListener {
         Unlink unlink = gson.fromJson(message, Unlink.class);
         unLinkProcessor.process(unlink);
     }
-
-
 }

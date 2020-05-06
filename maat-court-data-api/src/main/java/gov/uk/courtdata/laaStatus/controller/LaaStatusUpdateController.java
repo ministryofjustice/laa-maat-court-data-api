@@ -25,9 +25,9 @@ public class LaaStatusUpdateController {
     private final LaaStatusPublisher laaStatusPublisher;
 
     @PostMapping("/laaStatus")
-    public MessageCollection updateLAAStatus(@RequestHeader("laa-transaction-id") String laaTransactionId,@RequestBody String jsonPayload) {
+    public MessageCollection updateLAAStatus(@RequestHeader("Laa-Transaction-Id") String laaTransactionId,@RequestBody String jsonPayload) {
 
-        log.info("LAA Status Update Request received - laa-transaction-id:{0}" , laaTransactionId);
+        log.info("LAA Status Update Request received - laa-transaction-id:{}" , laaTransactionId);
 
         MessageCollection messageCollection = null;
         try {
@@ -35,25 +35,32 @@ public class LaaStatusUpdateController {
             messageCollection = laaStatusValidationProcessor.validate(caseDetails);
             if (messageCollection.getMessages().isEmpty()) {
 
-                log.info("Request Validation is successfully completed - laa-transaction-id:{0}" , laaTransactionId );
+                log.info("Request Validation is successfully completed - laa-transaction-id:{}" , laaTransactionId );
                 laaStatusPublisher.publish(caseDetails);
             } else {
-                LaaTransactionLogging logging = LaaTransactionLogging.builder()
-                        .maatId(caseDetails.getMaatId())
-                        .caseUrn(caseDetails.getCaseUrn())
-                        .laaTransactionId(Optional.ofNullable(UUID.fromString(laaTransactionId))
-                                .orElse(null))
-                        .build();
 
-                log.info("LAA Status Update Validation Failed - {0},{1}",
-                        messageCollection.getMessages(), laaTransactionId);
-                log.info(logging.toString());
+                log(laaTransactionId, caseDetails);
+                log.info("LAA Status Update Validation Failed - laa-transaction-id: {} - Messages {}", laaTransactionId, messageCollection.getMessages());
             }
         } catch (Exception exception) {
             assert messageCollection != null;
             messageCollection.getMessages().add(exception.getMessage());
-            throw new MaatCourtDataException("MAAT APT Call failed {0},{1}" + exception.getMessage() + "laa-transaction-id" +laaTransactionId );
+            throw new MaatCourtDataException("MAAT APT Call failed " + exception.getMessage() + "laa-transaction-id" +laaTransactionId );
         }
         return messageCollection;
+    }
+
+    /**
+     * Logging the object
+     * @param laaTransactionId
+     * @param caseDetails
+     */
+    private void log(String laaTransactionId, CaseDetails caseDetails) {
+        LaaTransactionLogging logging = LaaTransactionLogging.builder()
+                .maatId(caseDetails.getMaatId())
+                .caseUrn(caseDetails.getCaseUrn())
+                .laaTransactionId(Optional.ofNullable(UUID.fromString(laaTransactionId)).orElse(null))
+                .build();
+        log.info(logging.toString());
     }
 }

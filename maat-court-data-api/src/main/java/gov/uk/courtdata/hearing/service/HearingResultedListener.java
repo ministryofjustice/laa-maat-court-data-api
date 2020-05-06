@@ -21,10 +21,8 @@ public class HearingResultedListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.hearingResulted}")
     public void receive(@Payload final String message) throws JmsException {
 
-        log.info("Received JSON Message for Hearing Resulted {}", message);
         HearingResulted hearingResulted = gson.fromJson(message, HearingResulted.class);
         log.info("Start hearing resulted processing");
-        log.info(hearingResulted.toString());
         hearingResultedService.process(hearingResulted);
         log.info("Hearing Processing has been completed for MAAT ID:  {}", hearingResulted.getMaatId());
     }

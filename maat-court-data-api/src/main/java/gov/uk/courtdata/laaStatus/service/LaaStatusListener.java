@@ -1,7 +1,6 @@
 package gov.uk.courtdata.laaStatus.service;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.model.CaseDetails;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,21 +31,11 @@ public class LaaStatusListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.laaStatus}")
     public void receive(@Payload final String message) throws JmsException {
 
-        try {
-
-            log.debug("Received JSON Message  {}", message);
-            CaseDetails laaStatusUpdate = gson.fromJson(message, CaseDetails.class);
-            log.debug("Message converted {} ", laaStatusUpdate);
-            log.info("POST to CDA");
-            laaStatusPostCDAService.process(laaStatusUpdate);
-            log.info("After laa update");
-          //  laaStatusUpdateService.execute(laaStatusUpdate);
-
-        } catch (MaatCourtDataException mex) {
-            log.warn("Laa status update failed.");
-            log.error("MaatCourtDataException  {}", mex);
-            mex.printStackTrace();
-        }
+        CaseDetails laaStatusUpdate = gson.fromJson(message, CaseDetails.class);
+        log.info("POST to CDA");
+        laaStatusPostCDAService.process(laaStatusUpdate);
+        log.info("After laa update");
+        //  laaStatusUpdateService.execute(laaStatusUpdate);
     }
 
 

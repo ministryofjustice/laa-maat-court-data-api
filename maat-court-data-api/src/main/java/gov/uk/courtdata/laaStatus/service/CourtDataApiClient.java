@@ -28,8 +28,6 @@ public class CourtDataApiClient {
     public void invoke(LaaStatusUpdate laaStatusUpdate) {
 
         log.info("Get oauth token");
-        log.info("JSON=" + gsonBuilder.create().toJson(laaStatusUpdate));
-
         CourtDataApiService client =
                 WebReactiveFeign
                         .<CourtDataApiService>builder()

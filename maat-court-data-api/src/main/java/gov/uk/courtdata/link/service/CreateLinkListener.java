@@ -29,7 +29,6 @@ public class CreateLinkListener {
     public void receive(@Payload final String message) throws JmsException {
 
         CaseDetails linkMessage = gson.fromJson(message, CaseDetails.class);
-        log.info("Message converted");
         createLinkService.saveAndLink(linkMessage);
     }
 }

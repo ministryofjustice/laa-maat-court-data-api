@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.model.LaaTransactionLogging;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -25,10 +26,16 @@ public class GlobalAppLoggingHandler {
     public void afterThrowingHearingDetail(JoinPoint joinPoint, RuntimeException ex) {
 
         Gson gson = new Gson();
-        LaaTransactionLogging laaTransactionLogging = gson.fromJson(MDC.get("message"), LaaTransactionLogging.class);
-
-        log.info("Failed: Exception occur  - " + laaTransactionLogging.toString());
+        String laaTransactionLogging = MDC.get("message");
+        log.info("Failed: Exception occur  - " + laaTransactionLogging);
         log.error("Exception str "+ ex.toString());
+
+    }
+
+    @After(" execution(* gov.uk.courtdata.*.service.*.receive(..))  ")
+    public void afterProcess(JoinPoint joinPoint) {
+
+        log.info("Message from a queue has been processed successfully: {}", MDC.get("message"));
 
     }
 
@@ -42,10 +49,10 @@ public class GlobalAppLoggingHandler {
     @Before(" execution(* gov.uk.courtdata.*.service.*.receive(..))  && args(message,..) ")
     public void beforeQueueMessageRec(JoinPoint joinPoint, String message) {
 
-        log.info("Received JSON Message from a queue: " + joinPoint.getClass().getName() );
-        MDC.put("message", message);
+        Gson gson = new Gson();
+        LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);
+        log.info("Received a JSON Message from a queue - laa Transaction Logging {}", laaTransactionLogging.getLaaTransactionId() );
+        log.info("Message converted");
+        MDC.put("message", laaTransactionLogging.toString());
     }
-
-
-
 }

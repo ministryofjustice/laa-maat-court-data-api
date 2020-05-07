@@ -28,8 +28,6 @@ public class UnLinkProcessor {
 
     public UnlinkModel process(Unlink unlinkJson) {
 
-        log.info("unlinkjson {}",unlinkJson);
-
         unlinkValidator.validateRequest(unlinkJson);
         UnlinkModel unlinkModel =  UnlinkModel.builder().unlink(unlinkJson).build();
         mapWqLinkRegister(unlinkModel);

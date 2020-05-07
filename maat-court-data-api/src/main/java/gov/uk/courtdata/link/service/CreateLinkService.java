@@ -32,6 +32,5 @@ public class CreateLinkService {
         final CourtDataDTO courtDataDTO = validationProcessor.validate(linkMessage);
         log.info("Validation completed!!!");
         saveAndLinkImpl.execute(courtDataDTO);
-        log.info("Create link success!!!");
     }
 }

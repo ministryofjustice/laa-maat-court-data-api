@@ -21,10 +21,9 @@ public class LaaStatusPublisher {
 
     public void publish(CaseDetails caseDetails) {
 
-        log.info("Publishing to SQS Queue: " + sqsQueueName);
+        log.info("Publishing to SQS Queue {} with laa-transaction-id {} " + sqsQueueName, caseDetails.getLaaTransactionId());
         String laaStatusUpdateJSON = gson.toJson(caseDetails);
         defaultJmsTemplate.convertAndSend(sqsQueueName, laaStatusUpdateJSON);
-        log.info("A JSON Message {} has been published to the Queue {}", laaStatusUpdateJSON, sqsQueueName);
-
+        log.info("A JSON Message with laa-transaction-id {} has been published to the Queue {}", caseDetails.getLaaTransactionId(), sqsQueueName);
     }
 }

@@ -5,13 +5,12 @@ import gov.uk.courtdata.exception.MaatCourtDataException;
 import gov.uk.courtdata.laaStatus.service.LaaStatusPublisher;
 import gov.uk.courtdata.laaStatus.validator.LaaStatusValidationProcessor;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.LaaTransactionLogging;
 import gov.uk.courtdata.model.MessageCollection;
+import gov.uk.courtdata.util.LaaTransactionLoggingBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -28,39 +27,24 @@ public class LaaStatusUpdateController {
     public MessageCollection updateLAAStatus(@RequestHeader("Laa-Transaction-Id") String laaTransactionId,@RequestBody String jsonPayload) {
 
         log.info("LAA Status Update Request received - laa-transaction-id:{}" , laaTransactionId);
-
         MessageCollection messageCollection = null;
+        String laaLogging = null;
         try {
             CaseDetails caseDetails = gson.fromJson(jsonPayload, CaseDetails.class);
+            caseDetails.setLaaTransactionId(UUID.fromString(laaTransactionId));
             messageCollection = laaStatusValidationProcessor.validate(caseDetails);
+            laaLogging = LaaTransactionLoggingBuilder.getStr(caseDetails);
             if (messageCollection.getMessages().isEmpty()) {
-
-                log.info("Request Validation is successfully completed - laa-transaction-id:{}" , laaTransactionId );
+                log.info("Request Validation is successfully completed: {}" , laaLogging );
                 laaStatusPublisher.publish(caseDetails);
             } else {
-
-                log(laaTransactionId, caseDetails);
-                log.info("LAA Status Update Validation Failed - laa-transaction-id: {} - Messages {}", laaTransactionId, messageCollection.getMessages());
+                log.info("LAA Status Update Validation Failed - Messages {} - {}", messageCollection.getMessages(),laaLogging);
             }
         } catch (Exception exception) {
             assert messageCollection != null;
             messageCollection.getMessages().add(exception.getMessage());
-            throw new MaatCourtDataException("MAAT APT Call failed " + exception.getMessage() + "laa-transaction-id" +laaTransactionId );
+            throw new MaatCourtDataException("MAAT APT Call failed " + exception.getMessage() + "laa-logging" +laaLogging);
         }
         return messageCollection;
-    }
-
-    /**
-     * Logging the object
-     * @param laaTransactionId
-     * @param caseDetails
-     */
-    private void log(String laaTransactionId, CaseDetails caseDetails) {
-        LaaTransactionLogging logging = LaaTransactionLogging.builder()
-                .maatId(caseDetails.getMaatId())
-                .caseUrn(caseDetails.getCaseUrn())
-                .laaTransactionId(Optional.ofNullable(UUID.fromString(laaTransactionId)).orElse(null))
-                .build();
-        log.info(logging.toString());
     }
 }

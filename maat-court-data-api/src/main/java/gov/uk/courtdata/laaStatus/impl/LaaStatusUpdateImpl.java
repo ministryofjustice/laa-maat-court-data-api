@@ -32,7 +32,7 @@ public class LaaStatusUpdateImpl {
     @Transactional(rollbackFor = MaatCourtDataException.class)
     public void execute(CourtDataDTO courtDataDTO) {
 
-        log.info("LAA Status Update - Transaction Processing - Start");
+        log.info("LAA Status Update - Transaction Processing - Start" );
         mapTxnID(courtDataDTO);
         caseInfoProcessor.process(courtDataDTO);
         log.info("LAA Status Update - Case Details are processed");
@@ -56,4 +56,6 @@ public class LaaStatusUpdateImpl {
         courtDataDTO.setTxId(identifierRepository.getTxnID());
 
     }
+
+
 }

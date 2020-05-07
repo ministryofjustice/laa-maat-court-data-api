@@ -29,6 +29,7 @@ public class GlobalAppLoggingHandler {
         String laaTransactionLogging = MDC.get("message");
         log.info("Failed: Exception occur  - " + laaTransactionLogging);
         log.error("Exception str "+ ex.toString());
+        log.error("Exception StackTrace  "+ ex.getStackTrace());
 
     }
 

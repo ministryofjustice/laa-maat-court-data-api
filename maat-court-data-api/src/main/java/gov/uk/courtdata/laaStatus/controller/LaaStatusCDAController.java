@@ -1,6 +1,7 @@
 package gov.uk.courtdata.laaStatus.controller;
 
 import com.google.gson.GsonBuilder;
+import gov.uk.courtdata.model.LaaTransactionLogging;
 import gov.uk.courtdata.model.Token;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,8 @@ public class LaaStatusCDAController {
 
         gsonBuilder.serializeNulls();
 
-        log.info("Get oauth token");
-        log.info("JSON=" + gsonBuilder.create().toJson(laaStatusUpdate));
+        String laaLogging = LaaTransactionLogging.builder().maatId(laaStatusUpdate.getMaatId()).build().toString();
+        log.info("Get oauth token - Laa Logging{}", laaLogging);
 
         //Generate Token
         URI oauthURI = UriComponentsBuilder
@@ -56,13 +57,11 @@ public class LaaStatusCDAController {
 
         HttpEntity<LaaStatusUpdate> oauthRequest =
                 new HttpEntity<>(null, header);
-
-        log.info("Oauth URL==" + oauthURI.toString());
+        log.info("Oauth URL=={} - Laa Logging {}", oauthURI.toString(), laaLogging);
 
         ResponseEntity<Token> token = restTemplate.exchange(oauthURI, HttpMethod.POST, HttpEntity.EMPTY, Token.class);
-
-        log.info("Token=" + token.toString());
-
+        //todo?
+        log.info("token {}", token );
         //Invoke CP laa update
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -72,7 +71,7 @@ public class LaaStatusCDAController {
         HttpEntity<LaaStatusUpdate> requestEntity =
                 new HttpEntity<>(laaStatusUpdate, headers);
 
-        log.info("laa update URL:" + laaUpdateUrl);
+        log.info("laa update URL:{} - laa logging {}",laaUpdateUrl, laaLogging);
         ResponseEntity<LaaStatusUpdate> laaStatusResp
                 = restTemplate.exchange(laaUpdateUrl, HttpMethod.POST, requestEntity, LaaStatusUpdate.class);
     }

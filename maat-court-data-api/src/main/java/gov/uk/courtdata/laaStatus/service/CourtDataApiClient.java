@@ -1,6 +1,7 @@
 package gov.uk.courtdata.laaStatus.service;
 
 import com.google.gson.GsonBuilder;
+import gov.uk.courtdata.model.LaaTransactionLogging;
 import gov.uk.courtdata.model.Token;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,8 @@ public class CourtDataApiClient {
 
     public void invoke(LaaStatusUpdate laaStatusUpdate) {
 
-        log.info("Get oauth token");
+        String logging = LaaTransactionLogging.builder().maatId(laaStatusUpdate.getMaatId()).toString();
+        log.info("Get oauth token {}", logging);
         CourtDataApiService client =
                 WebReactiveFeign
                         .<CourtDataApiService>builder()
@@ -36,14 +38,13 @@ public class CourtDataApiClient {
         Mono<Token> oAuthToken = client.getOAuthToken(oauthClientId, oauthSecret)
                 .onErrorMap(CourtDataApiClient::handleAuthTokenError);
 
-
         Token token = oAuthToken.block();
 
         Mono<Void>  laaStatus = client.postLaaStatusUpdate(laaStatusUpdate)
                 .onErrorMap(CourtDataApiClient::handleCDAError);
 
         laaStatus.block();
-        log.info("After update to LAA status update");
+        log.info("After update to LAA status update {}", logging);
     }
 
     private static Throwable handleAuthTokenError(Throwable e) {

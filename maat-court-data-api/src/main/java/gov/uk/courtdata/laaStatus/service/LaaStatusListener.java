@@ -2,6 +2,7 @@ package gov.uk.courtdata.laaStatus.service;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.LaaTransactionLogging;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.JmsException;
@@ -32,9 +33,12 @@ public class LaaStatusListener {
     public void receive(@Payload final String message) throws JmsException {
 
         CaseDetails laaStatusUpdate = gson.fromJson(message, CaseDetails.class);
-        log.info("POST to CDA");
+        String logging = LaaTransactionLogging.builder()
+                .maatId(laaStatusUpdate.getMaatId())
+                .laaTransactionId(laaStatusUpdate.getLaaTransactionId()).build().toString();
+        log.info("POST to CDA {}" , logging);
         laaStatusPostCDAService.process(laaStatusUpdate);
-        log.info("After laa update");
+        log.info("After laa update {}", logging);
         //  laaStatusUpdateService.execute(laaStatusUpdate);
     }
 

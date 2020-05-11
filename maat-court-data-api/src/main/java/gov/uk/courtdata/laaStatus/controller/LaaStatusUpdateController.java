@@ -27,13 +27,13 @@ public class LaaStatusUpdateController {
     public MessageCollection updateLAAStatus(@RequestHeader("Laa-Transaction-Id") String laaTransactionId,@RequestBody String jsonPayload) {
 
         log.info("LAA Status Update Request received - laa-transaction-id:{}" , laaTransactionId);
+        String laaLogging = LaaTransactionLoggingBuilder.getStr(jsonPayload);
         MessageCollection messageCollection = null;
-        String laaLogging = null;
         try {
             CaseDetails caseDetails = gson.fromJson(jsonPayload, CaseDetails.class);
             caseDetails.setLaaTransactionId(UUID.fromString(laaTransactionId));
             messageCollection = laaStatusValidationProcessor.validate(caseDetails);
-            laaLogging = LaaTransactionLoggingBuilder.getStr(caseDetails);
+
             if (messageCollection.getMessages().isEmpty()) {
                 log.info("Request Validation is successfully completed: {}" , laaLogging );
                 laaStatusPublisher.publish(caseDetails);

@@ -1,22 +1,30 @@
 package gov.uk.courtdata.util;
 
+import com.google.gson.Gson;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.LaaTransactionLogging;
 
-import java.util.Optional;
-
 public class LaaTransactionLoggingBuilder {
 
+
     public static LaaTransactionLogging get(CaseDetails caseDetails) {
-        return LaaTransactionLogging.builder()
-                .maatId(caseDetails.getMaatId())
-                .caseUrn(caseDetails.getCaseUrn())
-                .laaTransactionId(Optional.ofNullable(caseDetails.getLaaTransactionId()).orElse(null))
-                .build();
+        Gson gson = new Gson();
+        LaaTransactionLogging laaTransactionLogging = get(gson.toJson(caseDetails));
+        return laaTransactionLogging;
     }
 
-    public static String getStr(CaseDetails caseDetails) {
-        return get(caseDetails).toString();
+
+    public static LaaTransactionLogging get(String message) {
+        Gson gson = new Gson();
+        LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);
+        return laaTransactionLogging;
     }
+
+    public static String getStr(String message) {
+        return get(message).toString();
+    }
+
+
+
 
 }

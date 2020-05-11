@@ -39,7 +39,7 @@ public class LaaStatusListener {
         log.info("POST to CDA {}" , logging);
         laaStatusPostCDAService.process(laaStatusUpdate);
         log.info("After laa update {}", logging);
-        //  laaStatusUpdateService.execute(laaStatusUpdate);
+        laaStatusUpdateService.execute(laaStatusUpdate);
     }
 
 

@@ -3,20 +3,17 @@ package gov.uk.courtdata.model.laastatus;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import lombok.*;
-import lombok.Data;
-
 
 @ToString
-@Data
+@lombok.Data
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Defendant {
+public class RootData {
 
     @SerializedName("data")
     @Expose
-    public DefendantData data;
-
+    private RepOrderData data;
 }

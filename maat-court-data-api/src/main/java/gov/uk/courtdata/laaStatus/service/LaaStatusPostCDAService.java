@@ -1,16 +1,16 @@
 package gov.uk.courtdata.laaStatus.service;
 
-import gov.uk.courtdata.entity.RepOrderCPDataEntity;
+import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.laaStatus.controller.LaaStatusCDAController;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.laastatus.*;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
+import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,13 +24,15 @@ public class LaaStatusPostCDAService {
 
     private final CourtDataApiClient courtDataApiClient;
 
+    private final SolicitorMAATDataRepository solicitorMAATDataRepository;
+
 
     public void process(final CaseDetails caseDetails) {
-        LaaStatusUpdate laaStatusUpdate = buildMessage(caseDetails);
-        log.info(laaStatusUpdate.toString());
-        // laaStatusCDAController.updateLaaStatus(laaStatusUpdate);
+        RootData repOrderData = buildMessage(caseDetails);
+        log.info(repOrderData.toString());
+        laaStatusCDAController.updateLaaStatus(repOrderData);
 
-        courtDataApiClient.invoke(laaStatusUpdate);
+      //  courtDataApiClient.invoke(repOrderData);
 
 
     }
@@ -39,36 +41,71 @@ public class LaaStatusPostCDAService {
     /**
      * @param caseDetails
      */
-    private LaaStatusUpdate buildMessage(CaseDetails caseDetails) {
+    private RootData buildMessage(CaseDetails caseDetails) {
 
         log.info(caseDetails.toString());
 
-        List<Offence> offences =
-                caseDetails.getDefendant().getOffences().stream().map(this::mapOffence).collect(Collectors.toList());
 
-        return LaaStatusUpdate.builder().maatId(caseDetails.getMaatId())
-                .defendant(mapDefendant(caseDetails))
-                .offences(offences)
-                .solicitor(mapSolicitor(caseDetails))
-                .build();
+        return RootData.builder().data(RepOrderData.builder()
+                .type("representation_orders")
+                .attributes(buildAttributes(caseDetails))
+                .relationships(mapRelationships()).build()).build();
 
     }
 
 
-    /**
-     * @param caseDetails
-     * @return
-     */
-    private Defendant mapDefendant(final CaseDetails caseDetails) {
+    public RepOrderData buildRepOrderData(CaseDetails caseDetails) {
 
-        Optional<RepOrderCPDataEntity>
-                repOrderCPDataEntity = repOrderCPDataRepository.findByrepOrderId(caseDetails.getMaatId());
+        return RepOrderData.builder().attributes(buildAttributes(caseDetails))
+                .relationships(mapRelationships()).build();
 
-        return Defendant.builder()
-                .uuid(repOrderCPDataEntity.get().getDefendantId())
-                .foreName(caseDetails.getDefendant().getForename())
-                .surName(caseDetails.getDefendant().getSurname())
+    }
+
+
+    public Attributes buildAttributes(CaseDetails caseDetails) {
+
+        List<Offence> offences =
+                caseDetails.getDefendant().getOffences().stream().map(this::mapOffence).collect(Collectors.toList());
+        return Attributes.builder()
+                .maatReference(caseDetails.getMaatId())
+                .defenceOrganisation(mapDefenceOrganisation(caseDetails))
+                .offences(offences)
                 .build();
+    }
+
+
+    public DefenceOrganisation mapDefenceOrganisation(CaseDetails caseDetails) {
+
+        SolicitorMAATDataEntity solicitorDetails = solicitorMAATDataRepository.findBymaatId(caseDetails.getMaatId()).get();
+
+        return DefenceOrganisation.builder().laaContractNumber(solicitorDetails.getAccountCode())
+                .organisation(mapOrganisation(solicitorDetails)).build();
+    }
+
+
+    public Organisation mapOrganisation(SolicitorMAATDataEntity solicitorMAATDataEntity) {
+
+        return Organisation.builder().address(mapAddress(solicitorMAATDataEntity))
+                .contact(mapContact(solicitorMAATDataEntity))
+                .name(solicitorMAATDataEntity.getAccountName()).build();
+    }
+
+
+    public Address mapAddress(SolicitorMAATDataEntity solicitorDetails) {
+
+        return Address.builder().address1(solicitorDetails.getLine1())
+                .address2(solicitorDetails.getLine2())
+                .address3(solicitorDetails.getLine3())
+                .address4(solicitorDetails.getCity())
+                .address5(solicitorDetails.getCounty())
+                .postcode(solicitorDetails.getPostcode()).build();
+    }
+
+    public Contact mapContact(SolicitorMAATDataEntity solicitorDetails) {
+        return Contact.builder().work(solicitorDetails.getPhone())
+                .primaryEmail(solicitorDetails.getAdminEmail())
+                .secondaryEmail(solicitorDetails.getEmail()).build();
+
     }
 
 
@@ -78,40 +115,22 @@ public class LaaStatusPostCDAService {
      */
     private Offence mapOffence(final gov.uk.courtdata.model.Offence offence) {
 
-        final String uuid = "";
-
         return Offence.builder()
-                .uuid(uuid)
-                .offenceCode(offence.getOffenceCode())
-                .offenceShortTitle(offence.getOffenceShortTitle())
-                .offenceClassification(offence.getOffenceClassification())
-                .modeOfTrial(offence.getModeOfTrial())
-                .offenceDate(offence.getOffenceDate())
-                .legalAid(LegalAid.builder()
-                        .status(offence.getLegalAidStatus())
-                        .statusDate(offence.getLegalAidStatusDate())
-                        .startDate(offence.getLegalAidStatusDate())
-                        .endDate("").build())
-                .build();
+                .offenceId(offence.getOffenceId())
+                .statusCode(offence.getLegalAidStatus())
+                .statusDate(offence.getLegalAidStatusDate())
+                .effectiveStartDate(offence.getLegalAidStatusDate())
+                .effectiveEndDate(offence.getLegalAidStatusDate()).build();
     }
 
 
-    /**
-     * @param caseDetails
-     * @return
-     */
-    private Solicitor mapSolicitor(final CaseDetails caseDetails) {
-
-        return Solicitor.builder()
-                .firmName(caseDetails.getSolicitor().getFirstName())
-                .laaAccountNumber(caseDetails.getSolicitor().getLaaOfficeAccount())
-                .contactName(caseDetails.getSolicitor().getContactName())
-                .addressLine1(caseDetails.getSolicitor().getAddress_line1())
-                .addressLine2(caseDetails.getSolicitor().getAddress_line2())
-                .postcode(caseDetails.getSolicitor().getPostcode())
-                .phone(caseDetails.getSolicitor().getTelephone())
-                .email(caseDetails.getSolicitor().getEmail())
-                .build();
-
+    private Relationships mapRelationships() {
+        return Relationships.builder().defendant(mapDefendant()).build();
     }
+
+    private Defendant mapDefendant() {
+        return Defendant.builder().data(DefendantData.builder().id("61e16fc1-9036-4a28-93b8-ec096b06b0b7")
+                .type("defendants").build()).build();
+    }
+
 }

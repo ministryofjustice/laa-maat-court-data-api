@@ -1,8 +1,10 @@
 package gov.uk.courtdata.model.laastatus;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import lombok.*;
+import lombok.Data;
 
-import java.util.List;
 
 @ToString
 @Data
@@ -13,10 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 public class LaaStatusUpdate {
 
-    private Integer maatId;
-    private Defendant defendant;
-    private List<Offence> offences;
-    private Solicitor solicitor;
-
+    @SerializedName("data")
+    @Expose
+    public Data data;
 
 }

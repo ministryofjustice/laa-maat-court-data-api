@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Offence {
 
+    private String offenceId;
     private String asnSeq;
     private String offenceCode;
     private String offenceShortTitle;

@@ -1,8 +1,12 @@
 package gov.uk.courtdata.laaStatus.controller;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.GsonBuilder;
 import gov.uk.courtdata.model.Token;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
+import gov.uk.courtdata.model.laastatus.RepOrderData;
+import gov.uk.courtdata.model.laastatus.RootData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +40,14 @@ public class LaaStatusCDAController {
     @Value("${cda.laastatus.url}")
     private String laaUpdateUrl;
 
-    public void updateLaaStatus(LaaStatusUpdate laaStatusUpdate) {
+    public void updateLaaStatus(RootData repOrderData) {
 
         gsonBuilder.serializeNulls();
 
         log.info("Get oauth token");
-        log.info("JSON=" + gsonBuilder.create().toJson(laaStatusUpdate));
+
+        final String json = gsonBuilder.create() .toJson(repOrderData);
+        log.info("JSON=" + json);
 
         //Generate Token
         URI oauthURI = UriComponentsBuilder
@@ -69,12 +75,12 @@ public class LaaStatusCDAController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token.getBody().getAccess_token());
 
-        HttpEntity<LaaStatusUpdate> requestEntity =
-                new HttpEntity<>(laaStatusUpdate, headers);
+        HttpEntity<String> requestEntity =
+                new HttpEntity<>(json, headers);
 
         log.info("laa update URL:" + laaUpdateUrl);
-        ResponseEntity<LaaStatusUpdate> laaStatusResp
-                = restTemplate.exchange(laaUpdateUrl, HttpMethod.POST, requestEntity, LaaStatusUpdate.class);
+        ResponseEntity<String> laaStatusResp
+                = restTemplate.exchange(laaUpdateUrl, HttpMethod.POST, requestEntity,String.class);
     }
 
 
@@ -82,6 +88,10 @@ public class LaaStatusCDAController {
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
     }
+
+
+
+
 
 
 }

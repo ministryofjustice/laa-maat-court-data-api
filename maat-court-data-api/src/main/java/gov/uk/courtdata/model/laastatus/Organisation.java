@@ -13,10 +13,16 @@ import lombok.Data;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Defendant {
+public class Organisation {
 
-    @SerializedName("data")
+    @SerializedName("name")
     @Expose
-    public DefendantData data;
+    public String name;
+    @SerializedName("address")
+    @Expose
+    public Address address;
+    @SerializedName("contact")
+    @Expose
+    public Contact contact;
 
 }

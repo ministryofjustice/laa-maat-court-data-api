@@ -16,6 +16,6 @@ public class LaaTransactionLogging {
     private UUID laaTransactionId;
     private Integer maatId;
     private String caseUrn;
-    private String message;
+
 
 }

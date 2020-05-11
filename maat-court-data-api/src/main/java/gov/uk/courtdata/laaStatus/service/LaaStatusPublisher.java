@@ -21,10 +21,10 @@ public class LaaStatusPublisher {
     private String sqsQueueName;
 
     public void publish(CaseDetails caseDetails) {
-        String logging = LaaTransactionLoggingBuilder.getStr(caseDetails);
+        String logging = LaaTransactionLoggingBuilder.get(caseDetails).toString();
         log.info("Publishing to SQS Queue {} with logging meta-data {} " + sqsQueueName,logging);
         String laaStatusUpdateJSON = gson.toJson(caseDetails);
         defaultJmsTemplate.convertAndSend(sqsQueueName, laaStatusUpdateJSON);
-        log.info("A JSON Message has been published to the Queue {} with logging meta-data {}",sqsQueueName,logging.toString());
+        log.info("A JSON Message has been published to the Queue {} with logging meta-data {}",sqsQueueName,logging);
     }
 }

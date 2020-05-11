@@ -7,7 +7,7 @@ spring:
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: oracle.jdbc.OracleDriver
   liquibase:
-    enabled: true
+    enabled: false
 
   jpa:
     database-platform: org.hibernate.dialect.Oracle10gDialect

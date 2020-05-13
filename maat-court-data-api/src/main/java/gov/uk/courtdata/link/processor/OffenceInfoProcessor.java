@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
-import static gov.uk.courtdata.constants.CourtDataConstants.PENDING_IOJ_DECISION;
+import static gov.uk.courtdata.constants.CourtDataConstants.*;
 
 @RequiredArgsConstructor
 @Component
@@ -35,7 +34,7 @@ public class OffenceInfoProcessor implements Process {
         return OffenceEntity.builder()
                 .caseId(courtDataDTO.getCaseId())
                 .txId(courtDataDTO.getTxId())
-                .asnSeq(offence.getAsnSeq())
+                .asnSeq(String.format(LEADING_ZERO_3,Integer.parseInt(offence.getAsnSeq())))
                 .offenceCode(offence.getOffenceCode())
                 .offenceClassification(offence.getOffenceClassification())
                 .legalAidStatus(offence.getLegalAidStatus())

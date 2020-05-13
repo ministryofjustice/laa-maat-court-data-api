@@ -18,6 +18,7 @@ public interface CourtDataConstants {
     String DEFAULT_HEARING_CUS_STATUS = "D";
     String COMMON_PLATFORM = "CP";
     Integer WQ_UNLINK_EVENT = 24;
+    String LEADING_ZERO_3 ="%03d";
 
     List<Integer> FAIL_IOJ_DECISION = Arrays.asList(0, 2);
     int PASS_IOJ_DECISION = 1;

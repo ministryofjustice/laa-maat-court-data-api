@@ -36,10 +36,10 @@ public class XLATResult {
     private String createdUser;
     @Column(name = "CREATED_DATE")
     private LocalDate createdDate;
-    @Column(name = "MODIFIED_USER")
-    private LocalDate modifiedDate;
     @Column(name = "MODIFIED_DATE")
-    private LocalDate modifiedUser;
+    private LocalDate modifiedDate;
+    @Column(name = "MODIFIED_USER")
+    private String modifiedUser;
     @Column(name = "SUBTYPE_CODE")
     private Integer subTypeCode;
 

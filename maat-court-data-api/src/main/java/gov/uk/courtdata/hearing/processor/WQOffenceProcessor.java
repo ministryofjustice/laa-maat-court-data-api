@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class WQOffenceProcessor {
                 .asnSeq(magsCourtDTO.getOffence().getAsnSeq())
                 .offenceCode(magsCourtDTO.getOffence().getOffenceCode())
                 .offenceClassification(magsCourtDTO.getOffence().getOffenceClassification())
-                .legalAidStatus(magsCourtDTO.getOffence().getLegalAidStatus())
+                .legalAidStatus(mapLegalAidStatus(magsCourtDTO.getOffence().getLegalAidStatus()))
                 .legalAidStatusDate(DateUtil.toDate(magsCourtDTO.getOffence().getLegalAidStatusDate()))
                 .legalaidReason(magsCourtDTO.getOffence().getLegalAidReason())
                 .offenceDate(DateUtil.toDate(magsCourtDTO.getOffence().getOffenceDate()))
@@ -38,5 +39,32 @@ public class WQOffenceProcessor {
 
         wqOffenceRepository.save(wqOffence);
     }
+
+
+    /**
+     * Map legacy codes as in stored proc.
+     *
+     * @param legalAidStatus
+     * @return
+     */
+    private String mapLegalAidStatus(String legalAidStatus) {
+
+        if (isEmpty(legalAidStatus))
+            return "AP";
+
+        switch (legalAidStatus) {
+
+            case "RE":
+                return "FB";
+            case "VA":
+                return "GR";
+            case "WI":
+                return "WD";
+            default:
+                return legalAidStatus;
+        }
+
+    }
+
 
 }

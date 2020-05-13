@@ -2,7 +2,6 @@ package gov.uk.courtdata.hearing.processor;
 
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.XLATResult;
-import gov.uk.courtdata.enums.WQType;
 import gov.uk.courtdata.hearing.magistrate.dto.MagistrateCourtDTO;
 import gov.uk.courtdata.repository.OffenceRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
@@ -20,8 +19,6 @@ import static gov.uk.courtdata.enums.WQStatus.WAITING;
 @RequiredArgsConstructor
 public class WQCoreProcessor {
 
-    private static final String AUTO_USER = "AUTO";
-    private static final String RESULT_CODE_DESCRIPTION = "Automatically added result";
     private final WqCoreRepository wqCoreRepository;
     private final XLATResultRepository xlatResultRepository;
     private final OffenceRepository offenceRepository;
@@ -61,8 +58,7 @@ public class WQCoreProcessor {
     }
 
     /**
-     * If the result code is available in xlat_result return the relevant WQ type
-     * else create a new xlat result with intervention queue type.
+     * If the result code is available in xlat_result return the relevant WQ type.
      *
      * @param magsCourtDTO
      * @return
@@ -72,43 +68,10 @@ public class WQCoreProcessor {
         Optional<XLATResult> xlatResult =
                 xlatResultRepository.findById(magsCourtDTO.getResult().getResultCode());
 
-        return xlatResult.isPresent() ? xlatResult.get().getWqType() : createXLATResult(magsCourtDTO).getWqType();
+        return xlatResult.get().getWqType();
 
 
     }
 
-    /**
-     * Create new xlat result.
-     *
-     * @param magsCourtDTO
-     * @return
-     */
-    private XLATResult createXLATResult(final MagistrateCourtDTO magsCourtDTO) {
 
-        XLATResult xlatResult = XLATResult.builder()
-                .cjsResultCode(magsCourtDTO.getResult().getResultCode())
-                .resultDescription(RESULT_CODE_DESCRIPTION)
-                .resultType(null)
-                .englandAndWales("Y")
-                .flag(null)
-                .notes(buildNotesContent(magsCourtDTO.getResult().getResultCode()))
-                .wqType(WQType.USER_INTERVENTIONS_QUEUE.value())
-                .createdUser(AUTO_USER)
-                .createdDate(LocalDate.now()).build();
-
-        return xlatResultRepository.save(xlatResult);
-
-
-    }
-
-    /**
-     * Build notes description for the result.
-     *
-     * @param resultCode
-     * @return
-     */
-    private String buildNotesContent(Integer resultCode) {
-        return String.format("New Result code %s  has been received " +
-                "and automatically added to the Intervention queue. Please contact support.'", resultCode);
-    }
 }

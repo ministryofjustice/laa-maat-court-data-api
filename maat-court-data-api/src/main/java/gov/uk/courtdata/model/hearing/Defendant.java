@@ -1,15 +1,16 @@
 package gov.uk.courtdata.model.hearing;
 
-import gov.uk.courtdata.model.hearing.Offence;
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@ToString
+
 @Data
 @Builder
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Defendant {

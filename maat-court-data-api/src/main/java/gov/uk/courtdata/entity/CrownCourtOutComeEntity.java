@@ -6,12 +6,12 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Data
 @Table(name = "REP_ORDER_CROWN_COURT_OUTCOMES", schema = "TOGDATA")
 public class CrownCourtOutComeEntity {
 

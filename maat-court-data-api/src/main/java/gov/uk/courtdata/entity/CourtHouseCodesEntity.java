@@ -7,11 +7,10 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @IdClass(CourtHouseCodesId.class)
 @Table(name = "XXMLA_XLAT_COURTHOUSE_CODES", schema = "MLA")

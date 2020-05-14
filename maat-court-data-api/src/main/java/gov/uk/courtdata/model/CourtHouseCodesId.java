@@ -1,17 +1,13 @@
 package gov.uk.courtdata.model;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CourtHouseCodesId implements Serializable {
 
     private String code;

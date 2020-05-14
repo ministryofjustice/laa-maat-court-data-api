@@ -4,11 +4,9 @@ import lombok.*;
 
 import java.util.List;
 
-@ToString
+
 @Data
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Offence {

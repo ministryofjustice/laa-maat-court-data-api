@@ -7,11 +7,10 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 
-@Getter
-@Setter
+@Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "XXMLA_CASE", schema = "MLA")
 public class CaseEntity {

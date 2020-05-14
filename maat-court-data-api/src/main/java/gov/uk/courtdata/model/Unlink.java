@@ -6,9 +6,6 @@ import java.util.UUID;
 
 @Data
 @Builder
-@Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class Unlink {
 

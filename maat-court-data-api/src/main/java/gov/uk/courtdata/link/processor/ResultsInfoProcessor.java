@@ -30,12 +30,13 @@ public class ResultsInfoProcessor implements Process {
 
     private void buildResultsList(List<Result> resultList, CourtDataDTO saveAndLinkModel) {
 
-        List<ResultEntity> resultEntityList = resultList
-                .stream()
-                .map(result -> buildResult(result, saveAndLinkModel))
-                .collect(Collectors.toList());
-        resultRepository.saveAll(resultEntityList);
-
+        if (resultList != null && !resultList.isEmpty()) {
+            List<ResultEntity> resultEntityList = resultList
+                    .stream()
+                    .map(result -> buildResult(result, saveAndLinkModel))
+                    .collect(Collectors.toList());
+            resultRepository.saveAll(resultEntityList);
+        }
     }
 
 

@@ -33,11 +33,11 @@ public class ResultCodesProcessor {
         if (resultCode != null) {
             Optional<XLATResult> xlatResult =
                     xlatResultRepository.findById(resultCode);
-
-            if (xlatResult.isEmpty())
+            if (xlatResult.isEmpty()) {
                 createNewXLATResult(resultCode);
-            log.info("A New CJS Result Code : " + resultCode + " has been added to the Ref Data");
-        }else {
+                log.info("A New CJS Result Code : " + resultCode + " has been added to the Ref Data");
+            }
+        } else {
             throw new MaatCourtDataException("A Null Result Code is passed in");
         }
     }

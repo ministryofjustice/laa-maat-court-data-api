@@ -38,19 +38,15 @@ public class CreateLinkService {
 
         final CourtDataDTO courtDataDTO = validationProcessor.validate(linkMessage);
         log.info("Validation completed!!!");
-        processOffenceCodes(courtDataDTO);
-        processResultsCodes(courtDataDTO);
+        processStaticRefData(courtDataDTO);
         saveAndLinkImpl.execute(courtDataDTO);
     }
 
-    private void processOffenceCodes(CourtDataDTO courtDataDTO) {
-        courtDataDTO.getCaseDetails().getDefendant().getOffences()
-                .forEach(offence -> offenceCodesProcessor.processOffenceCode(offence.getOffenceCode()));
-    }
 
-    private void processResultsCodes(CourtDataDTO courtDataDTO) {
+    private void processStaticRefData(CourtDataDTO courtDataDTO) {
         courtDataDTO.getCaseDetails().getDefendant().getOffences()
                 .forEach(offence -> {
+                    offenceCodesProcessor.processOffenceCode(offence.getOffenceCode());
                     offence.getResults()
                             .forEach(result ->
                                     resultCodesProcessor.processResultCode(Integer.parseInt(result.getResultCode())));

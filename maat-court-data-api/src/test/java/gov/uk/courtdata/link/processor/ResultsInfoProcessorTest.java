@@ -7,6 +7,7 @@ import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.ResultEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Result;
+import gov.uk.courtdata.processor.ResultCodesProcessor;
 import gov.uk.courtdata.repository.ResultRepository;
 import gov.uk.courtdata.util.CourtDataUtil;
 import org.junit.Before;
@@ -37,6 +38,9 @@ public class ResultsInfoProcessorTest {
 
     @Mock
     private CourtDataUtil courtDataUtil;
+
+    @Mock
+    private ResultCodesProcessor resultCodesProcessor;
 
     @Before
     public void setUp() {

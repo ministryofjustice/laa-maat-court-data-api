@@ -6,9 +6,14 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.link.validator.ValidationProcessor;
+import gov.uk.courtdata.model.Result;
+import gov.uk.courtdata.processor.OffenceCodesProcessor;
+import gov.uk.courtdata.processor.ResultCodesProcessor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <code>CreateLinkService</code> front handler for save and link with transaction boundary.
@@ -21,6 +26,8 @@ public class CreateLinkService {
     private final SaveAndLinkImpl saveAndLinkImpl;
 
     private final ValidationProcessor validationProcessor;
+    private final OffenceCodesProcessor offenceCodesProcessor;
+    private final ResultCodesProcessor resultCodesProcessor;
 
     /**
      * @param linkMessage
@@ -31,6 +38,23 @@ public class CreateLinkService {
 
         final CourtDataDTO courtDataDTO = validationProcessor.validate(linkMessage);
         log.info("Validation completed!!!");
+        processOffenceCodes(courtDataDTO);
+        processResultsCodes(courtDataDTO);
         saveAndLinkImpl.execute(courtDataDTO);
     }
+
+    private void processOffenceCodes(CourtDataDTO courtDataDTO) {
+        courtDataDTO.getCaseDetails().getDefendant().getOffences()
+                .forEach(offence -> offenceCodesProcessor.processOffenceCode(offence.getOffenceCode()));
+    }
+
+    private void processResultsCodes(CourtDataDTO courtDataDTO) {
+        courtDataDTO.getCaseDetails().getDefendant().getOffences()
+                .forEach(offence -> {
+                    offence.getResults()
+                            .forEach(result ->
+                                    resultCodesProcessor.processResultCode(Integer.parseInt(result.getResultCode())));
+                });
+    }
+
 }

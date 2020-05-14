@@ -1,11 +1,7 @@
 package gov.uk.courtdata.hearing.magistrate.mapper;
 
 import gov.uk.courtdata.hearing.magistrate.dto.*;
-import gov.uk.courtdata.model.hearing.HearingResulted;
-import gov.uk.courtdata.model.hearing.Defendant;
-import gov.uk.courtdata.model.hearing.Offence;
-import gov.uk.courtdata.model.hearing.Result;
-import gov.uk.courtdata.model.hearing.Session;
+import gov.uk.courtdata.model.hearing.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

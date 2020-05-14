@@ -9,10 +9,9 @@ import javax.persistence.Table;
 import java.time.LocalDate;
 
 @Builder
-@Setter
-@Getter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "XXMLA_XLAT_RESULT", schema = "MLA")
 public class XLATResult {

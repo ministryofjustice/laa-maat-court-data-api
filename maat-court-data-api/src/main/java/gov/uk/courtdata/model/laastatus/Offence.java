@@ -2,11 +2,9 @@ package gov.uk.courtdata.model.laastatus;
 
 import lombok.*;
 
-@ToString
+
 @Data
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Offence {

@@ -10,9 +10,9 @@ import java.time.LocalDate;
 
 @Builder
 @Setter
-@Getter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "XXMLA_WQ_OFFENCE", schema = "MLA")
 public class WQOffence {

@@ -4,13 +4,10 @@ import lombok.*;
 
 import java.util.List;
 
-@ToString
+
 @Data
 @Builder
-@Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class Defendant {
 
     private String defendantId;

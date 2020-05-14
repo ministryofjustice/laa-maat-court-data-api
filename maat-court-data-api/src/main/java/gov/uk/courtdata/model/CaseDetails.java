@@ -5,11 +5,9 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
-@ToString
+
 @Data
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CaseDetails {

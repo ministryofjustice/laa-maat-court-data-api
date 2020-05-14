@@ -3,6 +3,7 @@ package gov.uk.courtdata.link.processor;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.ResultEntity;
 import gov.uk.courtdata.model.Result;
+import gov.uk.courtdata.processor.ResultCodesProcessor;
 import gov.uk.courtdata.repository.ResultRepository;
 import gov.uk.courtdata.util.CourtDataUtil;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,9 @@ public class ResultsInfoProcessor implements Process {
 
     }
 
+
     private ResultEntity buildResult(Result result, CourtDataDTO saveAndLinkModel) {
+
         return ResultEntity.builder()
                 .caseId(saveAndLinkModel.getCaseId())
                 .txId(saveAndLinkModel.getTxId())
@@ -60,4 +63,5 @@ public class ResultsInfoProcessor implements Process {
                 .wqResult(G_NO)
                 .build();
     }
+
 }

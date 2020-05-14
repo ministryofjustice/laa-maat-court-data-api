@@ -2,6 +2,8 @@ package gov.uk.courtdata.hearing.processor;
 
 import gov.uk.courtdata.entity.WQOffence;
 import gov.uk.courtdata.hearing.magistrate.dto.MagistrateCourtDTO;
+import gov.uk.courtdata.hearing.magistrate.dto.OffenceDTO;
+import gov.uk.courtdata.processor.OffenceCodesProcessor;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,23 +18,24 @@ public class WQOffenceProcessor {
 
     private final WQOffenceRepository wqOffenceRepository;
 
-
     public void process(final MagistrateCourtDTO magsCourtDTO) {
 
+
+        final OffenceDTO offence = magsCourtDTO.getOffence();
 
         WQOffence wqOffence = WQOffence.builder()
                 .caseId(magsCourtDTO.getCaseId())
                 .txId(magsCourtDTO.getTxId())
-                .asnSeq(magsCourtDTO.getOffence().getAsnSeq())
-                .offenceCode(magsCourtDTO.getOffence().getOffenceCode())
-                .offenceClassification(magsCourtDTO.getOffence().getOffenceClassification())
-                .legalAidStatus(mapLegalAidStatus(magsCourtDTO.getOffence().getLegalAidStatus()))
-                .legalAidStatusDate(DateUtil.toDate(magsCourtDTO.getOffence().getLegalAidStatusDate()))
-                .legalaidReason(magsCourtDTO.getOffence().getLegalAidReason())
-                .offenceDate(DateUtil.toDate(magsCourtDTO.getOffence().getOffenceDate()))
-                .offenceShortTitle(magsCourtDTO.getOffence().getOffenceShortTitle())
-                .modeOfTrial(magsCourtDTO.getOffence().getModeOfTrial())
-                .offenceWording(magsCourtDTO.getOffence().getOffenceWording())
+                .asnSeq(offence.getAsnSeq())
+                .offenceCode(offence.getOffenceCode())
+                .offenceClassification(offence.getOffenceClassification())
+                .legalAidStatus(mapLegalAidStatus(offence.getLegalAidStatus()))
+                .legalAidStatusDate(DateUtil.toDate(offence.getLegalAidStatusDate()))
+                .legalaidReason(offence.getLegalAidReason())
+                .offenceDate(DateUtil.toDate(offence.getOffenceDate()))
+                .offenceShortTitle(offence.getOffenceShortTitle())
+                .modeOfTrial(offence.getModeOfTrial())
+                .offenceWording(offence.getOffenceWording())
                 .wqOffence(null)
                 .applicationFlag(G_NO)
                 .build();

@@ -28,4 +28,7 @@ public interface CourtDataConstants {
     List<String> FAILED_LAA_STATUS = Arrays.asList("FJ", "FB");
     String CROWN_COURT = "CROWN";
     String MAGS_PROCESSING_SYSTEM_USER = "System-CP";
+    String AUTO_USER = "AUTO";
+    String RESULT_CODE_DESCRIPTION = "Automatically added result";
+    String UNKNOWN_OFFENCE = "UNKNOWN OFFENCE";
 }

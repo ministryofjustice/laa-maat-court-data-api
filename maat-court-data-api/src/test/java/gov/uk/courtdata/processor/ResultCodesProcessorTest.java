@@ -65,7 +65,7 @@ public class ResultCodesProcessorTest {
     }
 
     @Test
-    public void testProcessOffenceCode_whenOffenceExists_thenOffenceNotSaved() {
+    public void testProcessResultCode_whenOffenceExists_thenOffenceNotSaved() {
 
         //given
         Integer resultCode = 3333;
@@ -83,7 +83,7 @@ public class ResultCodesProcessorTest {
     }
 
     @Test
-    public void testProcessOffenceCode_whenNullCodeIsPassedIn_thenThrowsMaatCourtDataException() {
+    public void testProcessResultCode_whenNullCodeIsPassedIn_thenThrowsMaatCourtDataException() {
 
         exceptionRule.expect(MaatCourtDataException.class);
         exceptionRule.expectMessage("A Null Result Code is passed in");

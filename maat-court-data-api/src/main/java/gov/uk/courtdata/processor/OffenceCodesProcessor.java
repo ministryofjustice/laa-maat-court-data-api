@@ -29,10 +29,10 @@ public class OffenceCodesProcessor {
         if (offenceCode != null) {
             Optional<XLATOffence> xlatOffence =
                     xlatOffenceRepository.findById(offenceCode);
-
-            if (xlatOffence.isEmpty())
+            if (xlatOffence.isEmpty()) {
                 createNewXLATOffence(offenceCode);
-            log.info("A New Offence Code : " + offenceCode + " has been added to the Ref Data");
+                log.info("A New Offence Code : " + offenceCode + " has been added to the Ref Data");
+            }
         } else {
             throw new MaatCourtDataException("A Null Offence Code is passed in");
         }

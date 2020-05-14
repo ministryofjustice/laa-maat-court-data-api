@@ -47,9 +47,11 @@ public class CreateLinkService {
         courtDataDTO.getCaseDetails().getDefendant().getOffences()
                 .forEach(offence -> {
                     offenceCodesProcessor.processOffenceCode(offence.getOffenceCode());
-                    offence.getResults()
-                            .forEach(result ->
-                                    resultCodesProcessor.processResultCode(Integer.parseInt(result.getResultCode())));
+                    if (offence.getResults() != null && !offence.getResults().isEmpty()) {
+                        offence.getResults()
+                                .forEach(result ->
+                                        resultCodesProcessor.processResultCode(Integer.parseInt(result.getResultCode())));
+                    }
                 });
     }
 

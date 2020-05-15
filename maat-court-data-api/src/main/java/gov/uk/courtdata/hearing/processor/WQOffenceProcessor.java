@@ -1,9 +1,8 @@
 package gov.uk.courtdata.hearing.processor;
 
 import gov.uk.courtdata.entity.WQOffence;
-import gov.uk.courtdata.hearing.magistrate.dto.MagistrateCourtDTO;
-import gov.uk.courtdata.hearing.magistrate.dto.OffenceDTO;
-import gov.uk.courtdata.processor.OffenceCodesProcessor;
+import gov.uk.courtdata.hearing.dto.HearingDTO;
+import gov.uk.courtdata.hearing.dto.OffenceDTO;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ public class WQOffenceProcessor {
 
     private final WQOffenceRepository wqOffenceRepository;
 
-    public void process(final MagistrateCourtDTO magsCourtDTO) {
+    public void process(final HearingDTO magsCourtDTO) {
 
 
         final OffenceDTO offence = magsCourtDTO.getOffence();
@@ -30,9 +29,9 @@ public class WQOffenceProcessor {
                 .offenceCode(offence.getOffenceCode())
                 .offenceClassification(offence.getOffenceClassification())
                 .legalAidStatus(mapLegalAidStatus(offence.getLegalAidStatus()))
-                .legalAidStatusDate(DateUtil.toDate(offence.getLegalAidStatusDate()))
+                .legalAidStatusDate(DateUtil.parse(offence.getLegalAidStatusDate()))
                 .legalaidReason(offence.getLegalAidReason())
-                .offenceDate(DateUtil.toDate(offence.getOffenceDate()))
+                .offenceDate(DateUtil.parse(offence.getOffenceDate()))
                 .offenceShortTitle(offence.getOffenceShortTitle())
                 .modeOfTrial(offence.getModeOfTrial())
                 .offenceWording(offence.getOffenceWording())

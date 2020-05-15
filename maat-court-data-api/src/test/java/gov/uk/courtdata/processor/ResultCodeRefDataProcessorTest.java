@@ -1,7 +1,7 @@
 package gov.uk.courtdata.processor;
 
 import gov.uk.courtdata.entity.XLATResult;
-import gov.uk.courtdata.exception.MaatCourtDataException;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.XLATResultRepository;
 import org.junit.Before;
 import org.junit.Rule;
@@ -20,10 +20,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ResultCodesProcessorTest {
+public class ResultCodeRefDataProcessorTest {
 
     @InjectMocks
-    private ResultCodesProcessor resultCodesProcessor;
+    private ResultCodeRefDataProcessor resultCodeRefDataProcessor;
 
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
@@ -50,7 +50,7 @@ public class ResultCodesProcessorTest {
         Mockito.when(xlatResultRepository.findById(resultCode))
                 .thenReturn(Optional.empty());
 
-        resultCodesProcessor.processResultCode(resultCode);
+        resultCodeRefDataProcessor.processResultCode(resultCode);
 
         //then
         verify(xlatResultRepository).save(xlatResultArgumentCaptor.capture());
@@ -75,7 +75,7 @@ public class ResultCodesProcessorTest {
         Mockito.when(xlatResultRepository.findById(resultCode))
                 .thenReturn(Optional.of(xlatResult));
 
-        resultCodesProcessor.processResultCode(resultCode);
+        resultCodeRefDataProcessor.processResultCode(resultCode);
 
         //then
         verify(xlatResultRepository, times(0)).save(xlatResult);
@@ -85,8 +85,8 @@ public class ResultCodesProcessorTest {
     @Test
     public void testProcessResultCode_whenNullCodeIsPassedIn_thenThrowsMaatCourtDataException() {
 
-        exceptionRule.expect(MaatCourtDataException.class);
+        exceptionRule.expect(MAATCourtDataException.class);
         exceptionRule.expectMessage("A Null Result Code is passed in");
-        resultCodesProcessor.processResultCode(null);
+        resultCodeRefDataProcessor.processResultCode(null);
     }
 }

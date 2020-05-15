@@ -7,7 +7,6 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantEntity;
 import gov.uk.courtdata.repository.DefendantRepository;
-import gov.uk.courtdata.util.CourtDataUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,8 +25,6 @@ public class DefendantInfoProcessorTest {
     private DefendantInfoProcessor defendantInfoProcessor;
     @Spy
     private DefendantRepository defendantRepository;
-    @Mock
-    private CourtDataUtil courtDataUtil;
 
     private TestModelDataBuilder testModelDataBuilder;
     @Captor

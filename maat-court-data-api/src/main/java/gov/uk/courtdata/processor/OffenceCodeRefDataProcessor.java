@@ -1,7 +1,7 @@
 package gov.uk.courtdata.processor;
 
 import gov.uk.courtdata.entity.XLATOffence;
-import gov.uk.courtdata.exception.MaatCourtDataException;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.XLATOffenceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.*;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class OffenceCodesProcessor {
+public class OffenceCodeRefDataProcessor {
 
     private final XLATOffenceRepository xlatOffenceRepository;
 
@@ -34,7 +34,7 @@ public class OffenceCodesProcessor {
                 log.info("A New Offence Code : " + offenceCode + " has been added to the Ref Data");
             }
         } else {
-            throw new MaatCourtDataException("A Null Offence Code is passed in");
+            throw new MAATCourtDataException("A Null Offence Code is passed in");
         }
     }
 

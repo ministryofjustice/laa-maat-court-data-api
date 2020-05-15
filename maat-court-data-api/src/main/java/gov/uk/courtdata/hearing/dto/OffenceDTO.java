@@ -1,4 +1,4 @@
-package gov.uk.courtdata.hearing.magistrate.dto;
+package gov.uk.courtdata.hearing.dto;
 
 
 import lombok.*;

@@ -1,7 +1,7 @@
 package gov.uk.courtdata.processor;
 
 import gov.uk.courtdata.entity.XLATOffence;
-import gov.uk.courtdata.exception.MaatCourtDataException;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.XLATOffenceRepository;
 import org.junit.Before;
 import org.junit.Rule;
@@ -20,10 +20,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class OffenceCodesProcessorTest {
+public class OffenceCodeRefDataProcessorTest {
 
     @InjectMocks
-    private OffenceCodesProcessor offenceCodesProcessor;
+    private OffenceCodeRefDataProcessor offenceCodeRefDataProcessor;
 
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
@@ -50,7 +50,7 @@ public class OffenceCodesProcessorTest {
         Mockito.when(xlatOffenceRepository.findById(offenceCode))
                 .thenReturn(Optional.empty());
 
-        offenceCodesProcessor.processOffenceCode(offenceCode);
+        offenceCodeRefDataProcessor.processOffenceCode(offenceCode);
 
         //then
         verify(xlatOffenceRepository).save(offenceCodeCaptor.capture());
@@ -75,7 +75,7 @@ public class OffenceCodesProcessorTest {
         Mockito.when(xlatOffenceRepository.findById(offenceCode))
                 .thenReturn(Optional.of(xlatOffence));
 
-        offenceCodesProcessor.processOffenceCode(offenceCode);
+        offenceCodeRefDataProcessor.processOffenceCode(offenceCode);
 
         //then
         verify(xlatOffenceRepository, times(0)).save(xlatOffence);
@@ -84,8 +84,8 @@ public class OffenceCodesProcessorTest {
     @Test
     public void testProcessOffenceCode_whenNullCodeIsPassedIn_thenThrowsMaatCourtDataException() {
 
-        exceptionRule.expect(MaatCourtDataException.class);
+        exceptionRule.expect(MAATCourtDataException.class);
         exceptionRule.expectMessage("A Null Offence Code is passed in");
-        offenceCodesProcessor.processOffenceCode(null);
+        offenceCodeRefDataProcessor.processOffenceCode(null);
     }
 }

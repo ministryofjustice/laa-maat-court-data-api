@@ -1,8 +1,8 @@
 package gov.uk.courtdata.hearing.processor;
 
 import gov.uk.courtdata.entity.WQDefendant;
-import gov.uk.courtdata.hearing.magistrate.dto.DefendantDTO;
-import gov.uk.courtdata.hearing.magistrate.dto.MagistrateCourtDTO;
+import gov.uk.courtdata.hearing.dto.DefendantDTO;
+import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQDefendantRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ public class WQDefendantProcessor {
 
     private final WQDefendantRepository defendantRepository;
 
-    public void process(final MagistrateCourtDTO magsCourtDTO) {
+    public void process(final HearingDTO magsCourtDTO) {
 
         DefendantDTO defendantDTO = magsCourtDTO.getDefendant();
 
@@ -23,7 +23,7 @@ public class WQDefendantProcessor {
                 .txId(magsCourtDTO.getTxId())
                 .forename(defendantDTO.getForename())
                 .surname(defendantDTO.getSurname())
-                .dateOfBirth(DateUtil.toDate(defendantDTO.getDateOfBirth()))
+                .dateOfBirth(DateUtil.parse(defendantDTO.getDateOfBirth()))
                 .address_line1(defendantDTO.getAddress_line1())
                 .address_line2(defendantDTO.getAddress_line2())
                 .address_line3(defendantDTO.getAddress_line3())

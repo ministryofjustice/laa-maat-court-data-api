@@ -7,7 +7,6 @@ import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.SessionEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.SessionRepository;
-import gov.uk.courtdata.util.CourtDataUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,9 +30,6 @@ public class SessionInfoProcessorTest {
 
     @Captor
     private ArgumentCaptor<List<SessionEntity>> sessionsCaptor;
-
-    @Mock
-    private CourtDataUtil courtDataUtil;
 
     @Before
     public void setUp() {

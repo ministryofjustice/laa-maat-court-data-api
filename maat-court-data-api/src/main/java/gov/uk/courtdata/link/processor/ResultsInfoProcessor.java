@@ -3,9 +3,7 @@ package gov.uk.courtdata.link.processor;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.ResultEntity;
 import gov.uk.courtdata.model.Result;
-import gov.uk.courtdata.processor.ResultCodesProcessor;
 import gov.uk.courtdata.repository.ResultRepository;
-import gov.uk.courtdata.util.CourtDataUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +11,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
+import static gov.uk.courtdata.util.DateUtil.parse;
 
 @Component
 @RequiredArgsConstructor
 public class ResultsInfoProcessor implements Process {
 
     private final ResultRepository resultRepository;
-    private final CourtDataUtil courtDataUtil;
+
 
     @Override
     public void process(CourtDataDTO courtDataDTO) {
@@ -51,16 +50,16 @@ public class ResultsInfoProcessor implements Process {
                 .contactName(result.getContactName())
                 .firmName(result.getFirstName())
                 .laaOfficeAccount(result.getLaaOfficeAccount())
-                .legalAidWithdrawalDate(courtDataUtil.getDate(result.getLegalAidWithdrawalDate()))
-                .nextHearingDate(courtDataUtil.getDate(result.getNextHearingDate()))
+                .legalAidWithdrawalDate(parse(result.getLegalAidWithdrawalDate()))
+                .nextHearingDate(parse(result.getNextHearingDate()))
                 .nextHearingLocation(result.getNextHearingLocation())
                 .receivedDate(result.getReceivedDate())
                 .resultCode(result.getResultCode())
                 .resultCodeQualifiers(result.getResultCodeQualifiers())
                 .resultShortTitle(result.getResultShortTitle())
-                .sessionValidateDate(courtDataUtil.getDate(result.getSessionValidateDate()))
-                .legalAidWithdrawalDate(courtDataUtil.getDate(result.getLegalAidWithdrawalDate()))
-                .dateOfHearing(courtDataUtil.getDate(result.getDateOfHearing()))
+                .sessionValidateDate(parse(result.getSessionValidateDate()))
+                .legalAidWithdrawalDate(parse(result.getLegalAidWithdrawalDate()))
+                .dateOfHearing(parse(result.getDateOfHearing()))
                 .wqResult(G_NO)
                 .build();
     }

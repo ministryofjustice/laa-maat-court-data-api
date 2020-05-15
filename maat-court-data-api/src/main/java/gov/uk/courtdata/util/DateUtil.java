@@ -2,9 +2,18 @@ package gov.uk.courtdata.util;
 
 import java.time.LocalDate;
 
-public class DateUtil {
+public final class DateUtil {
 
-    public static LocalDate toDate(final String date) {
+    /***
+     *  Parse date string to localdate if not null
+     *  else
+     *  return null;
+     * @param date
+     * @return
+     */
+    public static LocalDate parse(final String date) {
         return date != null ? LocalDate.parse(date) : null;
     }
+
+
 }

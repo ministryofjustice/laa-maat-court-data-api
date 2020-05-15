@@ -1,7 +1,7 @@
 package gov.uk.courtdata.laaStatus.controller;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.exception.MaatCourtDataException;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.laaStatus.service.LaaStatusPublisher;
 import gov.uk.courtdata.laaStatus.validator.LaaStatusValidationProcessor;
 import gov.uk.courtdata.model.CaseDetails;
@@ -43,7 +43,7 @@ public class LaaStatusUpdateController {
         } catch (Exception exception) {
             assert messageCollection != null;
             messageCollection.getMessages().add(exception.getMessage());
-            throw new MaatCourtDataException("MAAT APT Call failed " + exception.getMessage() + "laa-logging" +laaLogging);
+            throw new MAATCourtDataException("MAAT APT Call failed " + exception.getMessage() + "laa-logging" +laaLogging);
         }
         return messageCollection;
     }

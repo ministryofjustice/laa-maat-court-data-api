@@ -1,7 +1,7 @@
 package gov.uk.courtdata.hearing.processor;
 
 import gov.uk.courtdata.entity.WQCase;
-import gov.uk.courtdata.hearing.magistrate.dto.MagistrateCourtDTO;
+import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQCaseRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class WQCaseProcessor {
     /**
      * @param magsCourtDTO
      */
-    public void process(final MagistrateCourtDTO magsCourtDTO) {
+    public void process(final HearingDTO magsCourtDTO) {
 
 
         WQCase wqCase = WQCase.builder().caseId(magsCourtDTO.getCaseId())
@@ -43,7 +43,7 @@ public class WQCaseProcessor {
      */
     private LocalDate getCreationDate(final String creationDate) {
         return
-                isNotEmpty(creationDate) ? DateUtil.toDate(creationDate) : LocalDate.now();
+                isNotEmpty(creationDate) ? DateUtil.parse(creationDate) : LocalDate.now();
 
     }
 

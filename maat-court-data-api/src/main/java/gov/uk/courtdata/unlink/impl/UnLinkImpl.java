@@ -4,7 +4,7 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.exception.MaatCourtDataException;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.*;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UNLINK_EVENT;
@@ -29,7 +28,7 @@ public class UnLinkImpl {
     private final IdentifierRepository identifierRepository;
     private final RepOrderCPDataRepository repOrderCPDataRepository;
 
-    @Transactional(rollbackFor = MaatCourtDataException.class)
+    @Transactional(rollbackFor = MAATCourtDataException.class)
     public void execute(UnlinkModel unlinkModel) {
 
         mapTxnID(unlinkModel);

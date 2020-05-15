@@ -1,7 +1,7 @@
 package gov.uk.courtdata.laaStatus.impl;
 
 import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.exception.MaatCourtDataException;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.laaStatus.processor.UpdateDefendantInfoProcessor;
 import gov.uk.courtdata.laaStatus.processor.UpdateOffenceInfoProcessor;
 import gov.uk.courtdata.laaStatus.processor.UpdateWqCoreInfoProcessor;
@@ -29,7 +29,7 @@ public class LaaStatusUpdateImpl {
     private final UpdateOffenceInfoProcessor updateOffenceInfoProcessor;
 
 
-    @Transactional(rollbackFor = MaatCourtDataException.class)
+    @Transactional(rollbackFor = MAATCourtDataException.class)
     public void execute(CourtDataDTO courtDataDTO) {
 
         log.info("LAA Status Update - Transaction Processing - Start" );

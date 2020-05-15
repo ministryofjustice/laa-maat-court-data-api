@@ -3,7 +3,7 @@ package gov.uk.courtdata.processor;
 
 import gov.uk.courtdata.entity.XLATResult;
 import gov.uk.courtdata.enums.WQType;
-import gov.uk.courtdata.exception.MaatCourtDataException;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.XLATResultRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.*;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ResultCodesProcessor {
+public class ResultCodeRefDataProcessor {
 
     private final XLATResultRepository xlatResultRepository;
 
@@ -38,7 +38,7 @@ public class ResultCodesProcessor {
                 log.info("A New CJS Result Code : " + resultCode + " has been added to the Ref Data");
             }
         } else {
-            throw new MaatCourtDataException("A Null Result Code is passed in");
+            throw new MAATCourtDataException("A Null Result Code is passed in");
         }
     }
 

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.exception.MaatCourtDataException;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.Unlink;
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,14 +35,14 @@ public class UnlinkValidatorTest {
 
     @Test
     public void givenUnlinkModelIsEmpty_whenValidateRequestIsInvoked_thenValidationFailed() {
-        exceptionRule.expect(MaatCourtDataException.class);
+        exceptionRule.expect(MAATCourtDataException.class);
         exceptionRule.expectMessage("Unlink Request is empty");
         unlinkValidator.validateRequest(null);
     }
 
     @Test
     public void givenMAAtIdIsNull_whenValidateRequestIsInvoked_thenValidationFailed() {
-        exceptionRule.expect(MaatCourtDataException.class);
+        exceptionRule.expect(MAATCourtDataException.class);
         exceptionRule.expectMessage("There is No Valid MAAT ID found");
         unlink.setMaatId(null);
         unlinkValidator.validateRequest(unlink);
@@ -50,7 +50,7 @@ public class UnlinkValidatorTest {
 
     @Test
     public void givenUserIdlIsNull_whenValidateRequestIsInvoked_thenValidationFailed() {
-        exceptionRule.expect(MaatCourtDataException.class);
+        exceptionRule.expect(MAATCourtDataException.class);
         exceptionRule.expectMessage("There is No Valid User ID found");
         unlink.setUserId(null);
         unlinkValidator.validateRequest(unlink);
@@ -58,7 +58,7 @@ public class UnlinkValidatorTest {
 
     @Test
     public void givenReasonIdIsNull_whenValidateRequestIsInvoked_thenValidationFailed() {
-        exceptionRule.expect(MaatCourtDataException.class);
+        exceptionRule.expect(MAATCourtDataException.class);
         exceptionRule.expectMessage("There is No Valid Reason ID found");
         unlink.setReasonId(null);
         unlinkValidator.validateRequest(unlink);
@@ -66,13 +66,13 @@ public class UnlinkValidatorTest {
 
     @Test
     public void givenWQLinkRegisterIsNull_whenValidateWQLinkRegisterIsInvoked_thenValidationFailed() {
-        exceptionRule.expect(MaatCourtDataException.class);
+        exceptionRule.expect(MAATCourtDataException.class);
         exceptionRule.expectMessage("There is No link established for MAAT ID : 123");
         unlinkValidator.validateWQLinkRegister(null,123);
     }
     @Test
     public void givenWQLinkRegisterHasMoreThanOneEntry_whenValidateWQLinkRegisterIsInvoked_thenValidationFailed() {
-        exceptionRule.expect(MaatCourtDataException.class);
+        exceptionRule.expect(MAATCourtDataException.class);
         exceptionRule.expectMessage("There are multiple links found for  MAAT ID : 123");
         WqLinkRegisterEntity wqLinkRegisterEntity1 = WqLinkRegisterEntity.builder().build();
         WqLinkRegisterEntity wqLinkRegisterEntity2 = WqLinkRegisterEntity.builder().build();

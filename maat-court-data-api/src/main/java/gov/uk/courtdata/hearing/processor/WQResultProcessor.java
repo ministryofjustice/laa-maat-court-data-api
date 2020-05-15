@@ -1,7 +1,7 @@
 package gov.uk.courtdata.hearing.processor;
 
 import gov.uk.courtdata.entity.WQResult;
-import gov.uk.courtdata.hearing.magistrate.dto.MagistrateCourtDTO;
+import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQResultRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class WQResultProcessor {
     /**
      * @param magsCourtDTO
      */
-    public void process(final MagistrateCourtDTO magsCourtDTO) {
+    public void process(final HearingDTO magsCourtDTO) {
 
 
         WQResult wqResult = WQResult.builder()
@@ -28,15 +28,15 @@ public class WQResultProcessor {
                 .resultShortTitle(magsCourtDTO.getResult().getResultShortTitle())
                 .resultText(magsCourtDTO.getResult().getResultText())
                 .resultCodeQualifiers(magsCourtDTO.getResult().getResultCodeQualifiers())
-                .nextHearingDate(DateUtil.toDate(magsCourtDTO.getResult().getNextHearingDate()))
+                .nextHearingDate(DateUtil.parse(magsCourtDTO.getResult().getNextHearingDate()))
                 .nextHearingLocation(magsCourtDTO.getResult().getNextHearingLocation())
                 .firmName(magsCourtDTO.getResult().getFirmName())
                 .contactName(magsCourtDTO.getResult().getContactName())
                 .laaOfficeAccount(magsCourtDTO.getResult().getLaaOfficeAccount())
-                .legalAidWithdrawalDate(DateUtil.toDate(magsCourtDTO.getResult().getLegalAidWithdrawalDate()))
-                .dateOfHearing(DateUtil.toDate(magsCourtDTO.getSession().getDateOfHearing()))
+                .legalAidWithdrawalDate(DateUtil.parse(magsCourtDTO.getResult().getLegalAidWithdrawalDate()))
+                .dateOfHearing(DateUtil.parse(magsCourtDTO.getSession().getDateOfHearing()))
                 .courtLocation(magsCourtDTO.getSession().getCourtLocation())
-                .sessionValidateDate(DateUtil.toDate(magsCourtDTO.getSession().getSessionValidatedDate()))
+                .sessionValidateDate(DateUtil.parse(magsCourtDTO.getSession().getSessionValidatedDate()))
                 .build();
 
         wqResultRepository.save(wqResult);

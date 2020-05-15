@@ -1,7 +1,7 @@
 package gov.uk.courtdata.hearing.processor;
 
 import gov.uk.courtdata.entity.WQSession;
-import gov.uk.courtdata.hearing.magistrate.dto.MagistrateCourtDTO;
+import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQSessionRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +20,12 @@ public class WQSessionProcessor {
     /**
      * @param magsCourtDTO
      */
-    public void process(MagistrateCourtDTO magsCourtDTO) {
+    public void process(HearingDTO magsCourtDTO) {
 
         WQSession wqSession = WQSession.builder()
                 .caseId(magsCourtDTO.getCaseId())
                 .txId(magsCourtDTO.getTxId())
-                .dateOfHearing(DateUtil.toDate(magsCourtDTO.getSession().getDateOfHearing()))
+                .dateOfHearing(DateUtil.parse(magsCourtDTO.getSession().getDateOfHearing()))
                 .courtLocation(magsCourtDTO.getSession().getCourtLocation())
                 .postHearingCustody(magsCourtDTO.getSession().getPostHearingCustody())
                 .sessionvalidatedate(getSessionDate(magsCourtDTO.getSession().getSessionValidatedDate()))
@@ -43,7 +43,7 @@ public class WQSessionProcessor {
      */
     private LocalDate getSessionDate(final String sessionDate) {
         return
-                isNotEmpty(sessionDate) ? DateUtil.toDate(sessionDate) : LocalDate.now();
+                isNotEmpty(sessionDate) ? DateUtil.parse(sessionDate) : LocalDate.now();
     }
 
 }

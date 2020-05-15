@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class MagistrateValidationProcessor {
+public class HearingValidationProcessor {
 
     private final LinkRegisterValidator linkRegisterValidator;
     private final MaatIdValidator maatIdValidator;

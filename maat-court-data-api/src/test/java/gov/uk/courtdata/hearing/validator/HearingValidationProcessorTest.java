@@ -21,16 +21,14 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class HearingValidationProcessorTest {
 
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
     @Mock
     private MaatIdValidator maatIdValidator;
     @Mock
     private LinkRegisterValidator linkRegisterValidator;
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     @InjectMocks
-    private CrownCourtValidationProcessor hearingValidationProcessor;
+    private HearingValidationProcessor hearingValidationProcessor;
 
     @BeforeEach
     public void setUp() {

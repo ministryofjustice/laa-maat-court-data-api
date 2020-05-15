@@ -2,8 +2,7 @@ package gov.uk.courtdata.hearing.service;
 
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.hearing.crowncourt.CrownCourtProcessingImpl;
-import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
-import gov.uk.courtdata.hearing.validator.CrownCourtValidationProcessor;
+import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +22,7 @@ public class HearingResultedServiceTest {
     private HearingResultedService hearingResultedService;
 
     @Mock
-    private CrownCourtValidationProcessor hearingValidationProcessor;
+    private HearingValidationProcessor hearingValidationProcessor;
     @Mock
     private CrownCourtProcessingImpl hearingResultedImpl;
 

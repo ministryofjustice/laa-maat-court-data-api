@@ -2,7 +2,7 @@ package gov.uk.courtdata.hearing.processor;
 
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.XLATResult;
-import gov.uk.courtdata.hearing.magistrate.dto.MagistrateCourtDTO;
+import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.OffenceRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.XLATResultRepository;
@@ -24,7 +24,7 @@ public class WQCoreProcessor {
     private final OffenceRepository offenceRepository;
 
 
-    public void process(final MagistrateCourtDTO magsCourtDTO) {
+    public void process(final HearingDTO magsCourtDTO) {
 
 
         WqCoreEntity wqCoreEntity = WqCoreEntity.builder()
@@ -49,7 +49,7 @@ public class WQCoreProcessor {
      * @param magsCourtDTO
      * @return
      */
-    private int processIfNewOffence(final MagistrateCourtDTO magsCourtDTO) {
+    private int processIfNewOffence(final HearingDTO magsCourtDTO) {
 
         Integer offenceCount =
                 offenceRepository.getOffenceCountForAsnSeq(magsCourtDTO.getCaseId(), magsCourtDTO.getOffence().getAsnSeq());
@@ -63,7 +63,7 @@ public class WQCoreProcessor {
      * @param magsCourtDTO
      * @return
      */
-    private int findWQType(final MagistrateCourtDTO magsCourtDTO) {
+    private int findWQType(final HearingDTO magsCourtDTO) {
 
         Optional<XLATResult> xlatResult =
                 xlatResultRepository.findById(magsCourtDTO.getResult().getResultCode());

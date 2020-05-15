@@ -8,13 +8,13 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.integrationTest.MockJMSServicesConfig;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.unlink.impl.UnLinkImpl;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UNLINK_EVENT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MAATCourtDataApplication.class)
+@SpringBootTest(classes = {MAATCourtDataApplication.class, MockJMSServicesConfig.class})
 public class UnLinkImplIntegrationTest {
 
 
@@ -42,7 +42,6 @@ public class UnLinkImplIntegrationTest {
 
 
     @Test
-    @Ignore
     public void givenUnlinkLinkModel_whenUnlinkImplIsInvoked_thenCaseIsUnlinked() {
 
         //given

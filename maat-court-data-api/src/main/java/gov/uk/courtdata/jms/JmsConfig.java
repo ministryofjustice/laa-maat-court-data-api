@@ -86,23 +86,6 @@ public class JmsConfig {
                         .build();
     }
 
-    /**
-     * @param accessKey
-     * @param secretKey
-     * @param region
-     * @return
-     */
-    private AmazonSQS awsSqsDlqClient(final String accessKey,
-                                      final String secretKey,
-                                      final String region) {
-        return AmazonSQSClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-                .withRegion(region)
-                .build();
-
-    }
-
-
 }
 
 

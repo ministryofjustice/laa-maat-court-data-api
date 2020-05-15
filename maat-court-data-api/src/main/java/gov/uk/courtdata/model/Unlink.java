@@ -2,11 +2,10 @@ package gov.uk.courtdata.model;
 
 import lombok.*;
 
+import java.util.UUID;
+
 @Data
 @Builder
-@Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class Unlink {
 
@@ -14,5 +13,7 @@ public class Unlink {
     private String userId;
     private Integer reasonId;
     private String reasonText;
+    private UUID laaTransactionId;
+
 
 }

@@ -1,9 +1,6 @@
 package gov.uk.courtdata.link.service;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.exception.MaatCourtDataException;
-import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.link.service.CreateLinkService;
 import gov.uk.courtdata.model.CaseDetails;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,22 +28,7 @@ public class CreateLinkListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.link}")
     public void receive(@Payload final String message) throws JmsException {
 
-        try {
-
-            log.info("Received JSON Message  {}", message);
-            CaseDetails linkMessage = gson.fromJson(message, CaseDetails.class);
-            log.info("Message converted {} ", linkMessage);
-            createLinkService.saveAndLink(linkMessage);
-
-        } catch (ValidationException vex) {
-            log.warn("validation failed.");
-            log.error("Validation error {}", vex);
-        } catch (MaatCourtDataException mex) {
-            log.warn("Create link failed.");
-            log.error("MaatCourtDataExceptiontion  {}", mex);
-            mex.printStackTrace();
-        }
+        CaseDetails linkMessage = gson.fromJson(message, CaseDetails.class);
+        createLinkService.saveAndLink(linkMessage);
     }
-
-
 }

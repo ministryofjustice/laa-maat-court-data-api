@@ -4,21 +4,20 @@ import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.repository.OffenceRepository;
-import gov.uk.courtdata.util.CourtDataUtil;
+import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
-import static gov.uk.courtdata.constants.CourtDataConstants.PENDING_IOJ_DECISION;
+import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import static gov.uk.courtdata.util.DateUtil.parse;
 
 @RequiredArgsConstructor
 @Component
 public class OffenceInfoProcessor implements Process {
 
-    private final CourtDataUtil courtDataUtil;
     private final OffenceRepository offenceRepository;
 
     @Override
@@ -35,13 +34,13 @@ public class OffenceInfoProcessor implements Process {
         return OffenceEntity.builder()
                 .caseId(courtDataDTO.getCaseId())
                 .txId(courtDataDTO.getTxId())
-                .asnSeq(offence.getAsnSeq())
+                .asnSeq(String.format(LEADING_ZERO_3, Integer.parseInt(offence.getAsnSeq())))
                 .offenceCode(offence.getOffenceCode())
                 .offenceClassification(offence.getOffenceClassification())
                 .legalAidStatus(offence.getLegalAidStatus())
-                .legalAidStatusDate(courtDataUtil.getDate(offence.getLegalAidStatusDate()))
+                .legalAidStatusDate(DateUtil.parse(offence.getLegalAidStatusDate()))
                 .legalaidReason(offence.getLegalAidReason())
-                .offenceDate(courtDataUtil.getDate(offence.getOffenceDate()))
+                .offenceDate(parse((offence.getOffenceDate())))
                 .offenceShortTitle(offence.getOffenceShortTitle())
                 .modeOfTrial(offence.getModeOfTrial())
                 .offenceWording(offence.getOffenceWording())

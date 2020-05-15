@@ -2,14 +2,14 @@ package gov.uk.courtdata.model.hearing;
 
 import lombok.*;
 
-@ToString
+
 @Data
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Result {
+
+
 
     private String asnSeq;
     private Integer resultCode;
@@ -22,4 +22,7 @@ public class Result {
     private String contactName;
     private String laaOfficeAccount;
     private String legalAidWithdrawalDate;
+
+
+
 }

@@ -1,13 +1,10 @@
-package gov.uk.courtdata.hearing.magistrate.dto;
+package gov.uk.courtdata.hearing.dto;
 
 
 import lombok.*;
 
-@ToString
 @Data
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class OffenceDTO {

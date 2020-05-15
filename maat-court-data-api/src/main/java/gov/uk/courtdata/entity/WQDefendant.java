@@ -10,10 +10,9 @@ import javax.persistence.Table;
 import java.time.LocalDate;
 
 @Builder
-@Setter
-@Getter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "XXMLA_WQ_DEFENDANT",schema = "MLA")
 public class WQDefendant {

@@ -33,6 +33,12 @@ public class MaatIdValidatorTest {
         maatIdValidator.validate(null);
     }
 
+    @Test
+    public void testWhenMaatIdIsMissingFromPayload_throwsException() {
+        thrown.expect(ValidationException.class);
+        thrown.expectMessage("MAAT id is missing.");
+        maatIdValidator.validate(0);
+    }
 
     @Test
     public void testWhenMaatIsNotNull_validationPasses() {

@@ -187,6 +187,7 @@ Resources:
       Cluster: !Ref AppEcsCluster
       LaunchType : !Ref pLaunchType
       DesiredCount: !If [ cDevTest, 1, 2 ]
+      HealthCheckGracePeriodSeconds: 120
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: DISABLED
@@ -319,10 +320,10 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: LoadBalancer
     Properties:
-      HealthCheckIntervalSeconds: 25
+      HealthCheckIntervalSeconds: 15
       HealthCheckPath: /actuator/info
       HealthCheckProtocol: HTTP
-      HealthCheckTimeoutSeconds: 15
+      HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
       TargetType: ip
       Name: !Sub '${pAppName}-TargetGroup'

@@ -8,7 +8,6 @@ import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.repository.OffenceRepository;
-import gov.uk.courtdata.util.CourtDataUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,8 +28,7 @@ public class OffenceInfoProcessorTest {
     private OffenceInfoProcessor offenceInfoProcessor;
     @Spy
     private OffenceRepository offenceRepository;
-    @Mock
-    private CourtDataUtil courtDataUtil;
+
     private TestModelDataBuilder testModelDataBuilder;
     @Captor
     private ArgumentCaptor<List<OffenceEntity>> OffenceCaptor;

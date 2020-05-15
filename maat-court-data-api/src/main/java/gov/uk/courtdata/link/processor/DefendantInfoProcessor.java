@@ -6,12 +6,12 @@ import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.repository.DefendantRepository;
-import gov.uk.courtdata.util.CourtDataUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.CREATE_LINK;
 import static gov.uk.courtdata.constants.CourtDataConstants.SEARCH_TYPE_0;
+import static gov.uk.courtdata.util.DateUtil.parse;
 
 
 @Component
@@ -19,7 +19,6 @@ import static gov.uk.courtdata.constants.CourtDataConstants.SEARCH_TYPE_0;
 public class DefendantInfoProcessor implements Process {
 
     private final DefendantRepository defendantRepository;
-    private final CourtDataUtil courtDataUtil;
 
     @Override
     public void process(CourtDataDTO courtDataDTO) {
@@ -34,7 +33,7 @@ public class DefendantInfoProcessor implements Process {
                 .forename(defendant.getForename())
                 .surname(defendant.getSurname())
                 .organisation(defendant.getOrganization())
-                .dateOfBirth(courtDataUtil.getDate(defendant.getDateOfBirth()))
+                .dateOfBirth(parse(defendant.getDateOfBirth()))
                 .address_line1(defendant.getAddress_line1())
                 .address_line2(defendant.getAddress_line2())
                 .address_line3(defendant.getAddress_line3())

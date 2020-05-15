@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Setter
+
 @Builder
 @Generated
 @Data

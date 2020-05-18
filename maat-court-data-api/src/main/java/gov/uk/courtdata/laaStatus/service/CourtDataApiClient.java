@@ -27,24 +27,24 @@ public class CourtDataApiClient {
     private String laaUpdateUrl;
 
     public void invoke(LaaStatusUpdate laaStatusUpdate) {
-
-        String logging = LaaTransactionLogging.builder().maatId(laaStatusUpdate.getMaatId()).toString();
-        log.info("Get oauth token {}", logging);
-        CourtDataApiService client =
-                WebReactiveFeign
-                        .<CourtDataApiService>builder()
-                        .target(CourtDataApiService.class, tokenURL);
-
-        Mono<Token> oAuthToken = client.getOAuthToken(oauthClientId, oauthSecret)
-                .onErrorMap(CourtDataApiClient::handleAuthTokenError);
-
-        Token token = oAuthToken.block();
-
-        Mono<Void>  laaStatus = client.postLaaStatusUpdate(laaStatusUpdate)
-                .onErrorMap(CourtDataApiClient::handleCDAError);
-
-        laaStatus.block();
-        log.info("After update to LAA status update {}", logging);
+//
+//        String logging = LaaTransactionLogging.builder().maatId(laaStatusUpdate.getMaatId()).toString();
+//        log.info("Get oauth token {}", logging);
+//        CourtDataAdaptorClient client =
+//                WebReactiveFeign
+//                        .<CourtDataAdaptorClient>builder()
+//                        .target(CourtDataAdaptorClient.class, tokenURL);
+//
+//        Mono<Token> oAuthToken = client.getOAuthToken(oauthClientId, oauthSecret)
+//                .onErrorMap(CourtDataApiClient::handleAuthTokenError);
+//
+//        Token token = oAuthToken.block();
+//
+//        Mono<Void>  laaStatus = client.postLaaStatusUpdate(laaStatusUpdate)
+//                .onErrorMap(CourtDataApiClient::handleCDAError);
+//
+//        laaStatus.block();
+//        log.info("After update to LAA status update {}", logging);
     }
 
     private static Throwable handleAuthTokenError(Throwable e) {

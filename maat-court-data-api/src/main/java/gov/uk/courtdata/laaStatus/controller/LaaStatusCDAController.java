@@ -42,11 +42,9 @@ public class LaaStatusCDAController {
 
     public void updateLaaStatus(RootData repOrderData) {
 
-        gsonBuilder.serializeNulls();
-
         log.info("Get oauth token");
 
-        final String json = gsonBuilder.create() .toJson(repOrderData);
+        final String json = gsonBuilder.create().toJson(repOrderData);
         log.info("JSON=" + json);
 
         //Generate Token
@@ -88,10 +86,6 @@ public class LaaStatusCDAController {
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
     }
-
-
-
-
 
 
 }

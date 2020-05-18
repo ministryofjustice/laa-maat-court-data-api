@@ -20,7 +20,6 @@ public class DefenceOrganisation {
     @Expose
     public String laaContractNumber;
     @SerializedName("sra_number")
-    @Expose
     public String sraNumber;
     @SerializedName("bar_council_membership_number")
     @Expose

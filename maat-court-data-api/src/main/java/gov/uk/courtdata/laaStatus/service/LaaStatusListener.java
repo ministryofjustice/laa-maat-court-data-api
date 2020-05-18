@@ -36,7 +36,7 @@ public class LaaStatusListener {
         String logging = LaaTransactionLogging.builder()
                 .maatId(laaStatusUpdate.getMaatId())
                 .laaTransactionId(laaStatusUpdate.getLaaTransactionId()).build().toString();
-        log.info("POST to CDA {}" , logging);
+        log.info("POST Rep Order update to CDA {}", logging);
         laaStatusPostCDAService.process(laaStatusUpdate);
         log.info("After laa update {}", logging);
         laaStatusUpdateService.execute(laaStatusUpdate);

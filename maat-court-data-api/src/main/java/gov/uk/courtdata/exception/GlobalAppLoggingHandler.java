@@ -8,10 +8,7 @@ import io.sentry.event.BreadcrumbBuilder;
 import io.sentry.event.UserBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +30,13 @@ public class GlobalAppLoggingHandler {
         log.info("Failed: Exception occur  - " + laaTransactionLogging);
         log.error("Exception StackTrace", ex);
 
+        Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Exception: "+ex.getMessage()).setLevel(Breadcrumb.Level.ERROR).build());
+
         //Sentry
+        Sentry.getContext().addTag("laaTransactionId", MDC.get("laaTransactionId"));
+        Sentry.getContext().addTag("caseUrn", MDC.get("caseUrn"));
+        Sentry.getContext().setUser(new UserBuilder().setId(MDC.get("maatId")).build());
+
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage(ex.getMessage()).setLevel(Breadcrumb.Level.ERROR).build());
         Sentry.capture(ex);
     }
@@ -48,9 +51,19 @@ public class GlobalAppLoggingHandler {
 
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder()
                 .setMessage("Message from a queue has been processed successfully.").setLevel(Breadcrumb.Level.INFO).build());
-        Sentry.clearContext();
-        MDC.clear();
+
     }
+
+
+    @After(" execution(* gov.uk.courtdata.*.service.*.receive(..))  ")
+    public void afterProcessEnds(JoinPoint joinPoint) {
+
+        Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder()
+                .setMessage("SQS Message processing finished.  ").setLevel(Breadcrumb.Level.INFO).build());
+    }
+
+
+
 
     /**
      * This method will log the message and also put the message to MDC fo logging in the case of any failure (e.g. exception occur).
@@ -66,6 +79,10 @@ public class GlobalAppLoggingHandler {
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);
         log.info("Received a JSON Message and converted {}",laaTransactionLogging.toString());
         MDC.put("message", laaTransactionLogging.toString());
+
+        MDC.put("caseUrn",laaTransactionLogging.getCaseUrn());
+        MDC.put("laaTransactionId",laaTransactionLogging.getLaaTransactionId().toString());
+        MDC.put("maatId",laaTransactionLogging.getMaatId().toString());
 
         //Sentry.
         Sentry.getContext().addTag("laaTransactionId", laaTransactionLogging.getLaaTransactionId().toString());

@@ -21,8 +21,7 @@ public class MAATCourtDataApplication {
 
     @PostConstruct
     public void initSentry() {
-        SentryClient sC = Sentry.init();
-        //String globalVar = sC.getEnvironment();
+        SentryClient sentryClient = Sentry.init();
     }
 
     @Bean

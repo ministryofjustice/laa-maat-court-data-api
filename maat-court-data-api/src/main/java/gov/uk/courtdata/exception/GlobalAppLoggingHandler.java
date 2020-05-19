@@ -8,7 +8,11 @@ import io.sentry.event.BreadcrumbBuilder;
 import io.sentry.event.UserBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +31,7 @@ public class GlobalAppLoggingHandler {
     public void afterThrowingHearingDetail(JoinPoint joinPoint, RuntimeException ex) {
 
         String laaTransactionLogging = MDC.get("message");
-        log.info("Failed: Exception occur  - " + laaTransactionLogging);
+        log.info("Failed: Exception occur - " + laaTransactionLogging);
         log.error("Exception StackTrace", ex);
 
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Exception: "+ex.getMessage()).setLevel(Breadcrumb.Level.ERROR).build());
@@ -51,7 +55,6 @@ public class GlobalAppLoggingHandler {
 
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder()
                 .setMessage("Message from a queue has been processed successfully.").setLevel(Breadcrumb.Level.INFO).build());
-
     }
 
 
@@ -60,10 +63,10 @@ public class GlobalAppLoggingHandler {
 
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder()
                 .setMessage("SQS Message processing finished.  ").setLevel(Breadcrumb.Level.INFO).build());
+
+        Sentry.capture("AWS SQS Message processed.");
+
     }
-
-
-
 
     /**
      * This method will log the message and also put the message to MDC fo logging in the case of any failure (e.g. exception occur).
@@ -91,7 +94,6 @@ public class GlobalAppLoggingHandler {
 
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder()
                 .setMessage("Received a JSON Message and converted " + laaTransactionLogging.toString() ).setLevel(Breadcrumb.Level.INFO).build());
-
 
     }
 }

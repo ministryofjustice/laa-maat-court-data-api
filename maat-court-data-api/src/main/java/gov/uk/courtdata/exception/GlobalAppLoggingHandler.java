@@ -30,23 +30,23 @@ public class GlobalAppLoggingHandler {
     @AfterThrowing(pointcut = "execution(* gov.uk.courtdata.*.service.*.receive(..))", throwing = "ex")
     public void afterThrowingHearingDetail(JoinPoint joinPoint, RuntimeException ex) {
 
-        String laaTransactionLogging = MDC.get("message");
-        log.info("Failed: Exception occur - " + laaTransactionLogging);
-        log.error("Exception StackTrace", ex);
-
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Exception: "+ex.getMessage()).setLevel(Breadcrumb.Level.ERROR).build());
+        Sentry.clearContext();
 
-        //Sentry
         Sentry.getContext().addTag("laaTransactionId", MDC.get("laaTransactionId"));
         Sentry.getContext().addTag("caseUrn", MDC.get("caseUrn"));
         Sentry.getContext().setUser(new UserBuilder().setId(MDC.get("maatId")).build());
 
+        String laaTransactionLogging = MDC.get("message");
+        log.error("Exception StackTrace"+laaTransactionLogging, ex);
+
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage(ex.getMessage()).setLevel(Breadcrumb.Level.ERROR).build());
         Sentry.capture(ex);
+        Sentry.clearContext();
     }
 
     /**
-     *
+     * This method will be called at the end when there is a successful message processing.
      * @param joinPoint
      */
     @AfterReturning(" execution(* gov.uk.courtdata.*.service.*.receive(..))  ")
@@ -57,13 +57,16 @@ public class GlobalAppLoggingHandler {
                 .setMessage("Message from a queue has been processed successfully.").setLevel(Breadcrumb.Level.INFO).build());
     }
 
-
+    /**
+     * This method will called every time at the of queue consumer, regardless of the outcome.
+     * @param joinPoint
+     */
     @After(" execution(* gov.uk.courtdata.*.service.*.receive(..))  ")
     public void afterProcessEnds(JoinPoint joinPoint) {
 
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder()
-                .setMessage("SQS Message processing finished.  ").setLevel(Breadcrumb.Level.INFO).build());
-
+                .setMessage("SQS Message processing finished.")
+                .setLevel(Breadcrumb.Level.INFO).build());
         Sentry.capture("AWS SQS Message processed.");
 
     }
@@ -80,6 +83,9 @@ public class GlobalAppLoggingHandler {
 
         Gson gson = new Gson();
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);
+        Sentry.getContext().addTag("laaTransactionId", laaTransactionLogging.getLaaTransactionId().toString());
+        Sentry.getContext().addTag("caseUrn", laaTransactionLogging.getCaseUrn());
+        Sentry.getContext().setUser(new UserBuilder().setId(laaTransactionLogging.getMaatId().toString()).build());
         log.info("Received a JSON Message and converted {}",laaTransactionLogging.toString());
         MDC.put("message", laaTransactionLogging.toString());
 
@@ -87,13 +93,10 @@ public class GlobalAppLoggingHandler {
         MDC.put("laaTransactionId",laaTransactionLogging.getLaaTransactionId().toString());
         MDC.put("maatId",laaTransactionLogging.getMaatId().toString());
 
-        //Sentry.
-        Sentry.getContext().addTag("laaTransactionId", laaTransactionLogging.getLaaTransactionId().toString());
-        Sentry.getContext().addTag("caseUrn", laaTransactionLogging.getCaseUrn());
-        Sentry.getContext().setUser(new UserBuilder().setId(laaTransactionLogging.getMaatId().toString()).build());
 
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder()
-                .setMessage("Received a JSON Message and converted " + laaTransactionLogging.toString() ).setLevel(Breadcrumb.Level.INFO).build());
+                .setMessage("Received a JSON Message and converted " + laaTransactionLogging.toString() )
+                .setLevel(Breadcrumb.Level.INFO).build());
 
     }
 }

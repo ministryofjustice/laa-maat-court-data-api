@@ -60,7 +60,6 @@ public class LaaStatusCDAController {
         log.info("Oauth URL=={} - Laa Logging {}", oauthURI.toString(), laaLogging);
 
         ResponseEntity<Token> token = restTemplate.exchange(oauthURI, HttpMethod.POST, HttpEntity.EMPTY, Token.class);
-        //todo?
         log.info("token {}", token );
         //Invoke CP laa update
         HttpHeaders headers = new HttpHeaders();

@@ -37,6 +37,4 @@ public class SentryConfig {
     SentryClient sentryCliennt() {
         return SentryClientFactory.sentryClient();
     }
-
-
 }

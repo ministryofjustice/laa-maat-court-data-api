@@ -8,7 +8,7 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
 
 @TestConfiguration
-public class MockJMSServicesConfig {
+public class MockServicesConfig {
 
     @MockBean(name = "messageListenerContainer")
     private DefaultJmsListenerContainerFactory messageListenerContainer;

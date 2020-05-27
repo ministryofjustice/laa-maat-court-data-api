@@ -42,7 +42,7 @@ cda:
 
 
 sentry:
-  environment: 324
-  dsn: dsn-url
+  environment: ${SENTRY_ENV}
+  dsn: ${SENTRY_DSN}
   release: 1.1.1
-  servername: aws-ecs
+  servername: aws-ecs-con

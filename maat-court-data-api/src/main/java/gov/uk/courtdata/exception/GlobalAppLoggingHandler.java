@@ -83,9 +83,12 @@ public class GlobalAppLoggingHandler {
 
         Gson gson = new Gson();
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);
-        Sentry.getContext().addTag("laaTransactionId", laaTransactionLogging.getLaaTransactionId().toString());
-        Sentry.getContext().addTag("caseUrn", laaTransactionLogging.getCaseUrn());
-        Sentry.getContext().setUser(new UserBuilder().setId(laaTransactionLogging.getMaatId().toString()).build());
+        Sentry.getContext().addTag("laaTransactionId",
+                laaTransactionLogging.getLaaTransactionId()!=null?laaTransactionLogging.getLaaTransactionId().toString():"");
+        Sentry.getContext().addTag("caseUrn",
+                laaTransactionLogging.getCaseUrn()!=null?laaTransactionLogging.getCaseUrn():"");
+        Sentry.getContext().setUser(new UserBuilder()
+                .setId(laaTransactionLogging.getMaatId()!=null?laaTransactionLogging.getMaatId().toString():"").build());
         log.info("Received a JSON Message and converted {}",laaTransactionLogging.toString());
         MDC.put("message", laaTransactionLogging.toString());
 
@@ -93,10 +96,8 @@ public class GlobalAppLoggingHandler {
         MDC.put("laaTransactionId",laaTransactionLogging.getLaaTransactionId().toString());
         MDC.put("maatId",laaTransactionLogging.getMaatId().toString());
 
-
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder()
                 .setMessage("Received a JSON Message and converted " + laaTransactionLogging.toString() )
                 .setLevel(Breadcrumb.Level.INFO).build());
-
     }
 }

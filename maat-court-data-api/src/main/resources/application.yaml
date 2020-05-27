@@ -36,3 +36,10 @@ cda:
     clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
   laastatus:
     url: ${CDA_LAA_STATUS_URL}
+
+
+sentry:
+  environment: ${SENTRY_ENV}
+  dsn: ${SENTRY_DSN}
+  release: 1.1.1
+  servername: aws-ecs

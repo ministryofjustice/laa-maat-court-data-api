@@ -39,3 +39,10 @@ cda:
     clientSecret: cdaPass
   laastatus:
     url: cdaUrl
+
+
+sentry:
+  environment: 324
+  dsn: dsn-url
+  release: 1.1.1
+  servername: aws-ecs

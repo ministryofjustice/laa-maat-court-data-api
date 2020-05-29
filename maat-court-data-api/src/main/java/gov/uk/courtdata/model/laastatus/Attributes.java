@@ -8,11 +8,9 @@ import lombok.*;
 import lombok.Data;
 
 
-@ToString
+
 @Data
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Attributes {

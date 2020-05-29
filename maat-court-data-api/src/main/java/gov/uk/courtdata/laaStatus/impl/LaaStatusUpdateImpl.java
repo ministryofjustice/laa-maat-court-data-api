@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class LaaStatusUpdateImpl {
 
-    private final IdentifierRepository identifierRepository;
     private final CaseInfoProcessor caseInfoProcessor;
     private final UpdateWqCoreInfoProcessor updateWqCoreInfoProcessor;
     private final UpdateWqLinkRegisterProcessor updateWqLinkRegisterProcessor;
@@ -33,7 +32,6 @@ public class LaaStatusUpdateImpl {
     public void execute(CourtDataDTO courtDataDTO) {
 
         log.info("LAA Status Update - Transaction Processing - Start" );
-        mapTxnID(courtDataDTO);
         caseInfoProcessor.process(courtDataDTO);
         log.info("LAA Status Update - Case Details are processed");
         updateWqCoreInfoProcessor.process(courtDataDTO);
@@ -51,11 +49,6 @@ public class LaaStatusUpdateImpl {
         log.info("LAA Status Update -  Transaction Processing - End");
     }
 
-    private void mapTxnID(CourtDataDTO courtDataDTO) {
-
-        courtDataDTO.setTxId(identifierRepository.getTxnID());
-
-    }
 
 
 }

@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
+/**
+ *
+ */
 @Component
 @Slf4j
 @AllArgsConstructor
@@ -25,14 +27,17 @@ public class RepOrderUpdateMessageBuilder {
 
     private final SolicitorMAATDataRepository solicitorMAATDataRepository;
 
+
     /**
+     * Build representation order(aka laa status update) message to post to CDA.
+     *
      * @param caseDetails
      */
-    public RootData build(CaseDetails caseDetails) {
+    public LaaStatusUpdate build(final CaseDetails caseDetails) {
 
-        return RootData.builder().data(
+        return LaaStatusUpdate.builder().data(
                 RepOrderData.builder()
-                        .type("representation_orders")
+                        .type("representation_order")
                         .attributes(buildAttributes(caseDetails))
                         .relationships(mapRelationships(caseDetails)).build())
                 .build();
@@ -42,7 +47,8 @@ public class RepOrderUpdateMessageBuilder {
     private Attributes buildAttributes(CaseDetails caseDetails) {
 
         List<Offence> offences =
-                caseDetails.getDefendant().getOffences().stream().map(this::mapOffence).collect(Collectors.toList());
+                caseDetails.getDefendant().getOffences().stream()
+                        .map(this::mapOffence).collect(Collectors.toList());
         return Attributes.builder()
                 .maatReference(caseDetails.getMaatId())
                 .defenceOrganisation(mapDefenceOrganisation(caseDetails))
@@ -51,6 +57,11 @@ public class RepOrderUpdateMessageBuilder {
     }
 
 
+    /**
+     *
+     * @param caseDetails
+     * @return
+     */
     private DefenceOrganisation mapDefenceOrganisation(CaseDetails caseDetails) {
 
         SolicitorMAATDataEntity solicitorDetails = solicitorMAATDataRepository.findBymaatId(caseDetails.getMaatId()).get();
@@ -62,16 +73,26 @@ public class RepOrderUpdateMessageBuilder {
     }
 
 
+    /**
+     *
+     * @param solicitorMAATDataEntity
+     * @return
+     */
     private Organisation findSolicitorDetails(SolicitorMAATDataEntity solicitorMAATDataEntity) {
 
         return Organisation.builder()
+                //TODO: to be enabled when CDA handled invalid data.
                 //.address(mapAddress(solicitorMAATDataEntity))
                 // .contact(mapContact(solicitorMAATDataEntity))
                 .name(solicitorMAATDataEntity.getAccountName())
                 .build();
     }
 
-
+    /**
+     *
+     * @param solicitorDetails
+     * @return
+     */
     private Address mapAddress(SolicitorMAATDataEntity solicitorDetails) {
 
         return Address.builder().address1(solicitorDetails.getLine1())
@@ -82,6 +103,11 @@ public class RepOrderUpdateMessageBuilder {
                 .postcode(solicitorDetails.getPostcode()).build();
     }
 
+    /**
+     *
+     * @param solicitorDetails
+     * @return
+     */
     private Contact mapContact(SolicitorMAATDataEntity solicitorDetails) {
         return Contact.builder().work(solicitorDetails.getPhone())
                 .primaryEmail(solicitorDetails.getAdminEmail())
@@ -98,6 +124,7 @@ public class RepOrderUpdateMessageBuilder {
 
         return Offence.builder()
                 .offenceId(offence.getOffenceId())
+
                 .statusCode(offence.getLegalAidStatus())
                 .statusDate(offence.getLegalAidStatusDate())
                 .effectiveStartDate(offence.getLegalAidStatusDate())
@@ -105,6 +132,11 @@ public class RepOrderUpdateMessageBuilder {
     }
 
 
+    /**
+     *
+     * @param caseDetails
+     * @return
+     */
     private Relationships mapRelationships(final CaseDetails caseDetails) {
 
         return Relationships.builder()
@@ -112,6 +144,11 @@ public class RepOrderUpdateMessageBuilder {
                 .build();
     }
 
+    /**
+     *
+     * @param maatId
+     * @return
+     */
     private Defendant mapDefendant(final Integer maatId) {
 
         return Defendant.builder().data(DefendantData.builder()
@@ -121,6 +158,11 @@ public class RepOrderUpdateMessageBuilder {
     }
 
 
+    /**
+     *
+     * @param maatId
+     * @return
+     */
     private String findDefendantId(final Integer maatId) {
         Optional<RepOrderCPDataEntity> repOrderCPData
                 = repOrderCPDataRepository.findByrepOrderId(maatId);

@@ -1,10 +1,9 @@
 package gov.uk.courtdata.laaStatus.service;
 
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.laaStatus.builder.RepOrderUpdateMessageBuilder;
-import gov.uk.courtdata.laaStatus.controller.LaaStatusCDAController;
-import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.laastatus.RootData;
-import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
+import gov.uk.courtdata.laaStatus.client.CourtDataAdapterClient;
+import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,23 +13,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LaaStatusPostCDAService {
 
-
-    private final LaaStatusCDAController laaStatusCDAController;
-
     private final RepOrderUpdateMessageBuilder repOrderUpdateMessageBuilder;
 
-    private final SolicitorMAATDataRepository solicitorMAATDataRepository;
+    private final CourtDataAdapterClient courtDataAdapterClient;
 
+    public void process(final CourtDataDTO courtDataDTO) {
 
-    public void process(final CaseDetails caseDetails) {
-
-        RootData repOrderData = repOrderUpdateMessageBuilder.build(caseDetails);
+        LaaStatusUpdate repOrderData =
+                repOrderUpdateMessageBuilder.build(courtDataDTO.getCaseDetails());
 
         log.debug(repOrderData.toString());
-        laaStatusCDAController.updateLaaStatus(repOrderData);
-
-        //  courtDataApiClient.invoke(repOrderData);
-
+        courtDataAdapterClient.postLaaStatus(repOrderData);
 
     }
 

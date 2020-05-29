@@ -1,6 +1,7 @@
 package gov.uk.courtdata.laaStatus.controller;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.laaStatus.builder.CourtDataDTOBuilder;
 import gov.uk.courtdata.laaStatus.service.LaaStatusPostCDAService;
 import gov.uk.courtdata.model.CaseDetails;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ public class TestController {
 
     private final LaaStatusPostCDAService laaStatusPostCDAService;
 
+    private final CourtDataDTOBuilder courtDataDTOBuilder;
+
 //    @PostMapping("/saveAndLink")
 //    public String saveAndLink(@RequestBody String jsonPayload) {
 //        saveAndLinkProcessor.process(jsonPayload);
@@ -33,8 +36,8 @@ public class TestController {
     @PostMapping("/laaupdate")
     public String unLink(@RequestBody String jsonPayload) {
         CaseDetails unlink = gson.fromJson(jsonPayload, CaseDetails.class);
-        log.info("json posted"+unlink.toString());
-        laaStatusPostCDAService.process(unlink);
+        log.info("json posted" + unlink.toString());
+        laaStatusPostCDAService.process(courtDataDTOBuilder.build(unlink));
         return "Transaction has been unlinked successfully";
     }
 }

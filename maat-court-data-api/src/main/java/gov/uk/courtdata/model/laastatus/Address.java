@@ -6,11 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.*;
 
-@ToString
+
 @Data
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Address {

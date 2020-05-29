@@ -9,6 +9,7 @@ import gov.uk.courtdata.link.processor.CaseInfoProcessor;
 import gov.uk.courtdata.link.processor.SessionInfoProcessor;
 import gov.uk.courtdata.link.processor.SolicitorInfoProcessor;
 import gov.uk.courtdata.repository.IdentifierRepository;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;

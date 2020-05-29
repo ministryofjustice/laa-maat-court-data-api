@@ -6,7 +6,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.integrationTest.MockJMSServicesConfig;
+import gov.uk.courtdata.integrationTest.MockServicesConfig;
 import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Result;
@@ -15,8 +15,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
@@ -25,7 +23,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class,MockJMSServicesConfig.class})
+@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 public class SaveAndLinkImplIntegrationTest {
 
 

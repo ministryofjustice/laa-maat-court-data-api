@@ -8,7 +8,7 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.integrationTest.MockJMSServicesConfig;
+import gov.uk.courtdata.integrationTest.MockServicesConfig;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;
@@ -28,7 +28,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UNLINK_EVENT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockJMSServicesConfig.class})
+@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 public class UnLinkImplIntegrationTest {
 
 

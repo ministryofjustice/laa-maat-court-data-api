@@ -12,5 +12,4 @@ public class MAATCourtDataApplication {
 
         SpringApplication.run(MAATCourtDataApplication.class, args);
     }
-
 }

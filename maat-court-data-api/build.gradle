@@ -46,6 +46,11 @@ dependencies {
     implementation 'com.amazonaws:amazon-sqs-java-messaging-lib:1.0.6'
 
 
+    compile 'io.sentry:sentry:1.7.30'
+    compile 'io.sentry:sentry-logback:1.7.30'
+
+
+
     // DB Dependencies
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.liquibase:liquibase-core'

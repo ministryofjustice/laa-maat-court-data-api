@@ -9,12 +9,14 @@ import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integrationTest.MockServicesConfig;
+import gov.uk.courtdata.laaStatus.client.CourtDataAdapterClient;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.unlink.impl.UnLinkImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,8 @@ public class UnLinkImplIntegrationTest {
     private Gson gson;
     private TestModelDataBuilder testModelDataBuilder;
     private TestEntityDataBuilder testEntityDataBuilder;
+    @Autowired
+    private CourtDataAdapterClient courtDataAdapterClient;
 
 
     @Test

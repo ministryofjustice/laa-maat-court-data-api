@@ -58,7 +58,6 @@ public class LaaStatusUpdateImplTest {
         laaStatusUpdateImpl.execute(courtDataDTO);
 
         //then
-        verify(identifierRepository, times(1)).getTxnID();
         verify(caseInfoProcessor, times(1)).process(courtDataDTO);
         verify(updateWqCoreInfoProcessor, times(1)).process(courtDataDTO);
         verify(updateWqLinkRegisterProcessor, times(1)).process(courtDataDTO);

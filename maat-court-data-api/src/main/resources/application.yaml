@@ -6,9 +6,21 @@ spring:
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: oracle.jdbc.OracleDriver
+
   liquibase:
     enabled: false
 
+  security:
+    oauth2:
+      client:
+        provider:
+          cda:
+            tokenUri: ${CDA_OAUTH_URL}
+        registration:
+          cda:
+            clientId: ${CDA_OAUTH_CLIENT_ID}
+            clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
+            authorizationGrantType: client_credentials
   jpa:
     database-platform: org.hibernate.dialect.Oracle10gDialect
     open-in-view: false
@@ -28,12 +40,7 @@ cloud-platform:
         laaStatus: ${LAA_STATUS_UPDATE_QUEUE}
         hearingResulted: ${HEARING_RESULTED_QUEUE}
 
-
 cda:
-  oauth:
-    url: ${CDA_OAUTH_URL}
-    clientId: ${CDA_OAUTH_CLIENT_ID}
-    clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
   laastatus:
     url: ${CDA_LAA_STATUS_URL}
 

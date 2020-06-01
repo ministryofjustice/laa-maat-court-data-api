@@ -57,5 +57,7 @@ public class OffenceEntity {
     private String attribute4;
     @Column(name = "ATTRIBUTE5")
     private String attribute5;
+    @Column(name = "OFFENCE_ID")
+    private String offenceId;
 
 }

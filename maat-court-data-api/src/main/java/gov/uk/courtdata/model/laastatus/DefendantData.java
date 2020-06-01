@@ -5,16 +5,17 @@ import com.google.gson.annotations.SerializedName;
 import lombok.*;
 import lombok.Data;
 
-
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Defendant {
+public class DefendantData {
 
-    @SerializedName("data")
+    @SerializedName("type")
     @Expose
-    public DefendantData data;
+    public String type;
+    @SerializedName("id")
+    @Expose
+    public String id;
 
 }

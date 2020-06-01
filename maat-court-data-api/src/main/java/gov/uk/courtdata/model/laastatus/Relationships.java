@@ -6,15 +6,14 @@ import lombok.*;
 import lombok.Data;
 
 
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Defendant {
+public class Relationships {
 
-    @SerializedName("data")
+    @SerializedName("defendant")
     @Expose
-    public DefendantData data;
+    public Defendant defendant;
 
 }

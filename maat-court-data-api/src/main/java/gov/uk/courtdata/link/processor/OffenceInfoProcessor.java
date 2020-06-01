@@ -47,6 +47,7 @@ public class OffenceInfoProcessor implements Process {
                 .iojDecision(getIojDecision(offence))
                 .wqOffence(getWQOffence(offence))
                 .applicationFlag(G_NO)
+                .offenceId(offence.getOffenceId())
                 .build();
     }
 

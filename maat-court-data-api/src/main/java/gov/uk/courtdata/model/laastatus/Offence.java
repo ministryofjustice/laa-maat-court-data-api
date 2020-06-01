@@ -1,6 +1,9 @@
 package gov.uk.courtdata.model.laastatus;
 
 import lombok.*;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import lombok.Data;
 
 
 @Data
@@ -9,11 +12,19 @@ import lombok.*;
 @AllArgsConstructor
 public class Offence {
 
-    private String uuid;
-    private String offenceCode;
-    private String offenceShortTitle;
-    private String offenceClassification;
-    private String offenceDate;
-    private Integer modeOfTrial;
-    private LegalAid legalAid;
+    @SerializedName("offence_id")
+    @Expose
+    public String offenceId;
+    @SerializedName("status_code")
+    @Expose
+    public String statusCode;
+    @SerializedName("status_date")
+    @Expose
+    public String statusDate;
+    @SerializedName("effective_start_date")
+    @Expose
+    public String effectiveStartDate;
+    @SerializedName("effective_end_date")
+    @Expose
+    public String effectiveEndDate;
 }

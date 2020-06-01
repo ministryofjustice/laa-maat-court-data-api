@@ -10,6 +10,18 @@ spring:
     platform: h2
     name: MLA
 
+  security:
+    oauth2:
+      client:
+        provider:
+          cda:
+            tokenUri: dummyURL
+        registration:
+          cda:
+            clientId: dummyURL
+            clientSecret: dummyURL
+            authorizationGrantType: client_credentials
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true

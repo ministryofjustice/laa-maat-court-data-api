@@ -22,7 +22,7 @@ public class HearingResultedListener {
     public void receive(@Payload final String message) throws JmsException {
 
         HearingResulted hearingResulted = gson.fromJson(message, HearingResulted.class);
-        hearingResultedService.process(hearingResulted);
+        hearingResultedService.execute(hearingResulted);
     }
 }
 

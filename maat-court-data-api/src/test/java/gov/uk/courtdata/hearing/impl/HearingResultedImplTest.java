@@ -1,7 +1,7 @@
 package gov.uk.courtdata.hearing.impl;
 
 import gov.uk.courtdata.enums.JurisdictionType;
-import gov.uk.courtdata.hearing.crowncourt.CrownCourtProcessingImpl;
+import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessingImpl;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Ignore;
 import org.junit.Test;

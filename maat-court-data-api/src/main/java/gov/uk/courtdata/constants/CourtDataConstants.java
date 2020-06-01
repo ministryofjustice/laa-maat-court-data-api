@@ -1,5 +1,8 @@
 package gov.uk.courtdata.constants;
 
+import gov.uk.courtdata.enums.WQType;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +21,7 @@ public interface CourtDataConstants {
     String DEFAULT_HEARING_CUS_STATUS = "D";
     String COMMON_PLATFORM = "CP";
     Integer WQ_UNLINK_EVENT = 24;
-    String LEADING_ZERO_3 ="%03d";
+    String LEADING_ZERO_3 = "%03d";
 
     List<Integer> FAIL_IOJ_DECISION = Arrays.asList(0, 2);
     int PASS_IOJ_DECISION = 1;
@@ -31,4 +34,13 @@ public interface CourtDataConstants {
     String AUTO_USER = "AUTO";
     String RESULT_CODE_DESCRIPTION = "Automatically added result";
     String UNKNOWN_OFFENCE = "UNKNOWN OFFENCE";
+
+    String CATY_CASE_TYPE = "APPEAL CC";
+
+
+    List<Integer> ACTIONABLE_WQ_QUEUES = Arrays.asList(
+            WQType.COMMITTAL_QUEUE.value(),
+            WQType.INDICTABLE_QUEUE.value(),
+            WQType.CONCLUSION_QUEUE.value());
+
 }

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,15 +11,15 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
 @Data
-@Table(name = "CROWN_COURT_OUTCOMES", schema = "TOGDATA")
-public class CrownCourtOutComeEntity {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "APPEAL_TYPES", schema = "TOGDATA")
+public class AppealTypeEntity {
 
     @Id
-    @Column(name = "OUTCOME")
-    private String outcome;
+    @Column(name = "CODE")
+    private String code;
 }

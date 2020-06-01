@@ -1,7 +1,9 @@
 package gov.uk.courtdata.hearing.service;
 
 import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.hearing.crowncourt.CrownCourtProcessingImpl;
+import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessingImpl;
+import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
+import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
@@ -10,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import static java.lang.String.format;
+
 
 @Service
 @RequiredArgsConstructor
@@ -20,23 +23,22 @@ public class HearingResultedService {
 
     private final HearingResultedImpl hearingResultedImpl;
 
-    private final CrownCourtProcessingImpl crownCourtProcessingImpl;
-
+    private final CrownCourtHearingService crownCourtHearingService;
 
 
     /**
-     * @param hearingResulted
+     * Process Work Queue Processing for both Crown & Mags Court.
+     * Process Crown Court Outcomes for CC
      */
-    public void process(final HearingResulted hearingResulted) {
+    public void execute(final HearingResulted hearingResulted) {
 
+        hearingValidationProcessor.validate(hearingResulted);
 
         switch (hearingResulted.getJurisdictionType()) {
-
             case CROWN:
-                crownCourtProcessingImpl.execute(hearingResulted);
+                crownCourtHearingService.execute(hearingResulted);
                 break;
             case MAGISTRATES:
-                hearingValidationProcessor.validate(hearingResulted);
                 hearingResultedImpl.execute(hearingResulted);
                 break;
             default:
@@ -44,6 +46,9 @@ public class HearingResultedService {
                         hearingResulted.getJurisdictionType()));
         }
 
+
     }
 
 }
+
+

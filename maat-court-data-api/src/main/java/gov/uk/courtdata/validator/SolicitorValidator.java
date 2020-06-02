@@ -2,7 +2,6 @@ package gov.uk.courtdata.validator;
 
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

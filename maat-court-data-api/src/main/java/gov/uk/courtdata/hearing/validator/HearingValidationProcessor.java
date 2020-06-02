@@ -4,23 +4,26 @@ import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class HearingValidationProcessor {
 
     private final LinkRegisterValidator linkRegisterValidator;
     private final MaatIdValidator maatIdValidator;
 
     /**
-     *
      * @param hearingRes
      */
     public void validate(final HearingResulted hearingRes) {
 
-        maatIdValidator.validate(hearingRes.getMaatId());
-        linkRegisterValidator.validate(hearingRes.getMaatId());
+        final Integer maatId = hearingRes.getMaatId();
+        maatIdValidator.validate(maatId);
+        linkRegisterValidator.validate(maatId);
+        log.info("Hearing Validation Completed for MAAT ID: {}", maatId);
     }
 
 

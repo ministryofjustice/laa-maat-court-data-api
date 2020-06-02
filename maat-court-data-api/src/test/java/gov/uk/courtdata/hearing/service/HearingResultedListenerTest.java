@@ -37,7 +37,7 @@ public class HearingResultedListenerTest {
         when(gson.fromJson(message, HearingResulted.class)).thenReturn(laaHearingDetails);
         hearingResultedListener.receive(message);
         //then
-        verify(hearingResultedService, times(1)).process(laaHearingDetails);
+        verify(hearingResultedService, times(1)).execute(laaHearingDetails);
     }
 
     @Test

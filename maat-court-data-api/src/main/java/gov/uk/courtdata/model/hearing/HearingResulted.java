@@ -19,11 +19,7 @@ public class HearingResulted {
     private String docLanguage;
     private String caseCreationDate;
     private String cjsAreaCode;
-    private String ccooOutcome;
-    private String crownCourtCode;
-    private String benchWarrantIssuedYn;
-    private String ccImprisioned;
-    private String appealType;
+    private CCOutComeData ccOutComeData;
     private Defendant defendant;
     private String inActive;
     private Session session;

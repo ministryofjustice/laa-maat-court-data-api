@@ -5,6 +5,8 @@ import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.hearing.processor.HearingWQProcessor;
 import gov.uk.courtdata.hearing.mapper.HearingDTOMapper;
 import gov.uk.courtdata.model.hearing.HearingResulted;
+import gov.uk.courtdata.model.hearing.Offence;
+import gov.uk.courtdata.model.hearing.Result;
 import gov.uk.courtdata.processor.OffenceCodeRefDataProcessor;
 import gov.uk.courtdata.processor.ResultCodeRefDataProcessor;
 import gov.uk.courtdata.repository.IdentifierRepository;
@@ -21,7 +23,7 @@ import java.util.List;
 public class HearingResultedImpl {
 
 
-    private final HearingDTOMapper magsCourtDTOMapper;
+    private final HearingDTOMapper hearingDTOMapper;
     private final IdentifierRepository identifierRepository;
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
     private final HearingWQProcessor hearingWQProcessor;
@@ -39,32 +41,38 @@ public class HearingResultedImpl {
 
         WqLinkRegisterEntity wqLinkReg = wqLinkRegisterEntities.iterator().next();
 
-        log.info("Begin Magistrate Courts Notification...");
+        log.info("Begin Work Queue  Notification...");
         hearingResulted.getDefendant().getOffences()
                 .forEach(offence -> {
-
                     offenceCodeRefDataProcessor.processOffenceCode(offence.getOffenceCode());
-
                     offence.getResults().forEach(result -> {
-
-                        HearingDTO magsCourtDto =
-                                magsCourtDTOMapper.toHearingDTO(hearingResulted,
-                                        wqLinkReg.getCaseId(), wqLinkReg.getProceedingId(),
-                                        getNextTxId(), offence, result);
-
-                        log.debug("Hearing resulted mapped to Mags Court DTO: {0}", magsCourtDto.toString());
-
-                        final Integer resultCode = magsCourtDto.getResult().getResultCode();
-                        resultCodeRefDataProcessor.processResultCode(resultCode);
-
-                        log.info("Start process offence code {0} and result code {1}", offence.getOffenceCode(), resultCode);
-                        hearingWQProcessor.process(magsCourtDto);
-                        log.info("Completed  offence code {0} and result code {1}", offence.getOffenceCode(), resultCode);
-
+                        if (isWorkQueueProcessingRequired(result.getResultCode())) {
+                            processResults(hearingResulted, wqLinkReg, offence, result);
+                        }
                     });
-                });
-        log.info("Finished Magistrate Courts Notification processing.");
 
+                });
+        log.info("Finished Work Queue Notification processing.");
+
+
+    }
+
+
+    private void processResults(HearingResulted hearingResulted, WqLinkRegisterEntity wqLinkReg, Offence offence, Result result) {
+
+        HearingDTO hearingDTO =
+                hearingDTOMapper.toHearingDTO(hearingResulted,
+                        wqLinkReg.getCaseId(), wqLinkReg.getProceedingId(),
+                        getNextTxId(), offence, result);
+
+        log.debug("Hearing resulted mapped to Hearing Court DTO: {}", hearingDTO.toString());
+
+        final Integer resultCode = hearingDTO.getResult().getResultCode();
+        resultCodeRefDataProcessor.processResultCode(resultCode);
+
+        log.info("Start process offence code {} and result code {}", offence.getOffenceCode(), resultCode);
+        hearingWQProcessor.process(hearingDTO);
+        log.info("Completed  offence code {} and result code {}", offence.getOffenceCode(), resultCode);
     }
 
 
@@ -75,5 +83,9 @@ public class HearingResultedImpl {
      */
     private Integer getNextTxId() {
         return identifierRepository.getTxnID();
+    }
+
+    protected boolean isWorkQueueProcessingRequired(Integer resultCode) {
+        return true;
     }
 }

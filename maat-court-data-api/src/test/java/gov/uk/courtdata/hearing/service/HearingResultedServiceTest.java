@@ -1,7 +1,8 @@
 package gov.uk.courtdata.hearing.service;
 
 import gov.uk.courtdata.enums.JurisdictionType;
-import gov.uk.courtdata.hearing.crowncourt.CrownCourtProcessingImpl;
+import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
+import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Test;
@@ -23,9 +24,11 @@ public class HearingResultedServiceTest {
 
     @Mock
     private HearingValidationProcessor hearingValidationProcessor;
-    @Mock
-    private CrownCourtProcessingImpl hearingResultedImpl;
 
+    @Mock
+    private HearingResultedImpl hearingResultedImpl;
+    @Mock
+    private CrownCourtHearingService crownCourtHearingService;
 
     @BeforeEach
     public void setUp() {
@@ -34,13 +37,28 @@ public class HearingResultedServiceTest {
     }
 
     @Test
-    public void givenACaseDetail_whenHearingServiceIsInvoked_thenMessageIsPublished() {
+    public void givenACaseDetail_whenCrownCourtHearingServiceIsReceived_thenCCImplIsInvoked() {
 
         //given
         HearingResulted hearingDetails = HearingResulted.builder().jurisdictionType(JurisdictionType.CROWN).build();
         //when
-        hearingResultedService.process(hearingDetails);
+        hearingResultedService.execute(hearingDetails);
         //then
+        verify(crownCourtHearingService, times(1)).execute(hearingDetails);
+
+
+
+    }
+
+    @Test
+    public void givenACaseDetail_whenMAGGCourtHearingServiceIsReceived_thenMagsCourtProcessingInvoked() {
+
+        //given
+        HearingResulted hearingDetails = HearingResulted.builder().jurisdictionType(JurisdictionType.MAGISTRATES).build();
+        //when
+        hearingResultedService.execute(hearingDetails);
+        //then
+        verify(hearingValidationProcessor, times(1)).validate(hearingDetails);
         verify(hearingResultedImpl, times(1)).execute(hearingDetails);
 
     }

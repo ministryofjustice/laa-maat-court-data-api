@@ -33,7 +33,7 @@ public class WQCoreProcessor {
                 .createdTime(LocalDate.now())
                 .createdUserId(MAGS_PROCESSING_SYSTEM_USER)
                 .extendedProcessing(processIfNewOffence(magsCourtDTO))
-                .wqType(findWQType(magsCourtDTO))
+                .wqType(findWQType(magsCourtDTO.getResult().getResultCode()))
                 .wqStatus(WAITING.value())
                 .maatUpdateStatus(2) // No pre-processing status required here so set to ready for processing.
                 .build();
@@ -60,13 +60,13 @@ public class WQCoreProcessor {
     /**
      * If the result code is available in xlat_result return the relevant WQ type.
      *
-     * @param magsCourtDTO
+     * @param resultCode
      * @return
      */
-    private int findWQType(final HearingDTO magsCourtDTO) {
+    public int findWQType(final Integer resultCode) {
 
         Optional<XLATResult> xlatResult =
-                xlatResultRepository.findById(magsCourtDTO.getResult().getResultCode());
+                xlatResultRepository.findById(resultCode);
 
         return xlatResult.get().getWqType();
 

@@ -46,7 +46,9 @@ public class HearingResultedImpl {
                 .forEach(offence -> {
                     offenceCodeRefDataProcessor.processOffenceCode(offence.getOffenceCode());
                     offence.getResults().forEach(result -> {
-                        if (isWorkQueueProcessingRequired(result.getResultCode())) {
+                        final Integer resultCode = result.getResultCode();
+                        resultCodeRefDataProcessor.processResultCode(resultCode);
+                        if (isWorkQueueProcessingRequired(resultCode)) {
                             processResults(hearingResulted, wqLinkReg, offence, result);
                         }
                     });
@@ -68,8 +70,6 @@ public class HearingResultedImpl {
         log.debug("Hearing resulted mapped to Hearing Court DTO: {}", hearingDTO.toString());
 
         final Integer resultCode = hearingDTO.getResult().getResultCode();
-        resultCodeRefDataProcessor.processResultCode(resultCode);
-
         log.info("Start process offence code {} and result code {}", offence.getOffenceCode(), resultCode);
         hearingWQProcessor.process(hearingDTO);
         log.info("Completed  offence code {} and result code {}", offence.getOffenceCode(), resultCode);

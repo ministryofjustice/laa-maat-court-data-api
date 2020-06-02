@@ -1,27 +1,28 @@
 package gov.uk.courtdata.link.processor;
 
 import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.entity.RepOrderCPDataEntity;
-import gov.uk.courtdata.repository.RepOrderCPDataRepository;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.repository.RepOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
 public class RepOrderInfoProcessor implements Process {
 
-    private final RepOrderCPDataRepository repOrderDataRepository;
+    private final RepOrderRepository repOrderRepository;
 
     @Override
-    public void process(CourtDataDTO courtDataDTO) {
+    public void process(CourtDataDTO saveAndLinkModel) {
 
-        Optional<RepOrderCPDataEntity> repOrderEntity = repOrderDataRepository.findByrepOrderId(courtDataDTO.getCaseDetails().getMaatId());
-
-        RepOrderCPDataEntity repOrder = repOrderEntity.get();
-        repOrder.setDefendantId(courtDataDTO.getCaseDetails().getDefendant().getDefendantId());
-        repOrderDataRepository.save(repOrder);
-
+        final CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
+        final Integer maatId = caseDetails.getMaatId();
+        RepOrderEntity repOrderEntity = repOrderRepository.findById(maatId).get();
+        repOrderEntity.setCaseId(saveAndLinkModel.getLibraId());
+        if (caseDetails.getAsn() != null) {
+            repOrderEntity.setArrestSummonsNo(caseDetails.getAsn());
+        }
+        repOrderRepository.save(repOrderEntity);
     }
 }

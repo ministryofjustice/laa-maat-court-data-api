@@ -30,7 +30,7 @@ public class TestModelDataBuilder {
     public CourtDataDTO getCourtDataDTO() {
         return CourtDataDTO.builder()
                 .caseId(123456)
-                .libraId(25467)
+                .libraId("CP25467")
                 .proceedingId(12123231)
                 .txId(123456)
                 .caseDetails(getCaseDetails())

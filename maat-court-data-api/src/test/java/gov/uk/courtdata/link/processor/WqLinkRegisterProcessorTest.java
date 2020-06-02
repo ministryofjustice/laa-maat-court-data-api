@@ -54,7 +54,7 @@ public class WqLinkRegisterProcessorTest {
         assertThat(wqLinkRegisterCaptor.getValue().getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(wqLinkRegisterCaptor.getValue().getMaatCat()).isEqualTo(solicitorMAATDataEntity.getCmuId());
         assertThat(wqLinkRegisterCaptor.getValue().getMlrCat()).isEqualTo(solicitorMAATDataEntity.getCmuId());
-        assertThat(wqLinkRegisterCaptor.getValue().getLibraId()).isEqualTo(COMMON_PLATFORM + courtDataDTO.getLibraId());
+        assertThat(wqLinkRegisterCaptor.getValue().getLibraId()).isEqualTo(courtDataDTO.getLibraId());
         assertThat(wqLinkRegisterCaptor.getValue().getMaatId()).isEqualTo(caseDetails.getMaatId());
     }
 }

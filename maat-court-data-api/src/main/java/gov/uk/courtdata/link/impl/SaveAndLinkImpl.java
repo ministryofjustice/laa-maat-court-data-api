@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.COMMON_PLATFORM;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -23,8 +25,9 @@ public class SaveAndLinkImpl {
     private final SessionInfoProcessor sessionInfoProcessor;
     private final OffenceInfoProcessor offenceInfoProcessor;
     private final ResultsInfoProcessor resultsInfoProcessor;
-    private final RepOrderInfoProcessor repOrderInfoProcessor;
+    private final RepOrderCPInfoProcessor repOrderCPInfoProcessor;
     private final IdentifierRepository identifierRepository;
+    private final RepOrderInfoProcessor repOrderInfoProcessor;
 
     @Transactional(rollbackFor = MAATCourtDataException.class)
     public void execute(CourtDataDTO courtDataDTO) {
@@ -48,6 +51,8 @@ public class SaveAndLinkImpl {
         log.info("Create Link - Offence Details are Processed");
         resultsInfoProcessor.process(courtDataDTO);
         log.info("Create Link - Results Details are Processed");
+        repOrderCPInfoProcessor.process(courtDataDTO);
+        log.info("Create Link - Rep Order CP Details are Processed");
         repOrderInfoProcessor.process(courtDataDTO);
         log.info("Create Link - Rep Order Details are Processed");
         log.info("Create Link - Transaction Processing - End");
@@ -55,7 +60,7 @@ public class SaveAndLinkImpl {
 
     private void mapIdentifiers(CourtDataDTO courtDataDTO) {
         courtDataDTO.setTxId(identifierRepository.getTxnID());
-        courtDataDTO.setLibraId(identifierRepository.getLibraID());
+        courtDataDTO.setLibraId(COMMON_PLATFORM + identifierRepository.getLibraID());
         courtDataDTO.setProceedingId(identifierRepository.getProceedingID());
         courtDataDTO.setCaseId(identifierRepository.getCaseID());
     }

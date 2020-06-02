@@ -50,6 +50,12 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public RepOrderEntity getRepOrder() {
+        return RepOrderEntity.builder()
+                .id(1234)
+                .dateModified(LocalDateTime.now())
+                .build();
+    }
     public ProceedingEntity getProceedingEntity() {
         return ProceedingEntity.builder()
                 .createdTxid(123)

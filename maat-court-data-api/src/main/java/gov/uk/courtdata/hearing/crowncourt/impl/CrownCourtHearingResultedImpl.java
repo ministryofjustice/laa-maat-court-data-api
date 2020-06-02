@@ -18,9 +18,10 @@ public class CrownCourtHearingResultedImpl extends HearingResultedImpl {
 
     private WQCoreProcessor wqCoreProcessor;
 
-    public CrownCourtHearingResultedImpl(HearingDTOMapper magsCourtDTOMapper, IdentifierRepository identifierRepository, WqLinkRegisterRepository wqLinkRegisterRepository, HearingWQProcessor hearingWQProcessor, ResultCodeRefDataProcessor resultCodeRefDataProcessor, OffenceCodeRefDataProcessor offenceCodeRefDataProcessor) {
-        super(magsCourtDTOMapper, identifierRepository, wqLinkRegisterRepository, hearingWQProcessor, resultCodeRefDataProcessor, offenceCodeRefDataProcessor);
+    public CrownCourtHearingResultedImpl(HearingDTOMapper hearingDTOMapper, IdentifierRepository identifierRepository, WqLinkRegisterRepository wqLinkRegisterRepository, HearingWQProcessor hearingWQProcessor, ResultCodeRefDataProcessor resultCodeRefDataProcessor, OffenceCodeRefDataProcessor offenceCodeRefDataProcessor) {
+        super(hearingDTOMapper, identifierRepository, wqLinkRegisterRepository, hearingWQProcessor, resultCodeRefDataProcessor, offenceCodeRefDataProcessor);
     }
+
 
     @Override
     protected boolean isWorkQueueProcessingRequired(Integer resultCode) {

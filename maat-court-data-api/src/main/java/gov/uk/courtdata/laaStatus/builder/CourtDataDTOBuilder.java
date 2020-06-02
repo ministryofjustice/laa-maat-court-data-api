@@ -57,7 +57,7 @@ public class CourtDataDTOBuilder {
         return CourtDataDTO.builder()
                 .caseDetails(caseDetails)
                 .caseId(wqLinkRegisterEntity.getCaseId())
-                .libraId(Integer.parseInt(wqLinkRegisterEntity.getLibraId().substring(2)))
+                .libraId(wqLinkRegisterEntity.getLibraId().substring(2))
                 .proceedingId(wqLinkRegisterEntity.getProceedingId())
                 .defendantMAATDataEntity(defendantMAATDataEntity)
                 .solicitorMAATDataEntity(solicitorMAATDataEntity)

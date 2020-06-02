@@ -5,10 +5,8 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
-import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,16 +20,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RepOrderInfoProcessorTest {
+public class RepOrderCPInfoProcessorTest {
 
     @InjectMocks
-    private RepOrderInfoProcessor repOrderInfoProcessor;
+    private RepOrderCPInfoProcessor repOrderCPInfoProcessor;
     @Spy
-    private RepOrderRepository repOrderRepository;
+    private RepOrderCPDataRepository repOrderDataRepository;
 
     private TestModelDataBuilder testModelDataBuilder;
     @Captor
-    ArgumentCaptor<RepOrderEntity> repOrderCaptor;
+    ArgumentCaptor<RepOrderCPDataEntity> repOrderCaptor;
 
     @Before
     public void setUp() {
@@ -41,28 +39,22 @@ public class RepOrderInfoProcessorTest {
 
 
     @Test
-    public void givenRepOrderData_whenProcessIsInvoked_thenRepOrderRecordIsUpdatedWitASNId() {
+    public void givenRepOrderData_whenProcessIsInvoked_thenRepOrderRecordIsUpdatedWithDefendantId() {
 
         // given
         CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
         Defendant defendant = courtDataDTO.getCaseDetails().getDefendant();
         // when
-        when(repOrderRepository.findById(Mockito.anyInt()))
-                .thenReturn(Optional.of(RepOrderEntity
-                        .builder()
-                        .id(1234)
-                        .arrestSummonsNo("asn")
-                        .build()));
-
-        repOrderInfoProcessor.process(courtDataDTO);
+        when(repOrderDataRepository.findByrepOrderId(Mockito.anyInt()))
+                .thenReturn(Optional.of(RepOrderCPDataEntity.builder().repOrderId(123).caseUrn("caseurn1").build()));
+        repOrderCPInfoProcessor.process(courtDataDTO);
 
 
         // then
-        verify(repOrderRepository).save(repOrderCaptor.capture());
-
-        assertThat(repOrderCaptor.getValue().getCaseId()).isEqualTo("CP25467");
-        assertThat(repOrderCaptor.getValue().getId()).isEqualTo(1234);
-        assertThat(repOrderCaptor.getValue().getArrestSummonsNo()).isEqualTo("123456754");
+        verify(repOrderDataRepository).save(repOrderCaptor.capture());
+        assertThat(repOrderCaptor.getValue().getCaseUrn()).isEqualTo("caseurn1");
+        assertThat(repOrderCaptor.getValue().getRepOrderId()).isEqualTo(123);
+        assertThat(repOrderCaptor.getValue().getDefendantId()).isEqualTo(defendant.getDefendantId());
 
 
     }

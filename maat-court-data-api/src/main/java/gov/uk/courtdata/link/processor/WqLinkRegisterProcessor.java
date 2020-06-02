@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.COMMON_PLATFORM;
-
 @RequiredArgsConstructor
 @Component
 public class WqLinkRegisterProcessor implements Process {
@@ -27,7 +25,7 @@ public class WqLinkRegisterProcessor implements Process {
                 .createdDate(LocalDate.now())
                 .createdUserId(caseDetails.getCreatedUser())
                 .caseId(courtDataDTO.getCaseId())
-                .libraId(COMMON_PLATFORM + courtDataDTO.getLibraId())
+                .libraId(courtDataDTO.getLibraId())
                 .maatId(caseDetails.getMaatId())
                 .cjsAreaCode(caseDetails.getCjsAreaCode())
                 .cjsLocation(caseDetails.getCjsLocation())

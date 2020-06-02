@@ -11,7 +11,6 @@ import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.repository.*;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +39,7 @@ public class SaveAndLinkImplIntegrationTest {
     private OffenceRepository offenceRepository;
     private ResultRepository resultRepository;
     private RepOrderCPDataRepository repOrderDataRepository;
+    private  RepOrderRepository repOrderRepository;
     private TestEntityDataBuilder testEntityDataBuilder;
 
     @Test
@@ -48,6 +48,7 @@ public class SaveAndLinkImplIntegrationTest {
         //given
         CourtDataDTO courtDataDTO = testModelDataBuilder.getSaveAndLinkModelRaw();
         repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
+        repOrderRepository.save(testEntityDataBuilder.getRepOrder());
 
         //when
         saveAndLinkImp.execute(courtDataDTO);
@@ -156,7 +157,7 @@ public class SaveAndLinkImplIntegrationTest {
         assertThat(wqLinkRegisterEntity.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(wqLinkRegisterEntity.getMaatCat()).isEqualTo(courtDataDTO.getSolicitorMAATDataEntity().getCmuId());
         assertThat(wqLinkRegisterEntity.getMlrCat()).isEqualTo(courtDataDTO.getSolicitorMAATDataEntity().getCmuId());
-        assertThat(wqLinkRegisterEntity.getLibraId()).isEqualTo(COMMON_PLATFORM + courtDataDTO.getLibraId());
+        assertThat(wqLinkRegisterEntity.getLibraId()).isEqualTo(courtDataDTO.getLibraId());
         assertThat(wqLinkRegisterEntity.getMaatId()).isEqualTo(courtDataDTO.getCaseDetails().getMaatId());
     }
 
@@ -247,6 +248,10 @@ public class SaveAndLinkImplIntegrationTest {
     @Autowired
     public void setTestEntityDataBuilder(TestEntityDataBuilder testEntityDataBuilder) {
         this.testEntityDataBuilder = testEntityDataBuilder;
+    }
+    @Autowired
+    public void setRepOrderRepository(RepOrderRepository repOrderRepository) {
+        this.repOrderRepository = repOrderRepository;
     }
 }
 

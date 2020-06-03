@@ -1,10 +1,9 @@
-package gov.uk.courtdata.integrationTest.unlink;
+package gov.uk.courtdata.unlink.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.integrationTest.MockServicesConfig;
 import gov.uk.courtdata.model.Unlink;
-import gov.uk.courtdata.unlink.controller.UnLinkController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 @AutoConfigureMockMvc
-public class UnLinkControllerIntegrationTest {
+public class UnLinkControllerTest {
 
     private MockMvc mockMvc;
 
@@ -83,5 +82,4 @@ public class UnLinkControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(null)))
                 .andExpect(status().isBadRequest());
     }
-
 }

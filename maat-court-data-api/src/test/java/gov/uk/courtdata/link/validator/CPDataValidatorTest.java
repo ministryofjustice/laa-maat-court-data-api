@@ -49,36 +49,12 @@ public class CPDataValidatorTest {
         final int maatId = 1000;
         Mockito.when(repOrderCPDataRepository.findByrepOrderId(maatId)).thenReturn(Optional.empty());
         thrown.expect(ValidationException.class);
-        thrown.expectMessage("MaatId 1000 has no rep order cp data");
+        thrown.expectMessage("MaatId 1000 has no common platform data created against Maat application.");
+
         CPDataValidator.validate(CaseDetails.builder().maatId(maatId)
                 .caseUrn("caseURN").build());
     }
 
-
-    @Test
-    public void testWhenCaseURNIsNotEnteredOnMAAT_throwsException() {
-
-        final int maatId = 1000;
-        Mockito.when(repOrderCPDataRepository.findByrepOrderId(maatId))
-                .thenReturn(Optional.of(RepOrderCPDataEntity.builder().repOrderId(maatId).caseUrn(null).build()));
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("MAATId: 1000 has not caseURN entered on MAAT application");
-        CPDataValidator.validate(CaseDetails.builder().maatId(maatId)
-                .caseUrn("caseURN").build());
-    }
-
-    @Test
-    public void testWhenCaseURNonRequestDoesntMatchLinkedMAATApp_throwsException() {
-
-        final int maatId = 1000;
-        Mockito.when(repOrderCPDataRepository.findByrepOrderId(maatId))
-                .thenReturn(Optional.of(RepOrderCPDataEntity.builder().repOrderId(maatId).caseUrn("caseURN2222").build()));
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("CaseURN on request doesn't match with that on MAAT application.");
-        CPDataValidator.validate(CaseDetails.builder().maatId(maatId)
-                .caseUrn("caseURN111").build());
-
-    }
 
     @Test
     public void testWhenCaseURNValidAndExists_validationPasses() {

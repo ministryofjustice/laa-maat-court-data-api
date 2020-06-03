@@ -29,15 +29,7 @@ public class CPDataValidator implements IValidator<Void, CaseDetails> {
         Optional<RepOrderCPDataEntity> repOrderCPDataEntity = repOrderCPDataRepository.findByrepOrderId(caseDetails.getMaatId());
 
         repOrderCPDataEntity.orElseThrow(
-                () -> new ValidationException(format("MaatId %s has no rep order cp data.", caseDetails.getMaatId())));
-
-        Optional.ofNullable(repOrderCPDataEntity.get().getCaseUrn()).orElseThrow(
-                () -> new ValidationException(format("MAATId: %s has not caseURN entered on MAAT application", caseDetails.getMaatId())));
-
-        if (!repOrderCPDataEntity.get().getCaseUrn().equalsIgnoreCase(caseDetails.getCaseUrn())) {
-            throw new ValidationException("CaseURN on request doesn't match with that on MAAT application.");
-        }
-
+                () -> new ValidationException(format("MaatId %s has no common platform data created against Maat application.", caseDetails.getMaatId())));
 
         return Optional.empty();
     }

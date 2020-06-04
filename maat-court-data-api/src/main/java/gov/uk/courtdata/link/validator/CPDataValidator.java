@@ -29,8 +29,7 @@ public class CPDataValidator implements IValidator<Void, CaseDetails> {
         Optional<RepOrderCPDataEntity> repOrderCPDataEntity = repOrderCPDataRepository.findByrepOrderId(caseDetails.getMaatId());
 
         repOrderCPDataEntity.orElseThrow(
-                () -> new ValidationException(format("MaatId %s has no rep order cp data.", caseDetails.getMaatId())));
-
+                () -> new ValidationException(format("MaatId %s has no common platform data created against Maat application.", caseDetails.getMaatId())));
 
         return Optional.empty();
     }

@@ -3,6 +3,7 @@ package gov.uk.courtdata.link.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.CaseDetailsValidate;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.Rule;
 import org.junit.Test;
@@ -56,7 +57,7 @@ public class PreConditionsValidatorTest {
                         new ValidationException("MAAT id is missing."));
 
         preConditionsValidator.validate(
-                CaseDetails
+                CaseDetailsValidate
                         .builder()
                         .maatId(testMaatId)
                         .build());
@@ -80,7 +81,7 @@ public class PreConditionsValidatorTest {
 
 
         preConditionsValidator.validate(
-                CaseDetails
+                CaseDetailsValidate
                         .builder()
                         .maatId(testMaatId)
                         .build());
@@ -92,7 +93,7 @@ public class PreConditionsValidatorTest {
 
         final int testMaatId = 1000;
 
-        CaseDetails request = CaseDetails
+        CaseDetailsValidate request = CaseDetailsValidate
                 .builder()
                 .maatId(testMaatId)
                 .build();
@@ -100,7 +101,10 @@ public class PreConditionsValidatorTest {
         thrown.expect(ValidationException.class);
         thrown.expectMessage("CaseURN can't be null or empty on request.");
 
-        when(cpDataValidator.validate(request))
+        when(cpDataValidator.validate(CaseDetails
+                .builder()
+                .maatId(testMaatId)
+                .build()))
                 .thenThrow(new
                         ValidationException("CaseURN can't be null or empty on request."));
 
@@ -114,11 +118,17 @@ public class PreConditionsValidatorTest {
 
         //given
         final int testMaatId = 1000;
-        final CaseDetails caseDetails =
-                CaseDetails
+
+        final CaseDetailsValidate caseDetailsValidate =
+                CaseDetailsValidate
                         .builder()
                         .maatId(testMaatId)
                         .build();
+
+        final CaseDetails caseDetails = CaseDetails
+                .builder()
+                .maatId(testMaatId)
+                .build();
 
         // when
         when(maatIdValidator.validate(testMaatId))
@@ -126,11 +136,14 @@ public class PreConditionsValidatorTest {
         when(linkExistsValidator.validate(testMaatId))
                 .thenReturn(Optional.empty());
 
-        when(cpDataValidator.validate(caseDetails))
+        when(cpDataValidator.validate(CaseDetails
+                .builder()
+                .maatId(testMaatId)
+                .build()))
                 .thenReturn(Optional.empty());
 
 
-        preConditionsValidator.validate(caseDetails);
+        preConditionsValidator.validate(caseDetailsValidate);
 
         //then
         verify(maatIdValidator, times(1)).validate(testMaatId);

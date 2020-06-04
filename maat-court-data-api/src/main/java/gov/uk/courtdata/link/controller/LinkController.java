@@ -1,7 +1,7 @@
 package gov.uk.courtdata.link.controller;
 
 import gov.uk.courtdata.link.validator.PreConditionsValidator;
-import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.CaseDetailsValidate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +19,10 @@ public class LinkController {
     private final PreConditionsValidator preConditionsValidator;
 
     @PostMapping("/validate")
-    public ResponseEntity<Object> validate(@RequestBody CaseDetails caseDetails) {
+    public ResponseEntity<Object> validate(@RequestBody CaseDetailsValidate caseDetailsValidate) {
 
-        log.info("inside validate method");
-        preConditionsValidator.validate(caseDetails);
+        log.info("Validate link request.");
+        preConditionsValidator.validate(caseDetailsValidate);
 
         return ResponseEntity.ok().build();
     }

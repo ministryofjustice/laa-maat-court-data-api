@@ -1,6 +1,7 @@
 package gov.uk.courtdata.link.validator;
 
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.CaseDetailsValidate;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +19,15 @@ public class PreConditionsValidator {
     private final CPDataValidator cpDataValidator;
 
 
-    public void validate(final CaseDetails caseDetails) {
+    public void validate(final CaseDetailsValidate caseDetails) {
 
         final Integer maatId = caseDetails.getMaatId();
 
         maatIdValidator.validate(maatId);
         linkExistsValidator.validate(maatId);
-        cpDataValidator.validate(caseDetails);
+        cpDataValidator.validate(CaseDetails.builder()
+                .caseUrn(caseDetails.getCaseUrn())
+                .maatId(maatId).build());
 
     }
 }

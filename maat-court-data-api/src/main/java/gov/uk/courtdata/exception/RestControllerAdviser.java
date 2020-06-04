@@ -11,10 +11,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * <code>RestControllerAdviser</code> centralizes all rest controller exceptions.
  */
@@ -31,11 +27,10 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
     @ExceptionHandler({MAATCourtDataException.class})
     public ResponseEntity<Object> handleRuntimeException(RuntimeException ex, WebRequest request) {
 
-        List<ErrorDTO> errors = Stream.of(ErrorDTO.builder()
-                .message(ex.getMessage())
-                .build()).collect(Collectors.toList());
-        log.info("inside maat exception handler");
-        return handleExceptionInternal(ex, errors,
+        return handleExceptionInternal(ex,
+                ErrorDTO.builder()
+                        .message(ex.getMessage())
+                        .build(),
                 new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
@@ -46,15 +41,11 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<List<ErrorDTO>> handleValidationError(Exception ex) {
+    public ResponseEntity<ErrorDTO> handleValidationError(Exception ex) {
 
-        List<ErrorDTO> errors = Stream.of(ErrorDTO.builder()
-                .code("error-1")
+        return ResponseEntity.badRequest().body(ErrorDTO.builder()
+                .code("")
                 .message(ex.getMessage())
-                .build()).collect(Collectors.toList());
-
-        log.info("inside validation handler");
-
-        return ResponseEntity.badRequest().body(errors);
+                .build());
     }
 }

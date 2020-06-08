@@ -35,7 +35,6 @@ public class UnLinkControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    @InjectMocks
     private UnLinkController unLinkController;
 
     @Autowired

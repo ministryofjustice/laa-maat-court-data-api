@@ -16,7 +16,7 @@ public class UserIdValidator implements IValidator<Void, String> {
     @Override
     public Optional<Void> validate(String userId) throws ValidationException {
 
-        if (userId != null) {
+        if (userId != null && !userId.isEmpty()) {
             return Optional.empty();
         } else {
             throw new ValidationException("User id is missing.");

@@ -1,4 +1,4 @@
-package gov.uk.courtdata.integrationTest.link;
+package gov.uk.courtdata.integrationTest.link.impl;
 
 
 import gov.uk.MAATCourtDataApplication;
@@ -26,20 +26,33 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 public class SaveAndLinkImplIntegrationTest {
 
-
+    @Autowired
     private SaveAndLinkImpl saveAndLinkImp;
+    @Autowired
     private TestModelDataBuilder testModelDataBuilder;
+    @Autowired
     private CaseRepository caseRepository;
+    @Autowired
     private WqCoreRepository wqCoreRepository;
+    @Autowired
     private WqLinkRegisterRepository wqLinkRegisterRepository;
+    @Autowired
     private SolicitorRepository solicitorRepository;
+    @Autowired
     private ProceedingRepository proceedingRepository;
+    @Autowired
     private DefendantRepository defendantRepository;
+    @Autowired
     private SessionRepository sessionRepository;
+    @Autowired
     private OffenceRepository offenceRepository;
+    @Autowired
     private ResultRepository resultRepository;
+    @Autowired
     private RepOrderCPDataRepository repOrderDataRepository;
-    private  RepOrderRepository repOrderRepository;
+    @Autowired
+    private RepOrderRepository repOrderRepository;
+    @Autowired
     private TestEntityDataBuilder testEntityDataBuilder;
 
     @Test
@@ -185,73 +198,6 @@ public class SaveAndLinkImplIntegrationTest {
         assertThat(caseEntity.getInactive()).isEqualTo(NO);
     }
 
-    @Autowired
-    public void setSaveAndLinkImp(SaveAndLinkImpl saveAndLinkImp) {
-        this.saveAndLinkImp = saveAndLinkImp;
-    }
 
-    @Autowired
-    public void setTestModelDataBuilder(TestModelDataBuilder testModelDataBuilder) {
-        this.testModelDataBuilder = testModelDataBuilder;
-    }
-
-    @Autowired
-    public void setCaseRepository(CaseRepository caseRepository) {
-        this.caseRepository = caseRepository;
-    }
-
-    @Autowired
-    public void setWqCoreRepository(WqCoreRepository wqCoreRepository) {
-        this.wqCoreRepository = wqCoreRepository;
-    }
-
-    @Autowired
-    public void setWqLinkRegisterRepository(WqLinkRegisterRepository wqLinkRegisterRepository) {
-        this.wqLinkRegisterRepository = wqLinkRegisterRepository;
-    }
-
-    @Autowired
-    public void setSolicitorRepository(SolicitorRepository solicitorRepository) {
-        this.solicitorRepository = solicitorRepository;
-    }
-
-    @Autowired
-    public void setProceedingRepository(ProceedingRepository proceedingRepository) {
-        this.proceedingRepository = proceedingRepository;
-    }
-
-    @Autowired
-    public void setDefendantRepository(DefendantRepository defendantRepository) {
-        this.defendantRepository = defendantRepository;
-    }
-
-    @Autowired
-    public void setSessionRepository(SessionRepository sessionRepository) {
-        this.sessionRepository = sessionRepository;
-    }
-
-    @Autowired
-    public void setOffenceRepository(OffenceRepository offenceRepository) {
-        this.offenceRepository = offenceRepository;
-    }
-
-    @Autowired
-    public void setResultRepository(ResultRepository resultRepository) {
-        this.resultRepository = resultRepository;
-    }
-
-    @Autowired
-    public void setRepOrderDataRepository(RepOrderCPDataRepository repOrderDataRepository) {
-        this.repOrderDataRepository = repOrderDataRepository;
-    }
-
-    @Autowired
-    public void setTestEntityDataBuilder(TestEntityDataBuilder testEntityDataBuilder) {
-        this.testEntityDataBuilder = testEntityDataBuilder;
-    }
-    @Autowired
-    public void setRepOrderRepository(RepOrderRepository repOrderRepository) {
-        this.repOrderRepository = repOrderRepository;
-    }
 }
 

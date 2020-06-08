@@ -41,9 +41,7 @@ public class HearingResultedService {
             case MAGISTRATES:
                 hearingResultedImpl.execute(hearingResulted);
                 break;
-            default:
-                throw new MAATCourtDataException(format("Invalid Jurisdiction type %s",
-                        hearingResulted.getJurisdictionType()));
+
         }
 
 

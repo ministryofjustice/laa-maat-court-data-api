@@ -27,13 +27,13 @@ public class CreateLinkService {
     private final ResultCodeRefDataProcessor resultCodeRefDataProcessor;
 
     /**
-     * @param linkMessage
+     * @param caseDetails
      * @throws ValidationException
      * @throws MAATCourtDataException
      */
-    public void saveAndLink(final CaseDetails linkMessage) {
+    public void saveAndLink(final CaseDetails caseDetails) {
 
-        final CourtDataDTO courtDataDTO = validationProcessor.validate(linkMessage);
+        final CourtDataDTO courtDataDTO = validationProcessor.validate(caseDetails);
         log.info("Validation completed!!!");
         processStaticRefData(courtDataDTO);
         saveAndLinkImpl.execute(courtDataDTO);

@@ -40,15 +40,5 @@ public class HearingResultedListenerTest {
         verify(hearingResultedService, times(1)).execute(laaHearingDetails);
     }
 
-    @Test
-    public void givenJSONMessageIsReceived_whenHearingResultedListenerMAATIdNull() {
-        //given
-        HearingResulted hearingResulted = HearingResulted.builder().build();
-        String message = "Test JSON";
-        //when
-        when(gson.fromJson(message, HearingResulted.class)).thenReturn(hearingResulted);
-        hearingResultedListener.receive(message);
-        //then
 
-    }
 }

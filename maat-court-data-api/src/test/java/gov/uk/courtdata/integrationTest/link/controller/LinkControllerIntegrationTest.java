@@ -1,4 +1,4 @@
-package gov.uk.courtdata.link.controller;
+package gov.uk.courtdata.integrationTest.link.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,12 +7,12 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integrationTest.MockServicesConfig;
+import gov.uk.courtdata.link.controller.LinkController;
 import gov.uk.courtdata.model.CaseDetailsValidate;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
@@ -45,7 +45,6 @@ public class LinkControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    @InjectMocks
     private LinkController linkController;
     @Autowired
     private WebApplicationContext wac;

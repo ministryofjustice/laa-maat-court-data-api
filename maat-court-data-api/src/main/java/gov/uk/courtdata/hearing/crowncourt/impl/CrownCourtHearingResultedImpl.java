@@ -24,7 +24,7 @@ public class CrownCourtHearingResultedImpl extends HearingResultedImpl {
 
     @Override
     protected boolean isWorkQueueProcessingRequired(Integer resultCode) {
-       return WQType.isActionableQueue(wqCoreProcessor.findWQType(resultCode));
+       return !WQType.isActionableQueue(wqCoreProcessor.findWQType(resultCode));
 
     }
 

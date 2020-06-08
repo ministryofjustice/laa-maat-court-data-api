@@ -23,4 +23,12 @@ public class ReasonValidatorTest {
         thrown.expectMessage("Reason id is missing.");
         reasonValidator.validate(null);
     }
+
+    @Test
+    public void testReasonIdValidator_whenReasonIDIsZeroThrowsException() {
+
+        thrown.expect(ValidationException.class);
+        thrown.expectMessage("Reason id is missing.");
+        reasonValidator.validate(0);
+    }
 }

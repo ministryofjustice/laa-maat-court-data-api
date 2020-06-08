@@ -25,4 +25,12 @@ public class UserIdValidatorTest {
         thrown.expectMessage("User id is missing.");
         userIdValidator.validate(null);
     }
+
+    @Test
+    public void testUserIdValidator_whenUserIsEmpTyUserIDThrowsException() {
+
+        thrown.expect(ValidationException.class);
+        thrown.expectMessage("User id is missing.");
+        userIdValidator.validate("");
+    }
 }

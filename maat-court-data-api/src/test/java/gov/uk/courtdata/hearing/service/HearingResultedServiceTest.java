@@ -1,12 +1,16 @@
 package gov.uk.courtdata.hearing.service;
 
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -29,6 +33,9 @@ public class HearingResultedServiceTest {
     private HearingResultedImpl hearingResultedImpl;
     @Mock
     private CrownCourtHearingService crownCourtHearingService;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @BeforeEach
     public void setUp() {
@@ -62,4 +69,7 @@ public class HearingResultedServiceTest {
         verify(hearingResultedImpl, times(1)).execute(hearingDetails);
 
     }
+
+
+
 }

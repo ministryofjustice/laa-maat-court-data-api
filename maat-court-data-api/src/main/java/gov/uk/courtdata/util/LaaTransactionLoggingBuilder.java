@@ -9,22 +9,20 @@ public class LaaTransactionLoggingBuilder {
 
     public static LaaTransactionLogging get(CaseDetails caseDetails) {
         Gson gson = new Gson();
-        LaaTransactionLogging laaTransactionLogging = get(gson.toJson(caseDetails));
-        return laaTransactionLogging;
+        return get(gson.toJson(caseDetails));
+
     }
 
 
     public static LaaTransactionLogging get(String message) {
         Gson gson = new Gson();
-        LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);
-        return laaTransactionLogging;
+        return gson.fromJson(message, LaaTransactionLogging.class);
+
     }
 
     public static String getStr(String message) {
         return get(message).toString();
     }
-
-
 
 
 }

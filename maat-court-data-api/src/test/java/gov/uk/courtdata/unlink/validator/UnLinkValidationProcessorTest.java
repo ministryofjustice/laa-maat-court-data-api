@@ -3,8 +3,8 @@ package gov.uk.courtdata.unlink.validator;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.link.validator.LinkExistsValidator;
 import gov.uk.courtdata.model.Unlink;
+import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.After;
 import org.junit.Rule;
@@ -32,7 +32,7 @@ public class UnLinkValidationProcessorTest {
     @Mock
     private MaatIdValidator maatIdValidator;
     @Mock
-    private LinkExistsValidator linkExistsValidator;
+    private LinkRegisterValidator linkRegisterValidator;
     @Mock
     private ReasonValidator reasonValidator;
     @Mock
@@ -101,8 +101,8 @@ public class UnLinkValidationProcessorTest {
     @Test
     public void testWhenMaatIdValidatorFails_valdationPasses() {
         final int maatId = 123456;
-        final int reasonId=88999;
-        final String userId="moj";
+        final int reasonId = 88999;
+        final String userId = "moj";
         Unlink unlink = Unlink.builder()
                 .maatId(123456)
                 .reasonId(88999)
@@ -110,13 +110,12 @@ public class UnLinkValidationProcessorTest {
                 .build();
 
         when(maatIdValidator.validate(maatId)).thenReturn(Optional.empty());
-        when(linkExistsValidator.validate(maatId)).thenReturn(Optional.empty());
         when(reasonValidator.validate(reasonId)).thenReturn(Optional.empty());
         when(userIdValidator.validate(userId)).thenReturn(Optional.empty());
         unLinkValidationProcessor.validate(unlink);
         //then
         verify(maatIdValidator, times(1)).validate(maatId);
-        verify(linkExistsValidator, times(1)).validate(maatId);
+        // verify(linkExistsValidator, times(1)).validate(maatId);
         verify(reasonValidator, times(1)).validate(reasonId);
         verify(userIdValidator, times(1)).validate(userId);
 
@@ -131,14 +130,21 @@ public class UnLinkValidationProcessorTest {
         List<WqLinkRegisterEntity> linkRegisterEntities = new ArrayList<>();
         linkRegisterEntities.add(wqLinkRegisterEntity1);
         linkRegisterEntities.add(wqLinkRegisterEntity2);
-        unLinkValidationProcessor.validateWQLinkRegister(linkRegisterEntities,123);
+        unLinkValidationProcessor.validateWQLinkRegister(linkRegisterEntities, 123);
     }
 
     @Test
     public void givenWQLinkRegisterIsNull_whenValidateWQLinkRegisterIsInvoked_thenValidationFailed() {
         thrown.expect(MAATCourtDataException.class);
         thrown.expectMessage("There is No link established for MAAT ID : 123");
-        unLinkValidationProcessor.validateWQLinkRegister(null,123);
+        unLinkValidationProcessor.validateWQLinkRegister(null, 123);
+    }
+
+    @Test
+    public void givenUnLinkRequestIsIsNull_whenValidateWQLinkRegisterIsInvoked_thenValidationFailed() {
+        thrown.expect(MAATCourtDataException.class);
+        thrown.expectMessage("Unlink Request is empty");
+        unLinkValidationProcessor.validate(null);
     }
 
     @After

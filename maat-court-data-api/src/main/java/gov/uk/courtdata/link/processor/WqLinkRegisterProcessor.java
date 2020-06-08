@@ -19,7 +19,7 @@ public class WqLinkRegisterProcessor implements Process {
     public void process(CourtDataDTO courtDataDTO) {
 
         CaseDetails caseDetails = courtDataDTO.getCaseDetails();
-        int maatCat = geCategory(courtDataDTO);
+        Integer maatCat = geCategory(courtDataDTO);
         final WqLinkRegisterEntity wqLinkRegisterEntity = WqLinkRegisterEntity.builder()
                 .createdTxId(courtDataDTO.getTxId())
                 .createdDate(LocalDate.now())
@@ -36,7 +36,7 @@ public class WqLinkRegisterProcessor implements Process {
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
     }
 
-    protected int geCategory(CourtDataDTO courtDataDTO) {
+    protected Integer geCategory(CourtDataDTO courtDataDTO) {
         return courtDataDTO.getSolicitorMAATDataEntity().getCmuId();
     }
 }

@@ -13,9 +13,9 @@ import java.util.UUID;
 @Value
 public class LaaTransactionLogging {
 
-    private UUID laaTransactionId;
-    private Integer maatId;
-    private String caseUrn;
+    UUID laaTransactionId;
+    Integer maatId;
+    String caseUrn;
 
 
 }

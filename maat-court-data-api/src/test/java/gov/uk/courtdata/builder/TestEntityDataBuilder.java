@@ -9,36 +9,7 @@ import java.time.LocalDateTime;
 @Component
 public class TestEntityDataBuilder {
 
-    public CaseEntity getCaseEntity() {
 
-        return CaseEntity.builder()
-                .txId(113)
-                .caseId(59)
-                .cjsAreaCode("16")
-                .asn("123")
-                .docLanguage("EN")
-                .build();
-    }
-
-    public DefendantEntity getDefendantEntity() {
-        return DefendantEntity.builder()
-                .txId(113)
-                .caseId(59)
-                .nino("1224")
-                .dateOfBirth(LocalDate.now())
-                .build();
-
-    }
-
-    public OffenceEntity getOffenceEntity() {
-        return OffenceEntity.builder()
-                .txId(1234)
-                .offenceCode("FOUL")
-                .wqOffence(2)
-                .asnSeq("123")
-                .offenceWording("Offence Wording")
-                .build();
-    }
 
     public RepOrderCPDataEntity getRepOrderEntity() {
         return RepOrderCPDataEntity.builder()
@@ -54,63 +25,6 @@ public class TestEntityDataBuilder {
         return RepOrderEntity.builder()
                 .id(1234)
                 .dateModified(LocalDateTime.now())
-                .build();
-    }
-    public ProceedingEntity getProceedingEntity() {
-        return ProceedingEntity.builder()
-                .createdTxid(123)
-                .maatId(345)
-                .createdUser("testUser")
-                .proceedingId(1234)
-                .build();
-    }
-
-    public ResultEntity getResultEntity() {
-        return ResultEntity.builder()
-                .wqResult(0)
-                .resultCode("3606")
-                .txId(123)
-                .caseId(345)
-                .resultShortTitle("Result Title")
-                .build();
-    }
-
-    public SessionEntity getSessionEntity() {
-        return SessionEntity.builder()
-                .txId(123)
-                .caseId(345)
-                .postHearingCustody("R")
-                .courtLocation("London")
-                .dateOfHearing(LocalDate.now())
-                .build();
-    }
-
-    public SolicitorEntity getSolicitorEntity() {
-        return SolicitorEntity.builder()
-                .txId(123)
-                .caseId(345)
-                .laaOfficeAccount("Sol Account")
-                .firmName("Test Firm Name")
-                .email("abac@abo")
-                .build();
-    }
-
-    public UnlinkEntity getUnlinkEntity() {
-        return UnlinkEntity.builder()
-                .txId(123)
-                .caseId(345)
-                .otherReason("test reason")
-                .reasonId(1)
-                .build();
-    }
-
-    public WqCoreEntity getWqCoreEntity() {
-        return WqCoreEntity.builder()
-                .txId(123)
-                .caseId(345)
-                .createdTime(LocalDate.now())
-                .wqStatus(1)
-                .maatUpdateStatus(1)
                 .build();
     }
 

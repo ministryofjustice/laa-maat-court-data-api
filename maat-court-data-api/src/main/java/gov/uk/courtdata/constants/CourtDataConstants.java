@@ -1,11 +1,5 @@
 package gov.uk.courtdata.constants;
 
-import gov.uk.courtdata.enums.WQType;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public interface CourtDataConstants {
 
     Integer WQ_CREATION_EVENT = 20;
@@ -23,24 +17,12 @@ public interface CourtDataConstants {
     Integer WQ_UNLINK_EVENT = 24;
     String LEADING_ZERO_3 = "%03d";
 
-    List<Integer> FAIL_IOJ_DECISION = Arrays.asList(0, 2);
-    int PASS_IOJ_DECISION = 1;
-    int NA_IOJ_DECISION = 3;
 
-    List<String> GRANTED_LAA_STATUS = Arrays.asList("GR", "G2", "GQ");
-    List<String> FAILED_LAA_STATUS = Arrays.asList("FJ", "FB");
-    String CROWN_COURT = "CROWN";
     String MAGS_PROCESSING_SYSTEM_USER = "System-CP";
     String AUTO_USER = "AUTO";
     String RESULT_CODE_DESCRIPTION = "Automatically added result";
     String UNKNOWN_OFFENCE = "UNKNOWN OFFENCE";
 
     String CATY_CASE_TYPE = "APPEAL CC";
-
-
-    List<Integer> ACTIONABLE_WQ_QUEUES = Arrays.asList(
-            WQType.COMMITTAL_QUEUE.value(),
-            WQType.INDICTABLE_QUEUE.value(),
-            WQType.CONCLUSION_QUEUE.value());
 
 }

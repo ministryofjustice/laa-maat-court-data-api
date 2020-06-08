@@ -41,7 +41,6 @@ public class LaaStatusUpdateController {
                 log.info("LAA Status Update Validation Failed - Messages {} - {}", messageCollection.getMessages(),laaLogging);
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
             assert messageCollection != null;
             messageCollection.getMessages().add(exception.getMessage());
             throw new MAATCourtDataException("MAAT APT Call failed " + exception.getMessage() + "laa-logging" +laaLogging);

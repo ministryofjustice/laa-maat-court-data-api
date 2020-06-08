@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.CATY_CASE_TYPE;
 
@@ -30,8 +31,10 @@ public class CrownCourtProcessingImpl {
 
         CCOutComeData ccutComeData = hearingResulted.getCcOutComeData();
         final Integer maatId = hearingResulted.getMaatId();
-        RepOrderEntity repOrderEntity = repOrderRepository.findById(maatId).get();
+        final Optional<RepOrderEntity> optionalRepEntity = repOrderRepository.findById(maatId);
+        RepOrderEntity repOrderEntity = optionalRepEntity.orElse(null);
 
+        assert repOrderEntity != null;
         crownCourtProcessingRepository.invokeCrownCourtOutcomeProcess(maatId,
                 ccutComeData.getCcooOutcome(),
                 ccutComeData.getBenchWarrantIssuedYn(),

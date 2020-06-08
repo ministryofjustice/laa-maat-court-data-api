@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.crowncourt.impl;
 
+import gov.uk.courtdata.enums.WQType;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.mapper.HearingDTOMapper;
 import gov.uk.courtdata.hearing.processor.HearingWQProcessor;
@@ -10,8 +11,6 @@ import gov.uk.courtdata.repository.IdentifierRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import static gov.uk.courtdata.constants.CourtDataConstants.ACTIONABLE_WQ_QUEUES;
 
 @Component
 public class CrownCourtHearingResultedImpl extends HearingResultedImpl {
@@ -25,7 +24,7 @@ public class CrownCourtHearingResultedImpl extends HearingResultedImpl {
 
     @Override
     protected boolean isWorkQueueProcessingRequired(Integer resultCode) {
-       return !ACTIONABLE_WQ_QUEUES.contains(wqCoreProcessor.findWQType(resultCode));
+       return WQType.isActionableQueue(wqCoreProcessor.findWQType(resultCode));
 
     }
 

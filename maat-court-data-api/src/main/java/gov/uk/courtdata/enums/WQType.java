@@ -4,16 +4,15 @@ package gov.uk.courtdata.enums;
  * <Code>WQType</Code> list of work queue types.
  */
 public enum WQType {
+
     COMMITTAL_QUEUE(1),
     INDICTABLE_QUEUE(2),
     CONCLUSION_QUEUE(7),
-    PRE_STEERING(17),
     USER_INTERVENTIONS_QUEUE(8);
 
     private int value;
 
     /**
-     *
      * @param value
      */
     WQType(final int value) {
@@ -24,4 +23,13 @@ public enum WQType {
         return this.value;
     }
 
+    public static boolean isActionableQueue(int wqNumber) {
+        boolean isActionable = false;
+        if (COMMITTAL_QUEUE.value == wqNumber
+                || INDICTABLE_QUEUE.value == wqNumber
+                || CONCLUSION_QUEUE.value == wqNumber) {
+            isActionable = true;
+        }
+        return isActionable;
+    }
 }

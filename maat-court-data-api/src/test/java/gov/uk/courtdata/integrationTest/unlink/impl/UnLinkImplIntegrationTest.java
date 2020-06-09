@@ -9,7 +9,7 @@ import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integrationTest.MockServicesConfig;
-import gov.uk.courtdata.laaStatus.client.CourtDataAdapterClient;
+import gov.uk.courtdata.laastatus.client.CourtDataAdapterClient;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;

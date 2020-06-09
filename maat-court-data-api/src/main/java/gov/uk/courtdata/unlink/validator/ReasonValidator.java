@@ -22,7 +22,7 @@ public class ReasonValidator implements IValidator<Void, Integer> {
      * @throws ValidationException
      */
     @Override
-    public Optional<Void> validate(Integer reasonId) throws ValidationException {
+    public Optional<Void> validate(Integer reasonId)  {
 
         if (reasonId!=null && reasonId > 0) {
             //TODO: make a database call to check if its a valid

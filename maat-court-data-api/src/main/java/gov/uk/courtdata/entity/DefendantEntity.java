@@ -27,15 +27,15 @@ public class DefendantEntity {
     @Column(name = "DATE_OF_BIRTH")
     private LocalDate dateOfBirth;
     @Column(name = "ADDRESS_LINE1")
-    private String address_line1;
+    private String addressLine1;
     @Column(name = "ADDRESS_LINE2")
-    private String address_line2;
+    private String addressLine2;
     @Column(name = "ADDRESS_LINE3")
-    private String address_line3;
+    private String addressLine3;
     @Column(name = "ADDRESS_LINE4")
-    private String address_line4;
+    private String addressLine4;
     @Column(name = "ADDRESS_LINE5")
-    private String address_line5;
+    private String addressLine5;
     @Column(name = "POST_CODE")
     private String postCode;
     @Column(name = "NINO")

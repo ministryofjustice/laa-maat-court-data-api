@@ -21,7 +21,7 @@ public class CPDataValidator implements IValidator<Void, CaseDetails> {
     private final RepOrderCPDataRepository repOrderCPDataRepository;
 
     @Override
-    public Optional<Void> validate(CaseDetails caseDetails) throws ValidationException {
+    public Optional<Void> validate(CaseDetails caseDetails){
 
         Optional.ofNullable(caseDetails.getCaseUrn()).orElseThrow(
                 () -> new ValidationException("CaseURN can't be null or empty on request."));

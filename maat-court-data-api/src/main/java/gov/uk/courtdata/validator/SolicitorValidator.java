@@ -25,12 +25,10 @@ public class SolicitorValidator implements IValidator<SolicitorMAATDataEntity, I
     /**
      * @param maatId
      * @return
-     * @throws ValidationException
+     *
      */
     @Override
-    public Optional<SolicitorMAATDataEntity> validate(Integer maatId) throws ValidationException {
-
-        // Get the solicitor details.
+    public Optional<SolicitorMAATDataEntity> validate(Integer maatId) {
 
         Optional<SolicitorMAATDataEntity> solicitorViewEntity =
                 solicitorMAATDataRepository.findBymaatId(maatId);

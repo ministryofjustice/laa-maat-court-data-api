@@ -1,7 +1,6 @@
 package gov.uk.courtdata.link.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.validator.IValidator;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +23,14 @@ public class LinkExistsValidator implements IValidator<Void, Integer> {
 
 
     /**
-     *  Validate
+     * Validate
      *
      * @param maatId
      * @return
      * @throws ValidationException
      */
     @Override
-    public Optional<Void> validate(Integer maatId) throws ValidationException {
+    public Optional<Void> validate(Integer maatId) {
 
         final int linkCount = wqLinkRegisterRepository.getCountByMaatId(maatId);
 

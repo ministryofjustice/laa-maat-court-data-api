@@ -48,15 +48,19 @@ public class ValidationProcessor {
         courtValidator.validate(caseDetails);
         referenceDataValidator.validate(caseDetails);
 
-        final Optional<SolicitorMAATDataEntity> solicitorMAATDataEntity
+        final Optional<SolicitorMAATDataEntity> optSolicitorMAATDataEntity
                 = solicitorValidator.validate(maatId);
-        final Optional<DefendantMAATDataEntity> defendantMAATDataEntity
+        SolicitorMAATDataEntity solicitorMAATDataEntity = optSolicitorMAATDataEntity.orElse(null);
+
+        final Optional<DefendantMAATDataEntity> optDefendantMAATDataEntity
                 = defendantValidator.validate(maatId);
+
+        DefendantMAATDataEntity defendantMAATDataEntity = optDefendantMAATDataEntity.orElse(null);
 
 
         return CourtDataDTO.builder().caseDetails(caseDetails)
-                .solicitorMAATDataEntity(solicitorMAATDataEntity.get())
-                .defendantMAATDataEntity(defendantMAATDataEntity.get()).build();
+                .solicitorMAATDataEntity(solicitorMAATDataEntity)
+                .defendantMAATDataEntity(defendantMAATDataEntity).build();
     }
 
 }

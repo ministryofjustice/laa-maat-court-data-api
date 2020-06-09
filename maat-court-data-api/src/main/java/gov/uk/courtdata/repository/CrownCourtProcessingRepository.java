@@ -16,12 +16,12 @@ public interface CrownCourtProcessingRepository extends JpaRepository<RepOrderCC
     @Procedure(procedureName = "togdata.application.update_cc_outcome")
     void invokeCrownCourtOutcomeProcess(
             @Param("p_rep_id") Integer repId,
-            @Param("p_cc_outcome") String cc_outcome,
-            @Param("p_bench_warrant_issued") String bench_warrant_issued,
-            @Param("p_appeal_type") String appeal_type,
+            @Param("p_cc_outcome") String ccOutcome,
+            @Param("p_bench_warrant_issued") String benchWarrantIssued,
+            @Param("p_appeal_type") String appealType,
             @Param("p_imprisoned") String imprisoned,
-            @Param("p_case_number") String case_number,
-            @Param("p_crown_court_code") String crown_court_code);
+            @Param("p_case_number") String caseNumber,
+            @Param("p_crown_court_code") String crownCourtCode);
 
     @Transactional
     @Procedure(procedureName = "togdata.application.update_appeal_sentence_ord_dt")

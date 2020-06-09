@@ -4,6 +4,10 @@ import java.time.LocalDate;
 
 public final class DateUtil {
 
+    private DateUtil() {
+
+    }
+
     /***
      *  Parse date string to localdate if not null
      *  else

@@ -1,6 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
-import gov.uk.courtdata.entity.WQCase;
+import gov.uk.courtdata.entity.WQCaseEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQCaseRepository;
 import gov.uk.courtdata.util.DateUtil;
@@ -23,7 +23,7 @@ public class WQCaseProcessor {
     public void process(final HearingDTO magsCourtDTO) {
 
 
-        WQCase wqCase = WQCase.builder().caseId(magsCourtDTO.getCaseId())
+        WQCaseEntity wqCaseEntity = WQCaseEntity.builder().caseId(magsCourtDTO.getCaseId())
                 .txId(magsCourtDTO.getTxId())
                 .asn(magsCourtDTO.getAsn())
                 .docLanguage(magsCourtDTO.getDocLanguage())
@@ -32,7 +32,7 @@ public class WQCaseProcessor {
                 .cjsAreaCode(magsCourtDTO.getCjsAreaCode())
                 .proceedingId(magsCourtDTO.getProceedingId())
                 .build();
-        wqCaseRepository.save(wqCase);
+        wqCaseRepository.save(wqCaseEntity);
     }
 
     /**

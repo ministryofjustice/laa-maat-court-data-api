@@ -25,7 +25,7 @@ public class MaatIdValidator implements IValidator<Void, Integer> {
      * @throws ValidationException
      */
     @Override
-    public Optional<Void> validate(final Integer maatId) throws ValidationException {
+    public Optional<Void> validate(final Integer maatId)   {
 
         if (maatId != null && maatId > 0) {
             Optional<RepOrderEntity> repOrderEntity = repOrderRepository.findById(maatId);

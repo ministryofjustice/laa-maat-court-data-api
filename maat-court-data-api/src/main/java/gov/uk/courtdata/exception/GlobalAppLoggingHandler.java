@@ -21,6 +21,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class GlobalAppLoggingHandler {
 
+    public static final String LAA_TRANSACTION_ID = "laaTransactionId";
+    public static final String CASE_URN = "caseUrn";
+    public static final String MESSAGE = "message";
+
     /**
      * This method will execute whenever a exception occour in any of the following (service) package and a class has method name receive.
      * If we are adding new queue listener then we should follow the same existing pattern.
@@ -33,11 +37,11 @@ public class GlobalAppLoggingHandler {
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Exception: "+ex.getMessage()).setLevel(Breadcrumb.Level.ERROR).build());
         Sentry.clearContext();
 
-        Sentry.getContext().addTag("laaTransactionId", MDC.get("laaTransactionId"));
-        Sentry.getContext().addTag("caseUrn", MDC.get("caseUrn"));
+        Sentry.getContext().addTag(LAA_TRANSACTION_ID, MDC.get(LAA_TRANSACTION_ID));
+        Sentry.getContext().addTag(CASE_URN, MDC.get(CASE_URN));
         Sentry.getContext().setUser(new UserBuilder().setId(MDC.get("maatId")).build());
 
-        String laaTransactionLogging = MDC.get("message");
+        String laaTransactionLogging = MDC.get(MESSAGE);
         log.error("Exception StackTrace"+laaTransactionLogging, ex);
 
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage(ex.getMessage()).setLevel(Breadcrumb.Level.ERROR).build());
@@ -51,7 +55,7 @@ public class GlobalAppLoggingHandler {
      */
     @AfterReturning(" execution(* gov.uk.courtdata.*.service.*.receive(..))  ")
     public void afterProcess(JoinPoint joinPoint) {
-        log.info("Message from a queue has been processed successfully: {}", MDC.get("message"));
+        log.info("Message from a queue has been processed successfully: {}", MDC.get(MESSAGE));
 
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder()
                 .setMessage("Message from a queue has been processed successfully.").setLevel(Breadcrumb.Level.INFO).build());
@@ -83,17 +87,17 @@ public class GlobalAppLoggingHandler {
 
         Gson gson = new Gson();
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);
-        Sentry.getContext().addTag("laaTransactionId",
+        Sentry.getContext().addTag(LAA_TRANSACTION_ID,
                 laaTransactionLogging.getLaaTransactionId()!=null?laaTransactionLogging.getLaaTransactionId().toString():"");
-        Sentry.getContext().addTag("caseUrn",
+        Sentry.getContext().addTag(CASE_URN,
                 laaTransactionLogging.getCaseUrn()!=null?laaTransactionLogging.getCaseUrn():"");
         Sentry.getContext().setUser(new UserBuilder()
                 .setId(laaTransactionLogging.getMaatId()!=null?laaTransactionLogging.getMaatId().toString():"").build());
         log.info("Received a JSON Message and converted {}",laaTransactionLogging.toString());
-        MDC.put("message", laaTransactionLogging.toString());
+        MDC.put(MESSAGE, laaTransactionLogging.toString());
 
-        MDC.put("caseUrn",laaTransactionLogging.getCaseUrn());
-        MDC.put("laaTransactionId",laaTransactionLogging.getLaaTransactionId().toString());
+        MDC.put(CASE_URN,laaTransactionLogging.getCaseUrn());
+        MDC.put(LAA_TRANSACTION_ID,laaTransactionLogging.getLaaTransactionId().toString());
         MDC.put("maatId",laaTransactionLogging.getMaatId().toString());
 
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder()

@@ -29,7 +29,7 @@ public class UnLinkProcessor {
     public UnlinkModel process(Unlink unlinkJson) {
 
         unlinkValidator.validate(unlinkJson);
-        UnlinkModel unlinkModel =  UnlinkModel.builder().unlink(unlinkJson).build();
+        UnlinkModel unlinkModel = UnlinkModel.builder().unlink(unlinkJson).build();
         mapWqLinkRegister(unlinkModel);
         mapRepOrderCpData(unlinkModel);
         unlinkImpl.execute(unlinkModel);
@@ -50,7 +50,7 @@ public class UnLinkProcessor {
         Unlink unlink = unlinkModel.getUnlink();
         Optional<RepOrderCPDataEntity> repOrderCPDataEntity =
                 repOrderCPDataRepository.findByrepOrderId(unlink.getMaatId());
-        unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity.get());
+        unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity.orElse(null));
 
     }
 }

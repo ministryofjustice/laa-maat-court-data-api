@@ -32,6 +32,7 @@ public class CrownCourtProcessingImpl {
         CCOutComeData ccutComeData = hearingResulted.getCcOutComeData();
         final Integer maatId = hearingResulted.getMaatId();
         final Optional<RepOrderEntity> optionalRepEntity = repOrderRepository.findById(maatId);
+
         RepOrderEntity repOrderEntity = optionalRepEntity.orElse(null);
 
         assert repOrderEntity != null;

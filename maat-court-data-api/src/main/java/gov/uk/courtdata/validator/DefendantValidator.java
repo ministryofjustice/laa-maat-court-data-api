@@ -26,7 +26,7 @@ public class DefendantValidator implements IValidator<DefendantMAATDataEntity, I
      * @throws ValidationException
      */
     @Override
-    public Optional<DefendantMAATDataEntity> validate(Integer maatId) throws ValidationException {
+    public Optional<DefendantMAATDataEntity> validate(Integer maatId) {
 
         final Optional<DefendantMAATDataEntity> defendantViewEntity =
                 defendantMAATDataRepository.findBymaatId(maatId);

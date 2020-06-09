@@ -24,7 +24,7 @@ public class CourtValidator implements IValidator<Void, CaseDetails> {
      * @throws ValidationException
      */
     @Override
-    public Optional<Void> validate(final CaseDetails caseDetailsJson) throws ValidationException {
+    public Optional<Void> validate(final CaseDetails caseDetailsJson)  {
 
         Optional.ofNullable(caseDetailsJson.getCjsAreaCode()).filter(StringUtils::isNotBlank)
                 .orElseThrow(() -> new ValidationException("cjs area code not found."));

@@ -4,8 +4,12 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.LaaTransactionLogging;
 
+
 public class LaaTransactionLoggingBuilder {
 
+    private LaaTransactionLoggingBuilder() {
+
+    }
 
     public static LaaTransactionLogging get(CaseDetails caseDetails) {
         Gson gson = new Gson();

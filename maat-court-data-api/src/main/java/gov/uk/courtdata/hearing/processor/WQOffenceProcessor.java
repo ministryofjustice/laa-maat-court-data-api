@@ -1,6 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
-import gov.uk.courtdata.entity.WQOffence;
+import gov.uk.courtdata.entity.WQOffenceEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.hearing.dto.OffenceDTO;
 import gov.uk.courtdata.repository.WQOffenceRepository;
@@ -22,7 +22,7 @@ public class WQOffenceProcessor {
 
         final OffenceDTO offence = magsCourtDTO.getOffence();
 
-        WQOffence wqOffence = WQOffence.builder()
+        WQOffenceEntity wqOffenceEntity = WQOffenceEntity.builder()
                 .caseId(magsCourtDTO.getCaseId())
                 .txId(magsCourtDTO.getTxId())
                 .asnSeq(offence.getAsnSeq())
@@ -39,7 +39,7 @@ public class WQOffenceProcessor {
                 .applicationFlag(G_NO)
                 .build();
 
-        wqOffenceRepository.save(wqOffence);
+        wqOffenceRepository.save(wqOffenceEntity);
     }
 
 

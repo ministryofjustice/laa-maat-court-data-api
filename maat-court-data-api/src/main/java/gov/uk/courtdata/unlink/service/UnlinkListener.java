@@ -5,7 +5,6 @@ import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.unlink.processor.UnLinkProcessor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jms.JmsException;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ public class UnlinkListener {
      *
      */
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.unlink}")
-    public void receive(@Payload final String message) throws JmsException {
+    public void receive(@Payload final String message)  {
 
         Unlink unlink = gson.fromJson(message, Unlink.class);
         unLinkProcessor.process(unlink);

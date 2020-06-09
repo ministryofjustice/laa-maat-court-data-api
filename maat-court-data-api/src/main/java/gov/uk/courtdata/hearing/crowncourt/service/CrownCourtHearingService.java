@@ -21,8 +21,8 @@ public class CrownCourtHearingService {
 
     public void execute(final HearingResulted hearingResulted) {
 
-        CCOutComeData CCOutComeData = hearingResulted.getCcOutComeData();
-        if (isCrownCourtOutCome(CCOutComeData)) {
+        CCOutComeData ccOutComeData = hearingResulted.getCcOutComeData();
+        if (isCrownCourtOutCome(ccOutComeData)) {
             executeCrownCourtOutCome(hearingResulted);
         }
         crownCourtHearingResultedImpl.execute(hearingResulted);
@@ -37,9 +37,9 @@ public class CrownCourtHearingService {
         log.info("Crown Court Outcome Processing has been Completed for MAAT ID: {}", hearingResulted.getMaatId());
     }
 
-    private boolean isCrownCourtOutCome(CCOutComeData CCOutComeData) {
-        return CCOutComeData != null
-                && CCOutComeData.getCcooOutcome() != null
-                && !CCOutComeData.getCcooOutcome().isEmpty();
+    private boolean isCrownCourtOutCome(CCOutComeData ccOutComeData) {
+        return ccOutComeData != null
+                && ccOutComeData.getCcooOutcome() != null
+                && !ccOutComeData.getCcooOutcome().isEmpty();
     }
 }

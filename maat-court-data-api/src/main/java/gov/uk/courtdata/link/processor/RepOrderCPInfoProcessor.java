@@ -21,7 +21,8 @@ public class RepOrderCPInfoProcessor implements Process {
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         Optional<RepOrderCPDataEntity> repOrderEntity = repOrderDataRepository.findByrepOrderId(caseDetails.getMaatId());
 
-        RepOrderCPDataEntity repOrder = repOrderEntity.get();
+        RepOrderCPDataEntity repOrder = repOrderEntity.orElse(null);
+        assert repOrder != null;
         repOrder.setCaseUrn(caseDetails.getCaseUrn());
         repOrder.setDefendantId(caseDetails.getDefendant().getDefendantId());
         repOrderDataRepository.save(repOrder);

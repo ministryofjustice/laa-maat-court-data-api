@@ -13,8 +13,8 @@
     "pUnlinkQueue" : "crime-apps-staging-unlink-queue",
     "pLaaStatusUpdateQueue" : "crime-apps-staging-laa-status-update-queue",
     "pHearingsResultedQueue" : "crime-apps-staging-hearing-resulted-queue",
-    "pCdaOauthUrl" : "https://laa-court-data-adaptor-stage.apps.live-1.cloud-platform.service.justice.gov.uk",
-    "pCdaLaaStatusUrl" : "https://laa-court-data-adaptor-stage.apps.live-1.cloud-platform.service.justice.gov.uk"
+    "pCdaOauthUrl" : "https://laa-court-data-adaptor-stage.apps.live-1.cloud-platform.service.justice.gov.uk/oauth/token",
+    "pCdaLaaStatusUrl" : "https://laa-court-data-adaptor-stage.apps.live-1.cloud-platform.service.justice.gov.uk/api/internal/v1/representation_orders"
   },
   "Tags" : {
     "business-unit" : "LAA",

@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'org.springframework.boot' version '2.2.4.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'net.ltgt.apt' version '0.20'
@@ -52,7 +53,6 @@ dependencies {
     compile 'io.sentry:sentry-logback:1.7.30'
 
 
-
     // DB Dependencies
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.liquibase:liquibase-core'
@@ -67,6 +67,8 @@ dependencies {
 
     compile "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+    implementation 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7'
 
     // Test Only
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -84,4 +86,19 @@ dependencies {
 
 test {
     dependsOn 'cleanTest'
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
+}
+sonarqube {
+    properties {
+        property "sonar.exclusions",  "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java , **/exception/**.java"
+        property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+        property "sonar.projectName", "Crime Apps :: maat-court-data-api"
+    }
 }

@@ -1,6 +1,8 @@
 package gov.uk.courtdata.model.hearing;
 
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.model.Defendant;
+import gov.uk.courtdata.model.Session;
 import lombok.*;
 
 import java.util.UUID;

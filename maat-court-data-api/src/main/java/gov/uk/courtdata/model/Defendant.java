@@ -15,11 +15,11 @@ public class Defendant {
     private String surname;
     private String organization;
     private String dateOfBirth;
-    private String address_line1;
-    private String address_line2;
-    private String address_line3;
-    private String address_line4;
-    private String address_line5;
+    private String addressLine1;
+    private String addressLine2;
+    private String addressLine3;
+    private String addressLine4;
+    private String addressLine5;
     private String postcode;
     private String nino;
     private String telephoneHome;

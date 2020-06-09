@@ -90,32 +90,7 @@ public class RepOrderUpdateMessageBuilder {
                 .build();
     }
 
-    /**
-     *
-     * @param solicitorDetails
-     * @return
-     */
-    private Address mapAddress(SolicitorMAATDataEntity solicitorDetails) {
 
-        return Address.builder().address1(solicitorDetails.getLine1())
-                .address2(solicitorDetails.getLine2())
-                .address3(solicitorDetails.getLine3())
-                .address4(solicitorDetails.getCity())
-                .address5(solicitorDetails.getCounty())
-                .postcode(solicitorDetails.getPostcode()).build();
-    }
-
-    /**
-     *
-     * @param solicitorDetails
-     * @return
-     */
-    private Contact mapContact(SolicitorMAATDataEntity solicitorDetails) {
-        return Contact.builder().work(solicitorDetails.getPhone())
-                .primaryEmail(solicitorDetails.getAdminEmail())
-                .secondaryEmail(solicitorDetails.getEmail()).build();
-
-    }
 
 
     /**

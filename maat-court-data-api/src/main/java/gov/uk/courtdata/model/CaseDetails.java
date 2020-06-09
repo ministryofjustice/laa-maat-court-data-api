@@ -23,7 +23,6 @@ public class CaseDetails {
     private Defendant defendant;
     private boolean isActive;
     private List<Session> sessions;
-    private Solicitor solicitor;
     private Integer category;
     private UUID laaTransactionId;
 }

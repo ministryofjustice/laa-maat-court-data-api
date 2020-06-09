@@ -24,7 +24,7 @@ public class CourtValidator implements IValidator<Void, CaseDetails> {
      * @throws ValidationException
      */
     @Override
-    public Optional<Void> validate(final CaseDetails caseDetailsJson)  {
+    public Optional<Void> validate(final CaseDetails caseDetailsJson) {
 
         Optional.ofNullable(caseDetailsJson.getCjsAreaCode()).filter(StringUtils::isNotBlank)
                 .orElseThrow(() -> new ValidationException("cjs area code not found."));
@@ -32,10 +32,10 @@ public class CourtValidator implements IValidator<Void, CaseDetails> {
         Optional.ofNullable(caseDetailsJson.getSessions())
                 .orElseThrow(() -> new ValidationException("Sessions not available."));
 
-        caseDetailsJson.getSessions().forEach(s -> {
-            Optional.ofNullable(s.getCourtLocation())
-                    .orElseThrow(() -> new ValidationException("Court Location not available in session."));
-        });
+        caseDetailsJson.getSessions().forEach(s ->
+                Optional.ofNullable(s.getCourtLocation())
+                        .orElseThrow(() -> new ValidationException("Court Location not available in session.")));
+
 
         return Optional.empty();
     }

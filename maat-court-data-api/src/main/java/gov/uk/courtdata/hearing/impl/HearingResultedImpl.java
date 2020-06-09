@@ -4,9 +4,9 @@ import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.hearing.processor.HearingWQProcessor;
 import gov.uk.courtdata.hearing.mapper.HearingDTOMapper;
+import gov.uk.courtdata.model.Offence;
+import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.model.hearing.HearingResulted;
-import gov.uk.courtdata.model.hearing.Offence;
-import gov.uk.courtdata.model.hearing.Result;
 import gov.uk.courtdata.processor.OffenceCodeRefDataProcessor;
 import gov.uk.courtdata.processor.ResultCodeRefDataProcessor;
 import gov.uk.courtdata.repository.IdentifierRepository;
@@ -46,7 +46,7 @@ public class HearingResultedImpl {
                 .forEach(offence -> {
                     offenceCodeRefDataProcessor.processOffenceCode(offence.getOffenceCode());
                     offence.getResults().forEach(result -> {
-                        final Integer resultCode = result.getResultCode();
+                        final Integer resultCode = Integer.parseInt(result.getResultCode());
                         resultCodeRefDataProcessor.processResultCode(resultCode);
                         if (isWorkQueueProcessingRequired(resultCode)) {
                             processResults(hearingResulted, wqLinkReg, offence, result);

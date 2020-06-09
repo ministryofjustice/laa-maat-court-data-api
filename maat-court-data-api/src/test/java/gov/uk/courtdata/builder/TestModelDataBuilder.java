@@ -2,6 +2,8 @@ package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
+import gov.uk.courtdata.hearing.dto.DefendantDTO;
+import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.model.CaseDetails;
 import org.springframework.stereotype.Component;
 
@@ -127,4 +129,18 @@ public class TestModelDataBuilder {
                 "  \"reasonText\" : \"Test Data\"\n" +
                 "}";
     }
+
+
+    public HearingDTO getHearingDTO() {
+        return HearingDTO.builder()
+                .maatId(9988)
+                .caseId(1234)
+                .proceedingId(9999)
+                .txId(123456)
+                .caseUrn("caseurn")
+                .docLanguage("en")
+                .defendant(DefendantDTO.builder().surname("Smith").postcode("LU3 111").build())
+                .build();
+    }
+
 }

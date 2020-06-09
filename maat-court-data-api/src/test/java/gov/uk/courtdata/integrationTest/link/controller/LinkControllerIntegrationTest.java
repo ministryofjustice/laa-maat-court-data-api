@@ -61,7 +61,7 @@ public class LinkControllerIntegrationTest {
     private WqLinkRegisterRepository wqLinkRegisterRepository;
 
     @Before
-    public void setup() throws Exception {
+    public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         repOrderRepository.deleteAll();
         repOrderCPDataRepository.deleteAll();

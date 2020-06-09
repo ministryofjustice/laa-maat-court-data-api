@@ -13,6 +13,7 @@ import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.unlink.service.UnlinkListener;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,15 @@ public class UnlinkListenerTest {
     private RepOrderRepository repOrderRepository;
     @Autowired
     private RepOrderCPDataRepository repOrderCPDataRepository;
+
+    @Before
+    public void setUp() {
+        wqCoreRepository.deleteAll();
+        wqLinkRegisterRepository.deleteAll();
+        unlinkReasonRepository.deleteAll();
+        repOrderRepository.deleteAll();
+        repOrderCPDataRepository.deleteAll();
+    }
 
     @Test
     public void givenUnlinkLinkJSONMessage_whenUnlinkListenerIsInvoked_thenCaseIsUnlinked() {

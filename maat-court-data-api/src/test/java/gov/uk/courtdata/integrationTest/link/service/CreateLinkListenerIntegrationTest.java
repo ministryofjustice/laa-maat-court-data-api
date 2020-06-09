@@ -12,6 +12,7 @@ import gov.uk.courtdata.integrationTest.MockServicesConfig;
 import gov.uk.courtdata.link.service.CreateLinkListener;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,16 @@ public class CreateLinkListenerIntegrationTest {
     private SolicitorMAATDataRepository solicitorMAATDataRepository;
     @Autowired
     private DefendantMAATDataRepository defendantMAATDataRepository;
+
+    @Before
+    public void setUp() {
+        repOrderRepository.deleteAll();
+        wqLinkRegisterRepository.deleteAll();
+        repOrderDataRepository.deleteAll();
+        solicitorMAATDataRepository.deleteAll();
+        defendantMAATDataRepository.deleteAll();
+        courtHouseCodesRepository.deleteAll();
+    }
 
     @Test
     public void givenSaveAndLinkModel_whenSaveAndImplIsInvoked_thenLinkEstablished() {

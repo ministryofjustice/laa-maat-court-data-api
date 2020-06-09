@@ -54,7 +54,9 @@ public class CreateLinkListenerIntegrationTest {
         repOrderRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();
         repOrderDataRepository.deleteAll();
-        repOrderRepository.deleteAll();
+        solicitorMAATDataRepository.deleteAll();
+        defendantMAATDataRepository.deleteAll();
+        courtHouseCodesRepository.deleteAll();
     }
 
     @Test

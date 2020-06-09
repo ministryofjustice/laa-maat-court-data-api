@@ -12,8 +12,8 @@ import gov.uk.courtdata.integrationTest.MockServicesConfig;
 import gov.uk.courtdata.link.service.CreateLinkListener;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.*;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,7 +49,7 @@ public class CreateLinkListenerIntegrationTest {
     @Autowired
     private DefendantMAATDataRepository defendantMAATDataRepository;
 
-    @BeforeEach
+    @Before
     public void setUp() {
         repOrderRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();

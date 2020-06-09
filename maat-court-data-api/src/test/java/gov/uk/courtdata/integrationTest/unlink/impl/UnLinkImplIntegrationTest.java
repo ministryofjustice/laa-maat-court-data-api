@@ -16,8 +16,8 @@ import gov.uk.courtdata.repository.UnlinkReasonRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.unlink.impl.UnLinkImpl;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,7 +51,7 @@ public class UnLinkImplIntegrationTest {
     private CourtDataAdapterClient courtDataAdapterClient;
 
 
-    @BeforeEach
+    @Before
     public void setUp() {
         wqCoreRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();

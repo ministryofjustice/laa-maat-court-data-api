@@ -13,12 +13,10 @@ import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.repository.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
@@ -58,7 +56,7 @@ public class SaveAndLinkImplIntegrationTest {
     @Autowired
     private TestEntityDataBuilder testEntityDataBuilder;
 
-    @BeforeEach
+    @Before
     public void setup() throws Exception {
         repOrderRepository.deleteAll();
         wqCoreRepository.deleteAll();

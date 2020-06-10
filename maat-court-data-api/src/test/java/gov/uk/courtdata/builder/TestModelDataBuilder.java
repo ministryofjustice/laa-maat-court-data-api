@@ -2,8 +2,7 @@ package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.hearing.dto.DefendantDTO;
-import gov.uk.courtdata.hearing.dto.HearingDTO;
+import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
 import org.springframework.stereotype.Component;
 
@@ -140,6 +139,26 @@ public class TestModelDataBuilder {
                 .caseUrn("caseurn")
                 .docLanguage("en")
                 .defendant(DefendantDTO.builder().surname("Smith").postcode("LU3 111").build())
+                .offence(OffenceDTO.builder().legalAidStatus("AP").asnSeq("1").legalAidReason("some aid reason").build())
+                .result(getResultDTO())
+                .session(getSessionDTO())
+                .build();
+    }
+
+    public SessionDTO getSessionDTO(){
+        return SessionDTO.builder()
+                .dateOfHearing("2020-08-16")
+                .courtLocation("London")
+                .sessionValidatedDate("2020-08-16")
+                .build();
+    }
+    public ResultDTO getResultDTO() {
+        return ResultDTO.builder()
+                .resultCode(6666)
+                .resultText("This is a some result text for hearing")
+                .nextHearingLocation("London")
+                .firmName("Bristol Law Service")
+                .resultShortTitle("Next call")
                 .build();
     }
 

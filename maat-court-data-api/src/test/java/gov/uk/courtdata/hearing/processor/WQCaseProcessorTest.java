@@ -36,7 +36,7 @@ public class WQCaseProcessorTest {
     }
 
     @Test
-    public void givenCaseProcessor_whenProcessIsInvoken_thenSaveCase() {
+    public void givenCaseProcessor_whenProcessIsInvoke_thenSaveCase() {
 
         //given
         HearingDTO hearingDTO =  testModelDataBuilder.getHearingDTO();

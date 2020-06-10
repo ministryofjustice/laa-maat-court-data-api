@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**
@@ -29,11 +29,13 @@ public class CourtValidator implements IValidator<Void, CaseDetails> {
     @Override
     public Optional<Void> validate(final CaseDetails caseDetailsJson) {
 
-        if (isEmpty(caseDetailsJson.getCjsAreaCode()))
+        if (isBlank(caseDetailsJson.getCjsAreaCode()))
             throw new ValidationException("cjs area code not found.");
 
-        List<Session> sessions = Optional.ofNullable(caseDetailsJson.getSessions())
-                .orElseThrow(() -> new ValidationException("Sessions not available."));
+        List<Session> sessions = caseDetailsJson.getSessions();
+
+        if (sessions == null || sessions.isEmpty())
+            throw new ValidationException("Sessions not available.");
 
         sessions.forEach(s ->
                 Optional.ofNullable(s.getCourtLocation())

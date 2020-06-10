@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
@@ -37,7 +38,7 @@ public class SolicitorValidator implements IValidator<SolicitorMAATDataEntity, I
                         maatId)));
 
 
-        if (isEmpty(solicitorData.getAccountCode()))
+        if (isBlank(solicitorData.getAccountCode()))
             throw new ValidationException(format("Solicitor account code not available for maatId %s.", maatId));
 
         return solicitorViewEntity;

@@ -31,7 +31,8 @@ public class DefendantValidator implements IValidator<DefendantMAATDataEntity, I
         final Optional<DefendantMAATDataEntity> defendantViewEntity =
                 defendantMAATDataRepository.findBymaatId(maatId);
 
-        defendantViewEntity.orElseThrow(() -> new ValidationException("MAAT Defendant details not found."));
+        if (defendantViewEntity.isEmpty())
+            throw new ValidationException("MAAT Defendant details not found.");
 
         return defendantViewEntity;
     }

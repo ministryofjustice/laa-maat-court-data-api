@@ -2,12 +2,15 @@ package gov.uk.courtdata.link.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.validator.IValidator;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
+
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 
 /**
@@ -26,13 +29,13 @@ public class CourtValidator implements IValidator<Void, CaseDetails> {
     @Override
     public Optional<Void> validate(final CaseDetails caseDetailsJson) {
 
-        Optional.ofNullable(caseDetailsJson.getCjsAreaCode()).filter(StringUtils::isNotBlank)
-                .orElseThrow(() -> new ValidationException("cjs area code not found."));
+        if (isEmpty(caseDetailsJson.getCjsAreaCode()))
+            throw new ValidationException("cjs area code not found.");
 
-        Optional.ofNullable(caseDetailsJson.getSessions())
+        List<Session> sessions = Optional.ofNullable(caseDetailsJson.getSessions())
                 .orElseThrow(() -> new ValidationException("Sessions not available."));
 
-        caseDetailsJson.getSessions().forEach(s ->
+        sessions.forEach(s ->
                 Optional.ofNullable(s.getCourtLocation())
                         .orElseThrow(() -> new ValidationException("Court Location not available in session.")));
 

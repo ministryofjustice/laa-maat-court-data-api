@@ -1,8 +1,8 @@
 package gov.uk.courtdata.hearing.crowncourt.service;
 
-import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtHearingResultedImpl;
 import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessingImpl;
 import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;
+import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class CrownCourtHearingService {
 
     private final CrownCourtValidationProcessor crownCourtValidationProcessor;
     private final CrownCourtProcessingImpl crownCourtProcessingImpl;
-    private final CrownCourtHearingResultedImpl crownCourtHearingResultedImpl;
+    private final HearingResultedImpl hearingResultedImpl;
 
 
     public void execute(final HearingResulted hearingResulted) {
@@ -25,7 +25,7 @@ public class CrownCourtHearingService {
         if (isCrownCourtOutCome(ccOutComeData)) {
             executeCrownCourtOutCome(hearingResulted);
         }
-        crownCourtHearingResultedImpl.execute(hearingResulted);
+        hearingResultedImpl.execute(hearingResulted);
 
     }
 

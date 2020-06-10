@@ -48,7 +48,7 @@ public class WQOffenceProcessorTest {
         verify(wqOffenceRepository).save(wqOffenceEntityArgumentCaptor.capture());
 
        assertThat(wqOffenceEntityArgumentCaptor.getValue().getTxId()).isEqualTo(123456);
-       assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalAidStatus()).isEqualTo("Pending");
+       assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalAidStatus()).isEqualTo("AP");
        assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalaidReason()).isEqualTo("some aid reason");
        assertThat(wqOffenceEntityArgumentCaptor.getValue().getAsnSeq()).isEqualTo("1");
     }

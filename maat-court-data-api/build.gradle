@@ -99,6 +99,8 @@ sonarqube {
     properties {
         property "sonar.exclusions",  "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java , **/exception/**.java"
         property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+        property "sonar.projectKey", "maat-court-data-api"
         property "sonar.projectName", "Crime Apps :: maat-court-data-api"
+
     }
 }

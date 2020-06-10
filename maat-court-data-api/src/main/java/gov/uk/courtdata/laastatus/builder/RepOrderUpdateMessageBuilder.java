@@ -7,7 +7,6 @@ import gov.uk.courtdata.model.laastatus.*;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
  *
  */
 @Component
-@Slf4j
 @AllArgsConstructor
 public class RepOrderUpdateMessageBuilder {
 
@@ -83,7 +81,6 @@ public class RepOrderUpdateMessageBuilder {
     private Organisation findSolicitorDetails(SolicitorMAATDataEntity solicitorMAATDataEntity) {
 
         return Organisation.builder()
-                //TODO: to be enabled when CDA handled invalid data.
                 //.address(mapAddress(solicitorMAATDataEntity))
                 // .contact(mapContact(solicitorMAATDataEntity))
                 .name(solicitorMAATDataEntity.getAccountName())

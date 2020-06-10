@@ -1,8 +1,8 @@
 package gov.uk.courtdata.hearing.crowncourt.service;
 
-import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtHearingResultedImpl;
 import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessingImpl;
 import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;
+import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class CrownCourtHearingServiceTest {
     @Mock
     private CrownCourtProcessingImpl crownCourtProcessingImpl;
     @Mock
-    private CrownCourtHearingResultedImpl crownCourtHearingResultedImpl;
+    private HearingResultedImpl hearingResultedImpl;
     @InjectMocks
     private CrownCourtHearingService crownCourtHearingService;
     @BeforeEach
@@ -48,7 +48,7 @@ public class CrownCourtHearingServiceTest {
         //then
         verify(crownCourtValidationProcessor, times(1)).validate(hearingDetails);
         verify(crownCourtProcessingImpl, times(1)).execute(hearingDetails);
-        verify(crownCourtHearingResultedImpl, times(1)).execute(hearingDetails);
+        verify(hearingResultedImpl, times(1)).execute(hearingDetails);
 
     }
 
@@ -68,7 +68,7 @@ public class CrownCourtHearingServiceTest {
         //then
         verify(crownCourtValidationProcessor, times(0)).validate(hearingDetails);
         verify(crownCourtProcessingImpl, times(0)).execute(hearingDetails);
-        verify(crownCourtHearingResultedImpl, times(1)).execute(hearingDetails);
+        verify(hearingResultedImpl, times(1)).execute(hearingDetails);
 
     }
 

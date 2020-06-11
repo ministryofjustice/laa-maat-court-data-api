@@ -2,7 +2,6 @@ package gov.uk.courtdata.hearing.dto;
 
 import lombok.*;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -23,5 +22,4 @@ public class HearingDTO {
     private OffenceDTO offence;
     private ResultDTO result;
     private SessionDTO session;
-
 }

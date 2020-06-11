@@ -1,12 +1,12 @@
 package gov.uk.courtdata.hearing.service;
 
-import gov.uk.courtdata.hearing.dto.DefendantDTO;
-import gov.uk.courtdata.hearing.dto.ResultDTO;
-import gov.uk.courtdata.hearing.dto.SessionDTO;
+import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.hearing.mapper.HearingDTOMapper;
 import gov.uk.courtdata.model.Defendant;
+import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.model.Session;
+import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mapstruct.factory.Mappers;
@@ -30,8 +30,6 @@ public class HearingDTOMapperTest {
 
         //then
         assertThat(defendantDTO.getSurname()).isEqualTo("Smith");
-
-
     }
 
     @Test
@@ -60,18 +58,32 @@ public class HearingDTOMapperTest {
         assertThat(sessionDTO.getCourtLocation()).isEqualTo("London");
     }
 
-
     @Test
     public void giventoDefendant_whenMapperIsInvoke_thenCompareData() {
 
         //given
-        Defendant defendant = Defendant.builder().postcode("LU1 111").build();
+        Offence offence = Offence.builder().asnSeq("as12").build();
 
         //when
-        DefendantDTO defendantDTO = hearingDTOMapper.toDefendantDTO(defendant);
+        OffenceDTO offenceDTO = hearingDTOMapper.toOffenceDTO(offence);
 
         //then
-        assertThat(defendantDTO.getPostcode()).isEqualTo("LU1 111");
+        assertThat(offenceDTO.getAsnSeq()).isEqualTo("as12");
     }
 
+    @Test
+    public void giventoHearing_whenMapperIsInvoke_thenCompareData() {
+
+        //given
+        HearingResulted hearingResulted = HearingResulted.builder().caseUrn("caseurl").build();
+        Result result = Result.builder().resultCode("1").build();
+        Offence offence = Offence.builder().asnSeq("as12").build();
+
+        //when
+        HearingDTO hearingDTO = hearingDTOMapper.toHearingDTO(hearingResulted, 12, 34, 56, offence, result);
+
+        //then
+        assertThat(hearingDTO.getOffence().getAsnSeq()).isEqualTo("as12");
+        assertThat(hearingDTO.getResult().getResultCode()).isEqualTo(1);
+    }
 }

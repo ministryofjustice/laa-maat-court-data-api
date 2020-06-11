@@ -49,13 +49,10 @@ public class RepOrderCPInfoProcessorTest {
                 .thenReturn(Optional.of(RepOrderCPDataEntity.builder().repOrderId(123).caseUrn("caseurn1").build()));
         repOrderCPInfoProcessor.process(courtDataDTO);
 
-
         // then
         verify(repOrderDataRepository).save(repOrderCaptor.capture());
         assertThat(repOrderCaptor.getValue().getCaseUrn()).isEqualTo("caseurn1");
         assertThat(repOrderCaptor.getValue().getRepOrderId()).isEqualTo(123);
         assertThat(repOrderCaptor.getValue().getDefendantId()).isEqualTo(defendant.getDefendantId());
-
-
     }
 }

@@ -36,6 +36,7 @@ public class HearingResultedService {
             case MAGISTRATES:
                 hearingResultedImpl.execute(hearingResulted);
                 break;
+            default:
 
         }
 

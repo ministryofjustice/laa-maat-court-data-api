@@ -47,6 +47,7 @@ public class TestModelDataBuilder {
     public String getSaveAndLinkString() {
         return "{\n" +
                 "  \"maatId\": 1234,\n" +
+                "  \"category\": 12,\n" +
                 "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
                 "  \"caseUrn\":\"caseurn1\",\n" +
                 "  \"asn\": \"123456754\",\n" +

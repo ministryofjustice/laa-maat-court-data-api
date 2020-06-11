@@ -6,6 +6,7 @@ import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.repository.OffenceRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import static gov.uk.courtdata.util.DateUtil.parse;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class OffenceInfoProcessor implements Process {
 
     private final OffenceRepository offenceRepository;
@@ -44,18 +46,12 @@ public class OffenceInfoProcessor implements Process {
                 .offenceShortTitle(offence.getOffenceShortTitle())
                 .modeOfTrial(offence.getModeOfTrial())
                 .offenceWording(offence.getOffenceWording())
-                .iojDecision(getIojDecision(offence))
-                .wqOffence(getWQOffence(offence))
+                .iojDecision(PENDING_IOJ_DECISION)
+                .wqOffence(G_NO)
                 .applicationFlag(G_NO)
                 .offenceId(offence.getOffenceId())
                 .build();
     }
 
-    protected Integer getWQOffence(Offence offence) {
-        return G_NO;
-    }
 
-    protected Integer getIojDecision(Offence offence) {
-        return PENDING_IOJ_DECISION;
-    }
 }

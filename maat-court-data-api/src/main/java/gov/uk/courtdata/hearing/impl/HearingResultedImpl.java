@@ -1,9 +1,12 @@
 package gov.uk.courtdata.hearing.impl;
 
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.enums.WQType;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.hearing.processor.HearingWQProcessor;
 import gov.uk.courtdata.hearing.mapper.HearingDTOMapper;
+import gov.uk.courtdata.hearing.processor.WQCoreProcessor;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.model.hearing.HearingResulted;
@@ -29,6 +32,7 @@ public class HearingResultedImpl {
     private final HearingWQProcessor hearingWQProcessor;
     private final ResultCodeRefDataProcessor resultCodeRefDataProcessor;
     private final OffenceCodeRefDataProcessor offenceCodeRefDataProcessor;
+    private final WQCoreProcessor wqCoreProcessor;
 
 
     /**
@@ -48,7 +52,7 @@ public class HearingResultedImpl {
                     offence.getResults().forEach(result -> {
                         final Integer resultCode = Integer.parseInt(result.getResultCode());
                         resultCodeRefDataProcessor.processResultCode(resultCode);
-                        if (isWorkQueueProcessingRequired(resultCode)) {
+                        if (isWorkQueueProcessingRequired(resultCode, hearingResulted)) {
                             processResults(hearingResulted, wqLinkReg, offence, result);
                         }
                     });
@@ -85,7 +89,12 @@ public class HearingResultedImpl {
         return identifierRepository.getTxnID();
     }
 
-    protected boolean isWorkQueueProcessingRequired(Integer resultCode) {
-        return true;
+    private boolean isWorkQueueProcessingRequired(Integer resultCode, HearingResulted hearingResulted) {
+        boolean isWorkQNeeded = true;
+        if (JurisdictionType.CROWN == hearingResulted.getJurisdictionType() &&
+                WQType.isActionableQueue(wqCoreProcessor.findWQType(resultCode))) {
+            isWorkQNeeded = false;
+        }
+        return isWorkQNeeded;
     }
 }

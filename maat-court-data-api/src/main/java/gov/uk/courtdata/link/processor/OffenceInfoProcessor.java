@@ -17,7 +17,6 @@ import static gov.uk.courtdata.util.DateUtil.parse;
 
 @RequiredArgsConstructor
 @Component
-@Slf4j
 public class OffenceInfoProcessor implements Process {
 
     private final OffenceRepository offenceRepository;

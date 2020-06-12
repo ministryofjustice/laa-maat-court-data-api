@@ -33,20 +33,19 @@ public class CrownCourtProcessingImpl {
         final Integer maatId = hearingResulted.getMaatId();
         final Optional<RepOrderEntity> optionalRepEntity = repOrderRepository.findById(maatId);
 
-        RepOrderEntity repOrderEntity = optionalRepEntity.orElse(null);
+        if (optionalRepEntity.isPresent()) {
+            RepOrderEntity repOrderEntity = optionalRepEntity.get();
+            crownCourtProcessingRepository.invokeCrownCourtOutcomeProcess(maatId,
+                    ccutComeData.getCcooOutcome(),
+                    ccutComeData.getBenchWarrantIssuedYn(),
+                    ccutComeData.getAppealType() != null ? ccutComeData.getAppealType() : repOrderEntity.getAptyCode(),
+                    ccutComeData.getCcImprisioned(),
+                    hearingResulted.getCaseUrn(),
+                    ccutComeData.getCrownCourtCode());
 
-        assert repOrderEntity != null;
-        crownCourtProcessingRepository.invokeCrownCourtOutcomeProcess(maatId,
-                ccutComeData.getCcooOutcome(),
-                ccutComeData.getBenchWarrantIssuedYn(),
-                ccutComeData.getAppealType() != null ? ccutComeData.getAppealType() : repOrderEntity.getAptyCode(),
-                ccutComeData.getCcImprisioned(),
-                hearingResulted.getCaseUrn(),
-                ccutComeData.getCrownCourtCode());
 
-
-        processSentencingDate(ccutComeData.getCaseEndDate(), maatId, repOrderEntity.getCatyCaseType());
-
+            processSentencingDate(ccutComeData.getCaseEndDate(), maatId, repOrderEntity.getCatyCaseType());
+        }
     }
 
     private void processSentencingDate(String ccCaseEndDate, Integer maatId, String catyType) {

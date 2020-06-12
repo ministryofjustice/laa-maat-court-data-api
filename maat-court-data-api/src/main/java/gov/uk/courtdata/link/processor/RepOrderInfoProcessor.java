@@ -26,14 +26,16 @@ public class RepOrderInfoProcessor implements Process {
         final CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
         final Integer maatId = caseDetails.getMaatId();
         final Optional<RepOrderEntity> optRepOrder = repOrderRepository.findById(maatId);
-        RepOrderEntity repOrderEntity = optRepOrder.orElse(null);
-        assert repOrderEntity != null;
-        repOrderEntity.setCaseId(saveAndLinkModel.getLibraId());
-        if (caseDetails.getAsn() != null) {
-            repOrderEntity.setArrestSummonsNo(caseDetails.getAsn());
+        if (optRepOrder.isPresent()) {
+            RepOrderEntity repOrderEntity = optRepOrder.get();
+
+            repOrderEntity.setCaseId(saveAndLinkModel.getLibraId());
+            if (caseDetails.getAsn() != null) {
+                repOrderEntity.setArrestSummonsNo(caseDetails.getAsn());
+            }
+            repOrderEntity.setDateModified(LocalDateTime.now());
+            repOrderEntity.setUserModified(dbUser);
+            repOrderRepository.save(repOrderEntity);
         }
-        repOrderEntity.setDateModified(LocalDateTime.now());
-        repOrderEntity.setUserModified(dbUser);
-        repOrderRepository.save(repOrderEntity);
     }
 }

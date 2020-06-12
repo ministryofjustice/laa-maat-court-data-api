@@ -56,16 +56,15 @@ public class RepOrderUpdateMessageBuilder {
 
 
     /**
-     *
      * @param caseDetails
      * @return
      */
     private DefenceOrganisation mapDefenceOrganisation(CaseDetails caseDetails) {
 
         final Optional<SolicitorMAATDataEntity> optSolicitor = solicitorMAATDataRepository.findBymaatId(caseDetails.getMaatId());
-        SolicitorMAATDataEntity solicitorDetails = optSolicitor.orElse(null);
 
-        assert solicitorDetails != null;
+        SolicitorMAATDataEntity solicitorDetails = optSolicitor.orElse(SolicitorMAATDataEntity.builder().build());
+
         return DefenceOrganisation.builder()
                 .laaContractNumber(solicitorDetails.getAccountCode())
                 .organisation(findSolicitorDetails(solicitorDetails))
@@ -74,20 +73,15 @@ public class RepOrderUpdateMessageBuilder {
 
 
     /**
-     *
      * @param solicitorMAATDataEntity
      * @return
      */
     private Organisation findSolicitorDetails(SolicitorMAATDataEntity solicitorMAATDataEntity) {
 
         return Organisation.builder()
-                //.address(mapAddress(solicitorMAATDataEntity))
-                // .contact(mapContact(solicitorMAATDataEntity))
                 .name(solicitorMAATDataEntity.getAccountName())
                 .build();
     }
-
-
 
 
     /**
@@ -107,7 +101,6 @@ public class RepOrderUpdateMessageBuilder {
 
 
     /**
-     *
      * @param caseDetails
      * @return
      */
@@ -119,7 +112,6 @@ public class RepOrderUpdateMessageBuilder {
     }
 
     /**
-     *
      * @param maatId
      * @return
      */
@@ -133,7 +125,6 @@ public class RepOrderUpdateMessageBuilder {
 
 
     /**
-     *
      * @param maatId
      * @return
      */

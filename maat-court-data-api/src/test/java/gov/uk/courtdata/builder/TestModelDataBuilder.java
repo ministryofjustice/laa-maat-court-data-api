@@ -140,7 +140,7 @@ public class TestModelDataBuilder {
                 .caseUrn("caseurn")
                 .docLanguage("en")
                 .defendant(DefendantDTO.builder().surname("Smith").postcode("LU3 111").build())
-                .offence(OffenceDTO.builder().legalAidStatus("AP").asnSeq("1").legalAidReason("some aid reason").build())
+                .offence(OffenceDTO.builder().legalAidStatus("AP").asnSeq("0").asnSeq("1").legalAidReason("some aid reason").build())
                 .result(getResultDTO())
                 .session(getSessionDTO())
                 .build();

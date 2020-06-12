@@ -104,8 +104,7 @@ public class GlobalAppLoggingHandler {
         MDC.put(MESSAGE, laaTransactionLogging.toString());
 
         MDC.put(CASE_URN, laaTransactionLogging.getCaseUrn());
-        laaTransactionId = laaTransactionLogging.getLaaTransactionId() != null ? laaTransactionLogging.getLaaTransactionId() : UUID.randomUUID();
-        MDC.put(LAA_TRANSACTION_ID, laaTransactionId.toString());
+        MDC.put(LAA_TRANSACTION_ID, laaTransactionLogging.getLaaTransactionId() != null ? laaTransactionLogging.getLaaTransactionId().toString() : "");
         MDC.put("maatId", laaTransactionLogging.getMaatId().toString());
 
         Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder()

@@ -14,7 +14,7 @@ import java.util.Optional;
 public class UserIdValidator implements IValidator<Void, String> {
 
     @Override
-    public Optional<Void> validate(String userId) throws ValidationException {
+    public Optional<Void> validate(String userId) {
 
         if (userId != null && !userId.isEmpty()) {
             return Optional.empty();

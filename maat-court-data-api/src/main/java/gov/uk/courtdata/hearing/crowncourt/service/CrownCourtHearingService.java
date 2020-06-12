@@ -1,8 +1,8 @@
 package gov.uk.courtdata.hearing.crowncourt.service;
 
-import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtHearingResultedImpl;
 import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessingImpl;
 import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;
+import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import lombok.RequiredArgsConstructor;
@@ -16,16 +16,16 @@ public class CrownCourtHearingService {
 
     private final CrownCourtValidationProcessor crownCourtValidationProcessor;
     private final CrownCourtProcessingImpl crownCourtProcessingImpl;
-    private final CrownCourtHearingResultedImpl crownCourtHearingResultedImpl;
+    private final HearingResultedImpl hearingResultedImpl;
 
 
     public void execute(final HearingResulted hearingResulted) {
 
-        CCOutComeData CCOutComeData = hearingResulted.getCcOutComeData();
-        if (isCrownCourtOutCome(CCOutComeData)) {
+        CCOutComeData ccOutComeData = hearingResulted.getCcOutComeData();
+        if (isCrownCourtOutCome(ccOutComeData)) {
             executeCrownCourtOutCome(hearingResulted);
         }
-        crownCourtHearingResultedImpl.execute(hearingResulted);
+        hearingResultedImpl.execute(hearingResulted);
 
     }
 
@@ -37,9 +37,9 @@ public class CrownCourtHearingService {
         log.info("Crown Court Outcome Processing has been Completed for MAAT ID: {}", hearingResulted.getMaatId());
     }
 
-    private boolean isCrownCourtOutCome(CCOutComeData CCOutComeData) {
-        return CCOutComeData != null
-                && CCOutComeData.getCcooOutcome() != null
-                && !CCOutComeData.getCcooOutcome().isEmpty();
+    private boolean isCrownCourtOutCome(CCOutComeData ccOutComeData) {
+        return ccOutComeData != null
+                && ccOutComeData.getCcooOutcome() != null
+                && !ccOutComeData.getCcooOutcome().isEmpty();
     }
 }

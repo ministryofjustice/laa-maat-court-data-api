@@ -1,6 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
-import gov.uk.courtdata.entity.WQResult;
+import gov.uk.courtdata.entity.WQResultEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQResultRepository;
 import gov.uk.courtdata.util.DateUtil;
@@ -19,7 +19,7 @@ public class WQResultProcessor {
     public void process(final HearingDTO magsCourtDTO) {
 
 
-        WQResult wqResult = WQResult.builder()
+        WQResultEntity wqResultEntity = WQResultEntity.builder()
                 .caseId(magsCourtDTO.getCaseId())
                 .txId(magsCourtDTO.getTxId())
                 .asn(magsCourtDTO.getAsn())
@@ -39,7 +39,7 @@ public class WQResultProcessor {
                 .sessionValidateDate(DateUtil.parse(magsCourtDTO.getSession().getSessionValidatedDate()))
                 .build();
 
-        wqResultRepository.save(wqResult);
+        wqResultRepository.save(wqResultEntity);
     }
 
 

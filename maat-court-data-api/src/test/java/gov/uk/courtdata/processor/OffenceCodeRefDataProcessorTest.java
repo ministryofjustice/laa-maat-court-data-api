@@ -1,6 +1,6 @@
 package gov.uk.courtdata.processor;
 
-import gov.uk.courtdata.entity.XLATOffence;
+import gov.uk.courtdata.entity.XLATOffenceEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.XLATOffenceRepository;
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class OffenceCodeRefDataProcessorTest {
     private XLATOffenceRepository xlatOffenceRepository;
 
     @Captor
-    private ArgumentCaptor<XLATOffence> offenceCodeCaptor;
+    private ArgumentCaptor<XLATOffenceEntity> offenceCodeCaptor;
 
     @Before
     public void setUp() {
@@ -69,16 +69,16 @@ public class OffenceCodeRefDataProcessorTest {
 
         //given
         String offenceCode = "ABCD";
-        final XLATOffence xlatOffence = XLATOffence.builder().offenceCode(offenceCode).build();
+        final XLATOffenceEntity xlatOffenceEntity = XLATOffenceEntity.builder().offenceCode(offenceCode).build();
 
         //when
         Mockito.when(xlatOffenceRepository.findById(offenceCode))
-                .thenReturn(Optional.of(xlatOffence));
+                .thenReturn(Optional.of(xlatOffenceEntity));
 
         offenceCodeRefDataProcessor.processOffenceCode(offenceCode);
 
         //then
-        verify(xlatOffenceRepository, times(0)).save(xlatOffence);
+        verify(xlatOffenceRepository, times(0)).save(xlatOffenceEntity);
     }
 
     @Test

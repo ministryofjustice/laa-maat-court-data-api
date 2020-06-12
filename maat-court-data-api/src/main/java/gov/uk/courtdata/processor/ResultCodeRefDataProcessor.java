@@ -1,7 +1,7 @@
 package gov.uk.courtdata.processor;
 
 
-import gov.uk.courtdata.entity.XLATResult;
+import gov.uk.courtdata.entity.XLATResultEntity;
 import gov.uk.courtdata.enums.WQType;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.XLATResultRepository;
@@ -31,7 +31,7 @@ public class ResultCodeRefDataProcessor {
     public void processResultCode(final Integer resultCode) {
 
         if (resultCode != null) {
-            Optional<XLATResult> xlatResult =
+            Optional<XLATResultEntity> xlatResult =
                     xlatResultRepository.findById(resultCode);
             if (xlatResult.isEmpty()) {
                 createNewXLATResult(resultCode);
@@ -45,7 +45,7 @@ public class ResultCodeRefDataProcessor {
 
     private void createNewXLATResult(final Integer resultCode) {
 
-        XLATResult xlatResult = XLATResult.builder()
+        XLATResultEntity xlatResultEntity = XLATResultEntity.builder()
                 .cjsResultCode(resultCode)
                 .resultDescription(RESULT_CODE_DESCRIPTION)
                 .englandAndWales(YES)
@@ -55,7 +55,7 @@ public class ResultCodeRefDataProcessor {
                 .createdDate(LocalDate.now())
                 .build();
 
-        xlatResultRepository.save(xlatResult);
+        xlatResultRepository.save(xlatResultEntity);
 
 
     }

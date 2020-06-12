@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.CATY_CASE_TYPE;
 
@@ -30,19 +31,21 @@ public class CrownCourtProcessingImpl {
 
         CCOutComeData ccutComeData = hearingResulted.getCcOutComeData();
         final Integer maatId = hearingResulted.getMaatId();
-        RepOrderEntity repOrderEntity = repOrderRepository.findById(maatId).get();
+        final Optional<RepOrderEntity> optionalRepEntity = repOrderRepository.findById(maatId);
 
-        crownCourtProcessingRepository.invokeCrownCourtOutcomeProcess(maatId,
-                ccutComeData.getCcooOutcome(),
-                ccutComeData.getBenchWarrantIssuedYn(),
-                ccutComeData.getAppealType() != null ? ccutComeData.getAppealType() : repOrderEntity.getAptyCode(),
-                ccutComeData.getCcImprisioned(),
-                hearingResulted.getCaseUrn(),
-                ccutComeData.getCrownCourtCode());
+        if (optionalRepEntity.isPresent()) {
+            RepOrderEntity repOrderEntity = optionalRepEntity.get();
+            crownCourtProcessingRepository.invokeCrownCourtOutcomeProcess(maatId,
+                    ccutComeData.getCcooOutcome(),
+                    ccutComeData.getBenchWarrantIssuedYn(),
+                    ccutComeData.getAppealType() != null ? ccutComeData.getAppealType() : repOrderEntity.getAptyCode(),
+                    ccutComeData.getCcImprisioned(),
+                    hearingResulted.getCaseUrn(),
+                    ccutComeData.getCrownCourtCode());
 
 
-        processSentencingDate(ccutComeData.getCaseEndDate(), maatId, repOrderEntity.getCatyCaseType());
-
+            processSentencingDate(ccutComeData.getCaseEndDate(), maatId, repOrderEntity.getCatyCaseType());
+        }
     }
 
     private void processSentencingDate(String ccCaseEndDate, Integer maatId, String catyType) {

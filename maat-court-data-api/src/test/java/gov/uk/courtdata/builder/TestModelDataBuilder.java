@@ -2,6 +2,7 @@ package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
+import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +47,7 @@ public class TestModelDataBuilder {
     public String getSaveAndLinkString() {
         return "{\n" +
                 "  \"maatId\": 1234,\n" +
+                "  \"category\": 12,\n" +
                 "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
                 "  \"caseUrn\":\"caseurn1\",\n" +
                 "  \"asn\": \"123456754\",\n" +
@@ -127,4 +129,38 @@ public class TestModelDataBuilder {
                 "  \"reasonText\" : \"Test Data\"\n" +
                 "}";
     }
+
+
+    public HearingDTO getHearingDTO() {
+        return HearingDTO.builder()
+                .maatId(9988)
+                .caseId(1234)
+                .proceedingId(9999)
+                .txId(123456)
+                .caseUrn("caseurn")
+                .docLanguage("en")
+                .defendant(DefendantDTO.builder().surname("Smith").postcode("LU3 111").build())
+                .offence(OffenceDTO.builder().legalAidStatus("AP").asnSeq("0").asnSeq("1").legalAidReason("some aid reason").build())
+                .result(getResultDTO())
+                .session(getSessionDTO())
+                .build();
+    }
+
+    public SessionDTO getSessionDTO(){
+        return SessionDTO.builder()
+                .dateOfHearing("2020-08-16")
+                .courtLocation("London")
+                .sessionValidatedDate("2020-08-16")
+                .build();
+    }
+    public ResultDTO getResultDTO() {
+        return ResultDTO.builder()
+                .resultCode(6666)
+                .resultText("This is a some result text for hearing")
+                .nextHearingLocation("London")
+                .firmName("Bristol Law Service")
+                .resultShortTitle("Next call")
+                .build();
+    }
+
 }

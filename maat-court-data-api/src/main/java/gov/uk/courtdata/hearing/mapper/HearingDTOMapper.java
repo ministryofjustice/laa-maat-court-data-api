@@ -1,7 +1,11 @@
 package gov.uk.courtdata.hearing.mapper;
 
 import gov.uk.courtdata.hearing.dto.*;
-import gov.uk.courtdata.model.hearing.*;
+import gov.uk.courtdata.model.Defendant;
+import gov.uk.courtdata.model.Offence;
+import gov.uk.courtdata.model.Result;
+import gov.uk.courtdata.model.Session;
+import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -11,7 +15,6 @@ import org.mapstruct.ReportingPolicy;
  */
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface HearingDTOMapper {
-
     /***
      *  Map from hearing resulted to hearing DTO.
      * @param hearingResulted
@@ -31,6 +34,4 @@ public interface HearingDTOMapper {
     OffenceDTO toOffenceDTO(final Offence offence);
 
     ResultDTO toResultDTO(final Result result);
-
-
 }

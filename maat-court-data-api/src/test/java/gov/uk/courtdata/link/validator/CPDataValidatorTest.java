@@ -27,7 +27,7 @@ public class CPDataValidatorTest {
     private RepOrderCPDataRepository repOrderCPDataRepository;
 
     @InjectMocks
-    private gov.uk.courtdata.link.validator.CPDataValidator CPDataValidator;
+    private CPDataValidator CPDataValidator;
 
     @BeforeEach
     public void setUp() {

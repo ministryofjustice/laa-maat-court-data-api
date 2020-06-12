@@ -1,6 +1,6 @@
 package gov.uk.courtdata.processor;
 
-import gov.uk.courtdata.entity.XLATOffence;
+import gov.uk.courtdata.entity.XLATOffenceEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.XLATOffenceRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class OffenceCodeRefDataProcessor {
     public void processOffenceCode(final String offenceCode) {
 
         if (offenceCode != null) {
-            Optional<XLATOffence> xlatOffence =
+            Optional<XLATOffenceEntity> xlatOffence =
                     xlatOffenceRepository.findById(offenceCode);
             if (xlatOffence.isEmpty()) {
                 createNewXLATOffence(offenceCode);
@@ -41,7 +41,7 @@ public class OffenceCodeRefDataProcessor {
 
     private void createNewXLATOffence(final String offenceCode) {
 
-        XLATOffence xlatOffence = XLATOffence.builder()
+        XLATOffenceEntity xlatOffenceEntity = XLATOffenceEntity.builder()
                 .offenceCode(offenceCode)
                 .parentCode(offenceCode.length() >= 4 ? offenceCode.substring(0, 4) : offenceCode)
                 .codeMeaning(UNKNOWN_OFFENCE)
@@ -52,7 +52,7 @@ public class OffenceCodeRefDataProcessor {
                 .build();
 
 
-        xlatOffenceRepository.save(xlatOffence);
+        xlatOffenceRepository.save(xlatOffenceEntity);
 
 
     }

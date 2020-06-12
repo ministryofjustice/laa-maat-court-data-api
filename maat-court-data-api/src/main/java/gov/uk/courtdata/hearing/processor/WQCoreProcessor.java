@@ -1,7 +1,7 @@
 package gov.uk.courtdata.hearing.processor;
 
 import gov.uk.courtdata.entity.WqCoreEntity;
-import gov.uk.courtdata.entity.XLATResult;
+import gov.uk.courtdata.entity.XLATResultEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.OffenceRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
@@ -65,10 +65,12 @@ public class WQCoreProcessor {
      */
     public int findWQType(final Integer resultCode) {
 
-        Optional<XLATResult> xlatResult =
+        Optional<XLATResultEntity> xlatResult =
                 xlatResultRepository.findById(resultCode);
+        XLATResultEntity xlatResultEntity = xlatResult.orElse(null);
 
-        return xlatResult.get().getWqType();
+        assert xlatResultEntity != null;
+        return xlatResultEntity.getWqType();
 
 
     }

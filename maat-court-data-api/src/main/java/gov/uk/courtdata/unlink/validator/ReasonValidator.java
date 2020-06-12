@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Slf4j
 @RequiredArgsConstructor
 @Component
 public class ReasonValidator implements IValidator<Void, Integer> {
@@ -22,10 +21,9 @@ public class ReasonValidator implements IValidator<Void, Integer> {
      * @throws ValidationException
      */
     @Override
-    public Optional<Void> validate(Integer reasonId) throws ValidationException {
+    public Optional<Void> validate(Integer reasonId) {
 
-        if (reasonId!=null && reasonId > 0) {
-            //TODO: make a database call to check if its a valid
+        if (reasonId != null && reasonId > 0) {
             return Optional.empty();
         } else {
             throw new ValidationException("Reason id is missing.");

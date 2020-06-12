@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -24,13 +25,17 @@ public class RepOrderInfoProcessor implements Process {
 
         final CaseDetails caseDetails = saveAndLinkModel.getCaseDetails();
         final Integer maatId = caseDetails.getMaatId();
-        RepOrderEntity repOrderEntity = repOrderRepository.findById(maatId).get();
-        repOrderEntity.setCaseId(saveAndLinkModel.getLibraId());
-        if (caseDetails.getAsn() != null) {
-            repOrderEntity.setArrestSummonsNo(caseDetails.getAsn());
+        final Optional<RepOrderEntity> optRepOrder = repOrderRepository.findById(maatId);
+        if (optRepOrder.isPresent()) {
+            RepOrderEntity repOrderEntity = optRepOrder.get();
+
+            repOrderEntity.setCaseId(saveAndLinkModel.getLibraId());
+            if (caseDetails.getAsn() != null) {
+                repOrderEntity.setArrestSummonsNo(caseDetails.getAsn());
+            }
+            repOrderEntity.setDateModified(LocalDateTime.now());
+            repOrderEntity.setUserModified(dbUser);
+            repOrderRepository.save(repOrderEntity);
         }
-        repOrderEntity.setDateModified(LocalDateTime.now());
-        repOrderEntity.setUserModified(dbUser);
-        repOrderRepository.save(repOrderEntity);
     }
 }

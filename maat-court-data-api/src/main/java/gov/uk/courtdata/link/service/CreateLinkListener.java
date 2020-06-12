@@ -26,7 +26,7 @@ public class CreateLinkListener {
      * @throws JmsException
      */
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.link}")
-    public void receive(@Payload final String message) throws JmsException {
+    public void receive(@Payload final String message)  {
 
         CaseDetails linkMessage = gson.fromJson(message, CaseDetails.class);
         createLinkService.saveAndLink(linkMessage);

@@ -24,6 +24,6 @@ public class SessionEntity {
     @Column(name = "POST_HEARING_CUSTODY")
     private String postHearingCustody;
     @Column(name = "SESSIONVALIDATEDATE")
-    private LocalDate sessionvalidatedate;
+    private LocalDate sessionValidateDate;
 
 }

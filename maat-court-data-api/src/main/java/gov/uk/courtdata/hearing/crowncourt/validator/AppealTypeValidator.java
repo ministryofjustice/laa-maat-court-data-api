@@ -32,6 +32,5 @@ public class AppealTypeValidator {
                         .concat(appealType.concat(" is passed in for MAAT ID: " + hearingResulted.getMaatId())));
             }
         }
-
     }
 }

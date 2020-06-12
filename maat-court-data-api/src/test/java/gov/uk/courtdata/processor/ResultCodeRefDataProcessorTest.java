@@ -1,6 +1,6 @@
 package gov.uk.courtdata.processor;
 
-import gov.uk.courtdata.entity.XLATResult;
+import gov.uk.courtdata.entity.XLATResultEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.XLATResultRepository;
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class ResultCodeRefDataProcessorTest {
     private XLATResultRepository xlatResultRepository;
 
     @Captor
-    private ArgumentCaptor<XLATResult> xlatResultArgumentCaptor;
+    private ArgumentCaptor<XLATResultEntity> xlatResultArgumentCaptor;
 
     @Before
     public void setUp() {
@@ -69,16 +69,16 @@ public class ResultCodeRefDataProcessorTest {
 
         //given
         Integer resultCode = 3333;
-        final XLATResult xlatResult = XLATResult.builder().cjsResultCode(resultCode).build();
+        final XLATResultEntity xlatResultEntity = XLATResultEntity.builder().cjsResultCode(resultCode).build();
 
         //when
         Mockito.when(xlatResultRepository.findById(resultCode))
-                .thenReturn(Optional.of(xlatResult));
+                .thenReturn(Optional.of(xlatResultEntity));
 
         resultCodeRefDataProcessor.processResultCode(resultCode);
 
         //then
-        verify(xlatResultRepository, times(0)).save(xlatResult);
+        verify(xlatResultRepository, times(0)).save(xlatResultEntity);
 
     }
 

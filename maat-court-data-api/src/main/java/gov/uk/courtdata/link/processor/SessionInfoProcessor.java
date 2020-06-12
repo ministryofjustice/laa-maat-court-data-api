@@ -37,7 +37,7 @@ public class SessionInfoProcessor implements Process {
                 .dateOfHearing(LocalDate.parse(session.getDateOfHearing()))
                 .courtLocation(session.getCourtLocation())
                 .postHearingCustody(session.getPostHearingCustody() != null ? session.getPostHearingCustody() : DEFAULT_HEARING_CUS_STATUS)
-                .sessionvalidatedate(parse(session.getSessionvalidateddate()))
+                .sessionValidateDate(parse(session.getSessionValidateDate()))
                 .build();
     }
 }

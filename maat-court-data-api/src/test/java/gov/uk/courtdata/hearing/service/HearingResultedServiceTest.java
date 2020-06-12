@@ -1,8 +1,6 @@
 package gov.uk.courtdata.hearing.service;
 
 import gov.uk.courtdata.enums.JurisdictionType;
-import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;

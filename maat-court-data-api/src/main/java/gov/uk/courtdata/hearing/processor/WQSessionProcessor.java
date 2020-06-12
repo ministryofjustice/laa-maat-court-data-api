@@ -1,6 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
-import gov.uk.courtdata.entity.WQSession;
+import gov.uk.courtdata.entity.WQSessionEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQSessionRepository;
 import gov.uk.courtdata.util.DateUtil;
@@ -22,7 +22,7 @@ public class WQSessionProcessor {
      */
     public void process(HearingDTO magsCourtDTO) {
 
-        WQSession wqSession = WQSession.builder()
+        WQSessionEntity wqSessionEntity = WQSessionEntity.builder()
                 .caseId(magsCourtDTO.getCaseId())
                 .txId(magsCourtDTO.getTxId())
                 .dateOfHearing(DateUtil.parse(magsCourtDTO.getSession().getDateOfHearing()))
@@ -31,7 +31,7 @@ public class WQSessionProcessor {
                 .sessionvalidatedate(getSessionDate(magsCourtDTO.getSession().getSessionValidatedDate()))
                 .build();
 
-        wqSessionRepository.save(wqSession);
+        wqSessionRepository.save(wqSessionEntity);
 
     }
 

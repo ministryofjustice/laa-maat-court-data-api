@@ -1,17 +1,12 @@
 package gov.uk.courtdata.hearing.service;
 
-import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessingImpl;
 import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
-import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import static java.lang.String.format;
 
 
 @Service
@@ -41,6 +36,7 @@ public class HearingResultedService {
             case MAGISTRATES:
                 hearingResultedImpl.execute(hearingResulted);
                 break;
+            default:
 
         }
 

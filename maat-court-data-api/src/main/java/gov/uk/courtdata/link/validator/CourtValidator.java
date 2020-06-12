@@ -2,12 +2,15 @@ package gov.uk.courtdata.link.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.validator.IValidator;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**
@@ -24,18 +27,20 @@ public class CourtValidator implements IValidator<Void, CaseDetails> {
      * @throws ValidationException
      */
     @Override
-    public Optional<Void> validate(final CaseDetails caseDetailsJson) throws ValidationException {
+    public Optional<Void> validate(final CaseDetails caseDetailsJson) {
 
-        Optional.ofNullable(caseDetailsJson.getCjsAreaCode()).filter(StringUtils::isNotBlank)
-                .orElseThrow(() -> new ValidationException("cjs area code not found."));
+        if (isBlank(caseDetailsJson.getCjsAreaCode()))
+            throw new ValidationException("cjs area code not found.");
 
-        Optional.ofNullable(caseDetailsJson.getSessions())
-                .orElseThrow(() -> new ValidationException("Sessions not available."));
+        List<Session> sessions = caseDetailsJson.getSessions();
 
-        caseDetailsJson.getSessions().forEach(s -> {
-            Optional.ofNullable(s.getCourtLocation())
-                    .orElseThrow(() -> new ValidationException("Court Location not available in session."));
-        });
+        if (sessions == null || sessions.isEmpty())
+            throw new ValidationException("Sessions not available.");
+
+        sessions.forEach(s ->
+                Optional.ofNullable(s.getCourtLocation())
+                        .orElseThrow(() -> new ValidationException("Court Location not available in session.")));
+
 
         return Optional.empty();
     }

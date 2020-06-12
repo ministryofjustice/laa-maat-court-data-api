@@ -5,12 +5,13 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
  *
@@ -25,23 +26,20 @@ public class SolicitorValidator implements IValidator<SolicitorMAATDataEntity, I
     /**
      * @param maatId
      * @return
-     * @throws ValidationException
      */
     @Override
-    public Optional<SolicitorMAATDataEntity> validate(Integer maatId) throws ValidationException {
-
-        // Get the solicitor details.
+    public Optional<SolicitorMAATDataEntity> validate(Integer maatId) {
 
         Optional<SolicitorMAATDataEntity> solicitorViewEntity =
                 solicitorMAATDataRepository.findBymaatId(maatId);
 
-        solicitorViewEntity.orElseThrow(
+        SolicitorMAATDataEntity solicitorData = solicitorViewEntity.orElseThrow(
                 () -> new ValidationException(format("Solicitor not found for maatId %s",
                         maatId)));
 
 
-        Optional.ofNullable(solicitorViewEntity.get().getAccountCode()).filter(StringUtils::isNotBlank)
-                .orElseThrow(() -> new ValidationException(format("Solicitor account code not available for maatId %s.", maatId)));
+        if (isBlank(solicitorData.getAccountCode()))
+            throw new ValidationException(format("Solicitor account code not available for maatId %s.", maatId));
 
         return solicitorViewEntity;
     }

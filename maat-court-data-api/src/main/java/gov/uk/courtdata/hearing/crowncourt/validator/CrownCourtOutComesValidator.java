@@ -31,6 +31,5 @@ public class CrownCourtOutComesValidator {
             throw new MAATCourtDataException("Invalid Crown Court Outcome : "
                     .concat(ccOutcome.concat(" is passed in for MAAT ID: " + hearingResulted.getMaatId())));
         }
-
     }
 }

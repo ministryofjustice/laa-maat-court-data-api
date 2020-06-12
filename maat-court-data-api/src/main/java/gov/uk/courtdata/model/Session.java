@@ -12,7 +12,7 @@ public class Session {
     private String courtLocation;
     private String dateOfHearing;
     private String postHearingCustody;
-    private String sessionvalidateddate;
+    private String sessionValidateDate;
 
 
 }

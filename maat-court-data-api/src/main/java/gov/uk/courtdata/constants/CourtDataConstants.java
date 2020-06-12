@@ -1,46 +1,32 @@
 package gov.uk.courtdata.constants;
 
-import gov.uk.courtdata.enums.WQType;
+public final class CourtDataConstants {
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+    private CourtDataConstants() {
 
-public interface CourtDataConstants {
+    }
 
-    Integer WQ_CREATION_EVENT = 20;
-    Integer WQ_UPDATE_CASE_EVENT = 22;
-    Integer WQ_SUCCESS_STATUS = 0;
-    String SEARCH_TYPE_0 = "0";
-    String CREATE_LINK = "createlink";
-    String SAVE_MLR = "savemlr";
-    Integer PENDING_IOJ_DECISION = 2;
-    Integer G_NO = 0;
-    String YES = "Y";
-    String NO = "N";
-    String DEFAULT_HEARING_CUS_STATUS = "D";
-    String COMMON_PLATFORM = "CP";
-    Integer WQ_UNLINK_EVENT = 24;
-    String LEADING_ZERO_3 = "%03d";
-
-    List<Integer> FAIL_IOJ_DECISION = Arrays.asList(0, 2);
-    int PASS_IOJ_DECISION = 1;
-    int NA_IOJ_DECISION = 3;
-
-    List<String> GRANTED_LAA_STATUS = Arrays.asList("GR", "G2", "GQ");
-    List<String> FAILED_LAA_STATUS = Arrays.asList("FJ", "FB");
-    String CROWN_COURT = "CROWN";
-    String MAGS_PROCESSING_SYSTEM_USER = "System-CP";
-    String AUTO_USER = "AUTO";
-    String RESULT_CODE_DESCRIPTION = "Automatically added result";
-    String UNKNOWN_OFFENCE = "UNKNOWN OFFENCE";
-
-    String CATY_CASE_TYPE = "APPEAL CC";
+    public static final Integer WQ_CREATION_EVENT = 20;
+    public static final Integer WQ_UPDATE_CASE_EVENT = 22;
+    public static final Integer WQ_SUCCESS_STATUS = 0;
+    public static final String SEARCH_TYPE_0 = "0";
+    public static final String CREATE_LINK = "createlink";
+    public static final String SAVE_MLR = "savemlr";
+    public static final Integer PENDING_IOJ_DECISION = 2;
+    public static final Integer G_NO = 0;
+    public static final String YES = "Y";
+    public static final String NO = "N";
+    public static final String DEFAULT_HEARING_CUS_STATUS = "D";
+    public static final String COMMON_PLATFORM = "CP";
+    public static final Integer WQ_UNLINK_EVENT = 24;
+    public static final String LEADING_ZERO_3 = "%03d";
 
 
-    List<Integer> ACTIONABLE_WQ_QUEUES = Arrays.asList(
-            WQType.COMMITTAL_QUEUE.value(),
-            WQType.INDICTABLE_QUEUE.value(),
-            WQType.CONCLUSION_QUEUE.value());
+    public static final String MAGS_PROCESSING_SYSTEM_USER = "System-CP";
+    public static final String AUTO_USER = "AUTO";
+    public static final String RESULT_CODE_DESCRIPTION = "Automatically added result";
+    public static final String UNKNOWN_OFFENCE = "UNKNOWN OFFENCE";
+
+    public static final String CATY_CASE_TYPE = "APPEAL CC";
 
 }

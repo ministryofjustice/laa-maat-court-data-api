@@ -53,4 +53,23 @@ public class CaseInfoProcessorTest {
         assertThat(caseInfoCaptor.getValue().getInactive()).isEqualTo("N");
         assertThat(caseInfoCaptor.getValue().getProceedingId()).isEqualTo(courtDataDTO.getProceedingId());
     }
+
+    @Test
+    public void givenCaseDetailsWithINActiveANDNullDate_whenProcessIsInvoked_theCaseRecordIsCreated() {
+
+        // given
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+        caseDetails.setCaseCreationDate(null);
+        caseDetails.setActive(false);
+
+        //when
+        caseInfoProcessor.process(courtDataDTO);
+
+        // then
+        verify(caseRepository).save(caseInfoCaptor.capture());
+
+        assertThat(caseInfoCaptor.getValue().getInactive()).isEqualTo("Y");
+
+    }
 }

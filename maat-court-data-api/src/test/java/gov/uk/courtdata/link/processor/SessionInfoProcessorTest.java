@@ -15,6 +15,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.DEFAULT_HEARING_CUS_STATUS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
@@ -52,6 +53,26 @@ public class SessionInfoProcessorTest {
         assertThat(sessionsCaptor.getValue().get(0).getTxId()).isEqualTo(courtDataDTO.getTxId());
         assertThat(sessionsCaptor.getValue().get(0).getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(sessionsCaptor.getValue().get(0).getPostHearingCustody()).isEqualTo(caseDetails.getSessions().get(0).getPostHearingCustody());
+
+
+    }
+
+    @Test
+    public void givenSessionModelWithNullPostHearingCustody_whenProcessIsInvoked_thenSessionRecordIsCreated() {
+
+        // given
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+        caseDetails.getSessions().get(0).setPostHearingCustody(null);
+
+        // when
+        sessionInfoProcessor.process(courtDataDTO);
+
+        // then
+        verify(sessionRepository).saveAll(sessionsCaptor.capture());
+        assertThat(sessionsCaptor.getValue().get(0).getTxId()).isEqualTo(courtDataDTO.getTxId());
+        assertThat(sessionsCaptor.getValue().get(0).getCaseId()).isEqualTo(courtDataDTO.getCaseId());
+        assertThat(sessionsCaptor.getValue().get(0).getPostHearingCustody()).isEqualTo(DEFAULT_HEARING_CUS_STATUS);
 
 
     }

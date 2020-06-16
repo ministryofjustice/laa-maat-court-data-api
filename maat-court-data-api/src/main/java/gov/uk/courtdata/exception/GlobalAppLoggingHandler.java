@@ -8,15 +8,9 @@ import io.sentry.event.BreadcrumbBuilder;
 import io.sentry.event.UserBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 @Aspect
 @Component
@@ -26,7 +20,7 @@ public class GlobalAppLoggingHandler {
     public static final String LAA_TRANSACTION_ID = "laaTransactionId";
     public static final String CASE_URN = "caseUrn";
     public static final String MESSAGE = "message";
-    private UUID laaTransactionId;
+
 
     /**
      * This method will execute whenever a exception occour in any of the following (service) package and a class has method name receive.

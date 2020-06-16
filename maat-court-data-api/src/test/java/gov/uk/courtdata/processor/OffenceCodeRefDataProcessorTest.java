@@ -64,6 +64,26 @@ public class OffenceCodeRefDataProcessorTest {
 
     }
 
+
+    @Test
+    public void testProcessOffenceCode_whenNewOffenceIsPassedInWithLessThan4Digit_thenOffenceIsSaved() {
+
+        //given
+        String offenceCode = "ABC";
+
+        //when
+        Mockito.when(xlatOffenceRepository.findById(offenceCode))
+                .thenReturn(Optional.empty());
+
+        offenceCodeRefDataProcessor.processOffenceCode(offenceCode);
+
+        //then
+        verify(xlatOffenceRepository).save(offenceCodeCaptor.capture());
+        assertThat(offenceCodeCaptor.getValue().getParentCode()).isEqualTo("ABC");
+
+
+    }
+
     @Test
     public void testProcessOffenceCode_whenOffenceExists_thenOffenceNotSaved() {
 

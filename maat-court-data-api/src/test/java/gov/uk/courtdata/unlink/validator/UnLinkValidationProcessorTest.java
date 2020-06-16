@@ -141,11 +141,20 @@ public class UnLinkValidationProcessorTest {
     }
 
     @Test
+    public void givenWQLinkRegisterIsEmpty_whenValidateWQLinkRegisterIsInvoked_thenValidationFailed() {
+        List<WqLinkRegisterEntity> linkRegisterEntities = new ArrayList<>();
+        thrown.expect(MAATCourtDataException.class);
+        thrown.expectMessage("There is No link established for MAAT ID : 123");
+        unLinkValidationProcessor.validateWQLinkRegister(linkRegisterEntities, 123);
+    }
+
+    @Test
     public void givenUnLinkRequestIsIsNull_whenValidateWQLinkRegisterIsInvoked_thenValidationFailed() {
         thrown.expect(MAATCourtDataException.class);
         thrown.expectMessage("Unlink Request is empty");
         unLinkValidationProcessor.validate(null);
     }
+
 
     @After
     public void tearDown() throws Exception {

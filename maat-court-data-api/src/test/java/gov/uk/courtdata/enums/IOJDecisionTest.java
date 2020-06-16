@@ -12,7 +12,12 @@ public class IOJDecisionTest {
         boolean result = IOJDecision.isFailedDecision(0);
         assertThat(result).isEqualTo(true);
     }
+    @Test
+    public void givenPendingIOJDecision_failResultIsReturned() {
 
+        boolean result = IOJDecision.isFailedDecision(2);
+        assertThat(result).isEqualTo(true);
+    }
     @Test
     public void givenGrantedIOJDecision_grantedResultIsReturned() {
 

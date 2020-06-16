@@ -105,4 +105,21 @@ public class LaaStatusValidatorTest {
         assertThat(messageCollection.getMessages().isEmpty()).isEqualTo(true);
 
     }
+
+    @Test
+    public void givenNOTAPPLICABLEIOJDecisionAndGRANTLAAStatus_whenLaaStatusValidatorIsInvoked_thenValidationPassed() {
+
+        //given
+        Offence offence = caseDetails.getDefendant().getOffences().get(0);
+        offence.setIojDecision(3);
+        offence.setLegalAidStatus("FB");
+
+        //when
+        MessageCollection messageCollection = laaStatusValidator.validate(caseDetails);
+
+        //then
+        assertThat(messageCollection.getMessages().isEmpty()).isEqualTo(true);
+
+
+    }
 }

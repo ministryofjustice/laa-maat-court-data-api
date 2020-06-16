@@ -15,10 +15,13 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -61,6 +64,39 @@ public class ResultsInfoProcessorTest {
         assertThat(resultsCaptor.getValue().get(0).getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(resultsCaptor.getValue().get(0).getResultShortTitle()).isEqualTo(result.getResultShortTitle());
         assertThat(resultsCaptor.getValue().get(0).getWqResult()).isEqualTo(G_NO);
+
+
+    }
+
+    @Test
+    public void givenResultsModelIsNULL_whenProcessIsInvoked_thenResultRecordIsNOTCreated() {
+
+        // given
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+        caseDetails.getDefendant().getOffences().get(0).setResults(null);
+        // when
+        resultsInfoProcessor.process(courtDataDTO);
+
+        // then
+        verify(resultRepository, times(0)).saveAll(anyCollection());
+
+
+    }
+
+    @Test
+    public void givenResultsModelIsEmpty_whenProcessIsInvoked_thenResultRecordIsNOTCreated() {
+
+        // given
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+        List<Result> resultList = new ArrayList<>();
+        caseDetails.getDefendant().getOffences().get(0).setResults(resultList);
+        // when
+        resultsInfoProcessor.process(courtDataDTO);
+
+        // then
+        verify(resultRepository, times(0)).saveAll(anyCollection());
 
 
     }

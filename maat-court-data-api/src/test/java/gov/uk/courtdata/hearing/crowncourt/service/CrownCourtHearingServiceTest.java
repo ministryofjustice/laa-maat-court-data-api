@@ -27,6 +27,7 @@ public class CrownCourtHearingServiceTest {
     private HearingResultedImpl hearingResultedImpl;
     @InjectMocks
     private CrownCourtHearingService crownCourtHearingService;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -60,6 +61,46 @@ public class CrownCourtHearingServiceTest {
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .ccOutComeData(ccOutComeData)
+                .build();
+
+        //when
+        crownCourtHearingService.execute(hearingDetails);
+
+        //then
+        verify(crownCourtValidationProcessor, times(0)).validate(hearingDetails);
+        verify(crownCourtProcessingImpl, times(0)).execute(hearingDetails);
+        verify(hearingResultedImpl, times(1)).execute(hearingDetails);
+
+    }
+
+    @Test
+    public void givenHearingIsReceived_whenCCOutcomeIsNull_thenWorkQueueProcessingIsCompleted() {
+
+        //given
+
+        HearingResulted hearingDetails = HearingResulted.builder()
+                .maatId(12345)
+                .ccOutComeData(null)
+                .build();
+
+        //when
+        crownCourtHearingService.execute(hearingDetails);
+
+        //then
+        verify(crownCourtValidationProcessor, times(0)).validate(hearingDetails);
+        verify(crownCourtProcessingImpl, times(0)).execute(hearingDetails);
+        verify(hearingResultedImpl, times(1)).execute(hearingDetails);
+
+    }
+
+    @Test
+    public void givenHearingIsReceived_whenCCOutcomeIsEmptyString_thenWorkQueueProcessingIsCompleted() {
+
+        //given
+
+        HearingResulted hearingDetails = HearingResulted.builder()
+                .maatId(12345)
+                .ccOutComeData(CCOutComeData.builder().ccooOutcome("").build())
                 .build();
 
         //when

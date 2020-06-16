@@ -51,7 +51,7 @@ public class CrownCourtOutComesValidatorTest {
                 .build();
 
 
-        //when
+        //then
         when(crownCourtOutcomeRepository.findAll()).thenReturn(crownCourtOutComeEntities);
         thrown.expect(MAATCourtDataException.class);
         thrown.expectMessage("Invalid Crown Court Outcome : ABC is passed in for MAAT ID: 12345");

@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.CATY_CASE_TYPE;
-
 @Component
 @RequiredArgsConstructor
 public class CrownCourtProcessingImpl {
@@ -35,13 +33,13 @@ public class CrownCourtProcessingImpl {
 
         if (optionalRepEntity.isPresent()) {
             RepOrderEntity repOrderEntity = optionalRepEntity.get();
-            crownCourtProcessingRepository.invokeCrownCourtOutcomeProcess(maatId,
-                    ccutComeData.getCcooOutcome(),
-                    ccutComeData.getBenchWarrantIssuedYn(),
-                    ccutComeData.getAppealType() != null ? ccutComeData.getAppealType() : repOrderEntity.getAptyCode(),
-                    ccutComeData.getCcImprisioned(),
-                    hearingResulted.getCaseUrn(),
-                    ccutComeData.getCrownCourtCode());
+//            crownCourtProcessingRepository.invokeCrownCourtOutcomeProcess(maatId,
+//                    ccutComeData.getCcooOutcome(),
+//                    ccutComeData.getBenchWarrantIssuedYn(),
+//                    ccutComeData.getAppealType() != null ? ccutComeData.getAppealType() : repOrderEntity.getAptyCode(),
+//                    ccutComeData.getCcImprisioned(),na
+//                    hearingResulted.getCaseUrn(),
+//                    ccutComeData.getCrownCourtCode());
 
 
             processSentencingDate(ccutComeData.getCaseEndDate(), maatId, repOrderEntity.getCatyCaseType());
@@ -52,16 +50,16 @@ public class CrownCourtProcessingImpl {
 
         LocalDate caseEndDate = DateUtil.parse(ccCaseEndDate);
 
-        if (caseEndDate != null) {
-            String user = dbUser != null ? dbUser.toUpperCase() : null;
-            if (CATY_CASE_TYPE.equalsIgnoreCase(catyType)) {
-                crownCourtProcessingRepository
-                        .invokeUpdateAppealSentenceOrderDate(maatId, user, caseEndDate, LocalDate.now());
-            } else {
-                crownCourtProcessingRepository.invokeUpdateSentenceOrderDate(maatId, user, caseEndDate);
-
-            }
-
-        }
+//        if (caseEndDate != null) {
+//            String user = dbUser != null ? dbUser.toUpperCase() : null;
+//            if (CATY_CASE_TYPE.equalsIgnoreCase(catyType)) {
+//                crownCourtProcessingRepository
+//                        .invokeUpdateAppealSentenceOrderDate(maatId, user, caseEndDate, LocalDate.now());
+//            } else {
+//                crownCourtProcessingRepository.invokeUpdateSentenceOrderDate(maatId, user, caseEndDate);
+//
+//            }
+//
+//        }
     }
 }

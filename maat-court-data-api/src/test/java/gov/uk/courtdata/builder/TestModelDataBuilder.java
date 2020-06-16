@@ -44,6 +44,148 @@ public class TestModelDataBuilder {
         return gson.fromJson(jsonString, CaseDetails.class);
     }
 
+
+    public String hearingString () {
+
+        return "{\n" +
+                "  \"maatId\": 1234,\n" +
+                "  \"caseUrn\": \"EITHERWAY\",\n" +
+                "  \"jurisdictionType\": \"CROWN\",\n" +
+                "  \"asn\": \"MG25A12456\",\n" +
+                "  \"cjsAreaCode\": 16,\n" +
+                "  \"caseCreationDate\": \"2018-10-25\",\n" +
+                "  \"cjsLocation\": \"B16BG\",\n" +
+                "  \"docLanguage\": \"EN\",\n" +
+                "  \"inActive\": \"N\",\n" +
+                "  \"ccOutComeData\":{\n" +
+                "  \"ccooOutcome\": \"SUCCESSFUL\",\n" +
+                "     \"crownCourtCode\": \"453\",\n" +
+                "     \"benchWarrantIssuedYn\": \"Y\",\n" +
+                "     \"ccImprisioned\":\"Y\",\n" +
+                "    \"appealType\":\"ACN\",\n" +
+                "    \"caseEndDate\": \"2020-08-10\"\n" +
+                "  },\n" +
+                "  \"defendant\": {\n" +
+                "    \"forename\": \"Edward\",\n" +
+                "    \"surname\": \"Harrison\",\n" +
+                "    \"dateOfBirth\": \"2002-01-10\",\n" +
+                "    \"address_line1\": \"Flat 4\",\n" +
+                "    \"address_line2\": \"17 Oldberry Road\",\n" +
+                "    \"address_line3\": \"Edgeware\",\n" +
+                "    \"address_line4\": \"Middlesex\",\n" +
+                "    \"address_line5\": \"London\",\n" +
+                "    \"postcode\": \"HA8 9DA\",\n" +
+                "    \"nino\": \"NH195839C\",\n" +
+                "    \"telephoneHome\": null,\n" +
+                "    \"telephoneWork\": null,\n" +
+                "    \"telephoneMobile\": \"07973 824240\",\n" +
+                "    \"email1\": \"teddy_harrison@hotmail.com\",\n" +
+                "    \"email2\": null,\n" +
+                "    \"offences\": [{\n" +
+                "      \"offenceCode\": \"CD98072\",\n" +
+                "      \"asnSeq\": 001,\n" +
+                "      \"offenceShortTitle\": \"Racially / religiously aggravated wounding / grievous bodily harm\",\n" +
+                "      \"offenceClassification\": \"Temporary Offence Classification\",\n" +
+                "      \"offenceDate\": \"2018-10-21\",\n" +
+                "      \"offenceWording\": \"On 21/10/2018 at Euston Train Station group.\",\n" +
+                "      \"modeOfTrial\": 2,\n" +
+                "      \"legalAidStatus\": \"AP\",\n" +
+                "      \"legalAidStatusDate\": null,\n" +
+                "      \"legalAidReason\": \"Application Pending\",\n" +
+                "      \"results\": [{\n" +
+                "        \"resultCode\": \"4600\",\n" +
+                "        \"resultShortTitle\": \"Transfer of solicitor\",\n" +
+                "        \"resultText\": \"Transfer of solicitor\",\n" +
+                "        \"resultCodeQualifiers\": null,\n" +
+                "        \"nextHearingDate\": null,\n" +
+                "        \"nextHearingLocation\": \"B16BG\",\n" +
+                "        \"firmName\": \"MARTIN MURRAY u0026 ASSOCIATES\",\n" +
+                "        \"contactName\": null,\n" +
+                "        \"laaOfficeAccount\": \"0A935R\",\n" +
+                "        \"legalAidWithdrawalDate\": null\n" +
+                "      }]\n" +
+                "    }]\n" +
+                "  },\n" +
+                "  \"session\": {\n" +
+                "    \"courtLocation\": \"B16BG\",\n" +
+                "    \"dateOfHearing\": \"2018-10-24\",\n" +
+                "    \"postHearingCustody\": null,\n" +
+                "    \"sessionValidateDate\": \"2020-01-01\"\n" +
+                "  }\n" +
+                "}" ;
+
+    }
+
+    public String megCourtPayload () {
+
+        return "{\n" +
+                "  \"maatId\": 1234,\n" +
+                "  \"caseUrn\": \"EITHERWAY\",\n" +
+                "  \"jurisdictionType\": \"MAGISTRATES\",\n" +
+                "  \"asn\": \"MG25A12456\",\n" +
+                "  \"cjsAreaCode\": 16,\n" +
+                "  \"caseCreationDate\": \"2018-10-25\",\n" +
+                "  \"cjsLocation\": \"B16BG\",\n" +
+                "  \"docLanguage\": \"EN\",\n" +
+                "  \"inActive\": \"N\",\n" +
+                "  \"ccOutComeData\":{\n" +
+                "  \"ccooOutcome\": \"SUCCESSFUL\",\n" +
+                "     \"crownCourtCode\": \"453\",\n" +
+                "     \"benchWarrantIssuedYn\": \"Y\",\n" +
+                "     \"ccImprisioned\":\"Y\",\n" +
+                "    \"appealType\":\"ACN\",\n" +
+                "    \"caseEndDate\": \"2020-08-10\"\n" +
+                "  },\n" +
+                "  \"defendant\": {\n" +
+                "    \"forename\": \"Edward\",\n" +
+                "    \"surname\": \"Harrison\",\n" +
+                "    \"dateOfBirth\": \"2002-01-10\",\n" +
+                "    \"address_line1\": \"Flat 4\",\n" +
+                "    \"address_line2\": \"17 Oldberry Road\",\n" +
+                "    \"address_line3\": \"Edgeware\",\n" +
+                "    \"address_line4\": \"Middlesex\",\n" +
+                "    \"address_line5\": \"London\",\n" +
+                "    \"postcode\": \"HA8 9DA\",\n" +
+                "    \"nino\": \"NH195839C\",\n" +
+                "    \"telephoneHome\": null,\n" +
+                "    \"telephoneWork\": null,\n" +
+                "    \"telephoneMobile\": \"07973 824240\",\n" +
+                "    \"email1\": \"teddy_harrison@hotmail.com\",\n" +
+                "    \"email2\": null,\n" +
+                "    \"offences\": [{\n" +
+                "      \"offenceCode\": \"CD98072\",\n" +
+                "      \"asnSeq\": 001,\n" +
+                "      \"offenceShortTitle\": \"Racially / religiously aggravated wounding / grievous bodily harm\",\n" +
+                "      \"offenceClassification\": \"Temporary Offence Classification\",\n" +
+                "      \"offenceDate\": \"2018-10-21\",\n" +
+                "      \"offenceWording\": \"On 21/10/2018 at Euston Train Station group.\",\n" +
+                "      \"modeOfTrial\": 2,\n" +
+                "      \"legalAidStatus\": \"AP\",\n" +
+                "      \"legalAidStatusDate\": null,\n" +
+                "      \"legalAidReason\": \"Application Pending\",\n" +
+                "      \"results\": [{\n" +
+                "        \"resultCode\": \"4600\",\n" +
+                "        \"resultShortTitle\": \"Transfer of solicitor\",\n" +
+                "        \"resultText\": \"Transfer of solicitor\",\n" +
+                "        \"resultCodeQualifiers\": null,\n" +
+                "        \"nextHearingDate\": null,\n" +
+                "        \"nextHearingLocation\": \"B16BG\",\n" +
+                "        \"firmName\": \"MARTIN MURRAY u0026 ASSOCIATES\",\n" +
+                "        \"contactName\": null,\n" +
+                "        \"laaOfficeAccount\": \"0A935R\",\n" +
+                "        \"legalAidWithdrawalDate\": null\n" +
+                "      }]\n" +
+                "    }]\n" +
+                "  },\n" +
+                "  \"session\": {\n" +
+                "    \"courtLocation\": \"B16BG\",\n" +
+                "    \"dateOfHearing\": \"2018-10-24\",\n" +
+                "    \"postHearingCustody\": null,\n" +
+                "    \"sessionValidateDate\": \"2020-01-01\"\n" +
+                "  }\n" +
+                "}" ;
+
+    }
     public String getSaveAndLinkString() {
         return "{\n" +
                 "  \"maatId\": 1234,\n" +
@@ -129,6 +271,9 @@ public class TestModelDataBuilder {
                 "  \"reasonText\" : \"Test Data\"\n" +
                 "}";
     }
+
+
+
 
 
     public HearingDTO getHearingDTO() {

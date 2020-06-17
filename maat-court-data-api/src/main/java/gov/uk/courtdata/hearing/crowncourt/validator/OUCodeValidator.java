@@ -15,7 +15,7 @@ public class OUCodeValidator implements IValidator<Void, HearingResulted> {
     @Override
     public Optional<Void> validate(HearingResulted hearingResulted) {
 
-        String ouCode = hearingResulted.getCcOutComeData().getOuCode();
+        String ouCode = hearingResulted.getSession().getCourtLocation();
 
         if (!isBlank(ouCode)) {
             return Optional.empty();

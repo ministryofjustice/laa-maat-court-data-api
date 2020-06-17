@@ -1,8 +1,11 @@
 package gov.uk.courtdata.hearing.crowncourt.impl;
 
+import gov.uk.courtdata.entity.CrownCourtCode;
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
+import gov.uk.courtdata.repository.CrownCourtCodeRepository;
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.DateUtil;
@@ -23,6 +26,8 @@ public class CrownCourtProcessingImpl {
 
     private final RepOrderRepository repOrderRepository;
 
+    private final CrownCourtCodeRepository crownCourtCodeRepository;
+
     @Value("${spring.datasource.username}")
     private String dbUser;
 
@@ -33,7 +38,10 @@ public class CrownCourtProcessingImpl {
         final Integer maatId = hearingResulted.getMaatId();
         final Optional<RepOrderEntity> optionalRepEntity = repOrderRepository.findById(maatId);
 
+
         if (optionalRepEntity.isPresent()) {
+
+            final String crownCourtCode = getCCCode(ccutComeData.getOuCode());
             RepOrderEntity repOrderEntity = optionalRepEntity.get();
             crownCourtProcessingRepository.invokeCrownCourtOutcomeProcess(maatId,
                     ccutComeData.getCcooOutcome(),
@@ -41,12 +49,13 @@ public class CrownCourtProcessingImpl {
                     ccutComeData.getAppealType() != null ? ccutComeData.getAppealType() : repOrderEntity.getAptyCode(),
                     ccutComeData.getCcImprisioned(),
                     hearingResulted.getCaseUrn(),
-                    ccutComeData.getCrownCourtCode());
+                    crownCourtCode);
 
 
             processSentencingDate(ccutComeData.getCaseEndDate(), maatId, repOrderEntity.getCatyCaseType());
         }
     }
+
 
     private void processSentencingDate(String ccCaseEndDate, Integer maatId, String catyType) {
 
@@ -63,5 +72,11 @@ public class CrownCourtProcessingImpl {
             }
 
         }
+    }
+
+    private String getCCCode(String ouCode) {
+        Optional<CrownCourtCode> optCrownCourtCode = crownCourtCodeRepository.findByOuCode(ouCode);
+        CrownCourtCode crownCourtCode = optCrownCourtCode.orElseThrow(() -> new MAATCourtDataException("Crown Court Code Look Up is Failed"));
+        return crownCourtCode.getCode();
     }
 }

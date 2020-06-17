@@ -52,7 +52,7 @@ public class AppealTypeValidatorTest {
                 .build();
 
 
-        //when
+        //then
         when(appealTypeRepository.findAll()).thenReturn(appealTypeEntityList);
         thrown.expect(MAATCourtDataException.class);
         thrown.expectMessage("Invalid Appeal Type : XYZ is passed in for MAAT ID: 12345");

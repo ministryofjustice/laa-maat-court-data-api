@@ -41,7 +41,7 @@ public class CrownCourtProcessingImpl {
 
         if (optionalRepEntity.isPresent()) {
 
-            final String crownCourtCode = getCCCode(ccutComeData.getOuCode());
+            final String crownCourtCode = getCCCode(hearingResulted.getSession().getCourtLocation());
             RepOrderEntity repOrderEntity = optionalRepEntity.get();
             crownCourtProcessingRepository.invokeCrownCourtOutcomeProcess(maatId,
                     ccutComeData.getCcooOutcome(),

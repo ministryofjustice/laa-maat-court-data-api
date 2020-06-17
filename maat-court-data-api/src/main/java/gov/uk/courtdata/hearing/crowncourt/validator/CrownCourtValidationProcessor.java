@@ -20,7 +20,7 @@ public class CrownCourtValidationProcessor {
         crownCourtOutComesValidator.validate(hearingRes);
         appealTypeValidator.validate(hearingRes);
         ouCodeValidator.validate(hearingRes);
-        log.info("Crown Court Outcome Validation has been Completed for MAAT ID: {}", hearingRes.getDefendant());
+        log.info("Crown Court Outcome Validation has been Completed for MAAT ID: {}", hearingRes.getMaatId());
 
     }
 

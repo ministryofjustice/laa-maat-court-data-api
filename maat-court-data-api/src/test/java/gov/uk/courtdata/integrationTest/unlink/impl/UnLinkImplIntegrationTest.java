@@ -25,8 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
-import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UNLINK_EVENT;
+import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -81,6 +80,27 @@ public class UnLinkImplIntegrationTest {
     }
 
 
+    @Test
+    public void givenUnlinkReasonIsOther_whenUnlinked_ThenOtherReasonTextIs(){
+
+        Unlink unlink = gson.fromJson(testModelDataBuilder.getUnLinkWithOtherReasonString(), Unlink.class);
+        UnlinkModel unlinkModel = UnlinkModel.builder().unlink(unlink).build();
+        WqLinkRegisterEntity wqLinkRegisterEntity = testEntityDataBuilder.getWqLinkRegisterEntity();
+        unlinkModel.setWqLinkRegisterEntity(wqLinkRegisterEntity);
+        RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderCPDataEntity();
+        unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity);
+        wqLinkRegisterRepository.save(wqLinkRegisterEntity);
+
+
+        unLinkImpl.execute(unlinkModel);
+
+        assertWQLinkRegister(unlinkModel);
+        assertWQCore(unlinkModel);
+        assertUnLinkOtherReason(unlinkModel);
+
+    }
+
+
     private void assertWQLinkRegister(UnlinkModel unlinkModel) {
 
         Optional<WqLinkRegisterEntity> wqUnLinkRegisterEntity = wqLinkRegisterRepository.findById(unlinkModel.getWqLinkRegisterEntity().getCreatedTxId());
@@ -112,7 +132,18 @@ public class UnLinkImplIntegrationTest {
         assertThat(unLinkReason.getTxId()).isEqualTo(unlinkModel.getTxId());
         assertThat(unLinkReason.getCaseId()).isEqualTo(unlinkModel.getWqLinkRegisterEntity().getCaseId());
         assertThat(unLinkReason.getReasonId()).isEqualTo(unlinkModel.getUnlink().getReasonId());
-        assertThat(unLinkReason.getOtherReason()).isEqualTo(unlinkModel.getUnlink().getReasonText());
+        assertThat(unLinkReason.getOtherReason()).isEqualTo(SYSTEM_UNLINKED);
+    }
+
+    private void assertUnLinkOtherReason(UnlinkModel unlinkModel) {
+        Optional<UnlinkEntity> unlinkEntity = unlinkReasonRepository.findById(unlinkModel.getTxId());
+        UnlinkEntity unLinkReason = unlinkEntity.orElse(null);
+        assert unLinkReason != null;
+
+        assertThat(unLinkReason.getTxId()).isEqualTo(unlinkModel.getTxId());
+        assertThat(unLinkReason.getCaseId()).isEqualTo(unlinkModel.getWqLinkRegisterEntity().getCaseId());
+        assertThat(unLinkReason.getReasonId()).isEqualTo(unlinkModel.getUnlink().getReasonId());
+        assertThat(unLinkReason.getOtherReason()).isEqualTo(unlinkModel.getUnlink().getOtherReasonText());
     }
 
 

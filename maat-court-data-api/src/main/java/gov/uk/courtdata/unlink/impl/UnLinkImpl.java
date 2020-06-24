@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
-import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UNLINK_EVENT;
+import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 @Component
@@ -54,10 +54,14 @@ public class UnLinkImpl {
 
     private void processUnlinkReason(UnlinkModel unlinkModel) {
         Unlink unlink = unlinkModel.getUnlink();
+
+        final String otherReasonText = isBlank(unlink.getOtherReasonText()) ? SYSTEM_UNLINKED :
+        unlink.getOtherReasonText();
+
         UnlinkEntity unlinkEntity = UnlinkEntity.builder()
                 .caseId(unlinkModel.getWqLinkRegisterEntity().getCaseId())
                 .reasonId(unlink.getReasonId())
-                .otherReason(unlink.getReasonText())
+                .otherReason(otherReasonText)
                 .txId(unlinkModel.getTxId())
                 .build();
 

@@ -29,4 +29,6 @@ public final class CourtDataConstants {
 
     public static final String CATY_CASE_TYPE = "APPEAL CC";
 
+    public static final String SYSTEM_UNLINKED = "System Unlinked";
+
 }

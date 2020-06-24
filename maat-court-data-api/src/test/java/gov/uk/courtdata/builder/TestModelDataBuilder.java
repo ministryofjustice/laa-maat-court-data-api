@@ -126,7 +126,17 @@ public class TestModelDataBuilder {
                 "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
                 "  \"userId\": \"testUser\",\n" +
                 "  \"reasonId\": 1,\n" +
-                "  \"reasonText\" : \"Test Data\"\n" +
+                "  \"otherReasonText\" : \"\"\n" +
+                "}";
+    }
+
+    public String getUnLinkWithOtherReasonString() {
+        return "{\n" +
+                " \"maatId\": 1234,\n" +
+                "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
+                "  \"userId\": \"testUser\",\n" +
+                "  \"reasonId\": 1,\n" +
+                "  \"otherReasonText\" : \"Other reason description\"\n" +
                 "}";
     }
 

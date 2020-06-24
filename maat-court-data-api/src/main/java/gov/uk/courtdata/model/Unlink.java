@@ -13,7 +13,7 @@ public class Unlink {
     private Integer maatId;
     private String userId;
     private Integer reasonId;
-    private String reasonText;
+    private String otherReasonText;
     private UUID laaTransactionId;
 
 

@@ -62,7 +62,7 @@ public class UnLinkControllerTest {
 
         Unlink unlink = Unlink.builder()
                 .maatId(123456)
-                .reasonId(999888)
+                .reasonId(1)
                 .userId("User")
                 .laaTransactionId(UUID.randomUUID())
                 .build();

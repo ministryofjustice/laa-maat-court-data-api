@@ -59,8 +59,6 @@ public class HearingResultedImpl {
 
                 });
         log.info("Finished Work Queue Notification processing.");
-
-
     }
 
 

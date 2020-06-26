@@ -34,7 +34,7 @@ public class HearingResultedService {
 
         if (isMaatRecordLocked(hearingResulted)) {
 
-            rePostMessageToQueue(hearingResulted);
+            rePostMessagePayloadToQueue(hearingResulted);
 
         } else {
 
@@ -50,19 +50,23 @@ public class HearingResultedService {
         }
     }
 
-    private void rePostMessageToQueue (HearingResulted hearingResulted) {
+    private void rePostMessagePayloadToQueue (HearingResulted hearingResulted) {
 
         int messageRetryCounter = hearingResulted.getMessageRetryCounter()!=null?hearingResulted.getMessageRetryCounter():0;
-        log.info("Posting a message to Hearing SQS. Reposting counter time  "  + messageRetryCounter);
+        log.info("Posting a message to Hearing SQS. messageRetryCounter no. "  + messageRetryCounter);
 
         if (messageRetryCounter<=5) {
-            //hearingResultedPublisher.publish(hearingResulted);
-
+            hearingResultedPublisher.publish(hearingResulted);
         } else {
-            throw new MaatRecordLockedException("Maat Record is locked.");
+            throw new MaatRecordLockedException("Unable to process CP hearing notification because Maat Record is locked.");
         }
     }
 
+    /**
+     * Calling a database to check the Maat Record lock status
+     * @param hearingResulted
+     * @return boolean
+     */
     private boolean isMaatRecordLocked (HearingResulted hearingResulted) {
         //database call to check the status of a Maat Record. (using a SP)
         log.info("Maat Record is locked ");

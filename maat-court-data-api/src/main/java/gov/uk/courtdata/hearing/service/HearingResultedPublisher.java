@@ -2,7 +2,6 @@ package gov.uk.courtdata.hearing.service;
 
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.GetQueueUrlResult;
-import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.google.gson.Gson;
 import gov.uk.courtdata.config.AmazonSQSConfig;
@@ -13,9 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -25,7 +21,7 @@ public class HearingResultedPublisher {
     private String sqsQueueName;
 
     @Value("${cloud-platform.aws.sqs.queue.config.messageDelay}")
-    Integer delaySeconds;
+    private Integer delaySeconds;
 
 
     private final AmazonSQSConfig amazonSQSConfig;
@@ -42,23 +38,15 @@ public class HearingResultedPublisher {
         log.info("Publishing to SQS Queue {} with logging meta-data {} " + sqsQueueName,logging);
 
         int counter = hearingResulted.getMessageRetryCounter();
-        //TODO: remove this after testing on dev.
-        Map<String,MessageAttributeValue> attributeValueMap = new HashMap<>();
-        attributeValueMap.put("counter",
-                new MessageAttributeValue().withStringValue((counter+1)+"").withDataType("String"));
-
         hearingResulted.setMessageRetryCounter(counter+1);
-
         String hearingResultedJSON = gson.toJson(hearingResulted);
 
         AmazonSQS amazonSQS = amazonSQSConfig.awsSqsClient();
-
         GetQueueUrlResult getQueueUrlResult = amazonSQS.getQueueUrl(sqsQueueName);
         SendMessageRequest request = new SendMessageRequest()
                 .withQueueUrl(getQueueUrlResult.getQueueUrl())
                 .withMessageBody(hearingResultedJSON)
-                .withDelaySeconds(delaySeconds)
-                .withMessageAttributes(attributeValueMap);
+                .withDelaySeconds(delaySeconds);
 
         amazonSQS.sendMessage(request);
         log.info("Printing a message: "+request.toString());

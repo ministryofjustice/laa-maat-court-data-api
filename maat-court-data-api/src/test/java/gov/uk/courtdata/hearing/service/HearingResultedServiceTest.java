@@ -8,7 +8,6 @@ import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.ReservationsRepository;
-import gov.uk.courtdata.util.LaaTransactionLoggingBuilder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,36 +88,12 @@ public class HearingResultedServiceTest {
     }
 
     @Test
-    public void givenACaseDetail_whenMaatRecordIsLocked_thenPublishMessage() {
-
-        //given
-        HearingResulted hearingDetails = HearingResulted.builder()
-                .jurisdictionType(JurisdictionType.CROWN)
-                .maatId(34)
-                .messageRetryCounter(5)
-                .build();
-        ReservationsEntity reservationsEntity = ReservationsEntity.builder().recordId("34").userName("test-username").build();
-
-        String logging = LaaTransactionLoggingBuilder.get(hearingDetails.toString()).toString();
-
-
-        //when
-        when(reservationsRepository.getOne(anyString())).thenReturn(reservationsEntity);
-        //when
-        doNothing().when(hearingResultedPublisher).publish(hearingDetails);
-
-        hearingResultedService.execute(hearingDetails);
-    }
-
-
-    @Test
     public void givenACaseDetail_whenMAGGCourtHearingServiceIsReceived_thenMagsCourtProcessingInvoked() {
 
         //given
         HearingResulted hearingDetails = HearingResulted.builder().maatId(34).jurisdictionType(JurisdictionType.MAGISTRATES).build();
 
         //when
-        when(reservationsRepository.getOne(anyString())).thenReturn(null);
         doNothing().when(hearingResultedImpl).execute(hearingDetails);
 
         hearingResultedService.execute(hearingDetails);
@@ -129,5 +104,21 @@ public class HearingResultedServiceTest {
     }
 
 
+    @Test
+    public void givenACaseDetail_whenMAGGCourtHearingServiceIsReceived_thenCrownCourtProcessingInvoked() {
 
+        //given
+        HearingResulted hearingDetails = HearingResulted.builder().maatId(34).jurisdictionType(JurisdictionType.CROWN).build();
+
+        //when
+        when(reservationsRepository.getOne(anyString())).thenReturn(null);
+        doNothing().when(crownCourtHearingService).execute(hearingDetails);
+
+        hearingResultedService.execute(hearingDetails);
+
+        //verify
+        verify(hearingValidationProcessor, times(1)).validate(hearingDetails);
+        verify(crownCourtHearingService,times(1)).execute(hearingDetails);
+
+    }
 }

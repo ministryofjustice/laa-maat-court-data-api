@@ -2,6 +2,7 @@ package gov.uk.courtdata.integrationTest;
 
 import com.amazon.sqs.javamessaging.SQSConnectionFactory;
 import gov.uk.courtdata.config.SentryConfig;
+import gov.uk.courtdata.hearing.service.HearingResultedPublisher;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
@@ -33,5 +34,8 @@ public class MockServicesConfig {
 
     @MockBean(name = "cdaOAuth2WebClient")
     private WebClient cdaOAuth2WebClient;
+
+    @MockBean
+    private HearingResultedPublisher hearingResultedPublisher;
 
 }

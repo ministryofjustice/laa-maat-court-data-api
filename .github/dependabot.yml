@@ -5,7 +5,6 @@ updates:
     directory: "/maat-court-data-api"
     schedule:
       interval: "daily"
-    target_branch: "master"
     commit-message:
       prefix: "Gradle"
       include: "scope"

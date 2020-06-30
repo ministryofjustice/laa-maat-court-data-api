@@ -3,7 +3,6 @@ package gov.uk.courtdata.util;
 import com.google.gson.Gson;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.LaaTransactionLogging;
-import gov.uk.courtdata.model.hearing.HearingResulted;
 
 
 public class LaaTransactionLoggingBuilder {
@@ -16,13 +15,6 @@ public class LaaTransactionLoggingBuilder {
         Gson gson = new Gson();
         return get(gson.toJson(caseDetails));
     }
-
-    public static LaaTransactionLogging get(HearingResulted hearingResulted) {
-        Gson gson = new Gson();
-        return get(gson.toJson(hearingResulted));
-    }
-
-
 
     public static LaaTransactionLogging get(String message) {
         Gson gson = new Gson();

@@ -24,6 +24,10 @@ public class HearingResultedPublisher {
     @Value("${cloud-platform.aws.sqs.queue.hearingResulted}")
     private String sqsQueueName;
 
+    @Value("${cloud-platform.aws.sqs.queue.config.messageDelay}")
+    Integer delaySeconds;
+
+
     private final AmazonSQSConfig amazonSQSConfig;
     private final Gson gson;
 
@@ -33,7 +37,7 @@ public class HearingResultedPublisher {
      */
     public void publish (HearingResulted hearingResulted) {
 
-        String logging = LaaTransactionLoggingBuilder.get(hearingResulted).toString();
+        String logging = LaaTransactionLoggingBuilder.get(hearingResulted.toString()).toString();
         log.info("MAAT Record is locked. Publishing a message to the queue to process later.");
         log.info("Publishing to SQS Queue {} with logging meta-data {} " + sqsQueueName,logging);
 
@@ -53,7 +57,7 @@ public class HearingResultedPublisher {
         SendMessageRequest request = new SendMessageRequest()
                 .withQueueUrl(getQueueUrlResult.getQueueUrl())
                 .withMessageBody(hearingResultedJSON)
-                .withDelaySeconds(900)
+                .withDelaySeconds(delaySeconds)
                 .withMessageAttributes(attributeValueMap);
 
         amazonSQS.sendMessage(request);

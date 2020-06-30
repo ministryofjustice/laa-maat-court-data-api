@@ -8,6 +8,7 @@ import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.ReservationsRepository;
+import gov.uk.courtdata.util.LaaTransactionLoggingBuilder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +65,7 @@ public class HearingResultedServiceTest {
         //when
         hearingResultedService.execute(hearingDetails);
         //then
-        verify(crownCourtHearingService, times(1)).execute(hearingDetails);
+        verify(crownCourtHearingService).execute(hearingDetails);
 
     }
 
@@ -77,7 +78,7 @@ public class HearingResultedServiceTest {
                 .maatId(34)
                 .messageRetryCounter(6)
                 .build();
-        ReservationsEntity reservationsEntity = ReservationsEntity.builder().build();
+        ReservationsEntity reservationsEntity = ReservationsEntity.builder().recordId("34").userName("username-test").build();
         //when
         when(reservationsRepository.getOne(anyString())).thenReturn(reservationsEntity);
         //throw
@@ -96,7 +97,11 @@ public class HearingResultedServiceTest {
                 .maatId(34)
                 .messageRetryCounter(5)
                 .build();
-        ReservationsEntity reservationsEntity = ReservationsEntity.builder().build();
+        ReservationsEntity reservationsEntity = ReservationsEntity.builder().recordId("34").userName("test-username").build();
+
+        String logging = LaaTransactionLoggingBuilder.get(hearingDetails.toString()).toString();
+
+
         //when
         when(reservationsRepository.getOne(anyString())).thenReturn(reservationsEntity);
         //when

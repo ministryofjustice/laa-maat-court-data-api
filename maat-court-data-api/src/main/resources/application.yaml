@@ -46,6 +46,8 @@ cloud-platform:
         unlink: ${UNLINK_QUEUE}
         laaStatus: ${LAA_STATUS_UPDATE_QUEUE}
         hearingResulted: ${HEARING_RESULTED_QUEUE}
+        config:
+          messageDelay: 900
 
 cda:
   laastatus:

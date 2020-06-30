@@ -37,22 +37,24 @@ public class HearingResultedService {
 
         hearingValidationProcessor.validate(hearingResulted);
 
-        if (isMaatRecordLocked(hearingResulted)) {
-
-            publishMessageToHearingQueue(hearingResulted);
-
-        } else {
-
-            switch (hearingResulted.getJurisdictionType()) {
-                case CROWN:
-                    crownCourtHearingService.execute(hearingResulted);
-                    break;
+        switch (hearingResulted.getJurisdictionType()) {
+            case CROWN:
+                processCrownCourtNotification(hearingResulted);
+                break;
                 case MAGISTRATES:
                     hearingResultedImpl.execute(hearingResulted);
                     break;
                 default:
-            }
         }
+    }
+
+    private void processCrownCourtNotification(HearingResulted hearingResulted) {
+
+        if (isMaatRecordLocked(hearingResulted))
+            publishMessageToHearingQueue(hearingResulted);
+        else
+            crownCourtHearingService.execute(hearingResulted);
+
     }
 
     /**
@@ -79,7 +81,7 @@ public class HearingResultedService {
 
         ReservationsEntity reservationsEntity = reservationsRepository.getOne(hearingResulted.getMaatId().toString());
         if (reservationsEntity!=null) {
-            log.info("Maat Record is locked ");
+            log.info("Maat Record {} is locked by {} ", reservationsEntity.getRecordId(), reservationsEntity.getUserName());
             return true;
         } else {
             log.info("Maat Record is not locked");

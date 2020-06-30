@@ -74,7 +74,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    testImplementation 'com.h2database:h2:1.4.194'
+    testImplementation 'com.h2database:h2:1.4.200'
     testImplementation 'org.mockito:mockito-inline:3.3.3'
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'

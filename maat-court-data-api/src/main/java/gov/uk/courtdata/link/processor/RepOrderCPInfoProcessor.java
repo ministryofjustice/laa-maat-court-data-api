@@ -7,6 +7,7 @@ import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -24,6 +25,8 @@ public class RepOrderCPInfoProcessor implements Process {
             RepOrderCPDataEntity repOrder = repOrderEntity.get();
             repOrder.setCaseUrn(caseDetails.getCaseUrn());
             repOrder.setDefendantId(caseDetails.getDefendant().getDefendantId());
+            repOrder.setUserModified(caseDetails.getCreatedUser());
+            repOrder.setDateModified(LocalDateTime.now());
             repOrderDataRepository.save(repOrder);
         }
     }

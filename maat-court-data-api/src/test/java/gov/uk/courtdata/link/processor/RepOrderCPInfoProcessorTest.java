@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -22,14 +23,13 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class RepOrderCPInfoProcessorTest {
 
+    @Captor
+    ArgumentCaptor<RepOrderCPDataEntity> repOrderCaptor;
     @InjectMocks
     private RepOrderCPInfoProcessor repOrderCPInfoProcessor;
     @Spy
     private RepOrderCPDataRepository repOrderDataRepository;
-
     private TestModelDataBuilder testModelDataBuilder;
-    @Captor
-    ArgumentCaptor<RepOrderCPDataEntity> repOrderCaptor;
 
     @Before
     public void setUp() {
@@ -54,5 +54,8 @@ public class RepOrderCPInfoProcessorTest {
         assertThat(repOrderCaptor.getValue().getCaseUrn()).isEqualTo("caseurn1");
         assertThat(repOrderCaptor.getValue().getRepOrderId()).isEqualTo(123);
         assertThat(repOrderCaptor.getValue().getDefendantId()).isEqualTo(defendant.getDefendantId());
+        assertThat(repOrderCaptor.getValue().getUserModified()).isEqualTo("testUser");
+        assertThat(repOrderCaptor.getValue().getDateModified()).isNotNull()
+                .isExactlyInstanceOf(LocalDateTime.class);
     }
 }

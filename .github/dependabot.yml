@@ -4,7 +4,7 @@ updates:
   - package-ecosystem: "gradle"
     directory: "/maat-court-data-api"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     commit-message:
       prefix: "Gradle"
       include: "scope"

@@ -1,10 +1,12 @@
 package gov.uk.courtdata.hearing.service;
 
+import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.exception.MaatRecordLockedException;
 import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
+import gov.uk.courtdata.repository.ReservationsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,10 +25,13 @@ public class HearingResultedService {
 
     private final HearingResultedPublisher hearingResultedPublisher;
 
+    private final ReservationsRepository reservationsRepository;
+
 
     /**
      * Process Work Queue Processing for both Crown & Mags Court.
      * Process Crown Court Outcomes for CC
+     * Check MAAT record status, if locked then put the back to the hearing queue with a delay of 15 minutes
      */
     public void execute(final HearingResulted hearingResulted) {
 
@@ -34,7 +39,7 @@ public class HearingResultedService {
 
         if (isMaatRecordLocked(hearingResulted)) {
 
-            rePostMessagePayloadToQueue(hearingResulted);
+            publishMessageToHearingQueue(hearingResulted);
 
         } else {
 
@@ -50,12 +55,15 @@ public class HearingResultedService {
         }
     }
 
-    private void rePostMessagePayloadToQueue (HearingResulted hearingResulted) {
+    /**
+     * Publishing a hearing resulted payload to a hearing queue.
+     * @param hearingResulted
+     */
+    private void publishMessageToHearingQueue (HearingResulted hearingResulted) {
 
-        int messageRetryCounter = hearingResulted.getMessageRetryCounter()!=null?hearingResulted.getMessageRetryCounter():0;
-        log.info("Posting a message to Hearing SQS. messageRetryCounter no. "  + messageRetryCounter);
+        log.info("Publishing a message payload to Hearing SQS. messageRetryCounter no. "  + hearingResulted.getMessageRetryCounter());
 
-        if (messageRetryCounter<=5) {
+        if (hearingResulted.getMessageRetryCounter()<=5) {
             hearingResultedPublisher.publish(hearingResulted);
         } else {
             throw new MaatRecordLockedException("Unable to process CP hearing notification because Maat Record is locked.");
@@ -67,13 +75,16 @@ public class HearingResultedService {
      * @param hearingResulted
      * @return boolean
      */
-    private boolean isMaatRecordLocked (HearingResulted hearingResulted) {
-        //database call to check the status of a Maat Record. (using a SP)
-        log.info("Maat Record is locked ");
+    private boolean isMaatRecordLocked(HearingResulted hearingResulted) {
 
-
-        return true;
-
+        ReservationsEntity reservationsEntity = reservationsRepository.getOne(hearingResulted.getMaatId().toString());
+        if (reservationsEntity!=null) {
+            log.info("Maat Record is locked ");
+            return true;
+        } else {
+            log.info("Maat Record is not locked");
+            return false;
+        }
     }
 
 }

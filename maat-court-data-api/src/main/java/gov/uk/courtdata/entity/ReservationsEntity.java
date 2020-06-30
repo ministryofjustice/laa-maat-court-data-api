@@ -1,6 +1,5 @@
 package gov.uk.courtdata.entity;
 
-
 import lombok.*;
 
 import javax.persistence.Column;
@@ -9,9 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
 
-@Data
+@Builder
 @Value
 @Entity
+@AllArgsConstructor (access = AccessLevel.PRIVATE)
 @NoArgsConstructor (force = true)
 @Table(name = "RESERVATIONS", schema = "TOGDATA")
 public class ReservationsEntity {
@@ -34,5 +34,4 @@ public class ReservationsEntity {
 
     @Column(name = "EXPIRY_DATE")
     private LocalDate expiryDate;
-
 }

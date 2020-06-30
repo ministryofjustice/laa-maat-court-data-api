@@ -22,5 +22,4 @@ public class AmazonSQSConfig {
                         .withRegion(Regions.fromName(sqsProperties.getRegion()))
                         .build();
     }
-
 }

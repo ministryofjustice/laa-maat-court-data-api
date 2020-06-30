@@ -1,5 +1,10 @@
 package gov.uk.courtdata.hearing.service;
 
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.GetQueueUrlResult;
+import com.amazonaws.services.sqs.model.SendMessageResult;
+import com.google.gson.Gson;
+import gov.uk.courtdata.config.AmazonSQSConfig;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
@@ -10,9 +15,12 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.jms.core.JmsTemplate;
+
+import java.util.Arrays;
+import java.util.HashMap;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HearingResultedPublisherTest {
@@ -24,7 +32,16 @@ public class HearingResultedPublisherTest {
     private HearingValidationProcessor hearingValidationProcessor;
 
     @Mock
-    JmsTemplate defaultJmsTemplate;
+    Gson gson;
+
+    @Mock
+    AmazonSQSConfig amazonSQSConfig;
+
+    @Mock
+    AmazonSQS amazonSqs;
+
+    @Mock
+    GetQueueUrlResult getQueueUrlResult;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -34,15 +51,29 @@ public class HearingResultedPublisherTest {
         MockitoAnnotations.initMocks(this);
     }
 
-
     @Test
-    public void test_Process () {
+    public void test_publishMessage_backup () {
 
         HearingResulted hearingDetails = HearingResulted.builder()
                 .jurisdictionType(JurisdictionType.CROWN)
-                //.messageRetryCounter(10)
+                .messageRetryCounter(10)
+                .maatId(123456)
                 .build();
-        //when
+       final String queueName = "queue";
+        //SendMessageRequest messageRequest = new SendMessageRequest("queue-url", "");
+        Mockito.when(amazonSqs.getQueueUrl(queueName)).thenReturn(getQueueUrlResult);
+        Mockito.when(amazonSQSConfig.awsSqsClient()).thenReturn(amazonSqs);
+
+        //GetQueueUrlResult getQueueUrlResult = new GetQueueUrlResult();
+        //getQueueUrlResult.setQueueUrl(queueName);
+        //getQueueUrlResult.setQueueUrl(queueName);
+        amazonSqs.setQueueAttributes(queueName, new HashMap<>());
+
+        //Mockito.when(getQueueUrlResult.getQueueUrl()).thenReturn(queueName);
+
+
+        SendMessageResult sendMessageResult = new SendMessageResult();
+        Mockito.when(amazonSqs.sendMessage(Mockito.any())).thenReturn(sendMessageResult);
         hearingResultedPublisher.publish(hearingDetails);
 
         //then
@@ -53,4 +84,10 @@ public class HearingResultedPublisherTest {
     }
 
 
+
+    private String generateStringWithLength(int messageLength) {
+        char[] charArray = new char[messageLength];
+        Arrays.fill(charArray, 'x');
+        return new String(charArray);
+    }
 }

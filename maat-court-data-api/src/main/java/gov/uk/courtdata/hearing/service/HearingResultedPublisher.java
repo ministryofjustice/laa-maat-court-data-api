@@ -27,6 +27,10 @@ public class HearingResultedPublisher {
     private final AmazonSQSConfig amazonSQSConfig;
     private final Gson gson;
 
+    /**
+     * Publishing a message to a hearing queue with a 15 minutes delay.
+     * @param hearingResulted
+     */
     public void publish (HearingResulted hearingResulted) {
 
         String logging = LaaTransactionLoggingBuilder.get(hearingResulted).toString();
@@ -49,7 +53,7 @@ public class HearingResultedPublisher {
         SendMessageRequest request = new SendMessageRequest()
                 .withQueueUrl(getQueueUrlResult.getQueueUrl())
                 .withMessageBody(hearingResultedJSON)
-                .withDelaySeconds(60)
+                .withDelaySeconds(900)
                 .withMessageAttributes(attributeValueMap);
 
         amazonSQS.sendMessage(request);

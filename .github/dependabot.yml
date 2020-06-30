@@ -1,0 +1,11 @@
+version: 2
+
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/maat-court-data-api"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "Gradle"
+      include: "scope"
+

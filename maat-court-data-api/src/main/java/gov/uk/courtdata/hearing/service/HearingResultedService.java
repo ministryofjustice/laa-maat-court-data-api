@@ -1,5 +1,4 @@
 package gov.uk.courtdata.hearing.service;
-
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.exception.MaatRecordLockedException;
 import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
@@ -11,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +26,6 @@ public class HearingResultedService {
     private final HearingResultedPublisher hearingResultedPublisher;
 
     private final ReservationsRepository reservationsRepository;
-
 
     /**
      * Process Work Queue Processing for both Crown & Mags Court.
@@ -50,20 +49,16 @@ public class HearingResultedService {
 
     private void processCrownCourtNotification(HearingResulted hearingResulted) {
 
+        log.info("Processing crown court notification");
         if (isMaatRecordLocked(hearingResulted))
             publishMessageToHearingQueue(hearingResulted);
         else
             crownCourtHearingService.execute(hearingResulted);
-
     }
 
-    /**
-     * Publishing a hearing resulted payload to a hearing queue.
-     * @param hearingResulted
-     */
     private void publishMessageToHearingQueue (HearingResulted hearingResulted) {
 
-        log.info("Publishing a message payload to Hearing SQS. messageRetryCounter no. "  + hearingResulted.getMessageRetryCounter());
+        log.info("Message retry attempt no. "  + hearingResulted.getMessageRetryCounter());
 
         if (hearingResulted.getMessageRetryCounter()<=5) {
             hearingResultedPublisher.publish(hearingResulted);
@@ -72,23 +67,16 @@ public class HearingResultedService {
         }
     }
 
-    /**
-     * Calling a database to check the Maat Record lock status
-     * @param hearingResulted
-     * @return boolean
-     */
     private boolean isMaatRecordLocked(HearingResulted hearingResulted) {
 
-        ReservationsEntity reservationsEntity = reservationsRepository.getOne(hearingResulted.getMaatId().toString());
-        if (reservationsEntity!=null) {
-            log.info("Maat Record {} is locked by {} ", reservationsEntity.getRecordId(), reservationsEntity.getUserName());
+        log.info("Checking Maat Record Locked status");
+        Optional<ReservationsEntity> reservationsEntity = reservationsRepository.findById(hearingResulted.getMaatId());
+        if (reservationsEntity.isPresent()) {
+            log.info("Maat Record {} is locked by {} ", reservationsEntity.get().getRecordId(), reservationsEntity.get().getUserName());
             return true;
         } else {
             log.info("Maat Record is not locked");
             return false;
         }
     }
-
 }
-
-

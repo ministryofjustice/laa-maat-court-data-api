@@ -20,12 +20,9 @@ public class HearingResultedListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.hearingResulted}")
     public void receive(@Payload final String message)   {
 
-        log.info("message from a queue: "+ message) ;
         HearingResulted hearingResulted = gson.fromJson(message, HearingResulted.class);
         hearingResultedService.execute(hearingResulted);
     }
 }
-
-
 
 

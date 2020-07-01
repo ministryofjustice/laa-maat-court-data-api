@@ -5,8 +5,8 @@ import com.amazonaws.services.sqs.model.GetQueueUrlResult;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.google.gson.Gson;
 import gov.uk.courtdata.config.AmazonSQSConfig;
+import gov.uk.courtdata.model.LaaTransactionLogging;
 import gov.uk.courtdata.model.hearing.HearingResulted;
-import gov.uk.courtdata.util.LaaTransactionLoggingBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,13 +29,13 @@ public class HearingResultedPublisher {
 
     /**
      * Publishing a message to a hearing queue with a 15 minutes delay.
-     * @param hearingResulted
+     * @param hearingResulted message payload
      */
     public void publish (HearingResulted hearingResulted) {
 
-        String logging = LaaTransactionLoggingBuilder.get(hearingResulted.toString()).toString();
-        log.info("MAAT Record is locked. Publishing a message to the queue to process later.");
-        log.info("Publishing to SQS Queue {} with logging meta-data {} " + sqsQueueName,logging);
+        LaaTransactionLogging logging = LaaTransactionLogging.builder().maatId(hearingResulted.getMaatId()).laaTransactionId(hearingResulted.getLaaTransactionId()).build();
+        log.info("MAAT Record is locked. Publishing a message to the hearing queue to process later.");
+        log.info("Publishing to SQS Queue {} with logging meta-data {} ", sqsQueueName,logging);
 
         int counter = hearingResulted.getMessageRetryCounter();
         hearingResulted.setMessageRetryCounter(counter+1);
@@ -49,7 +49,6 @@ public class HearingResultedPublisher {
                 .withDelaySeconds(delaySeconds);
 
         amazonSQS.sendMessage(request);
-        log.info("Printing a message: "+request.toString());
-        log.info("A CP hearing message has been published to the Queue {} with logging meta-data {}",sqsQueueName, logging);
+        log.info("A CP hearing message has been published to the Queue {} with time delay of {} seconds. Transaction meta-data {}",sqsQueueName, delaySeconds,logging);
     }
 }

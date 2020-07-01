@@ -20,7 +20,7 @@ public class ReservationsEntity {
 
     @Id
     @Column(name = "RECORD_ID")
-    private String recordId;
+    private Integer recordId;
 
     @Column(name = "USER_NAME")
     private String userName;

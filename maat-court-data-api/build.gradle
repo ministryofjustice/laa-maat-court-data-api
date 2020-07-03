@@ -42,7 +42,7 @@ dependencies {
 
 
     // AWS
-    implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.228')
+    implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.816')
     implementation 'com.amazonaws:aws-java-sdk-sqs'
     implementation 'com.amazonaws:amazon-sqs-java-messaging-lib:1.0.6'
 

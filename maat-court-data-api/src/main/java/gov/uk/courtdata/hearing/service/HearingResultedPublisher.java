@@ -18,11 +18,10 @@ import org.springframework.stereotype.Service;
 public class HearingResultedPublisher {
 
     @Value("${cloud-platform.aws.sqs.queue.hearingResulted}")
-    private String sqsQueueName;
+    private String sqsQueueName = "";
 
     @Value("${cloud-platform.aws.sqs.queue.config.messageDelay}")
     private Integer delaySeconds;
-
 
     private final AmazonSQSConfig amazonSQSConfig;
     private final Gson gson;
@@ -43,6 +42,7 @@ public class HearingResultedPublisher {
 
         AmazonSQS amazonSQS = amazonSQSConfig.awsSqsClient();
         GetQueueUrlResult getQueueUrlResult = amazonSQS.getQueueUrl(sqsQueueName);
+
         SendMessageRequest request = new SendMessageRequest()
                 .withQueueUrl(getQueueUrlResult.getQueueUrl())
                 .withMessageBody(hearingResultedJSON)

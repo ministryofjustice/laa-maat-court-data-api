@@ -37,7 +37,7 @@ public class HearingResultedServiceTest {
     private CrownCourtHearingService crownCourtHearingService;
 
     @Mock
-    ReservationsRepository reservationsRepository;
+    private ReservationsRepository reservationsRepository;
 
     @Mock
     private HearingResultedPublisher hearingResultedPublisher;

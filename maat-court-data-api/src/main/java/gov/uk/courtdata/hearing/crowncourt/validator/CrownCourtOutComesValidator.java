@@ -26,7 +26,6 @@ public class CrownCourtOutComesValidator {
                 .map(CrownCourtOutComeEntity::getOutcome)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList()).contains(ccOutcome);
-
         if (!isValidOutCome) {
             throw new MAATCourtDataException("Invalid Crown Court Outcome : "
                     .concat(ccOutcome.concat(" is passed in for MAAT ID: " + hearingResulted.getMaatId())));

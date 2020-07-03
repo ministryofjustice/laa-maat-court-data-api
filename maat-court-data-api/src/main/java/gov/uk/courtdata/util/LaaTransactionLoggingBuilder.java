@@ -14,9 +14,7 @@ public class LaaTransactionLoggingBuilder {
     public static LaaTransactionLogging get(CaseDetails caseDetails) {
         Gson gson = new Gson();
         return get(gson.toJson(caseDetails));
-
     }
-
 
     public static LaaTransactionLogging get(String message) {
         Gson gson = new Gson();

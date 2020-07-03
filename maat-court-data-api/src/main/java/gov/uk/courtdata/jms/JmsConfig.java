@@ -3,11 +3,7 @@ package gov.uk.courtdata.jms;
 
 import com.amazon.sqs.javamessaging.ProviderConfiguration;
 import com.amazon.sqs.javamessaging.SQSConnectionFactory;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import gov.uk.courtdata.config.AmazonSQSConfig;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +28,8 @@ public class JmsConfig {
     private final JmsErrorHandler jmsErrorHandler;
 
     private final SqsProperties sqsProperties;
+
+    private final AmazonSQSConfig amazonSQSConfig;
 
     /**
      * Use the default container configured.
@@ -70,22 +68,8 @@ public class JmsConfig {
     public SQSConnectionFactory sqsConnectionFactory() {
 
         return new SQSConnectionFactory(new ProviderConfiguration(),
-                awsSqsClient());
+                amazonSQSConfig.awsSqsClient());
     }
-
-
-    /**
-     * @return
-     */
-    private AmazonSQS awsSqsClient() {
-        return
-                AmazonSQSClientBuilder.standard()
-                        .withCredentials(new AWSStaticCredentialsProvider(
-                                new BasicAWSCredentials(sqsProperties.getAccesskey(), sqsProperties.getSecretkey())))
-                        .withRegion(Regions.fromName(sqsProperties.getRegion()))
-                        .build();
-    }
-
 }
 
 

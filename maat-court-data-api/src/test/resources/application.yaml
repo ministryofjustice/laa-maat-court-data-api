@@ -43,6 +43,8 @@ cloud-platform:
         unlink: unlink
         laaStatus:  laaStatus
         hearingResulted: hearing
+        config:
+          messageDelay: 900
 
 cda:
   oauth:

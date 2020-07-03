@@ -1,10 +1,13 @@
 package gov.uk.courtdata.hearing.service;
 
+import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.exception.MaatRecordLockedException;
 import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
+import gov.uk.courtdata.repository.ReservationsRepository;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +18,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import java.util.Optional;
+
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HearingResultedServiceTest {
@@ -32,42 +36,89 @@ public class HearingResultedServiceTest {
     @Mock
     private CrownCourtHearingService crownCourtHearingService;
 
+    @Mock
+    private ReservationsRepository reservationsRepository;
+
+    @Mock
+    private HearingResultedPublisher hearingResultedPublisher;
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @BeforeEach
     public void setUp() {
-
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void givenACaseDetail_whenCrownCourtHearingServiceIsReceived_thenCCImplIsInvoked() {
+    public void givenAMagCourtNotification_whenMaatNotLocked_thenMagsCourtProcessingInvoked() {
 
         //given
-        HearingResulted hearingDetails = HearingResulted.builder().jurisdictionType(JurisdictionType.CROWN).build();
+        HearingResulted hearingDetails = HearingResulted.builder().maatId(34).jurisdictionType(JurisdictionType.MAGISTRATES).build();
+
         //when
+        doNothing().when(hearingResultedImpl).execute(hearingDetails);
+
         hearingResultedService.execute(hearingDetails);
         //then
-        verify(crownCourtHearingService, times(1)).execute(hearingDetails);
+        verify(hearingValidationProcessor).validate(hearingDetails);
+        verify(hearingResultedImpl).execute(hearingDetails);
+    }
 
+    @Test
+    public void givenACrownCourtNotification_whenMaatRecordIsNotLocked_thenCrownCourtProcessingInvoked() {
 
+        //given
+        HearingResulted hearingDetails = HearingResulted.builder().maatId(34).jurisdictionType(JurisdictionType.CROWN).build();
+        Optional<ReservationsEntity> reservationsEntity = Optional.empty();
+        //when
+        when(reservationsRepository.findById(34)).thenReturn(reservationsEntity);
+        doNothing().when(crownCourtHearingService).execute(hearingDetails);
+
+        hearingResultedService.execute(hearingDetails);
+
+        //verify
+        verify(hearingValidationProcessor).validate(hearingDetails);
+        verify(crownCourtHearingService).execute(hearingDetails);
 
     }
 
     @Test
-    public void givenACaseDetail_whenMAGGCourtHearingServiceIsReceived_thenMagsCourtProcessingInvoked() {
+    public void givenACrownCourtNotification_whenMaatRecordIsLocked_thenThrowException() {
 
         //given
-        HearingResulted hearingDetails = HearingResulted.builder().jurisdictionType(JurisdictionType.MAGISTRATES).build();
+        HearingResulted hearingDetails = HearingResulted.builder()
+                .jurisdictionType(JurisdictionType.CROWN)
+                .maatId(34)
+                .messageRetryCounter(6)
+                .build();
+        Optional<ReservationsEntity> reservationsEntity = Optional.of(ReservationsEntity.builder().recordId(34).userName("username-test").build());
         //when
-        hearingResultedService.execute(hearingDetails);
-        //then
-        verify(hearingValidationProcessor, times(1)).validate(hearingDetails);
-        verify(hearingResultedImpl, times(1)).execute(hearingDetails);
+        when(reservationsRepository.findById(anyInt())).thenReturn(reservationsEntity);
+        //throw
+        thrown.expect(MaatRecordLockedException.class);
+        thrown.expectMessage("Unable to process CP hearing notification because Maat Record is locked.");
 
+        hearingResultedService.execute(hearingDetails);
     }
 
+    @Test
+    public void givenACrownCourtNotification_whenMaatRecordIsLocked_thenPublishMessageToQueue() {
 
+        //given
+        HearingResulted hearingDetails = HearingResulted.builder()
+                .jurisdictionType(JurisdictionType.CROWN)
+                .maatId(34)
+                .messageRetryCounter(4)
+                .build();
+        Optional<ReservationsEntity> reservationsEntity = Optional.of(ReservationsEntity.builder().recordId(34).userName("username-test").build());
+        //when
+        when(reservationsRepository.findById(34)).thenReturn(reservationsEntity);
+        doNothing().when(hearingResultedPublisher).publish(hearingDetails);
 
+        hearingResultedService.execute(hearingDetails);
+
+        verify(hearingValidationProcessor).validate(hearingDetails);
+        verify(hearingResultedPublisher).publish(hearingDetails);
+    }
 }

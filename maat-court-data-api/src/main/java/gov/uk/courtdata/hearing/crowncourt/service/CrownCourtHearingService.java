@@ -28,8 +28,6 @@ public class CrownCourtHearingService {
         hearingResultedImpl.execute(hearingResulted);
 
     }
-
-
     private void executeCrownCourtOutCome(HearingResulted hearingResulted) {
 
         crownCourtValidationProcessor.validate(hearingResulted);

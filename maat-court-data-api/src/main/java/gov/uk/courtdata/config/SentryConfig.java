@@ -12,9 +12,6 @@ import javax.annotation.PostConstruct;
 @Component
 public class SentryConfig {
 
-    @Value("${sentry.dsn}")
-    private String dsn;
-
     @Value("${sentry.environment}")
     private String env;
 
@@ -27,7 +24,7 @@ public class SentryConfig {
     @PostConstruct
     public void initSentry() {
 
-        SentryClient sentryClient = Sentry.init(dsn);
+        SentryClient sentryClient = Sentry.init();
         sentryClient.setEnvironment(env);
         sentryClient.setRelease(release);
         sentryClient.setServerName(serverName);

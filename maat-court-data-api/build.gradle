@@ -44,7 +44,7 @@ dependencies {
     // AWS
     implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.816')
     implementation 'com.amazonaws:aws-java-sdk-sqs'
-    implementation 'com.amazonaws:amazon-sqs-java-messaging-lib:1.0.6'
+    implementation 'com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8'
 
 
     implementation 'io.sentry:sentry:1.7.30'

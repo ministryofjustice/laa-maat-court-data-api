@@ -5,6 +5,7 @@
     "pECSRepositoryURL" : "902837325998.dkr.ecr.eu-west-2.amazonaws.com/maat-cd-api",
     "pDockerImageTag" : "",
     "pAppCertificateArn" : "arn:aws:acm:eu-west-2:013163512034:certificate/3f5ffd24-0805-475a-80ad-8bc0f1330e83",
+    "pAppApiGatewayFQDN" : "maat-cd-api.tst.legalservices.gov.uk",
     "pSev5SnsTopicArn" : "arn:aws:sns:eu-west-2:902837325998:sns-topic-devel-severity_5",
     "pMlraAppSecurityGroupId": "sg-2e6d2a45",
     "pDatasourceUrl" : "jdbc:oracle:thin:@rds.maat.aws.tst.legalservices.gov.uk:1521:MAATDB",

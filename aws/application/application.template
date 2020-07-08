@@ -557,7 +557,7 @@ Resources:
       ApiId: !Ref ApiGateway
       Description: !Sub '${pAppName} Integration Proxy'
       IntegrationType: HTTP_PROXY
-      IntegrationUri: !Ref LoadBalancer
+      IntegrationUri: !Ref AlbHTTPListener
       IntegrationMethod: ANY
       ConnectionType: VPC_LINK
       ConnectionId: !Ref ApiGatewayVpcLink

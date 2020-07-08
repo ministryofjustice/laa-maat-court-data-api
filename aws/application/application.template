@@ -127,8 +127,7 @@ Parameters:
 Conditions:
   #The below condition will only be used for initial API-Gateway rollout
   cApiGateWayRollout:
-    !Or
-      - !Equals [ !Ref pEnvironment, "development" ]
+    !Equals [ !Ref pEnvironment, "development" ]
 
   cDevTest:
     !Or

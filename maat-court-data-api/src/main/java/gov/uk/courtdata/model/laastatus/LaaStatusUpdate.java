@@ -6,13 +6,12 @@ import lombok.*;
 
 
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor (force = true)
 @AllArgsConstructor
-@Data
+@Value
 public class LaaStatusUpdate {
 
     @SerializedName("data")
     @Expose
-    private RepOrderData data;
-
+    RepOrderData data;
 }

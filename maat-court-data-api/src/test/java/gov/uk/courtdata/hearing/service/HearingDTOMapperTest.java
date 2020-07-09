@@ -30,6 +30,7 @@ public class HearingDTOMapperTest {
 
         //then
         assertThat(defendantDTO.getSurname()).isEqualTo("Smith");
+
     }
 
     @Test

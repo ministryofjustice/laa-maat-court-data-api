@@ -2,6 +2,7 @@ package gov.uk.courtdata.link.service;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.service.QueueMessageLogService;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -21,6 +22,8 @@ public class CreateLinkListenerTest {
     private Gson gson;
     @Mock
     private CreateLinkService createLinkService;
+    @Mock
+    private QueueMessageLogService queueMessageLogService;
 
     @BeforeEach
     public void setUp() {

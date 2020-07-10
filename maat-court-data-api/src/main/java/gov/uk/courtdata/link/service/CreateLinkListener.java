@@ -1,7 +1,9 @@
 package gov.uk.courtdata.link.service;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.enums.QueueMessageType;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.JmsException;
@@ -21,6 +23,8 @@ public class CreateLinkListener {
 
     private final Gson gson;
 
+    private final QueueMessageLogService queueMessageLogService;
+
     /**
      * @param message
      * @throws JmsException
@@ -28,6 +32,7 @@ public class CreateLinkListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.link}")
     public void receive(@Payload final String message)  {
 
+        queueMessageLogService.log(QueueMessageType.LINK,message);
         CaseDetails linkMessage = gson.fromJson(message, CaseDetails.class);
         createLinkService.saveAndLink(linkMessage);
     }

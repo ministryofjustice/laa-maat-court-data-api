@@ -1,7 +1,9 @@
 package gov.uk.courtdata.unlink.service;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.enums.QueueMessageType;
 import gov.uk.courtdata.model.Unlink;
+import gov.uk.courtdata.service.QueueMessageLogService;
 import gov.uk.courtdata.unlink.processor.UnLinkProcessor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +21,14 @@ public class UnlinkListener {
 
     private final UnLinkProcessor unLinkProcessor;
 
-    /**
-     *
-     */
-    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.unlink}")
-    public void receive(@Payload final String message)  {
+    private final QueueMessageLogService queueMessageLogService;
 
+
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.unlink}")
+    public void receive(@Payload final String message) {
+
+
+        queueMessageLogService.log(QueueMessageType.UNLINK, message);
         Unlink unlink = gson.fromJson(message, Unlink.class);
         unLinkProcessor.process(unlink);
     }

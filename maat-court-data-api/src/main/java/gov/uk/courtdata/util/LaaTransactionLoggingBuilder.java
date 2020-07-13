@@ -7,10 +7,6 @@ import gov.uk.courtdata.model.LaaTransactionLogging;
 
 public class LaaTransactionLoggingBuilder {
 
-    private LaaTransactionLoggingBuilder() {
-
-    }
-
     public static LaaTransactionLogging get(CaseDetails caseDetails) {
         Gson gson = new Gson();
         return get(gson.toJson(caseDetails));
@@ -25,6 +21,4 @@ public class LaaTransactionLoggingBuilder {
     public static String getStr(String message) {
         return get(message).toString();
     }
-
-
 }

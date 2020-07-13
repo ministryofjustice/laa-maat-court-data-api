@@ -58,7 +58,7 @@ queue:
   message:
     log:
       cron:
-        expression: 0 0 0 * * 5
+        expression: 0 0 0 * * *
       expiryInDays: 15
 
 sentry:

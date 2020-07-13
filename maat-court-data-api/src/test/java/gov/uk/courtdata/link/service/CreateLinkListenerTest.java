@@ -1,6 +1,7 @@
 package gov.uk.courtdata.link.service;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.enums.QueueMessageType;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import org.junit.Test;
@@ -22,6 +23,7 @@ public class CreateLinkListenerTest {
     private Gson gson;
     @Mock
     private CreateLinkService createLinkService;
+
     @Mock
     private QueueMessageLogService queueMessageLogService;
 
@@ -41,6 +43,7 @@ public class CreateLinkListenerTest {
         createLinkListener.receive(message);
         //then
         verify(createLinkService, times(1)).saveAndLink(caseDetails);
+        verify(queueMessageLogService, times(1)).createLog(QueueMessageType.LINK, message);
     }
 
 

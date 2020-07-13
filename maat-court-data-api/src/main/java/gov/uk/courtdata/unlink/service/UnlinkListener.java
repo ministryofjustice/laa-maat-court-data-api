@@ -28,7 +28,7 @@ public class UnlinkListener {
     public void receive(@Payload final String message) {
 
 
-        queueMessageLogService.log(QueueMessageType.UNLINK, message);
+        queueMessageLogService.createLog(QueueMessageType.UNLINK, message);
         Unlink unlink = gson.fromJson(message, Unlink.class);
         unLinkProcessor.process(unlink);
     }

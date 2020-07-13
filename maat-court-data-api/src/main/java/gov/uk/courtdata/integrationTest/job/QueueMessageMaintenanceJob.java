@@ -1,7 +1,8 @@
-package gov.uk.courtdata.job;
+package gov.uk.courtdata.integrationTest.job;
 
 
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Configuration
 @EnableScheduling
 @Slf4j
+@Getter
 @RequiredArgsConstructor
 public class QueueMessageMaintenanceJob {
 
@@ -32,7 +34,7 @@ public class QueueMessageMaintenanceJob {
 
         LocalDateTime currentDate = LocalDateTime.now();
 
-        queueMessageLogRepository.deleteCreatedOnOrBefore(currentDate.minusDays(expiryInDays));
+        queueMessageLogRepository.deleteCreatedOnOrBefore(currentDate.minusDays(getExpiryInDays()));
 
         log.info("Finish Queue Message Purge Job...");
     }

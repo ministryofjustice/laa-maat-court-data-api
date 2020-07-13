@@ -24,7 +24,7 @@ public class HearingResultedListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.hearingResulted}")
     public void receive(@Payload final String message) {
 
-        queueMessageLogService.log(QueueMessageType.HEARING,message);
+        queueMessageLogService.createLog(QueueMessageType.HEARING,message);
         HearingResulted hearingResulted = gson.fromJson(message, HearingResulted.class);
         hearingResultedService.execute(hearingResulted);
     }

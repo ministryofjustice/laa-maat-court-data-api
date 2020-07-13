@@ -12,7 +12,6 @@ import gov.uk.courtdata.integrationTest.MockServicesConfig;
 import gov.uk.courtdata.laastatus.client.CourtDataAdapterClient;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
-import gov.uk.courtdata.repository.QueueMessageLogRepository;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;

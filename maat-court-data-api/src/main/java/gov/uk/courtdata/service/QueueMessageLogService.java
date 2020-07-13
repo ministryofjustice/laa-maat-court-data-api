@@ -1,6 +1,5 @@
 package gov.uk.courtdata.service;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -22,10 +21,8 @@ public class QueueMessageLogService {
 
     private final QueueMessageLogRepository queueMessageLogRepository;
 
-    private final Gson gson;
 
-
-    public void log(final QueueMessageType messageType, final String message) {
+    public void createLog(final QueueMessageType messageType, final String message) {
 
         JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
 

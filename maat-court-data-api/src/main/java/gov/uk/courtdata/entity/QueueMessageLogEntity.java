@@ -26,6 +26,6 @@ public class QueueMessageLogEntity {
     @Lob
     @Column(name = "MESSAGE")
     private byte[] message;
-    @Column(name = "CREATED_Time")
+    @Column(name = "CREATED_TIME")
     private LocalDateTime createdTime;
 }

@@ -32,7 +32,7 @@ public class CreateLinkListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.link}")
     public void receive(@Payload final String message)  {
 
-        queueMessageLogService.log(QueueMessageType.LINK,message);
+        queueMessageLogService.createLog(QueueMessageType.LINK,message);
         CaseDetails linkMessage = gson.fromJson(message, CaseDetails.class);
         createLinkService.saveAndLink(linkMessage);
     }

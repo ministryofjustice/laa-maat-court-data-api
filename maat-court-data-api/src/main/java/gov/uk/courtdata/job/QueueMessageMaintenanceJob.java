@@ -1,4 +1,4 @@
-package gov.uk.courtdata.integrationTest.job;
+package gov.uk.courtdata.job;
 
 
 import gov.uk.courtdata.repository.QueueMessageLogRepository;

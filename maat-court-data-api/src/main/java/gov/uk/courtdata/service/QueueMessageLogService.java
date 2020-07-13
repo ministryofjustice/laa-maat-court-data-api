@@ -48,10 +48,12 @@ public class QueueMessageLogService {
         final JsonElement jurType = msgObject.get("jurisdictionType");
         final StringBuilder msgBuilder = new StringBuilder().append(messageType.name());
 
-        if (Optional.ofNullable(jurType).isPresent()) {
+        Optional<String> jurisdiction = Optional.ofNullable(jurType).map(JsonElement::getAsString);
+
+        if (jurisdiction.isPresent()) {
             msgBuilder
                     .append("-")
-                    .append(Optional.of(jurType).map(JsonElement::getAsString).get());
+                    .append(jurisdiction.get());
         }
 
         return msgBuilder.toString();

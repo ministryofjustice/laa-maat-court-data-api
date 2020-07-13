@@ -1,8 +1,8 @@
-package gov.uk.courtdata.integrationTest.job;
+package gov.uk.courtdata.job;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
-import gov.uk.courtdata.integrationTest.MockServicesConfig;
+import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -31,8 +31,6 @@ public class QueueMessageMaintenanceJobTest {
     @Autowired
     private QueueMessageMaintenanceJob messageMaintenanceJob;
 
-    @Autowired
-    private QueueMessageLogRepository queueMessageLogRepository;
 
     private static byte[] buildMessage(Integer maatId) {
 
@@ -46,7 +44,7 @@ public class QueueMessageMaintenanceJobTest {
 
     @Before
     public void setUp() {
-        queueMessageLogRepository.deleteAll();
+        getQueueMessageLogRepository().deleteAll();
     }
 
     @Test
@@ -71,13 +69,13 @@ public class QueueMessageMaintenanceJobTest {
     @Test
     public void whenScheduledJobRuns_MessageLogBeforeExpiryDays_NotPurged() {
 
-        queueMessageLogRepository.save(QueueMessageLogEntity.builder()
+        getQueueMessageLogRepository().save(QueueMessageLogEntity.builder()
                 .transactionUUID(UUID.randomUUID().toString())
                 .maatId(1000)
                 .createdTime(LocalDateTime.now())
                 .message(buildMessage(1000)).build());
 
-        queueMessageLogRepository.save(QueueMessageLogEntity.builder()
+        getQueueMessageLogRepository().save(QueueMessageLogEntity.builder()
                 .transactionUUID(UUID.randomUUID().toString())
                 .maatId(1001)
                 .createdTime(LocalDateTime.now().minusDays(2))
@@ -85,7 +83,7 @@ public class QueueMessageMaintenanceJobTest {
 
         messageMaintenanceJob.purgeHistory();
 
-        List<QueueMessageLogEntity> messageList = queueMessageLogRepository.findAll();
+        List<QueueMessageLogEntity> messageList = getQueueMessageLogRepository().findAll();
 
         assertAll("messagelist",
                 () -> assertNotNull(messageList),
@@ -95,7 +93,7 @@ public class QueueMessageMaintenanceJobTest {
     @Test
     public void whenScheduledJobRuns_MessageLoggedOnOrAfterExpiry_IsPurged() {
 
-        queueMessageLogRepository.save(QueueMessageLogEntity.builder()
+        getQueueMessageLogRepository().save(QueueMessageLogEntity.builder()
                 .transactionUUID(UUID.randomUUID().toString())
                 .maatId(1111)
                 .createdTime(LocalDateTime.now().minusDays(messageMaintenanceJob.getExpiryInDays())
@@ -104,7 +102,7 @@ public class QueueMessageMaintenanceJobTest {
 
         messageMaintenanceJob.purgeHistory();
 
-        List<QueueMessageLogEntity> messageLogEntities = queueMessageLogRepository.findAll();
+        List<QueueMessageLogEntity> messageLogEntities = getQueueMessageLogRepository().findAll();
 
         assertAll("messageLogEntities",
                 () -> assertNotNull(messageLogEntities),
@@ -113,7 +111,11 @@ public class QueueMessageMaintenanceJobTest {
 
     @After
     public void tearDown() {
-        queueMessageLogRepository.deleteAll();
+        getQueueMessageLogRepository().deleteAll();
+    }
+
+    private QueueMessageLogRepository getQueueMessageLogRepository() {
+        return messageMaintenanceJob.getQueueMessageLogRepository();
     }
 
 }

@@ -1,4 +1,4 @@
-package gov.uk.courtdata.integrationTest;
+package gov.uk.courtdata.integration;
 
 import com.amazon.sqs.javamessaging.SQSConnectionFactory;
 import gov.uk.courtdata.config.SentryConfig;

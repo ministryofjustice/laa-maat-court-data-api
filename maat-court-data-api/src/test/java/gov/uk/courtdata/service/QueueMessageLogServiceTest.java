@@ -62,7 +62,7 @@ public class QueueMessageLogServiceTest {
 
         queueMessageLogService.createLog(QueueMessageType.UNLINK, newQueueMessage(maatId));
 
-        verify(queueMessageLogRepository, times(1)).save(queueMessageCaptor.capture());
+        verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
 
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
@@ -87,7 +87,7 @@ public class QueueMessageLogServiceTest {
         queueMessageLogService.createLog(QueueMessageType.HEARING,
                 newHearingQueueMessage(maatId, JurisdictionType.MAGISTRATES));
 
-        verify(queueMessageLogRepository, times(1)).save(queueMessageCaptor.capture());
+        verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
 
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
@@ -113,7 +113,7 @@ public class QueueMessageLogServiceTest {
         queueMessageLogService.createLog(QueueMessageType.HEARING,
                 newHearingQueueMessage(maatId, JurisdictionType.CROWN));
 
-        verify(queueMessageLogRepository, times(1)).save(queueMessageCaptor.capture());
+        verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
 
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
@@ -138,7 +138,7 @@ public class QueueMessageLogServiceTest {
 
         queueMessageLogService.createLog(QueueMessageType.LAA_STATUS, newQueueMessage(maatId));
 
-        verify(queueMessageLogRepository, times(1)).save(queueMessageCaptor.capture());
+        verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
 
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 

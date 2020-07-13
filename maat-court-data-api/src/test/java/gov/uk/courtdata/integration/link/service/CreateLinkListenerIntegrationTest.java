@@ -1,4 +1,4 @@
-package gov.uk.courtdata.integrationTest.link.service;
+package gov.uk.courtdata.integration.link.service;
 
 
 import gov.uk.MAATCourtDataApplication;
@@ -8,7 +8,7 @@ import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.CourtHouseCodesEntity;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.integrationTest.MockServicesConfig;
+import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.link.service.CreateLinkListener;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.*;

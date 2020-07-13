@@ -54,6 +54,12 @@ cda:
   laastatus:
     url: cdaUrl
 
+queue:
+  message:
+    log:
+      cron:
+        expression: 0 0 0 * * *
+      expiryInDays: 15
 
 sentry:
   environment: ${SENTRY_ENV}

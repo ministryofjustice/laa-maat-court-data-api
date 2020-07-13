@@ -1,4 +1,4 @@
-package gov.uk.courtdata.integrationTest.unlink.impl;
+package gov.uk.courtdata.integration.unlink.impl;
 
 import com.google.gson.Gson;
 import gov.uk.MAATCourtDataApplication;
@@ -8,7 +8,7 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.integrationTest.MockServicesConfig;
+import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.laastatus.client.CourtDataAdapterClient;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;

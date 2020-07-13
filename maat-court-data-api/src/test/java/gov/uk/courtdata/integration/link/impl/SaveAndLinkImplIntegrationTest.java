@@ -1,4 +1,4 @@
-package gov.uk.courtdata.integrationTest.link.impl;
+package gov.uk.courtdata.integration.link.impl;
 
 
 import gov.uk.MAATCourtDataApplication;
@@ -6,7 +6,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.integrationTest.MockServicesConfig;
+import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Result;

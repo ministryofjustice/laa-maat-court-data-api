@@ -1,11 +1,11 @@
-package gov.uk.courtdata.integrationTest.unlink.controller;
+package gov.uk.courtdata.integration.unlink.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.integrationTest.MockServicesConfig;
+import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;

@@ -1,7 +1,10 @@
 package gov.uk.courtdata.hearing.service;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.enums.QueueMessageType;
 import gov.uk.courtdata.model.hearing.HearingResulted;
+import gov.uk.courtdata.service.QueueMessageLogService;
+import gov.uk.courtdata.service.QueueMessageLogServiceTest;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -22,6 +25,10 @@ public class HearingResultedListenerTest {
     @Mock
     private HearingResultedService hearingResultedService;
 
+    @Mock
+    private QueueMessageLogService queueMessageLogService;
+
+
     @BeforeEach
     public void setUp() {
 
@@ -38,6 +45,7 @@ public class HearingResultedListenerTest {
         hearingResultedListener.receive(message);
         //then
         verify(hearingResultedService, times(1)).execute(laaHearingDetails);
+        verify(queueMessageLogService, times(1)).createLog(QueueMessageType.HEARING, message);
     }
 
 

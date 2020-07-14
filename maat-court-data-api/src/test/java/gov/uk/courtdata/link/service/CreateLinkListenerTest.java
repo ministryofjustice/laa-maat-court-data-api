@@ -1,7 +1,9 @@
 package gov.uk.courtdata.link.service;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.enums.QueueMessageType;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.service.QueueMessageLogService;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -22,6 +24,9 @@ public class CreateLinkListenerTest {
     @Mock
     private CreateLinkService createLinkService;
 
+    @Mock
+    private QueueMessageLogService queueMessageLogService;
+
     @BeforeEach
     public void setUp() {
 
@@ -38,6 +43,7 @@ public class CreateLinkListenerTest {
         createLinkListener.receive(message);
         //then
         verify(createLinkService, times(1)).saveAndLink(caseDetails);
+        verify(queueMessageLogService, times(1)).createLog(QueueMessageType.LINK, message);
     }
 
 

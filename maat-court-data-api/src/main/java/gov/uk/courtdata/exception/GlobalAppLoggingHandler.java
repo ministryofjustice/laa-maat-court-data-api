@@ -2,6 +2,7 @@ package gov.uk.courtdata.exception;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.model.LaaTransactionLogging;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class GlobalAppLoggingHandler {
 
     public static final String LAA_TRANSACTION_ID = "laaTransactionId";
@@ -18,7 +20,7 @@ public class GlobalAppLoggingHandler {
     public static final String MESSAGE = "message";
     public static final String MAATID = "maatId";
 
-    private Gson gson;
+    private final Gson gson;
 
 
     /**

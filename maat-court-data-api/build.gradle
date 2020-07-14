@@ -8,6 +8,46 @@ plugins {
     id "org.sonarqube" version "2.7"
 }
 
+
+
+def versions = [
+        mapstructVersion: '1.3.1.Final',
+        sentryVersion   : '1.7.30',
+        springdocVersion: '1.4.2',
+        amazonSQSVersion: '1.0.8',
+        ojdbc8Version   : '19.7.0.0',
+        gsonVersion     : '2.8.6',
+        commLan3Vriosn  : '3.10',
+        lombokVersion   : '1.18.6',
+        sonarVersion    : '2.7',
+        h2DBVersion     : '1.4.200',
+        mockitoVersion  : '3.3.3',
+        junitVersion    : '4.13',
+        harmcrestVersion: '1.3',
+        testngVersion   : '6.10',
+        festVersion     : '1.4',
+        jupiterVersion  : '5.6.2'
+
+]
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:2.3.1.RELEASE"
+        mavenBom "org.springframework:spring-framework-bom:5.2.7.RELEASE"
+        mavenBom "com.amazonaws:aws-java-sdk-bom:1.11.816"
+        mavenBom "org.springframework.security:spring-security-bom:5.3.3.RELEASE"
+    }
+    dependencies {
+        dependencySet(group: 'io.sentry', version: versions.sentryVersion) {
+            entry 'sentry'
+            entry 'sentry-logback'
+        }
+        dependencySet(group: 'org.mapstruct', version: versions.mapstructVersion) {
+            entry 'mapstruct'
+            entry 'mapstruct-processor'
+        }
+    }
+}
 group = 'gov.uk'
 
 java {
@@ -17,67 +57,63 @@ java {
 
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
-ext {
-    mapstructVersion = "1.3.1.Final"
-}
 
 dependencies {
 
     // Spring
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-configuration-processor'
-    implementation 'org.springframework.boot:spring-boot-autoconfigure:2.2.4.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-activemq'
-    implementation 'org.springframework:spring-jms:5.0.2.RELEASE'
-    implementation 'org.springframework.security:spring-security-oauth2-client:5.3.3.RELEASE'
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.4.2'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-activemq'
+    implementation group: 'org.springframework', name: 'spring-jms'
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client'
 
-    implementation 'io.projectreactor.netty:reactor-netty'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springdocVersion
+
+    implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
 
 
     // AWS
-    implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.816')
-    implementation 'com.amazonaws:aws-java-sdk-sqs'
-    implementation 'com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8'
+    implementation group: 'com.amazonaws', name: 'amazon-sqs-java-messaging-lib', version: versions.amazonSQSVersion
 
+    implementation group: 'org.mapstruct', name: 'mapstruct'
+    annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor'
 
-    implementation 'io.sentry:sentry:1.7.30'
-    implementation 'io.sentry:sentry-logback:1.7.30'
-
+    implementation group: 'io.sentry', name: 'sentry'
+    implementation group: 'io.sentry', name: 'sentry-logback'
 
     // DB Dependencies
-    implementation 'com.oracle.database.jdbc:ojdbc8:19.7.0.0'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.liquibase:liquibase-core'
+    implementation group: 'com.oracle.database.jdbc', name: 'ojdbc8', version: versions.ojdbc8Version
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
 
 
-    implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'org.apache.commons:commons-lang3:3.10'
+    implementation group: 'com.google.code.gson', name: 'gson', version: versions.gsonVersion
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: versions.commLan3Vriosn
 
-    compileOnly "org.projectlombok:lombok:1.18.6"
-    annotationProcessor 'org.projectlombok:lombok:1.18.6'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
 
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
-    implementation 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7'
+    implementation group: 'org.sonarsource.scanner.gradle', name: 'sonarqube-gradle-plugin', version: versions.sonarVersion
 
     // Test Only
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    testImplementation 'com.h2database:h2:1.4.200'
-    testImplementation 'org.mockito:mockito-inline:3.3.3'
-    testImplementation group: 'junit', name: 'junit', version: '4.13'
-    testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
-    testImplementation "org.testng:testng:6.10", "org.easytesting:fest-assert:1.4"
-    testCompile('org.junit.jupiter:junit-jupiter:5.6.2')
+    testImplementation group: 'com.h2database', name: 'h2', version: versions.h2DBVersion;
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockitoVersion
+    testImplementation group: 'junit', name: 'junit', version: versions.junitVersion
+    testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: versions.harmcrestVersion
+    testImplementation group: 'org.testng', name: 'testng', version: versions.testngVersion
+    testImplementation group: 'org.easytesting', name: 'fest-assert', version: versions.festVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: versions.jupiterVersion
 
 
 }
@@ -95,7 +131,7 @@ jacocoTestReport {
 }
 sonarqube {
     properties {
-        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java"
+        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java"
         property "sonar.coverage.exclusions", "**/MAATCourtDataApplication.java"
         property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
         property "sonar.projectKey", "maat-court-data-api"

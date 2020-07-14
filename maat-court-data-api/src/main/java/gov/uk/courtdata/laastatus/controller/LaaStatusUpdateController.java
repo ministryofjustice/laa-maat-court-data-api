@@ -6,7 +6,6 @@ import gov.uk.courtdata.laastatus.service.LaaStatusPublisher;
 import gov.uk.courtdata.laastatus.validator.LaaStatusValidationProcessor;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
-import gov.uk.courtdata.util.LaaTransactionLoggingBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -26,22 +25,21 @@ public class LaaStatusUpdateController {
     @PostMapping("/laaStatus")
     public MessageCollection updateLAAStatus(@RequestHeader("Laa-Transaction-Id") String laaTransactionId, @RequestBody String jsonPayload) {
 
-        log.info("LAA Status Update Request received - laa-transaction-id:{}", laaTransactionId);
-        String laaLogging = LaaTransactionLoggingBuilder.getStr(jsonPayload);
-        MessageCollection messageCollection = null;
+        log.info("LAA Status Update Request received.");
+        MessageCollection messageCollection;
         try {
             CaseDetails caseDetails = gson.fromJson(jsonPayload, CaseDetails.class);
             caseDetails.setLaaTransactionId(UUID.fromString(laaTransactionId));
             messageCollection = laaStatusValidationProcessor.validate(caseDetails);
 
             if (messageCollection.getMessages().isEmpty()) {
-                log.info("Request Validation is successfully completed: {}", laaLogging);
+                log.info("Request Validation is successfully completed.");
                 laaStatusPublisher.publish(caseDetails);
             } else {
-                log.info("LAA Status Update Validation Failed - Messages {} - {}", messageCollection.getMessages(), laaLogging);
+                log.info("LAA Status Update Validation Failed - Messages {}", messageCollection.getMessages());
             }
         } catch (Exception exception) {
-            throw new MAATCourtDataException("MAAT APT Call failed " + exception.getMessage() + "laa-logging" + laaLogging);
+            throw new MAATCourtDataException("MAAT APT Call failed " + exception.getMessage());
         }
         return messageCollection;
     }

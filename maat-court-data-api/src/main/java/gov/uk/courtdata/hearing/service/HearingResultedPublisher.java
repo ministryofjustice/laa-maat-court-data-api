@@ -5,7 +5,6 @@ import com.amazonaws.services.sqs.model.GetQueueUrlResult;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.google.gson.Gson;
 import gov.uk.courtdata.config.AmazonSQSConfig;
-import gov.uk.courtdata.model.LaaTransactionLogging;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +31,8 @@ public class HearingResultedPublisher {
      */
     public void publish (HearingResulted hearingResulted) {
 
-        LaaTransactionLogging logging = LaaTransactionLogging.builder().maatId(hearingResulted.getMaatId()).laaTransactionId(hearingResulted.getLaaTransactionId()).build();
         log.info("MAAT Record is locked. Publishing a message to the hearing queue to process later.");
-        log.info("Publishing to SQS Queue {} with logging meta-data {} ", sqsQueueName,logging);
+        log.info("Publishing to SQS Queue {} ", sqsQueueName);
 
         int counter = hearingResulted.getMessageRetryCounter();
         hearingResulted.setMessageRetryCounter(counter+1);
@@ -49,6 +47,6 @@ public class HearingResultedPublisher {
                 .withDelaySeconds(delaySeconds);
 
         amazonSQS.sendMessage(request);
-        log.info("A CP hearing message has been published to the Queue {} with time delay of {} seconds. Transaction meta-data {}",sqsQueueName, delaySeconds,logging);
+        log.info("A CP hearing message has been published to the Queue {} with time delay of {} seconds.",sqsQueueName, delaySeconds);
     }
 }

@@ -5,7 +5,6 @@ import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.enums.QueueMessageType;
 import gov.uk.courtdata.laastatus.builder.CourtDataDTOBuilder;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.LaaTransactionLogging;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,26 +33,20 @@ public class LaaStatusListener {
     private QueueMessageLogService queueMessageLogService;
 
     /**
-     * @param message
-     * @throws JmsException
+     * @param message queue message body
+     * @throws JmsException jms exception
      */
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.laaStatus}")
     public void receive(@Payload final String message) {
 
         queueMessageLogService.createLog(QueueMessageType.LAA_STATUS, message);
         CaseDetails laaStatusUpdate = gson.fromJson(message, CaseDetails.class);
-        String logging = LaaTransactionLogging.builder()
-                .maatId(laaStatusUpdate.getMaatId())
-                .laaTransactionId(laaStatusUpdate.getLaaTransactionId()).build().toString();
-
 
         CourtDataDTO courtDataDTO = courtDataDTOBuilder.build(laaStatusUpdate);
-        log.info("POST Rep Order update to CDA {}", logging);
+        log.info("POST Rep Order update to CDA");
         laaStatusPostCDAService.process(courtDataDTO);
-        log.info("Update LAA status {}", logging);
+        log.info("Update LAA status");
         laaStatusService.execute(courtDataDTO);
-        log.info("After laa update {}", logging);
+        log.info("After laa update");
     }
-
-
 }

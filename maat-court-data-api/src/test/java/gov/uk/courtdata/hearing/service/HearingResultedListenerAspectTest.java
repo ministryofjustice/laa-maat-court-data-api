@@ -1,11 +1,9 @@
 package gov.uk.courtdata.hearing.service;
 
-import com.google.gson.Gson;
 import gov.uk.courtdata.exception.GlobalAppLoggingHandler;
-import gov.uk.courtdata.model.hearing.HearingResulted;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,6 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HearingResultedListenerAspectTest {
@@ -23,19 +22,13 @@ public class HearingResultedListenerAspectTest {
 
     private HearingResultedListener hearingResultedListenerProxy;
 
-    @Mock
-    private Gson gson;
-
-    @Mock
-    private HearingResultedService hearingResultedService;
-
     @InjectMocks
-    GlobalAppLoggingHandler globalAppLoggingHandler = new GlobalAppLoggingHandler();
+    GlobalAppLoggingHandler globalAppLoggingHandler;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         AspectJProxyFactory factory = new AspectJProxyFactory();
@@ -50,11 +43,11 @@ public class HearingResultedListenerAspectTest {
         thrown.expect(RuntimeException.class);
 
         //given
-        HearingResulted laaHearingDetails = HearingResulted.builder().build();
         String message = "{\"laaTransactionId\":\"c77c96ff-7cad-44cc-9e12-5bc80f5f2d9e\" ,\n" +
                 "  \"caseUrn\":\"CASNUM-ABC123\",\n" +
-                "  \"maatId\": \"0\"}";
+                "  \"maatId\": \"null\"}";
         //when
+        lenient().when(hearingResultedListener).getMock();
         doThrow(new RuntimeException()).when(hearingResultedListener).receive(message);
 
         //then

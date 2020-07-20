@@ -107,7 +107,8 @@ public class RepOrderUpdateMessageBuilder {
      * @return
      */
     private Contact mapContact(SolicitorMAATDataEntity solicitorDetails) {
-        return Contact.builder().work(solicitorDetails.getPhone())
+        return Contact.builder()
+                .work(solicitorDetails.getPhone())
                 .primaryEmail(solicitorDetails.getAdminEmail())
                 .secondaryEmail(solicitorDetails.getEmail())
                 .build();

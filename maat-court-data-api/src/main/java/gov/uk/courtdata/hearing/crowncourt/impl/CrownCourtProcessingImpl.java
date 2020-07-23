@@ -28,6 +28,9 @@ public class CrownCourtProcessingImpl {
 
     private final CrownCourtCodeRepository crownCourtCodeRepository;
 
+    private final CrownCourtProcessHelper crownCourtProcessHelper;
+
+
     @Value("${spring.datasource.username}")
     private String dbUser;
 
@@ -41,13 +44,15 @@ public class CrownCourtProcessingImpl {
 
         if (optionalRepEntity.isPresent()) {
 
+
             final String crownCourtCode = getCCCode(hearingResulted.getSession().getCourtLocation());
             RepOrderEntity repOrderEntity = optionalRepEntity.get();
+
             crownCourtProcessingRepository.invokeCrownCourtOutcomeProcess(maatId,
                     ccutComeData.getCcooOutcome(),
-                    ccutComeData.getBenchWarrantIssuedYn(),
+                    crownCourtProcessHelper.isBenchWarrantIssued(hearingResulted),
                     ccutComeData.getAppealType() != null ? ccutComeData.getAppealType() : repOrderEntity.getAptyCode(),
-                    ccutComeData.getCcImprisioned(),
+                    crownCourtProcessHelper.isImprisoned(hearingResulted, ccutComeData.getCcooOutcome()),
                     hearingResulted.getCaseUrn(),
                     crownCourtCode);
 
@@ -76,7 +81,9 @@ public class CrownCourtProcessingImpl {
 
     private String getCCCode(String ouCode) {
         Optional<CrownCourtCode> optCrownCourtCode = crownCourtCodeRepository.findByOuCode(ouCode);
-        CrownCourtCode crownCourtCode = optCrownCourtCode.orElseThrow(() -> new MAATCourtDataException("Crown Court Code Look Up is Failed"));
+        CrownCourtCode crownCourtCode = optCrownCourtCode.orElseThrow(()
+                -> new MAATCourtDataException("Crown Court Code Look Up is Failed"));
         return crownCourtCode.getCode();
     }
+
 }

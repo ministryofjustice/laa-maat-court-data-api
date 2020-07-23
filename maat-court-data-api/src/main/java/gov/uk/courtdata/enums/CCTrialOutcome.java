@@ -18,11 +18,11 @@ public enum CCTrialOutcome {
 
     public static boolean isConvicted(String outcome) {
 
-        Optional.ofNullable(outcome).orElseThrow(
+        String out = Optional.ofNullable(outcome).orElseThrow(
                 () -> new IllegalArgumentException("Crown Court outcome can't be empty."));
 
         return Arrays.asList(CONVICTED.getOutcome(), PART_CONVICTED.getOutcome())
-                .stream().anyMatch(o -> o.equals(outcome));
+                .stream().anyMatch(o -> o.equals(out));
     }
 
 

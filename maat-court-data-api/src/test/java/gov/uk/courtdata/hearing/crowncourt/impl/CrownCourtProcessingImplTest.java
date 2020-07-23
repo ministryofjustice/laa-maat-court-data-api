@@ -39,6 +39,8 @@ public class CrownCourtProcessingImplTest {
     private RepOrderRepository repOrderRepository;
     @Mock
     private CrownCourtCodeRepository crownCourtCodeRepository;
+    @Mock
+    private CrownCourtProcessHelper crownCourtProcessHelper;
 
     @BeforeEach
     public void setUp() {
@@ -62,15 +64,19 @@ public class CrownCourtProcessingImplTest {
         //when
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.of(crownCourtCode));
+        when(crownCourtProcessHelper.isImprisoned(hearingDetails, ccOutComeData.getCcooOutcome()))
+                .thenReturn("N");
+        when(crownCourtProcessHelper.isBenchWarrantIssued(hearingDetails))
+                .thenReturn("N");
         crownCourtProcessingImpl.execute(hearingDetails);
 
         //then
         verify(crownCourtProcessingRepository, times(1))
                 .invokeCrownCourtOutcomeProcess(hearingDetails.getMaatId(),
                         ccOutComeData.getCcooOutcome(),
-                        ccOutComeData.getBenchWarrantIssuedYn(),
+                        "N",
                         "ACV",
-                        ccOutComeData.getCcImprisioned(),
+                        "N",
                         hearingDetails.getCaseUrn(),
                         "123");
 
@@ -110,7 +116,6 @@ public class CrownCourtProcessingImplTest {
         CCOutComeData ccOutComeData = CCOutComeData.builder().caseEndDate("2020-02-02").build();
         Session session = Session.builder().courtLocation("OU").build();
         CrownCourtCode crownCourtCode = CrownCourtCode.builder().code("123").ouCode("OU").build();
-        ;
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .session(session)

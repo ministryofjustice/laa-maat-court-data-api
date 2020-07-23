@@ -5,7 +5,7 @@ import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
-import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
+import gov.uk.courtdata.model.laastatus.*;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import org.junit.Test;
@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -56,16 +57,30 @@ public class RepOrderUpdateMessageBuilderTest {
 
         LaaStatusUpdate laaStatusUpdate = repOrderUpdateMessageBuilder.build(caseDetails);
 
+
         assertThat(laaStatusUpdate.getData().getAttributes().getMaatReference()).isEqualTo(1234567);
 
-        assertThat(laaStatusUpdate.getData().getAttributes().getOffences().get(0).getOffenceId()).isEqualTo("987");
-        assertThat(laaStatusUpdate.getData().getAttributes().getOffences().get(0).getStatusCode()).isEqualTo("OK");
-        assertThat(laaStatusUpdate.getData().getAttributes().getOffences().get(0).getEffectiveEndDate()).isEqualTo("2010-10-10");
+        gov.uk.courtdata.model.laastatus.Offence offence =
+                laaStatusUpdate.getData().getAttributes().getOffences().iterator().next();
 
-        assertThat(laaStatusUpdate.getData().getRelationships().getDefendant().getData().getId()).isEqualTo("555666");
-        assertThat(laaStatusUpdate.getData().getRelationships().getDefendant().getData().getType()).isEqualTo("defendants");
+        assertAll("VerifyOffence",
+                () -> assertNotNull(offence.getOffenceId()),
+                () -> assertNotNull(offence.getStatusCode()),
+                () -> assertNotNull(offence.getEffectiveEndDate()),
+                () -> assertEquals("987", offence.getOffenceId()),
+                () -> assertEquals("OK", offence.getStatusCode()),
+                () -> assertEquals("2010-10-10", offence.getEffectiveEndDate())
+        );
 
-        assertThat(laaStatusUpdate.getData().getRelationships().getDefendant().getData().getType()).isEqualTo("defendants");
+        DefendantData defData = laaStatusUpdate.getData().getRelationships().getDefendant().getData();
+
+        assertAll("VerifyDefendant",
+                () -> assertNotNull(defData.getId()),
+                () -> assertNotNull(defData.getType()),
+                () -> assertEquals("555666", defData.getId()),
+                () -> assertEquals("defendants", defData.getType())
+        );
+
 
         verify(repOrderCPDataRepository).findByrepOrderId(anyInt());
         verify(solicitorMAATDataRepository).findBymaatId(anyInt());
@@ -87,7 +102,110 @@ public class RepOrderUpdateMessageBuilderTest {
 
         LaaStatusUpdate laaStatusUpdate = repOrderUpdateMessageBuilder.build(caseDetails);
 
-        assertThat(laaStatusUpdate.getData().getAttributes().getDefenceOrganisation().getOrganisation().getName()).isEqualTo("Solicitor Name Ltd");
-        assertThat(laaStatusUpdate.getData().getAttributes().getDefenceOrganisation().getLaaContractNumber()).isEqualTo("456");
+        DefenceOrganisation defOrg = laaStatusUpdate.getData().getAttributes().getDefenceOrganisation();
+
+        assertAll("VerifyDefenceOrganisation",
+                () -> assertNotNull(defOrg.getLaaContractNumber()),
+                () -> assertNotNull(defOrg.getOrganisation().getName()),
+                () -> assertEquals("Solicitor Name Ltd", defOrg.getOrganisation().getName()),
+                () -> assertEquals("456", defOrg.getLaaContractNumber())
+        );
+
+    }
+
+    @Test
+    public void testSolicitorAddress_IsAvailableOnLaaStatusRequest() {
+
+        CaseDetails caseDetails = buildSampleCase();
+
+        Optional<SolicitorMAATDataEntity> optSolicitor = buildCompleteSolicitorDetails();
+
+        when(solicitorMAATDataRepository.findBymaatId(anyInt())).thenReturn(optSolicitor);
+
+        LaaStatusUpdate laaStatusUpdate = repOrderUpdateMessageBuilder.build(caseDetails);
+
+        Address address =
+                laaStatusUpdate.getData().getAttributes()
+                        .getDefenceOrganisation().getOrganisation().getAddress();
+
+        assertAll("VerifyAddress",
+                () -> assertNotNull(address),
+                () -> assertNotNull(address.getAddress1()),
+                () -> assertNotNull(address.getAddress2()),
+                () -> assertNotNull(address.getAddress3()),
+                () -> assertNotNull(address.getAddress4()),
+                () -> assertNotNull(address.getPostcode()),
+                () -> assertEquals(address.getAddress1(), optSolicitor.get().getLine1()),
+                () -> assertEquals(address.getAddress2(), optSolicitor.get().getLine2()),
+                () -> assertEquals(address.getAddress3(), optSolicitor.get().getLine3()),
+                () -> assertEquals(address.getAddress4(), optSolicitor.get().getCity()),
+                () -> assertEquals(address.getPostcode(), optSolicitor.get().getPostcode())
+        );
+
+    }
+
+    @Test
+    public void testSolicitorContact_isAvailableOnLaaStatusUpdate_Request() {
+
+
+        CaseDetails caseDetails = buildSampleCase();
+
+        Optional<SolicitorMAATDataEntity> optSolicitor = buildCompleteSolicitorDetails();
+
+        when(solicitorMAATDataRepository.findBymaatId(anyInt())).thenReturn(optSolicitor);
+
+        LaaStatusUpdate laaStatusUpdate = repOrderUpdateMessageBuilder.build(caseDetails);
+
+        Contact contact =
+                laaStatusUpdate.getData().getAttributes()
+                        .getDefenceOrganisation().getOrganisation().getContact();
+
+        assertAll("VerifyContact",
+                () -> assertNotNull(contact),
+                () -> assertNotNull(contact.getWork()),
+                () -> assertNotNull(contact.getPrimaryEmail()),
+                () -> assertNotNull(contact.getSecondaryEmail()),
+                () -> assertEquals(contact.getWork(), optSolicitor.get().getPhone()),
+                () -> assertEquals(contact.getPrimaryEmail(), optSolicitor.get().getAdminEmail()),
+                () -> assertEquals(contact.getSecondaryEmail(), optSolicitor.get().getEmail())
+        );
+
+    }
+
+
+    private Optional<SolicitorMAATDataEntity> buildCompleteSolicitorDetails() {
+
+        return Optional.of(SolicitorMAATDataEntity.builder()
+                .accountCode("456")
+                .accountName("BRAY & BRAY")
+                .line1("SPA PLACE")
+                .line2("36-42")
+                .line3("HUMBERSTONE ROAD")
+                .city("LEICESTER")
+                .postcode("LE5 0AE")
+                .phone("0116 254 8871")
+                .adminEmail("test@test.com")
+                .email("test@test.com")
+                .build());
+
+    }
+
+
+    private CaseDetails buildSampleCase() {
+
+        return CaseDetails.builder()
+                .maatId(864325)
+                .defendant(
+                        Defendant.builder()
+                                .surname("Gregory")
+                                .offences(Collections.singletonList(
+                                        Offence.builder()
+                                                .offenceCode("CJ01501")
+                                                .offenceId("987")
+                                                .legalAidStatus("GR")
+                                                .legalAidStatusDate("2010-10-10")
+                                                .build()))
+                                .build())
+                .build();
     }
 }

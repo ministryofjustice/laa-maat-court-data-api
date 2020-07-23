@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 public class CCOutComeData {
 
     private String ccooOutcome;
-    private String benchWarrantIssuedYn;
-    private String ccImprisioned;
     private String appealType;
     private String caseEndDate;
 }

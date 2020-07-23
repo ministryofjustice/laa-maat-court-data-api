@@ -13,9 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- *
- */
+
 @Component
 @AllArgsConstructor
 public class RepOrderUpdateMessageBuilder {
@@ -56,6 +54,7 @@ public class RepOrderUpdateMessageBuilder {
 
 
     /**
+     * <p>Build defence organisation</p>
      * @param caseDetails
      * @return
      */
@@ -73,18 +72,52 @@ public class RepOrderUpdateMessageBuilder {
 
 
     /**
+     * <p>Lookup solicitor details.</p>
      * @param solicitorMAATDataEntity
      * @return
      */
     private Organisation findSolicitorDetails(SolicitorMAATDataEntity solicitorMAATDataEntity) {
 
         return Organisation.builder()
+                .address(mapAddress(solicitorMAATDataEntity))
+                .contact(mapContact(solicitorMAATDataEntity))
                 .name(solicitorMAATDataEntity.getAccountName())
                 .build();
     }
 
+    /**
+     * <p>Map address to builder.</p>
+     * @param solicitorDetails
+     * @return
+     */
+    private Address mapAddress(SolicitorMAATDataEntity solicitorDetails) {
+
+        return Address.builder().address1(solicitorDetails.getLine1())
+                .address2(solicitorDetails.getLine2())
+                .address3(solicitorDetails.getLine3())
+                .address4(solicitorDetails.getCity())
+                .address5(solicitorDetails.getCounty())
+                .postcode(solicitorDetails.getPostcode())
+                .build();
+    }
 
     /**
+     * <p>Map contact details.</p>
+     * @param solicitorDetails
+     * @return
+     */
+    private Contact mapContact(SolicitorMAATDataEntity solicitorDetails) {
+        return Contact.builder()
+                .work(solicitorDetails.getPhone())
+                .primaryEmail(solicitorDetails.getAdminEmail())
+                .secondaryEmail(solicitorDetails.getEmail())
+                .build();
+
+    }
+
+
+    /**
+     * <p>Map offence details.</p>
      * @param offence
      * @return
      */
@@ -101,6 +134,7 @@ public class RepOrderUpdateMessageBuilder {
 
 
     /**
+     * <p> Map Relationship details.</p>
      * @param caseDetails
      * @return
      */
@@ -112,6 +146,7 @@ public class RepOrderUpdateMessageBuilder {
     }
 
     /**
+     * <p>Map defendant details.</p>
      * @param maatId
      * @return
      */
@@ -125,6 +160,7 @@ public class RepOrderUpdateMessageBuilder {
 
 
     /**
+     * <p>Find defendant Id.</p>
      * @param maatId
      * @return
      */

@@ -41,5 +41,9 @@ public class XLATResultEntity {
     private String modifiedUser;
     @Column(name = "SUBTYPE_CODE")
     private Integer subTypeCode;
+    @Column(name = "CC_IMPRISONMENT")
+    private String ccImprisonment;
+    @Column(name = "CC_BENCHWARRANT")
+    private String ccBenchWarrant;
 
 }

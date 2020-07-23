@@ -11,7 +11,6 @@ import java.util.UUID;
 @Data
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class HearingResulted {
 
     private Integer maatId;
@@ -26,6 +25,5 @@ public class HearingResulted {
     private String inActive;
     private Session session;
     private UUID laaTransactionId;
-
     private int messageRetryCounter;
 }

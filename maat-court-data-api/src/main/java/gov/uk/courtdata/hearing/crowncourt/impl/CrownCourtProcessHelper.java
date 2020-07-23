@@ -36,20 +36,22 @@ public final class CrownCourtProcessHelper {
         return "";
     }
 
-    private boolean anyResultCodeMatch(final List<XLATResultEntity> resultCodes, final List<String> resultsFlattened) {
+    public boolean anyResultCodeMatch(final List<XLATResultEntity> resultCodes, final List<String> resultsFlattened) {
         return resultCodes
                 .stream()
                 .map(XLATResultEntity::getCjsResultCode)
+                .map(String::valueOf)
                 .anyMatch(resultsFlattened::contains);
     }
 
-    private List<String> flattenResults(final HearingResulted hearingResulted) {
+    public List<String> flattenResults(final HearingResulted hearingResulted) {
         return hearingResulted
                 .getDefendant()
                 .getOffences()
                 .stream()
                 .flatMap(offence -> offence.getResults().stream())
                 .map(Result::getResultCode)
+                .distinct()
                 .collect(Collectors.toList());
     }
 

@@ -1,10 +1,11 @@
 package gov.uk.courtdata.enums;
 
+import gov.uk.courtdata.exception.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 
 @AllArgsConstructor
@@ -19,10 +20,10 @@ public enum CCTrialOutcome {
     public static boolean isConvicted(String outcome) {
 
         String out = Optional.ofNullable(outcome).orElseThrow(
-                () -> new IllegalArgumentException("Crown Court outcome can't be empty."));
+                () -> new ValidationException("Crown Court outcome can't be empty."));
 
-        return Arrays.asList(CONVICTED.getValue(), PART_CONVICTED.getValue())
-                .stream().anyMatch(o -> o.equals(out));
+        return Stream.of(CONVICTED.getValue(), PART_CONVICTED.getValue())
+                .anyMatch(o -> o.equals(out));
     }
 
 

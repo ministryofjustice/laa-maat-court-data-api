@@ -1,5 +1,6 @@
 package gov.uk.courtdata.enums;
 
+import gov.uk.courtdata.exception.ValidationException;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
@@ -11,7 +12,7 @@ public class CCTrialOutcomeTest {
     @Test
     public void givenOutcomeIsEmpty_ExceptionThrown() {
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        Assertions.assertThrows(ValidationException.class, () -> {
             isConvicted(null);
         });
     }

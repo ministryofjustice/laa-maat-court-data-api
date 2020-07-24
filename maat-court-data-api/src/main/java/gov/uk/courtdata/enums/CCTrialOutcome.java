@@ -14,14 +14,14 @@ public enum CCTrialOutcome {
     CONVICTED("CONVICTED"),
     PART_CONVICTED("PART CONVICTED");
 
-    private String outcome;
+    private String value;
 
     public static boolean isConvicted(String outcome) {
 
         String out = Optional.ofNullable(outcome).orElseThrow(
                 () -> new IllegalArgumentException("Crown Court outcome can't be empty."));
 
-        return Arrays.asList(CONVICTED.getOutcome(), PART_CONVICTED.getOutcome())
+        return Arrays.asList(CONVICTED.getValue(), PART_CONVICTED.getValue())
                 .stream().anyMatch(o -> o.equals(out));
     }
 

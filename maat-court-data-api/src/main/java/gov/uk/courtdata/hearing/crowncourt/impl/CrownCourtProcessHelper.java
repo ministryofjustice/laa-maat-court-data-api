@@ -36,7 +36,7 @@ public final class CrownCourtProcessHelper {
         return "";
     }
 
-    public boolean anyResultCodeMatch(final List<XLATResultEntity> resultCodes, final List<String> resultsFlattened) {
+    private boolean anyResultCodeMatch(final List<XLATResultEntity> resultCodes, final List<String> resultsFlattened) {
         return resultCodes
                 .stream()
                 .map(XLATResultEntity::getCjsResultCode)
@@ -44,7 +44,7 @@ public final class CrownCourtProcessHelper {
                 .anyMatch(resultsFlattened::contains);
     }
 
-    public List<String> flattenResults(final HearingResulted hearingResulted) {
+    private List<String> flattenResults(final HearingResulted hearingResulted) {
         return hearingResulted
                 .getDefendant()
                 .getOffences()

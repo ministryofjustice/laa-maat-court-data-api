@@ -32,14 +32,16 @@ public final class CrownCourtProcessHelper {
     }
 
     public String isBenchWarrantIssued(final HearingResulted hearingResulted) {
-        //TODO:
-        return "";
+
+        List<String> offenceResultCodes = flattenResults(hearingResulted);
+        return anyResultCodeMatch(xlatResultRepository.findByCjsResultCodeIn(), offenceResultCodes) ? YES : NO;
     }
 
     private boolean anyResultCodeMatch(final List<XLATResultEntity> resultCodes, final List<String> resultsFlattened) {
         return resultCodes
                 .stream()
                 .map(XLATResultEntity::getCjsResultCode)
+                .map(String::valueOf)
                 .anyMatch(resultsFlattened::contains);
     }
 
@@ -50,6 +52,7 @@ public final class CrownCourtProcessHelper {
                 .stream()
                 .flatMap(offence -> offence.getResults().stream())
                 .map(Result::getResultCode)
+                .distinct()
                 .collect(Collectors.toList());
     }
 

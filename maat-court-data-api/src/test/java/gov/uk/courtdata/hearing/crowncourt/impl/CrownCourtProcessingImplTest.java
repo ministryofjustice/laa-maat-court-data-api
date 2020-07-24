@@ -157,6 +157,32 @@ public class CrownCourtProcessingImplTest {
 
     }
 
+    @Test
+    public void given_when_thenThrown() {
+
+        //given
+        CCOutComeData ccOutComeData = CCOutComeData.builder().caseEndDate("2020-02-02").build();
+        Session session = Session.builder().courtLocation("X").build();
+        HearingResulted hearingDetails = HearingResulted.builder()
+                .maatId(12345)
+                .session(session)
+                .ccOutComeData(ccOutComeData)
+                .build();
+            RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("NON APPEAL").aptyCode("ACV").id(123).build();
+
+        thrown.expectMessage("Crown Court Code Look Up is Failed");
+        thrown.expect(MAATCourtDataException.class);
+        when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
+        when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.empty());
+
+        crownCourtProcessingImpl.execute(hearingDetails);
+
+
+    }
+
+
+
+
 }
 
 

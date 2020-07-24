@@ -11,6 +11,7 @@ import java.util.UUID;
 @Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class HearingResulted {
 
     private Integer maatId;

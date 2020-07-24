@@ -23,13 +23,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.junit.rules.ExpectedException.none;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CrownCourtProcessingImplTest {
 
     @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    public ExpectedException thrown = none();
 
     @InjectMocks
     private CrownCourtProcessingImpl crownCourtProcessingImpl;
@@ -158,31 +159,21 @@ public class CrownCourtProcessingImplTest {
     }
 
     @Test
-    public void given_when_thenThrown() {
+    public void givenCrownMessage_whenProcessingOutcome_thenVerifyBenchWarrantCalled() {
 
-        //given
-        CCOutComeData ccOutComeData = CCOutComeData.builder().caseEndDate("2020-02-02").build();
-        Session session = Session.builder().courtLocation("X").build();
         HearingResulted hearingDetails = HearingResulted.builder()
-                .maatId(12345)
-                .session(session)
-                .ccOutComeData(ccOutComeData)
+                .maatId(123456)
+                .session(Session.builder().courtLocation("London").build())
+                .ccOutComeData(CCOutComeData.builder().ccooOutcome("CONVICTED").caseEndDate("2020-07-23").build())
                 .build();
-            RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("NON APPEAL").aptyCode("ACV").id(123).build();
+        RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("APPEAL").aptyCode("ACV").build();
 
-        thrown.expectMessage("Crown Court Code Look Up is Failed");
-        thrown.expect(MAATCourtDataException.class);
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
-        when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.empty());
-
+        when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.of(CrownCourtCode.builder().ouCode("OU").build()));
         crownCourtProcessingImpl.execute(hearingDetails);
 
-
+        verify(crownCourtProcessHelper).isBenchWarrantIssued(any());
     }
-
-
-
-
 }
 
 

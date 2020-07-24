@@ -40,6 +40,7 @@ public final class CrownCourtProcessHelper {
         return resultCodes
                 .stream()
                 .map(XLATResultEntity::getCjsResultCode)
+                .map(String::valueOf)
                 .anyMatch(resultsFlattened::contains);
     }
 
@@ -50,6 +51,7 @@ public final class CrownCourtProcessHelper {
                 .stream()
                 .flatMap(offence -> offence.getResults().stream())
                 .map(Result::getResultCode)
+                .distinct()
                 .collect(Collectors.toList());
     }
 

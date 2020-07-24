@@ -163,7 +163,7 @@ public class CrownCourtProcessHelperTest {
         List<XLATResultEntity> resultList = new ArrayList<>();
 
         imprisonmentResultCodes().stream().forEach(res -> {
-            resultList.add(XLATResultEntity.builder().cjsResultCode(1002).build());
+            resultList.add(XLATResultEntity.builder().cjsResultCode(Integer.valueOf(res)).build());
         });
 
         return resultList;

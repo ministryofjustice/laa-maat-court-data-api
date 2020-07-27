@@ -189,7 +189,8 @@ public class CrownCourtProcessHelperTest {
 
         //then
         verify(xlatResultRepository).findByCjsResultCodeIn();
-        assertThat(status).isEqualTo("N");
+        assertNull(status);
+
     }
 
     private HearingResulted getHearingResulted() {

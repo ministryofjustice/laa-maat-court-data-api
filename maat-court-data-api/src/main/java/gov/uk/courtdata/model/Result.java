@@ -1,13 +1,10 @@
 package gov.uk.courtdata.model;
 
 import lombok.*;
-@ToString
+
 @Data
 @Builder
-@AllArgsConstructor
 public class Result {
-
-
 
     private String asnSeq;
     private String resultCode;

@@ -6,10 +6,14 @@ import gov.uk.courtdata.enums.CCTrialOutcome;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.Result;
+import gov.uk.courtdata.model.Session;
+import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.XLATResultRepository;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,9 +22,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.rules.ExpectedException.none;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -30,6 +38,9 @@ public class CrownCourtProcessHelperTest {
     private CrownCourtProcessHelper crownCourtProcessHelper;
     @Mock
     private XLATResultRepository xlatResultRepository;
+
+    @Rule
+    public ExpectedException thrown = none();
 
     @BeforeEach
     public void setUp() {
@@ -137,6 +148,70 @@ public class CrownCourtProcessHelperTest {
 
     }
 
+    @Test
+    public void givenHearingResulted_whenCrownCourtProcessorIsInvoked_thenProcessThenSetFlagToY() {
+
+        //given
+        List<XLATResultEntity> resultEntityList = Arrays.asList(
+                XLATResultEntity.builder().ccBenchWarrant("Y").cjsResultCode(3030).build(),
+                XLATResultEntity.builder().ccBenchWarrant("Y").cjsResultCode(3032).build(),
+                XLATResultEntity.builder().ccBenchWarrant("Y").cjsResultCode(3033).build()
+        );
+
+        //when
+        when(xlatResultRepository.findByCjsResultCodeIn()).thenReturn(resultEntityList);
+
+        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted());
+
+        //then
+        verify(xlatResultRepository).findByCjsResultCodeIn();
+        assertThat(status).isEqualTo("Y");
+    }
+
+    @Test
+    public void givenHearingResulted_whenResultCodeIsNull_thenSetFlagToN() {
+        //when
+        when(xlatResultRepository.findByCjsResultCodeIn()).thenReturn(null);
+        thrown.expect(NullPointerException.class);
+        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted());
+
+        //then
+        verify(xlatResultRepository).findByCjsResultCodeIn();
+
+    }
+
+    @Test
+    public void givenHearingResulted_whenResultCodeIsEmpty_thenSetFlagToN() {
+        //when
+        when(xlatResultRepository.findByCjsResultCodeIn()).thenReturn(Collections.singletonList(XLATResultEntity.builder().ccBenchWarrant("Y").cjsResultCode(3033).build()));
+
+        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted());
+
+        //then
+        verify(xlatResultRepository).findByCjsResultCodeIn();
+        assertNull(status);
+
+    }
+
+    private HearingResulted getHearingResulted() {
+
+        CCOutComeData ccOutComeData = CCOutComeData.builder().build();
+        Session session = Session.builder().courtLocation("OU").build();
+        Offence offence = Offence.builder()
+                .results(Collections.singletonList(Result.builder().resultCode("3030").build()))
+                .build();
+        Defendant defendant = Defendant.builder()
+                .offences(Collections.singletonList(offence))
+                .build();
+
+        return HearingResulted.builder()
+                .session(session)
+                .ccOutComeData(ccOutComeData)
+                .defendant(defendant)
+                .build();
+    }
+
+
     private HearingResulted hearingResultedWith(String... resultCodes) {
 
         List<Offence> offenceList = new ArrayList<>();
@@ -144,7 +219,7 @@ public class CrownCourtProcessHelperTest {
         Arrays.asList(resultCodes).forEach(result -> {
 
             offenceList.add(Offence.builder().offenceCode("CJ01502").results(
-                    Arrays.asList(Result.builder().resultCode(result).build())
+                    Collections.singletonList(Result.builder().resultCode(result).build())
             ).build());
         });
 
@@ -162,7 +237,7 @@ public class CrownCourtProcessHelperTest {
 
         List<XLATResultEntity> resultList = new ArrayList<>();
 
-        imprisonmentResultCodes().stream().forEach(res -> {
+        imprisonmentResultCodes().forEach(res -> {
             resultList.add(XLATResultEntity.builder().cjsResultCode(Integer.valueOf(res)).build());
         });
 

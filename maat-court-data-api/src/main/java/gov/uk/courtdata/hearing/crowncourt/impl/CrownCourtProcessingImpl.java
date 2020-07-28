@@ -7,6 +7,7 @@ import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.CrownCourtCodeRepository;
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
+import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.CATY_CASE_TYPE;
+import static java.lang.String.format;
 
 @Component
 @RequiredArgsConstructor
@@ -29,6 +31,8 @@ public class CrownCourtProcessingImpl {
     private final CrownCourtCodeRepository crownCourtCodeRepository;
 
     private final CrownCourtProcessHelper crownCourtProcessHelper;
+
+    private final CrownCourtStoredProcedureRepository crownCourtStoredProcedureRepository;
 
 
     @Value("${spring.datasource.username}")
@@ -48,7 +52,7 @@ public class CrownCourtProcessingImpl {
             final String crownCourtCode = getCCCode(hearingResulted.getSession().getCourtLocation());
             RepOrderEntity repOrderEntity = optionalRepEntity.get();
 
-            crownCourtProcessingRepository.invokeCrownCourtOutcomeProcess(maatId,
+            crownCourtStoredProcedureRepository.updateCrownCourtOutcome(maatId,
                     ccutComeData.getCcooOutcome(),
                     crownCourtProcessHelper.isBenchWarrantIssued(hearingResulted),
                     ccutComeData.getAppealType() != null ? ccutComeData.getAppealType() : repOrderEntity.getAptyCode(),
@@ -82,7 +86,7 @@ public class CrownCourtProcessingImpl {
     private String getCCCode(String ouCode) {
         Optional<CrownCourtCode> optCrownCourtCode = crownCourtCodeRepository.findByOuCode(ouCode);
         CrownCourtCode crownCourtCode = optCrownCourtCode.orElseThrow(()
-                -> new MAATCourtDataException("Crown Court Code Look Up is Failed"));
+                -> new MAATCourtDataException(format("Crown Court Code Look Up Failed for %s", ouCode)));
         return crownCourtCode.getCode();
     }
 

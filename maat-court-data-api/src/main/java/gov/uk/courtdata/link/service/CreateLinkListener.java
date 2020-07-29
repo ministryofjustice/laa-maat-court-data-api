@@ -34,6 +34,7 @@ public class CreateLinkListener {
 
         queueMessageLogService.createLog(QueueMessageType.LINK,message);
         CaseDetails linkMessage = gson.fromJson(message, CaseDetails.class);
+
         createLinkService.saveAndLink(linkMessage);
     }
 }

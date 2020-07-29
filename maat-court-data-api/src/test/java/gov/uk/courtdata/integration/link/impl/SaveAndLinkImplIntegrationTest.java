@@ -10,6 +10,9 @@ import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Result;
+import gov.uk.courtdata.model.id.CaseTxnId;
+import gov.uk.courtdata.model.id.AsnSeqTxnCaseId;
+import gov.uk.courtdata.model.id.ProceedingMaatId;
 import gov.uk.courtdata.repository.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -112,7 +115,8 @@ public class SaveAndLinkImplIntegrationTest {
 
     private void verifyResult(CourtDataDTO courtDataDTO) {
         // Verify Result Record is created
-        Optional<ResultEntity> retrievedResultEntity = resultRepository.findById(courtDataDTO.getTxId());
+        AsnSeqTxnCaseId asnSeqTxnCaseId = new AsnSeqTxnCaseId(courtDataDTO.getTxId(),courtDataDTO.getCaseId(),"001");
+        Optional<ResultEntity> retrievedResultEntity = resultRepository.findById(asnSeqTxnCaseId);
         ResultEntity found = retrievedResultEntity.orElse(null);
         assert found != null;
         final Result result = courtDataDTO.getCaseDetails().getDefendant().getOffences().get(0).getResults().get(0);
@@ -124,7 +128,8 @@ public class SaveAndLinkImplIntegrationTest {
 
     private void verifyOffence(CourtDataDTO courtDataDTO) {
         // Verify Offence Record is created
-        Optional<OffenceEntity> retrievedOffenceEntity = offenceRepository.findById(courtDataDTO.getTxId());
+        AsnSeqTxnCaseId asnSeqTxnCaseId = new AsnSeqTxnCaseId(courtDataDTO.getTxId(),courtDataDTO.getCaseId(),"001");
+        Optional<OffenceEntity> retrievedOffenceEntity = offenceRepository.findById(asnSeqTxnCaseId);
         OffenceEntity offenceEntity = retrievedOffenceEntity.orElse(null);
         assert offenceEntity != null;
         assertThat(offenceEntity.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
@@ -136,7 +141,8 @@ public class SaveAndLinkImplIntegrationTest {
 
     private void verifySession(CourtDataDTO courtDataDTO) {
         // Verify Session Record is created
-        Optional<SessionEntity> retrievedSessionEntity = sessionRepository.findById(courtDataDTO.getTxId());
+        CaseTxnId caseTxnId = new CaseTxnId(courtDataDTO.getTxId(),courtDataDTO.getCaseId());
+        Optional<SessionEntity> retrievedSessionEntity = sessionRepository.findById(caseTxnId);
         SessionEntity found = retrievedSessionEntity.orElse(null);
         assert found != null;
         assertThat(found.getTxId()).isEqualTo(courtDataDTO.getTxId());
@@ -146,7 +152,8 @@ public class SaveAndLinkImplIntegrationTest {
 
     private void verifyDefendant(CourtDataDTO courtDataDTO) {
         // Verify Defendant Record is created
-        Optional<DefendantEntity> retrievedDefendantEntity = defendantRepository.findById(courtDataDTO.getTxId());
+        CaseTxnId caseTxnId = new CaseTxnId(courtDataDTO.getTxId(),courtDataDTO.getCaseId());
+        Optional<DefendantEntity> retrievedDefendantEntity = defendantRepository.findById(caseTxnId);
         DefendantEntity defendantEntity = retrievedDefendantEntity.orElse(null);
         assert defendantEntity != null;
         assertThat(defendantEntity.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
@@ -158,7 +165,8 @@ public class SaveAndLinkImplIntegrationTest {
 
     private void verifyProceeding(CourtDataDTO courtDataDTO) {
         // Verify Proceeding Record is created
-        Optional<ProceedingEntity> retrievedProceedingEntity = proceedingRepository.findById(courtDataDTO.getTxId());
+        ProceedingMaatId proceedingMaatId = new ProceedingMaatId(courtDataDTO.getCaseDetails().getMaatId(),courtDataDTO.getProceedingId());
+        Optional<ProceedingEntity> retrievedProceedingEntity = proceedingRepository.findById(proceedingMaatId);
         ProceedingEntity foundProceeding = retrievedProceedingEntity.orElse(null);
         assert foundProceeding != null;
         assertThat(foundProceeding.getCreatedTxid()).isEqualTo(courtDataDTO.getTxId());
@@ -170,7 +178,8 @@ public class SaveAndLinkImplIntegrationTest {
 
     private void verifySolicitor(CourtDataDTO courtDataDTO) {
         // Verify WQCore Link register Record is created
-        Optional<SolicitorEntity> retrievedSolicitorEntity = solicitorRepository.findById(courtDataDTO.getTxId());
+        CaseTxnId caseTxnId = new CaseTxnId(courtDataDTO.getTxId(),courtDataDTO.getCaseId());
+        Optional<SolicitorEntity> retrievedSolicitorEntity = solicitorRepository.findById(caseTxnId);
         SolicitorEntity found = retrievedSolicitorEntity.orElse(null);
         assert found != null;
         assertThat(found.getTxId()).isEqualTo(courtDataDTO.getTxId());
@@ -206,7 +215,8 @@ public class SaveAndLinkImplIntegrationTest {
 
     private void verifyCase(CourtDataDTO courtDataDTO) {
         // Verify Case record is created
-        Optional<CaseEntity> retrievedCaseEntity = caseRepository.findById(courtDataDTO.getTxId());
+        CaseTxnId caseTxnId = new CaseTxnId(courtDataDTO.getTxId(),courtDataDTO.getCaseId());
+        Optional<CaseEntity> retrievedCaseEntity = caseRepository.findById(caseTxnId);
         CaseEntity caseEntity = retrievedCaseEntity.orElse(null);
         assert caseEntity != null;
 

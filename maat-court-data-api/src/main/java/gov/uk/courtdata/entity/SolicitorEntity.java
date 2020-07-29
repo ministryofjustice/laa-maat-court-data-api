@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import gov.uk.courtdata.model.id.CaseTxnId;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,12 +10,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@IdClass(CaseTxnId.class)
 @Table(name = "XXMLA_SOLICITOR", schema = "MLA")
 public class SolicitorEntity {
 
     @Id
     @Column(name = "TX_ID")
     private Integer txId;
+    @Id
     @Column(name = "CASE_ID")
     private Integer caseId;
     @Column(name = "FIRM_NAME")

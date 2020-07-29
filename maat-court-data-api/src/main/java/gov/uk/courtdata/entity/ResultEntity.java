@@ -1,6 +1,7 @@
 package gov.uk.courtdata.entity;
 
 
+import gov.uk.courtdata.model.id.AsnSeqTxnCaseId;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,19 +12,22 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@IdClass(AsnSeqTxnCaseId.class)
 @Table(name = "XXMLA_RESULT", schema = "MLA")
 public class ResultEntity {
     @Id
     @Column(name = "TX_ID")
     private Integer txId;
+    @Id
     @Column(name = "CASE_ID")
     private Integer caseId;
-    @Column(name = "ASN")
-    private String asn;
+    @Id
     @Column(name = "ASN_SEQ")
     private String asnSeq;
     @Column(name = "RESULT_CODE")
     private String resultCode;
+    @Column(name = "ASN")
+    private String asn;
     @Column(name = "RESULT_SHORT_TITLE")
     private String resultShortTitle;
     @Column(name = "RESULT_TEXT")

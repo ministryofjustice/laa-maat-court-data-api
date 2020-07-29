@@ -47,6 +47,7 @@ public class ResultsInfoProcessor implements Process {
                 .asn(saveAndLinkModel.getCaseDetails().getAsn())
                 .courtLocation(result.getCourtLocation())
                 .asnSeq(result.getAsnSeq())
+                .resultText(result.getResultText())
                 .contactName(result.getContactName())
                 .firmName(result.getFirstName())
                 .laaOfficeAccount(result.getLaaOfficeAccount())

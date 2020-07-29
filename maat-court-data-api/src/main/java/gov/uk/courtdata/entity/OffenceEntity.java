@@ -1,11 +1,9 @@
 package gov.uk.courtdata.entity;
 
+import gov.uk.courtdata.model.id.AsnSeqTxnCaseId;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Data
@@ -13,14 +11,17 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@IdClass(AsnSeqTxnCaseId.class)
 @Table(name = "XXMLA_OFFENCE", schema = "MLA")
 public class OffenceEntity {
 
     @Id
     @Column(name = "TX_ID")
     private Integer txId;
+    @Id
     @Column(name = "CASE_ID")
     private Integer caseId;
+    @Id
     @Column(name = "ASN_SEQ")
     private String asnSeq;
     @Column(name = "OFFENCE_SHORT_TITLE")

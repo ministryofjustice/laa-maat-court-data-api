@@ -1,5 +1,6 @@
 package gov.uk.courtdata.link.validator;
 
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
@@ -20,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -73,20 +75,22 @@ public class ValidationProcessorTest {
         //given
         final int testMaatId = 1000;
         final CaseDetails caseDetails = CaseDetails.builder().maatId(testMaatId).build();
-
+        final DefendantMAATDataEntity defendantMAATDataEntity = DefendantMAATDataEntity.builder().maatId(testMaatId).build();
+        final SolicitorMAATDataEntity solicitorMAATDataEntity = SolicitorMAATDataEntity.builder().maatId(testMaatId).build();
         // when
         when(maatIdValidator.validate(testMaatId))
                 .thenReturn(Optional.empty());
         when(linkExistsValidator.validate(testMaatId))
                 .thenReturn(
                         Optional.empty());
+
         when(defendantValidator.validate(testMaatId))
                 .thenReturn(
-                        Optional.of(DefendantMAATDataEntity.builder().maatId(testMaatId).build()));
+                        Optional.of(defendantMAATDataEntity));
 
         when(solicitorValidator.validate(testMaatId))
                 .thenReturn(
-                        Optional.of(SolicitorMAATDataEntity.builder().maatId(testMaatId).build()));
+                        Optional.of(solicitorMAATDataEntity));
         when(courtValidator.validate(caseDetails))
                 .thenReturn(
                         Optional.empty());
@@ -97,7 +101,7 @@ public class ValidationProcessorTest {
                 .thenReturn(Optional.empty());
 
 
-        validationProcessor.validate(caseDetails);
+        CourtDataDTO response = validationProcessor.validate(caseDetails);
 
         //then
         verify(maatIdValidator, times(1)).validate(testMaatId);
@@ -107,6 +111,14 @@ public class ValidationProcessorTest {
         verify(courtValidator, times(1)).validate(caseDetails);
         verify(referenceDataValidator, times(1)).validate(caseDetails);
         verify(CPDataValidator, times(1)).validate(caseDetails);
+
+        CourtDataDTO actual = CourtDataDTO.builder()
+                .caseDetails(caseDetails)
+                .solicitorMAATDataEntity(solicitorMAATDataEntity)
+                .defendantMAATDataEntity(defendantMAATDataEntity)
+                .build();
+        assertThat(response).isEqualTo(actual);
+
 
     }
 

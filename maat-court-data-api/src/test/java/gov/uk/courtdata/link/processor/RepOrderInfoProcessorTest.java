@@ -15,6 +15,9 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -64,6 +67,13 @@ public class RepOrderInfoProcessorTest {
         assertThat(repOrderCaptor.getValue().getId()).isEqualTo(1234);
         assertThat(repOrderCaptor.getValue().getArrestSummonsNo()).isEqualTo("123456754");
 
+        Optional<RepOrderEntity> repOrderEntity = repOrderRepository.findById(1234);
+        if (repOrderEntity.isPresent()) {
+            RepOrderEntity rep = repOrderEntity.get();
+            Duration duration = Duration.between(rep.getDateModified(), LocalDateTime.now());
+            assertThat(duration.getSeconds()).isEqualTo(0);
+            assertThat(rep.getUserModified()).isEqualTo("testUser");
 
+        }
     }
 }

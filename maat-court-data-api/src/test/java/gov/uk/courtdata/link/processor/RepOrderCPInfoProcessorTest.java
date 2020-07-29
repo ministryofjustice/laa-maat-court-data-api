@@ -5,6 +5,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import org.junit.Before;
@@ -46,8 +47,9 @@ public class RepOrderCPInfoProcessorTest {
         Defendant defendant = courtDataDTO.getCaseDetails().getDefendant();
         // when
         when(repOrderDataRepository.findByrepOrderId(Mockito.anyInt()))
-                .thenReturn(Optional.of(RepOrderCPDataEntity.builder().repOrderId(123).caseUrn("caseurn1").build()));
+                .thenReturn(Optional.of(RepOrderCPDataEntity.builder().repOrderId(123).build()));
         repOrderCPInfoProcessor.process(courtDataDTO);
+
 
         // then
         verify(repOrderDataRepository).save(repOrderCaptor.capture());
@@ -57,5 +59,11 @@ public class RepOrderCPInfoProcessorTest {
         assertThat(repOrderCaptor.getValue().getUserModified()).isEqualTo("testUser");
         assertThat(repOrderCaptor.getValue().getDateModified()).isNotNull()
                 .isExactlyInstanceOf(LocalDateTime.class);
+
+        Optional<RepOrderCPDataEntity> rep = repOrderDataRepository.findByrepOrderId(123);
+        if (rep.isPresent()) {
+            final RepOrderCPDataEntity repOrderCPDataEntity = rep.get();
+            assertThat(repOrderCPDataEntity.getCaseUrn()).isEqualTo("caseurn1");
+        }
     }
 }

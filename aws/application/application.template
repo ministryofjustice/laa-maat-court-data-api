@@ -484,6 +484,8 @@ Resources:
               Value: !Ref pCdaLaaStatusUrl
             - Name: SENTRY_ENV
               Value: !Ref pEnvironment
+            - Name: POST_MVP_ENABLED
+              Value: !Ref pPostMvpEnabled
 
   CloudwatchLogsGroup:
     Type: AWS::Logs::LogGroup

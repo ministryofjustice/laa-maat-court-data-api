@@ -73,3 +73,6 @@ springdoc:
 
 swagger-ui:
     path: /open-api/docs.html
+
+feature:
+  postMvpEnabled: true

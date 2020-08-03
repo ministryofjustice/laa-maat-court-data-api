@@ -64,3 +64,6 @@ sentry:
   environment: ${SENTRY_ENV}
   release: 1.1.1
   servername: aws-ecs
+
+feature:
+  postMvpEnabled: ${POST_MVP_ENABLED}

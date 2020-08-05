@@ -30,7 +30,7 @@ public class WQCaseProcessor {
                 .docLanguage(magsCourtDTO.getDocLanguage())
                 .inactive(magsCourtDTO.getInActive())
                 .libraCreationDate(getCreationDate(magsCourtDTO.getCaseCreationDate()))
-                .cjsAreaCode(String.format(LEADING_ZERO_2, Integer.parseInt(magsCourtDTO.getCjsAreaCode())))
+                .cjsAreaCode(magsCourtDTO.getCjsAreaCode() != null ? String.format(LEADING_ZERO_2, Integer.parseInt(magsCourtDTO.getCjsAreaCode())) : null)
                 .proceedingId(magsCourtDTO.getProceedingId())
                 .build();
         wqCaseRepository.save(wqCaseEntity);

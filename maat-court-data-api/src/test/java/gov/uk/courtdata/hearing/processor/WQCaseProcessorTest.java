@@ -39,7 +39,7 @@ public class WQCaseProcessorTest {
     public void givenCaseProcessor_whenProcessIsInvoke_thenSaveCase() {
 
         //given
-        HearingDTO hearingDTO =  testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
 
         //when
         wqCaseProcessor.process(hearingDTO);
@@ -50,5 +50,21 @@ public class WQCaseProcessorTest {
         assertThat(wqCaseEntityArgumentCaptor.getValue().getDocLanguage()).isEqualTo("en");
         assertThat(wqCaseEntityArgumentCaptor.getValue().getTxId()).isEqualTo(123456);
         assertThat(wqCaseEntityArgumentCaptor.getValue().getCjsAreaCode()).isEqualTo("05");
+    }
+
+    @Test
+    public void givenCaseProcessor_whenNullCJSCodeIsPassedIN_thenSaveNullCJSCode() {
+
+        //given
+        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        hearingDTO.setCjsAreaCode(null);
+
+        //when
+        wqCaseProcessor.process(hearingDTO);
+
+        //then
+        verify(wqCaseRepository).save(wqCaseEntityArgumentCaptor.capture());
+        assertThat(wqCaseEntityArgumentCaptor.getValue().getCjsAreaCode()).isEqualTo(null);
+
     }
 }

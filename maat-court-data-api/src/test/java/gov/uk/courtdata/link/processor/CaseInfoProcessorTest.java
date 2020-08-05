@@ -72,4 +72,41 @@ public class CaseInfoProcessorTest {
         assertThat(caseInfoCaptor.getValue().getInactive()).isEqualTo("Y");
 
     }
+
+    @Test
+    public void givenCaseDetailsWithSingleDigitCJSCode_whenProcessIsInvoked_thenTwoDigitCJSCodeISProcessed() {
+
+        // given
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+        caseDetails.setCaseCreationDate(null);
+        caseDetails.setActive(false);
+        caseDetails.setCjsAreaCode("5");
+
+        //when
+        caseInfoProcessor.process(courtDataDTO);
+
+        // then
+        verify(caseRepository).save(caseInfoCaptor.capture());
+
+        assertThat(caseInfoCaptor.getValue().getInactive()).isEqualTo("Y");
+        assertThat(caseInfoCaptor.getValue().getCjsAreaCode()).isEqualTo("05");
+
+    }
+    @Test
+    public void givenCaseDetailsWithTowDigitCJSCode_whenProcessIsInvoked_thenTwoDigitCJSCodeISProcessed() {
+
+        // given
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+        caseDetails.setCjsAreaCode("16");
+
+        //when
+        caseInfoProcessor.process(courtDataDTO);
+
+        // then
+        verify(caseRepository).save(caseInfoCaptor.capture());
+        assertThat(caseInfoCaptor.getValue().getCjsAreaCode()).isEqualTo("16");
+
+    }
 }

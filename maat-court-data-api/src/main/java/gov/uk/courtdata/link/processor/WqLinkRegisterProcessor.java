@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
+
 @RequiredArgsConstructor
 @Component
 public class WqLinkRegisterProcessor implements Process {
@@ -27,13 +30,15 @@ public class WqLinkRegisterProcessor implements Process {
                 .caseId(courtDataDTO.getCaseId())
                 .libraId(courtDataDTO.getLibraId())
                 .maatId(caseDetails.getMaatId())
-                .cjsAreaCode(caseDetails.getCjsAreaCode())
+                .cjsAreaCode(String.format(LEADING_ZERO_2, Integer.parseInt(caseDetails.getCjsAreaCode())))
                 .cjsLocation(caseDetails.getCjsLocation())
                 .proceedingId(courtDataDTO.getProceedingId())
                 .maatCat(maatCat)
                 .mlrCat(maatCat)
                 .build();
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
+
+
     }
 
     protected Integer geCategory(CourtDataDTO courtDataDTO) {

@@ -145,6 +145,7 @@ public class TestModelDataBuilder {
         return HearingDTO.builder()
                 .maatId(9988)
                 .caseId(1234)
+                .cjsAreaCode("5")
                 .proceedingId(9999)
                 .txId(123456)
                 .caseUrn("caseurn")

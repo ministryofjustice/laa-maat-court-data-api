@@ -150,7 +150,7 @@ pitest {
 
 sonarqube {
     properties {
-        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java"
+        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java, **/**StoredProcedureRepository.java"
         property "sonar.coverage.exclusions", "**/MAATCourtDataApplication.java"
         property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
         property "sonar.projectKey", "maat-court-data-api"

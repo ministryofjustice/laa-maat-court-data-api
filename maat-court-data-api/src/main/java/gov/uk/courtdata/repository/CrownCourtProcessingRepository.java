@@ -12,16 +12,6 @@ import java.time.LocalDate;
 @Repository
 public interface CrownCourtProcessingRepository extends JpaRepository<RepOrderCCOutComeEntity, Integer> {
 
-    @Transactional
-    @Procedure(procedureName = "togdata.application.update_cc_outcome")
-    void invokeCrownCourtOutcomeProcess(
-            @Param("p_rep_id") Integer repId,
-            @Param("p_cc_outcome") String ccOutcome,
-            @Param("p_bench_warrant_issued") String benchWarrantIssued,
-            @Param("p_appeal_type") String appealType,
-            @Param("p_imprisoned") String imprisoned,
-            @Param("p_case_number") String caseNumber,
-            @Param("p_crown_court_code") String crownCourtCode);
 
     @Transactional
     @Procedure(procedureName = "togdata.application.update_appeal_sentence_ord_dt")

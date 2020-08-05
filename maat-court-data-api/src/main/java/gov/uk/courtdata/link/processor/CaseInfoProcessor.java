@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.NO;
-import static gov.uk.courtdata.constants.CourtDataConstants.YES;
+import static gov.uk.courtdata.constants.CourtDataConstants.*;
 
 
 @Component
@@ -27,7 +26,7 @@ public class CaseInfoProcessor implements Process {
                 .txId(courtDataDTO.getTxId())
                 .caseId(courtDataDTO.getCaseId())
                 .asn(caseDetails.getAsn())
-                .cjsAreaCode(caseDetails.getCjsAreaCode())
+                .cjsAreaCode(String.format(LEADING_ZERO_2, Integer.parseInt(caseDetails.getCjsAreaCode())))
                 .inactive(caseDetails.isActive() ? NO : YES)
                 .libraCreationDate(getCaseCreationDate(caseDetails.getCaseCreationDate()))
                 .docLanguage(caseDetails.getDocLanguage())

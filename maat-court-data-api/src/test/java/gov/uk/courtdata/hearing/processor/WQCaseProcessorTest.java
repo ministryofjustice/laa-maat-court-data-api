@@ -49,5 +49,6 @@ public class WQCaseProcessorTest {
         assertThat(wqCaseEntityArgumentCaptor.getValue().getCaseId()).isEqualTo(1234);
         assertThat(wqCaseEntityArgumentCaptor.getValue().getDocLanguage()).isEqualTo("en");
         assertThat(wqCaseEntityArgumentCaptor.getValue().getTxId()).isEqualTo(123456);
+        assertThat(wqCaseEntityArgumentCaptor.getValue().getCjsAreaCode()).isEqualTo("05");
     }
 }

@@ -20,6 +20,7 @@ public final class CourtDataConstants {
     public static final String COMMON_PLATFORM = "CP";
     public static final Integer WQ_UNLINK_EVENT = 24;
     public static final String LEADING_ZERO_3 = "%03d";
+    public static final String LEADING_ZERO_2 = "%02d";
 
 
     public static final String MAGS_PROCESSING_SYSTEM_USER = "System-CP";

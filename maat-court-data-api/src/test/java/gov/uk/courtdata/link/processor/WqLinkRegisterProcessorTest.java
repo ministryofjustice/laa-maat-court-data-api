@@ -57,4 +57,38 @@ public class WqLinkRegisterProcessorTest {
         assertThat(wqLinkRegisterCaptor.getValue().getLibraId()).isEqualTo(courtDataDTO.getLibraId());
         assertThat(wqLinkRegisterCaptor.getValue().getMaatId()).isEqualTo(caseDetails.getMaatId());
     }
+
+    @Test
+    public void givenWQLinkRegisterModelWithSingleCJSCode_whenProcessIsInvoked_thenTwoDigitCJSCodeIsProcessed() {
+
+        // given
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+        SolicitorMAATDataEntity solicitorMAATDataEntity = courtDataDTO.getSolicitorMAATDataEntity();
+        caseDetails.setCjsAreaCode("5");
+        // when
+        wqLinkRegisterProcessor.process(courtDataDTO);
+
+        // then
+        verify(wqLinkRegisterRepository).save(wqLinkRegisterCaptor.capture());
+        assertThat(wqLinkRegisterCaptor.getValue().getCjsAreaCode()).isEqualTo("05");
+
+    }
+
+    @Test
+    public void givenWQLinkRegisterModelWithTwoDigitCJSCode_whenProcessIsInvoked_thenTwoDigitCJSCodeIsProcessed() {
+
+        // given
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+        SolicitorMAATDataEntity solicitorMAATDataEntity = courtDataDTO.getSolicitorMAATDataEntity();
+        caseDetails.setCjsAreaCode("16");
+        // when
+        wqLinkRegisterProcessor.process(courtDataDTO);
+
+        // then
+        verify(wqLinkRegisterRepository).save(wqLinkRegisterCaptor.capture());
+        assertThat(wqLinkRegisterCaptor.getValue().getCjsAreaCode()).isEqualTo("16");
+
+    }
 }

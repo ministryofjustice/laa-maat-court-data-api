@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Component
@@ -29,7 +30,7 @@ public class WQCaseProcessor {
                 .docLanguage(magsCourtDTO.getDocLanguage())
                 .inactive(magsCourtDTO.getInActive())
                 .libraCreationDate(getCreationDate(magsCourtDTO.getCaseCreationDate()))
-                .cjsAreaCode(magsCourtDTO.getCjsAreaCode())
+                .cjsAreaCode(String.format(LEADING_ZERO_2, Integer.parseInt(magsCourtDTO.getCjsAreaCode())))
                 .proceedingId(magsCourtDTO.getProceedingId())
                 .build();
         wqCaseRepository.save(wqCaseEntity);

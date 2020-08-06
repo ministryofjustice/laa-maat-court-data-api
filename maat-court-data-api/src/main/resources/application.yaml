@@ -22,11 +22,15 @@ spring:
             clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
             authorizationGrantType: client_credentials
 springdoc:
+
+
   api-docs:
     path: /maat-api
+    enabled: true
 
-swagger-ui:
-  path: /open-api/docs.html
+  swagger-ui:
+    path: /open-api/docs.html
+
 
   jpa:
     database-platform: org.hibernate.dialect.Oracle10gDialect

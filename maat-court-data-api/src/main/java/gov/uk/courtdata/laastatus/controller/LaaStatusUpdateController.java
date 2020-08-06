@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -23,13 +24,16 @@ public class LaaStatusUpdateController {
     private final LaaStatusPublisher laaStatusPublisher;
 
     @PostMapping("/laaStatus")
-    public MessageCollection updateLAAStatus(@RequestHeader("Laa-Transaction-Id") String laaTransactionId, @RequestBody String jsonPayload) {
+    public MessageCollection updateLAAStatus(@RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId, @RequestBody String jsonPayload) {
 
         log.info("LAA Status Update Request received.");
         MessageCollection messageCollection;
         try {
             CaseDetails caseDetails = gson.fromJson(jsonPayload, CaseDetails.class);
-            caseDetails.setLaaTransactionId(UUID.fromString(laaTransactionId));
+
+            UUID ud = Optional.ofNullable(laaTransactionId).isPresent() ? UUID.fromString(laaTransactionId) : UUID.randomUUID();
+            caseDetails.setLaaTransactionId(ud);
+
             messageCollection = laaStatusValidationProcessor.validate(caseDetails);
 
             if (messageCollection.getMessages().isEmpty()) {

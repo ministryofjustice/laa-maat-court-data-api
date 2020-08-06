@@ -58,6 +58,10 @@ Parameters:
   pCdaLaaStatusUrl:
     Type: String
     Default: ''
+  pPostMvpEnabled:
+    Type: String
+    Default: ''
+
 
   ###### API-Gateway parameters
   pApiScope1:

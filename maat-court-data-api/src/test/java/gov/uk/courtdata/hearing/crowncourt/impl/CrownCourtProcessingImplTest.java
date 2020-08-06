@@ -8,8 +8,10 @@ import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.CrownCourtCodeRepository;
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
+import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.DateUtil;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +44,8 @@ public class CrownCourtProcessingImplTest {
     private CrownCourtCodeRepository crownCourtCodeRepository;
     @Mock
     private CrownCourtProcessHelper crownCourtProcessHelper;
+    @Mock
+    private CrownCourtStoredProcedureRepository crownCourtStoredProcedureRepository;
 
     @BeforeEach
     public void setUp() {
@@ -72,8 +76,8 @@ public class CrownCourtProcessingImplTest {
         crownCourtProcessingImpl.execute(hearingDetails);
 
         //then
-        verify(crownCourtProcessingRepository, times(1))
-                .invokeCrownCourtOutcomeProcess(hearingDetails.getMaatId(),
+        verify(crownCourtStoredProcedureRepository, times(1))
+                .updateCrownCourtOutcome(hearingDetails.getMaatId(),
                         ccOutComeData.getCcooOutcome(),
                         "N",
                         "ACV",
@@ -149,7 +153,7 @@ public class CrownCourtProcessingImplTest {
                 .build();
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("NON APPEAL").aptyCode("ACV").id(123).build();
 
-        thrown.expectMessage("Crown Court Code Look Up is Failed");
+        thrown.expectMessage("Crown Court Code Look Up Failed for X");
         thrown.expect(MAATCourtDataException.class);
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.empty());

@@ -38,7 +38,7 @@ dependencyManagement {
     imports {
         mavenBom "org.springframework.boot:spring-boot-dependencies:2.3.2.RELEASE"
         mavenBom "org.springframework:spring-framework-bom:5.2.8.RELEASE"
-        mavenBom "com.amazonaws:aws-java-sdk-bom:1.11.827"
+        mavenBom "com.amazonaws:aws-java-sdk-bom:1.11.832"
         mavenBom "org.springframework.security:spring-security-bom:5.3.3.RELEASE"
     }
     dependencies {
@@ -150,7 +150,7 @@ pitest {
 
 sonarqube {
     properties {
-        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java"
+        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java, **/**StoredProcedureRepository.java"
         property "sonar.coverage.exclusions", "**/MAATCourtDataApplication.java"
         property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
         property "sonar.projectKey", "maat-court-data-api"

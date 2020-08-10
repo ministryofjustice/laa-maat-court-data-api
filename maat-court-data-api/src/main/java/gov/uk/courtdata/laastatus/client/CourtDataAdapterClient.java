@@ -31,7 +31,7 @@ public class CourtDataAdapterClient {
 
 
         final String laaStatusUpdateJson = gsonBuilder.create().toJson(laaStatusUpdate);
-        log.debug("  JSON request : {} ", laaStatusUpdateJson);
+        log.info("  JSON request : {} ", laaStatusUpdateJson);
 
         log.info("Post Laa status to CDA.");
         String clientResponse =

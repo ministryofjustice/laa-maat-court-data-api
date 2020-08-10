@@ -57,7 +57,8 @@ public class CourtDataDTOBuilderTest {
 
         CaseDetails caseDetails = CaseDetails.builder().maatId(12)
                 .defendant(Defendant.builder().surname("Smith")
-                        .offences(Collections.singletonList(Offence.builder().asnSeq("67").build()))
+                        .offences(Collections.singletonList(Offence.builder().asnSeq("67")
+                                .offenceCode("A603060").build()))
                         .build())
                 .build();
 
@@ -76,6 +77,7 @@ public class CourtDataDTOBuilderTest {
         Optional<OffenceEntity> offenceEntity = Optional.of(OffenceEntity.builder()
                 .caseId(88999)
                 .offenceId("90")
+                .offenceCode("A603060")
                 .build());
 
         //when

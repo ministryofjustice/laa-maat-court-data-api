@@ -88,7 +88,7 @@ public class CourtDataDTOBuilderTest {
         when(wqLinkRegisterRepository.findBymaatId(anyInt())).thenReturn(wqLinkRegisterEntityList);
         when(solicitorMAATDataRepository.findBymaatId(anyInt())).thenReturn(optionalSolicitorMAATDataEntity);
         when(defendantMAATDataRepository.findBymaatId(anyInt())).thenReturn(optionalDefendantMAATDataEntity);
-        when(offenceRepository.findByMaxTxId(anyInt(), anyString())).thenReturn(offenceEntity);
+        when(offenceRepository.findByMaxTxId(anyInt(), anyString(), anyString())).thenReturn(offenceEntity);
 
         CourtDataDTO courtDataDTO = courtDataDTOBuilder.build(caseDetails);
 
@@ -96,7 +96,7 @@ public class CourtDataDTOBuilderTest {
         verify(wqLinkRegisterRepository).findBymaatId(anyInt());
         verify(solicitorMAATDataRepository).findBymaatId(anyInt());
         verify(defendantMAATDataRepository).findBymaatId(anyInt());
-        verify(offenceRepository).findByMaxTxId(anyInt(), anyString());
+        verify(offenceRepository).findByMaxTxId(anyInt(), anyString(), anyString());
 
         assertThat(courtDataDTO.getCaseId()).isEqualTo(12);
         assertThat(courtDataDTO.getLibraId()).isEqualTo("06454");
@@ -142,7 +142,7 @@ public class CourtDataDTOBuilderTest {
         when(wqLinkRegisterRepository.findBymaatId(anyInt())).thenReturn(wqLinkRegisterEntityList);
         when(solicitorMAATDataRepository.findBymaatId(anyInt())).thenReturn(optionalSolicitorMAATDataEntity);
         when(defendantMAATDataRepository.findBymaatId(anyInt())).thenReturn(optionalDefendantMAATDataEntity);
-        when(offenceRepository.findByMaxTxId(anyInt(), anyString())).thenReturn(offenceEntity);
+        when(offenceRepository.findByMaxTxId(anyInt(), anyString(), anyString())).thenReturn(offenceEntity);
 
         CourtDataDTO courtDataDTO = courtDataDTOBuilder.build(caseDetails);
 
@@ -150,7 +150,7 @@ public class CourtDataDTOBuilderTest {
         verify(wqLinkRegisterRepository).findBymaatId(anyInt());
         verify(solicitorMAATDataRepository).findBymaatId(anyInt());
         verify(defendantMAATDataRepository).findBymaatId(anyInt());
-        verify(offenceRepository).findByMaxTxId(anyInt(), anyString());
+        verify(offenceRepository).findByMaxTxId(anyInt(), anyString(), anyString());
 
         Offence offence =
                 courtDataDTO.getCaseDetails().getDefendant().getOffences().iterator().next();

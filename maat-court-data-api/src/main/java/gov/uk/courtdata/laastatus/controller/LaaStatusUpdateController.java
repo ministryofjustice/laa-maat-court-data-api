@@ -1,6 +1,7 @@
 package gov.uk.courtdata.laastatus.controller;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.laastatus.service.LaaStatusPublisher;
 import gov.uk.courtdata.laastatus.validator.LaaStatusValidationProcessor;
@@ -27,7 +28,7 @@ import static gov.uk.courtdata.exception.GlobalAppLoggingHandler.LAA_TRANSACTION
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("maatApi")
-@Tag(name = "LAA Status", description = "Rest APIs for Case linking")
+@Tag(name = "LAA Status", description = "Rest APIs for LAA Status.")
 public class LaaStatusUpdateController {
 
     private final LaaStatusValidationProcessor laaStatusValidationProcessor;
@@ -38,8 +39,8 @@ public class LaaStatusUpdateController {
     @Operation(summary = "Process LAA Status updates.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageCollection.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request here", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Server Error", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     })
 
     public MessageCollection updateLAAStatus(@RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId,

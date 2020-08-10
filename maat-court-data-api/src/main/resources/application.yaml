@@ -74,3 +74,5 @@ sentry:
 
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}
+
+version: 0.0.1

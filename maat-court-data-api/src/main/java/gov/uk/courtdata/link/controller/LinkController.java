@@ -1,5 +1,6 @@
 package gov.uk.courtdata.link.controller;
 
+import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.link.validator.PreConditionsValidator;
 import gov.uk.courtdata.model.CaseDetailsValidate;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,18 +23,19 @@ import static gov.uk.courtdata.exception.GlobalAppLoggingHandler.LAA_TRANSACTION
 @RequestMapping("/link")
 @Slf4j
 @RequiredArgsConstructor
-@Tag(name = "Linking", description = "Rest APIs for Case linking")
+@Tag(name = "Link Case", description = "Rest APIs for Case linking.")
 public class LinkController {
 
     private final PreConditionsValidator preConditionsValidator;
 
     @PostMapping("/validate")
-    @Operation(description = "Validate case details")
+    @Operation(description = "Validate linking case details.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad Request here", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Server Error", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     })
+
     public ResponseEntity<Object> validate(
             @Parameter(description = "Case details data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetailsValidate.class)))
             @RequestBody CaseDetailsValidate caseDetailsValidate,

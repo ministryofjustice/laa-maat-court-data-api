@@ -24,9 +24,10 @@ spring:
 springdoc:
   api-docs:
     path: /maat-api
+  swagger-ui:
+    path: /open-api/docs.html
 
-swagger-ui:
-  path: /open-api/docs.html
+
 
   jpa:
     database-platform: org.hibernate.dialect.Oracle10gDialect
@@ -46,6 +47,7 @@ cloud-platform:
         unlink: ${UNLINK_QUEUE}
         laaStatus: ${LAA_STATUS_UPDATE_QUEUE}
         hearingResulted: ${HEARING_RESULTED_QUEUE}
+        laaStatusJob: ${LAA_STATUS_JOB_QUEUE}
         config:
           messageDelay: 900
 
@@ -67,3 +69,4 @@ sentry:
 
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}
+

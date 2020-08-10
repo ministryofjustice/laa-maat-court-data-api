@@ -6,6 +6,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.enums.WQStatus;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.model.CaseDetails;
@@ -209,7 +210,7 @@ public class SaveAndLinkImplIntegrationTest {
         assert wqCoreEntity != null;
         assertThat(wqCoreEntity.getTxId()).isEqualTo(courtDataDTO.getTxId());
         assertThat(wqCoreEntity.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
-        assertThat(wqCoreEntity.getWqStatus()).isEqualTo(WQ_SUCCESS_STATUS);
+        assertThat(wqCoreEntity.getWqStatus()).isEqualTo(WQStatus.WAITING.value());
         assertThat(wqCoreEntity.getWqType()).isEqualTo(WQ_CREATION_EVENT);
     }
 

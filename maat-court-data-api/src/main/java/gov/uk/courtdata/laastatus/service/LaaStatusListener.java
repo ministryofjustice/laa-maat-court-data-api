@@ -2,12 +2,16 @@ package gov.uk.courtdata.laastatus.service;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
+import gov.uk.courtdata.enums.JobStatus;
 import gov.uk.courtdata.enums.QueueMessageType;
 import gov.uk.courtdata.laastatus.builder.CourtDataDTOBuilder;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.laastatus.LaaStatusJob;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -18,7 +22,7 @@ import org.springframework.stereotype.Service;
  * status update in maat db.
  */
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class LaaStatusListener {
 
@@ -28,9 +32,13 @@ public class LaaStatusListener {
 
     private final Gson gson;
 
-    private CourtDataDTOBuilder courtDataDTOBuilder;
+    private final CourtDataDTOBuilder courtDataDTOBuilder;
 
-    private QueueMessageLogService queueMessageLogService;
+    private final QueueMessageLogService queueMessageLogService;
+
+
+    @Value("${feature.postMvpEnabled}")
+    private String isPostMVPEnabled;
 
     /**
      * @param message queue message body
@@ -43,10 +51,25 @@ public class LaaStatusListener {
         CaseDetails laaStatusUpdate = gson.fromJson(message, CaseDetails.class);
 
         CourtDataDTO courtDataDTO = courtDataDTOBuilder.build(laaStatusUpdate);
-        log.info("POST Rep Order update to CDA");
-        laaStatusPostCDAService.process(courtDataDTO);
+        if (Boolean.TRUE.toString().equalsIgnoreCase(isPostMVPEnabled)) {
+            processLaaStatus(courtDataDTO);
+        } else {
+            log.info("POST Rep Order update to CDA");
+            laaStatusPostCDAService.process(courtDataDTO);
+            log.info("Update LAA status");
+            laaStatusService.execute(courtDataDTO);
+            log.info("After laa update");
+        }
+    }
+
+    private void processLaaStatus(CourtDataDTO courtDataDTO) {
+
         log.info("Update LAA status");
         laaStatusService.execute(courtDataDTO);
         log.info("After laa update");
+        log.info("POST Rep Order update to CDA");
+        laaStatusPostCDAService.process(courtDataDTO);
+
+
     }
 }

@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -21,9 +23,10 @@ public class LaaStatusPostCDAService {
 
         LaaStatusUpdate repOrderData =
                 repOrderUpdateMessageBuilder.build(courtDataDTO.getCaseDetails());
+        Map<String,String> headers = repOrderUpdateMessageBuilder.buildHeaders(courtDataDTO);
 
-        log.debug(repOrderData.toString());
-        courtDataAdapterClient.postLaaStatus(repOrderData);
+        log.debug(repOrderData.toString(),headers.toString());
+        courtDataAdapterClient.postLaaStatus(repOrderData,headers);
 
     }
 

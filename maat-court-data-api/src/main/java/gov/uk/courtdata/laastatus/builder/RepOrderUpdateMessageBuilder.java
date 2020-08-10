@@ -1,5 +1,6 @@
 package gov.uk.courtdata.laastatus.builder;
 
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
@@ -9,8 +10,7 @@ import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -40,6 +40,20 @@ public class RepOrderUpdateMessageBuilder {
 
     }
 
+    /**
+     * Build Header Info to post to CDA.
+     *
+     * @param courtDataDTO
+     */
+    public Map<String, String> buildHeaders(CourtDataDTO courtDataDTO) {
+        Map<String, String> headers = new HashMap<>();
+        final UUID laaTransactionId = courtDataDTO.getCaseDetails().getLaaTransactionId();
+        headers.put("Laa-Transaction-Id", laaTransactionId != null ? laaTransactionId.toString() : null);
+        headers.put("Laa-Status-Transaction-Id", String.valueOf(courtDataDTO.getTxId()));
+        return headers;
+    }
+
+
     private Attributes buildAttributes(CaseDetails caseDetails) {
 
         List<Offence> offences =
@@ -55,6 +69,7 @@ public class RepOrderUpdateMessageBuilder {
 
     /**
      * <p>Build defence organisation</p>
+     *
      * @param caseDetails
      * @return
      */
@@ -73,6 +88,7 @@ public class RepOrderUpdateMessageBuilder {
 
     /**
      * <p>Lookup solicitor details.</p>
+     *
      * @param solicitorMAATDataEntity
      * @return
      */
@@ -87,6 +103,7 @@ public class RepOrderUpdateMessageBuilder {
 
     /**
      * <p>Map address to builder.</p>
+     *
      * @param solicitorDetails
      * @return
      */
@@ -103,6 +120,7 @@ public class RepOrderUpdateMessageBuilder {
 
     /**
      * <p>Map contact details.</p>
+     *
      * @param solicitorDetails
      * @return
      */
@@ -118,6 +136,7 @@ public class RepOrderUpdateMessageBuilder {
 
     /**
      * <p>Map offence details.</p>
+     *
      * @param offence
      * @return
      */
@@ -135,6 +154,7 @@ public class RepOrderUpdateMessageBuilder {
 
     /**
      * <p> Map Relationship details.</p>
+     *
      * @param caseDetails
      * @return
      */
@@ -147,6 +167,7 @@ public class RepOrderUpdateMessageBuilder {
 
     /**
      * <p>Map defendant details.</p>
+     *
      * @param maatId
      * @return
      */
@@ -161,6 +182,7 @@ public class RepOrderUpdateMessageBuilder {
 
     /**
      * <p>Find defendant Id.</p>
+     *
      * @param maatId
      * @return
      */
@@ -170,5 +192,6 @@ public class RepOrderUpdateMessageBuilder {
 
         return repOrderCPData.map(RepOrderCPDataEntity::getDefendantId).orElse(null);
     }
+
 
 }

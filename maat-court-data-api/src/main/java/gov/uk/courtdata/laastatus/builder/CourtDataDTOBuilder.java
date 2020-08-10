@@ -48,7 +48,7 @@ public class CourtDataDTOBuilder {
         caseDetails.getDefendant().getOffences().forEach(offence -> {
 
             Optional<OffenceEntity> offenceEntity
-                    = offenceRepository.findByMaxTxId(wqLinkRegisterEntity.getCaseId(), offence.getAsnSeq());
+                    = offenceRepository.findByMaxTxId(wqLinkRegisterEntity.getCaseId(), offence.getOffenceCode());
 
             offence.setOffenceId(offenceEntity.map(OffenceEntity::getOffenceId).orElse(null));
 

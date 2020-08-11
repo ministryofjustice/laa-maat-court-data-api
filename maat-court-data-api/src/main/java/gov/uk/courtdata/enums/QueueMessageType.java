@@ -4,5 +4,6 @@ public enum QueueMessageType {
     LINK,
     UNLINK,
     LAA_STATUS,
-    HEARING
+    HEARING,
+    LAA_STATUS_JOB
 }

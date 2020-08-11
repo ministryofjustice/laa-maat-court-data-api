@@ -35,6 +35,8 @@ springdoc:
     operationsSorter: method
 
 
+
+
   jpa:
     database-platform: org.hibernate.dialect.Oracle10gDialect
     open-in-view: false
@@ -53,6 +55,7 @@ cloud-platform:
         unlink: ${UNLINK_QUEUE}
         laaStatus: ${LAA_STATUS_UPDATE_QUEUE}
         hearingResulted: ${HEARING_RESULTED_QUEUE}
+        laaStatusJob: ${LAA_STATUS_JOB_QUEUE}
         config:
           messageDelay: 900
 

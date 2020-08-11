@@ -61,6 +61,9 @@ Parameters:
   pPostMvpEnabled:
     Type: String
     Default: ''
+  pLaaStatusJobQueue:
+    Type: String
+    Default: ''
 
 
   ###### API-Gateway parameters
@@ -490,6 +493,9 @@ Resources:
               Value: !Ref pEnvironment
             - Name: POST_MVP_ENABLED
               Value: !Ref pPostMvpEnabled
+            - Name: LAA_STATUS_JOB_QUEUE
+              Value: !Ref pLaaStatusJobQueue
+
 
   CloudwatchLogsGroup:
     Type: AWS::Logs::LogGroup

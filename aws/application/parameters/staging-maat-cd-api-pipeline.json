@@ -16,7 +16,8 @@
     "pHearingsResultedQueue" : "crime-apps-staging-hearing-resulted-queue",
     "pCdaOauthUrl" : "https://laa-court-data-adaptor-stage.apps.live-1.cloud-platform.service.justice.gov.uk/oauth/token",
     "pCdaLaaStatusUrl" : "https://laa-court-data-adaptor-stage.apps.live-1.cloud-platform.service.justice.gov.uk/api/internal/v1/representation_orders",
-    "pPostMvpEnabled" : "false"
+    "pPostMvpEnabled" : "false",
+    "pLaaStatusJobQueue" : ""
   },
   "Tags" : {
     "business-unit" : "LAA",

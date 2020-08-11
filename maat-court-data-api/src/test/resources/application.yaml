@@ -43,6 +43,7 @@ cloud-platform:
         unlink: unlink
         laaStatus:  laaStatus
         hearingResulted: hearing
+        laaStatusJob: laaStatusJob
         config:
           messageDelay: 900
 

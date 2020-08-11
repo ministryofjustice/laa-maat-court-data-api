@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Map;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class CourtDataAdapterClient {
     /**
      * @param laaStatusUpdate
      */
-    public void postLaaStatus(LaaStatusUpdate laaStatusUpdate) {
+    public void postLaaStatus(LaaStatusUpdate laaStatusUpdate, Map<String,String> headers) {
 
 
         final String laaStatusUpdateJson = gsonBuilder.create().toJson(laaStatusUpdate);
@@ -38,6 +40,7 @@ public class CourtDataAdapterClient {
                 webClient
                         .post()
                         .uri(laaUpdateUrl)
+                        .headers(httpHeaders -> httpHeaders.setAll(headers))
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(laaStatusUpdateJson))
                         .retrieve()

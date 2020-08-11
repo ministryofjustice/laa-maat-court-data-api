@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
-import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
 
 @RequiredArgsConstructor
 @Component

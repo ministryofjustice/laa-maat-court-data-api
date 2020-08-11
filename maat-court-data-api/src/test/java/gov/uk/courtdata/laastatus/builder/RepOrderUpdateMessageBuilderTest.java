@@ -1,5 +1,6 @@
 package gov.uk.courtdata.laastatus.builder;
 
+import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
@@ -17,7 +18,9 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +29,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RepOrderUpdateMessageBuilderTest {
+public class
+RepOrderUpdateMessageBuilderTest {
 
     @Mock
     private RepOrderCPDataRepository repOrderCPDataRepository;
@@ -170,6 +174,40 @@ public class RepOrderUpdateMessageBuilderTest {
                 () -> assertEquals(contact.getSecondaryEmail(), optSolicitor.get().getEmail())
         );
 
+    }
+
+
+    @Test
+    public void givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenHeaderDetailsAreReturned() {
+
+        //given
+        CaseDetails caseDetails = CaseDetails.builder().laaTransactionId(UUID.fromString("6f5b34ea-e038-4f1c-bfe5-d6bf622444f0")).build();
+        CourtDataDTO courtDataDTO = CourtDataDTO.builder().caseDetails(caseDetails).txId(123456).build();
+
+        //when
+        Map<String, String> headers = repOrderUpdateMessageBuilder.buildHeaders(courtDataDTO);
+
+        //then
+        assertAll("VerifyHeaders",
+                () -> assertEquals("6f5b34ea-e038-4f1c-bfe5-d6bf622444f0", headers.get("Laa-Transaction-Id")),
+                () -> assertEquals("123456", headers.get("Laa-Status-Transaction-Id")));
+    }
+
+
+    @Test
+    public void givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenHeaderDetailsAreReturnedWithMullTxnID() {
+
+        //given
+        CaseDetails caseDetails = CaseDetails.builder().build();
+        CourtDataDTO courtDataDTO = CourtDataDTO.builder().caseDetails(caseDetails).txId(123456).build();
+
+        //when
+        Map<String, String> headers = repOrderUpdateMessageBuilder.buildHeaders(courtDataDTO);
+
+        //then
+        assertAll("VerifyHeaders",
+                () -> assertNull(headers.get("Laa-Transaction-Id")),
+                () -> assertEquals("123456", headers.get("Laa-Status-Transaction-Id")));
     }
 
 

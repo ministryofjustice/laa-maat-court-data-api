@@ -77,24 +77,15 @@ public class UnLinkControllerTest {
     @Test
     public void givenUnlinkModel_whenValidationFailedTX() throws Exception {
 
-        Unlink unlink = Unlink.builder()
-                .maatId(null)
-                .reasonId(null)
-                .build();
-
         mockMvc.perform(post("/unlink/validate")
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(unlink)))
+                .header("Laa-Transaction-Id", "12112")
+                .content(objectMapper.writeValueAsString(null)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void givenUnlinkModel_whenValidationFailed() throws Exception {
-
-        Unlink unlink = Unlink.builder()
-                .maatId(null)
-                .reasonId(null)
-                .build();
 
         mockMvc.perform(post("/unlink/validate")
                 .contentType("application/json")

@@ -73,7 +73,9 @@ springdoc:
     path: /maat-api
 
 swagger-ui:
-    path: /open-api/docs.html
+  path: /open-api/docs.html
 
 feature:
   postMvpEnabled: true
+
+version: 0.0.1

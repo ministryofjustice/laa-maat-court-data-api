@@ -10,6 +10,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -25,7 +26,7 @@ public class LinkControllerTest {
     @Test
     public void givenCaseValidationDetails_whenValidateIsInvoked_thenValidationPerformed() {
         CaseDetailsValidate caseDetailsValidate = CaseDetailsValidate.builder().caseUrn("1244").maatId(1234).build();
-        ResponseEntity<Object> x = linkController.validate(caseDetailsValidate);
+        ResponseEntity<Object> x = linkController.validate(caseDetailsValidate, anyString());
 
         verify(preConditionsValidator, times(1)).validate(caseDetailsValidate);
         assertThat(x).isEqualTo(ResponseEntity.ok().build());

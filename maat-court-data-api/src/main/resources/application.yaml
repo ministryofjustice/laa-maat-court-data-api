@@ -21,11 +21,19 @@ spring:
             clientId: ${CDA_OAUTH_CLIENT_ID}
             clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
             authorizationGrantType: client_credentials
+
 springdoc:
+  packagesToScan: gov.uk.courtdata
+  show-actuator: true
   api-docs:
     path: /maat-api
+    enabled: true
+
   swagger-ui:
     path: /open-api/docs.html
+    enabled: true
+    operationsSorter: method
+
 
 
 
@@ -70,3 +78,4 @@ sentry:
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}
 
+version: 0.0.1

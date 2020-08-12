@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
-import static gov.uk.courtdata.enums.CCTrialOutcome.isConvicted;
+import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.isConvicted;
 
 @AllArgsConstructor
 @Component

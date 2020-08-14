@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.CATY_CASE_TYPE;
+import static gov.uk.courtdata.enums.CrownCourtCaseType.APPEAL_CC;
 import static java.lang.String.format;
 
 @Component
@@ -72,7 +72,7 @@ public class CrownCourtProcessingImpl {
 
         if (caseEndDate != null) {
             String user = dbUser != null ? dbUser.toUpperCase() : null;
-            if (CATY_CASE_TYPE.equalsIgnoreCase(catyType)) {
+            if (APPEAL_CC.getValue().equalsIgnoreCase(catyType)) {
                 crownCourtProcessingRepository
                         .invokeUpdateAppealSentenceOrderDate(maatId, user, caseEndDate, LocalDate.now());
             } else {

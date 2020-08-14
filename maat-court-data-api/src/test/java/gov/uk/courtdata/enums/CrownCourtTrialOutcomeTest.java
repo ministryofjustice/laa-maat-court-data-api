@@ -4,10 +4,10 @@ import gov.uk.courtdata.exception.ValidationException;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
-import static gov.uk.courtdata.enums.CCTrialOutcome.*;
+import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CCTrialOutcomeTest {
+public class CrownCourtTrialOutcomeTest {
 
     @Test
     public void givenOutcomeIsEmpty_ExceptionThrown() {
@@ -36,5 +36,28 @@ public class CCTrialOutcomeTest {
 
         assertAll("TrialOutcome",
                 () -> assertFalse(isConvicted("ACQUITTED")));
+    }
+
+    @Test
+    public void givenOutcomeIsEmptyForTrial_ExceptionThrown() {
+
+        Assertions.assertThrows(ValidationException.class, () -> {
+            isTrial(null);
+        });
+    }
+
+    @Test
+    public void givenOutComeIsForTrial_ReturnsTrue() {
+
+        assertAll("TrialOutcome",
+                () -> assertTrue(isTrial(CONVICTED.getValue())));
+    }
+
+
+    @Test
+    public void givenOutComeIsNotTrial_ReturnsFalse() {
+
+        assertAll("TrialOutcome",
+                () -> assertFalse(isTrial("INVALID")));
     }
 }

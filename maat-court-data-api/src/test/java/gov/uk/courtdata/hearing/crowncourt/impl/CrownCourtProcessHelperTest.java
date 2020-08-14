@@ -2,7 +2,7 @@ package gov.uk.courtdata.hearing.crowncourt.impl;
 
 
 import gov.uk.courtdata.entity.XLATResultEntity;
-import gov.uk.courtdata.enums.CCTrialOutcome;
+import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.Result;
@@ -68,7 +68,7 @@ public class CrownCourtProcessHelperTest {
         HearingResulted hearing = hearingResultedWith("3030");
 
         String imprisoned = crownCourtProcessHelper.isImprisoned(hearing,
-                CCTrialOutcome.CONVICTED.getValue());
+                CrownCourtTrialOutcome.CONVICTED.getValue());
 
         assertAll("Imprisoned",
                 () -> assertNotNull(imprisoned),
@@ -86,7 +86,7 @@ public class CrownCourtProcessHelperTest {
         HearingResulted hearing = hearingResultedWith("1002");
 
         String imprisoned = crownCourtProcessHelper.isImprisoned(hearing,
-                CCTrialOutcome.PART_CONVICTED.getValue());
+                CrownCourtTrialOutcome.PART_CONVICTED.getValue());
 
         assertAll("Imprisoned",
                 () -> assertNotNull(imprisoned),
@@ -104,7 +104,7 @@ public class CrownCourtProcessHelperTest {
         HearingResulted hearing = hearingResultedWith("1002");
 
         String imprisoned = crownCourtProcessHelper.isImprisoned(hearing,
-                CCTrialOutcome.CONVICTED.getValue());
+                CrownCourtTrialOutcome.CONVICTED.getValue());
 
         assertAll("Imprisoned",
                 () -> assertNotNull(imprisoned),
@@ -122,7 +122,7 @@ public class CrownCourtProcessHelperTest {
         HearingResulted hearing = hearingResultedWith("1002", "1070", "1111");
 
         String imprisoned = crownCourtProcessHelper.isImprisoned(hearing,
-                CCTrialOutcome.CONVICTED.getValue());
+                CrownCourtTrialOutcome.CONVICTED.getValue());
 
         assertAll("Imprisoned",
                 () -> assertNotNull(imprisoned),
@@ -140,7 +140,7 @@ public class CrownCourtProcessHelperTest {
         HearingResulted hearing = hearingResultedWith("1111", "2222", "3333");
 
         String imprisoned = crownCourtProcessHelper.isImprisoned(hearing,
-                CCTrialOutcome.CONVICTED.getValue());
+                CrownCourtTrialOutcome.CONVICTED.getValue());
 
         assertAll("Imprisoned",
                 () -> assertNotNull(imprisoned),

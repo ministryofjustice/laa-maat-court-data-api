@@ -21,6 +21,8 @@ public class CrownCourtValidationProcessorTest {
     private AppealTypeValidator appealTypeValidator;
     @Mock
     private OUCodeValidator ouCodeValidator;
+    @Mock
+    private CaseTypeValidator caseTypeValidator;
     @InjectMocks
     private CrownCourtValidationProcessor crownCourtValidationProcessor;
 
@@ -46,5 +48,7 @@ public class CrownCourtValidationProcessorTest {
         verify(crownCourtOutComesValidator, times(1)).validate(hearingDetails);
         verify(appealTypeValidator, times(1)).validate(hearingDetails);
         verify(ouCodeValidator, times(1)).validate(hearingDetails);
+        verify(caseTypeValidator, times(1)).validate(hearingDetails);
+
     }
 }

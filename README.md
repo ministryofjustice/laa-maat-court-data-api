@@ -1,8 +1,8 @@
 ## laa-maat-court-data-api
 
-This is a Java based Spring Boot Application which will be hosted on AWS Environment. This is a Facade application to the existing legacy Applications MAAT/MLRA. laa-maat-court-data-api orchestrates the traffics between Court Data Adaptor/Common Platform and MAAT/MLRA.
+This is a Java based Spring Boot Application which will be hosted on AWS Environment. The project will be deploy as a Docker image to AWS ECS container service. This is a Facade application to the existing legacy Applications MAAT/MLRA. laa-maat-court-data-api orchestrates the traffics between Court Data Adaptor/Common Platform and MAAT/MLRA.
 
-This Application mainly supports 4 user Journeys. The Details of the journeys can be found on the following links
+This Application mainly supports 4 user Journeys. The Details of the journeys can be found on the following links.
 
 1. Linking Cases between MAAT and Common Platform  - https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1758822646/Search+and+Link+Sequence+v2
 2. Unlinking a Linked case from Common Platform - https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1858994261/Unlinking+Sequence+Diagrams
@@ -12,16 +12,19 @@ This Application mainly supports 4 user Journeys. The Details of the journeys ca
 
 ## Developer setup
 
+* [MAAT Court Data API Deployment Requirements](https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1889992851/MAAT+Court+Data+API+Deployment+Requirements)
+
+* [Developer Starter Guild](https://dsdmoj.atlassian.net/wiki/spaces/LAA/pages/1391460702/New+Hire+Check+List) 
+
+
 ### Pre-requisites
 
 1. Docker
-2. SSH
+2. SSH 
 3. An editor/IDE of some sort - preferably Intellij/Ecilipse 
 4. Grade
-5. aws cli
+5. aws cli 
 6. kubectl
-
-
 
 We're using [Gradle](https://gradle.org/) to build the application. This also includes plugins for generating IntelliJ configuration.
 
@@ -32,10 +35,17 @@ The `docker-compose.override.yml` is encrypted using [git-crypt](https://github.
 To run the app locally you need to be able to decrypt this file.
 
 You will first need to create a GPG key. See [Create a GPG Key](https://docs.publishing.service.gov.uk/manual/create-a-gpg-key.html) for details on how to do this with `GPGTools` (GUI) or `gpg` (command line).
+You can install either from a terminal or just download the UI version. 
+
+``` 
+brew update
+brew install gpg
+brew install git-crypt
+```
 
 Once you have done this, a team member who already has access can add your key by running `git-crypt add-gpg-user USER_ID`* and creating a pull request to this repo.
 
-Once this has been merged you can decrypt your local copy of the repository by running `git-crypt unlock`.
+Once this has been merged you can decrypt your local copy of the repository by running `git-crypt unlock`. 
 
 *`USER_ID` can be your key ID, a full fingerprint, an email address, or anything else that uniquely identifies a public key to GPG (see "HOW TO SPECIFY A USER ID" in the gpg man page).
 
@@ -113,18 +123,21 @@ The Deployment requirements and all integrations of laa-maat-court-data-api can 
 
 We practice CI/CD approach and this is being done using AWS Code Pipeline Service.
 
-laa-maat-court-data-api  is being deployed on AWS Environment (Legacy Account) & the infrastructure and pipelines are created using AWS Cloud Formation.
+laa-maat-court-data-api  is being deployed on AWS Environment (Legacy Account) & the infrastructure and pipelines are created using AWS Cloud Formation templates.
 
 Cloud formation scripts can be found at laa-maat-court-data-api /aws
 
-Database releases are managed by Liquid Base DB migration tool and the Scripts can be found on the following location.
-https://github.com/ministryofjustice/laa-maat-court-data-api/tree/master/maat-court-data-api/src/main/resources/db/changelog
+### MAAT Open API
+We have implemented the Open API (with Swagger 3). The web link provides a details Rest API with a schema definition. The link can only from local or from dev environment. The swagger link can be found from [here](http://localhost:8090/open-api/docs.html)  
+  
+  
 
 ### Debugging Application
 
 Speak to one of the team member and get the docker-compose-debug.yml which will have  relevant credentials  to run the application on remote Debug Mode.
 
-Run the following command  
+Run the following command
+  
 ```sh
  docker-compose -f docker-compose-debug.yml up
 ```
@@ -132,6 +145,31 @@ Run the following command
 Make sure Remote Debug Option is set up on your preferred Editor.
 
 
+### Application Monitoring and Logs 
+
+The LAA-MAAT-API has been configured to send the application logs to both AWS Cloud Watch and Sentry. 
+
+####Cloud Watch Logs: 
+To see the Cloud watch logs, you need to have the right user groups and permission. More details about this available here. (link) The application logs are configured with the followings log groups (names). 
+The application deployed as a Docker container, and the logs can also be found from the AWS ECS logs. 
+
+####Sentry 
+Sentry is a 3rd party application logging and monitoring platform. The platform provides easier searching based on meta-data as well as application monitoring. You can learn more about ['how we have integrated Sentry to improve application logging and monitoring'](https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/2139914261/Integrate+Sentry+to+improve+application+logging+and+monitoring)
+There are several alert rules configured on Sentry that will push notification to both email and Slack channel. We have created a dedicated slack channel (named 'laa-crime-apps-logs-alert'). Sentry will push the alert to this channel for a specific type of exceptions. The configuration for Slack alert can be change from a [Sentry dashboard](https://sentry.io/settings/ministryofjustice/projects/laa-maat-court-data-api/alerts/).  
+
+
+### Further reading
+ 
+
+Here are some links that might be useful to learn more about the project. 
+
+* [MLRA/MAAT - CDA Integration](https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1660387451/MLRA+MAAT+-+CDA+Integration) 
+
+* [MAAT Court Data API Deployment Requirements](https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1889992851/MAAT+Court+Data+API+Deployment+Requirements) 
+  
+* [Diagrams for LAA and the common platform](https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/1513128006/Diagrams)
+
+* [New Starter Guild](https://dsdmoj.atlassian.net/wiki/spaces/LAA/pages/1391460702/New+Hire+Check+List)
 
 
 

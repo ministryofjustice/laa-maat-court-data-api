@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
@@ -25,7 +26,7 @@ public class WQOffenceProcessor {
         WQOffenceEntity wqOffenceEntity = WQOffenceEntity.builder()
                 .caseId(magsCourtDTO.getCaseId())
                 .txId(magsCourtDTO.getTxId())
-                .asnSeq(offence.getAsnSeq())
+                .asnSeq(String.format(LEADING_ZERO_3, Integer.parseInt(offence.getAsnSeq())))
                 .offenceCode(offence.getOffenceCode())
                 .offenceClassification(offence.getOffenceClassification())
                 .legalAidStatus(mapLegalAidStatus(offence.getLegalAidStatus()))

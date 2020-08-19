@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.isConvicted;
+import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.isTrial;
 
 @AllArgsConstructor
 @Component
@@ -32,8 +33,14 @@ public final class CrownCourtProcessHelper {
     }
 
     public String isBenchWarrantIssued(final HearingResulted hearingResulted) {
-        List<String> offenceResultCodes = flattenResults(hearingResulted);
-        return anyResultCodeMatch(xlatResultRepository.findByCjsResultCodeIn(), offenceResultCodes) ? YES : null;
+
+        if (isTrial(hearingResulted.getCcOutComeData().getCcooOutcome())) {
+
+            List<String> offenceResultCodes = flattenResults(hearingResulted);
+            return anyResultCodeMatch(xlatResultRepository.findByCjsResultCodeIn(), offenceResultCodes) ? YES : null;
+        }
+
+        return null;
     }
 
     private boolean anyResultCodeMatch(final List<XLATResultEntity> resultCodes, final List<String> resultsFlattened) {

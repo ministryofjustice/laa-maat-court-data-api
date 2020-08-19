@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static gov.uk.courtdata.enums.CrownCourtAppealOutcome.UNSUCCESSFUL;
+import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.CONVICTED;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.rules.ExpectedException.none;
@@ -34,13 +36,12 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CrownCourtProcessHelperTest {
 
+    @Rule
+    public ExpectedException thrown = none();
     @InjectMocks
     private CrownCourtProcessHelper crownCourtProcessHelper;
     @Mock
     private XLATResultRepository xlatResultRepository;
-
-    @Rule
-    public ExpectedException thrown = none();
 
     @BeforeEach
     public void setUp() {
@@ -68,7 +69,7 @@ public class CrownCourtProcessHelperTest {
         HearingResulted hearing = hearingResultedWith("3030");
 
         String imprisoned = crownCourtProcessHelper.isImprisoned(hearing,
-                CrownCourtTrialOutcome.CONVICTED.getValue());
+                CONVICTED.getValue());
 
         assertAll("Imprisoned",
                 () -> assertNotNull(imprisoned),
@@ -104,7 +105,7 @@ public class CrownCourtProcessHelperTest {
         HearingResulted hearing = hearingResultedWith("1002");
 
         String imprisoned = crownCourtProcessHelper.isImprisoned(hearing,
-                CrownCourtTrialOutcome.CONVICTED.getValue());
+                CONVICTED.getValue());
 
         assertAll("Imprisoned",
                 () -> assertNotNull(imprisoned),
@@ -122,7 +123,7 @@ public class CrownCourtProcessHelperTest {
         HearingResulted hearing = hearingResultedWith("1002", "1070", "1111");
 
         String imprisoned = crownCourtProcessHelper.isImprisoned(hearing,
-                CrownCourtTrialOutcome.CONVICTED.getValue());
+                CONVICTED.getValue());
 
         assertAll("Imprisoned",
                 () -> assertNotNull(imprisoned),
@@ -140,7 +141,7 @@ public class CrownCourtProcessHelperTest {
         HearingResulted hearing = hearingResultedWith("1111", "2222", "3333");
 
         String imprisoned = crownCourtProcessHelper.isImprisoned(hearing,
-                CrownCourtTrialOutcome.CONVICTED.getValue());
+                CONVICTED.getValue());
 
         assertAll("Imprisoned",
                 () -> assertNotNull(imprisoned),
@@ -161,7 +162,7 @@ public class CrownCourtProcessHelperTest {
         //when
         when(xlatResultRepository.findByCjsResultCodeIn()).thenReturn(resultEntityList);
 
-        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted());
+        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted(CONVICTED.getValue()));
 
         //then
         verify(xlatResultRepository).findByCjsResultCodeIn();
@@ -173,7 +174,7 @@ public class CrownCourtProcessHelperTest {
         //when
         when(xlatResultRepository.findByCjsResultCodeIn()).thenReturn(null);
         thrown.expect(NullPointerException.class);
-        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted());
+        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted(CONVICTED.getValue()));
 
         //then
         verify(xlatResultRepository).findByCjsResultCodeIn();
@@ -181,11 +182,21 @@ public class CrownCourtProcessHelperTest {
     }
 
     @Test
+    public void givenHearingResulted_whenNotTrial_thenSetFlagToNull() {
+
+        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted(UNSUCCESSFUL.getValue()));
+
+        assertNull(status);
+
+    }
+
+    @Test
     public void givenHearingResulted_whenResultCodeIsEmpty_thenSetFlagToN() {
         //when
-        when(xlatResultRepository.findByCjsResultCodeIn()).thenReturn(Collections.singletonList(XLATResultEntity.builder().ccBenchWarrant("Y").cjsResultCode(3033).build()));
+        when(xlatResultRepository.findByCjsResultCodeIn()).thenReturn(
+                Collections.singletonList(XLATResultEntity.builder().ccBenchWarrant("Y").cjsResultCode(3033).build()));
 
-        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted());
+        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted(CONVICTED.getValue()));
 
         //then
         verify(xlatResultRepository).findByCjsResultCodeIn();
@@ -193,9 +204,10 @@ public class CrownCourtProcessHelperTest {
 
     }
 
-    private HearingResulted getHearingResulted() {
+    private HearingResulted getHearingResulted(String outcome) {
 
-        CCOutComeData ccOutComeData = CCOutComeData.builder().build();
+        CCOutComeData ccOutComeData = CCOutComeData.builder()
+                .ccooOutcome(outcome).build();
         Session session = Session.builder().courtLocation("OU").build();
         Offence offence = Offence.builder()
                 .results(Collections.singletonList(Result.builder().resultCode("3030").build()))

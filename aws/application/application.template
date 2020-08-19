@@ -608,6 +608,7 @@ Resources:
       JwtConfiguration:
         Audience:
           - !Ref CognitoUserPoolClient
+          - !Ref CognitoUserPoolClientCda
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiStage:
     Condition: cApiGateWayRollout
@@ -662,6 +663,22 @@ Resources:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
+      UserPoolId: !Ref CognitoUserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      GenerateSecret: true
+      SupportedIdentityProviders: [COGNITO]
+      AllowedOAuthFlows: [client_credentials]
+      AllowedOAuthScopes:
+        - !Sub '${pAppName}/${pApiScope1}'
+      PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - "ALLOW_REFRESH_TOKEN_AUTH"
+  CognitoUserPoolClientCda:
+    Condition: cApiGateWayRollout
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: CognitoUserPoolResourceServer1
+    Properties:
+      ClientName: "CDA"
       UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlowsUserPoolClient: true
       GenerateSecret: true

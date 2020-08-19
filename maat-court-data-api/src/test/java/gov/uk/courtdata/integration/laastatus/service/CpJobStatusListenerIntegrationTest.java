@@ -19,7 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
-public class LaaStatusJobListenerIntegrationTest {
+public class CpJobStatusListenerIntegrationTest {
 
     @Autowired
     private WqCoreRepository wqCoreRepository;

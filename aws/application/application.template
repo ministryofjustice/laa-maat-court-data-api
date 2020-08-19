@@ -64,6 +64,9 @@ Parameters:
   pLaaStatusJobQueue:
     Type: String
     Default: ''
+  pCreateLinkCpStatusJobQueue:
+    Type: String
+    Default: ''
 
 
   ###### API-Gateway parameters
@@ -495,6 +498,9 @@ Resources:
               Value: !Ref pPostMvpEnabled
             - Name: LAA_STATUS_JOB_QUEUE
               Value: !Ref pLaaStatusJobQueue
+            - Name: CREATE_LINK_CP_STATUS_JOB_QUEUE
+              Value: !Ref pCreateLinkCpStatusJobQueue
+
 
 
   CloudwatchLogsGroup:

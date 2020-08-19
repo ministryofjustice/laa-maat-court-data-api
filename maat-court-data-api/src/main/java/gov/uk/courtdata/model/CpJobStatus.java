@@ -1,4 +1,4 @@
-package gov.uk.courtdata.model.laastatus;
+package gov.uk.courtdata.model;
 
 
 import gov.uk.courtdata.enums.JobStatus;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LaaStatusJob {
+public class CpJobStatus {
 
     private Integer laaStatusTransactionId;
     private UUID laaTransactionId;

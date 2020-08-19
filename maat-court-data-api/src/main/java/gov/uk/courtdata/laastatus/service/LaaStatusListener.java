@@ -2,13 +2,10 @@ package gov.uk.courtdata.laastatus.service;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.enums.JobStatus;
 import gov.uk.courtdata.enums.QueueMessageType;
 import gov.uk.courtdata.laastatus.builder.CourtDataDTOBuilder;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.laastatus.LaaStatusJob;
 import gov.uk.courtdata.service.QueueMessageLogService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

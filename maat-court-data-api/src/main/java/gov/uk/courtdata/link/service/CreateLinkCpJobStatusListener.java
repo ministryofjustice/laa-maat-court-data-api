@@ -1,4 +1,4 @@
-package gov.uk.courtdata.laastatus.service;
+package gov.uk.courtdata.link.service;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.QueueMessageType;
@@ -15,23 +15,21 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 @ConditionalOnProperty(value = "feature.postMvpEnabled", havingValue = "true")
-public class LaaStatusJobListener {
+public class CreateLinkCpJobStatusListener {
 
-    private final LaaStatusJobService laaStatusJobService;
+    private final CreateLinkCpJobStatusService createLinkCpJobStatusService;
     private final Gson gson;
     private final QueueMessageLogService queueMessageLogService;
 
-    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.laaStatusJob}")
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.createLinkCpStatusJob}")
     public void receive(@Payload final String message) {
 
-        queueMessageLogService.createLog(QueueMessageType.LAA_STATUS_JOB, message);
+        queueMessageLogService.createLog(QueueMessageType.CREATE_LINK_CP_STATUS_JOB, message);
 
         CpJobStatus cpJobStatus = gson.fromJson(message, CpJobStatus.class);
 
-        laaStatusJobService.execute(cpJobStatus);
+        createLinkCpJobStatusService.execute(cpJobStatus);
 
-        log.info("Laa Status Job is Updated Successfully for MAAT ID - {} , Txn ID - {}",
-                cpJobStatus.getMaatId(), cpJobStatus.getLaaStatusTransactionId());
-
+        log.info("Create Link CP Status Job is Updated Successfully.");
     }
 }

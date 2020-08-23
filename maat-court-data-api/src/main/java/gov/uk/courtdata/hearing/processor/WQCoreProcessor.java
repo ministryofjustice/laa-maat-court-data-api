@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
 import static gov.uk.courtdata.constants.CourtDataConstants.MAGS_PROCESSING_SYSTEM_USER;
 import static gov.uk.courtdata.enums.WQStatus.WAITING;
 
@@ -52,7 +53,9 @@ public class WQCoreProcessor {
     private int processIfNewOffence(final HearingDTO magsCourtDTO) {
 
         Integer offenceCount =
-                offenceRepository.getOffenceCountForAsnSeq(magsCourtDTO.getCaseId(), magsCourtDTO.getOffence().getAsnSeq());
+                offenceRepository.getOffenceCountForAsnSeq(
+                        magsCourtDTO.getCaseId(),
+                        String.format(LEADING_ZERO_3, Integer.parseInt(magsCourtDTO.getOffence().getAsnSeq())));
 
         return offenceCount == 0 ? 0 : 99;
     }

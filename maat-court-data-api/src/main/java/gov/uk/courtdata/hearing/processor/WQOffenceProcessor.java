@@ -38,6 +38,7 @@ public class WQOffenceProcessor {
                 .offenceWording(offence.getOffenceWording())
                 .wqOffence(null)
                 .applicationFlag(G_NO)
+                .offenceId(offence.getOffenceId())
                 .build();
 
         wqOffenceRepository.save(wqOffenceEntity);

@@ -30,7 +30,7 @@ public class CrownCourtStoredProcedureRepository {
 
         ccOutcomeProcedure.getParameterRegistration("p_imprisoned").enablePassingNulls(true);
         ccOutcomeProcedure.getParameterRegistration("p_bench_warrant_issued").enablePassingNulls(true);
-
+        ccOutcomeProcedure.getParameterRegistration("p_appeal_type").enablePassingNulls(true);
 
         ccOutcomeProcedure.setParameter("p_rep_id", repId);
         ccOutcomeProcedure.setParameter("p_imprisoned", imprisoned);

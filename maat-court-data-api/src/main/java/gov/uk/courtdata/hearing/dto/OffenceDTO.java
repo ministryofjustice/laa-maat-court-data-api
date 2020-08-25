@@ -10,6 +10,7 @@ import lombok.*;
 public class OffenceDTO {
     private String offenceCode;
     private String asnSeq;
+    private String offenceId;
     private String offenceShortTitle;
     private String offenceClassification;
     private String offenceDate;

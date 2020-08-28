@@ -25,10 +25,10 @@ public class CrownCourtCaseTypeTest {
     }
 
     @Test
-    public void givenCaseTypeForTrialIsSummaryOnly_ReturnsTrue() {
+    public void givenCaseTypeForTrialIsEitherWayOnly_ReturnsTrue() {
 
         assertAll("CaseTypeForTrial",
-                () -> assertTrue(caseTypeForTrial(SUMMARY_ONLY.getValue())));
+                () -> assertTrue(caseTypeForTrial(EITHER_WAY.getValue())));
     }
 
     @Test
@@ -66,6 +66,6 @@ public class CrownCourtCaseTypeTest {
     public void givenCaseTypeNotForAppeal_ReturnsFalse() {
 
         assertAll("CaseTypeForAppeal",
-                () -> assertFalse(caseTypeForAppeal(SUMMARY_ONLY.getValue())));
+                () -> assertFalse(caseTypeForAppeal(EITHER_WAY.getValue())));
     }
 }

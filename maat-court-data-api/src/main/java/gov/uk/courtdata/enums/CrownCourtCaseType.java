@@ -14,6 +14,7 @@ public enum CrownCourtCaseType {
     INDICTABLE("INDICTABLE"),
     SUMMARY_ONLY("SUMMARY ONLY"),
     CC_ALREADY("CC ALREADY"),
+    EITHER_WAY("EITHER WAY"),
     APPEAL_CC("APPEAL CC");
 
     private String value;
@@ -21,7 +22,7 @@ public enum CrownCourtCaseType {
 
     public static boolean caseTypeForTrial(final String caseType) {
 
-        return Stream.of(INDICTABLE, SUMMARY_ONLY, CC_ALREADY)
+        return Stream.of(INDICTABLE, EITHER_WAY, CC_ALREADY)
                 .anyMatch(csType -> csType.getValue().equalsIgnoreCase(notEmpty(caseType)));
     }
 

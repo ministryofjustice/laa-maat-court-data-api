@@ -29,5 +29,6 @@ public final class CourtDataConstants {
     public static final String UNKNOWN_OFFENCE = "UNKNOWN OFFENCE";
 
     public static final String SYSTEM_UNLINKED = "System Unlinked";
+    public static final String RESULT_CODE_1000 = "1000";
 
 }

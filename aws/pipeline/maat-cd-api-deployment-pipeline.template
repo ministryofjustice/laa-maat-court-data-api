@@ -104,13 +104,107 @@ Resources:
               - "ecr:BatchGetImage"
               - "ecr:BatchCheckLayerAvailability"
 
+  CodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      RoleName: !Sub ${ApplicationName}-CodeBuildRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service:
+                - codebuild.amazonaws.com
+            Action:
+              - sts:AssumeRole
+
+  CodeBuildPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub ${ApplicationName}-CodeBuildPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+              - ecr:GetAuthorizationToken
+              - codebuild:DeleteWebhook
+              - codebuild:InvalidateProjectCache
+              - codebuild:StopBuild
+              - codebuild:ListSourceCredentials
+              - codebuild:UpdateWebhook
+              - codebuild:ListBuildsForProject
+              - codebuild:ListRepositories
+              - codebuild:CreateWebhook
+              - codebuild:CreateProject
+              - codebuild:UpdateProject
+              - codebuild:ImportSourceCredentials
+              - codebuild:ListBuilds
+              - codebuild:DeleteOAuthToken
+              - codebuild:DeleteProject
+              - codebuild:ListProjects
+              - codebuild:StartBuild
+              - codebuild:DeleteSourceCredentials
+              - codebuild:PersistOAuthToken
+              - codebuild:ListConnectedOAuthAccounts
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:GetObjectVersion
+              - s3:GetBucketPolicy
+              - s3:ListBucket
+            Resource:
+              -  !Join [ "", [ "arn:aws:s3:::", !ImportValue pipeline-ArtifactBucket ] ]
+              -  !Join [ "", [ "arn:aws:s3:::", !ImportValue pipeline-ArtifactBucket, "/*" ] ]
+          - Effect: Allow
+            Action:
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+              - kms:DescribeKey
+            Resource: !ImportValue pipeline-EncryptionKey
+          - Effect: Allow
+            Action:
+              - ecr:GetDownloadUrlForLayer
+              - ecr:BatchGetImage
+              - ecr:BatchCheckLayerAvailability
+              - ecr:PutImage
+              - ecr:InitiateLayerUpload
+              - ecr:UploadLayerPart
+              - ecr:CompleteLayerUpload
+            Resource: !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${ECRRepositoryName}"
+          - Effect: Allow
+            Action:
+              # Allow ECS to access specific secrets from Parameter Store
+              - 'ssm:GetParameters'
+            Resource:
+              - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/*'
+      Roles:
+        - !Ref CodeBuildServiceRole
+
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
       Name: !Join [ "", [ !Ref ApplicationName , "-appbuild" ] ]
       Description: !Join [ '', [ 'Project to build the Java application ', !Ref ApplicationName ] ]
       EncryptionKey: !ImportValue pipeline-EncryptionKey
-      ServiceRole: !Sub arn:aws:iam::${AWS::AccountId}:role/CodeBuildServiceRole
+      VpcConfig:
+        VpcId: !ImportValue mgmt-VpcId
+        Subnets:
+          - !ImportValue mgmt-PrivateSubnetA
+          - !ImportValue mgmt-PrivateSubnetB
+          - !ImportValue mgmt-PrivateSubnetC
+        SecurityGroupIds:
+          - !ImportValue sonarqube-CodeTestingSecurityGroup
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Artifacts:
         Location: !ImportValue pipeline-ArtifactBucket
         Type: "S3"
@@ -134,6 +228,9 @@ Resources:
             Value: !Ref ApplicationName
           - Name: IS_ROUTE_TO_LIVE
             Value: !Ref pIsRouteToLive
+          - Name: SONARQUBE_TOKEN
+            Type: PARAMETER_STORE
+            Value: maat-cd-api/SONARQUBE-TOKEN
       TimeoutInMinutes: 15
 
   Pipeline:

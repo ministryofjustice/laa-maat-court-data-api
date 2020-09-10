@@ -8,6 +8,7 @@ chmod +x ./gradlew && ./gradlew sonarqube \
   -Dsonar.projectKey=maat-cd-api \
   -Dsonar.host.url=http://sonarqube.aws.ssvs.legalservices.gov.uk \
   -Dsonar.login=${SONARQUBE_TOKEN}
+./gradlew build
 docker build -t maat-cda .
 docker tag maat-cda "${IMAGE_URI}"
 popd

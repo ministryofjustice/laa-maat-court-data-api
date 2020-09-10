@@ -183,7 +183,7 @@ Resources:
             Resource: !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${ECRRepositoryName}"
           - Effect: Allow
             Action:
-              # Allow ECS to access specific secrets from Parameter Store
+              # Allow CodeBuild to access specific secrets from Parameter Store
               - 'ssm:GetParameters'
             Resource:
               - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/*'

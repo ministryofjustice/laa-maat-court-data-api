@@ -152,6 +152,7 @@ Resources:
               - codebuild:DeleteSourceCredentials
               - codebuild:PersistOAuthToken
               - codebuild:ListConnectedOAuthAccounts
+              - ec2:*
             Resource: "*"
           - Effect: Allow
             Action:
@@ -183,7 +184,7 @@ Resources:
             Resource: !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${ECRRepositoryName}"
           - Effect: Allow
             Action:
-              # Allow ECS to access specific secrets from Parameter Store
+              # Allow CodeBuild to access specific secrets from Parameter Store
               - 'ssm:GetParameters'
             Resource:
               - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/*'
@@ -191,17 +192,19 @@ Resources:
         - !Ref CodeBuildServiceRole
 
   CodeBuildProject:
+    DependsOn:
+      - CodeBuildPolicy
     Type: AWS::CodeBuild::Project
     Properties:
       Name: !Join [ "", [ !Ref ApplicationName , "-appbuild" ] ]
       Description: !Join [ '', [ 'Project to build the Java application ', !Ref ApplicationName ] ]
       EncryptionKey: !ImportValue pipeline-EncryptionKey
       VpcConfig:
-        VpcId: !ImportValue mgmt-VpcId
+        VpcId: !ImportValue mgmt-prod-VpcId
         Subnets:
-          - !ImportValue mgmt-PrivateSubnetA
-          - !ImportValue mgmt-PrivateSubnetB
-          - !ImportValue mgmt-PrivateSubnetC
+          - !ImportValue mgmt-prod-PrivateSubnetA
+          - !ImportValue mgmt-prod-PrivateSubnetB
+          - !ImportValue mgmt-prod-PrivateSubnetC
         SecurityGroupIds:
           - !ImportValue sonarqube-CodeTestingSecurityGroup
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
@@ -230,7 +233,7 @@ Resources:
             Value: !Ref pIsRouteToLive
           - Name: SONARQUBE_TOKEN
             Type: PARAMETER_STORE
-            Value: maat-cd-api/SONARQUBE-TOKEN
+            Value: /maat-cd-api/SONARQUBE_TOKEN
       TimeoutInMinutes: 15
 
   Pipeline:

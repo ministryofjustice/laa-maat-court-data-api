@@ -147,6 +147,7 @@ pitest {
     mutationThreshold = 60
 }
 
+tasks['sonarqube'].dependsOn test
 
 sonarqube {
     properties {

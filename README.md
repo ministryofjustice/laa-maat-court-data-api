@@ -1,6 +1,6 @@
 ## laa-maat-court-data-api
 
-This is a Java based Spring Boot Application which will be hosted on AWS Environment. The project will be deploy as a Docker image to AWS ECS container service. This is a Facade application to the existing legacy Applications MAAT/MLRA. laa-maat-court-data-api orchestrates the traffics between Court Data Adaptor/Common Platform and MAAT/MLRA.
+This is a Java based Spring Boot Application which will be hosted on AWS Environment. The application is being deployed on to the AWS ECS container service. This is a Facade application to the existing LAA legacy Applications MAAT/MLRA. laa-maat-court-data-api orchestrates the traffics between Court Data Adaptor/Common Platform and MAAT/MLRA.
 
 This Application mainly supports 4 user Journeys. The Details of the journeys can be found on the following links.
 

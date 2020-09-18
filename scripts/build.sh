@@ -7,6 +7,7 @@ pushd maat-court-data-api
 chmod +x ./gradlew
 ./gradlew build
 ./gradlew sonarqube \
+  -Dsonar.scm.provider=git
   -Dsonar.projectKey=maat-cd-api \
   -Dsonar.host.url=http://sonarqube.aws.ssvs.legalservices.gov.uk \
   -Dsonar.login=${SONARQUBE_TOKEN}

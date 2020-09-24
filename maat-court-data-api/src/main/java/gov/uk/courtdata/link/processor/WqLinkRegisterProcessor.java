@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
 
@@ -24,7 +25,7 @@ public class WqLinkRegisterProcessor implements Process {
         Integer maatCat = geCategory(courtDataDTO);
         final WqLinkRegisterEntity wqLinkRegisterEntity = WqLinkRegisterEntity.builder()
                 .createdTxId(courtDataDTO.getTxId())
-                .createdDate(LocalDate.now())
+                .createdDate(LocalDateTime.now())
                 .createdUserId(caseDetails.getCreatedUser())
                 .caseId(courtDataDTO.getCaseId())
                 .libraId(courtDataDTO.getLibraId())

@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -19,7 +20,7 @@ public class WqLinkRegisterEntity {
     @Column(name = "CASE_ID")
     private Integer caseId;
     @Column(name = "CREATED_DATE")
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
     @Column(name = "CREATED_USER_ID")
     private String createdUserId;
     @Column(name = "REMOVED_TX_ID")

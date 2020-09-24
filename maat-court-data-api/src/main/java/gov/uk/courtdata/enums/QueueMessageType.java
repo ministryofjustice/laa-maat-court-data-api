@@ -6,6 +6,7 @@ public enum QueueMessageType {
     LAA_STATUS,
     HEARING,
     LAA_STATUS_JOB,
-    CREATE_LINK_CP_STATUS_JOB
+    CREATE_LINK_CP_STATUS_JOB,
+    LAA_STATUS_UPDATE
 
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -77,7 +78,7 @@ public class UnLinkImpl {
                 .wqType(WQ_UNLINK_EVENT)
                 .wqStatus(WQ_SUCCESS_STATUS)
                 .createdUserId(unlink.getUserId())
-                .createdTime(LocalDate.now())
+                .createdTime(LocalDateTime.now())
                 .caseId(wqLinkRegisterEntity.getCaseId())
                 .build();
         wqCoreRepository.save(wqCoreEntity);

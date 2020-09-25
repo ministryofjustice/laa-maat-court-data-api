@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
@@ -31,7 +32,7 @@ public class WQCoreProcessor {
         WqCoreEntity wqCoreEntity = WqCoreEntity.builder()
                 .txId(magsCourtDTO.getTxId())
                 .caseId(magsCourtDTO.getCaseId())
-                .createdTime(LocalDate.now())
+                .createdTime(LocalDateTime.now())
                 .createdUserId(MAGS_PROCESSING_SYSTEM_USER)
                 .extendedProcessing(processIfNewOffence(magsCourtDTO))
                 .wqType(findWQType(magsCourtDTO.getResult().getResultCode()))

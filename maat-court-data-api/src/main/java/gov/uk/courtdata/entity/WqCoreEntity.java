@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -28,11 +29,11 @@ public class WqCoreEntity {
     @Column(name = "LOCK_USER_ID")
     private String lockUserId;
     @Column(name = "CREATED_TIME")
-    private LocalDate createdTime;
+    private LocalDateTime createdTime;
     @Column(name = "PROCESSED_USER_ID")
     private String processedUserId;
     @Column(name = "PROCESSED_TIME")
-    private LocalDate processedTime;
+    private LocalDateTime processedTime;
     @Column(name = "XML_ID")
     private Integer xmlID;
     @Column(name = "EXTENDED_PROCESSING")

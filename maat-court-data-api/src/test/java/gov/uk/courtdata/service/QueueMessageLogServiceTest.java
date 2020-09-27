@@ -3,7 +3,7 @@ package gov.uk.courtdata.service;
 
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
-import gov.uk.courtdata.enums.QueueMessageType;
+import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ public class QueueMessageLogServiceTest {
 
         final Integer maatId = 1000;
 
-        queueMessageLogService.createLog(QueueMessageType.LINK, newQueueMessage(maatId));
+        queueMessageLogService.createLog(MessageType.LINK, newQueueMessage(maatId));
 
         verify(queueMessageLogRepository, times(1)).save(queueMessageCaptor.capture());
 
@@ -50,7 +50,7 @@ public class QueueMessageLogServiceTest {
                 () -> assertNotNull(savedQueueMsg.getMessage()),
                 () -> assertNotNull(savedQueueMsg.getCreatedTime()),
                 () -> assertEquals(savedQueueMsg.getMaatId(), maatId),
-                () -> assertEquals(savedQueueMsg.getType(), QueueMessageType.LINK.name())
+                () -> assertEquals(savedQueueMsg.getType(), MessageType.LINK.name())
 
         );
     }
@@ -60,7 +60,7 @@ public class QueueMessageLogServiceTest {
 
         final Integer maatId = 1000;
 
-        queueMessageLogService.createLog(QueueMessageType.UNLINK, newQueueMessage(maatId));
+        queueMessageLogService.createLog(MessageType.UNLINK, newQueueMessage(maatId));
 
         verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
 
@@ -74,7 +74,7 @@ public class QueueMessageLogServiceTest {
                 () -> assertNotNull(savedQueueMsg.getMessage()),
                 () -> assertNotNull(savedQueueMsg.getCreatedTime()),
                 () -> assertEquals(savedQueueMsg.getMaatId(), maatId),
-                () -> assertEquals(savedQueueMsg.getType(), QueueMessageType.UNLINK.name())
+                () -> assertEquals(savedQueueMsg.getType(), MessageType.UNLINK.name())
 
         );
     }
@@ -84,7 +84,7 @@ public class QueueMessageLogServiceTest {
 
         final Integer maatId = 1000;
 
-        queueMessageLogService.createLog(QueueMessageType.HEARING,
+        queueMessageLogService.createLog(MessageType.HEARING,
                 newHearingQueueMessage(maatId, JurisdictionType.MAGISTRATES));
 
         verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
@@ -110,7 +110,7 @@ public class QueueMessageLogServiceTest {
 
         final Integer maatId = 1000;
 
-        queueMessageLogService.createLog(QueueMessageType.HEARING,
+        queueMessageLogService.createLog(MessageType.HEARING,
                 newHearingQueueMessage(maatId, JurisdictionType.CROWN));
 
         verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
@@ -136,7 +136,7 @@ public class QueueMessageLogServiceTest {
 
         final Integer maatId = 1000;
 
-        queueMessageLogService.createLog(QueueMessageType.LAA_STATUS, newQueueMessage(maatId));
+        queueMessageLogService.createLog(MessageType.LAA_STATUS, newQueueMessage(maatId));
 
         verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
 
@@ -150,7 +150,7 @@ public class QueueMessageLogServiceTest {
                 () -> assertNotNull(savedQueueMsg.getMessage()),
                 () -> assertNotNull(savedQueueMsg.getCreatedTime()),
                 () -> assertEquals(savedQueueMsg.getMaatId(), maatId),
-                () -> assertEquals(savedQueueMsg.getType(), QueueMessageType.LAA_STATUS.name())
+                () -> assertEquals(savedQueueMsg.getType(), MessageType.LAA_STATUS.name())
 
         );
     }
@@ -180,7 +180,7 @@ public class QueueMessageLogServiceTest {
     private String expectedType(JurisdictionType jurisdictionType) {
         return
                 new StringBuilder()
-                        .append(QueueMessageType.HEARING.name())
+                        .append(MessageType.HEARING.name())
                         .append("-")
                         .append(jurisdictionType.name())
                         .toString();

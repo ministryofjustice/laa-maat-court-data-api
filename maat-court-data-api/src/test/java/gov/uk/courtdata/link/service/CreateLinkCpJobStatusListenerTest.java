@@ -1,7 +1,7 @@
 package gov.uk.courtdata.link.service;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.enums.QueueMessageType;
+import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.CpJobStatus;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import org.junit.Test;
@@ -45,6 +45,6 @@ public class CreateLinkCpJobStatusListenerTest {
         createLinkCpJobStatusListener.receive(message);
 
         verify(createLinkCpJobStatusService).execute(cpJobStatus);
-        verify(queueMessageLogService).createLog(QueueMessageType.CREATE_LINK_CP_STATUS_JOB, message);
+        verify(queueMessageLogService).createLog(MessageType.CREATE_LINK_CP_STATUS_JOB, message);
     }
 }

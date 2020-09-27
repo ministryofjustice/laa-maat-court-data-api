@@ -1,6 +1,6 @@
 package gov.uk.courtdata.enums;
 
-public enum QueueMessageType {
+public enum MessageType {
     LINK,
     UNLINK,
     LAA_STATUS,

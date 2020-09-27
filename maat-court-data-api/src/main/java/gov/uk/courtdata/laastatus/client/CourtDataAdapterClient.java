@@ -1,7 +1,7 @@
 package gov.uk.courtdata.laastatus.client;
 
 import com.google.gson.GsonBuilder;
-import gov.uk.courtdata.enums.QueueMessageType;
+import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +37,7 @@ public class CourtDataAdapterClient {
 
 
         final String laaStatusUpdateJson = gsonBuilder.create().toJson(laaStatusUpdate);
-        queueMessageLogService.createLog(QueueMessageType.LAA_STATUS_UPDATE,laaStatusUpdateJson);
-        log.info("  JSON request : {} ", laaStatusUpdateJson);
+        queueMessageLogService.createLog(MessageType.LAA_STATUS_UPDATE,laaStatusUpdateJson);
 
         log.info("Post Laa status to CDA.");
         String clientResponse =

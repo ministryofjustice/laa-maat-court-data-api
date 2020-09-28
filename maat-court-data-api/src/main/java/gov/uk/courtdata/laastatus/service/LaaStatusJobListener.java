@@ -1,7 +1,7 @@
 package gov.uk.courtdata.laastatus.service;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.enums.QueueMessageType;
+import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.CpJobStatus;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class LaaStatusJobListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.laaStatusJob}")
     public void receive(@Payload final String message) {
 
-        queueMessageLogService.createLog(QueueMessageType.LAA_STATUS_JOB, message);
+        queueMessageLogService.createLog(MessageType.LAA_STATUS_JOB, message);
 
         CpJobStatus cpJobStatus = gson.fromJson(message, CpJobStatus.class);
 

@@ -2,7 +2,7 @@ package gov.uk.courtdata.laastatus.service;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.enums.QueueMessageType;
+import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.laastatus.builder.CourtDataDTOBuilder;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.service.QueueMessageLogService;
@@ -44,7 +44,7 @@ public class LaaStatusListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.laaStatus}")
     public void receive(@Payload final String message) {
 
-        queueMessageLogService.createLog(QueueMessageType.LAA_STATUS, message);
+        queueMessageLogService.createLog(MessageType.LAA_STATUS, message);
         CaseDetails laaStatusUpdate = gson.fromJson(message, CaseDetails.class);
 
         CourtDataDTO courtDataDTO = courtDataDTOBuilder.build(laaStatusUpdate);

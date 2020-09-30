@@ -8,12 +8,13 @@ public enum WQType {
     COMMITTAL_QUEUE(1),
     INDICTABLE_QUEUE(2),
     CONCLUSION_QUEUE(7),
-    USER_INTERVENTIONS_QUEUE(8);
+    USER_INTERVENTIONS_QUEUE(8),
+    TRANSFER_OF_SOLICITOR(3);
 
     private int value;
 
     /**
-     * @param value
+     * @param value enum value.
      */
     WQType(final int value) {
         this.value = value;

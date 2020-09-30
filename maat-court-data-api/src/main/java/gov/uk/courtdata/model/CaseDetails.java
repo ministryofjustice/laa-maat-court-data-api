@@ -25,4 +25,5 @@ public class CaseDetails {
     private List<Session> sessions;
     private Integer category;
     private UUID laaTransactionId;
+    private boolean onlyForCDAService;
 }

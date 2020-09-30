@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,14 +23,11 @@ public class CPDataValidator implements IValidator<Void, CaseDetails> {
     @Override
     public Optional<Void> validate(CaseDetails caseDetails) {
 
-        if (isEmpty(caseDetails.getCaseUrn()))
-            throw new ValidationException("CaseURN can't be null or empty on request.");
-
         Optional<RepOrderCPDataEntity> repOrderCPDataEntity = repOrderCPDataRepository.findByrepOrderId(caseDetails.getMaatId());
 
         if (repOrderCPDataEntity.isEmpty())
-                throw new ValidationException(
-                        format("MaatId %s has no common platform data created against Maat application.", caseDetails.getMaatId()));
+            throw new ValidationException(
+                    format("MaatId %s has no common platform data created in MAAT.", caseDetails.getMaatId()));
 
         return Optional.empty();
     }

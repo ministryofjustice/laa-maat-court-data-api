@@ -124,29 +124,7 @@ public class LinkControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.message",
-                        is("MaatId 1000 has no common platform data created against Maat application.")));
-    }
-
-    @Test
-    public void testWhenCaseUrnNotExists_Returns400ClientError() throws Exception {
-
-        final Integer maatId = 1000;
-
-        // Create Rep order with maatId
-        repOrderRepository.save(createRepOrderEntity(maatId));
-
-        final CaseDetailsValidate caseDetailsValidate =
-                CaseDetailsValidate
-                        .builder()
-                        .maatId(maatId)
-                        .build();
-
-        String json = objectMapper.writeValueAsString(caseDetailsValidate);
-
-        this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
-                .contentType(MediaType.APPLICATION_JSON)).andDo(print())
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message", is("CaseURN can't be null or empty on request.")));
+                        is("MaatId 1000 has no common platform data created in MAAT.")));
     }
 
 

@@ -2,7 +2,7 @@ package gov.uk.courtdata.laastatus.service;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.enums.QueueMessageType;
+import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.laastatus.builder.CourtDataDTOBuilder;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Defendant;
@@ -55,7 +55,7 @@ public class LaaStatusListenerTest {
         laaStatusListener.receive(sqsMessage);
 
         verify(laaStatusPostCDAService).process(courtDataDTO);
-        verify(queueMessageLogService).createLog(QueueMessageType.LAA_STATUS, sqsMessage);
+        verify(queueMessageLogService).createLog(MessageType.LAA_STATUS, sqsMessage);
     }
 
 
@@ -75,7 +75,7 @@ public class LaaStatusListenerTest {
         verify(laaStatusPostCDAService).process(courtDataDTO);
         verify(laaStatusService).execute(courtDataDTO);
 
-        verify(queueMessageLogService).createLog(QueueMessageType.LAA_STATUS, sqsMessage);
+        verify(queueMessageLogService).createLog(MessageType.LAA_STATUS, sqsMessage);
 
     }
 

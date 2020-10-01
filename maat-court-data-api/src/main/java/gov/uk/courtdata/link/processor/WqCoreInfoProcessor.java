@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_CREATION_EVENT;
 
@@ -31,7 +32,8 @@ public class WqCoreInfoProcessor implements Process {
         WqCoreEntity wqCoreEntity = WqCoreEntity.builder()
                 .txId(courtDataDTO.getTxId())
                 .caseId(courtDataDTO.getCaseId())
-                .createdTime(LocalDate.now())
+                .createdTime(LocalDateTime.now())
+                .processedTime(LocalDateTime.now())
                 .createdUserId(caseDetails.getCreatedUser())
                 .wqType(getWQEvent())
                 .wqStatus(Boolean.TRUE.toString().equalsIgnoreCase(isPostMVPEnabled) ? WQStatus.WAITING.value() : WQStatus.SUCCESS.value())

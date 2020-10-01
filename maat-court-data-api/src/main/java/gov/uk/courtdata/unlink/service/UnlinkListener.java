@@ -1,7 +1,7 @@
 package gov.uk.courtdata.unlink.service;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.enums.QueueMessageType;
+import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import gov.uk.courtdata.unlink.processor.UnLinkProcessor;
@@ -28,7 +28,7 @@ public class UnlinkListener {
     public void receive(@Payload final String message) {
 
 
-        queueMessageLogService.createLog(QueueMessageType.UNLINK, message);
+        queueMessageLogService.createLog(MessageType.UNLINK, message);
         Unlink unlink = gson.fromJson(message, Unlink.class);
         unLinkProcessor.process(unlink);
     }

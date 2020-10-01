@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
-import gov.uk.courtdata.enums.QueueMessageType;
+import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import static gov.uk.courtdata.enums.MessageType.LAA_STATUS_UPDATE;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -22,12 +24,16 @@ public class QueueMessageLogService {
     private final QueueMessageLogRepository queueMessageLogRepository;
 
 
-    public void createLog(final QueueMessageType messageType, final String message) {
+    public void createLog(final MessageType messageType, final String message) {
 
         JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
 
         JsonElement uuid = msgObject.get("laaTransactionId");
-        JsonElement maatId = msgObject.get("maatId");
+        JsonElement maatId = messageType.equals(LAA_STATUS_UPDATE) ?
+                msgObject.get("data")
+                        .getAsJsonObject().get("attributes")
+                        .getAsJsonObject().get("maat_reference")
+                : msgObject.get("maatId");
 
         QueueMessageLogEntity queueMessageLogEntity =
                 QueueMessageLogEntity.builder()
@@ -43,7 +49,7 @@ public class QueueMessageLogService {
     }
 
 
-    private String prepareMessageType(QueueMessageType messageType, JsonObject msgObject) {
+    private String prepareMessageType(MessageType messageType, JsonObject msgObject) {
 
         final JsonElement jurType = msgObject.get("jurisdictionType");
         final StringBuilder msgBuilder = new StringBuilder().append(messageType.name());

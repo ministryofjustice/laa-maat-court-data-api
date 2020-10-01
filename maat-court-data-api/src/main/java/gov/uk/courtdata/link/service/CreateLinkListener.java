@@ -1,7 +1,7 @@
 package gov.uk.courtdata.link.service;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.enums.QueueMessageType;
+import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.AllArgsConstructor;
@@ -32,7 +32,7 @@ public class CreateLinkListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.link}")
     public void receive(@Payload final String message)  {
 
-        queueMessageLogService.createLog(QueueMessageType.LINK,message);
+        queueMessageLogService.createLog(MessageType.LINK,message);
         CaseDetails linkMessage = gson.fromJson(message, CaseDetails.class);
 
         createLinkService.saveAndLink(linkMessage);

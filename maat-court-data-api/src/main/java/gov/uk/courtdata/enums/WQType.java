@@ -8,8 +8,7 @@ public enum WQType {
     COMMITTAL_QUEUE(1),
     INDICTABLE_QUEUE(2),
     CONCLUSION_QUEUE(7),
-    USER_INTERVENTIONS_QUEUE(8),
-    TRANSFER_OF_SOLICITOR(3);
+    USER_INTERVENTIONS_QUEUE(8);
 
     private int value;
 

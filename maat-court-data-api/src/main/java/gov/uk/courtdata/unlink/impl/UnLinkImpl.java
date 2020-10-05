@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.*;
@@ -48,7 +47,7 @@ public class UnLinkImpl {
         WqLinkRegisterEntity wqLinkRegisterEntity = unlinkModel.getWqLinkRegisterEntity();
         wqLinkRegisterEntity.setRemovedTxId(unlinkModel.getTxId());
         wqLinkRegisterEntity.setRemovedUserId(unlinkModel.getUnlink().getUserId());
-        wqLinkRegisterEntity.setRemovedDate(LocalDate.now());
+        wqLinkRegisterEntity.setRemovedDate(LocalDateTime.now());
 
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
     }
@@ -57,7 +56,7 @@ public class UnLinkImpl {
         Unlink unlink = unlinkModel.getUnlink();
 
         final String otherReasonText = isBlank(unlink.getOtherReasonText()) ? SYSTEM_UNLINKED :
-        unlink.getOtherReasonText();
+                unlink.getOtherReasonText();
 
         UnlinkEntity unlinkEntity = UnlinkEntity.builder()
                 .caseId(unlinkModel.getWqLinkRegisterEntity().getCaseId())

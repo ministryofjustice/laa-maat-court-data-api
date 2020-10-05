@@ -26,7 +26,7 @@ public class WqLinkRegisterEntity {
     @Column(name = "REMOVED_TX_ID")
     private Integer removedTxId;
     @Column(name = "REMOVED_DATE")
-    private LocalDate removedDate;
+    private LocalDateTime removedDate;
     @Column(name = "REMOVED_USER_ID")
     private String removedUserId;
     @Column(name = "LIBRA_ID")

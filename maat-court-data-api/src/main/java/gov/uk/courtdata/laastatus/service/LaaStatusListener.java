@@ -53,20 +53,24 @@ public class LaaStatusListener {
         } else {
             log.info("POST Rep Order update to CDA");
             laaStatusPostCDAService.process(courtDataDTO);
-            log.info("Update LAA status");
-            laaStatusService.execute(courtDataDTO);
-            log.info("After laa update");
+            log.info("After POST Rep Order update to CDA");
+            processLaaStatusService(courtDataDTO);
         }
     }
 
     private void processLaaStatus(CourtDataDTO courtDataDTO) {
-
-        log.info("Update LAA status");
-        laaStatusService.execute(courtDataDTO);
-        log.info("After laa update");
+        processLaaStatusService(courtDataDTO);
         log.info("POST Rep Order update to CDA");
         laaStatusPostCDAService.process(courtDataDTO);
 
+    }
 
+    private void processLaaStatusService(CourtDataDTO courtDataDTO) {
+
+        if (!courtDataDTO.getCaseDetails().isOnlyForCDAService()) {
+            log.info("Update LAA status");
+            laaStatusService.execute(courtDataDTO);
+            log.info("After laa update");
+        }
     }
 }

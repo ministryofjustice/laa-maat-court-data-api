@@ -13,7 +13,7 @@ public enum WQType {
     private int value;
 
     /**
-     * @param value
+     * @param value enum value.
      */
     WQType(final int value) {
         this.value = value;

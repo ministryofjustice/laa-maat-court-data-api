@@ -1,9 +1,14 @@
 package gov.uk.courtdata.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.time.LocalDate;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Data
@@ -26,7 +31,7 @@ public class WqLinkRegisterEntity {
     @Column(name = "REMOVED_TX_ID")
     private Integer removedTxId;
     @Column(name = "REMOVED_DATE")
-    private LocalDate removedDate;
+    private LocalDateTime removedDate;
     @Column(name = "REMOVED_USER_ID")
     private String removedUserId;
     @Column(name = "LIBRA_ID")

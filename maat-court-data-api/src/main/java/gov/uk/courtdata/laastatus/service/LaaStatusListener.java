@@ -51,26 +51,28 @@ public class LaaStatusListener {
         if (Boolean.TRUE.toString().equalsIgnoreCase(isPostMVPEnabled)) {
             processLaaStatus(courtDataDTO);
         } else {
-            log.info("POST Rep Order update to CDA");
-            laaStatusPostCDAService.process(courtDataDTO);
-            log.info("After POST Rep Order update to CDA");
-            processLaaStatusService(courtDataDTO);
+            processLaaStatusServiceForCDA(courtDataDTO);
+            processLaaStatusServiceForMLA(courtDataDTO);
         }
     }
 
     private void processLaaStatus(CourtDataDTO courtDataDTO) {
-        processLaaStatusService(courtDataDTO);
-        log.info("POST Rep Order update to CDA");
-        laaStatusPostCDAService.process(courtDataDTO);
-
+        processLaaStatusServiceForMLA(courtDataDTO);
+        processLaaStatusServiceForCDA(courtDataDTO);
     }
 
-    private void processLaaStatusService(CourtDataDTO courtDataDTO) {
+    private void processLaaStatusServiceForCDA(CourtDataDTO courtDataDTO) {
+        log.info("Start - POST Rep Order update to CDA");
+        laaStatusPostCDAService.process(courtDataDTO);
+        log.info("Ends - POST Rep Order update to CDA");
+    }
+
+    private void processLaaStatusServiceForMLA(CourtDataDTO courtDataDTO) {
 
         if (!courtDataDTO.getCaseDetails().isOnlyForCDAService()) {
-            log.info("Update LAA status");
+            log.info("Start - Update LAA status to MLA");
             laaStatusService.execute(courtDataDTO);
-            log.info("After laa update");
+            log.info("Ends - After laa update to MLA");
         }
     }
 }

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.link.controller;
 
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.link.validator.PreConditionsValidator;
 import gov.uk.courtdata.model.CaseDetailsValidate;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import static gov.uk.courtdata.exception.GlobalAppLoggingHandler.LAA_TRANSACTION_ID;
 
 @RestController
 
@@ -41,7 +40,7 @@ public class LinkController {
             @RequestBody CaseDetailsValidate caseDetailsValidate,
             @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        MDC.put(LAA_TRANSACTION_ID, laaTransactionId);
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info("Validate link request.");
         preConditionsValidator.validate(caseDetailsValidate);
 

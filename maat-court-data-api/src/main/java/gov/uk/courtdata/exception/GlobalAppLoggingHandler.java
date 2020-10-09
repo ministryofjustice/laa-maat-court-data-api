@@ -1,6 +1,7 @@
 package gov.uk.courtdata.exception;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.LaaTransactionLogging;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,13 +16,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GlobalAppLoggingHandler {
 
-    public static final String LAA_TRANSACTION_ID = "laaTransactionId";
-    public static final String CASE_URN = "caseUrn";
-    public static final String MESSAGE = "message";
-    public static final String MAATID = "maatId";
-
     private final Gson gson;
-
 
     /**
      * This method will execute whenever a exception occour in any of the following (service) package and a class has method name receive.
@@ -61,10 +56,10 @@ public class GlobalAppLoggingHandler {
 
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);
 
-        MDC.put(MESSAGE, laaTransactionLogging.toString());
-        MDC.put(CASE_URN, laaTransactionLogging.getCaseUrn());
-        MDC.put(LAA_TRANSACTION_ID, laaTransactionLogging.getLaaTransactionId() != null ? laaTransactionLogging.getLaaTransactionId().toString() : "");
-        MDC.put(MAATID, laaTransactionLogging.getMaatId().toString());
+        MDC.put(LoggingData.MESSAGE.getValue(), laaTransactionLogging.toString());
+        MDC.put(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn());
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionLogging.getLaaTransactionId() != null ? laaTransactionLogging.getLaaTransactionId().toString() : "");
+        MDC.put(LoggingData.MAATID.getValue(), laaTransactionLogging.getMaatId().toString());
         log.info("Received a json payload from a queue and converted.");
     }
 }

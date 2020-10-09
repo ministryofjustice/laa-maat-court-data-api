@@ -1,6 +1,7 @@
 package gov.uk.courtdata.unlink.controller;
 
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.unlink.validator.UnLinkValidationProcessor;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import static gov.uk.courtdata.exception.GlobalAppLoggingHandler.LAA_TRANSACTION_ID;
 
 @RestController
 @RequestMapping("/unlink")
@@ -39,7 +38,7 @@ public class UnLinkController {
             @Parameter(description = "Case details data", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Unlink.class))) @RequestBody Unlink unlink) {
 
-        MDC.put(LAA_TRANSACTION_ID, laaTransactionId);
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info("LAA Status Update Request received");
         unLinkValidationProcessor.validate(unlink);
 

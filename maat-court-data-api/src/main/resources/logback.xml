@@ -1,7 +1,7 @@
 <configuration>
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level meta-data:%X{message} - %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level maat-id:%X{maatId} - laaTransactionId:%X{laaTransactionId} - %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -10,7 +10,7 @@
             <level>INFO</level>
         </filter>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level maat-id:%X{maatId} - laaTransactionId:%X{laaTransactionId} - %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 

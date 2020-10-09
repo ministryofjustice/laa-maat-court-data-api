@@ -7,7 +7,6 @@ import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;

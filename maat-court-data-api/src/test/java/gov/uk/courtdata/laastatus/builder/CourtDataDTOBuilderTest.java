@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -62,6 +63,7 @@ public class CourtDataDTOBuilderTest {
                 .defendant(Defendant.builder().surname("Smith")
                         .offences(Collections.singletonList(Offence.builder().asnSeq("67")
                                 .offenceCode("A603060")
+                                .legalAidStatus("GR")
                                 .build()))
                         .build())
                 .build();
@@ -82,6 +84,7 @@ public class CourtDataDTOBuilderTest {
                 .caseId(88999)
                 .offenceId("90")
                 .offenceCode("A603060")
+                .legalAidStatusDate(LocalDate.now())
                 .build());
 
         //when
@@ -116,6 +119,7 @@ public class CourtDataDTOBuilderTest {
                         .offences(Collections.singletonList(Offence.builder().asnSeq("67")
                                 .offenceCode("A603060")
                                 .offenceId("ad691bec-8d87-4a5b-969a-66002b6a6da9")
+                                .legalAidStatus("GR")
                                 .build()))
                         .build())
                 .build();
@@ -135,6 +139,61 @@ public class CourtDataDTOBuilderTest {
         Optional<OffenceEntity> offenceEntity = Optional.of(OffenceEntity.builder()
                 .caseId(88999)
                 .offenceId("90")
+                .offenceCode("A603060")
+                .legalAidStatusDate(LocalDate.now())
+                .build());
+
+        //when
+        when(wqLinkRegisterRepository.findBymaatId(anyInt())).thenReturn(wqLinkRegisterEntityList);
+        when(solicitorMAATDataRepository.findBymaatId(anyInt())).thenReturn(optionalSolicitorMAATDataEntity);
+        when(defendantMAATDataRepository.findBymaatId(anyInt())).thenReturn(optionalDefendantMAATDataEntity);
+        when(offenceRepository.findByMaxTxId(anyInt(), anyString(), anyString())).thenReturn(offenceEntity);
+
+        CourtDataDTO courtDataDTO = courtDataDTOBuilder.build(caseDetails);
+
+        //then
+        verify(wqLinkRegisterRepository).findBymaatId(anyInt());
+        verify(solicitorMAATDataRepository).findBymaatId(anyInt());
+        verify(defendantMAATDataRepository).findBymaatId(anyInt());
+        verify(offenceRepository).findByMaxTxId(anyInt(), anyString(), anyString());
+
+        Offence offence =
+                courtDataDTO.getCaseDetails().getDefendant().getOffences().iterator().next();
+
+        assertThat(offence.getOffenceCode().equals("A603060"));
+        assertThat(offence.getOffenceId().equals("ad691bec-8d87-4a5b-969a-66002b6a6da9"));
+
+    }
+
+    @Test
+    public void givenCaseDetails_whenLegalAidStatusIsPending_thenIncludesOffenceDetails() {
+
+
+        CaseDetails caseDetails = CaseDetails.builder().maatId(12)
+                .defendant(Defendant.builder().surname("Smith")
+                        .offences(Collections.singletonList(Offence.builder().asnSeq("67")
+                                .offenceCode("A603060")
+                                .offenceId("ad691bec-8d87-4a5b-969a-66002b6a6da9")
+                                .legalAidStatus("AP")
+                                .build()))
+                        .build())
+                .build();
+
+        List<WqLinkRegisterEntity> wqLinkRegisterEntityList =
+                Collections.singletonList(WqLinkRegisterEntity.builder()
+                        .libraId("4506454")
+                        .proceedingId(789)
+                        .caseId(12).build());
+
+        Optional<SolicitorMAATDataEntity> optionalSolicitorMAATDataEntity =
+                Optional.of(SolicitorMAATDataEntity.builder().maatId(12).build());
+
+        Optional<DefendantMAATDataEntity> optionalDefendantMAATDataEntity =
+                Optional.of(DefendantMAATDataEntity.builder().maatId(12).build());
+
+        Optional<OffenceEntity> offenceEntity = Optional.of(OffenceEntity.builder()
+                .caseId(8999)
+                .offenceId("91")
                 .offenceCode("A603060")
                 .build());
 
@@ -159,6 +218,8 @@ public class CourtDataDTOBuilderTest {
         assertThat(offence.getOffenceId().equals("ad691bec-8d87-4a5b-969a-66002b6a6da9"));
 
     }
+
+
 
     @Test(expected = NoSuchElementException.class)
     public void givenCaseDetailsIsReceived_whenCourtDataDTOBuilderIsInvoked_thenThrowException() {

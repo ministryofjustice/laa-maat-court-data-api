@@ -49,7 +49,7 @@ public class CPDataValidatorTest {
         final int maatId = 1000;
         Mockito.when(repOrderCPDataRepository.findByrepOrderId(maatId)).thenReturn(Optional.empty());
         thrown.expect(ValidationException.class);
-        thrown.expectMessage("MaatId 1000 has no common platform data created against Maat application.");
+        thrown.expectMessage("1000 has no common platform data created against Maat application.");
 
         CPDataValidator.validate(CaseDetails.builder().maatId(maatId)
                 .caseUrn("caseURN").build());

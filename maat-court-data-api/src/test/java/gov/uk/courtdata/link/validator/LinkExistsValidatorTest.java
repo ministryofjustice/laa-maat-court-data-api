@@ -51,7 +51,7 @@ public class LinkExistsValidatorTest {
                 .thenReturn(BigDecimal.ONE.intValue());
 
         thrown.expect(ValidationException.class);
-        thrown.expectMessage("MaatId already linked to the application.");
+        thrown.expectMessage("0 is already linked to a case.");
         linkExistsValidator.validate(Mockito.anyInt());
     }
 

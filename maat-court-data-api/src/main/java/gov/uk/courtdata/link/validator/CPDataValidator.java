@@ -31,7 +31,7 @@ public class CPDataValidator implements IValidator<Void, CaseDetails> {
 
         if (repOrderCPDataEntity.isEmpty())
                 throw new ValidationException(
-                        format("MaatId %s has no common platform data created against Maat application.", caseDetails.getMaatId()));
+                        format("%s has no common platform data created against Maat application.", caseDetails.getMaatId()));
 
         return Optional.empty();
     }

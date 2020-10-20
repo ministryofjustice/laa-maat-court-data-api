@@ -30,11 +30,11 @@ public class MaatIdValidator implements IValidator<Void, Integer> {
         if (maatId != null && maatId > 0) {
             Optional<RepOrderEntity> repOrderEntity = repOrderRepository.findById(maatId);
             if (repOrderEntity.isEmpty())
-                throw new ValidationException(maatId + " is Not a Valid MAAT ID");
+                throw new ValidationException(maatId + " is invalid.");
             return Optional.empty();
 
         } else {
-            throw new ValidationException("MAAT id is missing.");
+            throw new ValidationException("MAAT id is required.");
         }
 
     }

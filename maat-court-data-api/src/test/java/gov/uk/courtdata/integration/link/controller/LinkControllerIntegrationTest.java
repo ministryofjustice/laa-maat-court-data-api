@@ -82,7 +82,7 @@ public class LinkControllerIntegrationTest {
         this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message", is("MAAT id is missing.")));
+                .andExpect(jsonPath("$.message", is("MAAT id is required.")));
     }
 
 
@@ -100,7 +100,7 @@ public class LinkControllerIntegrationTest {
         this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message", is("1000 is Not a Valid MAAT ID")));
+                .andExpect(jsonPath("$.message", is("1000 is invalid.")));
     }
 
     @Test
@@ -124,7 +124,7 @@ public class LinkControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.message",
-                        is("MaatId 1000 has no common platform data created against Maat application.")));
+                        is("1000 has no common platform data created against Maat application.")));
     }
 
     @Test
@@ -177,7 +177,7 @@ public class LinkControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.message",
-                        is("1000: MaatId already linked to the application.")));
+                        is("1000 is already linked to a case.")));
     }
 
 

@@ -35,7 +35,7 @@ public class LinkExistsValidator implements IValidator<Void, Integer> {
         final int linkCount = wqLinkRegisterRepository.getCountByMaatId(maatId);
 
         if (linkCount > 0)
-            throw new ValidationException(format("%s: MaatId already linked to the application.", maatId));
+            throw new ValidationException(format("%s is already linked to a case.", maatId));
 
         return Optional.empty();
     }

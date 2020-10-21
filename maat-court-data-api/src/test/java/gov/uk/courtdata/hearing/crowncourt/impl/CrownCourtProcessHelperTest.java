@@ -30,6 +30,8 @@ import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.CONVICTED;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.rules.ExpectedException.none;
+import static org.mockito.ArgumentMatchers.anyInt;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -202,6 +204,36 @@ public class CrownCourtProcessHelperTest {
         verify(xlatResultRepository).findByCjsResultCodeIn();
         assertNull(status);
 
+    }
+
+    @Test
+    public void givenHearingResulted_whenConcludedResultCodeAvailable_thenReturnTrue() {
+        //when
+        when(xlatResultRepository.findByWqType(anyInt())).thenReturn(
+                Arrays.asList(XLATResultEntity.builder().cjsResultCode(3030).build(),
+                        XLATResultEntity.builder().cjsResultCode(3033).build()
+                ));
+
+        boolean status = crownCourtProcessHelper.isCaseConcluded(getHearingResulted(CONVICTED.getValue()));
+
+        //then
+        verify(xlatResultRepository).findByWqType(anyInt());
+        assertTrue(status);
+    }
+
+    @Test
+    public void givenHearingResulted_whenConcludedResultCodeAvailable_thenReturnFalse() {
+        //when
+        when(xlatResultRepository.findByWqType(anyInt())).thenReturn(
+                Arrays.asList(XLATResultEntity.builder().cjsResultCode(1111).build(),
+                        XLATResultEntity.builder().cjsResultCode(7778).build()
+                ));
+
+        boolean status = crownCourtProcessHelper.isCaseConcluded(getHearingResulted(CONVICTED.getValue()));
+
+        //then
+        verify(xlatResultRepository).findByWqType(anyInt());
+        assertFalse(status);
     }
 
     private HearingResulted getHearingResulted(String outcome) {

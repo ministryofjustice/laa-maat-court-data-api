@@ -25,7 +25,7 @@ public class CrownCourtHearingService {
 
         CCOutComeData ccOutComeData = hearingResulted.getCcOutComeData();
         if (isCrownCourtOutCome(ccOutComeData)
-                || crownCourtProcessHelper.isCaseConcluded(hearingResulted) ) {
+                && crownCourtProcessHelper.isCaseConcluded(hearingResulted) ) {
             executeCrownCourtOutCome(hearingResulted);
         }
         hearingResultedImpl.execute(hearingResulted);

@@ -1,8 +1,12 @@
 package gov.uk.courtdata.hearing.crowncourt.service;
 
+import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessHelper;
 import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessingImpl;
 import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
+import gov.uk.courtdata.model.Defendant;
+import gov.uk.courtdata.model.Offence;
+import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Test;
@@ -12,6 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,6 +36,9 @@ public class CrownCourtHearingServiceTest {
     @InjectMocks
     private CrownCourtHearingService crownCourtHearingService;
 
+    @Mock
+    CrownCourtProcessHelper crownCourtProcessHelper;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -37,11 +48,8 @@ public class CrownCourtHearingServiceTest {
     public void givenHearingIsReceived_whenCCOutcomeIsAvailable_thenCrownCourtOutComeIsProcessed() {
 
         //given
-        CCOutComeData ccOutComeData = CCOutComeData.builder().ccooOutcome("CONVICTED").build();
-        HearingResulted hearingDetails = HearingResulted.builder()
-                .maatId(12345)
-                .ccOutComeData(ccOutComeData)
-                .build();
+        HearingResulted hearingDetails = getHearingResulted();
+
 
         //when
         crownCourtHearingService.execute(hearingDetails);
@@ -51,6 +59,26 @@ public class CrownCourtHearingServiceTest {
         verify(crownCourtProcessingImpl, times(1)).execute(hearingDetails);
         verify(hearingResultedImpl, times(1)).execute(hearingDetails);
 
+    }
+
+    private HearingResulted getHearingResulted() {
+        CCOutComeData ccOutComeData = CCOutComeData.builder().ccooOutcome("CONVICTED").build();
+        List<Result> resultList = Arrays.asList(
+                Result.builder().resultCode("3030").build(),
+                Result.builder().resultCode("3031").build(),
+                Result.builder().resultCode("3040").build()
+        );
+
+        HearingResulted hearingDetails = HearingResulted.builder()
+                .maatId(12345)
+                .ccOutComeData(ccOutComeData)
+                .defendant(Defendant.builder()
+                        .offences(Collections.singletonList(Offence
+                                .builder()
+                                .results(resultList).build()))
+                        .build()
+                ).build();
+        return hearingDetails;
     }
 
     @Test

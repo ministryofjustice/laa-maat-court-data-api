@@ -66,5 +66,18 @@ public final class CrownCourtProcessHelper {
         return xlatResultRepository.fetchResultCodesForCCImprisonment();
     }
 
+    /**
+     * Any results code that has a work queue type 7 that means case is concluded.
+     * @param hearingResulted message
+     * @return true when case is concluded.
+     */
+    public boolean isCaseConcluded (final HearingResulted hearingResulted) {
+
+        List<XLATResultEntity> resultEntityList = xlatResultRepository.findByWqType(7);
+
+        List<String> offenceResultCodes = flattenResults(hearingResulted);
+        return anyResultCodeMatch(resultEntityList, offenceResultCodes);
+    }
+
 
 }

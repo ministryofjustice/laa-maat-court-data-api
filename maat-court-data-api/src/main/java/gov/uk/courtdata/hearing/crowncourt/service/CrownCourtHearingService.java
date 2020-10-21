@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.crowncourt.service;
 
+import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessHelper;
 import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessingImpl;
 import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
@@ -17,12 +18,14 @@ public class CrownCourtHearingService {
     private final CrownCourtValidationProcessor crownCourtValidationProcessor;
     private final CrownCourtProcessingImpl crownCourtProcessingImpl;
     private final HearingResultedImpl hearingResultedImpl;
+    private final CrownCourtProcessHelper crownCourtProcessHelper;
 
 
     public void execute(final HearingResulted hearingResulted) {
 
         CCOutComeData ccOutComeData = hearingResulted.getCcOutComeData();
-        if (isCrownCourtOutCome(ccOutComeData)) {
+        if (isCrownCourtOutCome(ccOutComeData)
+                || crownCourtProcessHelper.isCaseConcluded(hearingResulted) ) {
             executeCrownCourtOutCome(hearingResulted);
         }
         hearingResultedImpl.execute(hearingResulted);

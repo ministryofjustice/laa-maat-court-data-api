@@ -15,4 +15,6 @@ public interface XLATResultRepository extends JpaRepository<XLATResultEntity,Int
 
     @Query("FROM XLATResultEntity r WHERE r.ccBenchWarrant='Y'")
     List<XLATResultEntity> findByCjsResultCodeIn();
+
+    List<XLATResultEntity> findByWqType(Integer wqType);
 }

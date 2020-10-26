@@ -1,13 +1,18 @@
 package gov.uk.courtdata.config;
 
 import io.sentry.Sentry;
+
+
 import io.sentry.SentryClient;
-import io.sentry.SentryClientFactory;
+import io.sentry.SentryOptions;
+import io.sentry.config.Lookup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.concurrent.Semaphore;
+
 
 @Component
 public class SentryConfig {
@@ -21,17 +26,21 @@ public class SentryConfig {
     @Value("${sentry.servername}")
     private String serverName;
 
+
+
+
+
     @PostConstruct
     public void initSentry() {
 
-        SentryClient sentryClient = Sentry.init();
-        sentryClient.setEnvironment(env);
-        sentryClient.setRelease(release);
-        sentryClient.setServerName(serverName);
+
+
+
+
     }
 
-    @Bean
-    SentryClient sentryCliennt() {
-        return SentryClientFactory.sentryClient();
-    }
+//    @Bean
+//    SentryClient sentryCliennt() {
+//        return SentryClientFactory.sentryClient();
+//    }
 }

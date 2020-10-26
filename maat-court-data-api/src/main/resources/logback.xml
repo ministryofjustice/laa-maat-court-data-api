@@ -1,21 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level maat-id:%X{maatId} - laaTransactionId:%X{laaTransactionId} - %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
 
-    <appender name="Sentry" class="io.sentry.logback.SentryAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level maat-id:%X{maatId} - laaTransactionId:%X{laaTransactionId} - %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
+    <appender name="SENTRY" class="io.sentry.logback.SentryAppender" />
 
-    <root level="INFO">
-        <appender-ref ref="Console" />
-        <appender-ref ref="Sentry" />
+    <root level="info">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="SENTRY" />
     </root>
 </configuration>

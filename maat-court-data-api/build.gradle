@@ -13,7 +13,7 @@ plugins {
 
 def versions = [
         mapstructVersion: '1.3.1.Final',
-        sentryVersion   : '1.7.30',
+        sentryVersion   : '3.1.1',
         springdocVersion: '1.4.2',
         amazonSQSVersion: '1.0.8',
         ojdbc8Version   : '19.7.0.0',
@@ -43,7 +43,7 @@ dependencyManagement {
     }
     dependencies {
         dependencySet(group: 'io.sentry', version: versions.sentryVersion) {
-            entry 'sentry'
+            entry 'sentry-spring-boot-starter'
             entry 'sentry-logback'
         }
         dependencySet(group: 'org.mapstruct', version: versions.mapstructVersion) {
@@ -90,7 +90,7 @@ dependencies {
     implementation group: 'org.mapstruct', name: 'mapstruct'
     annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor'
 
-    implementation group: 'io.sentry', name: 'sentry'
+    implementation group: 'io.sentry', name: 'sentry-spring-boot-starter'
     implementation group: 'io.sentry', name: 'sentry-logback'
 
     // DB Dependencies

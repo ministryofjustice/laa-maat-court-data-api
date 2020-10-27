@@ -26,6 +26,10 @@ Parameters:
     Type: String
     Description: The Security Group Id of the AWS-hosted MLRA application
     Default: ''
+  pEnvShortName:
+    Type: String
+    Description: Environment short name.
+    Default: ''
 
   # Application specific parameters
   pAppName:
@@ -695,7 +699,7 @@ Resources:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
       UserPoolId: !Ref CognitoUserPool
-      Domain: !Sub '${pAppName}-${pEnvironment}'
+      Domain: !Sub '${pAppName}-${pEnvShortName}'
   CognitoUserPoolResourceServer1:
     Condition: cApiGateWayRollout
     Type: AWS::Cognito::UserPoolResourceServer

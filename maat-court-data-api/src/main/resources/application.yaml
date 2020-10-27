@@ -70,16 +70,15 @@ queue:
 
 sentry:
   dsn: https://27fa5ff9451241cc8cd9aa85dac09e60@o345774.ingest.sentry.io/5372961
-  environment: local
+  environment: ${SENTRY_ENV}
   release: 1.1.0
-  servername: localhost
+  servername: aws-ecs-container
   send-default-pii: true
   logging:
     minimum-breadcrumb-level: info
     minimum-event-level: info
-    enabled: false
+    enabled: true
   attach-stacktrace: true
-  dist: dfdf
 
 
 

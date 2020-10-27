@@ -50,6 +50,8 @@ public class WqLinkRegisterEntity {
     private Integer mlrCat;
     @Column(name = "CASE_OWNER_ID")
     private String caseOwnerId;
+    @Column(name = "CASE_URN")
+    private String caseUrn;
 
 
 }

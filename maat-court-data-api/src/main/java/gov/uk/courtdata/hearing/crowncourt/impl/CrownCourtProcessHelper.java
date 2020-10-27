@@ -1,6 +1,7 @@
 package gov.uk.courtdata.hearing.crowncourt.impl;
 
 import gov.uk.courtdata.entity.XLATResultEntity;
+import gov.uk.courtdata.enums.WQType;
 import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.XLATResultRepository;
@@ -64,6 +65,19 @@ public final class CrownCourtProcessHelper {
 
     private List<XLATResultEntity> imprisonmentResultCodes() {
         return xlatResultRepository.fetchResultCodesForCCImprisonment();
+    }
+
+    /**
+     * Any results code that has a work queue type 7 that means case is concluded.
+     * @param hearingResulted input message
+     * @return true when case is concluded.
+     */
+    public boolean isCaseConcluded (final HearingResulted hearingResulted) {
+
+        List<XLATResultEntity> resultEntityList = xlatResultRepository.findByWqType(WQType.CONCLUSION_QUEUE.value());
+
+        List<String> offenceResultCodes = flattenResults(hearingResulted);
+        return anyResultCodeMatch(resultEntityList, offenceResultCodes);
     }
 
 

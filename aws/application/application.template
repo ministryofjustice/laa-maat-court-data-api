@@ -663,6 +663,7 @@ Resources:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
+      ClientName: "DEFAULT"
       UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlowsUserPoolClient: true
       GenerateSecret: true
@@ -694,7 +695,7 @@ Resources:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
       UserPoolId: !Ref CognitoUserPool
-      Domain: !Ref pAppName
+      Domain: !Sub '${pAppName}-${pEnvironment}'
   CognitoUserPoolResourceServer1:
     Condition: cApiGateWayRollout
     Type: AWS::Cognito::UserPoolResourceServer

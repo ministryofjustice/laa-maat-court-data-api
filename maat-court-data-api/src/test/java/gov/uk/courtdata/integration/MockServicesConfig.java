@@ -1,7 +1,6 @@
 package gov.uk.courtdata.integration;
 
 import com.amazon.sqs.javamessaging.SQSConnectionFactory;
-import gov.uk.courtdata.config.SentryConfig;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
@@ -21,9 +20,6 @@ public class MockServicesConfig {
 
     @MockBean(name = "sqsConnectionFactory")
     private SQSConnectionFactory sqsConnectionFactory;
-
-    @MockBean(name = "sentryConfig")
-    private SentryConfig sentryConfig;
 
     @MockBean(name = "clientRegistrationRepository")
     private ClientRegistrationRepository clientRegistrationRepository;

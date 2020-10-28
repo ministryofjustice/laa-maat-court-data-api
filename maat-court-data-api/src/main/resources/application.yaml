@@ -34,9 +34,6 @@ springdoc:
     enabled: true
     operationsSorter: method
 
-
-
-
   jpa:
     database-platform: org.hibernate.dialect.Oracle10gDialect
     open-in-view: false
@@ -72,9 +69,21 @@ queue:
       expiryInDays: 90
 
 sentry:
+  dsn: https://27fa5ff9451241cc8cd9aa85dac09e60@o345774.ingest.sentry.io/5372961
   environment: ${SENTRY_ENV}
-  release: 1.1.1
-  servername: aws-ecs
+  release: 1.1.0
+  servername: aws-ecs-container
+  send-default-pii: true
+  logging:
+    minimum-breadcrumb-level: info
+    minimum-event-level: info
+    enabled: true
+  attach-stacktrace: true
+
+
+
+
+
 
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}

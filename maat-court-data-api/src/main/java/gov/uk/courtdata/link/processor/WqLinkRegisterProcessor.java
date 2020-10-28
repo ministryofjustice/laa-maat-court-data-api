@@ -34,6 +34,7 @@ public class WqLinkRegisterProcessor implements Process {
                 .proceedingId(courtDataDTO.getProceedingId())
                 .maatCat(maatCat)
                 .mlrCat(maatCat)
+                .caseUrn(caseDetails.getCaseUrn())
                 .build();
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
 

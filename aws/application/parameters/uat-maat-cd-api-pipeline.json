@@ -2,6 +2,7 @@
   "Parameters" : {
     "pAppName": "maat-cd-api",
     "pEnvironment": "uat",
+    "pEnvShortName": "uat",
     "pECSRepositoryURL": "902837325998.dkr.ecr.eu-west-2.amazonaws.com/maat-cd-api",
     "pDockerImageTag": "",
     "pAppCertificateArn": "arn:aws:acm:eu-west-2:140455166311:certificate/be7fff7d-935d-4d35-8225-0d1fd9c07c78",

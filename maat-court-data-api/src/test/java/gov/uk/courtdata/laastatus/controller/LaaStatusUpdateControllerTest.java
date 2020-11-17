@@ -21,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -58,12 +59,11 @@ public class LaaStatusUpdateControllerTest {
         when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
         when(laaStatusValidationProcessor.validate(caseDetails)).thenReturn(messageCollection);
 
-
         laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c", myString);
 
         //then
+        verify(laaStatusValidationProcessor).validate(any());
         verify(laaStatusPublisher, times(1)).publish(caseDetails);
-
     }
 
     @Test
@@ -86,8 +86,9 @@ public class LaaStatusUpdateControllerTest {
         laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c", myString);
 
         //then
+        verify(laaStatusValidationProcessor).validate(any());
+        assertThat(messageCollection.getMessages().get(0)).isEqualTo("Test Validation Message");
         verify(laaStatusPublisher, times(0)).publish(caseDetails);
-
     }
 
     @Test
@@ -103,12 +104,8 @@ public class LaaStatusUpdateControllerTest {
         when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
         when(laaStatusValidationProcessor.validate(caseDetails)).thenThrow(new MAATCourtDataException("Validation Failed"));
 
-        exception.expect(Exception.class);
+        exception.expect(MAATCourtDataException.class);
         laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c", myString);
-
-
-
-
     }
 }
 

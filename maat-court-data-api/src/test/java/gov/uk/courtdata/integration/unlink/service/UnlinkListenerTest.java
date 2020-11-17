@@ -70,7 +70,7 @@ public class UnlinkListenerTest {
         RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderCPDataEntity();
         unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity);
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
-        repOrderRepository.save(RepOrderEntity.builder().id(1234).build());
+        repOrderRepository.save(RepOrderEntity.builder().id(1234).caseId("12121").build());
         repOrderCPDataRepository.save(RepOrderCPDataEntity.builder().repOrderId(1234).build());
 
         //when
@@ -78,7 +78,6 @@ public class UnlinkListenerTest {
 
         //then
         assertWQLinkRegister(unlinkModel);
-
 
     }
 

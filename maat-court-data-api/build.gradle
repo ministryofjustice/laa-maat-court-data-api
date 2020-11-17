@@ -140,7 +140,7 @@ jacocoTestReport {
 }
 
 pitest {
-    targetClasses = ['gov.uk.courtdata.link.*']
+    targetClasses = ['gov.uk.courtdata.link.*','gov.uk.courtdata.unlink.*','gov.uk.courtdata.laastatus.*']
     threads = 5
     outputFormats = ['XML', 'HTML']
     timestampedReports = false

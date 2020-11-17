@@ -47,8 +47,9 @@ public class UnLinkValidationProcessorTest {
     }
 
 
+
     @Test
-    public void testWhenMaatIdValidatorFails_throwsValdationException() {
+    public void testWhenMaatIdValidatorFails_throwsValidationException() {
         Unlink unlink = Unlink.builder()
                 .maatId(123456)
                 .reasonId(999888)
@@ -61,7 +62,22 @@ public class UnLinkValidationProcessorTest {
                 .thenThrow(new ValidationException("MAAT id is missing."));
 
         unLinkValidationProcessor.validate(unlink);
+    }
 
+    @Test
+    public void testWhenLinkRegisterValidatorFails_throwsValidationException() {
+        Unlink unlink = Unlink.builder()
+                .maatId(123456)
+                .reasonId(999888)
+                .build();
+
+        thrown.expect(MAATCourtDataException.class);
+        thrown.expectMessage("MAAT id is missing.");
+
+        when(linkRegisterValidator.validate(unlink.getMaatId()))
+                .thenThrow(new MAATCourtDataException("MAAT id is missing."));
+
+        unLinkValidationProcessor.validate(unlink);
     }
 
     @Test
@@ -112,12 +128,13 @@ public class UnLinkValidationProcessorTest {
         when(maatIdValidator.validate(maatId)).thenReturn(Optional.empty());
         when(reasonValidator.validate(reasonId)).thenReturn(Optional.empty());
         when(userIdValidator.validate(userId)).thenReturn(Optional.empty());
+        when(linkRegisterValidator.validate(maatId)).thenReturn(Optional.empty());
         unLinkValidationProcessor.validate(unlink);
         //then
         verify(maatIdValidator, times(1)).validate(maatId);
-        // verify(linkExistsValidator, times(1)).validate(maatId);
         verify(reasonValidator, times(1)).validate(reasonId);
         verify(userIdValidator, times(1)).validate(userId);
+        verify(linkRegisterValidator, times(1)).validate(maatId);
 
     }
 

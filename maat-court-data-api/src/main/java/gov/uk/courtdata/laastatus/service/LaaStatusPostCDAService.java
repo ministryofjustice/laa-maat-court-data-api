@@ -25,10 +25,6 @@ public class LaaStatusPostCDAService {
                 repOrderUpdateMessageBuilder.build(courtDataDTO.getCaseDetails());
         Map<String,String> headers = repOrderUpdateMessageBuilder.buildHeaders(courtDataDTO);
 
-        log.debug(repOrderData.toString(),headers.toString());
         courtDataAdapterClient.postLaaStatus(repOrderData,headers);
-
     }
-
-
 }

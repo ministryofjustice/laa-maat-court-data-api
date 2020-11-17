@@ -3,7 +3,6 @@ package gov.uk.courtdata.laastatus.controller;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.laastatus.service.LaaStatusPublisher;
 import gov.uk.courtdata.laastatus.validator.LaaStatusValidationProcessor;
 import gov.uk.courtdata.model.CaseDetails;
@@ -59,7 +58,31 @@ public class LaaStatusUpdateControllerTest {
         when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
         when(laaStatusValidationProcessor.validate(caseDetails)).thenReturn(messageCollection);
 
-        laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c", myString);
+
+        MessageCollection messageResponse =
+                laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c", myString);
+
+        //then
+        verify(laaStatusValidationProcessor).validate(any());
+        verify(laaStatusPublisher, times(1)).publish(caseDetails);
+        assertThat(messageResponse.getMessages().size()).isZero();
+    }
+
+    @Test
+    public void givenValidationIsPassed_whenControllerIsInvoked_thenPublisherIsCalled1() {
+
+        //given
+        final CaseDetails caseDetails = CaseDetails.builder().build();
+        final MessageCollection messageCollection = MessageCollection.builder().messages(new ArrayList<>()).build();
+        String myString = "{\"maatId\": 5635539,\n" +
+                "  \"caseUrn\": \"EITHERWAY\",\n" +
+                "  }";
+
+        //when
+        when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
+        when(laaStatusValidationProcessor.validate(caseDetails)).thenReturn(messageCollection);
+
+        laaStatusUpdateController.updateLAAStatus(null, myString);
 
         //then
         verify(laaStatusValidationProcessor).validate(any());

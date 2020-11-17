@@ -15,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -127,6 +129,7 @@ public class UnLinkImplTest {
                         .libraId("libraid1")
                         .maatId(43534543)
                         .cjsAreaCode("LFD3")
+                        .removedDate(LocalDateTime.now())
                         .build();
 
         RepOrderCPDataEntity repOrderCPDataEntity =
@@ -138,6 +141,7 @@ public class UnLinkImplTest {
                 .unlink(unlink)
                 .wqLinkRegisterEntity(wqLinkRegisterEntity)
                 .repOrderCPDataEntity(repOrderCPDataEntity)
+                .txId(1111)
                 .build();
     }
 }

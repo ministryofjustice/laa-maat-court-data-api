@@ -14,10 +14,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
+@TestPropertySource(locations="classpath:application.yaml")
 public class LaaStatusListenerTest {
 
     @InjectMocks
@@ -74,6 +76,8 @@ public class LaaStatusListenerTest {
 
         verify(laaStatusPostCDAService).process(courtDataDTO);
         verify(laaStatusService).execute(courtDataDTO);
+        verify(courtDataDTOBuilder).build(any());
+        verify(gson).fromJson(sqsMessage,CaseDetails.class);
 
         verify(queueMessageLogService).createLog(MessageType.LAA_STATUS, sqsMessage);
 

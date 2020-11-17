@@ -5,15 +5,18 @@ import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 import static java.lang.String.format;
 
 @Component
 @RequiredArgsConstructor
-public class LinkRegisterValidator {
+public class LinkRegisterValidator implements IValidator<Void, Integer> {
 
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
 
-    public void validate(Integer maatId) {
+    @Override
+    public Optional<Void> validate(final Integer maatId) {
 
         final int linkCount = wqLinkRegisterRepository.getCountByMaatId(maatId);
 
@@ -22,12 +25,6 @@ public class LinkRegisterValidator {
         } else if (linkCount > 1) {
             throw new MAATCourtDataException(format("Multiple Links found for  MAAT Id : %s", maatId));
         }
-
+        return Optional.empty();
     }
-
 }
-
-
-
-
-

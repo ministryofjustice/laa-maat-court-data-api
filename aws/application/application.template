@@ -139,6 +139,9 @@ Parameters:
 
 
 Conditions:
+  #The below condition will only be used for initial API-Gateway rollout
+  cApiGateWayRollout:
+    !Not [ !Equals [ !Ref pEnvironment, "production" ] ]
 
   cDevTest:
     !Or
@@ -198,6 +201,7 @@ Resources:
       ToPort: '80'
       SourceSecurityGroupId: !Ref pMlraAppSecurityGroupId
   AppAlbSecurityGroupApiGatewayIngress:
+    Condition: cApiGateWayRollout
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
       GroupId: !Ref AppAlbSecurityGroup
@@ -207,6 +211,7 @@ Resources:
       SourceSecurityGroupId: !Ref AppApiGatewaySecurityGroup
 
   AppApiGatewaySecurityGroup:
+    Condition: cApiGateWayRollout
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: !Sub 'LAA-${pAppName}-${pEnvironment}-ApiGateway'
@@ -544,6 +549,7 @@ Resources:
 
   # API Gateway configuration
   ApiGatewayVpcLink:
+    Condition: cApiGateWayRollout
     Type: AWS::ApiGatewayV2::VpcLink
     Properties:
       Name: !Sub '${pAppName}_VPC_Link'
@@ -554,17 +560,20 @@ Resources:
         - !ImportValue env-AppPrivateSubnetB
         - !ImportValue env-AppPrivateSubnetC
   ApiGatewayCloudwatchLogGroup:
+    Condition: cApiGateWayRollout
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub '${pAppName}-API-Gateway'
       RetentionInDays: 90
   ApiGateway:
+    Condition: cApiGateWayRollout
     Type: AWS::ApiGatewayV2::Api
     Properties:
       Name: !Sub '${pAppName} API Gateway'
       Description: !Sub '${pAppName} API Gateway - HTTP API'
       ProtocolType: HTTP
   ApiIntegration:
+    Condition: cApiGateWayRollout
     Type: 'AWS::ApiGatewayV2::Integration'
     Properties:
       ApiId: !Ref ApiGateway
@@ -576,6 +585,7 @@ Resources:
       ConnectionId: !Ref ApiGatewayVpcLink
       PayloadFormatVersion: '1.0'
   ApiRoute1:
+    Condition: cApiGateWayRollout
     Type: 'AWS::ApiGatewayV2::Route'
     DependsOn:
       - ApiIntegration
@@ -591,6 +601,7 @@ Resources:
         - - integrations
           - !Ref ApiIntegration
   ApiAuthorizer:
+    Condition: cApiGateWayRollout
     Type: 'AWS::ApiGatewayV2::Authorizer'
     Properties:
       Name: !Sub '${pAppName}_Authorizer'
@@ -604,6 +615,7 @@ Resources:
           - !Ref CognitoUserPoolClientCda
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiStage:
+    Condition: cApiGateWayRollout
     Type: 'AWS::ApiGatewayV2::Stage'
     Properties:
       StageName: !Ref pApiStageName
@@ -615,6 +627,7 @@ Resources:
        Format: >-
         {"requestId":"$context.requestId", "ip": "$context.identity.sourceIp","requestTime":"$context.requestTime","routeKey":"$context.routeKey","status":"$context.status"}
   ApiExternalDomainName:
+    Condition: cApiGateWayRollout
     Type: 'AWS::ApiGatewayV2::DomainName'
     Properties:
       DomainName: !Ref pAppApiGatewayFQDN
@@ -623,6 +636,7 @@ Resources:
           CertificateArn: !Ref pAppCertificateArn
           CertificateName: '-'
   ApiExternalDNSRecord:
+    Condition: cApiGateWayRollout
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId: !ImportValue "dns-HostedZoneId"
@@ -633,6 +647,7 @@ Resources:
       ResourceRecords:
       - !GetAtt ApiExternalDomainName.RegionalDomainName
   ApiMapping:
+    Condition: cApiGateWayRollout
     Type: 'AWS::ApiGatewayV2::ApiMapping'
     DependsOn: ApiExternalDomainName
     Properties:
@@ -641,12 +656,14 @@ Resources:
       Stage: !Ref ApiStage
 
   CognitoUserPool:
+    Condition: cApiGateWayRollout
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: !Sub '${pAppName}-UserPool'
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: true
   CognitoUserPoolClient:
+    Condition: cApiGateWayRollout
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
@@ -662,6 +679,7 @@ Resources:
       ExplicitAuthFlows:
         - "ALLOW_REFRESH_TOKEN_AUTH"
   CognitoUserPoolClientCda:
+    Condition: cApiGateWayRollout
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
@@ -677,11 +695,13 @@ Resources:
       ExplicitAuthFlows:
         - "ALLOW_REFRESH_TOKEN_AUTH"
   CognitoUserPoolDomain:
+    Condition: cApiGateWayRollout
     Type: AWS::Cognito::UserPoolDomain
     Properties:
       UserPoolId: !Ref CognitoUserPool
       Domain: !Sub '${pAppName}-${pEnvShortName}'
   CognitoUserPoolResourceServer1:
+    Condition: cApiGateWayRollout
     Type: AWS::Cognito::UserPoolResourceServer
     Properties:
       UserPoolId: !Ref CognitoUserPool

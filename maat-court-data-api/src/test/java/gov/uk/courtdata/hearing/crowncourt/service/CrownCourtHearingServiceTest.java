@@ -10,7 +10,6 @@ import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
-import gov.uk.courtdata.repository.XLATResultRepository;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -18,12 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-//import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -41,16 +37,10 @@ public class CrownCourtHearingServiceTest {
     @Mock
     private CrownCourtProcessHelper crownCourtProcessHelper;
 
-//    @Mock
-//    private XLATResultRepository xlatResultRepository;
-
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
-
-
-
 
     @Test
     public void givenHearingIsReceived_whenCCOutcomeIsAvailable_thenCrownCourtOutComeIsProcessed() {

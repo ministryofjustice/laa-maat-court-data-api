@@ -69,8 +69,6 @@ public class WQCaseProcessorTest {
         assertThat(wqCaseEntityArgumentCaptor.getValue().getTxId()).isEqualTo(123456);
         assertThat(wqCaseEntityArgumentCaptor.getValue().getProceedingId()).isEqualTo(9999);
         assertThat(wqCaseEntityArgumentCaptor.getValue().getLibraCreationDate()).isEqualTo(LocalDate.now());
-
-
     }
 
     @Test

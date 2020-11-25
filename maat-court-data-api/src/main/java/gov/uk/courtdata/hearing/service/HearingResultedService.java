@@ -60,7 +60,7 @@ public class HearingResultedService {
 
         log.info("Message retry attempt no. "  + hearingResulted.getMessageRetryCounter());
 
-        if (hearingResulted.getMessageRetryCounter()<=5) {
+        if (hearingResulted.getMessageRetryCounter() < 6) {
             hearingResultedPublisher.publish(hearingResulted);
         } else {
             throw new MaatRecordLockedException("Unable to process CP hearing notification because Maat Record is locked.");

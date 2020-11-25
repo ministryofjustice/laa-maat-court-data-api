@@ -5,6 +5,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WQOffenceEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
+import gov.uk.courtdata.hearing.dto.OffenceDTO;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class WQOffenceProcessorTest {
     private ArgumentCaptor<WQOffenceEntity> wqOffenceEntityArgumentCaptor;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
@@ -39,7 +40,7 @@ public class WQOffenceProcessorTest {
     public void givenOffenceProcessor_whenProcessIsInvoke_thenSaveOffence1() {
 
         //given
-        HearingDTO hearingDTO =  testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
 
         //when
         wqOffenceProcessor.process(hearingDTO);
@@ -47,9 +48,69 @@ public class WQOffenceProcessorTest {
         //then
         verify(wqOffenceRepository).save(wqOffenceEntityArgumentCaptor.capture());
 
-       assertThat(wqOffenceEntityArgumentCaptor.getValue().getTxId()).isEqualTo(123456);
-       assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalAidStatus()).isEqualTo("AP");
-       assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalaidReason()).isEqualTo("some aid reason");
-       assertThat(wqOffenceEntityArgumentCaptor.getValue().getAsnSeq()).isEqualTo("001");
+        assertThat(wqOffenceEntityArgumentCaptor.getValue().getTxId()).isEqualTo(123456);
+        assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalAidStatus()).isEqualTo("AP");
+        assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalaidReason()).isEqualTo("some aid reason");
+        assertThat(wqOffenceEntityArgumentCaptor.getValue().getAsnSeq()).isEqualTo("001");
+    }
+
+    @Test
+    public void givenOffenceProcessor_whenLAAStatusIsNull_thenSaveOffence() {
+
+        //given
+        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        hearingDTO.setOffence(OffenceDTO.builder().legalAidStatus(null).asnSeq("1").build());
+
+        //when
+        wqOffenceProcessor.process(hearingDTO);
+
+        //then
+        verify(wqOffenceRepository).save(wqOffenceEntityArgumentCaptor.capture());
+        assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalAidStatus()).isEqualTo("AP");
+
+    }
+    @Test
+    public void givenOffenceProcessor_whenLAAStatusIsRE_thenSaveOffence() {
+
+        //given
+        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        hearingDTO.setOffence(OffenceDTO.builder().legalAidStatus("RE").asnSeq("1").build());
+
+        //when
+        wqOffenceProcessor.process(hearingDTO);
+
+        //then
+        verify(wqOffenceRepository).save(wqOffenceEntityArgumentCaptor.capture());
+        assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalAidStatus()).isEqualTo("FB");
+    }
+
+    @Test
+    public void givenOffenceProcessor_whenLAAStatusIsVA_thenSaveOffence() {
+
+        //given
+        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        hearingDTO.setOffence(OffenceDTO.builder().legalAidStatus("VA").asnSeq("1").build());
+
+        //when
+        wqOffenceProcessor.process(hearingDTO);
+
+        //then
+        verify(wqOffenceRepository).save(wqOffenceEntityArgumentCaptor.capture());
+        assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalAidStatus()).isEqualTo("GR");
+    }
+
+    @Test
+    public void givenOffenceProcessor_whenLAAStatusIsWI_thenSaveOffence() {
+
+        //given
+        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        hearingDTO.setOffence(OffenceDTO.builder().legalAidStatus("WI").asnSeq("1").build());
+
+        //when
+        wqOffenceProcessor.process(hearingDTO);
+
+        //then
+        verify(wqOffenceRepository).save(wqOffenceEntityArgumentCaptor.capture());
+        assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalAidStatus()).isEqualTo("WD");
     }
 }

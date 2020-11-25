@@ -34,8 +34,8 @@ public class HearingResultedPublisher {
         log.info("MAAT Record is locked. Publishing a message to the hearing queue to process later.");
         log.info("Publishing to SQS Queue {} ", sqsQueueName);
 
-        int counter = hearingResulted.getMessageRetryCounter();
-        hearingResulted.setMessageRetryCounter(counter+1);
+        int counter = hearingResulted.getMessageRetryCounter()+1;
+        hearingResulted.setMessageRetryCounter(counter);
         String hearingResultedJSON = gson.toJson(hearingResulted);
 
         AmazonSQS amazonSQS = amazonSQSConfig.awsSqsClient();

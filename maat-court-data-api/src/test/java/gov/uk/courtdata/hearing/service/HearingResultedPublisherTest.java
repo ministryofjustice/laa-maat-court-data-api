@@ -40,7 +40,7 @@ public class HearingResultedPublisherTest {
     private GetQueueUrlResult getQueueUrlResult;
 
     @Mock
-    AmazonSQS amazonSqs;
+    private AmazonSQS amazonSqs;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -56,15 +56,12 @@ public class HearingResultedPublisherTest {
         //given
         HearingResulted hearingDetails = HearingResulted.builder()
                 .jurisdictionType(JurisdictionType.CROWN)
-                .messageRetryCounter(1)
+                .messageRetryCounter(10)
                 .maatId(123456)
                 .build();
         //when
         when(amazonSQSConfig.awsSqsClient()).thenReturn(amazonSqs);
         when(amazonSqs.getQueueUrl(anyString())).thenReturn(getQueueUrlResult);
-
-
-
         hearingResultedPublisher.publish(hearingDetails);
 
         //verify

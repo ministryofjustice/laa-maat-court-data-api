@@ -115,7 +115,7 @@ dependencies {
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    testImplementation group: 'com.h2database', name: 'h2', version: versions.h2DBVersion;
+    testImplementation group: 'com.h2database', name: 'h2', version: versions.h2DBVersion
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockitoVersion
     testImplementation group: 'junit', name: 'junit', version: versions.junitVersion
     testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: versions.harmcrestVersion
@@ -140,7 +140,8 @@ jacocoTestReport {
 }
 
 pitest {
-    targetClasses = ['gov.uk.courtdata.link.*','gov.uk.courtdata.unlink.*','gov.uk.courtdata.laastatus.*']
+    targetClasses = ['gov.uk.courtdata.link.*','gov.uk.courtdata.unlink.*','gov.uk.courtdata.laastatus.*','gov.uk.courtdata.hearing.*']
+    excludedClasses = ['gov.uk.courtdata.hearing.dto.*','gov.uk.courtdata.hearing.mapper.*','gov.uk.courtdata.laastatus.client.*']
     threads = 5
     outputFormats = ['XML', 'HTML']
     timestampedReports = false

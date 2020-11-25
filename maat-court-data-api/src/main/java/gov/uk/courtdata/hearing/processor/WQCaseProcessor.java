@@ -43,9 +43,7 @@ public class WQCaseProcessor {
      * @return
      */
     private LocalDate getCreationDate(final String creationDate) {
-        return
-                isNotEmpty(creationDate) ? DateUtil.parse(creationDate) : LocalDate.now();
-
+        return isNotEmpty(creationDate) ? DateUtil.parse(creationDate) : LocalDate.now();
     }
 
 

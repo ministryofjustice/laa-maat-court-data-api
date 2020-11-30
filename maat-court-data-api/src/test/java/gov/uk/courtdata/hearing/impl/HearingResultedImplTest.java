@@ -95,6 +95,36 @@ public class HearingResultedImplTest {
         verify(wqCoreProcessor).findWQType(any());
     }
 
+    @Test
+    public void givenACaseDetail_whenHearingResultedImplForMag_thenProcessingImplIsInvoked() {
+
+        //given
+        HearingResulted laaHearingDetails = HearingResulted.builder().maatId(12345)
+                .jurisdictionType(JurisdictionType.MAGISTRATES)
+                .defendant(getDefendant())
+                .build();
+
+        //when
+        List<WqLinkRegisterEntity> wqLinkRegisterEntities = Collections.singletonList(WqLinkRegisterEntity.builder()
+                .caseId(565)
+                .proceedingId(12121).maatId(12345).build());
+        Mockito.when(wqLinkRegisterRepository.findBymaatId(12345)).thenReturn(wqLinkRegisterEntities);
+        Mockito.when(identifierRepository.getTxnID()).thenReturn(-1);
+
+        HearingDTO hearingDTO = HearingDTO.builder().
+                result(ResultDTO.builder().resultCode(3026).build()).build();
+
+        Mockito.when(hearingDTOMapper.toHearingDTO(any(),any(),any(),any(),any(),any())).thenReturn(hearingDTO);
+
+        hearingResultedImpl.execute(laaHearingDetails);
+
+        //then
+        verify(resultCodeRefDataProcessor).processResultCode(3026);
+        verify(wqLinkRegisterRepository).findBymaatId(12345);
+        verify(offenceCodeRefDataProcessor).processOffenceCode("23224");
+        verify(hearingWQProcessor).process(any());
+    }
+
     private Defendant getDefendant() {
 
         return Defendant.builder()

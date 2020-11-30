@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDate;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
@@ -30,7 +31,7 @@ public class WQCaseProcessorTest {
     private ArgumentCaptor<WQCaseEntity> wqCaseEntityArgumentCaptor;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
@@ -65,6 +66,27 @@ public class WQCaseProcessorTest {
         //then
         verify(wqCaseRepository).save(wqCaseEntityArgumentCaptor.capture());
         assertThat(wqCaseEntityArgumentCaptor.getValue().getCjsAreaCode()).isEqualTo(null);
+        assertThat(wqCaseEntityArgumentCaptor.getValue().getTxId()).isEqualTo(123456);
+        assertThat(wqCaseEntityArgumentCaptor.getValue().getProceedingId()).isEqualTo(9999);
+        assertThat(wqCaseEntityArgumentCaptor.getValue().getLibraCreationDate()).isEqualTo(LocalDate.now());
+    }
 
+    @Test
+    public void givenCaseProcessor_whenCreationDateAvailable_thenSaveCase() {
+
+        //given
+        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        hearingDTO.setCaseCreationDate("2020-05-20");
+
+        //when
+        wqCaseProcessor.process(hearingDTO);
+
+        //then
+        verify(wqCaseRepository).save(wqCaseEntityArgumentCaptor.capture());
+        assertThat(wqCaseEntityArgumentCaptor.getValue().getCaseId()).isEqualTo(1234);
+        assertThat(wqCaseEntityArgumentCaptor.getValue().getDocLanguage()).isEqualTo("en");
+        assertThat(wqCaseEntityArgumentCaptor.getValue().getTxId()).isEqualTo(123456);
+        assertThat(wqCaseEntityArgumentCaptor.getValue().getCjsAreaCode()).isEqualTo("05");
+        assertThat(wqCaseEntityArgumentCaptor.getValue().getLibraCreationDate()).isEqualTo("2020-05-20");
     }
 }

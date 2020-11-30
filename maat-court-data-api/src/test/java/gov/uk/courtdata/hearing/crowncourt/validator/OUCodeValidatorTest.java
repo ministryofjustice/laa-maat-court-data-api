@@ -2,7 +2,6 @@ package gov.uk.courtdata.hearing.crowncourt.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.Session;
-import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Rule;
 import org.junit.Test;

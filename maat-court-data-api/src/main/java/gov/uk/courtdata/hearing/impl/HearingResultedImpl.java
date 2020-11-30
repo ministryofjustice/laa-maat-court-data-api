@@ -88,11 +88,10 @@ public class HearingResultedImpl {
     }
 
     private boolean isWorkQueueProcessingRequired(Integer resultCode, HearingResulted hearingResulted) {
-        boolean isWorkQNeeded = true;
         if (JurisdictionType.CROWN == hearingResulted.getJurisdictionType() &&
                 WQType.isActionableQueue(wqCoreProcessor.findWQType(resultCode))) {
-            isWorkQNeeded = false;
+            return false;
         }
-        return isWorkQNeeded;
+        return true;
     }
 }

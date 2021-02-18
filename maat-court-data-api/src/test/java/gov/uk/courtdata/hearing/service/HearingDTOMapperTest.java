@@ -2,10 +2,7 @@ package gov.uk.courtdata.hearing.service;
 
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.hearing.mapper.HearingDTOMapper;
-import gov.uk.courtdata.model.Defendant;
-import gov.uk.courtdata.model.Offence;
-import gov.uk.courtdata.model.Result;
-import gov.uk.courtdata.model.Session;
+import gov.uk.courtdata.model.*;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,9 +76,12 @@ public class HearingDTOMapperTest {
         HearingResulted hearingResulted = HearingResulted.builder().caseUrn("caseurl").build();
         Result result = Result.builder().resultCode("1").build();
         Offence offence = Offence.builder().asnSeq("as12").build();
+        Plea plea = Plea.builder().offenceId("off1").build();
+        Verdict verdict = Verdict.builder().category("Cat").build();
+
 
         //when
-        HearingDTO hearingDTO = hearingDTOMapper.toHearingDTO(hearingResulted, 12, 34, 56, offence, result);
+        HearingDTO hearingDTO = hearingDTOMapper.toHearingDTO(hearingResulted, 12, 34, 56, offence, result, plea, verdict);
 
         //then
         assertThat(hearingDTO.getOffence().getAsnSeq()).isEqualTo("as12");

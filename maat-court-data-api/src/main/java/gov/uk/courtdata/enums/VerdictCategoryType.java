@@ -1,0 +1,9 @@
+package gov.uk.courtdata.enums;
+
+public enum VerdictCategoryType {
+    GUILTY,
+    GUILTY_BUT_OF_ALTERNATIVE_OFFENCE_BY_JURY_CONVICTED,
+    GUILTY_BUT_OF_LESSER_OFFENCE_BY_JURY_CONVICTED,
+    GUILTY_BY_JURY_CONVICTED,
+    GUILTY_CONVICTED
+}

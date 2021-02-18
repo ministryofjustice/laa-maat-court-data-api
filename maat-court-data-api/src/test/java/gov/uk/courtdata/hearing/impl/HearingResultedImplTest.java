@@ -83,7 +83,7 @@ public class HearingResultedImplTest {
         HearingDTO hearingDTO = HearingDTO.builder().
                 result(ResultDTO.builder().resultCode(3026).build()).build();
 
-        Mockito.when(hearingDTOMapper.toHearingDTO(any(),any(),any(),any(),any(),any())).thenReturn(hearingDTO);
+        Mockito.when(hearingDTOMapper.toHearingDTO(any(),any(),any(),any(),any(),any(),any(),any())).thenReturn(hearingDTO);
 
         hearingResultedImpl.execute(laaHearingDetails);
 
@@ -114,7 +114,7 @@ public class HearingResultedImplTest {
         HearingDTO hearingDTO = HearingDTO.builder().
                 result(ResultDTO.builder().resultCode(3026).build()).build();
 
-        Mockito.when(hearingDTOMapper.toHearingDTO(any(),any(),any(),any(),any(),any())).thenReturn(hearingDTO);
+        Mockito.when(hearingDTOMapper.toHearingDTO(any(),any(),any(),any(),any(),any(), any(),any())).thenReturn(hearingDTO);
 
         hearingResultedImpl.execute(laaHearingDetails);
 

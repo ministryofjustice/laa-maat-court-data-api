@@ -8,7 +8,9 @@ import gov.uk.courtdata.hearing.processor.HearingWQProcessor;
 import gov.uk.courtdata.hearing.mapper.HearingDTOMapper;
 import gov.uk.courtdata.hearing.processor.WQCoreProcessor;
 import gov.uk.courtdata.model.Offence;
+import gov.uk.courtdata.model.Plea;
 import gov.uk.courtdata.model.Result;
+import gov.uk.courtdata.model.Verdict;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.processor.OffenceCodeRefDataProcessor;
 import gov.uk.courtdata.processor.ResultCodeRefDataProcessor;
@@ -53,7 +55,8 @@ public class HearingResultedImpl {
                         final Integer resultCode = Integer.parseInt(result.getResultCode());
                         resultCodeRefDataProcessor.processResultCode(resultCode);
                         if (isWorkQueueProcessingRequired(resultCode, hearingResulted)) {
-                            processResults(hearingResulted, wqLinkReg, offence, result);
+
+                            processResults(hearingResulted, wqLinkReg, offence, result, offence.getPlea(), offence.getVerdict());
                         }
                     });
 
@@ -62,12 +65,12 @@ public class HearingResultedImpl {
     }
 
 
-    private void processResults(HearingResulted hearingResulted, WqLinkRegisterEntity wqLinkReg, Offence offence, Result result) {
+    private void processResults(HearingResulted hearingResulted, WqLinkRegisterEntity wqLinkReg, Offence offence, Result result, Plea plea, Verdict verdict) {
 
         HearingDTO hearingDTO =
                 hearingDTOMapper.toHearingDTO(hearingResulted,
                         wqLinkReg.getCaseId(), wqLinkReg.getProceedingId(),
-                        getNextTxId(), offence, result);
+                        getNextTxId(), offence, result, plea, verdict);
 
         log.debug("Hearing resulted mapped to Hearing Court DTO: {}", hearingDTO.toString());
 

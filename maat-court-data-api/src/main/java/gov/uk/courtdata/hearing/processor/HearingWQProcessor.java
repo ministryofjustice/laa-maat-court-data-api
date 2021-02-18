@@ -29,6 +29,12 @@ public class HearingWQProcessor {
 
     private final WQSessionProcessor wqSessionProcessor;
 
+    private final WQPleaProcessor wqPleaProcessor;
+
+    private final WQVerdictProcessor wqVerdictProcessor;
+
+
+
     @Transactional(rollbackFor = MAATCourtDataException.class)
     public void process(final HearingDTO hearingDTO) {
 
@@ -44,5 +50,16 @@ public class HearingWQProcessor {
         wqResultProcessor.process(hearingDTO);
         log.info("Create WQ core");
         wqCoreProcessor.process(hearingDTO);
+
+        log.info("Create WQ plea processor ");
+        wqPleaProcessor.process(hearingDTO);
+
+        log.info("Create WQ verdict processor");
+        wqVerdictProcessor.process(hearingDTO);
+
+
+
+
+
     }
 }

@@ -27,4 +27,5 @@ public class HearingResulted {
     private Session session;
     private UUID laaTransactionId;
     private int messageRetryCounter;
+    private boolean prosecutionConcluded;
 }

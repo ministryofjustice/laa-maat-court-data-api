@@ -1,10 +1,7 @@
 package gov.uk.courtdata.hearing.mapper;
 
 import gov.uk.courtdata.hearing.dto.*;
-import gov.uk.courtdata.model.Defendant;
-import gov.uk.courtdata.model.Offence;
-import gov.uk.courtdata.model.Result;
-import gov.uk.courtdata.model.Session;
+import gov.uk.courtdata.model.*;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -25,7 +22,10 @@ public interface HearingDTOMapper {
                             final Integer proceedingId,
                             final Integer txId,
                             final Offence offence,
-                            final Result result);
+                            final Result result,
+                            final Plea plea,
+                            final Verdict verdict
+    );
 
     DefendantDTO toDefendantDTO(final Defendant defendant);
 
@@ -34,4 +34,8 @@ public interface HearingDTOMapper {
     OffenceDTO toOffenceDTO(final Offence offence);
 
     ResultDTO toResultDTO(final Result result);
+
+    PleaDTO toPleaDTO (final Plea plea);
+    VerdictDTO toVerdictDTO (final Verdict verdict);
+
 }

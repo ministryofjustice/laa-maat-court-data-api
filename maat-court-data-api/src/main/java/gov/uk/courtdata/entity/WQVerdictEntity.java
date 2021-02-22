@@ -5,11 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Date;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @Data
@@ -20,6 +18,7 @@ import java.util.Date;
 public class WQVerdictEntity {
 
     @Id
+    //@GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "VERDICT_ID")
     private Integer verdictId;
 
@@ -27,7 +26,7 @@ public class WQVerdictEntity {
     private String offenceId;
 
     @Column(name = "VERDICT_DATE")
-    private Date verdictDate;
+    private LocalDate verdictDate;
 
     @Column(name = "CATEGORY")
     private String category;
@@ -40,4 +39,7 @@ public class WQVerdictEntity {
 
     @Column(name = "VERDICT_CODE")
     private String verdictCode;
+
+    @Column(name = "CREATED_ON")
+    private LocalDateTime createdOn;
 }

@@ -22,9 +22,7 @@ public interface HearingDTOMapper {
                             final Integer proceedingId,
                             final Integer txId,
                             final Offence offence,
-                            final Result result,
-                            final Plea plea,
-                            final Verdict verdict
+                            final Result result
     );
 
     DefendantDTO toDefendantDTO(final Defendant defendant);
@@ -34,8 +32,4 @@ public interface HearingDTOMapper {
     OffenceDTO toOffenceDTO(final Offence offence);
 
     ResultDTO toResultDTO(final Result result);
-
-    PleaDTO toPleaDTO (final Plea plea);
-    VerdictDTO toVerdictDTO (final Verdict verdict);
-
 }

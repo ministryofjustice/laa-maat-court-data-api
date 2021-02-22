@@ -9,8 +9,6 @@ import static gov.uk.courtdata.constants.CourtDataConstants.RESULT_CODE_1000;
 public class Result {
 
     private String asnSeq;
-
-
     private String resultCode;
     private String resultShortTitle;
     private String resultText;
@@ -25,7 +23,6 @@ public class Result {
     private String dateOfHearing;
     private String courtLocation;
     private String sessionValidateDate;
-
 
     /**
      * This is to override the the results code with Default Value when there is an

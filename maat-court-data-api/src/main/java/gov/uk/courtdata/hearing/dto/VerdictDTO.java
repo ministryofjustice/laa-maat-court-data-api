@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.dto;
 
+import gov.uk.courtdata.enums.VerdictCategoryType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +15,9 @@ import java.util.Date;
 public class VerdictDTO {
 
     private String offenceId;
-    private Date verdictDate;
+    private String verdictDate;
     private String category;
-    private String categoryType;
+    private VerdictCategoryType categoryType;
     private String cjsVerdictCode;
     private String verdictCode;
 }

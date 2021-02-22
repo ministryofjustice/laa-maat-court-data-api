@@ -23,9 +23,5 @@ public class HearingDTO {
     private ResultDTO result;
     private SessionDTO session;
 
-    private PleaDTO pleaDTO;
-    private VerdictDTO verdictDTO;
-
-
 
 }

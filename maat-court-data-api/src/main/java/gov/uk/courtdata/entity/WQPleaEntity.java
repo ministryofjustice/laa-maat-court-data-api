@@ -5,11 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Date;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @Data
@@ -17,19 +15,21 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "XXMLA_WQ_PLEA", schema = "MLA")
-public class WQPleaEntity extends BaseEntity {
+public class WQPleaEntity {
 
-    //todo: auto generated?
     @Id
-    @Column(name = "PLEA_ID")
-    private Integer pleaId;
+    //@GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name = "PLEA_ID") private int pleaId;
 
     @Column(name = "PLEA_VALUE")
     private String pleaValue;
 
     @Column(name = "PLEA_DATE")
-    private Date pleaDate;
+    private LocalDate pleaDate;
 
     @Column(name = "OFFENCE_ID")
     private String offenceId;
+
+    @Column(name = "CREATED_ON")
+    private LocalDateTime createdOn;
 }

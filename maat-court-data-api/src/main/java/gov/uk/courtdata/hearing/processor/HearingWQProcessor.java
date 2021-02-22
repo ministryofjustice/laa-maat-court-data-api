@@ -8,14 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- */
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class HearingWQProcessor {
-
 
     private final WQCaseProcessor wqCaseProcessor;
 
@@ -50,16 +46,9 @@ public class HearingWQProcessor {
         wqResultProcessor.process(hearingDTO);
         log.info("Create WQ core");
         wqCoreProcessor.process(hearingDTO);
-
         log.info("Create WQ plea processor ");
         wqPleaProcessor.process(hearingDTO);
-
         log.info("Create WQ verdict processor");
         wqVerdictProcessor.process(hearingDTO);
-
-
-
-
-
     }
 }

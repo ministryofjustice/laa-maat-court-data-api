@@ -11,6 +11,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class Plea {
     private String pleaValue;
-    private Date pleaDate;
+    private String pleaDate;
     private String offenceId;
 }

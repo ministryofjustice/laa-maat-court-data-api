@@ -70,7 +70,7 @@ public class HearingResultedImpl {
         HearingDTO hearingDTO =
                 hearingDTOMapper.toHearingDTO(hearingResulted,
                         wqLinkReg.getCaseId(), wqLinkReg.getProceedingId(),
-                        getNextTxId(), offence, result, plea, verdict);
+                        getNextTxId(), offence, result);
 
         log.debug("Hearing resulted mapped to Hearing Court DTO: {}", hearingDTO.toString());
 

@@ -14,8 +14,7 @@ import java.util.Date;
 public class Verdict {
 
     private String offenceId;
-    private Date verdictDate;
-
+    private String verdictDate;
     private String category;
     private VerdictCategoryType categoryType;
     private String cjsVerdictCode;

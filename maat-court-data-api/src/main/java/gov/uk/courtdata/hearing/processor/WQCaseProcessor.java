@@ -23,7 +23,6 @@ public class WQCaseProcessor {
      */
     public void process(final HearingDTO magsCourtDTO) {
 
-
         WQCaseEntity wqCaseEntity = WQCaseEntity.builder().caseId(magsCourtDTO.getCaseId())
                 .txId(magsCourtDTO.getTxId())
                 .asn(magsCourtDTO.getAsn())
@@ -32,6 +31,7 @@ public class WQCaseProcessor {
                 .libraCreationDate(getCreationDate(magsCourtDTO.getCaseCreationDate()))
                 .cjsAreaCode(magsCourtDTO.getCjsAreaCode() != null ? String.format(LEADING_ZERO_2, Integer.parseInt(magsCourtDTO.getCjsAreaCode())) : null)
                 .proceedingId(magsCourtDTO.getProceedingId())
+                .prosecutionConcluded(String.valueOf(magsCourtDTO.isProsecutionConcluded()))
                 .build();
         wqCaseRepository.save(wqCaseEntity);
     }

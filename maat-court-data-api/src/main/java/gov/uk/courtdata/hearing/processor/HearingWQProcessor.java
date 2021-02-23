@@ -25,9 +25,9 @@ public class HearingWQProcessor {
 
     private final WQSessionProcessor wqSessionProcessor;
 
-    private final WQPleaProcessor wqPleaProcessor;
+    private final PleaProcessor pleaProcessor;
 
-    private final WQVerdictProcessor wqVerdictProcessor;
+    private final VerdictProcessor verdictProcessor;
 
 
 
@@ -46,9 +46,9 @@ public class HearingWQProcessor {
         wqResultProcessor.process(hearingDTO);
         log.info("Create WQ core");
         wqCoreProcessor.process(hearingDTO);
-        log.info("Create WQ plea processor ");
-        wqPleaProcessor.process(hearingDTO);
-        log.info("Create WQ verdict processor");
-        wqVerdictProcessor.process(hearingDTO);
+        log.info("Create plea processor ");
+        pleaProcessor.process(hearingDTO);
+        log.info("Create verdict processor");
+        verdictProcessor.process(hearingDTO);
     }
 }

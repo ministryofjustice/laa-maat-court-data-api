@@ -14,12 +14,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "XXMLA_WQ_PLEA", schema = "MLA")
-public class WQPleaEntity {
+@Table(name = "XXMLA_PLEA", schema = "MLA")
+public class PleaEntity {
 
     @Id
-    //@GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "PLEA_ID") private int pleaId;
+    @Column(name = "TX_ID")
+    private Integer txId;
 
     @Column(name = "PLEA_VALUE")
     private String pleaValue;
@@ -32,4 +32,10 @@ public class WQPleaEntity {
 
     @Column(name = "CREATED_ON")
     private LocalDateTime createdOn;
+
+    @Column(name = "CASE_ID")
+    private Integer caseId;
+
+    @Column(name = "MAAT_ID")
+    private Integer maatId;
 }

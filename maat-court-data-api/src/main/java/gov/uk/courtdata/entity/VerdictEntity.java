@@ -14,13 +14,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "XXMLA_WQ_VERDICT", schema = "MLA")
-public class WQVerdictEntity {
+@Table(name = "XXMLA_VERDICT", schema = "MLA")
+public class VerdictEntity {
 
     @Id
-    //@GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "VERDICT_ID")
-    private Integer verdictId;
+    @Column(name = "TX_ID")
+    private Integer txId;
 
     @Column(name = "OFFENCE_ID")
     private String offenceId;
@@ -42,4 +41,10 @@ public class WQVerdictEntity {
 
     @Column(name = "CREATED_ON")
     private LocalDateTime createdOn;
+
+    @Column(name = "CASE_ID")
+    private Integer caseId;
+
+    @Column(name = "MAAT_ID")
+    private Integer maatId;
 }

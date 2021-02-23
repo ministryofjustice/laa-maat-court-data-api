@@ -33,5 +33,6 @@ public class WQCaseEntity {
     private int proceedingId;
     @Column(name = "INACTIVE")
     private String inactive;
-
+    @Column(name = "PROSECUTION_CONCLUDED")
+    private String prosecutionConcluded;
 }

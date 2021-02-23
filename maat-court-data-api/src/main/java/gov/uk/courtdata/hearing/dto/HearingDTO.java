@@ -22,6 +22,5 @@ public class HearingDTO {
     private OffenceDTO offence;
     private ResultDTO result;
     private SessionDTO session;
-
-
+    private boolean prosecutionConcluded;
 }

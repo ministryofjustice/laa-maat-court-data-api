@@ -26,7 +26,7 @@ public class LinkRegisterProcessor {
         if (wqLinkRegisterEntity != null) {
             wqLinkRegisterEntity.setProsecutionConcluded(String.valueOf(hearingDTO.isProsecutionConcluded()));
             wqLinkRegisterRepository.save(wqLinkRegisterEntity);
-            log.info("Saved plea successfully");
+            log.info("Saved prosecution concluded successfully");
         } else {
             throw new MAATCourtDataException("MAAT ID not found.");
         }

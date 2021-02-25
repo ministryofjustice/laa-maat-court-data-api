@@ -23,7 +23,6 @@ public class WQCaseProcessor {
      */
     public void process(final HearingDTO magsCourtDTO) {
 
-
         WQCaseEntity wqCaseEntity = WQCaseEntity.builder().caseId(magsCourtDTO.getCaseId())
                 .txId(magsCourtDTO.getTxId())
                 .asn(magsCourtDTO.getAsn())
@@ -45,6 +44,4 @@ public class WQCaseProcessor {
     private LocalDate getCreationDate(final String creationDate) {
         return isNotEmpty(creationDate) ? DateUtil.parse(creationDate) : LocalDate.now();
     }
-
-
 }

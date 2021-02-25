@@ -52,6 +52,6 @@ public class WqLinkRegisterEntity {
     private String caseOwnerId;
     @Column(name = "CASE_URN")
     private String caseUrn;
-
-
+    @Column(name = "PROSECUTION_CONCLUDED")
+    private String prosecutionConcluded;
 }

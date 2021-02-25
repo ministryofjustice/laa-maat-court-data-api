@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.dto;
 
+import gov.uk.courtdata.enums.JurisdictionType;
 import lombok.*;
 
 @Data
@@ -22,4 +23,6 @@ public class HearingDTO {
     private OffenceDTO offence;
     private ResultDTO result;
     private SessionDTO session;
+    private boolean prosecutionConcluded;
+    private JurisdictionType jurisdictionType;
 }

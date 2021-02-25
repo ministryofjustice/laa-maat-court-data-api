@@ -33,5 +33,4 @@ public class WQCaseEntity {
     private int proceedingId;
     @Column(name = "INACTIVE")
     private String inactive;
-
 }

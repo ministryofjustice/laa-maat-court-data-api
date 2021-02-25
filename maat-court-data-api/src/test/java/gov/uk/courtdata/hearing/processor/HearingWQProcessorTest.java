@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static gov.uk.courtdata.enums.JurisdictionType.CROWN;
+import static gov.uk.courtdata.enums.JurisdictionType.MAGISTRATES;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -33,6 +35,14 @@ public class HearingWQProcessorTest {
     @Mock
     private WQSessionProcessor wqSessionProcessor;
 
+    @Mock
+    private PleaProcessor pleaProcessor;
+    @Mock
+    private VerdictProcessor verdictProcessor;
+
+    @Mock
+    private LinkRegisterProcessor linkRegisterProcessor;
+
     @InjectMocks
     private HearingWQProcessor hearingWQProcessor;
 
@@ -42,9 +52,13 @@ public class HearingWQProcessorTest {
     }
 
     @Test
-    public void process(){
+    public void givenHearingProcessor_whenProcessIsInvoke_thenProcessForCrown(){
 
-        HearingDTO hearingDTO = HearingDTO.builder().maatId(1212).build();
+        HearingDTO hearingDTO = HearingDTO
+                .builder()
+                .maatId(1212)
+                .jurisdictionType(CROWN)
+                .build();
 
         hearingWQProcessor.process(hearingDTO);
 
@@ -55,5 +69,28 @@ public class HearingWQProcessorTest {
         verify(wqOffenceProcessor,times(1)).process(hearingDTO);
         verify(wqResultProcessor,times(1)).process(hearingDTO);
         verify(wqSessionProcessor,times(1)).process(hearingDTO);
+        verify(pleaProcessor,times(1)).process(hearingDTO);
+        verify(verdictProcessor,times(1)).process(hearingDTO);
+        verify(linkRegisterProcessor,times(1)).process(hearingDTO);
+    }
+
+    @Test
+    public void givenHearingProcessor_whenProcessIsInvoke_thenProcessForMagistrates(){
+
+        HearingDTO hearingDTO = HearingDTO
+                .builder()
+                .maatId(1212)
+                .jurisdictionType(MAGISTRATES)
+                .build();
+
+        hearingWQProcessor.process(hearingDTO);
+
+        ///then
+        verify(wqCaseProcessor).process(hearingDTO);
+        verify(wqCoreProcessor).process(hearingDTO);
+        verify(wqDefendantProcessor).process(hearingDTO);
+        verify(wqOffenceProcessor).process(hearingDTO);
+        verify(wqResultProcessor).process(hearingDTO);
+        verify(wqSessionProcessor).process(hearingDTO);
     }
 }

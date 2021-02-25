@@ -25,5 +25,6 @@ public class Offence {
     private List<Result> results;
     private int iojDecision;
     private int wqOffence;
-
+    private Plea plea;
+    private Verdict verdict;
 }

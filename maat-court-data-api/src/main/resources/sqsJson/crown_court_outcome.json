@@ -1,0 +1,78 @@
+{
+  "maatId": 5635566,
+  "caseUrn": "EITHERWAY",
+  "jurisdictionType": "CROWN",
+  "asn": "MG25A12456",
+  "cjsAreaCode": 16,
+  "caseCreationDate": "2018-10-25",
+  "cjsLocation": "B16BG",
+  "docLanguage": "EN",
+  "inActive": "N",
+  "prosecutionConcluded": true,
+  "laaTransactionId": "7c49ebfe-fe3a-4f2f-8dad-f7b8f03b8327",
+  "ccOutComeData": null,
+  "defendant": {
+    "forename": "Edward",
+    "surname": "Harrison",
+    "dateOfBirth": "2002-01-10",
+    "address_line1": "Flat 4",
+    "address_line2": "17 Oldberry Road",
+    "address_line3": "Edgeware",
+    "address_line4": "Middlesex",
+    "address_line5": "London",
+    "postcode": "HA8 9DA",
+    "nino": "NH195839C",
+    "telephoneHome": null,
+    "telephoneWork": null,
+    "telephoneMobile": "07973 824240",
+    "email1": "teddy_harrison@hotmail.com",
+    "email2": null,
+    "offences": [
+      {
+        "offenceCode": "CD98072",
+        "asnSeq": "001",
+        "offenceShortTitle": "Racially / religiously aggravated wounding / grievous bodily harm",
+        "offenceClassification": "Temporary Offence Classification",
+        "offenceDate": "2018-10-21",
+        "offenceWording": "On 21/10/2018 at Euston Train Station, London used racially threatening or abusive or insulting words or behaviour causing fear of or provoking violence.",
+        "modeOfTrial": 2,
+        "legalAidStatus": "AP",
+        "legalAidStatusDate": null,
+        "legalAidReason": "Application Pending",
+        "plea":{
+          "pleaValue": "NOT_GUILTY",
+          "pleaDate": "2018-10-25",
+          "offenceId": "12345"
+        },
+        "verdict":{
+          "offenceId": "12345",
+          "verdictDate": "2018-10-25",
+          "category": "Cat",
+          "categoryType": "GUILTY_CONVICTED",
+          "cjsVerdictCode": "CD2343",
+          "verdictCode": "Verdict Code"
+        },
+        "results": [
+          {
+            "resultCode": "4600",
+            "resultShortTitle": "Transfer of solicitor",
+            "resultText": "Transfer of solicitor",
+            "resultCodeQualifiers": null,
+            "nextHearingDate": null,
+            "nextHearingLocation": "B16BG",
+            "firmName": "MARTIN MURRAY u0026 ASSOCIATES",
+            "contactName": null,
+            "laaOfficeAccount": "0A935R",
+            "legalAidWithdrawalDate": null
+          }
+        ]
+      }
+    ]
+  },
+  "session": {
+    "courtLocation": "C22SR",
+    "dateOfHearing": "2018-10-24",
+    "postHearingCustody": null,
+    "sessionValidateDate": "2020-01-01"
+  }
+}

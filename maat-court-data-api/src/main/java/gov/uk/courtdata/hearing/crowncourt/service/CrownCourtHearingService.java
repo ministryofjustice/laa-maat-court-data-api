@@ -20,16 +20,15 @@ public class CrownCourtHearingService {
     private final HearingResultedImpl hearingResultedImpl;
     private final CrownCourtProcessHelper crownCourtProcessHelper;
 
-
     public void execute(final HearingResulted hearingResulted) {
+
+        hearingResultedImpl.execute(hearingResulted);
 
         CCOutComeData ccOutComeData = hearingResulted.getCcOutComeData();
         if (isCrownCourtOutCome(ccOutComeData)
                 && crownCourtProcessHelper.isCaseConcluded(hearingResulted) ) {
             executeCrownCourtOutCome(hearingResulted);
         }
-        hearingResultedImpl.execute(hearingResulted);
-
     }
     private void executeCrownCourtOutCome(HearingResulted hearingResulted) {
 

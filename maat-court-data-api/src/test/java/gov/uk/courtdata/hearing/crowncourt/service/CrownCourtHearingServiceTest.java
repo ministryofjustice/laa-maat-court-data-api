@@ -142,6 +142,24 @@ public class CrownCourtHearingServiceTest {
         verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
     }
 
+    @Test
+    public void givenHearingIsReceived_whenPleaAvailable_thenWorkQueueProcessingIsCompleted() {
+
+        //given
+        HearingResulted hearingDetails = HearingResulted.builder()
+                .maatId(12345)
+                .build();
+
+        //when
+        crownCourtHearingService.execute(hearingDetails);
+
+        //then
+        verify(crownCourtValidationProcessor, times(0)).validate(hearingDetails);
+        verify(crownCourtProcessingImpl, times(0)).execute(hearingDetails);
+        verify(crownCourtProcessHelper, times(0)).isCaseConcluded(hearingDetails);
+        verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
+    }
+
 
 
     private HearingResulted getHearingResulted() {

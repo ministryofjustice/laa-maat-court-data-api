@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import static gov.uk.courtdata.enums.JurisdictionType.CROWN;
 
 @Component
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class HearingWQProcessor {
 
     private final VerdictProcessor verdictProcessor;
 
-
+    private final LinkRegisterProcessor linkRegisterProcessor;
 
     @Transactional(rollbackFor = MAATCourtDataException.class)
     public void process(final HearingDTO hearingDTO) {
@@ -46,9 +47,15 @@ public class HearingWQProcessor {
         wqResultProcessor.process(hearingDTO);
         log.info("Create WQ core");
         wqCoreProcessor.process(hearingDTO);
-        log.info("Create plea processor ");
-        pleaProcessor.process(hearingDTO);
-        log.info("Create verdict processor");
-        verdictProcessor.process(hearingDTO);
+
+        if (hearingDTO.getJurisdictionType().equals(CROWN)) {
+            log.info("Calling plea processor ");
+            pleaProcessor.process(hearingDTO);
+            log.info("Calling verdict processor");
+            verdictProcessor.process(hearingDTO);
+            log.info("Calling linkRegisterProcessor processor");
+            linkRegisterProcessor.process(hearingDTO);
+        }
+
     }
 }

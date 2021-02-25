@@ -2,6 +2,7 @@ package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
+import gov.uk.courtdata.enums.VerdictCategoryType;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
 import org.springframework.stereotype.Component;
@@ -173,5 +174,32 @@ public class TestModelDataBuilder {
                 .resultShortTitle("Next call")
                 .build();
     }
+    public HearingDTO getHearingDTOForCCOutcome() {
 
+        return HearingDTO
+                .builder()
+                .maatId(789034)
+                .offence(OffenceDTO
+                        .builder()
+                        .plea(PleaDTO
+                                .builder()
+                                .offenceId("123456")
+                                .pleaValue("NOT_GUILTY")
+                                .pleaDate("2020-10-12")
+                                .build()
+                        )
+                        .verdict(VerdictDTO
+                                .builder()
+                                .verdictCode("CD234")
+                                .verdictDate("2020-10-21")
+                                .category("Verdict_Category")
+                                .categoryType(VerdictCategoryType.GUILTY_CONVICTED)
+                                .cjsVerdictCode("88999")
+                                .build()
+                        )
+                        .build()
+                )
+
+                .build();
+    }
 }

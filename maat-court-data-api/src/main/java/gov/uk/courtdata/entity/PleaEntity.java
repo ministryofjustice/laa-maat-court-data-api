@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import gov.uk.courtdata.model.id.CaseTxnId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@IdClass(CaseTxnId.class)
 @Table(name = "XXMLA_PLEA", schema = "MLA")
 public class PleaEntity {
 

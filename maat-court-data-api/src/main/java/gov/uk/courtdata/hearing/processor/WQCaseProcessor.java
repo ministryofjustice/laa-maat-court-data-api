@@ -31,7 +31,6 @@ public class WQCaseProcessor {
                 .libraCreationDate(getCreationDate(magsCourtDTO.getCaseCreationDate()))
                 .cjsAreaCode(magsCourtDTO.getCjsAreaCode() != null ? String.format(LEADING_ZERO_2, Integer.parseInt(magsCourtDTO.getCjsAreaCode())) : null)
                 .proceedingId(magsCourtDTO.getProceedingId())
-                .prosecutionConcluded(String.valueOf(magsCourtDTO.isProsecutionConcluded()))
                 .build();
         wqCaseRepository.save(wqCaseEntity);
     }
@@ -45,6 +44,4 @@ public class WQCaseProcessor {
     private LocalDate getCreationDate(final String creationDate) {
         return isNotEmpty(creationDate) ? DateUtil.parse(creationDate) : LocalDate.now();
     }
-
-
 }

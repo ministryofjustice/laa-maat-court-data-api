@@ -71,7 +71,7 @@ public class RepOrderInfoProcessorTest {
         if (repOrderEntity.isPresent()) {
             RepOrderEntity rep = repOrderEntity.get();
             Duration duration = Duration.between(rep.getDateModified(), LocalDateTime.now());
-            assertThat(duration.getSeconds()).isEqualTo(0);
+            assertThat(duration.getSeconds()).isZero();
             assertThat(rep.getUserModified()).isEqualTo("testUser");
 
         }

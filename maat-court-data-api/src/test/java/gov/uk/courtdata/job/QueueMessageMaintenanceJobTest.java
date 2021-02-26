@@ -62,7 +62,7 @@ public class QueueMessageMaintenanceJobTest {
 
         assertAll("verifyCronExpr",
                 () -> assertNotNull(cronExpression),
-                () -> assertTrue(cronExpression.equals(expr), "Cron expressions don't match."));
+                () -> assertEquals(expr, cronExpression, "Cron expressions don't match."));
 
     }
 

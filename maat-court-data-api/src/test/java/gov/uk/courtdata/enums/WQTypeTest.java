@@ -10,25 +10,25 @@ public class WQTypeTest {
     public void givenCommittalWQ_actionableResultIsReturned() {
 
         boolean result = WQType.isActionableQueue(1);
-        assertThat(result).isEqualTo(true);
+        assertThat(result).isTrue();
     }
     @Test
     public void givenIndictableWQ_actionableResultIsReturned() {
 
         boolean result = WQType.isActionableQueue(2);
-        assertThat(result).isEqualTo(true);
+        assertThat(result).isTrue();
     }
     @Test
     public void givenConclusionsWQ_actionableResultIsReturned() {
 
         boolean result = WQType.isActionableQueue(7);
-        assertThat(result).isEqualTo(true);
+        assertThat(result).isTrue();
     }
 
     @Test
     public void givenNonActionableWQ_NonActionableResultIsReturned() {
 
         boolean result = WQType.isActionableQueue(5);
-        assertThat(result).isEqualTo(false);
+        assertThat(result).isFalse();
     }
 }

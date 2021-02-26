@@ -106,7 +106,7 @@ public class UnLinkImplTest {
         unLink.execute(unlinkModel);
 
         verify(unlinkReasonRepository).save(unlinkEntityArgumentCaptor.capture());
-        assertThat(unlinkEntityArgumentCaptor.getValue().getTxId()).isEqualTo(0);
+        assertThat(unlinkEntityArgumentCaptor.getValue().getTxId()).isZero();
         assertThat(unlinkEntityArgumentCaptor.getValue().getCaseId()).isEqualTo(5566);
         assertThat(unlinkEntityArgumentCaptor.getValue().getReasonId()).isEqualTo(8877);
         assertThat(unlinkEntityArgumentCaptor.getValue().getOtherReason()).isEqualTo("some reason text");

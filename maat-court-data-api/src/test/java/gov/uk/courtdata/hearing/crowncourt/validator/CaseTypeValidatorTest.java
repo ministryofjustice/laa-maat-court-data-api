@@ -10,7 +10,6 @@ import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -36,26 +35,19 @@ public class CaseTypeValidatorTest {
     private CaseTypeValidator caseTypeValidator;
 
 
-    @Test
+    @Test(expected = ValidationException.class)
     public void givenCaseTypeNotValidForAppeal_RaisesException() {
 
         when(repOrderRepository.findById(1001)).thenReturn(repOrderWith(CC_ALREADY.getValue()));
-
-
-        Assertions.assertThrows(ValidationException.class, () -> {
-            caseTypeValidator.validate(hearingResultedWith(SUCCESSFUL.getValue()));
-        });
+        caseTypeValidator.validate(hearingResultedWith(SUCCESSFUL.getValue()));
 
     }
 
-    @Test
+    @Test(expected = ValidationException.class)
     public void givenCaseTypeNotValidForTrial_RaisesException() {
 
         when(repOrderRepository.findById(1001)).thenReturn(repOrderWith(APPEAL_CC.getValue()));
-
-        Assertions.assertThrows(ValidationException.class, () -> {
-            caseTypeValidator.validate(hearingResultedWith(CONVICTED.getValue()));
-        });
+        caseTypeValidator.validate(hearingResultedWith(CONVICTED.getValue()));
 
     }
 

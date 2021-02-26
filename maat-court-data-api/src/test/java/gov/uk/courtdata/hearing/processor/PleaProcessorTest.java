@@ -48,4 +48,11 @@ public class PleaProcessorTest {
         assertThat(pleaEntityArgumentCaptor.getValue().getOffenceId()).isEqualTo("123456");
         assertThat(pleaEntityArgumentCaptor.getValue().getMaatId()).isEqualTo(789034);
     }
+
+    @Test(expected = NullPointerException.class)
+    public void givenCaseProcessor_whenPleaIsNull_thenSavePlea() {
+
+        //when
+        pleaProcessor.process(HearingDTO.builder().build());
+    }
 }

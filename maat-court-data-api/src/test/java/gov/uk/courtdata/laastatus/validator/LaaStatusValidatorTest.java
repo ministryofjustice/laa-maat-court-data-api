@@ -86,7 +86,7 @@ public class LaaStatusValidatorTest {
         MessageCollection messageCollection = laaStatusValidator.validate(caseDetails);
 
         //then
-        assertThat(messageCollection.getMessages().isEmpty()).isEqualTo(true);
+        assertThat(messageCollection.getMessages().isEmpty()).isTrue();
 
     }
 
@@ -102,7 +102,7 @@ public class LaaStatusValidatorTest {
         MessageCollection messageCollection = laaStatusValidator.validate(caseDetails);
 
         //then
-        assertThat(messageCollection.getMessages().isEmpty()).isEqualTo(true);
+        assertThat(messageCollection.getMessages().isEmpty()).isTrue();
 
     }
 
@@ -118,7 +118,7 @@ public class LaaStatusValidatorTest {
         MessageCollection messageCollection = laaStatusValidator.validate(caseDetails);
 
         //then
-        assertThat(messageCollection.getMessages().isEmpty()).isEqualTo(true);
+        assertThat(messageCollection.getMessages().isEmpty()).isTrue();
 
 
     }

@@ -42,7 +42,7 @@ public class OUCodeValidatorTest {
         HearingResulted hearingResulted = HearingResulted.builder().session(session).build();
 
         Optional<Void> result = ouCodeValidator.validate(hearingResulted);
-        assertThat(result).isEqualTo(Optional.empty());
+        assertThat(result).isNotPresent();
 
     }
 }

@@ -6,7 +6,6 @@ import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.repository.OffenceRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

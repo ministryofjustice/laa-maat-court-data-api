@@ -14,6 +14,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,5 +49,14 @@ public class PleaProcessorTest {
         assertThat(pleaEntityArgumentCaptor.getValue().getPleaDate()).isEqualTo("2020-10-12");
         assertThat(pleaEntityArgumentCaptor.getValue().getOffenceId()).isEqualTo("123456");
         assertThat(pleaEntityArgumentCaptor.getValue().getMaatId()).isEqualTo(789034);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void givenCaseProcessor_whenPleaIsNull_thenSavePlea() {
+
+        //when
+        pleaProcessor.process(HearingDTO.builder().build());
+
+        verify(pleaRepository, times(10)).save(any());
     }
 }

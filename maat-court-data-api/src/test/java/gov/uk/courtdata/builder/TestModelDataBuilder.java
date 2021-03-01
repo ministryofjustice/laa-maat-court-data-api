@@ -179,6 +179,7 @@ public class TestModelDataBuilder {
         return HearingDTO
                 .builder()
                 .maatId(789034)
+                .prosecutionConcluded(true)
                 .offence(OffenceDTO
                         .builder()
                         .plea(PleaDTO

@@ -63,7 +63,7 @@ public class MaatIdValidatorTest {
         when(repOrderRepository.findById(1000)).thenReturn(Optional.of(repOrderEntity));
 
         Optional<Void> result = maatIdValidator.validate(1000);
-        assertThat(result).isEqualTo(Optional.empty());
+        assertThat(result).isNotPresent();
 
     }
 }

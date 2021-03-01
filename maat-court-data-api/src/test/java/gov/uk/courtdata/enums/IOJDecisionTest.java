@@ -10,18 +10,18 @@ public class IOJDecisionTest {
     public void givenFailIOJDecision_failResultIsReturned() {
 
         boolean result = IOJDecision.isFailedDecision(0);
-        assertThat(result).isEqualTo(true);
+        assertThat(result).isTrue();
     }
     @Test
     public void givenPendingIOJDecision_failResultIsReturned() {
 
         boolean result = IOJDecision.isFailedDecision(2);
-        assertThat(result).isEqualTo(true);
+        assertThat(result).isTrue();
     }
     @Test
     public void givenGrantedIOJDecision_grantedResultIsReturned() {
 
         boolean result = IOJDecision.isFailedDecision(1);
-        assertThat(result).isEqualTo(false);
+        assertThat(result).isFalse();
     }
 }

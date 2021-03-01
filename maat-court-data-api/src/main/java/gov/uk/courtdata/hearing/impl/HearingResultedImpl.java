@@ -4,13 +4,11 @@ import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.enums.WQType;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
-import gov.uk.courtdata.hearing.processor.HearingWQProcessor;
 import gov.uk.courtdata.hearing.mapper.HearingDTOMapper;
+import gov.uk.courtdata.hearing.processor.HearingWQProcessor;
 import gov.uk.courtdata.hearing.processor.WQCoreProcessor;
 import gov.uk.courtdata.model.Offence;
-import gov.uk.courtdata.model.Plea;
 import gov.uk.courtdata.model.Result;
-import gov.uk.courtdata.model.Verdict;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.processor.OffenceCodeRefDataProcessor;
 import gov.uk.courtdata.processor.ResultCodeRefDataProcessor;
@@ -56,7 +54,7 @@ public class HearingResultedImpl {
                         resultCodeRefDataProcessor.processResultCode(resultCode);
                         if (isWorkQueueProcessingRequired(resultCode, hearingResulted)) {
 
-                            processResults(hearingResulted, wqLinkReg, offence, result, offence.getPlea(), offence.getVerdict());
+                            processResults(hearingResulted, wqLinkReg, offence, result);
                         }
                     });
 
@@ -65,7 +63,7 @@ public class HearingResultedImpl {
     }
 
 
-    private void processResults(HearingResulted hearingResulted, WqLinkRegisterEntity wqLinkReg, Offence offence, Result result, Plea plea, Verdict verdict) {
+    private void processResults(HearingResulted hearingResulted, WqLinkRegisterEntity wqLinkReg, Offence offence, Result result) {
 
         HearingDTO hearingDTO =
                 hearingDTOMapper.toHearingDTO(hearingResulted,
@@ -91,10 +89,7 @@ public class HearingResultedImpl {
     }
 
     private boolean isWorkQueueProcessingRequired(Integer resultCode, HearingResulted hearingResulted) {
-        if (JurisdictionType.CROWN == hearingResulted.getJurisdictionType() &&
-                WQType.isActionableQueue(wqCoreProcessor.findWQType(resultCode))) {
-            return false;
-        }
-        return true;
+        return JurisdictionType.CROWN != hearingResulted.getJurisdictionType() ||
+                !WQType.isActionableQueue(wqCoreProcessor.findWQType(resultCode));
     }
 }

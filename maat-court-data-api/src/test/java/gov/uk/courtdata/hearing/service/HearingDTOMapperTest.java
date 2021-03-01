@@ -112,6 +112,7 @@ public class HearingDTOMapperTest {
         HearingDTO hearingDTO = hearingDTOMapper.toHearingDTO(hearingResulted, 12, 34, 56, offence, result);
 
         //then
+        assertThat(hearingDTO.getOffence().getPlea()).isNotNull();
         assertThat(hearingDTO.getOffence().getPlea().getPleaValue()).isEqualTo("NOT_GUILTY");
         assertThat(hearingDTO.getOffence().getPlea().getOffenceId()).isEqualTo("8072");
         assertThat(hearingDTO.getOffence().getPlea().getPleaDate()).isEqualTo("2018-10-25");
@@ -164,6 +165,7 @@ public class HearingDTOMapperTest {
         HearingDTO hearingDTO = hearingDTOMapper.toHearingDTO(hearingResulted, 12, 34, 56, offence, result);
 
         //then
+        assertThat(hearingDTO.getOffence().getVerdict()).isNotNull();
         assertThat(hearingDTO.getOffence().getVerdict().getOffenceId()).isEqualTo("12345");
         assertThat(hearingDTO.getOffence().getVerdict().getVerdictDate()).isEqualTo("2018-12-25");
         assertThat(hearingDTO.getOffence().getVerdict().getCategory()).isEqualTo("Verdict Category");

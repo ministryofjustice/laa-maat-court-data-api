@@ -1,0 +1,12 @@
+Crown court outcome:
+
+
+Jira tickets:
+https://dsdmoj.atlassian.net/browse/LASB-533
+
+
+1 - Update database schema
+Creating new tables (Plea and Verdict) to persist the database. Also, update the link table to store the conclusion flag.
+The database file have all the relevant detail to update the MLA schema.
+ resources/db.changelog/changes/create_tables_for_crown_court_outcome.sql
+

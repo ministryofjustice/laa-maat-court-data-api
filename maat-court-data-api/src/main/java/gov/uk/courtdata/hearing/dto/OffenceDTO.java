@@ -1,9 +1,10 @@
 package gov.uk.courtdata.hearing.dto;
 
 
-import gov.uk.courtdata.model.Plea;
-import gov.uk.courtdata.model.Verdict;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder

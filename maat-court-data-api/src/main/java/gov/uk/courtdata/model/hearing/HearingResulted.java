@@ -1,5 +1,6 @@
 package gov.uk.courtdata.model.hearing;
 
+import gov.uk.courtdata.enums.FunctionType;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Session;
@@ -24,6 +25,7 @@ public class HearingResulted {
     private CCOutComeData ccOutComeData;
     private Defendant defendant;
     private String inActive;
+    private FunctionType functionType;
     private Session session;
     private UUID laaTransactionId;
     private int messageRetryCounter;

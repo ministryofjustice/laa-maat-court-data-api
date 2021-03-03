@@ -49,13 +49,17 @@ public class HearingWQProcessor {
         wqCoreProcessor.process(hearingDTO);
 
         if (hearingDTO.getJurisdictionType().equals(CROWN)) {
-            log.info("Calling plea processor ");
-            pleaProcessor.process(hearingDTO);
-            log.info("Calling verdict processor");
-            verdictProcessor.process(hearingDTO);
-            log.info("Calling linkRegisterProcessor processor");
-            linkRegisterProcessor.process(hearingDTO);
+            processCCOutComeData(hearingDTO);
         }
 
+    }
+
+    private void processCCOutComeData(HearingDTO hearingDTO) {
+        log.info("Calling plea processor ");
+        pleaProcessor.process(hearingDTO);
+        log.info("Calling verdict processor");
+        verdictProcessor.process(hearingDTO);
+        log.info("Calling linkRegisterProcessor processor");
+        linkRegisterProcessor.process(hearingDTO);
     }
 }

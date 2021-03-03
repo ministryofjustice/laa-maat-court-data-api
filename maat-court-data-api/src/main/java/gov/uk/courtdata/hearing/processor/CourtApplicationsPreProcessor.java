@@ -28,34 +28,36 @@ public class CourtApplicationsPreProcessor {
     /**
      * This process set Application Flags & ANS SEQ for court application data feed
      * to fit into the current legacy MLRA set up
+     * Use the ref data to get the Application flag by offence code
+     * ASN SEQ of existing applications = stored value, Increment it for new applications
      */
     public void process(final HearingResulted hearingResulted) {
-        List<Offence> applicationList;
-        applicationList = mapApplicationFlag(hearingResulted);
-        mapASNSeq(applicationList);
+
+        List<Offence> applicationList = mapApplicationFlag(hearingResulted);
+        mapASNSeq(hearingResulted, applicationList);
         hearingResulted.getDefendant().setOffences(applicationList);
 
 
     }
 
-    private void mapASNSeq(HearingResulted hearingResulted) {
-        WqLinkRegisterEntity wqLinkRegisterEntity = wqLinkRegisterRepository
-                .findBymaatId(hearingResulted.getMaatId())
-                .stream()
-                .findFirst()
-                .orElse(null);
+    private void mapASNSeq(HearingResulted hearingResulted, List<Offence> applicationList) {
+        List<WqLinkRegisterEntity> wqLinkRegisterEntity = wqLinkRegisterRepository
+                .findBymaatId(hearingResulted.getMaatId());
 
 
-        if (wqLinkRegisterEntity != null) {
-            List<Offence> existingApplications = hearingResulted.getDefendant().getOffences().stream()
-                    .map(offence -> setASNSeq(offence, wqLinkRegisterEntity))
+        if (!wqLinkRegisterEntity.isEmpty()) {
+            WqLinkRegisterEntity wqLinkReg = wqLinkRegisterEntity.get(0);
+            List<Offence> existingApplications = applicationList.stream()
+                    .map(offence -> setASNSeq(offence, wqLinkReg))
                     .filter(offence -> offence.getAsnSeq() != null)
                     .collect(Collectors.toList());
-            List<Offence> newApplications = hearingResulted.getDefendant().getOffences().stream()
+            List<Offence> newApplications = applicationList.stream()
                     .filter(offence -> offence.getAsnSeq() == null)
                     .map(offence -> setNewASNSeq(existingApplications, offence))
                     .collect(Collectors.toList());
-
+            applicationList.clear();
+            applicationList.addAll(existingApplications);
+            applicationList.addAll(newApplications);
 
         }
 
@@ -80,7 +82,7 @@ public class CourtApplicationsPreProcessor {
 
         return hearingResulted.getDefendant().getOffences()
                 .stream()
-                .filter(offence -> offence.getOffenceId() != null)
+                .filter(offence -> offence.getOffenceCode() != null)
                 .map(this::setApplicationFlag).collect(Collectors.toList());
 
     }

@@ -150,7 +150,7 @@ public class HearingDTOMapperTest {
                 .offenceId("12345")
                 .verdictDate("2018-12-25")
                 .category("Verdict Category")
-                .categoryType(VerdictCategoryType.GUILTY)
+                .categoryType("GUILTY")
                 .cjsVerdictCode("CD2343")
                 .verdictCode("MK1212")
                 .build();

@@ -41,10 +41,9 @@ public class CrownCourtProcessingImpl {
 
     public void execute(HearingResulted hearingResulted) {
 
-        CCOutComeData ccutComeData = hearingResulted.getCcOutComeData();
+        CCOutComeData ccOutComeData = hearingResulted.getCcOutComeData();
         final Integer maatId = hearingResulted.getMaatId();
         final Optional<RepOrderEntity> optionalRepEntity = repOrderRepository.findById(maatId);
-
 
         if (optionalRepEntity.isPresent()) {
 
@@ -53,15 +52,15 @@ public class CrownCourtProcessingImpl {
             RepOrderEntity repOrderEntity = optionalRepEntity.get();
 
             crownCourtStoredProcedureRepository.updateCrownCourtOutcome(maatId,
-                    ccutComeData.getCcooOutcome(),
+                    ccOutComeData.getCcOutcome(),
                     crownCourtProcessHelper.isBenchWarrantIssued(hearingResulted),
-                    ccutComeData.getAppealType() != null ? ccutComeData.getAppealType() : repOrderEntity.getAptyCode(),
-                    crownCourtProcessHelper.isImprisoned(hearingResulted, ccutComeData.getCcooOutcome()),
+                    ccOutComeData.getAppealType() != null ? ccOutComeData.getAppealType() : repOrderEntity.getAptyCode(),
+                    crownCourtProcessHelper.isImprisoned(hearingResulted, ccOutComeData.getCcOutcome()),
                     hearingResulted.getCaseUrn(),
                     crownCourtCode);
 
 
-            processSentencingDate(ccutComeData.getCaseEndDate(), maatId, repOrderEntity.getCatyCaseType());
+            processSentencingDate(ccOutComeData.getCaseEndDate(), maatId, repOrderEntity.getCatyCaseType());
         }
     }
 
@@ -69,7 +68,7 @@ public class CrownCourtProcessingImpl {
     private void processSentencingDate(String ccCaseEndDate, Integer maatId, String catyType) {
 
         LocalDate caseEndDate = DateUtil.parse(ccCaseEndDate);
-
+        //todo: remove this as not getting from the payload
         if (caseEndDate != null) {
             String user = dbUser != null ? dbUser.toUpperCase() : null;
             if (APPEAL_CC.getValue().equalsIgnoreCase(catyType)) {
@@ -89,5 +88,4 @@ public class CrownCourtProcessingImpl {
                 -> new MAATCourtDataException(format("Crown Court Code Look Up Failed for %s", ouCode)));
         return crownCourtCode.getCode();
     }
-
 }

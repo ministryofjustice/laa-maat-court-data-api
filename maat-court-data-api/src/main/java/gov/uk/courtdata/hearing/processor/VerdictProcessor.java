@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class VerdictProcessor {
                     .offenceId(verdictDTO.getOffenceId())
                     .verdictDate(DateUtil.parse(verdictDTO.getVerdictDate()))
                     .category(verdictDTO.getCategory())
-                    .categoryType(verdictDTO.getCategoryType().name())
+                    .categoryType(Optional.ofNullable(verdictDTO.getCategoryType()).orElse(""))
                     .cjsVerdictCode(verdictDTO.getCjsVerdictCode())
                     .verdictCode(verdictDTO.getVerdictCode())
                     .createdOn(LocalDateTime.now())

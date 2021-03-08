@@ -67,7 +67,7 @@ public class CourtApplicationsPreProcessorTest {
 
         //then
         assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq()).isEqualTo("1");
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getOffenceClassification()).isEqualTo("1");
+        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getApplicationFlag()).isEqualTo(1);
     }
 
 
@@ -92,7 +92,7 @@ public class CourtApplicationsPreProcessorTest {
 
         //then
         assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq()).isEqualTo("1");
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getOffenceClassification()).isEqualTo("1");
+        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getApplicationFlag()).isEqualTo(1);
     }
 
 

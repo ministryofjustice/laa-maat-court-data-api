@@ -72,7 +72,7 @@ public class CourtApplicationsPreProcessor {
 
     private Offence setASNSeq(Offence offence, WqLinkRegisterEntity wqLinkRegisterEntity) {
         Optional<OffenceEntity> offenceEntity = offenceRepository.findApplicationByOffenceCode(wqLinkRegisterEntity.getCaseId(),
-                offence.getOffenceId(), offence.getOffenceClassification());
+                offence.getOffenceId(), offence.getApplicationFlag());
         offenceEntity.ifPresent(entity -> offence.setAsnSeq(entity.getAsnSeq()));
         return offence;
     }
@@ -89,7 +89,7 @@ public class CourtApplicationsPreProcessor {
 
     private Offence setApplicationFlag(Offence offence) {
         Optional<XLATOffenceEntity> xlatOffenceEntity = xlatOffenceRepository.findById(offence.getOffenceCode());
-        xlatOffenceEntity.ifPresent(offenceEntity -> offence.setOffenceClassification(String.valueOf(offenceEntity.getApplicationFlag())));
+        xlatOffenceEntity.ifPresent(offenceEntity -> offence.setApplicationFlag(offenceEntity.getApplicationFlag()));
 
         return offence;
     }

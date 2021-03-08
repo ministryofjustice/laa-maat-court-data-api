@@ -22,6 +22,7 @@ public class OffenceDTO {
     private String legalAidStatus;
     private String legalAidStatusDate;
     private String legalAidReason;
+    private Integer applicationFlag;
     private VerdictDTO verdict;
     private PleaDTO plea;
 }

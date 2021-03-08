@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@IdClass(CaseTxnId.class)
 @Table(name = "XXMLA_PLEA", schema = "MLA")
 public class PleaEntity {
 

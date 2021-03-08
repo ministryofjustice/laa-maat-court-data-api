@@ -5,8 +5,10 @@ import gov.uk.courtdata.enums.PleaTrialOutcome;
 import gov.uk.courtdata.enums.VerdictTrialOutcome;
 import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessHelper;
 import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessingImpl;
+import gov.uk.courtdata.hearing.crowncourt.impl.OffenceHelper;
 import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
+import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ public class CrownCourtHearingService {
     private final CrownCourtProcessingImpl crownCourtProcessingImpl;
     private final HearingResultedImpl hearingResultedImpl;
     private final CrownCourtProcessHelper crownCourtProcessHelper;
+
+    private final OffenceHelper offenceHelper;
 
     public void execute(final HearingResulted hearingResulted) {
 
@@ -60,9 +64,9 @@ public class CrownCourtHearingService {
         if (hearingResulted.isProsecutionConcluded()) {
             List<String> offenceOutcomeList = new ArrayList<>();
 
-            hearingResulted
-                    .getDefendant()
-                    .getOffences()
+            List<Offence> offenceList = offenceHelper.getOffences(hearingResulted.getMaatId());
+
+            offenceList
                     .forEach(offence -> {
 
                         if (offence.getVerdict() != null) {
@@ -89,6 +93,4 @@ public class CrownCourtHearingService {
         return null;
 
     }
-
-
 }

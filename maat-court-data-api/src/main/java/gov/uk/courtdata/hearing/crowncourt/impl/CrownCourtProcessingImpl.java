@@ -5,10 +5,7 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
-import gov.uk.courtdata.repository.CrownCourtCodeRepository;
-import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
-import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +30,7 @@ public class CrownCourtProcessingImpl {
     private final CrownCourtProcessHelper crownCourtProcessHelper;
 
     private final CrownCourtStoredProcedureRepository crownCourtStoredProcedureRepository;
+
 
 
     @Value("${spring.datasource.username}")
@@ -68,7 +66,6 @@ public class CrownCourtProcessingImpl {
     private void processSentencingDate(String ccCaseEndDate, Integer maatId, String catyType) {
 
         LocalDate caseEndDate = DateUtil.parse(ccCaseEndDate);
-        //todo: remove this as not getting from the payload
         if (caseEndDate != null) {
             String user = dbUser != null ? dbUser.toUpperCase() : null;
             if (APPEAL_CC.getValue().equalsIgnoreCase(catyType)) {
@@ -76,9 +73,7 @@ public class CrownCourtProcessingImpl {
                         .invokeUpdateAppealSentenceOrderDate(maatId, user, caseEndDate, LocalDate.now());
             } else {
                 crownCourtProcessingRepository.invokeUpdateSentenceOrderDate(maatId, user, caseEndDate);
-
             }
-
         }
     }
 

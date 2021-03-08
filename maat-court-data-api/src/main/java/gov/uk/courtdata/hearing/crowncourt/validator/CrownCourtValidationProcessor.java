@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 public class CrownCourtValidationProcessor {
 
     private final CrownCourtOutComesValidator crownCourtOutComesValidator;
+    private final AppealTypeValidator appealTypeValidator;
     private final OUCodeValidator ouCodeValidator;
     private final CaseTypeValidator caseTypeValidator;
 
@@ -18,9 +19,9 @@ public class CrownCourtValidationProcessor {
     public void validate(final HearingResulted hearingRes) {
 
         crownCourtOutComesValidator.validate(hearingRes);
+        appealTypeValidator.validate(hearingRes);
         ouCodeValidator.validate(hearingRes);
         caseTypeValidator.validate(hearingRes);
         log.info("Crown Court Outcome Validation has been Completed for MAAT ID: {}", hearingRes.getMaatId());
     }
-
 }

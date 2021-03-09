@@ -80,7 +80,7 @@ public class CrownCourtHearingService {
                     });
 
             List<String> outcomes = offenceOutcomeList.stream().distinct().collect(Collectors.toList());
-            log.info("Offence count: " + outcomes);
+            log.info("Offence count: " + outcomes.toString());
             String offenceOutcomeStatus="";
             if (outcomes.stream().count() == 1) {
                 offenceOutcomeStatus = outcomes.get(0);

@@ -68,8 +68,8 @@ public class OffenceHelperTest {
         List<Offence> offenceList = offenceHelper.getOffences(anyInt());
 
         assertThat(offenceList.get(0).getOffenceId()).isEqualTo("2222");
-        verify(pleaRepository,atLeast(2)).getLatestPleaByOffence(anyInt());
-        verify(verdictRepository,atLeast(2)).getLatestVerdictByOffence(anyInt());
+        verify(pleaRepository,atLeast(2)).getLatestPleaByOffence(anyString());
+        verify(verdictRepository,atLeast(2)).getLatestVerdictByOffence(anyString());
     }
 
     @Test

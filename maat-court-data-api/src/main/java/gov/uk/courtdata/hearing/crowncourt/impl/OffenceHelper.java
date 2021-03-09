@@ -11,12 +11,12 @@ import gov.uk.courtdata.repository.OffenceRepository;
 import gov.uk.courtdata.repository.PleaRepository;
 import gov.uk.courtdata.repository.VerdictRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import gov.uk.courtdata.util.IntegerUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,6 +42,7 @@ public class OffenceHelper {
 
             return offenceEntityList
                     .stream()
+                    .filter(no -> Objects.nonNull(no.getOffenceId()))
                     .map(off->
                             Offence.builder()
                                     .offenceId(off.getOffenceId())
@@ -55,23 +56,18 @@ public class OffenceHelper {
 
     private Plea getPlea(String offenceId) {
 
-        Optional<Integer> offenceIdInt = IntegerUtil.parse(offenceId);
-        if (offenceIdInt.isPresent()) {
-            Optional<PleaEntity> pleaEntityOptional = pleaRepository.getLatestPleaByOffence(offenceIdInt.get());
+        Optional<PleaEntity> pleaEntityOptional = pleaRepository.getLatestPleaByOffence(offenceId);
             if (pleaEntityOptional.isPresent()) {
                 return Plea.builder()
                         .pleaValue(pleaEntityOptional.get().getPleaValue())
                         .build();
             }
-        }
         return null;
     }
 
     private Verdict getVerdict(String offenceId) {
 
-        Optional<Integer> offenceIdInt = IntegerUtil.parse(offenceId);
-        if (offenceIdInt.isPresent()) {
-            Optional<VerdictEntity> verdictEntityOptional = verdictRepository.getLatestVerdictByOffence(offenceIdInt.get());
+        Optional<VerdictEntity> verdictEntityOptional = verdictRepository.getLatestVerdictByOffence(offenceId);
             if (verdictEntityOptional.isPresent()) {
                 VerdictEntity recentVerdict = verdictEntityOptional.get();
                 return Verdict.builder()
@@ -79,7 +75,6 @@ public class OffenceHelper {
                         .category(recentVerdict.getCategory())
                         .build();
             }
-        }
         return null;
     }
 }

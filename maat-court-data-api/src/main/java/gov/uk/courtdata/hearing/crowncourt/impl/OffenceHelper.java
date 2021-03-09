@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-
 public class OffenceHelper {
 
     private final WqLinkRegisterRepository wqLinkRegisterRepository;

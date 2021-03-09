@@ -35,12 +35,9 @@ public class CrownCourtHearingService {
 
         hearingResultedImpl.execute(hearingResulted);
 
-        CCOutComeData calculatedOutcome = CCOutComeData.builder()
-                .ccOutcome(calculateCrownCourtOutCome(hearingResulted))
-                .build();
+          hearingResulted.getCcOutComeData().setCcOutcome(calculateCrownCourtOutCome(hearingResulted));
 
-        hearingResulted.setCcOutComeData(calculatedOutcome);
-        if (isCrownCourtOutCome(calculatedOutcome)
+        if (isCrownCourtOutCome(hearingResulted.getCcOutComeData())
                 && crownCourtProcessHelper.isCaseConcluded(hearingResulted)) {
             executeCrownCourtOutCome(hearingResulted);
         }
@@ -63,34 +60,29 @@ public class CrownCourtHearingService {
 
         if (hearingResulted.isProsecutionConcluded()) {
             List<String> offenceOutcomeList = new ArrayList<>();
-
             List<Offence> offenceList = offenceHelper.getOffences(hearingResulted.getMaatId());
 
             offenceList
                     .forEach(offence -> {
 
                         if (offence.getVerdict() != null) {
-
                             offenceOutcomeList.add(VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getCategoryType()));
-
                         } else if (offence.getPlea() != null) {
-
                             offenceOutcomeList.add(PleaTrialOutcome.getTrialOutcome(offence.getPlea().getPleaValue()));
-
                         }
                     });
 
             List<String> outcomes = offenceOutcomeList.stream().distinct().collect(Collectors.toList());
-            String offenceOutcomeStatus;
+            log.info("Offence count: " + outcomes);
+            String offenceOutcomeStatus="";
             if (outcomes.stream().count() == 1) {
                 offenceOutcomeStatus = outcomes.get(0);
-            } else {
+            } else if (outcomes.stream().count() > 1) {
                 offenceOutcomeStatus = CrownCourtTrialOutcome.PART_CONVICTED.name();
             }
             log.info("Calculated crown court outcome. " + offenceOutcomeStatus);
             return offenceOutcomeStatus;
         }
         return null;
-
     }
 }

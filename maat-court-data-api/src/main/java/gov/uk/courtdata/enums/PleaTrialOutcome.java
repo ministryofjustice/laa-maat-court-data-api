@@ -2,6 +2,7 @@ package gov.uk.courtdata.enums;
 
 import lombok.AllArgsConstructor;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @AllArgsConstructor
@@ -33,9 +34,11 @@ public enum PleaTrialOutcome {
 
     public static String getTrialOutcome(String pleaValue) {
 
-        return Stream
+        Optional<PleaTrialOutcome> trialOutcomeOptional = Stream
                 .of(PleaTrialOutcome.values())
                 .filter(pl -> pl.name().equalsIgnoreCase(pleaValue))
-                .findFirst().get().crownCourtTrialOutcome.name();
+                .findFirst();
+
+        return trialOutcomeOptional.isPresent() ? trialOutcomeOptional.get().crownCourtTrialOutcome.name() : CrownCourtTrialOutcome.AQUITTED.name();
     }
 }

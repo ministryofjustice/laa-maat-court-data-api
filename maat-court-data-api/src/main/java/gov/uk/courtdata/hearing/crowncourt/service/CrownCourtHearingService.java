@@ -35,7 +35,14 @@ public class CrownCourtHearingService {
 
         hearingResultedImpl.execute(hearingResulted);
 
-          hearingResulted.getCcOutComeData().setCcOutcome(calculateCrownCourtOutCome(hearingResulted));
+        if (hearingResulted.getCcOutComeData()!=null) {
+            hearingResulted.getCcOutComeData().setCcOutcome(calculateCrownCourtOutCome(hearingResulted));
+        } else {
+            hearingResulted.setCcOutComeData(
+                    CCOutComeData.builder().ccOutcome(calculateCrownCourtOutCome(hearingResulted)).build()
+            );
+        }
+
 
         if (isCrownCourtOutCome(hearingResulted.getCcOutComeData())
                 && crownCourtProcessHelper.isCaseConcluded(hearingResulted)) {

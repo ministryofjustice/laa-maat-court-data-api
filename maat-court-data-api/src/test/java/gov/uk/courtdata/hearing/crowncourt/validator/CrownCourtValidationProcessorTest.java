@@ -18,6 +18,8 @@ public class CrownCourtValidationProcessorTest {
     @Mock
     private CrownCourtOutComesValidator crownCourtOutComesValidator;
     @Mock
+    private AppealTypeValidator appealTypeValidator;
+    @Mock
     private OUCodeValidator ouCodeValidator;
     @Mock
     private CaseTypeValidator caseTypeValidator;
@@ -28,6 +30,8 @@ public class CrownCourtValidationProcessorTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
+
+
 
 
     @Test
@@ -42,7 +46,9 @@ public class CrownCourtValidationProcessorTest {
 
         //then
         verify(crownCourtOutComesValidator, times(1)).validate(hearingDetails);
+        verify(appealTypeValidator, times(1)).validate(hearingDetails);
         verify(ouCodeValidator, times(1)).validate(hearingDetails);
         verify(caseTypeValidator, times(1)).validate(hearingDetails);
+
     }
 }

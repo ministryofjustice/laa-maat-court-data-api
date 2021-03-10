@@ -85,7 +85,7 @@ public class CrownCourtHearingService {
             if (outcomes.stream().count() == 1) {
                 offenceOutcomeStatus = outcomes.get(0);
             } else if (outcomes.stream().count() > 1) {
-                offenceOutcomeStatus = CrownCourtTrialOutcome.PART_CONVICTED.name();
+                offenceOutcomeStatus = CrownCourtTrialOutcome.PART_CONVICTED.getValue();
             }
             log.info("Calculated crown court outcome. " + offenceOutcomeStatus);
             return offenceOutcomeStatus;

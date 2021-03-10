@@ -31,7 +31,7 @@ public enum VerdictTrialOutcome {
                 .filter(pl -> pl.name().equalsIgnoreCase(verdictValue))
                 .findFirst();
 
-        return trialOutcomeOptional.isPresent() ? trialOutcomeOptional.get().crownCourtTrialOutcome.name() : CrownCourtTrialOutcome.AQUITTED.name();
+        return trialOutcomeOptional.isPresent() ? trialOutcomeOptional.get().crownCourtTrialOutcome.getValue() : CrownCourtTrialOutcome.AQUITTED.getValue();
 
     }
 }

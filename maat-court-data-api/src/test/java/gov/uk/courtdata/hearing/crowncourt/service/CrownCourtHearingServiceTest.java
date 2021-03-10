@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.crowncourt.service;
 
+import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
 import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessHelper;
 import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessingImpl;
 import gov.uk.courtdata.hearing.crowncourt.impl.OffenceHelper;
@@ -169,7 +170,7 @@ public class CrownCourtHearingServiceTest {
         //when
         crownCourtHearingService.execute(hearingDetails);
         verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
-        assertThat(hearingDetails.getCcOutComeData().getCcOutcome()).isEqualTo("PART_CONVICTED");
+        assertThat(hearingDetails.getCcOutComeData().getCcOutcome()).isEqualTo(CrownCourtTrialOutcome.PART_CONVICTED.getValue());
     }
 
 

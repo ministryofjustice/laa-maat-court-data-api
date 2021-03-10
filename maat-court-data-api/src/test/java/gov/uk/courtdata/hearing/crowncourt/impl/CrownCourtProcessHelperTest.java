@@ -239,7 +239,7 @@ public class CrownCourtProcessHelperTest {
     private HearingResulted getHearingResulted(String outcome) {
 
         CCOutComeData ccOutComeData = CCOutComeData.builder()
-                .ccooOutcome(outcome).build();
+                .ccOutcome(outcome).build();
         Session session = Session.builder().courtLocation("OU").build();
         Offence offence = Offence.builder()
                 .results(Collections.singletonList(Result.builder().resultCode("3030").build()))

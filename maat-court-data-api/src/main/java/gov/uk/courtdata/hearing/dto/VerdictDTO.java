@@ -17,7 +17,7 @@ public class VerdictDTO {
     private String offenceId;
     private String verdictDate;
     private String category;
-    private VerdictCategoryType categoryType;
+    private String categoryType;
     private String cjsVerdictCode;
     private String verdictCode;
 }

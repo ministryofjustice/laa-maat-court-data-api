@@ -194,7 +194,7 @@ public class TestModelDataBuilder {
                                 .verdictCode("CD234")
                                 .verdictDate("2020-10-21")
                                 .category("Verdict_Category")
-                                .categoryType(VerdictCategoryType.GUILTY_CONVICTED)
+                                .categoryType("GUILTY_CONVICTED")
                                 .cjsVerdictCode("88999")
                                 .build()
                         )

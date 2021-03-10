@@ -30,7 +30,7 @@ public class CaseTypeValidator {
 
             RepOrderEntity repOrder = repOrderEntity.get();
             String caseType = repOrder.getCatyCaseType();
-            String outCome = hearingResulted.getCcOutComeData().getCcooOutcome();
+            String outCome = hearingResulted.getCcOutComeData().getCcOutcome();
 
             if (isTrial(outCome) && !caseTypeForTrial(caseType)) {
 

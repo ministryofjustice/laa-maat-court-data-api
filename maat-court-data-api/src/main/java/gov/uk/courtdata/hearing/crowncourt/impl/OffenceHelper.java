@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,7 +35,7 @@ public class OffenceHelper {
     public List<Offence> getOffences(int maatId) {
 
         List<WqLinkRegisterEntity> wqLinkRegisterEntities = wqLinkRegisterRepository.findBymaatId(maatId);
-        if (wqLinkRegisterEntities.size()>0) {
+        if (!wqLinkRegisterEntities.isEmpty()) {
 
             int caseId = wqLinkRegisterEntities.get(0).getCaseId();
 
@@ -51,7 +52,7 @@ public class OffenceHelper {
                                     .build())
                     .collect(Collectors.toList());
         }
-        return null;
+        return Collections.emptyList();
     }
 
     private Plea getPlea(String offenceId) {

@@ -58,9 +58,6 @@ public class CrownCourtHearingServiceTest {
         crownCourtHearingService.execute(hearingDetails);
 
         //then
-        verify(crownCourtValidationProcessor, times(0)).validate(hearingDetails);
-        verify(crownCourtProcessingImpl, times(0)).execute(hearingDetails);
-        verify(crownCourtProcessHelper, times(0)).isCaseConcluded(hearingDetails);
         verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
     }
 
@@ -77,33 +74,8 @@ public class CrownCourtHearingServiceTest {
         crownCourtHearingService.execute(hearingDetails);
 
         //then
-        verify(crownCourtValidationProcessor, times(0)).validate(hearingDetails);
-        verify(crownCourtProcessingImpl, times(0)).execute(hearingDetails);
-        verify(crownCourtProcessHelper, times(0)).isCaseConcluded(hearingDetails);
-        verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
-
-    }
-
-    @Test
-    public void givenHearingIsReceived_whenCCOutcomeIsEmptyString_thenWorkQueueProcessingIsCompleted() {
-
-        //given
-
-        HearingResulted hearingDetails = HearingResulted.builder()
-                .maatId(12345)
-                .ccOutComeData(CCOutComeData.builder().ccOutcome("").build())
-                .build();
-
-        //when
-        crownCourtHearingService.execute(hearingDetails);
-
-        //then
-        verify(crownCourtValidationProcessor, times(0)).validate(hearingDetails);
-        verify(crownCourtProcessingImpl, times(0)).execute(hearingDetails);
-        verify(crownCourtProcessHelper, times(0)).isCaseConcluded(hearingDetails);
         verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
     }
-
 
     @Test
     public void givenHearingIsReceived_whenProsFlagTrue_thenWorkQueueProcessingCrownOutcome() {
@@ -198,7 +170,6 @@ public class CrownCourtHearingServiceTest {
         crownCourtHearingService.execute(hearingDetails);
 
         verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
-        verify(crownCourtProcessHelper, atLeastOnce()).isCaseConcluded(hearingDetails);
         assertThat(hearingDetails.getCcOutComeData().getCcOutcome()).isEqualTo("AQUITTED");
     }
 

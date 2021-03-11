@@ -27,7 +27,6 @@ public class CrownCourtHearingService {
     private final CrownCourtValidationProcessor crownCourtValidationProcessor;
     private final CrownCourtProcessingImpl crownCourtProcessingImpl;
     private final HearingResultedImpl hearingResultedImpl;
-    private final CrownCourtProcessHelper crownCourtProcessHelper;
 
     private final OffenceHelper offenceHelper;
 
@@ -38,16 +37,11 @@ public class CrownCourtHearingService {
         if (hearingResulted.getCcOutComeData()!=null) {
             hearingResulted.getCcOutComeData().setCcOutcome(calculateCrownCourtOutCome(hearingResulted));
         } else {
-            hearingResulted.setCcOutComeData(
-                    CCOutComeData.builder().ccOutcome(calculateCrownCourtOutCome(hearingResulted)).build()
+            hearingResulted.setCcOutComeData(CCOutComeData.builder().ccOutcome(calculateCrownCourtOutCome(hearingResulted)).build()
             );
         }
 
-
-        if (isCrownCourtOutCome(hearingResulted.getCcOutComeData())
-                && crownCourtProcessHelper.isCaseConcluded(hearingResulted)) {
-            executeCrownCourtOutCome(hearingResulted);
-        }
+        executeCrownCourtOutCome(hearingResulted);
     }
 
     private void executeCrownCourtOutCome(HearingResulted hearingResulted) {
@@ -55,12 +49,6 @@ public class CrownCourtHearingService {
         crownCourtValidationProcessor.validate(hearingResulted);
         crownCourtProcessingImpl.execute(hearingResulted);
         log.info("Crown Court Outcome Processing has been Completed for MAAT ID: {}", hearingResulted.getMaatId());
-    }
-
-    private boolean isCrownCourtOutCome(CCOutComeData ccOutComeData) {
-        return ccOutComeData != null
-                && ccOutComeData.getCcOutcome() != null
-                && !ccOutComeData.getCcOutcome().isEmpty();
     }
 
     private String calculateCrownCourtOutCome(HearingResulted hearingResulted) {
@@ -82,6 +70,7 @@ public class CrownCourtHearingService {
             List<String> outcomes = offenceOutcomeList.stream().distinct().collect(Collectors.toList());
             log.info("Offence count: " + outcomes.toString());
             String offenceOutcomeStatus="";
+
             if (outcomes.stream().count() == 1) {
                 offenceOutcomeStatus = outcomes.get(0);
             } else if (outcomes.stream().count() > 1) {
@@ -90,6 +79,6 @@ public class CrownCourtHearingService {
             log.info("Calculated crown court outcome. " + offenceOutcomeStatus);
             return offenceOutcomeStatus;
         }
-        return null;
+        return "";
     }
 }

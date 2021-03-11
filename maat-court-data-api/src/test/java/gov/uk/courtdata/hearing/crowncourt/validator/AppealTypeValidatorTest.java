@@ -45,7 +45,7 @@ public class AppealTypeValidatorTest {
         AppealTypeEntity appealTypeEntity1 = AppealTypeEntity.builder().code("ACV").build();
         appealTypeEntityList.add(appealTypeEntity1);
         //given
-        CCOutComeData ccOutComeData = CCOutComeData.builder().ccooOutcome("CONVICTED").appealType("XYZ").build();
+        CCOutComeData ccOutComeData = CCOutComeData.builder().ccOutcome("CONVICTED").appealType("XYZ").build();
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .ccOutComeData(ccOutComeData)

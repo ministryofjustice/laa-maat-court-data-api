@@ -150,7 +150,7 @@ public class HearingDTOMapperTest {
                 .offenceId("12345")
                 .verdictDate("2018-12-25")
                 .category("Verdict Category")
-                .categoryType(VerdictCategoryType.GUILTY)
+                .categoryType("GUILTY")
                 .cjsVerdictCode("CD2343")
                 .verdictCode("MK1212")
                 .build();
@@ -169,7 +169,7 @@ public class HearingDTOMapperTest {
         assertThat(hearingDTO.getOffence().getVerdict().getOffenceId()).isEqualTo("12345");
         assertThat(hearingDTO.getOffence().getVerdict().getVerdictDate()).isEqualTo("2018-12-25");
         assertThat(hearingDTO.getOffence().getVerdict().getCategory()).isEqualTo("Verdict Category");
-        assertThat(hearingDTO.getOffence().getVerdict().getCategoryType()).isEqualTo(VerdictCategoryType.GUILTY);
+        assertThat(hearingDTO.getOffence().getVerdict().getCategoryType()).isEqualTo("GUILTY");
         assertThat(hearingDTO.getOffence().getVerdict().getCjsVerdictCode()).isEqualTo("CD2343");
         assertThat(hearingDTO.getOffence().getVerdict().getVerdictCode()).isEqualTo("MK1212");
     }

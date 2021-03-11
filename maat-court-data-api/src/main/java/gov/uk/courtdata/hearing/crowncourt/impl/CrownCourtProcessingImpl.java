@@ -5,10 +5,7 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
-import gov.uk.courtdata.repository.CrownCourtCodeRepository;
-import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
-import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,16 +32,16 @@ public class CrownCourtProcessingImpl {
     private final CrownCourtStoredProcedureRepository crownCourtStoredProcedureRepository;
 
 
+
     @Value("${spring.datasource.username}")
     private String dbUser;
 
 
     public void execute(HearingResulted hearingResulted) {
 
-        CCOutComeData ccutComeData = hearingResulted.getCcOutComeData();
+        CCOutComeData ccOutComeData = hearingResulted.getCcOutComeData();
         final Integer maatId = hearingResulted.getMaatId();
         final Optional<RepOrderEntity> optionalRepEntity = repOrderRepository.findById(maatId);
-
 
         if (optionalRepEntity.isPresent()) {
 
@@ -53,15 +50,15 @@ public class CrownCourtProcessingImpl {
             RepOrderEntity repOrderEntity = optionalRepEntity.get();
 
             crownCourtStoredProcedureRepository.updateCrownCourtOutcome(maatId,
-                    ccutComeData.getCcooOutcome(),
+                    ccOutComeData.getCcOutcome(),
                     crownCourtProcessHelper.isBenchWarrantIssued(hearingResulted),
-                    ccutComeData.getAppealType() != null ? ccutComeData.getAppealType() : repOrderEntity.getAptyCode(),
-                    crownCourtProcessHelper.isImprisoned(hearingResulted, ccutComeData.getCcooOutcome()),
+                    ccOutComeData.getAppealType() != null ? ccOutComeData.getAppealType() : repOrderEntity.getAptyCode(),
+                    crownCourtProcessHelper.isImprisoned(hearingResulted, ccOutComeData.getCcOutcome()),
                     hearingResulted.getCaseUrn(),
                     crownCourtCode);
 
 
-            processSentencingDate(ccutComeData.getCaseEndDate(), maatId, repOrderEntity.getCatyCaseType());
+            processSentencingDate(ccOutComeData.getCaseEndDate(), maatId, repOrderEntity.getCatyCaseType());
         }
     }
 
@@ -69,7 +66,6 @@ public class CrownCourtProcessingImpl {
     private void processSentencingDate(String ccCaseEndDate, Integer maatId, String catyType) {
 
         LocalDate caseEndDate = DateUtil.parse(ccCaseEndDate);
-
         if (caseEndDate != null) {
             String user = dbUser != null ? dbUser.toUpperCase() : null;
             if (APPEAL_CC.getValue().equalsIgnoreCase(catyType)) {
@@ -77,9 +73,7 @@ public class CrownCourtProcessingImpl {
                         .invokeUpdateAppealSentenceOrderDate(maatId, user, caseEndDate, LocalDate.now());
             } else {
                 crownCourtProcessingRepository.invokeUpdateSentenceOrderDate(maatId, user, caseEndDate);
-
             }
-
         }
     }
 
@@ -89,5 +83,4 @@ public class CrownCourtProcessingImpl {
                 -> new MAATCourtDataException(format("Crown Court Code Look Up Failed for %s", ouCode)));
         return crownCourtCode.getCode();
     }
-
 }

@@ -23,7 +23,5 @@ public class CrownCourtValidationProcessor {
         ouCodeValidator.validate(hearingRes);
         caseTypeValidator.validate(hearingRes);
         log.info("Crown Court Outcome Validation has been Completed for MAAT ID: {}", hearingRes.getMaatId());
-
     }
-
 }

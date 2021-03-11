@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hearing.processor;
 
-import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.entity.XLATOffenceEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
@@ -11,8 +10,8 @@ import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.OffenceRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.repository.XLATOffenceRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -20,13 +19,13 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CourtApplicationsPreProcessorTest {
@@ -36,8 +35,7 @@ public class CourtApplicationsPreProcessorTest {
 
     @Mock
     private XLATOffenceRepository xlatOffenceRepository;
-    @Mock
-    private OffenceRepository offenceRepository;
+
     @Mock
     private WqLinkRegisterRepository wqLinkRegisterRepository;
 
@@ -60,13 +58,13 @@ public class CourtApplicationsPreProcessorTest {
                 .caseId(565)
                 .proceedingId(12121).maatId(12345).build());
         Mockito.when(wqLinkRegisterRepository.findBymaatId(12345)).thenReturn(wqLinkRegisterEntities);
-        Mockito.when(offenceRepository.findApplicationByOffenceCode(any(), any(), any())).thenReturn(Optional.empty());
+
         Mockito.when(xlatOffenceRepository.findById(any())).thenReturn(Optional.of(XLATOffenceEntity.builder().applicationFlag(1).build()));
 
         courtApplicationsPreProcessor.process(laaHearingDetails);
 
         //then
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq()).isEqualTo("1");
+        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq()).isEqualTo("1000");
         assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getApplicationFlag()).isEqualTo(1);
     }
 
@@ -85,13 +83,13 @@ public class CourtApplicationsPreProcessorTest {
                 .caseId(565)
                 .proceedingId(12121).maatId(12345).build());
         Mockito.when(wqLinkRegisterRepository.findBymaatId(12345)).thenReturn(wqLinkRegisterEntities);
-        Mockito.when(offenceRepository.findApplicationByOffenceCode(any(), any(), any())).thenReturn(Optional.of(OffenceEntity.builder().asnSeq("1").build()));
+
         Mockito.when(xlatOffenceRepository.findById(any())).thenReturn(Optional.of(XLATOffenceEntity.builder().applicationFlag(1).build()));
 
         courtApplicationsPreProcessor.process(laaHearingDetails);
 
         //then
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq()).isEqualTo("1");
+        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq()).isEqualTo("1000");
         assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getApplicationFlag()).isEqualTo(1);
     }
 
@@ -134,7 +132,7 @@ public class CourtApplicationsPreProcessorTest {
         courtApplicationsPreProcessor.process(laaHearingDetails);
 
         //then
-        assertThat(laaHearingDetails.getDefendant().getOffences().size()).isZero();
+        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getApplicationFlag()).isNull();
 
 
     }

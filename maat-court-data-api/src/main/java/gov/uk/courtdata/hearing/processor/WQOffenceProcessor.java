@@ -37,7 +37,7 @@ public class WQOffenceProcessor {
                 .modeOfTrial(offence.getModeOfTrial())
                 .offenceWording(offence.getOffenceWording())
                 .wqOffence(null)
-                .applicationFlag(G_NO)
+                .applicationFlag(offence.getApplicationFlag() != null ? offence.getApplicationFlag() : G_NO)
                 .offenceId(offence.getOffenceId())
                 .build();
 

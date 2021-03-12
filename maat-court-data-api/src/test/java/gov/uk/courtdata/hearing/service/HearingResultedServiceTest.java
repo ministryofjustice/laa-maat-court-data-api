@@ -1,10 +1,12 @@
 package gov.uk.courtdata.hearing.service;
 
 import gov.uk.courtdata.entity.ReservationsEntity;
+import gov.uk.courtdata.enums.FunctionType;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.exception.MaatRecordLockedException;
 import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
+import gov.uk.courtdata.hearing.processor.CourtApplicationsPreProcessor;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.ReservationsRepository;
@@ -41,6 +43,9 @@ public class HearingResultedServiceTest {
 
     @Mock
     private HearingResultedPublisher hearingResultedPublisher;
+
+    @Mock
+    private CourtApplicationsPreProcessor courtApplicationsPreProcessor;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -120,5 +125,25 @@ public class HearingResultedServiceTest {
 
         verify(hearingValidationProcessor).validate(hearingDetails);
         verify(hearingResultedPublisher).publish(hearingDetails);
+    }
+
+    @Test
+    public void givenApplicationNotification_whenApplicationType_thenApplicationPreProcessingInvoked() {
+
+        //given
+        HearingResulted hearingDetails = HearingResulted.builder()
+                .maatId(34)
+                .functionType(FunctionType.APPLICATION)
+                .jurisdictionType(JurisdictionType.MAGISTRATES)
+                .build();
+
+        //when
+        doNothing().when(courtApplicationsPreProcessor).process(hearingDetails);
+
+        hearingResultedService.execute(hearingDetails);
+        //then
+        verify(courtApplicationsPreProcessor).process(hearingDetails);
+        verify(hearingValidationProcessor).validate(hearingDetails);
+        verify(hearingResultedImpl).execute(hearingDetails);
     }
 }

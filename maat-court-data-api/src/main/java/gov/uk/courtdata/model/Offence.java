@@ -22,6 +22,7 @@ public class Offence {
     private String legalAidStatus;
     private String legalAidStatusDate;
     private String legalAidReason;
+    private Integer applicationFlag;
     private List<Result> results;
     private int iojDecision;
     private int wqOffence;

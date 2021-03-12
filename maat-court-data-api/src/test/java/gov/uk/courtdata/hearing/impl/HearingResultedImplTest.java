@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,16 +47,16 @@ public class HearingResultedImplTest {
     private WqLinkRegisterRepository wqLinkRegisterRepository;
 
     @Mock
-    private  HearingWQProcessor hearingWQProcessor;
+    private HearingWQProcessor hearingWQProcessor;
 
     @Mock
-    private  ResultCodeRefDataProcessor resultCodeRefDataProcessor;
+    private ResultCodeRefDataProcessor resultCodeRefDataProcessor;
 
     @Mock
-    private  OffenceCodeRefDataProcessor offenceCodeRefDataProcessor;
+    private OffenceCodeRefDataProcessor offenceCodeRefDataProcessor;
 
     @Mock
-    private  WQCoreProcessor wqCoreProcessor;
+    private WQCoreProcessor wqCoreProcessor;
 
 
     @BeforeEach
@@ -83,7 +84,7 @@ public class HearingResultedImplTest {
         HearingDTO hearingDTO = HearingDTO.builder().
                 result(ResultDTO.builder().resultCode(3026).build()).build();
 
-        Mockito.when(hearingDTOMapper.toHearingDTO(any(),any(),any(),any(),any(),any())).thenReturn(hearingDTO);
+        Mockito.when(hearingDTOMapper.toHearingDTO(any(), any(), any(), any(), any(), any())).thenReturn(hearingDTO);
 
         hearingResultedImpl.execute(laaHearingDetails);
 
@@ -114,7 +115,7 @@ public class HearingResultedImplTest {
         HearingDTO hearingDTO = HearingDTO.builder().
                 result(ResultDTO.builder().resultCode(3026).build()).build();
 
-        Mockito.when(hearingDTOMapper.toHearingDTO(any(),any(),any(),any(),any(),any())).thenReturn(hearingDTO);
+        Mockito.when(hearingDTOMapper.toHearingDTO(any(), any(), any(), any(), any(), any())).thenReturn(hearingDTO);
 
         hearingResultedImpl.execute(laaHearingDetails);
 
@@ -123,6 +124,39 @@ public class HearingResultedImplTest {
         verify(wqLinkRegisterRepository).findBymaatId(12345);
         verify(offenceCodeRefDataProcessor).processOffenceCode("23224");
         verify(hearingWQProcessor).process(any());
+    }
+
+
+    @Test
+    public void givenACaseDetail_whenHearingResultedWitConclusionResults_thenProcessorIsNotInvoked() {
+
+        //given
+        HearingResulted laaHearingDetails = HearingResulted.builder().maatId(12345)
+                .jurisdictionType(JurisdictionType.CROWN)
+                .defendant(getDefendant())
+                .build();
+
+        //when
+        List<WqLinkRegisterEntity> wqLinkRegisterEntities = Collections.singletonList(WqLinkRegisterEntity.builder()
+                .caseId(565)
+                .proceedingId(12121).maatId(12345).build());
+        Mockito.when(wqLinkRegisterRepository.findBymaatId(12345)).thenReturn(wqLinkRegisterEntities);
+
+        Mockito.when(wqCoreProcessor.findWQType(any())).thenReturn(7);
+
+        HearingDTO hearingDTO = HearingDTO.builder().
+                result(ResultDTO.builder().resultCode(3026).build()).build();
+
+
+
+        hearingResultedImpl.execute(laaHearingDetails);
+
+        //then
+        verify(resultCodeRefDataProcessor).processResultCode(3026);
+        verify(wqLinkRegisterRepository).findBymaatId(12345);
+        verify(offenceCodeRefDataProcessor).processOffenceCode("23224");
+
+        verify(hearingWQProcessor, never()).process(any());
     }
 
     private Defendant getDefendant() {

@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -32,5 +31,8 @@ public interface OffenceRepository extends JpaRepository<OffenceEntity, AsnSeqTx
     Optional<OffenceEntity> findByMaxTxId(Integer caseId, String offenceCode, String asnSeq);
 
     List<OffenceEntity> findByCaseId(Integer caseId);
+
+    @Query(value = "SELECT * FROM MLA.XXMLA_OFFENCE WHERE  CASE_ID = ?1 AND OFFENCE_CODE = ?2 AND APPLICATION_FLAG = ?3", nativeQuery = true)
+    Optional<OffenceEntity> findApplicationByOffenceCode(Integer caseId, String offenceCode, Integer applicationFlag);
 
 }

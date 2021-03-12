@@ -1,8 +1,10 @@
 package gov.uk.courtdata.hearing.service;
 import gov.uk.courtdata.entity.ReservationsEntity;
+import gov.uk.courtdata.enums.FunctionType;
 import gov.uk.courtdata.exception.MaatRecordLockedException;
 import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
+import gov.uk.courtdata.hearing.processor.CourtApplicationsPreProcessor;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.ReservationsRepository;
@@ -27,6 +29,8 @@ public class HearingResultedService {
 
     private final ReservationsRepository reservationsRepository;
 
+    private final CourtApplicationsPreProcessor courtApplicationsPreProcessor;
+
     /**
      * Process Work Queue Processing for both Crown & Mags Court.
      * Process Crown Court Outcomes for CC
@@ -35,6 +39,10 @@ public class HearingResultedService {
     public void execute(final HearingResulted hearingResulted) {
 
         hearingValidationProcessor.validate(hearingResulted);
+
+        if(FunctionType.APPLICATION == hearingResulted.getFunctionType()){
+            courtApplicationsPreProcessor.process(hearingResulted);
+        }
 
         switch (hearingResulted.getJurisdictionType()) {
             case CROWN:

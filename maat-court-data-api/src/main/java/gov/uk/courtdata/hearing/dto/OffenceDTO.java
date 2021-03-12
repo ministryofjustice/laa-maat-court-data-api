@@ -1,9 +1,10 @@
 package gov.uk.courtdata.hearing.dto;
 
 
-import gov.uk.courtdata.model.Plea;
-import gov.uk.courtdata.model.Verdict;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -21,6 +22,7 @@ public class OffenceDTO {
     private String legalAidStatus;
     private String legalAidStatusDate;
     private String legalAidReason;
+    private Integer applicationFlag;
     private VerdictDTO verdict;
     private PleaDTO plea;
 }

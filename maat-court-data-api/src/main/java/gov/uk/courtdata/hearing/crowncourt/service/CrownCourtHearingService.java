@@ -3,7 +3,6 @@ package gov.uk.courtdata.hearing.crowncourt.service;
 import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
 import gov.uk.courtdata.enums.PleaTrialOutcome;
 import gov.uk.courtdata.enums.VerdictTrialOutcome;
-import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessHelper;
 import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessingImpl;
 import gov.uk.courtdata.hearing.crowncourt.impl.OffenceHelper;
 import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;

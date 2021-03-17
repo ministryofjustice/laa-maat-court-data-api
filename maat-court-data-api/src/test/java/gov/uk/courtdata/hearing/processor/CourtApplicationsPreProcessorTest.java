@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
+import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.entity.XLATOffenceEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
@@ -19,10 +20,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,13 +37,16 @@ public class CourtApplicationsPreProcessorTest {
     @Mock
     private WqLinkRegisterRepository wqLinkRegisterRepository;
 
+    @Mock
+    private OffenceRepository offenceRepository;
+
     @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void givenApplicationDetail_whenCourtApplicationsPreProcessorIsInvoked_thenASNSeqIsSet() {
+    public void testApplicationFlagAndASNSeqForNewApplication() {
 
         //given
         HearingResulted laaHearingDetails = HearingResulted.builder().maatId(12345)
@@ -70,7 +71,7 @@ public class CourtApplicationsPreProcessorTest {
 
 
     @Test
-    public void givenMultipleApplicationDetail_whenCourtApplicationsPreProcessorIsInvoked_thenASNSeqIsSetForExistingApplication() {
+    public void testApplicationFlagAndASNSeqForExistingApplication() {
 
         //given
         HearingResulted laaHearingDetails = HearingResulted.builder().maatId(12345)
@@ -86,16 +87,18 @@ public class CourtApplicationsPreProcessorTest {
 
         Mockito.when(xlatOffenceRepository.findById(any())).thenReturn(Optional.of(XLATOffenceEntity.builder().applicationFlag(1).build()));
 
+        Mockito.when(offenceRepository.findApplicationByOffenceCode(any(), any(), any())).thenReturn(Optional.of(OffenceEntity.builder().applicationFlag(1).asnSeq("1006").build()));
+
         courtApplicationsPreProcessor.process(laaHearingDetails);
 
         //then
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq()).isEqualTo("1000");
+        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq()).isEqualTo("1006");
         assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getApplicationFlag()).isEqualTo(1);
     }
 
 
     @Test
-    public void givenNoRecordAvailable_whenCourtApplicationsPreProcessorIsInvoked_thenASNSeqIsSetToNULL() {
+    public void testApplicationFuncWhenNoMAATId() {
 
         //given
         HearingResulted laaHearingDetails = HearingResulted.builder().maatId(12345)
@@ -116,7 +119,7 @@ public class CourtApplicationsPreProcessorTest {
     }
 
     @Test
-    public void givenApplicationDetail_whenNullOffenceCodeIsInvoked_thenOffenceClassificationIsSetToNull() {
+    public void testAppFuncWhenNoOffenceCode() {
 
         //given
         HearingResulted laaHearingDetails = HearingResulted.builder().maatId(12345)
@@ -137,16 +140,59 @@ public class CourtApplicationsPreProcessorTest {
 
     }
 
+
+    @Test
+    public void testApplicationFlagAndASNSeqForENewAndExistingApplication() {
+
+        Offence off = Offence.builder().legalAidStatus("AP")
+                .offenceCode("123")
+                .offenceId("Offence ID")
+                .legalAidReason("some aid reason")
+                .build();
+
+        //given
+        HearingResulted laaHearingDetails = HearingResulted.builder().maatId(12345)
+                .jurisdictionType(JurisdictionType.CROWN)
+                .defendant(getDefendant())
+                .build();
+        List<Offence> offenceList = Arrays.asList(off, getOffence());
+
+
+        laaHearingDetails.getDefendant().setOffences(offenceList);
+
+        //when
+        List<WqLinkRegisterEntity> wqLinkRegisterEntities = Collections.singletonList(WqLinkRegisterEntity.builder()
+                .caseId(565)
+                .proceedingId(12121).maatId(12345).build());
+        Mockito.when(wqLinkRegisterRepository.findBymaatId(12345)).thenReturn(wqLinkRegisterEntities);
+
+        Mockito.when(xlatOffenceRepository.findById(any())).thenReturn(Optional.of(XLATOffenceEntity.builder().applicationFlag(1).build()));
+
+      //  Mockito.when(offenceRepository.findApplicationByOffenceCode(565, "23224", 1)).thenReturn(Optional.of(OffenceEntity.builder().applicationFlag(1).asnSeq("1006").build()));
+
+        courtApplicationsPreProcessor.process(laaHearingDetails);
+
+        //then
+        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq()).isNotNull();
+        assertThat(laaHearingDetails.getDefendant().getOffences().get(1).getAsnSeq()).isNotNull();
+        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getApplicationFlag()).isEqualTo(1);
+    }
+
+
     private Defendant getDefendant() {
 
         return Defendant.builder()
                 .offences(Collections.singletonList(
-                        Offence.builder().legalAidStatus("AP")
-                                .offenceCode("23224")
-                                .offenceId("Offence ID")
-                                .legalAidReason("some aid reason")
-                                .results(Collections.singletonList(Result.builder().resultCode("3026").build()))
-                                .build()))
+                        getOffence()))
+                .build();
+    }
+
+    private Offence getOffence() {
+        return Offence.builder().legalAidStatus("AP")
+                .offenceCode("23224")
+                .offenceId("Offence ID")
+                .legalAidReason("some aid reason")
+                .results(Collections.singletonList(Result.builder().resultCode("3026").build()))
                 .build();
     }
 

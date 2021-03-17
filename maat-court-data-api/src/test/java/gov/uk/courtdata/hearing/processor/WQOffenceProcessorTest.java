@@ -105,7 +105,7 @@ public class WQOffenceProcessorTest {
 
         //given
         HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
-        hearingDTO.setOffence(OffenceDTO.builder().legalAidStatus("WI").asnSeq("1").build());
+        hearingDTO.setOffence(OffenceDTO.builder().legalAidStatus("WI").applicationFlag(1).asnSeq("1").build());
 
         //when
         wqOffenceProcessor.process(hearingDTO);
@@ -113,5 +113,6 @@ public class WQOffenceProcessorTest {
         //then
         verify(wqOffenceRepository).save(wqOffenceEntityArgumentCaptor.capture());
         assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalAidStatus()).isEqualTo("WD");
+        assertThat(wqOffenceEntityArgumentCaptor.getValue().getApplicationFlag()).isEqualTo(1);
     }
 }

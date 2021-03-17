@@ -65,10 +65,10 @@ public class CourtApplicationsPreProcessor {
                 .collect(Collectors.toList());
 
         if (!newApplications.isEmpty()) {
-            int count = APPLICATION_ASN_SEQ_INITIAL_VALUE + Long.valueOf(offenceList
+            int count = APPLICATION_ASN_SEQ_INITIAL_VALUE + (int) (offenceList
                     .stream()
                     .filter(offence -> offence.getAsnSeq() != null)
-                    .count()).intValue();
+                    .count());
 
             for (Offence offence : newApplications) {
                 offence.setAsnSeq(String.valueOf(count));
@@ -78,13 +78,11 @@ public class CourtApplicationsPreProcessor {
     }
 
     private void processASNSeqForExistingApp(WqLinkRegisterEntity wqLinkReg, List<Offence> offenceList) {
-        offenceList.stream()
-                .filter(offence -> offence.getAsnSeq() != null)
-                .forEach(offence -> setASNSeq(offence, wqLinkReg));
+        offenceList.forEach(offence -> setASNSeqOnExistingApp(offence, wqLinkReg));
 
     }
 
-    private void setASNSeq(Offence offence, WqLinkRegisterEntity wqLinkRegisterEntity) {
+    private void setASNSeqOnExistingApp(Offence offence, WqLinkRegisterEntity wqLinkRegisterEntity) {
         Optional<OffenceEntity> offenceEntity = offenceRepository.findApplicationByOffenceCode(wqLinkRegisterEntity.getCaseId(),
                 offence.getOffenceId(), offence.getApplicationFlag());
         offenceEntity.ifPresent(entity -> offence.setAsnSeq(entity.getAsnSeq()));

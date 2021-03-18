@@ -33,7 +33,11 @@ public interface OffenceRepository extends JpaRepository<OffenceEntity, AsnSeqTx
 
     List<OffenceEntity> findByCaseId(Integer caseId);
 
-    @Query(value = "SELECT * FROM MLA.XXMLA_OFFENCE WHERE  CASE_ID = ?1 AND OFFENCE_CODE = ?2 AND APPLICATION_FLAG = ?3", nativeQuery = true)
-    Optional<OffenceEntity> findApplicationByOffenceCode(Integer caseId, String offenceCode, Integer applicationFlag);
+    @Query(value = "SELECT * FROM MLA.XXMLA_OFFENCE WHERE " +
+            "CASE_ID = :caseId AND OFFENCE_ID = :offenceId AND APPLICATION_FLAG = :applicationFlag " +
+            "AND TX_ID = (SELECT MAX( TX_ID ) FROM MLA.XXMLA_OFFENCE " +
+            "WHERE CASE_ID = :caseId AND OFFENCE_ID = :offenceId AND APPLICATION_FLAG = :applicationFlag)",
+            nativeQuery = true)
+    Optional<OffenceEntity> findApplicationByOffenceCode(Integer caseId, String offenceId, Integer applicationFlag);
 
 }

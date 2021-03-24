@@ -78,6 +78,8 @@ public class CrownCourtHearingService {
             log.info("Calculated crown court outcome. " + offenceOutcomeStatus);
             return offenceOutcomeStatus;
         }
-        return "";
+
+        return hearingResulted.getCcOutComeData()!=null ? hearingResulted.getCcOutComeData().getCcOutcome() : "";
+
     }
 }

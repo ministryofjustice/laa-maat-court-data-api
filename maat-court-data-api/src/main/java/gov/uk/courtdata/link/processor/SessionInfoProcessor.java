@@ -25,6 +25,7 @@ public class SessionInfoProcessor implements Process {
 
         List<SessionEntity> sessionEntityList = courtDataDTO.getCaseDetails().getSessions()
                 .stream()
+                .filter(session  -> session.getDateOfHearing() != null)
                 .map(s -> buildSession(s, courtDataDTO))
                 .collect(Collectors.toList());
         sessionRepository.saveAll(sessionEntityList);

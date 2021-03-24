@@ -6,6 +6,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.SessionEntity;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.repository.SessionRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,5 +76,26 @@ public class SessionInfoProcessorTest {
         assertThat(sessionsCaptor.getValue().get(0).getPostHearingCustody()).isEqualTo(DEFAULT_HEARING_CUS_STATUS);
 
 
+    }
+
+    @Test
+    public void givenSessionModelWithNullHearingDate_whenProcessIsInvoked_thenSessionRecordIsNullFiltered() {
+
+        // given
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CaseDetails caseDetails = courtDataDTO.getCaseDetails();
+        caseDetails.getSessions().get(0).setPostHearingCustody(null);
+
+        courtDataDTO.getCaseDetails().getSessions().add(Session.builder().build());
+        courtDataDTO.getCaseDetails().getSessions().add(Session.builder().courtLocation("B30PG").dateOfHearing(null).build());
+        courtDataDTO.getCaseDetails().getSessions().add(Session.builder().courtLocation("B30PG").dateOfHearing("2021-04-30").build());
+
+        // when
+        sessionInfoProcessor.process(courtDataDTO);
+
+        // then
+        verify(sessionRepository).saveAll(sessionsCaptor.capture());
+        assertThat(sessionsCaptor.getValue().get(0).getCourtLocation()).isEqualTo("B16BG");
+        assertThat(sessionsCaptor.getValue().size()).isEqualTo(2);
     }
 }

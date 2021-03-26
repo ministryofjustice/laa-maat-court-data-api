@@ -1,11 +1,13 @@
 package gov.uk.courtdata.hearing.service;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class HearingResultedListener {
 
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.hearingResulted}")
     public void receive(@Payload final String message) {
-
+        MDC.put(LoggingData.SQS_CONSUMER_TYPE.getValue(), "hearing");
         queueMessageLogService.createLog(MessageType.HEARING,message);
         HearingResulted hearingResulted = gson.fromJson(message, HearingResulted.class);
         hearingResultedService.execute(hearingResulted);

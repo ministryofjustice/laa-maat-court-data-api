@@ -1,7 +1,7 @@
 <configuration>
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] maat-id:%X{maatId} - laaTransactionId:%X{laaTransactionId} %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] maat-id:%X{maatId} - laaTransactionId:%X{laaTransactionId} - type:%X{consumerType}  %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 

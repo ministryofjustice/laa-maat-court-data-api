@@ -3,6 +3,7 @@ package gov.uk.courtdata.exception;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.LaaTransactionLogging;
+import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -55,6 +56,13 @@ public class GlobalAppLoggingHandler {
     public void beforeQueueMessageRec(JoinPoint joinPoint, String message) {
 
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);
+
+        Sentry.configureScope(scope -> {
+            scope.setTag(LoggingData.MESSAGE.getValue(), laaTransactionLogging.toString());
+            scope.setTag(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn());
+            scope.setTag(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionLogging.getLaaTransactionId() != null ? laaTransactionLogging.getLaaTransactionId().toString() : "");
+            scope.setTag(LoggingData.MAATID.getValue(), laaTransactionLogging.getMaatId().toString());
+        });
 
         MDC.put(LoggingData.MESSAGE.getValue(), laaTransactionLogging.toString());
         MDC.put(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn());

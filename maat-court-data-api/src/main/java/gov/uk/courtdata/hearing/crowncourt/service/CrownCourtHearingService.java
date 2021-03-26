@@ -26,21 +26,17 @@ public class CrownCourtHearingService {
     private final CrownCourtValidationProcessor crownCourtValidationProcessor;
     private final CrownCourtProcessingImpl crownCourtProcessingImpl;
     private final HearingResultedImpl hearingResultedImpl;
-
     private final OffenceHelper offenceHelper;
 
     public void execute(final HearingResulted hearingResulted) {
 
         hearingResultedImpl.execute(hearingResulted);
 
-        if (hearingResulted.getCcOutComeData()!=null) {
+        if (hearingResulted.getCcOutComeData()!=null
+                || hearingResulted.isProsecutionConcluded()) {
             hearingResulted.getCcOutComeData().setCcOutcome(calculateCrownCourtOutCome(hearingResulted));
-        } else {
-            hearingResulted.setCcOutComeData(CCOutComeData.builder().ccOutcome(calculateCrownCourtOutCome(hearingResulted)).build()
-            );
+            executeCrownCourtOutCome(hearingResulted);
         }
-
-        executeCrownCourtOutCome(hearingResulted);
     }
 
     private void executeCrownCourtOutCome(HearingResulted hearingResulted) {
@@ -70,15 +66,14 @@ public class CrownCourtHearingService {
             log.info("Offence count: " + outcomes.toString());
             String offenceOutcomeStatus="";
 
-            if (outcomes.stream().count() == 1) {
+            if (outcomes.size() == 1) {
                 offenceOutcomeStatus = outcomes.get(0);
-            } else if (outcomes.stream().count() > 1) {
+            } else if (outcomes.size() > 1) {
                 offenceOutcomeStatus = CrownCourtTrialOutcome.PART_CONVICTED.getValue();
             }
             log.info("Calculated crown court outcome. " + offenceOutcomeStatus);
             return offenceOutcomeStatus;
         }
-
         return hearingResulted.getCcOutComeData()!=null ? hearingResulted.getCcOutComeData().getCcOutcome() : "";
 
     }

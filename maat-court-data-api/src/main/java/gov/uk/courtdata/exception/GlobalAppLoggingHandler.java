@@ -58,7 +58,6 @@ public class GlobalAppLoggingHandler {
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);
 
         Sentry.configureScope(scope -> {
-            scope.setTag(LoggingData.MESSAGE.getValue(), laaTransactionLogging.toString());
             scope.setTag(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn());
             scope.setTag(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionLogging.getLaaTransactionId() != null ? laaTransactionLogging.getLaaTransactionId().toString() : "");
             scope.setTag(LoggingData.MAATID.getValue(), laaTransactionLogging.getMaatId().toString());

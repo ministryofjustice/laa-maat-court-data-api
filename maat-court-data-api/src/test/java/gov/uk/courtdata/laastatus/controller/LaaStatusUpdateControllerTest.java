@@ -3,7 +3,7 @@ package gov.uk.courtdata.laastatus.controller;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.laastatus.service.LaaStatusPublisher;
+import gov.uk.courtdata.laastatus.service.LaaStatusServiceUpdate;
 import gov.uk.courtdata.laastatus.validator.LaaStatusValidationProcessor;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
@@ -34,7 +34,7 @@ public class LaaStatusUpdateControllerTest {
     @Mock
     private Gson gson;
     @Mock
-    private LaaStatusPublisher laaStatusPublisher;
+    private LaaStatusServiceUpdate laaStatusServiceUpdate;
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -64,7 +64,7 @@ public class LaaStatusUpdateControllerTest {
 
         //then
         verify(laaStatusValidationProcessor).validate(any());
-        verify(laaStatusPublisher, times(1)).publish(caseDetails);
+        verify(laaStatusServiceUpdate, times(1)).updateMlaAndCDA(caseDetails);
         assertThat(messageResponse.getMessages().size()).isZero();
     }
 
@@ -86,7 +86,7 @@ public class LaaStatusUpdateControllerTest {
 
         //then
         verify(laaStatusValidationProcessor).validate(any());
-        verify(laaStatusPublisher, times(1)).publish(caseDetails);
+        verify(laaStatusServiceUpdate, times(1)).updateMlaAndCDA(caseDetails);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class LaaStatusUpdateControllerTest {
         //then
         verify(laaStatusValidationProcessor).validate(any());
         assertThat(messageCollection.getMessages().get(0)).isEqualTo("Test Validation Message");
-        verify(laaStatusPublisher, times(0)).publish(caseDetails);
+        verify(laaStatusServiceUpdate, times(0)).updateMlaAndCDA(caseDetails);
     }
 
     @Test

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.laastatus.service.LaaStatusPublisher;
+import gov.uk.courtdata.laastatus.service.LaaStatusServiceUpdate;
 import gov.uk.courtdata.laastatus.validator.LaaStatusValidationProcessor;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
@@ -34,7 +34,8 @@ public class LaaStatusUpdateController {
 
     private final LaaStatusValidationProcessor laaStatusValidationProcessor;
     private final Gson gson;
-    private final LaaStatusPublisher laaStatusPublisher;
+
+    private final LaaStatusServiceUpdate laaStatusServiceUpdate;
 
     @PostMapping("/laaStatus")
     @Operation(summary = "Process LAA Status updates.")
@@ -60,7 +61,8 @@ public class LaaStatusUpdateController {
 
             if (messageCollection.getMessages().isEmpty()) {
                 log.info("Request Validation is successfully completed.");
-                laaStatusPublisher.publish(caseDetails);
+                laaStatusServiceUpdate.updateMlaAndCDA(caseDetails);
+
             } else {
                 log.info("LAA Status Update Validation Failed - Messages {}", messageCollection.getMessages());
             }

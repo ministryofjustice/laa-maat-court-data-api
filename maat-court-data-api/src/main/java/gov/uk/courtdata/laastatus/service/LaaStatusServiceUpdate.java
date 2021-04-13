@@ -21,13 +21,8 @@ public class LaaStatusServiceUpdate {
 
     private final CourtDataDTOBuilder courtDataDTOBuilder;
 
-    private final QueueMessageLogService queueMessageLogService;
-    private final Gson gson;
-
     public void updateMlaAndCDA(CaseDetails caseDetails) {
 
-        log.info("Persisting rest call payload to message log service.");
-        queueMessageLogService.createLog(MessageType.LAA_STATUS_REST_CALL, gson.toJson(caseDetails));
         CourtDataDTO courtDataDTO = courtDataDTOBuilder.build(caseDetails);
 
         processLaaStatusServiceForCDA(courtDataDTO);

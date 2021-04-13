@@ -8,7 +8,6 @@ import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,10 +22,11 @@ public class LaaStatusServiceUpdate {
     private final CourtDataDTOBuilder courtDataDTOBuilder;
 
     private final QueueMessageLogService queueMessageLogService;
-    private Gson gson;
+    private final Gson gson;
 
     public void updateMlaAndCDA(CaseDetails caseDetails) {
 
+        log.info("Persisting rest call payload to message log service.");
         queueMessageLogService.createLog(MessageType.LAA_STATUS_REST_CALL, gson.toJson(caseDetails));
         CourtDataDTO courtDataDTO = courtDataDTOBuilder.build(caseDetails);
 

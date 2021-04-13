@@ -34,6 +34,7 @@ public class CourtDataDTOBuilder {
      */
     public CourtDataDTO build(CaseDetails caseDetails) {
 
+        log.info("Building CourtDataDTO from caseDetails ");
         final Integer maatId = caseDetails.getMaatId();
         List<WqLinkRegisterEntity> wqLinkRegisterEntityList = wqLinkRegisterRepository.findBymaatId(maatId);
         final Optional<SolicitorMAATDataEntity> optSolicitorMAATDataEntity = solicitorMAATDataRepository.findBymaatId(maatId);

@@ -36,9 +36,6 @@ public class LaaStatusServiceUpdateTest {
     private CourtDataDTOBuilder courtDataDTOBuilder;
 
     @Mock
-    private QueueMessageLogService queueMessageLogService;
-
-    @Mock
     private Gson gson;
 
     @BeforeEach

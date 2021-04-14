@@ -3,6 +3,7 @@ package gov.uk.courtdata.hearing.crowncourt.impl;
 import gov.uk.courtdata.entity.CrownCourtCode;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;
 import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
@@ -24,6 +25,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static gov.uk.courtdata.enums.CrownCourtAppealOutcome.SUCCESSFUL;
 import static org.junit.rules.ExpectedException.none;
 import static org.mockito.Mockito.*;
 
@@ -45,6 +47,8 @@ public class CrownCourtProcessingImplTest {
     private CrownCourtProcessHelper crownCourtProcessHelper;
     @Mock
     private CrownCourtStoredProcedureRepository crownCourtStoredProcedureRepository;
+    @Mock
+    private CrownCourtValidationProcessor crownCourtValidationProcessor;
 
     @BeforeEach
     public void setUp() {
@@ -61,7 +65,7 @@ public class CrownCourtProcessingImplTest {
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .session(session)
-                .ccOutComeData(ccOutComeData)
+                //.ccOutComeData(ccOutComeData)
                 .build();
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("ABC").aptyCode("ACV").id(123).build();
 
@@ -70,7 +74,7 @@ public class CrownCourtProcessingImplTest {
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.of(crownCourtCode));
         when(crownCourtProcessHelper.isImprisoned(hearingDetails, ccOutComeData.getCcOutcome()))
                 .thenReturn("N");
-        when(crownCourtProcessHelper.isBenchWarrantIssued(hearingDetails))
+        when(crownCourtProcessHelper.isBenchWarrantIssued(hearingDetails,SUCCESSFUL.getValue()))
                 .thenReturn("N");
         crownCourtProcessingImpl.execute(hearingDetails);
 
@@ -96,7 +100,6 @@ public class CrownCourtProcessingImplTest {
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .session(session)
-                .ccOutComeData(ccOutComeData)
                 .build();
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("APPEAL CC").aptyCode("ACV").id(123).build();
 
@@ -106,8 +109,7 @@ public class CrownCourtProcessingImplTest {
         crownCourtProcessingImpl.execute(hearingDetails);
 
         //then
-        verify(crownCourtProcessingRepository, times(1))
-                .invokeUpdateAppealSentenceOrderDate(hearingDetails.getMaatId(),
+        verify(crownCourtProcessingRepository, times(1)).invokeUpdateAppealSentenceOrderDate(hearingDetails.getMaatId(),
                         null,
                         DateUtil.parse(ccOutComeData.getCaseEndDate()),
                         LocalDate.now());
@@ -123,7 +125,7 @@ public class CrownCourtProcessingImplTest {
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .session(session)
-                .ccOutComeData(ccOutComeData)
+                //.ccOutComeData(ccOutComeData)
                 .build();
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("NON APPEAL").aptyCode("ACV").id(123).build();
 
@@ -148,7 +150,7 @@ public class CrownCourtProcessingImplTest {
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .session(session)
-                .ccOutComeData(ccOutComeData)
+                //.ccOutComeData(ccOutComeData)
                 .build();
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("NON APPEAL").aptyCode("ACV").id(123).build();
 
@@ -167,7 +169,7 @@ public class CrownCourtProcessingImplTest {
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(123456)
                 .session(Session.builder().courtLocation("London").build())
-                .ccOutComeData(CCOutComeData.builder().ccOutcome("CONVICTED").caseEndDate("2020-07-23").build())
+                //.ccOutComeData(CCOutComeData.builder().ccOutcome("CONVICTED").caseEndDate("2020-07-23").build())
                 .build();
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("APPEAL").aptyCode("ACV").build();
 
@@ -175,7 +177,7 @@ public class CrownCourtProcessingImplTest {
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.of(CrownCourtCode.builder().ouCode("OU").build()));
         crownCourtProcessingImpl.execute(hearingDetails);
 
-        verify(crownCourtProcessHelper).isBenchWarrantIssued(any());
+        verify(crownCourtProcessHelper).isBenchWarrantIssued(any(),anyString());
     }
 }
 

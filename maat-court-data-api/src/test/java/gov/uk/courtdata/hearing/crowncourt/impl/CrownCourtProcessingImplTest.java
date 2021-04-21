@@ -47,6 +47,7 @@ public class CrownCourtProcessingImplTest {
     private CrownCourtProcessHelper crownCourtProcessHelper;
     @Mock
     private CrownCourtStoredProcedureRepository crownCourtStoredProcedureRepository;
+
     @Mock
     private CrownCourtValidationProcessor crownCourtValidationProcessor;
 
@@ -59,42 +60,39 @@ public class CrownCourtProcessingImplTest {
     public void givenCCMessageIsReceived_whenCrownCourtProcessingImplIsInvoked_thenCrownCourtProcessingRepositoryIsCalled() {
 
         //given
-        CCOutComeData ccOutComeData = CCOutComeData.builder().build();
+        //CCOutComeData ccOutComeData = CCOutComeData.builder().build();
         Session session = Session.builder().courtLocation("OU").build();
         CrownCourtCode crownCourtCode = CrownCourtCode.builder().code("123").ouCode("OU").build();
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .session(session)
-                //.ccOutComeData(ccOutComeData)
+                .caseEndDate("2020-02-02")
                 .build();
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("ABC").aptyCode("ACV").id(123).build();
 
         //when
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.of(crownCourtCode));
-        when(crownCourtProcessHelper.isImprisoned(hearingDetails, ccOutComeData.getCcOutcome()))
-                .thenReturn("N");
-        when(crownCourtProcessHelper.isBenchWarrantIssued(hearingDetails,SUCCESSFUL.getValue()))
-                .thenReturn("N");
+        when(crownCourtProcessHelper.isImprisoned(hearingDetails,"CONVICTED")).thenReturn("N");
+        when(crownCourtProcessHelper.isBenchWarrantIssued(hearingDetails,SUCCESSFUL.getValue())).thenReturn("N");
         crownCourtProcessingImpl.execute(hearingDetails);
 
         //then
         verify(crownCourtStoredProcedureRepository, times(1))
                 .updateCrownCourtOutcome(hearingDetails.getMaatId(),
-                        ccOutComeData.getCcOutcome(),
-                        "N",
+                        null,
+                        null,//"N",
                         "ACV",
-                        "N",
-                        hearingDetails.getCaseUrn(),
+                        null,//"N",
+                        null,//hearingDetails.getCaseUrn(),
                         "123");
-
     }
 
     @Test
     public void givenCCMessageIsReceived_whenAppealToCCScenario_thenInvokeUpdateAppealSentenceOrderDateIsCalled() {
 
         //given
-        CCOutComeData ccOutComeData = CCOutComeData.builder().caseEndDate("2020-02-02").build();
+        //CCOutComeData ccOutComeData = CCOutComeData.builder().caseEndDate("2020-02-02").build();
         Session session = Session.builder().courtLocation("OU").build();
         CrownCourtCode crownCourtCode = CrownCourtCode.builder().code("123").ouCode("OU").build();
         HearingResulted hearingDetails = HearingResulted.builder()
@@ -106,12 +104,13 @@ public class CrownCourtProcessingImplTest {
         //when
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.of(crownCourtCode));
+
         crownCourtProcessingImpl.execute(hearingDetails);
 
         //then
         verify(crownCourtProcessingRepository, times(1)).invokeUpdateAppealSentenceOrderDate(hearingDetails.getMaatId(),
                         null,
-                        DateUtil.parse(ccOutComeData.getCaseEndDate()),
+                        DateUtil.parse("2020-02-02"),
                         LocalDate.now());
     }
 
@@ -119,26 +118,27 @@ public class CrownCourtProcessingImplTest {
     public void givenCCMessageIsReceived_whenNONAppealToCCScenario_thenInvokeUpdateSentenceOrderDateIsCalled() {
 
         //given
-        CCOutComeData ccOutComeData = CCOutComeData.builder().caseEndDate("2020-02-02").build();
+        //CCOutComeData ccOutComeData = CCOutComeData.builder().caseEndDate("2020-02-02").build();
         Session session = Session.builder().courtLocation("OU").build();
         CrownCourtCode crownCourtCode = CrownCourtCode.builder().code("123").ouCode("OU").build();
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .session(session)
-                //.ccOutComeData(ccOutComeData)
+                .caseEndDate("2020-02-02")
                 .build();
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("NON APPEAL").aptyCode("ACV").id(123).build();
 
         //when
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.of(crownCourtCode));
+
         crownCourtProcessingImpl.execute(hearingDetails);
 
         //then
         verify(crownCourtProcessingRepository, times(1))
                 .invokeUpdateSentenceOrderDate(hearingDetails.getMaatId(),
                         null,
-                        DateUtil.parse(ccOutComeData.getCaseEndDate()));
+                        DateUtil.parse("2020-02-02"));
     }
 
     @Test
@@ -150,7 +150,7 @@ public class CrownCourtProcessingImplTest {
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .session(session)
-                //.ccOutComeData(ccOutComeData)
+                .caseEndDate("2020-02-02")
                 .build();
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("NON APPEAL").aptyCode("ACV").id(123).build();
 
@@ -169,7 +169,7 @@ public class CrownCourtProcessingImplTest {
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(123456)
                 .session(Session.builder().courtLocation("London").build())
-                //.ccOutComeData(CCOutComeData.builder().ccOutcome("CONVICTED").caseEndDate("2020-07-23").build())
+                .caseEndDate("2020-02-02")
                 .build();
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("APPEAL").aptyCode("ACV").build();
 

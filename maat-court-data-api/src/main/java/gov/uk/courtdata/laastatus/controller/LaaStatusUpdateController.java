@@ -55,14 +55,14 @@ public class LaaStatusUpdateController {
 
         UUID laaTransactionIdUUID = Optional.ofNullable(laaTransactionId).isPresent() ? UUID.fromString(laaTransactionId) : UUID.randomUUID();
         MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
-        log.info("LAA Status Update Request received.");
+        log.info("RestAPI - LAA Status Update Request received.");
 
         queueMessageLogService.createLog(MessageType.LAA_STATUS_REST_CALL, jsonPayload);
         MessageCollection messageCollection;
         try {
             CaseDetails caseDetails = gson.fromJson(jsonPayload, CaseDetails.class);
             caseDetails.setLaaTransactionId(laaTransactionIdUUID);
-
+            MDC.put(LoggingData.MAATID.getValue(), caseDetails.getMaatId().toString());
             messageCollection = laaStatusValidationProcessor.validate(caseDetails);
 
             if (messageCollection.getMessages().isEmpty()) {

@@ -3,11 +3,13 @@ package gov.uk.courtdata.laastatus.controller;
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.enums.LoggingData;
+import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.laastatus.service.LaaStatusServiceUpdate;
 import gov.uk.courtdata.laastatus.validator.LaaStatusValidationProcessor;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
+import gov.uk.courtdata.service.QueueMessageLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,6 +36,8 @@ public class LaaStatusUpdateController {
 
     private final LaaStatusValidationProcessor laaStatusValidationProcessor;
     private final Gson gson;
+    private final QueueMessageLogService queueMessageLogService;
+
 
     private final LaaStatusServiceUpdate laaStatusServiceUpdate;
 
@@ -52,6 +56,8 @@ public class LaaStatusUpdateController {
         UUID laaTransactionIdUUID = Optional.ofNullable(laaTransactionId).isPresent() ? UUID.fromString(laaTransactionId) : UUID.randomUUID();
         MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info("LAA Status Update Request received.");
+
+        queueMessageLogService.createLog(MessageType.LAA_STATUS_REST_CALL, jsonPayload);
         MessageCollection messageCollection;
         try {
             CaseDetails caseDetails = gson.fromJson(jsonPayload, CaseDetails.class);
@@ -62,7 +68,6 @@ public class LaaStatusUpdateController {
             if (messageCollection.getMessages().isEmpty()) {
                 log.info("Request Validation is successfully completed.");
                 laaStatusServiceUpdate.updateMlaAndCDA(caseDetails);
-
             } else {
                 log.info("LAA Status Update Validation Failed - Messages {}", messageCollection.getMessages());
             }

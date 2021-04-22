@@ -7,6 +7,7 @@ import gov.uk.courtdata.laastatus.service.LaaStatusServiceUpdate;
 import gov.uk.courtdata.laastatus.validator.LaaStatusValidationProcessor;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
+import gov.uk.courtdata.service.QueueMessageLogService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,10 @@ public class LaaStatusUpdateControllerTest {
     private Gson gson;
     @Mock
     private LaaStatusServiceUpdate laaStatusServiceUpdate;
+
+    @Mock
+    private QueueMessageLogService queueMessageLogService;
+
 
     @Rule
     public ExpectedException exception = ExpectedException.none();

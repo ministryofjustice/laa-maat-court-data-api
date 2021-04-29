@@ -2,13 +2,8 @@ package gov.uk.courtdata.hearing.crowncourt.impl;
 
 import gov.uk.courtdata.entity.CrownCourtCode;
 import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
-import gov.uk.courtdata.enums.PleaTrialOutcome;
-import gov.uk.courtdata.enums.VerdictTrialOutcome;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;
-import gov.uk.courtdata.model.Offence;
-import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.DateUtil;
@@ -18,10 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 import static gov.uk.courtdata.enums.CrownCourtCaseType.APPEAL_CC;
 import static java.lang.String.format;
@@ -41,7 +34,8 @@ public class CrownCourtProcessingImpl {
 
     private final CrownCourtStoredProcedureRepository crownCourtStoredProcedureRepository;
 
-    private final OffenceHelper offenceHelper;
+    private final CalculateCrownCourtOutCome calculateCrownCourtOutCome;
+
     private final CrownCourtValidationProcessor crownCourtValidationProcessor;
 
     @Value("${spring.datasource.username}")
@@ -49,7 +43,7 @@ public class CrownCourtProcessingImpl {
 
     public void execute(HearingResulted hearingResulted) {
 
-        String crownCourtOutCome = calculateCrownCourtOutCome(hearingResulted);
+        String crownCourtOutCome = calculateCrownCourtOutCome.calculate(hearingResulted);
         crownCourtValidationProcessor.validate(hearingResulted, crownCourtOutCome);
 
         final Integer maatId = hearingResulted.getMaatId();
@@ -93,34 +87,5 @@ public class CrownCourtProcessingImpl {
         return crownCourtCode.getCode();
     }
 
-    private String calculateCrownCourtOutCome(HearingResulted hearingResulted) {
 
-        if (hearingResulted.isProsecutionConcluded()) {
-            List<String> offenceOutcomeList = new ArrayList<>();
-            List<Offence> offenceList = offenceHelper.getOffences(hearingResulted.getMaatId());
-
-            offenceList
-                    .forEach(offence -> {
-
-                        if (offence.getVerdict() != null) {
-                            offenceOutcomeList.add(VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getCategoryType()));
-                        } else if (offence.getPlea() != null) {
-                            offenceOutcomeList.add(PleaTrialOutcome.getTrialOutcome(offence.getPlea().getPleaValue()));
-                        }
-                    });
-
-            List<String> outcomes = offenceOutcomeList.stream().distinct().collect(Collectors.toList());
-            log.info("Offence count: " + outcomes.stream().collect(Collectors.joining(", ")));
-            String offenceOutcomeStatus="";
-
-            if (outcomes.size() == 1) {
-                offenceOutcomeStatus = outcomes.get(0);
-            } else if (outcomes.size() > 1) {
-                offenceOutcomeStatus = CrownCourtTrialOutcome.PART_CONVICTED.getValue();
-            }
-            log.info("Calculated crown court outcome. " + offenceOutcomeStatus);
-            return offenceOutcomeStatus;
-        }
-        return null;
-    }
 }

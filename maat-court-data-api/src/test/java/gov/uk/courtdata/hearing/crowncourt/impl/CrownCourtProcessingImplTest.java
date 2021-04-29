@@ -5,7 +5,6 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;
 import gov.uk.courtdata.model.Session;
-import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.CrownCourtCodeRepository;
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
@@ -25,7 +24,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static gov.uk.courtdata.enums.CrownCourtAppealOutcome.SUCCESSFUL;
 import static org.junit.rules.ExpectedException.none;
 import static org.mockito.Mockito.*;
 
@@ -49,6 +47,12 @@ public class CrownCourtProcessingImplTest {
     private CrownCourtStoredProcedureRepository crownCourtStoredProcedureRepository;
 
     @Mock
+    private CalculateCrownCourtOutCome calculateCrownCourtOutCome;
+
+    @Mock
+    private OffenceHelper offenceHelper;
+
+    @Mock
     private CrownCourtValidationProcessor crownCourtValidationProcessor;
 
     @BeforeEach
@@ -59,45 +63,46 @@ public class CrownCourtProcessingImplTest {
     @Test
     public void givenCCMessageIsReceived_whenCrownCourtProcessingImplIsInvoked_thenCrownCourtProcessingRepositoryIsCalled() {
 
-        //given
-        //CCOutComeData ccOutComeData = CCOutComeData.builder().build();
         Session session = Session.builder().courtLocation("OU").build();
         CrownCourtCode crownCourtCode = CrownCourtCode.builder().code("123").ouCode("OU").build();
         HearingResulted hearingDetails = HearingResulted.builder()
-                .maatId(12345)
-                .session(session)
+                .maatId(123456)
+                .session(Session.builder().courtLocation("London").build())
+                .prosecutionConcluded(true)
                 .caseEndDate("2020-02-02")
                 .build();
+
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("ABC").aptyCode("ACV").id(123).build();
 
         //when
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.of(crownCourtCode));
+        when(calculateCrownCourtOutCome.calculate(any())).thenReturn("CONVICTED");
         when(crownCourtProcessHelper.isImprisoned(hearingDetails,"CONVICTED")).thenReturn("N");
-        when(crownCourtProcessHelper.isBenchWarrantIssued(hearingDetails,SUCCESSFUL.getValue())).thenReturn("N");
+        when(crownCourtProcessHelper.isBenchWarrantIssued(hearingDetails,"CONVICTED")).thenReturn("N");
+
         crownCourtProcessingImpl.execute(hearingDetails);
 
         //then
         verify(crownCourtStoredProcedureRepository, times(1))
                 .updateCrownCourtOutcome(hearingDetails.getMaatId(),
-                        null,
-                        null,//"N",
+                        "CONVICTED",
+                        "N",
                         "ACV",
-                        null,//"N",
-                        null,//hearingDetails.getCaseUrn(),
+                        "N",
+                        hearingDetails.getCaseUrn(),
                         "123");
     }
 
     @Test
     public void givenCCMessageIsReceived_whenAppealToCCScenario_thenInvokeUpdateAppealSentenceOrderDateIsCalled() {
 
-        //given
-        //CCOutComeData ccOutComeData = CCOutComeData.builder().caseEndDate("2020-02-02").build();
         Session session = Session.builder().courtLocation("OU").build();
         CrownCourtCode crownCourtCode = CrownCourtCode.builder().code("123").ouCode("OU").build();
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .session(session)
+                .caseEndDate("2020-02-02")
                 .build();
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("APPEAL CC").aptyCode("ACV").id(123).build();
 
@@ -117,8 +122,6 @@ public class CrownCourtProcessingImplTest {
     @Test
     public void givenCCMessageIsReceived_whenNONAppealToCCScenario_thenInvokeUpdateSentenceOrderDateIsCalled() {
 
-        //given
-        //CCOutComeData ccOutComeData = CCOutComeData.builder().caseEndDate("2020-02-02").build();
         Session session = Session.builder().courtLocation("OU").build();
         CrownCourtCode crownCourtCode = CrownCourtCode.builder().code("123").ouCode("OU").build();
         HearingResulted hearingDetails = HearingResulted.builder()
@@ -145,7 +148,6 @@ public class CrownCourtProcessingImplTest {
     public void givenCCMessageIsReceived_whenInValidOUCodeIsPassedIN_thenExceptionThrown() {
 
         //given
-        CCOutComeData ccOutComeData = CCOutComeData.builder().caseEndDate("2020-02-02").build();
         Session session = Session.builder().courtLocation("X").build();
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
@@ -159,12 +161,30 @@ public class CrownCourtProcessingImplTest {
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.empty());
         crownCourtProcessingImpl.execute(hearingDetails);
-
-
     }
 
     @Test
     public void givenCrownMessage_whenProcessingOutcome_thenVerifyBenchWarrantCalled() {
+
+        HearingResulted hearingDetails = HearingResulted.builder()
+                .maatId(123456)
+                .session(Session.builder().courtLocation("London").build())
+                .prosecutionConcluded(true)
+                .caseEndDate("2020-02-02")
+                .build();
+        RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("APPEAL").aptyCode("ACV").build();
+
+        when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
+        when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.of(CrownCourtCode.builder().ouCode("OU").build()));
+        when(calculateCrownCourtOutCome.calculate(any())).thenReturn("CONVICTED");
+        //when
+        crownCourtProcessingImpl.execute(hearingDetails);
+
+        verify(crownCourtProcessHelper).isBenchWarrantIssued(hearingDetails,"CONVICTED");
+    }
+
+    @Test
+    public void givenCrownMessage_whenOffencesIsNull_thenCrownOutcomeNull() {
 
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(123456)
@@ -177,7 +197,7 @@ public class CrownCourtProcessingImplTest {
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.of(CrownCourtCode.builder().ouCode("OU").build()));
         crownCourtProcessingImpl.execute(hearingDetails);
 
-        verify(crownCourtProcessHelper).isBenchWarrantIssued(any(),anyString());
+        verify(crownCourtProcessHelper).isBenchWarrantIssued(hearingDetails,null);
     }
 }
 

@@ -27,6 +27,7 @@ public class RepOrderCPInfoProcessor implements Process {
             repOrder.setDefendantId(caseDetails.getDefendant().getDefendantId());
             repOrder.setUserModified(caseDetails.getCreatedUser());
             repOrder.setDateModified(LocalDateTime.now());
+            repOrder.setInCommonPlatform("Y");
             repOrderDataRepository.save(repOrder);
         }
     }

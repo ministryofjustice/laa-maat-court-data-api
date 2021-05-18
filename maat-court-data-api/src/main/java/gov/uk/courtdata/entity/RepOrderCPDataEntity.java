@@ -29,5 +29,6 @@ public class RepOrderCPDataEntity {
     private LocalDateTime dateModified;
     @Column(name = "USER_MODIFIED")
     private String userModified;
-
+    @Column(name = "IN_COMMON_PLATFORM")
+    private String inCommonPlatform;
 }

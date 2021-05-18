@@ -86,7 +86,7 @@ public class UnLinkImpl {
     private void processCPData(UnlinkModel unlinkModel) {
 
         RepOrderCPDataEntity repOrderCPData = unlinkModel.getRepOrderCPDataEntity();
-        repOrderCPData.setDefendantId(null);
+        repOrderCPData.setInCommonPlatform("N");
         repOrderCPDataRepository.save(repOrderCPData);
     }
 }

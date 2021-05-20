@@ -4,6 +4,7 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.enums.InCommonPlatformFlag;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
@@ -86,7 +87,7 @@ public class UnLinkImpl {
     private void processCPData(UnlinkModel unlinkModel) {
 
         RepOrderCPDataEntity repOrderCPData = unlinkModel.getRepOrderCPDataEntity();
-        repOrderCPData.setInCommonPlatform("N");
+        repOrderCPData.setInCommonPlatform(InCommonPlatformFlag.NO.getValue());
         repOrderCPDataRepository.save(repOrderCPData);
     }
 }

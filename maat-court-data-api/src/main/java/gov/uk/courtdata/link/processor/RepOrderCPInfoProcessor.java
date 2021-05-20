@@ -2,6 +2,7 @@ package gov.uk.courtdata.link.processor;
 
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
+import gov.uk.courtdata.enums.InCommonPlatformFlag;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class RepOrderCPInfoProcessor implements Process {
             repOrder.setDefendantId(caseDetails.getDefendant().getDefendantId());
             repOrder.setUserModified(caseDetails.getCreatedUser());
             repOrder.setDateModified(LocalDateTime.now());
-            repOrder.setInCommonPlatform("Y");
+            repOrder.setInCommonPlatform(InCommonPlatformFlag.YES.getValue());
             repOrderDataRepository.save(repOrder);
         }
     }

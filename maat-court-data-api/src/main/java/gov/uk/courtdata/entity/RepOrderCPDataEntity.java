@@ -22,7 +22,7 @@ public class RepOrderCPDataEntity {
     @Column(name = "DEFENDANT_ID")
     private String defendantId;
     @Column(name = "DATE_CREATED")
-    private LocalDate dateCreated;
+    private LocalDateTime dateCreated;
     @Column(name = "USER_CREATED")
     private String userCreated;
     @Column(name = "DATE_MODIFIED")

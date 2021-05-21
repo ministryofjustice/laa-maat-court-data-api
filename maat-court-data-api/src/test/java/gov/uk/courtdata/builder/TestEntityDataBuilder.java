@@ -15,7 +15,7 @@ public class TestEntityDataBuilder {
         return RepOrderCPDataEntity.builder()
                 .repOrderId(1234)
                 .caseUrn("caseurn1")
-                .dateCreated(LocalDate.now())
+                .dateCreated(LocalDateTime.now())
                 .userCreated("user")
                 .dateModified(LocalDateTime.now())
                 .build();

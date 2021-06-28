@@ -10,7 +10,8 @@ public enum LoggingData{
     LAA_TRANSACTION_ID("laaTransactionId"),
     MAATID("maatId"),
     CASE_URN("caseUrn"),
-    MESSAGE("message");
+    MESSAGE("message"),
+    REQUEST_TYPE("requestType");
 
     private String value;
 }

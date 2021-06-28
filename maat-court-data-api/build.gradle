@@ -13,7 +13,7 @@ plugins {
 
 def versions = [
         mapstructVersion: '1.3.1.Final',
-        sentryVersion   : '3.1.1',
+        sentryVersion   : '5.0.1',
         springdocVersion: '1.4.2',
         amazonSQSVersion: '1.0.8',
         ojdbc8Version   : '19.7.0.0',

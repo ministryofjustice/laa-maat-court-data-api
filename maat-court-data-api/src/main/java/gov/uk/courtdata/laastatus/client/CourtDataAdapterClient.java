@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -31,7 +32,7 @@ public class CourtDataAdapterClient {
     private String laaUpdateUrl;
 
     /**
-     * @param laaStatusUpdate
+     * @param laaStatusUpdate laa status value
      */
     public void postLaaStatus(LaaStatusUpdate laaStatusUpdate, Map<String,String> headers) {
 
@@ -40,18 +41,15 @@ public class CourtDataAdapterClient {
         queueMessageLogService.createLog(MessageType.LAA_STATUS_UPDATE,laaStatusUpdateJson);
 
         log.info("Post Laa status to CDA.");
-        String clientResponse =
+        WebClient.ResponseSpec clientResponse =
                 webClient
                         .post()
                         .uri(laaUpdateUrl)
                         .headers(httpHeaders -> httpHeaders.setAll(headers))
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(laaStatusUpdateJson))
-                        .retrieve()
-                        .bodyToMono(String.class)
-                        .block();
+                        .retrieve();
 
-        log.info("LAA status update posted {}", clientResponse);
+        log.info("LAA status update posted {}", Optional.of( clientResponse.toBodilessEntity().block().getStatusCode() ));
     }
-
 }

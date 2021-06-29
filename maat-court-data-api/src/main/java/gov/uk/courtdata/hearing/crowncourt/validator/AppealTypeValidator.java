@@ -16,9 +16,8 @@ public class AppealTypeValidator {
 
     private final AppealTypeRepository appealTypeRepository;
 
-    public void validate(final HearingResulted hearingResulted) {
+    public void validate(final String appealType, final Integer maatId) {
 
-        final String appealType = hearingResulted.getCcOutComeData().getAppealType();
         if (appealType != null) {
             boolean isValidAppealType = appealTypeRepository
                     .findAll()
@@ -29,7 +28,7 @@ public class AppealTypeValidator {
 
             if (!isValidAppealType) {
                 throw new MAATCourtDataException("Invalid Appeal Type : "
-                        .concat(appealType.concat(" is passed in for MAAT ID: " + hearingResulted.getMaatId())));
+                        .concat(appealType.concat(" is passed in for MAAT ID: " + maatId)));
             }
         }
     }

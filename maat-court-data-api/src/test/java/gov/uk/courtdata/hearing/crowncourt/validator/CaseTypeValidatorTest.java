@@ -34,12 +34,11 @@ public class CaseTypeValidatorTest {
     @InjectMocks
     private CaseTypeValidator caseTypeValidator;
 
-
     @Test(expected = ValidationException.class)
     public void givenCaseTypeNotValidForAppeal_RaisesException() {
 
         when(repOrderRepository.findById(1001)).thenReturn(repOrderWith(CC_ALREADY.getValue()));
-        caseTypeValidator.validate(hearingResultedWith(SUCCESSFUL.getValue()));
+        caseTypeValidator.validate(getHearingResulted(),SUCCESSFUL.getValue());
 
     }
 
@@ -47,25 +46,18 @@ public class CaseTypeValidatorTest {
     public void givenCaseTypeNotValidForTrial_RaisesException() {
 
         when(repOrderRepository.findById(1001)).thenReturn(repOrderWith(APPEAL_CC.getValue()));
-        caseTypeValidator.validate(hearingResultedWith(CONVICTED.getValue()));
-
+        caseTypeValidator.validate(getHearingResulted(),CONVICTED.getValue());
     }
 
 
     @Test
     public void givenCaseTypeValidForTrial_ValidationSuccess() {
 
-
-        caseTypeValidator.validate(hearingResultedWith(CONVICTED.getValue()));
-
+        caseTypeValidator.validate(getHearingResulted(),CONVICTED.getValue());
     }
 
+    private HearingResulted getHearingResulted() {
 
-    private HearingResulted hearingResultedWith(String outcome) {
-
-        CCOutComeData ccOutComeData = CCOutComeData.builder()
-                .ccOutcome(outcome)
-                .build();
         Session session = Session.builder().courtLocation("OU").build();
         Offence offence = Offence.builder()
                 .results(Collections.singletonList(Result.builder().resultCode("3030").build()))
@@ -77,7 +69,6 @@ public class CaseTypeValidatorTest {
         return HearingResulted.builder()
                 .maatId(1001)
                 .session(session)
-                .ccOutComeData(ccOutComeData)
                 .defendant(defendant)
                 .build();
     }

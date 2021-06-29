@@ -33,9 +33,9 @@ public final class CrownCourtProcessHelper {
         return null;
     }
 
-    public String isBenchWarrantIssued(final HearingResulted hearingResulted) {
+    public String isBenchWarrantIssued(final HearingResulted hearingResulted, String crownCourtOutcome) {
 
-        if (isTrial(hearingResulted.getCcOutComeData().getCcOutcome())) {
+        if (isTrial(crownCourtOutcome)) {
 
             List<String> offenceResultCodes = flattenResults(hearingResulted);
             return anyResultCodeMatch(xlatResultRepository.findByCjsResultCodeIn(), offenceResultCodes) ? YES : null;

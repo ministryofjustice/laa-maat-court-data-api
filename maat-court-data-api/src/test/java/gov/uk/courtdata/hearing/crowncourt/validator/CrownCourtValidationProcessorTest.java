@@ -9,16 +9,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static gov.uk.courtdata.enums.CrownCourtAppealOutcome.SUCCESSFUL;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CrownCourtValidationProcessorTest {
 
-    @Mock
-    private CrownCourtOutComesValidator crownCourtOutComesValidator;
-    @Mock
-    private AppealTypeValidator appealTypeValidator;
     @Mock
     private OUCodeValidator ouCodeValidator;
     @Mock
@@ -32,8 +29,6 @@ public class CrownCourtValidationProcessorTest {
     }
 
 
-
-
     @Test
     public void givenHearingData_whenCrownCourtValidationProcessorIsCalled_thenValidatorsAreCalled() {
 
@@ -42,13 +37,9 @@ public class CrownCourtValidationProcessorTest {
         final HearingResulted hearingDetails = HearingResulted.builder().maatId(testMaatId).build();
 
         // when
-        crownCourtValidationProcessor.validate(hearingDetails);
+        crownCourtValidationProcessor.validate(hearingDetails, SUCCESSFUL.getValue());
 
-        //then
-        verify(crownCourtOutComesValidator, times(1)).validate(hearingDetails);
-        verify(appealTypeValidator, times(1)).validate(hearingDetails);
         verify(ouCodeValidator, times(1)).validate(hearingDetails);
-        verify(caseTypeValidator, times(1)).validate(hearingDetails);
-
+        verify(caseTypeValidator, times(1)).validate(hearingDetails,SUCCESSFUL.getValue());
     }
 }

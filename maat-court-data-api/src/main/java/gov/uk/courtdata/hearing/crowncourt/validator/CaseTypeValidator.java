@@ -20,31 +20,25 @@ public class CaseTypeValidator {
 
     private final RepOrderRepository repOrderRepository;
 
-    public void validate(final HearingResulted hearingResulted) {
+    public void validate(final HearingResulted hearingResulted, String crownCourtOutCome) {
 
         Optional<RepOrderEntity> repOrderEntity =
                 repOrderRepository.findById(hearingResulted.getMaatId());
-
 
         if (repOrderEntity.isPresent()) {
 
             RepOrderEntity repOrder = repOrderEntity.get();
             String caseType = repOrder.getCatyCaseType();
-            String outCome = hearingResulted.getCcOutComeData().getCcOutcome();
 
-            if (isTrial(outCome) && !caseTypeForTrial(caseType)) {
+            if (isTrial(crownCourtOutCome) && !caseTypeForTrial(caseType)) {
 
                 throw new ValidationException("Crown Court - Case type not valid for Trial.");
             }
 
-            if (isAppeal(outCome) && !caseTypeForAppeal(caseType)) {
+            if (isAppeal(crownCourtOutCome) && !caseTypeForAppeal(caseType)) {
 
                 throw new ValidationException("Crown Court  - Case type not valid for Appeal.");
             }
-
-
         }
-
-
     }
 }

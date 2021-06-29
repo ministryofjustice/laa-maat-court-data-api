@@ -164,7 +164,7 @@ public class CrownCourtProcessHelperTest {
         //when
         when(xlatResultRepository.findByCjsResultCodeIn()).thenReturn(resultEntityList);
 
-        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted(CONVICTED.getValue()));
+        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted(), CONVICTED.getValue());
 
         //then
         verify(xlatResultRepository).findByCjsResultCodeIn();
@@ -176,7 +176,7 @@ public class CrownCourtProcessHelperTest {
         //when
         when(xlatResultRepository.findByCjsResultCodeIn()).thenReturn(null);
         thrown.expect(NullPointerException.class);
-        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted(CONVICTED.getValue()));
+        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted(), CONVICTED.getValue());
 
         //then
         verify(xlatResultRepository).findByCjsResultCodeIn();
@@ -186,7 +186,7 @@ public class CrownCourtProcessHelperTest {
     @Test
     public void givenHearingResulted_whenNotTrial_thenSetFlagToNull() {
 
-        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted(UNSUCCESSFUL.getValue()));
+        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted(),CONVICTED.getValue());
 
         assertNull(status);
 
@@ -198,7 +198,7 @@ public class CrownCourtProcessHelperTest {
         when(xlatResultRepository.findByCjsResultCodeIn()).thenReturn(
                 Collections.singletonList(XLATResultEntity.builder().ccBenchWarrant("Y").cjsResultCode(3033).build()));
 
-        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted(CONVICTED.getValue()));
+        String status = crownCourtProcessHelper.isBenchWarrantIssued(getHearingResulted(),CONVICTED.getValue());
 
         //then
         verify(xlatResultRepository).findByCjsResultCodeIn();
@@ -214,7 +214,7 @@ public class CrownCourtProcessHelperTest {
                         XLATResultEntity.builder().cjsResultCode(3033).build()
                 ));
 
-        boolean status = crownCourtProcessHelper.isCaseConcluded(getHearingResulted(CONVICTED.getValue()));
+        boolean status = crownCourtProcessHelper.isCaseConcluded(getHearingResulted());
 
         //then
         verify(xlatResultRepository).findByWqType(anyInt());
@@ -229,17 +229,16 @@ public class CrownCourtProcessHelperTest {
                         XLATResultEntity.builder().cjsResultCode(7778).build()
                 ));
 
-        boolean status = crownCourtProcessHelper.isCaseConcluded(getHearingResulted(CONVICTED.getValue()));
+        boolean status = crownCourtProcessHelper.isCaseConcluded(getHearingResulted());
 
         //then
         verify(xlatResultRepository).findByWqType(anyInt());
         assertFalse(status);
     }
 
-    private HearingResulted getHearingResulted(String outcome) {
+    private HearingResulted getHearingResulted() {
 
-        CCOutComeData ccOutComeData = CCOutComeData.builder()
-                .ccOutcome(outcome).build();
+//        CCOutComeData ccOutComeData = CCOutComeData.builder().ccOutcome(outcome).build();
         Session session = Session.builder().courtLocation("OU").build();
         Offence offence = Offence.builder()
                 .results(Collections.singletonList(Result.builder().resultCode("3030").build()))
@@ -250,7 +249,7 @@ public class CrownCourtProcessHelperTest {
 
         return HearingResulted.builder()
                 .session(session)
-                .ccOutComeData(ccOutComeData)
+                //.ccOutComeData(ccOutComeData)
                 .defendant(defendant)
                 .build();
     }
@@ -287,5 +286,4 @@ public class CrownCourtProcessHelperTest {
 
         return resultList;
     }
-
 }

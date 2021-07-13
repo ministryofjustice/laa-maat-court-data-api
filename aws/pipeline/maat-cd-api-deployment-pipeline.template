@@ -321,19 +321,6 @@ Resources:
 
         - !If
           - cIsRouteToLive
-          - Name: ApproveToTest
-            Actions:
-              - Name: Approve
-                ActionTypeId:
-                  Category: Approval
-                  Owner: AWS
-                  Provider: Manual
-                  Version: '1'
-                RunOrder: 1
-          - !Ref AWS::NoValue
-
-        - !If
-          - cIsRouteToLive
           - Name: DeployToTest
             Actions:
             - Name: CreateChangeSetTest
@@ -364,6 +351,14 @@ Resources:
               RunOrder: 1
               RoleArn: !Sub arn:aws:iam::${TestAccount}:role/SharedServicesAccountCodePipelineCloudFormationRole
 
+            - Name: Approve
+              ActionTypeId:
+                Category: Approval
+                Owner: AWS
+                Provider: Manual
+                Version: '1'
+              RunOrder: 2
+
             - Name: DeployChangeSetTest
               ActionTypeId:
                 Category: Deploy
@@ -377,21 +372,8 @@ Resources:
                 RoleArn: !Sub arn:aws:iam::${TestAccount}:role/cloudformationdeployer-role
               InputArtifacts:
                 - Name: BuildOutput
-              RunOrder: 2
+              RunOrder: 3
               RoleArn: !Sub arn:aws:iam::${TestAccount}:role/SharedServicesAccountCodePipelineCloudFormationRole
-          - !Ref AWS::NoValue
-
-        - !If
-          - cIsRouteToLive
-          - Name: ApproveToUAT
-            Actions:
-              - Name: Approve
-                ActionTypeId:
-                  Category: Approval
-                  Owner: AWS
-                  Provider: Manual
-                  Version: '1'
-                RunOrder: 1
           - !Ref AWS::NoValue
 
         - !If
@@ -426,6 +408,14 @@ Resources:
                 RunOrder: 1
                 RoleArn: !Sub arn:aws:iam::${UATAccount}:role/SharedServicesAccountCodePipelineCloudFormationRole
 
+              - Name: Approve
+                ActionTypeId:
+                  Category: Approval
+                  Owner: AWS
+                  Provider: Manual
+                  Version: '1'
+                RunOrder: 2
+
               - Name: DeployChangeSetUAT
                 ActionTypeId:
                   Category: Deploy
@@ -439,21 +429,8 @@ Resources:
                   RoleArn: !Sub arn:aws:iam::${UATAccount}:role/cloudformationdeployer-role
                 InputArtifacts:
                   - Name: BuildOutput
-                RunOrder: 2
+                RunOrder: 3
                 RoleArn: !Sub arn:aws:iam::${UATAccount}:role/SharedServicesAccountCodePipelineCloudFormationRole
-          - !Ref AWS::NoValue
-
-        - !If
-          - cIsRouteToLive
-          - Name: ApproveToStaging
-            Actions:
-              - Name: Approve
-                ActionTypeId:
-                  Category: Approval
-                  Owner: AWS
-                  Provider: Manual
-                  Version: '1'
-                RunOrder: 1
           - !Ref AWS::NoValue
 
         - !If
@@ -488,6 +465,14 @@ Resources:
                 RunOrder: 1
                 RoleArn: !Sub arn:aws:iam::${StagingAccount}:role/SharedServicesAccountCodePipelineCloudFormationRole
 
+              - Name: Approve
+                ActionTypeId:
+                  Category: Approval
+                  Owner: AWS
+                  Provider: Manual
+                  Version: '1'
+                RunOrder: 2
+
               - Name: DeployChangeSetStaging
                 ActionTypeId:
                   Category: Deploy
@@ -501,21 +486,8 @@ Resources:
                   RoleArn: !Sub arn:aws:iam::${StagingAccount}:role/cloudformationdeployer-role
                 InputArtifacts:
                   - Name: BuildOutput
-                RunOrder: 2
+                RunOrder: 3
                 RoleArn: !Sub arn:aws:iam::${StagingAccount}:role/SharedServicesAccountCodePipelineCloudFormationRole
-          - !Ref AWS::NoValue
-
-        - !If
-          - cIsRouteToLive
-          - Name: ApproveToProduction
-            Actions:
-              - Name: Approve
-                ActionTypeId:
-                  Category: Approval
-                  Owner: AWS
-                  Provider: Manual
-                  Version: '1'
-                RunOrder: 1
           - !Ref AWS::NoValue
 
         - !If
@@ -549,6 +521,14 @@ Resources:
                 RunOrder: 1
                 RoleArn: !Sub arn:aws:iam::${ProductionAccount}:role/SharedServicesAccountCodePipelineCloudFormationRole
 
+              - Name: Approve
+                ActionTypeId:
+                  Category: Approval
+                  Owner: AWS
+                  Provider: Manual
+                  Version: '1'
+                RunOrder: 2
+
               - Name: DeployChangeSetProduction
                 ActionTypeId:
                   Category: Deploy
@@ -562,7 +542,7 @@ Resources:
                   RoleArn: !Sub arn:aws:iam::${ProductionAccount}:role/cloudformationdeployer-role
                 InputArtifacts:
                   - Name: BuildOutput
-                RunOrder: 2
+                RunOrder: 3
                 RoleArn: !Sub arn:aws:iam::${ProductionAccount}:role/SharedServicesAccountCodePipelineCloudFormationRole
           - !Ref AWS::NoValue
 

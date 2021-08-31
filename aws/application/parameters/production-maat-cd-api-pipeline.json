@@ -13,7 +13,6 @@
     "pCloudPlatformQueueRegion": "eu-west-2",
     "pCreateLinkQueue": "crime-apps-production-create-link-queue",
     "pUnlinkQueue": "crime-apps-production-unlink-queue",
-    "pLaaStatusUpdateQueue": "crime-apps-production-laa-status-update-queue",
     "pHearingsResultedQueue": "crime-apps-production-hearing-resulted-queue",
     "pCdaOauthUrl": "https://laa-court-data-adaptor.apps.live-1.cloud-platform.service.justice.gov.uk/oauth/token",
     "pCdaLaaStatusUrl": "https://laa-court-data-adaptor.apps.live-1.cloud-platform.service.justice.gov.uk/api/internal/v1/representation_orders",

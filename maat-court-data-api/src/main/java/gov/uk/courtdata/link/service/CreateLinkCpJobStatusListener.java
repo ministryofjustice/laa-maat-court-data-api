@@ -21,7 +21,7 @@ public class CreateLinkCpJobStatusListener {
     private final Gson gson;
     private final QueueMessageLogService queueMessageLogService;
 
-    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.createLinkCpStatusJob}")
+
     public void receive(@Payload final String message) {
 
         queueMessageLogService.createLog(MessageType.CREATE_LINK_CP_STATUS_JOB, message);

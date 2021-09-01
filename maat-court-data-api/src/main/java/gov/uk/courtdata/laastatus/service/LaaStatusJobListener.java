@@ -21,7 +21,7 @@ public class LaaStatusJobListener {
     private final Gson gson;
     private final QueueMessageLogService queueMessageLogService;
 
-    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.laaStatusJob}")
+
     public void receive(@Payload final String message) {
 
         queueMessageLogService.createLog(MessageType.LAA_STATUS_JOB, message);

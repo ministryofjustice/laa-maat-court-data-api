@@ -41,7 +41,7 @@ public class LaaStatusListener {
      * @param message queue message body
      * @throws JmsException jms exception
      */
-
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.laaStatus}")
     public void receive(@Payload final String message) {
 
         queueMessageLogService.createLog(MessageType.LAA_STATUS, message);

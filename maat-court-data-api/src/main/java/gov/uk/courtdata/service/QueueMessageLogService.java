@@ -39,7 +39,9 @@ public class QueueMessageLogService {
                 QueueMessageLogEntity.builder()
                         .transactionUUID(Optional.ofNullable(uuid).map(JsonElement::getAsString)
                                 .orElseGet(UUID.randomUUID()::toString))
-                        .maatId(maatId.getAsInt())
+                        .maatId(
+                                Optional.ofNullable(maatId).map(JsonElement::getAsInt).orElse(null)
+                        )
                         .type(prepareMessageType(messageType, msgObject))
                         .message(convertAsByte(message))
                         .createdTime(LocalDateTime.now())

@@ -10,11 +10,10 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Unlink {
 
+    private String defendantId;
     private Integer maatId;
     private String userId;
     private Integer reasonId;
     private String otherReasonText;
     private UUID laaTransactionId;
-
-
 }

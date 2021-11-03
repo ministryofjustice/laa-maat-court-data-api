@@ -2,6 +2,7 @@ package gov.uk.courtdata.unlink.processor;
 
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.helper.RepOrderCPDataHelper;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
@@ -26,7 +27,15 @@ public class UnLinkProcessor {
     private final UnLinkValidationProcessor unlinkValidator;
     private final UnLinkImpl unlinkImpl;
 
+    private final RepOrderCPDataHelper repOrderCPDataHelper;
+
+
     public UnlinkModel process(Unlink unlinkJson) {
+
+        unlinkJson.setMaatId(
+                repOrderCPDataHelper
+                        .getMaatIdByDefendantId(unlinkJson.getDefendantId())
+        );
 
         unlinkValidator.validate(unlinkJson);
         UnlinkModel unlinkModel = UnlinkModel.builder().unlink(unlinkJson).build();

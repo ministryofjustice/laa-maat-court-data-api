@@ -9,9 +9,10 @@ import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
-import gov.uk.courtdata.laastatus.client.CourtDataAdapterClient;
+//import gov.uk.courtdata.laastatus.client.CourtDataAdapterClient;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
@@ -47,7 +48,8 @@ public class UnLinkImplIntegrationTest {
     @Autowired
     private TestEntityDataBuilder testEntityDataBuilder;
     @Autowired
-    private CourtDataAdapterClient courtDataAdapterClient;
+    private RepOrderCPDataRepository repOrderCPDataRepository;
+
 
 
     @Before
@@ -55,6 +57,7 @@ public class UnLinkImplIntegrationTest {
         wqCoreRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();
         unlinkReasonRepository.deleteAll();
+        repOrderCPDataRepository.deleteAll();
     }
 
     @Test
@@ -68,6 +71,7 @@ public class UnLinkImplIntegrationTest {
         RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderCPDataEntity();
         unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity);
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
+        repOrderCPDataRepository.save(repOrderCPDataEntity);
 
         //when
         unLinkImpl.execute(unlinkModel);
@@ -90,6 +94,7 @@ public class UnLinkImplIntegrationTest {
         RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderCPDataEntity();
         unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity);
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
+        repOrderCPDataRepository.save(repOrderCPDataEntity);
 
 
         unLinkImpl.execute(unlinkModel);
@@ -104,10 +109,13 @@ public class UnLinkImplIntegrationTest {
     private void assertWQLinkRegister(UnlinkModel unlinkModel) {
 
         Optional<WqLinkRegisterEntity> wqUnLinkRegisterEntity = wqLinkRegisterRepository.findById(unlinkModel.getWqLinkRegisterEntity().getCreatedTxId());
+        Optional<RepOrderCPDataEntity> repOrderCPDataEntity = repOrderCPDataRepository.findByDefendantId(unlinkModel.getUnlink().getDefendantId());
         WqLinkRegisterEntity unLinkRegister = wqUnLinkRegisterEntity.orElse(null);
         assert unLinkRegister != null;
+        assert repOrderCPDataEntity != null;
+
         Unlink unlink = unlinkModel.getUnlink();
-        assertThat(unLinkRegister.getMaatId()).isEqualTo(unlink.getMaatId());
+        assertThat(unLinkRegister.getMaatId()).isEqualTo(repOrderCPDataEntity.get().getRepOrderId());
         assertThat(unLinkRegister.getRemovedUserId()).isEqualTo(unlink.getUserId());
     }
 

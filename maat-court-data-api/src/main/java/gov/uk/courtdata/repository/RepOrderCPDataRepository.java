@@ -11,4 +11,6 @@ public interface RepOrderCPDataRepository extends JpaRepository<RepOrderCPDataEn
 
     Optional<RepOrderCPDataEntity> findByrepOrderId(Integer repOrderId);
 
+    Optional<RepOrderCPDataEntity> findByDefendantId(String defendantId);
+
 }

@@ -2,7 +2,6 @@ package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.enums.VerdictCategoryType;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
 import org.springframework.stereotype.Component;
@@ -123,7 +122,7 @@ public class TestModelDataBuilder {
 
     public String getUnLinkString() {
         return "{\n" +
-                " \"maatId\": 1234,\n" +
+                " \"defendantId\": \"556677\",\n" +
                 "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
                 "  \"userId\": \"testUser\",\n" +
                 "  \"reasonId\": 1,\n" +
@@ -133,7 +132,7 @@ public class TestModelDataBuilder {
 
     public String getUnLinkWithOtherReasonString() {
         return "{\n" +
-                " \"maatId\": 1234,\n" +
+                " \"defendantId\": \"556677\",\n" +
                 "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
                 "  \"userId\": \"testUser\",\n" +
                 "  \"reasonId\": 1,\n" +

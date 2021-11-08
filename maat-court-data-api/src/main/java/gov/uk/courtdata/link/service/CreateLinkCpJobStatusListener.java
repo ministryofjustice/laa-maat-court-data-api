@@ -20,8 +20,8 @@ public class CreateLinkCpJobStatusListener {
     private final CreateLinkCpJobStatusService createLinkCpJobStatusService;
     private final Gson gson;
     private final QueueMessageLogService queueMessageLogService;
-
-    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.createLinkCpStatusJob}")
+    //ToDo: This SQS has been removed for now at the Cloud Platform. Its a work in progress so keeping it for now.
+    //@JmsListener(destination = "${cloud-platform.aws.sqs.queue.createLinkCpStatusJob}")
     public void receive(@Payload final String message) {
 
         queueMessageLogService.createLog(MessageType.CREATE_LINK_CP_STATUS_JOB, message);

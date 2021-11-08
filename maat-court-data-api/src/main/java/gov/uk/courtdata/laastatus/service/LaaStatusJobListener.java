@@ -20,8 +20,8 @@ public class LaaStatusJobListener {
     private final LaaStatusJobService laaStatusJobService;
     private final Gson gson;
     private final QueueMessageLogService queueMessageLogService;
-    //ToDo: This SQS has been removed for now at the Cloud Platform. Its a work in progress so keeping it for now.
-    //@JmsListener(destination = "${cloud-platform.aws.sqs.queue.laaStatusJob}")
+
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.laaStatusJob}")
     public void receive(@Payload final String message) {
 
         queueMessageLogService.createLog(MessageType.LAA_STATUS_JOB, message);

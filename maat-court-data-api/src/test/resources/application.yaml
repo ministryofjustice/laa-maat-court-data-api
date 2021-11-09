@@ -45,6 +45,7 @@ cloud-platform:
         hearingResulted: hearing
         laaStatusJob: laaStatusJob
         createLinkCpStatusJob: createLinkCpStatusJob
+        prosecutionConcluded: prosecutionConcluded
         config:
           messageDelay: 900
 

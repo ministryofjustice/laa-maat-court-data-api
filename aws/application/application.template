@@ -499,6 +499,8 @@ Resources:
               Value: !Ref pLaaStatusJobQueue
             - Name: CREATE_LINK_CP_STATUS_JOB_QUEUE
               Value: !Ref pCreateLinkCpStatusJobQueue
+            - Name: LAA_PROSECUTION_CONCLUDED_QUEUE
+              Value: !Ref pLaaProsecutionConcludedQueue
 
 
 

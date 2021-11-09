@@ -70,8 +70,11 @@ public class UnlinkListenerTest {
         RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderCPDataEntity();
         unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity);
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
-        repOrderRepository.save(RepOrderEntity.builder().id(1234).caseId("12121").build());
-        repOrderCPDataRepository.save(RepOrderCPDataEntity.builder().repOrderId(1234).build());
+        repOrderRepository.save(RepOrderEntity.builder().id(repOrderCPDataEntity.getRepOrderId()).caseId("12121").build());
+        repOrderCPDataRepository.save(RepOrderCPDataEntity.builder()
+                .defendantId("556677")
+                .repOrderId(1234)
+                .build());
 
         //when
         unlinkListener.receive(testModelDataBuilder.getUnLinkString());
@@ -88,7 +91,7 @@ public class UnlinkListenerTest {
         WqLinkRegisterEntity unLinkRegister = wqUnLinkRegisterEntity.get(0);
         assert unLinkRegister != null;
         Unlink unlink = unlinkModel.getUnlink();
-        assertThat(unLinkRegister.getMaatId()).isEqualTo(unlink.getMaatId());
+        assertThat(unLinkRegister.getMaatId()).isEqualTo(1234);
         assertThat(unLinkRegister.getRemovedUserId()).isEqualTo(unlink.getUserId());
     }
 

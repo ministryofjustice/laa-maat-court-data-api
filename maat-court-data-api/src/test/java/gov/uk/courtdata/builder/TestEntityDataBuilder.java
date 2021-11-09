@@ -62,6 +62,7 @@ public class TestEntityDataBuilder {
     public RepOrderCPDataEntity getRepOrderCPDataEntity() {
         return RepOrderCPDataEntity.builder()
                 .repOrderId(1234)
+                .defendantId("556677")
                 .caseUrn("testCaseURN")
                 .build();
     }

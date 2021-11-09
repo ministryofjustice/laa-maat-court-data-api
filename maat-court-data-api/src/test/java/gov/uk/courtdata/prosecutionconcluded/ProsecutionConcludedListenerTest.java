@@ -1,10 +1,10 @@
-package gov.uk.courtdata.crowncourt;
+package gov.uk.courtdata.prosecutionconcluded;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.crowncourt.service.ProsecutionConcludedListener;
-import gov.uk.courtdata.crowncourt.service.ProsecutionConcludedService;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.crowncourt.ProsecutionConcluded;
+import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedListener;
+import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedService;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;

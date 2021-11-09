@@ -1,4 +1,4 @@
-package gov.uk.courtdata.crowncourt.service;
+package gov.uk.courtdata.prosecutionconcluded.service;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;

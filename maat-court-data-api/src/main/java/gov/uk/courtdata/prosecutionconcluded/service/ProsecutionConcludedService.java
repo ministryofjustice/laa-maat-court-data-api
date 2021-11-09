@@ -1,4 +1,4 @@
-package gov.uk.courtdata.crowncourt.service;
+package gov.uk.courtdata.prosecutionconcluded.service;
 
 import gov.uk.courtdata.model.crowncourt.ProsecutionConcluded;
 import lombok.RequiredArgsConstructor;

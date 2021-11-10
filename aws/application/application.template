@@ -363,7 +363,7 @@ Resources:
     DependsOn: LoadBalancer
     Properties:
       HealthCheckIntervalSeconds: 15
-      HealthCheckPath: /actuator/info
+      HealthCheckPath: /actuator
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2

@@ -8,8 +8,6 @@ import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.processor.CourtApplicationsPreProcessor;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
-import gov.uk.courtdata.helper.RepOrderCPDataHelper;
-import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.ReservationsRepository;
 import org.junit.Rule;
@@ -49,9 +47,6 @@ public class HearingResultedServiceTest {
     @Mock
     private CourtApplicationsPreProcessor courtApplicationsPreProcessor;
 
-    @Mock
-    private RepOrderCPDataHelper repOrderCPDataHelper;
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -64,45 +59,32 @@ public class HearingResultedServiceTest {
     public void givenAMagCourtNotification_whenMaatNotLocked_thenMagsCourtProcessingInvoked() {
 
         //given
-        HearingResulted hearingDetails = HearingResulted.builder()
-                .jurisdictionType(JurisdictionType.MAGISTRATES)
-                .defendant(Defendant.builder().defendantId("1211").build())
-                .build();
+        HearingResulted hearingDetails = HearingResulted.builder().maatId(34).jurisdictionType(JurisdictionType.MAGISTRATES).build();
 
         //when
         doNothing().when(hearingResultedImpl).execute(hearingDetails);
-
-        when(repOrderCPDataHelper.getMaatIdByDefendantId(anyString())).thenReturn(12);
 
         hearingResultedService.execute(hearingDetails);
         //then
         verify(hearingValidationProcessor).validate(hearingDetails);
         verify(hearingResultedImpl).execute(hearingDetails);
-        verify(repOrderCPDataHelper).getMaatIdByDefendantId(any());
-
     }
 
     @Test
     public void givenACrownCourtNotification_whenMaatRecordIsNotLocked_thenCrownCourtProcessingInvoked() {
 
         //given
-        HearingResulted hearingDetails = HearingResulted.builder()
-                .defendant(Defendant.builder().defendantId("1211").build())
-                .jurisdictionType(JurisdictionType.CROWN).build();
-        //Optional<ReservationsEntity> reservationsEntity = Optional.empty();
+        HearingResulted hearingDetails = HearingResulted.builder().maatId(34).jurisdictionType(JurisdictionType.CROWN).build();
+        Optional<ReservationsEntity> reservationsEntity = Optional.empty();
         //when
-        when(repOrderCPDataHelper.getMaatIdByDefendantId(anyString())).thenReturn(12);
-        //when(reservationsRepository.findById(34)).thenReturn(reservationsEntity);
+        when(reservationsRepository.findById(34)).thenReturn(reservationsEntity);
         doNothing().when(crownCourtHearingService).execute(hearingDetails);
-
 
         hearingResultedService.execute(hearingDetails);
 
         //verify
         verify(hearingValidationProcessor).validate(hearingDetails);
         verify(crownCourtHearingService).execute(hearingDetails);
-        verify(repOrderCPDataHelper).getMaatIdByDefendantId(any());
-
 
     }
 
@@ -112,7 +94,7 @@ public class HearingResultedServiceTest {
         //given
         HearingResulted hearingDetails = HearingResulted.builder()
                 .jurisdictionType(JurisdictionType.CROWN)
-                .defendant(Defendant.builder().defendantId("1211").build())
+                .maatId(34)
                 .messageRetryCounter(6)
                 .build();
         Optional<ReservationsEntity> reservationsEntity = Optional.of(ReservationsEntity.builder().recordId(34).userName("username-test").build());
@@ -131,13 +113,12 @@ public class HearingResultedServiceTest {
         //given
         HearingResulted hearingDetails = HearingResulted.builder()
                 .jurisdictionType(JurisdictionType.CROWN)
-                .defendant(Defendant.builder().defendantId("121").build())
+                .maatId(34)
                 .messageRetryCounter(4)
                 .build();
         Optional<ReservationsEntity> reservationsEntity = Optional.of(ReservationsEntity.builder().recordId(34).userName("username-test").build());
         //when
         when(reservationsRepository.findById(34)).thenReturn(reservationsEntity);
-        when(repOrderCPDataHelper.getMaatIdByDefendantId(anyString())).thenReturn(34);
         doNothing().when(hearingResultedPublisher).publish(hearingDetails);
 
         hearingResultedService.execute(hearingDetails);
@@ -151,7 +132,7 @@ public class HearingResultedServiceTest {
 
         //given
         HearingResulted hearingDetails = HearingResulted.builder()
-                .defendant(Defendant.builder().defendantId("1211").build())
+                .maatId(34)
                 .functionType(FunctionType.APPLICATION)
                 .jurisdictionType(JurisdictionType.MAGISTRATES)
                 .build();
@@ -164,6 +145,5 @@ public class HearingResultedServiceTest {
         verify(courtApplicationsPreProcessor).process(hearingDetails);
         verify(hearingValidationProcessor).validate(hearingDetails);
         verify(hearingResultedImpl).execute(hearingDetails);
-        verify(repOrderCPDataHelper).getMaatIdByDefendantId(any());
     }
 }

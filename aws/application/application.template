@@ -71,7 +71,9 @@ Parameters:
   pCreateLinkCpStatusJobQueue:
     Type: String
     Default: ''
-
+  pLaaProsecutionConcludedQueue:
+    Type: String
+    Default: ''
 
   ###### API-Gateway parameters
   pApiScope1:

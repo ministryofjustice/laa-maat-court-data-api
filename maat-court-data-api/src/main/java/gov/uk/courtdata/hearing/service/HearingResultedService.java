@@ -6,6 +6,7 @@ import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.processor.CourtApplicationsPreProcessor;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
+import gov.uk.courtdata.helper.RepOrderCPDataHelper;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.ReservationsRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,8 @@ public class HearingResultedService {
 
     private final CourtApplicationsPreProcessor courtApplicationsPreProcessor;
 
+    private final RepOrderCPDataHelper repOrderCPDataHelper;
+
     /**
      * Process Work Queue Processing for both Crown & Mags Court.
      * Process Crown Court Outcomes for CC
@@ -38,9 +41,13 @@ public class HearingResultedService {
      */
     public void execute(final HearingResulted hearingResulted) {
 
+        hearingResulted.setMaatId(
+                repOrderCPDataHelper.getMaatIdByDefendantId(hearingResulted.getDefendant().getDefendantId())
+        );
+
         hearingValidationProcessor.validate(hearingResulted);
 
-        if(FunctionType.APPLICATION == hearingResulted.getFunctionType()){
+        if (FunctionType.APPLICATION == hearingResulted.getFunctionType()) {
             courtApplicationsPreProcessor.process(hearingResulted);
         }
 

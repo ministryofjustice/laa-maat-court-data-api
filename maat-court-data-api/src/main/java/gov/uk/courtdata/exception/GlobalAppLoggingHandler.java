@@ -66,7 +66,7 @@ public class GlobalAppLoggingHandler {
         MDC.put(LoggingData.MESSAGE.getValue(), laaTransactionLogging.toString());
         MDC.put(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn() : "");
         MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionLogging.getLaaTransactionId() != null ? laaTransactionLogging.getLaaTransactionId().toString() : "");
-        MDC.put(LoggingData.MAATID.getValue(), laaTransactionLogging.getMaatId().toString());
+        MDC.put(LoggingData.MAATID.getValue(), laaTransactionLogging.getMaatId() != null ? laaTransactionLogging.getMaatId().toString() : "-" );
         log.info("Received a json payload from a queue and converted.");
     }
 }

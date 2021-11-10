@@ -122,7 +122,7 @@ public class TestModelDataBuilder {
 
     public String getUnLinkString() {
         return "{\n" +
-                " \"defendantId\": \"556677\",\n" +
+                " \"maatId\": 1234,\n" +
                 "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
                 "  \"userId\": \"testUser\",\n" +
                 "  \"reasonId\": 1,\n" +
@@ -132,7 +132,7 @@ public class TestModelDataBuilder {
 
     public String getUnLinkWithOtherReasonString() {
         return "{\n" +
-                " \"defendantId\": \"556677\",\n" +
+                " \"maatId\": 1234,\n" +
                 "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
                 "  \"userId\": \"testUser\",\n" +
                 "  \"reasonId\": 1,\n" +

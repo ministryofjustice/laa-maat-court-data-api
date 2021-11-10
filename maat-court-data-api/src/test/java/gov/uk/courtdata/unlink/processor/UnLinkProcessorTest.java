@@ -2,7 +2,6 @@ package gov.uk.courtdata.unlink.processor;
 
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.helper.RepOrderCPDataHelper;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
@@ -40,9 +39,6 @@ public class UnLinkProcessorTest {
     @Mock
     private UnLinkImpl unlinkImpl;
 
-    @Mock
-    private RepOrderCPDataHelper repOrderCPDataHelper;
-
     @Test
     public void process() {
 
@@ -53,9 +49,8 @@ public class UnLinkProcessorTest {
         List<WqLinkRegisterEntity> wqLinkRegisterEntityList =
                 Collections.singletonList(WqLinkRegisterEntity.builder().caseUrn("casedfd").build());
 
-        when(repOrderCPDataHelper.getMaatIdByDefendantId(anyString())).thenReturn(12);
-
-        when(wqLinkRegisterRepository.findBymaatId(anyInt())).thenReturn(wqLinkRegisterEntityList);
+        when(wqLinkRegisterRepository.findBymaatId(anyInt()))
+                .thenReturn(wqLinkRegisterEntityList);
 
         Optional<RepOrderCPDataEntity> repOrderCPDataEntity =
                 Optional.of(RepOrderCPDataEntity.builder()
@@ -73,8 +68,7 @@ public class UnLinkProcessorTest {
 
         assertThat(unlinkResponse.getTxId()).isNull();
 
-        assertThat(unlinkResponse.getUnlink().getDefendantId()).isEqualTo("5555666");
-        assertThat(unlinkResponse.getUnlink().getMaatId()).isEqualTo(12);
+        assertThat(unlinkResponse.getUnlink().getMaatId()).isEqualTo(5555666);
         assertThat(unlinkResponse.getUnlink().getUserId()).isEqualTo("1234");
         assertThat(unlinkResponse.getUnlink().getReasonId()).isEqualTo(8877);
 
@@ -88,7 +82,7 @@ public class UnLinkProcessorTest {
 
         return Unlink.builder()
                 .userId("1234")
-                .defendantId("5555666")
+                .maatId(5555666)
                 .otherReasonText("some reason text")
                 .reasonId(8877)
                 .build();

@@ -45,18 +45,16 @@ public class AppealTypeValidatorTest {
         AppealTypeEntity appealTypeEntity1 = AppealTypeEntity.builder().code("ACV").build();
         appealTypeEntityList.add(appealTypeEntity1);
         //given
-        CCOutComeData ccOutComeData = CCOutComeData.builder().ccOutcome("CONVICTED").appealType("XYZ").build();
-        HearingResulted hearingDetails = HearingResulted.builder()
-                .maatId(12345)
-                .ccOutComeData(ccOutComeData)
-                .build();
-
+//        CCOutComeData ccOutComeData = CCOutComeData.builder().ccOutcome("CONVICTED").appealType("XYZ").build();
+//        HearingResulted hearingDetails = HearingResulted.builder()
+//                .maatId(12345)
+//                .build();
 
         //then
         when(appealTypeRepository.findAll()).thenReturn(appealTypeEntityList);
         thrown.expect(MAATCourtDataException.class);
         thrown.expectMessage("Invalid Appeal Type : XYZ is passed in for MAAT ID: 12345");
-        appealTypeValidator.validate(hearingDetails);
+        appealTypeValidator.validate("XYZ",12345);
 
     }
 

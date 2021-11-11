@@ -1,6 +1,7 @@
 package gov.uk.courtdata.hearing.crowncourt.validator;
 
 import gov.uk.courtdata.entity.CrownCourtOutComeEntity;
+import gov.uk.courtdata.enums.CrownCourtAppealOutcome;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
@@ -43,19 +44,12 @@ public class CrownCourtOutComesValidatorTest {
         List<CrownCourtOutComeEntity> crownCourtOutComeEntities = new ArrayList<>();
         CrownCourtOutComeEntity crownCourtOutComeEntity = CrownCourtOutComeEntity.builder().outcome("CONVICTED").build();
         crownCourtOutComeEntities.add(crownCourtOutComeEntity);
-        //given
-        CCOutComeData ccOutComeData = CCOutComeData.builder().ccOutcome("ABC").appealType("XYZ").build();
-        HearingResulted hearingDetails = HearingResulted.builder()
-                .maatId(12345)
-                .ccOutComeData(ccOutComeData)
-                .build();
-
 
         //then
         when(crownCourtOutcomeRepository.findAll()).thenReturn(crownCourtOutComeEntities);
         thrown.expect(MAATCourtDataException.class);
         thrown.expectMessage("Invalid Crown Court Outcome : ABC is passed in for MAAT ID: 12345");
-        crownCourtOutComesValidator.validate(hearingDetails);
+        crownCourtOutComesValidator.validate("ABC",12345);
 
     }
 

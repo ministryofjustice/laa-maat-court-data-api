@@ -16,9 +16,7 @@ public class CrownCourtOutComesValidator {
 
     private final CrownCourtOutcomeRepository crownCourtOutcomeRepository;
 
-    public void validate(final HearingResulted hearingResulted) {
-
-        final String ccOutcome = hearingResulted.getCcOutComeData().getCcOutcome();
+    public void validate(final String ccOutcome, Integer maatId) {
 
         boolean isValidOutCome = crownCourtOutcomeRepository
                 .findAll()
@@ -28,7 +26,7 @@ public class CrownCourtOutComesValidator {
                 .collect(Collectors.toList()).contains(ccOutcome);
         if (!isValidOutCome) {
             throw new MAATCourtDataException("Invalid Crown Court Outcome : "
-                    .concat(ccOutcome.concat(" is passed in for MAAT ID: " + hearingResulted.getMaatId())));
+                    .concat(ccOutcome.concat(" is passed in for MAAT ID: " + maatId)));
         }
     }
 }

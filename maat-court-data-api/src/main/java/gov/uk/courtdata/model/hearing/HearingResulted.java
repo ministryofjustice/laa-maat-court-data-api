@@ -22,7 +22,6 @@ public class HearingResulted {
     private String docLanguage;
     private String caseCreationDate;
     private String cjsAreaCode;
-    private CCOutComeData ccOutComeData;
     private Defendant defendant;
     private String inActive;
     private FunctionType functionType;
@@ -30,4 +29,5 @@ public class HearingResulted {
     private UUID laaTransactionId;
     private int messageRetryCounter;
     private boolean prosecutionConcluded;
+    private String caseEndDate;
 }

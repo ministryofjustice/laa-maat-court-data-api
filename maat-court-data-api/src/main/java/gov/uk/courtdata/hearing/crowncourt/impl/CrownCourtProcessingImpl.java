@@ -50,10 +50,10 @@ public class CrownCourtProcessingImpl {
             RepOrderEntity repOrderEntity = optionalRepEntity.get();
 
             crownCourtStoredProcedureRepository.updateCrownCourtOutcome(maatId,
-                    ccOutComeData.getCcOutcome(),
+                    ccOutComeData.getCcooOutcome(),
                     crownCourtProcessHelper.isBenchWarrantIssued(hearingResulted),
                     ccOutComeData.getAppealType() != null ? ccOutComeData.getAppealType() : repOrderEntity.getAptyCode(),
-                    crownCourtProcessHelper.isImprisoned(hearingResulted, ccOutComeData.getCcOutcome()),
+                    crownCourtProcessHelper.isImprisoned(hearingResulted, ccOutComeData.getCcooOutcome()),
                     hearingResulted.getCaseUrn(),
                     crownCourtCode);
 

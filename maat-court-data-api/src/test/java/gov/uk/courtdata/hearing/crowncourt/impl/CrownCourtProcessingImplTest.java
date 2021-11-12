@@ -68,7 +68,7 @@ public class CrownCourtProcessingImplTest {
         //when
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.of(crownCourtCode));
-        when(crownCourtProcessHelper.isImprisoned(hearingDetails, ccOutComeData.getCcOutcome()))
+        when(crownCourtProcessHelper.isImprisoned(hearingDetails, ccOutComeData.getCcooOutcome()))
                 .thenReturn("N");
         when(crownCourtProcessHelper.isBenchWarrantIssued(hearingDetails))
                 .thenReturn("N");
@@ -77,7 +77,7 @@ public class CrownCourtProcessingImplTest {
         //then
         verify(crownCourtStoredProcedureRepository, times(1))
                 .updateCrownCourtOutcome(hearingDetails.getMaatId(),
-                        ccOutComeData.getCcOutcome(),
+                        ccOutComeData.getCcooOutcome(),
                         "N",
                         "ACV",
                         "N",
@@ -167,7 +167,7 @@ public class CrownCourtProcessingImplTest {
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(123456)
                 .session(Session.builder().courtLocation("London").build())
-                .ccOutComeData(CCOutComeData.builder().ccOutcome("CONVICTED").caseEndDate("2020-07-23").build())
+                .ccOutComeData(CCOutComeData.builder().ccooOutcome("CONVICTED").caseEndDate("2020-07-23").build())
                 .build();
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType("APPEAL").aptyCode("ACV").build();
 

@@ -3,12 +3,15 @@ package gov.uk.courtdata.hearing.dto;
 import gov.uk.courtdata.enums.JurisdictionType;
 import lombok.*;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class HearingDTO {
 
+    private UUID hearingId;
     private String caseUrn;
     private Integer maatId;
     private Integer caseId;

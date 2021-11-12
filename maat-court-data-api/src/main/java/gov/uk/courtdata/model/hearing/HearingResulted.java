@@ -15,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class HearingResulted {
 
+    private UUID hearingId;
     private Integer maatId;
     private String caseUrn;
     private JurisdictionType jurisdictionType;

@@ -2,13 +2,19 @@ package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.enums.VerdictCategoryType;
+import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class TestModelDataBuilder {
+
+    public static final int MAAT_ID= 9988;
+    public static final UUID HEARING_ID= UUID.randomUUID();
+    public static final JurisdictionType JURISDICTION_TYPE_MAGISTRATES = JurisdictionType.MAGISTRATES;
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -144,7 +150,9 @@ public class TestModelDataBuilder {
 
     public HearingDTO getHearingDTO() {
         return HearingDTO.builder()
-                .maatId(9988)
+                .hearingId(HEARING_ID)
+                .maatId(MAAT_ID)
+                .jurisdictionType(JURISDICTION_TYPE_MAGISTRATES)
                 .caseId(1234)
                 .cjsAreaCode("5")
                 .proceedingId(9999)

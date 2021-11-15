@@ -58,15 +58,15 @@ public class GlobalAppLoggingHandler {
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);
 
         Sentry.configureScope(scope -> {
-            scope.setTag(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn());
+            scope.setTag(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn() : "");
             scope.setTag(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionLogging.getLaaTransactionId() != null ? laaTransactionLogging.getLaaTransactionId().toString() : "");
             scope.setTag(LoggingData.MAATID.getValue(), laaTransactionLogging.getMaatId().toString());
         });
 
         MDC.put(LoggingData.MESSAGE.getValue(), laaTransactionLogging.toString());
-        MDC.put(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn());
+        MDC.put(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn() : "");
         MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionLogging.getLaaTransactionId() != null ? laaTransactionLogging.getLaaTransactionId().toString() : "");
-        MDC.put(LoggingData.MAATID.getValue(), laaTransactionLogging.getMaatId().toString());
+        MDC.put(LoggingData.MAATID.getValue(), laaTransactionLogging.getMaatId() != null ? laaTransactionLogging.getMaatId().toString() : "-" );
         log.info("Received a json payload from a queue and converted.");
     }
 }

@@ -46,9 +46,6 @@ public class UnLinkImplIntegrationTest {
     private TestModelDataBuilder testModelDataBuilder;
     @Autowired
     private TestEntityDataBuilder testEntityDataBuilder;
-    @Autowired
-    private CourtDataAdapterClient courtDataAdapterClient;
-
 
     @Before
     public void setUp() {

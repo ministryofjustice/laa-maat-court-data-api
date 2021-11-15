@@ -40,7 +40,7 @@ public class HearingResultedService {
 
         hearingValidationProcessor.validate(hearingResulted);
 
-        if(FunctionType.APPLICATION == hearingResulted.getFunctionType()){
+        if (FunctionType.APPLICATION == hearingResulted.getFunctionType()) {
             courtApplicationsPreProcessor.process(hearingResulted);
         }
 

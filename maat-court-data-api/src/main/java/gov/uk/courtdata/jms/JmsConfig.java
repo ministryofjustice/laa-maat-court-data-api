@@ -46,7 +46,7 @@ public class JmsConfig {
         factory.setConnectionFactory(sqsConnectionFactory());
         factory.setDestinationResolver(new DynamicDestinationResolver());
         factory.setConcurrency("1-3");
-        factory.setSessionAcknowledgeMode(Session.AUTO_ACKNOWLEDGE);
+        factory.setSessionAcknowledgeMode(Session.CLIENT_ACKNOWLEDGE);
         factory.setErrorHandler(jmsErrorHandler);
         return factory;
 

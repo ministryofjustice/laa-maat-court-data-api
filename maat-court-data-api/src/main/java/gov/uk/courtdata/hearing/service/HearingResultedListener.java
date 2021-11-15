@@ -27,8 +27,6 @@ public class HearingResultedListener {
 
     private final QueueMessageLogService queueMessageLogService;
 
-
-
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.hearingResulted}")
     public void receive(@Payload final String message) {
 

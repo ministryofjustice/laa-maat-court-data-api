@@ -32,11 +32,13 @@ public class CrownCourtHearingService {
 
         hearingResultedImpl.execute(hearingResulted);
 
-        if (hearingResulted.getCcOutComeData()!=null
-                || hearingResulted.isProsecutionConcluded()) {
-            hearingResulted.getCcOutComeData().setCcOutcome(calculateCrownCourtOutCome(hearingResulted));
-            executeCrownCourtOutCome(hearingResulted);
-        }
+        //TODO: current flow to check? the pros concluded flag?
+//        if (hearingResulted.getCcOutComeData()!=null
+//                || hearingResulted.isProsecutionConcluded()) {
+//            hearingResulted.getCcOutComeData().setCcOutcome(calculateCrownCourtOutCome(hearingResulted));
+//
+//            executeCrownCourtOutCome(hearingResulted);
+//        }
     }
 
     private void executeCrownCourtOutCome(HearingResulted hearingResulted) {
@@ -46,6 +48,7 @@ public class CrownCourtHearingService {
         log.info("Crown Court Outcome Processing has been Completed for MAAT ID: {}", hearingResulted.getMaatId());
     }
 
+    //todo: this may removed? (as duplicate. @AM
     private String calculateCrownCourtOutCome(HearingResulted hearingResulted) {
 
         if (hearingResulted.isProsecutionConcluded()) {

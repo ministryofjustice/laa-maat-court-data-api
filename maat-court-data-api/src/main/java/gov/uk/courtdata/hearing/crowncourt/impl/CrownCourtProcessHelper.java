@@ -80,5 +80,4 @@ public final class CrownCourtProcessHelper {
         return anyResultCodeMatch(resultEntityList, offenceResultCodes);
     }
 
-
 }

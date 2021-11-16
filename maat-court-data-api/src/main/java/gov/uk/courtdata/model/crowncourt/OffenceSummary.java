@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -15,6 +16,6 @@ public class OffenceSummary {
     private UUID offenceId;
     private String offenceCode;
     private boolean proceedingConcluded;
-    private Plea plea;
+    private List<Plea> plea;
     private Verdict verdict;
 }

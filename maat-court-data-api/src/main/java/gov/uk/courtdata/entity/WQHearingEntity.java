@@ -12,7 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 @Builder
 @Data
@@ -33,7 +32,7 @@ public class WQHearingEntity {
     private String ouLocation;
     @Column(name = "CREATED_DATE_TIME",nullable = false, updatable = false)
     @CreationTimestamp
-    private ZonedDateTime createdDateTime;
+    private LocalDateTime createdDateTime;
     @Column(name = "UPDATED_DATE_TIME")
     @UpdateTimestamp
     private LocalDateTime updatedDateTime;

@@ -15,6 +15,7 @@ public class TestModelDataBuilder {
     public static final int MAAT_ID= 9988;
     public static final UUID HEARING_ID= UUID.randomUUID();
     public static final JurisdictionType JURISDICTION_TYPE_MAGISTRATES = JurisdictionType.MAGISTRATES;
+    public static final String COURT_LOCATION = "London";
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -169,7 +170,7 @@ public class TestModelDataBuilder {
     public SessionDTO getSessionDTO(){
         return SessionDTO.builder()
                 .dateOfHearing("2020-08-16")
-                .courtLocation("London")
+                .courtLocation(COURT_LOCATION)
                 .sessionValidatedDate("2020-08-16")
                 .build();
     }

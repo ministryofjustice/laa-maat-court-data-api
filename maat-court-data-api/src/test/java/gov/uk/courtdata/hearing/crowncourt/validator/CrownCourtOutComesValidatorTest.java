@@ -44,7 +44,7 @@ public class CrownCourtOutComesValidatorTest {
         CrownCourtOutComeEntity crownCourtOutComeEntity = CrownCourtOutComeEntity.builder().outcome("CONVICTED").build();
         crownCourtOutComeEntities.add(crownCourtOutComeEntity);
         //given
-        CCOutComeData ccOutComeData = CCOutComeData.builder().ccOutcome("ABC").appealType("XYZ").build();
+        CCOutComeData ccOutComeData = CCOutComeData.builder().ccooOutcome("ABC").appealType("XYZ").build();
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(12345)
                 .ccOutComeData(ccOutComeData)

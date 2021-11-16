@@ -8,7 +8,6 @@ import gov.uk.courtdata.hearing.crowncourt.impl.OffenceHelper;
 import gov.uk.courtdata.hearing.crowncourt.validator.CrownCourtValidationProcessor;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.model.Offence;
-import gov.uk.courtdata.model.hearing.CCOutComeData;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,7 @@ public class CrownCourtHearingService {
 
         if (hearingResulted.getCcOutComeData()!=null
                 || hearingResulted.isProsecutionConcluded()) {
-            hearingResulted.getCcOutComeData().setCcOutcome(calculateCrownCourtOutCome(hearingResulted));
+            hearingResulted.getCcOutComeData().setCcooOutcome(calculateCrownCourtOutCome(hearingResulted));
             executeCrownCourtOutCome(hearingResulted);
         }
     }
@@ -74,7 +73,7 @@ public class CrownCourtHearingService {
             log.info("Calculated crown court outcome. " + offenceOutcomeStatus);
             return offenceOutcomeStatus;
         }
-        return hearingResulted.getCcOutComeData()!=null ? hearingResulted.getCcOutComeData().getCcOutcome() : "";
+        return hearingResulted.getCcOutComeData()!=null ? hearingResulted.getCcOutComeData().getCcooOutcome() : "";
 
     }
 }

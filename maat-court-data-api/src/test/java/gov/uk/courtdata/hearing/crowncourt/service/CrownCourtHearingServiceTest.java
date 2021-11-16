@@ -100,7 +100,7 @@ public class CrownCourtHearingServiceTest {
         //when
         crownCourtHearingService.execute(hearingDetails);
         verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
-        assertThat(hearingDetails.getCcOutComeData().getCcOutcome()).isEqualTo("CONVICTED");
+        assertThat(hearingDetails.getCcOutComeData().getCcooOutcome()).isEqualTo("CONVICTED");
     }
 
     @Test
@@ -126,7 +126,7 @@ public class CrownCourtHearingServiceTest {
         //when
         crownCourtHearingService.execute(hearingDetails);
         verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
-        assertThat(hearingDetails.getCcOutComeData().getCcOutcome()).isEqualTo(CrownCourtTrialOutcome.PART_CONVICTED.getValue());
+        assertThat(hearingDetails.getCcOutComeData().getCcooOutcome()).isEqualTo(CrownCourtTrialOutcome.PART_CONVICTED.getValue());
     }
 
 
@@ -147,14 +147,14 @@ public class CrownCourtHearingServiceTest {
                 .prosecutionConcluded(true)
                 .maatId(123456)
                 .defendant(getDefendant())
-                .ccOutComeData(CCOutComeData.builder().caseEndDate("2012-12-12").ccOutcome("Convicted").build())
+                .ccOutComeData(CCOutComeData.builder().caseEndDate("2012-12-12").ccooOutcome("Convicted").build())
                 .build();
 
         //when
         crownCourtHearingService.execute(hearingDetails);
 
         verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
-        assertThat(hearingDetails.getCcOutComeData().getCcOutcome()).isEqualTo("AQUITTED");
+        assertThat(hearingDetails.getCcOutComeData().getCcooOutcome()).isEqualTo("AQUITTED");
     }
 
     /**
@@ -167,14 +167,14 @@ public class CrownCourtHearingServiceTest {
                 .prosecutionConcluded(false)
                 .maatId(123456)
                 .defendant(getDefendant())
-                .ccOutComeData(CCOutComeData.builder().caseEndDate("2012-12-12").ccOutcome("CONVICTED").build())
+                .ccOutComeData(CCOutComeData.builder().caseEndDate("2012-12-12").ccooOutcome("CONVICTED").build())
                 .build();
 
         //when
         crownCourtHearingService.execute(hearingDetails);
 
         verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
-        assertThat(hearingDetails.getCcOutComeData().getCcOutcome()).isEqualTo("CONVICTED");
+        assertThat(hearingDetails.getCcOutComeData().getCcooOutcome()).isEqualTo("CONVICTED");
     }
 
 
@@ -189,7 +189,7 @@ public class CrownCourtHearingServiceTest {
                 .maatId(123456)
                 .defendant(getDefendant())
                 .ccOutComeData(CCOutComeData.builder().caseEndDate("2012-12-12")
-                        .ccOutcome("CONVICTED")
+                        .ccooOutcome("CONVICTED")
                         .caseEndDate("2021-01-01")
                         .appealType("TYPE")
                         .build())
@@ -199,7 +199,7 @@ public class CrownCourtHearingServiceTest {
         crownCourtHearingService.execute(hearingDetails);
 
         verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
-        assertThat(hearingDetails.getCcOutComeData().getCcOutcome()).isEqualTo("CONVICTED");
+        assertThat(hearingDetails.getCcOutComeData().getCcooOutcome()).isEqualTo("CONVICTED");
         assertThat(hearingDetails.getCcOutComeData().getCaseEndDate()).isEqualTo("2021-01-01");
         assertThat(hearingDetails.getCcOutComeData().getAppealType()).isEqualTo("TYPE");
     }
@@ -219,7 +219,7 @@ public class CrownCourtHearingServiceTest {
 
         //then
         verify(hearingResultedImpl, atLeastOnce()).execute(hearingDetails);
-        assertThat(hearingDetails.getCcOutComeData().getCcOutcome()).isEmpty();
+        assertThat(hearingDetails.getCcOutComeData().getCcooOutcome()).isEmpty();
     }
 
     @Test

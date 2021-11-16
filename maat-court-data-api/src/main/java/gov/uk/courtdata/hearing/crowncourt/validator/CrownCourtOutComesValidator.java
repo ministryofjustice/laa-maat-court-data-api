@@ -18,7 +18,7 @@ public class CrownCourtOutComesValidator {
 
     public void validate(final HearingResulted hearingResulted) {
 
-        final String ccOutcome = hearingResulted.getCcOutComeData().getCcOutcome();
+        final String ccOutcome = hearingResulted.getCcOutComeData().getCcooOutcome();
 
         boolean isValidOutCome = crownCourtOutcomeRepository
                 .findAll()

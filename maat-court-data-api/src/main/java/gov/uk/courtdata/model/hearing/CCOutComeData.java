@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CCOutComeData {
 
-    private String ccOutcome;
+    private String ccooOutcome;
     private String appealType;
     private String caseEndDate;
 }

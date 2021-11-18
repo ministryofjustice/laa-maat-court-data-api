@@ -26,6 +26,8 @@ public class HearingWQProcessor {
 
     private final WQSessionProcessor wqSessionProcessor;
 
+    private final WQHearingProcessor wqHearingProcessor;
+
     private final PleaProcessor pleaProcessor;
 
     private final VerdictProcessor verdictProcessor;
@@ -47,11 +49,12 @@ public class HearingWQProcessor {
         wqResultProcessor.process(hearingDTO);
         log.info("Create WQ core");
         wqCoreProcessor.process(hearingDTO);
+        log.info("Create WQ hearing");
+        wqHearingProcessor.process(hearingDTO);
 
         if (hearingDTO.getJurisdictionType().equals(CROWN)) {
             processCCOutComeData(hearingDTO);
         }
-
     }
 
     private void processCCOutComeData(HearingDTO hearingDTO) {

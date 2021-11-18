@@ -7,10 +7,14 @@ import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
+import org.hamcrest.core.IsNull;
 import org.slf4j.MDC;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +33,9 @@ public class HearingResultedListener {
         MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.HEARING.name());
         queueMessageLogService.createLog(MessageType.HEARING,message);
         HearingResulted hearingResulted = gson.fromJson(message, HearingResulted.class);
+
+        if (hearingResulted.getHearingId() == null) hearingResulted.setHearingId(UUID.randomUUID());
+
         hearingResultedService.execute(hearingResulted);
     }
 }

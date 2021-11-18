@@ -48,6 +48,6 @@ public class WQHearingProcessorTest {
         assertThat(wqHearingEntityArgumentCaptor.getValue().getHearingUUID()).isEqualTo(TestModelDataBuilder.HEARING_ID.toString());
         assertThat(wqHearingEntityArgumentCaptor.getValue().getMaatId()).isEqualTo(TestModelDataBuilder.MAAT_ID);
         assertThat(wqHearingEntityArgumentCaptor.getValue().getWqJurisdictionType()).isEqualTo(TestModelDataBuilder.JURISDICTION_TYPE_MAGISTRATES.toString());
-        assertThat(wqHearingEntityArgumentCaptor.getValue().getOuLocation()).isEqualTo(TestModelDataBuilder.COURT_LOCATION);
+        assertThat(wqHearingEntityArgumentCaptor.getValue().getOuCourtLocation()).isEqualTo(TestModelDataBuilder.COURT_LOCATION);
     }
 }

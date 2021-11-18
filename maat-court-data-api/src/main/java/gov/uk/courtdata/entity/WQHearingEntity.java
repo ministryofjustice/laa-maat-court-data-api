@@ -28,8 +28,8 @@ public class WQHearingEntity {
     private Integer maatId;
     @Column(name = "WQ_JURISDICTION_TYPE")
     private String wqJurisdictionType;
-    @Column(name= "OU_LOCATION")
-    private String ouLocation;
+    @Column(name= "OU_COURT_LOCATION")
+    private String ouCourtLocation;
     @Column(name = "CREATED_DATE_TIME",nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdDateTime;

@@ -18,11 +18,6 @@ public class ProsecutionConcluded {
     private Integer defendantId;
     private UUID prosecutionCaseId;
     private boolean concluded;
-    private UUID hearingIdWhereChangeOccured; //table look up if hearing id and jud type --xmla hearigg get / also store the ou court -> Table
+    private UUID hearingIdWhereChangeOccured;
     private List<OffenceSummary> offenceSummaryList;
-
-    // String OU Court
-    //String Court Location
-
-
 }

@@ -28,6 +28,9 @@ public class ProsecutionConcludedListener {
         MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.PROSECUTION_CONCLUDED.name());
         queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
         ProsecutionConcluded prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
+
+        log.info(prosecutionConcluded.toString());
+
         prosecutionConcludedService.execute(prosecutionConcluded);
     }
 }

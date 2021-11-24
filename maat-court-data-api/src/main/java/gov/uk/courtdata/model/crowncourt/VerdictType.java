@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VerdictType {
-    private UUID verdictType;
+    private UUID verdictTypeId;
     private Integer sequence;
     private String description;
     private String category;

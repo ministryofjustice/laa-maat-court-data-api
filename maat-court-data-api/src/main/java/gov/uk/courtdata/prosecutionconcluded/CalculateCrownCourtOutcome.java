@@ -17,27 +17,26 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CalculateCrownCourtOutcome {
 
-
     public String calculate(ProsecutionConcluded prosecutionConcluded) {
 
         if (prosecutionConcluded.isConcluded()) {
-            log.info("Calculating crown court outcome");
+            log.info("Calculating crown court outcome for concluded case id {}", prosecutionConcluded.getProsecutionCaseId());
             List<String> offenceOutcomeList = new ArrayList<>();
-            List<OffenceSummary> offenceList = prosecutionConcluded.getOffenceSummaryList();
+            List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummaryList();
 
-            offenceList
+            offenceSummaryList
                     .forEach(offence -> {
 
                         if (offence.getVerdict() != null) {
                             offenceOutcomeList.add(VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType()));
                         } else if (offence.getPlea() != null) {
-                            offenceOutcomeList.add(PleaTrialOutcome.getTrialOutcome(offence.getPlea().get(0).getValue()));
+                            offenceOutcomeList.add(PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()));
                         }
                     });
 
             List<String> outcomes = offenceOutcomeList.stream().distinct().collect(Collectors.toList());
             log.info("Offence count: " + outcomes.stream().collect(Collectors.joining(", ")));
-            String offenceOutcomeStatus = "";
+            String offenceOutcomeStatus = null;
 
             if (outcomes.size() == 1) {
                 offenceOutcomeStatus = outcomes.get(0);
@@ -45,12 +44,10 @@ public class CalculateCrownCourtOutcome {
                 offenceOutcomeStatus = CrownCourtTrialOutcome.PART_CONVICTED.getValue();
             }
 
-            log.info("Calculated crown court outcome. " + offenceOutcomeStatus);
+            log.info("Calculated crown court outcome" + offenceOutcomeStatus);
             return offenceOutcomeStatus;
-
         } else {
-
-            //TODO: if the value is not true then we should throw an exception about validation failed or wrong data
+            log.info("Case is not concluded");
             return null;
         }
     }

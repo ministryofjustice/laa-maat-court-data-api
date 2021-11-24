@@ -64,7 +64,7 @@ public class CaseTypeValidatorTest {
     private HearingResulted hearingResultedWith(String outcome) {
 
         CCOutComeData ccOutComeData = CCOutComeData.builder()
-                .ccOutcome(outcome)
+                .ccooOutcome(outcome)
                 .build();
         Session session = Session.builder().courtLocation("OU").build();
         Offence offence = Offence.builder()

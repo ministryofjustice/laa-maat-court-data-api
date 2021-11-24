@@ -16,10 +16,10 @@ public class CrownCourtOutComesValidator {
 
     private final CrownCourtOutcomeRepository crownCourtOutcomeRepository;
 
-    //todo: change to a string value
+
     public void validate(final HearingResulted hearingResulted) {
 
-        final String ccOutcome = hearingResulted.getCcOutComeData().getCcOutcome();
+        final String ccOutcome = hearingResulted.getCcOutComeData().getCcooOutcome();
 
         boolean isValidOutCome = crownCourtOutcomeRepository
                 .findAll()

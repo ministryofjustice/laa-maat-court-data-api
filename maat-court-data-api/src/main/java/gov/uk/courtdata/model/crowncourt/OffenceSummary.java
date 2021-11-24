@@ -16,6 +16,6 @@ public class OffenceSummary {
     private UUID offenceId;
     private String offenceCode;
     private boolean proceedingConcluded;
-    private List<Plea> plea;
+    private Plea plea;
     private Verdict verdict;
 }

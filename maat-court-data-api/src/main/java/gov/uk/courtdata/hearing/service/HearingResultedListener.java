@@ -12,6 +12,8 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -29,6 +31,9 @@ public class HearingResultedListener {
         MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.HEARING.name());
         queueMessageLogService.createLog(MessageType.HEARING,message);
         HearingResulted hearingResulted = gson.fromJson(message, HearingResulted.class);
+
+        if (hearingResulted.getHearingId() == null) hearingResulted.setHearingId(UUID.randomUUID());
+
         hearingResultedService.execute(hearingResulted);
     }
 }

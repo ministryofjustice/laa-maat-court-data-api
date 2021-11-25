@@ -10,11 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Service;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
+//@Service
 public class ProsecutionConcludedListener {
 
     private final Gson gson;

@@ -3,6 +3,7 @@ package gov.uk.courtdata.prosecutionconcluded.dto;
 
 import gov.uk.courtdata.model.crowncourt.ProsecutionConcluded;
 import lombok.*;
+import java.util.List;
 
 @Value
 @Builder
@@ -14,8 +15,9 @@ public class ConcludedDTO {
     private String calculatedOutcome;
     private String wqJurisdictionType;
     private String ouCourtLocation;
+    private List<String> hearingResultCode;
 
-    //don't have it now
+    //todo?
     private String appealType;
     private String caseUrn;
     private String caseEndDate;

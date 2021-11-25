@@ -1,10 +1,10 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.hearing.crowncourt.impl.CrownCourtProcessHelper;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CrownCourtCodeHelper;
 import gov.uk.courtdata.prosecutionconcluded.helper.ProcessSentencingHelper;
+import gov.uk.courtdata.prosecutionconcluded.helper.ResultCodeHelper;
 import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,16 +18,16 @@ public class ProsecutionConcludedDAO {
 
     private final RepOrderRepository repOrderRepository;
 
-    private final CrownCourtProcessHelper crownCourtProcessHelper;
-
     private final CrownCourtStoredProcedureRepository crownCourtStoredProcedureRepository;
 
     private final CrownCourtCodeHelper crownCourtCodeHelper;
 
     private final ProcessSentencingHelper processSentencingHelper;
 
+    private final ResultCodeHelper resultCodeHelper;
+
     public void execute(ConcludedDTO concludedDTO) {
-        String appealType = concludedDTO.getAppealType();
+
         Integer maatId = concludedDTO.getProsecutionConcluded().getMaatId();
         final Optional<RepOrderEntity> optionalRepEntity = repOrderRepository.findById(maatId);
 
@@ -39,13 +39,11 @@ public class ProsecutionConcludedDAO {
                     .updateCrownCourtOutcome(
                             maatId,
                             concludedDTO.getCalculatedOutcome(),
-                            //todo: need to calculate
-                            crownCourtProcessHelper.isBenchWarrantIssued(null),
-                            appealType != null ? appealType : repOrderEntity.getAptyCode(),
-                            //todo: need to calculate
-                            crownCourtProcessHelper.isImprisoned(null, concludedDTO.getCalculatedOutcome()),
+                            resultCodeHelper.isBenchWarrantIssued(concludedDTO.getCalculatedOutcome(), concludedDTO.getHearingResultCode()),
+                            repOrderEntity.getAptyCode(),
+                            resultCodeHelper.isImprisoned(concludedDTO.getCalculatedOutcome(), concludedDTO.getHearingResultCode()),
                             concludedDTO.getCaseUrn(),
-                            crownCourtCodeHelper.get(concludedDTO.getOuCourtLocation()));
+                            crownCourtCodeHelper.getCode(concludedDTO.getOuCourtLocation()));
 
             processSentencingHelper.processSentencingDate(concludedDTO.getCaseEndDate(), maatId, "caseType");
         }

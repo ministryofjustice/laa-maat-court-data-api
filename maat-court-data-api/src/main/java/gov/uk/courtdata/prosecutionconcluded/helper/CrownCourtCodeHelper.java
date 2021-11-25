@@ -18,7 +18,7 @@ public class CrownCourtCodeHelper {
 
     private final CrownCourtCodeRepository crownCourtCodeRepository;
 
-    public String get(String ouCode) {
+    public String getCode(String ouCode) {
         log.info("Getting Crown Court Code");
         Optional<CrownCourtCode> optCrownCourtCode = crownCourtCodeRepository.findByOuCode(ouCode);
         CrownCourtCode crownCourtCode = optCrownCourtCode.orElseThrow(()

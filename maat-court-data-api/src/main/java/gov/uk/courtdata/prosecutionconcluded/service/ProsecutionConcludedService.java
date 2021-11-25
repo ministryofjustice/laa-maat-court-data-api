@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class ProsecutionConcludedService {
 
         WQHearingEntity wqHearingEntity = wqHearingRepository.getById(prosecutionConcluded.getProsecutionCaseId().toString());
 
-        if (Optional.ofNullable(wqHearingEntity).isEmpty())
+        if (wqHearingEntity.getMaatId()==null)
             throw new MAATCourtDataException("Hearing not found for this hearingId " + prosecutionConcluded.getProsecutionCaseId());
 
         if (JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType())) {
@@ -58,6 +59,7 @@ public class ProsecutionConcludedService {
                     .appealType("AR")
                     .caseEndDate(getMostRecentCaseEndDate(prosecutionConcluded.getOffenceSummaryList()))
                     .caseUrn(wqHearingEntity.getCaseUrn())
+                    .hearingResultCode(buildResultCodeList(wqHearingEntity))
                     .build();
 
             prosecutionConcludedDAO.execute(concludedDTO);
@@ -75,5 +77,11 @@ public class ProsecutionConcludedService {
                 .collect(Collectors.toList())
                 .stream().sorted()
                 .collect(Collectors.toList()).get(0).toString();
+    }
+    private List<String> buildResultCodeList(WQHearingEntity wqHearingEntity) {
+
+    return Arrays.stream(wqHearingEntity.getResultCodes().split(","))
+            .distinct()
+            .collect(Collectors.toList());
     }
 }

@@ -6,6 +6,7 @@ import gov.uk.courtdata.model.crowncourt.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedListener;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedService;
 import gov.uk.courtdata.service.QueueMessageLogService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
+@Ignore
 public class ProsecutionConcludedListenerTest {
 
     @InjectMocks

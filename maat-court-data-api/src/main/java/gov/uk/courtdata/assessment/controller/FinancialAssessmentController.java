@@ -26,7 +26,7 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/financial-assessmentsU[date")
+@RequestMapping("/financial-assessments")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Assessments", description = "Rest API for financial assessments")

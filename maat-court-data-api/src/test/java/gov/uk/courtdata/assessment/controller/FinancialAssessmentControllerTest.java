@@ -47,6 +47,8 @@ public class FinancialAssessmentControllerTest {
     private final Integer MOCK_ASSESSMENT_ID = 1234;
     private final Integer FAKE_ASSESSMENT_ID = 7123;
 
+    private final String endpointUrl = "/financial-assessments";
+
     @Before
     public void setUp() {
         financialAssessmentJson = TestModelDataBuilder.getCreateFinancialAssessmentJson();
@@ -61,7 +63,7 @@ public class FinancialAssessmentControllerTest {
         when(financialAssessmentService.createAssessment(any())).thenReturn(returnedFinancialAssessment);
         when(financialAssessmentValidationProcessor.validate(any(FinancialAssessment.class))).thenReturn(Optional.empty());
 
-        mvc.perform(MockMvcRequestBuilders.post("/assessment").content(financialAssessmentJson).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.post(endpointUrl).content(financialAssessmentJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(String.valueOf(MOCK_ASSESSMENT_ID)));
@@ -70,7 +72,7 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenIncorrectParameters_whenCreateFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(FinancialAssessment.class))).thenThrow(new ValidationException());
-        mvc.perform(MockMvcRequestBuilders.post("/assessment").content("{}").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.post(endpointUrl).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -81,7 +83,7 @@ public class FinancialAssessmentControllerTest {
 
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenReturn(Optional.empty());
         when(financialAssessmentService.getAssessment(MOCK_ASSESSMENT_ID)).thenReturn(returnedFinancialAssessment);
-        mvc.perform(MockMvcRequestBuilders.get("/assessment/" + MOCK_ASSESSMENT_ID))
+        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/" + MOCK_ASSESSMENT_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(returnedFinancialAssessment.getId()));
@@ -92,7 +94,7 @@ public class FinancialAssessmentControllerTest {
     public void givenIncorrectParameters_whenSearchFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenThrow(new ValidationException());
         when(financialAssessmentService.getAssessment(MOCK_ASSESSMENT_ID)).thenReturn(null);
-        mvc.perform(MockMvcRequestBuilders.post("/assessment/" + FAKE_ASSESSMENT_ID))
+        mvc.perform(MockMvcRequestBuilders.post(endpointUrl + "/" + FAKE_ASSESSMENT_ID))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -107,7 +109,7 @@ public class FinancialAssessmentControllerTest {
         String requestJson = TestModelDataBuilder.getUpdateFinancialAssessmentJson();
 
 
-        mvc.perform(MockMvcRequestBuilders.put("/assessment/").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.put(endpointUrl).content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.assessmentType").value("FULL"));
@@ -116,7 +118,7 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenIncorrectParameters_whenUpdateFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(FinancialAssessment.class))).thenThrow(new ValidationException());
-        mvc.perform(MockMvcRequestBuilders.put("/assessment").content("{}").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.put(endpointUrl).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -124,7 +126,7 @@ public class FinancialAssessmentControllerTest {
     public void givenCorrectParameters_whenDeleteFinancialAssessmentIsInvoked_thenAssessmentIsDeleted() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenReturn(Optional.empty());
         doNothing().when(financialAssessmentService).deleteAssessment(MOCK_ASSESSMENT_ID);
-        mvc.perform(MockMvcRequestBuilders.delete("/assessment/" + MOCK_ASSESSMENT_ID))
+        mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/" + MOCK_ASSESSMENT_ID))
                 .andExpect(status().isOk());
     }
 
@@ -132,7 +134,7 @@ public class FinancialAssessmentControllerTest {
     public void givenIncorrectParameters_whenDeleteFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenThrow(new ValidationException());
         doNothing().when(financialAssessmentService).deleteAssessment(MOCK_ASSESSMENT_ID);
-        mvc.perform(MockMvcRequestBuilders.delete("/assessment/" + FAKE_ASSESSMENT_ID))
+        mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/" + FAKE_ASSESSMENT_ID))
                 .andExpect(status().is4xxClientError());
     }
 }

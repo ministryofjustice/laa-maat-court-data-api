@@ -7,7 +7,6 @@ import java.util.List;
 
 @Value
 @Builder
-
 @AllArgsConstructor
 public class ConcludedDTO {
 
@@ -21,5 +20,4 @@ public class ConcludedDTO {
     private String appealType;
     private String caseUrn;
     private String caseEndDate;
-
 }

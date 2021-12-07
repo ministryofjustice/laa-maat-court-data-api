@@ -46,4 +46,6 @@ public class WQHearingEntity {
 
     @Column(name = "RESULT_CODES")
     private String resultCodes;
+
+
 }

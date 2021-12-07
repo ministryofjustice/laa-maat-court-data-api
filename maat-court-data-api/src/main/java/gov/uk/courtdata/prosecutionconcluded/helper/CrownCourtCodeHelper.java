@@ -20,9 +20,11 @@ public class CrownCourtCodeHelper {
 
     public String getCode(String ouCode) {
         log.info("Getting Crown Court Code");
+
         Optional<CrownCourtCode> optCrownCourtCode = crownCourtCodeRepository.findByOuCode(ouCode);
         CrownCourtCode crownCourtCode = optCrownCourtCode.orElseThrow(()
                 -> new MAATCourtDataException(format("Crown Court Code Look Up Failed for %s", ouCode)));
+
         return crownCourtCode.getCode();
     }
 }

@@ -3,12 +3,11 @@ package gov.uk.courtdata.prosecutionconcluded.service;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.hearing.crowncourt.validator.CaseTypeValidator;
-import gov.uk.courtdata.hearing.crowncourt.validator.OUCodeValidator;
 import gov.uk.courtdata.model.crowncourt.OffenceSummary;
 import gov.uk.courtdata.model.crowncourt.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.CalculateCrownCourtOutcome;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.ProsecutionConcludedValidator;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,26 +28,27 @@ public class ProsecutionConcludedService {
 
     private final WQHearingRepository wqHearingRepository;
 
-    private final OUCodeValidator ouCodeValidator;
-    private final CaseTypeValidator caseTypeValidator;
+    private final ProsecutionConcludedValidator prosecutionConcludedValidator;
 
     private final ProsecutionConcludedDAO prosecutionConcludedDAO;
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
 
-        WQHearingEntity wqHearingEntity = wqHearingRepository.getById(prosecutionConcluded.getProsecutionCaseId().toString());
+        Optional<WQHearingEntity> optionalWQHearingEntity = wqHearingRepository.findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(),prosecutionConcluded.getHearingIdWhereChangeOccured().toString());
 
-        if (wqHearingEntity.getMaatId()==null)
+        if (optionalWQHearingEntity.isEmpty())
             throw new MAATCourtDataException("Hearing not found for this hearingId " + prosecutionConcluded.getProsecutionCaseId());
 
+        WQHearingEntity wqHearingEntity = optionalWQHearingEntity.get();
+
         if (JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType())) {
+
+            prosecutionConcludedValidator.validateOuCode(wqHearingEntity.getOuCourtLocation());
 
             String calculatedOutcome = calculateCrownCourtOutcome.calculate(prosecutionConcluded);
             log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
 
-            //Todo: create or update the existing classes to process this validation
-            //ouCodeValidator.validate(wqHearingEntity.getOuCourtLocation());
-            //caseTypeValidator.validate(maatId, calculatedOutcome);
+            prosecutionConcludedValidator.validateOuCode(wqHearingEntity.getOuCourtLocation());
 
             ConcludedDTO concludedDTO = ConcludedDTO.
                     builder()
@@ -56,6 +56,7 @@ public class ProsecutionConcludedService {
                     .calculatedOutcome(calculatedOutcome)
                     .ouCourtLocation(wqHearingEntity.getOuCourtLocation())
                     .wqJurisdictionType(wqHearingEntity.getWqJurisdictionType())
+                    //TODO: appeal type
                     .appealType("AR")
                     .caseEndDate(getMostRecentCaseEndDate(prosecutionConcluded.getOffenceSummaryList()))
                     .caseUrn(wqHearingEntity.getCaseUrn())
@@ -79,8 +80,7 @@ public class ProsecutionConcludedService {
                 .collect(Collectors.toList()).get(0).toString();
     }
     private List<String> buildResultCodeList(WQHearingEntity wqHearingEntity) {
-
-    return Arrays.stream(wqHearingEntity.getResultCodes().split(","))
+        return Arrays.stream(wqHearingEntity.getResultCodes().split(","))
             .distinct()
             .collect(Collectors.toList());
     }

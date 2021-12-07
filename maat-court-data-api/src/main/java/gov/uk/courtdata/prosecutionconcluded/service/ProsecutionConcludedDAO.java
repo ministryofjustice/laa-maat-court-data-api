@@ -1,6 +1,7 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CrownCourtCodeHelper;
 import gov.uk.courtdata.prosecutionconcluded.helper.ProcessSentencingHelper;
@@ -11,6 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+
+import static gov.uk.courtdata.enums.CrownCourtAppealOutcome.isAppeal;
+import static gov.uk.courtdata.enums.CrownCourtCaseType.caseTypeForAppeal;
+import static gov.uk.courtdata.enums.CrownCourtCaseType.caseTypeForTrial;
+import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.isTrial;
 
 @Component
 @RequiredArgsConstructor
@@ -35,6 +41,8 @@ public class ProsecutionConcludedDAO {
 
             RepOrderEntity repOrderEntity = optionalRepEntity.get();
 
+            verifyCaseType(repOrderEntity,concludedDTO.getCalculatedOutcome());
+
             crownCourtStoredProcedureRepository
                     .updateCrownCourtOutcome(
                             maatId,
@@ -45,7 +53,24 @@ public class ProsecutionConcludedDAO {
                             concludedDTO.getCaseUrn(),
                             crownCourtCodeHelper.getCode(concludedDTO.getOuCourtLocation()));
 
-            processSentencingHelper.processSentencingDate(concludedDTO.getCaseEndDate(), maatId, "caseType");
+            processSentencingHelper.processSentencingDate(concludedDTO.getCaseEndDate(), maatId, repOrderEntity.getCatyCaseType());
         }
     }
+
+    //todo: Do we need to verify this explicitly knowing the case is already concluded?
+    private void verifyCaseType(RepOrderEntity repOrder, String calculatedOutcome) {
+
+        String caseType = repOrder.getCatyCaseType();
+
+        if (isTrial(calculatedOutcome) && !caseTypeForTrial(caseType)) {
+
+            throw new ValidationException("Crown Court - Case type not valid for Trial.");
+        }
+
+        if (isAppeal(calculatedOutcome) && !caseTypeForAppeal(caseType)) {
+
+            throw new ValidationException("Crown Court  - Case type not valid for Appeal.");
+        }
+    }
+
 }

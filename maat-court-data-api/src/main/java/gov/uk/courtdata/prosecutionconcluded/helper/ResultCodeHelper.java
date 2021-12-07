@@ -23,17 +23,14 @@ public class ResultCodeHelper {
     public String isBenchWarrantIssued(final String caseLevelOutcome, List<String> hearingResultCodes) {
 
         if (isTrial(caseLevelOutcome)) {
-
             return anyResultCodeMatch(xlatResultRepository.findByCjsResultCodeIn(), hearingResultCodes) ? YES : null;
         }
-
         return null;
     }
 
     public String isImprisoned(final String caseLevelOutcome, List<String> hearingResultCodes) {
 
         if (isConvicted(caseLevelOutcome)) {
-
             return anyResultCodeMatch(xlatResultRepository.fetchResultCodesForCCImprisonment(), hearingResultCodes) ? YES : NO;
         }
         return null;

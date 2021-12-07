@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://justice.gov.uk/laa/maatapi/assessment/apiIntialMeansAssessment.json",
+  "type": "object",
+  "title": "Initial Means Assessment Request",
+  "description": "Data contract between laa-crime-means-assessment service & Maa court data API for the initial means assessment processing",
+  "properties": {
+    "correlationId": {
+      "type": "string",
+      "description": "The correlation UUID"
+    },
+    "maatId": {
+      "type": "integer",
+      "description": "MAAT / Rep Id"
+    },
+    "cmuId": {
+      "type": "integer",
+      "description": "Case Management Unit Id"
+    },
+    "userId": {
+      "type": "string",
+      "description": "User  ID"
+    },
+    "assessmentId": {
+      "type": "string",
+      "description": "The financial assessment Id"
+    },
+    "criteriaId": {
+      "type": "integer",
+      "description": "Criteria ID"
+    },
+    "employmentCode": {
+      "type": "integer",
+      "description": "Criteria ID"
+    },
+    "transactionDateTime": {
+      "type": "string",
+      "description": "Time Stamp of the transaction",
+      "format": "date-time"
+    },
+    "assessmentDate": {
+      "type": "string",
+      "description": "Effective Date of the assessment"
+    },
+    "otherBenefitNote": {
+      "type": "string",
+      "description": "Benefit Note"
+    },
+    "otherIncomeNote": {
+      "type": "string",
+      "description": "Income Note."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes field."
+    },
+    "assessmentStatus": {
+      "description": "Assessment Status",
+      "$ref": "http://justice.gov.uk/laa/crime/common/apiAssessmentStatus.json"
+    },
+    "newWorkReason": {
+      "description": "Work Reason Details",
+      "$ref": "http://justice.gov.uk/laa/crime/common/apiNewWorkReason.json"
+    },
+    "incomeEvidenceDueDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Income Evidence Due Date"
+    },
+    "incomeUpliftRemovalDueDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Income Uplift Removal Due Date"
+    },
+    "incomeUpliftApplyDueDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Income Uplift Apply Due Date"
+    },
+    "incomeEvidenceNotes": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Income Evidence Notes"
+    },
+    "reviewType": {
+      "description": "Review Type Info",
+      "$ref": "http://justice.gov.uk/laa/crime/common/apiReviewType.json"
+    },
+    "assessmentDetail": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "http://justice.gov.uk/laa/crime/assessment/common/apiAssessmentDetail.json"
+      }
+    }
+  },
+  "usn": {
+    "type": "integer",
+    "description": "Unique Submission Number - EForm Reference"
+  },
+  "additionalProperties": false,
+  "required": [
+    "maatId",
+    "correlationId",
+    "cmuId",
+    "userId",
+    "transactionDateTime",
+    "assessmentDate"
+  ]
+}

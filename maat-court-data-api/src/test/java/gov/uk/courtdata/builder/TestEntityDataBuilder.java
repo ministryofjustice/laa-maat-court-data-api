@@ -3,7 +3,6 @@ package gov.uk.courtdata.builder;
 import gov.uk.courtdata.entity.*;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Component
@@ -67,4 +66,20 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static FinancialAssessmentEntity getFinancialAssessmentEntity() {
+        return FinancialAssessmentEntity.builder()
+                .repId(5678)
+                .initialAscrId(1)
+                .nworCode("FMA")
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("test-f")
+                .cmuId(30)
+                .fassInitStatus("COMPLETE")
+                .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
+                .initTotAggregatedIncome(15600.00)
+                .initAdjustedIncomeValue(15600.00)
+                .initResult("FULL")
+                .initApplicationEmploymentStatus("NONPASS")
+                .build();
+    }
 }

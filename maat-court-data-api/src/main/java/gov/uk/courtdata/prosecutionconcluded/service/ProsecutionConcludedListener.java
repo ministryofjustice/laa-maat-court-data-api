@@ -28,8 +28,6 @@ public class ProsecutionConcludedListener {
         queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
         ProsecutionConcluded prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
 
-        log.info(prosecutionConcluded.toString());
-
         prosecutionConcludedService.execute(prosecutionConcluded);
     }
 }

@@ -7,6 +7,7 @@ import gov.uk.courtdata.model.crowncourt.OffenceSummary;
 import gov.uk.courtdata.model.crowncourt.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.CalculateCrownCourtOutcome;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
+import gov.uk.courtdata.prosecutionconcluded.impl.ProsecutionConcludedImpl;
 import gov.uk.courtdata.prosecutionconcluded.listner.request.ProsecutionConcludedValidator;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,23 +31,19 @@ public class ProsecutionConcludedService {
 
     private final ProsecutionConcludedValidator prosecutionConcludedValidator;
 
-    private final ProsecutionConcludedDAO prosecutionConcludedDAO;
+    private final ProsecutionConcludedImpl prosecutionConcludedImpl;
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
 
-        Optional<WQHearingEntity> optionalWQHearingEntity = wqHearingRepository.findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(),prosecutionConcluded.getHearingIdWhereChangeOccured().toString());
+        String calculatedOutcome = calculateCrownCourtOutcome.calculate(prosecutionConcluded);
+        log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
 
-        if (optionalWQHearingEntity.isEmpty())
-            throw new MAATCourtDataException("Hearing not found for this hearingId " + prosecutionConcluded.getProsecutionCaseId());
-
-        WQHearingEntity wqHearingEntity = optionalWQHearingEntity.get();
+        WQHearingEntity wqHearingEntity = wqHearingRepository
+                .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccured().toString())
+                .orElseThrow(() ->
+                        new MAATCourtDataException("Hearing not found for this hearingId " + prosecutionConcluded.getProsecutionCaseId()));
 
         if (JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType())) {
-
-            prosecutionConcludedValidator.validateOuCode(wqHearingEntity.getOuCourtLocation());
-
-            String calculatedOutcome = calculateCrownCourtOutcome.calculate(prosecutionConcluded);
-            log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
 
             prosecutionConcludedValidator.validateOuCode(wqHearingEntity.getOuCourtLocation());
 
@@ -63,7 +60,7 @@ public class ProsecutionConcludedService {
                     .hearingResultCode(buildResultCodeList(wqHearingEntity))
                     .build();
 
-            prosecutionConcludedDAO.execute(concludedDTO);
+            prosecutionConcludedImpl.execute(concludedDTO);
         }
     }
 
@@ -76,7 +73,8 @@ public class ProsecutionConcludedService {
                 .map(offenceSummary -> LocalDate.parse(offenceSummary.getProceedingsConcludedChangedDate()))
                 .distinct()
                 .collect(Collectors.toList())
-                .stream().sorted()
+                .stream()
+                .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList()).get(0).toString();
     }
     private List<String> buildResultCodeList(WQHearingEntity wqHearingEntity) {

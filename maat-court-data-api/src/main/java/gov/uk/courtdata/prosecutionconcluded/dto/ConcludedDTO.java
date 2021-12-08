@@ -16,7 +16,6 @@ public class ConcludedDTO {
     private String ouCourtLocation;
     private List<String> hearingResultCode;
 
-    //todo?
     private String appealType;
     private String caseUrn;
     private String caseEndDate;

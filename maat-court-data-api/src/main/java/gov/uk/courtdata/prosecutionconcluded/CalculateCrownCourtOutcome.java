@@ -3,6 +3,7 @@ package gov.uk.courtdata.prosecutionconcluded;
 import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
 import gov.uk.courtdata.enums.PleaTrialOutcome;
 import gov.uk.courtdata.enums.VerdictTrialOutcome;
+import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.crowncourt.OffenceSummary;
 import gov.uk.courtdata.model.crowncourt.ProsecutionConcluded;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 @Component
 @RequiredArgsConstructor
@@ -35,7 +38,7 @@ public class CalculateCrownCourtOutcome {
                     });
 
             List<String> outcomes = offenceOutcomeList.stream().distinct().collect(Collectors.toList());
-            log.info("Offence count: " + outcomes.stream().collect(Collectors.joining(", ")));
+            log.info("Offence count: " + outcomes.stream().count());
             String offenceOutcomeStatus = null;
 
             if (outcomes.size() == 1) {
@@ -44,11 +47,10 @@ public class CalculateCrownCourtOutcome {
                 offenceOutcomeStatus = CrownCourtTrialOutcome.PART_CONVICTED.getValue();
             }
 
-            log.info("Calculated crown court outcome" + offenceOutcomeStatus);
+            log.info("Calculated crown court outcome: " + offenceOutcomeStatus);
             return offenceOutcomeStatus;
         } else {
-            log.info("Case is not concluded");
-            return null;
+            throw new ValidationException(format("Case is not concluded for {}", prosecutionConcluded.getMaatId().toString()));
         }
     }
 }

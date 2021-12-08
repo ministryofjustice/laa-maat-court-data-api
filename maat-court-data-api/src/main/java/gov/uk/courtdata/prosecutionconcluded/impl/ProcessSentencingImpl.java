@@ -1,4 +1,4 @@
-package gov.uk.courtdata.prosecutionconcluded.helper;
+package gov.uk.courtdata.prosecutionconcluded.impl;
 
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
 import gov.uk.courtdata.util.DateUtil;
@@ -14,7 +14,7 @@ import static gov.uk.courtdata.enums.CrownCourtCaseType.APPEAL_CC;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ProcessSentencingHelper {
+public class ProcessSentencingImpl {
 
     private final CrownCourtProcessingRepository crownCourtProcessingRepository;
 

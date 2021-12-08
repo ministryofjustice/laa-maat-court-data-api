@@ -1,10 +1,9 @@
-package gov.uk.courtdata.prosecutionconcluded.service;
+package gov.uk.courtdata.prosecutionconcluded.impl;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CrownCourtCodeHelper;
-import gov.uk.courtdata.prosecutionconcluded.helper.ProcessSentencingHelper;
 import gov.uk.courtdata.prosecutionconcluded.helper.ResultCodeHelper;
 import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
@@ -20,7 +19,7 @@ import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.isTrial;
 
 @Component
 @RequiredArgsConstructor
-public class ProsecutionConcludedDAO {
+public class ProsecutionConcludedImpl {
 
     private final RepOrderRepository repOrderRepository;
 
@@ -28,7 +27,7 @@ public class ProsecutionConcludedDAO {
 
     private final CrownCourtCodeHelper crownCourtCodeHelper;
 
-    private final ProcessSentencingHelper processSentencingHelper;
+    private final ProcessSentencingImpl processSentencingHelper;
 
     private final ResultCodeHelper resultCodeHelper;
 

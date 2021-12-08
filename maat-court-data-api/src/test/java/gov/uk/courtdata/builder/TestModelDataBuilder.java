@@ -10,6 +10,7 @@ import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -230,8 +231,8 @@ public class TestModelDataBuilder {
                 .cmuId(30)
                 .fassInitStatus("COMPLETE")
                 .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
-                .initTotAggregatedIncome(15600.00)
-                .initAdjustedIncomeValue(15600.00)
+                .initTotAggregatedIncome(BigDecimal.valueOf(15600.00))
+                .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
                 .build();
@@ -246,8 +247,8 @@ public class TestModelDataBuilder {
                 .cmuId(30)
                 .fassInitStatus("COMPLETE")
                 .initialAssessmentDate(LocalDateTime.now())
-                .initTotAggregatedIncome(15600.00)
-                .initAdjustedIncomeValue(15600.00)
+                .initTotAggregatedIncome(BigDecimal.valueOf(15600.00))
+                .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
                 .build();
@@ -262,8 +263,8 @@ public class TestModelDataBuilder {
                 .cmuId(30)
                 .fassInitStatus("COMPLETE")
                 .initialAssessmentDate(LocalDateTime.now())
-                .initTotAggregatedIncome(15600.00)
-                .initAdjustedIncomeValue(15600.00)
+                .initTotAggregatedIncome(BigDecimal.valueOf(15600.00))
+                .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
                 .build();

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FinancialAssessment {
-
     private Integer repId;
     private Integer initialAscrId;
     private Integer cmuId;
@@ -20,8 +20,8 @@ public class FinancialAssessment {
     private LocalDateTime initialAssessmentDate;
     private String initOtherBenefitNote;
     private String initOtherIncomeNote;
-    private Double initTotAggregatedIncome;
-    private Double initAdjustedIncomeValue;
+    private BigDecimal initTotAggregatedIncome;
+    private BigDecimal initAdjustedIncomeValue;
     private String initNotes;
     private String initResult;
     private String initResultReason;

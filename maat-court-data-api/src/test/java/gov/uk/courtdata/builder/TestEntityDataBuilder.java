@@ -3,6 +3,7 @@ package gov.uk.courtdata.builder;
 import gov.uk.courtdata.entity.*;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Component
@@ -76,8 +77,8 @@ public class TestEntityDataBuilder {
                 .cmuId(30)
                 .fassInitStatus("COMPLETE")
                 .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
-                .initTotAggregatedIncome(15600.00)
-                .initAdjustedIncomeValue(15600.00)
+                .initTotAggregatedIncome(BigDecimal.valueOf(15600.00))
+                .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
                 .build();

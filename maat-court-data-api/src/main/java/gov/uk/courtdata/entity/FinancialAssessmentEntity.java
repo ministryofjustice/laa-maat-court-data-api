@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -47,9 +48,9 @@ public class FinancialAssessmentEntity {
     @Column(name = "INIT_OTHER_INCOME_NOTE")
     private String initOtherIncomeNote;
     @Column(name = "INIT_TOT_AGGREGATED_INCOME")
-    private Double initTotAggregatedIncome;
+    private BigDecimal initTotAggregatedIncome;
     @Column(name = "INIT_ADJUSTED_INCOME_VALUE")
-    private Double initAdjustedIncomeValue;
+    private BigDecimal initAdjustedIncomeValue;
     @Column(name = "INIT_NOTES")
     private String initNotes;
     @Column(name = "INIT_RESULT")
@@ -77,13 +78,13 @@ public class FinancialAssessmentEntity {
     @Column(name = "FULL_RESULT")
     private String fullResult;
     @Column(name = "FULL_ADJUSTED_LIVING_ALLOWANCE")
-    private Double fullAdjustedLivingAllowance;
+    private BigDecimal fullAdjustedLivingAllowance;
     @Column(name = "FULL_TOT_ANNUAL_DISPOSABLE_INC")
-    private Double fullTotalAnnualDisposableIncome;
+    private BigDecimal fullTotalAnnualDisposableIncome;
     @Column(name = "FULL_OTHER_HOUSING_NOTE")
     private String fullOtherHousingNote;
     @Column(name = "FULL_TOT_AGGREGATED_EXP")
-    private Double fullTotalAggregatedExpenses;
+    private BigDecimal fullTotalAggregatedExpenses;
     @Column(name = "FULL_ASCR_ID")
     private Integer fullAscrId;
     @Column(name = "DATE_COMPLETED")

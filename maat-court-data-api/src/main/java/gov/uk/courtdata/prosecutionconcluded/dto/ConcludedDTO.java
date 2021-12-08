@@ -1,7 +1,7 @@
 package gov.uk.courtdata.prosecutionconcluded.dto;
 
 
-import gov.uk.courtdata.model.crowncourt.ProsecutionConcluded;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcluded;
 import lombok.*;
 import java.util.List;
 

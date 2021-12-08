@@ -5,7 +5,7 @@ import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.Plea;
 import gov.uk.courtdata.model.Verdict;
-import gov.uk.courtdata.model.crowncourt.ProsecutionConcluded;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.CalculateCrownCourtOutcome;
 import org.junit.Ignore;
 import org.junit.Test;

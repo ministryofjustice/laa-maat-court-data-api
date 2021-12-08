@@ -1,15 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://justice.gov.uk/laa/maatapi/assessment/apiIntialMeansAssessment.json",
+  "id": "apiInitialMeansAssessment.json",
   "type": "object",
   "title": "Initial Means Assessment Request",
   "description": "Data contract between laa-crime-means-assessment service & Maa court data API for the initial means assessment processing",
   "properties": {
-    "correlationId": {
+    "laaTransactionId": {
       "type": "string",
-      "description": "The correlation UUID"
+      "description": "The correlation / transaction UUID"
     },
-    "maatId": {
+    "repId": {
       "type": "integer",
       "description": "MAAT / Rep Id"
     },
@@ -21,17 +21,13 @@
       "type": "string",
       "description": "User  ID"
     },
-    "assessmentId": {
-      "type": "string",
-      "description": "The financial assessment Id"
-    },
     "criteriaId": {
       "type": "integer",
       "description": "Criteria ID"
     },
-    "employmentCode": {
+    "employmentStatus": {
       "type": "integer",
-      "description": "Criteria ID"
+      "description": "Code for the employment status"
     },
     "transactionDateTime": {
       "type": "string",
@@ -56,11 +52,11 @@
     },
     "assessmentStatus": {
       "description": "Assessment Status",
-      "$ref": "http://justice.gov.uk/laa/crime/common/apiAssessmentStatus.json"
+      "$ref": "common/apiAssessmentStatus.json"
     },
     "newWorkReason": {
       "description": "Work Reason Details",
-      "$ref": "http://justice.gov.uk/laa/crime/common/apiNewWorkReason.json"
+      "$ref": "common/apiNewWorkReason.json"
     },
     "incomeEvidenceDueDate": {
       "type": "string",
@@ -82,15 +78,31 @@
       "format": "date-time",
       "description": "Income Evidence Notes"
     },
+    "totalAggregatedIncome": {
+      "type": "number",
+      "description": "Total Aggregated income of the application."
+    },
+    "adjustedIncomeValue": {
+      "type": "number",
+      "description": "Adjusted Income of the Application"
+    },
+    "result": {
+      "type": "string",
+      "description": "Outcome of an Assessment"
+    },
+    "resultReason": {
+      "type": "string",
+      "description": "The reason for the outcome "
+    },
     "reviewType": {
       "description": "Review Type Info",
-      "$ref": "http://justice.gov.uk/laa/crime/common/apiReviewType.json"
+      "$ref": "common/apiReviewType.json"
     },
     "assessmentDetail": {
       "type": "array",
       "minItems": 1,
       "items": {
-        "$ref": "http://justice.gov.uk/laa/crime/assessment/common/apiAssessmentDetail.json"
+        "$ref": "common/apiAssessmentDetail.json"
       }
     }
   },
@@ -101,8 +113,9 @@
   "additionalProperties": false,
   "required": [
     "maatId",
-    "correlationId",
+    "laaTransactionId",
     "cmuId",
+    "newWorkReason",
     "userId",
     "transactionDateTime",
     "assessmentDate"

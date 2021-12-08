@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dto;
 
+import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -51,4 +53,5 @@ public class FinancialAssessmentDTO {
     private String userModified;
     private Integer usn;
     private String rtCode;
+    private List<FinancialAssessmentDetails> assessmentDetailsList;
 }

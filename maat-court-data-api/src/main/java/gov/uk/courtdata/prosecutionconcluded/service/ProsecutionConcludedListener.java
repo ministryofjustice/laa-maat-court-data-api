@@ -5,7 +5,6 @@ import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
 import gov.uk.courtdata.model.crowncourt.ProsecutionConcluded;
-import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +30,9 @@ public class ProsecutionConcludedListener {
     public void receive(@Payload final String message) {
         MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.PROSECUTION_CONCLUDED.name());
         queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
-        HearingResulted hearingResulted = gson.fromJson(message, HearingResulted.class);
+        ProsecutionConcluded prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
 
-        crownCourtHearingService.executeCrownCourtOutCome(hearingResulted);
-       // prosecutionConcludedService.execute(prosecutionConcluded);
+
+        prosecutionConcludedService.execute(prosecutionConcluded);
     }
 }

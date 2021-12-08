@@ -44,26 +44,21 @@ public class HearingResultedService {
             courtApplicationsPreProcessor.process(hearingResulted);
         }
 
+        hearingResultedImpl.execute(hearingResulted);
+
         switch (hearingResulted.getJurisdictionType()) {
             case CROWN:
-                processCrownCourtNotification(hearingResulted);
+           //     wqHearingProcessor.process(hearingResulted);
                 break;
                 case MAGISTRATES:
-                    hearingResultedImpl.execute(hearingResulted);
+
                     break;
                 default:
         }
     }
 
-    private void processCrownCourtNotification(HearingResulted hearingResulted) {
 
-        log.info("Processing crown court notification");
-        if (isMaatRecordLocked(hearingResulted))
-            publishMessageToHearingQueue(hearingResulted);
-        else
-            crownCourtHearingService.execute(hearingResulted);
-    }
-
+//TODO - Move this conclusion flow
     private void publishMessageToHearingQueue (HearingResulted hearingResulted) {
 
         log.info("Message retry attempt no. "  + hearingResulted.getMessageRetryCounter());

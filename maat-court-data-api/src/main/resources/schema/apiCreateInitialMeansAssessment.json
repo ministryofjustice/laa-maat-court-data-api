@@ -112,7 +112,7 @@
   },
   "additionalProperties": false,
   "required": [
-    "maatId",
+    "repId",
     "laaTransactionId",
     "cmuId",
     "newWorkReason",

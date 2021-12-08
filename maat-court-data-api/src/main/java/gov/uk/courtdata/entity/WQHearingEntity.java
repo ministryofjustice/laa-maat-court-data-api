@@ -36,4 +36,10 @@ public class WQHearingEntity {
     @Column(name = "UPDATED_DATE_TIME")
     @UpdateTimestamp
     private LocalDateTime updatedDateTime;
+
+    @Column(name = "CASE_URN")
+    private String caseUrn;
+    @Column(name = "RESULT_CODES")
+    private String resultCodes;
+
 }

@@ -5,7 +5,7 @@ import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.OffenceSummary;
 import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcluded;
-import gov.uk.courtdata.prosecutionconcluded.CalculateCrownCourtOutcome;
+import gov.uk.courtdata.prosecutionconcluded.helper.CalculateOutcomeHelper;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.impl.ProsecutionConcludedImpl;
 import gov.uk.courtdata.prosecutionconcluded.listner.request.ProsecutionConcludedValidator;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ProsecutionConcludedService {
 
-    private final CalculateCrownCourtOutcome calculateCrownCourtOutcome;
+    private final CalculateOutcomeHelper calculateOutcomeHelper;
 
     private final WQHearingRepository wqHearingRepository;
 
@@ -35,7 +35,7 @@ public class ProsecutionConcludedService {
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
 
-        String calculatedOutcome = calculateCrownCourtOutcome.calculate(prosecutionConcluded);
+        String calculatedOutcome = calculateOutcomeHelper.calculate(prosecutionConcluded);
         log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
 
         WQHearingEntity wqHearingEntity = wqHearingRepository

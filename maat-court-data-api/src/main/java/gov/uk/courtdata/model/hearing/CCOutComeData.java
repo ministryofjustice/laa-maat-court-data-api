@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+//todo: delete this.
 public class CCOutComeData {
 
     private String ccooOutcome;

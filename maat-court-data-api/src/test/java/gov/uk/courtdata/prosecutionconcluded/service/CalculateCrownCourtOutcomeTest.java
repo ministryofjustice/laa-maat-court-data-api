@@ -1,25 +1,22 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
-import gov.uk.courtdata.hearing.crowncourt.impl.OffenceHelper;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.Plea;
 import gov.uk.courtdata.model.Verdict;
 import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcluded;
-import gov.uk.courtdata.prosecutionconcluded.CalculateCrownCourtOutcome;
+import gov.uk.courtdata.prosecutionconcluded.helper.CalculateOutcomeHelper;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
 //todo: wip
 @Ignore
 @RunWith(MockitoJUnitRunner.class)
@@ -27,10 +24,7 @@ import static org.mockito.Mockito.*;
 public class CalculateCrownCourtOutcomeTest {
 
     @InjectMocks
-    private CalculateCrownCourtOutcome calculateCrownCourtOutcome;
-
-    @Mock
-    private OffenceHelper offenceHelper;
+    private CalculateOutcomeHelper calculateOutcomeHelper;
 
     @BeforeEach
     public void setUp() {
@@ -40,23 +34,23 @@ public class CalculateCrownCourtOutcomeTest {
     @Test
     public void givenHearingIsReceived_whenProsFlagTrue_thenProcessingOutcomeAsConvicted() {
 
-        //given
-        when(offenceHelper.getOffences(anyInt()))
-                .thenReturn(
-                        Arrays.asList(
-                                Offence.builder().plea(Plea.builder().pleaValue("GUILTY").build()).build(),
-                                Offence.builder().plea(Plea.builder().pleaValue("GUILTY_LESSER_OFFENCE_NAMELY").build()).build(),
-                                Offence.builder().verdict(Verdict.builder().categoryType("GUILTY_CONVICTED").build()).build()
-                        )
-                );
+//        //given
+//        when(offenceHelper.getOffences(anyInt()))
+//                .thenReturn(
+//                        Arrays.asList(
+//                                Offence.builder().plea(Plea.builder().pleaValue("GUILTY").build()).build(),
+//                                Offence.builder().plea(Plea.builder().pleaValue("GUILTY_LESSER_OFFENCE_NAMELY").build()).build(),
+//                                Offence.builder().verdict(Verdict.builder().categoryType("GUILTY_CONVICTED").build()).build()
+//                        )
+//                );
 
         ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
 
         //when
-        String response = calculateCrownCourtOutcome.calculate(prosecutionConcluded);
+        String response = calculateOutcomeHelper.calculate(prosecutionConcluded);
 
         //then
-        verify(offenceHelper, atLeastOnce()).getOffences(123456);
+       // verify(offenceHelper, atLeastOnce()).getOffences(123456);
         assertThat(response).isEqualTo("CONVICTED");
     }
 
@@ -65,20 +59,20 @@ public class CalculateCrownCourtOutcomeTest {
     @Test
     public void givenHearingIsReceived_whenProsFlagTrue_thenProcessingOutcomeAsAcquitted() {
 
-        when(offenceHelper.getOffences(anyInt()))
-                .thenReturn(
-                        Arrays.asList(
-                                Offence.builder().plea(Plea.builder().pleaValue("NOT_GUILTY").build()).build(),
-                                Offence.builder().plea(Plea.builder().pleaValue("NOT_GUILTY").build()).build(),
-                                Offence.builder().verdict(Verdict.builder().categoryType("RANDOM").build()).build()
-                        )
-                );
+//        when(offenceHelper.getOffences(anyInt()))
+//                .thenReturn(
+//                        Arrays.asList(
+//                                Offence.builder().plea(Plea.builder().pleaValue("NOT_GUILTY").build()).build(),
+//                                Offence.builder().plea(Plea.builder().pleaValue("NOT_GUILTY").build()).build(),
+//                                Offence.builder().verdict(Verdict.builder().categoryType("RANDOM").build()).build()
+//                        )
+//                );
 
 
         ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
 
         //when
-        String response = calculateCrownCourtOutcome.calculate(prosecutionConcluded);
+        String response = calculateOutcomeHelper.calculate(prosecutionConcluded);
 
         assertThat(response).isEqualTo("AQUITTED");
     }
@@ -88,20 +82,20 @@ public class CalculateCrownCourtOutcomeTest {
     public void givenHearingIsReceived_whenProsFlagTrue_thenProcessingOutcomeAsPartConv() {
 
         //given
-        when(offenceHelper.getOffences(anyInt()))
-                .thenReturn(
-                        Arrays.asList(
-                                Offence.builder().plea(Plea.builder().pleaValue("GUILTY").build()).build(),
-                                Offence.builder().plea(Plea.builder().pleaValue("NOT_GUILTY").build()).build(),
-                                Offence.builder().verdict(Verdict.builder().categoryType("RANDOM").build()).build()
-                        )
-                );
+//        when(offenceHelper.getOffences(anyInt()))
+//                .thenReturn(
+//                        Arrays.asList(
+//                                Offence.builder().plea(Plea.builder().pleaValue("GUILTY").build()).build(),
+//                                Offence.builder().plea(Plea.builder().pleaValue("NOT_GUILTY").build()).build(),
+//                                Offence.builder().verdict(Verdict.builder().categoryType("RANDOM").build()).build()
+//                        )
+//                );
 
         ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
 
 
         //when
-        String response = calculateCrownCourtOutcome.calculate(prosecutionConcluded);
+        String response = calculateOutcomeHelper.calculate(prosecutionConcluded);
 
         assertThat(response).isEqualTo("PART CONVICTED");
     }
@@ -115,7 +109,7 @@ public class CalculateCrownCourtOutcomeTest {
         ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
 
         //when
-        String response = calculateCrownCourtOutcome.calculate(prosecutionConcluded);
+        String response = calculateOutcomeHelper.calculate(prosecutionConcluded);
 
         //then
         assertThat(response).isEmpty();
@@ -132,7 +126,7 @@ public class CalculateCrownCourtOutcomeTest {
 
 
         //when
-        String response = calculateCrownCourtOutcome.calculate(prosecutionConcluded);
+        String response = calculateOutcomeHelper.calculate(prosecutionConcluded);
 
         //then
         assertThat(response).isNull();

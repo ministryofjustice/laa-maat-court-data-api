@@ -1,4 +1,4 @@
-package gov.uk.courtdata.prosecutionconcluded;
+package gov.uk.courtdata.prosecutionconcluded.helper;
 
 import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
 import gov.uk.courtdata.enums.PleaTrialOutcome;
@@ -18,7 +18,7 @@ import static java.lang.String.format;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class CalculateCrownCourtOutcome {
+public class CalculateOutcomeHelper {
 
     public String calculate(ProsecutionConcluded prosecutionConcluded) {
 

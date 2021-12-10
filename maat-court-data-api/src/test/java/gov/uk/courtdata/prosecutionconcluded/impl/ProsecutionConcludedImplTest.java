@@ -1,0 +1,141 @@
+package gov.uk.courtdata.prosecutionconcluded.impl;
+
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.XLATResultEntity;
+import gov.uk.courtdata.enums.CrownCourtCaseType;
+import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
+import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
+import gov.uk.courtdata.prosecutionconcluded.helper.CrownCourtCodeHelper;
+import gov.uk.courtdata.prosecutionconcluded.helper.ResultCodeHelper;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcluded;
+import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
+import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.repository.XLATResultRepository;
+import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static gov.uk.courtdata.enums.CrownCourtAppealOutcome.isAppeal;
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ProsecutionConcludedImplTest {
+
+
+    @InjectMocks
+    private ProsecutionConcludedImpl prosecutionConcludedImpl;
+
+    @Mock
+    private RepOrderRepository repOrderRepository;
+
+    @Mock
+    private CrownCourtStoredProcedureRepository crownCourtStoredProcedureRepository;
+
+    @Mock
+    private CrownCourtCodeHelper crownCourtCodeHelper;
+
+    @Mock
+    private ProcessSentencingImpl processSentencingHelper;
+
+    @Mock
+    private ResultCodeHelper resultCodeHelper;
+
+    @Mock
+    private XLATResultRepository xlatResultRepository;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void givenMessageIsReceived_whenProsecutionConcludedImplTestIsInvoked_thenCrownCourtProcessingRepositoryIsCalled() {
+        //given
+
+
+        List<String> hearingResultCodes = Arrays.asList("1212,3343");
+        ConcludedDTO concludedDTO = ConcludedDTO.builder()
+                .calculatedOutcome(CrownCourtTrialOutcome.CONVICTED.name())
+                .hearingResultCode(hearingResultCodes)
+                .caseUrn("caaseURN12")
+                .ouCourtLocation("121")
+                .prosecutionConcluded(ProsecutionConcluded.builder()
+                        .maatId(121111)
+                        .concluded(true)
+
+                        .build())
+                .build();
+
+        //when
+        RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType(CrownCourtCaseType.INDICTABLE.name()).aptyCode("ACV").id(123).build();
+        when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
+
+        String courtCode = "1212";
+        when(crownCourtCodeHelper.getCode(anyString())).thenReturn(courtCode);
+
+        when(resultCodeHelper.isImprisoned("CONVICTED",hearingResultCodes)).thenReturn("N");
+        when(resultCodeHelper.isBenchWarrantIssued("CONVICTED",hearingResultCodes)).thenReturn("N");
+
+        when(xlatResultRepository.fetchResultCodesForCCImprisonment())
+                .thenReturn(buildCCImprisonmentResultEntities());
+
+        prosecutionConcludedImpl.execute(concludedDTO);
+
+        //then
+        verify(crownCourtStoredProcedureRepository, times(1))
+                .updateCrownCourtOutcome(concludedDTO.getProsecutionConcluded().getMaatId(),
+                        CrownCourtTrialOutcome.CONVICTED.name(),
+                        "N",
+                        "ACV",
+                        "N",
+                        "caaseURN12",
+                        courtCode);
+
+
+        verify(processSentencingHelper)
+                .processSentencingDate(concludedDTO.getCaseEndDate(),
+                        concludedDTO.getProsecutionConcluded().getMaatId(),
+                        repOrderEntity.getCatyCaseType());
+
+    }
+
+    @Test
+    public void givenOutcomeIsEmpty_whenProsecutionConcludedImplCalled_ThenExceptionThrown() {
+
+        ConcludedDTO concludedDTO = ConcludedDTO.builder()
+                .prosecutionConcluded(ProsecutionConcluded.builder().maatId(121111).build())
+                .build();
+
+        prosecutionConcludedImpl.execute(concludedDTO);
+
+        Assertions.assertThrows(ValidationException.class, () -> {
+            isAppeal(null);
+        });
+    }
+
+    private List<String> imprisonmentResultCodes() {
+        return Arrays.asList("1002", "1024", "1003", "1007", "1016", "1002", "1081");
+    }
+
+    private List<XLATResultEntity> buildCCImprisonmentResultEntities() {
+
+        List<XLATResultEntity> resultList = new ArrayList<>();
+
+        imprisonmentResultCodes().forEach(res -> {
+            resultList.add(XLATResultEntity.builder().cjsResultCode(Integer.valueOf(res)).build());
+        });
+
+        return resultList;
+    }
+}

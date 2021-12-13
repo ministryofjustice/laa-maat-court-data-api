@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import gov.uk.courtdata.enums.Frequency;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,18 +30,20 @@ public class FinancialAssessmentDetailsEntity {
     @Column(name = "CRITERIA_DETAIL_ID")
     private Integer criteriaDetailId;
     @CreationTimestamp
-    @Column(name = "DATE_CREATED")
+    @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
-    @Column(name = "USER_CREATED")
+    @Column(name = "USER_CREATED", nullable = false, updatable = false)
     private String userCreated;
+    @Builder.Default
     @Column(name = "APPLICANT_AMOUNT")
-    private BigDecimal applicantAmount;
+    private BigDecimal applicantAmount = BigDecimal.valueOf(0);
     @Column(name = "APPLICANT_FREQ")
-    private String applicantFrequency;
+    private Frequency applicantFrequency;
+    @Builder.Default
     @Column(name = "PARTNER_AMOUNT")
-    private BigDecimal partnerAmount;
+    private BigDecimal partnerAmount = BigDecimal.valueOf(0);
     @Column(name = "PARTNER_FREQ")
-    private String partnerFrequency;
+    private Frequency partnerFrequency;
     @UpdateTimestamp
     @Column(name = "DATE_MODIFIED")
     private LocalDateTime dateModified;

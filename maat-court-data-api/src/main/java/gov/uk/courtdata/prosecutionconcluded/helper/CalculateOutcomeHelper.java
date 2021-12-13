@@ -22,7 +22,7 @@ public class CalculateOutcomeHelper {
 
     public String calculate(ProsecutionConcluded prosecutionConcluded) {
 
-        if (prosecutionConcluded.isConcluded()) {
+        if (prosecutionConcluded.isConcluded() && prosecutionConcluded.getOffenceSummaryList() != null) {
             log.info("Calculating crown court outcome for concluded case id {}", prosecutionConcluded.getProsecutionCaseId());
             List<String> offenceOutcomeList = new ArrayList<>();
             List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummaryList();
@@ -50,7 +50,7 @@ public class CalculateOutcomeHelper {
             log.info("Calculated crown court outcome: " + offenceOutcomeStatus);
             return offenceOutcomeStatus;
         } else {
-            throw new ValidationException(format("Case is not concluded for {}", prosecutionConcluded.getMaatId().toString()));
+            throw new ValidationException(format("Case is not concluded or an offence list is empty for {}", prosecutionConcluded.getMaatId().toString()));
         }
     }
 }

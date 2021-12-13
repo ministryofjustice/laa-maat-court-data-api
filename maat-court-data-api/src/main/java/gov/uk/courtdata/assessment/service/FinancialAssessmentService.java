@@ -1,7 +1,7 @@
 package gov.uk.courtdata.assessment.service;
 
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
-import gov.uk.courtdata.assessment.mapper.FinancialAssessmentDTOMapper;
+import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
@@ -16,17 +16,17 @@ import org.springframework.stereotype.Service;
 public class FinancialAssessmentService {
 
     private final FinancialAssessmentImpl financialAssessmentImpl;
-    private final FinancialAssessmentDTOMapper financialAssessmentDTOMapper;
+    private final FinancialAssessmentMapper financialAssessmentMapper;
 
     public FinancialAssessmentDTO getAssessment(Integer financialAssessmentId) {
         FinancialAssessmentEntity assessment = financialAssessmentImpl.getAssessment(financialAssessmentId);
-        return financialAssessmentDTOMapper.toFinancialAssessmentDTO(assessment);
+        return financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessment);
     }
 
     public FinancialAssessmentDTO updateAssessment(UpdateFinancialAssessment financialAssessment) {
-        FinancialAssessmentEntity assessmentEntity = financialAssessmentDTOMapper.toFinancialAssessmentEntity(financialAssessment);
-        FinancialAssessmentEntity updatedEntity = financialAssessmentImpl.updateAssessment(assessmentEntity);
-        return financialAssessmentDTOMapper.toFinancialAssessmentDTO(updatedEntity);
+        FinancialAssessmentDTO assessmentDTO =
+                financialAssessmentMapper.UpdateFinancialAssessmentToFinancialAssessmentDTO(financialAssessment);
+        return financialAssessmentImpl.updateAssessment(assessmentDTO);
     }
 
     public void deleteAssessment(Integer financialAssessmentId) {
@@ -34,8 +34,8 @@ public class FinancialAssessmentService {
     }
 
     public FinancialAssessmentDTO createAssessment(CreateFinancialAssessment financialAssessment) {
-        FinancialAssessmentEntity assessmentEntity = financialAssessmentDTOMapper.toFinancialAssessmentEntity(financialAssessment);
-        FinancialAssessmentEntity newEntity = financialAssessmentImpl.createAssessment(assessmentEntity);
-        return financialAssessmentDTOMapper.toFinancialAssessmentDTO(newEntity);
+        FinancialAssessmentDTO assessmentDTO =
+                financialAssessmentMapper.CreateFinancialAssessmentToFinancialAssessmentDTO(financialAssessment);
+        return financialAssessmentImpl.createAssessment(assessmentDTO);
     }
 }

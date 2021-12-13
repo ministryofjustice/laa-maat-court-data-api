@@ -24,20 +24,20 @@ public class FinancialAssessmentEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_seq")
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "REP_ID")
+    @Column(name = "REP_ID", nullable = false, updatable = false)
     private Integer repId;
-    @Column(name = "INITIAL_ASCR_ID")
+    @Column(name = "INITIAL_ASCR_ID", nullable = false)
     private Integer initialAscrId;
     @Column(name = "ASS_TYPE")
     private String assessmentType;
-    @Column(name = "NWOR_CODE")
+    @Column(name = "NWOR_CODE", nullable = false, updatable = false)
     private String nworCode;
     @CreationTimestamp
-    @Column(name = "DATE_CREATED")
+    @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
-    @Column(name = "USER_CREATED")
+    @Column(name = "USER_CREATED", nullable = false, updatable = false)
     private String userCreated;
-    @Column(name = "CMU_ID")
+    @Column(name = "CMU_ID", nullable = false)
     private Integer cmuId;
     @Column(name = "FASS_INIT_STATUS")
     private String fassInitStatus;
@@ -94,7 +94,7 @@ public class FinancialAssessmentEntity {
     private LocalDateTime updated;
     @Column(name = "USER_MODIFIED")
     private String userModified;
-    @Column(name = "USN")
+    @Column(name = "USN", updatable = false)
     private Integer usn;
     @Column(name = "RT_CODE")
     private String rtCode;

@@ -56,7 +56,7 @@ public class FinancialAssessmentController {
     public ResponseEntity<Object> getAssessment(@PathVariable int financialAssessmentId) {
         log.info("Get Financial Assessment Request Received");
         financialAssessmentValidationProcessor.validate(financialAssessmentId);
-        FinancialAssessmentDTO financialAssessment = financialAssessmentService.getAssessment(financialAssessmentId);
+        FinancialAssessmentDTO financialAssessment = financialAssessmentService.find(financialAssessmentId);
         String financialAssessmentJson = gson.toJson(financialAssessment, FinancialAssessmentDTO.class);
         return ResponseEntity.ok(financialAssessmentJson);
     }
@@ -73,7 +73,7 @@ public class FinancialAssessmentController {
                     schema = @Schema(implementation = UpdateFinancialAssessment.class))) @RequestBody UpdateFinancialAssessment financialAssessment) {
         log.info("Update Financial Assessment Request Received");
         financialAssessmentValidationProcessor.validate(financialAssessment);
-        FinancialAssessmentDTO updatedAssessment = financialAssessmentService.updateAssessment(financialAssessment);
+        FinancialAssessmentDTO updatedAssessment = financialAssessmentService.update(financialAssessment);
         return ResponseEntity.ok(gson.toJson(updatedAssessment));
     }
 
@@ -86,7 +86,7 @@ public class FinancialAssessmentController {
     })
     public ResponseEntity<Object> deleteAssessment(@PathVariable int financialAssessmentId) {
         financialAssessmentValidationProcessor.validate(financialAssessmentId);
-        financialAssessmentService.deleteAssessment(financialAssessmentId);
+        financialAssessmentService.delete(financialAssessmentId);
         return ResponseEntity.ok().build();
     }
 
@@ -101,7 +101,7 @@ public class FinancialAssessmentController {
             schema = @Schema(implementation = CreateFinancialAssessment.class))) @RequestBody CreateFinancialAssessment financialAssessment) {
         log.info("Create Financial Assessment Request Received");
         financialAssessmentValidationProcessor.validate(financialAssessment);
-        FinancialAssessmentDTO newAssessment = financialAssessmentService.createAssessment(financialAssessment);
+        FinancialAssessmentDTO newAssessment = financialAssessmentService.create(financialAssessment);
         return ResponseEntity.ok(gson.toJson(newAssessment, FinancialAssessmentDTO.class));
     }
 }

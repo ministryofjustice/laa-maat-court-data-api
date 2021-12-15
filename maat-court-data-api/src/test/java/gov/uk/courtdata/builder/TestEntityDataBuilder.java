@@ -1,6 +1,7 @@
 package gov.uk.courtdata.builder;
 
 import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.enums.Frequency;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -69,6 +70,7 @@ public class TestEntityDataBuilder {
 
     public static FinancialAssessmentEntity getFinancialAssessmentEntity() {
         return FinancialAssessmentEntity.builder()
+                .id(1000)
                 .repId(5678)
                 .initialAscrId(1)
                 .nworCode("FMA")
@@ -81,6 +83,21 @@ public class TestEntityDataBuilder {
                 .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
+                .userModified("test-f")
+                .build();
+    }
+
+    public static FinancialAssessmentDetailsEntity getFinancialAssessmentDetailsEntity() {
+        return FinancialAssessmentDetailsEntity.builder()
+                .id(23456)
+                .criteriaDetailId(40)
+                .financialAssessmentId(1000)
+                .applicantAmount(BigDecimal.valueOf(1650.00))
+                .applicantFrequency(Frequency.MONTHLY)
+                .partnerAmount(BigDecimal.valueOf(1650.00))
+                .partnerFrequency(Frequency.TWO_WEEKLY)
+                .userCreated("test-f")
+                .userModified("test-f")
                 .build();
     }
 }

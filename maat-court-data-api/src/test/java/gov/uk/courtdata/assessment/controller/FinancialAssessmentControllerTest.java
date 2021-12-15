@@ -1,7 +1,7 @@
 package gov.uk.courtdata.assessment.controller;
 
-import gov.uk.courtdata.assessment.mapper.FinancialAssessmentDTOMapper;
-import gov.uk.courtdata.assessment.mapper.FinancialAssessmentDTOMapperImpl;
+import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
+import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapperImpl;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -40,7 +40,7 @@ public class FinancialAssessmentControllerTest {
     @MockBean
     private FinancialAssessmentService financialAssessmentService;
 
-    private final FinancialAssessmentDTOMapper financialAssessmentDTOMapper = new FinancialAssessmentDTOMapperImpl();
+    private final FinancialAssessmentMapper financialAssessmentMapper = new FinancialAssessmentMapperImpl();
 
     private String financialAssessmentJson;
 
@@ -57,7 +57,7 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenCorrectParameters_whenCreateFinancialAssessmentIsInvoked_thenAssessmentIsCreated() throws Exception {
         FinancialAssessmentDTO returnedFinancialAssessment =
-                financialAssessmentDTOMapper.toFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
+                financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
         returnedFinancialAssessment.setId(MOCK_ASSESSMENT_ID);
 
         when(financialAssessmentService.createAssessment(any())).thenReturn(returnedFinancialAssessment);
@@ -79,7 +79,7 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenCorrectParameters_whenSearchFinancialAssessmentIsInvoked_thenAssessmentIsReturned() throws Exception {
         FinancialAssessmentDTO returnedFinancialAssessment =
-                financialAssessmentDTOMapper.toFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
+                financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
 
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenReturn(Optional.empty());
         when(financialAssessmentService.getAssessment(MOCK_ASSESSMENT_ID)).thenReturn(returnedFinancialAssessment);
@@ -101,7 +101,7 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenCorrectParameters_whenUpdateFinancialAssessmentIsInvoked_thenAssessmentIsUpdated() throws Exception {
         FinancialAssessmentDTO returnedFinancialAssessment =
-                financialAssessmentDTOMapper.toFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
+                financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
         returnedFinancialAssessment.setAssessmentType("FULL");
 
         when(financialAssessmentValidationProcessor.validate(any(FinancialAssessment.class))).thenReturn(Optional.empty());

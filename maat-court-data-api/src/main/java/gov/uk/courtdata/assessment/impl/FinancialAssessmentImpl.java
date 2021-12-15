@@ -129,7 +129,7 @@ public class FinancialAssessmentImpl {
         return buildFinancialAssessmentDTO(newAssessmentEntity, assessmentDetailsEntities);
     }
 
-    private FinancialAssessmentDTO buildFinancialAssessmentDTO(FinancialAssessmentEntity assessmentEntity, List<FinancialAssessmentDetailsEntity> detailEntitiesList) {
+    public FinancialAssessmentDTO buildFinancialAssessmentDTO(FinancialAssessmentEntity assessmentEntity, List<FinancialAssessmentDetailsEntity> detailEntitiesList) {
         FinancialAssessmentDTO newDto =
                 assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
         newDto.setAssessmentDetailsList(

@@ -1,7 +1,7 @@
 package gov.uk.courtdata.assessment.service;
 
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
-import gov.uk.courtdata.assessment.mapper.FinancialAssessmentDTOMapper;
+import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
@@ -27,18 +29,18 @@ public class FinancialAssessmentServiceTest {
     private FinancialAssessmentImpl financialAssessmentImpl;
 
     @Mock
-    private FinancialAssessmentDTOMapper financialAssessmentDTOMapper;
+    private FinancialAssessmentMapper financialAssessmentMapper;
 
     @Test
     public void testFinancialAssessmentService_whenGetAssessmentIsInvoked_thenAssessmentIsRetrieved() {
         FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
         financialAssessment.setId(1000);
         when(financialAssessmentImpl.getAssessment(any())).thenReturn(financialAssessment);
-        when(financialAssessmentDTOMapper.toFinancialAssessmentDTO(any())).thenReturn(FinancialAssessmentDTO.builder().id(1000).build());
+        when(financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(any())).thenReturn(FinancialAssessmentDTO.builder().id(1000).build());
 
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.getAssessment(1000);
 
-        verify(financialAssessmentDTOMapper).toFinancialAssessmentDTO(any());
+        verify(financialAssessmentImpl).getAssessment(any());
 
         assertThat(returnedAssessment.getId()).isEqualTo(1000);
     }
@@ -51,32 +53,32 @@ public class FinancialAssessmentServiceTest {
 
     @Test
     public void testFinancialAssessmentService_whenCreateAssessmentIsInvoked_thenAssessmentIsCreated() {
+        FinancialAssessmentDTO financialAssessmentDTO = TestModelDataBuilder.getFinancialAssessmentDTO();
         CreateFinancialAssessment financialAssessment = TestModelDataBuilder.getCreateFinancialAssessment();
-        FinancialAssessmentEntity financialAssessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntity();
-        when(financialAssessmentDTOMapper.toFinancialAssessmentEntity(any(CreateFinancialAssessment.class))).thenReturn(financialAssessmentEntity);
-        when(financialAssessmentDTOMapper.toFinancialAssessmentDTO(any())).thenReturn(FinancialAssessmentDTO.builder().id(1000).build());
-        when(financialAssessmentImpl.createAssessment(any())).thenReturn(financialAssessmentEntity);
+        when(financialAssessmentMapper.CreateFinancialAssessmentToFinancialAssessmentDTO(any())).thenReturn(financialAssessmentDTO);
+
+        financialAssessmentDTO.setId(1000);
+        when(financialAssessmentImpl.createAssessment(any())).thenReturn(financialAssessmentDTO);
 
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.createAssessment(financialAssessment);
-
-        verify(financialAssessmentDTOMapper).toFinancialAssessmentDTO(any());
 
         assertThat(returnedAssessment.getId()).isEqualTo(1000);
     }
 
     @Test
     public void testFinancialAssessmentService_whenUpdateAssessmentIsInvoked_thenAssessmentIsUpdated() {
+        FinancialAssessmentDTO financialAssessmentDTO = TestModelDataBuilder.getFinancialAssessmentDTO();
         UpdateFinancialAssessment financialAssessment = TestModelDataBuilder.getUpdateFinancialAssessment();
-        FinancialAssessmentEntity financialAssessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntity();
-        financialAssessmentEntity.setId(1000);
-        when(financialAssessmentDTOMapper.toFinancialAssessmentEntity(any(UpdateFinancialAssessment.class))).thenReturn(financialAssessmentEntity);
-        when(financialAssessmentDTOMapper.toFinancialAssessmentDTO(any())).thenReturn(FinancialAssessmentDTO.builder().id(1000).build());
-        when(financialAssessmentImpl.updateAssessment(any())).thenReturn(financialAssessmentEntity);
+
+        when(financialAssessmentMapper.UpdateFinancialAssessmentToFinancialAssessmentDTO(any(UpdateFinancialAssessment.class))).thenReturn(financialAssessmentDTO);
+
+        financialAssessmentDTO.setFullAssessmentDate(LocalDateTime.now());
+        financialAssessmentDTO.setAssessmentType("FULL");
+
+        when(financialAssessmentImpl.updateAssessment(any())).thenReturn(financialAssessmentDTO);
 
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.updateAssessment(financialAssessment);
 
-        verify(financialAssessmentDTOMapper).toFinancialAssessmentDTO(any());
-
-        assertThat(returnedAssessment.getId()).isEqualTo(1000);
+        assertThat(returnedAssessment.getAssessmentType()).isEqualTo("FULL");
     }
 }

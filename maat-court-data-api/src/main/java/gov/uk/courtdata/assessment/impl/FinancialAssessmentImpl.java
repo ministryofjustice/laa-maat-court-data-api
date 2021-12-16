@@ -70,8 +70,6 @@ public class FinancialAssessmentImpl {
                 assessmentMapper.FinancialAssessmentDtoToFinancialAssessmentEntity(financialAssessment);
         assessmentEntity.setAssessmentType(FinancialAssessmentType.INIT.getValue());
         return financialAssessmentRepository.save(assessmentEntity);
-
-//
     }
 
     public void setOldAssessmentReplaced(FinancialAssessmentDTO financialAssessment) {

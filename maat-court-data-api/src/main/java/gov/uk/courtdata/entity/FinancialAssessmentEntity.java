@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -23,20 +24,20 @@ public class FinancialAssessmentEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_seq")
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "REP_ID")
+    @Column(name = "REP_ID", nullable = false, updatable = false)
     private Integer repId;
-    @Column(name = "INITIAL_ASCR_ID")
+    @Column(name = "INITIAL_ASCR_ID", nullable = false)
     private Integer initialAscrId;
     @Column(name = "ASS_TYPE")
     private String assessmentType;
-    @Column(name = "NWOR_CODE")
+    @Column(name = "NWOR_CODE", nullable = false, updatable = false)
     private String nworCode;
     @CreationTimestamp
-    @Column(name = "DATE_CREATED")
+    @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
-    @Column(name = "USER_CREATED")
+    @Column(name = "USER_CREATED", nullable = false, updatable = false)
     private String userCreated;
-    @Column(name = "CMU_ID")
+    @Column(name = "CMU_ID", nullable = false)
     private Integer cmuId;
     @Column(name = "FASS_INIT_STATUS")
     private String fassInitStatus;
@@ -47,9 +48,9 @@ public class FinancialAssessmentEntity {
     @Column(name = "INIT_OTHER_INCOME_NOTE")
     private String initOtherIncomeNote;
     @Column(name = "INIT_TOT_AGGREGATED_INCOME")
-    private Double initTotAggregatedIncome;
+    private BigDecimal initTotAggregatedIncome;
     @Column(name = "INIT_ADJUSTED_INCOME_VALUE")
-    private Double initAdjustedIncomeValue;
+    private BigDecimal initAdjustedIncomeValue;
     @Column(name = "INIT_NOTES")
     private String initNotes;
     @Column(name = "INIT_RESULT")
@@ -77,13 +78,13 @@ public class FinancialAssessmentEntity {
     @Column(name = "FULL_RESULT")
     private String fullResult;
     @Column(name = "FULL_ADJUSTED_LIVING_ALLOWANCE")
-    private Double fullAdjustedLivingAllowance;
+    private BigDecimal fullAdjustedLivingAllowance;
     @Column(name = "FULL_TOT_ANNUAL_DISPOSABLE_INC")
-    private Double fullTotalAnnualDisposableIncome;
+    private BigDecimal fullTotalAnnualDisposableIncome;
     @Column(name = "FULL_OTHER_HOUSING_NOTE")
     private String fullOtherHousingNote;
     @Column(name = "FULL_TOT_AGGREGATED_EXP")
-    private Double fullTotalAggregatedExpenses;
+    private BigDecimal fullTotalAggregatedExpenses;
     @Column(name = "FULL_ASCR_ID")
     private Integer fullAscrId;
     @Column(name = "DATE_COMPLETED")
@@ -93,7 +94,7 @@ public class FinancialAssessmentEntity {
     private LocalDateTime updated;
     @Column(name = "USER_MODIFIED")
     private String userModified;
-    @Column(name = "USN")
+    @Column(name = "USN", updatable = false)
     private Integer usn;
     @Column(name = "RT_CODE")
     private String rtCode;

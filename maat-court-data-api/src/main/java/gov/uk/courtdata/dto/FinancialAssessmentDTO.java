@@ -1,11 +1,14 @@
 package gov.uk.courtdata.dto;
 
+import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -25,8 +28,8 @@ public class FinancialAssessmentDTO {
     private LocalDateTime initialAssessmentDate;
     private String initOtherBenefitNote;
     private String initOtherIncomeNote;
-    private Double initTotAggregatedIncome;
-    private Double initAdjustedIncomeValue;
+    private BigDecimal initTotAggregatedIncome;
+    private BigDecimal initAdjustedIncomeValue;
     private String initNotes;
     private String initResult;
     private String initResultReason;
@@ -40,14 +43,15 @@ public class FinancialAssessmentDTO {
     private String fullResultReason;
     private String fullAssessmentNotes;
     private String fullResult;
-    private Double fullAdjustedLivingAllowance;
-    private Double fullTotalAnnualDisposableIncome;
+    private BigDecimal fullAdjustedLivingAllowance;
+    private BigDecimal fullTotalAnnualDisposableIncome;
     private String fullOtherHousingNote;
-    private Double fullTotalAggregatedExpenses;
+    private BigDecimal fullTotalAggregatedExpenses;
     private Integer fullAscrId;
     private LocalDateTime dateCompleted;
     private LocalDateTime updated;
     private String userModified;
     private Integer usn;
     private String rtCode;
+    private List<FinancialAssessmentDetails> assessmentDetailsList;
 }

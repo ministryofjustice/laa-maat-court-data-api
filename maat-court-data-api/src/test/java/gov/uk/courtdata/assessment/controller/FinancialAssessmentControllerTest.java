@@ -1,7 +1,7 @@
 package gov.uk.courtdata.assessment.controller;
 
-import gov.uk.courtdata.assessment.mapper.FinancialAssessmentDTOMapper;
-import gov.uk.courtdata.assessment.mapper.FinancialAssessmentDTOMapperImpl;
+import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
+import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapperImpl;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -40,7 +40,7 @@ public class FinancialAssessmentControllerTest {
     @MockBean
     private FinancialAssessmentService financialAssessmentService;
 
-    private final FinancialAssessmentDTOMapper financialAssessmentDTOMapper = new FinancialAssessmentDTOMapperImpl();
+    private final FinancialAssessmentMapper financialAssessmentMapper = new FinancialAssessmentMapperImpl();
 
     private String financialAssessmentJson;
 
@@ -57,10 +57,10 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenCorrectParameters_whenCreateFinancialAssessmentIsInvoked_thenAssessmentIsCreated() throws Exception {
         FinancialAssessmentDTO returnedFinancialAssessment =
-                financialAssessmentDTOMapper.toFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
+                financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
         returnedFinancialAssessment.setId(MOCK_ASSESSMENT_ID);
 
-        when(financialAssessmentService.createAssessment(any())).thenReturn(returnedFinancialAssessment);
+        when(financialAssessmentService.create(any())).thenReturn(returnedFinancialAssessment);
         when(financialAssessmentValidationProcessor.validate(any(FinancialAssessment.class))).thenReturn(Optional.empty());
 
         mvc.perform(MockMvcRequestBuilders.post(endpointUrl).content(financialAssessmentJson).contentType(MediaType.APPLICATION_JSON))
@@ -79,10 +79,10 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenCorrectParameters_whenSearchFinancialAssessmentIsInvoked_thenAssessmentIsReturned() throws Exception {
         FinancialAssessmentDTO returnedFinancialAssessment =
-                financialAssessmentDTOMapper.toFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
+                financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
 
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenReturn(Optional.empty());
-        when(financialAssessmentService.getAssessment(MOCK_ASSESSMENT_ID)).thenReturn(returnedFinancialAssessment);
+        when(financialAssessmentService.find(MOCK_ASSESSMENT_ID)).thenReturn(returnedFinancialAssessment);
         mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/" + MOCK_ASSESSMENT_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -93,7 +93,7 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenIncorrectParameters_whenSearchFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenThrow(new ValidationException());
-        when(financialAssessmentService.getAssessment(MOCK_ASSESSMENT_ID)).thenReturn(null);
+        when(financialAssessmentService.find(MOCK_ASSESSMENT_ID)).thenReturn(null);
         mvc.perform(MockMvcRequestBuilders.post(endpointUrl + "/" + FAKE_ASSESSMENT_ID))
                 .andExpect(status().is4xxClientError());
     }
@@ -101,11 +101,11 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenCorrectParameters_whenUpdateFinancialAssessmentIsInvoked_thenAssessmentIsUpdated() throws Exception {
         FinancialAssessmentDTO returnedFinancialAssessment =
-                financialAssessmentDTOMapper.toFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
+                financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
         returnedFinancialAssessment.setAssessmentType("FULL");
 
         when(financialAssessmentValidationProcessor.validate(any(FinancialAssessment.class))).thenReturn(Optional.empty());
-        when(financialAssessmentService.updateAssessment(any())).thenReturn(returnedFinancialAssessment);
+        when(financialAssessmentService.update(any())).thenReturn(returnedFinancialAssessment);
         String requestJson = TestModelDataBuilder.getUpdateFinancialAssessmentJson();
 
 
@@ -125,7 +125,7 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenCorrectParameters_whenDeleteFinancialAssessmentIsInvoked_thenAssessmentIsDeleted() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenReturn(Optional.empty());
-        doNothing().when(financialAssessmentService).deleteAssessment(MOCK_ASSESSMENT_ID);
+        doNothing().when(financialAssessmentService).delete(MOCK_ASSESSMENT_ID);
         mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/" + MOCK_ASSESSMENT_ID))
                 .andExpect(status().isOk());
     }
@@ -133,7 +133,7 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenIncorrectParameters_whenDeleteFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenThrow(new ValidationException());
-        doNothing().when(financialAssessmentService).deleteAssessment(MOCK_ASSESSMENT_ID);
+        doNothing().when(financialAssessmentService).delete(MOCK_ASSESSMENT_ID);
         mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/" + FAKE_ASSESSMENT_ID))
                 .andExpect(status().is4xxClientError());
     }

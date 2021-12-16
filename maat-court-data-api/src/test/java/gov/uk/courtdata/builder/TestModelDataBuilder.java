@@ -3,14 +3,18 @@ package gov.uk.courtdata.builder;
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
+import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -230,10 +234,40 @@ public class TestModelDataBuilder {
                 .cmuId(30)
                 .fassInitStatus("COMPLETE")
                 .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
-                .initTotAggregatedIncome(15600.00)
-                .initAdjustedIncomeValue(15600.00)
+                .initTotAggregatedIncome(BigDecimal.valueOf(15600.00))
+                .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
+                .build();
+    }
+
+    public static FinancialAssessmentDTO getFinancialAssessmentWithDetails() {
+        FinancialAssessmentDTO base = getFinancialAssessmentDTO();
+
+        base.setAssessmentDetailsList(List.of(
+                FinancialAssessmentDetails.builder()
+                        .criteriaDetailId(40)
+                        .applicantAmount(BigDecimal.valueOf(1650.00))
+                        .applicantFrequency(Frequency.MONTHLY)
+                        .partnerAmount(BigDecimal.valueOf(1650.00))
+                        .partnerFrequency(Frequency.TWO_WEEKLY)
+                        .build(),
+                FinancialAssessmentDetails.builder()
+                        .criteriaDetailId(45)
+                        .applicantAmount(BigDecimal.valueOf(150.00))
+                        .applicantFrequency(Frequency.WEEKLY)
+                        .build()
+        ));
+        return base;
+    }
+
+    public static FinancialAssessmentDetails getFinancialAssessmentDetails() {
+        return FinancialAssessmentDetails.builder()
+                .criteriaDetailId(40)
+                .applicantAmount(BigDecimal.valueOf(1650.00))
+                .applicantFrequency(Frequency.MONTHLY)
+                .partnerAmount(BigDecimal.valueOf(1650.00))
+                .partnerFrequency(Frequency.TWO_WEEKLY)
                 .build();
     }
 
@@ -246,8 +280,8 @@ public class TestModelDataBuilder {
                 .cmuId(30)
                 .fassInitStatus("COMPLETE")
                 .initialAssessmentDate(LocalDateTime.now())
-                .initTotAggregatedIncome(15600.00)
-                .initAdjustedIncomeValue(15600.00)
+                .initTotAggregatedIncome(BigDecimal.valueOf(15600.00))
+                .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
                 .build();
@@ -262,8 +296,8 @@ public class TestModelDataBuilder {
                 .cmuId(30)
                 .fassInitStatus("COMPLETE")
                 .initialAssessmentDate(LocalDateTime.now())
-                .initTotAggregatedIncome(15600.00)
-                .initAdjustedIncomeValue(15600.00)
+                .initTotAggregatedIncome(BigDecimal.valueOf(15600.00))
+                .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
                 .build();

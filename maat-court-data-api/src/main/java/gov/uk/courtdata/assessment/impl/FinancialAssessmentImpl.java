@@ -1,56 +1,81 @@
 package gov.uk.courtdata.assessment.impl;
 
+import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
+import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.enums.FinancialAssessmentType;
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class FinancialAssessmentImpl {
 
+    private final FinancialAssessmentMapper assessmentMapper;
     private final PassportAssessmentRepository passportAssessmentRepository;
     private final HardshipReviewRepository hardshipReviewRepository;
     private final FinancialAssessmentRepository financialAssessmentRepository;
 
-    public FinancialAssessmentEntity getAssessment(Integer financialAssessmentId) {
+    public FinancialAssessmentEntity find(Integer financialAssessmentId) {
         return financialAssessmentRepository.getById(financialAssessmentId);
     }
 
-    public FinancialAssessmentEntity updateAssessment(FinancialAssessmentEntity financialAssessment) {
-        if (financialAssessment.getFullAssessmentDate() != null) {
-            financialAssessment.setAssessmentType(FinancialAssessmentType.FULL.getValue());
+    public FinancialAssessmentEntity update(FinancialAssessmentDTO financialAssessment) {
+        FinancialAssessmentEntity existingAssessment = financialAssessmentRepository.getById(financialAssessment.getId());
+        existingAssessment.setFassInitStatus(financialAssessment.getFassInitStatus());
+        existingAssessment.setFassFullStatus(financialAssessment.getFassFullStatus());
+        existingAssessment.setInitialAssessmentDate(financialAssessment.getInitialAssessmentDate());
+        existingAssessment.setFullAssessmentDate(financialAssessment.getFullAssessmentDate());
+        existingAssessment.setInitApplicationEmploymentStatus(financialAssessment.getInitApplicationEmploymentStatus());
+        existingAssessment.setInitialAscrId(financialAssessment.getInitialAscrId());
+        existingAssessment.setInitOtherBenefitNote(financialAssessment.getInitOtherBenefitNote());
+        existingAssessment.setInitOtherIncomeNote(financialAssessment.getInitOtherIncomeNote());
+        existingAssessment.setInitTotAggregatedIncome(financialAssessment.getInitTotAggregatedIncome());
+        existingAssessment.setInitAdjustedIncomeValue(financialAssessment.getInitAdjustedIncomeValue());
+        existingAssessment.setInitNotes(financialAssessment.getInitNotes());
+        existingAssessment.setInitResult(financialAssessment.getInitResult());
+        existingAssessment.setInitResultReason(financialAssessment.getInitResultReason());
+        existingAssessment.setFullResultReason(financialAssessment.getFullResultReason());
+        existingAssessment.setFullAssessmentNotes(financialAssessment.getFullAssessmentNotes());
+        existingAssessment.setFullResult(financialAssessment.getFullResult());
+        existingAssessment.setFullAdjustedLivingAllowance(financialAssessment.getFullAdjustedLivingAllowance());
+        existingAssessment.setFullTotalAnnualDisposableIncome(financialAssessment.getFullTotalAnnualDisposableIncome());
+        existingAssessment.setFullOtherHousingNote(financialAssessment.getFullOtherHousingNote());
+        existingAssessment.setFullTotalAggregatedExpenses(financialAssessment.getFullTotalAggregatedExpenses());
+        existingAssessment.setFullAscrId(financialAssessment.getFullAscrId());
+        existingAssessment.setIncomeEvidenceDueDate(financialAssessment.getIncomeEvidenceDueDate());
+        existingAssessment.setIncomeEvidenceNotes(financialAssessment.getIncomeEvidenceNotes());
+        existingAssessment.setDateCompleted(financialAssessment.getDateCompleted());
+        existingAssessment.setUserModified(financialAssessment.getUserModified());
+
+        if (existingAssessment.getFullAssessmentDate() != null) {
+            existingAssessment.setAssessmentType(FinancialAssessmentType.FULL.getValue());
         } else {
-            financialAssessment.setAssessmentType(FinancialAssessmentType.INIT.getValue());
+            existingAssessment.setAssessmentType(FinancialAssessmentType.INIT.getValue());
         }
-        return financialAssessmentRepository.save(financialAssessment);
+        return financialAssessmentRepository.save(existingAssessment);
     }
 
-    public void deleteAssessment(Integer financialAssessmentId) {
+    public void delete(Integer financialAssessmentId) {
         financialAssessmentRepository.deleteById(financialAssessmentId);
     }
 
-    @Transactional(rollbackFor = MAATCourtDataException.class)
-    public FinancialAssessmentEntity createAssessment(FinancialAssessmentEntity financialAssessment) {
-        financialAssessment.setAssessmentType(FinancialAssessmentType.INIT.getValue());
-        log.info("Create Financial Assessment - Transaction Processing - Start");
+    public FinancialAssessmentEntity create(FinancialAssessmentDTO financialAssessment) {
+        FinancialAssessmentEntity assessmentEntity =
+                assessmentMapper.FinancialAssessmentDtoToFinancialAssessmentEntity(financialAssessment);
+        assessmentEntity.setAssessmentType(FinancialAssessmentType.INIT.getValue());
+        return financialAssessmentRepository.save(assessmentEntity);
+    }
+
+    public void setOldAssessmentReplaced(FinancialAssessmentDTO financialAssessment) {
         Integer repID = financialAssessment.getRepId();
-        log.info("Updating old assessments with REP_ID = {}", repID);
         financialAssessmentRepository.updateOldAssessments(repID);
-        log.info("Updating old passport assessments");
         passportAssessmentRepository.updateOldPassportAssessments(repID);
-        log.info("Updating old hardship reviews");
         hardshipReviewRepository.updateOldHardshipReviews(repID, financialAssessment.getId());
-        log.info("Creating new financial assessment record");
-        FinancialAssessmentEntity newEntity = financialAssessmentRepository.save(financialAssessment);
-        log.info("Create Financial Assessment - Transaction Processing - End");
-        return newEntity;
     }
 }

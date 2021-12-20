@@ -1,10 +1,12 @@
 package gov.uk.courtdata.authorization.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import gov.uk.courtdata.authorization.service.AuthorizationService;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.enums.LoggingData;
+import gov.uk.courtdata.model.AuthorizationResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,12 +14,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/authorization")
@@ -32,15 +32,19 @@ public class AuthorizationController {
     @GetMapping(value = "/users/{username}/validation/action/{action}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Check role action privileges")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AuthorizationResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class))),
             @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     })
-    public ResponseEntity<Object> isRoleActionAuthorized(@PathVariable String username, @PathVariable String action) {
+    public ResponseEntity<Object> isRoleActionAuthorized(
+            @PathVariable String username, @PathVariable String action,
+            @Parameter(description = "Used for tracing calls")
+            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+
         log.info("Check-Role-Action Request Received");
         boolean isAuthorized = authorizationService.isRoleActionAuthorized(username, action);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("result", Boolean.toString(isAuthorized));
-        return ResponseEntity.ok(gson.toJson(jsonObject));
+        return ResponseEntity.ok(gson.toJson(AuthorizationResponse.builder().result(isAuthorized).build()));
     }
 }

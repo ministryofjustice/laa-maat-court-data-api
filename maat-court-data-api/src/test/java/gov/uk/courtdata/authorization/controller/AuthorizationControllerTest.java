@@ -50,13 +50,13 @@ public class AuthorizationControllerTest {
     @Test
     public void givenIncorrectParameters_whenIsRoleActionAuthorizedIsInvoked_thenReturn400ClientError() throws Exception {
         when(authorizationService.isRoleActionAuthorized(any(), any())).thenThrow(
-                new ValidationException("FAKE ERROR MESSAGE")
+                new ValidationException("Username and action are required")
         );
 
         mvc.perform(MockMvcRequestBuilders.get(getUrl("test-f", "FAKE_ACTION")))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("FAKE ERROR MESSAGE"));
+                .andExpect(jsonPath("$.message").value("Username and action are required"));
     }
 }
 

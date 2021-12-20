@@ -1,15 +1,14 @@
 package gov.uk.courtdata.authorization.service;
 
-import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.repository.AuthorizationRepository;
-import org.junit.Assert;
+import gov.uk.courtdata.entity.RoleActionsEntity;
+import gov.uk.courtdata.repository.RoleActionsRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.any;
@@ -22,32 +21,21 @@ public class AuthorizationServiceTest {
     private AuthorizationService authorizationService;
 
     @Mock
-    private AuthorizationRepository authorizationRepository;
+    private RoleActionsRepository roleActionsRepository;
 
     @Test
-    public void givenInvalidAction_whenIsRoleActionAuthorizedIsInvoked_thenValidationExceptionIsThrown() {
-        when(authorizationRepository.getAvailableActions()).thenReturn(List.of());
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
-                () -> authorizationService.isRoleActionAuthorized("test-f", "FAKE_ACTION"));
-        assertThat(validationException.getMessage()).isEqualTo("The specified action does not exist");
-    }
-
-    @Test
-    public void givenInvalidUsername_whenIsRoleActionAuthorizedIsInvoked_thenValidationExceptionIsThrown() {
-        when(authorizationRepository.getAuthorizedActions(any())).thenReturn(List.of());
-        when(authorizationRepository.getAvailableActions()).thenReturn(List.of("CREATE_ASSESSMENT"));
-
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
-                () -> authorizationService.isRoleActionAuthorized("fake-u", "CREATE_ASSESSMENT"));
-        assertThat(validationException.getMessage()).isEqualTo("User does not exist or has invalid role");
-    }
-
-    @Test
-    public void givenValidParameters_whenIsRoleActionAuthorizedIsInvoked_thenResultIsReturned() {
-        when(authorizationRepository.getAvailableActions()).thenReturn(List.of("CREATE_ASSESSMENT", "FAKE_ACTION"));
-        when(authorizationRepository.getAuthorizedActions(any())).thenReturn(List.of("CREATE_ASSESSMENT"));
-
+    public void givenInvalidAction_whenIsRoleActionAuthorizedIsInvoked_thenResultIsFalse() {
+        when(roleActionsRepository.getRoleAction(any(), any())).thenReturn(
+                Optional.empty()
+        );
         assertThat(authorizationService.isRoleActionAuthorized("test-f", "FAKE_ACTION")).isEqualTo(Boolean.FALSE);
+    }
+
+    @Test
+    public void givenValidAction_whenIsRoleActionAuthorizedIsInvoked_thenResultIsTrue() {
+        when(roleActionsRepository.getRoleAction(any(), any())).thenReturn(
+                Optional.of(RoleActionsEntity.builder().action("CREATE_ASSESSMENT").build())
+        );
         assertThat(authorizationService.isRoleActionAuthorized("test-f", "CREATE_ASSESSMENT")).isEqualTo(Boolean.TRUE);
     }
 }

@@ -10,13 +10,11 @@ import java.util.List;
 @AllArgsConstructor
 public class ConcludedDTO {
 
-    private ProsecutionConcluded prosecutionConcluded;
-    private String calculatedOutcome;
-    private String wqJurisdictionType;
-    private String ouCourtLocation;
-    private List<String> hearingResultCode;
-
-    private String appealType;
-    private String caseUrn;
-    private String caseEndDate;
+    ProsecutionConcluded prosecutionConcluded;
+    String calculatedOutcome;
+    String wqJurisdictionType;
+    String ouCourtLocation;
+    List<String> hearingResultCodeList;
+    String caseUrn;
+    String caseEndDate;
 }

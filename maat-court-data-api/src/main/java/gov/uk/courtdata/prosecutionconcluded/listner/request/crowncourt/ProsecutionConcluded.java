@@ -17,4 +17,5 @@ public class ProsecutionConcluded {
     private boolean concluded;
     private UUID hearingIdWhereChangeOccured;
     private List<OffenceSummary> offenceSummaryList;
+    private int messageRetryCounter;
 }

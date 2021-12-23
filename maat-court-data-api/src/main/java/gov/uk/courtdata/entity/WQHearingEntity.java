@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder
@@ -22,6 +19,10 @@ import java.time.LocalDateTime;
 public class WQHearingEntity {
 
     @Id
+    @Column(name = "TX_ID")
+    private Integer txId;
+    @Column(name = "CASE_ID")
+    private Integer caseId;
     @Column(name = "HEARING_UUID")
     private String hearingUUID;
     @Column(name = "MAAT_ID")

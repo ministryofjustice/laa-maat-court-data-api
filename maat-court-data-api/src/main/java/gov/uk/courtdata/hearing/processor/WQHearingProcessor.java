@@ -20,6 +20,8 @@ public class WQHearingProcessor {
     public void process(final HearingDTO hearingDTO) {
 
         WQHearingEntity wqHearingEntity = WQHearingEntity.builder()
+                .txId(hearingDTO.getTxId())
+                .caseId(hearingDTO.getCaseId())
                 .hearingUUID(hearingDTO.getHearingId().toString())
                 .maatId(hearingDTO.getMaatId())
                 .wqJurisdictionType(getJurisdictionTypeFrom(hearingDTO))

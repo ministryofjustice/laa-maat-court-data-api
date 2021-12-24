@@ -3,7 +3,7 @@ package gov.uk.courtdata.prosecutionconcluded.listner;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcluded;
+ import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcludedRequest;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedService;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class ProsecutionConcludedListener {
     public void receive(@Payload final String message) {
         MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.PROSECUTION_CONCLUDED.name());
         queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
-        ProsecutionConcluded prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
+        ProsecutionConcludedRequest prosecutionConcluded = gson.fromJson(message, ProsecutionConcludedRequest.class);
 
         prosecutionConcludedService.execute(prosecutionConcluded);
     }

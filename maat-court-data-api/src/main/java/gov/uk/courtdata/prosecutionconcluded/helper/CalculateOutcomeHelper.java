@@ -22,16 +22,16 @@ public class CalculateOutcomeHelper {
 
     public String calculate(ProsecutionConcluded prosecutionConcluded) {
 
-        if (prosecutionConcluded.isConcluded() && prosecutionConcluded.getOffenceSummaryList() != null) {
+        if (prosecutionConcluded.getOffenceSummaryList() != null && prosecutionConcluded.getOffenceSummaryList().size() > 0 ) {
             log.info("Calculating crown court outcome for concluded case id {}", prosecutionConcluded.getProsecutionCaseId());
             List<String> offenceOutcomeList = new ArrayList<>();
             List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummaryList();
-
             offenceSummaryList
                     .forEach(offence -> {
 
-                        if (offence.getVerdict() != null) {
+                        if (offence.getVerdict() != null && offence.getVerdict().getVerdictType().getCategoryType() != null) {
                             offenceOutcomeList.add(VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType()));
+
                         } else if (offence.getPlea() != null) {
                             offenceOutcomeList.add(PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()));
                         }
@@ -46,11 +46,10 @@ public class CalculateOutcomeHelper {
             } else if (outcomes.size() > 1) {
                 offenceOutcomeStatus = CrownCourtTrialOutcome.PART_CONVICTED.getValue();
             }
-
             log.info("Calculated crown court outcome: " + offenceOutcomeStatus);
             return offenceOutcomeStatus;
         } else {
-            throw new ValidationException(format("Case is not concluded or an offence list is empty for {}", prosecutionConcluded.getMaatId().toString()));
+            throw new ValidationException(format("Offence summary list is null or empty for maat-id: {}", prosecutionConcluded.getMaatId().toString()));
         }
     }
 }

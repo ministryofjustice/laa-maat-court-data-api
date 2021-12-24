@@ -40,15 +40,15 @@ public class ProsecutionConcludedImpl {
 
             RepOrderEntity repOrderEntity = optionalRepEntity.get();
 
-            verifyCaseType(repOrderEntity,concludedDTO.getCalculatedOutcome());
+            verifyCaseTypeValidator(repOrderEntity,concludedDTO.getCalculatedOutcome());
 
             crownCourtStoredProcedureRepository
                     .updateCrownCourtOutcome(
                             maatId,
                             concludedDTO.getCalculatedOutcome(),
-                            resultCodeHelper.isBenchWarrantIssued(concludedDTO.getCalculatedOutcome(), concludedDTO.getHearingResultCode()),
+                            resultCodeHelper.isBenchWarrantIssued(concludedDTO.getCalculatedOutcome(), concludedDTO.getHearingResultCodeList()),
                             repOrderEntity.getAptyCode(),
-                            resultCodeHelper.isImprisoned(concludedDTO.getCalculatedOutcome(), concludedDTO.getHearingResultCode()),
+                            resultCodeHelper.isImprisoned(concludedDTO.getCalculatedOutcome(), concludedDTO.getHearingResultCodeList()),
                             concludedDTO.getCaseUrn(),
                             crownCourtCodeHelper.getCode(concludedDTO.getOuCourtLocation()));
 
@@ -57,7 +57,8 @@ public class ProsecutionConcludedImpl {
     }
 
     //todo: Do we need to verify this explicitly knowing the case is already concluded?
-    private void verifyCaseType(RepOrderEntity repOrder, String calculatedOutcome) {
+    //todo make as a interface -
+    private void verifyCaseTypeValidator(RepOrderEntity repOrder, String calculatedOutcome) {
 
         String caseType = repOrder.getCatyCaseType();
 

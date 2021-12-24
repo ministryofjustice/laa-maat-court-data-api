@@ -9,13 +9,12 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class ProsecutionConcluded {
     private Integer maatId;
     private Integer defendantId;
     private UUID prosecutionCaseId;
     private boolean concluded;
-    private UUID hearingIdWhereChangeOccured;
+    private UUID hearingIdWhereChangeOccurred;
     private List<OffenceSummary> offenceSummaryList;
     private int messageRetryCounter;
 }

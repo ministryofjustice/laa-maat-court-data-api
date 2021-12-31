@@ -3,10 +3,12 @@ package gov.uk.courtdata.builder;
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.CreateIOJAppeal;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
@@ -24,6 +26,8 @@ public class TestModelDataBuilder {
     public static final UUID HEARING_ID = UUID.randomUUID();
     public static final JurisdictionType JURISDICTION_TYPE_MAGISTRATES = JurisdictionType.MAGISTRATES;
     public static final String COURT_LOCATION = "London";
+    public static final Integer IOJ_APPEAL_ID = 123;
+    public static final Integer IOJ_REP_ID = 5635978;
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -32,7 +36,6 @@ public class TestModelDataBuilder {
         this.gson = gson;
         this.testEntityDataBuilder = testEntityDataBuilder;
     }
-
 
     public CourtDataDTO getSaveAndLinkModelRaw() {
         return CourtDataDTO.builder()
@@ -364,5 +367,37 @@ public class TestModelDataBuilder {
                 "\"dateCompleted\": \"2006-10-09T00:00:00\",\n" +
                 "\"userModified\": \"dohe-f\"\n" +
                 "}";
+    }
+
+    public static IOJAppealDTO getIOJAppealDTO() {
+        return IOJAppealDTO.builder()
+                .id(IOJ_APPEAL_ID)
+                .repId(IOJ_REP_ID)
+                .appealSetupDate(LocalDateTime.of(2022,1,1,10,0))
+                .nworCode("NEW")
+                .userCreated("test-s")
+                .cmuId(86679086)
+                .iapsStatus("COMPLETE")
+                .appealSetupResult("GRANT")
+                .iderCode("NOTUNDPROC")
+                .decisionDate(LocalDateTime.of(2022,1,1,10,0))
+                .decisionResult("PASS")
+                .notes("notes test notes")
+                .build();
+    }
+    public static CreateIOJAppeal getCreateIOJAppealObject(boolean isValid) {
+        return CreateIOJAppeal.builder()
+                .repId(isValid ? IOJ_REP_ID : null)
+                .appealSetupDate(LocalDateTime.of(2022,1,1,10,0))
+                .nworCode("NEW")
+                .userCreated("test-s")
+                .cmuId(86679086)
+                .iapsStatus("COMPLETE")
+                .appealSetupResult("GRANT")
+                .iderCode("NOTUNDPROC")
+                .decisionDate(LocalDateTime.of(2022,1,1,10,0))
+                .decisionResult("PASS")
+                .notes("notes test notes")
+                .build();
     }
 }

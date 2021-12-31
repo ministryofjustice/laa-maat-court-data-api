@@ -76,6 +76,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
     implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-activemq'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
     implementation group: 'org.springframework', name: 'spring-jms'
     implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client'
 

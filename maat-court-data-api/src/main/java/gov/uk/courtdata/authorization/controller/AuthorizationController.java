@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,12 +30,10 @@ public class AuthorizationController {
 
     @GetMapping(value = "/users/{username}/validation/action/{action}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Check role action privileges")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AuthorizationResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class))),
-            @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    })
-    public ResponseEntity<Object> isRoleActionAuthorized(
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AuthorizationResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<AuthorizationResponse> isRoleActionAuthorized(
             @PathVariable String username, @PathVariable String action,
             @Parameter(description = "Used for tracing calls")
             @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
@@ -45,6 +42,6 @@ public class AuthorizationController {
 
         log.info("Check-Role-Action Request Received");
         boolean isAuthorized = authorizationService.isRoleActionAuthorized(username, action);
-        return ResponseEntity.ok(gson.toJson(AuthorizationResponse.builder().result(isAuthorized).build()));
+        return ResponseEntity.ok(AuthorizationResponse.builder().result(isAuthorized).build());
     }
 }

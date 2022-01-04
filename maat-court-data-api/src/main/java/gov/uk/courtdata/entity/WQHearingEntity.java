@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 public class WQHearingEntity {
 
     @Id
+    @Column(name = "ID")
+    private String iD;
     @Column(name = "HEARING_UUID")
     private String hearingUUID;
     @Column(name = "MAAT_ID")

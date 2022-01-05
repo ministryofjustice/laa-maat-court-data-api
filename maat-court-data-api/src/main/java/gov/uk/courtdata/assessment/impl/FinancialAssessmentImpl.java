@@ -73,9 +73,8 @@ public class FinancialAssessmentImpl {
     }
 
     public void setOldAssessmentReplaced(FinancialAssessmentDTO financialAssessment) {
-        Integer repID = financialAssessment.getRepId();
-        financialAssessmentRepository.updateOldAssessments(repID);
-        passportAssessmentRepository.updateOldPassportAssessments(repID);
-        hardshipReviewRepository.updateOldHardshipReviews(repID, financialAssessment.getId());
+        financialAssessmentRepository.updatePreviousFinancialAssessmentsAsReplaced(financialAssessment.getRepId(), financialAssessment.getId());
+        passportAssessmentRepository.updateAllPreviousPassportAssessmentsAsReplaced(financialAssessment.getRepId());
+        hardshipReviewRepository.updateOldHardshipReviews(financialAssessment.getRepId(), financialAssessment.getId());
     }
 }

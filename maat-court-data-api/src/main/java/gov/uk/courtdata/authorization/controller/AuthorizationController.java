@@ -1,6 +1,5 @@
 package gov.uk.courtdata.authorization.controller;
 
-import com.google.gson.Gson;
 import gov.uk.courtdata.authorization.service.AuthorizationService;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.enums.LoggingData;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authorization", description = "Rest API for performing role authorization checks")
 public class AuthorizationController {
 
-    private final Gson gson;
     private final AuthorizationService authorizationService;
 
     @GetMapping(value = "/users/{username}/validation/action/{action}", produces = MediaType.APPLICATION_JSON_VALUE)

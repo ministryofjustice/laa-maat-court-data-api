@@ -18,7 +18,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-
 public class ProsecutionConcludedListenerTest {
 
     @InjectMocks

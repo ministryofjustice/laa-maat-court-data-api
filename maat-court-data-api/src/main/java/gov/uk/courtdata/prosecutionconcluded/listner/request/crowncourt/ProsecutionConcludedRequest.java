@@ -16,5 +16,6 @@ public class ProsecutionConcludedRequest {
 
     @SerializedName("prosecutionConcluded")
     private List<ProsecutionConcluded> prosecutionConcludedList;
+    private int messageRetryCounter;
 
 }

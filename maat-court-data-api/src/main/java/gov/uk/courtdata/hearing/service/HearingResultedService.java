@@ -42,38 +42,4 @@ public class HearingResultedService {
         if (CROWN.equals(hearingResulted.getJurisdictionType()))
             wqHearingProcessor.process(hearingResulted);
     }
-
-//    private void processCrownCourtNotification(HearingResulted hearingResulted) {
-//
-//        log.info("Processing crown court notification");
-//        if (isMaatRecordLocked(hearingResulted))
-//            publishMessageToHearingQueue(hearingResulted);
-//        else
-//            crownCourtHearingService.execute(hearingResulted);
-//    }
-
-//    private void publishMessageToHearingQueue (HearingResulted hearingResulted) {
-//
-//        log.info("Message retry attempt no. "  + hearingResulted.getMessageRetryCounter());
-//
-//        if (hearingResulted.getMessageRetryCounter() < 6) {
-//            hearingResultedPublisher.publish(hearingResulted);
-//        } else {
-//            throw new MaatRecordLockedException("Unable to process CP hearing notification because Maat Record is locked.");
-//        }
-//    }
-
-    //todo: move to new flow
-//    private boolean isMaatRecordLocked(HearingResulted hearingResulted) {
-//
-//        log.info("Checking Maat Record Locked status");
-//        Optional<ReservationsEntity> reservationsEntity = reservationsRepository.findById(hearingResulted.getMaatId());
-//        if (reservationsEntity.isPresent()) {
-//            log.info("Maat Record {} is locked by {} ", reservationsEntity.get().getRecordId(), reservationsEntity.get().getUserName());
-//            return true;
-//        } else {
-//            log.info("Maat Record is not locked");
-//            return false;
-//        }
-//    }
 }

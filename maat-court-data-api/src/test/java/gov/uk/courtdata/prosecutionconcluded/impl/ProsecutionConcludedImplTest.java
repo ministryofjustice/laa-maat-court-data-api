@@ -32,7 +32,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ProsecutionConcludedImplTest {
 
-
     @InjectMocks
     private ProsecutionConcludedImpl prosecutionConcludedImpl;
 
@@ -60,22 +59,79 @@ public class ProsecutionConcludedImplTest {
     }
 
     @Test
+    public void testWhenCaseConcludedAndImpAndWarrantisY_thenProcessDataAsExpected() {
+
+        //given
+        List<String> hearingResultCodes = List.of("1212","3343");
+        ConcludedDTO concludedDTO = getConcludedDTO();
+
+        //when
+        RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType(CrownCourtCaseType.INDICTABLE.name()).aptyCode("ACV").id(123).build();
+        when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
+
+        String courtCode = "1212";
+        when(crownCourtCodeHelper.getCode(anyString())).thenReturn(courtCode);
+
+        when(resultCodeHelper.isImprisoned("CONVICTED",hearingResultCodes)).thenReturn("Y");
+        when(resultCodeHelper.isBenchWarrantIssued("CONVICTED",hearingResultCodes)).thenReturn("Y");
+
+//        when(xlatResultRepository.fetchResultCodesForCCImprisonment())
+//                .thenReturn(buildCCImprisonmentResultEntities());
+
+        prosecutionConcludedImpl.execute(concludedDTO);
+
+        //then
+        verify(crownCourtStoredProcedureRepository, times(1))
+                .updateCrownCourtOutcome(concludedDTO.getProsecutionConcluded().getMaatId(),
+                        CrownCourtTrialOutcome.CONVICTED.name(),
+                        "Y",
+                        "ACV",
+                        "Y",
+                        "caaseURN12",
+                        courtCode);
+
+
+        verify(processSentencingHelper)
+                .processSentencingDate(concludedDTO.getCaseEndDate(),
+                        concludedDTO.getProsecutionConcluded().getMaatId(),
+                        repOrderEntity.getCatyCaseType());
+
+
+    }
+
+
+    @Test
+    public void testWhenRepOrderIsMissing_thenDoNothing() {
+
+        ConcludedDTO concludedDTO = getConcludedDTO();
+
+        when(repOrderRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        prosecutionConcludedImpl.execute(concludedDTO);
+
+        verify(crownCourtStoredProcedureRepository, never())
+                .updateCrownCourtOutcome(concludedDTO.getProsecutionConcluded().getMaatId(),
+                        CrownCourtTrialOutcome.CONVICTED.name(),
+                        "Y",
+                        "ACV",
+                        "Y",
+                        "caaseURN12",
+                        "");
+
+        verify(processSentencingHelper,never())
+                .processSentencingDate(concludedDTO.getCaseEndDate(),
+                        concludedDTO.getProsecutionConcluded().getMaatId(),
+                        "");
+
+
+    }
+
+
+    @Test
     public void givenMessageIsReceived_whenProsecutionConcludedImplTestIsInvoked_thenCrownCourtProcessingRepositoryIsCalled() {
         //given
-
-
-        List<String> hearingResultCodes = Arrays.asList("1212,3343");
-        ConcludedDTO concludedDTO = ConcludedDTO.builder()
-                .calculatedOutcome(CrownCourtTrialOutcome.CONVICTED.name())
-                .hearingResultCode(hearingResultCodes)
-                .caseUrn("caaseURN12")
-                .ouCourtLocation("121")
-                .prosecutionConcluded(ProsecutionConcluded.builder()
-                        .maatId(121111)
-                        .concluded(true)
-
-                        .build())
-                .build();
+        List<String> hearingResultCodes = List.of("1212","3343");
+        ConcludedDTO concludedDTO = getConcludedDTO();
 
         //when
         RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType(CrownCourtCaseType.INDICTABLE.name()).aptyCode("ACV").id(123).build();
@@ -87,18 +143,47 @@ public class ProsecutionConcludedImplTest {
         when(resultCodeHelper.isImprisoned("CONVICTED",hearingResultCodes)).thenReturn("N");
         when(resultCodeHelper.isBenchWarrantIssued("CONVICTED",hearingResultCodes)).thenReturn("N");
 
-        when(xlatResultRepository.fetchResultCodesForCCImprisonment())
-                .thenReturn(buildCCImprisonmentResultEntities());
-
         prosecutionConcludedImpl.execute(concludedDTO);
 
         //then
-        verify(crownCourtStoredProcedureRepository, times(1))
+        verify(crownCourtStoredProcedureRepository)
                 .updateCrownCourtOutcome(concludedDTO.getProsecutionConcluded().getMaatId(),
                         CrownCourtTrialOutcome.CONVICTED.name(),
                         "N",
                         "ACV",
                         "N",
+                        "caaseURN12",
+                        courtCode);
+
+
+        verify(processSentencingHelper)
+                .processSentencingDate(concludedDTO.getCaseEndDate(),
+                        concludedDTO.getProsecutionConcluded().getMaatId(),
+                        repOrderEntity.getCatyCaseType());
+
+    }
+
+    @Test
+    public void testWhenResultCodesAreNotValid_thenProcessWithNullExpected() {
+        //given
+        ConcludedDTO concludedDTO = getConcludedDTO();
+
+        //when
+        RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType(CrownCourtCaseType.INDICTABLE.name()).aptyCode("ACV").id(123).build();
+        when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
+
+        String courtCode = "1212";
+        when(crownCourtCodeHelper.getCode(anyString())).thenReturn(courtCode);
+
+        prosecutionConcludedImpl.execute(concludedDTO);
+
+        //then
+        verify(crownCourtStoredProcedureRepository)
+                .updateCrownCourtOutcome(concludedDTO.getProsecutionConcluded().getMaatId(),
+                        CrownCourtTrialOutcome.CONVICTED.name(),
+                        null,
+                        "ACV",
+                        null,
                         "caaseURN12",
                         courtCode);
 
@@ -137,5 +222,19 @@ public class ProsecutionConcludedImplTest {
         });
 
         return resultList;
+    }
+
+    private ConcludedDTO getConcludedDTO() {
+        List<String> hearingResultCodes = List.of("1212","3343");
+        return ConcludedDTO.builder()
+                .calculatedOutcome(CrownCourtTrialOutcome.CONVICTED.name())
+                .hearingResultCodeList(hearingResultCodes)
+                .caseUrn("caaseURN12")
+                .ouCourtLocation("121")
+                .prosecutionConcluded(ProsecutionConcluded.builder()
+                        .maatId(121111)
+                        .concluded(true)
+                        .build())
+                .build();
     }
 }

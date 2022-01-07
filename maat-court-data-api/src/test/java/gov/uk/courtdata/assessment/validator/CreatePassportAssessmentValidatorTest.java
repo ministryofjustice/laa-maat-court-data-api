@@ -38,20 +38,6 @@ public class CreatePassportAssessmentValidatorTest {
     }
 
     @Test
-    public void testCreatePassportAssessmentValidator_whenNworCodeIsBlank_thenThrowsException() {
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
-                () -> createAssessmentValidator.validate(getAssessmentWithNworCode("")));
-        assertThat(validationException.getMessage()).isEqualTo("New work reason code is required");
-    }
-
-    @Test
-    public void testCreatePassportAssessmentValidator_whenNworCodeIsNull_thenThrowsException() {
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
-                () -> createAssessmentValidator.validate(getAssessmentWithNworCode(null)));
-        assertThat(validationException.getMessage()).isEqualTo("New work reason code is required");
-    }
-
-    @Test
     public void testCreatePassportAssessmentValidator_whenUserCreatedIsFilled_thenValidationPasses() {
         Optional<Void> result = createAssessmentValidator.validate(getAssessmentWithUserCreated("test-f"));
         assertThat(result).isEqualTo(Optional.empty());

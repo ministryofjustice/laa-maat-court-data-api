@@ -15,6 +15,6 @@ public interface PassportAssessmentRepository extends JpaRepository<PassportAsse
     void updateAllPreviousPassportAssessmentsAsReplaced(@Param("repId") Integer repId);
 
     @Modifying
-    @Query(value = "UPDATE PassportAssessmentEntity pa set pa.replaced = 'Y' WHERE pa.id = :id AND pa.repId = :repId")
+    @Query(value = "UPDATE PassportAssessmentEntity pa set pa.replaced = 'Y' WHERE pa.id <> :id AND pa.repId = :repId")
     void updatePreviousPassportAssessmentsAsReplaced(@Param("repId") Integer repId, @Param("id") Integer id);
 }

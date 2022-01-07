@@ -16,6 +16,5 @@ import java.time.LocalDateTime;
 public class UpdatePassportAssessment extends PassportAssessment {
 
     private Integer id;
-    private LocalDateTime dateModified;
     private String userModified;
 }

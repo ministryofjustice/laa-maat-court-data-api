@@ -23,8 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -121,19 +120,13 @@ public class PassportAssessmentControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
-    @Test
-    public void givenCorrectParameters_whenDeletePassportAssessmentIsInvoked_thenPassportAssessmentIsDeleted() throws Exception {
-        when(passportAssessmentValidationProcessor.validate(any(Integer.class))).thenReturn(Optional.empty());
-        doNothing().when(passportAssessmentService).delete(MOCK_ASSESSMENT_ID);
-        mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/" + MOCK_ASSESSMENT_ID))
-                .andExpect(status().isOk());
-    }
 
     @Test
     public void givenIncorrectParameters_whenDeletePassportAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(passportAssessmentValidationProcessor.validate(any(Integer.class))).thenThrow(new ValidationException());
         doNothing().when(passportAssessmentService).delete(MOCK_ASSESSMENT_ID);
-        mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/" + FAKE_ASSESSMENT_ID))
+        verify(passportAssessmentService, never()).delete(any(Integer.class));
+        mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/" + MOCK_ASSESSMENT_ID))
                 .andExpect(status().is4xxClientError());
     }
 }

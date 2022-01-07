@@ -69,6 +69,14 @@ public class PassportAssessmentValidationProcessorTest {
                 () -> passportAssessmentValidationProcessor.validate(assessment));
         assertThat(validationException.getMessage()).isEqualTo("New Work Reason (NWOR) code is required");
     }
+    @Test
+    public void testPassportAssessmentValidationProcessor_whenNWORCodeIsBlank_thenThrowsException() {
+        PassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
+        assessment.setNworCode("");
+        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+                () -> passportAssessmentValidationProcessor.validate(assessment));
+        assertThat(validationException.getMessage()).isEqualTo("New Work Reason (NWOR) code is required");
+    }
 
     @Test
     public void testPassportAssessmentValidationProcessor_whenRequiredFieldsPresent_thenValidationPasses() {

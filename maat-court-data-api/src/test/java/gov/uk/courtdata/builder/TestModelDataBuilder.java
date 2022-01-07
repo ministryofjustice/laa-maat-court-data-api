@@ -383,6 +383,7 @@ public class TestModelDataBuilder {
                 .decisionDate(LocalDateTime.of(2022,1,1,10,0))
                 .decisionResult("PASS")
                 .notes("notes test notes")
+                .replaced("N")
                 .build();
     }
     public static CreateIOJAppeal getCreateIOJAppealObject(boolean isValid) {
@@ -398,6 +399,7 @@ public class TestModelDataBuilder {
                 .decisionDate(LocalDateTime.of(2022,1,1,10,0))
                 .decisionResult("PASS")
                 .notes("notes test notes")
+
                 .build();
     }
 }

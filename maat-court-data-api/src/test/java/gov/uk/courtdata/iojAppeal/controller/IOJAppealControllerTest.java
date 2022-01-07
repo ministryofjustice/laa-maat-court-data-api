@@ -1,11 +1,8 @@
 package gov.uk.courtdata.iojAppeal.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.iojAppeal.service.IOJAppealService;
-import gov.uk.courtdata.iojAppeal.validator.IOJAppealValidationProcessor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +13,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.*;
 @RunWith(SpringRunner.class)
@@ -32,9 +28,6 @@ public class IOJAppealControllerTest {
     private MockMvc mvc;
 
     @MockBean
-    private IOJAppealValidationProcessor iojAppealValidationProcessor;
-
-    @MockBean
     private IOJAppealService iojAppealService;
 
     @Autowired
@@ -42,7 +35,6 @@ public class IOJAppealControllerTest {
 
     @Test
     public void givenValidIOJAppealID_ThenReturnValidIOJAppealResponse_Success() throws Exception {
-        when(iojAppealValidationProcessor.validate(IOJ_APPEAL_ID)).thenReturn(Optional.empty());
 
         when(iojAppealService.find(IOJ_APPEAL_ID)).thenReturn(TestModelDataBuilder.getIOJAppealDTO());
         mvc.perform(MockMvcRequestBuilders.get("/ioj-appeal/"+IOJ_APPEAL_ID))
@@ -52,11 +44,12 @@ public class IOJAppealControllerTest {
     }
 
     @Test
-    public void givenInvalidIOJAppealID_ThenReturnExceptionResponse_Error() throws Exception {
-        when(iojAppealValidationProcessor.validate(-1)).thenThrow(new ValidationException());
-        mvc.perform(MockMvcRequestBuilders.get("/ioj-appeal/"+-1))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    public void givenNonExistentIOJAppealID_ThenReturnBadRequestResponse_Error() throws Exception {
+        when(iojAppealService.find(IOJ_APPEAL_ID)).thenThrow( new NoSuchElementException("No IOJAppeal object found. ID: "+IOJ_APPEAL_ID));
+        mvc.perform(MockMvcRequestBuilders.get("/ioj-appeal/"+IOJ_APPEAL_ID))
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("No IOJAppeal object found. ID: "+IOJ_APPEAL_ID));
     }
 
     @Test
@@ -64,8 +57,7 @@ public class IOJAppealControllerTest {
         //given
         var createIOJAppeal= TestModelDataBuilder.getCreateIOJAppealObject(IS_VALID);
         var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
-        //when
-        //TODO: calling validator process return optional.empty
+
         when(iojAppealService.create(createIOJAppeal)).thenReturn(iojAppealDTO);
 
         var createIOJAppealJson = objectMapper.writeValueAsString(createIOJAppeal);
@@ -80,7 +72,6 @@ public class IOJAppealControllerTest {
     public void givenInvalidCreateIOJAppealPassedToPostCall_ThenReturnError_FailRequestParameterObjectValidation() throws Exception {
         //given
         var createIOJAppeal= TestModelDataBuilder.getCreateIOJAppealObject(!IS_VALID);
-        var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
 
         var createIOJAppealJson = objectMapper.writeValueAsString(createIOJAppeal);
         //on call check the id of the object and any other value

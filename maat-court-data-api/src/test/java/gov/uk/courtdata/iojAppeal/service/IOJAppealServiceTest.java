@@ -1,5 +1,6 @@
 package gov.uk.courtdata.iojAppeal.service;
 
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -31,7 +33,7 @@ public class IOJAppealServiceTest {
     @Test
     public void whenFindIsInvoked_thenIOJAppealIsRetrieved() {
         var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
-        when(iojAppealImpl.find(any())).thenReturn(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).build());
+        when(iojAppealImpl.find(any())).thenReturn(TestEntityDataBuilder.getIOJAppealEntity());
         when(iojAppealMapper.toIOJAppealDTO(any(IOJAppealEntity.class))).thenReturn(iojAppealDTO);
         var returnedIOJAppeal = iojAppealService.find(IOJ_APPEAL_ID);
         assertEquals(returnedIOJAppeal.getId(), IOJ_APPEAL_ID);
@@ -39,12 +41,19 @@ public class IOJAppealServiceTest {
 
     @Test
     public void whenCreateIsInvoked_thenIOJAppealIsCreated() {
-        var createIOJAppeal = TestModelDataBuilder.getCreateIOJAppealObject(true);
         var createdIOJAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
-//        when(iojAppealImpl.find(any())).thenReturn(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).build());
-//        TODO: uncomment this: //when(iojAppealMapper.toIOJAppealDTO(any(CreateIOJAppeal.class))).thenReturn(createdIOJAppealDTO);
+        var createIOJAppeal = TestModelDataBuilder.getCreateIOJAppealObject(true);
 
-//        var returnedIOJAppeal = iojAppealService.find(IOJ_APPEAL_ID);
-//        assertEquals(returnedIOJAppeal.getId(), IOJ_APPEAL_ID);
+        when(iojAppealMapper.toIOJAppealDTO(any(CreateIOJAppeal.class))).thenReturn(createdIOJAppealDTO);
+
+        when(iojAppealImpl.create(any())).thenReturn(TestEntityDataBuilder.getIOJAppealEntity());
+
+        when(iojAppealMapper.toIOJAppealDTO(any(IOJAppealEntity.class))).thenReturn(createdIOJAppealDTO);
+
+        var newlyCreatedIOJAppealDTO = iojAppealService.create(createIOJAppeal);
+
+        assertEquals(newlyCreatedIOJAppealDTO.getId(), IOJ_APPEAL_ID);
+
+        verify(iojAppealImpl).setOldIOJAppealReplaced(IOJ_REP_ID, IOJ_APPEAL_ID);
     }
 }

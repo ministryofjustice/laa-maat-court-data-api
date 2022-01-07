@@ -2,12 +2,14 @@ package gov.uk.courtdata.iojAppeal.service;
 
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.iojAppeal.impl.IOJAppealImpl;
 import gov.uk.courtdata.iojAppeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.model.CreateIOJAppeal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,21 +22,21 @@ public class IOJAppealService {
     public IOJAppealDTO find(Integer iojAppealId) {
         var iojAppealEntity = iojAppealImpl.find(iojAppealId);
 
-        return buildIOJAppealDTOFrom(iojAppealEntity);
-    }
-
-    public IOJAppealDTO create(CreateIOJAppeal iojAppeal) {
-        log.info("Create IOJ Appeal - Transaction Processing - Start");
-        var iojAppealDTO =  iojAppealMapper.toIOJAppealDTO(iojAppeal);
-        //TODO: Create new IOJ Appeal record -> look at FinancialAssessmentImpl.create() to see how it is done
-        //TODO: UPDATE all previous records look at Matt's FinancialAssessmentService.create() function to see how it is done
-        log.info("Create IOJ Appeal - Transaction Processing - end");
-        return null;
-    }
-
-    private IOJAppealDTO buildIOJAppealDTOFrom(IOJAppealEntity iojAppealEntity) {
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
     }
 
+    @Transactional(rollbackFor = MAATCourtDataException.class)
+    public IOJAppealDTO create(CreateIOJAppeal iojAppeal) {
+        log.info("Create IOJ Appeal - Transaction Processing - Start");
+        var iojAppealDTO =  iojAppealMapper.toIOJAppealDTO(iojAppeal);
 
+        log.info("Creating new IOJAppeal record");
+        var iojAppealEntity = iojAppealImpl.create(iojAppealDTO);
+
+        log.info("Update previous IOJ Appeal records and set them to replaced");
+        iojAppealImpl.setOldIOJAppealReplaced(iojAppealEntity.getRepId(), iojAppealEntity.getId());
+
+        log.info("Create IOJ Appeal - Transaction Processing - end");
+        return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
+    }
 }

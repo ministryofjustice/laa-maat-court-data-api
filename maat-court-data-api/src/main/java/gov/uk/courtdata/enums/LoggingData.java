@@ -11,7 +11,8 @@ public enum LoggingData{
     MAATID("maatId"),
     CASE_URN("caseUrn"),
     MESSAGE("message"),
-    REQUEST_TYPE("requestType");
+    REQUEST_TYPE("requestType"),
+    IOJ_APPEAL_ID("iojAppealId");
 
     private String value;
 }

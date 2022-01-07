@@ -88,5 +88,7 @@ sentry:
 
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}
+  authorizationEndpoints: ${AUTHORIZATION_ENDPOINTS_ENABLED}
+
 
 version: 0.0.1

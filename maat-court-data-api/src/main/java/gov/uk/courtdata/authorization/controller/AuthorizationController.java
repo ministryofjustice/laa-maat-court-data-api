@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Authorization", description = "Rest API for performing role authorization checks")
+@ConditionalOnProperty(value = "feature.authorizationEndpoints", havingValue = "true")
 public class AuthorizationController {
 
     private final AuthorizationService authorizationService;

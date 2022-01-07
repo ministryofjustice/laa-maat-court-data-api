@@ -433,7 +433,6 @@ public class TestModelDataBuilder {
                 "\"valid\": \"Y\",\n" +
                 "\"dateCompleted\": \"2021-10-09T15:02:25\",\n" +
                 "\"whoDWPChecked\": \"ABC\",\n" +
-                "\"dateModified\": \"2021-10-09T15:01:25\",\n" +
                 "\"userModified\": \"test-f\"\n" +
                 "}";
     }
@@ -517,7 +516,6 @@ public class TestModelDataBuilder {
         return UpdatePassportAssessment.builder()
                 .repId(5678)
                 .nworCode("FMA")
-                .dateModified(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userModified("test-f")
                 .cmuId(30)
                 .assessmentDate(LocalDateTime.parse("2021-10-09T15:01:25"))

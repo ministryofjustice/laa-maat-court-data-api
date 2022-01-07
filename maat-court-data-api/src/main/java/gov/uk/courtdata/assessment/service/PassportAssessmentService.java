@@ -5,6 +5,7 @@ import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class PassportAssessmentService {
-
+    public static final String STATUS_COMPLETE = "COMPLETE";
     private final PassportAssessmentImpl passportAssessmentImpl;
     private final PassportAssessmentMapper passportAssessmentMapper;
 
@@ -31,6 +32,13 @@ public class PassportAssessmentService {
         PassportAssessmentDTO passportAssessmentDTO =
                 passportAssessmentMapper.updatePassportAssessmentToPassportAssessmentDTO(updatePassportAssessment);
         log.info("Updating existing passport assessment record");
+        PassportAssessmentEntity existingPassportAssessmentEntity = passportAssessmentImpl.find(passportAssessmentDTO.getId());
+        if(existingPassportAssessmentEntity == null) {
+            throw new ValidationException(String.format("Passport assessment with id %s not found !",passportAssessmentDTO.getId()));
+        }
+        if(existingPassportAssessmentEntity.getPastStatus().equals(STATUS_COMPLETE)) {
+            throw new ValidationException("User cannot modify a completed assessment");
+        }
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.update(passportAssessmentDTO);
         log.info("Update Passport Assessment - Transaction Processing - End");
         return buildPassportAssessmentDTO(passportAssessmentEntity);

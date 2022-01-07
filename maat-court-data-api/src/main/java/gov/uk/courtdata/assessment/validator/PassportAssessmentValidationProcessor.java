@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 @Component
 @RequiredArgsConstructor
 public class PassportAssessmentValidationProcessor {
@@ -28,8 +30,10 @@ public class PassportAssessmentValidationProcessor {
             throw new ValidationException("Rep Order ID is required");
         } else if (passportAssessment.getCmuId() == null) {
             throw new ValidationException("Case Management Unit (CMU) ID is required");
-        }else if (StringUtils.isBlank(passportAssessment.getNworCode())) {
+        } else if (StringUtils.isBlank(passportAssessment.getNworCode())) {
             throw new ValidationException("New Work Reason (NWOR) code is required");
+        } else if (isBlank(passportAssessment.getPastStatus())) {
+            throw new ValidationException("Past Status is required");
         }
         if (passportAssessment instanceof CreatePassportAssessment) {
             return createPassportAssessmentValidator.validate((CreatePassportAssessment) passportAssessment);

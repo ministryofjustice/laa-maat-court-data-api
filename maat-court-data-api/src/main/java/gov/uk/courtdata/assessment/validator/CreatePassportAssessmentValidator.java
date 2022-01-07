@@ -19,13 +19,9 @@ public class CreatePassportAssessmentValidator implements IValidator<Void, Creat
     @Override
     public Optional<Void> validate(CreatePassportAssessment createPassportAssessment) {
 
-        if (isBlank(createPassportAssessment.getNworCode())) {
-            throw new ValidationException("New work reason code is required");
-        } else if (isBlank(createPassportAssessment.getUserCreated())) {
+        if (isBlank(createPassportAssessment.getUserCreated())) {
             throw new ValidationException("Username is required");
-        } else if (isBlank(createPassportAssessment.getPastStatus())) {
-            throw new ValidationException("Past Status is required");
-        } if (createPassportAssessment.getFinancialAssessmentId() == null) {
+        } else if (createPassportAssessment.getFinancialAssessmentId() == null) {
             throw new ValidationException("Financial Assessment ID is required");
         }
         return Optional.empty();

@@ -44,4 +44,21 @@ public class AuthorizationController {
         boolean isAuthorized = authorizationService.isRoleActionAuthorized(username, action);
         return ResponseEntity.ok(AuthorizationResponse.builder().result(isAuthorized).build());
     }
+
+    @GetMapping(value = "/users/{username}/validation/nwor/{nworCode}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Check new work order reason")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AuthorizationResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<AuthorizationResponse> isNewWorkReasonAuthorized(
+            @PathVariable String username, @PathVariable String nworCode,
+            @Parameter(description = "Used for tracing calls")
+            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+
+        log.info("Check-New-Work-Order-Reason Request Received");
+        boolean isAuthorized = authorizationService.isNewWorkReasonAuthorized(username, nworCode);
+        return ResponseEntity.ok(AuthorizationResponse.builder().result(isAuthorized).build());
+    }
 }

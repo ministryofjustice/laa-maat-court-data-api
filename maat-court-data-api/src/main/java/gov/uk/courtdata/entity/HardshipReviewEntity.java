@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @Builder
@@ -71,4 +72,10 @@ public class HardshipReviewEntity {
     private String replaced = "N";
     @Column(name = "VALID")
     private String valid;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "hardshipReview")
+    private Set<HardshipReviewDetailEntity> hardshipReviewDetails;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "hardshipReview")
+    private Set<HardshipReviewProgressEntity> hardshipReviewProgresses;
 }

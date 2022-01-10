@@ -1,11 +1,10 @@
 package gov.uk.courtdata.iojAppeal.service;
 
 import gov.uk.courtdata.dto.IOJAppealDTO;
-import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.iojAppeal.impl.IOJAppealImpl;
 import gov.uk.courtdata.iojAppeal.mapper.IOJAppealMapper;
-import gov.uk.courtdata.model.CreateIOJAppeal;
+import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

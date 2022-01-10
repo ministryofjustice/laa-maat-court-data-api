@@ -1,4 +1,4 @@
-package gov.uk.courtdata.model;
+package gov.uk.courtdata.model.iojAppeal;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,15 +12,13 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateIOJAppeal {
+public class IOJAppeal {
     @NotNull
     private Integer repId;
     @NotNull
     private LocalDateTime appealSetupDate;
     @NotNull
     private String nworCode;
-    @NotNull
-    private String userCreated;
     @NotNull
     private Integer cmuId;
     @NotNull

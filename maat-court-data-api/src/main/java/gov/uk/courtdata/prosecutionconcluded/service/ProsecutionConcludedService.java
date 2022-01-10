@@ -90,6 +90,7 @@ public class ProsecutionConcludedService {
     private WQHearingEntity getWqHearingEntity(ProsecutionConcluded prosecutionConcluded) {
         WQHearingEntity wqHearingEntity = wqHearingRepository
                 .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString())
+                //TODO: in case of multiple maat-id then this will break the flow.
                 .orElseThrow(() ->
                         new MAATCourtDataException("Hearing not found for this hearingId " + prosecutionConcluded.getProsecutionCaseId()));
         return wqHearingEntity;

@@ -22,8 +22,11 @@ import java.time.LocalDateTime;
 public class WQHearingEntity {
 
     @Id
-    @Column(name = "ID")
-    private String iD;
+    @Column(name = "TX_ID")
+    private Integer txId;
+    @Column(name = "CASE_ID")
+    private Integer caseId;
+
     @Column(name = "HEARING_UUID")
     private String hearingUUID;
     @Column(name = "MAAT_ID")
@@ -38,7 +41,6 @@ public class WQHearingEntity {
     @Column(name = "UPDATED_DATE_TIME")
     @UpdateTimestamp
     private LocalDateTime updatedDateTime;
-
     @Column(name = "CASE_URN")
     private String caseUrn;
     @Column(name = "RESULT_CODES")

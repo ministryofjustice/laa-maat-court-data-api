@@ -1,9 +1,12 @@
 package gov.uk.courtdata.hearing.processor;
 
 import gov.uk.courtdata.entity.WQHearingEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.model.hearing.HearingResulted;
+import gov.uk.courtdata.repository.IdentifierRepository;
 import gov.uk.courtdata.repository.WQHearingRepository;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,9 +21,19 @@ public class WQHearingProcessor {
 
     private final WQHearingRepository wQHearingRepository;
 
+    private final WqLinkRegisterRepository wqLinkRegisterRepository;
+    private final IdentifierRepository identifierRepository;
+
     public void process(final HearingResulted hearingResulted) {
 
+        List<WqLinkRegisterEntity> wqLinkRegisterEntities =
+                wqLinkRegisterRepository.findBymaatId(hearingResulted.getMaatId());
+
+        WqLinkRegisterEntity wqLinkReg = wqLinkRegisterEntities.iterator().next();
+
         WQHearingEntity wqHearingEntity = WQHearingEntity.builder()
+                .caseId(wqLinkReg.getCaseId())
+                .txId(identifierRepository.getTxnID())
                 .hearingUUID(hearingResulted.getHearingId().toString())
                 .maatId(hearingResulted.getMaatId())
                 .wqJurisdictionType(hearingResulted.getJurisdictionType().name())

@@ -32,19 +32,9 @@ import java.time.LocalDateTime;
 @Tag(name = "Assessments", description = "Rest API for financial assessments")
 public class FinancialAssessmentController {
 
-    private Gson gson;
-    private final GsonBuilder gsonBuilder;
+    private final Gson gson;
     private final FinancialAssessmentService financialAssessmentService;
     private final FinancialAssessmentValidationProcessor financialAssessmentValidationProcessor;
-
-    @PostConstruct
-    private void initialize() {
-        gson = gsonBuilder
-                .setPrettyPrinting()
-                .serializeNulls()
-                .registerTypeAdapter(LocalDateTime.class, new DateUtil.LocalDateTimeAdapter())
-                .create();
-    }
 
     @GetMapping(value = "/{financialAssessmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a financial assessment record")

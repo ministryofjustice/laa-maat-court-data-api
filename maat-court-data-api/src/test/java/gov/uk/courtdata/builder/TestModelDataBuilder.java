@@ -12,6 +12,7 @@ import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
+import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -373,14 +374,14 @@ public class TestModelDataBuilder {
         return IOJAppealDTO.builder()
                 .id(IOJ_APPEAL_ID)
                 .repId(IOJ_REP_ID)
-                .appealSetupDate(LocalDateTime.of(2022,1,1,10,0))
+                .appealSetupDate(getIOJTestDate())
                 .nworCode("NEW")
                 .userCreated("test-s")
                 .cmuId(86679086)
                 .iapsStatus("COMPLETE")
                 .appealSetupResult("GRANT")
                 .iderCode("NOTUNDPROC")
-                .decisionDate(LocalDateTime.of(2022,1,1,10,0))
+                .decisionDate(getIOJTestDate())
                 .decisionResult("PASS")
                 .notes("notes test notes")
                 .replaced("N")
@@ -389,17 +390,37 @@ public class TestModelDataBuilder {
     public static CreateIOJAppeal getCreateIOJAppealObject(boolean isValid) {
         return CreateIOJAppeal.builder()
                 .repId(isValid ? IOJ_REP_ID : null)
-                .appealSetupDate(LocalDateTime.of(2022,1,1,10,0))
+                .appealSetupDate(getIOJTestDate())
                 .nworCode("NEW")
                 .userCreated("test-s")
                 .cmuId(86679086)
                 .iapsStatus("COMPLETE")
                 .appealSetupResult("GRANT")
                 .iderCode("NOTUNDPROC")
-                .decisionDate(LocalDateTime.of(2022,1,1,10,0))
+                .decisionDate(getIOJTestDate())
                 .decisionResult("PASS")
                 .notes("notes test notes")
 
                 .build();
+    }
+
+    public static UpdateIOJAppeal getUpdateIOJAppealObject(boolean isValid) {
+        return UpdateIOJAppeal.builder()
+                .repId(isValid ? IOJ_REP_ID : null)
+                .appealSetupDate(getIOJTestDate())
+                .nworCode("NEW")
+                .cmuId(86679086)
+                .iapsStatus("COMPLETE")
+                .appealSetupResult("GRANT")
+                .iderCode("NOTUNDPROC")
+                .decisionDate(getIOJTestDate())
+                .decisionResult("PASS")
+                .notes("notes Update test notes")
+                .userModified("test-s")
+                .dateModified(getIOJTestDate())
+                .build();
+    }
+    private static LocalDateTime getIOJTestDate(){
+        return LocalDateTime.of(2022,1,1,10,0);
     }
 }

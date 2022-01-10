@@ -90,4 +90,21 @@ public class IOJAppealControllerTest {
         mvc.perform(MockMvcRequestBuilders.post("/ioj-appeal").content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
+
+    @Test
+    public void givenValidUpdateIOJAppealPassedToPostCall_ThenReturnUpdatedIOJAppeal() throws Exception {
+        //given
+        var updateIOJAppeal= TestModelDataBuilder.getUpdateIOJAppealObject(IS_VALID);
+        var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
+
+//        when(iojAppealService.create(updateIOJAppeal)).thenReturn(iojAppealDTO);
+
+        var updateIOJAppealJson = objectMapper.writeValueAsString(updateIOJAppeal);
+        //on call check the id of the object and any other value
+        mvc.perform(MockMvcRequestBuilders.put("/ioj-appeal").content(updateIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$.id").value(IOJ_APPEAL_ID));
+    }
+
 }

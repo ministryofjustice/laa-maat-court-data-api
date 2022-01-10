@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Authorization", description = "Rest API for performing role authorization checks")
-@ConditionalOnProperty(value = "feature.authorizationEndpoints", havingValue = "true")
 public class AuthorizationController {
 
     private final AuthorizationService authorizationService;

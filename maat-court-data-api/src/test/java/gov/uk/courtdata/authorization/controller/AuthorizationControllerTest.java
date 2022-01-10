@@ -28,20 +28,24 @@ public class AuthorizationControllerTest {
 
     private final String baseURL = "/authorization";
 
-    private String getUrl(String username, String action) {
-        return String.format(baseURL + "/users/%s/validation/action/%s", username, action);
+    private String getRoleActionUrl(String action) {
+        return String.format(baseURL + "/users/test-f/validation/action/%s", action);
+    }
+
+    private String getWorkReasonUrl(String nworCode) {
+        return String.format(baseURL + "/users/test-f/validation/nwor/%s", nworCode);
     }
 
     @Test
     public void givenCorrectParameters_whenIsRoleActionAuthorizedIsInvoked_thenResultIsReturned() throws Exception {
         when(authorizationService.isRoleActionAuthorized(any(), any())).thenReturn(Boolean.TRUE);
-        mvc.perform(MockMvcRequestBuilders.get(getUrl("test-f", "CREATE_ASSESSMENT")))
+        mvc.perform(MockMvcRequestBuilders.get(getRoleActionUrl("CREATE_ASSESSMENT")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.result").value("true"));
 
         when(authorizationService.isRoleActionAuthorized(any(), any())).thenReturn(Boolean.FALSE);
-        mvc.perform(MockMvcRequestBuilders.get(getUrl("test-f", "CREATE_ASSESSMENT")))
+        mvc.perform(MockMvcRequestBuilders.get(getRoleActionUrl("CREATE_ASSESSMENT")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.result").value("false"));
@@ -53,10 +57,37 @@ public class AuthorizationControllerTest {
                 new ValidationException("Username and action are required")
         );
 
-        mvc.perform(MockMvcRequestBuilders.get(getUrl("test-f", "FAKE_ACTION")))
+        mvc.perform(MockMvcRequestBuilders.get(getRoleActionUrl("FAKE_ACTION")))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value("Username and action are required"));
+    }
+
+    @Test
+    public void givenCorrectParameters_whenIsNewWorkReasonAuthorizedIsInvoked_thenResultIsReturned() throws Exception {
+        when(authorizationService.isNewWorkReasonAuthorized(any(), any())).thenReturn(Boolean.TRUE);
+        mvc.perform(MockMvcRequestBuilders.get(getWorkReasonUrl("FMA")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.result").value("true"));
+
+        when(authorizationService.isNewWorkReasonAuthorized(any(), any())).thenReturn(Boolean.FALSE);
+        mvc.perform(MockMvcRequestBuilders.get(getWorkReasonUrl("FMA")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.result").value("false"));
+    }
+
+    @Test
+    public void givenIncorrectParameters_IsNewWorkReasonAuthorizedIsInvoked_thenReturn400ClientError() throws Exception {
+        when(authorizationService.isNewWorkReasonAuthorized(any(), any())).thenThrow(
+                new ValidationException("Username and new work reason are required")
+        );
+
+        mvc.perform(MockMvcRequestBuilders.get(getWorkReasonUrl("FAKE_WORK_REASON")))
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("Username and new work reason are required"));
     }
 }
 

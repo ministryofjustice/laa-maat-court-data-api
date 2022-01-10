@@ -4,6 +4,7 @@ import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.iojAppeal.service.IOJAppealService;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
+import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -58,5 +59,20 @@ public class IOJAppealController {
         var iojAppealDTO= iojAppealService.create(iojAppeal);
 
         return ResponseEntity.ok(iojAppealDTO);
+    }
+
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Update an existing Interest of Justice appeal record")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = IOJAppealDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<IOJAppealDTO> updateIOJAppeal(@Parameter(description = "Interest of Justice appeal data", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = UpdateIOJAppeal.class))) @Valid @RequestBody UpdateIOJAppeal iojAppeal,
+                                                        @Parameter(description = "Used for tracing calls")
+                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        log.info("Update IOJ Appeal Request Received with ID: {}", iojAppeal.getId());
+
+        return ResponseEntity.ok(null);
     }
 }

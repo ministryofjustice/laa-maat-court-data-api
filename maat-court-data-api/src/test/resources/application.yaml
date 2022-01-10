@@ -79,6 +79,5 @@ swagger-ui:
 
 feature:
   postMvpEnabled: true
-  authorizationEndpoints: true
 
 version: 0.0.1

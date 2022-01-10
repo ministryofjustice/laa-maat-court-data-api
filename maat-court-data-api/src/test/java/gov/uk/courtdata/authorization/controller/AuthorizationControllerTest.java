@@ -2,6 +2,7 @@ package gov.uk.courtdata.authorization.controller;
 
 import gov.uk.courtdata.authorization.service.AuthorizationService;
 import gov.uk.courtdata.exception.ValidationException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AuthorizationController.class)
+@Ignore
 public class AuthorizationControllerTest {
 
     @Autowired

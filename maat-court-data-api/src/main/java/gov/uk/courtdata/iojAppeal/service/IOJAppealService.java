@@ -33,6 +33,7 @@ public class IOJAppealService {
         var iojAppealEntity = iojAppealImpl.create(iojAppealDTO);
 
         log.info("Update previous IOJ Appeal records and set them to replaced");
+
         iojAppealImpl.setOldIOJAppealsReplaced(iojAppealEntity.getRepId(), iojAppealEntity.getId());
 
         log.info("Create IOJ Appeal - Transaction Processing - end");

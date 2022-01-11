@@ -57,9 +57,12 @@ public class IOJAppealImplTest {
 
     @Test
     public void whenSetOldIOJAppealReplaced_thenAllIOJAppealRecordsWithGivenREP_IDAreSetToReplaced(){
+
         iojAppealImpl.setOldIOJAppealsReplaced(IOJ_REP_ID, 124);
+
         verify(iojAppealRepository).setOldIOJAppealsReplaced(IOJ_REP_ID,124);
     }
+
     @Test
     public void whenUpdateIsInvoked_thenIOJAppealIsUpdated() {
         var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();

@@ -21,6 +21,7 @@ import java.util.Optional;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.*;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(IOJAppealController.class)
 public class IOJAppealControllerTest {
@@ -90,8 +91,10 @@ public class IOJAppealControllerTest {
         mvc.perform(MockMvcRequestBuilders.post("/ioj-appeal").content("").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
+
     @Test
     public void createIOJAppeal_BadRequest_RequestEmptyBody() throws Exception {
+
         mvc.perform(MockMvcRequestBuilders.post("/ioj-appeal").content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
@@ -117,8 +120,8 @@ public class IOJAppealControllerTest {
     public void givenInvalidUpdateIOJAppeal_whenUpdateOJAppealIsCalled_thenFailRequestParameterSchemaValidation() throws Exception {
         //given
         var updateIOJAppeal= TestModelDataBuilder.getUpdateIOJAppealObject(false);
-
         var updateIOJAppealJson = objectMapper.writeValueAsString(updateIOJAppeal);
+
         //on call check the id of the object and any other value
         mvc.perform(MockMvcRequestBuilders.put("/ioj-appeal").content(updateIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());

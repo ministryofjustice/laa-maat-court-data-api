@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class UpdateIOJAppeal extends IOJAppeal{
     @NotNull
     private Integer id;
-    @NotNull
+
     private LocalDateTime dateModified;
     @NotNull
     private String userModified;

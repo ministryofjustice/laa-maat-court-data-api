@@ -15,6 +15,7 @@ import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
@@ -55,7 +56,7 @@ public class IOJAppealImplTest {
         iojAppealImpl.create(iojAppealDTO);
 
         verify(iojAppealRepository).save(iojAppealEntityArgumentCaptor.capture());
-
+        var test = iojAppealEntityArgumentCaptor.getValue();
         assertThat(iojAppealEntityArgumentCaptor.getValue().getId()).isEqualTo(iojAppealDTO.getId());
     }
 
@@ -63,5 +64,19 @@ public class IOJAppealImplTest {
     public void whenSetOldIOJAppealReplaced_thenAllIOJAppealRecordsWithGivenREP_IDAreSetToReplaced(){
         iojAppealImpl.setOldIOJAppealReplaced(IOJ_REP_ID, 124);
         verify(iojAppealRepository).setOldIOJAppealsReplaced(IOJ_REP_ID,124);
+    }
+    @Test
+    public void whenUpdateIsInvoked_thenIOJAppealIsUpdated() {
+        var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
+        var dateModified = LocalDateTime.of(2022,1,1,10,0);
+        var updatedIOJAppealEntity = TestEntityDataBuilder.getIOJAppealEntity(dateModified);
+
+        when(iojAppealRepository.getById(any())).thenReturn(updatedIOJAppealEntity);
+
+        iojAppealImpl.update(iojAppealDTO);
+
+        verify(iojAppealRepository).save(iojAppealEntityArgumentCaptor.capture());
+
+        assertThat(iojAppealEntityArgumentCaptor.getValue().getDateModified()).isEqualTo(dateModified);
     }
 }

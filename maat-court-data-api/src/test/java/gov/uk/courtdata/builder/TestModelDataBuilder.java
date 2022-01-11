@@ -369,8 +369,7 @@ public class TestModelDataBuilder {
                 "\"userModified\": \"dohe-f\"\n" +
                 "}";
     }
-
-    public static IOJAppealDTO getIOJAppealDTO() {
+    public static IOJAppealDTO getIOJAppealDTO(LocalDateTime dateModified) {
         return IOJAppealDTO.builder()
                 .id(IOJ_APPEAL_ID)
                 .repId(IOJ_REP_ID)
@@ -385,8 +384,14 @@ public class TestModelDataBuilder {
                 .decisionResult("PASS")
                 .notes("notes test notes")
                 .replaced("N")
+                .dateModified(dateModified)
                 .build();
     }
+
+    public static IOJAppealDTO getIOJAppealDTO() {
+        return getIOJAppealDTO(null);
+    }
+
     public static CreateIOJAppeal getCreateIOJAppealObject(boolean isValid) {
         return CreateIOJAppeal.builder()
                 .repId(isValid ? IOJ_REP_ID : null)
@@ -400,24 +405,37 @@ public class TestModelDataBuilder {
                 .decisionDate(getIOJTestDate())
                 .decisionResult("PASS")
                 .notes("notes test notes")
-
                 .build();
     }
+    public static CreateIOJAppeal getCreateIOJAppealObject(){
+        return getCreateIOJAppealObject(true);
+    }
 
-    public static UpdateIOJAppeal getUpdateIOJAppealObject(boolean isValid) {
+    public static UpdateIOJAppeal getUpdateIOJAppealObject(){
+        return getUpdateIOJAppealObject(true, null);
+    }
+    public static UpdateIOJAppeal getUpdateIOJAppealObject(LocalDateTime dateModified){
+        return getUpdateIOJAppealObject(true, dateModified);
+    }
+    public static UpdateIOJAppeal getUpdateIOJAppealObject(boolean isValid){
+        return getUpdateIOJAppealObject(isValid, null);
+    }
+
+    public static UpdateIOJAppeal getUpdateIOJAppealObject(boolean isValid,  LocalDateTime dateModified) {
         return UpdateIOJAppeal.builder()
+                .id(IOJ_APPEAL_ID)
                 .repId(isValid ? IOJ_REP_ID : null)
                 .appealSetupDate(getIOJTestDate())
                 .nworCode("NEW")
                 .cmuId(86679086)
-                .iapsStatus("COMPLETE")
+                .iapsStatus("IN PROGRESS")
                 .appealSetupResult("GRANT")
                 .iderCode("NOTUNDPROC")
                 .decisionDate(getIOJTestDate())
                 .decisionResult("PASS")
                 .notes("notes Update test notes")
                 .userModified("test-s")
-                .dateModified(getIOJTestDate())
+                .dateModified(dateModified)
                 .build();
     }
     private static LocalDateTime getIOJTestDate(){

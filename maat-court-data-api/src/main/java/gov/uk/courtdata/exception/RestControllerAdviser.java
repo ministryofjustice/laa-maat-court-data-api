@@ -49,7 +49,7 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDTO> handleValidationError(Exception ex) {
 
         return ResponseEntity.badRequest().body(ErrorDTO.builder()
-                .code("")
+                .code(HttpStatus.BAD_REQUEST.name())
                 .message(ex.getMessage())
                 .build());
     }

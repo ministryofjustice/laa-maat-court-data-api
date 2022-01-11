@@ -31,4 +31,21 @@ public class IOJAppealImpl {
     public void setOldIOJAppealReplaced(Integer repId, Integer iojAppealIDNotToUpdate) {
         iojAppealRepository.setOldIOJAppealsReplaced(repId, iojAppealIDNotToUpdate);
     }
+
+    public IOJAppealEntity update(IOJAppealDTO iojAppealDTO){
+        var existingIOJAppealEntity = iojAppealRepository.getById(iojAppealDTO.getId());
+
+        existingIOJAppealEntity.setAppealSetupDate(iojAppealDTO.getAppealSetupDate());
+        existingIOJAppealEntity.setNworCode(iojAppealDTO.getNworCode());
+        existingIOJAppealEntity.setCmuId(iojAppealDTO.getCmuId());
+        existingIOJAppealEntity.setIapsStatus(iojAppealDTO.getIapsStatus());
+        existingIOJAppealEntity.setAppealSetupResult(iojAppealDTO.getAppealSetupResult());
+        existingIOJAppealEntity.setDecisionDate(iojAppealDTO.getDecisionDate());
+        existingIOJAppealEntity.setDecisionResult(iojAppealDTO.getDecisionResult());
+        existingIOJAppealEntity.setIderCode(iojAppealDTO.getIderCode());
+        existingIOJAppealEntity.setNotes(iojAppealDTO.getNotes());
+        existingIOJAppealEntity.setUserModified(iojAppealDTO.getUserModified());
+
+        return iojAppealRepository.save(existingIOJAppealEntity);
+    }
 }

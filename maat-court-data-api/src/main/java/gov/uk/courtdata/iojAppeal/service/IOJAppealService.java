@@ -5,6 +5,7 @@ import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.iojAppeal.impl.IOJAppealImpl;
 import gov.uk.courtdata.iojAppeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
+import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class IOJAppealService {
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
     }
 
-    @Transactional(rollbackFor = MAATCourtDataException.class)
+    @Transactional(rollbackFor = RuntimeException.class)
     public IOJAppealDTO create(CreateIOJAppeal iojAppeal) {
         log.info("Create IOJ Appeal - Transaction Processing - Start");
         var iojAppealDTO =  iojAppealMapper.toIOJAppealDTO(iojAppeal);
@@ -37,5 +38,17 @@ public class IOJAppealService {
 
         log.info("Create IOJ Appeal - Transaction Processing - end");
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
+    }
+
+    @Transactional(rollbackFor = RuntimeException.class)
+    public IOJAppealDTO update(UpdateIOJAppeal iojAppeal) {
+        log.info("Update IOJ Appeal - Transaction Processing - Start");
+        var iojAppealDTO =  iojAppealMapper.toIOJAppealDTO(iojAppeal);
+
+        log.info("Updating IOJAppeal record");
+        var updatedIOJAppealEntity = iojAppealImpl.update(iojAppealDTO);
+
+        log.info("Update IOJ Appeal - Transaction Processing - end");
+        return iojAppealMapper.toIOJAppealDTO(updatedIOJAppealEntity);
     }
 }

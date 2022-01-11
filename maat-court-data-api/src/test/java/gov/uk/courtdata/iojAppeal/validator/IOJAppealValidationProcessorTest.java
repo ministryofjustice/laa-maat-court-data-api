@@ -67,7 +67,7 @@ public class IOJAppealValidationProcessorTest {
     public void givenAnIOJUpdateWithNullModifiedDate_andDBEntityWithModifiedDate_ThenThrowValidationException(){
         //given
         var dbEntityDateModified = LocalDateTime.of(2023,1,1,10,0);
-        var updateIOJAppealObject = TestModelDataBuilder.getUpdateIOJAppealObject((LocalDateTime) null);
+        var updateIOJAppealObject = TestModelDataBuilder.getUpdateIOJAppealObject(null);
         var dbEntity = TestEntityDataBuilder.getIOJAppealEntity( dbEntityDateModified, "IN PROGRESS");
 
         when(iojAppealRepository.findById(any())).thenReturn(Optional.of(dbEntity));

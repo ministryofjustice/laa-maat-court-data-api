@@ -56,7 +56,7 @@ public class IOJAppealServiceTest {
 
         assertEquals(newlyCreatedIOJAppealDTO.getId(), IOJ_APPEAL_ID);
 
-        verify(iojAppealImpl).setOldIOJAppealReplaced(IOJ_REP_ID, IOJ_APPEAL_ID);
+        verify(iojAppealImpl).setOldIOJAppealsReplaced(IOJ_REP_ID, IOJ_APPEAL_ID);
     }
 
     @Test

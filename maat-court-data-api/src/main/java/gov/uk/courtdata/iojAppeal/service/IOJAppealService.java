@@ -1,7 +1,6 @@
 package gov.uk.courtdata.iojAppeal.service;
 
 import gov.uk.courtdata.dto.IOJAppealDTO;
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.iojAppeal.impl.IOJAppealImpl;
 import gov.uk.courtdata.iojAppeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
@@ -34,7 +33,7 @@ public class IOJAppealService {
         var iojAppealEntity = iojAppealImpl.create(iojAppealDTO);
 
         log.info("Update previous IOJ Appeal records and set them to replaced");
-        iojAppealImpl.setOldIOJAppealReplaced(iojAppealEntity.getRepId(), iojAppealEntity.getId());
+        iojAppealImpl.setOldIOJAppealsReplaced(iojAppealEntity.getRepId(), iojAppealEntity.getId());
 
         log.info("Create IOJ Appeal - Transaction Processing - end");
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);

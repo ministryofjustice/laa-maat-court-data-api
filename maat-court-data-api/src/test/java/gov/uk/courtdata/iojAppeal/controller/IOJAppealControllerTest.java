@@ -87,11 +87,11 @@ public class IOJAppealControllerTest {
     @Test
     public void createIOJAppeal_ServerError_RequestBodyIsMissing() throws Exception {
 
-        mvc.perform(MockMvcRequestBuilders.post("/ioj-appeal").content(new String()).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.post("/ioj-appeal").content("").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
     @Test
-    public void createIOJAppeal_BadRequest_RequestEmtpyBody() throws Exception {
+    public void createIOJAppeal_BadRequest_RequestEmptyBody() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/ioj-appeal").content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
@@ -136,6 +136,6 @@ public class IOJAppealControllerTest {
         mvc.perform(MockMvcRequestBuilders.put("/ioj-appeal").content(updateIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("IOJ Appeal does not exist in Db. ID: " + updateIOJAppeal.getId()));;
+                .andExpect(jsonPath("$.message").value("IOJ Appeal does not exist in Db. ID: " + updateIOJAppeal.getId()));
     }
 }

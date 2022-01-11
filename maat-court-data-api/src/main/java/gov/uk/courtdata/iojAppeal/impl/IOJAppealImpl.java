@@ -6,7 +6,6 @@ import gov.uk.courtdata.iojAppeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.repository.IOJAppealRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -28,7 +27,7 @@ public class IOJAppealImpl {
         return iojAppealRepository.save(iojAppealEntity);
     }
 
-    public void setOldIOJAppealReplaced(Integer repId, Integer iojAppealIDNotToUpdate) {
+    public void setOldIOJAppealsReplaced(Integer repId, Integer iojAppealIDNotToUpdate) {
         iojAppealRepository.setOldIOJAppealsReplaced(repId, iojAppealIDNotToUpdate);
     }
 

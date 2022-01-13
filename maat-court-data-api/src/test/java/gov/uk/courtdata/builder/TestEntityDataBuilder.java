@@ -2,15 +2,17 @@ package gov.uk.courtdata.builder;
 
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.Frequency;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
+
 @Component
 public class TestEntityDataBuilder {
-
-
 
     public RepOrderCPDataEntity getRepOrderEntity() {
         return RepOrderCPDataEntity.builder()
@@ -100,4 +102,32 @@ public class TestEntityDataBuilder {
                 .userModified("test-f")
                 .build();
     }
+    public static IOJAppealEntity getIOJAppealEntity(LocalDateTime dateModified, String iapStatus) {
+        return IOJAppealEntity.builder()
+                .id(IOJ_APPEAL_ID)
+                .repId(IOJ_REP_ID)
+                .appealSetupDate(LocalDateTime.of(2022,1,1,10,0))
+                .nworCode("NEW")
+                .userCreated("test-s")
+                .cmuId(86679086)
+                .iapsStatus(StringUtils.isBlank(iapStatus) ? "COMPLETE" : iapStatus)
+                .appealSetupResult("GRANT")
+                .iderCode("NOTUNDPROC")
+                .decisionDate(LocalDateTime.of(2022,1,1,10,0))
+                .decisionResult("PASS")
+                .notes("notes test notes")
+                .replaced("N")
+                .dateModified(dateModified)
+                .build();
+    }
+    public static IOJAppealEntity getIOJAppealEntity(){
+        return getIOJAppealEntity(null, null);
+    }
+    public static IOJAppealEntity getIOJAppealEntity(LocalDateTime dateModified){
+        return getIOJAppealEntity(dateModified, null);
+    }
+    public static IOJAppealEntity getIOJAppealEntity(String iapStatus){
+        return getIOJAppealEntity(null, iapStatus);
+    }
+
 }

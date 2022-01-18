@@ -16,16 +16,6 @@ public class ProsecutionConcludedValidator {
                 || prosecutionConcludedRequest.getProsecutionConcludedList() == null
                 || prosecutionConcludedRequest.getProsecutionConcludedList().size() == 0 )
             throw new ValidationException("Payload is not available or null. ");
-
-//        long offenceCount = prosecutionConcludedRequest.getProsecutionConcludedList()
-//                .stream()
-//                .filter(pro -> pro.getOffenceSummaryList().size() == 0)
-//                .count();
-//
-//        if (offenceCount == 0) {
-//            throw new ValidationException("Offence Summery is null for some hearing ");
-//        }
-
     }
 
     public Optional<Void> validateOuCode(String ouCode) {

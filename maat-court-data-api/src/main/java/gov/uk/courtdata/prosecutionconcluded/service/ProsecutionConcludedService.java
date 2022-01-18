@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,56 +50,58 @@ public class ProsecutionConcludedService {
     private final Gson gson;
 
 
-    public void execute(final ProsecutionConcludedRequest prosecutionConcludedList) {
+    public void execute(final ProsecutionConcludedRequest prosecutionConcludedRequest) {
 
-       prosecutionConcludedValidator.validateRequestObject(prosecutionConcludedList);
+       try {
+           prosecutionConcludedValidator.validateRequestObject(prosecutionConcludedRequest);
 
-        if (prosecutionConcludedList.getProsecutionConcludedList().size() == 0 )
-            throw new MAATCourtDataException("ProsecutionConcluded object is empty ");
+           if (prosecutionConcludedRequest.getProsecutionConcludedList().size() == 0)
+               throw new MAATCourtDataException("ProsecutionConcluded list object is empty ");
 
-        for (ProsecutionConcluded prosecutionConcluded : prosecutionConcludedList.getProsecutionConcludedList()) {
+           for (ProsecutionConcluded prosecutionConcluded : prosecutionConcludedRequest.getProsecutionConcludedList()) {
 
-            WQHearingEntity wqHearingEntity = getWqHearingEntity(prosecutionConcluded);
+               WQHearingEntity wqHearingEntity = getWqHearingEntity(prosecutionConcluded);
 
-            if (prosecutionConcluded.isConcluded()
-                    && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType())) {
+               if (prosecutionConcluded.isConcluded()
+                       && wqHearingEntity != null
+                       && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType())) {
 
-                if (reservationsRepositoryHelper.isMaatRecordLocked(prosecutionConcluded.getMaatId())) {
-                    publishMessageToProsecutionSQS(prosecutionConcluded);
-                }
+                   if (reservationsRepositoryHelper.isMaatRecordLocked(prosecutionConcluded.getMaatId())) {
+                       publishMessageToProsecutionSQS(prosecutionConcluded);
+                   }
 
-                prosecutionConcludedValidator.validateOuCode(wqHearingEntity.getOuCourtLocation());
-                String calculatedOutcome = calculateOutcomeHelper.calculate(prosecutionConcluded);
-                log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
+                   prosecutionConcludedValidator.validateOuCode(wqHearingEntity.getOuCourtLocation());
+                   String calculatedOutcome = calculateOutcomeHelper.calculate(prosecutionConcluded);
+                   log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
 
-                ConcludedDTO concludedDTO = ConcludedDTO.
-                        builder()
-                        .prosecutionConcluded(prosecutionConcluded)
-                        .calculatedOutcome(calculatedOutcome)
-                        .ouCourtLocation(wqHearingEntity.getOuCourtLocation())
-                        .wqJurisdictionType(wqHearingEntity.getWqJurisdictionType())
-                        .caseEndDate(getMostRecentCaseEndDate(prosecutionConcluded.getOffenceSummaryList()))
-                        .caseUrn(wqHearingEntity.getCaseUrn())
-                        .hearingResultCodeList(buildResultCodeList(wqHearingEntity))
-                        .build();
+                   ConcludedDTO concludedDTO = ConcludedDTO.
+                           builder()
+                           .prosecutionConcluded(prosecutionConcluded)
+                           .calculatedOutcome(calculatedOutcome)
+                           .ouCourtLocation(wqHearingEntity.getOuCourtLocation())
+                           .wqJurisdictionType(wqHearingEntity.getWqJurisdictionType())
+                           .caseEndDate(getMostRecentCaseEndDate(prosecutionConcluded.getOffenceSummaryList()))
+                           .caseUrn(wqHearingEntity.getCaseUrn())
+                           .hearingResultCodeList(buildResultCodeList(wqHearingEntity))
+                           .build();
 
-                prosecutionConcludedImpl.execute(concludedDTO);
-            }
-        }
+                   prosecutionConcludedImpl.execute(concludedDTO);
+               }
+           }
+       } catch (Exception ex) {
+           log.error(ex.getMessage());
+       }
     }
 
     private WQHearingEntity getWqHearingEntity(ProsecutionConcluded prosecutionConcluded) {
-        WQHearingEntity wqHearingEntity = wqHearingRepository
-                .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString())
-                //TODO: in case of multiple maat-id then this will break the flow.
-                .orElseThrow(() ->
-                        new MAATCourtDataException("Hearing not found for this hearingId " + prosecutionConcluded.getProsecutionCaseId()));
-        return wqHearingEntity;
+        Optional<WQHearingEntity> wqHearingEntity = wqHearingRepository
+                .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
+        return  wqHearingEntity.isPresent() ? wqHearingEntity.get() : null;
     }
 
     private String getMostRecentCaseEndDate(List<OffenceSummary> offenceSummaryList) {
 
-        if (offenceSummaryList.isEmpty())
+        if (offenceSummaryList == null && offenceSummaryList.isEmpty())
             return null;
 
         return offenceSummaryList.stream()

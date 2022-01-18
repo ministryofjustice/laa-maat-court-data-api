@@ -49,6 +49,7 @@ public class CalculateOutcomeHelper {
             log.info("Calculated crown court outcome: " + offenceOutcomeStatus);
             return offenceOutcomeStatus;
         } else {
+             log.error("Offence summary list is empty {}", prosecutionConcluded.getMaatId().toString());
             throw new ValidationException(format("Offence summary list is null or empty for maat-id: {}", prosecutionConcluded.getMaatId().toString()));
         }
     }

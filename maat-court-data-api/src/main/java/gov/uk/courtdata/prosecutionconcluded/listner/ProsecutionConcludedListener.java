@@ -27,9 +27,10 @@ public class ProsecutionConcludedListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}")
     public void receive(@Payload final String message) {
         MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.PROSECUTION_CONCLUDED.name());
-        queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
-        ProsecutionConcludedRequest prosecutionConcluded = gson.fromJson(message, ProsecutionConcludedRequest.class);
 
+        queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
+
+        ProsecutionConcludedRequest prosecutionConcluded = gson.fromJson(message, ProsecutionConcludedRequest.class);
         prosecutionConcludedService.execute(prosecutionConcluded);
     }
 }

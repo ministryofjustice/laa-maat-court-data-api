@@ -56,8 +56,6 @@ public class ProsecutionConcludedImpl {
         }
     }
 
-    //todo: Do we need to verify this explicitly knowing the case is already concluded?
-    //todo make as a interface -
     private void verifyCaseTypeValidator(RepOrderEntity repOrder, String calculatedOutcome) {
 
         String caseType = repOrder.getCatyCaseType();

@@ -1,11 +1,19 @@
 package gov.uk.courtdata.authorization.service;
 
+import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.model.authorization.Reservation;
+import gov.uk.courtdata.model.authorization.UserReservation;
+import gov.uk.courtdata.model.authorization.UserSession;
+import gov.uk.courtdata.repository.ReservationsRepository;
 import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.isAnyBlank;
 
@@ -15,6 +23,7 @@ import static org.apache.commons.lang3.StringUtils.isAnyBlank;
 @Slf4j
 public class AuthorizationService {
     private final RoleActionsRepository roleActionsRepository;
+    private final ReservationsRepository reservationsRepository;
     private final RoleWorkReasonsRepository roleWorkReasonsRepository;
 
     public boolean isRoleActionAuthorized(String username, String action) {
@@ -29,5 +38,22 @@ public class AuthorizationService {
             throw new ValidationException("Username and new work reason are required");
         }
         return roleWorkReasonsRepository.getNewWorkReason(username, nworCode.toUpperCase()).isPresent();
+    }
+
+    @Transactional
+    public boolean isReserved(UserReservation userReservation) {
+        UserSession session = userReservation.getUserSession();
+        Reservation reservation = userReservation.getReservation();
+        Optional<ReservationsEntity> existingReservation =
+                reservationsRepository.findReservationByUserSession(
+                        session.getSession(), session.getUsername(), reservation.getRecordName(), reservation.getRecordId()
+                );
+        if (existingReservation.isEmpty()) {
+            return false;
+        }
+
+        reservationsRepository.updateReservationExpiryDate(session.getSession(), session.getUsername(), reservation.getRecordName(), reservation.getRecordId());
+
+        return true;
     }
 }

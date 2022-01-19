@@ -31,13 +31,15 @@ public class UserReservationValidator implements IValidator<Void, UserReservatio
                 throw new ValidationException("User session attributes are missing");
             }
 
-            checkUserSession(session);
-
             if (userReservation.getReservationId() == null) {
                 throw new ValidationException("Reservation attributes are missing");
             }
+
+            checkUserSession(session);
+
+            return Optional.empty();
         }
-        return Optional.empty();
+        throw new ValidationException("User reservation is required");
     }
 
     private void checkUserSession(UserSession session) {
@@ -45,9 +47,10 @@ public class UserReservationValidator implements IValidator<Void, UserReservatio
                 .orElse(null);
 
         if (user != null) {
-            if (!(user.getCurrentSession().equals(session.getId()) || RESERVATION_SPECIAL_USERNAMES.contains(session.getUsername()))) {
-                throw new ValidationException("Stale user session, reservation not allowed");
+            if (user.getCurrentSession().equals(session.getId()) || RESERVATION_SPECIAL_USERNAMES.contains(session.getUsername())) {
+                return;
             }
         }
+        throw new ValidationException("Stale user session, reservation not allowed");
     }
 }

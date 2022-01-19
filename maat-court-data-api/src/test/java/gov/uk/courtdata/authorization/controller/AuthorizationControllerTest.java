@@ -31,11 +31,11 @@ public class AuthorizationControllerTest {
     private final String baseURL = "/authorization";
 
     private String getRoleActionUrl(String action) {
-        return String.format(baseURL + "/users/test-f/validation/action/%s", action);
+        return String.format(baseURL + "/users/test-f/actions/%s", action);
     }
 
     private String getWorkReasonUrl(String nworCode) {
-        return String.format(baseURL + "/users/test-f/validation/nwor/%s", nworCode);
+        return String.format(baseURL + "/users/test-f/work-reasons/%s", nworCode);
     }
 
     @Test

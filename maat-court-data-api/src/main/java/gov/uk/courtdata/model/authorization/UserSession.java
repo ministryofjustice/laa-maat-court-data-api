@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserSession {
-    private String appName;
-    private String appServer;
-    private String session;
+    private String id;
     private String username;
 }

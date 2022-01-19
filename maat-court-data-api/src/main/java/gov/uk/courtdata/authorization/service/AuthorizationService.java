@@ -2,7 +2,6 @@ package gov.uk.courtdata.authorization.service;
 
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.model.authorization.Reservation;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
 import gov.uk.courtdata.repository.ReservationsRepository;
@@ -15,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.RESERVATION_RECORD_NAME;
 import static org.apache.commons.lang3.StringUtils.isAnyBlank;
 
 
@@ -42,17 +42,16 @@ public class AuthorizationService {
 
     @Transactional
     public boolean isReserved(UserReservation userReservation) {
-        UserSession session = userReservation.getUserSession();
-        Reservation reservation = userReservation.getReservation();
+        UserSession session = userReservation.getSession();
         Optional<ReservationsEntity> existingReservation =
                 reservationsRepository.findReservationByUserSession(
-                        session.getSession(), session.getUsername(), reservation.getRecordName(), reservation.getRecordId()
+                        session.getId(), session.getUsername(), RESERVATION_RECORD_NAME, userReservation.getReservationId()
                 );
         if (existingReservation.isEmpty()) {
             return false;
         }
 
-        reservationsRepository.updateReservationExpiryDate(session.getSession(), session.getUsername(), reservation.getRecordName(), reservation.getRecordId());
+        reservationsRepository.updateReservationExpiryDate(session.getId(), session.getUsername(), RESERVATION_RECORD_NAME, userReservation.getReservationId());
 
         return true;
     }

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserReservation {
-    private UserSession userSession;
-    private Reservation reservation;
+    private Integer reservationId;
+    private UserSession session;
 }

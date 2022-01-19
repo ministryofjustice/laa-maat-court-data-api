@@ -2,7 +2,6 @@ package gov.uk.courtdata.authorization.validator;
 
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.model.authorization.Reservation;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
 import gov.uk.courtdata.repository.UserRepository;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.RESERVATION_SPECIAL_USERNAMES;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -26,15 +26,14 @@ public class UserReservationValidator implements IValidator<Void, UserReservatio
     public Optional<Void> validate(UserReservation userReservation) {
         if (userReservation != null) {
 
-            UserSession session = userReservation.getUserSession();
-            if (isBlank(session.getAppName()) || isBlank(session.getAppServer()) || isBlank(session.getSession()) || isBlank(session.getUsername())) {
+            UserSession session = userReservation.getSession();
+            if (isBlank(session.getId()) || isBlank(session.getUsername())) {
                 throw new ValidationException("User session attributes are missing");
             }
 
             checkUserSession(session);
 
-            Reservation reservation = userReservation.getReservation();
-            if (reservation.getRecordId() == null || isBlank(reservation.getRecordName())) {
+            if (userReservation.getReservationId() == null) {
                 throw new ValidationException("Reservation attributes are missing");
             }
         }
@@ -46,7 +45,7 @@ public class UserReservationValidator implements IValidator<Void, UserReservatio
                 .orElse(null);
 
         if (user != null) {
-            if (!(user.getCurrentSession().equals(session.getSession()) || session.getUsername().equals("HUB") || session.getUsername().equals("MLA"))) {
+            if (!(user.getCurrentSession().equals(session.getId()) || RESERVATION_SPECIAL_USERNAMES.contains(session.getUsername()))) {
                 throw new ValidationException("Stale user session, reservation not allowed");
             }
         }

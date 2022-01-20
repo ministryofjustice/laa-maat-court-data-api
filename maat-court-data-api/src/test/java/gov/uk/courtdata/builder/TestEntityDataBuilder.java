@@ -89,8 +89,8 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static FinancialAssessmentDetailsEntity getFinancialAssessmentDetailsEntity() {
-        return FinancialAssessmentDetailsEntity.builder()
+    public static FinancialAssessmentDetailEntity getFinancialAssessmentDetailsEntity() {
+        return FinancialAssessmentDetailEntity.builder()
                 .id(23456)
                 .criteriaDetailId(40)
                 .financialAssessmentId(1000)

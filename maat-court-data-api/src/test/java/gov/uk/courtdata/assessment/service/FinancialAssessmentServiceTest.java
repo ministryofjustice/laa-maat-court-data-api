@@ -6,7 +6,7 @@ import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.entity.FinancialAssessmentDetailsEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
@@ -102,7 +102,7 @@ public class FinancialAssessmentServiceTest {
     @Test
     public void whenBuildFinancialAssessmentDTOIsInvoked_thenDTOIsReturned() {
         FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
-        FinancialAssessmentDetailsEntity financialAssessmentDetails = TestEntityDataBuilder.getFinancialAssessmentDetailsEntity();
+        FinancialAssessmentDetailEntity financialAssessmentDetails = TestEntityDataBuilder.getFinancialAssessmentDetailsEntity();
 
         FinancialAssessmentDetails mockFinancialAssessmentDetails =
                 FinancialAssessmentDetails.builder()

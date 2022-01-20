@@ -1,7 +1,7 @@
 package gov.uk.courtdata.authorization.service;
 
-import gov.uk.courtdata.entity.RoleActionsEntity;
-import gov.uk.courtdata.entity.RoleWorkReasonsEntity;
+import gov.uk.courtdata.entity.RoleActionEntity;
+import gov.uk.courtdata.entity.RoleWorkReasonEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
@@ -41,7 +41,7 @@ public class AuthorizationServiceTest {
     @Test
     public void givenValidAction_whenIsRoleActionAuthorizedIsInvoked_thenResultIsTrue() {
         when(roleActionsRepository.getRoleAction(any(), any())).thenReturn(
-                Optional.of(RoleActionsEntity.builder().action("CREATE_ASSESSMENT").build())
+                Optional.of(RoleActionEntity.builder().action("CREATE_ASSESSMENT").build())
         );
         assertThat(authorizationService.isRoleActionAuthorized("test-f", "CREATE_ASSESSMENT")).isEqualTo(Boolean.TRUE);
     }
@@ -68,7 +68,7 @@ public class AuthorizationServiceTest {
     @Test
     public void givenValidWorkReason_whenIsNewWorkReasonAuthorizedIsInvoked_thenResultIsTrue() {
         when(roleWorkReasonsRepository.getNewWorkReason(any(), any())).thenReturn(
-                Optional.of(RoleWorkReasonsEntity.builder().nworCode("FMA").build())
+                Optional.of(RoleWorkReasonEntity.builder().nworCode("FMA").build())
         );
         assertThat(authorizationService.isNewWorkReasonAuthorized("test-f", "FMA")).isEqualTo(Boolean.TRUE);
     }

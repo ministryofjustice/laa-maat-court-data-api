@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "FIN_ASSESSMENT_DETAILS", schema = "TOGDATA")
-public class FinancialAssessmentDetailsEntity {
+public class FinancialAssessmentDetailEntity {
 
     @Id
     @SequenceGenerator(name = "fin_ass_det_seq", sequenceName = "S_FIN_ASS_DET_ID", allocationSize = 1)

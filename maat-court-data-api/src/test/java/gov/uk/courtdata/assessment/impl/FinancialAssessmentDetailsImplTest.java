@@ -4,7 +4,7 @@ import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.entity.FinancialAssessmentDetailsEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
@@ -38,7 +38,7 @@ public class FinancialAssessmentDetailsImplTest {
     private FinancialAssessmentMapper financialAssessmentMapper;
 
     @Captor
-    private ArgumentCaptor<List<FinancialAssessmentDetailsEntity>> financialAssessmentDetailsEntityArgumentCaptor;
+    private ArgumentCaptor<List<FinancialAssessmentDetailEntity>> financialAssessmentDetailsEntityArgumentCaptor;
 
 
     @Test
@@ -47,7 +47,7 @@ public class FinancialAssessmentDetailsImplTest {
 
         when(financialAssessmentDetailsRepository.findAllByFinancialAssessmentId(any())).thenReturn(
                 List.of(
-                        FinancialAssessmentDetailsEntity.builder()
+                        FinancialAssessmentDetailEntity.builder()
                                 .id(12345)
                                 .criteriaDetailId(41)
                                 .financialAssessmentId(financialAssessment.getId())
@@ -56,7 +56,7 @@ public class FinancialAssessmentDetailsImplTest {
                                 .applicantFrequency(Frequency.MONTHLY)
                                 .build(),
 
-                        FinancialAssessmentDetailsEntity.builder()
+                        FinancialAssessmentDetailEntity.builder()
                                 .id(67890)
                                 .criteriaDetailId(39)
                                 .financialAssessmentId(financialAssessment.getId())
@@ -84,7 +84,7 @@ public class FinancialAssessmentDetailsImplTest {
 
         when(financialAssessmentDetailsRepository.findAllByFinancialAssessmentId(any())).thenReturn(List.of());
         when(financialAssessmentMapper.FinancialAssessmentDetailsToFinancialAssessmentDetailsEntity(any())).thenReturn(
-                FinancialAssessmentDetailsEntity.builder()
+                FinancialAssessmentDetailEntity.builder()
                         .criteriaDetailId(40)
                         .applicantAmount(BigDecimal.valueOf(1650.00))
                         .applicantFrequency(Frequency.MONTHLY)
@@ -113,8 +113,8 @@ public class FinancialAssessmentDetailsImplTest {
 
         financialAssessmentDetails.get(1).setCriteriaDetailId(41);
 
-        List<FinancialAssessmentDetailsEntity> financialAssessmentDetailsEntities = List.of(
-                FinancialAssessmentDetailsEntity.builder()
+        List<FinancialAssessmentDetailEntity> financialAssessmentDetailsEntities = List.of(
+                FinancialAssessmentDetailEntity.builder()
                         .criteriaDetailId(40)
                         .applicantAmount(BigDecimal.valueOf(1650.00))
                         .applicantFrequency(Frequency.MONTHLY)
@@ -122,7 +122,7 @@ public class FinancialAssessmentDetailsImplTest {
                         .partnerFrequency(Frequency.TWO_WEEKLY)
                         .build(),
 
-                FinancialAssessmentDetailsEntity.builder()
+                FinancialAssessmentDetailEntity.builder()
                         .criteriaDetailId(41)
                         .applicantAmount(BigDecimal.valueOf(500))
                         .applicantFrequency(Frequency.WEEKLY)
@@ -132,7 +132,7 @@ public class FinancialAssessmentDetailsImplTest {
         );
 
         when(financialAssessmentDetailsRepository.findAllByFinancialAssessmentId(any())).thenReturn(List.of(
-                FinancialAssessmentDetailsEntity.builder()
+                FinancialAssessmentDetailEntity.builder()
                         .id(1234)
                         .criteriaDetailId(41)
                         .build()

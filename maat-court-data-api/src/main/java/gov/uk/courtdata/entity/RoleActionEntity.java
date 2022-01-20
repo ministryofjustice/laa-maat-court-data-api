@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "ROLE_ACTIONS", schema = "TOGDATA")
-public class RoleActionsEntity {
+public class RoleActionEntity {
     @Id
     @Column(name = "ID")
     private Integer Id;

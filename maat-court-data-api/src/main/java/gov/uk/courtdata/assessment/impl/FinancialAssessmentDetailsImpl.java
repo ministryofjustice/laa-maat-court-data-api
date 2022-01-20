@@ -2,7 +2,7 @@ package gov.uk.courtdata.assessment.impl;
 
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.entity.FinancialAssessmentDetailsEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.repository.FinancialAssessmentDetailsRepository;
@@ -23,7 +23,7 @@ public class FinancialAssessmentDetailsImpl {
 
     public void deleteStaleAssessmentDetails(FinancialAssessmentDTO financialAssessment) {
         List<FinancialAssessmentDetails> assessmentDetailsList = financialAssessment.getAssessmentDetailsList();
-        List<FinancialAssessmentDetailsEntity> oldAssessmentDetailsList =
+        List<FinancialAssessmentDetailEntity> oldAssessmentDetailsList =
                 financialAssessmentDetailsRepository.findAllByFinancialAssessmentId(financialAssessment.getId());
 
         List<Integer> staleAssessmentDetailIds = oldAssessmentDetailsList
@@ -32,25 +32,25 @@ public class FinancialAssessmentDetailsImpl {
                         .stream()
                         .noneMatch(newDetails -> oldDetails.getCriteriaDetailId().equals(newDetails.getCriteriaDetailId())))
                 .collect(Collectors.toList())
-                .stream().map(FinancialAssessmentDetailsEntity::getId)
+                .stream().map(FinancialAssessmentDetailEntity::getId)
                 .collect(Collectors.toList());
 
         financialAssessmentDetailsRepository.deleteAllByIdInBatch(staleAssessmentDetailIds);
     }
 
-    public List<FinancialAssessmentDetailsEntity> save(FinancialAssessmentEntity financialAssessment, List<FinancialAssessmentDetails> assessmentDetails) {
-        List<FinancialAssessmentDetailsEntity> detailEntitiesList = new ArrayList<>();
-        List<FinancialAssessmentDetailsEntity> existingAssessmentDetails =
+    public List<FinancialAssessmentDetailEntity> save(FinancialAssessmentEntity financialAssessment, List<FinancialAssessmentDetails> assessmentDetails) {
+        List<FinancialAssessmentDetailEntity> detailEntitiesList = new ArrayList<>();
+        List<FinancialAssessmentDetailEntity> existingAssessmentDetails =
                 financialAssessmentDetailsRepository.findAllByFinancialAssessmentId(financialAssessment.getId());
 
         for (FinancialAssessmentDetails detail : assessmentDetails) {
-            FinancialAssessmentDetailsEntity detailsEntity =
+            FinancialAssessmentDetailEntity detailsEntity =
                     assessmentMapper.FinancialAssessmentDetailsToFinancialAssessmentDetailsEntity(detail);
             detailsEntity.setFinancialAssessmentId(financialAssessment.getId());
 
             boolean exists = false;
             if (!existingAssessmentDetails.isEmpty()) {
-                for (FinancialAssessmentDetailsEntity existingDetail : existingAssessmentDetails) {
+                for (FinancialAssessmentDetailEntity existingDetail : existingAssessmentDetails) {
                     if (existingDetail.getCriteriaDetailId().equals(detailsEntity.getCriteriaDetailId())) {
                         detailsEntity.setId(existingDetail.getId());
                         detailsEntity.setUserModified(financialAssessment.getUserModified());

@@ -7,7 +7,7 @@ import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
-import gov.uk.courtdata.entity.FinancialAssessmentDetailsEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
@@ -45,7 +45,7 @@ public class FinancialAssessmentService {
         log.info("Deleting stale financial assessment details");
         financialAssessmentDetailsImpl.deleteStaleAssessmentDetails(assessmentDTO);
         log.info("Updating financial assessment detail records");
-        List<FinancialAssessmentDetailsEntity> assessmentDetailsEntities =
+        List<FinancialAssessmentDetailEntity> assessmentDetailsEntities =
                 financialAssessmentDetailsImpl.save(assessmentEntity, assessmentDTO.getAssessmentDetailsList());
         log.info("Deleting stale child weightings");
         childWeightingsImpl.deleteStaleChildWeightings(assessmentDTO);
@@ -67,7 +67,7 @@ public class FinancialAssessmentService {
         log.info("Creating new financial assessment record");
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.create(assessmentDTO);
         log.info("Creating new financial assessment detail records");
-        List<FinancialAssessmentDetailsEntity> assessmentDetailsEntities =
+        List<FinancialAssessmentDetailEntity> assessmentDetailsEntities =
                 financialAssessmentDetailsImpl.save(assessmentEntity, assessmentDTO.getAssessmentDetailsList());
         log.info("Creating new financial assessment child weightings records");
         List<ChildWeightingsEntity> childWeightingsEntities = childWeightingsImpl.save(assessmentEntity, assessmentDTO.getChildWeightingsList());
@@ -77,9 +77,7 @@ public class FinancialAssessmentService {
         return buildFinancialAssessmentDTO(assessmentEntity, assessmentDetailsEntities, childWeightingsEntities);
     }
 
-    public FinancialAssessmentDTO buildFinancialAssessmentDTO(FinancialAssessmentEntity assessmentEntity,
-                                                              List<FinancialAssessmentDetailsEntity> detailEntitiesList,
-                                                              List<ChildWeightingsEntity> childWeightingsEntities) {
+    public FinancialAssessmentDTO buildFinancialAssessmentDTO(FinancialAssessmentEntity assessmentEntity, List<FinancialAssessmentDetailEntity> detailEntitiesList) {
         FinancialAssessmentDTO newDto =
                 assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
         if (detailEntitiesList != null) {

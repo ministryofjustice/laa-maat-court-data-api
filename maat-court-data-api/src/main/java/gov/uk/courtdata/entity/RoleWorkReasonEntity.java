@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "ROLE_WORK_REASONS", schema = "TOGDATA")
-public class RoleWorkReasonsEntity {
+public class RoleWorkReasonEntity {
     @Id
     @Column(name = "ID")
     private Integer id;

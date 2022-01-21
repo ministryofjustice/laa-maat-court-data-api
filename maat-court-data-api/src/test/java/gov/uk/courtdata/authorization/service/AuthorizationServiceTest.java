@@ -1,8 +1,11 @@
 package gov.uk.courtdata.authorization.service;
 
+import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.entity.RoleActionsEntity;
 import gov.uk.courtdata.entity.RoleWorkReasonsEntity;
 import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.repository.ReservationsRepository;
 import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
 import org.junit.Test;
@@ -15,8 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthorizationServiceTest {
@@ -29,6 +31,9 @@ public class AuthorizationServiceTest {
 
     @Mock
     private RoleWorkReasonsRepository roleWorkReasonsRepository;
+
+    @Mock
+    private ReservationsRepository reservationsRepository;
 
     @Test
     public void givenInvalidAction_whenIsRoleActionAuthorizedIsInvoked_thenResultIsFalse() {
@@ -82,5 +87,30 @@ public class AuthorizationServiceTest {
         assertThatThrownBy(
                 () -> authorizationService.isNewWorkReasonAuthorized(null, "FAKE_WORK_REASON")
         ).isInstanceOf(ValidationException.class).hasMessageContaining("Username and new work reason are required");
+    }
+
+    @Test
+    public void givenIncorrectParameters_whenIsReservedIsInvoked_thenResultIsFalse() {
+        when(reservationsRepository.findReservationByUserSession(any(), any(), any(), any())).thenReturn(
+                Optional.empty()
+        );
+        assertThat(authorizationService.isReserved(TestModelDataBuilder.getUserReservation())).isEqualTo(Boolean.FALSE);
+    }
+
+    @Test
+    public void givenCorrectParameters_whenIsReservedIsInvoked_thenResultIsTrue() {
+        when(reservationsRepository.findReservationByUserSession(any(), any(), any(), any())).thenReturn(
+                Optional.of(ReservationsEntity.builder().build())
+        );
+        assertThat(authorizationService.isReserved(TestModelDataBuilder.getUserReservation())).isEqualTo(Boolean.TRUE);
+    }
+
+    @Test
+    public void givenCorrectParameters_whenIsReservedIsInvoked_thenExpiryDateIsUpdated() {
+        when(reservationsRepository.findReservationByUserSession(any(), any(), any(), any())).thenReturn(
+                Optional.of(ReservationsEntity.builder().build())
+        );
+        authorizationService.isReserved(TestModelDataBuilder.getUserReservation());
+        verify(reservationsRepository).updateReservationExpiryDate(any(), any(), any(), any());
     }
 }

@@ -1,45 +1,37 @@
 package gov.uk.courtdata.enums;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import gov.uk.courtdata.helper.AbstractEnumConverter;
+import gov.uk.courtdata.helper.PersistableEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.stream.Stream;
+import javax.persistence.Converter;
 
 @Getter
 @AllArgsConstructor
-public enum Frequency {
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum Frequency implements PersistableEnum<String> {
 
-    @SerializedName("WEEKLY")
-    WEEKLY("WEEKLY"),
-
-    @SerializedName("2WEEKLY")
-    TWO_WEEKLY("2WEEKLY"),
-
-    @SerializedName("4WEEKLY")
-    FOUR_WEEKLY("4WEEKLY"),
-
-    @SerializedName("MONTHLY")
-    MONTHLY("MONTHLY"),
-
-    @SerializedName("ANNUALLY")
-    ANNUALLY("ANNUALLY");
+    WEEKLY("WEEKLY", "Weekly", 52),
+    TWO_WEEKLY("2WEEKLY", "2 Weekly", 26),
+    FOUR_WEEKLY("4WEEKLY", "4 Weekly", 13),
+    MONTHLY("MONTHLY", "Monthly", 12),
+    ANNUALLY("ANNUALLY", "Annually", 1);
 
     private String code;
+    private String description;
+    private int annualWeighting;
 
     @Override
-    public String toString() {
-        return code;
+    public String getValue() {
+        return this.code;
     }
 
-    @JsonCreator
-    public static Frequency fromCode(String code) {
-        if (code == null) return null;
-
-        return Stream.of(Frequency.values())
-                .filter(f -> f.code.equals(code))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+    @Converter(autoApply = true)
+    private static class FrequencyConverter extends AbstractEnumConverter<Frequency, String> {
+        protected FrequencyConverter() {
+            super(Frequency.class);
+        }
     }
 }

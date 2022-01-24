@@ -21,8 +21,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "HARDSHIP_REVIEW_DETAILS", schema = "TOGDATA")
 public class HardshipReviewDetailEntity {
-    // TODO dropped the 's' from table as this entity represents only one record, discuss and agree with team as this will differ from approach in Financial Assessment Details. This approach will work for all cases like PASSPORT_EVIDENCE
-    // Table naming seems to have varied over time
 
     @Id
     @SequenceGenerator(name = "hardship_review_detail_seq", sequenceName = "S_HARDSHIP_DETAIL_ID", allocationSize = 1)
@@ -30,12 +28,11 @@ public class HardshipReviewDetailEntity {
     @Column(name = "ID")
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "HARD_ID", referencedColumnName = "id", nullable = false)
-    private HardshipReviewEntity hardshipReview;
+    @Column(name = "HARD_ID", nullable = false)
+    private Integer hardshipReviewId;
 
     @Column(name = "HRDT_TYPE", nullable = false)
-    private HardshipReviewDetailType hardshipReviewDetailType;
+    private HardshipReviewDetailType detailType;
 
     @CreationTimestamp
     @Column(name = "DATE_CREATED", nullable = false, updatable = false)
@@ -59,7 +56,6 @@ public class HardshipReviewDetailEntity {
     @Column(name = "DATE_DUE")
     private LocalDateTime dateDue;
 
-    // TODO Discuss and find how mapping this to Boolean will impact existing code
     @Builder.Default
     @Column(name = "ACCEPTED")
     private String accepted = "N";
@@ -74,20 +70,18 @@ public class HardshipReviewDetailEntity {
     @Column(name = "USER_MODIFIED")
     private String userModified;
 
-    @ManyToOne
-    @JoinColumn(name = "HRDR_ID", referencedColumnName = "id", nullable = false)
-    private HardshipReviewDetailReasonEntity hardshipReviewDetailReason;
+    @Column(name = "HRDR_ID")
+    private Integer detailReasonId;
 
     @Column(name = "HRDR_REASON_NOTE")
-    private String hardshipReviewDetailReasonNote;
+    private String reasonNote;
 
     @Column(name = "HRDC_CODE")
-    private HardshipReviewDetailCode hardshipReviewDetailCode;
+    private HardshipReviewDetailCode detailCode;
 
     @Column(name = "OTHER_DESCRIPTION")
     private String otherDescription;
 
-    // TODO Discuss and find how mapping this to Boolean will impact existing code
     @Builder.Default
     @Column(name = "ACTIVE")
     private String active = "N";

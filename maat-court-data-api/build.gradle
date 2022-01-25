@@ -38,7 +38,7 @@ dependencyManagement {
     imports {
         mavenBom "org.springframework.boot:spring-boot-dependencies:2.5.6"
         mavenBom "org.springframework:spring-framework-bom:5.3.12"
-        mavenBom "com.amazonaws:aws-java-sdk-bom:1.12.110"
+        mavenBom "com.amazonaws:aws-java-sdk-bom:1.12.146"
         mavenBom "org.springframework.security:spring-security-bom:5.5.3"
     }
     dependencies {

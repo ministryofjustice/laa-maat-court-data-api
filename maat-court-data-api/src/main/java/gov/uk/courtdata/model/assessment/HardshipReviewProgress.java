@@ -1,5 +1,6 @@
 package gov.uk.courtdata.model.assessment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.uk.courtdata.enums.HardshipReviewProgressAction;
 import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
 import lombok.AllArgsConstructor;
@@ -15,18 +16,26 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class HardshipReviewProgress {
     private Integer id;
-    private Integer hardshipReviewId;
     private LocalDateTime dateRequested;
     private LocalDateTime dateRequired;
     private LocalDateTime dateCompleted;
-    private LocalDateTime dateCreated;
-    private String userCreated;
-    private LocalDateTime dateModified;
-    private String userModified;
-    @Builder.Default
-    private String active = "N";
-    private LocalDateTime removedDate;
+    private LocalDateTime timestamp;
 
     private HardshipReviewProgressAction progressAction;
     private HardshipReviewProgressResponse progressResponse;
+
+    @JsonIgnore
+    private LocalDateTime dateCreated;
+    @JsonIgnore
+    private LocalDateTime dateModified;
+    @JsonIgnore
+    private LocalDateTime removedDate;
+    @JsonIgnore
+    private String userCreated;
+    @JsonIgnore
+    private String userModified;
+
+    public LocalDateTime getTimestamp() {
+        return dateModified != null ? dateModified : dateCreated;
+    }
 }

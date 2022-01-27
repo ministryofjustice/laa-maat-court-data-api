@@ -1,5 +1,6 @@
 package gov.uk.courtdata.model.assessment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
@@ -16,24 +17,38 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HardshipReviewDetail {
+
     private Integer id;
-    private Integer hardshipReviewId;
-    private HardshipReviewDetailType type;
-    private LocalDateTime dateCreated;
-    private String userCreated;
     private Frequency frequency;
     private LocalDateTime dateReceived;
-    private String description;
     private BigDecimal amount;
     private LocalDateTime dateDue;
     private String accepted;
-    private String reasonResponse;
-    private LocalDateTime dateModified;
-    private String userModified;
-    private Integer detailReasonId;
-    private String reasonNote;
-    private HardshipReviewDetailCode detailCode;
     private String otherDescription;
+    private String reasonNote;
+    private HardshipReviewDetailType detailType;
+    private HardshipReviewDetailCode detailCode;
+    private HardshipReviewDetailReason detailReason;
+    private LocalDateTime timestamp;
+
+    @JsonIgnore
+    private LocalDateTime dateCreated;
+    @JsonIgnore
+    private LocalDateTime dateModified;
+    @JsonIgnore
+    private String description;
+    @JsonIgnore
+    private String reasonResponse;
+    @JsonIgnore
+    private String userModified;
+    @JsonIgnore
+    private String userCreated;
+    @JsonIgnore
     private Boolean active;
+    @JsonIgnore
     private LocalDateTime removedDate;
+
+    public LocalDateTime getTimestamp() {
+        return dateModified != null ? dateModified : dateCreated;
+    }
 }

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.validator;
 
-import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +19,8 @@ public class HardshipReviewIdValidator implements IValidator<Void, Integer> {
     public Optional<Void> validate(final Integer hardshipId) {
 
         if (hardshipId != null && hardshipId > 0) {
-            Optional<HardshipReviewEntity> hardshipEntity = hardshipReviewRepository.findById(hardshipId);
-            if (hardshipEntity.isEmpty())
+            boolean exists = hardshipReviewRepository.existsById(hardshipId);
+            if (!exists)
                 throw new ValidationException(hardshipId + " is invalid");
             return Optional.empty();
 

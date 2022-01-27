@@ -19,6 +19,7 @@ public class CreatePassportAssessmentValidatorTest {
     @InjectMocks
     private CreatePassportAssessmentValidator createAssessmentValidator;
 
+
     private CreatePassportAssessment getAssessmentWithUserCreated(String userCreated) {
         CreatePassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
         assessment.setUserCreated(userCreated);

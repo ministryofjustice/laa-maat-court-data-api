@@ -169,5 +169,4 @@ public class TestEntityDataBuilder {
                 .rtCode("DEF")
                 .build();
     }
-
 }

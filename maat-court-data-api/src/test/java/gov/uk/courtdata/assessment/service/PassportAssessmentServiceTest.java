@@ -97,6 +97,7 @@ public class PassportAssessmentServiceTest {
         PassportAssessmentDTO passportAssessmentDTO = TestModelDataBuilder.getPassportAssessmentDTO();
         passportAssessmentDTO.setId(20000);
         UpdatePassportAssessment passportAssessment = TestModelDataBuilder.getUpdatePassportAssessment();
+        PassportAssessmentEntity existingPassportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         when(passportAssessmentMapper.updatePassportAssessmentToPassportAssessmentDTO(any(UpdatePassportAssessment.class))).thenReturn(passportAssessmentDTO);
         when(passportAssessmentService.buildPassportAssessmentDTO(any())).thenReturn(
                 PassportAssessmentDTO.builder().id(1000).build()

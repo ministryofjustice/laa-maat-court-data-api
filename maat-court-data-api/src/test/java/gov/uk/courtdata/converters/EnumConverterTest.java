@@ -67,15 +67,15 @@ public class EnumConverterTest {
                 .hardshipReviewId(1000)
                 .dateCreated(LocalDateTime.now())
                 .userCreated("test-s")
-                .detailType(HardshipReviewDetailType.INCOME)
+                .type(HardshipReviewDetailType.INCOME)
                 .detailCode(HardshipReviewDetailCode.DEBTS)
-                .frequencyCode(Frequency.ANNUALLY)
+                .frequency(Frequency.ANNUALLY)
                 .build();
 
         HardshipReviewDetailEntity returned = hardshipReviewDetailRepository.save(mockEntity);
-        assertThat(returned.getFrequencyCode()).isEqualTo(Frequency.ANNUALLY);
+        assertThat(returned.getFrequency()).isEqualTo(Frequency.ANNUALLY);
         assertThat(returned.getDetailCode()).isEqualTo(HardshipReviewDetailCode.DEBTS);
-        assertThat(returned.getDetailType()).isEqualTo(HardshipReviewDetailType.INCOME);
+        assertThat(returned.getType()).isEqualTo(HardshipReviewDetailType.INCOME);
 
     }
 

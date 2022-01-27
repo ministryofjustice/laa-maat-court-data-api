@@ -3,15 +3,13 @@ package gov.uk.courtdata.builder;
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.dto.IOJAppealDTO;
-import gov.uk.courtdata.enums.Frequency;
-import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.assessment.*;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
-import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
-import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
-import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
 
@@ -369,6 +367,7 @@ public class TestModelDataBuilder {
                 "\"userModified\": \"dohe-f\"\n" +
                 "}";
     }
+
     public static IOJAppealDTO getIOJAppealDTO(LocalDateTime dateModified) {
         return IOJAppealDTO.builder()
                 .id(IOJ_APPEAL_ID)
@@ -407,21 +406,24 @@ public class TestModelDataBuilder {
                 .notes("notes test notes")
                 .build();
     }
-    public static CreateIOJAppeal getCreateIOJAppealObject(){
+
+    public static CreateIOJAppeal getCreateIOJAppealObject() {
         return getCreateIOJAppealObject(true);
     }
 
-    public static UpdateIOJAppeal getUpdateIOJAppealObject(){
+    public static UpdateIOJAppeal getUpdateIOJAppealObject() {
         return getUpdateIOJAppealObject(true, null);
     }
-    public static UpdateIOJAppeal getUpdateIOJAppealObject(LocalDateTime dateModified){
+
+    public static UpdateIOJAppeal getUpdateIOJAppealObject(LocalDateTime dateModified) {
         return getUpdateIOJAppealObject(true, dateModified);
     }
-    public static UpdateIOJAppeal getUpdateIOJAppealObject(boolean isValid){
+
+    public static UpdateIOJAppeal getUpdateIOJAppealObject(boolean isValid) {
         return getUpdateIOJAppealObject(isValid, null);
     }
 
-    public static UpdateIOJAppeal getUpdateIOJAppealObject(boolean isValid,  LocalDateTime dateModified) {
+    public static UpdateIOJAppeal getUpdateIOJAppealObject(boolean isValid, LocalDateTime dateModified) {
         return UpdateIOJAppeal.builder()
                 .id(IOJ_APPEAL_ID)
                 .repId(isValid ? IOJ_REP_ID : null)
@@ -438,7 +440,74 @@ public class TestModelDataBuilder {
                 .dateModified(dateModified)
                 .build();
     }
-    private static LocalDateTime getIOJTestDate(){
-        return LocalDateTime.of(2022,1,1,10,0);
+
+    private static LocalDateTime getIOJTestDate() {
+        return LocalDateTime.of(2022, 1, 1, 10, 0);
+    }
+
+    public static HardshipReviewDTO getHardshipReviewDTO() {
+        return HardshipReviewDTO.builder()
+                .id(1000)
+                .repId(621580)
+                .newWorkOrderCode("NEW")
+                .caseManagementUnitId(253)
+                .reviewResult("FAIL")
+                .solicitorCosts(
+                        SolicitorCosts.builder()
+                                .solicitorRate(183.0)
+                                .solicitorHours(12.0)
+                                .solicitorVat(384.25)
+                                .solicitorDisb(0.0)
+                                .solicitorEstTotalCost(2580.25)
+                                .build()
+                )
+                .disposableIncome(4215.46)
+                .disposableIncomeAfterHardship(2921.38)
+                .status(HardshipReviewStatus.COMPLETE)
+                .userCreated("test-s")
+                .userModified("test-s")
+                .courtType("MAGISTRATE")
+                .financialAssessmentId(349211)
+                .valid("Y")
+                .build();
+    }
+
+    public static HardshipReviewDTO getHardshipReviewDTOWithDetails() {
+        HardshipReviewDTO hardship = getHardshipReviewDTO();
+        hardship.setReviewDetails(List.of(getHardshipReviewDetail()));
+        return hardship;
+    }
+
+    public static HardshipReviewDTO getHardshipReviewDTOWithDetailsAndProgress() {
+        HardshipReviewDTO hardship = getHardshipReviewDTO();
+        hardship.setReviewDetails(List.of(getHardshipReviewDetail()));
+        hardship.setReviewProgresses(List.of(getHardshipReviewProgress()));
+        return hardship;
+    }
+
+    public static HardshipReviewDetail getHardshipReviewDetail() {
+        return HardshipReviewDetail.builder()
+                .id(4253)
+                .hardshipReviewId(1000)
+                .type(HardshipReviewDetailType.EXPENDITURE)
+                .userCreated("test-s")
+                .frequency(Frequency.MONTHLY)
+                .description("Pension")
+                .amount(BigDecimal.valueOf(107.84))
+                .accepted("Y")
+                .reasonResponse("evidence provided")
+                .active(false)
+                .build();
+    }
+
+    public static HardshipReviewProgress getHardshipReviewProgress() {
+        return HardshipReviewProgress.builder()
+                .id(1254)
+                .hardshipReviewId(1000)
+                .userCreated("test-s")
+                .userModified("test-s")
+                .progressAction(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE)
+                .progressResponse(HardshipReviewProgressResponse.FURTHER_RECEIVED)
+                .build();
     }
 }

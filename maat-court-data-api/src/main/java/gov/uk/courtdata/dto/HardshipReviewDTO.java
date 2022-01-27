@@ -1,6 +1,8 @@
 package gov.uk.courtdata.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.uk.courtdata.enums.HardshipReviewStatus;
+import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.HardshipReviewDetail;
 import gov.uk.courtdata.model.assessment.HardshipReviewProgress;
 import gov.uk.courtdata.model.assessment.SolicitorCosts;
@@ -17,28 +19,43 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HardshipReviewDTO {
+
     private Integer id;
-    private String newWorkOrderCode;
-    private LocalDateTime dateCreated;
     private Integer caseManagementUnitId;
-    private String reviewResult;
-    private LocalDateTime reviewDate;
     private String notes;
     private String decisionNotes;
-    private SolicitorCosts solicitorCosts;
+    private LocalDateTime reviewDate;
+    private String reviewResult;
     private Double disposableIncome;
     private Double disposableIncomeAfterHardship;
+    private LocalDateTime timestamp;
+    private NewWorkReason newWorkReason;
+    private SolicitorCosts solicitorCosts;
     private HardshipReviewStatus status;
 
+    @JsonIgnore
+    private LocalDateTime dateCreated;
+    @JsonIgnore
     private Integer repId;
+    @JsonIgnore
     private String userCreated;
+    @JsonIgnore
     private LocalDateTime updated;
+    @JsonIgnore
     private String userModified;
+    @JsonIgnore
     private LocalDateTime resultDate;
+    @JsonIgnore
     private String courtType;
+    @JsonIgnore
     private Integer financialAssessmentId;
+    @JsonIgnore
     private String valid;
 
     private List<HardshipReviewDetail> reviewDetails;
-    private List<HardshipReviewProgress> reviewProgresses;
+    private List<HardshipReviewProgress> reviewProgressItems;
+
+    public LocalDateTime getTimestamp() {
+        return updated != null ? updated : dateCreated;
+    }
 }

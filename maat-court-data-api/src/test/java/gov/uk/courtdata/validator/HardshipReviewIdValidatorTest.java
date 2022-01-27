@@ -1,6 +1,5 @@
 package gov.uk.courtdata.validator;
 
-import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import org.junit.Assert;
@@ -42,13 +41,13 @@ public class HardshipReviewIdValidatorTest {
 
     @Test
     public void testWhenFinancialAssessmentIdExists_thenValidationPasses() {
-        when(hardshipReviewRepository.findById(any())).thenReturn(java.util.Optional.of(new HardshipReviewEntity()));
+        when(hardshipReviewRepository.existsById(any())).thenReturn(true);
         assertThat(hardshipReviewIdValidator.validate(1000)).isEqualTo(Optional.empty());
     }
 
     @Test
     public void testWhenFinancialAssessmentIdDoesNotExist_thenThrowsException() {
-        when(hardshipReviewRepository.findById(any())).thenReturn(Optional.empty());
+        when(hardshipReviewRepository.existsById(any())).thenReturn(false);
         ValidationException validationException = Assert.assertThrows(ValidationException.class,
                 () -> hardshipReviewIdValidator.validate(1000));
         assertThat(validationException.getMessage()).isEqualTo(format("%d is invalid", 1000));

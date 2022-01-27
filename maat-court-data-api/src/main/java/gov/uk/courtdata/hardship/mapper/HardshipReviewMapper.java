@@ -1,10 +1,10 @@
 package gov.uk.courtdata.hardship.mapper;
 
 import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
-import gov.uk.courtdata.entity.HardshipReviewEntity;
-import gov.uk.courtdata.entity.HardshipReviewProgressEntity;
+import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.HardshipReviewDetail;
+import gov.uk.courtdata.model.assessment.HardshipReviewDetailReason;
 import gov.uk.courtdata.model.assessment.HardshipReviewProgress;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,4 +24,8 @@ public interface HardshipReviewMapper {
     HardshipReviewDetail HardshipReviewDetailEntityToHardshipReviewDetail(final HardshipReviewDetailEntity reviewDetailEntity);
 
     HardshipReviewProgress HardshipReviewProgressEntityToHardshipReviewProgress(final HardshipReviewProgressEntity reviewProgressEntity);
+
+    NewWorkReason NewWorkReasonEntityToNewWorkReason(final NewWorkReasonEntity newWorkReason);
+
+    HardshipReviewDetailReason HardshipReviewDetailReasonEntityToHardshipReviewDetailReason(final HardshipReviewDetailReasonEntity detailReasonEntity);
 }

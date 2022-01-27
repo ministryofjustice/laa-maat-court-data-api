@@ -47,8 +47,8 @@ public class HardshipReviewControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(String.valueOf(MOCK_HARDSHIP_ID)))
-                .andExpect(jsonPath("$.reviewDetails[0].hardshipReviewId").value(String.valueOf(MOCK_HARDSHIP_ID)))
-                .andExpect(jsonPath("$.reviewProgresses[0].hardshipReviewId").value(String.valueOf(MOCK_HARDSHIP_ID)));
+                .andExpect(jsonPath("$.reviewDetails[0].id").value(String.valueOf(4253)))
+                .andExpect(jsonPath("$.reviewProgressItems[0].id").value(String.valueOf(1254)));
     }
 
     @Test

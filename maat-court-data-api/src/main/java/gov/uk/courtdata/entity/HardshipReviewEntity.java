@@ -2,17 +2,19 @@ package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.enums.HardshipReviewStatus;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "HARDSHIP_REVIEWS", schema = "TOGDATA")
@@ -26,9 +28,6 @@ public class HardshipReviewEntity {
 
     @Column(name = "REP_ID")
     private Integer repId;
-
-    @Column(name = "NWOR_CODE")
-    private String newWorkOrderCode;
 
     @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
@@ -97,4 +96,21 @@ public class HardshipReviewEntity {
 
     @Column(name = "VALID")
     private String valid;
+
+    @ToString.Exclude
+    @Fetch(FetchMode.JOIN)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "NWOR_CODE", nullable = false)
+    private NewWorkReasonEntity newWorkReason;
+
+    @ToString.Exclude
+    @Fetch(FetchMode.JOIN)
+    @OneToMany(mappedBy = "hardshipReview", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<HardshipReviewDetailEntity> reviewDetails;
+
+    @ToString.Exclude
+    @JoinColumn(name = "HARE_ID")
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<HardshipReviewProgressEntity> reviewProgressItems;
+
 }

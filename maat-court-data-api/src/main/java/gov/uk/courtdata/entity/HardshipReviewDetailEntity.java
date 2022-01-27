@@ -5,6 +5,8 @@ import gov.uk.courtdata.enums.HardshipReviewDetailCode;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -16,7 +18,6 @@ import java.time.LocalDateTime;
 @ToString
 @RequiredArgsConstructor
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "HARDSHIP_REVIEW_DETAILS", schema = "TOGDATA")
@@ -28,11 +29,8 @@ public class HardshipReviewDetailEntity {
     @Column(name = "ID")
     private Integer id;
 
-    @Column(name = "HARD_ID", nullable = false)
-    private Integer hardshipReviewId;
-
     @Column(name = "HRDT_TYPE", nullable = false)
-    private HardshipReviewDetailType type;
+    private HardshipReviewDetailType detailType;
 
     @CreationTimestamp
     @Column(name = "DATE_CREATED", nullable = false, updatable = false)
@@ -70,9 +68,6 @@ public class HardshipReviewDetailEntity {
     @Column(name = "USER_MODIFIED")
     private String userModified;
 
-    @Column(name = "HRDR_ID")
-    private Integer detailReasonId;
-
     @Column(name = "HRDR_REASON_NOTE")
     private String reasonNote;
 
@@ -88,4 +83,15 @@ public class HardshipReviewDetailEntity {
 
     @Column(name = "REMOVED_DATE")
     private LocalDateTime removedDate;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "HARD_ID", nullable = false)
+    private HardshipReviewEntity hardshipReview;
+
+    @ToString.Exclude
+    @Fetch(FetchMode.JOIN)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "HRDR_ID", nullable = false)
+    private HardshipReviewDetailReasonEntity detailReason;
+
 }

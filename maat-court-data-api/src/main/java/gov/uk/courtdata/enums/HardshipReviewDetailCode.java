@@ -44,8 +44,8 @@ public enum HardshipReviewDetailCode implements PersistableEnum<String> {
     }
 
     @Converter(autoApply = true)
-    private static class HardshipReviewDetailConverter extends AbstractEnumConverter<HardshipReviewDetailCode, String> {
-        protected HardshipReviewDetailConverter() {
+    private static class HardshipReviewDetailCodeConverter extends AbstractEnumConverter<HardshipReviewDetailCode, String> {
+        protected HardshipReviewDetailCodeConverter() {
             super(HardshipReviewDetailCode.class);
         }
     }

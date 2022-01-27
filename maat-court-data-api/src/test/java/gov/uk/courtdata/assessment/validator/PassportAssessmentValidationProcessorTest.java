@@ -79,6 +79,24 @@ public class PassportAssessmentValidationProcessorTest {
     }
 
     @Test
+    public void testPassportAssessmentValidationProcessor_whenPastStatusIsNull_thenThrowsException() {
+        PassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
+        assessment.setPastStatus(null);
+        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+                () -> passportAssessmentValidationProcessor.validate(assessment));
+        assertThat(validationException.getMessage()).isEqualTo("Past Status is required");
+    }
+
+    @Test
+    public void testPassportAssessmentValidationProcessor_whenPastStatusIsBlank_thenThrowsException() {
+        PassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
+        assessment.setPastStatus("");
+        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+                () -> passportAssessmentValidationProcessor.validate(assessment));
+        assertThat(validationException.getMessage()).isEqualTo("Past Status is required");
+    }
+
+    @Test
     public void testPassportAssessmentValidationProcessor_whenRequiredFieldsPresent_thenValidationPasses() {
         PassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
         when(createPassportAssessmentValidator.validate(any(CreatePassportAssessment.class))).thenReturn(Optional.empty());

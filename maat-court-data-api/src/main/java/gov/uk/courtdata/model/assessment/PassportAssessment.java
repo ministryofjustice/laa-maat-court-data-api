@@ -38,8 +38,6 @@ public class PassportAssessment {
     private LocalDateTime lastSignOnDate;
     private String esa;
     private String pastStatus;
-    @Builder.Default
-    private String replaced = "N";
     private LocalDateTime passportEvidenceDueDate;
     private LocalDateTime allPassportEvidenceReceivedDate;
     private Integer passportUpliftPercentage;

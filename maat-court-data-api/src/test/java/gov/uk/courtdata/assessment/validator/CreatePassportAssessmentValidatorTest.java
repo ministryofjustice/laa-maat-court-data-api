@@ -19,12 +19,6 @@ public class CreatePassportAssessmentValidatorTest {
     @InjectMocks
     private CreatePassportAssessmentValidator createAssessmentValidator;
 
-    private CreatePassportAssessment getAssessmentWithNworCode(String nworCode) {
-        CreatePassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
-        assessment.setNworCode(nworCode);
-        return assessment;
-    }
-
     private CreatePassportAssessment getAssessmentWithUserCreated(String userCreated) {
         CreatePassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
         assessment.setUserCreated(userCreated);
@@ -32,9 +26,18 @@ public class CreatePassportAssessmentValidatorTest {
     }
 
     @Test
-    public void testCreatePassportAssessmentValidator_whenNworCodeIsFilled_thenValidationPasses() {
-        Optional<Void> result = createAssessmentValidator.validate(getAssessmentWithNworCode("1000"));
+    public void testCreatePassportAssessmentValidator_whenFinancialAssessmentIdIsFilled_thenValidationPasses() {
+        Optional<Void> result = createAssessmentValidator.validate(getAssessmentWithUserCreated("test-f"));
         assertThat(result).isEqualTo(Optional.empty());
+    }
+
+    @Test
+    public void testCreatePassportAssessmentValidator_whenFinancialAssessmentIdIsNotFilled_thenThrowsException() {
+        CreatePassportAssessment createPassportAssessment = getAssessmentWithUserCreated("test-f");
+        createPassportAssessment.setFinancialAssessmentId(null);
+        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+                () -> createAssessmentValidator.validate(createPassportAssessment));
+        assertThat(validationException.getMessage()).isEqualTo("Financial Assessment ID is required");
     }
 
     @Test

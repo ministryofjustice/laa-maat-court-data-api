@@ -97,7 +97,6 @@ public class PassportAssessmentServiceTest {
         PassportAssessmentDTO passportAssessmentDTO = TestModelDataBuilder.getPassportAssessmentDTO();
         passportAssessmentDTO.setId(20000);
         UpdatePassportAssessment passportAssessment = TestModelDataBuilder.getUpdatePassportAssessment();
-        PassportAssessmentEntity existingPassportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         when(passportAssessmentMapper.updatePassportAssessmentToPassportAssessmentDTO(any(UpdatePassportAssessment.class))).thenReturn(passportAssessmentDTO);
         when(passportAssessmentService.buildPassportAssessmentDTO(any())).thenReturn(
                 PassportAssessmentDTO.builder().id(1000).build()
@@ -108,6 +107,7 @@ public class PassportAssessmentServiceTest {
         assertThat(validationException.getMessage()).isEqualTo("Passport assessment with id 20000 not found !");
     }
 
+    @Test
     public void whenUpdateIsInvokedOnCompletedPassportAssessment_thenValidationExceptionIsThrown() {
         PassportAssessmentDTO passportAssessmentDTO = TestModelDataBuilder.getPassportAssessmentDTO();
         passportAssessmentDTO.setId(1000);
@@ -116,9 +116,6 @@ public class PassportAssessmentServiceTest {
         PassportAssessmentEntity existingPassportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         when(passportAssessmentMapper.updatePassportAssessmentToPassportAssessmentDTO(any(UpdatePassportAssessment.class))).thenReturn(passportAssessmentDTO);
         when(passportAssessmentImpl.find(any(Integer.class))).thenReturn(existingPassportAssessmentEntity);
-        when(passportAssessmentImpl.update(any())).thenReturn(
-                PassportAssessmentEntity.builder().id(1000).build()
-        );
         when(passportAssessmentService.buildPassportAssessmentDTO(any())).thenReturn(
                 PassportAssessmentDTO.builder().id(1000).build()
         );

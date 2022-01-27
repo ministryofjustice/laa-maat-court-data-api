@@ -19,12 +19,12 @@ public enum HardshipReviewDetailType implements PersistableEnum<String> {
     SOL_COSTS("SOL COSTS", "Solicitor Costs"),
     ACTION("ACTION", "Review Progress");
 
-    private String code;
+    private String type;
     private String description;
 
     @Override
     public String getValue() {
-        return this.code;
+        return this.type;
     }
 
     @Converter(autoApply = true)

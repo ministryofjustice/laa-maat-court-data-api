@@ -8,6 +8,7 @@ import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.*;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
@@ -449,7 +450,13 @@ public class TestModelDataBuilder {
         return HardshipReviewDTO.builder()
                 .id(1000)
                 .repId(621580)
-                .newWorkOrderCode("NEW")
+                .newWorkReason(
+                        NewWorkReason.builder()
+                                .code("NEW")
+                                .type("HARDIOJ")
+                                .description("New")
+                                .build()
+                )
                 .caseManagementUnitId(253)
                 .reviewResult("FAIL")
                 .solicitorCosts(
@@ -481,15 +488,14 @@ public class TestModelDataBuilder {
     public static HardshipReviewDTO getHardshipReviewDTOWithDetailsAndProgress() {
         HardshipReviewDTO hardship = getHardshipReviewDTO();
         hardship.setReviewDetails(List.of(getHardshipReviewDetail()));
-        hardship.setReviewProgresses(List.of(getHardshipReviewProgress()));
+        hardship.setReviewProgressItems(List.of(getHardshipReviewProgress()));
         return hardship;
     }
 
     public static HardshipReviewDetail getHardshipReviewDetail() {
         return HardshipReviewDetail.builder()
                 .id(4253)
-                .hardshipReviewId(1000)
-                .type(HardshipReviewDetailType.EXPENDITURE)
+                .detailType(HardshipReviewDetailType.EXPENDITURE)
                 .userCreated("test-s")
                 .frequency(Frequency.MONTHLY)
                 .description("Pension")
@@ -503,7 +509,6 @@ public class TestModelDataBuilder {
     public static HardshipReviewProgress getHardshipReviewProgress() {
         return HardshipReviewProgress.builder()
                 .id(1254)
-                .hardshipReviewId(1000)
                 .userCreated("test-s")
                 .userModified("test-s")
                 .progressAction(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE)

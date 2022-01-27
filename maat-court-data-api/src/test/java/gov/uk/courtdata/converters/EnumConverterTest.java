@@ -64,10 +64,9 @@ public class EnumConverterTest {
     public void givenHardshipReviewDetailEntity_whenEntityIsSaved_thenEnumArePersisted() {
 
         HardshipReviewDetailEntity mockEntity = HardshipReviewDetailEntity.builder()
-                .hardshipReviewId(1000)
                 .dateCreated(LocalDateTime.now())
                 .userCreated("test-s")
-                .type(HardshipReviewDetailType.INCOME)
+                .detailType(HardshipReviewDetailType.INCOME)
                 .detailCode(HardshipReviewDetailCode.DEBTS)
                 .frequency(Frequency.ANNUALLY)
                 .build();
@@ -75,7 +74,7 @@ public class EnumConverterTest {
         HardshipReviewDetailEntity returned = hardshipReviewDetailRepository.save(mockEntity);
         assertThat(returned.getFrequency()).isEqualTo(Frequency.ANNUALLY);
         assertThat(returned.getDetailCode()).isEqualTo(HardshipReviewDetailCode.DEBTS);
-        assertThat(returned.getType()).isEqualTo(HardshipReviewDetailType.INCOME);
+        assertThat(returned.getDetailType()).isEqualTo(HardshipReviewDetailType.INCOME);
 
     }
 

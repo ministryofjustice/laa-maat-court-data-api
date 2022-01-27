@@ -21,12 +21,12 @@ public enum HardshipReviewProgressAction implements PersistableEnum<String> {
     REJECTED_APP("REJECTED APP", "Rejected application"),
     OTHER("OTHER", "Other");
 
-    private String code;
+    private String action;
     private String description;
 
     @Override
     public String getValue() {
-        return this.code;
+        return this.action;
     }
 
     @Converter(autoApply = true)

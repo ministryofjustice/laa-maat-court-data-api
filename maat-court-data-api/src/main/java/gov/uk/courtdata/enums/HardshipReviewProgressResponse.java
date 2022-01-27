@@ -17,12 +17,12 @@ public enum HardshipReviewProgressResponse implements PersistableEnum<String> {
     ORIGINAL_RECEIVED("ORIGINAL RECEIVED", "Original application received from HMCS"),
     ADDITIONAL_PROVIDED("ADDITIONAL PROVIDED", "Additional evidence provided");
 
-    private String code;
+    private String response;
     private String description;
 
     @Override
     public String getValue() {
-        return this.code;
+        return this.response;
     }
 
     @Converter(autoApply = true)

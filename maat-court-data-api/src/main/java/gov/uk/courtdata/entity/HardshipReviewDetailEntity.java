@@ -3,10 +3,7 @@ package gov.uk.courtdata.entity;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,7 +11,10 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,7 +32,7 @@ public class HardshipReviewDetailEntity {
     private Integer hardshipReviewId;
 
     @Column(name = "HRDT_TYPE", nullable = false)
-    private HardshipReviewDetailType detailType;
+    private HardshipReviewDetailType type;
 
     @CreationTimestamp
     @Column(name = "DATE_CREATED", nullable = false, updatable = false)
@@ -42,16 +42,16 @@ public class HardshipReviewDetailEntity {
     private String userCreated;
 
     @Column(name = "FREQ_CODE", nullable = false)
-    private Frequency frequencyCode;
+    private Frequency frequency;
 
     @Column(name = "DATE_RECEIVED")
     private LocalDateTime dateReceived;
 
     @Column(name = "DETAIL_DESCRIPTION")
-    private String detailDescription;
+    private String description;
 
     @Column(name = "AMOUNT_NUMBER")
-    private BigDecimal amountNumber;
+    private BigDecimal amount;
 
     @Column(name = "DATE_DUE")
     private LocalDateTime dateDue;

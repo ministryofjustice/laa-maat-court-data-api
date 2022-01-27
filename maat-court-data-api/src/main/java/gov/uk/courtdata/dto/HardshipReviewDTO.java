@@ -1,19 +1,16 @@
 package gov.uk.courtdata.dto;
 
-import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
+import gov.uk.courtdata.enums.HardshipReviewStatus;
 import gov.uk.courtdata.model.assessment.HardshipReviewDetail;
 import gov.uk.courtdata.model.assessment.HardshipReviewProgress;
+import gov.uk.courtdata.model.assessment.SolicitorCosts;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
@@ -21,31 +18,27 @@ import java.util.Set;
 @NoArgsConstructor
 public class HardshipReviewDTO {
     private Integer id;
-    private Integer repId;
-    private String nworCode;
+    private String newWorkOrderCode;
     private LocalDateTime dateCreated;
-    private String userCreated;
-    private Integer cmuId;
+    private Integer caseManagementUnitId;
     private String reviewResult;
     private LocalDateTime reviewDate;
     private String notes;
     private String decisionNotes;
-    private Double solicitorRate;
-    private Double solicitorHours;
-    private Double solicitorVat;
-    private Double solicitorDisb;
-    private Double solicitorEstTotalCost;
+    private SolicitorCosts solicitorCosts;
     private Double disposableIncome;
     private Double disposableIncomeAfterHardship;
+    private HardshipReviewStatus status;
+
+    private Integer repId;
+    private String userCreated;
     private LocalDateTime updated;
     private String userModified;
     private LocalDateTime resultDate;
-    private String cotyCourtType;
-    private String hresStatus;
-    private Integer fiasId;
-    @Builder.Default
-    private String replaced = "N";
+    private String courtType;
+    private Integer financialAssessmentId;
     private String valid;
-    private Set<HardshipReviewDetail> hardshipReviewDetailSet;
-    private Set<HardshipReviewProgress> hardshipReviewProgressSet;
+
+    private List<HardshipReviewDetail> reviewDetails;
+    private List<HardshipReviewProgress> reviewProgresses;
 }

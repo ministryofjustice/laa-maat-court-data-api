@@ -1,7 +1,7 @@
 package gov.uk.courtdata.builder;
 
 import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.enums.Frequency;
+import gov.uk.courtdata.enums.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -107,30 +107,34 @@ public class TestEntityDataBuilder {
         return IOJAppealEntity.builder()
                 .id(IOJ_APPEAL_ID)
                 .repId(IOJ_REP_ID)
-                .appealSetupDate(LocalDateTime.of(2022,1,1,10,0))
+                .appealSetupDate(LocalDateTime.of(2022, 1, 1, 10, 0))
                 .nworCode("NEW")
                 .userCreated("test-s")
                 .cmuId(86679086)
                 .iapsStatus(StringUtils.isBlank(iapStatus) ? "COMPLETE" : iapStatus)
                 .appealSetupResult("GRANT")
                 .iderCode("NOTUNDPROC")
-                .decisionDate(LocalDateTime.of(2022,1,1,10,0))
+                .decisionDate(LocalDateTime.of(2022, 1, 1, 10, 0))
                 .decisionResult("PASS")
                 .notes("notes test notes")
                 .replaced("N")
                 .dateModified(dateModified)
                 .build();
     }
-    public static IOJAppealEntity getIOJAppealEntity(){
+
+    public static IOJAppealEntity getIOJAppealEntity() {
         return getIOJAppealEntity(null, null);
     }
-    public static IOJAppealEntity getIOJAppealEntity(LocalDateTime dateModified){
+
+    public static IOJAppealEntity getIOJAppealEntity(LocalDateTime dateModified) {
         return getIOJAppealEntity(dateModified, null);
     }
-    public static IOJAppealEntity getIOJAppealEntity(String iapStatus){
+
+    public static IOJAppealEntity getIOJAppealEntity(String iapStatus) {
         return getIOJAppealEntity(null, iapStatus);
     }
 
+<<<<<<< HEAD
     public static PassportAssessmentEntity getPassportAssessmentEntity() {
         return PassportAssessmentEntity.builder()
                 .id(1000)
@@ -167,6 +171,54 @@ public class TestEntityDataBuilder {
                 .usn(1234)
                 .whoDWPChecked("ABC")
                 .rtCode("DEF")
+=======
+    public static HardshipReviewEntity getHardshipReviewEntity() {
+        return HardshipReviewEntity.builder()
+                .id(1000)
+                .repId(621580)
+                .newWorkOrderCode("NEW")
+                .caseManagementUnitId(253)
+                .reviewResult("FAIL")
+                .solicitorRate(183.0)
+                .solicitorHours(12.0)
+                .solicitorVat(384.25)
+                .solicitorDisb(0.0)
+                .solicitorEstTotalCost(2580.25)
+                .disposableIncome(4215.46)
+                .disposableIncomeAfterHardship(2921.38)
+                .status(HardshipReviewStatus.COMPLETE)
+                .userCreated("test-s")
+                .userModified("test-s")
+                .courtType("MAGISTRATE")
+                .financialAssessmentId(349211)
+                .valid("Y")
+                .build();
+    }
+
+    public static HardshipReviewDetailEntity getHardshipReviewDetailsEntity() {
+        return HardshipReviewDetailEntity.builder()
+                .id(4253)
+                .hardshipReviewId(338)
+                .type(HardshipReviewDetailType.EXPENDITURE)
+                .userCreated("test-s")
+                .frequency(Frequency.MONTHLY)
+                .description("Pension")
+                .amount(BigDecimal.valueOf(107.84))
+                .accepted("Y")
+                .reasonResponse("evidence provided")
+                .active("false")
+                .build();
+    }
+
+    public static HardshipReviewProgressEntity getHardshipReviewProgressEntity() {
+        return HardshipReviewProgressEntity.builder()
+                .id(1254)
+                .hardshipReviewId(1000)
+                .userCreated("test-s")
+                .userModified("test-s")
+                .progressAction(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE)
+                .progressResponse(HardshipReviewProgressResponse.FURTHER_RECEIVED)
+>>>>>>> Creation of new endpoint to search for existing hardship reviews
                 .build();
     }
 }

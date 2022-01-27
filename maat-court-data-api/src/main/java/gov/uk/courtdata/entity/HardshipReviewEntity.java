@@ -1,16 +1,16 @@
 package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.enums.HardshipReviewStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,7 +28,7 @@ public class HardshipReviewEntity {
     private Integer repId;
 
     @Column(name = "NWOR_CODE")
-    private String nworCode;
+    private String newWorkOrderCode;
 
     @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
@@ -37,7 +37,7 @@ public class HardshipReviewEntity {
     private String userCreated;
 
     @Column(name = "CMU_ID")
-    private Integer cmuId;
+    private Integer caseManagementUnitId;
 
     @Column(name = "REVIEW_RESULT")
     private String reviewResult;
@@ -83,13 +83,13 @@ public class HardshipReviewEntity {
     private LocalDateTime resultDate;
 
     @Column(name = "COTY_COURT_TYPE")
-    private String cotyCourtType;
+    private String courtType;
 
     @Column(name = "HRES_STATUS")
     private HardshipReviewStatus status;
 
     @Column(name = "FIAS_ID")
-    private Integer fiasId;
+    private Integer financialAssessmentId;
 
     @Builder.Default
     @Column(name = "REPLACED")

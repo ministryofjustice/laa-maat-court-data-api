@@ -1,22 +1,21 @@
-package gov.uk.courtdata.prosecutionconcluded.service;
+package gov.uk.courtdata.prosecutionconcluded.listner;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
-import gov.uk.courtdata.hearing.crowncourt.service.CrownCourtHearingService;
-import gov.uk.courtdata.model.crowncourt.ProsecutionConcluded;
-import gov.uk.courtdata.model.hearing.HearingResulted;
+ import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcludedRequest;
+import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedService;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
+@Component
 public class ProsecutionConcludedListener {
 
     private final Gson gson;
@@ -25,15 +24,13 @@ public class ProsecutionConcludedListener {
 
     private final QueueMessageLogService queueMessageLogService;
 
-    private final CrownCourtHearingService crownCourtHearingService;
-
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}")
     public void receive(@Payload final String message) {
         MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.PROSECUTION_CONCLUDED.name());
-        queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
-        HearingResulted hearingResulted = gson.fromJson(message, HearingResulted.class);
 
-        crownCourtHearingService.executeCrownCourtOutCome(hearingResulted);
-       // prosecutionConcludedService.execute(prosecutionConcluded);
+        queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
+
+        ProsecutionConcludedRequest prosecutionConcluded = gson.fromJson(message, ProsecutionConcludedRequest.class);
+        prosecutionConcludedService.execute(prosecutionConcluded);
     }
 }

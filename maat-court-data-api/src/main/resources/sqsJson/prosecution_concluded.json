@@ -1,0 +1,35 @@
+{
+  "prosecutionConcluded": [
+    {
+      "prosecutionCaseId": "da128bc4-4687-4010-bd54-1cf21367b927",
+      "defendantId": 1212121,
+      "concluded": true,
+      "hearingIdWhereChangeOccured": "da128bc4-4687-4010-bd54-1cf21367b927",
+      "maatId": "5635566",
+      "offenceSummaryList": [
+        {
+          "offenceId": "9c5d4b67-ab21-48eb-a519-33b58d34bcbe",
+          "offenceCode": "BA76001",
+          "proceedingConcluded": true,
+          "proceedingsConcludedChangedDate": "2020-12-12",
+          "plea": {
+            "originatingHearingId": "9758541b-b72c-49ea-96ba-d36d0d7b7d8c",
+            "value": "GUILTY",
+            "pleaDate": "2021-12-12"
+          },
+          "verdict": {
+            "originatingHearingId": "9758541b-b72c-49ea-96ba-d36d0d7b7d8c",
+            "verdictDate": "2021-12-12",
+            "verdictType": {
+              "originatingHearingId": "9758541b-b72c-49ea-96ba-d36d0d7b7d8c",
+              "categoryType": "GUILTY",
+              "description": "this is a GUILTY",
+              "sequence": "1",
+              "verdictTypeId": "9758541b-b72c-49ea-96ba-d36d0d7b7d8c"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

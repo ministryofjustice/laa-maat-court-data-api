@@ -1,4 +1,4 @@
-package gov.uk.courtdata.model.crowncourt;
+package gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,4 +17,5 @@ public class OffenceSummary {
     private boolean proceedingConcluded;
     private Plea plea;
     private Verdict verdict;
+    private String proceedingsConcludedChangedDate;
 }

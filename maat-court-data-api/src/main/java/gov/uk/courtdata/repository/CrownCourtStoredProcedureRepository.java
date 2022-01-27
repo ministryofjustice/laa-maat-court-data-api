@@ -40,7 +40,6 @@ public class CrownCourtStoredProcedureRepository {
         ccOutcomeProcedure.setParameter("p_case_number", caseNumber);
         ccOutcomeProcedure.setParameter("p_crown_court_code", crownCourtCode);
 
-
         ccOutcomeProcedure.execute();
 
     }

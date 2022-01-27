@@ -22,6 +22,5 @@ public class OUCodeValidator implements IValidator<Void, HearingResulted> {
         } else {
             throw new ValidationException("OU Code is missing.");
         }
-
     }
 }

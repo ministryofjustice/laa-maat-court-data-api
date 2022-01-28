@@ -1,4 +1,4 @@
-package gov.uk.courtdata.model.assessment;
+package gov.uk.courtdata.model.hardship;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.uk.courtdata.enums.HardshipReviewProgressAction;

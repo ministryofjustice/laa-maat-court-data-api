@@ -1,4 +1,4 @@
-package gov.uk.courtdata.model.assessment;
+package gov.uk.courtdata.model.hardship;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

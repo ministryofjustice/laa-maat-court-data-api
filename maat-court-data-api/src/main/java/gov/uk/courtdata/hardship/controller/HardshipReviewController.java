@@ -3,6 +3,7 @@ package gov.uk.courtdata.hardship.controller;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.hardship.service.HardshipReviewService;
+import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.validator.HardshipReviewIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,5 +45,22 @@ public class HardshipReviewController {
 
         hardshipReviewIdValidator.validate(hardshipId);
         return ResponseEntity.ok(hardshipReviewService.find(hardshipId));
+    }
+
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve a hardship review record")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HardshipReviewDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<Object> createHardship(
+            @Parameter(description = "Hardship review data", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = CreateHardshipReview.class))) @RequestBody CreateHardshipReview hardshipReview,
+            @Parameter(description = "Used for tracing calls")
+            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+
+        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        log.info("Create Hardship Review Request Received");
+
+        return ResponseEntity.ok(hardshipReviewService.create(hardshipReview));
     }
 }

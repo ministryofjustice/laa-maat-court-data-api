@@ -7,6 +7,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -51,25 +52,25 @@ public class HardshipReviewEntity {
     private String decisionNotes;
 
     @Column(name = "SOLICITOR_RATE")
-    private Double solicitorRate;
+    private BigDecimal solicitorRate;
 
     @Column(name = "SOLICITOR_HOURS")
-    private Double solicitorHours;
+    private BigDecimal solicitorHours;
 
     @Column(name = "SOLICITOR_VAT")
-    private Double solicitorVat;
+    private BigDecimal solicitorVat;
 
     @Column(name = "SOLICITOR_DISB")
-    private Double solicitorDisb;
+    private BigDecimal solicitorDisb;
 
     @Column(name = "SOLICITOR_EST_TOTAL_COST")
-    private Double solicitorEstTotalCost;
+    private BigDecimal solicitorEstTotalCost;
 
     @Column(name = "DISPOS_INCOME")
-    private Double disposableIncome;
+    private BigDecimal disposableIncome;
 
     @Column(name = "DISPOS_INCOME_AFTER_HARDSHIP")
-    private Double disposableIncomeAfterHardship;
+    private BigDecimal disposableIncomeAfterHardship;
 
     @UpdateTimestamp
     @Column(name = "TIME_STAMP")

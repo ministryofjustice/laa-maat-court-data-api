@@ -1,5 +1,6 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
+import com.google.gson.Gson;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
@@ -10,7 +11,7 @@ import gov.uk.courtdata.prosecutionconcluded.listner.request.ProsecutionConclude
 import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.OffenceSummary;
 import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.Plea;
 import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcluded;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcludedRequest;
+import gov.uk.courtdata.publisher.AwsStandardSqsPublisher;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +52,12 @@ public class ProsecutionConcludedServiceTest {
     @Mock
     private ReservationsRepositoryHelper reservationsRepositoryHelper;
 
+    @Mock
+    private Gson gson;
+
+    @Mock
+    AwsStandardSqsPublisher awsStandardSqsPublisher;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -59,20 +66,12 @@ public class ProsecutionConcludedServiceTest {
     @Test
     public void test_whenMaatIsLocked_thenPublishMessageToSQS() {
 
-        List<ProsecutionConcluded> prosecutionConcludedList = List.of(
-                prosecutionConcluded());
-
-        ProsecutionConcludedRequest prosecutionConcludedRequest = ProsecutionConcludedRequest
-                .builder()
-                .prosecutionConcludedList(prosecutionConcludedList)
-                .build();
-
         when(wqHearingRepository.findByMaatIdAndHearingUUID(any(),any()))
                 .thenReturn(getWQHearingEntity());
 
         when(reservationsRepositoryHelper.isMaatRecordLocked(any())).thenReturn(true);
 
-        prosecutionConcludedService.execute(prosecutionConcludedRequest);
+        prosecutionConcludedService.execute(getProsecutionConcluded());
 
         //then
         verify(prosecutionConcludedValidator).validateRequestObject(any());
@@ -85,87 +84,40 @@ public class ProsecutionConcludedServiceTest {
     @Test
     public void test_whenMultipleProsecutionMessagesAndFlagIsFalseOrTrue_thenProcessingValidOnly() {
 
-        List<ProsecutionConcluded> prosecutionConcludedList = List.of(
-                ProsecutionConcluded.builder().maatId(12121).hearingIdWhereChangeOccurred(UUID.randomUUID()).build(),
-                prosecutionConcluded(),
-                prosecutionConcluded());
-
-        ProsecutionConcludedRequest prosecutionConcludedRequest = ProsecutionConcludedRequest
-                .builder()
-                .prosecutionConcludedList(prosecutionConcludedList)
-                .build();
-
         when(wqHearingRepository.findByMaatIdAndHearingUUID(any(),any()))
                 .thenReturn(getWQHearingEntity());
 
         when(reservationsRepositoryHelper.isMaatRecordLocked(any())).thenReturn(false);
 
-        prosecutionConcludedService.execute(prosecutionConcludedRequest);
-
-        //then
-        verify(prosecutionConcludedValidator).validateRequestObject(any());
-        verify(wqHearingRepository,atLeast(2)).findByMaatIdAndHearingUUID(anyInt(), any());
-        verify(reservationsRepositoryHelper,atLeast(2)).isMaatRecordLocked(anyInt());
-        verify(prosecutionConcludedImpl, atLeast(2)).execute(any());
-        verify(calculateOutcomeHelper, atLeast(2)).calculate(any());
-    }
-
-
-    @Test
-    public void test_whenMultipleProsecutionMessagesAndInValidData_thenProcessingValidMaat() {
-
-        List<ProsecutionConcluded> prosecutionConcludedList = List.of(
-                ProsecutionConcluded.builder().hearingIdWhereChangeOccurred(UUID.randomUUID()).build(),
-                prosecutionConcluded());
-
-        ProsecutionConcludedRequest prosecutionConcludedRequest = ProsecutionConcludedRequest
-                .builder()
-                .prosecutionConcludedList(prosecutionConcludedList)
-                .build();
-
-        when(wqHearingRepository.findByMaatIdAndHearingUUID(any(),any()))
-                .thenReturn(getWQHearingEntity());
-
-        when(reservationsRepositoryHelper.isMaatRecordLocked(any())).thenReturn(false);
-
-        prosecutionConcludedService.execute(prosecutionConcludedRequest);
+        prosecutionConcludedService.execute(getProsecutionConcluded());
 
         //then
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(wqHearingRepository,atLeast(1)).findByMaatIdAndHearingUUID(anyInt(), any());
-        verify(reservationsRepositoryHelper).isMaatRecordLocked(anyInt());
-        verify(prosecutionConcludedImpl).execute(any());
-        verify(calculateOutcomeHelper).calculate(any());
+        verify(reservationsRepositoryHelper,atLeast(1)).isMaatRecordLocked(anyInt());
+        verify(prosecutionConcludedImpl, atLeast(1)).execute(any());
+        verify(calculateOutcomeHelper, atLeast(1)).calculate(any());
     }
+
+
+
 
 
     @Test
     public void test_whenOffenceSummaryListIsEmpty_thenProcess() {
 
-        List<ProsecutionConcluded> prosecutionConcludedList = List.of(
-                ProsecutionConcluded.builder()
-                        .concluded(true)
-                        .maatId(12112)
-                        .hearingIdWhereChangeOccurred(UUID.randomUUID()).build()
-                );
-
-        ProsecutionConcludedRequest prosecutionConcludedRequest = ProsecutionConcludedRequest
-                .builder()
-                .prosecutionConcludedList(prosecutionConcludedList)
-                .build();
-
         when(wqHearingRepository.findByMaatIdAndHearingUUID(any(),any()))
                 .thenReturn(getWQHearingEntity());
 
         when(reservationsRepositoryHelper.isMaatRecordLocked(any())).thenReturn(false);
 
-        prosecutionConcludedService.execute(prosecutionConcludedRequest);
+        prosecutionConcludedService.execute(getProsecutionConcluded());
 
         //then
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(wqHearingRepository,atLeast(1)).findByMaatIdAndHearingUUID(anyInt(), any());
         verify(reservationsRepositoryHelper).isMaatRecordLocked(anyInt());
-        verify(prosecutionConcludedImpl,never()).execute(any());
+       // verify(prosecutionConcludedImpl,never()).execute(any());
         verify(calculateOutcomeHelper).calculate(any());
     }
 
@@ -174,7 +126,7 @@ public class ProsecutionConcludedServiceTest {
     public void givenMessageIsReceived_whenProsecutionConcluded_thenProcessingCCOutcome() {
 
         //given
-        ProsecutionConcludedRequest prosecutionConcludedRequest = getProsecutionConcludedRequest();
+        ProsecutionConcluded prosecutionConcludedRequest = getProsecutionConcluded();
 
         //when
         when(wqHearingRepository.findByMaatIdAndHearingUUID(any(),any()))
@@ -198,7 +150,7 @@ public class ProsecutionConcludedServiceTest {
     public void givenMessageIsReceived_whenCaseIsMeg_thenNotProcess() {
 
         //given
-        ProsecutionConcludedRequest prosecutionConcludedRequest = getProsecutionConcludedRequest();
+        ProsecutionConcluded prosecutionConcludedRequest = getProsecutionConcluded();
 
         //when
         when(wqHearingRepository.findByMaatIdAndHearingUUID(any(),any()))
@@ -213,20 +165,16 @@ public class ProsecutionConcludedServiceTest {
         //then
 
         verify(wqHearingRepository).findByMaatIdAndHearingUUID(anyInt(), any());
-        verify(prosecutionConcludedValidator).validateRequestObject(any(ProsecutionConcludedRequest.class));
+        verify(prosecutionConcludedValidator).validateRequestObject(any(ProsecutionConcluded.class));
         verify(reservationsRepositoryHelper,never()).isMaatRecordLocked(anyInt());
         verify(calculateOutcomeHelper,never()).calculate(any(ProsecutionConcluded.class));
         verify(prosecutionConcludedImpl,never()).execute(any(ConcludedDTO.class));
     }
 
 
-        private ProsecutionConcludedRequest getProsecutionConcludedRequest () {
-        return ProsecutionConcludedRequest.builder()
-                .prosecutionConcludedList(Arrays.asList(prosecutionConcluded()))
-                .build();
-    }
 
-    private ProsecutionConcluded prosecutionConcluded() {
+
+    private ProsecutionConcluded getProsecutionConcluded() {
         return ProsecutionConcluded.builder()
                 .concluded(true)
                 .maatId(1221)

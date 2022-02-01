@@ -1,12 +1,11 @@
 package gov.uk.courtdata.prosecutionconcluded.listner.request;
 
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcludedRequest;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcluded;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
-import java.util.Collections;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -22,17 +21,14 @@ public class ProsecutionConcludedValidatorTest {
     @Test (expected = ValidationException.class)
     public void testWhenProsecutionConcludedListIsEmpty_thenThrowException() {
 
-        ProsecutionConcludedRequest request = ProsecutionConcludedRequest.builder()
-                .prosecutionConcludedList(Collections.emptyList())
-                .build();
+        ProsecutionConcluded request = ProsecutionConcluded.builder().build();
         prosecutionConcludedValidator.validateRequestObject(request);
     }
 
     @Test (expected = ValidationException.class)
     public void testWhenProsecutionConcludedListIsNull_thenThrowException() {
 
-        ProsecutionConcludedRequest request = ProsecutionConcludedRequest.builder()
-                .prosecutionConcludedList(null)
+        ProsecutionConcluded request = ProsecutionConcluded.builder().offenceSummaryList(null)
                 .build();
 
         prosecutionConcludedValidator.validateRequestObject(request);

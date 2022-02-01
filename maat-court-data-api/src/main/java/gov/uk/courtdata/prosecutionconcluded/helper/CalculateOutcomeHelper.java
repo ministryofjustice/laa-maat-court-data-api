@@ -9,11 +9,10 @@ import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.Prosecut
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.lang.String.format;
 
 @Component
 @RequiredArgsConstructor
@@ -38,7 +37,7 @@ public class CalculateOutcomeHelper {
                     });
 
             List<String> outcomes = offenceOutcomeList.stream().distinct().collect(Collectors.toList());
-            log.info("Offence count: " + outcomes.stream().count());
+            log.info("Offence count: " + outcomes.size());
             String offenceOutcomeStatus = null;
 
             if (outcomes.size() == 1) {
@@ -50,7 +49,7 @@ public class CalculateOutcomeHelper {
             return offenceOutcomeStatus;
         } else {
              log.error("Offence summary list is empty {}", prosecutionConcluded.getMaatId().toString());
-            throw new ValidationException(format("Offence summary list is null or empty for maat-id: {}", prosecutionConcluded.getMaatId().toString()));
+            throw new ValidationException("Offence summary list is null or empty for maat-id: " + prosecutionConcluded.getMaatId().toString());
         }
     }
 }

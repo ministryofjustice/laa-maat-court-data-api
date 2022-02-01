@@ -8,9 +8,9 @@ import gov.uk.courtdata.prosecutionconcluded.helper.CalculateOutcomeHelper;
 import gov.uk.courtdata.prosecutionconcluded.helper.ReservationsRepositoryHelper;
 import gov.uk.courtdata.prosecutionconcluded.impl.ProsecutionConcludedImpl;
 import gov.uk.courtdata.prosecutionconcluded.listner.request.ProsecutionConcludedValidator;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.OffenceSummary;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.Plea;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcluded;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.OffenceSummary;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.Plea;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.ProsecutionConcluded;
 import gov.uk.courtdata.publisher.AwsStandardSqsPublisher;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import org.junit.Test;
@@ -22,7 +22,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -188,7 +187,7 @@ public class ProsecutionConcludedServiceTest {
 
         return OffenceSummary.builder()
                 .offenceCode(offenceCode)
-                .proceedingConcluded(true)
+                .proceedingsConcluded(true)
                 .plea(Plea.builder().value("GUILTY").build())
                 .proceedingsConcludedChangedDate("2012-12-12")
                 .build();

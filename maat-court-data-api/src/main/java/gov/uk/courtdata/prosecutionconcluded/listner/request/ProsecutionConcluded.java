@@ -1,4 +1,4 @@
-package gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt;
+package gov.uk.courtdata.prosecutionconcluded.listner.request;
 
 import lombok.*;
 

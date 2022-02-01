@@ -3,7 +3,7 @@ package gov.uk.courtdata.prosecutionconcluded.listner;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcluded;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedService;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;

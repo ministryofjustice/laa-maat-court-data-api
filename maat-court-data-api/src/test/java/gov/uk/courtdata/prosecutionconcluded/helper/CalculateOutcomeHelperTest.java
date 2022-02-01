@@ -1,6 +1,6 @@
 package gov.uk.courtdata.prosecutionconcluded.helper;
 
-import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.*;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.*;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;

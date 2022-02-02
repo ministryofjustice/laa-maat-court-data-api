@@ -31,14 +31,10 @@ public class PassportAssessmentService {
         log.info("Update Passport Assessment - Transaction Processing - Start");
         PassportAssessmentDTO passportAssessmentDTO =
                 passportAssessmentMapper.updatePassportAssessmentToPassportAssessmentDTO(updatePassportAssessment);
-        log.info("Updating existing passport assessment record");
-        PassportAssessmentEntity existingPassportAssessmentEntity = passportAssessmentImpl.find(passportAssessmentDTO.getId());
-        if(existingPassportAssessmentEntity == null) {
-            throw new ValidationException(String.format("Passport assessment with id %s not found !",passportAssessmentDTO.getId()));
-        }
         if(existingPassportAssessmentEntity.getPastStatus().equals(STATUS_COMPLETE)) {
             throw new ValidationException("User cannot modify a completed assessment");
         }
+        log.info("Updating existing passport assessment record");
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.update(passportAssessmentDTO);
         log.info("Update Passport Assessment - Transaction Processing - End");
         return buildPassportAssessmentDTO(passportAssessmentEntity);

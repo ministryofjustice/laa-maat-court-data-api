@@ -120,13 +120,4 @@ public class PassportAssessmentControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
-
-    @Test
-    public void givenIncorrectParameters_whenDeletePassportAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
-        when(passportAssessmentValidationProcessor.validate(any(Integer.class))).thenThrow(new ValidationException());
-        doNothing().when(passportAssessmentService).delete(MOCK_ASSESSMENT_ID);
-        verify(passportAssessmentService, never()).delete(any(Integer.class));
-        mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/" + MOCK_ASSESSMENT_ID))
-                .andExpect(status().is4xxClientError());
-    }
 }

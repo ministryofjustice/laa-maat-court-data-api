@@ -11,7 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ProsecutionConcluded {
     private Integer maatId;
-    private Integer defendantId;
+    private UUID defendantId;
     private UUID prosecutionCaseId;
     private boolean concluded;
     private UUID hearingIdWhereChangeOccurred;

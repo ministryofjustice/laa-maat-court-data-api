@@ -3,7 +3,7 @@ package gov.uk.courtdata.prosecutionconcluded;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.prosecutionconcluded.listner.ProsecutionConcludedListener;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcludedRequest;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedService;
 import gov.uk.courtdata.service.QueueMessageLogService;
 
@@ -40,10 +40,10 @@ public class ProsecutionConcludedListenerTest {
     @Test
     public void givenJSONMessageIsReceived_whenProsecutionConcludedListenerIsInvoked_thenProsecutionConcludedServiceIsCalled() {
         //given
-        ProsecutionConcludedRequest prosecutionConcludedRequest = ProsecutionConcludedRequest.builder().build();
+        ProsecutionConcluded prosecutionConcludedRequest = ProsecutionConcluded.builder().build();
         String message = "Test JSON";
         //when
-        when(gson.fromJson(message, ProsecutionConcludedRequest.class)).thenReturn(prosecutionConcludedRequest);
+        when(gson.fromJson(message, ProsecutionConcluded.class)).thenReturn(prosecutionConcludedRequest);
         prosecutionConcludedListener.receive(message);
         //then
         verify(prosecutionConcludedService).execute(prosecutionConcludedRequest);

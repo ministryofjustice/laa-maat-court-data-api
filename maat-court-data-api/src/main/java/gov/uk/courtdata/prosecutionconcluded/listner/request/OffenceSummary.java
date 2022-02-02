@@ -1,4 +1,4 @@
-package gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt;
+package gov.uk.courtdata.prosecutionconcluded.listner.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import java.util.UUID;
 public class OffenceSummary {
     private UUID offenceId;
     private String offenceCode;
-    private boolean proceedingConcluded;
+    private boolean proceedingsConcluded;
     private Plea plea;
     private Verdict verdict;
     private String proceedingsConcludedChangedDate;

@@ -3,16 +3,14 @@ package gov.uk.courtdata.prosecutionconcluded.service;
 import com.google.gson.Gson;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.MaatRecordLockedException;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CalculateOutcomeHelper;
 import gov.uk.courtdata.prosecutionconcluded.helper.ReservationsRepositoryHelper;
 import gov.uk.courtdata.prosecutionconcluded.impl.ProsecutionConcludedImpl;
 import gov.uk.courtdata.prosecutionconcluded.listner.request.ProsecutionConcludedValidator;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.OffenceSummary;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcluded;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.crowncourt.ProsecutionConcludedRequest;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.OffenceSummary;
+import gov.uk.courtdata.prosecutionconcluded.listner.request.ProsecutionConcluded;
 import gov.uk.courtdata.publisher.AwsStandardSqsPublisher;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,58 +48,49 @@ public class ProsecutionConcludedService {
     private final Gson gson;
 
 
-    public void execute(final ProsecutionConcludedRequest prosecutionConcludedRequest) {
+    public void execute(final ProsecutionConcluded prosecutionConcluded) {
 
-       try {
-           prosecutionConcludedValidator.validateRequestObject(prosecutionConcludedRequest);
+        prosecutionConcludedValidator.validateRequestObject(prosecutionConcluded);
 
-           if (prosecutionConcludedRequest.getProsecutionConcludedList().size() == 0)
-               throw new MAATCourtDataException("ProsecutionConcluded list object is empty ");
+        WQHearingEntity wqHearingEntity = getWqHearingEntity(prosecutionConcluded);
 
-           for (ProsecutionConcluded prosecutionConcluded : prosecutionConcludedRequest.getProsecutionConcludedList()) {
+        if (prosecutionConcluded.isConcluded()
+                && wqHearingEntity != null
+                && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType())) {
 
-               WQHearingEntity wqHearingEntity = getWqHearingEntity(prosecutionConcluded);
+            if (reservationsRepositoryHelper.isMaatRecordLocked(prosecutionConcluded.getMaatId())) {
+                publishMessageToProsecutionSQS(prosecutionConcluded);
+            } else {
 
-               if (prosecutionConcluded.isConcluded()
-                       && wqHearingEntity != null
-                       && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType())) {
+                prosecutionConcludedValidator.validateOuCode(wqHearingEntity.getOuCourtLocation());
+                String calculatedOutcome = calculateOutcomeHelper.calculate(prosecutionConcluded);
+                log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
 
-                   if (reservationsRepositoryHelper.isMaatRecordLocked(prosecutionConcluded.getMaatId())) {
-                       publishMessageToProsecutionSQS(prosecutionConcluded);
-                   }
+                ConcludedDTO concludedDTO = ConcludedDTO.
+                        builder()
+                        .prosecutionConcluded(prosecutionConcluded)
+                        .calculatedOutcome(calculatedOutcome)
+                        .ouCourtLocation(wqHearingEntity.getOuCourtLocation())
+                        .wqJurisdictionType(wqHearingEntity.getWqJurisdictionType())
+                        .caseEndDate(getMostRecentCaseEndDate(prosecutionConcluded.getOffenceSummaryList()))
+                        .caseUrn(wqHearingEntity.getCaseUrn())
+                        .hearingResultCodeList(buildResultCodeList(wqHearingEntity))
+                        .build();
 
-                   prosecutionConcludedValidator.validateOuCode(wqHearingEntity.getOuCourtLocation());
-                   String calculatedOutcome = calculateOutcomeHelper.calculate(prosecutionConcluded);
-                   log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
-
-                   ConcludedDTO concludedDTO = ConcludedDTO.
-                           builder()
-                           .prosecutionConcluded(prosecutionConcluded)
-                           .calculatedOutcome(calculatedOutcome)
-                           .ouCourtLocation(wqHearingEntity.getOuCourtLocation())
-                           .wqJurisdictionType(wqHearingEntity.getWqJurisdictionType())
-                           .caseEndDate(getMostRecentCaseEndDate(prosecutionConcluded.getOffenceSummaryList()))
-                           .caseUrn(wqHearingEntity.getCaseUrn())
-                           .hearingResultCodeList(buildResultCodeList(wqHearingEntity))
-                           .build();
-
-                   prosecutionConcludedImpl.execute(concludedDTO);
-               }
-           }
-       } catch (Exception ex) {
-           log.error(ex.getMessage());
-       }
+                prosecutionConcludedImpl.execute(concludedDTO);
+            }
+        }
     }
 
     private WQHearingEntity getWqHearingEntity(ProsecutionConcluded prosecutionConcluded) {
         Optional<WQHearingEntity> wqHearingEntity = wqHearingRepository
                 .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
-        return  wqHearingEntity.isPresent() ? wqHearingEntity.get() : null;
+        return wqHearingEntity.orElse(null);
     }
 
     private String getMostRecentCaseEndDate(List<OffenceSummary> offenceSummaryList) {
 
-        if (offenceSummaryList == null && offenceSummaryList.isEmpty())
+        if (offenceSummaryList == null || offenceSummaryList.isEmpty())
             return null;
 
         return offenceSummaryList.stream()
@@ -128,10 +117,7 @@ public class ProsecutionConcludedService {
 
             int counter = prosecutionConcluded.getMessageRetryCounter()+1;
             prosecutionConcluded.setMessageRetryCounter(counter);
-            ProsecutionConcludedRequest concludedRequest = ProsecutionConcludedRequest.builder()
-                    .prosecutionConcludedList(Arrays.asList(prosecutionConcluded))
-                    .build();
-            String toJson = gson.toJson(concludedRequest);
+            String toJson = gson.toJson(prosecutionConcluded);
 
             awsStandardSqsPublisher.publish(sqsQueueName,toJson);
         } else {

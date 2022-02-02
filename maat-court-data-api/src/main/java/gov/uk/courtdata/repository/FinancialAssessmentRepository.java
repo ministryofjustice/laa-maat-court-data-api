@@ -11,9 +11,14 @@ import java.util.List;
 
 @Repository
 public interface FinancialAssessmentRepository extends JpaRepository<FinancialAssessmentEntity, Integer> {
+
     List<FinancialAssessmentEntity> findByRepId(Integer repId);
 
     @Modifying
     @Query(value = "UPDATE FinancialAssessmentEntity fa set fa.replaced = 'Y' WHERE fa.repId = :repId")
-    void updateOldAssessments(@Param("repId") Integer repId);
+    void updateAllPreviousFinancialAssessmentsAsReplaced(@Param("repId") Integer repId);
+
+    @Modifying
+    @Query(value = "UPDATE FinancialAssessmentEntity fa set fa.replaced = 'Y' WHERE fa.id <> :id AND fa.repId = :repId")
+    void updatePreviousFinancialAssessmentsAsReplaced(@Param("repId") Integer repId, @Param("id") Integer id);
 }

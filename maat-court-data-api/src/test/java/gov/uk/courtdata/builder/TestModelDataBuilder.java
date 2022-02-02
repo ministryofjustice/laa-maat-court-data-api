@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.IOJAppealDTO;
+import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.hearing.dto.*;
@@ -15,6 +16,8 @@ import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
+import gov.uk.courtdata.model.assessment.*;
+
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -457,5 +460,184 @@ public class TestModelDataBuilder {
                         .username("test-f")
                         .build()
                 ).build();
+    }
+
+    public static String getCreatePassportAssessmentJson() {
+        return "{\n" +
+                "\"financialAssessmentId\": \"2000\",\n" +
+                "\"repId\": \"1234567\",\n" +
+                "\"nworCode\": \"FMA\",\n" +
+                "\"dateCreated\": \"2021-10-09T15:02:25\",\n" +
+                "\"userCreated\": \"test-f\",\n" +
+                "\"cmuId\": 30,\n" +
+                "\"assessmentDate\": \"2021-10-09T15:02:25\",\n" +
+                "\"partnerBenefitClaimed\": \"Y\",\n" +
+                "\"partnerFirstName\": \"Test\",\n" +
+                "\"partnerSurname\": \"Partner\",\n" +
+                "\"partnerNiNumber\": \"AB123456C\",\n" +
+                "\"partnerDob\": \"1978-10-09T06:00:00\",\n" +
+                "\"incomeSupport\": \"Y\",\n" +
+                "\"jobSeekers\": \"Y\",\n" +
+                "\"statePensionCredit\": \"N\",\n" +
+                "\"under18FullEducation\": \"N\",\n" +
+                "\"under16\": \"N\",\n" +
+                "\"pcobConfirmation\": \"AGEREL\",\n" +
+                "\"result\": \"PASS\",\n" +
+                "\"dateModified\": \"2021-10-09T15:01:25\",\n" +
+                "\"userModified\": \"test-f\",\n" +
+                "\"dwpResult\": \"Yes\",\n" +
+                "\"between16And17\": \"N\",\n" +
+                "\"under18HeardInYouthCourt\": \"N\",\n" +
+                "\"under18HeardInMagsCourt\": \"N\",\n" +
+                "\"lastSignOnDate\": \"2021-08-09T12:12:48\",\n" +
+                "\"esa\": \"N\",\n" +
+                "\"pastStatus\": \"COMPLETE\",\n" +
+                "\"replaced\": \"N\",\n" +
+                "\"valid\": \"Y\",\n" +
+                "\"dateCompleted\": \"2021-10-09T15:02:25\",\n" +
+                "\"usn\": \"1234\",\n" +
+                "\"whoDWPChecked\": \"ABC\",\n" +
+                "\"rtCode\": \"DEF\"\n" +
+                "}";
+    }
+
+    public static String getUpdatePassportAssessmentJson() {
+        return "{\n" +
+                "\"id\": \"1000\",\n" +
+                "\"repId\": \"1234567\",\n" +
+                "\"nworCode\": \"FMA\",\n" +
+                "\"cmuId\": 30,\n" +
+                "\"assessmentDate\": \"2021-10-09T15:02:25\",\n" +
+                "\"partnerBenefitClaimed\": \"Y\",\n" +
+                "\"partnerFirstName\": \"Test\",\n" +
+                "\"partnerSurname\": \"Partner\",\n" +
+                "\"partnerNiNumber\": \"AB123456C\",\n" +
+                "\"partnerDob\": \"1978-10-09T06:00:00\",\n" +
+                "\"incomeSupport\": \"Y\",\n" +
+                "\"jobSeekers\": \"Y\",\n" +
+                "\"statePensionCredit\": \"N\",\n" +
+                "\"under18FullEducation\": \"N\",\n" +
+                "\"under16\": \"N\",\n" +
+                "\"pcobConfirmation\": \"DWP\",\n" +
+                "\"result\": \"PASS\",\n" +
+                "\"dwpResult\": \"Yes\",\n" +
+                "\"between16And17\": \"N\",\n" +
+                "\"under18HeardInYouthCourt\": \"N\",\n" +
+                "\"under18HeardInMagsCourt\": \"N\",\n" +
+                "\"lastSignOnDate\": \"2021-08-09T12:12:48\",\n" +
+                "\"esa\": \"N\",\n" +
+                "\"pastStatus\": \"COMPLETE\",\n" +
+                "\"replaced\": \"N\",\n" +
+                "\"valid\": \"Y\",\n" +
+                "\"dateCompleted\": \"2021-10-09T15:02:25\",\n" +
+                "\"whoDWPChecked\": \"ABC\",\n" +
+                "\"userModified\": \"test-f\"\n" +
+                "}";
+    }
+
+    public static PassportAssessmentDTO getPassportAssessmentDTO() {
+        return PassportAssessmentDTO.builder()
+                .repId(5678)
+                .nworCode("FMA")
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("test-f")
+                .cmuId(30)
+                .assessmentDate(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .partnerBenefitClaimed("Y")
+                .partnerFirstName("Test")
+                .partnerSurname("Partner")
+                .partnerNiNumber("AB123456C")
+                .partnerDob(LocalDateTime.parse("1978-10-09T06:00:00"))
+                .incomeSupport("Y")
+                .jobSeekers("Y")
+                .statePensionCredit("N")
+                .under18FullEducation("N")
+                .under16("N")
+                .pcobConfirmation("DWP")
+                .result("PASS")
+                .dateModified(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userModified("test-f")
+                .dwpResult("Yes")
+                .between16And17("N")
+                .under18HeardInYouthCourt("N")
+                .under18HeardInMagsCourt("N")
+                .lastSignOnDate(LocalDateTime.parse("2021-08-09T12:12:48"))
+                .esa("N")
+                .pastStatus("COMPLETE")
+                .replaced("N")
+                .valid("Y")
+                .dateCompleted(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .usn(1234)
+                .whoDWPChecked("ABC")
+                .rtCode("DEF")
+                .build();
+    }
+
+    public static CreatePassportAssessment getCreatePassportAssessment() {
+        return CreatePassportAssessment.builder()
+                .financialAssessmentId(2000)
+                .repId(5678)
+                .nworCode("FMA")
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("test-f")
+                .cmuId(30)
+                .assessmentDate(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .partnerBenefitClaimed("Y")
+                .partnerFirstName("Test")
+                .partnerSurname("Partner")
+                .partnerNiNumber("AB123456C")
+                .partnerDob(LocalDateTime.parse("1978-10-09T06:00:00"))
+                .incomeSupport("Y")
+                .jobSeekers("Y")
+                .statePensionCredit("N")
+                .under18FullEducation("N")
+                .under16("N")
+                .pcobConfirmation("DWP")
+                .result("PASS")
+                .dwpResult("Yes")
+                .between16And17("N")
+                .under18HeardInYouthCourt("N")
+                .under18HeardInMagsCourt("N")
+                .lastSignOnDate(LocalDateTime.parse("2021-08-09T12:12:48"))
+                .esa("N")
+                .pastStatus("COMPLETE")
+                .valid("Y")
+                .dateCompleted(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .usn(1234)
+                .whoDWPChecked("ABC")
+                .rtCode("DEF")
+                .build();
+    }
+
+    public static UpdatePassportAssessment getUpdatePassportAssessment() {
+        return UpdatePassportAssessment.builder()
+                .repId(5678)
+                .nworCode("FMA")
+                .userModified("test-f")
+                .cmuId(30)
+                .assessmentDate(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .partnerBenefitClaimed("Y")
+                .partnerFirstName("Test")
+                .partnerSurname("Partner")
+                .partnerNiNumber("AB123456C")
+                .partnerDob(LocalDateTime.parse("1978-10-09T06:00:00"))
+                .incomeSupport("Y")
+                .jobSeekers("Y")
+                .statePensionCredit("N")
+                .under18FullEducation("N")
+                .under16("N")
+                .pcobConfirmation("DWP")
+                .result("PASS")
+                .dwpResult("Yes")
+                .between16And17("N")
+                .under18HeardInYouthCourt("N")
+                .under18HeardInMagsCourt("N")
+                .lastSignOnDate(LocalDateTime.parse("2021-08-09T12:12:48"))
+                .esa("N")
+                .pastStatus("COMPLETE")
+                .valid("Y")
+                .dateCompleted(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .whoDWPChecked("ABC")
+                .build();
     }
 }

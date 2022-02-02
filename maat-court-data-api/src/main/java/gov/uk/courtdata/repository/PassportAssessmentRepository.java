@@ -11,6 +11,10 @@ import org.springframework.stereotype.Repository;
 public interface PassportAssessmentRepository extends JpaRepository<PassportAssessmentEntity, Integer> {
 
     @Modifying
-    @Query(value = "UPDATE PassportAssessmentEntity pa set pa.replaced = 'Y' WHERE pa.repId = :repId")
-    void updateOldPassportAssessments(@Param("repId") Integer repId);
+    @Query(value = "UPDATE PASSPORT_ASSESSMENTS pa set pa.replaced = 'Y' WHERE pa.repId = :repId", nativeQuery = true)
+    void updateAllPreviousPassportAssessmentsAsReplaced(@Param("repId") Integer repId);
+
+    @Modifying
+    @Query(value = "UPDATE PASSPORT_ASSESSMENTS pa set pa.replaced = 'Y' WHERE pa.id <> :id AND pa.repId = :repId", nativeQuery = true)
+    void updatePreviousPassportAssessmentsAsReplaced(@Param("repId") Integer repId, @Param("id") Integer id);
 }

@@ -93,22 +93,6 @@ public class PassportAssessmentServiceTest {
     }
 
     @Test
-    public void whenUpdateIsInvokedWithInvalidId_thenValidationExceptionIsThrown() {
-        PassportAssessmentDTO passportAssessmentDTO = TestModelDataBuilder.getPassportAssessmentDTO();
-        passportAssessmentDTO.setId(20000);
-        UpdatePassportAssessment passportAssessment = TestModelDataBuilder.getUpdatePassportAssessment();
-        PassportAssessmentEntity existingPassportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
-        when(passportAssessmentMapper.updatePassportAssessmentToPassportAssessmentDTO(any(UpdatePassportAssessment.class))).thenReturn(passportAssessmentDTO);
-        when(passportAssessmentService.buildPassportAssessmentDTO(any())).thenReturn(
-                PassportAssessmentDTO.builder().id(1000).build()
-        );
-
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
-                () -> passportAssessmentService.update(passportAssessment));
-        assertThat(validationException.getMessage()).isEqualTo("Passport assessment with id 20000 not found !");
-    }
-
-    @Test
     public void whenUpdateIsInvokedOnCompletedPassportAssessment_thenValidationExceptionIsThrown() {
         PassportAssessmentDTO passportAssessmentDTO = TestModelDataBuilder.getPassportAssessmentDTO();
         passportAssessmentDTO.setId(1000);

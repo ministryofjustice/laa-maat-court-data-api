@@ -2,17 +2,17 @@ package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.enums.HardshipReviewProgressAction;
 import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,9 +25,6 @@ public class HardshipReviewProgressEntity {
     @SequenceGenerator(name = "hardship_review_progress_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hardship_review_progress_seq")
     private Integer id;
-
-    @Column(name = "HARE_ID", nullable = false)
-    private Integer hardshipReviewId;
 
     @Column(name = "HRPA_ACTION", nullable = false)
     private HardshipReviewProgressAction progressAction;

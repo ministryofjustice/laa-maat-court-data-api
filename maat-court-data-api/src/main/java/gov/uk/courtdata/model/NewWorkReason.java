@@ -1,6 +1,6 @@
 package gov.uk.courtdata.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,23 +14,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class NewWorkReason {
 
+    @JsonValue
     private String code;
     private String type;
     private String description;
-    @JsonIgnore
     private LocalDateTime dateCreated;
-    @JsonIgnore
     private String userCreated;
-    @JsonIgnore
     private LocalDateTime dateModified;
-    @JsonIgnore
     private String userModified;
-    @JsonIgnore
     private Integer sequence;
-    @JsonIgnore
     private String enabled;
-    @JsonIgnore
     private String raGroup;
-    @JsonIgnore
     private String initialDefault;
 }

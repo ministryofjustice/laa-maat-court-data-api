@@ -6,6 +6,7 @@ import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
+import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,19 @@ public class HardshipReviewService {
         return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReview);
     }
 
+    @Transactional(rollbackFor = MAATCourtDataException.class)
     public HardshipReviewDTO create(CreateHardshipReview hardshipReview) {
         HardshipReviewDTO hardshipReviewDTO =
                 hardshipReviewMapper.CreateHardshipReviewToHardshipReviewDTO(hardshipReview);
         HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.create(hardshipReviewDTO);
+        return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
+    }
+
+    @Transactional(rollbackFor = MAATCourtDataException.class)
+    public HardshipReviewDTO update(UpdateHardshipReview hardshipReview) {
+        HardshipReviewDTO hardshipReviewDTO =
+                hardshipReviewMapper.UpdateHardshipReviewToHardshipReviewDTO(hardshipReview);
+        HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.update(hardshipReviewDTO);
         return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
     }
 }

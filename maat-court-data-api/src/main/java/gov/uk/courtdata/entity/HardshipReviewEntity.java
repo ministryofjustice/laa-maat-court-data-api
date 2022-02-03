@@ -2,6 +2,7 @@ package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.enums.HardshipReviewStatus;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -30,6 +32,7 @@ public class HardshipReviewEntity {
     @Column(name = "REP_ID")
     private Integer repId;
 
+    @CreationTimestamp
     @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
 
@@ -37,7 +40,7 @@ public class HardshipReviewEntity {
     private String userCreated;
 
     @Column(name = "CMU_ID")
-    private Integer caseManagementUnitId;
+    private Integer cmuId;
 
     @Column(name = "REVIEW_RESULT")
     private String reviewResult;
@@ -100,18 +103,41 @@ public class HardshipReviewEntity {
 
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "NWOR_CODE", nullable = false)
     private NewWorkReasonEntity newWorkReason;
 
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
     @OneToMany(mappedBy = "hardshipReview", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<HardshipReviewDetailEntity> reviewDetails;
+    private final List<HardshipReviewDetailEntity> reviewDetails = new ArrayList<>();
+
+    public void addReviewDetail(HardshipReviewDetailEntity detailEntity) {
+        if (detailEntity.getUserCreated() == null) {
+            detailEntity.setUserCreated(this.userCreated);
+        }
+        detailEntity.setHardshipReview(this);
+        this.reviewDetails.add(detailEntity);
+    }
+
+    public void removeReviewDetail(HardshipReviewDetailEntity detailEntity) {
+        detailEntity.setHardshipReview(null);
+        this.reviewDetails.remove(detailEntity);
+    }
 
     @ToString.Exclude
-    @JoinColumn(name = "HARE_ID")
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<HardshipReviewProgressEntity> reviewProgressItems;
+    @JoinColumn(name = "HARE_ID", nullable = false)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<HardshipReviewProgressEntity> reviewProgressItems = new ArrayList<>();
 
+    public void addReviewProgressItem(HardshipReviewProgressEntity progressEntity) {
+        if (progressEntity.getUserCreated() == null) {
+            progressEntity.setUserCreated(this.userCreated);
+        }
+        this.reviewProgressItems.add(progressEntity);
+    }
+
+    public void removeReviewProgressItem(HardshipReviewProgressEntity progressEntity) {
+        this.reviewProgressItems.remove(progressEntity);
+    }
 }

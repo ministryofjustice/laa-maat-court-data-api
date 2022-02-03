@@ -27,7 +27,7 @@ public class ProsecutionConcludedValidatorTest {
     @Test (expected = ValidationException.class)
     public void testWhenProsecutionConcludedListIsNull_thenThrowException() {
 
-        ProsecutionConcluded request = ProsecutionConcluded.builder().offenceSummaryList(null)
+        ProsecutionConcluded request = ProsecutionConcluded.builder().offenceSummary(null)
                 .build();
 
         prosecutionConcludedValidator.validateRequestObject(request);

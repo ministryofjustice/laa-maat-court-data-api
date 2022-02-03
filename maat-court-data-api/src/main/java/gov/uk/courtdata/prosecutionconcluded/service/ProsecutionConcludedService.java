@@ -72,7 +72,7 @@ public class ProsecutionConcludedService {
                         .calculatedOutcome(calculatedOutcome)
                         .ouCourtLocation(wqHearingEntity.getOuCourtLocation())
                         .wqJurisdictionType(wqHearingEntity.getWqJurisdictionType())
-                        .caseEndDate(getMostRecentCaseEndDate(prosecutionConcluded.getOffenceSummaryList()))
+                        .caseEndDate(getMostRecentCaseEndDate(prosecutionConcluded.getOffenceSummary()))
                         .caseUrn(wqHearingEntity.getCaseUrn())
                         .hearingResultCodeList(buildResultCodeList(wqHearingEntity))
                         .build();

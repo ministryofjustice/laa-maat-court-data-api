@@ -21,10 +21,10 @@ public class CalculateOutcomeHelper {
 
     public String calculate(ProsecutionConcluded prosecutionConcluded) {
 
-        if (prosecutionConcluded.getOffenceSummaryList() != null && prosecutionConcluded.getOffenceSummaryList().size() > 0 ) {
+        if (prosecutionConcluded.getOffenceSummary() != null && prosecutionConcluded.getOffenceSummary().size() > 0 ) {
             log.info("Calculating crown court outcome for concluded case id {}", prosecutionConcluded.getProsecutionCaseId());
             List<String> offenceOutcomeList = new ArrayList<>();
-            List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummaryList();
+            List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummary();
             offenceSummaryList
                     .forEach(offence -> {
 

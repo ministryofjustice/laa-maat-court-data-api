@@ -3,6 +3,7 @@ package gov.uk.courtdata.hardship.controller;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.hardship.service.HardshipReviewService;
+import gov.uk.courtdata.hardship.validator.HardshipReviewValidationProcessor;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.validator.HardshipReviewIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +29,7 @@ import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
 public class HardshipReviewController {
 
     private final HardshipReviewService hardshipReviewService;
-    private final HardshipReviewIdValidator hardshipReviewIdValidator;
+    private final HardshipReviewValidationProcessor validationProcessor;
 
     @GetMapping(value = "/{hardshipId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a hardship review record")
@@ -43,7 +44,7 @@ public class HardshipReviewController {
         MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info("Get Hardship Review Request Received");
 
-        hardshipReviewIdValidator.validate(hardshipId);
+        validationProcessor.validate(hardshipId);
         return ResponseEntity.ok(hardshipReviewService.find(hardshipId));
     }
 
@@ -61,6 +62,7 @@ public class HardshipReviewController {
         MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info("Create Hardship Review Request Received");
 
+        validationProcessor.validate(hardshipReview);
         return ResponseEntity.ok(hardshipReviewService.create(hardshipReview));
     }
 }

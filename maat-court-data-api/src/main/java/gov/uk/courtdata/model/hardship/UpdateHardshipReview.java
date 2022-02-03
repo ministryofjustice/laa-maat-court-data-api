@@ -6,15 +6,16 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class CreateHardshipReview extends HardshipReview {
+public class UpdateHardshipReview extends HardshipReview {
 
-    private Integer repId;
-    private String userCreated;
-    private String courtType;
-    private Integer financialAssessmentId;
+    private Integer id;
+    private String userModified;
+    private LocalDateTime updated;
 }

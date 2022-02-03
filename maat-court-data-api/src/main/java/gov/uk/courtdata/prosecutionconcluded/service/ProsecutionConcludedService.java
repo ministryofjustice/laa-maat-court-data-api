@@ -59,7 +59,7 @@ public class ProsecutionConcludedService {
             } else {
 
                 prosecutionConcludedValidator.validateOuCode(wqHearingEntity.getOuCourtLocation());
-                List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummaryList();
+                List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummary();
                 List<OffenceSummary> trialOffences = offenceHelper
                         .getTrialOffences(offenceSummaryList, wqHearingEntity.getCaseId());
 

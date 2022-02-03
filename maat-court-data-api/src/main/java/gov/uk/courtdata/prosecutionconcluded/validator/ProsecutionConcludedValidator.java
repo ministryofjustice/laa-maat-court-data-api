@@ -15,8 +15,8 @@ public class ProsecutionConcludedValidator {
 
     public void validateRequestObject(ProsecutionConcluded prosecutionConcluded) {
         if (prosecutionConcluded == null
-                || prosecutionConcluded.getOffenceSummaryList() == null
-                || prosecutionConcluded.getOffenceSummaryList().isEmpty()
+                || prosecutionConcluded.getOffenceSummary() == null
+                || prosecutionConcluded.getOffenceSummary().isEmpty()
                 || prosecutionConcluded.getMaatId() == null)
             throw new ValidationException("Payload is not available or null. ");
     }

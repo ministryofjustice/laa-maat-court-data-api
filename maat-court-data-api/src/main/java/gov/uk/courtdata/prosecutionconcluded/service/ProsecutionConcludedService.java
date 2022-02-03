@@ -2,6 +2,7 @@ package gov.uk.courtdata.prosecutionconcluded.service;
 
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CalculateOutcomeHelper;
 import gov.uk.courtdata.prosecutionconcluded.helper.OffenceHelper;
@@ -78,8 +79,7 @@ public class ProsecutionConcludedService {
     private WQHearingEntity getWqHearingEntity(ProsecutionConcluded prosecutionConcluded) {
         Optional<WQHearingEntity> wqHearingEntity = wqHearingRepository
                 .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
-        return wqHearingEntity.orElse(null);
+        return wqHearingEntity.orElseThrow(
+                () -> new ValidationException("WQHearingEntity is not found"));
     }
-
-
 }

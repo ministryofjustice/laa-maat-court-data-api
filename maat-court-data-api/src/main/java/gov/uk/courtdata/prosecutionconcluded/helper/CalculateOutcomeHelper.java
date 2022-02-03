@@ -3,9 +3,8 @@ package gov.uk.courtdata.prosecutionconcluded.helper;
 import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
 import gov.uk.courtdata.enums.PleaTrialOutcome;
 import gov.uk.courtdata.enums.VerdictTrialOutcome;
-import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.OffenceSummary;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.ProsecutionConcluded;
+import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,37 +18,32 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CalculateOutcomeHelper {
 
-    public String calculate(ProsecutionConcluded prosecutionConcluded) {
+    public String calculate(List<OffenceSummary> offenceSummaryList) {
 
-        if (prosecutionConcluded.getOffenceSummaryList() != null && prosecutionConcluded.getOffenceSummaryList().size() > 0 ) {
-            log.info("Calculating crown court outcome for concluded case id {}", prosecutionConcluded.getProsecutionCaseId());
-            List<String> offenceOutcomeList = new ArrayList<>();
-            List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummaryList();
-            offenceSummaryList
-                    .forEach(offence -> {
 
-                        if (offence.getVerdict() != null && offence.getVerdict().getVerdictType().getCategoryType() != null) {
-                            offenceOutcomeList.add(VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType()));
+        List<String> outcomes = buildOffenceOutComes(offenceSummaryList);
 
-                        } else if (offence.getPlea() != null) {
-                            offenceOutcomeList.add(PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()));
-                        }
-                    });
+        log.info("Offence count: " + outcomes.size());
+        return outcomes.size() == 1 ? outcomes.get(0) : CrownCourtTrialOutcome.PART_CONVICTED.getValue();
 
-            List<String> outcomes = offenceOutcomeList.stream().distinct().collect(Collectors.toList());
-            log.info("Offence count: " + outcomes.size());
-            String offenceOutcomeStatus = null;
 
-            if (outcomes.size() == 1) {
-                offenceOutcomeStatus = outcomes.get(0);
-            } else if (outcomes.size() > 1) {
-                offenceOutcomeStatus = CrownCourtTrialOutcome.PART_CONVICTED.getValue();
-            }
-            log.info("Calculated crown court outcome: " + offenceOutcomeStatus);
-            return offenceOutcomeStatus;
-        } else {
-             log.error("Offence summary list is empty {}", prosecutionConcluded.getMaatId().toString());
-            throw new ValidationException("Offence summary list is null or empty for maat-id: " + prosecutionConcluded.getMaatId().toString());
-        }
+    }
+
+    private List<String> buildOffenceOutComes(List<OffenceSummary> offenceSummaryList) {
+
+        List<String> offenceOutcomeList = new ArrayList<>();
+        offenceSummaryList
+                .forEach(offence -> {
+
+                    if (offence.getVerdict() != null && offence.getVerdict().getVerdictType().getCategoryType() != null) {
+                        offenceOutcomeList.add(VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType()));
+
+                    } else if (offence.getPlea() != null) {
+                        offenceOutcomeList.add(PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()));
+                    }
+                });
+
+        return offenceOutcomeList.stream().distinct().collect(Collectors.toList());
+
     }
 }

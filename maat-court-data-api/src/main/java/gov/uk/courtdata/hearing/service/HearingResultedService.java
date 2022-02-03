@@ -1,4 +1,5 @@
 package gov.uk.courtdata.hearing.service;
+
 import gov.uk.courtdata.enums.FunctionType;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.processor.CourtApplicationsPreProcessor;
@@ -9,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static gov.uk.courtdata.enums.JurisdictionType.CROWN;
+
 
 @Service
 @RequiredArgsConstructor
@@ -32,14 +33,13 @@ public class HearingResultedService {
     public void execute(final HearingResulted hearingResulted) {
 
         hearingValidationProcessor.validate(hearingResulted);
-
+        wqHearingProcessor.process(hearingResulted);
         if (FunctionType.APPLICATION == hearingResulted.getFunctionType()) {
             courtApplicationsPreProcessor.process(hearingResulted);
         }
 
         hearingResultedImpl.execute(hearingResulted);
 
-        if (CROWN.equals(hearingResulted.getJurisdictionType()))
-            wqHearingProcessor.process(hearingResulted);
+
     }
 }

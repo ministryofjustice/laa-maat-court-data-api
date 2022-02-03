@@ -1,6 +1,6 @@
 package gov.uk.courtdata.prosecutionconcluded.helper;
 
-import gov.uk.courtdata.prosecutionconcluded.listner.request.*;
+import gov.uk.courtdata.prosecutionconcluded.model.*;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
@@ -47,7 +47,7 @@ public class CalculateOutcomeHelperTest {
                 ))
                 .build();
 
-        String res = calculateOutcomeHelper.calculate(prosecutionConcluded);
+        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummaryList());
 
         assertThat(res).isEqualTo("CONVICTED");
     }
@@ -71,7 +71,7 @@ public class CalculateOutcomeHelperTest {
                 ))
                 .build();
 
-        String res = calculateOutcomeHelper.calculate(prosecutionConcluded);
+        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummaryList());
 
         assertThat(res).isEqualTo("PART CONVICTED");
     }
@@ -90,7 +90,7 @@ public class CalculateOutcomeHelperTest {
                 ))
                 .build();
 
-        String res = calculateOutcomeHelper.calculate(prosecutionConcluded);
+        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummaryList());
 
         assertThat(res).isEqualTo("CONVICTED");
     }
@@ -110,7 +110,7 @@ public class CalculateOutcomeHelperTest {
                 ))
                 .build();
 
-        String res = calculateOutcomeHelper.calculate(prosecutionConcluded);
+        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummaryList());
 
         assertThat(res).isEqualTo("AQUITTED");
     }
@@ -130,7 +130,7 @@ public class CalculateOutcomeHelperTest {
                 ))
                 .build();
 
-        String res = calculateOutcomeHelper.calculate(prosecutionConcluded);
+        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummaryList());
 
         assertThat(res).isEqualTo("AQUITTED");
     }
@@ -143,20 +143,13 @@ public class CalculateOutcomeHelperTest {
 
         ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
 
-        String res = calculateOutcomeHelper.calculate(prosecutionConcluded);
+        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummaryList());
 
         assertThat(res).isEqualTo("CONVICTED");
 
     }
 
-    @Test (expected = NullPointerException.class)
-    public void givenMessageIsReceived_whenOffenceSummeryIsNull_thenThrowException() {
 
-        calculateOutcomeHelper.calculate(ProsecutionConcluded.builder()
-                .concluded(true)
-                .build()
-        );
-    }
 
     private ProsecutionConcluded getProsecutionConcluded() {
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()

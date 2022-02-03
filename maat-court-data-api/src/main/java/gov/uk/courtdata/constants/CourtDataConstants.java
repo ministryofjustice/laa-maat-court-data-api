@@ -36,5 +36,6 @@ public final class CourtDataConstants {
 
     public static final String RESERVATION_RECORD_NAME = "REP_ORDER";
     public static final List<String> RESERVATION_SPECIAL_USERNAMES = List.of("HUB", "MLA");
+    public static final Integer COMMITTAL_FOR_TRIAL_SUB_TYPE = 24;
 
 }

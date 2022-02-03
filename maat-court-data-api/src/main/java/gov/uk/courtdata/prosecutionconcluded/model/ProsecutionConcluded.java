@@ -1,4 +1,4 @@
-package gov.uk.courtdata.prosecutionconcluded.listner.request;
+package gov.uk.courtdata.prosecutionconcluded.model;
 
 import lombok.*;
 
@@ -10,6 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProsecutionConcluded {
+
     private Integer maatId;
     private UUID defendantId;
     private UUID prosecutionCaseId;

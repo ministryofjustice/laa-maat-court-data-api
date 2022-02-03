@@ -1,6 +1,8 @@
-package gov.uk.courtdata.prosecutionconcluded.listner.request;
+package gov.uk.courtdata.prosecutionconcluded.request;
 
 import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
+import gov.uk.courtdata.prosecutionconcluded.validator.ProsecutionConcludedValidator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

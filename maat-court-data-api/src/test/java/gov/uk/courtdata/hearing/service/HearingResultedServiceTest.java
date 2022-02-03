@@ -4,6 +4,7 @@ import gov.uk.courtdata.enums.FunctionType;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.processor.CourtApplicationsPreProcessor;
+import gov.uk.courtdata.hearing.processor.WQHearingProcessor;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.junit.Rule;
@@ -33,6 +34,9 @@ public class HearingResultedServiceTest {
     @Mock
     private CourtApplicationsPreProcessor courtApplicationsPreProcessor;
 
+    @Mock
+    private WQHearingProcessor wqHearingProcessor;
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -54,6 +58,7 @@ public class HearingResultedServiceTest {
         //then
         verify(hearingValidationProcessor).validate(hearingDetails);
         verify(hearingResultedImpl).execute(hearingDetails);
+        verify(wqHearingProcessor).process(hearingDetails);
     }
 
     @Test
@@ -74,5 +79,6 @@ public class HearingResultedServiceTest {
         verify(courtApplicationsPreProcessor).process(hearingDetails);
         verify(hearingValidationProcessor).validate(hearingDetails);
         verify(hearingResultedImpl).execute(hearingDetails);
+        verify(wqHearingProcessor).process(hearingDetails);
     }
 }

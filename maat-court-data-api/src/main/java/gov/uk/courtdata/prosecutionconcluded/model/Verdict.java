@@ -1,4 +1,4 @@
-package gov.uk.courtdata.prosecutionconcluded.listner.request;
+package gov.uk.courtdata.prosecutionconcluded.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,8 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Plea {
+public class Verdict {
+    private String verdictDate;
     private UUID originatingHearingId;
-    private String value;
-    private String pleaDate;
+    private VerdictType verdictType;
 }

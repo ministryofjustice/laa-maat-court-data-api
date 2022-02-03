@@ -5,14 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class SolicitorCosts {
-    private Double solicitorRate;
-    private Double solicitorHours;
-    private Double solicitorVat;
-    private Double solicitorDisb;
-    private Double solicitorEstTotalCost;
+    private BigDecimal solicitorRate;
+    private BigDecimal solicitorHours;
+    private BigDecimal solicitorVat;
+    private BigDecimal solicitorDisb;
+    private BigDecimal solicitorEstTotalCost;
 }

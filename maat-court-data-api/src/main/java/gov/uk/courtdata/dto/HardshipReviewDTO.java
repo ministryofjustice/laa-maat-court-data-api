@@ -11,7 +11,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,14 +23,13 @@ import java.util.List;
 public class HardshipReviewDTO {
 
     private Integer id;
-    private Integer caseManagementUnitId;
+    private Integer cmuId;
     private String notes;
     private String decisionNotes;
     private LocalDateTime reviewDate;
     private String reviewResult;
-    private Double disposableIncome;
-    private Double disposableIncomeAfterHardship;
-    private LocalDateTime timestamp;
+    private BigDecimal disposableIncome;
+    private BigDecimal disposableIncomeAfterHardship;
     private NewWorkReason newWorkReason;
     private SolicitorCosts solicitorCosts;
     private HardshipReviewStatus status;
@@ -52,8 +53,10 @@ public class HardshipReviewDTO {
     @JsonIgnore
     private String valid;
 
-    private List<HardshipReviewDetail> reviewDetails;
-    private List<HardshipReviewProgress> reviewProgressItems;
+    @Builder.Default
+    private List<HardshipReviewDetail> reviewDetails = new ArrayList<>();
+    @Builder.Default
+    private List<HardshipReviewProgress> reviewProgressItems = new ArrayList<>();
 
     public LocalDateTime getTimestamp() {
         return updated != null ? updated : dateCreated;

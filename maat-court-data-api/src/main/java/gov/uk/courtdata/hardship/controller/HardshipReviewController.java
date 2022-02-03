@@ -5,7 +5,7 @@ import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.hardship.service.HardshipReviewService;
 import gov.uk.courtdata.hardship.validator.HardshipReviewValidationProcessor;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
-import gov.uk.courtdata.validator.HardshipReviewIdValidator;
+import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -64,5 +64,23 @@ public class HardshipReviewController {
 
         validationProcessor.validate(hardshipReview);
         return ResponseEntity.ok(hardshipReviewService.create(hardshipReview));
+    }
+
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Update a hardship review record")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HardshipReviewDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<Object> updateHardship(
+            @Parameter(description = "Hardship review data", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = UpdateHardshipReview.class))) @RequestBody UpdateHardshipReview hardshipReview,
+            @Parameter(description = "Used for tracing calls")
+            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+
+        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        log.info("Update Hardship Review Request Received");
+
+        validationProcessor.validate(hardshipReview);
+        return ResponseEntity.ok(hardshipReviewService.update(hardshipReview));
     }
 }

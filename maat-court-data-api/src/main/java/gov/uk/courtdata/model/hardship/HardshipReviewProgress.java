@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HardshipReviewProgress {
+
     private Integer id;
     private LocalDateTime dateRequested;
     private LocalDateTime dateRequired;

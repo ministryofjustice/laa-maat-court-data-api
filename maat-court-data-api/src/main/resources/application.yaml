@@ -22,6 +22,13 @@ spring:
             clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
             authorizationGrantType: client_credentials
 
+  jpa:
+    database-platform: org.hibernate.dialect.Oracle10gDialect
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate.jdbc.lob.non_contextual_creation: true
+
 springdoc:
   packagesToScan: gov.uk.courtdata
   show-actuator: true
@@ -33,13 +40,6 @@ springdoc:
     path: /open-api/docs.html
     enabled: true
     operationsSorter: method
-
-  jpa:
-    database-platform: org.hibernate.dialect.Oracle10gDialect
-    open-in-view: false
-    show-sql: false
-    properties:
-      hibernate.jdbc.lob.non_contextual_creation: true
 
 cloud-platform:
   aws:

@@ -29,9 +29,6 @@ public class CreateHardshipReviewValidatorTest {
 
     @Test
     public void givenIncompleteAssessment_whenValidateIsInvoked_thenThrowsException() {
-        when(financialAssessmentRepository.findCompletedAssessmentByRepId(any(Integer.class))).thenReturn(
-                Optional.empty()
-        );
         ValidationException validationException = Assert.assertThrows(ValidationException.class,
                 () -> createHardshipReviewValidator.validate(CreateHardshipReview.builder().build()));
         assertThat(validationException.getMessage()).isEqualTo("Review can only be entered after a completed assessment");

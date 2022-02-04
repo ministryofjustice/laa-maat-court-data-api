@@ -36,16 +36,6 @@ public class HearingWQProcessorTest {
     private WQResultProcessor wqResultProcessor;
     @Mock
     private WQSessionProcessor wqSessionProcessor;
-    @Mock
-    private WQHearingProcessor wqHearingProcessor;
-
-    @Mock
-    private PleaProcessor pleaProcessor;
-    @Mock
-    private VerdictProcessor verdictProcessor;
-
-    @Mock
-    private LinkRegisterProcessor linkRegisterProcessor;
 
     @InjectMocks
     private HearingWQProcessor hearingWQProcessor;
@@ -74,12 +64,6 @@ public class HearingWQProcessorTest {
         verify(wqOffenceProcessor,times(1)).process(hearingDTO);
         verify(wqResultProcessor,times(1)).process(hearingDTO);
         verify(wqSessionProcessor,times(1)).process(hearingDTO);
-        verify(wqHearingProcessor,times(1)).process(hearingDTO);
-        verify(linkRegisterProcessor,times(1)).process(hearingDTO);
-        verify(pleaProcessor,times(1)).process(hearingDTO);
-        verify(verdictProcessor,times(1)).process(hearingDTO);
-        verify(linkRegisterProcessor,times(1)).process(hearingDTO);
-
     }
 
     @Test
@@ -101,6 +85,5 @@ public class HearingWQProcessorTest {
         verify(wqOffenceProcessor).process(hearingDTO);
         verify(wqResultProcessor).process(hearingDTO);
         verify(wqSessionProcessor).process(hearingDTO);
-        verify(wqHearingProcessor).process(hearingDTO);
     }
 }

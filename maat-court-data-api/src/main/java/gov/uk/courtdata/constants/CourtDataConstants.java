@@ -1,5 +1,7 @@
 package gov.uk.courtdata.constants;
 
+import java.util.List;
+
 public final class CourtDataConstants {
 
     private CourtDataConstants() {
@@ -31,5 +33,9 @@ public final class CourtDataConstants {
     public static final String SYSTEM_UNLINKED = "System Unlinked";
     public static final String RESULT_CODE_1000 = "1000";
     public static final Integer APPLICATION_ASN_SEQ_INITIAL_VALUE = 1000;
+
+    public static final String RESERVATION_RECORD_NAME = "REP_ORDER";
+    public static final List<String> RESERVATION_SPECIAL_USERNAMES = List.of("HUB", "MLA");
+    public static final Integer COMMITTAL_FOR_TRIAL_SUB_TYPE = 1;
 
 }

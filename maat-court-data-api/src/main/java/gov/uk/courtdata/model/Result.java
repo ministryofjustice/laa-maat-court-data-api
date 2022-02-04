@@ -25,7 +25,7 @@ public class Result {
     private String sessionValidateDate;
 
     /**
-     * This is to override the the results code with Default Value when there is an
+     * This is to override the results code with Default Value when there is an
      * empty/null result code is passed in
      */
     public String getResultCode() {

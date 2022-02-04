@@ -134,6 +134,44 @@ public class TestEntityDataBuilder {
         return getIOJAppealEntity(null, iapStatus);
     }
 
+    public static PassportAssessmentEntity getPassportAssessmentEntity() {
+        return PassportAssessmentEntity.builder()
+                .id(1000)
+                .repId(5678)
+                .nworCode("FMA")
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("test-f")
+                .cmuId(30)
+                .assessmentDate(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .partnerBenefitClaimed("Y")
+                .partnerFirstName("Test")
+                .partnerSurname("Partner")
+                .partnerNiNumber("AB123456C")
+                .partnerDob(LocalDateTime.parse("1978-10-09T06:00:00"))
+                .incomeSupport("Y")
+                .jobSeekers("Y")
+                .statePensionCredit("N")
+                .under18FullEducation("N")
+                .under16("N")
+                .pcobConfirmation("DWP")
+                .result("PASS")
+                .dateModified(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userModified("test-f")
+                .dwpResult("Yes")
+                .between16And17("N")
+                .under18HeardInYouthCourt("N")
+                .under18HeardInMagsCourt("N")
+                .lastSignOnDate(LocalDateTime.parse("2021-08-09T12:12:48"))
+                .esa("N")
+                .pastStatus("COMPLETE")
+                .replaced("N")
+                .valid("Y")
+                .dateCompleted(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .usn(1234)
+                .whoDWPChecked("ABC")
+                .rtCode("DEF")
+                .build();
+    }
     public static HardshipReviewEntity getHardshipReviewEntityWithRelationships() {
         HardshipReviewEntity hardshipReview = getHardshipReviewEntity();
         hardshipReview.addReviewDetail(getHardshipReviewDetailsEntity());

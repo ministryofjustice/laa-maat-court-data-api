@@ -61,7 +61,7 @@ public class EnumConverterTest {
     }
 
     @Test
-    public void givenHardshipReviewDetailEntity_whenEntityIsSaved_thenEnumArePersisted() {
+    public void givenHardshipReviewDetailEntity_whenEntityIsSaved_thenEnumsArePersisted() {
 
         HardshipReviewDetailEntity mockEntity = HardshipReviewDetailEntity.builder()
                 .dateCreated(LocalDateTime.now())
@@ -79,7 +79,7 @@ public class EnumConverterTest {
     }
 
     @Test
-    public void givenHardshipReviewDetailReasonEntity_whenEntityIsSaved_thenEnumArePersisted() {
+    public void givenHardshipReviewDetailReasonEntity_whenEntityIsSaved_thenEnumsArePersisted() {
 
         HardshipReviewDetailReasonEntity mockEntity = HardshipReviewDetailReasonEntity.builder()
                 .id(1000)
@@ -94,10 +94,9 @@ public class EnumConverterTest {
     }
 
     @Test
-    public void givenHardshipReviewProgressEntity_whenEntityIsSaved_thenEnumArePersisted() {
+    public void givenHardshipReviewProgressEntity_whenEntityIsSaved_thenEnumsArePersisted() {
 
         HardshipReviewProgressEntity mockEntity = HardshipReviewProgressEntity.builder()
-                .hardshipReviewId(1000)
                 .dateCreated(LocalDateTime.now())
                 .userCreated("test-s")
                 .dateRequested(LocalDateTime.now())

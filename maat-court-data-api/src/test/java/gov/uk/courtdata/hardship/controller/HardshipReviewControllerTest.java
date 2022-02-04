@@ -4,7 +4,10 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.hardship.service.HardshipReviewService;
-import gov.uk.courtdata.validator.HardshipReviewIdValidator;
+import gov.uk.courtdata.hardship.validator.HardshipReviewValidationProcessor;
+import gov.uk.courtdata.model.hardship.CreateHardshipReview;
+import gov.uk.courtdata.model.hardship.HardshipReview;
+import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -30,20 +35,20 @@ public class HardshipReviewControllerTest {
     private HardshipReviewService hardshipReviewService;
 
     @MockBean
-    private HardshipReviewIdValidator hardshipReviewIdValidator;
+    private HardshipReviewValidationProcessor hardshipReviewValidationProcessor;
 
     private final Integer MOCK_HARDSHIP_ID = 1000;
 
-    private final String endpointUrl = "/hardship";
+    private final String ENDPOINT_URL = "/hardship";
 
     @Test
     public void givenCorrectParameters_whenGetHardshipIsInvoked_thenHardshipIsReturned() throws Exception {
 
-        HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithDetailsAndProgress();
+        HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
 
         when(hardshipReviewService.find(MOCK_HARDSHIP_ID)).thenReturn(hardshipReviewDTO);
 
-        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/" + MOCK_HARDSHIP_ID))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + MOCK_HARDSHIP_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(String.valueOf(MOCK_HARDSHIP_ID)))
@@ -52,10 +57,54 @@ public class HardshipReviewControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenGetHardshipIsInvoked_thenErrorIsThrown() throws Exception {
-        when(hardshipReviewIdValidator.validate(any(Integer.class))).thenThrow(new ValidationException());
+    public void givenIncorrectParameters_whenGetHardshipIsInvoked_then4xxIsThrown() throws Exception {
+        when(hardshipReviewValidationProcessor.validate(any(Integer.class))).thenThrow(new ValidationException());
         when(hardshipReviewService.find(MOCK_HARDSHIP_ID)).thenReturn(null);
-        mvc.perform(MockMvcRequestBuilders.post(endpointUrl + "/" + MOCK_HARDSHIP_ID))
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/" + MOCK_HARDSHIP_ID))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void givenCorrectParameters_whenCreateHardshipIsInvoked_thenHardshipIsPersisted() throws Exception {
+        HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
+        String requestJson = TestModelDataBuilder.getCreateHardshipReviewJson(true);
+
+        when(hardshipReviewService.create(any(CreateHardshipReview.class))).thenReturn(hardshipReviewDTO);
+        when(hardshipReviewValidationProcessor.validate(any(HardshipReview.class))).thenReturn(Optional.empty());
+
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").hasJsonPath())
+                .andExpect(jsonPath("$.reviewDetails[0].id").value(String.valueOf(4253)))
+                .andExpect(jsonPath("$.reviewProgressItems[0].id").value(String.valueOf(1254)));
+    }
+
+    @Test
+    public void givenIncorrectParameters_whenCreateHardshipIsInvoked_then4xxIsThrown() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void givenCorrectParameters_whenUpdateHardshipIsInvoked_thenHardshipIsPersisted() throws Exception {
+        HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
+        String requestJson = TestModelDataBuilder.getUpdateHardshipReviewJson(true);
+
+        when(hardshipReviewService.update(any(UpdateHardshipReview.class))).thenReturn(hardshipReviewDTO);
+        when(hardshipReviewValidationProcessor.validate(any(HardshipReview.class))).thenReturn(Optional.empty());
+
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").hasJsonPath())
+                .andExpect(jsonPath("$.reviewDetails[0].id").value(String.valueOf(4253)))
+                .andExpect(jsonPath("$.reviewProgressItems[0].id").value(String.valueOf(1254)));
+    }
+
+    @Test
+    public void givenIncorrectParameters_whenUpdateHardshipIsInvoked_then4xxIsThrown() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 }

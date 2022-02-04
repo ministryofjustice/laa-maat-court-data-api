@@ -462,19 +462,19 @@ public class TestModelDataBuilder {
                                 .description("New")
                                 .build()
                 )
-                .caseManagementUnitId(253)
+                .cmuId(253)
                 .reviewResult("FAIL")
                 .solicitorCosts(
                         SolicitorCosts.builder()
-                                .solicitorRate(183.0)
-                                .solicitorHours(12.0)
-                                .solicitorVat(384.25)
-                                .solicitorDisb(0.0)
-                                .solicitorEstTotalCost(2580.25)
+                                .solicitorRate(BigDecimal.valueOf(183.0))
+                                .solicitorHours(BigDecimal.valueOf(12.0))
+                                .solicitorVat(BigDecimal.valueOf(384.25))
+                                .solicitorDisb(BigDecimal.valueOf(0.0))
+                                .solicitorEstTotalCost(BigDecimal.valueOf(2580.25))
                                 .build()
                 )
-                .disposableIncome(4215.46)
-                .disposableIncomeAfterHardship(2921.38)
+                .disposableIncome(BigDecimal.valueOf(4215.46))
+                .disposableIncomeAfterHardship(BigDecimal.valueOf(2921.38))
                 .status(HardshipReviewStatus.COMPLETE)
                 .userCreated("test-s")
                 .userModified("test-s")
@@ -484,13 +484,91 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static HardshipReviewDTO getHardshipReviewDTOWithDetails() {
-        HardshipReviewDTO hardship = getHardshipReviewDTO();
-        hardship.setReviewDetails(List.of(getHardshipReviewDetail()));
-        return hardship;
+    public static String getCreateHardshipReviewJson(boolean withRelationships) {
+        String json =
+                "{\n" +
+                        "\"nworCode\":\"NEW\",\n" +
+                        "\"cmuId\": 253,\n" +
+                        "\"reviewResult\": \"FAIL\",\n" +
+                        "\"resultDate\": \"2022-01-01T10:00:00\",\n" +
+                        "\"reviewDate\": \"2022-01-01T10:00:00\",\n" +
+                        "\"notes\": \"\",\n" +
+                        "\"decisionNotes\": \"\",\n" +
+                        "\"solicitorCosts\": {\n" +
+                        "   \"solicitorRate\": 183.0,\n" +
+                        "   \"solicitorHours\": 12.0,\n" +
+                        "   \"solicitorVat\": 384.25,\n" +
+                        "   \"solicitorDisb\": 0.0,\n" +
+                        "   \"solicitorEstTotalCost\": 2580.25\n" +
+                        "},\n" +
+                        "\"disposableIncome\": 4215.46,\n" +
+                        "\"disposableIncomeAfterHardship\": 2921.38,\n" +
+                        "\"status\": \"COMPLETE\",\n" +
+                        "\"repId\": 621580,\n" +
+                        "\"userCreated\": \"test-s\",\n" +
+                        "\"courtType\": \"MAGISTRATE\",\n" +
+                        "\"financialAssessmentId\": 349211\n";
+
+        if (withRelationships) {
+            json = json +
+                    ",\"reviewDetails\": [{\n" +
+                    "   \"frequency\": \"MONTHLY\",\n" +
+                    "   \"amount\": 107.84,\n" +
+                    "   \"accepted\": \"Y\",\n" +
+                    "   \"type\": \"EXPENDITURE\"\n" +
+                    "}],\n" +
+                    "\"reviewProgressItems\": [{\n" +
+                    "   \"progressAction\": \"ADDITIONAL_EVIDENCE\",\n" +
+                    "   \"progressResponse\": \"FURTHER_RECEIVED\"\n" +
+                    "}]\n";
+        }
+
+        return json + "}";
     }
 
-    public static HardshipReviewDTO getHardshipReviewDTOWithDetailsAndProgress() {
+    public static String getUpdateHardshipReviewJson(boolean withRelationships) {
+        String json =
+                "{\n" +
+                        "\"id\": 1000,\n" +
+                        "\"userModified\": \"test-s\",\n" +
+                        "\"updated\": \"2022-01-01T10:00:00\",\n" +
+                        "\"nworCode\":\"NEW\",\n" +
+                        "\"cmuId\": 253,\n" +
+                        "\"reviewResult\": \"FAIL\",\n" +
+                        "\"resultDate\": \"2022-01-01T10:00:00\",\n" +
+                        "\"reviewDate\": \"2022-01-01T10:00:00\",\n" +
+                        "\"notes\": \"\",\n" +
+                        "\"decisionNotes\": \"\",\n" +
+                        "\"solicitorCosts\": {\n" +
+                        "   \"solicitorRate\": 183.0,\n" +
+                        "   \"solicitorHours\": 12.0,\n" +
+                        "   \"solicitorVat\": 384.25,\n" +
+                        "   \"solicitorDisb\": 0.0,\n" +
+                        "   \"solicitorEstTotalCost\": 2580.25\n" +
+                        "},\n" +
+                        "\"disposableIncome\": 4215.46,\n" +
+                        "\"disposableIncomeAfterHardship\": 2921.38,\n" +
+                        "\"status\": \"COMPLETE\",\n" +
+                        "\"repId\": 621580\n";
+
+        if (withRelationships) {
+            json = json +
+                    ",\"reviewDetails\": [{\n" +
+                    "   \"frequency\": \"MONTHLY\",\n" +
+                    "   \"amount\": 107.84,\n" +
+                    "   \"accepted\": \"Y\",\n" +
+                    "   \"type\": \"EXPENDITURE\"\n" +
+                    "}],\n" +
+                    "\"reviewProgressItems\": [{\n" +
+                    "   \"progressAction\": \"ADDITIONAL_EVIDENCE\",\n" +
+                    "   \"progressResponse\": \"FURTHER_RECEIVED\"\n" +
+                    "}]\n";
+        }
+
+        return json + "}";
+    }
+
+    public static HardshipReviewDTO getHardshipReviewDTOWithRelationships() {
         HardshipReviewDTO hardship = getHardshipReviewDTO();
         hardship.setReviewDetails(List.of(getHardshipReviewDetail()));
         hardship.setReviewProgressItems(List.of(getHardshipReviewProgress()));

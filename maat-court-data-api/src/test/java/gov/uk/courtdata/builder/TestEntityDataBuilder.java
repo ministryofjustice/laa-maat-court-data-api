@@ -134,6 +134,13 @@ public class TestEntityDataBuilder {
         return getIOJAppealEntity(null, iapStatus);
     }
 
+    public static HardshipReviewEntity getHardshipReviewEntityWithRelationships() {
+        HardshipReviewEntity hardshipReview = getHardshipReviewEntity();
+        hardshipReview.addReviewDetail(getHardshipReviewDetailsEntity());
+        hardshipReview.addReviewProgressItem(getHardshipReviewProgressEntity());
+        return hardshipReview;
+    }
+
     public static HardshipReviewEntity getHardshipReviewEntity() {
         return HardshipReviewEntity.builder()
                 .id(1000)
@@ -145,7 +152,7 @@ public class TestEntityDataBuilder {
                                 .description("New")
                                 .build()
                 )
-                .caseManagementUnitId(253)
+                .cmuId(253)
                 .reviewResult("FAIL")
                 .solicitorRate(BigDecimal.valueOf(183.0))
                 .solicitorHours(BigDecimal.valueOf(12.0))
@@ -174,17 +181,30 @@ public class TestEntityDataBuilder {
                 .accepted("Y")
                 .reasonResponse("evidence provided")
                 .active("false")
+                .detailReason(HardshipReviewDetailReasonEntity.builder().id(1000).build())
                 .build();
     }
 
     public static HardshipReviewProgressEntity getHardshipReviewProgressEntity() {
         return HardshipReviewProgressEntity.builder()
                 .id(1254)
-                .hardshipReviewId(1000)
                 .userCreated("test-s")
                 .userModified("test-s")
                 .progressAction(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE)
                 .progressResponse(HardshipReviewProgressResponse.FURTHER_RECEIVED)
+                .build();
+    }
+
+    public static NewWorkReasonEntity getNewWorkReasonEntity() {
+        return NewWorkReasonEntity.builder()
+                .code("NEW")
+                .type("HARDIOJ")
+                .description("New")
+                .dateCreated(LocalDateTime.now())
+                .userCreated("TOGDATA")
+                .sequence(1)
+                .enabled("Y")
+                .initialDefault("Y")
                 .build();
     }
 }

@@ -1,10 +1,11 @@
 package gov.uk.courtdata.hardship.service;
 
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.hardship.impl.HardshipReviewDetailImpl;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
-import gov.uk.courtdata.hardship.impl.HardshipReviewProgressImpl;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
+import gov.uk.courtdata.model.hardship.CreateHardshipReview;
+import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -26,12 +27,6 @@ public class HardshipReviewServiceTest {
     private HardshipReviewImpl hardshipReviewImpl;
 
     @Mock
-    private HardshipReviewDetailImpl hardshipReviewDetailImpl;
-
-    @Mock
-    private HardshipReviewProgressImpl hardshipReviewProgressImpl;
-
-    @Mock
     private HardshipReviewMapper hardshipReviewMapper;
 
     @Test
@@ -43,5 +38,29 @@ public class HardshipReviewServiceTest {
 
         verify(hardshipReviewImpl).find(any());
         assertThat(returnedAssessment.getId()).isEqualTo(1000);
+    }
+
+    @Test
+    public void whenCreateIsInvoked_thenAssessmentIsPersisted() {
+        when(hardshipReviewMapper.CreateHardshipReviewToHardshipReviewDTO(any())).thenReturn(
+                TestModelDataBuilder.getHardshipReviewDTO()
+        );
+        when(hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
+                TestModelDataBuilder.getHardshipReviewDTO()
+        );
+        hardshipReviewService.create(CreateHardshipReview.builder().build());
+        verify(hardshipReviewImpl).create(any());
+    }
+
+    @Test
+    public void whenUpdateIsInvoked_thenAssessmentIsPersisted() {
+        when(hardshipReviewMapper.UpdateHardshipReviewToHardshipReviewDTO(any())).thenReturn(
+                TestModelDataBuilder.getHardshipReviewDTO()
+        );
+        when(hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
+                TestModelDataBuilder.getHardshipReviewDTO()
+        );
+        hardshipReviewService.update(UpdateHardshipReview.builder().build());
+        verify(hardshipReviewImpl).update(any());
     }
 }

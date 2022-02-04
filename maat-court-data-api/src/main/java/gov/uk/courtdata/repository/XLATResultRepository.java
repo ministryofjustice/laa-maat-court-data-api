@@ -17,4 +17,9 @@ public interface XLATResultRepository extends JpaRepository<XLATResultEntity,Int
     List<XLATResultEntity> findByCjsResultCodeIn();
 
     List<XLATResultEntity> findByWqType(Integer wqType);
+
+    @Query(value = "SELECT RS.CJS_RESULT_CODE FROM MLA.XXMLA_XLAT_RESULT RS " +
+            "WHERE RS.WQ_TYPE = :wqType AND RS.SUBTYPE_CODE = :subTypeCode",
+            nativeQuery = true)
+    List<Integer> findResultsByWQType(int wqType,int subTypeCode);
 }

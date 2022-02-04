@@ -3,7 +3,7 @@ package gov.uk.courtdata.prosecutionconcluded.listner;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
-import gov.uk.courtdata.prosecutionconcluded.listner.request.ProsecutionConcluded;
+import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedService;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +32,7 @@ public class ProsecutionConcludedListener {
 
         ProsecutionConcluded prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
         prosecutionConcludedService.execute(prosecutionConcluded);
+
+        log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
     }
 }

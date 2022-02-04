@@ -1,6 +1,9 @@
-package gov.uk.courtdata.prosecutionconcluded.listner.request;
+package gov.uk.courtdata.prosecutionconcluded.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
+
+
+import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -12,7 +15,8 @@ public class ProsecutionConcludedValidator {
 
     public void validateRequestObject(ProsecutionConcluded prosecutionConcluded) {
         if (prosecutionConcluded == null
-                || prosecutionConcluded.getOffenceSummaryList() == null
+                || prosecutionConcluded.getOffenceSummary() == null
+                || prosecutionConcluded.getOffenceSummary().isEmpty()
                 || prosecutionConcluded.getMaatId() == null)
             throw new ValidationException("Payload is not available or null. ");
     }

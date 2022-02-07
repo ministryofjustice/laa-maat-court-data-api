@@ -14,7 +14,7 @@ public class ProsecutionConcluded {
     private Integer maatId;
     private UUID defendantId;
     private UUID prosecutionCaseId;
-    private boolean concluded;
+    private boolean isConcluded;
     private UUID hearingIdWhereChangeOccurred;
     private List<OffenceSummary> offenceSummary;
     private int messageRetryCounter;

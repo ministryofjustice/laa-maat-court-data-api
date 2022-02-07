@@ -58,15 +58,21 @@ public class OffenceHelper {
     private boolean hasCommittalForTrailResults(OffenceEntity offenceEntity, List<Integer> committalRefResults) {
         boolean isCommittal = false;
         if (offenceEntity != null) {
+            String asnSeq = getAsnSeq(offenceEntity);
             List<Integer> resultList = resultRepository
-                    .findResultCodeByCaseIdAndAsnSeq(offenceEntity.getCaseId(), offenceEntity.getAsnSeq());
+                    .findResultCodeByCaseIdAndAsnSeq(offenceEntity.getCaseId(), asnSeq);
             List<Integer> wqResultList = wqResultRepository
-                    .findResultCodeByCaseIdAndAsnSeq(offenceEntity.getCaseId(), offenceEntity.getAsnSeq());
+                    .findResultCodeByCaseIdAndAsnSeq(offenceEntity.getCaseId(), asnSeq);
 
             isCommittal = Stream.concat(resultList.stream(), wqResultList.stream())
                     .anyMatch(committalRefResults::contains);
         }
         return isCommittal;
+    }
+
+    private String getAsnSeq(OffenceEntity offenceEntity) {
+        int asnSeq = Integer.parseInt(offenceEntity.getAsnSeq());
+        return asnSeq < 9 ? offenceEntity.getAsnSeq().substring(2) : offenceEntity.getAsnSeq().substring(1);
     }
 
 

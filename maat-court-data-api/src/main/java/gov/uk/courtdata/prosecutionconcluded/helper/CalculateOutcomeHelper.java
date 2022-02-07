@@ -35,15 +35,23 @@ public class CalculateOutcomeHelper {
         offenceSummaryList
                 .forEach(offence -> {
 
-                    if (offence.getVerdict() != null && offence.getVerdict().getVerdictType().getCategoryType() != null) {
+                    if (isVerdictAvailable(offence)) {
                         offenceOutcomeList.add(VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType()));
 
-                    } else if (offence.getPlea() != null) {
+                    } else if (offence.getPlea() != null && offence.getPlea().getValue() != null) {
                         offenceOutcomeList.add(PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()));
+                    } else {
+                        offenceOutcomeList.add(CrownCourtTrialOutcome.AQUITTED.getValue());
                     }
                 });
 
         return offenceOutcomeList.stream().distinct().collect(Collectors.toList());
 
+    }
+
+    private boolean isVerdictAvailable(OffenceSummary offence) {
+        return offence.getVerdict() != null
+                && offence.getVerdict().getVerdictType() != null
+                && offence.getVerdict().getVerdictType().getCategoryType() != null;
     }
 }

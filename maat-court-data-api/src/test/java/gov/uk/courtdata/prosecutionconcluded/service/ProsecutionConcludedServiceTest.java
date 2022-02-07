@@ -182,7 +182,7 @@ public class ProsecutionConcludedServiceTest {
 
     private ProsecutionConcluded getProsecutionConcluded() {
         return ProsecutionConcluded.builder()
-                .concluded(true)
+                .isConcluded(true)
                 .maatId(1221)
                 .offenceSummary(Arrays.asList(getOffenceSummary("OF121")))
                 .prosecutionCaseId(UUID.fromString("ce60cac9-ab22-468e-8af9-a3ba2ecece5b"))

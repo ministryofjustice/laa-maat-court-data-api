@@ -233,7 +233,7 @@ public class ProsecutionConcludedImplTest {
                 .ouCourtLocation("121")
                 .prosecutionConcluded(ProsecutionConcluded.builder()
                         .maatId(121111)
-                        .concluded(true)
+                        .isConcluded(true)
                         .build())
                 .build();
     }

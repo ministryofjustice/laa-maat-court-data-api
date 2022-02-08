@@ -23,17 +23,24 @@ public class ChildWeightingsImpl {
     private final ChildWeightingsRepository childWeightingsRepository;
 
     public List<ChildWeightingsEntity> save(final FinancialAssessmentEntity financialAssessment, final List<ChildWeightings> childWeightingsList) {
-        final List<ChildWeightingsEntity> childWeightingsEntityList = ofNullable(childWeightingsList)
-                .orElse(Collections.emptyList()).stream()
-                .map(childWeightings -> {
-                    ChildWeightingsEntity childWeightingsEntity =
-                            assessmentMapper.ChildWeightingsToChildWeightingsEntity(childWeightings);
-                    childWeightingsEntity.setFinancialAssessmentId(financialAssessment.getId());
-                    childWeightingsEntity.setUserCreated(financialAssessment.getUserCreated());
-                    childWeightingsEntity.setUserModified(financialAssessment.getUserModified());
-                    return childWeightingsEntity;
-                }).collect(toList());
-        return childWeightingsRepository.saveAll(childWeightingsEntityList);
+        try {
+            log.info("");
+            final List<ChildWeightingsEntity> childWeightingsEntityList = ofNullable(childWeightingsList)
+                    .orElse(Collections.emptyList()).stream()
+                    .map(childWeightings -> {
+                        ChildWeightingsEntity childWeightingsEntity =
+                                assessmentMapper.ChildWeightingsToChildWeightingsEntity(childWeightings);
+                        childWeightingsEntity.setFinancialAssessmentId(financialAssessment.getId());
+                        childWeightingsEntity.setUserCreated(financialAssessment.getUserCreated());
+                        childWeightingsEntity.setUserModified(financialAssessment.getUserModified());
+                        return childWeightingsEntity;
+                    }).collect(toList());
+            return childWeightingsRepository.saveAll(childWeightingsEntityList);
+        } catch (Exception ex) {
+            log.error("Failed to save ChildWeightings", ex);
+            throw ex;
+        }
+
     }
 }
 

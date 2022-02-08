@@ -2,6 +2,7 @@ package gov.uk.courtdata.prosecutionconcluded.service;
 
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CalculateOutcomeHelper;
 import gov.uk.courtdata.prosecutionconcluded.helper.OffenceHelper;
@@ -11,7 +12,6 @@ import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
 import gov.uk.courtdata.prosecutionconcluded.model.Plea;
 import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.validator.ProsecutionConcludedValidator;
-import gov.uk.courtdata.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
 import gov.uk.courtdata.publisher.AwsStandardSqsPublisher;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -95,6 +95,7 @@ public class ProsecutionConcludedServiceTest {
                 .thenReturn(getWQHearingEntity());
 
         when(reservationsRepositoryHelper.isMaatRecordLocked(any())).thenReturn(false);
+        when(offenceHelper.getTrialOffences(any(),anyInt())).thenReturn(List.of(getOffenceSummary("123")));
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
 
@@ -116,6 +117,7 @@ public class ProsecutionConcludedServiceTest {
                 .thenReturn(getWQHearingEntity());
 
         when(reservationsRepositoryHelper.isMaatRecordLocked(any())).thenReturn(false);
+        when(offenceHelper.getTrialOffences(any(),anyInt())).thenReturn(List.of(getOffenceSummary("123")));
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
 
@@ -139,6 +141,7 @@ public class ProsecutionConcludedServiceTest {
                 .thenReturn(getWQHearingEntity());
 
         when(reservationsRepositoryHelper.isMaatRecordLocked(any())).thenReturn(false);
+        when(offenceHelper.getTrialOffences(any(),anyInt())).thenReturn(List.of(getOffenceSummary("123")));
 
         prosecutionConcludedService.execute(prosecutionConcludedRequest);
 
@@ -160,8 +163,7 @@ public class ProsecutionConcludedServiceTest {
 
         //when
         when(wqHearingRepository.findByMaatIdAndHearingUUID(any(), any()))
-                .thenReturn(Optional
-                        .ofNullable(
+                .thenReturn(Arrays.asList(
                                 WQHearingEntity.builder()
                                         .wqJurisdictionType(JurisdictionType.MAGISTRATES.name())
                                         .build()));
@@ -180,7 +182,7 @@ public class ProsecutionConcludedServiceTest {
 
     private ProsecutionConcluded getProsecutionConcluded() {
         return ProsecutionConcluded.builder()
-                .concluded(true)
+                .isConcluded(true)
                 .maatId(1221)
                 .offenceSummary(Arrays.asList(getOffenceSummary("OF121")))
                 .prosecutionCaseId(UUID.fromString("ce60cac9-ab22-468e-8af9-a3ba2ecece5b"))
@@ -198,10 +200,10 @@ public class ProsecutionConcludedServiceTest {
                 .build();
     }
 
-    private Optional<WQHearingEntity> getWQHearingEntity() {
+    private List<WQHearingEntity> getWQHearingEntity() {
 
-        return Optional
-                .ofNullable(
+        return List
+                .of(
                         WQHearingEntity.builder()
                                 .maatId(1212111)
                                 .caseId(1234)

@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,8 +46,12 @@ public class FinancialAssessmentService {
         log.info("Updating financial assessment detail records");
         List<FinancialAssessmentDetailsEntity> assessmentDetailsEntities =
                 financialAssessmentDetailsImpl.save(assessmentEntity, assessmentDTO.getAssessmentDetailsList());
+        log.info("Deleting stale child weightings");
+        childWeightingsImpl.deleteStaleChildWeightings(assessmentDTO);
+        log.info("Updating child weightings records");
+        List<ChildWeightingsEntity> childWeightingsEntities = childWeightingsImpl.save(assessmentEntity, assessmentDTO.getChildWeightingsList());
         log.info("Update Financial Assessment - Transaction Processing - End");
-        return buildFinancialAssessmentDTO(assessmentEntity, assessmentDetailsEntities, Collections.emptyList());
+        return buildFinancialAssessmentDTO(assessmentEntity, assessmentDetailsEntities, childWeightingsEntities);
     }
 
     public void delete(Integer financialAssessmentId) {

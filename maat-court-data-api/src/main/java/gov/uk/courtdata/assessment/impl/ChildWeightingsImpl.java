@@ -1,6 +1,7 @@
 package gov.uk.courtdata.assessment.impl;
 
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
+import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
@@ -24,7 +25,7 @@ public class ChildWeightingsImpl {
 
     public List<ChildWeightingsEntity> save(final FinancialAssessmentEntity financialAssessment, final List<ChildWeightings> childWeightingsList) {
         try {
-            log.info("");
+            log.info("Executing save child weightings on FIN_ASS_CHILD_WEIGHTINGS table");
             final List<ChildWeightingsEntity> childWeightingsEntityList = ofNullable(childWeightingsList)
                     .orElse(Collections.emptyList()).stream()
                     .map(childWeightings -> {
@@ -37,10 +38,27 @@ public class ChildWeightingsImpl {
                     }).collect(toList());
             return childWeightingsRepository.saveAll(childWeightingsEntityList);
         } catch (Exception ex) {
-            log.error("Failed to save ChildWeightings", ex);
+            log.error("Failed to save child weightings in FIN_ASS_CHILD_WEIGHTINGS table", ex);
             throw ex;
         }
-
     }
+
+    public void deleteStaleChildWeightings(final FinancialAssessmentDTO financialAssessment) {
+        try {
+            log.info("Executing delete child weightings on FIN_ASS_CHILD_WEIGHTINGS table");
+            final List<ChildWeightingsEntity> oldChildWeightingsList = childWeightingsRepository.findAllByFinancialAssessmentId(financialAssessment.getId());
+
+            final List<Integer> staleChildWeightingsIds = oldChildWeightingsList
+                    .stream()
+                    .map(ChildWeightingsEntity::getId)
+                    .collect(toList());
+
+            childWeightingsRepository.deleteAllByIdInBatch(staleChildWeightingsIds);
+        } catch (Exception ex) {
+            log.error("Failed to delete child weightings from FIN_ASS_CHILD_WEIGHTINGS table", ex);
+            throw ex;
+        }
+    }
+
 }
 

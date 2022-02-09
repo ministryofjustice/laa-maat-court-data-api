@@ -100,6 +100,8 @@ public class FinancialAssessmentServiceTest {
         verify(financialAssessmentImpl).update(any(FinancialAssessmentDTO.class));
         verify(financialAssessmentDetailsImpl).deleteStaleAssessmentDetails(any(FinancialAssessmentDTO.class));
         verify(financialAssessmentDetailsImpl).save(any(FinancialAssessmentEntity.class), isNull());
+        verify(childWeightingsImpl).deleteStaleChildWeightings(any(FinancialAssessmentDTO.class));
+        verify(childWeightingsImpl).save(any(FinancialAssessmentEntity.class), isNull());
 
         assertThat(returnedAssessment.getId()).isEqualTo(1000);
     }

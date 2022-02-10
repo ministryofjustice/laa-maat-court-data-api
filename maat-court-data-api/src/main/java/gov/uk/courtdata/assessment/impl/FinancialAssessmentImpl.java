@@ -2,6 +2,7 @@ package gov.uk.courtdata.assessment.impl;
 
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.enums.FinancialAssessmentType;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class FinancialAssessmentImpl {
+
+    public static final String MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND = "An incomplete means assessment is associated with the current application";
+    public static final String MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND = "An incomplete passport assessment is associated with the current application";
 
     private final FinancialAssessmentMapper assessmentMapper;
     private final PassportAssessmentRepository passportAssessmentRepository;
@@ -76,5 +80,26 @@ public class FinancialAssessmentImpl {
         financialAssessmentRepository.updatePreviousFinancialAssessmentsAsReplaced(financialAssessment.getRepId(), financialAssessment.getId());
         passportAssessmentRepository.updateAllPreviousPassportAssessmentsAsReplaced(financialAssessment.getRepId());
         hardshipReviewRepository.updateOldHardshipReviews(financialAssessment.getRepId(), financialAssessment.getId());
+    }
+
+    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(Integer repId){
+        OutstandingAssessmentResultDTO result = new OutstandingAssessmentResultDTO();
+
+        // Check for outstanding financial assessments
+        Long outstandingFinancialAssessments = financialAssessmentRepository.findOutstandingFinancialAssessments(repId);
+        if(outstandingFinancialAssessments != null && outstandingFinancialAssessments > 0l){
+            result = new OutstandingAssessmentResultDTO(true, MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
+            return result;
+        }
+
+        // Check for outstanding passport assessments
+        Long outstandingPassportAssessments = passportAssessmentRepository.findOutstandingPassportAssessments(repId);
+        if(outstandingPassportAssessments != null && outstandingPassportAssessments > 0l){
+            result = new OutstandingAssessmentResultDTO(true, MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
+            return result;
+        }
+
+        // None found
+        return result;
     }
 }

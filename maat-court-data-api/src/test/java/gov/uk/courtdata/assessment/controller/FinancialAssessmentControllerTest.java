@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.controller;
 
+import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapperImpl;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
@@ -7,6 +8,7 @@ import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProces
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.FinancialAssessment;
 import org.junit.Before;
@@ -31,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(FinancialAssessmentController.class)
 public class FinancialAssessmentControllerTest {
 
+    public static final String CHECK_OUTSTANDING_URI = "/check-outstanding/";
     @Autowired
     private MockMvc mvc;
 
@@ -46,6 +49,8 @@ public class FinancialAssessmentControllerTest {
 
     private final Integer MOCK_ASSESSMENT_ID = 1234;
     private final Integer FAKE_ASSESSMENT_ID = 7123;
+    private final Integer OUTSTANDING_ASSESSMENT_REP_ID = 9999;
+    private final Integer NO_OUTSTANDING_ASSESSMENTS_REP_ID = 9998;
 
     private final String endpointUrl = "/financial-assessments";
 
@@ -136,5 +141,42 @@ public class FinancialAssessmentControllerTest {
         doNothing().when(financialAssessmentService).delete(MOCK_ASSESSMENT_ID);
         mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/" + FAKE_ASSESSMENT_ID))
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void givenRepIdForOutstandingFinancialAssessment_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingFinancialAssessmentsFoundResultIsReturned() throws Exception {
+        OutstandingAssessmentResultDTO result = new OutstandingAssessmentResultDTO(true, FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
+
+        when(financialAssessmentService.checkForOutstandingAssessments(OUTSTANDING_ASSESSMENT_REP_ID)).thenReturn(result);
+        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + CHECK_OUTSTANDING_URI + OUTSTANDING_ASSESSMENT_REP_ID))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.outstandingAssessments").value(result.isOutstandingAssessments()))
+                .andExpect(jsonPath("$.message").value(result.getMessage()));
+
+    }
+
+    @Test
+    public void givenRepIdForOutstandingPassportAssessment_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingFinancialAssessmentsFoundResultIsReturned() throws Exception {
+        OutstandingAssessmentResultDTO result = new OutstandingAssessmentResultDTO(true, FinancialAssessmentImpl.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
+
+        when(financialAssessmentService.checkForOutstandingAssessments(OUTSTANDING_ASSESSMENT_REP_ID)).thenReturn(result);
+        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + CHECK_OUTSTANDING_URI + OUTSTANDING_ASSESSMENT_REP_ID))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.outstandingAssessments").value(result.isOutstandingAssessments()))
+                .andExpect(jsonPath("$.message").value(result.getMessage()));
+
+    }
+
+    @Test
+    public void givenRepIdForNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenNotFoundResultIsReturned() throws Exception {
+        OutstandingAssessmentResultDTO result = new OutstandingAssessmentResultDTO();
+
+        when(financialAssessmentService.checkForOutstandingAssessments(NO_OUTSTANDING_ASSESSMENTS_REP_ID)).thenReturn(result);
+        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + CHECK_OUTSTANDING_URI + NO_OUTSTANDING_ASSESSMENTS_REP_ID))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.outstandingAssessments").value(result.isOutstandingAssessments()));
     }
 }

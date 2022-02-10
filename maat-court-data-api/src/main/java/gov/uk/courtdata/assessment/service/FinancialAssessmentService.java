@@ -4,6 +4,7 @@ import gov.uk.courtdata.assessment.impl.FinancialAssessmentDetailsImpl;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailsEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -83,5 +84,9 @@ public class FinancialAssessmentService {
 
     public FinancialAssessmentDTO buildFinancialAssessmentDTO(FinancialAssessmentEntity assessmentEntity) {
         return buildFinancialAssessmentDTO(assessmentEntity, null);
+    }
+
+    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(Integer repId) {
+        return financialAssessmentImpl.checkForOutstandingAssessments(repId);
     }
 }

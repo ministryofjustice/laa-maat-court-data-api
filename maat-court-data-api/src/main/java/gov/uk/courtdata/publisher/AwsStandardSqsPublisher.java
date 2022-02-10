@@ -28,9 +28,9 @@ public class AwsStandardSqsPublisher {
 
     private final AmazonSQSConfig amazonSQSConfig;
 
-    public void publish(String toJson) {
+    private void publish(String toJson, Integer messageDelayDuration) {
 
-        log.info("MAAT Record is locked. Publishing a message to the prosecution concluded queue to process later.");
+
         log.info("Publishing to SQS Queue {} ", sqsQueueName);
 
         AmazonSQS amazonSQS = amazonSQSConfig.awsSqsClient();
@@ -39,7 +39,7 @@ public class AwsStandardSqsPublisher {
         SendMessageRequest request = new SendMessageRequest()
                 .withQueueUrl(getQueueUrlResult.getQueueUrl())
                 .withMessageBody(toJson)
-                .withDelaySeconds(delaySeconds);
+                .withDelaySeconds(messageDelayDuration);
 
         amazonSQS.sendMessage(request);
         log.info("A CP hearing message has been published to the Queue {} with time delay of {} seconds.",sqsQueueName, delaySeconds);
@@ -48,6 +48,7 @@ public class AwsStandardSqsPublisher {
 
     public void publishMessageToProsecutionSQS(ProsecutionConcluded prosecutionConcluded) {
 
+        log.info("MAAT Record is locked. Publishing a message to the prosecution concluded queue to process later.");
         log.info("Message retry attempt no. " + prosecutionConcluded.getMessageRetryCounter());
 
         if (prosecutionConcluded.getMessageRetryCounter() < 6) {
@@ -57,9 +58,16 @@ public class AwsStandardSqsPublisher {
             prosecutionConcluded.setMessageRetryCounter(counter);
             String toJson = gson.toJson(prosecutionConcluded);
 
-             publish(toJson);
+             publish(toJson, delaySeconds);
         } else {
             throw new MaatRecordLockedException("Unable to process CP hearing notification because Maat Record is locked.");
         }
+    }
+
+    public void publishToSqsUntilHearingAvailable(ProsecutionConcluded prosecutionConcluded) {
+
+        log.info("Hearing data not available for hearing-id {} - publishing message back to the SQS {} - Hearing", prosecutionConcluded.getHearingIdWhereChangeOccurred() ,sqsQueueName);
+        String toJson = gson.toJson(prosecutionConcluded);
+        publish(toJson, 120);
     }
 }

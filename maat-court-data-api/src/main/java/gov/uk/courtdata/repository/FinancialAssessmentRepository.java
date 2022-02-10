@@ -21,4 +21,8 @@ public interface FinancialAssessmentRepository extends JpaRepository<FinancialAs
     @Modifying
     @Query(value = "UPDATE FinancialAssessmentEntity fa set fa.replaced = 'Y' WHERE fa.id <> :id AND fa.repId = :repId")
     void updatePreviousFinancialAssessmentsAsReplaced(@Param("repId") Integer repId, @Param("id") Integer id);
+
+    @Query(value = "SELECT count(*) FROM FINANCIAL_ASSESSMENTS fa WHERE fa.repId = :repId AND fa.REPLACED = 'N' AND (fa.valid IS NOT NULL AND fa.valid <> 'N') AND (fa.FASS_FULL_STATUS = 'IN PROGRESS' OR fa.FASS_INIT_STATUS  = 'IN PROGRESS')", nativeQuery = true)
+    Long findOutstandingFinancialAssessments(@Param("repId") Integer repId);
+
 }

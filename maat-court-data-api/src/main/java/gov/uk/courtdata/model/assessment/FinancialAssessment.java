@@ -30,4 +30,5 @@ public class FinancialAssessment {
     private String incomeEvidenceNotes;
     private String initApplicationEmploymentStatus;
     private List<FinancialAssessmentDetails> assessmentDetailsList;
+    private List<ChildWeightings> childWeightingsList;
 }

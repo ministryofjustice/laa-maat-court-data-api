@@ -640,4 +640,11 @@ public class TestModelDataBuilder {
                 .whoDWPChecked("ABC")
                 .build();
     }
+
+    public static ChildWeightings getChildWeightings() {
+        return ChildWeightings.builder()
+                .childWeightingId(2)
+                .noOfChildren(1)
+                .build();
+    }
 }

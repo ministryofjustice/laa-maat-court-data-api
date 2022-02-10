@@ -1,9 +1,11 @@
 package gov.uk.courtdata.assessment.service;
 
+import gov.uk.courtdata.assessment.impl.ChildWeightingsImpl;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentDetailsImpl;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailsEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -24,6 +26,7 @@ public class FinancialAssessmentService {
 
     private final FinancialAssessmentImpl financialAssessmentImpl;
     private final FinancialAssessmentDetailsImpl financialAssessmentDetailsImpl;
+    private final ChildWeightingsImpl childWeightingsImpl;
     private final FinancialAssessmentMapper assessmentMapper;
 
     public FinancialAssessmentDTO find(Integer financialAssessmentId) {
@@ -43,8 +46,12 @@ public class FinancialAssessmentService {
         log.info("Updating financial assessment detail records");
         List<FinancialAssessmentDetailsEntity> assessmentDetailsEntities =
                 financialAssessmentDetailsImpl.save(assessmentEntity, assessmentDTO.getAssessmentDetailsList());
+        log.info("Deleting stale child weightings");
+        childWeightingsImpl.deleteStaleChildWeightings(assessmentDTO);
+        log.info("Updating child weightings records");
+        List<ChildWeightingsEntity> childWeightingsEntities = childWeightingsImpl.save(assessmentEntity, assessmentDTO.getChildWeightingsList());
         log.info("Update Financial Assessment - Transaction Processing - End");
-        return buildFinancialAssessmentDTO(assessmentEntity, assessmentDetailsEntities);
+        return buildFinancialAssessmentDTO(assessmentEntity, assessmentDetailsEntities, childWeightingsEntities);
     }
 
     public void delete(Integer financialAssessmentId) {
@@ -61,13 +68,17 @@ public class FinancialAssessmentService {
         log.info("Creating new financial assessment detail records");
         List<FinancialAssessmentDetailsEntity> assessmentDetailsEntities =
                 financialAssessmentDetailsImpl.save(assessmentEntity, assessmentDTO.getAssessmentDetailsList());
+        log.info("Creating new financial assessment child weightings records");
+        List<ChildWeightingsEntity> childWeightingsEntities = childWeightingsImpl.save(assessmentEntity, assessmentDTO.getChildWeightingsList());
         log.info("Setting outdated records as replaced");
         financialAssessmentImpl.setOldAssessmentReplaced(assessmentDTO);
         log.info("Create Financial Assessment - Transaction Processing - End");
-        return buildFinancialAssessmentDTO(assessmentEntity, assessmentDetailsEntities);
+        return buildFinancialAssessmentDTO(assessmentEntity, assessmentDetailsEntities, childWeightingsEntities);
     }
 
-    public FinancialAssessmentDTO buildFinancialAssessmentDTO(FinancialAssessmentEntity assessmentEntity, List<FinancialAssessmentDetailsEntity> detailEntitiesList) {
+    public FinancialAssessmentDTO buildFinancialAssessmentDTO(FinancialAssessmentEntity assessmentEntity,
+                                                              List<FinancialAssessmentDetailsEntity> detailEntitiesList,
+                                                              List<ChildWeightingsEntity> childWeightingsEntities) {
         FinancialAssessmentDTO newDto =
                 assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
         if (detailEntitiesList != null) {
@@ -78,10 +89,16 @@ public class FinancialAssessmentService {
                             .collect(Collectors.toList())
             );
         }
+        if (childWeightingsEntities != null) {
+            newDto.setChildWeightingsList(childWeightingsEntities
+                    .stream()
+                    .map(assessmentMapper::ChildWeightingsEntityToChildWeightings)
+                    .collect(Collectors.toList()));
+        }
         return newDto;
     }
 
     public FinancialAssessmentDTO buildFinancialAssessmentDTO(FinancialAssessmentEntity assessmentEntity) {
-        return buildFinancialAssessmentDTO(assessmentEntity, null);
+        return buildFinancialAssessmentDTO(assessmentEntity, null, null);
     }
 }

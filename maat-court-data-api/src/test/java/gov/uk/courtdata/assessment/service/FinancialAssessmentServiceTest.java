@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.service;
 
+import gov.uk.courtdata.assessment.impl.ChildWeightingsImpl;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentDetailsImpl;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
@@ -32,6 +33,9 @@ public class FinancialAssessmentServiceTest {
 
     @Mock
     private FinancialAssessmentImpl financialAssessmentImpl;
+
+    @Mock
+    private ChildWeightingsImpl childWeightingsImpl;
 
     @Mock
     private FinancialAssessmentDetailsImpl financialAssessmentDetailsImpl;
@@ -72,6 +76,7 @@ public class FinancialAssessmentServiceTest {
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.create(financialAssessment);
 
         verify(financialAssessmentDetailsImpl).save(any(FinancialAssessmentEntity.class), isNull());
+        verify(childWeightingsImpl).save(any(FinancialAssessmentEntity.class), isNull());
         verify(financialAssessmentImpl).setOldAssessmentReplaced(any(FinancialAssessmentDTO.class));
 
         assertThat(returnedAssessment.getId()).isEqualTo(1000);
@@ -95,6 +100,8 @@ public class FinancialAssessmentServiceTest {
         verify(financialAssessmentImpl).update(any(FinancialAssessmentDTO.class));
         verify(financialAssessmentDetailsImpl).deleteStaleAssessmentDetails(any(FinancialAssessmentDTO.class));
         verify(financialAssessmentDetailsImpl).save(any(FinancialAssessmentEntity.class), isNull());
+        verify(childWeightingsImpl).deleteStaleChildWeightings(any(FinancialAssessmentDTO.class));
+        verify(childWeightingsImpl).save(any(FinancialAssessmentEntity.class), isNull());
 
         assertThat(returnedAssessment.getId()).isEqualTo(1000);
     }
@@ -118,7 +125,7 @@ public class FinancialAssessmentServiceTest {
 
         FinancialAssessmentDTO expectedDTO = TestModelDataBuilder.getFinancialAssessmentDTO();
         expectedDTO.setAssessmentDetailsList(List.of(mockFinancialAssessmentDetails));
-        FinancialAssessmentDTO actualDTO = financialAssessmentService.buildFinancialAssessmentDTO(financialAssessment, List.of(financialAssessmentDetails));
+        FinancialAssessmentDTO actualDTO = financialAssessmentService.buildFinancialAssessmentDTO(financialAssessment, List.of(financialAssessmentDetails), null);
 
         assertThat(actualDTO).isEqualTo(expectedDTO);
     }
@@ -133,7 +140,5 @@ public class FinancialAssessmentServiceTest {
 
         assertThat(actualDTO).isEqualTo(expectedDTO);
         assertThat(actualDTO.getAssessmentDetailsList()).isNull();
-
-
     }
 }

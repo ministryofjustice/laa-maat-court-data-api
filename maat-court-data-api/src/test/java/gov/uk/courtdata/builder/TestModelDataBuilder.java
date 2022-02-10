@@ -640,4 +640,43 @@ public class TestModelDataBuilder {
                 .whoDWPChecked("ABC")
                 .build();
     }
+
+    public String getProsecutionConcludedJson() {
+        return "{\n" +
+                "    \"prosecutionCaseId\": \"998984a0-ae53-466c-9c13-e0c84c1fd581\",\n" +
+                "    \"defendantId\": \"aa07e234-7e80-4be1-a076-5ab8a8f49df5\",\n" +
+                "    \"isConcluded\": true,\n" +
+                "    \"hearingIdWhereChangeOccurred\": \"908ad01e-5a38-4158-957a-0c1d1a783862\",\n" +
+                "    \"offenceSummary\": [\n" +
+                "        {\n" +
+                "            \"offenceId\": \"ed0e9d59-cc1c-4869-8fcd-464caf770744\",\n" +
+                "            \"offenceCode\": \"PT00011\",\n" +
+                "            \"proceedingsConcluded\": true,\n" +
+                "            \"proceedingsConcludedChangedDate\": \"2022-02-01\",\n" +
+                "            \"plea\": {\n" +
+                "                \"originatingHearingId\": \"61600a90-89e2-4717-aa9b-a01fc66130c1\",\n" +
+                "                \"value\": \"Not Guilty\",\n" +
+                "                \"pleaDate\": \"2022-02-01\"\n" +
+                "            },\n" +
+                "            \"verdict\": {\n" +
+                "                \"verdictDate\": \"2022-02-01\",\n" +
+                "                \"originatingHearingId\": \"61600a90-89e2-4717-aa9b-a01fc66130c1\",\n" +
+                "                \"verdictType\": {\n" +
+                "                    \"description\": \"Guilty\",\n" +
+                "                    \"category\": \"Guilty\",\n" +
+                "                    \"categoryType\": \"Guilty\",\n" +
+                "                    \"sequence\": 4126,\n" +
+                "                    \"verdictTypeId\": null\n" +
+                "                }\n" +
+                "            }\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"maatId\": \"5635566\",\n" +
+                "    \"metadata\": {\n" +
+                "        \"laaTransactionId\": \"ed26c13b09186939f28d95c75725c560\"\n" +
+                "    }\n" +
+                "}\n" +
+                "\n" +
+                "\n";
+    }
 }

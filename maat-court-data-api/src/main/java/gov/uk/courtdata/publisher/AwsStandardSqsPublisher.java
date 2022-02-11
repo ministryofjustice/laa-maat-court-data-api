@@ -20,6 +20,10 @@ public class AwsStandardSqsPublisher {
     @Value("${cloud-platform.aws.sqs.queue.config.messageDelay}")
     private Integer delaySeconds;
 
+    @Value("${cloud-platform.aws.sqs.queue.config.messageDelayDuration}")
+    private Integer messageDelayDuration;
+
+
     @Value("${cloud-platform.aws.sqs.queue.prosecutionConcluded}")
     private String sqsQueueName = "";
 
@@ -42,7 +46,7 @@ public class AwsStandardSqsPublisher {
                 .withDelaySeconds(messageDelayDuration);
 
         amazonSQS.sendMessage(request);
-        log.info("A CP hearing message has been published to the Queue {} with time delay of {} seconds.",sqsQueueName, delaySeconds);
+        log.info("A CP hearing message has been published to the Queue {} with time delay of {} seconds.",sqsQueueName, messageDelayDuration);
     }
 
 
@@ -68,6 +72,6 @@ public class AwsStandardSqsPublisher {
 
         log.info("Hearing data not available for hearing-id {} - publishing message back to the SQS {} - Hearing", prosecutionConcluded.getHearingIdWhereChangeOccurred() ,sqsQueueName);
         String toJson = gson.toJson(prosecutionConcluded);
-        publish(toJson, 120);
+        publish(toJson, messageDelayDuration);
     }
 }

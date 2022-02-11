@@ -82,7 +82,7 @@ public class FinancialAssessmentImpl {
         hardshipReviewRepository.updateOldHardshipReviews(financialAssessment.getRepId(), financialAssessment.getId());
     }
 
-    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(Integer repId){
+    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId){
         OutstandingAssessmentResultDTO result = new OutstandingAssessmentResultDTO();
 
         // Check for outstanding financial assessments

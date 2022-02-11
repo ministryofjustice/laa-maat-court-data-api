@@ -103,7 +103,7 @@ public class FinancialAssessmentService {
         return buildFinancialAssessmentDTO(assessmentEntity, null, null);
     }
 
-    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(Integer repId) {
+    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId) {
         return financialAssessmentImpl.checkForOutstandingAssessments(repId);
     }
 }

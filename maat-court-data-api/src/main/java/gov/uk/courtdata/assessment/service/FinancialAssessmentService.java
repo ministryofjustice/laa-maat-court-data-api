@@ -106,4 +106,5 @@ public class FinancialAssessmentService {
     public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId) {
         return financialAssessmentImpl.checkForOutstandingAssessments(repId);
     }
+
 }

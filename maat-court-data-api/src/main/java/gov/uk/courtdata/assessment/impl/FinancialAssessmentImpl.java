@@ -83,6 +83,7 @@ public class FinancialAssessmentImpl {
     }
 
     public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId){
+
         OutstandingAssessmentResultDTO result = new OutstandingAssessmentResultDTO();
 
         // Check for outstanding financial assessments

@@ -17,4 +17,7 @@ public interface PassportAssessmentRepository extends JpaRepository<PassportAsse
     @Modifying
     @Query(value = "UPDATE PASSPORT_ASSESSMENTS pa set pa.REPLACED = 'Y' WHERE pa.ID <> :id AND pa.REP_ID = :repId", nativeQuery = true)
     void updatePreviousPassportAssessmentsAsReplaced(@Param("repId") Integer repId, @Param("id") Integer id);
+
+    @Query(value = "SELECT count(*) FROM PASSPORT_ASSESSMENTS pa WHERE pa.REP_ID = :repId AND pa.REPLACED = 'N' AND (pa.VALID IS NULL OR pa.VALID <> 'N') AND pa.PAST_STATUS = 'IN PROGRESS'", nativeQuery = true)
+    Long findOutstandingPassportAssessments(@Param("repId") Integer repId);
 }

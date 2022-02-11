@@ -82,7 +82,7 @@ public class ProsecutionConcludedService {
         List<WQHearingEntity> wqHearingEntityList = wqHearingRepository
                 .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
         if (wqHearingEntityList.isEmpty()) {
-            awsStandardSqsPublisher.publishMessageToProsecutionSQS(prosecutionConcluded);
+            awsStandardSqsPublisher.publishToSqsUntilHearingAvailable(prosecutionConcluded);
             throw new ValidationException("No Hearing Entity found, re publishing to the queue");
         }
         return wqHearingEntityList.get(0);

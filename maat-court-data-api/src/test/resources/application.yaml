@@ -48,6 +48,7 @@ cloud-platform:
         prosecutionConcluded: prosecutionConcluded
         config:
           messageDelay: 900
+          messageDelayDuration: 120
 
 cda:
   oauth:

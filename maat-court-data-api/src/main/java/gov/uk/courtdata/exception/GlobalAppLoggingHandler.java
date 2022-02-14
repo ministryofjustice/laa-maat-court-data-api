@@ -11,6 +11,8 @@ import org.aspectj.lang.annotation.*;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Aspect
 @Component
 @Slf4j
@@ -56,16 +58,24 @@ public class GlobalAppLoggingHandler {
     public void beforeQueueMessageRec(JoinPoint joinPoint, String message) {
 
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);
+        String laaTransactionIdStr;
+
+        if (laaTransactionLogging.getMetadata() != null
+                && laaTransactionLogging.getMetadata().getLaaTransactionId() != null) {
+            laaTransactionIdStr = laaTransactionLogging.getMetadata().getLaaTransactionId().toString();
+        } else {
+            laaTransactionIdStr = UUID.randomUUID().toString();
+        }
 
         Sentry.configureScope(scope -> {
             scope.setTag(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn() : "");
-            scope.setTag(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionLogging.getLaaTransactionId() != null ? laaTransactionLogging.getLaaTransactionId().toString() : "");
+            scope.setTag(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionIdStr);
             scope.setTag(LoggingData.MAATID.getValue(), laaTransactionLogging.getMaatId().toString());
         });
 
         MDC.put(LoggingData.MESSAGE.getValue(), laaTransactionLogging.toString());
         MDC.put(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn() : "");
-        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionLogging.getLaaTransactionId() != null ? laaTransactionLogging.getLaaTransactionId().toString() : "");
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionIdStr);
         MDC.put(LoggingData.MAATID.getValue(), laaTransactionLogging.getMaatId() != null ? laaTransactionLogging.getMaatId().toString() : "-" );
         log.info("Received a json payload from a queue and converted.");
     }

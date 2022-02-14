@@ -68,10 +68,19 @@ public class AwsStandardSqsPublisher {
         }
     }
 
-    public void publishToSqsUntilHearingAvailable(ProsecutionConcluded prosecutionConcluded) {
+    public void publishingSqsMessageForHearing(ProsecutionConcluded prosecutionConcluded) {
 
         log.info("Hearing data not available for hearing-id {} - publishing message back to the SQS {} - Hearing", prosecutionConcluded.getHearingIdWhereChangeOccurred() ,sqsQueueName);
-        String toJson = gson.toJson(prosecutionConcluded);
-        publish(toJson, messageDelayDuration);
+        if (prosecutionConcluded.getRetryCounterForHearing() < 6 ) {
+            log.info("Publishing a message to the SQS again, with retry number {}", prosecutionConcluded.getMessageRetryCounter());
+
+            int counter = prosecutionConcluded.getRetryCounterForHearing()+1;
+            prosecutionConcluded.setRetryCounterForHearing(counter);
+            String toJson = gson.toJson(prosecutionConcluded);
+            publish(toJson, messageDelayDuration);
+        } else {
+            log.info("A message retried multiple times and breaking the republishing sqs chain {}", prosecutionConcluded.getMessageRetryCounter());
+            throw new MaatRecordLockedException("Hearing data not available for this maat and throwing the exception.");
+        }
     }
 }

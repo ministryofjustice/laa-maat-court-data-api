@@ -2,6 +2,7 @@ package gov.uk.courtdata.prosecutionconcluded.service;
 
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.exception.HearingNotAvailableException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
@@ -82,10 +83,9 @@ public class ProsecutionConcludedService {
         List<WQHearingEntity> wqHearingEntityList = wqHearingRepository
                 .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
         if (wqHearingEntityList.isEmpty()) {
-            awsStandardSqsPublisher.publishToSqsUntilHearingAvailable(prosecutionConcluded);
-            throw new ValidationException("No Hearing Entity found, re publishing to the queue");
+            awsStandardSqsPublisher.publishingSqsMessageForHearing(prosecutionConcluded);
+            throw new HearingNotAvailableException("No Hearing Entity found, re-publishing to the queue");
         }
         return wqHearingEntityList.get(0);
-
     }
 }

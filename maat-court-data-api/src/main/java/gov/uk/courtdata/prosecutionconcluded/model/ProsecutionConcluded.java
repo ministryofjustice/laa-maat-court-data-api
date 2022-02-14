@@ -1,5 +1,6 @@
 package gov.uk.courtdata.prosecutionconcluded.model;
 
+import gov.uk.courtdata.model.Metadata;
 import lombok.*;
 
 import java.util.List;
@@ -18,4 +19,7 @@ public class ProsecutionConcluded {
     private UUID hearingIdWhereChangeOccurred;
     private List<OffenceSummary> offenceSummary;
     private int messageRetryCounter;
+    private int retryCounterForHearing;
+    private Metadata metadata;
+
 }

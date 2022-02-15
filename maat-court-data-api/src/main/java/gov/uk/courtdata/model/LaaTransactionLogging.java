@@ -13,9 +13,7 @@ import java.util.UUID;
 @Value
 public class LaaTransactionLogging {
 
-    UUID laaTransactionId;
     Integer maatId;
     String caseUrn;
-
-
+    Metadata metadata;
 }

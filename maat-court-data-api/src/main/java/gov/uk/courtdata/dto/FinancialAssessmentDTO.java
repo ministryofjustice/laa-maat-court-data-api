@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dto;
 
+import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,4 +55,5 @@ public class FinancialAssessmentDTO {
     private Integer usn;
     private String rtCode;
     private List<FinancialAssessmentDetails> assessmentDetailsList;
+    private List<ChildWeightings> childWeightingsList;
 }

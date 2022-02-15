@@ -12,7 +12,7 @@ import java.util.List;
 public interface ResultRepository extends JpaRepository<ResultEntity, AsnSeqTxnCaseId> {
 
 
-    @Query(value = "SELECT RS.RESULT_CODE FROM MLA.XXMLA_RESULT RS WHERE RS.case_id =:caseId AND RS.ASN_SEQ = :snSeq;",
+    @Query(value = "SELECT RS.RESULT_CODE FROM MLA.XXMLA_RESULT RS WHERE RS.case_id =:caseId AND RS.ASN_SEQ = :asnSeq",
             nativeQuery = true)
-    List<Integer> findResultCodeByCaseIdAndAsnSeq(Integer caseId, String snSeq);
+    List<Integer> findResultCodeByCaseIdAndAsnSeq(Integer caseId, String asnSeq);
 }

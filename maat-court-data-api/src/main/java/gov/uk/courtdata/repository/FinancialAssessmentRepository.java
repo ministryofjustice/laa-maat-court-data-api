@@ -22,4 +22,8 @@ public interface FinancialAssessmentRepository extends JpaRepository<FinancialAs
 
     @Query(value = "SELECT * FROM FINANCIAL_ASSESSMENTS fa WHERE fa.REP_ID = :repId AND DATE_COMPLETED IS NOT NULL AND fa.REPLACED = 'N'", nativeQuery = true)
     Optional<FinancialAssessmentEntity> findCompletedAssessmentByRepId(@Param("repId") Integer repId);
+
+    @Query(value = "SELECT count(*) FROM FINANCIAL_ASSESSMENTS fa WHERE fa.REP_ID = :repId AND fa.REPLACED = 'N' AND (fa.VALID IS NULL OR fa.VALID <> 'N') AND (fa.FASS_FULL_STATUS = 'IN PROGRESS' OR fa.FASS_INIT_STATUS  = 'IN PROGRESS')", nativeQuery = true)
+    Long findOutstandingFinancialAssessments(@Param("repId") Integer repId);
+
 }

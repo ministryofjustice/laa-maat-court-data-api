@@ -790,4 +790,11 @@ public class TestModelDataBuilder {
                 .progressResponse(HardshipReviewProgressResponse.FURTHER_RECEIVED)
                 .build();
     }
+
+    public static ChildWeightings getChildWeightings() {
+        return ChildWeightings.builder()
+                .childWeightingId(2)
+                .noOfChildren(1)
+                .build();
+    }
 }

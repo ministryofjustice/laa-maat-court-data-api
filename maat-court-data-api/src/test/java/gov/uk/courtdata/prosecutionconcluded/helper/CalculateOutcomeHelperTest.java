@@ -36,7 +36,7 @@ public class CalculateOutcomeHelperTest {
     public void givenMessageIsReceived_whenPleaAndVerdictIsAvailable_thenReturnOutcomeAsPartConvicted() {
 
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
-                .concluded(true)
+                .isConcluded(true)
                 .maatId(123456)
                 .offenceSummary(Arrays.asList(
                         OffenceSummary.builder()
@@ -56,7 +56,7 @@ public class CalculateOutcomeHelperTest {
     public void givenMessageIsReceived_whenMultipleOffenceIsAvailable_thenReturnOutcomeAsPartConvicted() {
 
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
-                .concluded(true)
+                .isConcluded(true)
                 .maatId(123456)
                 .offenceSummary(
                         Arrays.asList(
@@ -80,7 +80,7 @@ public class CalculateOutcomeHelperTest {
     public void givenMessageIsReceived_whenVerdictIsGuilty_thenReturnOutcomeAsConvicted() {
 
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
-                .concluded(true)
+                .isConcluded(true)
                 .maatId(123456)
                 .offenceSummary(Arrays.asList(
                         OffenceSummary.builder()
@@ -100,7 +100,7 @@ public class CalculateOutcomeHelperTest {
     public void givenMessageIsReceived_whenVerdictIsNotGuilty_thenReturnOutcomeAsAquitted() {
 
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
-                .concluded(true)
+                .isConcluded(true)
                 .maatId(123456)
                 .offenceSummary(Arrays.asList(
                         OffenceSummary.builder()
@@ -120,7 +120,7 @@ public class CalculateOutcomeHelperTest {
     public void givenMessageIsReceived_whenPleaIsNotGuilty_thenReturnOutcomeAsAquitted() {
 
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
-                .concluded(true)
+                .isConcluded(true)
                 .maatId(123456)
                 .offenceSummary(Arrays.asList(
                         OffenceSummary.builder()
@@ -153,7 +153,7 @@ public class CalculateOutcomeHelperTest {
 
     private ProsecutionConcluded getProsecutionConcluded() {
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
-                .concluded(true)
+                .isConcluded(true)
                 .maatId(123456)
                 .offenceSummary(Arrays.asList(
                         OffenceSummary.builder()

@@ -57,6 +57,7 @@ cloud-platform:
         prosecutionConcluded: ${LAA_PROSECUTION_CONCLUDED_QUEUE}
         config:
           messageDelay: 900
+          messageDelayDuration: 120
 
 cda:
   laastatus:

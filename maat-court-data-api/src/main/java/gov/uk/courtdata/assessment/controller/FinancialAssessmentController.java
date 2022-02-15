@@ -3,6 +3,10 @@ package gov.uk.courtdata.assessment.controller;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
+import gov.uk.courtdata.dto.PassportAssessmentDTO;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,5 +77,19 @@ public class FinancialAssessmentController {
         log.info("Create Financial Assessment Request Received");
         financialAssessmentValidationProcessor.validate(financialAssessment);
         return ResponseEntity.ok(financialAssessmentService.create(financialAssessment));
+    }
+
+    @GetMapping(value = "/check-outstanding/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Check if there are outstanding assessments for a given repId")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = OutstandingAssessmentResultDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<OutstandingAssessmentResultDTO> checkForOutstandingAssessments(@PathVariable Integer repId,
+                                                               @Parameter(description = "Used for tracing calls")
+                                                               @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        log.debug("Check outstanding assessments Request Received for repId : {}", repId);
+        OutstandingAssessmentResultDTO resultDTO = financialAssessmentService.checkForOutstandingAssessments(repId);
+        return ResponseEntity.ok(resultDTO);
     }
 }

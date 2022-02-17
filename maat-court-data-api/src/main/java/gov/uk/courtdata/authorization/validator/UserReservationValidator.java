@@ -47,7 +47,7 @@ public class UserReservationValidator implements IValidator<Void, UserReservatio
                 .orElse(null);
 
         if (user != null) {
-            if (user.getCurrentSession().equals(session.getId()) || RESERVATION_SPECIAL_USERNAMES.contains(session.getUsername())) {
+            if (session.getId().equals(user.getCurrentSession()) || RESERVATION_SPECIAL_USERNAMES.contains(session.getUsername())) {
                 return;
             }
         }

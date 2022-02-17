@@ -11,5 +11,5 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Metadata {
 
-    private UUID laaTransactionId;
+    private String laaTransactionId;
 }

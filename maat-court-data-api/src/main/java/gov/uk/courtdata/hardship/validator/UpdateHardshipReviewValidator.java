@@ -25,12 +25,12 @@ public class UpdateHardshipReviewValidator implements IValidator<Void, UpdateHar
 
     @Override
     @Transactional(rollbackFor = MAATCourtDataException.class)
-    public Optional<Void> validate(UpdateHardshipReview hardshipReview) {
-        HardshipReviewEntity existing = hardshipReviewRepository.getById(hardshipReview.getId());
+    public Optional<Void> validate(final UpdateHardshipReview updateHardshipReview) {
+        HardshipReviewEntity existing = hardshipReviewRepository.getById(updateHardshipReview.getId());
 
         LocalDateTime timestamp = existing.getUpdated() != null ? existing.getUpdated() : existing.getDateCreated();
 
-        if (Math.abs(Duration.between(hardshipReview.getUpdated(), timestamp).getSeconds()) > 0) {
+        if (Math.abs(Duration.between(updateHardshipReview.getUpdated(), timestamp).getSeconds()) > 0) {
             throw new ValidationException("Hardship has been modified by another user");
         }
 

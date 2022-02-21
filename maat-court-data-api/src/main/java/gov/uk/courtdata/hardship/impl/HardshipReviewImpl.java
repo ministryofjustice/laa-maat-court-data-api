@@ -28,7 +28,7 @@ public class HardshipReviewImpl {
         return hardshipReviewRepository.getById(hardshipReviewId);
     }
 
-    public HardshipReviewEntity create(HardshipReviewDTO hardshipReviewDTO) {
+    public HardshipReviewEntity create(final HardshipReviewDTO hardshipReviewDTO) {
         HardshipReviewEntity hardshipReview = hardshipReviewMapper.HardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
         hardshipReview.getReviewDetails().forEach(
                 detail -> detail.setDetailReason(
@@ -38,7 +38,7 @@ public class HardshipReviewImpl {
         return hardshipReviewRepository.saveAndFlush(hardshipReview);
     }
 
-    public HardshipReviewEntity update(HardshipReviewDTO hardshipReviewDTO) {
+    public HardshipReviewEntity update(final HardshipReviewDTO hardshipReviewDTO) {
 
         HardshipReviewEntity existing = hardshipReviewRepository.getById(hardshipReviewDTO.getId());
 

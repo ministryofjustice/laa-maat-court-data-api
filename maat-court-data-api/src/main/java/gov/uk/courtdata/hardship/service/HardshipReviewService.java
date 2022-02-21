@@ -2,7 +2,7 @@ package gov.uk.courtdata.hardship.service;
 
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
-import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
@@ -20,24 +20,27 @@ public class HardshipReviewService {
     private final HardshipReviewImpl hardshipReviewImpl;
     private final HardshipReviewMapper hardshipReviewMapper;
 
-    @Transactional(rollbackFor = MAATCourtDataException.class)
-    public HardshipReviewDTO find(Integer hardshipReviewId) {
+    @Transactional(readOnly = true)
+    public HardshipReviewDTO findHardshipReview(final Integer hardshipReviewId) {
         HardshipReviewEntity hardshipReview = hardshipReviewImpl.find(hardshipReviewId);
+        if(hardshipReview == null){
+            throw new RequestedObjectNotFoundException(String.format("Hardship Review with id %s not found", hardshipReviewId));
+        }
         return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReview);
     }
 
-    @Transactional(rollbackFor = MAATCourtDataException.class)
-    public HardshipReviewDTO create(CreateHardshipReview hardshipReview) {
+    @Transactional
+    public HardshipReviewDTO createHardshipReview(final CreateHardshipReview createHardshipReview) {
         HardshipReviewDTO hardshipReviewDTO =
-                hardshipReviewMapper.CreateHardshipReviewToHardshipReviewDTO(hardshipReview);
+                hardshipReviewMapper.CreateHardshipReviewToHardshipReviewDTO(createHardshipReview);
         HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.create(hardshipReviewDTO);
         return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
     }
 
-    @Transactional(rollbackFor = MAATCourtDataException.class)
-    public HardshipReviewDTO update(UpdateHardshipReview hardshipReview) {
+    @Transactional
+    public HardshipReviewDTO updateHardshipReview(UpdateHardshipReview updateHardshipReview) {
         HardshipReviewDTO hardshipReviewDTO =
-                hardshipReviewMapper.UpdateHardshipReviewToHardshipReviewDTO(hardshipReview);
+                hardshipReviewMapper.UpdateHardshipReviewToHardshipReviewDTO(updateHardshipReview);
         HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.update(hardshipReviewDTO);
         return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
     }

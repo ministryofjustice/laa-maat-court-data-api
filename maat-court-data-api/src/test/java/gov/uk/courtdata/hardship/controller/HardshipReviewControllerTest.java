@@ -46,7 +46,7 @@ public class HardshipReviewControllerTest {
 
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
 
-        when(hardshipReviewService.find(MOCK_HARDSHIP_ID)).thenReturn(hardshipReviewDTO);
+        when(hardshipReviewService.findHardshipReview(MOCK_HARDSHIP_ID)).thenReturn(hardshipReviewDTO);
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + MOCK_HARDSHIP_ID))
                 .andExpect(status().isOk())
@@ -59,7 +59,7 @@ public class HardshipReviewControllerTest {
     @Test
     public void givenIncorrectParameters_whenGetHardshipIsInvoked_then4xxIsThrown() throws Exception {
         when(hardshipReviewValidationProcessor.validate(any(Integer.class))).thenThrow(new ValidationException());
-        when(hardshipReviewService.find(MOCK_HARDSHIP_ID)).thenReturn(null);
+        when(hardshipReviewService.findHardshipReview(MOCK_HARDSHIP_ID)).thenReturn(null);
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/" + MOCK_HARDSHIP_ID))
                 .andExpect(status().is4xxClientError());
     }
@@ -69,7 +69,7 @@ public class HardshipReviewControllerTest {
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
         String requestJson = TestModelDataBuilder.getCreateHardshipReviewJson(true);
 
-        when(hardshipReviewService.create(any(CreateHardshipReview.class))).thenReturn(hardshipReviewDTO);
+        when(hardshipReviewService.createHardshipReview(any(CreateHardshipReview.class))).thenReturn(hardshipReviewDTO);
         when(hardshipReviewValidationProcessor.validate(any(HardshipReview.class))).thenReturn(Optional.empty());
 
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(requestJson).contentType(MediaType.APPLICATION_JSON))
@@ -91,7 +91,7 @@ public class HardshipReviewControllerTest {
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
         String requestJson = TestModelDataBuilder.getUpdateHardshipReviewJson(true);
 
-        when(hardshipReviewService.update(any(UpdateHardshipReview.class))).thenReturn(hardshipReviewDTO);
+        when(hardshipReviewService.updateHardshipReview(any(UpdateHardshipReview.class))).thenReturn(hardshipReviewDTO);
         when(hardshipReviewValidationProcessor.validate(any(HardshipReview.class))).thenReturn(Optional.empty());
 
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(requestJson).contentType(MediaType.APPLICATION_JSON))

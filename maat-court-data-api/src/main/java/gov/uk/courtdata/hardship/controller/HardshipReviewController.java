@@ -36,7 +36,7 @@ public class HardshipReviewController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HardshipReviewDTO.class)))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Object> getHardship(
+    public ResponseEntity<HardshipReviewDTO> getHardship(
             @PathVariable int hardshipId,
             @Parameter(description = "Used for tracing calls")
             @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
@@ -45,7 +45,7 @@ public class HardshipReviewController {
         log.info("Get Hardship Review Request Received");
 
         validationProcessor.validate(hardshipId);
-        return ResponseEntity.ok(hardshipReviewService.find(hardshipId));
+        return ResponseEntity.ok(hardshipReviewService.findHardshipReview(hardshipId));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -53,7 +53,7 @@ public class HardshipReviewController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HardshipReviewDTO.class)))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Object> createHardship(
+    public ResponseEntity<HardshipReviewDTO> createHardship(
             @Parameter(description = "Hardship review data", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = CreateHardshipReview.class))) @RequestBody CreateHardshipReview hardshipReview,
             @Parameter(description = "Used for tracing calls")
@@ -63,7 +63,7 @@ public class HardshipReviewController {
         log.info("Create Hardship Review Request Received");
 
         validationProcessor.validate(hardshipReview);
-        return ResponseEntity.ok(hardshipReviewService.create(hardshipReview));
+        return ResponseEntity.ok(hardshipReviewService.createHardshipReview(hardshipReview));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -71,7 +71,7 @@ public class HardshipReviewController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HardshipReviewDTO.class)))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Object> updateHardship(
+    public ResponseEntity<HardshipReviewDTO> updateHardship(
             @Parameter(description = "Hardship review data", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = UpdateHardshipReview.class))) @RequestBody UpdateHardshipReview hardshipReview,
             @Parameter(description = "Used for tracing calls")
@@ -81,6 +81,6 @@ public class HardshipReviewController {
         log.info("Update Hardship Review Request Received");
 
         validationProcessor.validate(hardshipReview);
-        return ResponseEntity.ok(hardshipReviewService.update(hardshipReview));
+        return ResponseEntity.ok(hardshipReviewService.updateHardshipReview(hardshipReview));
     }
 }

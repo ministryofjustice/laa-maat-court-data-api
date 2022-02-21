@@ -2,7 +2,6 @@ package gov.uk.courtdata.assessment.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
-import gov.uk.courtdata.validator.FinancialAssessmentIdValidator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

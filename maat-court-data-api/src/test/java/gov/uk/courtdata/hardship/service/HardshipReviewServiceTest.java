@@ -2,6 +2,7 @@ package gov.uk.courtdata.hardship.service;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
+import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
@@ -31,10 +32,13 @@ public class HardshipReviewServiceTest {
 
     @Test
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
+        when(hardshipReviewImpl.find(any())).thenReturn(
+                HardshipReviewEntity.builder().id(1000).build()
+        );
         when(hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
                 HardshipReviewDTO.builder().id(1000).build()
         );
-        HardshipReviewDTO returnedAssessment = hardshipReviewService.find(1000);
+        HardshipReviewDTO returnedAssessment = hardshipReviewService.findHardshipReview(1000);
 
         verify(hardshipReviewImpl).find(any());
         assertThat(returnedAssessment.getId()).isEqualTo(1000);
@@ -48,7 +52,7 @@ public class HardshipReviewServiceTest {
         when(hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
                 TestModelDataBuilder.getHardshipReviewDTO()
         );
-        hardshipReviewService.create(CreateHardshipReview.builder().build());
+        hardshipReviewService.createHardshipReview(CreateHardshipReview.builder().build());
         verify(hardshipReviewImpl).create(any());
     }
 
@@ -60,7 +64,7 @@ public class HardshipReviewServiceTest {
         when(hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
                 TestModelDataBuilder.getHardshipReviewDTO()
         );
-        hardshipReviewService.update(UpdateHardshipReview.builder().build());
+        hardshipReviewService.updateHardshipReview(UpdateHardshipReview.builder().build());
         verify(hardshipReviewImpl).update(any());
     }
 }

@@ -20,14 +20,14 @@ public class CreateHardshipReviewValidator implements IValidator<Void, CreateHar
     private final FinancialAssessmentRepository financialAssessmentRepository;
 
     @Override
-    public Optional<Void> validate(CreateHardshipReview hardshipReview) {
+    public Optional<Void> validate(final CreateHardshipReview createHardshipReview) {
         Optional<FinancialAssessmentEntity> assessment =
-                financialAssessmentRepository.findCompletedAssessmentByRepId(hardshipReview.getRepId());
+                financialAssessmentRepository.findCompletedAssessmentByRepId(createHardshipReview.getRepId());
         if (assessment.isEmpty()) {
             throw new ValidationException("Review can only be entered after a completed assessment");
         }
 
-        LocalDateTime reviewDate = hardshipReview.getReviewDate();
+        LocalDateTime reviewDate = createHardshipReview.getReviewDate();
         LocalDateTime fullAssessmentDate = assessment.get().getFullAssessmentDate();
         LocalDateTime initialAssessmentDate = assessment.get().getInitialAssessmentDate();
         LocalDateTime timestamp = fullAssessmentDate != null ? fullAssessmentDate : initialAssessmentDate;

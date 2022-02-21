@@ -4,7 +4,6 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessment;
-import gov.uk.courtdata.validator.FinancialAssessmentIdValidator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

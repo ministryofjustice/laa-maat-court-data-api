@@ -4,7 +4,6 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
-import gov.uk.courtdata.validator.FinancialAssessmentIdValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

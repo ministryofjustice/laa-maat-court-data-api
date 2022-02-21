@@ -5,6 +5,7 @@ import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
@@ -23,6 +24,9 @@ public class PassportAssessmentService {
 
     public PassportAssessmentDTO find(Integer passportAssessmentId) {
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.find(passportAssessmentId);
+        if(passportAssessmentEntity == null){
+            throw new RequestedObjectNotFoundException(String.format("Passported Assessment with id %s not found", passportAssessmentId));
+        }
         return buildPassportAssessmentDTO(passportAssessmentEntity);
     }
 

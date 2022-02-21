@@ -1,4 +1,4 @@
-package gov.uk.courtdata.validator;
+package gov.uk.courtdata.assessment.validator;
 
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.ValidationException;

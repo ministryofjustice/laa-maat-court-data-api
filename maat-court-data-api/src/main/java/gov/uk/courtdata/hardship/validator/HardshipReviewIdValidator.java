@@ -1,7 +1,8 @@
-package gov.uk.courtdata.validator;
+package gov.uk.courtdata.hardship.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
+import gov.uk.courtdata.validator.IValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

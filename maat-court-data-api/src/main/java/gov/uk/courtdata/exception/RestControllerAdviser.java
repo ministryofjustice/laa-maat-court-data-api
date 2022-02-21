@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 /**
@@ -74,6 +73,20 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(ErrorDTO.builder()
                 .code("DB Error")
                 .message(ex.getMessage() + ". "+ ExceptionUtils.findRootCause(ex).getMessage())
+                .build());
+    }
+
+    /**
+     * Handles exceptions where an object is requested but is not found in the database
+     *
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(RequestedObjectNotFoundException.class)
+    public ResponseEntity<ErrorDTO> handleRequestedObjectNotFoundException(Exception ex) {
+        return ResponseEntity.badRequest().body(ErrorDTO.builder()
+                .code("OBJECT NOT FOUND")
+                .message(ex.getMessage())
                 .build());
     }
 }

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.hardship.validator.HardshipReviewIdValidator;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import org.junit.Assert;
 import org.junit.Test;

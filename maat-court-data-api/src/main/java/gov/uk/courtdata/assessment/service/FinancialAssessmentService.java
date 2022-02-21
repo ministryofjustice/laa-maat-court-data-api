@@ -5,11 +5,12 @@ import gov.uk.courtdata.assessment.impl.FinancialAssessmentDetailsImpl;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
+import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,9 @@ public class FinancialAssessmentService {
 
     public FinancialAssessmentDTO find(Integer financialAssessmentId) {
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
+        if(assessmentEntity == null){
+            throw new RequestedObjectNotFoundException(String.format("Financial Assessment with id %s not found", financialAssessmentId));
+        }
         return buildFinancialAssessmentDTO(assessmentEntity);
     }
 

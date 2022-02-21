@@ -6,13 +6,11 @@ import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
-import gov.uk.courtdata.enums.Frequency;
-import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
-import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
-import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
+import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
+import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
 import gov.uk.courtdata.enums.*;
@@ -652,13 +650,6 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static ChildWeightings getChildWeightings() {
-        return ChildWeightings.builder()
-                .childWeightingId(2)
-                .noOfChildren(1)
-                .build();
-    }
-
     public static HardshipReviewDTO getHardshipReviewDTO() {
         return HardshipReviewDTO.builder()
                 .id(1000)
@@ -806,4 +797,12 @@ public class TestModelDataBuilder {
                 .progressResponse(HardshipReviewProgressResponse.FURTHER_RECEIVED)
                 .build();
     }
+
+    public static ChildWeightings getChildWeightings() {
+        return ChildWeightings.builder()
+                .childWeightingId(2)
+                .noOfChildren(1)
+                .build();
+    }
+
 }

@@ -31,6 +31,7 @@ import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.*;
 public class FinancialAssessmentServiceTest {
 
     private static final Integer TEST_REP_ID = 1000;
+
     @InjectMocks
     private FinancialAssessmentService financialAssessmentService;
 

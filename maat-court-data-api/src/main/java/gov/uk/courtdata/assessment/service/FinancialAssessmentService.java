@@ -77,7 +77,10 @@ public class FinancialAssessmentService {
         return buildFinancialAssessmentDTO(assessmentEntity, assessmentDetailsEntities, childWeightingsEntities);
     }
 
-    public FinancialAssessmentDTO buildFinancialAssessmentDTO(FinancialAssessmentEntity assessmentEntity, List<FinancialAssessmentDetailEntity> detailEntitiesList) {
+
+    public FinancialAssessmentDTO buildFinancialAssessmentDTO(FinancialAssessmentEntity assessmentEntity,
+                                                              List<FinancialAssessmentDetailEntity> detailEntitiesList,
+                                                              List<ChildWeightingsEntity> childWeightingsEntities) {
         FinancialAssessmentDTO newDto =
                 assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
         if (detailEntitiesList != null) {

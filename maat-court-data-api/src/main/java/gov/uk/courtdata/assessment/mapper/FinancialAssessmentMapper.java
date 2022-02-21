@@ -1,7 +1,6 @@
 package gov.uk.courtdata.assessment.mapper;
 
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-
 import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
@@ -26,10 +25,10 @@ public interface FinancialAssessmentMapper {
 
     FinancialAssessmentEntity FinancialAssessmentDtoToFinancialAssessmentEntity(final FinancialAssessmentDTO financialAssessment);
 
+    FinancialAssessmentDetailEntity FinancialAssessmentDetailsToFinancialAssessmentDetailsEntity(final FinancialAssessmentDetails details);
+
     ChildWeightingsEntity ChildWeightingsToChildWeightingsEntity(final ChildWeightings childWeightings);
 
     ChildWeightings ChildWeightingsEntityToChildWeightings(final ChildWeightingsEntity childWeightingsEntity);
-
-    FinancialAssessmentDetailEntity FinancialAssessmentDetailsToFinancialAssessmentDetailsEntity(final FinancialAssessmentDetails details);
 
 }

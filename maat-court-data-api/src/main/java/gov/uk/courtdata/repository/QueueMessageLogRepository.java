@@ -15,4 +15,8 @@ public interface QueueMessageLogRepository extends JpaRepository<QueueMessageLog
     @Modifying
     @Query("delete from QueueMessageLogEntity q where q.createdTime<=:expiryDate")
     void deleteCreatedOnOrBefore(@Param("expiryDate") LocalDateTime expiryDate);
+
+    @Query("Select count(qml.maatId) from QueueMessageLogEntity qml where qml.maatId=:maatId and qml.type='PROSECUTION_CONCLUDED'")
+    int getMessageCounterByMaatId(@Param("maatId") Integer maatId);
+
 }

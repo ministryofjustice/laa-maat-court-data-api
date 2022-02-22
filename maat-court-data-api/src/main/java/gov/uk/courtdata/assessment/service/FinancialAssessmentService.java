@@ -9,7 +9,6 @@ import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
@@ -31,6 +30,7 @@ public class FinancialAssessmentService {
     private final ChildWeightingsImpl childWeightingsImpl;
     private final FinancialAssessmentMapper assessmentMapper;
 
+    @Transactional(readOnly = true)
     public FinancialAssessmentDTO find(Integer financialAssessmentId) {
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
         if(assessmentEntity == null){
@@ -39,7 +39,7 @@ public class FinancialAssessmentService {
         return buildFinancialAssessmentDTO(assessmentEntity);
     }
 
-    @Transactional(rollbackFor = MAATCourtDataException.class)
+    @Transactional
     public FinancialAssessmentDTO update(UpdateFinancialAssessment financialAssessment) {
         log.info("Update Financial Assessment - Transaction Processing - Start");
         FinancialAssessmentDTO assessmentDTO =
@@ -59,11 +59,12 @@ public class FinancialAssessmentService {
         return buildFinancialAssessmentDTO(assessmentEntity, assessmentDetailsEntities, childWeightingsEntities);
     }
 
+    @Transactional
     public void delete(Integer financialAssessmentId) {
         financialAssessmentImpl.delete(financialAssessmentId);
     }
 
-    @Transactional(rollbackFor = MAATCourtDataException.class)
+    @Transactional
     public FinancialAssessmentDTO create(CreateFinancialAssessment financialAssessment) {
         log.info("Create Financial Assessment - Transaction Processing - Start");
         FinancialAssessmentDTO assessmentDTO =

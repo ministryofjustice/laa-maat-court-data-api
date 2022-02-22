@@ -4,7 +4,6 @@ import gov.uk.courtdata.assessment.impl.PassportAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
@@ -22,6 +21,7 @@ public class PassportAssessmentService {
     private final PassportAssessmentImpl passportAssessmentImpl;
     private final PassportAssessmentMapper passportAssessmentMapper;
 
+    @Transactional(readOnly = true)
     public PassportAssessmentDTO find(Integer passportAssessmentId) {
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.find(passportAssessmentId);
         if(passportAssessmentEntity == null){
@@ -30,7 +30,7 @@ public class PassportAssessmentService {
         return buildPassportAssessmentDTO(passportAssessmentEntity);
     }
 
-    @Transactional(rollbackFor = MAATCourtDataException.class)
+    @Transactional
     public PassportAssessmentDTO update(UpdatePassportAssessment updatePassportAssessment) {
         log.info("Update Passport Assessment - Transaction Processing - Start");
         PassportAssessmentDTO passportAssessmentDTO =
@@ -49,7 +49,7 @@ public class PassportAssessmentService {
         passportAssessmentImpl.delete(passportAssessmentId);
     }
 
-    @Transactional(rollbackFor = MAATCourtDataException.class)
+    @Transactional
     public PassportAssessmentDTO create(CreatePassportAssessment createPassportAssessment) {
         log.info("Create Passport Assessment - Transaction Processing - Start");
         PassportAssessmentDTO passportAssessmentDTO =

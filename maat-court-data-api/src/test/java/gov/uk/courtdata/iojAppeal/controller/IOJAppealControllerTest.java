@@ -2,6 +2,7 @@ package gov.uk.courtdata.iojAppeal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.iojAppeal.service.IOJAppealService;
 import gov.uk.courtdata.iojAppeal.validator.IOJAppealValidationProcessor;
@@ -15,12 +16,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(IOJAppealController.class)
@@ -52,7 +52,7 @@ public class IOJAppealControllerTest {
 
     @Test
     public void givenNonExistentIOJAppealID_WhenGetIOJAppealIsCalled_ThenReturnBadRequestResponse_Error() throws Exception {
-        when(iojAppealService.find(IOJ_APPEAL_ID)).thenThrow( new NoSuchElementException("No IOJAppeal object found. ID: "+IOJ_APPEAL_ID));
+        when(iojAppealService.find(IOJ_APPEAL_ID)).thenThrow( new RequestedObjectNotFoundException("No IOJAppeal object found. ID: "+IOJ_APPEAL_ID));
         mvc.perform(MockMvcRequestBuilders.get("/ioj-appeal/"+IOJ_APPEAL_ID))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

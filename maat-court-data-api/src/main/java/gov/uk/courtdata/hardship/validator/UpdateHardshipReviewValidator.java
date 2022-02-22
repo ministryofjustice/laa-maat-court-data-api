@@ -2,7 +2,6 @@ package gov.uk.courtdata.hardship.validator;
 
 import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.enums.HardshipReviewStatus;
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
@@ -24,7 +23,7 @@ public class UpdateHardshipReviewValidator implements IValidator<Void, UpdateHar
     private final HardshipReviewRepository hardshipReviewRepository;
 
     @Override
-    @Transactional(rollbackFor = MAATCourtDataException.class)
+    @Transactional(readOnly = true)
     public Optional<Void> validate(final UpdateHardshipReview updateHardshipReview) {
         HardshipReviewEntity existing = hardshipReviewRepository.getById(updateHardshipReview.getId());
 

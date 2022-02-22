@@ -2,15 +2,20 @@ package gov.uk.courtdata.publisher;
 
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.GetQueueUrlResult;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.google.gson.Gson;
 import gov.uk.courtdata.config.AmazonSQSConfig;
 import gov.uk.courtdata.exception.MaatRecordLockedException;
 import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
+import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +36,8 @@ public class AwsStandardSqsPublisher {
 
 
     private final AmazonSQSConfig amazonSQSConfig;
+
+    private final QueueMessageLogService queueMessageLogService;
 
     private void publish(String toJson, Integer messageDelayDuration) {
 
@@ -71,11 +78,9 @@ public class AwsStandardSqsPublisher {
     public void publishingSqsMessageForHearing(ProsecutionConcluded prosecutionConcluded) {
 
         log.info("Hearing data not available for hearing-id {} - publishing message back to the SQS {} - Hearing", prosecutionConcluded.getHearingIdWhereChangeOccurred() ,sqsQueueName);
-        if (prosecutionConcluded.getRetryCounterForHearing() < 6 ) {
-            log.info("Publishing a message to the SQS again, with retry number {}", prosecutionConcluded.getMessageRetryCounter());
-
-            int counter = prosecutionConcluded.getRetryCounterForHearing()+1;
-            prosecutionConcluded.setRetryCounterForHearing(counter);
+        int counter = queueMessageLogService.getMessageCounterByMaatId(prosecutionConcluded.getMaatId());
+        if (counter < 6 ) {
+            log.info("Publishing a message to the SQS again, with retry number {}", counter);
             String toJson = gson.toJson(prosecutionConcluded);
             publish(toJson, messageDelayDuration);
         } else {

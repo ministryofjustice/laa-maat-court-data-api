@@ -3,10 +3,7 @@ package gov.uk.courtdata.prosecutionconcluded.helper;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
 import gov.uk.courtdata.prosecutionconcluded.model.Plea;
-import gov.uk.courtdata.repository.OffenceRepository;
-import gov.uk.courtdata.repository.ResultRepository;
-import gov.uk.courtdata.repository.WQResultRepository;
-import gov.uk.courtdata.repository.XLATResultRepository;
+import gov.uk.courtdata.repository.*;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -21,8 +18,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OffenceHelperTest {
@@ -31,13 +27,15 @@ public class OffenceHelperTest {
     private OffenceHelper offenceHelper;
 
     @Mock
-    private  OffenceRepository offenceRepository;
+    private OffenceRepository offenceRepository;
     @Mock
-    private  WQResultRepository wqResultRepository;
+    private WQResultRepository wqResultRepository;
     @Mock
-    private  ResultRepository resultRepository;
+    private ResultRepository resultRepository;
     @Mock
-    private  XLATResultRepository xlatResultRepository;
+    private XLATResultRepository xlatResultRepository;
+    @Mock
+    private WQOffenceRepository wqOffenceRepository;
 
     @BeforeEach
     public void setUp() {
@@ -48,16 +46,16 @@ public class OffenceHelperTest {
     public void testWhenOffenceResultIsCommittal_thenReturnTrue() {
 
         when(offenceRepository.findByCaseId(anyInt())).thenReturn(getOffenceEntity());
-        when(xlatResultRepository.findResultsByWQType(anyInt(),anyInt())).thenReturn(List.of(4057,4558,4559,4560,4561,4562,4564,4567,4593,1290));
+        when(xlatResultRepository.findResultsByWQType(anyInt(), anyInt())).thenReturn(List.of(4057, 4558, 4559, 4560, 4561, 4562, 4564, 4567, 4593, 1290));
 
-        when(resultRepository.findResultCodeByCaseIdAndAsnSeq(anyInt(),anyString())).thenReturn(List.of(4057,4558));
+        when(resultRepository.findResultCodeByCaseIdAndAsnSeq(anyInt(), anyString())).thenReturn(List.of(4057, 4558));
 
-        when(wqResultRepository.findResultCodeByCaseIdAndAsnSeq(anyInt(),anyString())).thenReturn(List.of(4057,4558));
+        when(wqResultRepository.findResultCodeByCaseIdAndAsnSeq(anyInt(), anyString())).thenReturn(List.of(4057, 4558));
 
         List<OffenceSummary> offenceSummaryList = offenceHelper.getTrialOffences(getOffenceSummary(), 12121);
 
         verify(offenceRepository).findByCaseId(anyInt());
-        verify(xlatResultRepository).findResultsByWQType(anyInt(),anyInt());
+        verify(xlatResultRepository,atLeast(2)).findResultsByWQType(anyInt(), anyInt());
         assertEquals(1, offenceSummaryList.size());
         assertEquals(UUID.fromString("e2540d98-995f-43f2-97e4-f712b8a5d6a6"), offenceSummaryList.get(0).getOffenceId());
 
@@ -67,17 +65,17 @@ public class OffenceHelperTest {
     public void testWhenOffenceResultIsNotCommittal_thenReturnFalse() {
 
         when(offenceRepository.findByCaseId(anyInt())).thenReturn(getOffenceEntity());
-        when(xlatResultRepository.findResultsByWQType(anyInt(),anyInt())).thenReturn(List.of(4057,4558,4559,4560,4561,4562,4564,4567,4593,1290));
+        when(xlatResultRepository.findResultsByWQType(anyInt(), anyInt())).thenReturn(List.of(4057, 4558, 4559, 4560, 4561, 4562, 4564, 4567, 4593, 1290));
 
-        when(resultRepository.findResultCodeByCaseIdAndAsnSeq(anyInt(),anyString())).thenReturn(List.of(453,454));
+        when(resultRepository.findResultCodeByCaseIdAndAsnSeq(anyInt(), anyString())).thenReturn(List.of(453, 454));
 
-        when(wqResultRepository.findResultCodeByCaseIdAndAsnSeq(anyInt(),anyString())).thenReturn(List.of(6665,6666));
+        when(wqResultRepository.findResultCodeByCaseIdAndAsnSeq(anyInt(), anyString())).thenReturn(List.of(6665, 6666));
 
 
         List<OffenceSummary> offenceSummaryList = offenceHelper.getTrialOffences(getOffenceSummary(), 12121);
 
         verify(offenceRepository).findByCaseId(anyInt());
-        verify(xlatResultRepository).findResultsByWQType(anyInt(),anyInt());
+        verify(xlatResultRepository,atLeast(2)).findResultsByWQType(anyInt(), anyInt());
         assertEquals(0, offenceSummaryList.size());
 
     }

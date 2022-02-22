@@ -53,5 +53,7 @@ public class WQResultEntity {
     private String courtLocation;
     @Column(name = "SESSION_VALIDATE_DATE")
     private LocalDate sessionValidateDate;
+    @Column(name = "JURISDICTIONTYPE")
+    private String jurisdictionType;
 
 }

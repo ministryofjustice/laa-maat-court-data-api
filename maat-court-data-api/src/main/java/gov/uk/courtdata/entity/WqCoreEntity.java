@@ -42,4 +42,6 @@ public class WqCoreEntity {
     private Integer retryFlag;
     @Column(name = "MAAT_UPDATE_STATUS")
     private Integer maatUpdateStatus;
+    @Column(name = "JURISDICTIONTYPE")
+    private String jurisdictionType;
 }

@@ -50,5 +50,7 @@ public class WQOffenceEntity {
     private Integer applicationFlag;
     @Column(name = "OFFENCE_ID")
     private String offenceId;
+    @Column(name = "CC_NEW_OFFENCE")
+    private String isCCNewOffence;
 
 }

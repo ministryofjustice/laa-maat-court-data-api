@@ -37,10 +37,12 @@ public class WQCoreProcessor {
                 .wqType(findWQType(magsCourtDTO.getResult().getResultCode()))
                 .wqStatus(WAITING.value())
                 .maatUpdateStatus(2) // No pre-processing status required here so set to ready for processing.
+                .jurisdictionType(magsCourtDTO.getJurisdictionType().name())
                 .build();
         wqCoreRepository.save(wqCoreEntity);
 
     }
+
 
     /**
      * Check if there is an offence for the case and seq no, if not then a new offence

@@ -40,4 +40,7 @@ public interface OffenceRepository extends JpaRepository<OffenceEntity, AsnSeqTx
             nativeQuery = true)
     Optional<OffenceEntity> findApplicationByOffenceCode(Integer caseId, String offenceId, Integer applicationFlag);
 
+    @Query(value = "SELECT COUNT(*) FROM MLA.XXMLA_OFFENCE WHERE CASE_ID = ?1 AND OFFENCE_ID = ?2 AND CC_NEW_OFFENCE = 'Y'", nativeQuery = true)
+    Integer getNewOffenceCount(Integer caseId, String offenceId);
+
 }

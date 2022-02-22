@@ -1,15 +1,16 @@
 package gov.uk.courtdata.hearing.processor;
 
 import gov.uk.courtdata.entity.WQOffenceEntity;
+import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.hearing.dto.OffenceDTO;
+import gov.uk.courtdata.prosecutionconcluded.helper.OffenceHelper;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
-import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
+import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
@@ -17,6 +18,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 public class WQOffenceProcessor {
 
     private final WQOffenceRepository wqOffenceRepository;
+    private final OffenceHelper offenceHelper;
 
     public void process(final HearingDTO magsCourtDTO) {
 
@@ -39,9 +41,20 @@ public class WQOffenceProcessor {
                 .wqOffence(null)
                 .applicationFlag(offence.getApplicationFlag() != null ? offence.getApplicationFlag() : G_NO)
                 .offenceId(offence.getOffenceId())
+                .isCCNewOffence(isCCNewOffence(magsCourtDTO))
                 .build();
 
         wqOffenceRepository.save(wqOffenceEntity);
+    }
+
+    private String isCCNewOffence(HearingDTO magsCourtDTO) {
+        String isCCNewOffence = NO;
+        if (JurisdictionType.CROWN == magsCourtDTO.getJurisdictionType()
+                && offenceHelper.isNewOffence(magsCourtDTO.getCaseId(), magsCourtDTO.getOffence().getAsnSeq())) {
+            isCCNewOffence = YES;
+        }
+
+        return isCCNewOffence;
     }
 
 

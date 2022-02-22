@@ -46,7 +46,7 @@ public class AwsStandardSqsPublisher {
                 .withDelaySeconds(messageDelayDuration);
 
         amazonSQS.sendMessage(request);
-        log.info("A CP hearing message has been published to the Queue {} with time delay of {} seconds.",sqsQueueName, messageDelayDuration);
+        log.info("A CP hearing message has been published to the Queue {} with time delay of {} seconds.", sqsQueueName, messageDelayDuration);
     }
 
 
@@ -58,11 +58,11 @@ public class AwsStandardSqsPublisher {
         if (prosecutionConcluded.getMessageRetryCounter() < 6) {
             log.info("Publishing a message to the SQS again, with retry number {}", prosecutionConcluded.getMessageRetryCounter());
 
-            int counter = prosecutionConcluded.getMessageRetryCounter()+1;
+            int counter = prosecutionConcluded.getMessageRetryCounter() + 1;
             prosecutionConcluded.setMessageRetryCounter(counter);
             String toJson = gson.toJson(prosecutionConcluded);
 
-             publish(toJson, delaySeconds);
+            publish(toJson, delaySeconds);
         } else {
             throw new MaatRecordLockedException("Unable to process CP hearing notification because Maat Record is locked.");
         }
@@ -70,11 +70,11 @@ public class AwsStandardSqsPublisher {
 
     public void publishingSqsMessageForHearing(ProsecutionConcluded prosecutionConcluded) {
 
-        log.info("Hearing data not available for hearing-id {} - publishing message back to the SQS {} - Hearing", prosecutionConcluded.getHearingIdWhereChangeOccurred() ,sqsQueueName);
-        if (prosecutionConcluded.getRetryCounterForHearing() < 6 ) {
+        log.info("Hearing data not available for hearing-id {} - publishing message back to the SQS {} - Hearing", prosecutionConcluded.getHearingIdWhereChangeOccurred(), sqsQueueName);
+        if (prosecutionConcluded.getRetryCounterForHearing() < 6) {
             log.info("Publishing a message to the SQS again, with retry number {}", prosecutionConcluded.getMessageRetryCounter());
 
-            int counter = prosecutionConcluded.getRetryCounterForHearing()+1;
+            int counter = prosecutionConcluded.getRetryCounterForHearing() + 1;
             prosecutionConcluded.setRetryCounterForHearing(counter);
             String toJson = gson.toJson(prosecutionConcluded);
             publish(toJson, messageDelayDuration);

@@ -79,6 +79,7 @@ public class AwsStandardSqsPublisher {
 
         log.info("Hearing data not available for hearing-id {} - publishing message back to the SQS {} - Hearing", prosecutionConcluded.getHearingIdWhereChangeOccurred() ,sqsQueueName);
         int counter = queueMessageLogService.getMessageCounterByMaatId(prosecutionConcluded.getMaatId());
+        log.info("Current counter value is {}", counter);
         if (counter < 6 ) {
             log.info("Publishing a message to the SQS again, with retry number {}", counter);
             String toJson = gson.toJson(prosecutionConcluded);

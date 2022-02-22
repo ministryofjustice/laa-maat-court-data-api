@@ -8,7 +8,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
-import gov.uk.courtdata.entity.FinancialAssessmentDetailsEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
@@ -23,14 +23,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
-import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FinancialAssessmentServiceTest {
 
     private static final Integer TEST_REP_ID = 1000;
+
     @InjectMocks
     private FinancialAssessmentService financialAssessmentService;
 
@@ -50,6 +51,9 @@ public class FinancialAssessmentServiceTest {
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
         when(financialAssessmentService.buildFinancialAssessmentDTO(any())).thenReturn(
                 FinancialAssessmentDTO.builder().id(1000).build()
+        );
+        when(financialAssessmentImpl.find(any())).thenReturn(
+                FinancialAssessmentEntity.builder().id(1000).build()
         );
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.find(1000);
 
@@ -112,7 +116,7 @@ public class FinancialAssessmentServiceTest {
     @Test
     public void whenBuildFinancialAssessmentDTOIsInvoked_thenDTOIsReturned() {
         FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
-        FinancialAssessmentDetailsEntity financialAssessmentDetails = TestEntityDataBuilder.getFinancialAssessmentDetailsEntity();
+        FinancialAssessmentDetailEntity financialAssessmentDetails = TestEntityDataBuilder.getFinancialAssessmentDetailsEntity();
 
         FinancialAssessmentDetails mockFinancialAssessmentDetails =
                 FinancialAssessmentDetails.builder()

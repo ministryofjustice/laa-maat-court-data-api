@@ -2,13 +2,12 @@ package gov.uk.courtdata.iojAppeal.impl;
 
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.iojAppeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.repository.IOJAppealRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +18,7 @@ public class IOJAppealImpl {
     private final IOJAppealMapper iojAppealMapper;
 
     public IOJAppealEntity find(Integer iojAppealId) {
-        return iojAppealRepository.findById(iojAppealId).orElseThrow(()-> new NoSuchElementException("No IOJAppeal object found. ID: "+iojAppealId));
+        return iojAppealRepository.findById(iojAppealId).orElseThrow(()-> new RequestedObjectNotFoundException("No IOJAppeal object found. ID: "+iojAppealId));
     }
 
     public IOJAppealEntity create(IOJAppealDTO iojAppealDTO){

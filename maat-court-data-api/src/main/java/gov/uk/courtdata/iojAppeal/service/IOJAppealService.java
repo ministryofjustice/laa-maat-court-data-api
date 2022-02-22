@@ -18,6 +18,7 @@ public class IOJAppealService {
     private final IOJAppealImpl iojAppealImpl;
     private final IOJAppealMapper iojAppealMapper;
 
+    @Transactional(readOnly = true)
     public IOJAppealDTO find(Integer iojAppealId) {
         var iojAppealEntity = iojAppealImpl.find(iojAppealId);
 

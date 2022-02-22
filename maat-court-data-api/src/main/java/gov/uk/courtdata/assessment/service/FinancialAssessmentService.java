@@ -5,11 +5,11 @@ import gov.uk.courtdata.assessment.impl.FinancialAssessmentDetailsImpl;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
-import gov.uk.courtdata.entity.FinancialAssessmentDetailsEntity;
+import gov.uk.courtdata.entity.ChildWeightingsEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
-import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +30,16 @@ public class FinancialAssessmentService {
     private final ChildWeightingsImpl childWeightingsImpl;
     private final FinancialAssessmentMapper assessmentMapper;
 
+    @Transactional(readOnly = true)
     public FinancialAssessmentDTO find(Integer financialAssessmentId) {
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
+        if(assessmentEntity == null){
+            throw new RequestedObjectNotFoundException(String.format("Financial Assessment with id %s not found", financialAssessmentId));
+        }
         return buildFinancialAssessmentDTO(assessmentEntity);
     }
 
-    @Transactional(rollbackFor = MAATCourtDataException.class)
+    @Transactional
     public FinancialAssessmentDTO update(UpdateFinancialAssessment financialAssessment) {
         log.info("Update Financial Assessment - Transaction Processing - Start");
         FinancialAssessmentDTO assessmentDTO =
@@ -45,7 +49,7 @@ public class FinancialAssessmentService {
         log.info("Deleting stale financial assessment details");
         financialAssessmentDetailsImpl.deleteStaleAssessmentDetails(assessmentDTO);
         log.info("Updating financial assessment detail records");
-        List<FinancialAssessmentDetailsEntity> assessmentDetailsEntities =
+        List<FinancialAssessmentDetailEntity> assessmentDetailsEntities =
                 financialAssessmentDetailsImpl.save(assessmentEntity, assessmentDTO.getAssessmentDetailsList());
         log.info("Deleting stale child weightings");
         childWeightingsImpl.deleteStaleChildWeightings(assessmentDTO);
@@ -55,11 +59,12 @@ public class FinancialAssessmentService {
         return buildFinancialAssessmentDTO(assessmentEntity, assessmentDetailsEntities, childWeightingsEntities);
     }
 
+    @Transactional
     public void delete(Integer financialAssessmentId) {
         financialAssessmentImpl.delete(financialAssessmentId);
     }
 
-    @Transactional(rollbackFor = MAATCourtDataException.class)
+    @Transactional
     public FinancialAssessmentDTO create(CreateFinancialAssessment financialAssessment) {
         log.info("Create Financial Assessment - Transaction Processing - Start");
         FinancialAssessmentDTO assessmentDTO =
@@ -67,7 +72,7 @@ public class FinancialAssessmentService {
         log.info("Creating new financial assessment record");
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.create(assessmentDTO);
         log.info("Creating new financial assessment detail records");
-        List<FinancialAssessmentDetailsEntity> assessmentDetailsEntities =
+        List<FinancialAssessmentDetailEntity> assessmentDetailsEntities =
                 financialAssessmentDetailsImpl.save(assessmentEntity, assessmentDTO.getAssessmentDetailsList());
         log.info("Creating new financial assessment child weightings records");
         List<ChildWeightingsEntity> childWeightingsEntities = childWeightingsImpl.save(assessmentEntity, assessmentDTO.getChildWeightingsList());
@@ -77,8 +82,9 @@ public class FinancialAssessmentService {
         return buildFinancialAssessmentDTO(assessmentEntity, assessmentDetailsEntities, childWeightingsEntities);
     }
 
+
     public FinancialAssessmentDTO buildFinancialAssessmentDTO(FinancialAssessmentEntity assessmentEntity,
-                                                              List<FinancialAssessmentDetailsEntity> detailEntitiesList,
+                                                              List<FinancialAssessmentDetailEntity> detailEntitiesList,
                                                               List<ChildWeightingsEntity> childWeightingsEntities) {
         FinancialAssessmentDTO newDto =
                 assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);

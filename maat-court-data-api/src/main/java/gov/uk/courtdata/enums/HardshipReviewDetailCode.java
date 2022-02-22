@@ -1,0 +1,52 @@
+package gov.uk.courtdata.enums;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import gov.uk.courtdata.helper.AbstractEnumConverter;
+import gov.uk.courtdata.helper.PersistableEnum;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import javax.persistence.Converter;
+
+@Getter
+@AllArgsConstructor
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum HardshipReviewDetailCode implements PersistableEnum<String> {
+
+    UNSECURED_LOAN("UNSECURED LOAN", "Unsecured Loan"),
+    SECURED_LOAN("SECURED LOAN", "Secured Loan"),
+    CAR_LOAN("CAR LOAN", "Car Loan"),
+    IVA("IVA", "IVA"),
+    CARDS("CARDS", "Credit/Store Card Payment"),
+    DEBTS("DEBTS", "Debts"),
+    FINES("FINES", "Fines"),
+    RENT_ARREARS("RENT ARREARS", "Rent Arrears"),
+    BAILIFF("BAILIFF", "Bailiff Costs"),
+    DWP_OVERPAYMENT("DWP OVERPAYMENT", "DWP Overpayment"),
+    STUDENT_LOAN("STUDENT LOAN", "Student Loan"),
+    ADD_MORTGAGE("ADD MORTGAGE", "Mortgage on additional Property"),
+    UNI_HOUSING("UNI HOUSING", "University Housing Costs"),
+    PRESCRIPTION("PRESCRIPTION", "Prescription Costs"),
+    PENSION_PAY("PENSION PAY", "Pension Payments"),
+    // Typo in the data that is already in the table
+    MEDICAL_COSTS("MEDIAL COSTS", "Medical Costs"),
+    OTHER("OTHER", "Other"),
+    MEDICAL_GROUNDS("MEDICAL GROUNDS", "Medical Grounds"),
+    SUSPENDED_WORK("SUSPENDED WORK", "Suspended from work"),
+    OTHER_INC("OTHER INC", "Other");
+
+    private String code;
+    private String description;
+
+    @Override
+    public String getValue() {
+        return this.code;
+    }
+
+    @Converter(autoApply = true)
+    private static class HardshipReviewDetailCodeConverter extends AbstractEnumConverter<HardshipReviewDetailCode, String> {
+        protected HardshipReviewDetailCodeConverter() {
+            super(HardshipReviewDetailCode.class);
+        }
+    }
+}

@@ -2,7 +2,6 @@ package gov.uk.courtdata.assessment.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
-import gov.uk.courtdata.validator.FinancialAssessmentIdValidator;
 import gov.uk.courtdata.validator.IValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HardshipReviewRepository extends JpaRepository<HardshipReviewEntity, Integer> {
     @Modifying
-    @Query(value = "UPDATE HardshipReviewEntity hr set hr.replaced = 'Y' WHERE hr.repId = :repId and hr.fiasId <> :financialAssessmentId")
+    @Query(value = "UPDATE HardshipReviewEntity hr set hr.replaced = 'Y' WHERE hr.repId = :repId and hr.financialAssessmentId <> :financialAssessmentId")
     void updateOldHardshipReviews(@Param("repId") Integer repId, @Param("financialAssessmentId") Integer financialAssessmentId);
 }

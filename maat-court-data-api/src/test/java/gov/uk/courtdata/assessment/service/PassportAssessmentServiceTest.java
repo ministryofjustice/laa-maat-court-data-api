@@ -37,6 +37,10 @@ public class PassportAssessmentServiceTest {
         when(passportAssessmentService.buildPassportAssessmentDTO(any())).thenReturn(
                 PassportAssessmentDTO.builder().id(1000).build()
         );
+
+        when(passportAssessmentImpl.find(any())).thenReturn(
+                PassportAssessmentEntity.builder().id(1000).build()
+        );
         PassportAssessmentDTO returnedAssessment = passportAssessmentService.find(1000);
 
         verify(passportAssessmentImpl).find(any());

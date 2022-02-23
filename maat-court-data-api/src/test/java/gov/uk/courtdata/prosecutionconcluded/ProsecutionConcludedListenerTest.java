@@ -1,7 +1,6 @@
 package gov.uk.courtdata.prosecutionconcluded;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.config.AmazonSQSConfig;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.enums.PleaTrialOutcome;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedListener;
@@ -9,7 +8,6 @@ import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedService;
 import gov.uk.courtdata.service.QueueMessageLogService;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -17,8 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -36,9 +32,6 @@ public class ProsecutionConcludedListenerTest {
     @Mock
     private QueueMessageLogService queueMessageLogService;
 
-    @Mock
-    private AmazonSQSConfig amazonSQSConfig;
-
 
     @BeforeEach
     public void setUp() {
@@ -46,7 +39,7 @@ public class ProsecutionConcludedListenerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test @Ignore
+    @Test
     public void givenJSONMessageIsReceived_whenProsecutionConcludedListenerIsInvoked_thenProsecutionConcludedServiceIsCalled() {
         //given
 
@@ -55,11 +48,9 @@ public class ProsecutionConcludedListenerTest {
         ProsecutionConcluded prosecutionConcluded = locaGson.fromJson(getSqsMessagePayload(), ProsecutionConcluded.class);
         String originatingHearingId="61600a90-89e2-4717-aa9b-a01fc66130c1";
 
-
         //when
         when(gson.fromJson(message, ProsecutionConcluded.class)).thenReturn(prosecutionConcluded);
-        Objects.requireNonNull(when(amazonSQSConfig.awsSqsClient()));
-        prosecutionConcludedListener.receive();
+        prosecutionConcludedListener.receive(message);
         //then
         verify(prosecutionConcludedService).execute(prosecutionConcluded);
         verify(queueMessageLogService).createLog(MessageType.PROSECUTION_CONCLUDED, message);

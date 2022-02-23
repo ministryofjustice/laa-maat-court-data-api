@@ -14,6 +14,7 @@ import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.validator.ProsecutionConcludedValidator;
 import gov.uk.courtdata.publisher.AwsStandardSqsPublisher;
 import gov.uk.courtdata.repository.WQHearingRepository;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -31,6 +32,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
+@Ignore
 public class ProsecutionConcludedServiceTest {
 
     @InjectMocks

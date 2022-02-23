@@ -21,5 +21,6 @@ public class ProsecutionConcluded {
     private int messageRetryCounter;
     private int retryCounterForHearing;
     private Metadata metadata;
+    private boolean isProcessed;
 
 }

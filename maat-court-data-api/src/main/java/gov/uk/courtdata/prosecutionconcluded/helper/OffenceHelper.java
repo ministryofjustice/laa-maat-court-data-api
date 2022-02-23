@@ -3,7 +3,6 @@ package gov.uk.courtdata.prosecutionconcluded.helper;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.enums.WQType;
 import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
-
 import gov.uk.courtdata.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,9 +23,12 @@ public class OffenceHelper {
     private final ResultRepository resultRepository;
     private final XLATResultRepository xlatResultRepository;
     private final WQOffenceRepository wqOffenceRepository;
+    private final WqLinkRegisterRepository wqLinkRegisterRepository;
 
 
-    public List<OffenceSummary> getTrialOffences(List<OffenceSummary> offenceList, int caseId) {
+    public List<OffenceSummary> getTrialOffences(List<OffenceSummary> offenceList, int maatId) {
+
+        int caseId = wqLinkRegisterRepository.findBymaatId(maatId).get(0).getCaseId();
 
         List<OffenceEntity> offenceEntities = offenceRepository.findByCaseId(caseId);
         List<Integer> committalForTrialRefResults = xlatResultRepository.findResultsByWQType(WQType.COMMITTAL_QUEUE.value(),
@@ -41,6 +43,7 @@ public class OffenceHelper {
                 .collect(Collectors.toList());
 
     }
+
 
     private boolean isNewCCOffence(OffenceSummary offence, List<OffenceEntity> offenceEntities, List<Integer> committalForSentenceRefResults, int caseId) {
         boolean isNewCCOffence = false;

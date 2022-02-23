@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.config.AmazonSQSConfig;
 import gov.uk.courtdata.exception.MaatRecordLockedException;
 import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
-import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,8 +36,6 @@ public class AwsStandardSqsPublisher {
 
     private final AmazonSQSConfig amazonSQSConfig;
 
-    private final QueueMessageLogService queueMessageLogService;
-
     private void publish(String toJson, Integer messageDelayDuration) {
 
 
@@ -47,8 +44,14 @@ public class AwsStandardSqsPublisher {
         AmazonSQS amazonSQS = amazonSQSConfig.awsSqsClient();
         GetQueueUrlResult getQueueUrlResult = amazonSQS.getQueueUrl(sqsQueueName);
 
+        final Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
+        messageAttributes.put("HearingRetryCounterValue", new MessageAttributeValue()
+                .withDataType("Number")
+                .withStringValue("1"));
+
         SendMessageRequest request = new SendMessageRequest()
                 .withQueueUrl(getQueueUrlResult.getQueueUrl())
+                .withMessageAttributes(messageAttributes)
                 .withMessageBody(toJson)
                 .withDelaySeconds(messageDelayDuration);
 
@@ -78,10 +81,11 @@ public class AwsStandardSqsPublisher {
     public void publishingSqsMessageForHearing(ProsecutionConcluded prosecutionConcluded) {
 
         log.info("Hearing data not available for hearing-id {} - publishing message back to the SQS {} - Hearing", prosecutionConcluded.getHearingIdWhereChangeOccurred() ,sqsQueueName);
-        int counter = queueMessageLogService.getMessageCounterByMaatId(prosecutionConcluded.getMaatId());
-        log.info("Current counter value is {}", counter);
-        if (counter < 6 ) {
-            log.info("Publishing a message to the SQS again, with retry number {}", counter);
+        if (prosecutionConcluded.getRetryCounterForHearing() < 6 ) {
+            log.info("Publishing a message to the SQS again, with retry number {}", prosecutionConcluded.getMessageRetryCounter());
+
+            int counter = prosecutionConcluded.getRetryCounterForHearing()+1;
+            prosecutionConcluded.setRetryCounterForHearing(counter);
             String toJson = gson.toJson(prosecutionConcluded);
             publish(toJson, messageDelayDuration);
         } else {

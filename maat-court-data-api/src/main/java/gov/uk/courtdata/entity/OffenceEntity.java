@@ -60,5 +60,7 @@ public class OffenceEntity {
     private String attribute5;
     @Column(name = "OFFENCE_ID")
     private String offenceId;
+    @Column(name = "CC_NEW_OFFENCE")
+    private String isCCNewOffence;
 
 }

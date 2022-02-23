@@ -25,8 +25,7 @@ public enum WQType {
 
     public static boolean isActionableQueue(int wqNumber) {
         boolean isActionable = false;
-        if (COMMITTAL_QUEUE.value == wqNumber
-                || INDICTABLE_QUEUE.value == wqNumber
+        if (INDICTABLE_QUEUE.value == wqNumber
                 || CONCLUSION_QUEUE.value == wqNumber) {
             isActionable = true;
         }

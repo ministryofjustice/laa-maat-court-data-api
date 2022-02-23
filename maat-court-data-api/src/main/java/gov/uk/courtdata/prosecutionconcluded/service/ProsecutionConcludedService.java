@@ -61,6 +61,7 @@ public class ProsecutionConcludedService {
                         .getTrialOffences(offenceSummaryList, wqHearingEntity.getCaseId());
 
                 if (!trialOffences.isEmpty()) {
+                    log.info("Number of Valid offences for CC Outcome Calculations : {}" ,trialOffences.size());
                     processOutcome(prosecutionConcluded, wqHearingEntity, trialOffences);
                 }
             }

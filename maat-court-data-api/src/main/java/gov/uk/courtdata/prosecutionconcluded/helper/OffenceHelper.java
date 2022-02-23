@@ -4,19 +4,15 @@ import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.enums.WQType;
 import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
 
-import gov.uk.courtdata.repository.OffenceRepository;
-import gov.uk.courtdata.repository.ResultRepository;
-import gov.uk.courtdata.repository.WQResultRepository;
-import gov.uk.courtdata.repository.XLATResultRepository;
+import gov.uk.courtdata.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.COMMITTAL_FOR_TRIAL_SUB_TYPE;
+import static gov.uk.courtdata.constants.CourtDataConstants.*;
 
 
 @RequiredArgsConstructor
@@ -27,35 +23,51 @@ public class OffenceHelper {
     private final WQResultRepository wqResultRepository;
     private final ResultRepository resultRepository;
     private final XLATResultRepository xlatResultRepository;
+    private final WQOffenceRepository wqOffenceRepository;
 
 
     public List<OffenceSummary> getTrialOffences(List<OffenceSummary> offenceList, int caseId) {
 
         List<OffenceEntity> offenceEntities = offenceRepository.findByCaseId(caseId);
-        List<Integer> committalRefResults = xlatResultRepository.findResultsByWQType(WQType.COMMITTAL_QUEUE.value(),
+        List<Integer> committalForTrialRefResults = xlatResultRepository.findResultsByWQType(WQType.COMMITTAL_QUEUE.value(),
                 COMMITTAL_FOR_TRIAL_SUB_TYPE);
+        List<Integer> committalForSentenceRefResults = xlatResultRepository.findResultsByWQType(WQType.COMMITTAL_QUEUE.value(),
+                COMMITTAL_FOR_SENTENCE_SUB_TYPE);
 
         return offenceList
                 .stream()
-                .filter(offence -> isTrialOffence(offence, offenceEntities, committalRefResults))
+                .filter(offence -> (hasCommittalResults(offence, offenceEntities, committalForTrialRefResults))
+                        || isNewCCOffence(offence, offenceEntities, committalForSentenceRefResults, caseId))
                 .collect(Collectors.toList());
 
     }
 
-    private boolean isTrialOffence(OffenceSummary offence, List<OffenceEntity> offenceEntities, List<Integer> committalRefResults) {
-        Optional<OffenceEntity> optionalOffenceEntity = offenceEntities
+    private boolean isNewCCOffence(OffenceSummary offence, List<OffenceEntity> offenceEntities, List<Integer> committalForSentenceRefResults, int caseId) {
+        boolean isNewCCOffence = false;
+
+        int newOffenceCount = offenceRepository.getNewOffenceCount(caseId, offence.getOffenceId().toString())
+                + wqOffenceRepository.getNewOffenceCount(caseId, offence.getOffenceId().toString());
+
+        if (newOffenceCount > 0 &&
+                !hasCommittalResults(offence, offenceEntities, committalForSentenceRefResults)) {
+            isNewCCOffence = true;
+        }
+        return isNewCCOffence;
+    }
+
+
+    private boolean hasCommittalResults(OffenceSummary offence, List<OffenceEntity> offenceEntities, List<Integer> committalRefResults) {
+        OffenceEntity offenceEntity = offenceEntities
                 .stream()
                 .filter(o -> o.getOffenceId() != null
                         && o.getOffenceId().equalsIgnoreCase(offence.getOffenceId().toString()))
-                .findFirst();
+                .findFirst().orElse(null);
 
-        OffenceEntity offenceEntity = optionalOffenceEntity.orElse(null);
-
-
-        return hasCommittalForTrailResults(offenceEntity, committalRefResults);
+        return hasResults(offenceEntity, committalRefResults);
     }
 
-    private boolean hasCommittalForTrailResults(OffenceEntity offenceEntity, List<Integer> committalRefResults) {
+
+    private boolean hasResults(OffenceEntity offenceEntity, List<Integer> committalRefResults) {
         boolean isCommittal = false;
         if (offenceEntity != null) {
             String asnSeq = getAsnSeq(offenceEntity);
@@ -76,4 +88,13 @@ public class OffenceHelper {
     }
 
 
+    public boolean isNewOffence(Integer caseId, String asaSeq) {
+
+        Integer offenceCount =
+                offenceRepository.getOffenceCountForAsnSeq(
+                        caseId,
+                        String.format(LEADING_ZERO_3, Integer.parseInt(asaSeq)));
+
+        return offenceCount == 0;
+    }
 }

@@ -37,6 +37,7 @@ public class WQResultProcessor {
                 .dateOfHearing(DateUtil.parse(magsCourtDTO.getSession().getDateOfHearing()))
                 .courtLocation(magsCourtDTO.getSession().getCourtLocation())
                 .sessionValidateDate(DateUtil.parse(magsCourtDTO.getSession().getSessionValidatedDate()))
+                .jurisdictionType(magsCourtDTO.getJurisdictionType().name())
                 .build();
 
         wqResultRepository.save(wqResultEntity);

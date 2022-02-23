@@ -12,13 +12,17 @@ import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.processor.OffenceCodeRefDataProcessor;
 import gov.uk.courtdata.processor.ResultCodeRefDataProcessor;
+import gov.uk.courtdata.prosecutionconcluded.helper.OffenceHelper;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
+
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +37,7 @@ public class HearingResultedImpl {
     private final ResultCodeRefDataProcessor resultCodeRefDataProcessor;
     private final OffenceCodeRefDataProcessor offenceCodeRefDataProcessor;
     private final WQCoreProcessor wqCoreProcessor;
+    private final OffenceHelper offenceHelper;
 
 
     /**
@@ -52,7 +57,7 @@ public class HearingResultedImpl {
                     offence.getResults().forEach(result -> {
                         final Integer resultCode = Integer.parseInt(result.getResultCode());
                         resultCodeRefDataProcessor.processResultCode(resultCode);
-                        if (isWorkQueueProcessingRequired(resultCode, hearingResulted)) {
+                        if (isWorkQueueProcessingRequired(resultCode, hearingResulted, offence, wqLinkReg)) {
 
                             processResults(hearingResulted, wqLinkReg, offence, result);
                         }
@@ -88,8 +93,22 @@ public class HearingResultedImpl {
         return identifierRepository.getTxnID();
     }
 
-    private boolean isWorkQueueProcessingRequired(Integer resultCode, HearingResulted hearingResulted) {
+    private boolean isWorkQueueProcessingRequired(Integer resultCode, HearingResulted hearingResulted,
+                                                  Offence offence, WqLinkRegisterEntity wqLink) {
         return JurisdictionType.CROWN != hearingResulted.getJurisdictionType() ||
-                !WQType.isActionableQueue(wqCoreProcessor.findWQType(resultCode));
+                !WQType.isActionableQueue(wqCoreProcessor.findWQType(resultCode))
+                || isConcludingNewOffence(resultCode, offence, wqLink.getCaseId());
     }
+
+    private boolean isConcludingNewOffence(Integer resultCode, Offence offence,
+                                             Integer caseId) {
+        boolean myReturn = false;
+        if (WQType.CONCLUSION_QUEUE.value() == wqCoreProcessor.findWQType(resultCode)
+                && offenceHelper.isNewOffence(caseId, offence.getAsnSeq())) {
+            myReturn = true;
+        }
+        return myReturn;
+    }
+
+
 }

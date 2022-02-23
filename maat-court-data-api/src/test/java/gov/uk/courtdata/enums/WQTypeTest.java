@@ -10,7 +10,7 @@ public class WQTypeTest {
     public void givenCommittalWQ_actionableResultIsReturned() {
 
         boolean result = WQType.isActionableQueue(1);
-        assertThat(result).isTrue();
+        assertThat(result).isFalse();
     }
     @Test
     public void givenIndictableWQ_actionableResultIsReturned() {

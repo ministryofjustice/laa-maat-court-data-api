@@ -36,7 +36,7 @@ public class AwsStandardSqsPublisher {
 
     private final AmazonSQSConfig amazonSQSConfig;
 
-    private void publish(String toJson, Integer messageDelayDuration) {
+    private void publish(String toJson, Integer messageDelayDuration, String retryCounter) {
 
 
         log.info("Publishing to SQS Queue {} ", sqsQueueName);
@@ -47,7 +47,7 @@ public class AwsStandardSqsPublisher {
         final Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
         messageAttributes.put("HearingRetryCounterValue", new MessageAttributeValue()
                 .withDataType("Number")
-                .withStringValue("1"));
+                .withStringValue(retryCounter));
 
         SendMessageRequest request = new SendMessageRequest()
                 .withQueueUrl(getQueueUrlResult.getQueueUrl())
@@ -72,7 +72,7 @@ public class AwsStandardSqsPublisher {
             prosecutionConcluded.setMessageRetryCounter(counter);
             String toJson = gson.toJson(prosecutionConcluded);
 
-             publish(toJson, delaySeconds);
+             publish(toJson, delaySeconds, String.valueOf(counter));
         } else {
             throw new MaatRecordLockedException("Unable to process CP hearing notification because Maat Record is locked.");
         }
@@ -87,7 +87,7 @@ public class AwsStandardSqsPublisher {
             int counter = prosecutionConcluded.getRetryCounterForHearing()+1;
             prosecutionConcluded.setRetryCounterForHearing(counter);
             String toJson = gson.toJson(prosecutionConcluded);
-            publish(toJson, messageDelayDuration);
+            publish(toJson, messageDelayDuration, String.valueOf(counter));
         } else {
             log.info("A message retried multiple times and breaking the republishing sqs chain {}", prosecutionConcluded.getMessageRetryCounter());
             throw new MaatRecordLockedException("Hearing data not available for this maat and throwing the exception.");

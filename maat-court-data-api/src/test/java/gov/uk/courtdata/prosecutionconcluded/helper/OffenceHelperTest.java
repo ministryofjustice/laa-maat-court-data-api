@@ -1,6 +1,7 @@
 package gov.uk.courtdata.prosecutionconcluded.helper;
 
 import gov.uk.courtdata.entity.OffenceEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
 import gov.uk.courtdata.prosecutionconcluded.model.Plea;
 import gov.uk.courtdata.repository.*;
@@ -37,6 +38,9 @@ public class OffenceHelperTest {
     @Mock
     private WQOffenceRepository wqOffenceRepository;
 
+    @Mock
+    private WqLinkRegisterRepository wqLinkRegisterRepository;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -46,6 +50,7 @@ public class OffenceHelperTest {
     public void testWhenOffenceResultIsCommittal_thenReturnTrue() {
 
         when(offenceRepository.findByCaseId(anyInt())).thenReturn(getOffenceEntity());
+        when(wqLinkRegisterRepository.findBymaatId(anyInt())).thenReturn(List.of(WqLinkRegisterEntity.builder().maatId(123).caseId(456).build()));
         when(xlatResultRepository.findResultsByWQType(anyInt(), anyInt())).thenReturn(List.of(4057, 4558, 4559, 4560, 4561, 4562, 4564, 4567, 4593, 1290));
 
         when(resultRepository.findResultCodeByCaseIdAndAsnSeq(anyInt(), anyString())).thenReturn(List.of(4057, 4558));
@@ -65,6 +70,7 @@ public class OffenceHelperTest {
     public void testWhenOffenceResultIsNotCommittal_thenReturnFalse() {
 
         when(offenceRepository.findByCaseId(anyInt())).thenReturn(getOffenceEntity());
+        when(wqLinkRegisterRepository.findBymaatId(anyInt())).thenReturn(List.of(WqLinkRegisterEntity.builder().maatId(123).caseId(456).build()));
         when(xlatResultRepository.findResultsByWQType(anyInt(), anyInt())).thenReturn(List.of(4057, 4558, 4559, 4560, 4561, 4562, 4564, 4567, 4593, 1290));
 
         when(resultRepository.findResultCodeByCaseIdAndAsnSeq(anyInt(), anyString())).thenReturn(List.of(453, 454));

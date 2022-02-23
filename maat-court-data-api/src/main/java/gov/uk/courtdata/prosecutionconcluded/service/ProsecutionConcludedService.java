@@ -56,7 +56,7 @@ public class ProsecutionConcludedService {
             } else {
                 List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummary();
                 List<OffenceSummary> trialOffences = offenceHelper
-                        .getTrialOffences(offenceSummaryList, wqHearingEntity.getCaseId());
+                        .getTrialOffences(offenceSummaryList, prosecutionConcluded.getMaatId());
 
                 if (!trialOffences.isEmpty()) {
                     log.info("Number of Valid offences for CC Outcome Calculations : {}", trialOffences.size());

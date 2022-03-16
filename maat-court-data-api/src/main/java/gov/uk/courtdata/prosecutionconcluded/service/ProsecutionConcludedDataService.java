@@ -48,14 +48,12 @@ public class ProsecutionConcludedDataService {
     @Transactional
     public void updateConclusion(Integer maatId) {
         List<ProsecutionConcludedEntity> processedCases = prosecutionConcludedRepository.getByMaatId(maatId);
-        processedCases.forEach(this::updateStatus);
+        processedCases.forEach(concludedCase -> {
+            concludedCase.setStatus(CaseConclusionStatus.PROCESSED.name());
+            concludedCase.setCreatedTime(LocalDateTime.now());
+        });
+        prosecutionConcludedRepository.saveAll(processedCases);
     }
 
-
-    private void updateStatus(ProsecutionConcludedEntity concludedCase) {
-        concludedCase.setStatus(CaseConclusionStatus.PROCESSED.name());
-        concludedCase.setCreatedTime(LocalDateTime.now());
-        prosecutionConcludedRepository.save(concludedCase);
-    }
 
 }

@@ -41,21 +41,19 @@ public class ProsecutionConcludedDataService {
 
     private byte[] convertAsByte(final ProsecutionConcluded message) {
 
-        return Optional.ofNullable(message).isPresent() ?
+        return Optional.ofNullable(message).isPresent() && gson.toJson(message) != null ?
                 gson.toJson(message).getBytes() : null;
     }
 
     @Transactional
     public void updateConclusion(Integer maatId) {
         List<ProsecutionConcludedEntity> processedCases = prosecutionConcludedRepository.getByMaatId(maatId);
-        processedCases.forEach(this::updateStatus);
+        processedCases.forEach(concludedCase -> {
+            concludedCase.setStatus(CaseConclusionStatus.PROCESSED.name());
+            concludedCase.setCreatedTime(LocalDateTime.now());
+        });
+        prosecutionConcludedRepository.saveAll(processedCases);
     }
 
-
-    private void updateStatus(ProsecutionConcludedEntity concludedCase) {
-        concludedCase.setStatus(CaseConclusionStatus.PROCESSED.name());
-        concludedCase.setCreatedTime(LocalDateTime.now());
-        prosecutionConcludedRepository.save(concludedCase);
-    }
 
 }

@@ -10,10 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableScheduling
@@ -26,17 +26,22 @@ public class prosecutionConcludedSchedulerService {
     private final ProsecutionConcludedService prosecutionConcludedService;
     private final Gson gson;
 
-    @Scheduled(cron = "0 0/2 * * * *")
-    @Transactional
+    @Scheduled(cron = "${queue.message.log.cron.expression}")
     public void process() {
 
         log.info("Prosecution Conclusion Scheduling is started");
 
         List<ProsecutionConcludedEntity> prosecutionConcludedEntityList = prosecutionConcludedRepository.getConcludedCases();
-        prosecutionConcludedEntityList.stream()
-                .filter(item -> prosecutionConcludedRepository.getPendingCaseConclusions(item.getMaatId()) < 10)
-                .map(m -> convertToObject(m.getCaseData()))
+        prosecutionConcludedEntityList
+                .stream()
+                .collect(Collectors
+                        .toMap(ProsecutionConcludedEntity::getMaatId, ProsecutionConcludedEntity::getCaseData, (a1, a2) -> a1))
+                .entrySet()
+                .stream()
+                .filter(item -> prosecutionConcludedRepository.getPendingCaseConclusions(item.getKey()) < 10)
+                .map(m -> convertToObject(m.getValue()))
                 .forEach(this::processConclusion);
+
 
         log.info("{} case conclusions are processed - ", prosecutionConcludedEntityList.size());
 

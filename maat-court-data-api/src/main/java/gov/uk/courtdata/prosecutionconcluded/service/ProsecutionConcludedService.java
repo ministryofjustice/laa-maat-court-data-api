@@ -84,10 +84,10 @@ public class ProsecutionConcludedService {
     private WQHearingEntity getWqHearingEntity(ProsecutionConcluded prosecutionConcluded) {
         List<WQHearingEntity> wqHearingEntityList = wqHearingRepository
                 .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
-        if (wqHearingEntityList.isEmpty()) {
+        if (wqHearingEntityList.isEmpty() && prosecutionConcluded.isConcluded()) {
             prosecutionConcludedDataService.execute(prosecutionConcluded);
             return null;
         }
-        return wqHearingEntityList.get(0);
+        return !wqHearingEntityList.isEmpty() ? wqHearingEntityList.get(0) : null;
     }
 }

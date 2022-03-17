@@ -41,7 +41,7 @@ public class ProsecutionConcludedDataService {
 
     private byte[] convertAsByte(final ProsecutionConcluded message) {
 
-        return Optional.ofNullable(message).isPresent() ?
+        return Optional.ofNullable(message).isPresent() && gson.toJson(message) != null ?
                 gson.toJson(message).getBytes() : null;
     }
 

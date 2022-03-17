@@ -12,9 +12,7 @@ import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
 import gov.uk.courtdata.prosecutionconcluded.model.Plea;
 import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.validator.ProsecutionConcludedValidator;
-import gov.uk.courtdata.publisher.AwsStandardSqsPublisher;
 import gov.uk.courtdata.repository.WQHearingRepository;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -32,7 +30,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-@Ignore
 public class ProsecutionConcludedServiceTest {
 
     @InjectMocks
@@ -59,9 +56,11 @@ public class ProsecutionConcludedServiceTest {
     @Mock
     private OffenceHelper offenceHelper;
 
-
     @Mock
-    AwsStandardSqsPublisher awsStandardSqsPublisher;
+    private ProsecutionConcludedDataService prosecutionConcludedDataService;
+
+
+
 
     @BeforeEach
     public void setUp() {
@@ -81,7 +80,7 @@ public class ProsecutionConcludedServiceTest {
         //then
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(wqHearingRepository, atLeast(1)).findByMaatIdAndHearingUUID(anyInt(), any());
-        verify(awsStandardSqsPublisher, atLeast(1)).publishMessageToProsecutionSQS( any());
+        verify(prosecutionConcludedDataService, atLeast(1)).execute( any());
         verify(reservationsRepositoryHelper, atLeast(1)).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, never()).execute(any());
         verify(calculateOutcomeHelper, never()).calculate(any());

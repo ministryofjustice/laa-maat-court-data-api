@@ -8,7 +8,6 @@ import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.hearing.dto.OffenceDTO;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;

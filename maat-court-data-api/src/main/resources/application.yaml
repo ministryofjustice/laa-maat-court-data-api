@@ -6,6 +6,8 @@ spring:
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      maximum-pool-size: 25
 
   liquibase:
     enabled: false
@@ -25,7 +27,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle10gDialect
     open-in-view: false
-    show-sql: true
+    show-sql: false
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
 

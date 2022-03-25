@@ -9,6 +9,7 @@ import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -45,7 +46,8 @@ public class CaseConclusionDTOBuilder {
     }
 
     private List<String> buildResultCodeList(WQHearingEntity wqHearingEntity) {
-        return Arrays.stream(wqHearingEntity.getResultCodes().split(","))
+        String results = wqHearingEntity.getResultCodes() != null ? wqHearingEntity.getResultCodes() : "";
+        return Arrays.stream(results.split(","))
                 .distinct()
                 .collect(Collectors.toList());
     }

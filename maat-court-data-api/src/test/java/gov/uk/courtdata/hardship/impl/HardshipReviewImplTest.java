@@ -30,45 +30,51 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class HardshipReviewImplTest {
 
+    private static final int MOCK_REP_ID = 5678;
+    private static final Integer MOCK_HARDSHIP_ID = 1000;
     @InjectMocks
     private HardshipReviewImpl hardshipReviewImpl;
-
     @Mock
     private HardshipReviewMapper hardshipReviewMapper;
-
     @Mock
     private HardshipReviewRepository hardshipReviewRepository;
-
     @Mock
     private HardshipReviewDetailReasonRepository hardshipReviewDetailReasonRepository;
-
     @Captor
     private ArgumentCaptor<HardshipReviewEntity> hardshipReviewEntityArgumentCaptor;
 
     @Test
     public void givenExistingHardshipId_whenFindIsInvoked_thenHardshipIsRetrieved() {
-        HardshipReviewEntity mockHardship = HardshipReviewEntity.builder().id(1000).build();
-        when(hardshipReviewRepository.getById(any(Integer.class))).thenReturn(
-                mockHardship
-        );
-        assertThat(hardshipReviewImpl.find(1000)).isEqualTo(mockHardship);
+        HardshipReviewEntity mockHardship = HardshipReviewEntity.builder().id(MOCK_HARDSHIP_ID).build();
+        when(hardshipReviewRepository.getById(any(Integer.class))).thenReturn(mockHardship);
+        assertThat(hardshipReviewImpl.find(MOCK_HARDSHIP_ID)).isEqualTo(mockHardship);
+    }
+
+    @Test
+    public void givenExistingRepId_whenFindByRepIdIsInvoked_thenHardshipIsRetrieved() {
+        when(hardshipReviewRepository.findByRepId(MOCK_REP_ID))
+                .thenReturn(HardshipReviewEntity.builder().id(MOCK_HARDSHIP_ID).repId(MOCK_REP_ID).build());
+
+        HardshipReviewEntity returnedEntity = hardshipReviewImpl.findByRepId(MOCK_REP_ID);
+
+        assertThat(returnedEntity.getId()).isEqualTo(MOCK_HARDSHIP_ID);
+        assertThat(returnedEntity.getRepId()).isEqualTo(MOCK_REP_ID);
     }
 
     @Test
     public void givenHardshipDTO_whenCreateIsInvoked_thenHardshipIsPersisted() {
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
         when(hardshipReviewMapper.HardshipReviewDTOToHardshipReviewEntity(any(HardshipReviewDTO.class))).thenReturn(
-                TestEntityDataBuilder.getHardshipReviewEntityWithRelationships()
-        );
+                TestEntityDataBuilder.getHardshipReviewEntityWithRelationships());
         when(hardshipReviewDetailReasonRepository.getById(any(Integer.class))).thenReturn(
                 HardshipReviewDetailReasonEntity.builder()
-                        .id(1000)
+                        .id(MOCK_HARDSHIP_ID)
                         .accepted("Y")
                         .dateCreated(LocalDateTime.now())
                         .userCreated("test-s")
                         .detailType(HardshipReviewDetailType.INCOME)
-                        .build()
-        );
+                        .build());
+
         hardshipReviewImpl.create(hardshipReviewDTO);
         verify(hardshipReviewRepository).saveAndFlush(hardshipReviewEntityArgumentCaptor.capture());
         assertThat(hardshipReviewEntityArgumentCaptor.getValue().getId()).isEqualTo(hardshipReviewDTO.getId());
@@ -78,18 +84,13 @@ public class HardshipReviewImplTest {
     public void givenHardshipDTO_whenUpdateIsInvoked_thenHardshipIsUpdated() {
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
         HardshipReviewEntity mockHardshipEntity = TestEntityDataBuilder.getHardshipReviewEntityWithRelationships();
-        when(hardshipReviewRepository.getById(any(Integer.class))).thenReturn(
-                mockHardshipEntity
-        );
+        when(hardshipReviewRepository.getById(any(Integer.class))).thenReturn(mockHardshipEntity);
         when(hardshipReviewMapper.HardshipReviewDetailToHardshipReviewDetailEntity(any(HardshipReviewDetail.class))).thenReturn(
-                TestEntityDataBuilder.getHardshipReviewDetailsEntity()
-        );
+                TestEntityDataBuilder.getHardshipReviewDetailsEntity());
         when(hardshipReviewMapper.HardshipReviewProgressToHardshipReviewProgressEntity(any(HardshipReviewProgress.class))).thenReturn(
-                TestEntityDataBuilder.getHardshipReviewProgressEntity()
-        );
+                TestEntityDataBuilder.getHardshipReviewProgressEntity());
         when(hardshipReviewMapper.NewWorkReasonToNewWorkReasonEntity(any(NewWorkReason.class))).thenReturn(
-                TestEntityDataBuilder.getNewWorkReasonEntity()
-        );
+                TestEntityDataBuilder.getNewWorkReasonEntity());
 
         hardshipReviewImpl.update(hardshipReviewDTO);
 

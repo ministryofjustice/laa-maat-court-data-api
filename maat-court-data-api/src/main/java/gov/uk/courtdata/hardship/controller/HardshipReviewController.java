@@ -48,6 +48,20 @@ public class HardshipReviewController {
         return ResponseEntity.ok(hardshipReviewService.findHardshipReview(hardshipId));
     }
 
+    @GetMapping(value = "repId/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve a hardship review record by repId")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HardshipReviewDTO.class)))
+    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<HardshipReviewDTO> getHardshipByRepId(@PathVariable int repId,
+                                                                @Parameter(description = "Used for tracing calls")
+                                                                @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        log.info("Get Hardship Review by repId = {}", repId);
+        return ResponseEntity.ok(hardshipReviewService.findHardshipReviewByRepId(repId));
+    }
+
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a hardship review record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HardshipReviewDTO.class)))

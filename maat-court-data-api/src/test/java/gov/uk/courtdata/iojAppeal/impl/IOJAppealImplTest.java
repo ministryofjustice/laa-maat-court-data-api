@@ -43,6 +43,14 @@ public class IOJAppealImplTest {
     }
 
     @Test
+    public void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
+        when(iojAppealRepository.findByRepId(IOJ_REP_ID)).thenReturn(Optional.of(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build()));
+        var iojAppeal = iojAppealImpl.findByRepId(IOJ_REP_ID);
+        assertEquals(iojAppeal.getId(), IOJ_APPEAL_ID);
+        assertEquals(iojAppeal.getRepId(), IOJ_REP_ID);
+    }
+
+    @Test
     public void whenCreateIsInvoked_thenIOJAppealIsSaved() {
 
         var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();

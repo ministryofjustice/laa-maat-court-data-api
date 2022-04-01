@@ -25,6 +25,12 @@ public class IOJAppealService {
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
     }
 
+    @Transactional(readOnly = true)
+    public IOJAppealDTO findByRepId(int repId) {
+        var iojAppealEntity = iojAppealImpl.findByRepId(repId);
+        return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
+    }
+
     @Transactional(rollbackFor = RuntimeException.class)
     public IOJAppealDTO create(CreateIOJAppeal iojAppeal) {
         log.info("Create IOJ Appeal - Transaction Processing - Start");

@@ -4,8 +4,8 @@ import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
+import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,10 @@ public class PassportAssessmentImpl {
 
     public PassportAssessmentEntity find(Integer passportAssessmentId) {
         return passportAssessmentRepository.getById(passportAssessmentId);
+    }
+
+    public PassportAssessmentEntity findByRepId(int repId) {
+        return passportAssessmentRepository.findByRepId(repId);
     }
 
     public PassportAssessmentEntity update(PassportAssessmentDTO passportAssessmentDTO) {

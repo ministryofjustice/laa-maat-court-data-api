@@ -32,12 +32,27 @@ public class PassportAssessmentImplTest {
     @Captor
     private ArgumentCaptor<PassportAssessmentEntity> passportAssessmentEntityArgumentCaptor;
 
+    private static final int MOCK_REP_ID = 5678;
+    
+    private static final int MOCK_ASSESSMENT_ID = 1000;
+
 
     @Test
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
-        when(passportAssessmentRepository.getById(any())).thenReturn(PassportAssessmentEntity.builder().id(1000).build());
-        PassportAssessmentEntity returned = passportAssessmentImpl.find(1000);
-        assertThat(returned.getId()).isEqualTo(1000);
+        when(passportAssessmentRepository.getById(any())).thenReturn(PassportAssessmentEntity.builder().id(MOCK_ASSESSMENT_ID).build());
+        PassportAssessmentEntity returned = passportAssessmentImpl.find(MOCK_ASSESSMENT_ID);
+        assertThat(returned.getId()).isEqualTo(MOCK_ASSESSMENT_ID);
+    }
+
+    @Test
+    public void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
+        when(passportAssessmentRepository.findByRepId(MOCK_REP_ID))
+                .thenReturn(PassportAssessmentEntity.builder().id(MOCK_ASSESSMENT_ID).repId(MOCK_REP_ID).build());
+
+        PassportAssessmentEntity returned = passportAssessmentImpl.findByRepId(MOCK_REP_ID);
+
+        assertThat(returned.getId()).isEqualTo(MOCK_ASSESSMENT_ID);
+        assertThat(returned.getRepId()).isEqualTo(MOCK_REP_ID);
     }
 
     @Test
@@ -68,12 +83,12 @@ public class PassportAssessmentImplTest {
         verify(passportAssessmentRepository).save(passportAssessmentEntityArgumentCaptor.capture());
 
         assertThat(passportAssessment.getDateCompleted()).isEqualTo(now);
-        assertThat(passportAssessmentEntityArgumentCaptor.getValue().getId()).isEqualTo(1000);
+        assertThat(passportAssessmentEntityArgumentCaptor.getValue().getId()).isEqualTo(MOCK_ASSESSMENT_ID);
     }
 
     @Test
     public void whenDeleteIsInvoked_thenAssessmentIsDeleted() {
-        Integer id = 1000;
+        Integer id = MOCK_ASSESSMENT_ID;
         passportAssessmentImpl.delete(id);
         verify(passportAssessmentRepository).deleteById(id);
     }

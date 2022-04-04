@@ -23,10 +23,19 @@ public class HardshipReviewService {
     @Transactional(readOnly = true)
     public HardshipReviewDTO findHardshipReview(final Integer hardshipReviewId) {
         HardshipReviewEntity hardshipReview = hardshipReviewImpl.find(hardshipReviewId);
-        if(hardshipReview == null){
+        if (hardshipReview == null) {
             throw new RequestedObjectNotFoundException(String.format("Hardship Review with id %s not found", hardshipReviewId));
         }
         return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReview);
+    }
+
+    @Transactional(readOnly = true)
+    public HardshipReviewDTO findHardshipReviewByRepId(final int repId) {
+        HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.findByRepId(repId);
+        if (hardshipReviewEntity == null) {
+            throw new RequestedObjectNotFoundException(String.format("Hardship Review with repId %s not found", repId));
+        }
+        return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
     }
 
     @Transactional

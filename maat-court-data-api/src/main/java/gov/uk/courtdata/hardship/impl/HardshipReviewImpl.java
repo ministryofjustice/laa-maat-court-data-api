@@ -28,6 +28,10 @@ public class HardshipReviewImpl {
         return hardshipReviewRepository.getById(hardshipReviewId);
     }
 
+    public HardshipReviewEntity findByRepId(int repId) {
+        return hardshipReviewRepository.findByRepId(repId);
+    }
+
     public HardshipReviewEntity create(final HardshipReviewDTO hardshipReviewDTO) {
         HardshipReviewEntity hardshipReview = hardshipReviewMapper.HardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
         hardshipReview.getReviewDetails().forEach(

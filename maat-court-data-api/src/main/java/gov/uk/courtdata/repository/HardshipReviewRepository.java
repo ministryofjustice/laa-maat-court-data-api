@@ -12,4 +12,6 @@ public interface HardshipReviewRepository extends JpaRepository<HardshipReviewEn
     @Modifying
     @Query(value = "UPDATE HardshipReviewEntity hr set hr.replaced = 'Y' WHERE hr.repId = :repId and hr.financialAssessmentId <> :financialAssessmentId")
     void updateOldHardshipReviews(@Param("repId") Integer repId, @Param("financialAssessmentId") Integer financialAssessmentId);
+
+    HardshipReviewEntity findByRepId(int repId);
 }

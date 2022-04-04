@@ -1,7 +1,5 @@
 package gov.uk.courtdata.assessment.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import gov.uk.courtdata.assessment.service.PassportAssessmentService;
 import gov.uk.courtdata.assessment.validator.PassportAssessmentValidationProcessor;
 import gov.uk.courtdata.dto.ErrorDTO;
@@ -9,13 +7,11 @@ import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
-import gov.uk.courtdata.util.DateUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +19,6 @@ import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/passport-assessments")
@@ -43,6 +36,7 @@ public class PassportAssessmentController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PassportAssessmentDTO.class)))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<PassportAssessmentDTO> getAssessment(@PathVariable int passportAssessmentId,
                                                                @Parameter(description = "Used for tracing calls")
                                                                @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
@@ -50,6 +44,21 @@ public class PassportAssessmentController {
         log.debug("Get Passport Assessment Request Received");
         passportAssessmentValidationProcessor.validate(passportAssessmentId);
         PassportAssessmentDTO passportAssessment = passportAssessmentService.find(passportAssessmentId);
+        return ResponseEntity.ok(passportAssessment);
+    }
+
+    @GetMapping(value = "repId/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve a passport assessment record by repId")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PassportAssessmentDTO.class)))
+    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<PassportAssessmentDTO> getAssessmentByRepId(@PathVariable int repId,
+                                                                      @Parameter(description = "Used for tracing calls")
+                                                                      @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        log.info("Get Passport Assessment by repId = {}", repId);
+        PassportAssessmentDTO passportAssessment = passportAssessmentService.findByRepId(repId);
         return ResponseEntity.ok(passportAssessment);
     }
 

@@ -24,8 +24,17 @@ public class PassportAssessmentService {
     @Transactional(readOnly = true)
     public PassportAssessmentDTO find(Integer passportAssessmentId) {
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.find(passportAssessmentId);
-        if(passportAssessmentEntity == null){
+        if (passportAssessmentEntity == null) {
             throw new RequestedObjectNotFoundException(String.format("Passported Assessment with id %s not found", passportAssessmentId));
+        }
+        return buildPassportAssessmentDTO(passportAssessmentEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public PassportAssessmentDTO findByRepId(int repId) {
+        PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.findByRepId(repId);
+        if (passportAssessmentEntity == null) {
+            throw new RequestedObjectNotFoundException(String.format("Passport Assessment with repId %s not found", repId));
         }
         return buildPassportAssessmentDTO(passportAssessmentEntity);
     }
@@ -37,7 +46,7 @@ public class PassportAssessmentService {
                 passportAssessmentMapper.updatePassportAssessmentToPassportAssessmentDTO(updatePassportAssessment);
         log.info("Updating existing passport assessment record");
         PassportAssessmentEntity existingPassportAssessmentEntity = passportAssessmentImpl.find(passportAssessmentDTO.getId());
-        if(existingPassportAssessmentEntity.getPastStatus().equals(STATUS_COMPLETE)) {
+        if (existingPassportAssessmentEntity.getPastStatus().equals(STATUS_COMPLETE)) {
             throw new ValidationException("User cannot modify a completed assessment");
         }
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.update(passportAssessmentDTO);
@@ -62,7 +71,7 @@ public class PassportAssessmentService {
         return buildPassportAssessmentDTO(assessmentEntity);
     }
 
-    public PassportAssessmentDTO buildPassportAssessmentDTO(PassportAssessmentEntity assessmentEntity) {
+    PassportAssessmentDTO buildPassportAssessmentDTO(PassportAssessmentEntity assessmentEntity) {
         PassportAssessmentDTO passportAssessmentDTO = passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(assessmentEntity);
         return passportAssessmentDTO;
     }

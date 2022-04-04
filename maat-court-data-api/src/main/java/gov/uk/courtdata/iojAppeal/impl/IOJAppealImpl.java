@@ -18,10 +18,14 @@ public class IOJAppealImpl {
     private final IOJAppealMapper iojAppealMapper;
 
     public IOJAppealEntity find(Integer iojAppealId) {
-        return iojAppealRepository.findById(iojAppealId).orElseThrow(()-> new RequestedObjectNotFoundException("No IOJAppeal object found. ID: "+iojAppealId));
+        return iojAppealRepository.findById(iojAppealId).orElseThrow(() -> new RequestedObjectNotFoundException("No IOJAppeal object found. ID: " + iojAppealId));
     }
 
-    public IOJAppealEntity create(IOJAppealDTO iojAppealDTO){
+    public IOJAppealEntity findByRepId(int repId) {
+        return iojAppealRepository.findByRepId(repId).orElseThrow(() -> new RequestedObjectNotFoundException("No IOJAppeal object found for repId: " + repId));
+    }
+
+    public IOJAppealEntity create(IOJAppealDTO iojAppealDTO) {
         var iojAppealEntity = iojAppealMapper.toIOJIojAppealEntity(iojAppealDTO);
         return iojAppealRepository.save(iojAppealEntity);
     }
@@ -30,7 +34,7 @@ public class IOJAppealImpl {
         iojAppealRepository.setOldIOJAppealsReplaced(repId, iojAppealIDNotToUpdate);
     }
 
-    public IOJAppealEntity update(IOJAppealDTO iojAppealDTO){
+    public IOJAppealEntity update(IOJAppealDTO iojAppealDTO) {
         var existingIOJAppealEntity = iojAppealRepository.getById(iojAppealDTO.getId());
 
         existingIOJAppealEntity.setAppealSetupDate(iojAppealDTO.getAppealSetupDate());

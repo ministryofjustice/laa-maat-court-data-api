@@ -47,6 +47,20 @@ public class IOJAppealController {
         return ResponseEntity.ok(iojAppealService.find(iojAppealId));
     }
 
+    @GetMapping(value = "repId/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve an IOJ Appeal record by repId")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = IOJAppealDTO.class)))
+    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<IOJAppealDTO> getIOJAppealByRepId(@PathVariable int repId,
+                                                     @Parameter(description = "Used for tracing calls")
+                                                     @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        log.info("Get IOJ Appeal by repId: {}", repId);
+        return ResponseEntity.ok(iojAppealService.findByRepId(repId));
+    }
+
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create a new Interest of Justice appeal record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = IOJAppealDTO.class)))

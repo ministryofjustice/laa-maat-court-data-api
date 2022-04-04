@@ -20,4 +20,6 @@ public interface PassportAssessmentRepository extends JpaRepository<PassportAsse
 
     @Query(value = "SELECT count(*) FROM PASSPORT_ASSESSMENTS pa WHERE pa.REP_ID = :repId AND pa.REPLACED = 'N' AND (pa.VALID IS NULL OR pa.VALID <> 'N') AND pa.PAST_STATUS = 'IN PROGRESS'", nativeQuery = true)
     Long findOutstandingPassportAssessments(@Param("repId") Integer repId);
+
+    PassportAssessmentEntity findByRepId(int repId);
 }

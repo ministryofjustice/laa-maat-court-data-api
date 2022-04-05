@@ -1,7 +1,12 @@
 package gov.uk.courtdata.converters;
 
 import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.enums.*;
+import gov.uk.courtdata.enums.Frequency;
+import gov.uk.courtdata.enums.HardshipReviewStatus;
+import gov.uk.courtdata.enums.HardshipReviewDetailType;
+import gov.uk.courtdata.enums.HardshipReviewDetailCode;
+import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
+import gov.uk.courtdata.enums.HardshipReviewProgressAction;
 import gov.uk.courtdata.repository.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;

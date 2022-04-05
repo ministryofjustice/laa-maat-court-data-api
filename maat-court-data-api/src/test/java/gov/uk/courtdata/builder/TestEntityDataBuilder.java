@@ -1,7 +1,11 @@
 package gov.uk.courtdata.builder;
 
 import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.enums.*;
+import gov.uk.courtdata.enums.Frequency;
+import gov.uk.courtdata.enums.HardshipReviewStatus;
+import gov.uk.courtdata.enums.HardshipReviewDetailType;
+import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
+import gov.uk.courtdata.enums.HardshipReviewProgressAction;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 

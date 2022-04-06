@@ -1,6 +1,5 @@
-package gov.uk;
+package gov.uk.courtdata.entity;
 
-import gov.uk.courtdata.entity.AssCriteriaChildWeighting;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,9 +17,8 @@ public class FinAssChildWeightHistory {
     @Id
     @Column(name = "ID", nullable = false)
     private Integer id;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "FASH_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FASH_ID")
     private FinancialAssessmentsHistory fash;
 
     @Column(name = "FACW_ID", nullable = false)
@@ -45,4 +43,5 @@ public class FinAssChildWeightHistory {
     @Column(name = "USER_MODIFIED", length = 100)
     private String userModified;
 
+    //TODO Reverse Engineering! Migrate other columns to the entity
 }

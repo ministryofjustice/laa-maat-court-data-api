@@ -1,12 +1,13 @@
-package gov.uk;
+package gov.uk.courtdata.entity;
 
-import gov.uk.courtdata.entity.*;
 import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -204,5 +205,11 @@ public class FinancialAssessmentsHistory {
 
     @Column(name = "RT_CODE", length = 10)
     private String rtCode;
+
+    @OneToMany(mappedBy = "fash")
+    private Set<FinAssChildWeightHistory> finAssChildWeightHistories = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "fash")
+    private Set<FinAssessmentDetailsHistory> finAssessmentDetailsHistories = new LinkedHashSet<>();
 
 }

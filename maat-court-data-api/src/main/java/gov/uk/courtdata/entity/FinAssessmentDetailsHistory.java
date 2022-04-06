@@ -1,7 +1,5 @@
-package gov.uk;
+package gov.uk.courtdata.entity;
 
-import gov.uk.courtdata.entity.AssCriteriaDetail;
-import gov.uk.courtdata.entity.Frequency;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,9 +18,8 @@ public class FinAssessmentDetailsHistory {
     @Id
     @Column(name = "ID", nullable = false)
     private Integer id;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "FASH_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FASH_ID")
     private FinancialAssessmentsHistory fash;
 
     @Column(name = "FASD_ID", nullable = false)
@@ -58,4 +55,5 @@ public class FinAssessmentDetailsHistory {
     @Column(name = "USER_MODIFIED", length = 10)
     private String userModified;
 
+    //TODO Reverse Engineering! Migrate other columns to the entity
 }

@@ -31,7 +31,7 @@ public class IOJAppealControllerTest {
 
     private static final boolean IS_VALID = true;
     private static final int INVALID_REP_ID = 3456;
-    private static final String ENDPOINT_URL = "api/internal/v1/assessments/ioj-appeal";
+    private static final String ENDPOINT_URL = "/api/internal/v1/assessments/ioj-appeal";
     @Autowired
     private MockMvc mvc;
     @MockBean
@@ -76,7 +76,7 @@ public class IOJAppealControllerTest {
     @Test
     public void givenInvalidRepId_whenGetIOJAppealByRepIdIsInvoked_then404NotFoundErrorIsThrown() throws Exception {
         when(iojAppealService.findByRepId(INVALID_REP_ID))
-                .thenThrow(new RequestedObjectNotFoundException(String.format("No IOJAppeal object found for repId", INVALID_REP_ID)));
+                .thenThrow(new RequestedObjectNotFoundException(String.format("No IOJAppeal object found for repId %s", INVALID_REP_ID)));
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/" + INVALID_REP_ID))
                 .andExpect(status().isNotFound());
@@ -98,7 +98,7 @@ public class IOJAppealControllerTest {
 
         var createIOJAppealJson = objectMapper.writeValueAsString(createIOJAppeal);
         //on call check the id of the object and any other value
-        mvc.perform(MockMvcRequestBuilders.post("/ioj-appeal").content(createIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(IOJ_APPEAL_ID));
@@ -111,21 +111,21 @@ public class IOJAppealControllerTest {
 
         var createIOJAppealJson = objectMapper.writeValueAsString(createIOJAppeal);
         //on call check the id of the object and any other value
-        mvc.perform(MockMvcRequestBuilders.post("/ioj-appeal").content(createIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     public void createIOJAppeal_ServerError_RequestBodyIsMissing() throws Exception {
 
-        mvc.perform(MockMvcRequestBuilders.post("/ioj-appeal").content("").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     public void createIOJAppeal_BadRequest_RequestEmptyBody() throws Exception {
 
-        mvc.perform(MockMvcRequestBuilders.post("/ioj-appeal").content("{}").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -140,7 +140,7 @@ public class IOJAppealControllerTest {
 
         var updateIOJAppealJson = objectMapper.writeValueAsString(updateIOJAppeal);
         //on call check the id of the object and any other value
-        mvc.perform(MockMvcRequestBuilders.put("/ioj-appeal").content(updateIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(updateIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(IOJ_APPEAL_ID));
@@ -153,7 +153,7 @@ public class IOJAppealControllerTest {
         var updateIOJAppealJson = objectMapper.writeValueAsString(updateIOJAppeal);
 
         //on call check the id of the object and any other value
-        mvc.perform(MockMvcRequestBuilders.put("/ioj-appeal").content(updateIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(updateIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -166,7 +166,7 @@ public class IOJAppealControllerTest {
 
         var updateIOJAppealJson = objectMapper.writeValueAsString(updateIOJAppeal);
         //on call check the id of the object and any other value
-        mvc.perform(MockMvcRequestBuilders.put("/ioj-appeal").content(updateIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(updateIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value("IOJ Appeal does not exist in Db. ID: " + updateIOJAppeal.getId()));

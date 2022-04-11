@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
-    id 'org.springframework.boot' version '2.5.6'
+    id 'org.springframework.boot' version '2.6.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'net.ltgt.apt' version '0.21'
     id 'net.ltgt.apt-idea' version '0.21'
@@ -14,7 +14,7 @@ plugins {
 def versions = [
         mapstructVersion: '1.3.1.Final',
         sentryVersion   : '5.0.1',
-        springdocVersion: '1.4.2',
+        springdocVersion: '1.6.6',
         amazonSQSVersion: '1.0.8',
         ojdbc8Version   : '19.7.0.0',
         gsonVersion     : '2.8.6',
@@ -36,8 +36,8 @@ def versions = [
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:2.5.6"
-        mavenBom "org.springframework:spring-framework-bom:5.3.12"
+        mavenBom "org.springframework.boot:spring-boot-dependencies:2.6.6"
+        mavenBom "org.springframework:spring-framework-bom:5.3.18"
         mavenBom "com.amazonaws:aws-java-sdk-bom:1.12.110"
         mavenBom "org.springframework.security:spring-security-bom:5.5.3"
     }

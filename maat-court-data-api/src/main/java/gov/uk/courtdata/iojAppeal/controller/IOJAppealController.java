@@ -24,7 +24,7 @@ import javax.validation.Valid;
 import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
 
 @RestController
-@RequestMapping("/ioj-appeal")
+@RequestMapping("${api-endpoints.assessments-domain}/ioj-appeal")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "ioj appeal", description = "Rest API for ioj appeal")

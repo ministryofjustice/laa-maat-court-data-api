@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
 
 @RestController
-@RequestMapping("/hardship")
+@RequestMapping("${api-endpoints.assessments-domain}/hardship")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Hardship Reviews", description = "Rest API for hardship reviews")

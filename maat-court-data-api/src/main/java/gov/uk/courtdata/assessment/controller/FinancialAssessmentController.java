@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/financial-assessments")
+@RequestMapping("${api-endpoints.assessments-domain}/financial-assessments")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Assessments", description = "Rest API for financial assessments")

@@ -1,9 +1,10 @@
 package gov.uk.courtdata.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -12,36 +13,34 @@ import java.time.Instant;
 @Setter
 @ToString
 @Entity
-@Table(name = "FIN_ASS_CHILD_WEIGHT_HISTORY")
-public class FinAssChildWeightHistory {
+@Table(name = "FIN_ASS_CHILD_WEIGHT_HISTORY", schema = "TOGDATA")
+public class ChildWeightHistoryEntity {
     @Id
     @Column(name = "ID", nullable = false)
     private Integer id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FASH_ID")
-    private FinancialAssessmentsHistory fash;
+    private FinancialAssessmentsHistoryEntity fash;
 
     @Column(name = "FACW_ID", nullable = false)
     private Integer facwId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "CHILD_WEIGHTING_ID", nullable = false)
-    private AssCriteriaChildWeighting childWeighting;
+    @Column(name = "CHILD_WEIGHTING_ID", nullable = false)
+    private Integer childWeighting;
 
     @Column(name = "NO_OF_CHILDREN", nullable = false)
     private Integer noOfChildren;
 
+    @CreationTimestamp
     @Column(name = "DATE_CREATED", nullable = false)
-    private Instant dateCreated;
+    private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED", nullable = false, length = 100)
     private String userCreated;
 
     @Column(name = "DATE_MODIFIED")
-    private Instant dateModified;
+    private LocalDateTime dateModified;
 
     @Column(name = "USER_MODIFIED", length = 100)
     private String userModified;
-
-    //TODO Reverse Engineering! Migrate other columns to the entity
 }

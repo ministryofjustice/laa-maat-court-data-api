@@ -199,9 +199,11 @@ public class FinancialAssessmentsHistoryEntity {
     @Column(name = "RT_CODE", length = 10)
     private String rtCode;
 
+    @Builder.Default
     @OneToMany(mappedBy = "fash")
     private Set<ChildWeightHistoryEntity> childWeightHistories = new LinkedHashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "fash")
     private Set<FinancialAssessmentDetailsHistoryEntity> finAssessmentDetailsHistories = new LinkedHashSet<>();
 

@@ -6,12 +6,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@AllArgsConstructor
 @Entity
 @Table(name = "FIN_ASS_CHILD_WEIGHT_HISTORY", schema = "TOGDATA")
 public class ChildWeightHistoryEntity {

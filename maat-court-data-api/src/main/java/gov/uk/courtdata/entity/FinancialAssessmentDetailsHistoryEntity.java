@@ -7,12 +7,10 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@AllArgsConstructor
 @Entity
 @Table(name = "FIN_ASSESSMENT_DETAILS_HISTORY", schema = "TOGDATA")
 public class FinancialAssessmentDetailsHistoryEntity {

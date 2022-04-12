@@ -9,12 +9,10 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@AllArgsConstructor
 @Entity
 @Table(name = "FINANCIAL_ASSESSMENTS_HISTORY", schema = "TOGDATA")
 public class FinancialAssessmentsHistoryEntity {

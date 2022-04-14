@@ -31,7 +31,7 @@ public class IOJAppealControllerTest {
 
     private static final boolean IS_VALID = true;
     private static final int INVALID_REP_ID = 3456;
-    private static final String ENDPOINT_URL = "/api/internal/v1/assessments/ioj-appeal";
+    private static final String ENDPOINT_URL = "/api/internal/v1/assessment/ioj-appeal";
     @Autowired
     private MockMvc mvc;
     @MockBean

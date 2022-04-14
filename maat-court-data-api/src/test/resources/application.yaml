@@ -84,4 +84,4 @@ feature:
 version: 0.0.1
 
 api-endpoints:
-  assessments-domain: /api/internal/v1/assessments
+  assessments-domain: /api/internal/v1/assessment

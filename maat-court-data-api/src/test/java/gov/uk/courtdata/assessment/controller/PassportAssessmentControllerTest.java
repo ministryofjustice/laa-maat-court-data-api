@@ -49,7 +49,7 @@ public class PassportAssessmentControllerTest {
     private static final int MOCK_REP_ID = 5678;
     private static final int INVALID_REP_ID = 3456;
 
-    private final String endpointUrl = "/passport-assessments";
+    private final String endpointUrl = "/api/internal/v1/assessments/passport-assessments";
 
     @Before
     public void setUp() {

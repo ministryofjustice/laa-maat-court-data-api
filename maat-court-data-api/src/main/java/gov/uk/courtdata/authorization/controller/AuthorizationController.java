@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/authorization")
+@RequestMapping("${api-endpoints.assessments-domain}/authorization")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Authorization", description = "Rest API for performing role authorization checks")

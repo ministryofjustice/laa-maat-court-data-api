@@ -20,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AuthorizationController.class)
-@Ignore
 public class AuthorizationControllerTest {
 
     @Autowired
@@ -32,7 +31,7 @@ public class AuthorizationControllerTest {
     @MockBean
     private UserReservationValidator userReservationValidator;
 
-    private final String baseURL = "/authorization";
+    private final String baseURL = "/api/internal/v1/assessments/authorization";
 
     private String getRoleActionUrl(String action) {
         return String.format(baseURL + "/users/test-f/actions/%s", action);

@@ -33,7 +33,7 @@ public class HardshipReviewControllerTest {
     private static final int MOCK_REP_ID = 621580;
     private static final int INVALID_REP_ID = 3456;
     private static final Integer MOCK_HARDSHIP_ID = 1000;
-    private static final String ENDPOINT_URL = "/hardship";
+    private static final String ENDPOINT_URL = "/api/internal/v1/assessments/hardship";
     @Autowired
     private MockMvc mvc;
     @MockBean

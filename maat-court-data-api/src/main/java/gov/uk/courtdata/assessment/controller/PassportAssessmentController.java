@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/passport-assessments")
+@RequestMapping("${api-endpoints.assessments-domain}/passport-assessments")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Passport Assessments", description = "Rest API for passport assessments")

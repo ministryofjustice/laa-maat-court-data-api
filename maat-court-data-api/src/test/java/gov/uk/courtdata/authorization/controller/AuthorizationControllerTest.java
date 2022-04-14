@@ -31,7 +31,7 @@ public class AuthorizationControllerTest {
     @MockBean
     private UserReservationValidator userReservationValidator;
 
-    private final String baseURL = "/api/internal/v1/assessments/authorization";
+    private final String baseURL = "/api/internal/v1/assessment/authorization";
 
     private String getRoleActionUrl(String action) {
         return String.format(baseURL + "/users/test-f/actions/%s", action);

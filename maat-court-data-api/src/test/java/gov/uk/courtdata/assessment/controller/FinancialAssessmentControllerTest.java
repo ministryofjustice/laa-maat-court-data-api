@@ -52,7 +52,7 @@ public class FinancialAssessmentControllerTest {
     private final Integer OUTSTANDING_ASSESSMENT_REP_ID = 9999;
     private final Integer NO_OUTSTANDING_ASSESSMENTS_REP_ID = 9998;
 
-    private final String endpointUrl = "/api/internal/v1/assessments/financial-assessments";
+    private final String endpointUrl = "/api/internal/v1/assessment/financial-assessments";
 
     @Before
     public void setUp() {

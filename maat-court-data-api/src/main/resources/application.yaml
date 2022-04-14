@@ -85,7 +85,7 @@ sentry:
   attach-stacktrace: true
 
 api-endpoints:
-  assessments-domain: /api/internal/v1/assessments
+  assessments-domain: /api/internal/v1/assessment
 
 
 

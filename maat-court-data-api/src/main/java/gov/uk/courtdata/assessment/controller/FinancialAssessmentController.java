@@ -3,9 +3,7 @@ package gov.uk.courtdata.assessment.controller;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
 import gov.uk.courtdata.dto.ErrorDTO;
-import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
-import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
@@ -91,5 +89,17 @@ public class FinancialAssessmentController {
         log.debug("Check outstanding assessments Request Received for repId : {}", repId);
         OutstandingAssessmentResultDTO resultDTO = financialAssessmentService.checkForOutstandingAssessments(repId);
         return ResponseEntity.ok(resultDTO);
+    }
+
+    @PostMapping(value = "/history/{financialAssessmentId}/fullAvailable/{fullAvailable}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Create financial assessment, details and child weight history record")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<Object> createAssessmentHistory(@PathVariable int financialAssessmentId, @PathVariable boolean fullAvailable) {
+        log.info("Create Assessment History Request Received");
+        financialAssessmentService.createAssessmentHistory(financialAssessmentId, fullAvailable);
+        return ResponseEntity.ok().build();
     }
 }

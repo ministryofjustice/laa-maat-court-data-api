@@ -82,20 +82,20 @@ public class FinancialAssessmentImpl {
         hardshipReviewRepository.updateOldHardshipReviews(financialAssessment.getRepId(), financialAssessment.getId());
     }
 
-    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId){
+    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId) {
 
         OutstandingAssessmentResultDTO result = new OutstandingAssessmentResultDTO();
 
         // Check for outstanding financial assessments
         Long outstandingFinancialAssessments = financialAssessmentRepository.findOutstandingFinancialAssessments(repId);
-        if(outstandingFinancialAssessments != null && outstandingFinancialAssessments > 0l){
+        if (outstandingFinancialAssessments != null && outstandingFinancialAssessments > 0l) {
             result = new OutstandingAssessmentResultDTO(true, MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
             return result;
         }
 
         // Check for outstanding passport assessments
         Long outstandingPassportAssessments = passportAssessmentRepository.findOutstandingPassportAssessments(repId);
-        if(outstandingPassportAssessments != null && outstandingPassportAssessments > 0l){
+        if (outstandingPassportAssessments != null && outstandingPassportAssessments > 0l) {
             result = new OutstandingAssessmentResultDTO(true, MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
             return result;
         }

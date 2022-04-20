@@ -60,5 +60,9 @@ public class ChildWeightingsImpl {
         }
     }
 
+    public List<ChildWeightingsEntity> findAll(Integer financialAssessmentId) {
+        return childWeightingsRepository.findAllByFinancialAssessmentId(financialAssessmentId);
+    }
+
 }
 

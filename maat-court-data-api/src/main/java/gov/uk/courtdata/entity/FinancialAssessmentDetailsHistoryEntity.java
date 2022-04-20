@@ -17,9 +17,9 @@ public class FinancialAssessmentDetailsHistoryEntity {
     @Id
     @Column(name = "ID", nullable = false)
     private Integer id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FASH_ID")
-    private FinancialAssessmentsHistoryEntity fash;
+
+    @Column(name = "FASH_ID", nullable = false)
+    private Integer fashId;
 
     @Column(name = "FASD_ID", nullable = false)
     private Integer fasdId;

@@ -1,6 +1,9 @@
 package gov.uk.courtdata.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -20,13 +23,15 @@ public class FinancialAssessmentsHistoryEntity {
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "FIAS_ID", nullable = false)
-    private FinancialAssessmentEntity fias;
+//        @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "FIAS_ID", nullable = false)
+    @Column(name = "FIAS_ID", nullable = false)
+    private Integer fiasId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "REP_ID", nullable = false)
-    private RepOrderEntity rep;
+    //    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "REP_ID", nullable = false)
+    @Column(name = "REP_ID", nullable = false)
+    private Integer repId;
 
     @Column(name = "AS_AT_DATE", nullable = false)
     private LocalDate asAtDate;
@@ -37,9 +42,10 @@ public class FinancialAssessmentsHistoryEntity {
     @Column(name = "ASS_TYPE", nullable = false, length = 4)
     private String assType;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "NWOR_CODE", nullable = false)
-    private NewWorkReasonEntity nworCode;
+    //    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "NWOR_CODE", nullable = false)
+    @Column(name = "NWOR_CODE", nullable = false, updatable = false)
+    private String nworCode;
 
     @Column(name = "CMU_ID", nullable = false)
     private Integer cmu;
@@ -129,7 +135,7 @@ public class FinancialAssessmentsHistoryEntity {
     private Integer fullAscrId;
 
     @Column(name = "DATE_COMPLETED")
-    private LocalDate dateCompleted;
+    private LocalDateTime dateCompleted;
 
     @Column(name = "FULL_TOT_AGGREGATED_EXP", precision = 12, scale = 2)
     private BigDecimal fullTotAggregatedExp;
@@ -138,28 +144,28 @@ public class FinancialAssessmentsHistoryEntity {
     private String restResidentialStatus;
 
     @Column(name = "INCOME_EVIDENCE_DUE_DATE")
-    private LocalDate incomeEvidenceDueDate;
+    private LocalDateTime incomeEvidenceDueDate;
 
     @Column(name = "ALL_INC_EVIDENCE_REC_DATE")
-    private LocalDate allIncEvidenceRecDate;
+    private LocalDateTime allIncEvidenceRecDate;
 
     @Column(name = "INCOME_EVIDENCE_NOTES", length = 1000)
     private String incomeEvidenceNotes;
 
     @Column(name = "INCOME_UPLIFT_APPLY_DATE")
-    private LocalDate incomeUpliftApplyDate;
+    private LocalDateTime incomeUpliftApplyDate;
 
     @Column(name = "INCOME_UPLIFT_PERCENTAGE")
     private Integer incomeUpliftPercentage;
 
     @Column(name = "INCOME_UPLIFT_REMOVE_DATE")
-    private LocalDate incomeUpliftRemoveDate;
+    private LocalDateTime incomeUpliftRemoveDate;
 
     @Column(name = "FIRST_INCOME_REMINDER_DATE")
-    private LocalDate firstIncomeReminderDate;
+    private LocalDateTime firstIncomeReminderDate;
 
     @Column(name = "SECOND_INCOME_REMINDER_DATE")
-    private LocalDate secondIncomeReminderDate;
+    private LocalDateTime secondIncomeReminderDate;
 
     @Column(name = "USN")
     private Integer usn;
@@ -197,12 +203,12 @@ public class FinancialAssessmentsHistoryEntity {
     @Column(name = "RT_CODE", length = 10)
     private String rtCode;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "fash")
-    private Set<ChildWeightHistoryEntity> childWeightHistories = new LinkedHashSet<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "fash")
-    private Set<FinancialAssessmentDetailsHistoryEntity> finAssessmentDetailsHistories = new LinkedHashSet<>();
+//    @Builder.Default
+//    @OneToMany(mappedBy = "fash")
+//    private Set<ChildWeightHistoryEntity> childWeightHistories = new LinkedHashSet<>();
+//
+//    @Builder.Default
+//    @OneToMany(mappedBy = "fash")
+//    private Set<FinancialAssessmentDetailsHistoryEntity> finAssessmentDetailsHistories = new LinkedHashSet<>();
 
 }

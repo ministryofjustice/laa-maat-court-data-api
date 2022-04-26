@@ -84,7 +84,7 @@ public class SaveAndLinkImplIntegrationTest {
         //given
         CourtDataDTO courtDataDTO = testModelDataBuilder.getSaveAndLinkModelRaw();
         repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
-        repOrderRepository.save(testEntityDataBuilder.getRepOrder());
+        repOrderRepository.save(TestEntityDataBuilder.getRepOrder());
 
         //when
         saveAndLinkImp.execute(courtDataDTO);

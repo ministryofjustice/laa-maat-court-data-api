@@ -1,12 +1,12 @@
 package gov.uk.courtdata.entity;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -45,5 +45,19 @@ public class RepOrderEntity {
     private String userModified;
     @Column(name = "DATE_MODIFIED")
     private LocalDateTime dateModified;
+    @Column(name = "MCOO_OUTCOME")
+    private String magsOutcome;
+    @Column(name = "MAGS_OUTCOME_DATE")
+    private String magsOutcomeDate;
+    @Column(name = "MAGS_OUTCOME_DATE_SET")
+    private LocalDate magsOutcomeDateSet;
+    @Column(name = "COMMITTAL_DATE")
+    private LocalDate committalDate;
+    @Column(name = "RDER_CODE")
+    private String rderCode;
+    @Column(name = "CC_REP_DECISION")
+    private String ccRepDec;
+    @Column(name = "CC_REP_TYPE")
+    private String ccRepType;
 
 }

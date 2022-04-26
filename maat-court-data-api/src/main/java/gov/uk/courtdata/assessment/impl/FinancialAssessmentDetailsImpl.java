@@ -67,4 +67,8 @@ public class FinancialAssessmentDetailsImpl {
         }
         return financialAssessmentDetailsRepository.saveAll(detailEntitiesList);
     }
+
+    public List<FinancialAssessmentDetailEntity> findAll(Integer financialAssessmentId){
+        return financialAssessmentDetailsRepository.findAllByFinancialAssessmentId(financialAssessmentId);
+    }
 }

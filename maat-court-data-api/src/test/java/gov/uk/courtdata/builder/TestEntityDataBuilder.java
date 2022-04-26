@@ -1,11 +1,7 @@
 package gov.uk.courtdata.builder;
 
 import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.enums.Frequency;
-import gov.uk.courtdata.enums.HardshipReviewStatus;
-import gov.uk.courtdata.enums.HardshipReviewDetailType;
-import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
-import gov.uk.courtdata.enums.HardshipReviewProgressAction;
+import gov.uk.courtdata.enums.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -18,59 +14,10 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 @Component
 public class TestEntityDataBuilder {
 
-    public RepOrderCPDataEntity getRepOrderEntity() {
-        return RepOrderCPDataEntity.builder()
-                .repOrderId(1234)
-                .caseUrn("caseurn1")
-                .dateCreated(LocalDateTime.now())
-                .userCreated("user")
-                .dateModified(LocalDateTime.now())
-                .build();
-    }
-
-    public RepOrderEntity getRepOrder() {
+    public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder()
                 .id(1234)
                 .dateModified(LocalDateTime.now())
-                .build();
-    }
-
-    public WqLinkRegisterEntity getWqLinkRegisterEntity() {
-        return WqLinkRegisterEntity.builder()
-                .caseId(345)
-                .createdTxId(123)
-                .proceedingId(345)
-                .cjsAreaCode("16")
-                .maatCat(1)
-                .mlrCat(1)
-                .maatId(1234)
-                .build();
-    }
-
-    public DefendantMAATDataEntity getDefendantMAATDataEntity() {
-        return DefendantMAATDataEntity.builder()
-                .maatId(1234)
-                .firstName("T First Name")
-                .lastName("T Last Name")
-                .libraId("libra id")
-                .dob("07041960")
-                .build();
-    }
-
-    public SolicitorMAATDataEntity getSolicitorMAATDataEntity() {
-        return SolicitorMAATDataEntity.builder()
-                .maatId(1234)
-                .accountCode("Acc")
-                .accountName("Acc Name")
-                .cmuId(123)
-                .build();
-    }
-
-    public RepOrderCPDataEntity getRepOrderCPDataEntity() {
-        return RepOrderCPDataEntity.builder()
-                .repOrderId(1234)
-                .defendantId("556677")
-                .caseUrn("testCaseURN")
                 .build();
     }
 
@@ -248,6 +195,100 @@ public class TestEntityDataBuilder {
                 .sequence(1)
                 .enabled("Y")
                 .initialDefault("Y")
+                .build();
+    }
+
+    public static FinancialAssessmentsHistoryEntity getFinancialAssessmentsHistoryEntity() {
+        return FinancialAssessmentsHistoryEntity.builder()
+                .id(4321)
+                .repId(1234)
+                .initialAscrId(1)
+                .nworCode("FMA")
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("test-f")
+                .cmuId(30)
+                .fassInitStatus("COMPLETE")
+                .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
+                .initTotAggregatedIncome(BigDecimal.valueOf(15600.00))
+                .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
+                .initResult("FULL")
+                .initApplicationEmploymentStatus("NONPASS")
+                .userModified("test-f")
+                .build();
+    }
+
+    public static FinancialAssessmentDetailsHistoryEntity getFinancialAssessmentDetailsHistoryEntity() {
+        return FinancialAssessmentDetailsHistoryEntity.builder()
+                .id(23456)
+                .criteriaDetailId(40)
+                .applicantAmount(BigDecimal.valueOf(1650.00))
+                .partnerAmount(BigDecimal.valueOf(1650.00))
+                .userCreated("test-f")
+                .userModified("test-f")
+                .build();
+    }
+
+    public static ChildWeightingsEntity getChildWeightingsEntity() {
+        return ChildWeightingsEntity.builder()
+                .noOfChildren(1)
+                .childWeightingId(12)
+                .financialAssessmentId(1000)
+                .build();
+    }
+
+    public static ChildWeightHistoryEntity getChildWeightHistoryEntity() {
+        return ChildWeightHistoryEntity.builder()
+                .noOfChildren(1)
+                .childWeightingId(12)
+                .build();
+    }
+
+    public RepOrderCPDataEntity getRepOrderEntity() {
+        return RepOrderCPDataEntity.builder()
+                .repOrderId(1234)
+                .caseUrn("caseurn1")
+                .dateCreated(LocalDateTime.now())
+                .userCreated("user")
+                .dateModified(LocalDateTime.now())
+                .build();
+    }
+
+    public WqLinkRegisterEntity getWqLinkRegisterEntity() {
+        return WqLinkRegisterEntity.builder()
+                .caseId(345)
+                .createdTxId(123)
+                .proceedingId(345)
+                .cjsAreaCode("16")
+                .maatCat(1)
+                .mlrCat(1)
+                .maatId(1234)
+                .build();
+    }
+
+    public DefendantMAATDataEntity getDefendantMAATDataEntity() {
+        return DefendantMAATDataEntity.builder()
+                .maatId(1234)
+                .firstName("T First Name")
+                .lastName("T Last Name")
+                .libraId("libra id")
+                .dob("07041960")
+                .build();
+    }
+
+    public SolicitorMAATDataEntity getSolicitorMAATDataEntity() {
+        return SolicitorMAATDataEntity.builder()
+                .maatId(1234)
+                .accountCode("Acc")
+                .accountName("Acc Name")
+                .cmuId(123)
+                .build();
+    }
+
+    public RepOrderCPDataEntity getRepOrderCPDataEntity() {
+        return RepOrderCPDataEntity.builder()
+                .repOrderId(1234)
+                .defendantId("556677")
+                .caseUrn("testCaseURN")
                 .build();
     }
 }

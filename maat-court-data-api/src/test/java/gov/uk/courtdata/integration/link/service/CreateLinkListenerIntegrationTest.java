@@ -64,7 +64,7 @@ public class CreateLinkListenerIntegrationTest {
 
         //given
         repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
-        repOrderRepository.save(testEntityDataBuilder.getRepOrder());
+        repOrderRepository.save(TestEntityDataBuilder.getRepOrder());
         courtHouseCodesRepository.save(CourtHouseCodesEntity.builder().code("B16BG").effectiveDateFrom(LocalDateTime.now()).build());
         solicitorMAATDataRepository.save(testEntityDataBuilder.getSolicitorMAATDataEntity());
         defendantMAATDataRepository.save(testEntityDataBuilder.getDefendantMAATDataEntity());

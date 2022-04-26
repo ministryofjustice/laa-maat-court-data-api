@@ -3,6 +3,7 @@ package gov.uk.courtdata.assessment.controller;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapperImpl;
+import gov.uk.courtdata.assessment.service.FinancialAssessmentHistoryService;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -25,15 +26,21 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(FinancialAssessmentController.class)
 public class FinancialAssessmentControllerTest {
 
-    public static final String CHECK_OUTSTANDING_URI = "/check-outstanding/";
+    private static final String CHECK_OUTSTANDING_URI = "/check-outstanding/";
+    private static final Integer MOCK_ASSESSMENT_ID = 1234;
+    private static final Integer FAKE_ASSESSMENT_ID = 7123;
+    private static final Integer OUTSTANDING_ASSESSMENT_REP_ID = 9999;
+    private static final Integer NO_OUTSTANDING_ASSESSMENTS_REP_ID = 9998;
+    private static final String endpointUrl = "/api/internal/v1/assessment/financial-assessments";
+    private final FinancialAssessmentMapper financialAssessmentMapper = new FinancialAssessmentMapperImpl();
+
     @Autowired
     private MockMvc mvc;
 
@@ -43,16 +50,10 @@ public class FinancialAssessmentControllerTest {
     @MockBean
     private FinancialAssessmentService financialAssessmentService;
 
-    private final FinancialAssessmentMapper financialAssessmentMapper = new FinancialAssessmentMapperImpl();
+    @MockBean
+    private FinancialAssessmentHistoryService financialAssessmentHistoryService;
 
     private String financialAssessmentJson;
-
-    private final Integer MOCK_ASSESSMENT_ID = 1234;
-    private final Integer FAKE_ASSESSMENT_ID = 7123;
-    private final Integer OUTSTANDING_ASSESSMENT_REP_ID = 9999;
-    private final Integer NO_OUTSTANDING_ASSESSMENTS_REP_ID = 9998;
-
-    private final String endpointUrl = "/api/internal/v1/assessment/financial-assessments";
 
     @Before
     public void setUp() {
@@ -92,7 +93,6 @@ public class FinancialAssessmentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(returnedFinancialAssessment.getId()));
-
     }
 
     @Test
@@ -153,7 +153,6 @@ public class FinancialAssessmentControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.outstandingAssessments").value(result.isOutstandingAssessments()))
                 .andExpect(jsonPath("$.message").value(result.getMessage()));
-
     }
 
     @Test
@@ -166,7 +165,6 @@ public class FinancialAssessmentControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.outstandingAssessments").value(result.isOutstandingAssessments()))
                 .andExpect(jsonPath("$.message").value(result.getMessage()));
-
     }
 
     @Test
@@ -178,5 +176,20 @@ public class FinancialAssessmentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.outstandingAssessments").value(result.isOutstandingAssessments()));
+    }
+
+    @Test
+    public void givenCorrectParameters_whenCreateAssessmentHistoryIsInvoked_thenAssessmentsHistoryIsCreated() throws Exception {
+        doNothing().when(financialAssessmentHistoryService).createAssessmentHistory(MOCK_ASSESSMENT_ID, true);
+
+        mvc.perform(MockMvcRequestBuilders.post(endpointUrl + "/history/1234/fullAvailable/true"))
+                .andExpect(status().isOk());
+        verify(financialAssessmentHistoryService).createAssessmentHistory(MOCK_ASSESSMENT_ID, true);
+    }
+
+    @Test
+    public void givenIncorrectFullAvailableParameter_whenCreateAssessmentHistoryIsInvoked_then400ErrorIsThrown() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(endpointUrl + "/history/1234/fullAvailable/test"))
+                .andExpect(status().isBadRequest());
     }
 }

@@ -1,7 +1,6 @@
 package gov.uk.courtdata.assessment.impl;
 
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentHistoryMapper;
-import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDetailsHistoryDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailsHistoryEntity;
 import gov.uk.courtdata.repository.FinancialAssessmentDetailsHistoryRepository;
@@ -21,16 +20,19 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class FinancialAssessmentDetailsHistoryImpl {
 
-    private final FinancialAssessmentHistoryMapper assessmentMapper;
+    private final FinancialAssessmentHistoryMapper assessmentHistoryMapper;
     private final FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistoryRepository;
 
-    public List<FinancialAssessmentDetailsHistoryEntity> save(List<FinancialAssessmentDetailsHistoryDTO> financialAssessmentDetailsHistoryDTOs) {
-
-        List<FinancialAssessmentDetailsHistoryEntity> financialAssessmentDetailsHistoryEntities = ofNullable(financialAssessmentDetailsHistoryDTOs)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(assessmentMapper :: FinancialAssessmentDetailsHistoryDTOToFinancialAssessmentDetailsHistoryEntity)
-                .collect(toList());
+    public List<FinancialAssessmentDetailsHistoryEntity> buildAndSave(
+            final List<FinancialAssessmentDetailsHistoryDTO> financialAssessmentDetailsHistoryDTOs,
+            final int financialAssessmentId) {
+        List<FinancialAssessmentDetailsHistoryEntity> financialAssessmentDetailsHistoryEntities =
+                ofNullable(financialAssessmentDetailsHistoryDTOs)
+                        .orElse(Collections.emptyList())
+                        .stream()
+                        .map(assessmentHistoryMapper::FinancialAssessmentDetailsHistoryDTOToFinancialAssessmentDetailsHistoryEntity)
+                        .collect(toList());
+        log.info("Executing save financialAssessmentDetailsHistoryEntities for financialAssessmentId: {}", financialAssessmentId);
         return financialAssessmentDetailsHistoryRepository.saveAll(financialAssessmentDetailsHistoryEntities);
     }
 

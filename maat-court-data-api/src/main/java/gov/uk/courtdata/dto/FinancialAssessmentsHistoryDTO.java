@@ -61,7 +61,7 @@ public class FinancialAssessmentsHistoryDTO {
     //repOrder
     private String caseType;
     private String magsOutcome;
-    private LocalDate magsOutcomeDate;
+    private String magsOutcomeDate;
     private LocalDate magsOutcomeDateSet;
     private LocalDate committalDate;
     private String rderCode;

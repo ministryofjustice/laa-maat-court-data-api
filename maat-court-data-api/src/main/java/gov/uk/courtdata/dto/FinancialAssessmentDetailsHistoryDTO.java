@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -15,5 +16,7 @@ public class FinancialAssessmentDetailsHistoryDTO {
     private BigDecimal partnerAmount;
     private Frequency partnerFrequency;
     private Integer fashId;
+    private Integer fasdId;
     private String userCreated;
+    private LocalDateTime dateCreated;
 }

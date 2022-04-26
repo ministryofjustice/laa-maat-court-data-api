@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.controller;
 
+import gov.uk.courtdata.assessment.service.FinancialAssessmentHistoryService;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
 import gov.uk.courtdata.dto.ErrorDTO;
@@ -29,6 +30,7 @@ public class FinancialAssessmentController {
 
     private final FinancialAssessmentService financialAssessmentService;
     private final FinancialAssessmentValidationProcessor financialAssessmentValidationProcessor;
+    private final FinancialAssessmentHistoryService financialAssessmentHistoryService;
 
     @GetMapping(value = "/{financialAssessmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a financial assessment record")
@@ -96,10 +98,9 @@ public class FinancialAssessmentController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Object> createAssessmentHistory(@PathVariable int financialAssessmentId, @PathVariable boolean fullAvailable) {
         log.info("Create Assessment History Request Received");
-        financialAssessmentService.createAssessmentHistory(financialAssessmentId, fullAvailable);
+        financialAssessmentHistoryService.createAssessmentHistory(financialAssessmentId, fullAvailable);
         return ResponseEntity.ok().build();
     }
 }

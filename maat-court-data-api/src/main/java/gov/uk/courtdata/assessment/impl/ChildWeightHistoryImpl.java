@@ -22,14 +22,14 @@ public class ChildWeightHistoryImpl {
     private final FinancialAssessmentHistoryMapper assessmentHistoryMapper;
     private final ChildWeightHistoryRepository childWeightHistoryRepository;
 
-    public List<ChildWeightHistoryEntity> save(List<ChildWeightHistoryDTO> childWeightHistoryDTOs) {
-
+    public List<ChildWeightHistoryEntity> buildAndSave(final List<ChildWeightHistoryDTO> childWeightHistoryDTOs,
+                                                       final int financialAssessmentId) {
         List<ChildWeightHistoryEntity> childWeightHistoryEntities = ofNullable(childWeightHistoryDTOs)
                 .orElse(Collections.emptyList())
                 .stream()
                 .map(assessmentHistoryMapper::ChildWeightHistoryDTOToChildWeightHistoryEntity)
                 .collect(toList());
+        log.info("Executing save childWeightHistoryEntities for financialAssessmentId: {}", financialAssessmentId);
         return childWeightHistoryRepository.saveAll(childWeightHistoryEntities);
     }
-
 }

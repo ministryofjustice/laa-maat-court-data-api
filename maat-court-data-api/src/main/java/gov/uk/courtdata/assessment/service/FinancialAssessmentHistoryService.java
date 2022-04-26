@@ -4,8 +4,8 @@ import gov.uk.courtdata.assessment.impl.*;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentHistoryMapper;
 import gov.uk.courtdata.dto.ChildWeightHistoryDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDetailsHistoryDTO;
+import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
 import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,24 +29,26 @@ public class FinancialAssessmentHistoryService {
     private final FinancialAssessmentHistoryMapper assessmentHistoryMapper;
 
     @Transactional
-    public void createAssessmentHistory(int financialAssessmentId, boolean fullAvailable) {
+    public void createAssessmentHistory(final int financialAssessmentId, final boolean fullAvailable) {
         log.info("Create Assessment History - Transaction Processing - Start");
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
-        if (assessmentEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("Financial Assessment with id %s not found", financialAssessmentId));
-        }
+
         RepOrderEntity repOrderEntity = repOrderImpl.findRepOrder(assessmentEntity.getRepId());
-        FinancialAssessmentsHistoryEntity financialAssessmentsHistoryEntity = financialAssessmentsHistoryImpl
-                .save(assessmentEntity, repOrderEntity, financialAssessmentId, fullAvailable);
+        log.info("Creating FinancialAssessmentsHistory record for financialAssessmentId: {}", financialAssessmentId);
+        FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO =
+                buildFinancialAssessmentHistoryDTO(assessmentEntity, repOrderEntity, financialAssessmentId, fullAvailable);
+        FinancialAssessmentsHistoryEntity financialAssessmentsHistoryEntity =
+                financialAssessmentsHistoryImpl.buildAndSave(financialAssessmentsHistoryDTO, financialAssessmentId);
 
         createFinancialAssessmentDetailsHistory(financialAssessmentId, financialAssessmentsHistoryEntity.getId());
         createFinancialAssessmentChildWeightHistory(financialAssessmentId, financialAssessmentsHistoryEntity.getId());
-
         log.info("Create Assessment History - Transaction Processing - End");
     }
 
-    private void createFinancialAssessmentDetailsHistory(int financialAssessmentId, int financialAssessmentsHistoryId) {
+    private void createFinancialAssessmentDetailsHistory(final int financialAssessmentId, final int financialAssessmentsHistoryId) {
+        log.info("Creating FinancialAssessmentDetailsHistory record for financialAssessmentId: {}", financialAssessmentId);
         List<FinancialAssessmentDetailEntity> assessmentDetailsEntities = financialAssessmentDetailsImpl.findAll(financialAssessmentId);
+
         if (assessmentDetailsEntities != null) {
             List<FinancialAssessmentDetailsHistoryDTO> financialAssessmentDetailsHistoryDTOs = assessmentDetailsEntities
                     .stream()
@@ -54,13 +56,15 @@ public class FinancialAssessmentHistoryService {
                         FinancialAssessmentDetailsHistoryDTO financialAssessmentDetailsHistoryDTO =
                                 assessmentHistoryMapper.FinancialAssessmentDetailEntityToFinancialAssessmentDetailsHistoryDTO(financialAssessmentDetailEntity);
                         financialAssessmentDetailsHistoryDTO.setFashId(financialAssessmentsHistoryId);
+                        financialAssessmentDetailsHistoryDTO.setFasdId(financialAssessmentDetailEntity.getId());
                         return financialAssessmentDetailsHistoryDTO;
                     }).collect(Collectors.toList());
-            financialAssessmentDetailsHistoryImpl.save(financialAssessmentDetailsHistoryDTOs);
+            financialAssessmentDetailsHistoryImpl.buildAndSave(financialAssessmentDetailsHistoryDTOs, financialAssessmentId);
         }
     }
 
-    private void createFinancialAssessmentChildWeightHistory(int financialAssessmentId, int financialAssessmentsHistoryId) {
+    private void createFinancialAssessmentChildWeightHistory(final int financialAssessmentId, final int financialAssessmentsHistoryId) {
+        log.info("Creating ChildWeightHistory record for financialAssessmentId: {}", financialAssessmentId);
         List<ChildWeightingsEntity> childWeightingsEntities = childWeightingsImpl.findAll(financialAssessmentId);
         if (childWeightingsEntities != null) {
             List<ChildWeightHistoryDTO> childWeightHistoryDTOs = childWeightingsEntities
@@ -72,8 +76,32 @@ public class FinancialAssessmentHistoryService {
                         return childWeightHistoryDTO;
                     })
                     .collect(Collectors.toList());
-            childWeightHistoryImpl.save(childWeightHistoryDTOs);
+            childWeightHistoryImpl.buildAndSave(childWeightHistoryDTOs, financialAssessmentId);
         }
+    }
+
+    private FinancialAssessmentsHistoryDTO buildFinancialAssessmentHistoryDTO(final FinancialAssessmentEntity assessmentEntity,
+                                                                              final RepOrderEntity repOrderEntity,
+                                                                              final int financialAssessmentId,
+                                                                              final boolean fullAvailable) {
+        log.info("Building financialAssessmentsHistoryDTO with financialAssessmentId: {}", financialAssessmentId);
+        FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO =
+                assessmentHistoryMapper.FinancialAssessmentEntityToFinancialAssessmentsHistoryDTO(assessmentEntity);
+
+        financialAssessmentsHistoryDTO.setFiasId(financialAssessmentId);
+        financialAssessmentsHistoryDTO.setFullAssessmentAvailable(fullAvailable);
+
+        if (repOrderEntity != null) {
+            financialAssessmentsHistoryDTO.setCaseType(repOrderEntity.getCatyCaseType());
+            financialAssessmentsHistoryDTO.setMagsOutcome(repOrderEntity.getMagsOutcome());
+            financialAssessmentsHistoryDTO.setMagsOutcomeDate(repOrderEntity.getMagsOutcomeDate());
+            financialAssessmentsHistoryDTO.setMagsOutcomeDateSet(repOrderEntity.getMagsOutcomeDateSet());
+            financialAssessmentsHistoryDTO.setCommittalDate(repOrderEntity.getCommittalDate());
+            financialAssessmentsHistoryDTO.setRderCode(repOrderEntity.getRderCode());
+            financialAssessmentsHistoryDTO.setCcRepDec(repOrderEntity.getCcRepDec());
+            financialAssessmentsHistoryDTO.setCcRepType(repOrderEntity.getCcRepType());
+        }
+        return financialAssessmentsHistoryDTO;
     }
 
 }

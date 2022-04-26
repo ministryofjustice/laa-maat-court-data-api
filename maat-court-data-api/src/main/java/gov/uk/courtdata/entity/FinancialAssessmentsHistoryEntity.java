@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Data
 @Builder
@@ -20,19 +19,18 @@ import java.util.Set;
 @Table(name = "FINANCIAL_ASSESSMENTS_HISTORY", schema = "TOGDATA")
 public class FinancialAssessmentsHistoryEntity {
     @Id
+    @SequenceGenerator(name = "fin_ass_hist_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_hist_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-//        @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "FIAS_ID", nullable = false)
     @Column(name = "FIAS_ID", nullable = false)
     private Integer fiasId;
 
-    //    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "REP_ID", nullable = false)
     @Column(name = "REP_ID", nullable = false)
     private Integer repId;
 
+    @CreationTimestamp
     @Column(name = "AS_AT_DATE", nullable = false)
     private LocalDate asAtDate;
 
@@ -40,24 +38,22 @@ public class FinancialAssessmentsHistoryEntity {
     private Integer initialAscrId;
 
     @Column(name = "ASS_TYPE", nullable = false, length = 4)
-    private String assType;
+    private String assessmentType;
 
-    //    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "NWOR_CODE", nullable = false)
     @Column(name = "NWOR_CODE", nullable = false, updatable = false)
     private String nworCode;
 
     @Column(name = "CMU_ID", nullable = false)
-    private Integer cmu;
+    private Integer cmuId;
 
     @Column(name = "INCOMPLETE", length = 1)
     private String incomplete;
 
     @Column(name = "INIT_ASS_DATE")
-    private LocalDate initAssDate;
+    private LocalDateTime initialAssessmentDate;
 
     @Column(name = "FULL_ASS_DATE")
-    private LocalDate fullAssDate;
+    private LocalDateTime fullAssessmentDate;
 
     @Column(name = "INIT_APP_EMP_STATUS")
     private String initApplicationEmploymentStatus;
@@ -180,7 +176,7 @@ public class FinancialAssessmentsHistoryEntity {
     private String magsOutcome;
 
     @Column(name = "MAGS_OUTCOME_DATE")
-    private LocalDate magsOutcomeDate;
+    private String magsOutcomeDate;
 
     @Column(name = "MAGS_OUTCOME_DATE_SET")
     private LocalDate magsOutcomeDateSet;
@@ -202,13 +198,4 @@ public class FinancialAssessmentsHistoryEntity {
 
     @Column(name = "RT_CODE", length = 10)
     private String rtCode;
-
-//    @Builder.Default
-//    @OneToMany(mappedBy = "fash")
-//    private Set<ChildWeightHistoryEntity> childWeightHistories = new LinkedHashSet<>();
-//
-//    @Builder.Default
-//    @OneToMany(mappedBy = "fash")
-//    private Set<FinancialAssessmentDetailsHistoryEntity> finAssessmentDetailsHistories = new LinkedHashSet<>();
-
 }

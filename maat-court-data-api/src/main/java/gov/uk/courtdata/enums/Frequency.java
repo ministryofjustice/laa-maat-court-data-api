@@ -1,6 +1,6 @@
 package gov.uk.courtdata.enums;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonValue;
 import gov.uk.courtdata.helper.AbstractEnumConverter;
 import gov.uk.courtdata.helper.PersistableEnum;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,6 @@ import javax.persistence.Converter;
 
 @Getter
 @AllArgsConstructor
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Frequency implements PersistableEnum<String> {
 
     WEEKLY("WEEKLY", "Weekly", 52),
@@ -19,6 +18,7 @@ public enum Frequency implements PersistableEnum<String> {
     MONTHLY("MONTHLY", "Monthly", 12),
     ANNUALLY("ANNUALLY", "Annually", 1);
 
+    @JsonValue
     private String code;
     private String description;
     private int annualWeighting;

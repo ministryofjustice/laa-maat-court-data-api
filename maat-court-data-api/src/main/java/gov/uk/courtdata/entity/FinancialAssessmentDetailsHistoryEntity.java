@@ -6,6 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -15,6 +16,8 @@ import java.time.LocalDate;
 @Table(name = "FIN_ASSESSMENT_DETAILS_HISTORY", schema = "TOGDATA")
 public class FinancialAssessmentDetailsHistoryEntity {
     @Id
+    @SequenceGenerator(name = "fin_ass_details_hist_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_details_hist_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
 
@@ -25,10 +28,10 @@ public class FinancialAssessmentDetailsHistoryEntity {
     private Integer fasdId;
 
     @Column(name = "CRITERIA_DETAIL_ID", nullable = false)
-    private Integer criteriaDetail;
+    private Integer criteriaDetailId;
 
     @Column(name = "DATE_CREATED", nullable = false)
-    private LocalDate dateCreated;
+    private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED", nullable = false, length = 10)
     private String userCreated;

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.entity;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -49,7 +48,7 @@ public class RepOrderEntity {
     @Column(name = "MCOO_OUTCOME")
     private String magsOutcome;
     @Column(name = "MAGS_OUTCOME_DATE")
-    private LocalDate magsOutcomeDate;
+    private String magsOutcomeDate;
     @Column(name = "MAGS_OUTCOME_DATE_SET")
     private LocalDate magsOutcomeDateSet;
     @Column(name = "COMMITTAL_DATE")

@@ -1,16 +1,15 @@
 package gov.uk.courtdata.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
 @Table(name = "IOJ_APPEALS", schema = "TOGDATA")
 public class IOJAppealEntity {
     @Id
-    @SequenceGenerator(name = "ioj_appeal_seq", sequenceName = "S_IOJ_APPEAL_ID", allocationSize = 1)
+    @SequenceGenerator(name = "ioj_appeal_seq", sequenceName = "S_IOJ_APPEAL_ID", allocationSize = 1, schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ioj_appeal_seq")
     @Column(name = "ID")
     private Integer id;

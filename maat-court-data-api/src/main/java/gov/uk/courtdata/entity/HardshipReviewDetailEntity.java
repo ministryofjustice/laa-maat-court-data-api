@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 public class HardshipReviewDetailEntity {
 
     @Id
-    @SequenceGenerator(name = "hardship_review_detail_seq", sequenceName = "S_HARDSHIP_DETAIL_ID", allocationSize = 1)
+    @SequenceGenerator(name = "hardship_review_detail_seq", sequenceName = "S_HARDSHIP_DETAIL_ID", allocationSize = 1, schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hardship_review_detail_seq")
     @Column(name = "ID")
     private Integer id;

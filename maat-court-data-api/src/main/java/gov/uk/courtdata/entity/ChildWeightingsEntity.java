@@ -4,13 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder
@@ -24,7 +18,7 @@ import java.time.LocalDateTime;
 public class ChildWeightingsEntity {
 
     @Id
-    @SequenceGenerator(name = "fin_ass_child_weighting_seq", sequenceName = "S_FIN_ASS_CHILD_WEIGHTING_ID", allocationSize = 1)
+    @SequenceGenerator(name = "fin_ass_child_weighting_seq", sequenceName = "S_FIN_ASS_CHILD_WEIGHTING_ID", allocationSize = 1, schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_child_weighting_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;

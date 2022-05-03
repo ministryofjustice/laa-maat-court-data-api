@@ -1,10 +1,7 @@
 package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.enums.Frequency;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,7 +9,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +20,7 @@ import java.time.LocalDateTime;
 public class FinancialAssessmentDetailEntity {
 
     @Id
-    @SequenceGenerator(name = "fin_ass_det_seq", sequenceName = "S_FIN_ASS_DET_ID", allocationSize = 1)
+    @SequenceGenerator(name = "fin_ass_det_seq", sequenceName = "S_FIN_ASS_DET_ID", allocationSize = 1, schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_det_seq")
     @Column(name = "ID")
     private Integer id;

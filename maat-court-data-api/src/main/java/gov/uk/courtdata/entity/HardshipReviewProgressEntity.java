@@ -21,7 +21,7 @@ public class HardshipReviewProgressEntity {
 
     @Id
     @Column(name = "ID")
-    @SequenceGenerator(name = "hardship_review_progress_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1)
+    @SequenceGenerator(name = "hardship_review_progress_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hardship_review_progress_seq")
     private Integer id;
 

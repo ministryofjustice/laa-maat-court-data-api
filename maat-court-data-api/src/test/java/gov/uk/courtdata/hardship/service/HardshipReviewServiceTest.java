@@ -33,7 +33,6 @@ public class HardshipReviewServiceTest {
     private HardshipReviewMapper hardshipReviewMapper;
 
     private static final int MOCK_REP_ID = 621580;
-    private static final int INVALID_REP_ID = 3456;
     private static final Integer MOCK_HARDSHIP_ID = 1000;
 
     @Test
@@ -47,6 +46,15 @@ public class HardshipReviewServiceTest {
 
         verify(hardshipReviewImpl).find(any());
         assertThat(returnedAssessment.getId()).isEqualTo(MOCK_HARDSHIP_ID);
+    }
+
+    @Test
+    public void whenFindIsInvokedWithInvalidRepId_thenNotFoundExceptionIsThrown() {
+        when(hardshipReviewImpl.find(MOCK_REP_ID)).thenReturn(null);
+
+        assertThatExceptionOfType(RequestedObjectNotFoundException.class)
+                .isThrownBy(() -> hardshipReviewService.findHardshipReview(MOCK_REP_ID))
+                .withMessageContaining("No Hardship Review found for ID: 621580");
     }
 
     @Test

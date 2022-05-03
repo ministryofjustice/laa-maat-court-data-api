@@ -46,6 +46,15 @@ public class IOJAppealServiceTest {
     }
 
     @Test
+    public void whenFindIsInvokedWithInvalidId_thenNotFoundExceptionIsThrown() {
+        when(iojAppealImpl.find(IOJ_REP_ID)).thenReturn(null);
+
+        assertThatExceptionOfType(RequestedObjectNotFoundException.class)
+                .isThrownBy(() -> iojAppealService.find(IOJ_REP_ID))
+                .withMessageContaining(String.format("No IOJ Appeal found for ID: %d", IOJ_REP_ID));
+    }
+
+    @Test
     public void whenFindByRepIdIsInvoked_thenIOJAppealIsRetrieved() {
         IOJAppealEntity iojAppealEntity = IOJAppealEntity.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build();
         when(iojAppealImpl.findByRepId(IOJ_REP_ID)).thenReturn(iojAppealEntity);
@@ -62,12 +71,11 @@ public class IOJAppealServiceTest {
 
     @Test
     public void whenFindByRepIdIsInvokedWithInvalidRepId_thenNotFoundExceptionIsThrown() {
-        when(iojAppealImpl.findByRepId(IOJ_REP_ID)).thenThrow(new RequestedObjectNotFoundException("No IOJAppeal object found for repId: " + IOJ_REP_ID));
+        when(iojAppealImpl.findByRepId(IOJ_REP_ID)).thenReturn(null);
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> iojAppealService.findByRepId(IOJ_REP_ID))
-                .withMessageContaining("No IOJAppeal object found for repId: 5635978");
-        verify(iojAppealImpl).findByRepId(IOJ_REP_ID);
+                .withMessageContaining(String.format("No IOJ Appeal found for REP ID: %d", IOJ_REP_ID));
     }
 
     @Test

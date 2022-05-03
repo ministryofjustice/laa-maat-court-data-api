@@ -8,7 +8,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,7 +18,7 @@ import java.time.LocalDateTime;
 @Table(name = "FIN_ASSESSMENT_DETAILS_HISTORY", schema = "TOGDATA")
 public class FinancialAssessmentDetailsHistoryEntity {
     @Id
-    @SequenceGenerator(name = "fin_ass_details_hist_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1)
+    @SequenceGenerator(name = "fin_ass_details_hist_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_details_hist_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;

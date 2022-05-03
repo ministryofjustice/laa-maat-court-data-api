@@ -89,14 +89,12 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
     /**
      * Handles exceptions where an object is requested but is not found in the database
      *
-     * @param ex
-     * @return
      */
     @ExceptionHandler(RequestedObjectNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleRequestedObjectNotFoundException(RequestedObjectNotFoundException ex) {
-        log.error("Object cannot be found for the given input. Error: {}", ex);
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorDTO.builder()
-                .code("OBJECT NOT FOUND")
+                .code(HttpStatus.NOT_FOUND.name())
                 .message(ex.getMessage())
                 .build());
     }

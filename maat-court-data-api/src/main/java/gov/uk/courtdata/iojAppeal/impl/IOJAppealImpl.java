@@ -2,7 +2,6 @@ package gov.uk.courtdata.iojAppeal.impl;
 
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
-import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.iojAppeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.repository.IOJAppealRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +17,11 @@ public class IOJAppealImpl {
     private final IOJAppealMapper iojAppealMapper;
 
     public IOJAppealEntity find(Integer iojAppealId) {
-        return iojAppealRepository.findById(iojAppealId).orElseThrow(() -> new RequestedObjectNotFoundException("No IOJAppeal object found. ID: " + iojAppealId));
+        return iojAppealRepository.getById(iojAppealId);
     }
 
     public IOJAppealEntity findByRepId(int repId) {
-        return iojAppealRepository.findByRepId(repId).orElseThrow(() -> new RequestedObjectNotFoundException("No IOJAppeal object found for repId: " + repId));
+        return iojAppealRepository.findByRepId(repId);
     }
 
     public IOJAppealEntity create(IOJAppealDTO iojAppealDTO) {

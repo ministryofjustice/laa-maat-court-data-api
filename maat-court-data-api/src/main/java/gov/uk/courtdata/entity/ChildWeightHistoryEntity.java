@@ -1,15 +1,14 @@
 package gov.uk.courtdata.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 @Table(name = "FIN_ASS_CHILD_WEIGHT_HISTORY", schema = "TOGDATA")
 public class ChildWeightHistoryEntity {
     @Id
-    @SequenceGenerator(name = "fin_ass_child_weight_hist_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1)
+    @SequenceGenerator(name = "fin_ass_child_weight_hist_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_child_weight_hist_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;

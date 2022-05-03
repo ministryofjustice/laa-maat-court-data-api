@@ -11,12 +11,11 @@ import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -37,14 +36,14 @@ public class IOJAppealImplTest {
 
     @Test
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
-        when(iojAppealRepository.findById(any())).thenReturn(Optional.of(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).build()));
+        when(iojAppealRepository.getById(any())).thenReturn(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).build());
         var iojAppeal = iojAppealImpl.find(IOJ_APPEAL_ID);
         assertEquals(iojAppeal.getId(), IOJ_APPEAL_ID);
     }
 
     @Test
     public void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
-        when(iojAppealRepository.findByRepId(IOJ_REP_ID)).thenReturn(Optional.of(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build()));
+        when(iojAppealRepository.findByRepId(IOJ_REP_ID)).thenReturn(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build());
         var iojAppeal = iojAppealImpl.findByRepId(IOJ_REP_ID);
         assertEquals(iojAppeal.getId(), IOJ_APPEAL_ID);
         assertEquals(iojAppeal.getRepId(), IOJ_REP_ID);
@@ -64,17 +63,17 @@ public class IOJAppealImplTest {
     }
 
     @Test
-    public void whenSetOldIOJAppealReplaced_thenAllIOJAppealRecordsWithGivenREP_IDAreSetToReplaced(){
+    public void whenSetOldIOJAppealReplaced_thenAllIOJAppealRecordsWithGivenREP_IDAreSetToReplaced() {
 
         iojAppealImpl.setOldIOJAppealsReplaced(IOJ_REP_ID, 124);
 
-        verify(iojAppealRepository).setOldIOJAppealsReplaced(IOJ_REP_ID,124);
+        verify(iojAppealRepository).setOldIOJAppealsReplaced(IOJ_REP_ID, 124);
     }
 
     @Test
     public void whenUpdateIsInvoked_thenIOJAppealIsUpdated() {
         var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
-        var dateModified = LocalDateTime.of(2022,1,1,10,0);
+        var dateModified = LocalDateTime.of(2022, 1, 1, 10, 0);
         var updatedIOJAppealEntity = TestEntityDataBuilder.getIOJAppealEntity(dateModified);
 
         when(iojAppealRepository.getById(any())).thenReturn(updatedIOJAppealEntity);

@@ -2,9 +2,7 @@ package gov.uk.courtdata.hardship.service;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
-import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
@@ -35,7 +33,6 @@ public class HardshipReviewServiceTest {
     private HardshipReviewMapper hardshipReviewMapper;
 
     private static final int MOCK_REP_ID = 621580;
-    private static final int INVALID_REP_ID = 3456;
     private static final Integer MOCK_HARDSHIP_ID = 1000;
 
     @Test
@@ -49,6 +46,15 @@ public class HardshipReviewServiceTest {
 
         verify(hardshipReviewImpl).find(any());
         assertThat(returnedAssessment.getId()).isEqualTo(MOCK_HARDSHIP_ID);
+    }
+
+    @Test
+    public void whenFindIsInvokedWithInvalidRepId_thenNotFoundExceptionIsThrown() {
+        when(hardshipReviewImpl.find(MOCK_REP_ID)).thenReturn(null);
+
+        assertThatExceptionOfType(RequestedObjectNotFoundException.class)
+                .isThrownBy(() -> hardshipReviewService.findHardshipReview(MOCK_REP_ID))
+                .withMessageContaining(String.format("No Hardship Review found for ID: %d", MOCK_REP_ID));
     }
 
     @Test
@@ -72,8 +78,7 @@ public class HardshipReviewServiceTest {
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> hardshipReviewService.findHardshipReviewByRepId(MOCK_REP_ID))
-                .withMessageContaining("Hardship Review with repId 621580 not found");
-        verify(hardshipReviewImpl).findByRepId(MOCK_REP_ID);
+                .withMessageContaining(String.format("No Hardship Review found for REP ID: %d", MOCK_REP_ID));
     }
 
     @Test

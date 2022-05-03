@@ -1,16 +1,15 @@
 package gov.uk.courtdata.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
 @Table(name = "PASSPORT_ASSESSMENTS", schema = "TOGDATA")
 public class PassportAssessmentEntity {
     @Id
-    @SequenceGenerator(name = "passport_ass_seq", sequenceName = "S_PASSPORT_ID", allocationSize = 1)
+    @SequenceGenerator(name = "passport_ass_seq", sequenceName = "S_PASSPORT_ID", allocationSize = 1, schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "passport_ass_seq")
     private Integer id;
     @Column(name = "REP_ID")

@@ -48,6 +48,15 @@ public class PassportAssessmentServiceTest {
     }
 
     @Test
+    public void whenFindIsInvokedWithInvalidId_thenNotFoundExceptionIsThrown() {
+        when(passportAssessmentImpl.find(MOCK_REP_ID)).thenReturn(null);
+
+        assertThatExceptionOfType(RequestedObjectNotFoundException.class)
+                .isThrownBy(() -> passportAssessmentService.find(MOCK_REP_ID))
+                .withMessageContaining(String.format("No Passport Assessment found for ID: %d", MOCK_REP_ID));
+    }
+
+    @Test
     public void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
         PassportAssessmentEntity passportAssessmentEntity = PassportAssessmentEntity.builder().id(MOCK_ASSESSMENT_ID).repId(MOCK_REP_ID).build();
         when(passportAssessmentImpl.findByRepId(MOCK_REP_ID)).thenReturn(passportAssessmentEntity);
@@ -68,8 +77,7 @@ public class PassportAssessmentServiceTest {
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> passportAssessmentService.findByRepId(MOCK_REP_ID))
-                .withMessageContaining("Passport Assessment with repId 5678 not found");
-        verify(passportAssessmentImpl).findByRepId(MOCK_REP_ID);
+                .withMessageContaining(String.format("No Passport Assessment found for REP ID: %d", MOCK_REP_ID));
     }
 
     @Test

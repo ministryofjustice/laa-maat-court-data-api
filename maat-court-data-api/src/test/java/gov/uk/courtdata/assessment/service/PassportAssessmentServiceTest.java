@@ -68,8 +68,7 @@ public class PassportAssessmentServiceTest {
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> passportAssessmentService.findByRepId(MOCK_REP_ID))
-                .withMessageContaining("Passport Assessment with repId 5678 not found");
-        verify(passportAssessmentImpl).findByRepId(MOCK_REP_ID);
+                .withMessageContaining("No Passport Assessment found for REP ID: 5678");
     }
 
     @Test

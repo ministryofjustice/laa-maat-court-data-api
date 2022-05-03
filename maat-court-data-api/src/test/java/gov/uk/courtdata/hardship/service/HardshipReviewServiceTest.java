@@ -2,9 +2,7 @@ package gov.uk.courtdata.hardship.service;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
-import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
@@ -72,8 +70,7 @@ public class HardshipReviewServiceTest {
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> hardshipReviewService.findHardshipReviewByRepId(MOCK_REP_ID))
-                .withMessageContaining("Hardship Review with repId 621580 not found");
-        verify(hardshipReviewImpl).findByRepId(MOCK_REP_ID);
+                .withMessageContaining("No Hardship Review found for REP ID: 621580");
     }
 
     @Test

@@ -24,7 +24,7 @@ public class HardshipReviewService {
     public HardshipReviewDTO findHardshipReview(final Integer hardshipReviewId) {
         HardshipReviewEntity hardshipReview = hardshipReviewImpl.find(hardshipReviewId);
         if (hardshipReview == null) {
-            throw new RequestedObjectNotFoundException(String.format("Hardship Review with id %s not found", hardshipReviewId));
+            throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for ID: %s", hardshipReviewId));
         }
         return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReview);
     }
@@ -33,7 +33,7 @@ public class HardshipReviewService {
     public HardshipReviewDTO findHardshipReviewByRepId(final int repId) {
         HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.findByRepId(repId);
         if (hardshipReviewEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("Hardship Review with repId %s not found", repId));
+            throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for REP ID: %s", repId));
         }
         return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
     }

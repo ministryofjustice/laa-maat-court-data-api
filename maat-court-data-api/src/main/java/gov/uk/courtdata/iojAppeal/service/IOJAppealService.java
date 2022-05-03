@@ -1,6 +1,8 @@
 package gov.uk.courtdata.iojAppeal.service;
 
 import gov.uk.courtdata.dto.IOJAppealDTO;
+import gov.uk.courtdata.entity.IOJAppealEntity;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.iojAppeal.impl.IOJAppealImpl;
 import gov.uk.courtdata.iojAppeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
@@ -20,14 +22,19 @@ public class IOJAppealService {
 
     @Transactional(readOnly = true)
     public IOJAppealDTO find(Integer iojAppealId) {
-        var iojAppealEntity = iojAppealImpl.find(iojAppealId);
-
+        IOJAppealEntity iojAppealEntity = iojAppealImpl.find(iojAppealId);
+        if (iojAppealEntity == null) {
+            throw new RequestedObjectNotFoundException(String.format("No IOJ Appeal found for ID: %s", iojAppealId));
+        }
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
     }
 
     @Transactional(readOnly = true)
     public IOJAppealDTO findByRepId(int repId) {
-        var iojAppealEntity = iojAppealImpl.findByRepId(repId);
+        IOJAppealEntity iojAppealEntity = iojAppealImpl.findByRepId(repId);
+        if (iojAppealEntity == null) {
+            throw new RequestedObjectNotFoundException(String.format("No IOJ Appeal found for REP ID: %s", repId));
+        }
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
     }
 

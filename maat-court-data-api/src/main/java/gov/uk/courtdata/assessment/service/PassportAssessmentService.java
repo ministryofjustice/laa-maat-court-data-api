@@ -25,7 +25,7 @@ public class PassportAssessmentService {
     public PassportAssessmentDTO find(Integer passportAssessmentId) {
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.find(passportAssessmentId);
         if (passportAssessmentEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("Passported Assessment with id %s not found", passportAssessmentId));
+            throw new RequestedObjectNotFoundException(String.format("No Passport Assessment found for ID: %s", passportAssessmentId));
         }
         return buildPassportAssessmentDTO(passportAssessmentEntity);
     }
@@ -34,7 +34,7 @@ public class PassportAssessmentService {
     public PassportAssessmentDTO findByRepId(int repId) {
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.findByRepId(repId);
         if (passportAssessmentEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("Passport Assessment with repId %s not found", repId));
+            throw new RequestedObjectNotFoundException(String.format("No Passport Assessment found for REP ID: %s", repId));
         }
         return buildPassportAssessmentDTO(passportAssessmentEntity);
     }
@@ -72,8 +72,7 @@ public class PassportAssessmentService {
     }
 
     PassportAssessmentDTO buildPassportAssessmentDTO(PassportAssessmentEntity assessmentEntity) {
-        PassportAssessmentDTO passportAssessmentDTO = passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(assessmentEntity);
-        return passportAssessmentDTO;
+        return passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(assessmentEntity);
     }
 
 }

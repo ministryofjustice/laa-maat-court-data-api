@@ -33,8 +33,8 @@ public class FinancialAssessmentService {
     @Transactional(readOnly = true)
     public FinancialAssessmentDTO find(Integer financialAssessmentId) {
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
-        if(assessmentEntity == null){
-            throw new RequestedObjectNotFoundException(String.format("Financial Assessment with id %s not found", financialAssessmentId));
+        if (assessmentEntity == null) {
+            throw new RequestedObjectNotFoundException(String.format("No Financial Assessment found for ID: %s", financialAssessmentId));
         }
         return buildFinancialAssessmentDTO(assessmentEntity);
     }

@@ -53,7 +53,7 @@ public class PassportAssessmentServiceTest {
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> passportAssessmentService.find(MOCK_REP_ID))
-                .withMessageContaining("No Passport Assessment found for ID: 5678");
+                .withMessageContaining(String.format("No Passport Assessment found for ID: %d", MOCK_REP_ID));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class PassportAssessmentServiceTest {
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> passportAssessmentService.findByRepId(MOCK_REP_ID))
-                .withMessageContaining("No Passport Assessment found for REP ID: 5678");
+                .withMessageContaining(String.format("No Passport Assessment found for REP ID: %d", MOCK_REP_ID));
     }
 
     @Test

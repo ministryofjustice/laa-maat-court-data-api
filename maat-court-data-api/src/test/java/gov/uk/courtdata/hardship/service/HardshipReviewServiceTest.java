@@ -54,7 +54,7 @@ public class HardshipReviewServiceTest {
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> hardshipReviewService.findHardshipReview(MOCK_REP_ID))
-                .withMessageContaining("No Hardship Review found for ID: 621580");
+                .withMessageContaining(String.format("No Hardship Review found for ID: %d", MOCK_REP_ID));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class HardshipReviewServiceTest {
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> hardshipReviewService.findHardshipReviewByRepId(MOCK_REP_ID))
-                .withMessageContaining("No Hardship Review found for REP ID: 621580");
+                .withMessageContaining(String.format("No Hardship Review found for REP ID: %d", MOCK_REP_ID));
     }
 
     @Test

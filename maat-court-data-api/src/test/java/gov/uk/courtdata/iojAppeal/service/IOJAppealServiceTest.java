@@ -51,7 +51,7 @@ public class IOJAppealServiceTest {
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> iojAppealService.find(IOJ_REP_ID))
-                .withMessageContaining("No IOJ Appeal found for ID: 5635978");
+                .withMessageContaining(String.format("No IOJ Appeal found for ID: %d", IOJ_REP_ID));
     }
 
     @Test
@@ -75,7 +75,7 @@ public class IOJAppealServiceTest {
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> iojAppealService.findByRepId(IOJ_REP_ID))
-                .withMessageContaining("No IOJ Appeal found for REP ID: 5635978");
+                .withMessageContaining(String.format("No IOJ Appeal found for REP ID: %d", IOJ_REP_ID));
     }
 
     @Test

@@ -7,7 +7,7 @@ spring:
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: oracle.jdbc.OracleDriver
     hikari:
-      maximum-pool-size: 25
+      maximum-pool-size: 50
 
   liquibase:
     enabled: false

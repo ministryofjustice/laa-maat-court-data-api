@@ -223,6 +223,9 @@ Resources:
     Type: "AWS::ECS::Cluster"
     Properties:
       ClusterName: !Ref pAppName
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
 
   EcsService:
     Type: AWS::ECS::Service

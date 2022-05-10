@@ -80,9 +80,9 @@ public class LinkControllerIntegrationTest {
 
         //Assert response
         this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
-                .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message", is("MAAT id is required.")));
+                .andExpect(jsonPath("$.message", is("MAAT ID is required.")));
     }
 
 
@@ -98,9 +98,9 @@ public class LinkControllerIntegrationTest {
         String json = objectMapper.writeValueAsString(caseDetailsValidate);
 
         this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
-                .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message", is("1000 is invalid.")));
+                .andExpect(jsonPath("$.message", is("MAAT/REP ID: 1000 is invalid.")));
     }
 
     @Test

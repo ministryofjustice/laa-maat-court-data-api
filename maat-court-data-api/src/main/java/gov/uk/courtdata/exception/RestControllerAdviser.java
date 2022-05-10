@@ -1,8 +1,8 @@
 package gov.uk.courtdata.exception;
 
 
+import gov.uk.courtdata.constants.ErrorCodes;
 import gov.uk.courtdata.dto.ErrorDTO;
-import io.sentry.util.ExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -47,12 +47,13 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorDTO> handleValidationError(ValidationException ex) {
-        log.error("Given input is not valid. Error: {}", ex);
+        log.error(ex.getMessage());
         return ResponseEntity.badRequest().body(ErrorDTO.builder()
                 .code(HttpStatus.BAD_REQUEST.name())
                 .message(ex.getMessage())
                 .build());
     }
+
     /**
      * Handles business validation exceptions.
      *
@@ -63,32 +64,31 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDTO> handleNoSuchElementException(NoSuchElementException ex) {
         log.error("Unable to find element for given input. Error: {}", ex);
         return ResponseEntity.badRequest().body(ErrorDTO.builder()
-                .code("OBJECT NOT FOUND")
+                .code(ErrorCodes.OBJECT_NOT_FOUND)
                 .message(ex.getMessage())
                 .build());
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorDTO> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        log.error("Problem when trying to insert/update into the database. Error: {}", ex);
+        log.error("Data integrity violation. Error: {}", ex.getMessage());
         return ResponseEntity.badRequest().body(ErrorDTO.builder()
-                .code("DB Error")
-                .message(ex.getMessage() + ". "+ ExceptionUtils.findRootCause(ex).getMessage())
+                .code(ErrorCodes.DB_ERROR)
+                .message(ex.getMessage())
                 .build());
     }
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorDTO> handleDataAccessException(DataAccessException ex) {
-        log.error("Problem when accessing the database. Error: {}", ex);
+        log.error("Problem accessing the database. Error: {}", ex.getMessage());
         return ResponseEntity.internalServerError().body(ErrorDTO.builder()
-                .code("DB Error")
-                .message(ex.getMessage() + ". "+ ExceptionUtils.findRootCause(ex).getMessage())
+                .code(ErrorCodes.DB_ERROR)
+                .message(ex.getMessage())
                 .build());
     }
 
     /**
      * Handles exceptions where an object is requested but is not found in the database
-     *
      */
     @ExceptionHandler(RequestedObjectNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleRequestedObjectNotFoundException(RequestedObjectNotFoundException ex) {

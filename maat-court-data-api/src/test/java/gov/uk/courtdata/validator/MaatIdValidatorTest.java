@@ -38,14 +38,14 @@ public class MaatIdValidatorTest {
     @Test
     public void testWhenMaatIdIsNull_throwsException() {
         thrown.expect(ValidationException.class);
-        thrown.expectMessage("MAAT id is required.");
+        thrown.expectMessage("MAAT ID is required.");
         maatIdValidator.validate(null);
     }
 
     @Test
     public void testWhenMaatIdIsMissingFromPayload_throwsException() {
         thrown.expect(ValidationException.class);
-        thrown.expectMessage("MAAT id is required.");
+        thrown.expectMessage("MAAT ID is required.");
         maatIdValidator.validate(0);
     }
 
@@ -53,7 +53,7 @@ public class MaatIdValidatorTest {
     public void testWhenMaatIsNotNullButNotOnRepOrder_validationPasses() {
         when(repOrderRepository.findById(1000)).thenReturn(Optional.empty());
         thrown.expect(ValidationException.class);
-        thrown.expectMessage("1000 is invalid.");
+        thrown.expectMessage("MAAT/REP ID: 1000 is invalid.");
         maatIdValidator.validate(1000);
     }
 

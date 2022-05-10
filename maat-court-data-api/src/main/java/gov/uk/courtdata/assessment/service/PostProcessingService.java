@@ -20,6 +20,7 @@ public class PostProcessingService {
             postProcessingStoredProcedureRepository.invokePostAssessmentProcessingCma(repId);
         } catch (DataAccessException exception) {
             log.error("Post-processing failed for repId: {}", repId);
+            throw exception;
         }
     }
 }

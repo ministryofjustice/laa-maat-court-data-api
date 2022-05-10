@@ -3,6 +3,7 @@ package gov.uk.courtdata.assessment.controller;
 import gov.uk.courtdata.assessment.service.PostProcessingService;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.enums.LoggingData;
+import gov.uk.courtdata.validator.MaatIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Post Processing", description = "Rest API for assessment post-processing")
 public class PostProcessingController {
 
+    private final MaatIdValidator maatIdValidator;
     private final PostProcessingService postProcessingService;
 
     @ApiResponse(
@@ -31,11 +33,11 @@ public class PostProcessingController {
     @ApiResponse(
             responseCode = "400",
             description = "Bad Request.",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(
             responseCode = "500",
             description = "Server Error.",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @PostMapping(value = "/{repID}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Perform post-processing for a given RepID")
     public ResponseEntity<Object> doPostProcessing(
@@ -44,8 +46,10 @@ public class PostProcessingController {
             @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
         MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
-
         log.info("Assessment Post-Processing Request Received for RepID: {}", repID);
+
+        maatIdValidator.validate(repID);
+
         postProcessingService.execute(repID);
         log.info("Assessment Post-Processing Request Complete");
         return ResponseEntity.ok().build();

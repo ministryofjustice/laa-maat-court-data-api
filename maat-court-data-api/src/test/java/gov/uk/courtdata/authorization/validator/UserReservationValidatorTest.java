@@ -46,6 +46,8 @@ public class UserReservationValidatorTest {
     public void givenSpecialUsername_whenValidateIsInvoked_thenValidationPasses() {
         UserReservation userReservation = TestModelDataBuilder.getUserReservation();
         UserSession fakeUserSession = userReservation.getSession();
+        System.out.println(fakeUserSession.getUsername());
+        System.out.println(fakeUserSession.getId());
 
         fakeUserSession.setUsername(CourtDataConstants.RESERVATION_SPECIAL_USERNAMES.get(0));
 

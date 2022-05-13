@@ -43,7 +43,7 @@ public class CalculateOutcomeHelper {
                                     "Offence Id {} Plea Date {} Verdict Date {} Plea Outcome {} Verdict Outcome {}",
                                     offence.getOffenceId(), offence.getPlea().getPleaDate(), offence.getVerdict().getVerdictDate(),
                                     PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()),
-                                    PleaTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType())
+                                    VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType())
                                     );
                             throw new ValidationException("The recent Plea outcome is different from the Verdict outcome");
                         }
@@ -61,7 +61,7 @@ public class CalculateOutcomeHelper {
     private boolean isVerdictPleaMismatch(OffenceSummary offence) {
         if((offence.getPlea() != null && offence.getPlea().getPleaDate() !=null)
                 && offence.getVerdict().getVerdictDate().compareTo(offence.getPlea().getPleaDate()) < 0){
-            String verdictOutcome = PleaTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType());
+            String verdictOutcome = VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType());
             String pleaOutcome = PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue());
             if(!verdictOutcome.equalsIgnoreCase(pleaOutcome)){
                 return true;

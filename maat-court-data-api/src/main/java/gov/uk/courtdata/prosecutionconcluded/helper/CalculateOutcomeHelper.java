@@ -36,16 +36,14 @@ public class CalculateOutcomeHelper {
         offenceSummaryList
                 .forEach(offence -> {
                     if (isVerdictAvailable(offence)) {
-                        if(!isVerdictPleaMismatch(offence)){
-                            offenceOutcomeList.add(VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType()));
-                        } else {
+                        offenceOutcomeList.add(VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType()));
+                        if(isVerdictPleaMismatch(offence)){
                             log.error("The recent Plea outcome is different from the Verdict outcome - " +
                                     "Offence Id {} Plea Date {} Verdict Date {} Plea Outcome {} Verdict Outcome {}",
                                     offence.getOffenceId(), offence.getPlea().getPleaDate(), offence.getVerdict().getVerdictDate(),
                                     PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()),
                                     VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType())
                                     );
-                            throw new ValidationException("The recent Plea outcome is different from the Verdict outcome");
                         }
                     } else if (offence.getPlea() != null && offence.getPlea().getValue() != null) {
                         offenceOutcomeList.add(PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()));

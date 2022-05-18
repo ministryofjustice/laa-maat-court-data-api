@@ -1,6 +1,7 @@
 package gov.uk.courtdata.assessment.mapper;
 
 import gov.uk.courtdata.dto.ChildWeightHistoryDTO;
+import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDetailsHistoryDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
 import gov.uk.courtdata.entity.*;
@@ -8,15 +9,18 @@ import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = {FinancialAssessmentMapper.class})
 public interface FinancialAssessmentHistoryMapper {
-    FinancialAssessmentsHistoryDTO FinancialAssessmentEntityToFinancialAssessmentsHistoryDTO(final FinancialAssessmentEntity assessmentEntity);
-
-    FinancialAssessmentsHistoryEntity FinancialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(final FinancialAssessmentsHistoryDTO assessmentsHistoryDTO);
 
     FinancialAssessmentDetailsHistoryDTO FinancialAssessmentDetailEntityToFinancialAssessmentDetailsHistoryDTO(final FinancialAssessmentDetailEntity financialAssessmentDetailEntity);
 
     FinancialAssessmentDetailsHistoryEntity FinancialAssessmentDetailsHistoryDTOToFinancialAssessmentDetailsHistoryEntity(final FinancialAssessmentDetailsHistoryDTO financialAssessmentDetailsHistoryDTO);
+
+    FinancialAssessmentsHistoryDTO FinancialAssessmentEntityToFinancialAssessmentsHistoryDTO(final FinancialAssessmentEntity assessmentEntity);
+
+    FinancialAssessmentsHistoryDTO FinancialAssessmentsHistoryEntityToFinancialAssessmentsHistoryDTO(final FinancialAssessmentsHistoryEntity assessmentsHistoryEntity);
+
+    FinancialAssessmentsHistoryEntity FinancialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(final FinancialAssessmentsHistoryDTO assessmentsHistoryDTO);
 
     ChildWeightHistoryDTO ChildWeightingsEntityToChildWeightHistoryDTO(final ChildWeightingsEntity childWeightingsEntity);
 

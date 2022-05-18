@@ -15,7 +15,7 @@ public class FinancialAssessmentDetailsHistoryDTO {
     private Frequency applicantFrequency;
     private BigDecimal partnerAmount;
     private Frequency partnerFrequency;
-    private Integer fashId;
+    private FinancialAssessmentsHistoryDTO financialAssessmentsHistory;
     private Integer fasdId;
     private String userCreated;
     private LocalDateTime dateCreated;

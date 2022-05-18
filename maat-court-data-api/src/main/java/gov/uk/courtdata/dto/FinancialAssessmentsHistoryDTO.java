@@ -11,13 +11,14 @@ import java.util.List;
 @Data
 @Builder
 public class FinancialAssessmentsHistoryDTO {
+    private Integer id;
     private LocalDateTime initialAssessmentDate;
     private String assessmentType;
     private Integer cmuId;
     private Integer initialAscrId;
     private Integer fullAscrId;
     private LocalDateTime dateCreated;
-    private Integer fiasId;
+    private FinancialAssessmentDTO financialAssessment;
     private BigDecimal adjustedLivingAllowance;
     private String fullAssessmentNotes;
     private String otherHousingNote;

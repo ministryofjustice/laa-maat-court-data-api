@@ -23,8 +23,9 @@ public class FinancialAssessmentsHistoryEntity {
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-    @Column(name = "FIAS_ID", nullable = false)
-    private Integer fiasId;
+    @OneToOne(targetEntity = FinancialAssessmentEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "FIAS_ID", referencedColumnName = "id")
+    private FinancialAssessmentEntity financialAssessment;
 
     @Column(name = "REP_ID", nullable = false)
     private Integer repId;

@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class ChildWeightHistoryDTO {
-    private Integer fashId;
+    private FinancialAssessmentsHistoryDTO financialAssessmentsHistory;
     private Integer facwId;
     private Integer childWeightingId;
     private Integer noOfChildren;

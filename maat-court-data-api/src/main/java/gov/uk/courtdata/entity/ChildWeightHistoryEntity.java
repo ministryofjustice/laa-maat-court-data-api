@@ -21,7 +21,7 @@ public class ChildWeightHistoryEntity {
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-    @OneToOne(targetEntity = FinancialAssessmentsHistoryEntity.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = FinancialAssessmentsHistoryEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "FASH_ID", referencedColumnName = "id")
     private FinancialAssessmentsHistoryEntity financialAssessmentHistory;
 

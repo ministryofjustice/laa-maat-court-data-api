@@ -1,12 +1,17 @@
 package gov.uk.courtdata.entity;
 
+import gov.uk.courtdata.dto.ChildWeightHistoryDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -198,4 +203,25 @@ public class FinancialAssessmentsHistoryEntity {
 
     @Column(name = "RT_CODE", length = 10)
     private String rtCode;
+
+    @ToString.Exclude()
+    @Fetch(FetchMode.JOIN)
+    @Builder.Default()
+    @OneToMany(mappedBy = "financialAssessmentsHistory", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FinancialAssessmentDetailsHistoryEntity> assessmentDetailsList = new ArrayList<>();
+
+    public void addFinancialAssessmentDetailsHistoryEntity(FinancialAssessmentDetailsHistoryEntity assessmentDetail) {
+        this.assessmentDetailsList.add(assessmentDetail);
+        assessmentDetail.setFinancialAssessmentsHistory(this);
+    }
+
+    @ToString.Exclude()
+    @Builder.Default()
+    @OneToMany(mappedBy = "financialAssessmentHistory", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChildWeightHistoryEntity> childWeightingsList = new ArrayList<>();
+
+    public void addChildWeightHistoryEntity(ChildWeightHistoryEntity childWeighting) {
+        this.childWeightingsList.add(childWeighting);
+        childWeighting.setFinancialAssessmentHistory(this);
+    }
 }

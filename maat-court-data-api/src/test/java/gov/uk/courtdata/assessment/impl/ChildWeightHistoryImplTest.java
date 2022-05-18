@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,10 +43,10 @@ public class ChildWeightHistoryImplTest {
     public void givenFinancialAssessmentsHistoryDTOAndFinancialAssessmentId_whenBuildAndSaveIsInvoked_thenFinancialAssessmentsHistoryEntityIsPersisted() {
         when(assessmentHistoryMapper.ChildWeightHistoryDTOToChildWeightHistoryEntity(childWeightHistoryDTO)).thenReturn(childWeightHistoryEntity);
 
-        childWeightHistoryImpl.buildAndSave(Arrays.asList(childWeightHistoryDTO), 1000);
+        childWeightHistoryImpl.buildAndSave(List.of(childWeightHistoryDTO));
 
         verify(assessmentHistoryMapper).ChildWeightHistoryDTOToChildWeightHistoryEntity(childWeightHistoryDTO);
-        verify(childWeightHistoryRepository).saveAll(Arrays.asList(childWeightHistoryEntity));
+        verify(childWeightHistoryRepository).saveAll(List.of(childWeightHistoryEntity));
     }
 
 }

@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,9 +44,9 @@ public class FinancialAssessmentDetailsHistoryImplTest {
         when(assessmentHistoryMapper.FinancialAssessmentDetailsHistoryDTOToFinancialAssessmentDetailsHistoryEntity(financialAssessmentDetailsHistoryDTO))
                 .thenReturn(financialAssessmentDetailsHistoryEntity);
 
-        financialAssessmentDetailsHistoryImpl.buildAndSave(Arrays.asList(financialAssessmentDetailsHistoryDTO),1000);
+        financialAssessmentDetailsHistoryImpl.buildAndSave(List.of(financialAssessmentDetailsHistoryDTO));
 
         verify(assessmentHistoryMapper).FinancialAssessmentDetailsHistoryDTOToFinancialAssessmentDetailsHistoryEntity(financialAssessmentDetailsHistoryDTO);
-        verify(financialAssessmentDetailsHistoryRepository).saveAll(Arrays.asList(financialAssessmentDetailsHistoryEntity));
+        verify(financialAssessmentDetailsHistoryRepository).saveAll(List.of(financialAssessmentDetailsHistoryEntity));
     }
 }

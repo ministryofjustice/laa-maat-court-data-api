@@ -26,7 +26,7 @@ public class TestEntityDataBuilder {
                 .id(1000)
                 .repId(5678)
                 .initialAscrId(1)
-                .nworCode("FMA")
+                .newWorkReason(NewWorkReasonEntity.builder().code("FMA").build())
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("test-f")
                 .cmuId(30)
@@ -40,11 +40,29 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithDetails() {
+        FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
+        financialAssessment.addAssessmentDetail(getFinancialAssessmentDetailsEntity());
+        return financialAssessment;
+    }
+
+    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithChildWeightings() {
+        FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
+        financialAssessment.addChildWeighting(getChildWeightingsEntity());
+        return financialAssessment;
+    }
+
+    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithRelationships() {
+        FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
+        financialAssessment.addAssessmentDetail(getFinancialAssessmentDetailsEntity());
+        financialAssessment.addChildWeighting(getChildWeightingsEntity());
+        return financialAssessment;
+    }
+
     public static FinancialAssessmentDetailEntity getFinancialAssessmentDetailsEntity() {
         return FinancialAssessmentDetailEntity.builder()
                 .id(23456)
                 .criteriaDetailId(40)
-                .financialAssessmentId(1000)
                 .applicantAmount(BigDecimal.valueOf(1650.00))
                 .applicantFrequency(Frequency.MONTHLY)
                 .partnerAmount(BigDecimal.valueOf(1650.00))
@@ -232,7 +250,6 @@ public class TestEntityDataBuilder {
         return ChildWeightingsEntity.builder()
                 .noOfChildren(1)
                 .childWeightingId(12)
-                .financialAssessmentId(1000)
                 .build();
     }
 

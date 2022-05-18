@@ -40,11 +40,7 @@ public class FinancialAssessmentHistoryServiceTest {
     @Mock
     private RepOrderImpl repOrderImpl;
     @Mock
-    private FinancialAssessmentDetailsHistoryImpl financialAssessmentDetailsHistoryImpl;
-    @Mock
     private FinancialAssessmentHistoryImpl financialAssessmentHistoryImpl;
-    @Mock
-    private ChildWeightHistoryImpl childWeightHistoryImpl;
     @Mock
     private FinancialAssessmentHistoryMapper assessmentHistoryMapper;
     @Mock

@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,9 +48,8 @@ public class FinancialAssessmentHistoryServiceTest {
     private FinancialAssessmentMapper assessmentMapper;
 
     private FinancialAssessmentEntity assessmentEntity;
-    private FinancialAssessmentsHistoryEntity financialAssessmentsHistoryEntity;
     private List<FinancialAssessmentDetailEntity> assessmentDetailsEntities;
-    private ChildWeightingsEntity childWeightingsEntity;
+    private List<ChildWeightingsEntity> childWeightingsEntities;
 
     private FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO;
     private FinancialAssessmentDetailsHistoryDTO financialAssessmentDetailsHistoryDTO;
@@ -61,9 +61,9 @@ public class FinancialAssessmentHistoryServiceTest {
     @Before
     public void setup() {
         assessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntity();
-        financialAssessmentsHistoryEntity = TestEntityDataBuilder.getFinancialAssessmentsHistoryEntity();
-        assessmentDetailsEntities = Arrays.asList(TestEntityDataBuilder.getFinancialAssessmentDetailsEntity());
-        childWeightingsEntity = TestEntityDataBuilder.getChildWeightingsEntity();
+        FinancialAssessmentsHistoryEntity financialAssessmentsHistoryEntity = TestEntityDataBuilder.getFinancialAssessmentsHistoryEntity();
+        assessmentDetailsEntities = List.of(TestEntityDataBuilder.getFinancialAssessmentDetailsEntity());
+        childWeightingsEntities = List.of(TestEntityDataBuilder.getChildWeightingsEntity());
 
         financialAssessmentsHistoryDTO = TestModelDataBuilder.getFinancialAssessmentsHistoryDTO();
         financialAssessmentDetailsHistoryDTO = TestModelDataBuilder.getFinancialAssessmentDetailsHistoryDTO();
@@ -80,7 +80,7 @@ public class FinancialAssessmentHistoryServiceTest {
         when(financialAssessmentDetailsImpl.findAll(MOCK_FINANCIAL_ASSESSMENT_ID)).thenReturn(assessmentDetailsEntities);
         when(assessmentHistoryMapper.FinancialAssessmentDetailEntityToFinancialAssessmentDetailsHistoryDTO(any(FinancialAssessmentDetailEntity.class)))
                 .thenReturn(financialAssessmentDetailsHistoryDTO);
-        when(childWeightingsImpl.findAll(MOCK_FINANCIAL_ASSESSMENT_ID)).thenReturn(Arrays.asList(childWeightingsEntity));
+        when(childWeightingsImpl.findAll(MOCK_FINANCIAL_ASSESSMENT_ID)).thenReturn(childWeightingsEntities);
         when(assessmentHistoryMapper.ChildWeightingsEntityToChildWeightHistoryDTO(any(ChildWeightingsEntity.class))).thenReturn(childWeightHistoryDTO);
 
         financialAssessmentHistoryService.createAssessmentHistory(MOCK_FINANCIAL_ASSESSMENT_ID, true);
@@ -91,12 +91,13 @@ public class FinancialAssessmentHistoryServiceTest {
         verify(assessmentHistoryMapper).FinancialAssessmentDetailEntityToFinancialAssessmentDetailsHistoryDTO(any(FinancialAssessmentDetailEntity.class));
         verify(childWeightingsImpl).findAll(MOCK_FINANCIAL_ASSESSMENT_ID);
         verify(assessmentHistoryMapper).ChildWeightingsEntityToChildWeightHistoryDTO(any(ChildWeightingsEntity.class));
+        verify(financialAssessmentHistoryImpl).buildAndSave(financialAssessmentsHistoryDTO, MOCK_FINANCIAL_ASSESSMENT_ID);
     }
 
     @Test
     public void givenCorrectFinancialAssessmentId_whenCreateAssessmentHistoryIsInvoked_thenAssessmentsHistoryWithoutFinAssessmentDetailsIsCreated() {
         when(financialAssessmentDetailsImpl.findAll(MOCK_FINANCIAL_ASSESSMENT_ID)).thenReturn(null);
-        when(childWeightingsImpl.findAll(MOCK_FINANCIAL_ASSESSMENT_ID)).thenReturn(Arrays.asList(childWeightingsEntity));
+        when(childWeightingsImpl.findAll(MOCK_FINANCIAL_ASSESSMENT_ID)).thenReturn(childWeightingsEntities);
         when(assessmentHistoryMapper.ChildWeightingsEntityToChildWeightHistoryDTO(any(ChildWeightingsEntity.class))).thenReturn(childWeightHistoryDTO);
 
         financialAssessmentHistoryService.createAssessmentHistory(MOCK_FINANCIAL_ASSESSMENT_ID, true);
@@ -107,6 +108,9 @@ public class FinancialAssessmentHistoryServiceTest {
         verify(assessmentHistoryMapper, times(0)).FinancialAssessmentDetailEntityToFinancialAssessmentDetailsHistoryDTO(any(FinancialAssessmentDetailEntity.class));
         verify(childWeightingsImpl).findAll(MOCK_FINANCIAL_ASSESSMENT_ID);
         verify(assessmentHistoryMapper).ChildWeightingsEntityToChildWeightHistoryDTO(any(ChildWeightingsEntity.class));
+
+        financialAssessmentsHistoryDTO.setAssessmentDetailsList(new ArrayList<>());
+        verify(financialAssessmentHistoryImpl).buildAndSave(financialAssessmentsHistoryDTO, MOCK_FINANCIAL_ASSESSMENT_ID);
     }
 
     @Test
@@ -127,5 +131,8 @@ public class FinancialAssessmentHistoryServiceTest {
         verify(assessmentHistoryMapper).FinancialAssessmentDetailEntityToFinancialAssessmentDetailsHistoryDTO(any(FinancialAssessmentDetailEntity.class));
         verify(childWeightingsImpl).findAll(MOCK_FINANCIAL_ASSESSMENT_ID);
         verify(assessmentHistoryMapper, times(0)).ChildWeightingsEntityToChildWeightHistoryDTO(any(ChildWeightingsEntity.class));
+
+        financialAssessmentsHistoryDTO.setChildWeightingsList(new ArrayList<>());
+        verify(financialAssessmentHistoryImpl).buildAndSave(financialAssessmentsHistoryDTO, MOCK_FINANCIAL_ASSESSMENT_ID);
     }
 }

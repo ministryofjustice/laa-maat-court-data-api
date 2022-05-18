@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -616,6 +617,8 @@ public class TestModelDataBuilder {
                 .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
+                .childWeightingsList(List.of(TestModelDataBuilder.getChildWeightHistoryDTO()))
+                .assessmentDetailsList(List.of(TestModelDataBuilder.getFinancialAssessmentDetailsHistoryDTO()))
                 .build();
     }
 

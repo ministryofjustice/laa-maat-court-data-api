@@ -73,6 +73,7 @@ public class FinancialAssessmentHistoryServiceTest {
         when(financialAssessmentHistoryImpl.buildAndSave(financialAssessmentsHistoryDTO, MOCK_FINANCIAL_ASSESSMENT_ID)).thenReturn(financialAssessmentsHistoryEntity);
         when(financialAssessmentImpl.find(MOCK_FINANCIAL_ASSESSMENT_ID)).thenReturn(assessmentEntity);
         when(assessmentHistoryMapper.FinancialAssessmentEntityToFinancialAssessmentsHistoryDTO(assessmentEntity)).thenReturn(financialAssessmentsHistoryDTO);
+        when(repOrderImpl.findRepOrder(assessmentEntity.getRepId())).thenReturn(TestEntityDataBuilder.getRepOrder());
     }
 
     @Test

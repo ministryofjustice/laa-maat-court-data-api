@@ -626,7 +626,6 @@ public class TestModelDataBuilder {
                 .applicantFrequency(Frequency.MONTHLY)
                 .partnerAmount(BigDecimal.valueOf(1650.00))
                 .partnerFrequency(Frequency.TWO_WEEKLY)
-                .financialAssessmentsHistory(FinancialAssessmentsHistoryDTO.builder().id(1234).build())
                 .fasdId(4321)
                 .build();
     }

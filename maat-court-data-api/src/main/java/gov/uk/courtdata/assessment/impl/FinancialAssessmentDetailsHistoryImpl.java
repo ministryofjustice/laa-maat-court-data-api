@@ -24,15 +24,13 @@ public class FinancialAssessmentDetailsHistoryImpl {
     private final FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistoryRepository;
 
     public List<FinancialAssessmentDetailsHistoryEntity> buildAndSave(
-            final List<FinancialAssessmentDetailsHistoryDTO> financialAssessmentDetailsHistoryDTOs,
-            final int financialAssessmentId) {
+            final List<FinancialAssessmentDetailsHistoryDTO> financialAssessmentDetailsHistoryDTOs) {
         List<FinancialAssessmentDetailsHistoryEntity> financialAssessmentDetailsHistoryEntities =
                 ofNullable(financialAssessmentDetailsHistoryDTOs)
                         .orElse(Collections.emptyList())
                         .stream()
                         .map(assessmentHistoryMapper::FinancialAssessmentDetailsHistoryDTOToFinancialAssessmentDetailsHistoryEntity)
                         .collect(toList());
-        log.info("Executing save financialAssessmentDetailsHistoryEntities for financialAssessmentId: {}", financialAssessmentId);
         return financialAssessmentDetailsHistoryRepository.saveAll(financialAssessmentDetailsHistoryEntities);
     }
 

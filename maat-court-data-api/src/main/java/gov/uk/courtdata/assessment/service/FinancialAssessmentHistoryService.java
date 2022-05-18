@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 public class FinancialAssessmentHistoryService {
 
     private final FinancialAssessmentImpl financialAssessmentImpl;
-    private final FinancialAssessmentDetailsImpl financialAssessmentDetailsImpl;
-    private final ChildWeightingsImpl childWeightingsImpl;
     private final RepOrderImpl repOrderImpl;
     private final FinancialAssessmentHistoryImpl financialAssessmentsHistoryImpl;
     private final FinancialAssessmentDetailsHistoryImpl financialAssessmentDetailsHistoryImpl;
@@ -40,14 +38,14 @@ public class FinancialAssessmentHistoryService {
         FinancialAssessmentsHistoryEntity financialAssessmentsHistoryEntity =
                 financialAssessmentsHistoryImpl.buildAndSave(financialAssessmentsHistoryDTO, financialAssessmentId);
 
-        createFinancialAssessmentDetailsHistory(financialAssessmentId, financialAssessmentsHistoryEntity.getId());
-        createFinancialAssessmentChildWeightHistory(financialAssessmentId, financialAssessmentsHistoryEntity.getId());
+        createFinancialAssessmentDetailsHistory(assessmentEntity, financialAssessmentsHistoryEntity.getId());
+        createFinancialAssessmentChildWeightHistory(assessmentEntity, financialAssessmentsHistoryEntity.getId());
         log.info("Create Assessment History - Transaction Processing - End");
     }
 
-    private void createFinancialAssessmentDetailsHistory(final int financialAssessmentId, final int financialAssessmentsHistoryId) {
-        log.info("Creating FinancialAssessmentDetailsHistory record for financialAssessmentId: {}", financialAssessmentId);
-        List<FinancialAssessmentDetailEntity> assessmentDetailsEntities = financialAssessmentDetailsImpl.findAll(financialAssessmentId);
+    private void createFinancialAssessmentDetailsHistory(FinancialAssessmentEntity financialAssessment, final int financialAssessmentsHistoryId) {
+        log.info("Creating FinancialAssessmentDetailsHistory record for financialAssessmentId: {}", financialAssessment.getId());
+        List<FinancialAssessmentDetailEntity> assessmentDetailsEntities = financialAssessment.getAssessmentDetails();
 
         if (assessmentDetailsEntities != null) {
             List<FinancialAssessmentDetailsHistoryDTO> financialAssessmentDetailsHistoryDTOs = assessmentDetailsEntities
@@ -59,24 +57,28 @@ public class FinancialAssessmentHistoryService {
                         financialAssessmentDetailsHistoryDTO.setFasdId(financialAssessmentDetailEntity.getId());
                         return financialAssessmentDetailsHistoryDTO;
                     }).collect(Collectors.toList());
-            financialAssessmentDetailsHistoryImpl.buildAndSave(financialAssessmentDetailsHistoryDTOs, financialAssessmentId);
+            log.info("Executing save financialAssessmentDetailsHistoryEntities for financialAssessmentId: {}", financialAssessment.getId());
+            financialAssessmentDetailsHistoryImpl.buildAndSave(financialAssessmentDetailsHistoryDTOs);
         }
     }
 
-    private void createFinancialAssessmentChildWeightHistory(final int financialAssessmentId, final int financialAssessmentsHistoryId) {
-        log.info("Creating ChildWeightHistory record for financialAssessmentId: {}", financialAssessmentId);
-        List<ChildWeightingsEntity> childWeightingsEntities = childWeightingsImpl.findAll(financialAssessmentId);
+    private void createFinancialAssessmentChildWeightHistory(FinancialAssessmentEntity financialAssessment, final int financialAssessmentsHistoryId) {
+        log.info("Creating ChildWeightHistory record for financialAssessmentId: {}", financialAssessment.getId());
+        List<ChildWeightingsEntity> childWeightingsEntities = financialAssessment.getChildWeightings();
+
         if (childWeightingsEntities != null) {
             List<ChildWeightHistoryDTO> childWeightHistoryDTOs = childWeightingsEntities
                     .stream()
                     .map(childWeightingsEntity -> {
-                        ChildWeightHistoryDTO childWeightHistoryDTO = assessmentHistoryMapper.ChildWeightingsEntityToChildWeightHistoryDTO(childWeightingsEntity);
+                        ChildWeightHistoryDTO childWeightHistoryDTO =
+                                assessmentHistoryMapper.ChildWeightingsEntityToChildWeightHistoryDTO(childWeightingsEntity);
                         childWeightHistoryDTO.setFacwId(childWeightingsEntity.getChildWeightingId());
                         childWeightHistoryDTO.setFashId(financialAssessmentsHistoryId);
                         return childWeightHistoryDTO;
                     })
                     .collect(Collectors.toList());
-            childWeightHistoryImpl.buildAndSave(childWeightHistoryDTOs, financialAssessmentId);
+            log.info("Executing save childWeightHistoryEntities for financialAssessmentId: {}", financialAssessment.getId());
+            childWeightHistoryImpl.buildAndSave(childWeightHistoryDTOs);
         }
     }
 
@@ -103,5 +105,4 @@ public class FinancialAssessmentHistoryService {
         }
         return financialAssessmentsHistoryDTO;
     }
-
 }

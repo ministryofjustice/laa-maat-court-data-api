@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dto;
 
+import gov.uk.courtdata.model.NewWorkReason;
 import lombok.Builder;
 import lombok.Data;
 
@@ -35,7 +36,7 @@ public class FinancialAssessmentsHistoryDTO {
     private String initResult;
     private String initResultReason;
     private BigDecimal initTotalAggregatedIncome;
-    private String nworCode;
+    private NewWorkReason newWorkReason;
     private Integer repId;
     private String userCreated;
     private BigDecimal totalAggregatedExpense;

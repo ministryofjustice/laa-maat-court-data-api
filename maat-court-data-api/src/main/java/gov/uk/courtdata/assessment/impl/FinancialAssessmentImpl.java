@@ -3,14 +3,20 @@ package gov.uk.courtdata.assessment.impl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
+import gov.uk.courtdata.entity.ChildWeightingsEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.enums.FinancialAssessmentType;
+import gov.uk.courtdata.model.assessment.ChildWeightings;
+import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -62,7 +68,70 @@ public class FinancialAssessmentImpl {
         } else {
             existingAssessment.setAssessmentType(FinancialAssessmentType.INIT.getValue());
         }
-        return financialAssessmentRepository.save(existingAssessment);
+
+        if (!financialAssessment.getAssessmentDetails().isEmpty()) {
+            updateAssessmentDetails(financialAssessment, existingAssessment);
+        }
+        if (!financialAssessment.getChildWeightings().isEmpty()) {
+            updateChildWeightings(financialAssessment, existingAssessment);
+        }
+
+        return financialAssessmentRepository.saveAndFlush(existingAssessment);
+    }
+
+    void updateChildWeightings(FinancialAssessmentDTO financialAssessment, FinancialAssessmentEntity existingAssessment) {
+        existingAssessment.getChildWeightings()
+                .removeIf(weighting -> !financialAssessment.getChildWeightings()
+                        .stream()
+                        .map(ChildWeightings::getChildWeightingId).collect(Collectors.toList())
+                        .contains(weighting.getChildWeightingId()));
+
+        for (ChildWeightings weighting : financialAssessment.getChildWeightings()) {
+            ChildWeightingsEntity childWeightingEntity =
+                    assessmentMapper.ChildWeightingsToChildWeightingsEntity(weighting);
+            ChildWeightingsEntity existingChildWeightingEntity =
+                    existingAssessment.getChildWeightings()
+                            .stream()
+                            .filter(assessmentDetail -> weighting.getChildWeightingId().equals(assessmentDetail.getChildWeightingId()))
+                            .findFirst().orElse(null);
+            if (existingChildWeightingEntity != null) {
+                if (!existingChildWeightingEntity.equals(childWeightingEntity)) {
+                    existingChildWeightingEntity.setNoOfChildren(weighting.getNoOfChildren());
+                    existingChildWeightingEntity.setUserModified(financialAssessment.getUserModified());
+                }
+            } else {
+                existingAssessment.addChildWeighting(childWeightingEntity);
+            }
+        }
+    }
+
+    void updateAssessmentDetails(FinancialAssessmentDTO financialAssessment, FinancialAssessmentEntity existingAssessment) {
+        existingAssessment.getAssessmentDetails()
+                .removeIf(detail -> !financialAssessment.getAssessmentDetails()
+                        .stream()
+                        .map(FinancialAssessmentDetails::getCriteriaDetailId).collect(Collectors.toList())
+                        .contains(detail.getCriteriaDetailId()));
+
+        for (FinancialAssessmentDetails detail : financialAssessment.getAssessmentDetails()) {
+            FinancialAssessmentDetailEntity detailEntity =
+                    assessmentMapper.FinancialAssessmentDetailsToFinancialAssessmentDetailsEntity(detail);
+            FinancialAssessmentDetailEntity existingDetailEntity =
+                    existingAssessment.getAssessmentDetails()
+                            .stream()
+                            .filter(assessmentDetail -> detail.getCriteriaDetailId().equals(assessmentDetail.getCriteriaDetailId()))
+                            .findFirst().orElse(null);
+            if (existingDetailEntity != null) {
+                if (!existingDetailEntity.equals(detailEntity)) {
+                    existingDetailEntity.setApplicantAmount(detail.getApplicantAmount());
+                    existingDetailEntity.setApplicantFrequency(detail.getApplicantFrequency());
+                    existingDetailEntity.setPartnerAmount(detail.getPartnerAmount());
+                    existingDetailEntity.setPartnerFrequency(detail.getPartnerFrequency());
+                    existingDetailEntity.setUserModified(financialAssessment.getUserModified());
+                }
+            } else {
+                existingAssessment.addAssessmentDetail(detailEntity);
+            }
+        }
     }
 
     public void delete(Integer financialAssessmentId) {
@@ -77,30 +146,34 @@ public class FinancialAssessmentImpl {
     }
 
     public void setOldAssessmentReplaced(FinancialAssessmentDTO financialAssessment) {
-        financialAssessmentRepository.updatePreviousFinancialAssessmentsAsReplaced(financialAssessment.getRepId(), financialAssessment.getId());
-        passportAssessmentRepository.updateAllPreviousPassportAssessmentsAsReplaced(financialAssessment.getRepId());
-        hardshipReviewRepository.updateOldHardshipReviews(financialAssessment.getRepId(), financialAssessment.getId());
+        financialAssessmentRepository.updatePreviousFinancialAssessmentsAsReplaced(
+                financialAssessment.getRepId(), financialAssessment.getId()
+        );
+        passportAssessmentRepository.updateAllPreviousPassportAssessmentsAsReplaced(
+                financialAssessment.getRepId()
+        );
+        hardshipReviewRepository.updateOldHardshipReviews(
+                financialAssessment.getRepId(), financialAssessment.getId()
+        );
     }
 
     public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId) {
 
-        OutstandingAssessmentResultDTO result = new OutstandingAssessmentResultDTO();
-
-        // Check for outstanding financial assessments
-        Long outstandingFinancialAssessments = financialAssessmentRepository.findOutstandingFinancialAssessments(repId);
+        Long outstandingFinancialAssessments =
+                financialAssessmentRepository.findOutstandingFinancialAssessments(repId);
         if (outstandingFinancialAssessments != null && outstandingFinancialAssessments > 0l) {
-            result = new OutstandingAssessmentResultDTO(true, MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
-            return result;
+            return new OutstandingAssessmentResultDTO(
+                    true, MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND
+            );
         }
 
-        // Check for outstanding passport assessments
-        Long outstandingPassportAssessments = passportAssessmentRepository.findOutstandingPassportAssessments(repId);
+        Long outstandingPassportAssessments =
+                passportAssessmentRepository.findOutstandingPassportAssessments(repId);
         if (outstandingPassportAssessments != null && outstandingPassportAssessments > 0l) {
-            result = new OutstandingAssessmentResultDTO(true, MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
-            return result;
+            return new OutstandingAssessmentResultDTO(
+                    true, MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND
+            );
         }
-
-        // None found
-        return result;
+        return new OutstandingAssessmentResultDTO();
     }
 }

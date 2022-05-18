@@ -23,9 +23,6 @@ public class ChildWeightingsEntity {
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-    @Column(name = "FINA_ID", nullable = false)
-    private Integer financialAssessmentId;
-
     @Column(name = "CHILD_WEIGHTING_ID", nullable = false)
     private Integer childWeightingId;
 
@@ -46,4 +43,7 @@ public class ChildWeightingsEntity {
     @Column(name = "USER_MODIFIED", length = 10)
     private String userModified;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "FINA_ID", nullable = false)
+    private FinancialAssessmentEntity financialAssessment;
 }

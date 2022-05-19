@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
@@ -223,7 +222,7 @@ public class TestEntityDataBuilder {
                 .id(4321)
                 .repId(1234)
                 .initialAscrId(1)
-                .nworCode("FMA")
+                .newWorkReason(getNewWorkReasonEntity())
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("test-f")
                 .cmuId(30)
@@ -234,8 +233,8 @@ public class TestEntityDataBuilder {
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
                 .userModified("test-f")
-                .assessmentDetailsList(List.of(TestEntityDataBuilder.getFinancialAssessmentDetailsHistoryEntity()))
-                .childWeightingsList(List.of(TestEntityDataBuilder.getChildWeightHistoryEntity()))
+                .assessmentDetails(List.of(TestEntityDataBuilder.getFinancialAssessmentDetailsHistoryEntity()))
+                .childWeightings(List.of(TestEntityDataBuilder.getChildWeightHistoryEntity()))
                 .build();
     }
 

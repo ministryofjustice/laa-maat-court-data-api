@@ -62,8 +62,8 @@ public class FinancialAssessmentsHistoryDTO {
     private LocalDateTime dateCompleted;
     private String userModified;
     private String rtCode;
-    private List<FinancialAssessmentDetailsHistoryDTO> assessmentDetailsList;
-    private List<ChildWeightHistoryDTO> childWeightingsList;
+    private List<FinancialAssessmentDetailsHistoryDTO> assessmentDetails;
+    private List<ChildWeightHistoryDTO> childWeightings;
     //repOrder
     private String caseType;
     private String magsOutcome;

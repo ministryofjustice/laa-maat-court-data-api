@@ -24,6 +24,7 @@ public interface FinancialAssessmentHistoryMapper {
 
     FinancialAssessmentsHistoryEntity FinancialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(final FinancialAssessmentsHistoryDTO assessmentsHistoryDTO);
 
+    @Mapping(source = "id", target = "facwId")
     ChildWeightHistoryDTO ChildWeightingsEntityToChildWeightHistoryDTO(final ChildWeightingsEntity childWeightingsEntity);
 
     ChildWeightHistoryEntity ChildWeightHistoryDTOToChildWeightHistoryEntity(final ChildWeightHistoryDTO childWeightHistoryDTO);

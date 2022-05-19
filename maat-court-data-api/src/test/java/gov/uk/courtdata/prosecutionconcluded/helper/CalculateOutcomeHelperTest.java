@@ -1,5 +1,6 @@
 package gov.uk.courtdata.prosecutionconcluded.helper;
 
+import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.prosecutionconcluded.model.*;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -16,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CalculateOutcomeHelperTest {
@@ -51,6 +53,7 @@ public class CalculateOutcomeHelperTest {
 
         assertThat(res).isEqualTo("CONVICTED");
     }
+
 
     @Test
     public void givenMessageIsReceived_whenMultipleOffenceIsAvailable_thenReturnOutcomeAsPartConvicted() {

@@ -11,6 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface RoleActionsRepository extends JpaRepository<RoleActionEntity, Integer> {
-    @Query(value = "select ra.* from ROLE_ACTIONS ra inner join USER_ROLES ur on (ra.ROLE_NAME = ur.ROLE_NAME) where  ur.USER_NAME = :username and ra.ACTION = :action and ra.enabled = 'Y' FETCH FIRST 1 ROWS ONLY", nativeQuery = true)
+    @Query(value = "select ra.* from TOGDATA.ROLE_ACTIONS ra inner join TOGDATA.USER_ROLES ur on (ra.ROLE_NAME = ur.ROLE_NAME) where  ur.USER_NAME = :username and ra.ACTION = :action and ra.enabled = 'Y' FETCH FIRST 1 ROWS ONLY", nativeQuery = true)
     Optional<RoleActionEntity> getRoleAction(@Param("username") String username, @Param("action") String action);
 }

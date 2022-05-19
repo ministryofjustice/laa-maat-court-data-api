@@ -18,9 +18,7 @@ public class JmsErrorHandler implements ErrorHandler {
 
         log.warn("In default JMS error handler...");
         log.error("Error Message : {}", t.getMessage());
-
-        if(t instanceof RuntimeException)
-            throw new RuntimeException(t.getMessage());
+        throw new RuntimeException(t.getMessage());
     }
 
 }

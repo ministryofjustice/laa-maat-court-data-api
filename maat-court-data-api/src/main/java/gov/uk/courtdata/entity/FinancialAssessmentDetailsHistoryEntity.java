@@ -23,8 +23,9 @@ public class FinancialAssessmentDetailsHistoryEntity {
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-    @Column(name = "FASH_ID", nullable = false)
-    private Integer fashId;
+    @ManyToOne(targetEntity = FinancialAssessmentsHistoryEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "FASH_ID", referencedColumnName = "id")
+    private FinancialAssessmentsHistoryEntity financialAssessmentsHistory;
 
     @Column(name = "FASD_ID", nullable = false)
     private Integer fasdId;

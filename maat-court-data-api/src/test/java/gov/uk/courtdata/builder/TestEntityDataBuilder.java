@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
@@ -214,6 +216,8 @@ public class TestEntityDataBuilder {
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
                 .userModified("test-f")
+                .assessmentDetailsList(List.of(TestEntityDataBuilder.getFinancialAssessmentDetailsHistoryEntity()))
+                .childWeightingsList(List.of(TestEntityDataBuilder.getChildWeightHistoryEntity()))
                 .build();
     }
 

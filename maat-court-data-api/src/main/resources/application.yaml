@@ -78,10 +78,6 @@ sentry:
   release: 1.1.0
   servername: aws-ecs-container
   send-default-pii: true
-  logging:
-    minimum-breadcrumb-level: info
-    minimum-event-level: info
-    enabled: true
   attach-stacktrace: true
 
 api-endpoints:

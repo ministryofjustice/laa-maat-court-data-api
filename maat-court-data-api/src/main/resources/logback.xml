@@ -5,10 +5,7 @@
         </encoder>
     </appender>
 
-    <appender name="Sentry" class="io.sentry.logback.SentryAppender"/>
-
     <root level="INFO">
         <appender-ref ref="Console" />
-        <appender-ref ref="Sentry" />
     </root>
 </configuration>

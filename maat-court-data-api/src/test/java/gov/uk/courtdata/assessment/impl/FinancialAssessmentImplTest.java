@@ -46,12 +46,14 @@ public class FinancialAssessmentImplTest {
     @Captor
     private ArgumentCaptor<FinancialAssessmentEntity> financialAssessmentEntityArgumentCaptor;
 
+    private static final Integer MOCK_FINANCIAL_ASSESSMENT_ID = 1000;
+
 
     @Test
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
-        when(financialAssessmentRepository.getById(any())).thenReturn(FinancialAssessmentEntity.builder().id(1000).build());
-        FinancialAssessmentEntity returned = financialAssessmentImpl.find(1000);
-        assertThat(returned.getId()).isEqualTo(1000);
+        when(financialAssessmentRepository.getById(any())).thenReturn(FinancialAssessmentEntity.builder().id(MOCK_FINANCIAL_ASSESSMENT_ID).build());
+        FinancialAssessmentEntity returned = financialAssessmentImpl.find(MOCK_FINANCIAL_ASSESSMENT_ID);
+        assertThat(returned.getId()).isEqualTo(MOCK_FINANCIAL_ASSESSMENT_ID);
     }
 
     @Test
@@ -129,23 +131,23 @@ public class FinancialAssessmentImplTest {
 
     @Test
     public void whenDeleteIsInvoked_thenAssessmentIsDeleted() {
-        financialAssessmentImpl.delete(1000);
+        financialAssessmentImpl.delete(MOCK_FINANCIAL_ASSESSMENT_ID);
         verify(financialAssessmentRepository).deleteById(any());
     }
 
     @Test
     public void givenOutstandingFinancialAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentFoundResultIsRetrieved() {
-        when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(1l);
-        OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(1000);
+        when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(1L);
+        OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
         assertThat(result.isOutstandingAssessments()).isEqualTo(true);
         assertThat(result.getMessage()).isEqualTo(MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
     }
 
     @Test
     public void givenOutstandingPassportAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentFoundResultIsRetrieved() {
-        when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(0l);
-        when(passportAssessmentRepository.findOutstandingPassportAssessments(any())).thenReturn(1l);
-        OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(1000);
+        when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(0L);
+        when(passportAssessmentRepository.findOutstandingPassportAssessments(any())).thenReturn(1L);
+        OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
         assertThat(result.isOutstandingAssessments()).isEqualTo(true);
         assertThat(result.getMessage()).isEqualTo(MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
     }
@@ -154,19 +156,21 @@ public class FinancialAssessmentImplTest {
     public void givenFinancialAssessment_whenSetOldAssessmentReplacedIsInvoked_thenOldAssessmentsAreReplaced() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTO();
 
-        financialAssessment.setId(1000);
+        financialAssessment.setId(MOCK_FINANCIAL_ASSESSMENT_ID);
         financialAssessmentImpl.setOldAssessmentReplaced(financialAssessment);
 
-        verify(hardshipReviewRepository).updateOldHardshipReviews(financialAssessment.getRepId(), financialAssessment.getId());
-        verify(passportAssessmentRepository).updateAllPreviousPassportAssessmentsAsReplaced(anyInt());
-        verify(financialAssessmentRepository).updatePreviousFinancialAssessmentsAsReplaced(anyInt(), anyInt());
+        Integer repId = financialAssessment.getRepId();
+
+        verify(hardshipReviewRepository).updateOldHardshipReviews(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
+        verify(passportAssessmentRepository).updateAllPreviousPassportAssessmentsAsReplaced(repId);
+        verify(financialAssessmentRepository).updatePreviousFinancialAssessmentsAsReplaced(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
     }
 
     @Test
     public void givenNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentNotFoundResultIsRetrieved() {
-        when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(0l);
-        when(passportAssessmentRepository.findOutstandingPassportAssessments(any())).thenReturn(0l);
-        OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(1000);
+        when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(0L);
+        when(passportAssessmentRepository.findOutstandingPassportAssessments(any())).thenReturn(0L);
+        OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
         assertThat(result.isOutstandingAssessments()).isEqualTo(false);
     }
 

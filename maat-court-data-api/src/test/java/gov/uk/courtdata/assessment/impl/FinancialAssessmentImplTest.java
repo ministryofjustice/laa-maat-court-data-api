@@ -157,7 +157,7 @@ public class FinancialAssessmentImplTest {
         financialAssessment.setId(1000);
         financialAssessmentImpl.setOldAssessmentReplaced(financialAssessment);
 
-        verify(hardshipReviewRepository).updateOldHardshipReviews(anyInt(), anyInt());
+        verify(hardshipReviewRepository).updateOldHardshipReviews(financialAssessment.getRepId(), financialAssessment.getId());
         verify(passportAssessmentRepository).updateAllPreviousPassportAssessmentsAsReplaced(anyInt());
         verify(financialAssessmentRepository).updatePreviousFinancialAssessmentsAsReplaced(anyInt(), anyInt());
     }

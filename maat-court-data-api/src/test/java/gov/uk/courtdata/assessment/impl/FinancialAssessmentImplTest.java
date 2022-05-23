@@ -65,7 +65,7 @@ public class FinancialAssessmentImplTest {
 
         financialAssessmentImpl.create(financialAssessment);
 
-        verify(financialAssessmentRepository).save(financialAssessmentEntityArgumentCaptor.capture());
+        verify(financialAssessmentRepository).saveAndFlush(financialAssessmentEntityArgumentCaptor.capture());
     }
 
     @Test
@@ -154,9 +154,8 @@ public class FinancialAssessmentImplTest {
 
     @Test
     public void givenFinancialAssessment_whenSetOldAssessmentReplacedIsInvoked_thenOldAssessmentsAreReplaced() {
-        FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTO();
+        FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
 
-        financialAssessment.setId(MOCK_FINANCIAL_ASSESSMENT_ID);
         financialAssessmentImpl.setOldAssessmentReplaced(financialAssessment);
 
         Integer repId = financialAssessment.getRepId();

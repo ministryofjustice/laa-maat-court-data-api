@@ -53,7 +53,7 @@ public class FinancialAssessmentService {
                 assessmentMapper.CreateFinancialAssessmentToFinancialAssessmentDTO(financialAssessment);
         log.info("Creating new financial assessment record");
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.create(assessmentDTO);
-        financialAssessmentImpl.setOldAssessmentReplaced(assessmentDTO);
+        financialAssessmentImpl.setOldAssessmentReplaced(assessmentEntity);
         log.info("Create Financial Assessment - Transaction Processing - End");
         return assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
     }

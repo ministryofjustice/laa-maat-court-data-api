@@ -25,7 +25,7 @@ public class HearingResultedListener {
 
     private final QueueMessageLogService queueMessageLogService;
 
-    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.hearingResulted}")
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.hearingResulted}", concurrency = "1")
     public void receive(@Payload final String message) {
 
         MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.HEARING.name());

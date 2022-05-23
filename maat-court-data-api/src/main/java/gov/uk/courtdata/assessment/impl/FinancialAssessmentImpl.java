@@ -142,10 +142,10 @@ public class FinancialAssessmentImpl {
         FinancialAssessmentEntity assessmentEntity =
                 assessmentMapper.FinancialAssessmentDtoToFinancialAssessmentEntity(financialAssessment);
         assessmentEntity.setAssessmentType(FinancialAssessmentType.INIT.getValue());
-        return financialAssessmentRepository.save(assessmentEntity);
+        return financialAssessmentRepository.saveAndFlush(assessmentEntity);
     }
 
-    public void setOldAssessmentReplaced(FinancialAssessmentDTO financialAssessment) {
+    public void setOldAssessmentReplaced(FinancialAssessmentEntity financialAssessment) {
         financialAssessmentRepository.updatePreviousFinancialAssessmentsAsReplaced(
                 financialAssessment.getRepId(), financialAssessment.getId()
         );

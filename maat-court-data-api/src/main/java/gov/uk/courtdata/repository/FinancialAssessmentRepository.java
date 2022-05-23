@@ -17,7 +17,7 @@ public interface FinancialAssessmentRepository extends JpaRepository<FinancialAs
     void updateAllPreviousFinancialAssessmentsAsReplaced(@Param("repId") Integer repId);
 
     @Modifying
-    @Query(value = "UPDATE FinancialAssessmentEntity fa set fa.replaced = 'Y' WHERE fa.id <> :id AND fa.repId = :repId")
+    @Query(value = "UPDATE TOGDATA.FINANCIAL_ASSESSMENTS fa set fa.REPLACED = 'Y' WHERE fa.ID <> :id AND fa.REP_ID = :repId", nativeQuery = true)
     void updatePreviousFinancialAssessmentsAsReplaced(@Param("repId") Integer repId, @Param("id") Integer id);
 
     @Query(value = "SELECT * FROM TOGDATA.FINANCIAL_ASSESSMENTS fa WHERE fa.REP_ID = :repId AND DATE_COMPLETED IS NOT NULL AND fa.REPLACED = 'N'", nativeQuery = true)
@@ -25,9 +25,4 @@ public interface FinancialAssessmentRepository extends JpaRepository<FinancialAs
 
     @Query(value = "SELECT count(*) FROM TOGDATA.FINANCIAL_ASSESSMENTS fa WHERE fa.REP_ID = :repId AND fa.REPLACED = 'N' AND (fa.VALID IS NULL OR fa.VALID <> 'N') AND (fa.FASS_FULL_STATUS = 'IN PROGRESS' OR fa.FASS_INIT_STATUS  = 'IN PROGRESS')", nativeQuery = true)
     Long findOutstandingFinancialAssessments(@Param("repId") Integer repId);
-
-    @Modifying
-    @Query(value = "UPDATE TOGDATA.FINANCIAL_ASSESSMENTS fa set fa.REPLACED = 'Y' WHERE fa.REP_ID = :repId", nativeQuery = true)
-    void updateOldAssessments(@Param("repId") Integer repId);
-
 }

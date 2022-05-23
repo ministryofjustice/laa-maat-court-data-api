@@ -61,7 +61,7 @@ public class FinancialAssessmentServiceTest {
                 .thenReturn(FinancialAssessmentDTO.builder().id(1000).build());
 
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.create(financialAssessment);
-        verify(financialAssessmentImpl).setOldAssessmentReplaced(any(FinancialAssessmentDTO.class));
+        verify(financialAssessmentImpl).setOldAssessmentReplaced(any(FinancialAssessmentEntity.class));
 
         assertThat(returnedAssessment.getId()).isEqualTo(1000);
     }

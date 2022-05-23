@@ -26,7 +26,6 @@ public class FinancialAssessmentValidationProcessor {
             throw new ValidationException("Financial Assessment Request is empty");
         } else if (financialAssessment.getRepId() == null) {
             throw new ValidationException("Rep Order ID is required");
-            // TODO: Check the database, can Rep Orders still be reserved?
         } else if (financialAssessment.getInitialAscrId() == null) {
             throw new ValidationException("Assessment Criteria ID is required");
         } else if (financialAssessment.getCmuId() == null) {

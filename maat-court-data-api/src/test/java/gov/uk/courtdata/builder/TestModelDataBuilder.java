@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,7 +44,7 @@ public class TestModelDataBuilder {
                 .repId(5678)
                 .initialAscrId(1)
                 .assessmentType("INIT")
-                .nworCode("FMA")
+                .newWorkReason(getNewWorkReason())
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("test-f")
                 .cmuId(30)
@@ -58,24 +57,24 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static FinancialAssessmentDTO getFinancialAssessmentWithDetails() {
-        FinancialAssessmentDTO base = getFinancialAssessmentDTO();
-
-        base.setAssessmentDetailsList(List.of(
+    public static FinancialAssessmentDTO getFinancialAssessmentDTOWithDetails() {
+        FinancialAssessmentDTO financialAssessment = getFinancialAssessmentDTO();
+        financialAssessment.setAssessmentDetails(List.of(
                 FinancialAssessmentDetails.builder()
                         .criteriaDetailId(40)
                         .applicantAmount(BigDecimal.valueOf(1650.00))
                         .applicantFrequency(Frequency.MONTHLY)
                         .partnerAmount(BigDecimal.valueOf(1650.00))
                         .partnerFrequency(Frequency.TWO_WEEKLY)
-                        .build(),
-                FinancialAssessmentDetails.builder()
-                        .criteriaDetailId(45)
-                        .applicantAmount(BigDecimal.valueOf(150.00))
-                        .applicantFrequency(Frequency.WEEKLY)
                         .build()
         ));
-        return base;
+        return financialAssessment;
+    }
+
+    public static FinancialAssessmentDTO getFinancialAssessmentWithChildWeightings() {
+        FinancialAssessmentDTO financialAssessment = getFinancialAssessmentDTO();
+        financialAssessment.setChildWeightings(List.of(getChildWeightings()));
+        return financialAssessment;
     }
 
     public static FinancialAssessmentDetails getFinancialAssessmentDetails() {
@@ -86,6 +85,23 @@ public class TestModelDataBuilder {
                 .partnerAmount(BigDecimal.valueOf(1650.00))
                 .partnerFrequency(Frequency.TWO_WEEKLY)
                 .build();
+    }
+
+    public static NewWorkReason getNewWorkReason() {
+        return NewWorkReason.builder()
+                .code("FMA")
+                .build();
+    }
+
+    public static CreateFinancialAssessment getCreateFinancialAssessmentWithRelationships() {
+        CreateFinancialAssessment financialAssessment = getCreateFinancialAssessment();
+        financialAssessment.setAssessmentDetails(
+                List.of(getFinancialAssessmentDetails())
+        );
+        financialAssessment.setChildWeightings(
+                List.of(getChildWeightings())
+        );
+        return financialAssessment;
     }
 
     public static CreateFinancialAssessment getCreateFinancialAssessment() {
@@ -599,7 +615,7 @@ public class TestModelDataBuilder {
 
     public static ChildWeightings getChildWeightings() {
         return ChildWeightings.builder()
-                .childWeightingId(2)
+                .childWeightingId(12)
                 .noOfChildren(1)
                 .build();
     }
@@ -609,7 +625,7 @@ public class TestModelDataBuilder {
                 .repId(1234)
                 .initialAscrId(1)
                 .assessmentType("INIT")
-                .nworCode("FMA")
+                .newWorkReason(getNewWorkReason())
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("test-f")
                 .cmuId(30)
@@ -617,8 +633,8 @@ public class TestModelDataBuilder {
                 .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
-                .childWeightingsList(List.of(TestModelDataBuilder.getChildWeightHistoryDTO()))
-                .assessmentDetailsList(List.of(TestModelDataBuilder.getFinancialAssessmentDetailsHistoryDTO()))
+                .childWeightings(List.of(TestModelDataBuilder.getChildWeightHistoryDTO()))
+                .assessmentDetails(List.of(TestModelDataBuilder.getFinancialAssessmentDetailsHistoryDTO()))
                 .build();
     }
 

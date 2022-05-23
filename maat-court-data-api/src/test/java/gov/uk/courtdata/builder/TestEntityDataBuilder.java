@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
@@ -28,7 +27,7 @@ public class TestEntityDataBuilder {
                 .id(1000)
                 .repId(5678)
                 .initialAscrId(1)
-                .nworCode("FMA")
+                .newWorkReason(NewWorkReasonEntity.builder().code("FMA").build())
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("test-f")
                 .cmuId(30)
@@ -42,11 +41,29 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithDetails() {
+        FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
+        financialAssessment.addAssessmentDetail(getFinancialAssessmentDetailsEntity());
+        return financialAssessment;
+    }
+
+    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithChildWeightings() {
+        FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
+        financialAssessment.addChildWeighting(getChildWeightingsEntity());
+        return financialAssessment;
+    }
+
+    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithRelationships() {
+        FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
+        financialAssessment.addAssessmentDetail(getFinancialAssessmentDetailsEntity());
+        financialAssessment.addChildWeighting(getChildWeightingsEntity());
+        return financialAssessment;
+    }
+
     public static FinancialAssessmentDetailEntity getFinancialAssessmentDetailsEntity() {
         return FinancialAssessmentDetailEntity.builder()
                 .id(23456)
                 .criteriaDetailId(40)
-                .financialAssessmentId(1000)
                 .applicantAmount(BigDecimal.valueOf(1650.00))
                 .applicantFrequency(Frequency.MONTHLY)
                 .partnerAmount(BigDecimal.valueOf(1650.00))
@@ -205,7 +222,7 @@ public class TestEntityDataBuilder {
                 .id(4321)
                 .repId(1234)
                 .initialAscrId(1)
-                .nworCode("FMA")
+                .newWorkReason(getNewWorkReasonEntity())
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("test-f")
                 .cmuId(30)
@@ -216,8 +233,8 @@ public class TestEntityDataBuilder {
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
                 .userModified("test-f")
-                .assessmentDetailsList(List.of(TestEntityDataBuilder.getFinancialAssessmentDetailsHistoryEntity()))
-                .childWeightingsList(List.of(TestEntityDataBuilder.getChildWeightHistoryEntity()))
+                .assessmentDetails(List.of(TestEntityDataBuilder.getFinancialAssessmentDetailsHistoryEntity()))
+                .childWeightings(List.of(TestEntityDataBuilder.getChildWeightHistoryEntity()))
                 .build();
     }
 
@@ -236,7 +253,6 @@ public class TestEntityDataBuilder {
         return ChildWeightingsEntity.builder()
                 .noOfChildren(1)
                 .childWeightingId(12)
-                .financialAssessmentId(1000)
                 .build();
     }
 

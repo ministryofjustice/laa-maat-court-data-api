@@ -1,6 +1,5 @@
 package gov.uk.courtdata.entity;
 
-import gov.uk.courtdata.dto.ChildWeightHistoryDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
@@ -28,6 +27,7 @@ public class FinancialAssessmentsHistoryEntity {
     @Column(name = "ID", nullable = false)
     private Integer id;
 
+    @ToString.Exclude
     @OneToOne(targetEntity = FinancialAssessmentEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "FIAS_ID", referencedColumnName = "id")
     private FinancialAssessmentEntity financialAssessment;
@@ -45,8 +45,11 @@ public class FinancialAssessmentsHistoryEntity {
     @Column(name = "ASS_TYPE", nullable = false, length = 4)
     private String assessmentType;
 
-    @Column(name = "NWOR_CODE", nullable = false, updatable = false)
-    private String nworCode;
+    @ToString.Exclude
+    @Fetch(FetchMode.JOIN)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "NWOR_CODE", nullable = false)
+    private NewWorkReasonEntity newWorkReason;
 
     @Column(name = "CMU_ID", nullable = false)
     private Integer cmuId;
@@ -208,20 +211,20 @@ public class FinancialAssessmentsHistoryEntity {
     @Fetch(FetchMode.JOIN)
     @Builder.Default()
     @OneToMany(mappedBy = "financialAssessmentsHistory", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FinancialAssessmentDetailsHistoryEntity> assessmentDetailsList = new ArrayList<>();
+    private List<FinancialAssessmentDetailsHistoryEntity> assessmentDetails = new ArrayList<>();
 
     public void addFinancialAssessmentDetailsHistoryEntity(FinancialAssessmentDetailsHistoryEntity assessmentDetail) {
-        this.assessmentDetailsList.add(assessmentDetail);
+        this.assessmentDetails.add(assessmentDetail);
         assessmentDetail.setFinancialAssessmentsHistory(this);
     }
 
     @ToString.Exclude()
     @Builder.Default()
     @OneToMany(mappedBy = "financialAssessmentHistory", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChildWeightHistoryEntity> childWeightingsList = new ArrayList<>();
+    private List<ChildWeightHistoryEntity> childWeightings = new ArrayList<>();
 
     public void addChildWeightHistoryEntity(ChildWeightHistoryEntity childWeighting) {
-        this.childWeightingsList.add(childWeighting);
+        this.childWeightings.add(childWeighting);
         childWeighting.setFinancialAssessmentHistory(this);
     }
 }

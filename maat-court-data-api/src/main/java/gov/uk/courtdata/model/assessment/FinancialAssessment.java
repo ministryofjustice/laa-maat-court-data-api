@@ -29,6 +29,6 @@ public class FinancialAssessment {
     private LocalDateTime incomeEvidenceDueDate;
     private String incomeEvidenceNotes;
     private String initApplicationEmploymentStatus;
-    private List<FinancialAssessmentDetails> assessmentDetailsList;
-    private List<ChildWeightings> childWeightingsList;
+    private List<FinancialAssessmentDetails> assessmentDetails;
+    private List<ChildWeightings> childWeightings;
 }

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dto;
 
+import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,7 +23,7 @@ public class FinancialAssessmentDTO {
     private Integer repId;
     private Integer initialAscrId;
     private String assessmentType;
-    private String nworCode;
+    private NewWorkReason newWorkReason;
     private LocalDateTime dateCreated;
     private String userCreated;
     private Integer cmuId;
@@ -54,6 +56,8 @@ public class FinancialAssessmentDTO {
     private String userModified;
     private Integer usn;
     private String rtCode;
-    private List<FinancialAssessmentDetails> assessmentDetailsList;
-    private List<ChildWeightings> childWeightingsList;
+    @Builder.Default
+    private List<FinancialAssessmentDetails> assessmentDetails = new ArrayList<>();
+    @Builder.Default
+    private List<ChildWeightings> childWeightings = new ArrayList<>();
 }

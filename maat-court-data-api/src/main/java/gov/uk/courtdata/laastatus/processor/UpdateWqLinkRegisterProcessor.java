@@ -19,7 +19,7 @@ public class UpdateWqLinkRegisterProcessor implements Process {
         WqLinkRegisterEntity wqLinkRegisterEntity = wqLinkRegisterRepository
                 .findBymaatId(courtDataDTO.getCaseDetails()
                         .getMaatId()).get(0);
-        final int category = geCategory(courtDataDTO);
+        final int category = getCategory(courtDataDTO);
         if (wqLinkRegisterEntity.getMlrCat() != category) {
             wqLinkRegisterEntity.setMlrCat(category);
             wqLinkRegisterRepository.save(wqLinkRegisterEntity);
@@ -27,7 +27,7 @@ public class UpdateWqLinkRegisterProcessor implements Process {
     }
 
 
-    protected int geCategory(CourtDataDTO courtDataDTO) {
+    protected int getCategory(CourtDataDTO courtDataDTO) {
         return courtDataDTO.getCaseDetails().getCategory();
     }
 

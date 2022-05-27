@@ -56,7 +56,7 @@ cda:
     clientId: cdaClient
     clientSecret: cdaPass
   laastatus:
-    url: cdaUrl
+    url: "http://localhost:1234/update"
 
 queue:
   message:

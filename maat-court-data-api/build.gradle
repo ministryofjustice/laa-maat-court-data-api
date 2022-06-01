@@ -30,8 +30,9 @@ def versions = [
         jupiterVersion  : '5.6.2',
         gradlePitest    : '1.4.6',
         pitest          : '1.4.10',
-        sonarPitest     : '0.5'
-
+        sonarPitest     : '0.5',
+        okhttpVersion   : '4.9.3',
+        mockWebServerVersion : '4.9.3'
 ]
 
 dependencyManagement {
@@ -122,9 +123,8 @@ dependencies {
     testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: versions.harmcrestVersion
     testImplementation group: 'org.testng', name: 'testng', version: versions.testngVersion
     testImplementation group: 'org.easytesting', name: 'fest-assert', version: versions.festVersion
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: versions.jupiterVersion
-
-
+    testImplementation group: 'com.squareup.okhttp3', name: 'okhttp', version: versions.okhttpVersion
+    testImplementation group: 'com.squareup.okhttp3', name: 'mockwebserver', version: versions.mockWebServerVersion
 }
 
 

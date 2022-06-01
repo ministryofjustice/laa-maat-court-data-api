@@ -157,6 +157,20 @@ The application deployed as a Docker container, and the logs can also be found f
 Sentry is a 3rd party application logging and monitoring platform. The platform provides easier searching based on meta-data as well as application monitoring. You can learn more about ['how we have integrated Sentry to improve application logging and monitoring'](https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/2139914261/Integrate+Sentry+to+improve+application+logging+and+monitoring)
 There are several alert rules configured on Sentry that will push notification to both email and Slack channel. We have created a dedicated slack channel (named 'laa-crime-apps-logs-alert'). Sentry will push the alert to this channel for a specific type of exceptions. The configuration for Slack alert can be change from a [Sentry dashboard](https://sentry.io/settings/ministryofjustice/projects/laa-maat-court-data-api/alerts/).  
 
+### Mutation PI testing 
+
+Mutation testing providing test coverage for Java applications.
+Faults (or mutations) are automatically seeded into the code, then your tests are run. If your tests fail then the mutation is killed, if your tests pass then the mutation lived.
+Here are some of the key benefits for this type of testing. 
+* High coverage of testing
+* New kinds of test scenarios
+* Validate unit test scripts
+
+Once we build the project then run the following command. This will generate a test report under build/reports/pitest/ 
+We want to make sure that the Mutation Coverage for new classes are covered properly 
+```sh
+./gradlew pitest
+```
 
 ### Further reading
  

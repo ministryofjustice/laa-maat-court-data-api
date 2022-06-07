@@ -57,9 +57,11 @@ cloud-platform:
         laaStatusJob: ${LAA_STATUS_JOB_QUEUE}
         createLinkCpStatusJob: ${CREATE_LINK_CP_STATUS_JOB_QUEUE}
         prosecutionConcluded: ${LAA_PROSECUTION_CONCLUDED_QUEUE}
+        prosecutionConcludedDeadLetter: ${LAA_PROSECUTION_CONCLUDED_DEADLETTER_QUEUE}
         config:
           messageDelay: 900
           messageDelayDuration: 120
+          dlqReprocessingDelayMilliseconds: 30000
 
 cda:
   laastatus:

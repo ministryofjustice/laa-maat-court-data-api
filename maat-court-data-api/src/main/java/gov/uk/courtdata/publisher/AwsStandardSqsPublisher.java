@@ -1,5 +1,6 @@
 package gov.uk.courtdata.publisher;
 
+import com.amazon.sqs.javamessaging.SQSQueueDestination;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.GetQueueUrlResult;
 import com.amazonaws.services.sqs.model.MessageAttributeValue;
@@ -14,8 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,34 +32,43 @@ public class AwsStandardSqsPublisher {
     @Value("${cloud-platform.aws.sqs.queue.config.messageDelayDuration}")
     private Integer messageDelayDuration;
 
-
     @Value("${cloud-platform.aws.sqs.queue.prosecutionConcluded}")
     private String sqsQueueName = "";
 
-    private final Gson gson;
+    @Value("${cloud-platform.aws.sqs.queue.prosecutionConcludedDeadLetter}")
+    private String sqsQueueDeadLetterName = "";
 
+    private final Gson gson;
 
     private final AmazonSQSConfig amazonSQSConfig;
 
     private final QueueMessageLogService queueMessageLogService;
 
-    private void publish(String toJson, Integer messageDelayDuration) {
+    private void publish(
+            String toJson,
+            Integer messageDelayDuration,
+            String queueName,
+            Optional<Map<String, MessageAttributeValue>> attributes) {
 
-
-        log.info("Publishing to SQS Queue {} ", sqsQueueName);
+        log.info("Publishing to SQS Queue {} ", queueName);
 
         AmazonSQS amazonSQS = amazonSQSConfig.awsSqsClient();
-        GetQueueUrlResult getQueueUrlResult = amazonSQS.getQueueUrl(sqsQueueName);
+        GetQueueUrlResult getQueueUrlResult = amazonSQS.getQueueUrl(queueName);
 
         SendMessageRequest request = new SendMessageRequest()
                 .withQueueUrl(getQueueUrlResult.getQueueUrl())
                 .withMessageBody(toJson)
                 .withDelaySeconds(messageDelayDuration);
 
+        attributes.ifPresent(request::withMessageAttributes);
+
         amazonSQS.sendMessage(request);
-        log.info("A CP hearing message has been published to the Queue {} with time delay of {} seconds.",sqsQueueName, messageDelayDuration);
+        log.info("A message has been published to the Queue {} with time delay of {} seconds.", queueName, messageDelayDuration);
     }
 
+    public void returnMessageToDeadLetterQueue(Map<String, MessageAttributeValue> attributes, String jsonPayload) {
+        publish(jsonPayload, delaySeconds, sqsQueueDeadLetterName, Optional.of(attributes));
+    }
 
     public void publishMessageToProsecutionSQS(ProsecutionConcluded prosecutionConcluded) {
 
@@ -69,7 +82,7 @@ public class AwsStandardSqsPublisher {
             prosecutionConcluded.setMessageRetryCounter(counter);
             String toJson = gson.toJson(prosecutionConcluded);
 
-             publish(toJson, delaySeconds);
+             publish(toJson, delaySeconds, sqsQueueName, Optional.empty());
         } else {
             throw new MaatRecordLockedException("Unable to process CP hearing notification because Maat Record is locked.");
         }
@@ -83,7 +96,7 @@ public class AwsStandardSqsPublisher {
         if (counter < 6 ) {
             log.info("Publishing a message to the SQS again, with retry number {}", counter);
             String toJson = gson.toJson(prosecutionConcluded);
-            publish(toJson, messageDelayDuration);
+            publish(toJson, messageDelayDuration, sqsQueueName, Optional.empty());
         } else {
             log.info("A message retried multiple times and breaking the republishing sqs chain {}", prosecutionConcluded.getMessageRetryCounter());
             throw new MaatRecordLockedException("Hearing data not available for this maat and throwing the exception.");

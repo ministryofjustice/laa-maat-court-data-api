@@ -1,19 +1,18 @@
 package gov.uk.courtdata.integration.authorization;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.authorization.controller.AuthorizationController;
 import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
 import gov.uk.courtdata.repository.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -35,6 +35,9 @@ public class AuthorizationControllerIntegrationTest {
     private final String VALID_TEST_USER = "test-user-valid";
     private final String AUTHORISED_ACTION = "VALID_ACTION";
     private final String DISABLED_ACTION = "DISABLED_ACTION";
+    private final String VALID_NWORCODE = "VALID_WORK_REASON";
+    private final String MISSING_USER_NAME_OR_NWORCODE_ERROR = "Username and new work reason are required";
+    private final String MISSING_USER_NAME_OR_ACTION_ERROR = "Username and action are required";
 
     @Autowired
     private RoleActionsRepository roleActionsRepository;
@@ -72,7 +75,7 @@ public class AuthorizationControllerIntegrationTest {
                         .username(VALID_TEST_USER).roleName(DISABLED_ROLE).build()
         );
 
-        userRolesRepository.saveAllAndFlush(userRoleEntities);
+        userRolesRepository.saveAll(userRoleEntities);
 
         String ROLE_ACTION_ENABLED = "Y";
         String ROLE_ACTION_DISABLED = "N";
@@ -83,7 +86,16 @@ public class AuthorizationControllerIntegrationTest {
                     .Id(2).roleName(DISABLED_ROLE).action(DISABLED_ACTION).enabled(ROLE_ACTION_DISABLED).build()
         );
 
-        roleActionsRepository.saveAllAndFlush(roleActionEntities);
+        roleActionsRepository.saveAll(roleActionEntities);
+
+        roleWorkReasonsRepository
+                .save(RoleWorkReasonEntity.builder()
+                        .id(1)
+                        .roleName(AUTHORISED_ROLE)
+                        .nworCode(VALID_NWORCODE)
+                        .dateCreated(LocalDateTime.now())
+                        .userCreated(VALID_TEST_USER)
+                        .build());
     }
 
     @Test
@@ -107,23 +119,46 @@ public class AuthorizationControllerIntegrationTest {
     }
 
     @Test
-    public void givenMissingUser_whenIsRoleActionAuthorizedIsInvoked_theCorrectErrorIsThrown() {
-        ValidationException error =
-                assertThrows(
-                        ValidationException.class,
-                        () -> authorizationController.isRoleActionAuthorized("", AUTHORISED_ACTION, LAA_TRANSACTION_ID));
-
-        assertThat(error.getMessage()).contains("Username and action are required");
+    public void givenMissingUsername_whenIsRoleActionAuthorizedIsInvoked_theCorrectErrorIsThrown() {
+        runValidationErrorScenario(
+                () -> authorizationController.isRoleActionAuthorized("", AUTHORISED_ACTION, LAA_TRANSACTION_ID),
+                MISSING_USER_NAME_OR_ACTION_ERROR);
     }
 
     @Test
     public void givenMissingAction_whenIsRoleActionAuthorizedIsInvoked_theCorrectErrorIsThrown() {
-        ValidationException error =
-                assertThrows(
-                        ValidationException.class,
-                        () -> authorizationController.isRoleActionAuthorized(VALID_TEST_USER, "", LAA_TRANSACTION_ID));
+        runValidationErrorScenario(
+                () -> authorizationController.isRoleActionAuthorized(VALID_TEST_USER, "", LAA_TRANSACTION_ID),
+                MISSING_USER_NAME_OR_ACTION_ERROR);
+    }
 
-        assertThat(error.getMessage()).contains("Username and action are required");
+    @Test
+    public void givenValidUsernameAndNWorCode_whenIsNewWorkReasonAuthorizedIsInvoked_theCorrectResponseIsReturned() {
+        runNewWorkReasonAuthorizedScenario(VALID_TEST_USER, VALID_NWORCODE, true);
+    }
+
+    @Test
+    public void givenValidUsernameAndInvalidNWorCode_whenIsNewWorkReasonAuthorizedIsInvoked_theCorrectResponseIsReturned() {
+        runNewWorkReasonAuthorizedScenario(VALID_TEST_USER, "INVALID_WORK_REASON", false);
+    }
+
+    @Test
+    public void givenAnInvalidUsernameAndValidNWorCode_whenIsNewWorkReasonAuthorizedIsInvoked_theCorrectResponseIsReturned() {
+        runNewWorkReasonAuthorizedScenario("invalid-user", VALID_NWORCODE, false);
+    }
+
+    @Test
+    public void givenMissingNWorCode_whenIsNewWorkReasonAuthorizedIsInvoked_theCorrectErrorIsThrown() {
+        runValidationErrorScenario(
+                () -> authorizationController.isNewWorkReasonAuthorized(VALID_TEST_USER, "", LAA_TRANSACTION_ID),
+                MISSING_USER_NAME_OR_NWORCODE_ERROR);
+    }
+
+    @Test
+    public void givenMissingUsername_whenIsNewWorkReasonAuthorizedIsInvoked_theCorrectErrorIsThrown() {
+        runValidationErrorScenario(
+                () -> authorizationController.isNewWorkReasonAuthorized("", VALID_NWORCODE, LAA_TRANSACTION_ID),
+                MISSING_USER_NAME_OR_NWORCODE_ERROR);
     }
 
     private void runRoleActionAuthorizedScenario(String username, String action, Boolean expectedResult) {
@@ -132,5 +167,18 @@ public class AuthorizationControllerIntegrationTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(Objects.requireNonNull(response.getBody()).isResult()).isEqualTo(expectedResult);
+    }
+
+    private void runNewWorkReasonAuthorizedScenario(String username, String nWorCode, Boolean expectedResult) {
+        ResponseEntity<AuthorizationResponse> response =
+                authorizationController.isNewWorkReasonAuthorized(username, nWorCode, LAA_TRANSACTION_ID);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(Objects.requireNonNull(response.getBody()).isResult()).isEqualTo(expectedResult);
+    }
+
+    private void runValidationErrorScenario(ThrowingRunnable throwingRunnable, String expectedErrorMessage) {
+        ValidationException error = assertThrows(ValidationException.class, throwingRunnable);
+        assertThat(error.getMessage()).contains(expectedErrorMessage);
     }
 }

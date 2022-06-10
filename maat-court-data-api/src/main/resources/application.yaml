@@ -83,8 +83,40 @@ sentry:
 api-endpoints:
   assessments-domain: /api/internal/v1/assessment
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, metrics"
+  metrics:
+    use-global-registry: false
+    enable:
+      process: false
+      jdbc: true
+      logback: false
+      spring: true
+      tomcat: false
+      hikaricp: true
+      jvm: true
+      system: true
+    export:
+      cloudwatch:
+        enabled: ${ENABLE_CLOUDWATCH_METRICS}
+        namespace: maat-api
+        batch-size: ${CLOUDWATCH_BATCH_SIZE}
+        step: ${CLOUDWATCH_STEP}
 
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
 
+cloud:
+  aws:
+    region:
+      static: ${AWS_DEFAULT_REGION}
 
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}

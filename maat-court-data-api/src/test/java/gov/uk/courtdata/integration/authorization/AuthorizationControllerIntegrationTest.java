@@ -31,6 +31,7 @@ import static org.junit.Assert.assertThrows;
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 public class AuthorizationControllerIntegrationTest {
 
+
     private final String LAA_TRANSACTION_ID = "b27b97e4-0514-42c4-8e09-fcc2c693e11f";
     private final String VALID_TEST_USER = "test-user-valid";
     private final String AUTHORISED_ACTION = "VALID_ACTION";
@@ -38,6 +39,9 @@ public class AuthorizationControllerIntegrationTest {
     private final String VALID_NWORCODE = "VALID_WORK_REASON";
     private final String MISSING_USER_NAME_OR_NWORCODE_ERROR = "Username and new work reason are required";
     private final String MISSING_USER_NAME_OR_ACTION_ERROR = "Username and action are required";
+    private final Integer VALID_RESERVATION_ID = 1234;
+    private final String VALID_SESSION_ID = "valid-session";
+    private final String MISSING_USER_ATTRIBUTES_ERROR = "User session attributes are missing";
 
     @Autowired
     private RoleActionsRepository roleActionsRepository;
@@ -50,8 +54,9 @@ public class AuthorizationControllerIntegrationTest {
     @Autowired
     private UserRolesRepository userRolesRepository;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private ObjectMapper objectMapper;
-
 
     @Before
     public void setUp() throws IOException {
@@ -96,6 +101,26 @@ public class AuthorizationControllerIntegrationTest {
                         .dateCreated(LocalDateTime.now())
                         .userCreated(VALID_TEST_USER)
                         .build());
+
+
+        LocalDateTime reservationDate = LocalDateTime.now();
+        LocalDateTime expiryDate = reservationDate.plusHours(3);
+
+        reservationsRepository.save(ReservationsEntity.builder()
+                .recordId(1)
+                .userName(VALID_TEST_USER)
+                .userSession(VALID_SESSION_ID)
+                .recordId(VALID_RESERVATION_ID)
+                .reservationDate(reservationDate)
+                .recordName("REP_ORDER")
+                .expiryDate(expiryDate)
+                .build());
+
+        userRepository.save(UserEntity.builder()
+                        .username(VALID_TEST_USER)
+                        .currentSession(VALID_SESSION_ID)
+
+                .build());
     }
 
     @Test
@@ -161,6 +186,44 @@ public class AuthorizationControllerIntegrationTest {
                 MISSING_USER_NAME_OR_NWORCODE_ERROR);
     }
 
+    @Test
+    public void givenAReservedRecord_whenIsReservedIsInvoked_theCorrectResponseIsReturnedAndTheReservationTimeIsUpdated() {
+        runIsReservedScenario(VALID_RESERVATION_ID, true);
+    }
+
+    @Test
+    public void givenAnUnreservedRecord_whenIsReservedIsInvoked_theCorrectResponseIsReturned() {
+        runIsReservedScenario(5678, false);
+    }
+
+    @Test
+    public void givenAStaleUserSession_whenIsReservedIsInvoked_theCorrectErrorIsThrown() {
+        runValidationErrorScenario(
+                () -> authorizationController.isReserved(VALID_TEST_USER, VALID_RESERVATION_ID, "Stale-session", LAA_TRANSACTION_ID),
+                "Stale user session, reservation not allowed");
+    }
+
+    @Test
+    public void givenAMissingUsername_whenIsReservedIsInvoked_theCorrectErrorIsThrown() {
+        runValidationErrorScenario(
+                () -> authorizationController.isReserved("", VALID_RESERVATION_ID, VALID_SESSION_ID, LAA_TRANSACTION_ID),
+                MISSING_USER_ATTRIBUTES_ERROR);
+    }
+
+    @Test
+    public void givenAMissingSessionId_whenIsReservedIsInvoked_theCorrectErrorIsThrown() {
+        runValidationErrorScenario(
+                () -> authorizationController.isReserved(VALID_TEST_USER, VALID_RESERVATION_ID, "", LAA_TRANSACTION_ID),
+                MISSING_USER_ATTRIBUTES_ERROR);
+    }
+
+    @Test
+    public void givenAMissingReservationId_whenIsReservedIsInvoked_theCorrectErrorIsThrown() {
+        runValidationErrorScenario(
+                () -> authorizationController.isReserved(VALID_TEST_USER, null, VALID_SESSION_ID, LAA_TRANSACTION_ID),
+                "Reservation attributes are missing");
+    }
+
     private void runRoleActionAuthorizedScenario(String username, String action, Boolean expectedResult) {
         ResponseEntity<AuthorizationResponse> response =
                 authorizationController.isRoleActionAuthorized(username, action, LAA_TRANSACTION_ID);
@@ -175,6 +238,15 @@ public class AuthorizationControllerIntegrationTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(Objects.requireNonNull(response.getBody()).isResult()).isEqualTo(expectedResult);
+    }
+
+    private void runIsReservedScenario(Integer reservationId, Boolean expectedResult) {
+        ResponseEntity<Object> response =
+                authorizationController.isReserved(VALID_TEST_USER, reservationId, VALID_SESSION_ID, LAA_TRANSACTION_ID);
+        AuthorizationResponse responseBody = (AuthorizationResponse) response.getBody();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseBody).isNotNull();
+        assertThat(responseBody.isResult()).isEqualTo(expectedResult);
     }
 
     private void runValidationErrorScenario(ThrowingRunnable throwingRunnable, String expectedErrorMessage) {

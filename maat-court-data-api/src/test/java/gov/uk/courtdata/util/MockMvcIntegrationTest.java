@@ -31,7 +31,7 @@ public abstract class MockMvcIntegrationTest {
     @Autowired
     protected WebApplicationContext webApplicationContext;
 
-    public void setUp() {
+    public void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
@@ -45,7 +45,7 @@ public abstract class MockMvcIntegrationTest {
     public void runBadRequestErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
         ErrorDTO expectedError = ErrorDTO.builder().code(HttpStatus.BAD_REQUEST.name()).message(expectedErrorMessage).build();
 
-        MvcResult result = mockMvc.perform(request).andReturn();
+        MvcResult result = mockMvc.perform(request).andExpect(status().isBadRequest()).andReturn();
 
         assertThat(result.getResponse().getContentAsString())
                 .isEqualTo(objectMapper.writeValueAsString(expectedError));

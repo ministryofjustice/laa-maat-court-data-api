@@ -1,17 +1,13 @@
 package gov.uk.courtdata.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.dto.ErrorDTO;
-import gov.uk.courtdata.integration.MockServicesConfig;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -19,8 +15,6 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 @AutoConfigureMockMvc
 public abstract class MockMvcIntegrationTest {
 
@@ -44,9 +38,11 @@ public abstract class MockMvcIntegrationTest {
 
     public void runBadRequestErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
         ErrorDTO expectedError = ErrorDTO.builder().code(HttpStatus.BAD_REQUEST.name()).message(expectedErrorMessage).build();
+        runErrorScenario(expectedError, request, status().isBadRequest());
+    }
 
-        MvcResult result = mockMvc.perform(request).andExpect(status().isBadRequest()).andReturn();
-
+    private void runErrorScenario(ErrorDTO expectedError, MockHttpServletRequestBuilder request, ResultMatcher resultMatcher) throws Exception {
+        MvcResult result = mockMvc.perform(request).andExpect(resultMatcher).andReturn();
         assertThat(result.getResponse().getContentAsString())
                 .isEqualTo(objectMapper.writeValueAsString(expectedError));
     }

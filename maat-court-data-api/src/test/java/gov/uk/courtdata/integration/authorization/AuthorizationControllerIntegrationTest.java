@@ -43,7 +43,7 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws Exception {
         super.setUp();
         setupTestData();
     }

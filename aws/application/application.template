@@ -418,6 +418,19 @@ Resources:
       ResourceRecords:
       - !GetAtt LoadBalancer.DNSName
 
+  XRayTracingRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [ecs-tasks.amazonaws.com]
+          Action: ['sts:AssumeRole']
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
+
   ECSTaskExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -464,7 +477,22 @@ Resources:
       RequiresCompatibilities:
         - !Ref pLaunchType
       ExecutionRoleArn: !Ref ECSTaskExecutionRole
+      TaskRoleArn: !Ref XRayTracingRole
       ContainerDefinitions:
+        - Name: xray-daemon
+          Cpu: 32
+          Essential: false
+          Image: 'amazon/aws-xray-daemon'
+          Memory: 256
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref 'CloudwatchLogsGroup'
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: !Sub '${pAppName}-app'
+          PortMappings:
+            - ContainerPort: 2000
+              Protocol: udp
         - Name: !Ref pAppName
           Cpu: !If [ cNonProd, 512, 512 ]
           Essential: true
@@ -478,6 +506,8 @@ Resources:
               awslogs-stream-prefix: !Sub '${pAppName}-app'
           PortMappings:
             - ContainerPort: 8090
+          Links:
+            - xray-daemon
           Secrets:
             - Name: DATASOURCE_USERNAME
               ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/DATASOURCE_USERNAME'
@@ -518,6 +548,8 @@ Resources:
               Value: !Ref pCreateLinkCpStatusJobQueue
             - Name: LAA_PROSECUTION_CONCLUDED_QUEUE
               Value: !Ref pLaaProsecutionConcludedQueue
+            - Name: AWS_XRAY_DAEMON_ADDRESS
+              Value: xray-daemon:2000
 
 
 

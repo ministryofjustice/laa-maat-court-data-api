@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.service.PostProcessingService;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.enums.LoggingData;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("${api-endpoints.assessments-domain}/post-processing")
 @Slf4j
 @RequiredArgsConstructor
+@XRayEnabled
 @Tag(name = "Post Processing", description = "Rest API for assessment post-processing")
 public class PostProcessingController {
 

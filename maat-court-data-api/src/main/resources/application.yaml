@@ -83,8 +83,8 @@ sentry:
 api-endpoints:
   assessments-domain: /api/internal/v1/assessment
 
-
-
+xray:
+  enabled: ${AWS_XRAY_SDK_ENABLED}
 
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("${api-endpoints.assessments-domain}/financial-assessments")
 @Slf4j
 @RequiredArgsConstructor
+@XRayEnabled
 @Tag(name = "Assessments", description = "Rest API for financial assessments")
 public class FinancialAssessmentController {
 

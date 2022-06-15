@@ -6,19 +6,17 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.WQStatus;
 import gov.uk.courtdata.integration.MockCdaWebConfig;
-import gov.uk.courtdata.link.processor.WqCoreInfoProcessor;
 import gov.uk.courtdata.model.*;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.laastatus.*;
+import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.assertj.core.api.SoftAssertions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.laastatus.controller.LaaStatusUpdateController;
 import gov.uk.courtdata.repository.*;
 import org.junit.After;
@@ -29,8 +27,9 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -42,12 +41,13 @@ import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UPDATE_CASE_EVENT
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static org.junit.Assert.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         properties = "spring.main.allow-bean-definition-overriding=true",
         classes = {MAATCourtDataApplication.class, MockCdaWebConfig.class})
-public class LaaStatusUpdateControllerIntegrationTest {
+public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private final String LAA_TRANSACTION_ID = "b27b97e4-0514-42c4-8e09-fcc2c693e11f";
     private final Integer TEST_MAAT_ID = 1234;
@@ -82,15 +82,13 @@ public class LaaStatusUpdateControllerIntegrationTest {
     private RepOrderCPDataRepository repOrderCPDataRepository;
     @Autowired
     private LaaStatusUpdateController laaStatusUpdateController;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private WqCoreInfoProcessor wqCoreInfoProcessor;
 
     private MockWebServer mockCdaWebServer;
 
     @Before
-    public void setUp() throws IOException {
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         setupCdaWebServer();
@@ -116,69 +114,63 @@ public class LaaStatusUpdateControllerIntegrationTest {
 
     @Test
     @Ignore("This test will be ignored until bug LASB-1123 has been fixed and may require updates.")
-    public void givenNullMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws JsonProcessingException {
+    public void givenNullMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         String testPayload = objectMapper
                 .writeValueAsString(CaseDetails.builder().laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID)).build());
-        MAATCourtDataException error =
-                assertThrows(MAATCourtDataException.class, () -> laaStatusUpdateController.updateLAAStatus(LAA_TRANSACTION_ID, testPayload));
-
-        assertThat(error.getMessage()).contains("MAAT ID is required.");
+        runServerErrorScenario("MAAT APT Call failed MAAT ID is required.", getPostRequest(testPayload));
     }
 
     @Test
     @Ignore("This test will be ignored until bug LASB-1123 has been fixed and may require updates.")
-    public void givenAMissingMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() {
+    public void givenAMissingMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         String payloadMissingMaatId = String.format("{\"laaTransactionId\":\"%s\"}", LAA_TRANSACTION_ID);
-        MAATCourtDataException error =
-                assertThrows(MAATCourtDataException.class, () -> laaStatusUpdateController.updateLAAStatus(LAA_TRANSACTION_ID, payloadMissingMaatId));
-
-        assertThat(error.getMessage()).contains("MAAT ID is required.");
+        runServerErrorScenario("MAAT APT Call failed MAAT ID is required.", getPostRequest(payloadMissingMaatId));
     }
 
     @Test
-    public void givenAnInvalidMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws JsonProcessingException {
-        runValidationFailureScenario(String.format("MAAT/REP ID: %d is invalid.", TEST_MAAT_ID));
+    public void givenAnInvalidMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
+        runValidationFailureScenario(String.format("MAAT APT Call failed MAAT/REP ID: %d is invalid.", TEST_MAAT_ID));
     }
 
     @Test
-    public void givenAMaatIdThatIsNotLinked_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws JsonProcessingException {
+    public void givenAMaatIdThatIsNotLinked_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         runValidationFailureScenario(String.format("MAAT APT Call failed MAAT Id : %s not linked.", TEST_MAAT_ID));
     }
 
     @Test
-    public void givenAMaatIdWithMultipleLinks_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws JsonProcessingException {
+    public void givenAMaatIdWithMultipleLinks_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         createTestLinkData(2);
-        runValidationFailureScenario(String.format("Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
+        runValidationFailureScenario(String.format("MAAT APT Call failed Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
     }
 
     @Test
-    public void givenAMaatIdNoLinkedSolicitor_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws JsonProcessingException {
+    public void givenAMaatIdNoLinkedSolicitor_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         createTestLinkData(1);
-        runValidationFailureScenario(String.format("Solicitor not found for maatId %s", TEST_MAAT_ID));
+        runValidationFailureScenario(String.format("MAAT APT Call failed Solicitor not found for maatId %s", TEST_MAAT_ID));
     }
 
     @Test
-    public void givenAMaatIdWhereTheLinkedSolicitorHasNoAccountCode_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws JsonProcessingException {
+    public void givenAMaatIdWhereTheLinkedSolicitorHasNoAccountCode_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         createTestLinkData(1);
         createSolicitorData("");
         createDefendantData();
-        runValidationFailureScenario(String.format("Solicitor account code not available for maatId %s.", TEST_MAAT_ID));
+        runValidationFailureScenario(String.format("MAAT APT Call failed Solicitor account code not available for maatId %s.", TEST_MAAT_ID));
     }
 
     @Test
-    public void givenAMaatIdWithNoLinkedDefendant_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws JsonProcessingException {
+    public void givenAMaatIdWithNoLinkedDefendant_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         createTestLinkData(1);
         createSolicitorData("test-account-code");
-        runValidationFailureScenario("MAAT Defendant details not found.");
+        runValidationFailureScenario("MAAT APT Call failed MAAT Defendant details not found.");
     }
 
     @Test
-    public void givenCaseDetailsWithOffencesContainingInvalidLaaStatuses_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws JsonProcessingException {
+    public void givenCaseDetailsWithOffencesContainingInvalidLaaStatuses_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         createTestLinkData(1);
         createSolicitorData("test-account-code");
@@ -203,26 +195,24 @@ public class LaaStatusUpdateControllerIntegrationTest {
                 .defendant(defendantWithInvalidLaaStatuses)
                 .build());
 
-        MessageCollection messageCollection = laaStatusUpdateController.updateLAAStatus(LAA_TRANSACTION_ID, testPayload);
+        runSuccessScenario(
+                MessageCollection.builder().messages(expectedErrorMessages).build(),
+                getPostRequest(testPayload));
 
-        assertEquals(expectedErrorMessages.size(), messageCollection.getMessages().size());
-        assertTrue(
-                expectedErrorMessages.containsAll(messageCollection.getMessages()) &&
-                messageCollection.getMessages().containsAll(expectedErrorMessages));
         assertQueueMessageLogged(testPayload, 1);
     }
 
     @Test
-    public void givenValidCaseDetails_whenUpdateLAAStatusIsInvoked_theUpdateIsPerformedCorrectly() throws JsonProcessingException, InterruptedException {
+    public void givenValidCaseDetails_whenUpdateLAAStatusIsInvoked_theUpdateIsPerformedCorrectly() throws Exception {
         runValidCaseDetailsScenario(false);
     }
 
     @Test
-    public void givenValidCaseDetailsWithCdaOnlySet_whenUpdateLAAStatusIsInvoked_onlyCdaUpdatesArePerformed() throws JsonProcessingException, InterruptedException {
+    public void givenValidCaseDetailsWithCdaOnlySet_whenUpdateLAAStatusIsInvoked_onlyCdaUpdatesArePerformed() throws Exception {
         runValidCaseDetailsScenario(true);
     }
 
-    private void runValidCaseDetailsScenario(Boolean cdaOnly) throws JsonProcessingException, InterruptedException {
+    private void runValidCaseDetailsScenario(Boolean cdaOnly) throws Exception {
         createTestRepoOrder();
         List<WqLinkRegisterEntity> linkEntities = createTestLinkData(1);
         SolicitorMAATDataEntity solicitorMAATDataEntity = createSolicitorData("test-account-code");
@@ -258,9 +248,10 @@ public class LaaStatusUpdateControllerIntegrationTest {
 
         String testPayload = generateCaseDetailsJsonPayload(inputCaseDetails);
 
-        MessageCollection messageCollection = laaStatusUpdateController.updateLAAStatus(LAA_TRANSACTION_ID, testPayload);
+        runSuccessScenario(
+                MessageCollection.builder().messages(new ArrayList<>()).build(),
+                getPostRequest(testPayload));
 
-        assertEquals(0, messageCollection.getMessages().size());
         assertQueueMessageLogged(testPayload, 2);
         assertCdaCalledCorrectly(inputCaseDetails, offenceEntity, solicitorMAATDataEntity, repOrderCPDataEntity);
 
@@ -271,14 +262,12 @@ public class LaaStatusUpdateControllerIntegrationTest {
         }
     }
 
-    private void runValidationFailureScenario(String expectedErrorMessage) throws JsonProcessingException {
+    private void runValidationFailureScenario(String expectedErrorMessage) throws Exception {
         String testPayload = generateCaseDetailsJsonPayload(
                 CaseDetails.builder().laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID)).maatId(TEST_MAAT_ID).build());
 
-        MAATCourtDataException error =
-                assertThrows(MAATCourtDataException.class, () -> laaStatusUpdateController.updateLAAStatus(LAA_TRANSACTION_ID, testPayload));
+        runServerErrorScenario(expectedErrorMessage, getPostRequest(testPayload));
 
-        assertThat(error.getMessage()).contains(expectedErrorMessage);
         assertQueueMessageLogged(testPayload, 1);
         assertCdaNotCalled();
     }
@@ -475,10 +464,6 @@ public class LaaStatusUpdateControllerIntegrationTest {
         mockCdaWebServer.enqueue(new MockResponse().setResponseCode(OK.code()));
     }
 
-    private void turnOffMvpFeatureToggle() {
-        ReflectionTestUtils.setField(wqCoreInfoProcessor, "isPostMVPEnabled", Boolean.FALSE.toString());
-    }
-
     private LaaStatusUpdate generateExpectedLaaStatusObject(
             CaseDetails inputCaseDetails,
             OffenceEntity offence,
@@ -528,6 +513,14 @@ public class LaaStatusUpdateControllerIntegrationTest {
                             .relationships(relationships)
                             .build()
                 ).build();
+    }
+
+    private MockHttpServletRequestBuilder getPostRequest(String payload) {
+        String LAA_STATUS_URL = "/maatApi/laaStatus";
+        return post(LAA_STATUS_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("laa-transaction-id", LAA_TRANSACTION_ID)
+                .content(payload);
     }
 
 }

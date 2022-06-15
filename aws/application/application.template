@@ -74,6 +74,18 @@ Parameters:
   pLaaProsecutionConcludedQueue:
     Type: String
     Default: ''
+  pAwsDefaultRegion:
+    Type: String
+    Default: ''
+  pCloudwatchStep:
+    Type: String
+    Default: ''
+  pCloudwatchBatchSize:
+    Type: String
+    Default: ''
+  pEnableCloudwatchMetrics:
+    Type: String
+    Default: ''
 
   ###### API-Gateway parameters
   pApiScope1:

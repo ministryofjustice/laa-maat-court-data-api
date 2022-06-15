@@ -90,9 +90,6 @@ dependencies {
     implementation group: 'com.amazonaws', name: 'amazon-sqs-java-messaging-lib', version: versions.amazonSQSVersion
 
     implementation group: 'org.mapstruct', name: 'mapstruct'
-    implementation 'io.micrometer:micrometer-registry-cloudwatch:1.9.0'
-    implementation 'org.springframework.cloud:spring-cloud-aws-autoconfigure:2.2.6.RELEASE'
-
     annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor'
 
     implementation group: 'io.sentry', name: 'sentry-spring-boot-starter'

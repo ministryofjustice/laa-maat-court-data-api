@@ -91,3 +91,20 @@ feature:
 
 
 version: 0.0.1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics
+  metrics:
+    export:
+      cloudwatch:
+        enabled: ${ENABLE_CLOUDWATCH_METRICS}
+        namespace: maat-api
+        batch-size: ${CLOUDWATCH_BATCH_SIZE}
+        step: ${CLOUDWATCH_STEP}
+
+aws:
+  region: ${AWS_DEFAULT_REGION}
+

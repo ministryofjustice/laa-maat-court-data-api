@@ -16,7 +16,7 @@ import java.time.Duration;
 
 @Component
 @ConditionalOnProperty(prefix = "management.metrics.export.cloudwatch", name = "enabled")
-public class MicrometerCloudwatchConfig extends StepRegistryProperties {
+public class MicrometerCloudwatchConfig {
 
     @Bean
     public Clock micrometerClock() {

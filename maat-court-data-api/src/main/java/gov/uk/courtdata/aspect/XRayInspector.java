@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Aspect
 @Slf4j
@@ -23,15 +24,23 @@ public class XRayInspector extends AbstractXRayInterceptor {
         Map<String, Map<String, Object>> metadata = super.generateMetadata(proceedingJoinPoint, subsegment);
 
         Map<String, Object> argumentsInfo = new HashMap<>();
-        Arrays.stream(proceedingJoinPoint.getArgs())
-                .forEach(arg -> argumentsInfo.put(arg.getClass().getSimpleName(), arg));
-        metadata.put("Arguments", argumentsInfo);
+
+        Object[] methodArgs = proceedingJoinPoint.getArgs();
+        if (methodArgs != null) {
+            Arrays.stream(methodArgs)
+                    .filter(Objects::nonNull)
+                    .forEach(arg -> argumentsInfo.put(arg.getClass().getSimpleName(), arg));
+            metadata.put("Arguments", argumentsInfo);
+        }
         metadata.get("ClassInfo").put("Method", proceedingJoinPoint.getSignature().getName());
         return metadata;
     }
 
     @Override
-    @Pointcut("@within(com.amazonaws.xray.spring.aop.XRayEnabled) && (bean(*Controller) || bean(*Listener) || bean(*Service) || bean(*Validator) || bean(*Impl))")
+    @Pointcut("" +
+            "@within(com.amazonaws.xray.spring.aop.XRayEnabled) && " +
+            "(bean(*Controller) || bean(*Listener) || bean(*Service) || bean(*Validator) || bean(*Impl))"
+    )
     public void xrayEnabledClasses() {
     }
 }

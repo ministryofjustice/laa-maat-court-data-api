@@ -110,7 +110,7 @@ management:
     export:
       cloudwatch:
         enabled: ${ENABLE_CLOUDWATCH_METRICS}
-        namespace: maat-api
+        namespace: MAAT-COURT-DATA-API
         batch-size: ${CLOUDWATCH_BATCH_SIZE}
         step: ${CLOUDWATCH_STEP}
 

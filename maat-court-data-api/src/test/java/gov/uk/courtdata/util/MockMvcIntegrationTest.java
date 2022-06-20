@@ -29,8 +29,12 @@ public abstract class MockMvcIntegrationTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
+    public MvcResult runSuccessScenario(MockHttpServletRequestBuilder request) throws Exception {
+        return mockMvc.perform(request).andExpect(status().isOk()).andReturn();
+    }
+
     public <T> void runSuccessScenario(T expectedResponseBody, MockHttpServletRequestBuilder request) throws Exception {
-        MvcResult result = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
+        MvcResult result = runSuccessScenario(request);
 
         assertThat(result.getResponse().getContentAsString())
                 .isEqualTo(objectMapper.writeValueAsString(expectedResponseBody));

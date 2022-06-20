@@ -4,6 +4,7 @@ import com.amazonaws.xray.AWSXRay;
 import com.amazonaws.xray.AWSXRayRecorderBuilder;
 import com.amazonaws.xray.javax.servlet.AWSXRayServletFilter;
 import com.amazonaws.xray.slf4j.SLF4JSegmentListener;
+import com.amazonaws.xray.strategy.DefaultStreamingStrategy;
 import com.amazonaws.xray.strategy.sampling.AllSamplingStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +25,8 @@ public class XRayConfig {
     static {
         AWSXRayRecorderBuilder builder = AWSXRayRecorderBuilder.standard()
                 .withSamplingStrategy(new AllSamplingStrategy())
-                .withSegmentListener(new SLF4JSegmentListener());
+                .withSegmentListener(new SLF4JSegmentListener())
+                .withStreamingStrategy(new DefaultStreamingStrategy(3));
 
         AWSXRay.setGlobalRecorder(builder.build());
         log.debug("aws xray recorder setup complete.");

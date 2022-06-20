@@ -518,8 +518,14 @@ Resources:
               Value: !Ref pCreateLinkCpStatusJobQueue
             - Name: LAA_PROSECUTION_CONCLUDED_QUEUE
               Value: !Ref pLaaProsecutionConcludedQueue
-
-
+            - Name: AWS_DEFAULT_REGION
+              Value: !Ref pAwsDefaultRegion
+            - Name: CLOUDWATCH_STEP
+              Value: !Ref pCloudwatchStep
+            - Name: CLOUDWATCH_BATCH_SIZE
+              Value: !Ref pCloudwatchBatchSize
+            - Name: ENABLE_CLOUDWATCH_METRICS
+              Value: !Ref pEnableCloudwatchMetrics
 
   CloudwatchLogsGroup:
     Type: AWS::Logs::LogGroup

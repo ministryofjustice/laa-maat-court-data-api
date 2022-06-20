@@ -446,6 +446,8 @@ Resources:
                 # Allow the ECS tasks to upload logs to CloudWatch
                 - 'logs:CreateLogStream'
                 - 'logs:PutLogEvents'
+                # Allow ECS tasks to push metrics to CloudWatch
+                - 'cloudwatch:PutMetricData'
               Resource: '*'
             - Effect: Allow
               Action:

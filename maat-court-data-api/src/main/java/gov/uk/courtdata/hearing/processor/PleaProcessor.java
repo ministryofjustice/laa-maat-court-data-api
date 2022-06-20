@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.PleaEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.hearing.dto.PleaDTO;
@@ -8,11 +9,13 @@ import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
 import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
 public class PleaProcessor {
 
     private final PleaRepository pleaRepository;

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.processor;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.XLATOffenceEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.XLATOffenceRepository;
@@ -13,8 +14,9 @@ import java.util.Optional;
 import static gov.uk.courtdata.constants.CourtDataConstants.*;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
+@RequiredArgsConstructor
 public class OffenceCodeRefDataProcessor {
 
     private final XLATOffenceRepository xlatOffenceRepository;

@@ -2,8 +2,8 @@ package gov.uk.courtdata.publisher;
 
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.GetQueueUrlResult;
-import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import gov.uk.courtdata.config.AmazonSQSConfig;
 import gov.uk.courtdata.exception.MaatRecordLockedException;
@@ -14,12 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
-@RequiredArgsConstructor
+@XRayEnabled
 @Slf4j
+@RequiredArgsConstructor
 public class AwsStandardSqsPublisher {
 
     @Value("${cloud-platform.aws.sqs.queue.config.messageDelay}")

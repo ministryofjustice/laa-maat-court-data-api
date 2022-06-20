@@ -1,5 +1,6 @@
 package gov.uk.courtdata.validator;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.DefendantMAATDataRepository;
@@ -13,8 +14,9 @@ import java.util.Optional;
  * <code>DefendantValidator</code> to check existence of MAAT defendant details.
  */
 @Slf4j
-@RequiredArgsConstructor
 @Component
+@XRayEnabled
+@RequiredArgsConstructor
 public class DefendantValidator implements IValidator<DefendantMAATDataEntity, Integer> {
 
 

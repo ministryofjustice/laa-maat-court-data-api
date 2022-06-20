@@ -1,5 +1,6 @@
 package gov.uk.courtdata.link.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.link.validator.PreConditionsValidator;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/link")
 @Slf4j
+@XRayEnabled
 @RequiredArgsConstructor
 @Tag(name = "Link Case", description = "Rest APIs for Case linking.")
 public class LinkController {

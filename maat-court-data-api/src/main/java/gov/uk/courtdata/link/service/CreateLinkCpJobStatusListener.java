@@ -1,5 +1,6 @@
 package gov.uk.courtdata.link.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.CpJobStatus;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@XRayEnabled
 @ConditionalOnProperty(value = "feature.postMvpEnabled", havingValue = "true")
 public class CreateLinkCpJobStatusListener {
 

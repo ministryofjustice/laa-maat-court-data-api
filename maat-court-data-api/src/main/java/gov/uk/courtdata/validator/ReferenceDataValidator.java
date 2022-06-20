@@ -1,5 +1,6 @@
 package gov.uk.courtdata.validator;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.CourtHouseCodesRepository;
@@ -16,8 +17,9 @@ import static java.lang.String.format;
  * <code>ReferenceDataValidator</code>
  */
 @Slf4j
-@RequiredArgsConstructor
 @Component
+@XRayEnabled
+@RequiredArgsConstructor
 public class ReferenceDataValidator implements IValidator<Void, CaseDetails> {
 
 

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.validator;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
@@ -8,8 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
+@XRayEnabled
 @Slf4j
+@RequiredArgsConstructor
 public class HearingValidationProcessor {
 
     private final LinkRegisterValidator linkRegisterValidator;

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.hearing.processor;
 
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
 public class HearingWQProcessor {
 
     private final WQCaseProcessor wqCaseProcessor;

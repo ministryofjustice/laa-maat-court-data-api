@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.Result;
@@ -15,8 +16,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
+@RequiredArgsConstructor
 public class WQHearingProcessor {
 
     private final WQHearingRepository wQHearingRepository;

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.unlink.validator;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.Unlink;
@@ -12,9 +13,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Slf4j
+@XRayEnabled
 @AllArgsConstructor
 @Component
-
 public class UnLinkValidationProcessor {
 
     private final MaatIdValidator maatIdValidator;

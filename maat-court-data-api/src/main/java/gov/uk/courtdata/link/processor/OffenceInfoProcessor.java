@@ -1,5 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.model.Offence;
@@ -14,8 +15,9 @@ import java.util.stream.Collectors;
 import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static gov.uk.courtdata.util.DateUtil.parse;
 
-@RequiredArgsConstructor
 @Component
+@XRayEnabled
+@RequiredArgsConstructor
 public class OffenceInfoProcessor implements Process {
 
     private final OffenceRepository offenceRepository;

@@ -1,9 +1,8 @@
 package gov.uk.courtdata.validator;
 
-import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +11,9 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
+@XRayEnabled
+@RequiredArgsConstructor
 public class PassportAssessmentIdValidator implements IValidator<Void, Integer> {
 
     private final PassportAssessmentRepository passportAssessmentRepository;

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.link.processor;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.CaseDetails;
@@ -10,8 +11,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Component
+@XRayEnabled
+@RequiredArgsConstructor
 public class RepOrderInfoProcessor implements Process {
 
     private final RepOrderRepository repOrderRepository;

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
+@XRayEnabled
 public class ProsecutionConcludedListener {
 
     private final Gson gson;

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.impl.PassportAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
@@ -14,8 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
+@RequiredArgsConstructor
 public class PassportAssessmentService {
     public static final String STATUS_COMPLETE = "COMPLETE";
     private final PassportAssessmentImpl passportAssessmentImpl;

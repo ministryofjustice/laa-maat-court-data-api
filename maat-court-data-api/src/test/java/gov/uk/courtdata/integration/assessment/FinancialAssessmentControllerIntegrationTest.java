@@ -1,8 +1,10 @@
 package gov.uk.courtdata.integration.assessment;
 
 import gov.uk.MAATCourtDataApplication;
+import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
@@ -30,6 +32,9 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private final String BASE_URL = "/api/internal/v1/assessment/financial-assessments/";
     private final String ASSESSMENT_URL = BASE_URL + "{financialAssessmentId}";
     private final String CHECK_OUTSTANDING_URL = BASE_URL + "/check-outstanding/{repId}";
+    private final Integer REP_ID_WITH_OUTSTANDING_ASSESSMENTS = 1111;
+    private final Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = 2222;
+    private final Integer REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS = 3333;
 
     @Autowired
     private FinancialAssessmentRepository financialAssessmentRepository;
@@ -42,7 +47,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     @Autowired
     private NewWorkReasonRepository newWorkReasonRepository;
 
-    private FinancialAssessmentEntity existingAssessmentEntity;
+    private List<FinancialAssessmentEntity> existingAssessmentEntities;
 
     @Before
     @Override
@@ -69,9 +74,11 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
                         .userCreated(testUser)
                         .build());
 
-        existingAssessmentEntity = financialAssessmentRepository.save(
+        List<FinancialAssessmentEntity> assessmentsToCreate = List.of(
+
                 FinancialAssessmentEntity.builder()
-                        .repId(1234)
+                        .repId(REP_ID_WITH_OUTSTANDING_ASSESSMENTS)
+                        .fassFullStatus("IN PROGRESS")
                         .dateCreated(testCreationDate)
                         .userCreated(testUser)
                         .initialAscrId(1)
@@ -79,8 +86,38 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
                         .cmuId(3)
                         .replaced("N")
                         .newWorkReason(newWorkReasonEntity)
-                        .build());
+                        .build(),
+                FinancialAssessmentEntity.builder()
+                        .repId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS)
+                        .fassFullStatus("COMPLETE")
+                        .dateCreated(testCreationDate)
+                        .userCreated(testUser)
+                        .initialAscrId(4)
+                        .usn(5)
+                        .cmuId(6)
+                        .replaced("N")
+                        .newWorkReason(newWorkReasonEntity)
+                        .build(),
+                FinancialAssessmentEntity.builder()
+                        .repId(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS)
+                        .fassFullStatus("COMPLETE")
+                        .dateCreated(testCreationDate)
+                        .userCreated(testUser)
+                        .initialAscrId(7)
+                        .usn(8)
+                        .cmuId(9)
+                        .replaced("N")
+                        .newWorkReason(newWorkReasonEntity)
+                        .build()
+        );
 
+        existingAssessmentEntities = financialAssessmentRepository.saveAll(assessmentsToCreate);
+
+        passportAssessmentRepository.save(
+                PassportAssessmentEntity.builder()
+                        .repId(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS)
+                        .pastStatus("IN PROGRESS")
+                        .build());
     }
 
     @Test
@@ -96,9 +133,10 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     @Test
     public void givenAValidAssessmentId_whenGetAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        var testAssessment = existingAssessmentEntities.get(0);
         runSuccessScenario(
-                assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(existingAssessmentEntity),
-                get(ASSESSMENT_URL, existingAssessmentEntity.getId()));
+                assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(testAssessment),
+                get(ASSESSMENT_URL, testAssessment.getId()));
     }
 
     @Test
@@ -114,6 +152,30 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     @Test
     public void givenAValidAssessmentId_whenDeleteAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runSuccessScenario(delete(ASSESSMENT_URL, existingAssessmentEntity.getId()));
+        runSuccessScenario(delete(ASSESSMENT_URL, existingAssessmentEntities.get(0).getId()));
+    }
+
+    @Test
+    public void givenARepIdWithNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        OutstandingAssessmentResultDTO expectedResponse = OutstandingAssessmentResultDTO.builder().build();
+        runSuccessScenario(expectedResponse, get(CHECK_OUTSTANDING_URL, REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS));
+    }
+
+    @Test
+    public void givenARepIdWithOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        OutstandingAssessmentResultDTO expectedResponse =
+                OutstandingAssessmentResultDTO.builder()
+                        .outstandingAssessments(true)
+                        .message(FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND).build();
+        runSuccessScenario(expectedResponse, get(CHECK_OUTSTANDING_URL, REP_ID_WITH_OUTSTANDING_ASSESSMENTS));
+    }
+
+    @Test
+    public void givenARepIdWithOutstandingPassportAssessments_whenCheckForOutstandingAssessmentsIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        OutstandingAssessmentResultDTO expectedResponse =
+                OutstandingAssessmentResultDTO.builder()
+                        .outstandingAssessments(true)
+                        .message(FinancialAssessmentImpl.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND).build();
+        runSuccessScenario(expectedResponse, get(CHECK_OUTSTANDING_URL, REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS));
     }
 }

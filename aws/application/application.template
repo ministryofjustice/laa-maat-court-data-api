@@ -466,6 +466,7 @@ Resources:
       RequiresCompatibilities:
         - !Ref pLaunchType
       ExecutionRoleArn: !Ref ECSTaskExecutionRole
+      TaskRoleArn: !Ref ECSTaskExecutionRole
       ContainerDefinitions:
         - Name: !Ref pAppName
           Cpu: !If [ cNonProd, 512, 512 ]

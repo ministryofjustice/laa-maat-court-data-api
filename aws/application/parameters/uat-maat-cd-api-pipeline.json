@@ -24,7 +24,7 @@
     "pAwsDefaultRegion":"eu-west-2",
     "pCloudwatchStep":"1m",
     "pCloudwatchBatchSize":"10",
-    "pEnableCloudwatchMetrics":"false"
+    "pEnableCloudwatchMetrics":"true"
   },
   "Tags" : {
     "business-unit" : "LAA",

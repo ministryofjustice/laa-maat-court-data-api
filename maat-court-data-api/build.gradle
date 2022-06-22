@@ -94,6 +94,7 @@ dependencies {
     implementation group: 'com.amazonaws', name: 'aws-xray-recorder-sdk-spring', version: versions.xRayVersion
 
     implementation group: 'org.mapstruct', name: 'mapstruct'
+    implementation 'io.micrometer:micrometer-registry-cloudwatch2:1.9.0'
     annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor'
 
     implementation group: 'io.sentry', name: 'sentry-spring-boot-starter'

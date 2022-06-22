@@ -421,7 +421,7 @@ Resources:
       ResourceRecords:
       - !GetAtt LoadBalancer.DNSName
 
-  XRayTracingRole:
+  ECSTaskExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -433,17 +433,6 @@ Resources:
       Path: /
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
-
-  ECSTaskExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service: [ecs-tasks.amazonaws.com]
-          Action: ['sts:AssumeRole']
-      Path: /
       Policies:
         - PolicyName: !Sub '${pAppName}-ecs-TaskExecutionRolePolicy'
           PolicyDocument:
@@ -462,6 +451,8 @@ Resources:
                 # Allow the ECS tasks to upload logs to CloudWatch
                 - 'logs:CreateLogStream'
                 - 'logs:PutLogEvents'
+                # Allow ECS tasks to push metrics to CloudWatch
+                - 'cloudwatch:PutMetricData'
               Resource: '*'
             - Effect: Allow
               Action:
@@ -480,7 +471,7 @@ Resources:
       RequiresCompatibilities:
         - !Ref pLaunchType
       ExecutionRoleArn: !Ref ECSTaskExecutionRole
-      TaskRoleArn: !Ref XRayTracingRole
+      TaskRoleArn: !Ref ECSTaskExecutionRole
       ContainerDefinitions:
         - Name: xray-daemon
           Cpu: 32
@@ -551,6 +542,14 @@ Resources:
               Value: !Ref pCreateLinkCpStatusJobQueue
             - Name: LAA_PROSECUTION_CONCLUDED_QUEUE
               Value: !Ref pLaaProsecutionConcludedQueue
+            - Name: AWS_DEFAULT_REGION
+              Value: !Ref pAwsDefaultRegion
+            - Name: CLOUDWATCH_STEP
+              Value: !Ref pCloudwatchStep
+            - Name: CLOUDWATCH_BATCH_SIZE
+              Value: !Ref pCloudwatchBatchSize
+            - Name: ENABLE_CLOUDWATCH_METRICS
+              Value: !Ref pEnableCloudwatchMetrics
             - Name: AWS_XRAY_SDK_ENABLED
               Value: !Ref pAwsXRayEnabled
             - Name: AWS_XRAY_DAEMON_ADDRESS

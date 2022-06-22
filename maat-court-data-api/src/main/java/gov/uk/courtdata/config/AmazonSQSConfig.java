@@ -7,19 +7,21 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import gov.uk.courtdata.jms.SqsProperties;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class AmazonSQSConfig {
 
     private final SqsProperties sqsProperties;
 
     public AmazonSQS awsSqsClient() {
         return AmazonSQSClientBuilder.standard()
-                        .withCredentials(new AWSStaticCredentialsProvider(
-                                new BasicAWSCredentials(sqsProperties.getAccesskey(), sqsProperties.getSecretkey())))
-                        .withRegion(Regions.fromName(sqsProperties.getRegion()))
-                        .build();
+                .withCredentials(new AWSStaticCredentialsProvider(
+                        new BasicAWSCredentials(sqsProperties.getAccesskey(), sqsProperties.getSecretkey())))
+                .withRegion(Regions.fromName(sqsProperties.getRegion()))
+                .build();
     }
 }

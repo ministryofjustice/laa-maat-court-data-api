@@ -1,5 +1,6 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import gov.uk.courtdata.entity.ProsecutionConcludedEntity;
 import gov.uk.courtdata.entity.WQHearingEntity;
@@ -24,9 +25,10 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableScheduling
 @Getter
-@RequiredArgsConstructor
+@XRayEnabled
 @Slf4j
-public class prosecutionConcludedSchedulerService {
+@RequiredArgsConstructor
+public class prosecutionConcludedScheduler {
 
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;
     private final ProsecutionConcludedService prosecutionConcludedService;

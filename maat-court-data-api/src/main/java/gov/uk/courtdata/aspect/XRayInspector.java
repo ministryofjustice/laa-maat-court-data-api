@@ -51,11 +51,15 @@ public class XRayInspector extends AbstractXRayInterceptor {
     public void xrayEnabledClasses() {
     }
 
-    @Pointcut("@within(com.amazonaws.xray.spring.aop.XRayEnabled) && (bean(*Listener))")
+    @Pointcut("@within(com.amazonaws.xray.spring.aop.XRayEnabled) && bean(*Listener)")
     public void xrayEnabledListeners() {
     }
 
-    @Around("xrayEnabledListeners()")
+    @Pointcut("@within(com.amazonaws.xray.spring.aop.XRayEnabled) && bean(*Scheduler)")
+    public void xrayEnabledSchedulers() {
+    }
+
+    @Around("xrayEnabledListeners() || xrayEnabledSchedulers()")
     public Object traceAroundListeners(ProceedingJoinPoint pjp) throws Throwable {
         try {
             AWSXRay.beginSegment(AWS_XRAY_SEGMENT_NAME);

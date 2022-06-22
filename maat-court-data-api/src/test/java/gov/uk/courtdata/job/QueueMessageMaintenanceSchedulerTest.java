@@ -23,23 +23,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 @TestPropertySource(locations = {"classpath:application.yaml"})
-public class QueueMessageMaintenanceJobTest {
+public class QueueMessageMaintenanceSchedulerTest {
 
     @Value("${queue.message.log.cron.expression}")
     private String cronExpression;
 
     @Autowired
-    private QueueMessageMaintenanceJob messageMaintenanceJob;
+    private QueueMessageMaintenanceScheduler messageMaintenanceJob;
 
 
     private static byte[] buildMessage(Integer maatId) {
-
-        return new StringBuilder()
-                .append("{laaTransactionId:\"8720c683-39ef-4168-a8cc-058668a2dcca\",\"maatId\":")
-                .append(maatId)
-                .append("}")
-                .toString()
-                .getBytes();
+        return ("{laaTransactionId:\"8720c683-39ef-4168-a8cc-058668a2dcca\",\"maatId\":" + maatId + "}").getBytes();
     }
 
     @Before

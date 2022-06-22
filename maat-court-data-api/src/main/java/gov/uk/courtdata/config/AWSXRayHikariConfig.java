@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Primary;
 import javax.sql.DataSource;
 
 @Configuration
-@ConditionalOnProperty(prefix = "xray", value = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = "aws", value = "xray-enabled", havingValue = "true")
 public class AWSXRayHikariConfig {
 
     @Bean

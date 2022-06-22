@@ -21,7 +21,7 @@ import java.util.Objects;
 @Aspect
 @Slf4j
 @Component
-@ConditionalOnProperty(prefix = "xray", value = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = "aws", value = "xray-enabled", havingValue = "true")
 public class XRayInspector extends AbstractXRayInterceptor {
 
     @Value("${spring.application.name}")

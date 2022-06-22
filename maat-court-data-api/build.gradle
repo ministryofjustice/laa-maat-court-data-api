@@ -75,7 +75,6 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
     implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-activemq'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
@@ -86,6 +85,7 @@ dependencies {
 
     implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
 
+    annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
 
     // AWS
     implementation group: 'com.amazonaws', name: 'aws-xray-recorder-sdk-sql', version: versions.xRayVersion

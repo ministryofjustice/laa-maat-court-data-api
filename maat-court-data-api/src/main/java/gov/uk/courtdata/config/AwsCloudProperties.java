@@ -9,4 +9,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "aws")
 public class AwsCloudProperties {
     private String region;
+    private boolean xrayEnabled;
 }

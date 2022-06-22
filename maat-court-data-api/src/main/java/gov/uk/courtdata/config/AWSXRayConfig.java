@@ -17,8 +17,8 @@ import javax.servlet.Filter;
 
 @Slf4j
 @Configuration
-@ConditionalOnProperty(prefix = "xray", value = "enabled", havingValue = "true")
-public class XRayConfig {
+@ConditionalOnProperty(prefix = "aws", value = "xray-enabled", havingValue = "true")
+public class AWSXRayConfig {
 
     @Value("${spring.application.name}")
     private String AWS_XRAY_SEGMENT_NAME;

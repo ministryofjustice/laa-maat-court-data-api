@@ -1,6 +1,5 @@
 package gov.uk.courtdata.integration.assessment;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
@@ -9,34 +8,30 @@ import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.integration.MockServicesConfig;
+import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
-import gov.uk.courtdata.model.authorization.AuthorizationResponse;
+import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import org.apache.tomcat.jni.Local;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class, NewWorkReasonRepository.class})
@@ -258,6 +253,10 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         List<FinancialAssessmentDetailEntity> assessmentDetails =
                 financialAssessmentDetailsRepository.findAllByFinancialAssessmentId(createdAssessment.getId());
 
+        expectedResponse.setId(createdAssessment.getId());
+        expectedResponse.setDateCreated(createdAssessment.getDateCreated());
+        expectedResponse.setUpdated(createdAssessment.getUpdated());
+
         SoftAssertions.assertSoftly(softly -> {
             assertThat(matchingAssessments.size()).isEqualTo(2);
             assertThat((int) matchingAssessments.stream().filter(assessment -> assessment.getReplaced().equals("Y")).count())
@@ -267,9 +266,92 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
             assertFinancialAssessmentEqual(expectedResponse, createdAssessment);
         });
 
-        expectedResponse.setId(createdAssessment.getId());
-        expectedResponse.setDateCreated(createdAssessment.getDateCreated());
-        expectedResponse.setUpdated(createdAssessment.getUpdated());
+        assertThat(objectMapper.writeValueAsString(expectedResponse)).isEqualTo(result.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void givenAnAssessmentWithNoRepId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        runUpdateAssessmentErrorScenario("Rep Order ID is required", UpdateFinancialAssessment.builder().build());
+    }
+
+    @Test
+    public void givenAnAssessmentWithNoCriteriaId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        runUpdateAssessmentErrorScenario(
+                "Assessment Criteria ID is required",
+                UpdateFinancialAssessment.builder().repId(1).build());
+    }
+
+    @Test
+    public void givenAnAssessmentWithNoCmuId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        runUpdateAssessmentErrorScenario(
+                "Case management unit ID is required",
+                UpdateFinancialAssessment.builder().repId(1).initialAscrId(1).build());
+    }
+
+    @Test
+    public void givenAnAssessmentWithAnInvalidId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        Integer assessmentId = 0;
+        runUpdateAssessmentErrorScenario(
+                "Financial Assessment id is required",
+                UpdateFinancialAssessment.builder().id(assessmentId).repId(1).initialAscrId(1).cmuId(1).build());
+    }
+
+    @Test
+    public void givenAnAssessmentWithAnIdThatDoesNotExist_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        Integer assessmentId = 999;
+        runUpdateAssessmentErrorScenario(
+                String.format("%d is invalid", assessmentId),
+                UpdateFinancialAssessment.builder().id(assessmentId).repId(1).initialAscrId(1).cmuId(1).build());
+    }
+
+    @Test
+    public void givenAnAssessmentWithNoUserModifiedSet_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        runUpdateAssessmentErrorScenario(
+                "Username is required",
+                UpdateFinancialAssessment.builder().id(existingAssessmentEntities.get(0).getId()).repId(1).initialAscrId(1).cmuId(1).build());
+    }
+
+    @Test
+    public void givenAValidAssessmentBody_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        FinancialAssessmentEntity assessmentToUpdate =
+                existingAssessmentEntities.stream().filter(item -> item.getRepId().equals(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS)).findFirst().orElse(null);
+        Integer assessmentId = Objects.requireNonNull(assessmentToUpdate).getId();
+        UpdateFinancialAssessment body = TestModelDataBuilder.getUpdateFinancialAssessment();
+        body.setChildWeightings(List.of(TestModelDataBuilder.getChildWeightings()));
+        body.setAssessmentDetails(List.of(TestModelDataBuilder.getFinancialAssessmentDetails()));
+        body.setRepId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS);
+        body.setId(assessmentId);
+
+        FinancialAssessmentDTO expectedResponse = assessmentMapper.UpdateFinancialAssessmentToFinancialAssessmentDTO(body);
+        expectedResponse.setAssessmentType("INIT");
+        expectedResponse.setNewWorkReason(NewWorkReason.builder().code(assessmentToUpdate.getNewWorkReason().getCode()).build());
+        expectedResponse.setUserCreated(assessmentToUpdate.getUserCreated());
+        expectedResponse.setDateCreated(assessmentToUpdate.getDateCreated());
+        expectedResponse.setCmuId(assessmentToUpdate.getCmuId());
+        expectedResponse.setUsn(assessmentToUpdate.getUsn());
+
+        MvcResult result =
+                runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+
+        FinancialAssessmentEntity updatedAssessment = financialAssessmentRepository.findById(assessmentToUpdate.getId()).orElse(null);
+
+        List<ChildWeightingsEntity> childWeightings =
+                childWeightingsRepository.findAll().stream()
+                        .filter(item -> item.getFinancialAssessment().getRepId().equals(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS))
+                        .collect(Collectors.toList());
+        List<FinancialAssessmentDetailEntity> assessmentDetails =
+                financialAssessmentDetailsRepository.findAllByFinancialAssessmentId(assessmentId);
+
+        assertThat(assessmentToUpdate.getUpdated()).isNotEqualTo(Objects.requireNonNull(updatedAssessment).getUpdated());
+        expectedResponse.setUpdated(updatedAssessment.getUpdated());
+
+        SoftAssertions.assertSoftly(softly -> {
+            assertThat(updatedAssessment).isNotNull();
+            assertChildWeightingsEqual(expectedResponse.getChildWeightings(), childWeightings);
+            assertFinancialAssessmentDetailsEqual(expectedResponse.getAssessmentDetails(), assessmentDetails);
+            assertFinancialAssessmentEqual(expectedResponse, updatedAssessment);
+        });
+
         assertThat(objectMapper.writeValueAsString(expectedResponse)).isEqualTo(result.getResponse().getContentAsString());
     }
 
@@ -277,6 +359,12 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         runBadRequestErrorScenario(
                 errorMessage,
                 post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+    }
+
+    private void runUpdateAssessmentErrorScenario(String errorMessage, UpdateFinancialAssessment body) throws Exception {
+        runBadRequestErrorScenario(
+                errorMessage,
+                put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }
 
     private void assertChildWeightingsEqual(List<ChildWeightings> expectedChildWeightingsList, List<ChildWeightingsEntity> createdEntities) {
@@ -304,19 +392,20 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         }
     }
 
-    private void assertFinancialAssessmentEqual(FinancialAssessmentDTO expectedAssessment, FinancialAssessmentEntity createdAssessment) {
-        assertThat(expectedAssessment.getRepId()).isEqualTo(createdAssessment.getRepId());
-        assertThat(expectedAssessment.getInitialAscrId()).isEqualTo(createdAssessment.getInitialAscrId());
-        assertThat(expectedAssessment.getNewWorkReason().getCode()).isEqualTo(createdAssessment.getNewWorkReason().getCode());
-        assertThat(expectedAssessment.getUserCreated()).isEqualTo(createdAssessment.getUserCreated());
-        assertThat(expectedAssessment.getFassInitStatus()).isEqualTo(createdAssessment.getFassInitStatus());
-        assertThat(expectedAssessment.getInitialAssessmentDate()).isEqualTo(createdAssessment.getInitialAssessmentDate());
-        assertThat(expectedAssessment.getInitTotAggregatedIncome()).isEqualByComparingTo(createdAssessment.getInitTotAggregatedIncome().toString());
-        assertThat(expectedAssessment.getInitAdjustedIncomeValue()).isEqualByComparingTo(createdAssessment.getInitAdjustedIncomeValue().toString());
-        assertThat(expectedAssessment.getCmuId()).isEqualTo(createdAssessment.getCmuId());
-        assertThat(expectedAssessment.getAssessmentType()).isEqualTo(createdAssessment.getAssessmentType());
-        assertThat(expectedAssessment.getInitResult()).isEqualTo(createdAssessment.getInitResult());
-        assertThat(expectedAssessment.getInitApplicationEmploymentStatus()).isEqualTo(createdAssessment.getInitApplicationEmploymentStatus());
+    private void assertFinancialAssessmentEqual(FinancialAssessmentDTO expectedAssessment, FinancialAssessmentEntity actualAssessment) {
+        assertThat(expectedAssessment.getRepId()).isEqualTo(actualAssessment.getRepId());
+        assertThat(expectedAssessment.getInitialAscrId()).isEqualTo(actualAssessment.getInitialAscrId());
+        assertThat(expectedAssessment.getNewWorkReason().getCode()).isEqualTo(actualAssessment.getNewWorkReason().getCode());
+        assertThat(expectedAssessment.getUserCreated()).isEqualTo(actualAssessment.getUserCreated());
+        assertThat(expectedAssessment.getFassInitStatus()).isEqualTo(actualAssessment.getFassInitStatus());
+        assertThat(expectedAssessment.getInitialAssessmentDate()).isEqualTo(actualAssessment.getInitialAssessmentDate());
+        assertThat(expectedAssessment.getInitTotAggregatedIncome()).isEqualByComparingTo(actualAssessment.getInitTotAggregatedIncome().toString());
+        assertThat(expectedAssessment.getInitAdjustedIncomeValue()).isEqualByComparingTo(actualAssessment.getInitAdjustedIncomeValue().toString());
+        assertThat(expectedAssessment.getCmuId()).isEqualTo(actualAssessment.getCmuId());
+        assertThat(expectedAssessment.getAssessmentType()).isEqualTo(actualAssessment.getAssessmentType());
+        assertThat(expectedAssessment.getInitResult()).isEqualTo(actualAssessment.getInitResult());
+        assertThat(expectedAssessment.getInitApplicationEmploymentStatus()).isEqualTo(actualAssessment.getInitApplicationEmploymentStatus());
+        assertThat(expectedAssessment.getUpdated()).isEqualTo(actualAssessment.getUpdated());
     }
 
 

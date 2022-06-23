@@ -18,10 +18,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -89,8 +87,8 @@ public class FinancialAssessmentController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<OutstandingAssessmentResultDTO> checkForOutstandingAssessments(@PathVariable Integer repId,
-                                                               @Parameter(description = "Used for tracing calls")
-                                                               @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+                                                                                         @Parameter(description = "Used for tracing calls")
+                                                                                         @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
         MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.debug("Check outstanding assessments Request Received for repId : {}", repId);
         OutstandingAssessmentResultDTO resultDTO = financialAssessmentService.checkForOutstandingAssessments(repId);
@@ -106,11 +104,5 @@ public class FinancialAssessmentController {
         log.info("Create Assessment History Request Received");
         financialAssessmentHistoryService.createAssessmentHistory(financialAssessmentId, fullAvailable);
         return ResponseEntity.ok().build();
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public void handle(HttpMessageNotReadableException e) {
-        log.warn("Returning HTTP 400 Bad Request", e);
     }
 }

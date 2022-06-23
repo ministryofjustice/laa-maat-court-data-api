@@ -507,6 +507,8 @@ Resources:
               Value: !Ref pLaaStatusUpdateQueue
             - Name: HEARING_RESULTED_QUEUE
               Value: !Ref pHearingsResultedQueue
+            - Name: MEANS_ASSESSMENT_POST_PROCESSING_QUEUE
+              Value: !Ref pMeansAssessmentPostProcessingQueue
             - Name: CDA_OAUTH_URL
               Value: !Ref pCdaOauthUrl
             - Name: CDA_LAA_STATUS_URL

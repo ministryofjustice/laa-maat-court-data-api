@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentHistoryImpl;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.impl.RepOrderImpl;
@@ -14,8 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
+@RequiredArgsConstructor
 public class FinancialAssessmentHistoryService {
 
     private final FinancialAssessmentImpl financialAssessmentImpl;

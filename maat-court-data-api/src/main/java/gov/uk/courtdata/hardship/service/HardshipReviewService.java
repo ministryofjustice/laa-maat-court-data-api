@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hardship.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
 public class HardshipReviewService {
 
     private final HardshipReviewImpl hardshipReviewImpl;

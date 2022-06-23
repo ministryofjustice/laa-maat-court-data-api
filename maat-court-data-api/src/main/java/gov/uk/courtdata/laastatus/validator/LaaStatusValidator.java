@@ -1,5 +1,6 @@
 package gov.uk.courtdata.laastatus.validator;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.enums.IOJDecision;
 import gov.uk.courtdata.enums.LAAStatus;
 import gov.uk.courtdata.model.CaseDetails;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 
 @Component
+@XRayEnabled
 public class LaaStatusValidator {
 
 

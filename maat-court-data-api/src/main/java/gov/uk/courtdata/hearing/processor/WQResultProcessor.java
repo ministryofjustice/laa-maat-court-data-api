@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WQResultEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQResultRepository;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@XRayEnabled
 @RequiredArgsConstructor
 public class WQResultProcessor {
 

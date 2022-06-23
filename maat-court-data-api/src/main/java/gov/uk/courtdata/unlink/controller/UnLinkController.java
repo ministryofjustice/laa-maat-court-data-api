@@ -1,5 +1,6 @@
 package gov.uk.courtdata.unlink.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.Unlink;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/unlink")
 @Slf4j
+@XRayEnabled
 @RequiredArgsConstructor
 @Tag(name = "UnLink Case", description = "Rest APIs for Case unlinking.")
 public class UnLinkController {

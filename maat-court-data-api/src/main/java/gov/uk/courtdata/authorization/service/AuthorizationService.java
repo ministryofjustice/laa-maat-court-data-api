@@ -1,5 +1,6 @@
 package gov.uk.courtdata.authorization.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.authorization.UserReservation;
@@ -21,6 +22,7 @@ import static org.apache.commons.lang3.StringUtils.isAnyBlank;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
 public class AuthorizationService {
     private final RoleActionsRepository roleActionsRepository;
     private final ReservationsRepository reservationsRepository;

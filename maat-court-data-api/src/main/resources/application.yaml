@@ -1,6 +1,8 @@
 server:
   port : 8090
 spring:
+  application:
+    name: maat-cd-api
   datasource:
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
@@ -83,9 +85,6 @@ sentry:
 api-endpoints:
   assessments-domain: /api/internal/v1/assessment
 
-
-
-
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}
 
@@ -116,4 +115,5 @@ management:
 
 aws:
   region: ${AWS_DEFAULT_REGION}
+  xray-enabled: ${AWS_XRAY_SDK_ENABLED}
 

@@ -1,12 +1,15 @@
 package gov.uk.courtdata.laastatus.impl;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.laastatus.processor.UpdateDefendantInfoProcessor;
 import gov.uk.courtdata.laastatus.processor.UpdateOffenceInfoProcessor;
 import gov.uk.courtdata.laastatus.processor.UpdateWqCoreInfoProcessor;
 import gov.uk.courtdata.laastatus.processor.UpdateWqLinkRegisterProcessor;
-import gov.uk.courtdata.link.processor.*;
+import gov.uk.courtdata.link.processor.CaseInfoProcessor;
+import gov.uk.courtdata.link.processor.SessionInfoProcessor;
+import gov.uk.courtdata.link.processor.SolicitorInfoProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,8 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-@RequiredArgsConstructor
+@XRayEnabled
 @Slf4j
+@RequiredArgsConstructor
 public class LaaStatusUpdateImpl {
 
     private final CaseInfoProcessor caseInfoProcessor;

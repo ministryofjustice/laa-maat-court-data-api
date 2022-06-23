@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.impl;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
@@ -18,9 +19,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
-@Component
-@RequiredArgsConstructor
 @Slf4j
+@Component
+@XRayEnabled
+@RequiredArgsConstructor
 public class FinancialAssessmentImpl {
 
     public static final String MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND = "An incomplete means assessment is associated with the current application";

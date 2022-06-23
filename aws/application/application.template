@@ -86,6 +86,9 @@ Parameters:
   pEnableCloudwatchMetrics:
     Type: String
     Default: ''
+  pAwsXRayEnabled:
+    Type: String
+    Default: ''
 
   ###### API-Gateway parameters
   pApiScope1:
@@ -428,6 +431,8 @@ Resources:
             Service: [ecs-tasks.amazonaws.com]
           Action: ['sts:AssumeRole']
       Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
       Policies:
         - PolicyName: !Sub '${pAppName}-ecs-TaskExecutionRolePolicy'
           PolicyDocument:
@@ -468,6 +473,20 @@ Resources:
       ExecutionRoleArn: !Ref ECSTaskExecutionRole
       TaskRoleArn: !Ref ECSTaskExecutionRole
       ContainerDefinitions:
+        - Name: xray-daemon
+          Cpu: 32
+          Essential: false
+          Image: 'amazon/aws-xray-daemon'
+          Memory: 256
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref 'CloudwatchLogsGroup'
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: !Sub '${pAppName}-app'
+          PortMappings:
+            - ContainerPort: 2000
+              Protocol: udp
         - Name: !Ref pAppName
           Cpu: !If [ cNonProd, 512, 512 ]
           Essential: true
@@ -481,6 +500,8 @@ Resources:
               awslogs-stream-prefix: !Sub '${pAppName}-app'
           PortMappings:
             - ContainerPort: 8090
+          Links:
+            - xray-daemon
           Secrets:
             - Name: DATASOURCE_USERNAME
               ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/DATASOURCE_USERNAME'
@@ -529,6 +550,12 @@ Resources:
               Value: !Ref pCloudwatchBatchSize
             - Name: ENABLE_CLOUDWATCH_METRICS
               Value: !Ref pEnableCloudwatchMetrics
+            - Name: AWS_XRAY_SDK_ENABLED
+              Value: !Ref pAwsXRayEnabled
+            - Name: AWS_XRAY_DAEMON_ADDRESS
+              Value: xray-daemon:2000
+
+
 
   CloudwatchLogsGroup:
     Type: AWS::Logs::LogGroup

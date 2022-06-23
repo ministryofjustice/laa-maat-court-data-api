@@ -1,5 +1,6 @@
 package gov.uk.courtdata.authorization.validator;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.authorization.UserReservation;
@@ -18,6 +19,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Slf4j
 @AllArgsConstructor
 @Component
+@XRayEnabled
 public class UserReservationValidator implements IValidator<Void, UserReservation> {
 
     private final UserRepository userRepository;

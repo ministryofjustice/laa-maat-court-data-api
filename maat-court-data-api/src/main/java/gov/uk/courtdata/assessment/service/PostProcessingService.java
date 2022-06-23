@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.repository.PostProcessingStoredProcedureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,8 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
+@RequiredArgsConstructor
 public class PostProcessingService {
 
     private final PostProcessingStoredProcedureRepository postProcessingStoredProcedureRepository;

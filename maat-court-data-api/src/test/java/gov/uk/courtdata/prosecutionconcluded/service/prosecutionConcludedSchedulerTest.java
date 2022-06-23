@@ -16,13 +16,12 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class prosecutionConcludedSchedulerServiceTest {
+public class prosecutionConcludedSchedulerTest {
 
     @InjectMocks
-    private prosecutionConcludedSchedulerService prosecutionConcludedSchedulerService;
+    private prosecutionConcludedScheduler prosecutionConcludedScheduler;
     @Mock
     private ProsecutionConcludedRepository prosecutionConcludedRepository;
     @Mock
@@ -46,7 +45,7 @@ public class prosecutionConcludedSchedulerServiceTest {
                 thenReturn(List.of(WQHearingEntity.builder().wqJurisdictionType("CROWN").build()));
 
         //when
-        prosecutionConcludedSchedulerService.process();
+        prosecutionConcludedScheduler.process();
 
         //then
         verify(prosecutionConcludedService, atLeast(1)).execute(any());

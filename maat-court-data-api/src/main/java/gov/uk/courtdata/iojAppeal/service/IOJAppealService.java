@@ -1,5 +1,6 @@
 package gov.uk.courtdata.iojAppeal.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -13,8 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
+@XRayEnabled
 @Slf4j
+@RequiredArgsConstructor
 public class IOJAppealService {
 
     private final IOJAppealImpl iojAppealImpl;

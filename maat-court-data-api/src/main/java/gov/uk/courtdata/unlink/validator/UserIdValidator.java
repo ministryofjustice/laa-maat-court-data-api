@@ -1,5 +1,6 @@
 package gov.uk.courtdata.unlink.validator;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.validator.IValidator;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
+@XRayEnabled
+@RequiredArgsConstructor
 public class UserIdValidator implements IValidator<Void, String> {
 
     @Override

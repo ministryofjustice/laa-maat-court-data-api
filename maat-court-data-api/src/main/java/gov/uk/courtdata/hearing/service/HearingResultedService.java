@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.enums.FunctionType;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
 import gov.uk.courtdata.hearing.processor.CourtApplicationsPreProcessor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
 public class HearingResultedService {
 
     private final HearingValidationProcessor hearingValidationProcessor;

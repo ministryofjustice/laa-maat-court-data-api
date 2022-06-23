@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.entity.XLATOffenceEntity;
@@ -24,6 +25,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
 public class CourtApplicationsPreProcessor {
 
     private final XLATOffenceRepository xlatOffenceRepository;

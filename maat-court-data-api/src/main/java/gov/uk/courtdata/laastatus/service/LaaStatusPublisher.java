@@ -1,5 +1,6 @@
 package gov.uk.courtdata.laastatus.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
@@ -12,8 +13,9 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+@XRayEnabled
 @Slf4j
+@RequiredArgsConstructor
 public class LaaStatusPublisher {
 
     private final JmsTemplate defaultJmsTemplate;

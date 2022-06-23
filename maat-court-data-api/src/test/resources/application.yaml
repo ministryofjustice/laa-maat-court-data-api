@@ -31,6 +31,7 @@ spring:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate:
         defaulat_schema: mla
+        enable_lazy_load_no_trans: true
 
 cloud-platform:
   aws:

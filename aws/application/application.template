@@ -500,8 +500,6 @@ Resources:
               awslogs-stream-prefix: !Sub '${pAppName}-app'
           PortMappings:
             - ContainerPort: 8090
-          Links:
-            - xray-daemon
           Secrets:
             - Name: DATASOURCE_USERNAME
               ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/DATASOURCE_USERNAME'

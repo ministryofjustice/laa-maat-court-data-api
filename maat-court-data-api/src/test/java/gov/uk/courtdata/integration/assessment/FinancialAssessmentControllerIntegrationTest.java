@@ -91,83 +91,31 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         LocalDateTime testCreationDate = LocalDateTime.of(2022, 1, 1, 12, 0);
         String testUser = "test-f";
 
-        existingRepOrder = repOrderRepository.save(
-                RepOrderEntity.builder()
-                        .id(4444)
-                        .catyCaseType("case-type")
-                        .magsOutcome("outcome")
-                        .magsOutcomeDate(testCreationDate.toString())
-                        .magsOutcomeDateSet(testCreationDate.toLocalDate())
-                        .committalDate(testCreationDate.toLocalDate())
-                        .rderCode("rder-code")
-                        .ccRepDec("cc-rep-doc")
-                        .ccRepType("cc-rep-type")
-                        .build()
-        );
+        existingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(4444, testCreationDate));
 
         NewWorkReasonEntity newWorkReasonEntity = newWorkReasonRepository.save(
-                NewWorkReasonEntity.builder()
-                        .code("FMA")
-                        .type("ASS")
-                        .description("")
-                        .dateCreated(testCreationDate)
-                        .userCreated(testUser)
-                        .build());
-
-        var assessmentDetails = TestEntityDataBuilder.getFinancialAssessmentDetailsEntity();
-        assessmentDetails.setId(null);
-
-        FinancialAssessmentEntity assessmentWithWeightingsAndDetails = FinancialAssessmentEntity.builder()
-                .repId(existingRepOrder.getId())
-                .assessmentType("INIT")
-                .fassFullStatus("COMPLETE")
-                .dateCreated(testCreationDate)
-                .userCreated(testUser)
-                .initialAscrId(10)
-                .usn(11)
-                .cmuId(12)
-                .replaced("N")
-                .newWorkReason(newWorkReasonEntity)
-                .build();
-        assessmentWithWeightingsAndDetails.addAssessmentDetail(assessmentDetails);
-        assessmentWithWeightingsAndDetails.addChildWeighting(TestEntityDataBuilder.getChildWeightingsEntity());
+                TestEntityDataBuilder.getFmaNewWorkReasonEntity(testCreationDate, testUser));
 
         List<FinancialAssessmentEntity> assessmentsToCreate = List.of(
-
-                FinancialAssessmentEntity.builder()
-                        .repId(REP_ID_WITH_OUTSTANDING_ASSESSMENTS)
-                        .fassFullStatus("IN PROGRESS")
-                        .dateCreated(testCreationDate)
-                        .userCreated(testUser)
-                        .initialAscrId(1)
-                        .usn(2)
-                        .cmuId(3)
-                        .replaced("N")
-                        .newWorkReason(newWorkReasonEntity)
-                        .build(),
-                FinancialAssessmentEntity.builder()
-                        .repId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS)
-                        .fassFullStatus("COMPLETE")
-                        .dateCreated(testCreationDate)
-                        .userCreated(testUser)
-                        .initialAscrId(4)
-                        .usn(5)
-                        .cmuId(6)
-                        .replaced("N")
-                        .newWorkReason(newWorkReasonEntity)
-                        .build(),
-                FinancialAssessmentEntity.builder()
-                        .repId(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS)
-                        .fassFullStatus("COMPLETE")
-                        .dateCreated(testCreationDate)
-                        .userCreated(testUser)
-                        .initialAscrId(7)
-                        .usn(8)
-                        .cmuId(9)
-                        .replaced("N")
-                        .newWorkReason(newWorkReasonEntity)
-                        .build(),
-                assessmentWithWeightingsAndDetails
+                TestEntityDataBuilder.getCustomFinancialAssessmentEntity(
+                        REP_ID_WITH_OUTSTANDING_ASSESSMENTS,
+                        "IN PROGRESS",
+                        testCreationDate,
+                        newWorkReasonEntity,
+                        testUser),
+                TestEntityDataBuilder.getCustomFinancialAssessmentEntity(
+                        REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS,
+                        "COMPLETE",
+                        testCreationDate,
+                        newWorkReasonEntity,
+                        testUser),
+                TestEntityDataBuilder.getCustomFinancialAssessmentEntity(
+                        REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS,
+                        "COMPLETE",
+                        testCreationDate,
+                        newWorkReasonEntity,
+                        testUser),
+                TestEntityDataBuilder.getFinancialAssessmentEntityWithRelationships(existingRepOrder.getId(), newWorkReasonEntity)
         );
 
         existingAssessmentEntities = financialAssessmentRepository.saveAll(assessmentsToCreate);

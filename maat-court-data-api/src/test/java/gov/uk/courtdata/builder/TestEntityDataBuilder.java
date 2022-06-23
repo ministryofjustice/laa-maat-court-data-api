@@ -22,6 +22,20 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static RepOrderEntity getPopulatedRepOrder(Integer id, LocalDateTime testDate) {
+        return RepOrderEntity.builder()
+                .id(id)
+                .catyCaseType("case-type")
+                .magsOutcome("outcome")
+                .magsOutcomeDate(testDate.toString())
+                .magsOutcomeDateSet(testDate.toLocalDate())
+                .committalDate(testDate.toLocalDate())
+                .rderCode("rder-code")
+                .ccRepDec("cc-rep-doc")
+                .ccRepType("cc-rep-type")
+                .build();
+    }
+
     public static FinancialAssessmentEntity getFinancialAssessmentEntity() {
         return FinancialAssessmentEntity.builder()
                 .id(1000)
@@ -41,6 +55,21 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(
+            Integer repId, String FassStatus, LocalDateTime testDate, NewWorkReasonEntity newWorkReason, String user) {
+        return FinancialAssessmentEntity.builder()
+                .repId(repId)
+                .fassFullStatus(FassStatus)
+                .dateCreated(testDate)
+                .userCreated(user)
+                .initialAscrId(1)
+                .usn(2)
+                .cmuId(3)
+                .replaced("N")
+                .newWorkReason(newWorkReason)
+                .build();
+    }
+
     public static FinancialAssessmentEntity getFinancialAssessmentEntityWithDetails() {
         FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
         financialAssessment.addAssessmentDetail(getFinancialAssessmentDetailsEntity());
@@ -53,8 +82,13 @@ public class TestEntityDataBuilder {
         return financialAssessment;
     }
 
-    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithRelationships() {
+    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithRelationships(Integer repId, NewWorkReasonEntity newWorkReason) {
         FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
+        financialAssessment.setId(null);
+        financialAssessment.setRepId(repId);
+        financialAssessment.setNewWorkReason(newWorkReason);
+        FinancialAssessmentDetailEntity details = getFinancialAssessmentDetailsEntity();
+        details.setId(null);
         financialAssessment.addAssessmentDetail(getFinancialAssessmentDetailsEntity());
         financialAssessment.addChildWeighting(getChildWeightingsEntity());
         return financialAssessment;
@@ -214,6 +248,16 @@ public class TestEntityDataBuilder {
                 .sequence(1)
                 .enabled("Y")
                 .initialDefault("Y")
+                .build();
+    }
+
+    public static NewWorkReasonEntity getFmaNewWorkReasonEntity(LocalDateTime creationDate, String user) {
+        return NewWorkReasonEntity.builder()
+                .code("FMA")
+                .type("ASS")
+                .description("")
+                .dateCreated(creationDate)
+                .userCreated(user)
                 .build();
     }
 

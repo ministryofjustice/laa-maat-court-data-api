@@ -550,8 +550,6 @@ Resources:
               Value: !Ref pEnableCloudwatchMetrics
             - Name: AWS_XRAY_SDK_ENABLED
               Value: !Ref pAwsXRayEnabled
-            - Name: AWS_XRAY_DAEMON_ADDRESS
-              Value: xray-daemon:2000
 
 
 

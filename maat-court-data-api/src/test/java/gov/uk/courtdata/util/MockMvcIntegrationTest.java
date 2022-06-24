@@ -45,6 +45,11 @@ public abstract class MockMvcIntegrationTest {
         runErrorScenario(expectedError, request, status().isBadRequest());
     }
 
+    public void runNotFoundErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
+        ErrorDTO expectedError = ErrorDTO.builder().code(HttpStatus.NOT_FOUND.name()).message(expectedErrorMessage).build();
+        runErrorScenario(expectedError, request, status().isNotFound());
+    }
+
     private void runErrorScenario(ErrorDTO expectedError, MockHttpServletRequestBuilder request, ResultMatcher resultMatcher) throws Exception {
         MvcResult result = mockMvc.perform(request).andExpect(resultMatcher).andReturn();
         assertThat(result.getResponse().getContentAsString())

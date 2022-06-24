@@ -15,6 +15,9 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 @Component
 public class TestEntityDataBuilder {
 
+    public static final String TEST_USER = "test-f";
+    public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
+
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder()
                 .id(1234)
@@ -22,14 +25,14 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static RepOrderEntity getPopulatedRepOrder(Integer id, LocalDateTime testDate) {
+    public static RepOrderEntity getPopulatedRepOrder(Integer id) {
         return RepOrderEntity.builder()
                 .id(id)
                 .catyCaseType("case-type")
                 .magsOutcome("outcome")
-                .magsOutcomeDate(testDate.toString())
-                .magsOutcomeDateSet(testDate.toLocalDate())
-                .committalDate(testDate.toLocalDate())
+                .magsOutcomeDate(TEST_DATE.toString())
+                .magsOutcomeDateSet(TEST_DATE.toLocalDate())
+                .committalDate(TEST_DATE.toLocalDate())
                 .rderCode("rder-code")
                 .ccRepDec("cc-rep-doc")
                 .ccRepType("cc-rep-type")
@@ -56,12 +59,12 @@ public class TestEntityDataBuilder {
     }
 
     public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(
-            Integer repId, String FassStatus, LocalDateTime testDate, NewWorkReasonEntity newWorkReason, String user) {
+            Integer repId, String FassStatus, NewWorkReasonEntity newWorkReason) {
         return FinancialAssessmentEntity.builder()
                 .repId(repId)
                 .fassFullStatus(FassStatus)
-                .dateCreated(testDate)
-                .userCreated(user)
+                .dateCreated(TEST_DATE)
+                .userCreated(TEST_USER)
                 .initialAscrId(1)
                 .usn(2)
                 .cmuId(3)
@@ -89,7 +92,7 @@ public class TestEntityDataBuilder {
         financialAssessment.setNewWorkReason(newWorkReason);
         FinancialAssessmentDetailEntity details = getFinancialAssessmentDetailsEntity();
         details.setId(null);
-        financialAssessment.addAssessmentDetail(getFinancialAssessmentDetailsEntity());
+        financialAssessment.addAssessmentDetail(details);
         financialAssessment.addChildWeighting(getChildWeightingsEntity());
         return financialAssessment;
     }
@@ -251,13 +254,13 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static NewWorkReasonEntity getFmaNewWorkReasonEntity(LocalDateTime creationDate, String user) {
+    public static NewWorkReasonEntity getFmaNewWorkReasonEntity() {
         return NewWorkReasonEntity.builder()
                 .code("FMA")
                 .type("ASS")
                 .description("")
-                .dateCreated(creationDate)
-                .userCreated(user)
+                .dateCreated(TEST_DATE)
+                .userCreated(TEST_USER)
                 .build();
     }
 

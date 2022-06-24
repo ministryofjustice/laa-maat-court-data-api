@@ -8,6 +8,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.*;
@@ -24,7 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class, NewWorkReasonRepository.class})
+@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class, MockNewWorkReasonRepository.class})
 public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private final String BASE_URL = "/api/internal/v1/assessment/financial-assessments/";
@@ -52,7 +52,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     @Autowired
     private FinancialAssessmentMapper assessmentMapper;
     @Autowired
-    private NewWorkReasonRepository newWorkReasonRepository;
+    private MockNewWorkReasonRepository newWorkReasonRepository;
     @Autowired
     private ChildWeightingsRepository childWeightingsRepository;
     @Autowired
@@ -88,33 +88,24 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         financialAssessmentRepository.deleteAll();
         newWorkReasonRepository.deleteAll();
 
-        LocalDateTime testCreationDate = LocalDateTime.of(2022, 1, 1, 12, 0);
-        String testUser = "test-f";
-
-        existingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(4444, testCreationDate));
+        existingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(4444));
 
         NewWorkReasonEntity newWorkReasonEntity = newWorkReasonRepository.save(
-                TestEntityDataBuilder.getFmaNewWorkReasonEntity(testCreationDate, testUser));
+                TestEntityDataBuilder.getFmaNewWorkReasonEntity());
 
         List<FinancialAssessmentEntity> assessmentsToCreate = List.of(
                 TestEntityDataBuilder.getCustomFinancialAssessmentEntity(
                         REP_ID_WITH_OUTSTANDING_ASSESSMENTS,
                         "IN PROGRESS",
-                        testCreationDate,
-                        newWorkReasonEntity,
-                        testUser),
+                        newWorkReasonEntity),
                 TestEntityDataBuilder.getCustomFinancialAssessmentEntity(
                         REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS,
                         "COMPLETE",
-                        testCreationDate,
-                        newWorkReasonEntity,
-                        testUser),
+                        newWorkReasonEntity),
                 TestEntityDataBuilder.getCustomFinancialAssessmentEntity(
                         REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS,
                         "COMPLETE",
-                        testCreationDate,
-                        newWorkReasonEntity,
-                        testUser),
+                        newWorkReasonEntity),
                 TestEntityDataBuilder.getFinancialAssessmentEntityWithRelationships(existingRepOrder.getId(), newWorkReasonEntity)
         );
 

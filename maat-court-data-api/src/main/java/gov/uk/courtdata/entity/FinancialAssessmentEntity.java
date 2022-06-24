@@ -149,9 +149,6 @@ public class FinancialAssessmentEntity implements Serializable {
     @Column(name = "RT_CODE")
     private String rtCode;
 
-    @Column(name = "VALID")
-    private String valid;
-
     @Builder.Default
     @Column(name = "REPLACED")
     private String replaced = "N";

@@ -26,7 +26,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate:

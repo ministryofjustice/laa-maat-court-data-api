@@ -27,7 +27,7 @@ public class AWSXRayConfig {
         AWSXRayRecorderBuilder builder = AWSXRayRecorderBuilder.standard()
                 .withSamplingStrategy(new AllSamplingStrategy())
                 .withSegmentListener(new SLF4JSegmentListener())
-                .withStreamingStrategy(new DefaultStreamingStrategy(3))
+                .withStreamingStrategy(new DefaultStreamingStrategy(1))
                 .withContextMissingStrategy(new LogErrorContextMissingStrategy());
 
         AWSXRay.setGlobalRecorder(builder.build());

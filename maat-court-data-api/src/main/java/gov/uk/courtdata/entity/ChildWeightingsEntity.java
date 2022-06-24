@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -44,6 +45,7 @@ public class ChildWeightingsEntity {
     private String userModified;
 
     @ManyToOne(optional = false)
+    @JsonBackReference
     @JoinColumn(name = "FINA_ID", nullable = false)
     private FinancialAssessmentEntity financialAssessment;
 }

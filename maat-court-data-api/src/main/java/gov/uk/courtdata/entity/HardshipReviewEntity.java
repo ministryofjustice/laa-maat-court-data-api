@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import gov.uk.courtdata.enums.HardshipReviewStatus;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -109,6 +110,7 @@ public class HardshipReviewEntity {
 
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
+    @JsonManagedReference
     @OneToMany(mappedBy = "hardshipReview", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private final List<HardshipReviewDetailEntity> reviewDetails = new ArrayList<>();
 

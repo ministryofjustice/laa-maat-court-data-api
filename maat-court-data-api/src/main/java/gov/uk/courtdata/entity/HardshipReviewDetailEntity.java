@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
@@ -84,6 +85,7 @@ public class HardshipReviewDetailEntity {
     @Column(name = "REMOVED_DATE")
     private LocalDateTime removedDate;
 
+    @JsonBackReference
     @ManyToOne(optional = false)
     @JoinColumn(name = "HARD_ID", nullable = false)
     private HardshipReviewEntity hardshipReview;

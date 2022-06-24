@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import gov.uk.courtdata.enums.Frequency;
 import lombok.*;
 
@@ -23,8 +24,9 @@ public class FinancialAssessmentDetailsHistoryEntity {
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-    @ManyToOne(targetEntity = FinancialAssessmentsHistoryEntity.class, fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "FASH_ID", referencedColumnName = "id")
+    @ManyToOne(targetEntity = FinancialAssessmentsHistoryEntity.class, fetch = FetchType.LAZY)
     private FinancialAssessmentsHistoryEntity financialAssessmentsHistory;
 
     @Column(name = "FASD_ID", nullable = false)

@@ -11,14 +11,14 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class AmazonSQSConfig {
+public class CMASQSConfig {
 
     private final SqsProperties sqsProperties;
 
     public AmazonSQS awsSqsClient() {
         return AmazonSQSClientBuilder.standard()
                         .withCredentials(new AWSStaticCredentialsProvider(
-                                new BasicAWSCredentials(sqsProperties.getAccesskey(), sqsProperties.getSecretkey())))
+                                new BasicAWSCredentials(sqsProperties.getCmaAccesskey(), sqsProperties.getCmaSecretkey())))
                         .withRegion(Regions.fromName(sqsProperties.getRegion()))
                         .build();
     }

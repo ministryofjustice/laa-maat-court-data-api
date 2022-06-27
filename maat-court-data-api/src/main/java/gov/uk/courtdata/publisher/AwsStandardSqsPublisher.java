@@ -2,10 +2,9 @@ package gov.uk.courtdata.publisher;
 
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.GetQueueUrlResult;
-import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.google.gson.Gson;
-import gov.uk.courtdata.config.AmazonSQSConfig;
+import gov.uk.courtdata.config.CDASQSConfig;
 import gov.uk.courtdata.exception.MaatRecordLockedException;
 import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.service.QueueMessageLogService;
@@ -13,9 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +31,7 @@ public class AwsStandardSqsPublisher {
     private final Gson gson;
 
 
-    private final AmazonSQSConfig amazonSQSConfig;
+    private final CDASQSConfig amazonSQSConfig;
 
     private final QueueMessageLogService queueMessageLogService;
 

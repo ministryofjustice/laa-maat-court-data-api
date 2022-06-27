@@ -49,6 +49,8 @@ cloud-platform:
       region: ${CLOUD_PLATFORM_QUEUE_REGION}
       accesskey: ${CLOUD_PLATFORM_QUEUE_ACCESS_KEY}
       secretkey: ${CLOUD_PLATFORM_QUEUE_SECRET_KEY}
+      cmaaccesskey: ${CLOUD_PLATFORM_CMA_QUEUE_ACCESS_KEY}
+      cmasecretkey: ${CLOUD_PLATFORM_CMA_QUEUE_SECRET_KEY}
       queue:
         link: ${CREATE_LINK_QUEUE}
         unlink: ${UNLINK_QUEUE}

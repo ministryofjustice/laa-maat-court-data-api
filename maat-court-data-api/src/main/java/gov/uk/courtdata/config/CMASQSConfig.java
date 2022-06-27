@@ -18,7 +18,7 @@ public class CMASQSConfig {
     public AmazonSQS awsSqsClient() {
         return AmazonSQSClientBuilder.standard()
                         .withCredentials(new AWSStaticCredentialsProvider(
-                                new BasicAWSCredentials(sqsProperties.getCmaAccesskey(), sqsProperties.getCmaSecretkey())))
+                                new BasicAWSCredentials(sqsProperties.getCmaaccesskey(), sqsProperties.getCmasecretkey())))
                         .withRegion(Regions.fromName(sqsProperties.getRegion()))
                         .build();
     }

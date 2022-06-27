@@ -25,10 +25,8 @@ public class MeansAssessmentPostProcessingListener {
     private final PostProcessingService postProcessingService;
     private final QueueMessageLogService queueMessageLogService;
 
-    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.meansAssessmentPostProcessing}", concurrency = "1")
+    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.meansAssessmentPostProcessing}", concurrency = "1", containerFactory = "cmaJMSListenerContainerFactory")
     public void receive(@Payload final String message) {
-        queueMessageLogService.createLog(MessageType.MEANS_ASSESSMENT_POST_PROCESSING,message);
-
         PostProcessing postProcessing = gson.fromJson(message, PostProcessing.class);
 
         log.info("Assessment Post-Processing Request Received for RepID: {}", postProcessing.getRepId());

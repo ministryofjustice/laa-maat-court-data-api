@@ -15,10 +15,27 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 @Component
 public class TestEntityDataBuilder {
 
+    public static final String TEST_USER = "test-f";
+    public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
+
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder()
                 .id(1234)
                 .dateModified(LocalDateTime.now())
+                .build();
+    }
+
+    public static RepOrderEntity getPopulatedRepOrder(Integer id) {
+        return RepOrderEntity.builder()
+                .id(id)
+                .catyCaseType("case-type")
+                .magsOutcome("outcome")
+                .magsOutcomeDate(TEST_DATE.toString())
+                .magsOutcomeDateSet(TEST_DATE.toLocalDate())
+                .committalDate(TEST_DATE.toLocalDate())
+                .rderCode("rder-code")
+                .ccRepDec("cc-rep-doc")
+                .ccRepType("cc-rep-type")
                 .build();
     }
 
@@ -41,6 +58,21 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(
+            Integer repId, String FassStatus, NewWorkReasonEntity newWorkReason) {
+        return FinancialAssessmentEntity.builder()
+                .repId(repId)
+                .fassFullStatus(FassStatus)
+                .dateCreated(TEST_DATE)
+                .userCreated(TEST_USER)
+                .initialAscrId(1)
+                .usn(2)
+                .cmuId(3)
+                .replaced("N")
+                .newWorkReason(newWorkReason)
+                .build();
+    }
+
     public static FinancialAssessmentEntity getFinancialAssessmentEntityWithDetails() {
         FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
         financialAssessment.addAssessmentDetail(getFinancialAssessmentDetailsEntity());
@@ -53,9 +85,14 @@ public class TestEntityDataBuilder {
         return financialAssessment;
     }
 
-    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithRelationships() {
+    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithRelationships(Integer repId, NewWorkReasonEntity newWorkReason) {
         FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
-        financialAssessment.addAssessmentDetail(getFinancialAssessmentDetailsEntity());
+        financialAssessment.setId(null);
+        financialAssessment.setRepId(repId);
+        financialAssessment.setNewWorkReason(newWorkReason);
+        FinancialAssessmentDetailEntity details = getFinancialAssessmentDetailsEntity();
+        details.setId(null);
+        financialAssessment.addAssessmentDetail(details);
         financialAssessment.addChildWeighting(getChildWeightingsEntity());
         return financialAssessment;
     }
@@ -214,6 +251,16 @@ public class TestEntityDataBuilder {
                 .sequence(1)
                 .enabled("Y")
                 .initialDefault("Y")
+                .build();
+    }
+
+    public static NewWorkReasonEntity getFmaNewWorkReasonEntity() {
+        return NewWorkReasonEntity.builder()
+                .code("FMA")
+                .type("ASS")
+                .description("")
+                .dateCreated(TEST_DATE)
+                .userCreated(TEST_USER)
                 .build();
     }
 

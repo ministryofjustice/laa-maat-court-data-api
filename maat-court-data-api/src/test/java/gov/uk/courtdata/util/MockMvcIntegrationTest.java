@@ -29,8 +29,12 @@ public abstract class MockMvcIntegrationTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
+    public MvcResult runSuccessScenario(MockHttpServletRequestBuilder request) throws Exception {
+        return mockMvc.perform(request).andExpect(status().isOk()).andReturn();
+    }
+
     public <T> void runSuccessScenario(T expectedResponseBody, MockHttpServletRequestBuilder request) throws Exception {
-        MvcResult result = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
+        MvcResult result = runSuccessScenario(request);
 
         assertThat(result.getResponse().getContentAsString())
                 .isEqualTo(objectMapper.writeValueAsString(expectedResponseBody));
@@ -39,6 +43,11 @@ public abstract class MockMvcIntegrationTest {
     public void runBadRequestErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
         ErrorDTO expectedError = ErrorDTO.builder().code(HttpStatus.BAD_REQUEST.name()).message(expectedErrorMessage).build();
         runErrorScenario(expectedError, request, status().isBadRequest());
+    }
+
+    public void runNotFoundErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
+        ErrorDTO expectedError = ErrorDTO.builder().code(HttpStatus.NOT_FOUND.name()).message(expectedErrorMessage).build();
+        runErrorScenario(expectedError, request, status().isNotFound());
     }
 
     private void runErrorScenario(ErrorDTO expectedError, MockHttpServletRequestBuilder request, ResultMatcher resultMatcher) throws Exception {

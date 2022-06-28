@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 public class CDASQSConfig {
-
     private final SqsProperties sqsProperties;
 
     public AmazonSQS awsSqsClient() {

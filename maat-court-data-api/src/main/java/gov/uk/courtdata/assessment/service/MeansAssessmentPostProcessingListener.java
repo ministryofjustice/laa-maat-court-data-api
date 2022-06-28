@@ -31,6 +31,7 @@ public class MeansAssessmentPostProcessingListener {
 
         log.info("Assessment Post-Processing Request Received for RepID: {}", postProcessing.getRepId());
         MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), postProcessing.getLaaTransactionId());
+        queueMessageLogService.createLog(MessageType.MEANS_ASSESSMENT_POST_PROCESSING,message);
 
         maatIdValidator.validate(postProcessing.getRepId());
         postProcessingService.execute(postProcessing.getRepId());

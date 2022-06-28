@@ -15,7 +15,7 @@
     "pUnlinkQueue": "crime-apps-uat-unlink-queue",
     "pLaaStatusUpdateQueue": "crime-apps-uat-laa-status-update-queue",
     "pHearingsResultedQueue": "crime-apps-uat-hearing-resulted-queue",
-    "pMeansAssessmentPostProcessingQueue": "crime-apps-uat-means-assessment-post-processing-queue",
+    "pMeansAssessmentPostProcessingQueue": "crime-apps-uat-assessment-post-processing-queue",
     "pLaaProsecutionConcludedQueue": "crime-apps-uat-prosecution-concluded-queue",
     "pCdaOauthUrl": "https://laa-court-data-adaptor-uat.apps.live-1.cloud-platform.service.justice.gov.uk/oauth/token",
     "pCdaLaaStatusUrl": "https://laa-court-data-adaptor-uat.apps.live-1.cloud-platform.service.justice.gov.uk/api/internal/v1/representation_orders",

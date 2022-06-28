@@ -38,6 +38,8 @@ cloud-platform:
       region: eu-west-2
       accesskey: access
       secretkey: secret
+      cmaaccesskey: access
+      cmasecretkey: secret
       queue:
         link: link
         unlink: unlink
@@ -46,6 +48,7 @@ cloud-platform:
         laaStatusJob: laaStatusJob
         createLinkCpStatusJob: createLinkCpStatusJob
         prosecutionConcluded: prosecutionConcluded
+        meansAssessmentPostProcessing: meansAssessmentPostProcessing
         config:
           messageDelay: 900
           messageDelayDuration: 120

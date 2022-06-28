@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hardship.validator;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.enums.HardshipReviewStatus;
 import gov.uk.courtdata.exception.ValidationException;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @Slf4j
 @AllArgsConstructor
 @Component
+@XRayEnabled
 public class UpdateHardshipReviewValidator implements IValidator<Void, UpdateHardshipReview> {
 
     private final HardshipReviewRepository hardshipReviewRepository;

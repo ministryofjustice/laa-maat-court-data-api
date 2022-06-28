@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WQCaseEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQCaseRepository;
@@ -13,6 +14,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Component
+@XRayEnabled
 @RequiredArgsConstructor
 public class WQCaseProcessor {
 

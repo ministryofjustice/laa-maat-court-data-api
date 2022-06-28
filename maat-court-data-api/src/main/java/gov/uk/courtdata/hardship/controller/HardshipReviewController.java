@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hardship.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.hardship.service.HardshipReviewService;
@@ -25,6 +26,7 @@ import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
 @RequestMapping("${api-endpoints.assessments-domain}/hardship")
 @Slf4j
 @RequiredArgsConstructor
+@XRayEnabled
 @Tag(name = "Hardship Reviews", description = "Rest API for hardship reviews")
 public class HardshipReviewController {
 

@@ -9,16 +9,16 @@ import gov.uk.courtdata.jms.SqsProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class CDASQSConfig {
     private final SqsProperties sqsProperties;
 
     public AmazonSQS awsSqsClient() {
         return AmazonSQSClientBuilder.standard()
-                        .withCredentials(new AWSStaticCredentialsProvider(
-                                new BasicAWSCredentials(sqsProperties.getAccesskey(), sqsProperties.getSecretkey())))
-                        .withRegion(Regions.fromName(sqsProperties.getRegion()))
-                        .build();
+                .withCredentials(new AWSStaticCredentialsProvider(
+                        new BasicAWSCredentials(sqsProperties.getAccesskey(), sqsProperties.getSecretkey())))
+                .withRegion(Regions.fromName(sqsProperties.getRegion()))
+                .build();
     }
 }

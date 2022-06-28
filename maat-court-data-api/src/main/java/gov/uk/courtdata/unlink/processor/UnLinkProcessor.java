@@ -1,5 +1,6 @@
 package gov.uk.courtdata.unlink.processor;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.Unlink;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
+@XRayEnabled
 @RequiredArgsConstructor
 public class UnLinkProcessor {
 

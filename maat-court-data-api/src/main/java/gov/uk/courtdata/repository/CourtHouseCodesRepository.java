@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface CourtHouseCodesRepository extends JpaRepository<CourtHouseCodesEntity, String> {
 
     /**
-     *
      * @param code
      * @return
      */

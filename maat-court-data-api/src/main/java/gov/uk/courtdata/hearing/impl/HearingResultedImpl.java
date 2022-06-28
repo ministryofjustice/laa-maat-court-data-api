@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hearing.impl;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.enums.WQType;
@@ -19,14 +20,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
-
-import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
 public class HearingResultedImpl {
 
 

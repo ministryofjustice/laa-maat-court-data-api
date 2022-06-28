@@ -1,5 +1,6 @@
 package gov.uk.courtdata.link.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.JobStatus;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static java.lang.String.format;
 
 @Service
+@XRayEnabled
 @RequiredArgsConstructor
 public class CreateLinkCpJobStatusService {
 

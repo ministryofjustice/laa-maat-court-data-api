@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import gov.uk.courtdata.enums.Frequency;
 import lombok.*;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -60,6 +61,7 @@ public class FinancialAssessmentDetailEntity {
     private String userModified;
 
     @ManyToOne(optional = false)
+    @JsonBackReference
     @JoinColumn(name = "FINA_ID", nullable = false)
     private FinancialAssessmentEntity financialAssessment;
 

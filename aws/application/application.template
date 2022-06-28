@@ -86,6 +86,9 @@ Parameters:
   pEnableCloudwatchMetrics:
     Type: String
     Default: ''
+  pAwsXRayEnabled:
+    Type: String
+    Default: ''
 
   ###### API-Gateway parameters
   pApiScope1:
@@ -428,6 +431,8 @@ Resources:
             Service: [ecs-tasks.amazonaws.com]
           Action: ['sts:AssumeRole']
       Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
       Policies:
         - PolicyName: !Sub '${pAppName}-ecs-TaskExecutionRolePolicy'
           PolicyDocument:
@@ -460,19 +465,33 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: !Join [ '', [ !Ref pAppName, '-app' ] ]
-      Cpu: !If [ cNonProd, 512, 512 ]
-      Memory: !If [ cNonProd, 1024, 2048 ]
+      Cpu: !If [ cNonProd, 1024, 1024 ]
+      Memory: !If [ cNonProd, 2048, 3072 ]
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - !Ref pLaunchType
       ExecutionRoleArn: !Ref ECSTaskExecutionRole
       TaskRoleArn: !Ref ECSTaskExecutionRole
       ContainerDefinitions:
+        - Name: xray-daemon
+          Cpu: 32
+          Essential: false
+          Image: 'amazon/aws-xray-daemon'
+          Memory: 256
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref 'CloudwatchLogsGroup'
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: !Sub '${pAppName}-app'
+          PortMappings:
+            - ContainerPort: 2000
+              Protocol: udp
         - Name: !Ref pAppName
-          Cpu: !If [ cNonProd, 512, 512 ]
+          Cpu: !If [ cNonProd, 992, 992 ]
           Essential: true
           Image: !Join [':', [!Ref pECSRepositoryURL, !Ref pDockerImageTag ]]
-          Memory: !If [ cNonProd, 1024, 2048 ]
+          Memory: !If [ cNonProd, 1792, 2816 ]
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -535,6 +554,10 @@ Resources:
               Value: !Ref pCloudwatchBatchSize
             - Name: ENABLE_CLOUDWATCH_METRICS
               Value: !Ref pEnableCloudwatchMetrics
+            - Name: AWS_XRAY_SDK_ENABLED
+              Value: !Ref pAwsXRayEnabled
+
+
 
   CloudwatchLogsGroup:
     Type: AWS::Logs::LogGroup

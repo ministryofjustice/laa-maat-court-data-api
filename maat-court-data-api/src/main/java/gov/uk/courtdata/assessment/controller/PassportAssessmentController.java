@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.service.PassportAssessmentService;
 import gov.uk.courtdata.assessment.validator.PassportAssessmentValidationProcessor;
 import gov.uk.courtdata.dto.ErrorDTO;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("${api-endpoints.assessments-domain}/passport-assessments")
 @Slf4j
 @RequiredArgsConstructor
+@XRayEnabled
 @Tag(name = "Passport Assessments", description = "Rest API for passport assessments")
 public class PassportAssessmentController {
 

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.laastatus.validator;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
 import gov.uk.courtdata.validator.DefendantValidator;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@XRayEnabled
 @RequiredArgsConstructor
 public class LaaStatusValidationProcessor {
 

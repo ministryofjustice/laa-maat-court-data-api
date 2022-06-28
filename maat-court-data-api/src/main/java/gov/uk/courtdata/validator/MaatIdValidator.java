@@ -1,5 +1,6 @@
 package gov.uk.courtdata.validator;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.RepOrderRepository;
@@ -13,8 +14,9 @@ import java.util.Optional;
  * <class>MaatIdValidator</class> validate maat id exists.
  */
 @Slf4j
-@RequiredArgsConstructor
+@XRayEnabled
 @Component
+@RequiredArgsConstructor
 public class MaatIdValidator implements IValidator<Void, Integer> {
 
     private final RepOrderRepository repOrderRepository;

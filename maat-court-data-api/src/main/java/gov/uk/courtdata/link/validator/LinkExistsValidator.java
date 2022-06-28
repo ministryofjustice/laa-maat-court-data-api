@@ -1,5 +1,6 @@
 package gov.uk.courtdata.link.validator;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.validator.IValidator;
@@ -15,8 +16,9 @@ import static java.lang.String.format;
  * <code>LinkExistsValidator</code> validate maatid has no link established.
  */
 @Slf4j
-@RequiredArgsConstructor
 @Component
+@XRayEnabled
+@RequiredArgsConstructor
 public class LinkExistsValidator implements IValidator<Void, Integer> {
 
     private final WqLinkRegisterRepository wqLinkRegisterRepository;

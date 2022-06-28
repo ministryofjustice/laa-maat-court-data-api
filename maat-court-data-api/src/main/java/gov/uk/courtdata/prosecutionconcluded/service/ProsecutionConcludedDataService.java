@@ -1,5 +1,6 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import gov.uk.courtdata.entity.ProsecutionConcludedEntity;
 import gov.uk.courtdata.enums.CaseConclusionStatus;
@@ -14,9 +15,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
 @Slf4j
+@XRayEnabled
+@RequiredArgsConstructor
 public class ProsecutionConcludedDataService {
 
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;

@@ -1,10 +1,14 @@
 package gov.uk.courtdata.link.validator;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.validator.*;
+import gov.uk.courtdata.validator.DefendantValidator;
+import gov.uk.courtdata.validator.MaatIdValidator;
+import gov.uk.courtdata.validator.ReferenceDataValidator;
+import gov.uk.courtdata.validator.SolicitorValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -15,6 +19,7 @@ import java.util.Optional;
  * <code>ValidationProcessor</code> chain of validations on the create link process.
  */
 @Slf4j
+@XRayEnabled
 @AllArgsConstructor
 @Component
 public class ValidationProcessor {

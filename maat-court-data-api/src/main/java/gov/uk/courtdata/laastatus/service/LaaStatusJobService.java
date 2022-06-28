@@ -1,5 +1,6 @@
 package gov.uk.courtdata.laastatus.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.enums.JobStatus;
 import gov.uk.courtdata.enums.WQStatus;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import static java.lang.String.format;
 
 @Service
+@XRayEnabled
 @RequiredArgsConstructor
 public class LaaStatusJobService {
 

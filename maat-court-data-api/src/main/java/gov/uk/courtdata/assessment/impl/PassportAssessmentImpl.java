@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.impl;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
 public class PassportAssessmentImpl {
 
     private final PassportAssessmentMapper assessmentMapper;

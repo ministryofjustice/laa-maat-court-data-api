@@ -1,5 +1,6 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
@@ -19,8 +20,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
+@RequiredArgsConstructor
 public class ProsecutionConcludedService {
 
     private final CalculateOutcomeHelper calculateOutcomeHelper;

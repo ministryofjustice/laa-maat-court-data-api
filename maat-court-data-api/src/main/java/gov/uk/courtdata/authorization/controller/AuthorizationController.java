@@ -1,5 +1,6 @@
 package gov.uk.courtdata.authorization.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.authorization.service.AuthorizationService;
 import gov.uk.courtdata.authorization.validator.UserReservationValidator;
 import gov.uk.courtdata.dto.ErrorDTO;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("${api-endpoints.assessments-domain}/authorization")
 @Slf4j
 @RequiredArgsConstructor
+@XRayEnabled
 @Tag(name = "Authorization", description = "Rest API for performing role authorization checks")
 public class AuthorizationController {
 

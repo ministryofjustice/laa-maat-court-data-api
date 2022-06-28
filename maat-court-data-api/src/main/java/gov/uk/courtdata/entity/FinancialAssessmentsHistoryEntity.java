@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
@@ -207,9 +208,10 @@ public class FinancialAssessmentsHistoryEntity {
     @Column(name = "RT_CODE", length = 10)
     private String rtCode;
 
+    @Builder.Default()
     @ToString.Exclude()
     @Fetch(FetchMode.JOIN)
-    @Builder.Default()
+    @JsonManagedReference
     @OneToMany(mappedBy = "financialAssessmentsHistory", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FinancialAssessmentDetailsHistoryEntity> assessmentDetails = new ArrayList<>();
 
@@ -218,8 +220,9 @@ public class FinancialAssessmentsHistoryEntity {
         assessmentDetail.setFinancialAssessmentsHistory(this);
     }
 
-    @ToString.Exclude()
     @Builder.Default()
+    @ToString.Exclude()
+    @JsonManagedReference
     @OneToMany(mappedBy = "financialAssessmentHistory", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChildWeightHistoryEntity> childWeightings = new ArrayList<>();
 

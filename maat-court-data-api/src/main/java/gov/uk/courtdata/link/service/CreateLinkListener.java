@@ -1,5 +1,6 @@
 package gov.uk.courtdata.link.service;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
@@ -17,8 +18,9 @@ import org.springframework.stereotype.Service;
  * <code>CreateLinkListener</code> a JMS listener to consume create link messages from queue.
  */
 @Slf4j
-@AllArgsConstructor
+@XRayEnabled
 @Service
+@AllArgsConstructor
 public class CreateLinkListener {
 
     private final CreateLinkService createLinkService;

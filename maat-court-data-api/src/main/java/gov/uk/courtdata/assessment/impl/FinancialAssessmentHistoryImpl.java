@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.impl;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentHistoryMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentsHistoryEntity;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
 public class FinancialAssessmentHistoryImpl {
 
     private final FinancialAssessmentHistoryMapper assessmentHistoryMapper;

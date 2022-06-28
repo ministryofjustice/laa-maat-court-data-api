@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
@@ -155,6 +156,7 @@ public class FinancialAssessmentEntity implements Serializable {
 
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
+    @JsonManagedReference
     @OneToMany(mappedBy = "financialAssessment", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private final List<FinancialAssessmentDetailEntity> assessmentDetails = new ArrayList<>();
 
@@ -167,6 +169,7 @@ public class FinancialAssessmentEntity implements Serializable {
     }
 
     @ToString.Exclude
+    @JsonManagedReference
     @OneToMany(mappedBy = "financialAssessment", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private final List<ChildWeightingsEntity> childWeightings = new ArrayList<>();
 

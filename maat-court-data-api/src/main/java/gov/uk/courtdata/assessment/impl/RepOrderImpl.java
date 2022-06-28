@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.impl;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@XRayEnabled
 public class RepOrderImpl {
 
     private final RepOrderRepository repOrderRepository;

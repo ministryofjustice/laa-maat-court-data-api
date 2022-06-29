@@ -17,5 +17,6 @@ public class SqsProperties {
     private String region;
     private String accesskey;
     private String secretkey;
-
+    private String cmaaccesskey;
+    private String cmasecretkey;
 }

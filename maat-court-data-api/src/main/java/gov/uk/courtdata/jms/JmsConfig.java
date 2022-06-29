@@ -3,7 +3,8 @@ package gov.uk.courtdata.jms;
 
 import com.amazon.sqs.javamessaging.ProviderConfiguration;
 import com.amazon.sqs.javamessaging.SQSConnectionFactory;
-import gov.uk.courtdata.config.AmazonSQSConfig;
+import gov.uk.courtdata.config.CDASQSConfig;
+import gov.uk.courtdata.config.CMASQSConfig;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,7 @@ import javax.jms.Session;
 
 
 /**
- * <Class>JmsConfig</Class> for SQS hosted on clouds platform with .
+ * <Class>JmsConfig</Class> for SQS hosted on cloud's platform with .
  */
 @Slf4j
 @AllArgsConstructor
@@ -27,14 +28,15 @@ public class JmsConfig {
 
     private final JmsErrorHandler jmsErrorHandler;
 
-    private final SqsProperties sqsProperties;
+    private final CDASQSConfig cdaSQSConfig;
 
-    private final AmazonSQSConfig amazonSQSConfig;
+    private final CMASQSConfig cmaSQSConfig;
+
 
     /**
      * Use the default container configured.
      *
-     * @return
+     * @return DefaultJmsListenerContainerFactory
      *
      */
 
@@ -52,10 +54,25 @@ public class JmsConfig {
 
     }
 
+
+    @Bean
+    public DefaultJmsListenerContainerFactory cmaJMSListenerContainerFactory() {
+
+        DefaultJmsListenerContainerFactory factory =
+                new DefaultJmsListenerContainerFactory();
+        factory.setConnectionFactory(cmaSQSConnectionFactory());
+        factory.setDestinationResolver(new DynamicDestinationResolver());
+        factory.setConcurrency("1");
+        factory.setSessionAcknowledgeMode(Session.CLIENT_ACKNOWLEDGE);
+        factory.setErrorHandler(jmsErrorHandler);
+        return factory;
+
+    }
+
     /**
      * Create the jms template with provider config for the SQS client.
      *
-     * @return
+     * @return JmsTemplate
      */
     @Bean
     public JmsTemplate defaultJmsTemplate() {
@@ -68,7 +85,14 @@ public class JmsConfig {
     public SQSConnectionFactory sqsConnectionFactory() {
 
         return new SQSConnectionFactory(new ProviderConfiguration(),
-                amazonSQSConfig.awsSqsClient());
+                cdaSQSConfig.awsSqsClient());
+    }
+
+    @Bean
+    public SQSConnectionFactory cmaSQSConnectionFactory() {
+
+        return new SQSConnectionFactory(new ProviderConfiguration(),
+                cmaSQSConfig.awsSqsClient());
     }
 }
 

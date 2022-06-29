@@ -7,14 +7,11 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import gov.uk.courtdata.jms.SqsProperties;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
-public class AmazonSQSConfig {
-
+public class CDASQSConfig {
     private final SqsProperties sqsProperties;
 
     public AmazonSQS awsSqsClient() {

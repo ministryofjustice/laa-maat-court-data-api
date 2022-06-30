@@ -34,7 +34,7 @@ public class MeansAssessmentPostProcessingListener {
         queueMessageLogService.createLog(MessageType.MEANS_ASSESSMENT_POST_PROCESSING,message);
 
         maatIdValidator.validate(postProcessing.getRepId());
-        postProcessingService.execute(postProcessing.getRepId());
+        postProcessingService.execute(postProcessing);
         log.info("Assessment Post-Processing Request Complete");
 
     }

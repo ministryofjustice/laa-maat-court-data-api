@@ -4,6 +4,7 @@ import gov.uk.courtdata.assessment.service.PostProcessingService;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.constants.ErrorCodes;
 import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.model.assessment.PostProcessing;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,10 +45,11 @@ public class PostProcessingControllerTest {
 
     @Test
     public void givenValidRepId_whenDoPostProcessingIsInvoked_thenPostProcessingIsPerformed() throws Exception {
+        PostProcessing postProcessing = PostProcessing.builder().repId(TestModelDataBuilder.MAAT_ID).build();
         when(maatIdValidator.validate(anyInt())).thenReturn(Optional.empty());
         mvc.perform(MockMvcRequestBuilders.post(ASSESSMENTS_DOMAIN + POST_PROCESSING_ENDPOINT + TestModelDataBuilder.MAAT_ID))
                 .andExpect(status().isOk());
-        verify(postProcessingService).execute(anyInt());
+        verify(postProcessingService).execute(postProcessing);
     }
 
     @Test
@@ -61,8 +63,9 @@ public class PostProcessingControllerTest {
 
     @Test
     public void givenRequiredParameters_whenDoPostProcessingFails_thenErrorIsThrown() throws Exception {
+        PostProcessing postProcessing = PostProcessing.builder().repId(TestModelDataBuilder.MAAT_ID).build();
         doThrow(new JpaSystemException(new RuntimeException("Problem accessing DB")))
-                .when(postProcessingService).execute(anyInt());
+                .when(postProcessingService).execute(postProcessing);
         mvc.perform(MockMvcRequestBuilders.post(ASSESSMENTS_DOMAIN + POST_PROCESSING_ENDPOINT + TestModelDataBuilder.MAAT_ID))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

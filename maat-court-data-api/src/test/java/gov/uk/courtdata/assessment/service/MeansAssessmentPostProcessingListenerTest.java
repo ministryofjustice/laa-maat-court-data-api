@@ -1,6 +1,7 @@
 package gov.uk.courtdata.assessment.service;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.assessment.PostProcessing;
 import gov.uk.courtdata.service.QueueMessageLogService;
@@ -31,20 +32,20 @@ public class MeansAssessmentPostProcessingListenerTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
     public void givenJSONMessageIsReceived_whenPostProcessingListenerIsInvoked_thenPostProcessingServiceIsCalled() {
         //given
-        PostProcessing postProcessing = PostProcessing.builder().build();
+        PostProcessing postProcessing = TestModelDataBuilder.getPostProcessing();
         String message = "{\"repId\":5232177, \"laaTransactionId\":\"CASNUM-ABC123\"}";
 
         //when
         when(gson.fromJson(message, PostProcessing.class)).thenReturn(postProcessing);
         meansAssessmentPostProcessingListener.receive(message);
         //then
-        verify(postProcessingService, times(1)).execute(postProcessing.getRepId());
+        verify(postProcessingService, times(1)).execute(postProcessing);
         verify(queueMessageLogService, times(1)).createLog(MessageType.MEANS_ASSESSMENT_POST_PROCESSING, message);
 
     }

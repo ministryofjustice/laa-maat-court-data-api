@@ -43,6 +43,7 @@ public class TestEntityDataBuilder {
         return FinancialAssessmentEntity.builder()
                 .id(1000)
                 .repId(5678)
+                .assessmentType("INIT")
                 .initialAscrId(1)
                 .newWorkReason(NewWorkReasonEntity.builder().code("FMA").build())
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
@@ -62,6 +63,7 @@ public class TestEntityDataBuilder {
             Integer repId, String FassStatus, NewWorkReasonEntity newWorkReason) {
         return FinancialAssessmentEntity.builder()
                 .repId(repId)
+                .assessmentType("INIT")
                 .fassFullStatus(FassStatus)
                 .dateCreated(TEST_DATE)
                 .userCreated(TEST_USER)

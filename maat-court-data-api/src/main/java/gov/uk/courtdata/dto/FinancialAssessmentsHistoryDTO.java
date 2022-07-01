@@ -56,7 +56,7 @@ public class FinancialAssessmentsHistoryDTO {
     private LocalDateTime secondIncomeReminderDate;
     private Integer usn;
     private String valid;
-    private Boolean fullAssessmentAvailable;
+    private Boolean fullAvailable;
     private LocalDateTime fullAssessmentDate;
     private String replaced;
     private LocalDateTime dateCompleted;

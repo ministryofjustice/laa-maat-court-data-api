@@ -28,4 +28,8 @@ public interface FinancialAssessmentHistoryMapper {
     ChildWeightHistoryDTO ChildWeightingsEntityToChildWeightHistoryDTO(final ChildWeightingsEntity childWeightingsEntity);
 
     ChildWeightHistoryEntity ChildWeightHistoryDTOToChildWeightHistoryEntity(final ChildWeightHistoryDTO childWeightHistoryDTO);
+
+    default String booleanToString(final Boolean bool) {
+        return bool == null ? "N" : (bool ? "Y" : "N");
+    }
 }

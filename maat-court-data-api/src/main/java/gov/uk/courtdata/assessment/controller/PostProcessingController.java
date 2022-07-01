@@ -4,6 +4,7 @@ import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.service.PostProcessingService;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.enums.LoggingData;
+import gov.uk.courtdata.model.assessment.PostProcessing;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -52,7 +53,10 @@ public class PostProcessingController {
 
         maatIdValidator.validate(repID);
 
-        postProcessingService.execute(repID);
+        postProcessingService.execute(PostProcessing
+                .builder()
+                .repId(repID)
+                .build());
         log.info("Assessment Post-Processing Request Complete");
         return ResponseEntity.ok().build();
     }

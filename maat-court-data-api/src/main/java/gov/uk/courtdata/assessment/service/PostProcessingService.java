@@ -1,6 +1,7 @@
 package gov.uk.courtdata.assessment.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.model.assessment.PostProcessing;
 import gov.uk.courtdata.repository.PostProcessingStoredProcedureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,11 +18,11 @@ public class PostProcessingService {
     private final PostProcessingStoredProcedureRepository postProcessingStoredProcedureRepository;
 
     @Transactional
-    public void execute(Integer repId) {
+    public void execute(PostProcessing postProcessing) {
         try {
-            postProcessingStoredProcedureRepository.invokePostAssessmentProcessingCma(repId);
+            postProcessingStoredProcedureRepository.invokePostAssessmentProcessingCma(postProcessing);
         } catch (DataAccessException exception) {
-            log.error("Post-processing failed for repId: {}", repId);
+            log.error("Post-processing failed for repId: {}", postProcessing.getRepId());
             throw exception;
         }
     }

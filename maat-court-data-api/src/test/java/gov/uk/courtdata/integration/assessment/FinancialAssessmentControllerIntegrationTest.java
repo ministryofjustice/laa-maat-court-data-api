@@ -11,12 +11,14 @@ import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.NewWorkReason;
-import gov.uk.courtdata.model.assessment.*;
+import gov.uk.courtdata.model.assessment.ChildWeightings;
+import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
+import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
+import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -337,13 +339,11 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     }
 
     @Test
-    @Ignore("This test will fail until LCAM-85 is addressed.")
     public void givenAValidAssessmentIdWithoutAFullAssessmentAvailable_whenCreateAssessmentHistoryIsInvoked_theCorrectResponseIsReturned() throws Exception {
         runCreateAssessmentHistoryScenario(false);
     }
 
     @Test
-    @Ignore("This test will fail until LCAM-85 is addressed.")
     public void givenAValidAssessmentIdWithAFullAssessmentAvailable_whenCreateAssessmentHistoryIsInvoked_theCorrectResponseIsReturned() throws Exception {
         runCreateAssessmentHistoryScenario(true);
     }

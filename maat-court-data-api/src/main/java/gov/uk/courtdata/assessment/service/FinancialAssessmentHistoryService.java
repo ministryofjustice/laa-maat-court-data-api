@@ -49,7 +49,7 @@ public class FinancialAssessmentHistoryService {
 
         financialAssessmentsHistoryDTO.setFinancialAssessment(
                 assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity));
-        financialAssessmentsHistoryDTO.setFullAssessmentAvailable(fullAvailable);
+        financialAssessmentsHistoryDTO.setFullAvailable(fullAvailable);
 
         if (repOrderEntity != null) {
             financialAssessmentsHistoryDTO.setCaseType(repOrderEntity.getCatyCaseType());

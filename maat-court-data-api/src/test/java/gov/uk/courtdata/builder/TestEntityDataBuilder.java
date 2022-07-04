@@ -16,6 +16,7 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 public class TestEntityDataBuilder {
 
     public static final String TEST_USER = "test-f";
+    public static final String ASSESSMENT_TYPE = "INIT";
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
 
     public static RepOrderEntity getRepOrder() {
@@ -43,6 +44,7 @@ public class TestEntityDataBuilder {
         return FinancialAssessmentEntity.builder()
                 .id(1000)
                 .repId(5678)
+                .assessmentType(ASSESSMENT_TYPE)
                 .initialAscrId(1)
                 .newWorkReason(NewWorkReasonEntity.builder().code("FMA").build())
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
@@ -62,6 +64,7 @@ public class TestEntityDataBuilder {
             Integer repId, String FassStatus, NewWorkReasonEntity newWorkReason) {
         return FinancialAssessmentEntity.builder()
                 .repId(repId)
+                .assessmentType(ASSESSMENT_TYPE)
                 .fassFullStatus(FassStatus)
                 .dateCreated(TEST_DATE)
                 .userCreated(TEST_USER)

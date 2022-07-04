@@ -5,12 +5,17 @@ import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.HardshipReviewEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
-import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import gov.uk.courtdata.repository.HardshipReviewRepository;
+import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -177,7 +182,6 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
     }
 
     @Test
-    @Ignore("This test will fail until LCAM-88 is fixed.")
     public void givenAValidPassportAssessmentBody_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
         Integer repId = existingPassportAssessmentEntity.getRepId();
         CreatePassportAssessment body = TestModelDataBuilder.getCreatePassportAssessment();
@@ -187,6 +191,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         PassportAssessmentDTO expectedResponse = TestModelDataBuilder.getPassportAssessmentDTO();
         expectedResponse.setRepId(repId);
         expectedResponse.setUserModified(null);
+        expectedResponse.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
 
         MvcResult result =
                 runSuccessScenario(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));

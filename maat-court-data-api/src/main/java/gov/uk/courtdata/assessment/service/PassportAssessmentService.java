@@ -68,7 +68,7 @@ public class PassportAssessmentService {
         log.info("Creating new passport assessment record");
         PassportAssessmentEntity assessmentEntity = passportAssessmentImpl.create(passportAssessmentDTO);
         log.info("Setting outdated records as replaced");
-        passportAssessmentImpl.setOldPassportAssessmentAsReplaced(passportAssessmentDTO);
+        passportAssessmentImpl.setOldPassportAssessmentAsReplaced(assessmentEntity, passportAssessmentDTO.getFinancialAssessmentId());
         log.info("Create Passport Assessment - Transaction Processing - End");
         return buildPassportAssessmentDTO(assessmentEntity);
     }

@@ -100,7 +100,7 @@ public class PassportAssessmentServiceTest {
         PassportAssessmentDTO returnedAssessment = passportAssessmentService.create(passportAssessment);
 
         verify(passportAssessmentImpl).create(any(PassportAssessmentDTO.class));
-        verify(passportAssessmentImpl).setOldPassportAssessmentAsReplaced(any(PassportAssessmentDTO.class));
+        verify(passportAssessmentImpl).setOldPassportAssessmentAsReplaced(any(PassportAssessmentEntity.class), anyInt());
 
         assertThat(returnedAssessment.getId()).isEqualTo(MOCK_ASSESSMENT_ID);
     }

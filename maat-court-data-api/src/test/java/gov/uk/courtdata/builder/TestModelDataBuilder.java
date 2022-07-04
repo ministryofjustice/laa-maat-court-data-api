@@ -30,6 +30,7 @@ public class TestModelDataBuilder {
     public static final String COURT_LOCATION = "London";
     public static final Integer IOJ_APPEAL_ID = 123;
     public static final Integer IOJ_REP_ID = 5635978;
+    public static final Integer FINANCIAL_ASSESSMENT_ID = 364563;
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -373,6 +374,7 @@ public class TestModelDataBuilder {
         return PassportAssessmentDTO.builder()
                 .repId(5678)
                 .nworCode("FMA")
+                .financialAssessmentId(FINANCIAL_ASSESSMENT_ID)
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("test-f")
                 .cmuId(30)

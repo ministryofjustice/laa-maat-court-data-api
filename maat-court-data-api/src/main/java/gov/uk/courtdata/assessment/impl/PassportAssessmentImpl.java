@@ -73,9 +73,15 @@ public class PassportAssessmentImpl {
         return passportAssessmentRepository.save(passportAssessmentEntity);
     }
 
-    public void setOldPassportAssessmentAsReplaced(PassportAssessmentDTO passportAssessment) {
-        passportAssessmentRepository.updatePreviousPassportAssessmentsAsReplaced(passportAssessment.getRepId(), passportAssessment.getId());
-        financialAssessmentRepository.updateAllPreviousFinancialAssessmentsAsReplaced(passportAssessment.getRepId());
-        hardshipReviewRepository.updateOldHardshipReviews(passportAssessment.getRepId(), passportAssessment.getFinancialAssessmentId());
+    public void setOldPassportAssessmentAsReplaced(PassportAssessmentEntity passportAssessment, Integer financialAssessmentId) {
+        passportAssessmentRepository.updatePreviousPassportAssessmentsAsReplaced(
+                passportAssessment.getRepId(), passportAssessment.getId()
+        );
+        financialAssessmentRepository.updateAllPreviousFinancialAssessmentsAsReplaced(
+                passportAssessment.getRepId()
+        );
+        hardshipReviewRepository.updateOldHardshipReviews(
+                passportAssessment.getRepId(), financialAssessmentId
+        );
     }
 }

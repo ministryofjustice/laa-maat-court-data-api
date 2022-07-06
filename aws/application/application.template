@@ -56,9 +56,6 @@ Parameters:
   pHearingsResultedQueue:
     Type: String
     Default: ''
-  pMeansAssessmentPostProcessingQueue:
-    Type: String
-    Default: ''
   pCdaOauthUrl:
     Type: String
     Default: ''

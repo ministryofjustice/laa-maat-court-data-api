@@ -12,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * <code>RestControllerAdviser</code> centralizes all rest controller exceptions.
@@ -96,6 +98,17 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorDTO.builder()
                 .code(HttpStatus.NOT_FOUND.name())
                 .message(ex.getMessage())
+                .build());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorDTO> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        String errorMessage = String.format(
+                "The provided value '%s' is the incorrect type for the '%s' parameter.", ex.getValue(), ex.getName());
+        log.error(errorMessage);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder()
+                .code(HttpStatus.BAD_REQUEST.name())
+                .message(errorMessage)
                 .build());
     }
 }

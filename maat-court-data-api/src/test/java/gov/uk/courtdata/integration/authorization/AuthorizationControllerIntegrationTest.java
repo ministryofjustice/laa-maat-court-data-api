@@ -196,11 +196,12 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    @Ignore("This test will fail until LASB-1141 has been addressed.")
-    public void givenAMissingReservationId_whenIsReservedIsInvoked_theCorrectErrorIsThrown() throws Exception {
+    public void givenAStringTypeReservationId_whenIsReservedIsInvoked_theCorrectErrorIsThrown() throws Exception {
+        String reservationIdString = "incorrect-type";
+
         runBadRequestErrorScenario(
-                "Reservation attributes are missing",
-                get(IS_RESERVED_URL, VALID_TEST_USER, "null", VALID_SESSION_ID));
+                String.format("The provided value '%s' is the incorrect type for the 'reservationId' parameter.", reservationIdString),
+                get(IS_RESERVED_URL, VALID_TEST_USER, reservationIdString, VALID_SESSION_ID));
     }
 
     private AuthorizationResponse getAuthorizedResponse() {

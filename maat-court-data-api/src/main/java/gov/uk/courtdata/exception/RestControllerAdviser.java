@@ -16,7 +16,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 /**
  * <code>RestControllerAdviser</code> centralizes all rest controller exceptions.

@@ -12,6 +12,5 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class PostProcessing {
     private Integer repId;
-    private String laaTransactionId;
     private UserSession user;
 }

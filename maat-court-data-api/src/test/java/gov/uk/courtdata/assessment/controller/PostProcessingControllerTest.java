@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.assessment.service.PostProcessingService;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.constants.ErrorCodes;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
@@ -32,6 +34,9 @@ public class PostProcessingControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockBean
     private MaatIdValidator maatIdValidator;
 
@@ -43,19 +48,29 @@ public class PostProcessingControllerTest {
 
     private static final String POST_PROCESSING_ENDPOINT = "/post-processing/";
 
+    private static final PostProcessing postProcessing = TestModelDataBuilder.getPostProcessing();
+
+    public ResultActions performApiCall() throws Exception {
+        return mvc.perform(MockMvcRequestBuilders.post(ASSESSMENTS_DOMAIN + POST_PROCESSING_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(postProcessing)));
+    }
+
     @Test
     public void givenValidRepId_whenDoPostProcessingIsInvoked_thenPostProcessingIsPerformed() throws Exception {
-        PostProcessing postProcessing = PostProcessing.builder().repId(TestModelDataBuilder.MAAT_ID).build();
         when(maatIdValidator.validate(anyInt())).thenReturn(Optional.empty());
-        mvc.perform(MockMvcRequestBuilders.post(ASSESSMENTS_DOMAIN + POST_PROCESSING_ENDPOINT + TestModelDataBuilder.MAAT_ID))
+
+        performApiCall()
                 .andExpect(status().isOk());
+
         verify(postProcessingService).execute(postProcessing);
     }
 
     @Test
     public void givenInvalidRepId_whenDoPostProcessingIsInvoked_thenErrorIsThrown() throws Exception {
         when(maatIdValidator.validate(anyInt())).thenThrow(new ValidationException(TestModelDataBuilder.MAAT_ID + " is invalid."));
-        mvc.perform(MockMvcRequestBuilders.post(ASSESSMENTS_DOMAIN + POST_PROCESSING_ENDPOINT + TestModelDataBuilder.MAAT_ID))
+
+        performApiCall()
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()));
@@ -63,10 +78,10 @@ public class PostProcessingControllerTest {
 
     @Test
     public void givenRequiredParameters_whenDoPostProcessingFails_thenErrorIsThrown() throws Exception {
-        PostProcessing postProcessing = PostProcessing.builder().repId(TestModelDataBuilder.MAAT_ID).build();
         doThrow(new JpaSystemException(new RuntimeException("Problem accessing DB")))
                 .when(postProcessingService).execute(postProcessing);
-        mvc.perform(MockMvcRequestBuilders.post(ASSESSMENTS_DOMAIN + POST_PROCESSING_ENDPOINT + TestModelDataBuilder.MAAT_ID))
+
+        performApiCall()
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));

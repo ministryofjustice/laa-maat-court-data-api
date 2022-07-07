@@ -4,7 +4,6 @@ package gov.uk.courtdata.jms;
 import com.amazon.sqs.javamessaging.ProviderConfiguration;
 import com.amazon.sqs.javamessaging.SQSConnectionFactory;
 import gov.uk.courtdata.config.CDASQSConfig;
-import gov.uk.courtdata.config.CMASQSConfig;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -30,9 +29,6 @@ public class JmsConfig {
 
     private final CDASQSConfig cdaSQSConfig;
 
-    private final CMASQSConfig cmaSQSConfig;
-
-
     /**
      * Use the default container configured.
      *
@@ -46,21 +42,6 @@ public class JmsConfig {
         DefaultJmsListenerContainerFactory factory =
                 new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(sqsConnectionFactory());
-        factory.setDestinationResolver(new DynamicDestinationResolver());
-        factory.setConcurrency("1");
-        factory.setSessionAcknowledgeMode(Session.CLIENT_ACKNOWLEDGE);
-        factory.setErrorHandler(jmsErrorHandler);
-        return factory;
-
-    }
-
-
-    @Bean
-    public DefaultJmsListenerContainerFactory cmaJMSListenerContainerFactory() {
-
-        DefaultJmsListenerContainerFactory factory =
-                new DefaultJmsListenerContainerFactory();
-        factory.setConnectionFactory(cmaSQSConnectionFactory());
         factory.setDestinationResolver(new DynamicDestinationResolver());
         factory.setConcurrency("1");
         factory.setSessionAcknowledgeMode(Session.CLIENT_ACKNOWLEDGE);
@@ -86,13 +67,6 @@ public class JmsConfig {
 
         return new SQSConnectionFactory(new ProviderConfiguration(),
                 cdaSQSConfig.awsSqsClient());
-    }
-
-    @Bean
-    public SQSConnectionFactory cmaSQSConnectionFactory() {
-
-        return new SQSConnectionFactory(new ProviderConfiguration(),
-                cmaSQSConfig.awsSqsClient());
     }
 }
 

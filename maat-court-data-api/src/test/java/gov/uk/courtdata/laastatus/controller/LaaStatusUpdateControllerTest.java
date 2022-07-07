@@ -8,15 +8,12 @@ import gov.uk.courtdata.laastatus.validator.LaaStatusValidationProcessor;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
 import gov.uk.courtdata.service.QueueMessageLogService;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +21,7 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LaaStatusUpdateControllerTest {
 
     @InjectMocks
@@ -40,14 +37,6 @@ public class LaaStatusUpdateControllerTest {
     @Mock
     private QueueMessageLogService queueMessageLogService;
 
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void givenValidationIsPassed_whenControllerIsInvoked_thenPublisherIsCalled() {
@@ -132,8 +121,9 @@ public class LaaStatusUpdateControllerTest {
         when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
         when(laaStatusValidationProcessor.validate(caseDetails)).thenThrow(new MAATCourtDataException("Validation Failed"));
 
-        exception.expect(MAATCourtDataException.class);
-        laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c", myString);
+        Assertions.assertThrows(MAATCourtDataException.class, ()->{
+            laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c", myString);
+        });
     }
 }
 

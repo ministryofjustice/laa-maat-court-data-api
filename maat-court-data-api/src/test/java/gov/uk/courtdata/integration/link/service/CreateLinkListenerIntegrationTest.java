@@ -12,12 +12,12 @@ import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.link.service.CreateLinkListener;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 public class CreateLinkListenerIntegrationTest {
 
@@ -49,7 +49,7 @@ public class CreateLinkListenerIntegrationTest {
     @Autowired
     private DefendantMAATDataRepository defendantMAATDataRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         repOrderRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();

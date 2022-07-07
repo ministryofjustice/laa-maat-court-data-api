@@ -9,18 +9,16 @@ import gov.uk.courtdata.link.processor.CaseInfoProcessor;
 import gov.uk.courtdata.link.processor.SessionInfoProcessor;
 import gov.uk.courtdata.link.processor.SolicitorInfoProcessor;
 import gov.uk.courtdata.repository.IdentifierRepository;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LaaStatusUpdateImplTest {
 
     @InjectMocks
@@ -43,10 +41,6 @@ public class LaaStatusUpdateImplTest {
     @Mock
     private UpdateOffenceInfoProcessor updateOffenceInfoProcessor;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void givenProcessors_whenImplIsInvoked_thenRequiredProcessorsAreInvoked() {

@@ -5,19 +5,19 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.PassportAssessment;
 import gov.uk.courtdata.validator.PassportAssessmentIdValidator;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PassportAssessmentValidationProcessorTest {
 
     @InjectMocks
@@ -38,7 +38,7 @@ public class PassportAssessmentValidationProcessorTest {
 
     @Test
     public void testPassportAssessmentValidationProcessor_whenAssessmentIsNull_thenThrowsException() {
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> passportAssessmentValidationProcessor.validate((PassportAssessment) null));
         assertThat(validationException.getMessage()).isEqualTo("Passport Assessment Request is empty");
     }
@@ -47,7 +47,7 @@ public class PassportAssessmentValidationProcessorTest {
     public void testPassportAssessmentValidationProcessor_whenRepIdIsNull_thenThrowsException() {
         PassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
         assessment.setRepId(null);
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> passportAssessmentValidationProcessor.validate(assessment));
         assertThat(validationException.getMessage()).isEqualTo("Rep Order ID is required");
     }
@@ -56,7 +56,7 @@ public class PassportAssessmentValidationProcessorTest {
     public void testPassportAssessmentValidationProcessor_whenCmuIdIsNull_thenThrowsException() {
         PassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
         assessment.setCmuId(null);
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> passportAssessmentValidationProcessor.validate(assessment));
         assertThat(validationException.getMessage()).isEqualTo("Case Management Unit (CMU) ID is required");
     }
@@ -65,7 +65,7 @@ public class PassportAssessmentValidationProcessorTest {
     public void testPassportAssessmentValidationProcessor_whenNWORCodeIsNull_thenThrowsException() {
         PassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
         assessment.setNworCode(null);
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> passportAssessmentValidationProcessor.validate(assessment));
         assertThat(validationException.getMessage()).isEqualTo("New Work Reason (NWOR) code is required");
     }
@@ -73,7 +73,7 @@ public class PassportAssessmentValidationProcessorTest {
     public void testPassportAssessmentValidationProcessor_whenNWORCodeIsBlank_thenThrowsException() {
         PassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
         assessment.setNworCode("");
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> passportAssessmentValidationProcessor.validate(assessment));
         assertThat(validationException.getMessage()).isEqualTo("New Work Reason (NWOR) code is required");
     }
@@ -82,7 +82,7 @@ public class PassportAssessmentValidationProcessorTest {
     public void testPassportAssessmentValidationProcessor_whenPastStatusIsNull_thenThrowsException() {
         PassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
         assessment.setPastStatus(null);
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> passportAssessmentValidationProcessor.validate(assessment));
         assertThat(validationException.getMessage()).isEqualTo("Past Status is required");
     }
@@ -91,7 +91,7 @@ public class PassportAssessmentValidationProcessorTest {
     public void testPassportAssessmentValidationProcessor_whenPastStatusIsBlank_thenThrowsException() {
         PassportAssessment assessment = TestModelDataBuilder.getCreatePassportAssessment();
         assessment.setPastStatus("");
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> passportAssessmentValidationProcessor.validate(assessment));
         assertThat(validationException.getMessage()).isEqualTo("Past Status is required");
     }

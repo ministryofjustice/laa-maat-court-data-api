@@ -2,26 +2,20 @@ package gov.uk.courtdata.link.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LinkExistsValidatorTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Mock
     private WqLinkRegisterRepository wqLinkRegisterRepository;
@@ -29,10 +23,6 @@ public class LinkExistsValidatorTest {
     @InjectMocks
     private LinkExistsValidator linkExistsValidator;
 
-    @BeforeEach
-    private void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
 
     @Test
@@ -41,7 +31,7 @@ public class LinkExistsValidatorTest {
         Integer testId = 1000;
         Mockito.when(wqLinkRegisterRepository.getCountByMaatId(testId)).thenReturn(BigDecimal.ZERO.intValue());
         Optional result = linkExistsValidator.validate(testId);
-        Assert.assertFalse(result.isPresent());
+        Assertions.assertFalse(result.isPresent());
 
     }
 
@@ -50,9 +40,8 @@ public class LinkExistsValidatorTest {
         Mockito.when(wqLinkRegisterRepository.getCountByMaatId(Mockito.anyInt()))
                 .thenReturn(BigDecimal.ONE.intValue());
 
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("0 is already linked to a case.");
-        linkExistsValidator.validate(Mockito.anyInt());
+        Assertions.assertThrows(ValidationException.class, ()->
+                linkExistsValidator.validate(Mockito.anyInt()),"0 is already linked to a case.");
     }
 
 }

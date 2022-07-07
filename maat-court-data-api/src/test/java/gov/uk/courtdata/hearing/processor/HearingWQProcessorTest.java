@@ -1,18 +1,17 @@
 package gov.uk.courtdata.hearing.processor;
 
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-
 import java.util.UUID;
-
 import static gov.uk.courtdata.enums.JurisdictionType.CROWN;
 import static gov.uk.courtdata.enums.JurisdictionType.MAGISTRATES;
 import static org.mockito.Mockito.times;
@@ -40,7 +39,7 @@ public class HearingWQProcessorTest {
     @InjectMocks
     private HearingWQProcessor hearingWQProcessor;
 
-    @BeforeEach
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
     }

@@ -10,19 +10,22 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import static gov.uk.courtdata.assessment.service.PassportAssessmentService.STATUS_COMPLETE;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class PassportAssessmentServiceTest {
 
     private static final int MOCK_REP_ID = 5678;
@@ -137,7 +140,7 @@ public class PassportAssessmentServiceTest {
         when(passportAssessmentService.buildPassportAssessmentDTO(any())).thenReturn(
                 PassportAssessmentDTO.builder().id(MOCK_ASSESSMENT_ID).build());
 
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> passportAssessmentService.update(passportAssessment));
         assertThat(validationException.getMessage()).isEqualTo("User cannot modify a completed assessment");
     }

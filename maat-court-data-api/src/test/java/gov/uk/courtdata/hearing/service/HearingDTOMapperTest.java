@@ -1,18 +1,17 @@
 package gov.uk.courtdata.hearing.service;
 
-import gov.uk.courtdata.enums.VerdictCategoryType;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.hearing.mapper.HearingDTOMapper;
 import gov.uk.courtdata.model.*;
 import gov.uk.courtdata.model.hearing.HearingResulted;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class HearingDTOMapperTest {
 
     private final HearingDTOMapper hearingDTOMapper = Mappers.getMapper(HearingDTOMapper.class);

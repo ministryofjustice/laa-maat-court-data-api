@@ -51,14 +51,11 @@ cloud-platform:
       region: ${CLOUD_PLATFORM_QUEUE_REGION}
       accesskey: ${CLOUD_PLATFORM_QUEUE_ACCESS_KEY}
       secretkey: ${CLOUD_PLATFORM_QUEUE_SECRET_KEY}
-      cmaaccesskey: ${CLOUD_PLATFORM_CMA_QUEUE_ACCESS_KEY}
-      cmasecretkey: ${CLOUD_PLATFORM_CMA_QUEUE_SECRET_KEY}
       queue:
         link: ${CREATE_LINK_QUEUE}
         unlink: ${UNLINK_QUEUE}
         laaStatus: ${LAA_STATUS_UPDATE_QUEUE}
         hearingResulted: ${HEARING_RESULTED_QUEUE}
-        meansAssessmentPostProcessing: ${MEANS_ASSESSMENT_POST_PROCESSING_QUEUE}
         laaStatusJob: ${LAA_STATUS_JOB_QUEUE}
         createLinkCpStatusJob: ${CREATE_LINK_CP_STATUS_JOB_QUEUE}
         prosecutionConcluded: ${LAA_PROSECUTION_CONCLUDED_QUEUE}

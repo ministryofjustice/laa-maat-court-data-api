@@ -116,7 +116,6 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     }
 
     @Test
-    @Ignore("This test will be ignored until bug LASB-1123 has been fixed and may require updates.")
     public void givenNullMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         String testPayload = objectMapper
                 .writeValueAsString(CaseDetails.builder().laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID)).build());
@@ -124,7 +123,6 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     }
 
     @Test
-    @Ignore("This test will be ignored until bug LASB-1123 has been fixed and may require updates.")
     public void givenAMissingMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         String payloadMissingMaatId = String.format("{\"laaTransactionId\":\"%s\"}", LAA_TRANSACTION_ID);
         runServerErrorScenario("MAAT APT Call failed MAAT ID is required.", getPostRequest(payloadMissingMaatId));

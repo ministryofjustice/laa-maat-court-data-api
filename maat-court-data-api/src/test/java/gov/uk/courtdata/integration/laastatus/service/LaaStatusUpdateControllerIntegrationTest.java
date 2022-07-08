@@ -11,6 +11,7 @@ import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.laastatus.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.util.QueueMessageLogTestHelper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -84,6 +85,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     private LaaStatusUpdateController laaStatusUpdateController;
 
     private MockWebServer mockCdaWebServer;
+    private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
     @Before
     @Override
@@ -105,6 +107,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         solicitorMAATDataRepository.deleteAll();
         defendantMAATDataRepository.deleteAll();
         repOrderCPDataRepository.deleteAll();
+        queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
     }
 
     @After
@@ -199,7 +202,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
                 MessageCollection.builder().messages(expectedErrorMessages).build(),
                 getPostRequest(testPayload));
 
-        assertQueueMessageLogged(testPayload, 1);
+        queueMessageLogTestHelper.assertQueueMessageLogged(testPayload, 1, LAA_TRANSACTION_ID, TEST_MAAT_ID);
     }
 
     @Test
@@ -252,7 +255,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
                 MessageCollection.builder().messages(new ArrayList<>()).build(),
                 getPostRequest(testPayload));
 
-        assertQueueMessageLogged(testPayload, 2);
+        queueMessageLogTestHelper.assertQueueMessageLogged(testPayload, 2, LAA_TRANSACTION_ID, TEST_MAAT_ID);
         assertCdaCalledCorrectly(inputCaseDetails, offenceEntity, solicitorMAATDataEntity, repOrderCPDataEntity);
 
         if (cdaOnly){
@@ -268,20 +271,8 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
         runServerErrorScenario(expectedErrorMessage, getPostRequest(testPayload));
 
-        assertQueueMessageLogged(testPayload, 1);
+        queueMessageLogTestHelper.assertQueueMessageLogged(testPayload, 1, LAA_TRANSACTION_ID, TEST_MAAT_ID);
         assertCdaNotCalled();
-    }
-
-    private void assertQueueMessageLogged(String expectedMessageBlob, int expectedNumberOfMessages) {
-        byte[] messageBlobBytes = expectedMessageBlob.getBytes();
-        List<QueueMessageLogEntity> loggedMessages = queueMessageLogRepository.findAll();
-        SoftAssertions.assertSoftly(softly -> {
-            assertThat(loggedMessages.size()).isEqualTo(expectedNumberOfMessages);
-            QueueMessageLogEntity messageLog = loggedMessages.get(0);
-            assertThat(messageLog.getMessage()).isEqualTo(messageBlobBytes);
-            assertThat(messageLog.getTransactionUUID()).isEqualTo(LAA_TRANSACTION_ID);
-            assertThat(messageLog.getMaatId()).isEqualTo(TEST_MAAT_ID);
-        });
     }
 
     private void assertMlaUpdatesPerformedCorrectly(
@@ -522,5 +513,4 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
                 .header("laa-transaction-id", LAA_TRANSACTION_ID)
                 .content(payload);
     }
-
 }

@@ -24,4 +24,7 @@ public class MockCdaWebConfig {
 
     @MockBean(name = "sqsConnectionFactory")
     private SQSConnectionFactory sqsConnectionFactory;
+
+    @MockBean(name = "cmaSQSConnectionFactory")
+    private SQSConnectionFactory cmaSQSConnectionFactory;
 }

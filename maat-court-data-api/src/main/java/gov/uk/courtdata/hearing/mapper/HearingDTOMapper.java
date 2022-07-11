@@ -4,6 +4,7 @@ import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.*;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 /**
@@ -27,6 +28,7 @@ public interface HearingDTOMapper {
 
     DefendantDTO toDefendantDTO(final Defendant defendant);
 
+    @Mapping(source = "sessionValidateDate", target = "sessionValidatedDate")
     SessionDTO toSessionDTO(final Session session);
 
     OffenceDTO toOffenceDTO(final Offence offence);

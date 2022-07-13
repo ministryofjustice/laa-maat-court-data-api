@@ -1,6 +1,7 @@
 package gov.uk.courtdata.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonValue;
 import gov.uk.courtdata.helper.AbstractEnumConverter;
 import gov.uk.courtdata.helper.PersistableEnum;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,6 @@ import javax.persistence.Converter;
 
 @Getter
 @AllArgsConstructor
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum HardshipReviewDetailCode implements PersistableEnum<String> {
 
     UNSECURED_LOAN("UNSECURED LOAN", "Unsecured Loan"),
@@ -35,8 +35,9 @@ public enum HardshipReviewDetailCode implements PersistableEnum<String> {
     SUSPENDED_WORK("SUSPENDED WORK", "Suspended from work"),
     OTHER_INC("OTHER INC", "Other");
 
-    private String code;
-    private String description;
+    @JsonValue
+    private final String code;
+    private final String description;
 
     @Override
     public String getValue() {

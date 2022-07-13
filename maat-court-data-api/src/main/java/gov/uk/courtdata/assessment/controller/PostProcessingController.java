@@ -41,22 +41,19 @@ public class PostProcessingController {
             responseCode = "500",
             description = "Server Error.",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @PostMapping(value = "/{repID}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Perform post-processing for a given RepID")
     public ResponseEntity<Object> doPostProcessing(
-            @PathVariable Integer repID,
             @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId,
+            @RequestBody PostProcessing postProcessing) {
 
         MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
-        log.info("Assessment Post-Processing Request Received for RepID: {}", repID);
+        log.info("Assessment Post-Processing Request Received for RepID: {}", postProcessing.getRepId());
 
-        maatIdValidator.validate(repID);
+        maatIdValidator.validate(postProcessing.getRepId());
 
-        postProcessingService.execute(PostProcessing
-                .builder()
-                .repId(repID)
-                .build());
+        postProcessingService.execute(postProcessing);
         log.info("Assessment Post-Processing Request Complete");
         return ResponseEntity.ok().build();
     }

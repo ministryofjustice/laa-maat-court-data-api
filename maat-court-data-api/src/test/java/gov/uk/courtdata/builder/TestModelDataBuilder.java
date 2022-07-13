@@ -289,7 +289,6 @@ public class TestModelDataBuilder {
     public static PostProcessing getPostProcessing() {
         return PostProcessing.builder()
                 .repId(MAAT_ID)
-                .laaTransactionId("e439dfc8-664e-4c8e-a999-d756dcf112c2")
                 .user(UserSession.builder()
                         .id("test-f6E3E618A32AC870D07A65CD7AB9131AD")
                         .username("test-f")

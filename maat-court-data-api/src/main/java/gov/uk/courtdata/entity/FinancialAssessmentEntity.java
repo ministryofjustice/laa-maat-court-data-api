@@ -154,6 +154,9 @@ public class FinancialAssessmentEntity implements Serializable {
     @Column(name = "REPLACED")
     private String replaced = "N";
 
+    @Column(name = "VALID")
+    private String valid;
+
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
     @JsonManagedReference

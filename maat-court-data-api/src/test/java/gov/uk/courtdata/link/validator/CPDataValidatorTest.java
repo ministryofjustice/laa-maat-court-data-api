@@ -4,24 +4,18 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CPDataValidatorTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Mock
     private RepOrderCPDataRepository repOrderCPDataRepository;
@@ -29,18 +23,13 @@ public class CPDataValidatorTest {
     @InjectMocks
     private CPDataValidator CPDataValidator;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
-
     @Test
     public void testWhenCaseURNisNullonRequest_throwsException() {
 
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("CaseURN can't be null or empty on request.");
-        CPDataValidator.validate(CaseDetails.builder().maatId(100)
-                .caseUrn(null).build());
+        Assertions.assertThrows(ValidationException.class, () ->
+                CPDataValidator.validate(CaseDetails.builder().maatId(100)
+                .caseUrn(null).build()), "CaseURN can't be null or empty on request.");
+
     }
 
     @Test
@@ -48,11 +37,9 @@ public class CPDataValidatorTest {
 
         final int maatId = 1000;
         Mockito.when(repOrderCPDataRepository.findByrepOrderId(maatId)).thenReturn(Optional.empty());
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("1000 has no common platform data created against Maat application.");
-
-        CPDataValidator.validate(CaseDetails.builder().maatId(maatId)
-                .caseUrn("caseURN").build());
+        Assertions.assertThrows(ValidationException.class, ()->
+                CPDataValidator.validate(CaseDetails.builder().maatId(maatId)
+                .caseUrn("caseURN").build()), "1000 has no common platform data created against Maat application.");
     }
 
 

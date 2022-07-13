@@ -6,17 +6,18 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentsHistoryEntity;
 import gov.uk.courtdata.repository.FinancialAssessmentsHistoryRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.InjectMocks;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+
+@ExtendWith(MockitoExtension.class)
 public class FinancialAssessmentHistoryImplTest {
 
     private static final int MOCK_FINANCIAL_ASSESSMENT_ID = 1000;
@@ -33,7 +34,7 @@ public class FinancialAssessmentHistoryImplTest {
     private FinancialAssessmentsHistoryEntity financialAssessmentsHistoryEntity;
     private FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO;
 
-    @Before
+    @BeforeEach
     public void setup() {
         financialAssessmentsHistoryEntity = TestEntityDataBuilder.getFinancialAssessmentsHistoryEntity();
         financialAssessmentsHistoryDTO = TestModelDataBuilder.getFinancialAssessmentsHistoryDTO();

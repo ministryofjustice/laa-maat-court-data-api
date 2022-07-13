@@ -17,14 +17,14 @@ import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDateTime;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class, MockNewWorkReasonRepository.class})
 public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
@@ -58,7 +58,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
     private FinancialAssessmentEntity existingFinancialAssessmentEntity;
     private PassportAssessmentEntity completePassportAssessmentEntity;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -309,7 +309,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
     }
 
     @Test
-    @Ignore("This test will fail until LCAM-89 is fixed.")
+    @Disabled("This test will fail until LCAM-89 is fixed.")
     public void givenAValidPassportAssessmentBody_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
         Integer id = existingPassportAssessmentEntity.getId();
         Integer repId = existingPassportAssessmentEntity.getRepId();

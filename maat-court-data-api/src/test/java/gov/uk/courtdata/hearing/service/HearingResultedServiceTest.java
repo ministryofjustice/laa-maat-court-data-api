@@ -7,19 +7,15 @@ import gov.uk.courtdata.hearing.processor.CourtApplicationsPreProcessor;
 import gov.uk.courtdata.hearing.processor.WQHearingProcessor;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class HearingResultedServiceTest {
 
     @InjectMocks
@@ -36,14 +32,6 @@ public class HearingResultedServiceTest {
 
     @Mock
     private WQHearingProcessor wqHearingProcessor;
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void givenAMagCourtNotification_whenMaatNotLocked_thenMagsCourtProcessingInvoked() {

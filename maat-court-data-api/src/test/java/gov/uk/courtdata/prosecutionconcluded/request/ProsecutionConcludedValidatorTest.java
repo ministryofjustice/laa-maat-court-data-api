@@ -3,46 +3,56 @@ package gov.uk.courtdata.prosecutionconcluded.request;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.validator.ProsecutionConcludedValidator;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProsecutionConcludedValidatorTest {
 
     @InjectMocks
     private ProsecutionConcludedValidator prosecutionConcludedValidator;
 
-    @Test (expected = ValidationException.class)
+    @Test
     public void testWhenProsecutionConcludedRequestIsNull_thenThrowException() {
-        prosecutionConcludedValidator.validateRequestObject(null);
+        Assertions.assertThrows(ValidationException.class, () ->
+                prosecutionConcludedValidator.validateRequestObject(null));
     }
-    @Test (expected = ValidationException.class)
+
+    @Test
     public void testWhenProsecutionConcludedListIsEmpty_thenThrowException() {
 
         ProsecutionConcluded request = ProsecutionConcluded.builder().build();
-        prosecutionConcludedValidator.validateRequestObject(request);
+        Assertions.assertThrows(ValidationException.class, () ->
+                prosecutionConcludedValidator.validateRequestObject(request));
     }
 
-    @Test (expected = ValidationException.class)
+    @Test
     public void testWhenProsecutionConcludedListIsNull_thenThrowException() {
 
         ProsecutionConcluded request = ProsecutionConcluded.builder().offenceSummary(null)
                 .build();
+        Assertions.assertThrows(ValidationException.class, () -> {
+            prosecutionConcludedValidator.validateRequestObject(request);
+        });
 
-        prosecutionConcludedValidator.validateRequestObject(request);
 
         assertThat(request);
     }
 
-    @Test (expected = ValidationException.class)
+    @Test
     public void testWhenOuCodeIsNull_thenThrowException() {
-        prosecutionConcludedValidator.validateOuCode(null);
+        Assertions.assertThrows(ValidationException.class, () -> {
+            prosecutionConcludedValidator.validateOuCode(null);
+        });
     }
-    @Test (expected = ValidationException.class)
+
+    @Test
     public void testWhenOuCodeIsEmpty_thenThrowException() {
-        prosecutionConcludedValidator.validateOuCode("");
+        Assertions.assertThrows(ValidationException.class, () -> prosecutionConcludedValidator.validateOuCode(""));
     }
 }

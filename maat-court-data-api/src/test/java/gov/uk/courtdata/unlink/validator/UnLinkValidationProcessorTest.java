@@ -6,16 +6,12 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +19,8 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UnLinkValidationProcessorTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Mock
     private MaatIdValidator maatIdValidator;
@@ -41,12 +34,6 @@ public class UnLinkValidationProcessorTest {
     @InjectMocks
     private UnLinkValidationProcessor unLinkValidationProcessor;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
-
-
 
     @Test
     public void testWhenMaatIdValidatorFails_throwsValidationException() {
@@ -55,13 +42,15 @@ public class UnLinkValidationProcessorTest {
                 .reasonId(999888)
                 .build();
 
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("MAAT id is missing.");
-
         when(maatIdValidator.validate(123456))
                 .thenThrow(new ValidationException("MAAT id is missing."));
 
-        unLinkValidationProcessor.validate(unlink);
+        Assertions.assertThrows(ValidationException.class,()->
+                unLinkValidationProcessor.validate(unlink),
+                "MAAT id is missing.");
+
+
+
     }
 
     @Test
@@ -71,13 +60,11 @@ public class UnLinkValidationProcessorTest {
                 .reasonId(999888)
                 .build();
 
-        thrown.expect(MAATCourtDataException.class);
-        thrown.expectMessage("MAAT id is missing.");
-
         when(linkRegisterValidator.validate(unlink.getMaatId()))
                 .thenThrow(new MAATCourtDataException("MAAT id is missing."));
 
-        unLinkValidationProcessor.validate(unlink);
+        Assertions.assertThrows(MAATCourtDataException.class,()->
+                unLinkValidationProcessor.validate(unlink),"MAAT id is missing.");
     }
 
     @Test
@@ -86,13 +73,10 @@ public class UnLinkValidationProcessorTest {
                 .reasonId(999888)
                 .build();
 
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("Reasons id is missing.");
-
         when(reasonValidator.validate(999888))
                 .thenThrow(new ValidationException("Reasons id is missing."));
-
-        unLinkValidationProcessor.validate(unlink);
+        Assertions.assertThrows(ValidationException.class,()->
+                unLinkValidationProcessor.validate(unlink),"Reasons id is missing.");
 
     }
 
@@ -104,13 +88,11 @@ public class UnLinkValidationProcessorTest {
                 .maatId(4444)
                 .build();
 
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("User id is missing.");
-
         when(userIdValidator.validate("laa-moj"))
                 .thenThrow(new ValidationException("User id is missing."));
 
-        unLinkValidationProcessor.validate(unlink);
+        Assertions.assertThrows(ValidationException.class,()->
+        unLinkValidationProcessor.validate(unlink),"User id is missing.");
 
     }
 
@@ -140,42 +122,39 @@ public class UnLinkValidationProcessorTest {
 
     @Test
     public void givenWQLinkRegisterHasMoreThanOneEntry_whenValidateWQLinkRegisterIsInvoked_thenValidationFailed() {
-        thrown.expect(MAATCourtDataException.class);
-        thrown.expectMessage("There are multiple links found for  MAAT ID : 123");
         WqLinkRegisterEntity wqLinkRegisterEntity1 = WqLinkRegisterEntity.builder().build();
         WqLinkRegisterEntity wqLinkRegisterEntity2 = WqLinkRegisterEntity.builder().build();
         List<WqLinkRegisterEntity> linkRegisterEntities = new ArrayList<>();
         linkRegisterEntities.add(wqLinkRegisterEntity1);
         linkRegisterEntities.add(wqLinkRegisterEntity2);
-        unLinkValidationProcessor.validateWQLinkRegister(linkRegisterEntities, 123);
+        Assertions.assertThrows(MAATCourtDataException.class,()->
+        unLinkValidationProcessor.validateWQLinkRegister(linkRegisterEntities, 123),
+                "There are multiple links found for  MAAT ID : 123");
     }
 
     @Test
     public void givenWQLinkRegisterIsNull_whenValidateWQLinkRegisterIsInvoked_thenValidationFailed() {
-        thrown.expect(MAATCourtDataException.class);
-        thrown.expectMessage("There is No link established for MAAT ID : 123");
-        unLinkValidationProcessor.validateWQLinkRegister(null, 123);
+
+        Assertions.assertThrows(MAATCourtDataException.class,()->
+                unLinkValidationProcessor.validateWQLinkRegister(null, 123),
+                "There is No link established for MAAT ID : 123");
+
     }
 
     @Test
     public void givenWQLinkRegisterIsEmpty_whenValidateWQLinkRegisterIsInvoked_thenValidationFailed() {
         List<WqLinkRegisterEntity> linkRegisterEntities = new ArrayList<>();
-        thrown.expect(MAATCourtDataException.class);
-        thrown.expectMessage("There is No link established for MAAT ID : 123");
-        unLinkValidationProcessor.validateWQLinkRegister(linkRegisterEntities, 123);
+        Assertions.assertThrows(MAATCourtDataException.class,()->{
+            unLinkValidationProcessor.validateWQLinkRegister(linkRegisterEntities, 123);
+        },"There is No link established for MAAT ID : 123");
     }
 
     @Test
     public void givenUnLinkRequestIsIsNull_whenValidateWQLinkRegisterIsInvoked_thenValidationFailed() {
-        thrown.expect(MAATCourtDataException.class);
-        thrown.expectMessage("Unlink Request is empty");
-        unLinkValidationProcessor.validate(null);
-    }
 
-
-    @After
-    public void tearDown() throws Exception {
-
+        Assertions.assertThrows(MAATCourtDataException.class,()->{
+            unLinkValidationProcessor.validate(null);
+        },"Unlink Request is empty");
     }
 
 

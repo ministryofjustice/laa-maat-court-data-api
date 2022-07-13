@@ -6,11 +6,12 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.PleaEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.PleaRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -18,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PleaProcessorTest {
 
     @InjectMocks
@@ -32,7 +33,7 @@ public class PleaProcessorTest {
     @Captor
     ArgumentCaptor<PleaEntity> pleaEntityArgumentCaptor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
@@ -51,12 +52,12 @@ public class PleaProcessorTest {
         assertThat(pleaEntityArgumentCaptor.getValue().getMaatId()).isEqualTo(789034);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void givenCaseProcessor_whenPleaIsNull_thenSavePlea() {
-
-        //when
-        pleaProcessor.process(HearingDTO.builder().build());
-
-        verify(pleaRepository, times(10)).save(any());
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            //when
+            pleaProcessor.process(HearingDTO.builder().build());
+            verify(pleaRepository, times(10)).save(any());
+        });
     }
 }

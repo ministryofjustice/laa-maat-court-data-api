@@ -1,21 +1,19 @@
 package gov.uk.courtdata.hearing.service;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.service.QueueMessageLogService;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
-import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertNotNull;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class HearingResultedListenerTest {
 
     @InjectMocks
@@ -27,12 +25,6 @@ public class HearingResultedListenerTest {
 
     @Mock
     private QueueMessageLogService queueMessageLogService;
-
-    @BeforeEach
-    public void setUp() {
-
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void givenJSONMessageIsReceived_whenHearingResultedListenerIsInvoked_thenHearingResultedServiceIsCalled() {

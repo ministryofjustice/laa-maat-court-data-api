@@ -12,13 +12,12 @@ import gov.uk.courtdata.repository.DefendantMAATDataRepository;
 import gov.uk.courtdata.repository.OffenceRepository;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -32,7 +31,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CourtDataDTOBuilderTest {
 
     @InjectMocks
@@ -50,10 +49,6 @@ public class CourtDataDTOBuilderTest {
     @Mock
     private OffenceRepository offenceRepository;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void givenCaseDetailsIsReceived_whenCourtDataDTOBuilderIsInvoked_thenReturnedCaseDetailsDTO() {
@@ -221,10 +216,12 @@ public class CourtDataDTOBuilderTest {
 
 
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void givenCaseDetailsIsReceived_whenCourtDataDTOBuilderIsInvoked_thenThrowException() {
 
         CaseDetails caseDetails = CaseDetails.builder().build();
-        courtDataDTOBuilder.build(caseDetails);
+        Assertions.assertThrows(NoSuchElementException.class, ()->{
+            courtDataDTOBuilder.build(caseDetails);
+        });
     }
 }

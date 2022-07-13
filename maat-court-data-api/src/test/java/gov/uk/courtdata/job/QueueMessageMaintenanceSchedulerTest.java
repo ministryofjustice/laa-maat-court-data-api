@@ -4,15 +4,15 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 @TestPropertySource(locations = {"classpath:application.yaml"})
 public class QueueMessageMaintenanceSchedulerTest {
@@ -36,7 +36,7 @@ public class QueueMessageMaintenanceSchedulerTest {
         return ("{laaTransactionId:\"8720c683-39ef-4168-a8cc-058668a2dcca\",\"maatId\":" + maatId + "}").getBytes();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         getQueueMessageLogRepository().deleteAll();
     }
@@ -103,7 +103,7 @@ public class QueueMessageMaintenanceSchedulerTest {
                 () -> assertTrue(messageLogEntities.isEmpty()));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         getQueueMessageLogRepository().deleteAll();
     }

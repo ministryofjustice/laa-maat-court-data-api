@@ -10,9 +10,9 @@ import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.repository.SessionRepository;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.DEFAULT_HEARING_CUS_
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SessionInfoProcessorTest {
 
     @InjectMocks

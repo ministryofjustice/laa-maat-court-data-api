@@ -3,19 +3,19 @@ package gov.uk.courtdata.assessment.service;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.model.assessment.PostProcessing;
 import gov.uk.courtdata.repository.PostProcessingStoredProcedureRepository;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.jpa.JpaSystemException;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PostProcessingAssessmentServiceTest {
 
     @InjectMocks
@@ -35,7 +35,7 @@ public class PostProcessingAssessmentServiceTest {
         PostProcessing postProcessing = TestModelDataBuilder.getPostProcessing();
         doThrow(new JpaSystemException(new RuntimeException("Problem Calling Stored Procedure")))
                 .when(postProcessingStoredProcedureRepository).invokePostAssessmentProcessingCma(postProcessing);
-        Assert.assertThrows(DataAccessException.class,
+        Assertions.assertThrows(DataAccessException.class,
                 () -> postProcessingStoredProcedureRepository.invokePostAssessmentProcessingCma(postProcessing));
     }
 }

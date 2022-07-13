@@ -5,12 +5,12 @@ import gov.uk.courtdata.enums.HardshipReviewStatus;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UpdateHardshipReviewValidatorTest {
 
     @InjectMocks
@@ -39,7 +39,7 @@ public class UpdateHardshipReviewValidatorTest {
                 .status(HardshipReviewStatus.IN_PROGRESS)
                 .build();
         when(hardshipReviewRepository.getById(any(Integer.class))).thenReturn(mockExisting);
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> updateHardshipReviewValidator.validate(mockReview));
         assertThat(validationException.getMessage()).isEqualTo("Hardship has been modified by another user");
 
@@ -59,7 +59,7 @@ public class UpdateHardshipReviewValidatorTest {
                         .status(HardshipReviewStatus.COMPLETE)
                         .build()
         );
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> updateHardshipReviewValidator.validate(mockReview));
         assertThat(validationException.getMessage()).isEqualTo("User cannot modify a complete hardship review");
     }

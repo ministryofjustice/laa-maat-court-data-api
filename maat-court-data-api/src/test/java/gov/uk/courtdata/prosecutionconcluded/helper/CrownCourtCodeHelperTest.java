@@ -3,13 +3,12 @@ package gov.uk.courtdata.prosecutionconcluded.helper;
 import gov.uk.courtdata.entity.CrownCourtCode;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.CrownCourtCodeRepository;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
@@ -18,7 +17,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CrownCourtCodeHelperTest {
 
     @InjectMocks
@@ -26,11 +25,6 @@ public class CrownCourtCodeHelperTest {
 
     @Mock
     private CrownCourtCodeRepository crownCourtCodeRepository;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void testWhenOuCodeFound_thenReturnCode() {
@@ -48,13 +42,15 @@ public class CrownCourtCodeHelperTest {
         assertEquals("8899", code);
     }
 
-    @Test(expected = MAATCourtDataException.class)
+    @Test
     public void testWhenOuCodeNotFound_thenThrowMAATCourtDataException() {
 
         Optional<CrownCourtCode> optCrownCourtCode = Optional.empty();
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(optCrownCourtCode);
 
-        crownCourtCodeHelper.getCode(anyString());
-        verify(crownCourtCodeRepository).findByOuCode(anyString());
+        Assertions.assertThrows(MAATCourtDataException.class, () -> {
+            crownCourtCodeHelper.getCode(anyString());
+            verify(crownCourtCodeRepository).findByOuCode(anyString());
+        });
     }
 }

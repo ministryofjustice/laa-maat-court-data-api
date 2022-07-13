@@ -3,17 +3,17 @@ package gov.uk.courtdata.assessment.validator;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CreateAssessmentValidatorTest {
 
     @InjectMocks
@@ -39,14 +39,14 @@ public class CreateAssessmentValidatorTest {
 
     @Test
     public void testCreateAssessmentValidator_whenNworCodeIsBlank_thenThrowsException() {
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> createAssessmentValidator.validate(getAssessmentWithNworCode("")));
         assertThat(validationException.getMessage()).isEqualTo("New work reason code is required");
     }
 
     @Test
     public void testCreateAssessmentValidator_whenNworCodeIsNull_thenThrowsException() {
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> createAssessmentValidator.validate(getAssessmentWithNworCode(null)));
         assertThat(validationException.getMessage()).isEqualTo("New work reason code is required");
     }
@@ -59,14 +59,14 @@ public class CreateAssessmentValidatorTest {
 
     @Test
     public void testCreateAssessmentValidator_whenUserCreatedIsBlank_thenThrowsException() {
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> createAssessmentValidator.validate(getAssessmentWithUserCreated("")));
         assertThat(validationException.getMessage()).isEqualTo("Username is required");
     }
 
     @Test
     public void testCreateAssessmentValidator_whenUserCreatedIsNull_thenThrowsException() {
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> createAssessmentValidator.validate(getAssessmentWithUserCreated(null)));
         assertThat(validationException.getMessage()).isEqualTo("Username is required");
     }

@@ -5,22 +5,17 @@ import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.laastatus.builder.CourtDataDTOBuilder;
 import gov.uk.courtdata.model.CaseDetails;
-
-import gov.uk.courtdata.service.QueueMessageLogService;
-
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LaaStatusServiceUpdateTest {
 
     @InjectMocks
@@ -37,11 +32,6 @@ public class LaaStatusServiceUpdateTest {
 
     @Mock
     private Gson gson;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void givenACaseDetail_whenRestCallReceived_thenUpdateMlaAndCDA() {

@@ -7,16 +7,16 @@ import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.ProceedingEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.ProceedingRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProceedingsInfoProcessorTest {
 
     @InjectMocks
@@ -28,9 +28,8 @@ public class ProceedingsInfoProcessorTest {
     @Captor
     private ArgumentCaptor<ProceedingEntity> proceedingInfoCaptor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 

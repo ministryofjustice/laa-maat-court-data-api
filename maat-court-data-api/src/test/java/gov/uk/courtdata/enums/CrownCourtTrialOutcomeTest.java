@@ -1,8 +1,8 @@
 package gov.uk.courtdata.enums;
 
 import gov.uk.courtdata.exception.ValidationException;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.*;
 import static org.junit.jupiter.api.Assertions.*;

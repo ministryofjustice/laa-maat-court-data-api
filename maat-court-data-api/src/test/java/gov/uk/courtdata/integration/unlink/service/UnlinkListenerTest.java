@@ -13,18 +13,18 @@ import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.unlink.service.UnlinkListener;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 public class UnlinkListenerTest {
 
@@ -50,7 +50,7 @@ public class UnlinkListenerTest {
     @Autowired
     private RepOrderCPDataRepository repOrderCPDataRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         wqCoreRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();

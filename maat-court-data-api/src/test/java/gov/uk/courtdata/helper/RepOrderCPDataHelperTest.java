@@ -4,22 +4,19 @@ package gov.uk.courtdata.helper;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RepOrderCPDataHelperTest {
 
     @InjectMocks
@@ -27,13 +24,6 @@ public class RepOrderCPDataHelperTest {
 
     @Mock
     private RepOrderCPDataRepository repOrderCPDataRepository;
-
-
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void givenValidDefendantIdWhenFindCalledThenReturnMaatId() {
@@ -53,7 +43,7 @@ public class RepOrderCPDataHelperTest {
 
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void givenInValidDefendantIdWhenFindCalledThenReturnMaatId() {
 
         RepOrderCPDataEntity repOrderCPDataEntity = RepOrderCPDataEntity.builder()
@@ -62,8 +52,10 @@ public class RepOrderCPDataHelperTest {
                 .repOrderId(12345)
                 .inCommonPlatform("Y")
                 .build();
+        Assertions.assertThrows(ValidationException.class, ()->{
+            repOrderCPDataHelper.getMaatIdByDefendantId(repOrderCPDataEntity.getDefendantId());
+        });
 
-        repOrderCPDataHelper.getMaatIdByDefendantId(repOrderCPDataEntity.getDefendantId());
     }
 
 

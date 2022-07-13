@@ -3,18 +3,18 @@ package gov.uk.courtdata.laastatus.service;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.model.CaseDetails;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.jms.core.JmsTemplate;
 
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LaaStatusPublisherTest {
 
     @InjectMocks

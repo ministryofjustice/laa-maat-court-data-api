@@ -5,18 +5,16 @@ import gov.uk.courtdata.validator.DefendantValidator;
 import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import gov.uk.courtdata.validator.SolicitorValidator;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LaaStatusValidationProcessorTest {
 
 
@@ -34,10 +32,6 @@ public class LaaStatusValidationProcessorTest {
     @Mock
     private DefendantValidator defendantValidator;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void givenLAAStatusValidators_whenProcessorIsInvoked_thenRequiredValidatorsAreInvoked() {

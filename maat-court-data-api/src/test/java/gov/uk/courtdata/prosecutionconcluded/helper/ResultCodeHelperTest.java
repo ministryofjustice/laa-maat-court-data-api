@@ -3,13 +3,12 @@ package gov.uk.courtdata.prosecutionconcluded.helper;
 
 import gov.uk.courtdata.entity.XLATResultEntity;
 import gov.uk.courtdata.repository.XLATResultRepository;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ResultCodeHelperTest {
 
     @InjectMocks
@@ -32,17 +31,12 @@ public class ResultCodeHelperTest {
     @Mock
     private XLATResultRepository xlatResultRepository;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
-
     @Test
     public void testWhenCCOutcomeIsConvictedAndResultCodeWithNonImp_thenReturnN() {
 
         when(xlatResultRepository.fetchResultCodesForCCImprisonment()).thenReturn(buildCCResultEntities());
 
-        String isImp = resultCodeHelper.isImprisoned(CONVICTED.getValue(), Arrays.asList("0000"));
+        String isImp = resultCodeHelper.isImprisoned(CONVICTED.getValue(), List.of("0000"));
 
         verify(xlatResultRepository).fetchResultCodesForCCImprisonment();
 
@@ -104,27 +98,30 @@ public class ResultCodeHelperTest {
                 () -> assertNull(imprisoned));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void whenCCOutcomeIsConvAndResultCodeWithImp_thenBWarFlagIsY() {
         //when
         when(xlatResultRepository.fetchResultCodesForCCImprisonment()).thenReturn(null);
+        Assertions.assertThrows(NullPointerException.class,()->{
+            resultCodeHelper.isImprisoned(CONVICTED.getValue(), List.of("1002"));
+            //then
+            verify(xlatResultRepository).fetchResultCodesForCCImprisonment();
+        });
 
-        resultCodeHelper.isImprisoned(CONVICTED.getValue(), Arrays.asList("1002"));
-
-        //then
-        verify(xlatResultRepository).fetchResultCodesForCCImprisonment();
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void whenCCOutcomeIsAquittedAndResultCodeWithBW_thenBWarFlagIsY() {
         //when
         when(xlatResultRepository.findByCjsResultCodeIn()).thenReturn(null);
 
-        //   thrown.expect(NullPointerException.class);
-        resultCodeHelper.isBenchWarrantIssued(AQUITTED.getValue(), Arrays.asList("1002"));
+        Assertions.assertThrows(NullPointerException.class,()->{
+            //   thrown.expect(NullPointerException.class);
+            resultCodeHelper.isBenchWarrantIssued(AQUITTED.getValue(), List.of("1002"));
+            //then
+            verify(xlatResultRepository).findByCjsResultCodeIn();
+        });
 
-        //then
-        verify(xlatResultRepository).findByCjsResultCodeIn();
     }
 
     @Test

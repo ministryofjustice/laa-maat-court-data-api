@@ -9,26 +9,20 @@ import gov.uk.courtdata.validator.DefendantValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import gov.uk.courtdata.validator.ReferenceDataValidator;
 import gov.uk.courtdata.validator.SolicitorValidator;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ValidationProcessorTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Mock
     private MaatIdValidator maatIdValidator;
@@ -48,23 +42,16 @@ public class ValidationProcessorTest {
     @InjectMocks
     private ValidationProcessor validationProcessor;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
-
     @Test
     public void testWhenAnyValidatorFails_throwsValidationException() {
 
         final int testMaatId = 1000;
 
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("MAAT id is missing.");
         when(maatIdValidator.validate(testMaatId))
                 .thenThrow(
                         new ValidationException("MAAT id is missing."));
-
-        validationProcessor.validate(CaseDetails.builder().maatId(testMaatId).build());
+        Assertions.assertThrows(ValidationException.class, ()->
+                validationProcessor.validate(CaseDetails.builder().maatId(testMaatId).build()),"MAAT id is missing.");
 
     }
 

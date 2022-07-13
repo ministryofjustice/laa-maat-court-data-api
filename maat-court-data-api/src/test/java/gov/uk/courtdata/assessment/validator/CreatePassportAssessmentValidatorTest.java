@@ -3,17 +3,17 @@ package gov.uk.courtdata.assessment.validator;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CreatePassportAssessmentValidatorTest {
 
     @InjectMocks
@@ -36,7 +36,7 @@ public class CreatePassportAssessmentValidatorTest {
     public void testCreatePassportAssessmentValidator_whenFinancialAssessmentIdIsNotFilled_thenThrowsException() {
         CreatePassportAssessment createPassportAssessment = getAssessmentWithUserCreated("test-f");
         createPassportAssessment.setFinancialAssessmentId(null);
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> createAssessmentValidator.validate(createPassportAssessment));
         assertThat(validationException.getMessage()).isEqualTo("Financial Assessment ID is required");
     }
@@ -49,14 +49,14 @@ public class CreatePassportAssessmentValidatorTest {
 
     @Test
     public void testCreatePassportAssessmentValidator_whenUserCreatedIsBlank_thenThrowsException() {
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> createAssessmentValidator.validate(getAssessmentWithUserCreated("")));
         assertThat(validationException.getMessage()).isEqualTo("Username is required");
     }
 
     @Test
     public void testCreatePassportAssessmentValidator_whenUserCreatedIsNull_thenThrowsException() {
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> createAssessmentValidator.validate(getAssessmentWithUserCreated(null)));
         assertThat(validationException.getMessage()).isEqualTo("Username is required");
     }

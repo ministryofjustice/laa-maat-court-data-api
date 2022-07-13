@@ -15,19 +15,19 @@ import gov.uk.courtdata.model.id.CaseTxnId;
 import gov.uk.courtdata.model.id.AsnSeqTxnCaseId;
 import gov.uk.courtdata.model.id.ProceedingMaatId;
 import gov.uk.courtdata.repository.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 public class SaveAndLinkImplIntegrationTest {
 
@@ -60,7 +60,7 @@ public class SaveAndLinkImplIntegrationTest {
     @Autowired
     private TestEntityDataBuilder testEntityDataBuilder;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         repOrderRepository.deleteAll();
         wqCoreRepository.deleteAll();

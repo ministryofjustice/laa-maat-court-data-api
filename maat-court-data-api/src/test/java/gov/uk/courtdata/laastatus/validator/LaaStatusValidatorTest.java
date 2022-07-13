@@ -6,20 +6,20 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
 import gov.uk.courtdata.model.Offence;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LaaStatusValidatorTest {
 
     private LaaStatusValidator laaStatusValidator;
     private CaseDetails caseDetails;
 
-    @Before
+    @BeforeEach
     public void build() {
         TestModelDataBuilder testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(),new Gson());
         laaStatusValidator = new LaaStatusValidator();

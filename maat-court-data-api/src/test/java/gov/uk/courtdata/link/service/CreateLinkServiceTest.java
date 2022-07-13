@@ -9,20 +9,18 @@ import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.processor.OffenceCodeRefDataProcessor;
 import gov.uk.courtdata.processor.ResultCodeRefDataProcessor;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CreateLinkServiceTest {
 
     @InjectMocks
@@ -36,12 +34,6 @@ public class CreateLinkServiceTest {
     private OffenceCodeRefDataProcessor offenceCodeRefDataProcessor;
     @Mock
     private ResultCodeRefDataProcessor resultCodeRefDataProcessor;
-
-    @BeforeEach
-    public void setUp() {
-
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void givenJSONMessageIsReceived_whenCreateLinkServiceIsInvoked_thenSaveAndImplIsCalled() {

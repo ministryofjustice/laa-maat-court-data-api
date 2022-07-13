@@ -7,13 +7,12 @@ import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 
@@ -22,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LinkRegisterProcessorTest {
 
     @InjectMocks
@@ -36,10 +35,8 @@ public class LinkRegisterProcessorTest {
     @Captor
     ArgumentCaptor<WqLinkRegisterEntity> wqLinkRegisterEntityArgumentCaptor;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
@@ -63,13 +60,14 @@ public class LinkRegisterProcessorTest {
         assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getProsecutionConcluded()).isEqualTo("true");
     }
 
-    @Test(expected = MAATCourtDataException.class)
+    @Test
     public void givenCaseProcessor_whenMaatIdInvalid_thenThrowException() {
+        Assertions.assertThrows(MAATCourtDataException.class, () -> {
+            HearingDTO hearingDTO = testModelDataBuilder.getHearingDTOForCCOutcome();
 
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTOForCCOutcome();
-
-        //when
-        linkRegisterProcessor.process(hearingDTO);
-        verify(wqLinkRegisterRepository).save(wqLinkRegisterEntityArgumentCaptor.capture());
+            //when
+            linkRegisterProcessor.process(hearingDTO);
+            verify(wqLinkRegisterRepository).save(wqLinkRegisterEntityArgumentCaptor.capture());
+        });
     }
 }

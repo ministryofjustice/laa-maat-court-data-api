@@ -1,21 +1,20 @@
 package gov.uk.courtdata.service;
 
 
-import gov.uk.courtdata.entity.QueueMessageLogEntity;
+ import gov.uk.courtdata.entity.QueueMessageLogEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class QueueMessageLogServiceTest {
 
     @InjectMocks
@@ -24,11 +23,6 @@ public class QueueMessageLogServiceTest {
     public QueueMessageLogRepository queueMessageLogRepository;
     @Captor
     private ArgumentCaptor<QueueMessageLogEntity> queueMessageCaptor;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
 
     @Test

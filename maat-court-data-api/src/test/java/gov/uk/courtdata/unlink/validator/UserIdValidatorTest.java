@@ -1,36 +1,32 @@
 package gov.uk.courtdata.unlink.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UserIdValidatorTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
     @InjectMocks
     private UserIdValidator userIdValidator;
-
 
 
     @Test
     public void testUserIdValidator_whenUserIsNullThrowsException() {
 
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("User id is missing.");
-        userIdValidator.validate(null);
+        Assertions.assertThrows(ValidationException.class, () ->
+                userIdValidator.validate(null), "User id is missing.");
+
     }
 
     @Test
     public void testUserIdValidator_whenUserIsEmpTyUserIDThrowsException() {
 
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("User id is missing.");
-        userIdValidator.validate("");
+        Assertions.assertThrows(ValidationException.class,
+                () -> userIdValidator.validate(""), "User id is missing.");
+
     }
 }

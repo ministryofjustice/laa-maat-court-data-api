@@ -12,14 +12,12 @@ import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.repository.XLATResultRepository;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +27,7 @@ import java.util.Optional;
 import static gov.uk.courtdata.enums.CrownCourtAppealOutcome.isAppeal;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProsecutionConcludedImplTest {
 
     @InjectMocks
@@ -53,10 +51,6 @@ public class ProsecutionConcludedImplTest {
     @Mock
     private XLATResultRepository xlatResultRepository;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void testWhenCaseConcludedAndImpAndWarrantisY_thenProcessDataAsExpected() {

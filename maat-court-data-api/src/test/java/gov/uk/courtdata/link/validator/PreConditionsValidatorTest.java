@@ -5,26 +5,20 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.CaseDetailsValidate;
 import gov.uk.courtdata.validator.MaatIdValidator;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static java.lang.String.format;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PreConditionsValidatorTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Mock
     private LinkExistsValidator linkExistsValidator;
@@ -38,29 +32,20 @@ public class PreConditionsValidatorTest {
     @InjectMocks
     private PreConditionsValidator preConditionsValidator;
 
-    @BeforeEach
-    public void setUp() {
-
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void testMaatIdValidator_throwsValidationException() {
 
         final int testMaatId = 1000;
 
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("MAAT id is missing.");
-
         when(maatIdValidator.validate(testMaatId))
                 .thenThrow(
                         new ValidationException("MAAT id is missing."));
-
-        preConditionsValidator.validate(
+        Assertions.assertThrows(ValidationException.class, ()-> preConditionsValidator.validate(
                 CaseDetailsValidate
                         .builder()
                         .maatId(testMaatId)
-                        .build());
+                        .build()),"MAAT id is missing.");
 
     }
 
@@ -70,21 +55,15 @@ public class PreConditionsValidatorTest {
 
         final int testMaatId = 1000;
 
-
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("1000: MaatId already linked to the application.");
-
-
         when(linkExistsValidator.validate(testMaatId))
                 .thenThrow(new
                         ValidationException(format("%s: MaatId already linked to the application.", testMaatId)));
 
-
-        preConditionsValidator.validate(
+        Assertions.assertThrows(ValidationException.class, ()-> preConditionsValidator.validate(
                 CaseDetailsValidate
                         .builder()
                         .maatId(testMaatId)
-                        .build());
+                        .build()),"1000: MaatId already linked to the application.");
     }
 
 
@@ -98,18 +77,14 @@ public class PreConditionsValidatorTest {
                 .maatId(testMaatId)
                 .build();
 
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("CaseURN can't be null or empty on request.");
-
         when(cpDataValidator.validate(CaseDetails
                 .builder()
                 .maatId(testMaatId)
                 .build()))
                 .thenThrow(new
                         ValidationException("CaseURN can't be null or empty on request."));
-
-        preConditionsValidator.validate(
-                request);
+        Assertions.assertThrows(ValidationException.class, ()-> preConditionsValidator.validate(
+                request),"CaseURN can't be null or empty on request.");
     }
 
 

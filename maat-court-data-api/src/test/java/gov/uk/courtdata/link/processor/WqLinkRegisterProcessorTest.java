@@ -8,17 +8,16 @@ import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.COMMON_PLATFORM;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WqLinkRegisterProcessorTest {
 
     @InjectMocks
@@ -31,9 +30,8 @@ public class WqLinkRegisterProcessorTest {
     @Captor
     private ArgumentCaptor<WqLinkRegisterEntity> wqLinkRegisterCaptor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 

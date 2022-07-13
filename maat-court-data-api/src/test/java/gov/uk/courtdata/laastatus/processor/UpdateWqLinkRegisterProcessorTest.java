@@ -4,26 +4,23 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UpdateWqLinkRegisterProcessorTest {
 
     @InjectMocks
@@ -36,9 +33,8 @@ public class UpdateWqLinkRegisterProcessorTest {
     @Captor
     private ArgumentCaptor<WqLinkRegisterEntity> wqLinkRegisterCaptor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 
@@ -59,7 +55,6 @@ public class UpdateWqLinkRegisterProcessorTest {
 
         // then
         verify(wqLinkRegisterRepository).save(wqLinkRegisterCaptor.capture());
-       ;
         assertThat(wqLinkRegisterCaptor.getValue().getMaatId()).isEqualTo(caseDetails.getMaatId());
         assertThat(wqLinkRegisterCaptor.getValue().getMlrCat()).isEqualTo(caseDetails.getCategory());
     }

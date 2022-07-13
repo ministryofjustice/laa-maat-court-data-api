@@ -6,12 +6,11 @@ import gov.uk.courtdata.enums.WQStatus;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.CpJobStatus;
 import gov.uk.courtdata.repository.WqCoreRepository;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CpJobStatusServiceTest {
 
     @InjectMocks
@@ -30,9 +29,6 @@ public class CpJobStatusServiceTest {
 
     @Captor
     private ArgumentCaptor<WqCoreEntity> wqCoreCaptor;
-
-    @Rule
-    public ExpectedException exceptionRule = ExpectedException.none();
 
     @Test
     public void givenStatusJobIsReceivedWithSUCCESSStatus_whenExecuteIsInvoked_thenStatusIsUpdated() {
@@ -100,9 +96,10 @@ public class CpJobStatusServiceTest {
         when(wqCoreRepository.findById(Mockito.anyInt()))
                 .thenReturn(Optional.empty());
 
-        exceptionRule.expect(MAATCourtDataException.class);
-        exceptionRule.expectMessage("No Record found for Maat ID- 1234, Txn ID-123456");
-        laaStatusJobService.execute(cpJobStatus);
+        Assertions.assertThrows(MAATCourtDataException.class, ()->{
+            laaStatusJobService.execute(cpJobStatus);
+        }, "No Record found for Maat ID- 1234, Txn ID-123456");
+
 
 
     }

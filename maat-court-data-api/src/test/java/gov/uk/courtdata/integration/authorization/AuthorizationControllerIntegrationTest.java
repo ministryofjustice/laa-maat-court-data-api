@@ -6,20 +6,20 @@ import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+  import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTest {
 
@@ -48,7 +48,7 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
     @Autowired
     private UserRepository userRepository;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -196,7 +196,7 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    @Ignore("This test will fail until LASB-1141 has been addressed.")
+    @Disabled("This test will fail until LASB-1141 has been addressed.")
     public void givenAMissingReservationId_whenIsReservedIsInvoked_theCorrectErrorIsThrown() throws Exception {
         runBadRequestErrorScenario(
                 "Reservation attributes are missing",

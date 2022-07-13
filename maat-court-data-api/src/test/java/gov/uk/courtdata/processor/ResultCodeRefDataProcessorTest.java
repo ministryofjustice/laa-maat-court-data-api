@@ -3,13 +3,11 @@ package gov.uk.courtdata.processor;
 import gov.uk.courtdata.entity.XLATResultEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.XLATResultRepository;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -19,14 +17,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ResultCodeRefDataProcessorTest {
 
     @InjectMocks
     private ResultCodeRefDataProcessor resultCodeRefDataProcessor;
-
-    @Rule
-    public ExpectedException exceptionRule = ExpectedException.none();
 
     @Spy
     private XLATResultRepository xlatResultRepository;
@@ -34,11 +29,6 @@ public class ResultCodeRefDataProcessorTest {
     @Captor
     private ArgumentCaptor<XLATResultEntity> xlatResultArgumentCaptor;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-    }
 
     @Test
     public void testProcessResultCode_whenNewResultIsPassedIn_thenResultIsSaved() {
@@ -85,8 +75,9 @@ public class ResultCodeRefDataProcessorTest {
     @Test
     public void testProcessResultCode_whenNullCodeIsPassedIn_thenThrowsMaatCourtDataException() {
 
-        exceptionRule.expect(MAATCourtDataException.class);
-        exceptionRule.expectMessage("A Null Result Code is passed in");
-        resultCodeRefDataProcessor.processResultCode(null);
+        Assertions.assertThrows(MAATCourtDataException.class, ()->{
+            resultCodeRefDataProcessor.processResultCode(null);
+        }, "A Null Result Code is passed in");
+
     }
 }

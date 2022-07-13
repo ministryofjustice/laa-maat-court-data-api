@@ -18,13 +18,13 @@ import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class, MockNewWorkReasonRepository.class})
 public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
@@ -71,7 +71,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private List<FinancialAssessmentEntity> existingAssessmentEntities;
     private RepOrderEntity existingRepOrder;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();

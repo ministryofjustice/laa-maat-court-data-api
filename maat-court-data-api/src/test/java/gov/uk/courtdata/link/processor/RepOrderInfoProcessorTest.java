@@ -4,27 +4,24 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.Defendant;
-import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RepOrderInfoProcessorTest {
 
     @InjectMocks
@@ -36,9 +33,8 @@ public class RepOrderInfoProcessorTest {
     @Captor
     ArgumentCaptor<RepOrderEntity> repOrderCaptor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 

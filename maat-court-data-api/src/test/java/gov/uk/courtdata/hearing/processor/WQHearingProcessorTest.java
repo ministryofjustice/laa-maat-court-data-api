@@ -12,24 +12,21 @@ import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WQHearingProcessorTest {
 
     @InjectMocks
@@ -46,7 +43,7 @@ public class WQHearingProcessorTest {
     @Captor
     private ArgumentCaptor<WQHearingEntity> wqHearingEntityArgumentCaptor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
     }
@@ -55,8 +52,8 @@ public class WQHearingProcessorTest {
     public void givenWQHearingProcessor_whenProcessIsInvoke_thenSaveWQHearingEntity() {
 
         when(wqLinkRegisterRepository.findBymaatId(anyInt()))
-                .thenReturn(Arrays.asList(WqLinkRegisterEntity.builder()
-                                .maatId(121112)
+                .thenReturn(Collections.singletonList(WqLinkRegisterEntity.builder()
+                        .maatId(121112)
                         .build()));
 
         wqHearingProcessor.process(getHearingResulted());
@@ -85,9 +82,12 @@ public class WQHearingProcessorTest {
                         Defendant.builder()
                                 .offences(
                                         Arrays.asList(
-                                                Offence.builder().results(Collections.singletonList(Result.builder().resultCode("3030").build())).build(),
-                                                Offence.builder().results(Collections.singletonList(Result.builder().resultCode("5031").build())).build(),
-                                                Offence.builder().results(Collections.singletonList(Result.builder().resultCode("4032").build())).build()
+                                                Offence.builder().results(Collections.singletonList(Result.builder()
+                                                        .resultCode("3030").build())).build(),
+                                                Offence.builder().results(Collections.singletonList(Result.builder()
+                                                        .resultCode("5031").build())).build(),
+                                                Offence.builder().results(Collections.singletonList(Result.builder()
+                                                        .resultCode("4032").build())).build()
                                         )
                                 ).build())
                 .build();

@@ -6,16 +6,16 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WQDefendant;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQDefendantRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WQDefendantProcessorTest {
 
     @InjectMocks
@@ -29,9 +29,8 @@ public class WQDefendantProcessorTest {
     @Captor
     private ArgumentCaptor<WQDefendant> wqDefendantArgumentCaptor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 

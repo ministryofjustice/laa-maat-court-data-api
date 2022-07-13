@@ -1,34 +1,34 @@
 package gov.uk.courtdata.unlink.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ReasonValidatorTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+
     @InjectMocks
     private ReasonValidator reasonValidator;
 
     @Test
     public void testReasonIdValidator_whenReasonIDIsNullThrowsException() {
 
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("Reason id is missing.");
-        reasonValidator.validate(null);
+        Assertions.assertThrows(ValidationException.class,()->{
+            reasonValidator.validate(null);
+        },"Reason id is missing.");
+
     }
 
     @Test
     public void testReasonIdValidator_whenReasonIDIsZeroThrowsException() {
 
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("Reason id is missing.");
-        reasonValidator.validate(0);
+        Assertions.assertThrows(ValidationException.class,()->{
+            reasonValidator.validate(0);
+        }, "Reason id is missing.");
+
     }
 }

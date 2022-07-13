@@ -13,13 +13,11 @@ import gov.uk.courtdata.prosecutionconcluded.model.Plea;
 import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.validator.ProsecutionConcludedValidator;
 import gov.uk.courtdata.repository.WQHearingRepository;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProsecutionConcludedServiceTest {
 
     @InjectMocks
@@ -59,13 +57,6 @@ public class ProsecutionConcludedServiceTest {
     @Mock
     private ProsecutionConcludedDataService prosecutionConcludedDataService;
 
-
-
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void test_whenMaatIsLocked_thenPublishMessageToSQS() {

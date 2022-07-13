@@ -19,16 +19,16 @@ import org.assertj.core.api.SoftAssertions;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.laastatus.controller.LaaStatusUpdateController;
 import gov.uk.courtdata.repository.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ import static org.junit.Assert.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
         properties = "spring.main.allow-bean-definition-overriding=true",
         classes = {MAATCourtDataApplication.class, MockCdaWebConfig.class})
@@ -85,7 +85,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
     private MockWebServer mockCdaWebServer;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -107,13 +107,13 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         repOrderCPDataRepository.deleteAll();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws IOException {
        mockCdaWebServer.shutdown();
     }
 
     @Test
-    @Ignore("This test will be ignored until bug LASB-1123 has been fixed and may require updates.")
+    @Disabled("This test will be ignored until bug LASB-1123 has been fixed and may require updates.")
     public void givenNullMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         String testPayload = objectMapper
                 .writeValueAsString(CaseDetails.builder().laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID)).build());
@@ -121,7 +121,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     }
 
     @Test
-    @Ignore("This test will be ignored until bug LASB-1123 has been fixed and may require updates.")
+    @Disabled("This test will be ignored until bug LASB-1123 has been fixed and may require updates.")
     public void givenAMissingMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         String payloadMissingMaatId = String.format("{\"laaTransactionId\":\"%s\"}", LAA_TRANSACTION_ID);
         runServerErrorScenario("MAAT APT Call failed MAAT ID is required.", getPostRequest(payloadMissingMaatId));

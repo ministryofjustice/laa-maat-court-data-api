@@ -1,7 +1,6 @@
 package gov.uk.courtdata.integration.hardship;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.DataBuilderUtil;
@@ -10,28 +9,24 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.Frequency;
-import gov.uk.courtdata.enums.HardshipReviewDetailCode;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.enums.HardshipReviewStatus;
-import gov.uk.courtdata.hardship.controller.HardshipReviewController;
 import gov.uk.courtdata.integration.MockCdaWebConfig;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.model.NewWorkReason;
-import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.model.hardship.*;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -40,7 +35,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
         properties = "spring.main.allow-bean-definition-overriding=true",
         classes = {MAATCourtDataApplication.class, MockCdaWebConfig.class})
@@ -68,7 +63,7 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private FinancialAssessmentEntity existingUnlinkedFinancialAssessment;
     private NewWorkReasonEntity existingNewWorkReason;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();

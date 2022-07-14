@@ -491,15 +491,15 @@ public class TestModelDataBuilder {
                 .reviewResult("FAIL")
                 .solicitorCosts(
                         SolicitorCosts.builder()
-                                .solicitorRate(BigDecimal.valueOf(183.0))
-                                .solicitorHours(BigDecimal.valueOf(12.0))
-                                .solicitorVat(BigDecimal.valueOf(384.25))
-                                .solicitorDisb(BigDecimal.valueOf(0.0))
-                                .solicitorEstTotalCost(BigDecimal.valueOf(2580.25))
+                                .solicitorRate(DataBuilderUtil.createScaledBigDecimal(183.00))
+                                .solicitorHours(DataBuilderUtil.createScaledBigDecimal(12.00))
+                                .solicitorVat(DataBuilderUtil.createScaledBigDecimal(384.25))
+                                .solicitorDisb(DataBuilderUtil.createScaledBigDecimal(0.00))
+                                .solicitorEstTotalCost(DataBuilderUtil.createScaledBigDecimal(2580.25))
                                 .build()
                 )
-                .disposableIncome(BigDecimal.valueOf(4215.46))
-                .disposableIncomeAfterHardship(BigDecimal.valueOf(2921.38))
+                .disposableIncome(DataBuilderUtil.createScaledBigDecimal(4215.46))
+                .disposableIncomeAfterHardship(DataBuilderUtil.createScaledBigDecimal(2921.38))
                 .status(HardshipReviewStatus.COMPLETE)
                 .userCreated("test-s")
                 .userModified("test-s")
@@ -853,5 +853,4 @@ public class TestModelDataBuilder {
 
                 .build();
     }
-
 }

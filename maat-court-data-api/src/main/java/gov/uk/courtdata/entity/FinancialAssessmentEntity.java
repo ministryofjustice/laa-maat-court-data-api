@@ -26,7 +26,9 @@ import java.util.List;
         name = "post_assessment_processing_cma",
         procedureName = "togdata.assessments.post_assessment_processing_cma",
         parameters = {
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class, name = "p_rep_id")
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class, name = "p_rep_id"),
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_user_name"),
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_user_session")
         }
 )
 public class FinancialAssessmentEntity implements Serializable {

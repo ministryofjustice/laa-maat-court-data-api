@@ -19,3 +19,5 @@ CREATE TABLE TOGDATA.CONFIG_PARAMETERS
 
 INSERT INTO TOGDATA.CONFIG_PARAMETERS
 VALUES ('RESERVATION_TIME', 'description', '24', null, 'test', null, 'test', '2022-01-01');
+
+CREATE ALIAS IF NOT EXISTS UPDATE_CC_OUTCOME FOR "gov.uk.courtdata.integration.prosecution_concluded.H2StoredProcedures.updateCcOutcome"

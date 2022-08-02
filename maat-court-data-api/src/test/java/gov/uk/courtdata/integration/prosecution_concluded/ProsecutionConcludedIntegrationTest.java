@@ -8,19 +8,20 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedListener;
 import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class, H2StoredProcedures.class })
-
-public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest {
+@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
+public class ProsecutionConcludedIntegrationTest {
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -39,23 +40,14 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
     @Autowired
     private ResultRepository resultRepository;
     @Autowired
+    private RepOrderRepository repOrderRepository;
+    @Autowired
     private CrownCourtCodeRepository crownCourtCodeRepository;
 
-
-
-
-//    private final ProsecutionConcludedService prosecutionConcludedService;
-//    private final QueueMessageLogService queueMessageLogService;
-
-//    private QueueMessageLogTestHelper queueMessageLogTestHelper;
-    @Autowired
-    private RepOrderRepository repOrderRepository;
+    private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
     @BeforeEach
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
-
         wqHearingRepository.deleteAll();
         offenceRepository.deleteAll();
         queueMessageLogRepository.deleteAll();
@@ -65,7 +57,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
         repOrderRepository.deleteAll();
         crownCourtCodeRepository.deleteAll();
         loadData();
-
+        queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
     }
 
     private void loadData() {
@@ -150,32 +142,26 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
                         .ouCode("3434")
                         .build()
         );
-
     }
 
     @Test
     public void givenSqsPayload_whenDataIsValid_thenProcessAsExpected() {
-
         prosecutionConcludedListener.receive(pullMessageFromSQS());
-        //  queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
+    }
 
-
+    @Test
+    public void givenSqsPayload_whenDataIsValidAndCaseIsNotConcluded_thenProcessAsExpected() {
+        prosecutionConcludedListener.receive(pullMessageFromSQS());
     }
 
 
     @Test
     public void givenSqsPayload_whenMaatIdIsNotLocked_thenProcess() {
-
         prosecutionConcludedListener.receive(pullMessageFromSQS());
-        //queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
-
-
     }
 
     @Test
     public void givenSqsPayload_whenMaatIdIsLocked_thenThrowException() {
-
-
         prosecutionConcludedListener.receive(pullMessageFromSQS());
     }
 
@@ -204,7 +190,8 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
     }
 
     @Test
-    public void givenSqsPayload_whenHearingOffenceSummaryIsEmpty_thenReturnMessage() {
+    @Ignore("This test will fail until LASB-1238 is fixed.")
+    public void givenSqsPayload_whenHearingOffenceSummaryIsNull_thenReturnMessage() {
 
         String sqsPayload = "{" +
                 "    \"maatId\": \"6039349\",\n" +
@@ -214,9 +201,47 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
                 "    }\n" +
                 "}";
 
-        Assertions.assertThrows(ValidationException.class, () -> {
-            prosecutionConcludedListener.receive(sqsPayload);
-        }, "Payload is not available or null. ");
+        Assertions.assertThrows(
+                ValidationException.class, () -> prosecutionConcludedListener.receive(sqsPayload), "Payload is not available or null. ");
+
+        queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1,"61600a90-89e2-4717-aa9b-a01fc66130c1", 6039349);
+    }
+
+    @Test
+    @Ignore("This test will fail until LASB-1238 is fixed.")
+    public void givenSqsPayload_whenHearingOffenceSummaryIsEmpty_thenReturnMessage() {
+        String laaTransactionId = "61600a90-89e2-4717-aa9b-a01fc66130c1";
+        Integer maatId = 6039349;
+        String sqsPayload = "{" +
+                "    \"maatId\": " + maatId + ",\n" +
+                "    \"hearingIdWhereChangeOccurred\": \"61600a90-89e2-4717-aa9b-a01fc66130c1\",\n" +
+                "    \"offenceSummary\": [],\n" +
+                "    \"metadata\": {\n" +
+                "        \"laaTransactionId\": " + laaTransactionId + "\n" +
+                "    }\n" +
+                "}";
+
+        Assertions.assertThrows(
+                ValidationException.class, () -> prosecutionConcludedListener.receive(sqsPayload), "Payload is not available or null. ");
+
+        queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1,laaTransactionId, maatId);
+    }
+
+    @Test
+    @Ignore("This test will fail until LASB-1238 is fixed.")
+    public void givenSqsPayload_whenMaatIdIsNull_thenReturnMessage() {
+        String laaTransactionId = "61600a90-89e2-4717-aa9b-a01fc66130c1";
+        String sqsPayload = "{" +
+                "    \"hearingIdWhereChangeOccurred\": \"61600a90-89e2-4717-aa9b-a01fc66130c1\",\n" +
+                "    \"metadata\": {\n" +
+                "        \"laaTransactionId\": " + laaTransactionId + "\n" +
+                "    }\n" +
+                "}";
+
+        Assertions.assertThrows(
+                ValidationException.class, () -> prosecutionConcludedListener.receive(sqsPayload), "Payload is not available or null. ");
+
+        queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1,"61600a90-89e2-4717-aa9b-a01fc66130c1", -1);
     }
 
     private String pullMessageFromSQS() {

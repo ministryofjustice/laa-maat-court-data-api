@@ -30,18 +30,18 @@ public class ProcessSentencingImpl {
         if (caseEndDate != null) {
             String user = dbUser != null ? dbUser.toUpperCase() : null;
             if (APPEAL_CC.getValue().equalsIgnoreCase(catyType)) {
-//                crownCourtProcessingRepository
-//                        .invokeUpdateAppealSentenceOrderDate(maatId,
-//                                user,
-//                                caseEndDate,
-//                                LocalDate.now()
-//                        );
+                crownCourtProcessingRepository
+                        .invokeUpdateAppealSentenceOrderDate(maatId,
+                                user,
+                                caseEndDate,
+                                LocalDate.now()
+                        );
             } else {
-//                crownCourtProcessingRepository
-//                        .invokeUpdateSentenceOrderDate(maatId,
-//                                user,
-//                                caseEndDate
-//                        );
+                crownCourtProcessingRepository
+                        .invokeUpdateSentenceOrderDate(maatId,
+                                user,
+                                caseEndDate
+                        );
             }
         }
     }

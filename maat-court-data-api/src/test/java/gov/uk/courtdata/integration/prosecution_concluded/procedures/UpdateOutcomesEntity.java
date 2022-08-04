@@ -1,4 +1,4 @@
-package gov.uk.courtdata.integration.prosecution_concluded;
+package gov.uk.courtdata.integration.prosecution_concluded.procedures;
 
 import lombok.*;
 

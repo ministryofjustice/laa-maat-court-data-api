@@ -201,7 +201,7 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     @Test
-    @Ignore("This test will fail until LASB-1238 and LASB-12XX are fixed.")
+    @Ignore("This test will fail until LASB-1238 and LASB-1251 are fixed.")
     public void givenSqsPayload_whenDataIsValidWithAppealCaseType_thenProcessAsExpected() throws JsonProcessingException {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
         message.getOffenceSummary().get(0).getPlea().setValue("NOT_GUILTY");

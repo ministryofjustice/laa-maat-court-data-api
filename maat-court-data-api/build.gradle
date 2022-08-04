@@ -109,7 +109,8 @@ dependencies {
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
-
+    testCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
 
     implementation group: 'org.sonarsource.scanner.gradle', name: 'sonarqube-gradle-plugin', version: versions.sonarVersion
 

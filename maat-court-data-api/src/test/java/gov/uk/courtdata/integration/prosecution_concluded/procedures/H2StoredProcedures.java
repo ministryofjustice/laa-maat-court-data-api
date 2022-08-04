@@ -2,10 +2,8 @@ package gov.uk.courtdata.integration.prosecution_concluded.procedures;
 
 import lombok.RequiredArgsConstructor;
 import org.h2.tools.SimpleResultSet;
-import org.springframework.data.repository.query.Param;
 
 import java.sql.*;
-import java.time.LocalDate;
 
 @RequiredArgsConstructor
 public final class H2StoredProcedures {
@@ -24,33 +22,6 @@ public final class H2StoredProcedures {
                 String.format(
                         "VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s');",
                         repId, ccOutcome, benchWarrantIssued, appealType, imprisoned, caseNumber, crownCourtCode);
-        return runSqlStatement(sqlInsert);
-
-    }
-
-    public static ResultSet updateAppealSentenceOrdDt(Integer repId,
-                                                      String dbUser,
-                                                      LocalDate sentenceOrderDate,
-                                                      LocalDate dateChanged) throws SQLException {
-
-        String sqlInsert =
-                "INSERT INTO TOGDATA.UPDATE_APPEAL_SENTENCE " +
-                        "(REP_ID,DB_USER,SENTENCE_DATE,DATE_CHANGED)" +
-                        String.format(
-                                "VALUES (%d, '%s', '%s', '%s');",
-                                repId, dbUser, sentenceOrderDate, dateChanged);
-        return runSqlStatement(sqlInsert);
-
-    }
-
-    public static ResultSet updateCrownCourtSentenceOrdDt(Integer repId, String dbUser, LocalDate sentenceOrderDate) throws SQLException {
-
-        String sqlInsert =
-                "INSERT INTO TOGDATA.UPDATE_CC_SENTENCE " +
-                        "(REP_ID,DB_USER,SENTENCE_DATE)" +
-                        String.format(
-                                "VALUES (%d, '%s', '%s');",
-                                repId, dbUser, sentenceOrderDate);
         return runSqlStatement(sqlInsert);
 
     }

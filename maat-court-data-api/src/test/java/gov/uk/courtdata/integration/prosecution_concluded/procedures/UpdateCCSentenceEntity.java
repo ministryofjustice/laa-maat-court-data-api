@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,22 +16,13 @@ import javax.persistence.Table;
 @Builder
 @AllArgsConstructor
 @Entity
-@Table(name = "UPDATE_OUTCOMES", schema = "TOGDATA")
+@Table(name = "UPDATE_CC_SENTENCE", schema = "TOGDATA")
 public class UpdateCCSentenceEntity {
     @Id
     @Column(name = "REP_ID", nullable = false)
     private Integer repId;
-    @Column(name = "CC_OUTCOME", nullable = false)
-    private String ccOutcome;
-    @Column(name = "BENCH_WARRANT_ISSUED", nullable = false)
-    private String benchWarrantIssued;
-    @Column(name = "APPEAL_TYPE", nullable = false)
-    private String appealType;
-    @Column(name = "IMPRISONED", nullable = false)
-    private String imprisoned;
-    @Column(name = "CASE_NUMBER", nullable = false)
-    private String caseNumber;
-    @Column(name = "CROWN_COURT_CODE", nullable = false)
-    private String crownCourtCode;
-
+    @Column(name = "DB_USER", nullable = false)
+    private String dbUser;
+    @Column(name = "SENTENCE_DATE", nullable = false)
+    private LocalDate sentenceDate;
 }

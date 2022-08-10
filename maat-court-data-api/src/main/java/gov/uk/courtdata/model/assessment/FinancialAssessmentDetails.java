@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FinancialAssessmentDetails {
+    private Integer id;
     private Integer criteriaDetailId;
     private BigDecimal applicantAmount;
     private Frequency applicantFrequency;

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FinancialAssessmentDetailsHistoryDTO {
+    private Integer id;
     private Integer criteriaDetailId;
     private BigDecimal applicantAmount;
     private Frequency applicantFrequency;

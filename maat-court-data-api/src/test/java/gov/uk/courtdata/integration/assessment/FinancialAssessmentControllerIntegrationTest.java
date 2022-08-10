@@ -239,6 +239,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         expectedResponse.setId(createdAssessment.getId());
         expectedResponse.setDateCreated(createdAssessment.getDateCreated());
         expectedResponse.setUpdated(createdAssessment.getUpdated());
+        expectedResponse.getAssessmentDetails().get(0).setId(createdAssessment.getAssessmentDetails().get(0).getId());
 
         SoftAssertions.assertSoftly(softly -> {
             assertThat(matchingAssessments.size()).isEqualTo(2);
@@ -324,6 +325,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
                 runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
 
         FinancialAssessmentEntity updatedAssessment = financialAssessmentRepository.findById(assessmentToUpdate.getId()).orElse(null);
+        expectedResponse.getAssessmentDetails().get(0).setId(updatedAssessment.getAssessmentDetails().get(0).getId());
 
         assertThat(assessmentToUpdate.getUpdated()).isNotEqualTo(Objects.requireNonNull(updatedAssessment).getUpdated());
         expectedResponse.setUpdated(updatedAssessment.getUpdated());

@@ -4,6 +4,10 @@
   "type": "object",
   "description": "Assessment details",
   "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Assessment details ID"
+    },
     "criteriaDetailsId": {
       "type": "string",
       "description": "Criteria Id"

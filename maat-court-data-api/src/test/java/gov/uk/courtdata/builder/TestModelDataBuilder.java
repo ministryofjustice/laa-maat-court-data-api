@@ -17,6 +17,7 @@ import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -851,6 +852,13 @@ public class TestModelDataBuilder {
                         .build()
                 )
 
+                .build();
+    }
+
+    public static UpdateAppDateCompleted getUpdateAppDateCompleted() {
+        return UpdateAppDateCompleted.builder()
+                .repId(4351623)
+                .assessmentDateCompleted(LocalDate.now())
                 .build();
     }
 }

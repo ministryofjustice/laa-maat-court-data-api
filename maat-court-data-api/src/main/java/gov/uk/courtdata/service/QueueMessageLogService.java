@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import static gov.uk.courtdata.enums.MessageType.LAA_STATUS_REST_CALL;
 import static gov.uk.courtdata.enums.MessageType.LAA_STATUS_UPDATE;
 
 @Service
@@ -35,21 +36,41 @@ public class QueueMessageLogService {
 
         JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
 
-        JsonElement uuid = msgObject.get("laaTransactionId");
+        String laaTransactionIdStr = "";
+        JsonElement maatId;
 
-        JsonElement maatId = messageType.equals(LAA_STATUS_UPDATE) ?
-                msgObject.get("data")
-                        .getAsJsonObject().get("attributes")
-                        .getAsJsonObject().get("maat_reference")
-                : msgObject.get("maatId");
+        if (messageType.equals(LAA_STATUS_UPDATE) ) {
+
+            maatId = msgObject.get("data")
+                    .getAsJsonObject().get("attributes")
+                    .getAsJsonObject().get("maat_reference");
+
+        } else if (messageType.equals(LAA_STATUS_REST_CALL)) {
+
+            laaTransactionIdStr = msgObject.get("laaTransactionId").getAsString();
+            maatId = msgObject.get("maatId");
+
+        } else {
+
+            maatId = msgObject.get("maatId");
+            if (msgObject.has("metadata") ){
+
+                JsonObject metadata = msgObject.get("metadata").getAsJsonObject();
+                laaTransactionIdStr =  metadata.has("laaTransactionId") ? metadata.get("laaTransactionId").getAsString() : "";
+
+            }
+        }
+
+
 
         QueueMessageLogEntity queueMessageLogEntity =
                 QueueMessageLogEntity.builder()
-                        .transactionUUID(Optional.ofNullable(uuid).map(JsonElement::getAsString)
-                                .orElseGet(UUID.randomUUID()::toString))
-                        .maatId(
-                                Optional.ofNullable(maatId).map(JsonElement::getAsInt).orElse(-1)
-                        )
+                        .transactionUUID(UUID.randomUUID().toString())
+                        .laaTransactionId(laaTransactionIdStr)
+                        .maatId(Optional
+                                .ofNullable(maatId)
+                                .map(JsonElement::getAsInt)
+                                .orElse(-1) )
                         .type(prepareMessageType(messageType, msgObject))
                         .message(convertAsByte(message))
                         .createdTime(LocalDateTime.now())
@@ -81,6 +102,4 @@ public class QueueMessageLogService {
         return Optional.ofNullable(message).isPresent() ?
                 message.getBytes() : null;
     }
-
-
 }

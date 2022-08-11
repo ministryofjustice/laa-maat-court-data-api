@@ -24,7 +24,7 @@ public class QueueMessageLogTestHelper {
             assertThat(loggedMessages.size()).isEqualTo(expectedNumberOfMessages);
             QueueMessageLogEntity messageLog = loggedMessages.get(0);
             assertThat(messageLog.getMessage()).isEqualTo(messageBlobBytes);
-            assertThat(messageLog.getTransactionUUID()).isEqualTo(laaTransactionId);
+            assertThat(messageLog.getLaaTransactionId()).isEqualTo(laaTransactionId);
             assertThat(messageLog.getMaatId()).isEqualTo(maatId);
         });
     }

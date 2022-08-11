@@ -19,6 +19,9 @@ public class QueueMessageLogEntity {
     @Id
     @Column(name = "TRANSACTION_UUID")
     private String transactionUUID;
+    @Column(name = "LAA_TRANSACTION_ID")
+    private String laaTransactionId;
+
     @Column(name = "MAAT_ID")
     private Integer maatId;
     @Column(name = "TYPE")

@@ -44,14 +44,10 @@ public class QueueMessageLogService {
                     .getAsJsonObject().get("attributes")
                     .getAsJsonObject().get("maat_reference");
 
-        } else if (messageType.equals(LAA_STATUS_REST_CALL)) {
+        } else if (messageType.equals(LAA_STATUS_REST_CALL) || messageType.equals(LINK) || messageType.equals(UNLINK)) {
 
             laaTransactionIdStr = msgObject.get("laaTransactionId").getAsString();
             maatId = msgObject.get("maatId");
-
-        } else if (messageType.equals(LINK) || messageType.equals(UNLINK)) {
-            maatId = msgObject.get("maatId");
-            laaTransactionIdStr = msgObject.get("laaTransactionId").getAsString();
 
         } else {
 
@@ -63,8 +59,6 @@ public class QueueMessageLogService {
 
             }
         }
-
-
 
         QueueMessageLogEntity queueMessageLogEntity =
                 QueueMessageLogEntity.builder()

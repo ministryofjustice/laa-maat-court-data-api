@@ -35,35 +35,21 @@ public class QueueMessageLogService {
 
         JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
 
-        String laaTransactionIdStr = null;
-        JsonElement maatId;
+        JsonElement maatId = messageType.equals(LAA_STATUS_UPDATE) ?
+                msgObject.get("data")
+                        .getAsJsonObject().get("attributes")
+                        .getAsJsonObject().get("maat_reference")
+                : msgObject.get("maatId");
 
-        if (messageType.equals(LAA_STATUS_UPDATE) ) {
-
-            maatId = msgObject.get("data")
-                    .getAsJsonObject().get("attributes")
-                    .getAsJsonObject().get("maat_reference");
-
-        } else if (messageType.equals(LAA_STATUS_REST_CALL) || messageType.equals(LINK) || messageType.equals(UNLINK)) {
-
-            laaTransactionIdStr = msgObject.get("laaTransactionId").getAsString();
-            maatId = msgObject.get("maatId");
-
-        } else {
-
-            maatId = msgObject.get("maatId");
-            if (msgObject.has("metadata") ){
-
-                JsonObject metadata = msgObject.get("metadata").getAsJsonObject();
-                laaTransactionIdStr =  metadata.has("laaTransactionId") ? metadata.get("laaTransactionId").getAsString() : null;
-
-            }
-        }
+        JsonElement uuid = msgObject.has("metadata") ?
+                msgObject.get("metadata").getAsJsonObject().get("laaTransactionId") :
+                msgObject.get("laaTransactionId");
 
         QueueMessageLogEntity queueMessageLogEntity =
                 QueueMessageLogEntity.builder()
                         .transactionUUID(UUID.randomUUID().toString())
-                        .laaTransactionId(laaTransactionIdStr)
+                        .laaTransactionId(Optional.ofNullable(uuid).map(JsonElement::getAsString)
+                                .orElse(null))
                         .maatId(Optional
                                 .ofNullable(maatId)
                                 .map(JsonElement::getAsInt)

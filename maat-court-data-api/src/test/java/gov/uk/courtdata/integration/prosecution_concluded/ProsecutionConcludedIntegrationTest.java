@@ -188,7 +188,6 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     @Test
-    @Disabled("This test will fail until LASB-1238 is fixed.")
     public void givenSqsPayload_whenDataIsValid_thenProcessAsExpected() throws JsonProcessingException {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
@@ -227,7 +226,6 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     @Test
-    @Disabled("This test will fail until LASB-1238 is fixed.")
     public void givenSqsPayload_whenCaseTypeIsNotValidForTrial_thenReturnMessage() throws JsonProcessingException {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
@@ -244,7 +242,6 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     @Test
-    @Disabled("This test will fail until LASB-1238 is fixed.")
     public void givenSqsPayload_whenDataIsValidAndProsecutionConcludedEntityExists_thenProcessAndUpdateAsExpected() throws JsonProcessingException {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
@@ -264,7 +261,6 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     @Test
-    @Disabled("This test will fail until LASB-1238 is fixed.")
     public void givenSqsPayload_whenDataIsValidAndCaseIsNotConcluded_thenDoNothing() throws JsonProcessingException {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
         message.setConcluded(false);
@@ -276,7 +272,6 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     @Test
-    @Disabled("This test will fail until LASB-1238 is fixed.")
     public void givenSqsPayload_whenDataIsValidAndJurisdictionIsNotCrown_thenDoNothing() throws JsonProcessingException {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
         existingWqHearingEntity.setWqJurisdictionType("MAGISTRATES");
@@ -289,7 +284,6 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     @Test
-    @Disabled("This test will fail until LASB-1238 is fixed.")
     public void givenSqsPayload_whenMaatIdIsLocked_thenScheduleForProcessing() throws JsonProcessingException {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
@@ -303,7 +297,6 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     @Test
-    @Disabled("This test will fail until LASB-1238 is fixed.")
     public void givenSqsPayload_whenHearingEntityDoesNotExist_thenScheduleForProcessing() throws JsonProcessingException {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
         message.setHearingIdWhereChangeOccurred(UUID.randomUUID());
@@ -314,7 +307,6 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     @Test
-    @Disabled("This test will fail until LASB-1238 is fixed.")
     public void givenSqsPayload_whenHearingOffenceSummaryIsNull_thenReturnMessage() {
         String sqsPayload = "{" +
                 "    \"maatId\": " + TEST_MAAT_ID + ",\n" +
@@ -331,7 +323,7 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     @Test
-    @Disabled("This test will fail until LASB-1238 is fixed.")
+
     public void givenSqsPayload_whenHearingOffenceSummaryIsEmpty_thenReturnMessage() {
         String sqsPayload = "{" +
                 "    \"maatId\": " + TEST_MAAT_ID + ",\n" +
@@ -349,7 +341,7 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     @Test
-    @Disabled("This test will fail until LASB-1238 is fixed.")
+
     public void givenSqsPayload_whenMaatIdIsNull_thenReturnMessage() {
         String sqsPayload = "{" +
                 "    \"hearingIdWhereChangeOccurred\": \"61600a90-89e2-4717-aa9b-a01fc66130c1\",\n" +

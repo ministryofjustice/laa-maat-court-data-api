@@ -12,6 +12,7 @@ import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.link.service.CreateLinkListener;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.util.QueueMessageLogTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +49,10 @@ public class CreateLinkListenerIntegrationTest {
     private SolicitorMAATDataRepository solicitorMAATDataRepository;
     @Autowired
     private DefendantMAATDataRepository defendantMAATDataRepository;
+    @Autowired
+    private QueueMessageLogRepository queueMessageLogRepository;
+    @Autowired
+    private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
     @BeforeEach
     public void setUp() {
@@ -57,6 +62,7 @@ public class CreateLinkListenerIntegrationTest {
         solicitorMAATDataRepository.deleteAll();
         defendantMAATDataRepository.deleteAll();
         courtHouseCodesRepository.deleteAll();
+        queueMessageLogRepository.deleteAll();
     }
 
     @Test
@@ -79,6 +85,8 @@ public class CreateLinkListenerIntegrationTest {
 
         verifyWqLinkRegister(courtDataDTO);
         verifyRepOrder(courtDataDTO);
+
+        queueMessageLogTestHelper.assertQueueMessageLogged(saveAndLinkMessage, 1, "e439dfc8-664e-4c8e-a999-d756dcf112c2", 1234);
 
     }
 

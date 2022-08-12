@@ -15,8 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static gov.uk.courtdata.enums.MessageType.LAA_STATUS_REST_CALL;
-import static gov.uk.courtdata.enums.MessageType.LAA_STATUS_UPDATE;
+import static gov.uk.courtdata.enums.MessageType.*;
 
 @Service
 @Slf4j
@@ -36,7 +35,7 @@ public class QueueMessageLogService {
 
         JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
 
-        String laaTransactionIdStr = "";
+        String laaTransactionIdStr = null;
         JsonElement maatId;
 
         if (messageType.equals(LAA_STATUS_UPDATE) ) {
@@ -50,13 +49,17 @@ public class QueueMessageLogService {
             laaTransactionIdStr = msgObject.get("laaTransactionId").getAsString();
             maatId = msgObject.get("maatId");
 
+        } else if (messageType.equals(LINK) || messageType.equals(UNLINK)) {
+            maatId = msgObject.get("maatId");
+            laaTransactionIdStr = msgObject.get("laaTransactionId").getAsString();
+
         } else {
 
             maatId = msgObject.get("maatId");
             if (msgObject.has("metadata") ){
 
                 JsonObject metadata = msgObject.get("metadata").getAsJsonObject();
-                laaTransactionIdStr =  metadata.has("laaTransactionId") ? metadata.get("laaTransactionId").getAsString() : "";
+                laaTransactionIdStr =  metadata.has("laaTransactionId") ? metadata.get("laaTransactionId").getAsString() : null;
 
             }
         }

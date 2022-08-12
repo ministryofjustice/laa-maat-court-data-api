@@ -3,11 +3,13 @@ package gov.uk.courtdata.util;
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
 import org.assertj.core.api.SoftAssertions;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@Component
 public class QueueMessageLogTestHelper {
 
     private final QueueMessageLogRepository queueMessageLogRepository;

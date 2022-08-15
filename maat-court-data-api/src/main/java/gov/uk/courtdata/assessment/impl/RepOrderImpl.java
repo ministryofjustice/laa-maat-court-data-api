@@ -22,6 +22,8 @@ public class RepOrderImpl {
     }
 
     public void updateAppDateCompleted(final Integer repId, final LocalDateTime assessmentDateCompleted) {
-        repOrderRepository.updateAppDateCompleted(repId, assessmentDateCompleted);
+        RepOrderEntity repOrderEntity = repOrderRepository.getById(repId);
+        repOrderEntity.setAssessmentDateCompleted(assessmentDateCompleted);
+        repOrderRepository.saveAndFlush(repOrderEntity);
     }
 }

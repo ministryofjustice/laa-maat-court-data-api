@@ -57,5 +57,8 @@ public class RepOrderEntity {
     private String ccRepDec;
     @Column(name = "CC_REP_TYPE")
     private String ccRepType;
+    @Column(name = "ASS_DATE_COMPLETED")
+    private LocalDateTime assessmentDateCompleted;
+
 
 }

@@ -22,11 +22,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -453,5 +456,16 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         assertThat(expectedAssessment.getInitResult()).isEqualTo(actualAssessment.getInitResult());
         assertThat(expectedAssessment.getInitApplicationEmploymentStatus()).isEqualTo(actualAssessment.getInitApplicationEmploymentStatus());
         assertThat(expectedAssessment.getUpdated()).isEqualTo(actualAssessment.getUpdated());
+    }
+
+    @Test
+    @Transactional
+    public void givenAValidRepOrdersAvailable_whenUpdateAppDateCompletedInvoked_theCompletedDateShouldUpdate() {
+        LocalDateTime dateCompleted = LocalDateTime.now();;
+        existingRepOrder.setAssessmentDateCompleted(dateCompleted);
+        repOrderRepository.saveAndFlush(existingRepOrder);
+        RepOrderEntity repOrderEntity = repOrderRepository.getById(4444);
+        assertThat(repOrderEntity.getId()).isEqualTo(4444);
+        assertThat(repOrderEntity.getAssessmentDateCompleted()).isEqualTo(dateCompleted);
     }
 }

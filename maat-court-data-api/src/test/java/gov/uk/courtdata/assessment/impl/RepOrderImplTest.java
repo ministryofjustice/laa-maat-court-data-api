@@ -2,7 +2,6 @@ package gov.uk.courtdata.assessment.impl;
 
 
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.repository.RepOrderRepository;
@@ -13,10 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -33,8 +29,9 @@ class RepOrderImplTest {
 
     @Test
     public void testUpdateAppDateCompleted_whenUpdateIsSuccess() {
+        when(repOrderRepository.getById(TestModelDataBuilder.REP_ORDERS_ID)).thenReturn(new RepOrderEntity());
         repOrderImpl.updateAppDateCompleted(TestModelDataBuilder.REP_ORDERS_ID, LocalDateTime.now());
-        verify(repOrderRepository, times(1)).updateAppDateCompleted(any(),any());
+        verify(repOrderRepository, times(1)).saveAndFlush(any());
     }
 
     @Test

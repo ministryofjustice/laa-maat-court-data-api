@@ -41,14 +41,14 @@ public class QueueMessageLogService {
                         .getAsJsonObject().get("maat_reference")
                 : msgObject.get("maatId");
 
-        JsonElement uuid = msgObject.has("metadata") ?
+        JsonElement laaTransactionUUID = msgObject.has("metadata") ?
                 msgObject.get("metadata").getAsJsonObject().get("laaTransactionId") :
                 msgObject.get("laaTransactionId");
 
         QueueMessageLogEntity queueMessageLogEntity =
                 QueueMessageLogEntity.builder()
                         .transactionUUID(UUID.randomUUID().toString())
-                        .laaTransactionId(Optional.ofNullable(uuid).map(JsonElement::getAsString)
+                        .laaTransactionId(Optional.ofNullable(laaTransactionUUID).map(JsonElement::getAsString)
                                 .orElse(null))
                         .maatId(Optional
                                 .ofNullable(maatId)

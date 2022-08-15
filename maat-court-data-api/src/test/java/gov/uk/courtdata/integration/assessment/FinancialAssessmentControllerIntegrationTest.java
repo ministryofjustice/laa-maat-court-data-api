@@ -15,6 +15,7 @@ import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
+import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import org.assertj.core.api.SoftAssertions;
@@ -22,20 +23,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class, MockNewWorkReasonRepository.class})
@@ -458,14 +460,41 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         assertThat(expectedAssessment.getUpdated()).isEqualTo(actualAssessment.getUpdated());
     }
 
+
     @Test
-    @Transactional
-    public void givenAValidRepOrdersAvailable_whenUpdateAppDateCompletedInvoked_theCompletedDateShouldUpdate() {
-        LocalDateTime dateCompleted = LocalDateTime.now();;
-        existingRepOrder.setAssessmentDateCompleted(dateCompleted);
-        repOrderRepository.saveAndFlush(existingRepOrder);
-        RepOrderEntity repOrderEntity = repOrderRepository.getById(4444);
-        assertThat(repOrderEntity.getId()).isEqualTo(4444);
-        assertThat(repOrderEntity.getAssessmentDateCompleted()).isEqualTo(dateCompleted);
+    public void givenARepIdIsMissing_whenUpdateAppDateCompletedInvoked_theCorrectErrorResponseIsReturned() throws Exception{
+        runBadRequestErrorScenario(
+                "Rep Id is missing from request and is required",
+                post(BASE_URL+ "/update-date-completed").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new UpdateAppDateCompleted().builder().build())));
+
+    }
+    @Test
+    public void givenAUpdateDateCompletedIsMissing_whenUpdateAppDateCompletedInvoked_theCorrectErrorResponseIsReturned() throws Exception{
+        runBadRequestErrorScenario(
+                "Assessment Date completed is missing from request and is required",
+                post(BASE_URL+ "/update-date-completed").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(
+                        new UpdateAppDateCompleted().builder().repId(TestModelDataBuilder.REP_ORDERS_ID).build())));
+
+    }
+    @Test
+    public void givenAInvalidRepId_whenUpdateAppDateCompletedInvoked_theCorrectErrorResponseIsReturned() throws Exception{
+        runBadRequestErrorScenario(
+                "MAAT/REP ID: "+TestModelDataBuilder.MAAT_ID+" is invalid.",
+                post(BASE_URL+ "/update-date-completed").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(
+                        new UpdateAppDateCompleted().builder().repId(TestModelDataBuilder.MAAT_ID).assessmentDateCompleted(LocalDateTime.now()).build())));
+
+    }
+
+    @Test
+    public void givenAValidRepOrdersAvailable_whenUpdateAppDateCompletedInvoked_theCompletedDateShouldUpdate() throws Exception{
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDateTime expectedDate = LocalDateTime.parse(TestModelDataBuilder.APP_DATE_COMPLETED, formatter);
+        runSuccessScenario(MockMvcRequestBuilders.post(BASE_URL + "/update-date-completed").contentType(MediaType.APPLICATION_JSON)
+                .content(TestModelDataBuilder.getUpdateAppDateCompletedJson())
+                .contentType(MediaType.APPLICATION_JSON));
+        RepOrderEntity repOrderEntity = repOrderRepository.getById(TestModelDataBuilder.REP_ORDERS_ID);
+        assertThat(repOrderEntity.getId()).isEqualTo(TestModelDataBuilder.REP_ORDERS_ID);
+        assertThat(repOrderEntity.getAssessmentDateCompleted()).isEqualTo(expectedDate);
     }
 }

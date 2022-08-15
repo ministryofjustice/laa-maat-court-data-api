@@ -33,6 +33,8 @@ public class TestModelDataBuilder {
     public static final Integer IOJ_REP_ID = 5635978;
     public static final Integer FINANCIAL_ASSESSMENT_ID = 364563;
 
+    public static final Integer REP_ORDERS_ID = 48105;
+
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
 
@@ -857,8 +859,15 @@ public class TestModelDataBuilder {
 
     public static UpdateAppDateCompleted getUpdateAppDateCompleted() {
         return UpdateAppDateCompleted.builder()
-                .repId(4351623)
-                .assessmentDateCompleted(LocalDate.now())
+                .repId(REP_ORDERS_ID)
+                .assessmentDateCompleted(LocalDateTime.now())
                 .build();
+    }
+
+    public static String getUpdateAppDateCompletedJson() {
+        return "{\n" +
+                " \"repId\": "+ REP_ORDERS_ID +" ,\n" +
+                "  \"assessmentDateCompleted\":\"2021-10-09T15:02:25\"\n" +
+                "}";
     }
 }

@@ -110,12 +110,12 @@ public class FinancialAssessmentController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(value = "/update_app_date_completed", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/update-date-completed", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update application date completed")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Object> updateApplicationDateCompleted(@Parameter(description = "Update app date", content = @Content(mediaType = "application/json",
+    public ResponseEntity<Object> updateApplicationDateCompleted(@Parameter(description = "Update app date", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
             schema = @Schema(implementation = UpdateAppDateCompleted.class)))
                                                                      @RequestBody  UpdateAppDateCompleted updateAppDateCompleted) {
         log.debug("Assessments Request Received for repId : {}", updateAppDateCompleted.getRepId());

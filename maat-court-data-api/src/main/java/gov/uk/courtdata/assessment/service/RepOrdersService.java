@@ -20,12 +20,7 @@ public class RepOrdersService {
     @Transactional
     public void updateAppDateCompleted(final UpdateAppDateCompleted updateAppDateCompleted) {
         log.info("update app date completed - Transaction Processing - Start");
-         RepOrderEntity repOrderEntity = repOrderImpl.findRepOrder(updateAppDateCompleted.getRepId());
-        if (null != repOrderEntity) {
-            repOrderImpl.updateAppDateCompleted(updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted());
-        } else {
-            throw new RequestedObjectNotFoundException(String.format("No Rep order found for ID: %s", updateAppDateCompleted.getRepId()));
-        }
+        repOrderImpl.updateAppDateCompleted(updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted());
         log.info("update app date completed  - Transaction Processing - End");
     }
 

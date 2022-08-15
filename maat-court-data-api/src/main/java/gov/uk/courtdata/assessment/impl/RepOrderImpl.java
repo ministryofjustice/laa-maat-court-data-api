@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class RepOrderImpl {
         return repOrderRepository.getById(repId);
     }
 
-    public void updateAppDateCompleted(final Integer repId, final LocalDate assessmentDateCompleted) {
+    public void updateAppDateCompleted(final Integer repId, final LocalDateTime assessmentDateCompleted) {
         repOrderRepository.updateAppDateCompleted(repId, assessmentDateCompleted);
     }
 }

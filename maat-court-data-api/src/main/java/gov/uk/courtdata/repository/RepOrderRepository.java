@@ -7,13 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Repository
 public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Integer> {
 
     @Modifying
     @Query(value = "UPDATE REP_ORDERS SET ass_date_completed = :dateCompleted WHERE id = :repId", nativeQuery = true)
-    void updateAppDateCompleted(@Param("repId") Integer repId, @Param("dateCompleted") LocalDate dateCompleted);
+    void updateAppDateCompleted(@Param("repId") Integer repId, @Param("dateCompleted") LocalDateTime dateCompleted);
 
 }

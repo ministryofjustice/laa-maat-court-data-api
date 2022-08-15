@@ -82,9 +82,9 @@ public class FinancialAssessmentValidationProcessorTest {
 
     @Test
     public void testUpdateAppDateCompletedValidator_whenRequiredFieldsPresent_thenValidationPasses() {
-        UpdateAppDateCompleted updateAppDateCompleted = TestModelDataBuilder.getUpdateAppDateCompleted();
-        when(updateAppDateCompletedValidator.validate(any(UpdateAppDateCompleted.class))).thenReturn(Optional.empty());
-        assertThat(updateAppDateCompletedValidator.validate(updateAppDateCompleted)).isEqualTo(Optional.empty());
+        when(financialAssessmentValidationProcessor.validate(any(UpdateAppDateCompleted.class))).thenReturn(Optional.empty());
+        financialAssessmentValidationProcessor.validate(TestModelDataBuilder.getUpdateAppDateCompleted());
+        verify(updateAppDateCompletedValidator, times(1)).validate(any(UpdateAppDateCompleted.class));
     }
 
 }

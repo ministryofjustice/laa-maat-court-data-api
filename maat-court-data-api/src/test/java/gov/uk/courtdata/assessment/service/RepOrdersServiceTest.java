@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -24,17 +26,10 @@ class RepOrdersServiceTest {
     @Mock
     private RepOrderImpl repOrderImpl;
 
+
     @Test
-    public void testRepOrdersService_updateAppDateCompleted_shouldSuccess_whenRepIdIsFound() {
-        when(repOrderImpl.findRepOrder(any())).thenReturn(TestEntityDataBuilder.getPopulatedRepOrder(1000));
-        doNothing().when(repOrderImpl).updateAppDateCompleted(any(),any());
+    public void testRepOrdersService_updateAppDateCompleted_shouldSuccess() {
         repOrdersService.updateAppDateCompleted(new UpdateAppDateCompleted());
-    }
-    @Test
-    public void testRepOrdersService_updateAppDateCompleted_shouldFail_whenRepIdIsNotFound() {
-        when(repOrderImpl.findRepOrder(any())).thenReturn(null);
-        RequestedObjectNotFoundException requestedObjectNotFoundException = Assertions.assertThrows(RequestedObjectNotFoundException.class,
-                () -> repOrdersService.updateAppDateCompleted(new UpdateAppDateCompleted().builder().repId(1000).build()));
-        assertThat(requestedObjectNotFoundException.getMessage()).isEqualTo("No Rep order found for ID: 1000");
+        verify(repOrderImpl,times(1)).updateAppDateCompleted(any(), any());
     }
 }

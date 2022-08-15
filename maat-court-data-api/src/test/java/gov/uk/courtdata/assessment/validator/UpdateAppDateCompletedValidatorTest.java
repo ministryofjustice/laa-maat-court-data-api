@@ -1,14 +1,17 @@
 package gov.uk.courtdata.assessment.validator;
 
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -20,6 +23,9 @@ class UpdateAppDateCompletedValidatorTest {
 
     @InjectMocks
     private UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
+
+    @Mock
+    private MaatIdValidator maatIdValidator;
 
 
     @Test
@@ -37,12 +43,12 @@ class UpdateAppDateCompletedValidatorTest {
 
     @Test
     public void testUpdateAppDateCompletedValidator_whenAppDateCompletedIsDefine_thenValidationPasses() {
-        Optional<Void> result = updateAppDateCompletedValidator.validate(getUpdateAppDateCompleted(LocalDate.now()));
+        Optional<Void> result = updateAppDateCompletedValidator.validate(getUpdateAppDateCompleted(LocalDateTime.now()));
         assertThat(result).isEqualTo(Optional.empty());
     }
 
     @Test
-    public void testUpdateAppDateCompletedValidator_whenAppDateCompletedIsNull_thenValidationPasses() {
+    public void testUpdateAppDateCompletedValidator_whenAppDateCompletedIsNull_thenThrowValidationException() {
         ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> updateAppDateCompletedValidator.validate(getUpdateAppDateCompleted(null)));
         assertThat(validationException.getMessage()).isEqualTo("Assessment Date completed is missing from request and is required");
@@ -53,17 +59,17 @@ class UpdateAppDateCompletedValidatorTest {
 
         UpdateAppDateCompleted updateAppDateCompleted = new UpdateAppDateCompleted();
         updateAppDateCompleted.setRepId(repId);
-        updateAppDateCompleted.setAssessmentDateCompleted(LocalDate.now());
+        updateAppDateCompleted.setAssessmentDateCompleted(LocalDateTime.now());
 
         return updateAppDateCompleted;
     }
 
 
-    private UpdateAppDateCompleted getUpdateAppDateCompleted(LocalDate appDateCompleted) {
+    private UpdateAppDateCompleted getUpdateAppDateCompleted(LocalDateTime appDateCompleted) {
 
         UpdateAppDateCompleted updateAppDateCompleted = new UpdateAppDateCompleted();
         updateAppDateCompleted.setAssessmentDateCompleted(appDateCompleted);
-        updateAppDateCompleted.setRepId(10000);
+        updateAppDateCompleted.setRepId(TestModelDataBuilder.REP_ORDERS_ID);
         return updateAppDateCompleted;
     }
 

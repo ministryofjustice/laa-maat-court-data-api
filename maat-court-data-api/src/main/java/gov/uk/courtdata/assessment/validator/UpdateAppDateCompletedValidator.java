@@ -5,6 +5,7 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.validator.IValidator;
+import gov.uk.courtdata.validator.MaatIdValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @AllArgsConstructor
 public class UpdateAppDateCompletedValidator implements IValidator<Void, UpdateAppDateCompleted> {
 
+    private MaatIdValidator maatIdValidator;
+
     @Override
     public Optional<Void> validate(UpdateAppDateCompleted updateAppDateCompleted) {
 
@@ -27,6 +30,8 @@ public class UpdateAppDateCompletedValidator implements IValidator<Void, UpdateA
         } else if (updateAppDateCompleted.getAssessmentDateCompleted() == null) {
             throw new ValidationException("Assessment Date completed is missing from request and is required");
         }
+        maatIdValidator.validate(updateAppDateCompleted.getRepId());
+
         return Optional.empty();
     }
 }

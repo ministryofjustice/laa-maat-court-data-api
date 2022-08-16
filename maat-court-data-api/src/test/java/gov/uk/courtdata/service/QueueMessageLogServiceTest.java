@@ -24,7 +24,6 @@ public class QueueMessageLogServiceTest {
     @Captor
     private ArgumentCaptor<QueueMessageLogEntity> queueMessageCaptor;
 
-
     @Test
     public void whenLinkMessage_CheckLogEntryCreated() {
 
@@ -140,12 +139,85 @@ public class QueueMessageLogServiceTest {
                 () -> assertNotNull(savedQueueMsg),
                 () -> assertNotNull(savedQueueMsg.getMaatId()),
                 () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
+                () -> assertNotNull(savedQueueMsg.getLaaTransactionId()),
                 () -> assertNotNull(savedQueueMsg.getType()),
                 () -> assertNotNull(savedQueueMsg.getMessage()),
                 () -> assertNotNull(savedQueueMsg.getCreatedTime()),
                 () -> assertEquals(savedQueueMsg.getMaatId(), maatId),
+                () -> assertEquals(savedQueueMsg.getLaaTransactionId(), "8720c683-39ef-4168-a8cc-058668a2dcca"),
                 () -> assertEquals(savedQueueMsg.getType(), MessageType.LAA_STATUS.name())
 
+        );
+    }
+
+
+    @Test
+    public void testWhenProsecutionConcluded_thenCheckLogEntryCreated() {
+
+        final Integer maatId = 1000;
+        queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, getQueueMessage(maatId, JurisdictionType.CROWN));
+
+        verify(queueMessageLogRepository, times(1)).save(queueMessageCaptor.capture());
+        QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
+
+        assertAll("linkMessage",
+                () -> assertNotNull(savedQueueMsg),
+                () -> assertNotNull(savedQueueMsg.getMaatId()),
+                () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
+                () -> assertNotNull(savedQueueMsg.getLaaTransactionId()),
+                () -> assertNotNull(savedQueueMsg.getType()),
+                () -> assertNotNull(savedQueueMsg.getMessage()),
+                () -> assertNotNull(savedQueueMsg.getCreatedTime()),
+                () -> assertEquals(savedQueueMsg.getLaaTransactionId(), "8720c683-39ef-4168-a8cc-058668a2dcca"),
+                () -> assertEquals(savedQueueMsg.getMaatId(), maatId)
+        );
+    }
+
+    @Test
+    public void testWhenMetadataIsNull_thenProcessAsExpected() {
+
+        final Integer maatId = 1000;
+
+        queueMessageLogService.createLog(MessageType.LAA_STATUS, newQueueMessageWithoutMetaData(maatId));
+
+        verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
+
+        QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
+
+        assertAll("SQSMessage",
+                () -> assertNotNull(savedQueueMsg),
+                () -> assertNotNull(savedQueueMsg.getMaatId()),
+                () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
+                () -> assertNull(savedQueueMsg.getLaaTransactionId()),
+                () -> assertNotNull(savedQueueMsg.getType()),
+                () -> assertNotNull(savedQueueMsg.getMessage()),
+                () -> assertEquals(savedQueueMsg.getMaatId(), maatId)
+        );
+    }
+
+    @Test
+    public void testWhenMessageTypeIsLaaStatusUpdate_thenProcessAsExpected() {
+
+        String payload = "{" +
+                "    \"data\": {\n" +
+                "        \"attributes\":{\n " +
+                "                \"maat_reference\":324334\n" +
+                "    }\n" +
+                "    }\n" +
+                "}";
+
+        queueMessageLogService.createLog(MessageType.LAA_STATUS_UPDATE,payload);
+
+        verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
+
+        QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
+
+        assertAll("SQSMessage",
+                () -> assertNotNull(savedQueueMsg),
+                () -> assertNotNull(savedQueueMsg.getMaatId()),
+                () -> assertNull(savedQueueMsg.getLaaTransactionId()),
+                () -> assertNotNull(savedQueueMsg.getType()),
+                () -> assertEquals(savedQueueMsg.getMaatId(), 324334)
         );
     }
 
@@ -157,6 +229,25 @@ public class QueueMessageLogServiceTest {
                 .append("}")
                 .toString();
     }
+
+    private String newQueueMessageWithoutMetaData(Integer maatId) {
+
+        return  "{" +
+                "    \"maatId\": " + maatId + "\n" +
+                "}";
+    }
+
+    private String getQueueMessage(Integer maatId, JurisdictionType jurisdictionType) {
+
+        return  "{" +
+                "    \"maatId\": " + maatId + ",\n" +
+                "    \"jurisdictionType\": " + jurisdictionType.name() + ",\n" +
+                "    \"metadata\": {\n" +
+                "        \"laaTransactionId\":\"8720c683-39ef-4168-a8cc-058668a2dcca\" \n" +
+                "    }\n" +
+                "}";
+
+}
 
     private String newHearingQueueMessage(Integer maatId, JurisdictionType jurisdictionType) {
 

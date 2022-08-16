@@ -13,6 +13,7 @@ import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.unlink.service.UnlinkListener;
+import gov.uk.courtdata.util.QueueMessageLogTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,6 +50,11 @@ public class UnlinkListenerTest {
     private RepOrderRepository repOrderRepository;
     @Autowired
     private RepOrderCPDataRepository repOrderCPDataRepository;
+    @Autowired
+    private QueueMessageLogRepository queueMessageLogRepository;
+    @Autowired
+    private QueueMessageLogTestHelper queueMessageLogTestHelper;
+
 
     @BeforeEach
     public void setUp() {
@@ -57,6 +63,7 @@ public class UnlinkListenerTest {
         unlinkReasonRepository.deleteAll();
         repOrderRepository.deleteAll();
         repOrderCPDataRepository.deleteAll();
+        queueMessageLogRepository.deleteAll();
     }
 
     @Test
@@ -82,8 +89,9 @@ public class UnlinkListenerTest {
         //then
         assertWQLinkRegister(unlinkModel);
 
-    }
+        queueMessageLogTestHelper.assertQueueMessageLogged(testModelDataBuilder.getUnLinkString(), 1, "e439dfc8-664e-4c8e-a999-d756dcf112c2", 1234);
 
+    }
 
     private void assertWQLinkRegister(UnlinkModel unlinkModel) {
 

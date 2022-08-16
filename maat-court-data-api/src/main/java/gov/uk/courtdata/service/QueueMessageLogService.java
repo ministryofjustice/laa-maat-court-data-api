@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static gov.uk.courtdata.enums.MessageType.LAA_STATUS_UPDATE;
+import static gov.uk.courtdata.enums.MessageType.*;
 
 @Service
 @Slf4j
@@ -35,21 +35,25 @@ public class QueueMessageLogService {
 
         JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
 
-        JsonElement uuid = msgObject.get("laaTransactionId");
-
         JsonElement maatId = messageType.equals(LAA_STATUS_UPDATE) ?
                 msgObject.get("data")
                         .getAsJsonObject().get("attributes")
                         .getAsJsonObject().get("maat_reference")
                 : msgObject.get("maatId");
 
+        JsonElement laaTransactionUUID = msgObject.has("metadata") ?
+                msgObject.get("metadata").getAsJsonObject().get("laaTransactionId") :
+                msgObject.get("laaTransactionId");
+
         QueueMessageLogEntity queueMessageLogEntity =
                 QueueMessageLogEntity.builder()
-                        .transactionUUID(Optional.ofNullable(uuid).map(JsonElement::getAsString)
-                                .orElseGet(UUID.randomUUID()::toString))
-                        .maatId(
-                                Optional.ofNullable(maatId).map(JsonElement::getAsInt).orElse(-1)
-                        )
+                        .transactionUUID(UUID.randomUUID().toString())
+                        .laaTransactionId(Optional.ofNullable(laaTransactionUUID).map(JsonElement::getAsString)
+                                .orElse(null))
+                        .maatId(Optional
+                                .ofNullable(maatId)
+                                .map(JsonElement::getAsInt)
+                                .orElse(-1) )
                         .type(prepareMessageType(messageType, msgObject))
                         .message(convertAsByte(message))
                         .createdTime(LocalDateTime.now())
@@ -81,6 +85,4 @@ public class QueueMessageLogService {
         return Optional.ofNullable(message).isPresent() ?
                 message.getBytes() : null;
     }
-
-
 }

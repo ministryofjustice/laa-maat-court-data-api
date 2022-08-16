@@ -17,6 +17,7 @@ import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +32,10 @@ public class TestModelDataBuilder {
     public static final Integer IOJ_APPEAL_ID = 123;
     public static final Integer IOJ_REP_ID = 5635978;
     public static final Integer FINANCIAL_ASSESSMENT_ID = 364563;
+
+    public static final Integer REP_ORDERS_ID = 4444;
+
+    public static final String APP_DATE_COMPLETED = "2022-07-15T15:02:25";
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -852,5 +857,26 @@ public class TestModelDataBuilder {
                 )
 
                 .build();
+    }
+
+    public static UpdateAppDateCompleted getUpdateAppDateCompleted() {
+        return UpdateAppDateCompleted.builder()
+                .repId(REP_ORDERS_ID)
+                .assessmentDateCompleted(LocalDateTime.now())
+                .build();
+    }
+
+    public static String getUpdateAppDateCompletedJson() {
+        return "{\n" +
+                " \"repId\": "+ REP_ORDERS_ID +" ,\n" +
+                "  \"assessmentDateCompleted\":\""+APP_DATE_COMPLETED+"\"\n" +
+                "}";
+    }
+
+    public static String getInvalidRepIdUpdateAppDateCompletedJson() {
+        return "{\n" +
+                " \"repId\": 0,\n"  +
+                "  \"assessmentDateCompleted\":\""+APP_DATE_COMPLETED+"\"\n" +
+                "}";
     }
 }

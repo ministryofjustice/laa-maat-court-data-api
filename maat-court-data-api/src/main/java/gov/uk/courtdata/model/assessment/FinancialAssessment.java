@@ -31,4 +31,5 @@ public class FinancialAssessment {
     private String initApplicationEmploymentStatus;
     private List<FinancialAssessmentDetails> assessmentDetails;
     private List<ChildWeightings> childWeightings;
+    private LocalDateTime dateCompleted;
 }

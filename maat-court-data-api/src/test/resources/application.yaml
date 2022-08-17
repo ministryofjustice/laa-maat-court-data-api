@@ -39,8 +39,6 @@ cloud-platform:
       region: eu-west-2
       accesskey: access
       secretkey: secret
-      cmaaccesskey: access
-      cmasecretkey: secret
       queue:
         link: link
         unlink: unlink

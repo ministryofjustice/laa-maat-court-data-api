@@ -29,7 +29,4 @@ public class MockServicesConfig {
 
     @MockBean(name = "cdaOAuth2WebClient")
     private WebClient cdaOAuth2WebClient;
-
-    @MockBean(name = "cmaSQSConnectionFactory")
-    private SQSConnectionFactory cmaSQSConnectionFactory;
 }

@@ -1,4 +1,4 @@
-package gov.uk.courtdata.laastatus.client;
+package gov.uk.courtdata.courtdataadapter.client;
 
 import com.google.gson.GsonBuilder;
 import gov.uk.courtdata.enums.MessageType;

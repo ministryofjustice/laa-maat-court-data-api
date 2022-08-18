@@ -3,6 +3,7 @@ package gov.uk.courtdata.prosecutionconcluded.service;
 import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.Metadata;
 import gov.uk.courtdata.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
@@ -189,6 +190,24 @@ public class ProsecutionConcludedServiceTest {
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
 
+        verifyCallsForHearingTriggerScenario();
+    }
+
+    @Test
+    public void givenMessageIsReceived_whenHearingDataNotInMaatAndCdaCallErrors_thenTheErrorIsHandled() {
+
+        when(wqHearingRepository.findByMaatIdAndHearingUUID(any(), any()))
+                .thenReturn(new ArrayList<>());
+
+        doThrow(new MAATCourtDataException("Test CDA call Error")).when(courtDataAdapterClient)
+                .triggerHearingProcessing(any(), any());
+
+        prosecutionConcludedService.execute(getProsecutionConcluded());
+
+        verifyCallsForHearingTriggerScenario();
+    }
+
+    private void verifyCallsForHearingTriggerScenario() {
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(wqHearingRepository, atLeast(1)).findByMaatIdAndHearingUUID(anyInt(), any());
         verify(prosecutionConcludedDataService, atLeast(1)).execute( any());

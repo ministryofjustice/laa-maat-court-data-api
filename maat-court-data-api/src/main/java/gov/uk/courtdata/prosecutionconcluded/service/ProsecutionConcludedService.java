@@ -1,6 +1,7 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
@@ -40,6 +41,8 @@ public class ProsecutionConcludedService {
     private final OffenceHelper offenceHelper;
 
     private final ProsecutionConcludedDataService prosecutionConcludedDataService;
+
+    private final CourtDataAdapterClient courtDataAdapterClient;
 
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
@@ -82,14 +85,20 @@ public class ProsecutionConcludedService {
         prosecutionConcludedImpl.execute(concludedDTO);
     }
 
-
     private WQHearingEntity getWqHearingEntity(ProsecutionConcluded prosecutionConcluded) {
         List<WQHearingEntity> wqHearingEntityList = wqHearingRepository
                 .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
         if (wqHearingEntityList.isEmpty() && prosecutionConcluded.isConcluded()) {
             prosecutionConcludedDataService.execute(prosecutionConcluded);
+            triggerHearingDataProcessing(prosecutionConcluded);
             return null;
         }
         return !wqHearingEntityList.isEmpty() ? wqHearingEntityList.get(0) : null;
+    }
+
+    private void triggerHearingDataProcessing(ProsecutionConcluded prosecutionConcluded) {
+        courtDataAdapterClient.triggerHearingProcessing(
+                prosecutionConcluded.getHearingIdWhereChangeOccurred(),
+                prosecutionConcluded.getMetadata().getLaaTransactionId());
     }
 }

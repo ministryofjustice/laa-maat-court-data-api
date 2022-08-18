@@ -1,7 +1,9 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
+import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.model.Metadata;
 import gov.uk.courtdata.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CalculateOutcomeHelper;
@@ -19,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -57,6 +60,9 @@ public class ProsecutionConcludedServiceTest {
     @Mock
     private ProsecutionConcludedDataService prosecutionConcludedDataService;
 
+    @Mock
+    private CourtDataAdapterClient courtDataAdapterClient;
+
 
     @Test
     public void test_whenMaatIsLocked_thenPublishMessageToSQS() {
@@ -78,6 +84,7 @@ public class ProsecutionConcludedServiceTest {
 
         verify(caseConclusionDTOBuilder, never()).build(any(), any(), any());
         verify(offenceHelper, never()).getTrialOffences(any(),anyInt());
+        verify(courtDataAdapterClient, never()).triggerHearingProcessing(any(), any());
     }
 
     @Test
@@ -99,6 +106,7 @@ public class ProsecutionConcludedServiceTest {
         verify(calculateOutcomeHelper, atLeast(1)).calculate(any());
         verify(caseConclusionDTOBuilder, atLeast(1)).build(any(),any(),any());
         verify(offenceHelper, atLeast(1)).getTrialOffences(any(),anyInt());
+        verify(courtDataAdapterClient, never()).triggerHearingProcessing(any(), any());
     }
 
 
@@ -119,6 +127,7 @@ public class ProsecutionConcludedServiceTest {
         verify(reservationsRepositoryHelper).isMaatRecordLocked(anyInt());
         // verify(prosecutionConcludedImpl,never()).execute(any());
         verify(calculateOutcomeHelper).calculate(any());
+        verify(courtDataAdapterClient, never()).triggerHearingProcessing(any(), any());
     }
 
 
@@ -143,7 +152,7 @@ public class ProsecutionConcludedServiceTest {
         verify(reservationsRepositoryHelper).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl).execute(any());
         verify(calculateOutcomeHelper).calculate(any());
-
+        verify(courtDataAdapterClient, never()).triggerHearingProcessing(any(), any());
 
     }
 
@@ -155,10 +164,10 @@ public class ProsecutionConcludedServiceTest {
 
         //when
         when(wqHearingRepository.findByMaatIdAndHearingUUID(any(), any()))
-                .thenReturn(Arrays.asList(
-                                WQHearingEntity.builder()
-                                        .wqJurisdictionType(JurisdictionType.MAGISTRATES.name())
-                                        .build()));
+                .thenReturn(List.of(
+                        WQHearingEntity.builder()
+                                .wqJurisdictionType(JurisdictionType.MAGISTRATES.name())
+                                .build()));
 
         prosecutionConcludedService.execute(prosecutionConcludedRequest);
 
@@ -169,6 +178,26 @@ public class ProsecutionConcludedServiceTest {
         verify(reservationsRepositoryHelper, never()).isMaatRecordLocked(anyInt());
 
         verify(prosecutionConcludedImpl, never()).execute(any(ConcludedDTO.class));
+        verify(courtDataAdapterClient, never()).triggerHearingProcessing(any(), any());
+    }
+
+    @Test
+    public void givenMessageIsReceived_whenHearingDataNotInMaat_thenTriggerHearingProcessingViaCda() {
+
+        when(wqHearingRepository.findByMaatIdAndHearingUUID(any(), any()))
+                .thenReturn(new ArrayList<>());
+
+        prosecutionConcludedService.execute(getProsecutionConcluded());
+
+        verify(prosecutionConcludedValidator).validateRequestObject(any());
+        verify(wqHearingRepository, atLeast(1)).findByMaatIdAndHearingUUID(anyInt(), any());
+        verify(prosecutionConcludedDataService, atLeast(1)).execute( any());
+        verify(reservationsRepositoryHelper, never()).isMaatRecordLocked(anyInt());
+        verify(prosecutionConcludedImpl, never()).execute(any());
+        verify(calculateOutcomeHelper, never()).calculate(any());
+        verify(caseConclusionDTOBuilder, never()).build(any(), any(), any());
+        verify(offenceHelper, never()).getTrialOffences(any(),anyInt());
+        verify(courtDataAdapterClient, atLeastOnce()).triggerHearingProcessing(any(), any());
     }
 
 
@@ -176,9 +205,10 @@ public class ProsecutionConcludedServiceTest {
         return ProsecutionConcluded.builder()
                 .isConcluded(true)
                 .maatId(1221)
-                .offenceSummary(Arrays.asList(getOffenceSummary("OF121")))
+                .offenceSummary(List.of(getOffenceSummary("OF121")))
                 .prosecutionCaseId(UUID.fromString("ce60cac9-ab22-468e-8af9-a3ba2ecece5b"))
                 .hearingIdWhereChangeOccurred(UUID.fromString("ce60cac9-ab22-468e-8af9-a3ba2ecece5b"))
+                .metadata(Metadata.builder().laaTransactionId(UUID.randomUUID().toString()).build())
                 .build();
     }
 

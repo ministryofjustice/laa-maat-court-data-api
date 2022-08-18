@@ -18,6 +18,7 @@
     "pLaaProsecutionConcludedQueue": "crime-apps-production-prosecution-concluded-queue",
     "pCdaOauthUrl": "https://laa-court-data-adaptor.apps.live-1.cloud-platform.service.justice.gov.uk/oauth/token",
     "pCdaLaaStatusUrl": "https://laa-court-data-adaptor.apps.live-1.cloud-platform.service.justice.gov.uk/api/internal/v1/representation_orders",
+    "pCdaHearingUrl": "https://laa-court-data-adaptor.apps.live-1.cloud-platform.service.justice.gov.uk/api/internal/v1/hearings/{hearingId}",
     "pPostMvpEnabled": "false",
     "pLaaStatusJobQueue": "",
     "pCreateLinkCpStatusJobQueue": "",

@@ -30,11 +30,7 @@ public class CourtDataAdapterClient {
 
     private final QueueMessageLogService queueMessageLogService;
 
-    @Value("${cda.laastatus.url}")
-    private String laaUpdateUrl;
-
-    @Value("${cda.gethearing.url}")
-    private String getHearingUrl;
+    private final CourtDataAdapterClientConfig courtDataAdapterClientConfig;
 
     /**
      * @param laaStatusUpdate laa status value
@@ -49,7 +45,7 @@ public class CourtDataAdapterClient {
         WebClient.ResponseSpec clientResponse =
                 webClient
                         .post()
-                        .uri(laaUpdateUrl)
+                        .uri(courtDataAdapterClientConfig.getLaaStatusUrl())
                         .headers(httpHeaders -> httpHeaders.setAll(headers))
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(laaStatusUpdateJson))
@@ -62,8 +58,8 @@ public class CourtDataAdapterClient {
         log.info("Triggering processing for hearing '{}' via court data adapter.", hearingId);
         webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder.path(getHearingUrl).queryParam("triggerProcessing", true)
-                        .build(hearingId))
+                .uri(uriBuilder ->
+                        uriBuilder.path(courtDataAdapterClientConfig.getHearingUrl()).queryParam("publish_to_queue", true).build(hearingId))
                 .headers(httpHeaders -> httpHeaders.setAll(Map.of("X-Request-ID", laaTransactionId)))
                 .retrieve().toBodilessEntity()
                 .doOnError(Sentry::captureException)

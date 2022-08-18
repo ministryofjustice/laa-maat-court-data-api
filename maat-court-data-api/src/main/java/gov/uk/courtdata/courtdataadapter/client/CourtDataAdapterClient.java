@@ -2,6 +2,7 @@ package gov.uk.courtdata.courtdataadapter.client;
 
 import com.google.gson.GsonBuilder;
 import gov.uk.courtdata.enums.MessageType;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import io.sentry.Sentry;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 import java.util.Optional;
@@ -63,6 +65,7 @@ public class CourtDataAdapterClient {
                 .headers(httpHeaders -> httpHeaders.setAll(Map.of("X-Request-ID", laaTransactionId)))
                 .retrieve().toBodilessEntity()
                 .doOnError(Sentry::captureException)
+                .onErrorMap(error -> new MAATCourtDataException(String.format("Error triggering CDA processing for hearing '%s'.%s", hearingId, error.getMessage())))
                 .doOnSuccess(response -> log.info("Processing trigger successfully for hearing '{}'", hearingId))
                 .block();
     }

@@ -4,6 +4,7 @@ import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CalculateOutcomeHelper;
@@ -97,8 +98,12 @@ public class ProsecutionConcludedService {
     }
 
     private void triggerHearingDataProcessing(ProsecutionConcluded prosecutionConcluded) {
-        courtDataAdapterClient.triggerHearingProcessing(
-                prosecutionConcluded.getHearingIdWhereChangeOccurred(),
-                prosecutionConcluded.getMetadata().getLaaTransactionId());
+        try {
+            courtDataAdapterClient.triggerHearingProcessing(
+                    prosecutionConcluded.getHearingIdWhereChangeOccurred(),
+                    prosecutionConcluded.getMetadata().getLaaTransactionId());
+        } catch (MAATCourtDataException exception) {
+            log.info(exception.getMessage());
+        }
     }
 }

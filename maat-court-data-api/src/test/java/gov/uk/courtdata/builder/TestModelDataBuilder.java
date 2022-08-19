@@ -17,7 +17,6 @@ import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -286,15 +285,6 @@ public class TestModelDataBuilder {
         return UserReservation.builder()
                 .reservationId(1000000)
                 .session(UserSession.builder()
-                        .id("test-f6E3E618A32AC870D07A65CD7AB9131AD")
-                        .username("test-f")
-                        .build()
-                ).build();
-    }
-    public static PostProcessing getPostProcessing() {
-        return PostProcessing.builder()
-                .repId(MAAT_ID)
-                .user(UserSession.builder()
                         .id("test-f6E3E618A32AC870D07A65CD7AB9131AD")
                         .username("test-f")
                         .build()

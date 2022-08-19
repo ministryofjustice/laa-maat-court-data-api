@@ -29,8 +29,6 @@ public class ProsecutionConcludedService {
 
     private final CalculateOutcomeHelper calculateOutcomeHelper;
 
-    private final WQHearingRepository wqHearingRepository;
-
     private final ProsecutionConcludedValidator prosecutionConcludedValidator;
 
     private final ProsecutionConcludedImpl prosecutionConcludedImpl;
@@ -43,7 +41,7 @@ public class ProsecutionConcludedService {
 
     private final ProsecutionConcludedDataService prosecutionConcludedDataService;
 
-    private final CourtDataAdapterClient courtDataAdapterClient;
+    private final HearingsService hearingsService;
 
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
@@ -51,7 +49,11 @@ public class ProsecutionConcludedService {
         log.info("CC Outcome process is kicked off for  maat-id {}", prosecutionConcluded.getMaatId());
         prosecutionConcludedValidator.validateRequestObject(prosecutionConcluded);
 
-        WQHearingEntity wqHearingEntity = getWqHearingEntity(prosecutionConcluded);
+        WQHearingEntity wqHearingEntity = hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded);
+
+        if (wqHearingEntity == null) {
+            prosecutionConcludedDataService.execute(prosecutionConcluded);
+        }
 
         if (prosecutionConcluded.isConcluded()
                 && wqHearingEntity != null
@@ -84,26 +86,5 @@ public class ProsecutionConcludedService {
         ConcludedDTO concludedDTO = caseConclusionDTOBuilder.build(prosecutionConcluded, wqHearingEntity, calculatedOutcome);
 
         prosecutionConcludedImpl.execute(concludedDTO);
-    }
-
-    private WQHearingEntity getWqHearingEntity(ProsecutionConcluded prosecutionConcluded) {
-        List<WQHearingEntity> wqHearingEntityList = wqHearingRepository
-                .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
-        if (wqHearingEntityList.isEmpty() && prosecutionConcluded.isConcluded()) {
-            prosecutionConcludedDataService.execute(prosecutionConcluded);
-            triggerHearingDataProcessing(prosecutionConcluded);
-            return null;
-        }
-        return !wqHearingEntityList.isEmpty() ? wqHearingEntityList.get(0) : null;
-    }
-
-    private void triggerHearingDataProcessing(ProsecutionConcluded prosecutionConcluded) {
-        try {
-            courtDataAdapterClient.triggerHearingProcessing(
-                    prosecutionConcluded.getHearingIdWhereChangeOccurred(),
-                    prosecutionConcluded.getMetadata().getLaaTransactionId());
-        } catch (MAATCourtDataException exception) {
-            log.info(exception.getMessage());
-        }
     }
 }

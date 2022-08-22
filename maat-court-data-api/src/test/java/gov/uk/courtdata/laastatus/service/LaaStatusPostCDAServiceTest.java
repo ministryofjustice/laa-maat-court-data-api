@@ -2,7 +2,7 @@ package gov.uk.courtdata.laastatus.service;
 
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.laastatus.builder.RepOrderUpdateMessageBuilder;
-import gov.uk.courtdata.laastatus.client.CourtDataAdapterClient;
+import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

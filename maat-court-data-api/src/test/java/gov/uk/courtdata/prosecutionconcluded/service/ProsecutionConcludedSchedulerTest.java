@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.entity.ProsecutionConcludedEntity;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.repository.ProsecutionConcludedRepository;
-import gov.uk.courtdata.repository.WQHearingRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class prosecutionConcludedSchedulerTest {
+public class ProsecutionConcludedSchedulerTest {
 
     @InjectMocks
     private prosecutionConcludedScheduler prosecutionConcludedScheduler;
@@ -27,7 +26,7 @@ public class prosecutionConcludedSchedulerTest {
     @Mock
     private ProsecutionConcludedService prosecutionConcludedService;
     @Mock
-    private WQHearingRepository wqHearingRepository;
+    private HearingsService hearingsService;
 
     @Mock
     private Gson gson;
@@ -41,8 +40,8 @@ public class prosecutionConcludedSchedulerTest {
                 .maatId(1234)
                 .caseData("test".getBytes(StandardCharsets.UTF_8))
                 .build()));
-        when(wqHearingRepository.findByMaatIdAndHearingUUID(any(),any())).
-                thenReturn(List.of(WQHearingEntity.builder().wqJurisdictionType("CROWN").build()));
+        when(hearingsService.retrieveHearingForCaseConclusion(any())).
+                thenReturn(WQHearingEntity.builder().wqJurisdictionType("CROWN").build());
 
         //when
         prosecutionConcludedScheduler.process();

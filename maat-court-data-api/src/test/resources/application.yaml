@@ -61,6 +61,8 @@ cda:
     clientSecret: cdaPass
   laastatus:
     url: "http://localhost:1234/update"
+  hearing:
+    url: "http://localhost:1234/hearing/{hearingId}"
 
 queue:
   message:

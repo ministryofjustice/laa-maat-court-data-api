@@ -3,29 +3,26 @@ package gov.uk.courtdata.integration.laastatus.service;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.WQStatus;
 import gov.uk.courtdata.integration.MockCdaWebConfig;
-import gov.uk.courtdata.model.*;
+import gov.uk.courtdata.laastatus.controller.LaaStatusUpdateController;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
+import gov.uk.courtdata.model.*;
 import gov.uk.courtdata.model.laastatus.*;
+import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.assertj.core.api.SoftAssertions;
-
-import gov.uk.MAATCourtDataApplication;
-import gov.uk.courtdata.laastatus.controller.LaaStatusUpdateController;
-import gov.uk.courtdata.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -34,13 +31,12 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UPDATE_CASE_EVENT;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
-import static org.junit.Assert.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -88,9 +84,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
     @BeforeEach
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         setupCdaWebServer();
@@ -112,7 +106,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
     @AfterEach
     public void tearDown() throws IOException {
-       mockCdaWebServer.shutdown();
+        mockCdaWebServer.shutdown();
     }
 
     @Test
@@ -191,10 +185,10 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         Defendant defendantWithInvalidLaaStatuses = Defendant.builder().offences(List.of(offenceOne, offenceTwo, offenceThree)).build();
         String testPayload = generateCaseDetailsJsonPayload(
                 CaseDetails.builder()
-                .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
-                .maatId(TEST_MAAT_ID)
-                .defendant(defendantWithInvalidLaaStatuses)
-                .build());
+                        .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
+                        .maatId(TEST_MAAT_ID)
+                        .defendant(defendantWithInvalidLaaStatuses)
+                        .build());
 
         runSuccessScenario(
                 MessageCollection.builder().messages(expectedErrorMessages).build(),
@@ -256,7 +250,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         queueMessageLogTestHelper.assertQueueMessageLogged(testPayload, 2, LAA_TRANSACTION_ID, TEST_MAAT_ID);
         assertCdaCalledCorrectly(inputCaseDetails, offenceEntity, solicitorMAATDataEntity, repOrderCPDataEntity);
 
-        if (cdaOnly){
+        if (cdaOnly) {
             assertMlaUpdatesNotPerformed(linkEntities.get(0));
         } else {
             assertMlaUpdatesPerformedCorrectly(inputCaseDetails, linkEntities.get(0), solicitorMAATDataEntity, defendantMAATDataEntity);
@@ -349,15 +343,21 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
     private void assertMlaUpdatesNotPerformed(WqLinkRegisterEntity initialWqLinkRegisterEntity) {
         SoftAssertions.assertSoftly(softly -> {
-            assertEquals(0, caseRepository.findAll().size());
-            assertEquals(0, wqCoreRepository.findAll().size());
-            assertEquals(0, solicitorRepository.findAll().size());
-            assertEquals(0, defendantRepository.findAll().size());
-            assertEquals(0, sessionRepository.findAll().size());
-            assertEquals(1, offenceRepository.findAll().size());
-            assertEquals(
-                    initialWqLinkRegisterEntity.getMlrCat(),
-                    wqLinkRegisterRepository.findBymaatId(initialWqLinkRegisterEntity.getMaatId()).get(0).getMlrCat());
+            assertThat(caseRepository.findAll().size())
+                    .isEqualTo(0);
+            assertThat(wqCoreRepository.findAll().size())
+                    .isEqualTo(0);
+            assertThat(solicitorRepository.findAll().size())
+                    .isEqualTo(0);
+            assertThat(defendantRepository.findAll().size())
+                    .isEqualTo(0);
+            assertThat(sessionRepository.findAll().size())
+                    .isEqualTo(0);
+            assertThat(offenceRepository.findAll().size())
+                    .isEqualTo(1);
+            assertThat(wqLinkRegisterRepository.findBymaatId(
+                    initialWqLinkRegisterEntity.getMaatId()).get(0).getMlrCat()
+            ).isEqualTo(initialWqLinkRegisterEntity.getMlrCat());
         });
     }
 
@@ -377,17 +377,22 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         RecordedRequest receivedRequest = mockCdaWebServer.takeRequest();
 
         SoftAssertions.assertSoftly(softly -> {
-            assertEquals(1, mockCdaWebServer.getRequestCount());
-            assertEquals("http://localhost:1234/update", Objects.requireNonNull(receivedRequest.getRequestUrl()).toString());
-            assertEquals(expectedCdaPostBody, receivedRequest.getBody().readUtf8());
+            assertThat(mockCdaWebServer.getRequestCount())
+                    .isEqualTo(1);
+            assertThat(Objects.requireNonNull(receivedRequest.getRequestUrl()).toString())
+                    .isEqualTo("http://localhost:1234/update");
+            assertThat(receivedRequest.getBody().readUtf8())
+                    .isEqualTo(expectedCdaPostBody);
             for (String key : expectedHeaders.keySet()) {
-                assertEquals(expectedHeaders.get(key), receivedRequest.getHeader(key));
+                assertThat(receivedRequest.getHeader(key))
+                        .isEqualTo(expectedHeaders.get(key));
             }
         });
     }
 
     private void assertCdaNotCalled() {
-        assertEquals(0, mockCdaWebServer.getRequestCount());
+        assertThat(mockCdaWebServer.getRequestCount())
+                .isEqualTo(0);
     }
 
     private String generateCaseDetailsJsonPayload(CaseDetails inputCaseDetails) throws JsonProcessingException {
@@ -469,10 +474,10 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
                 .laaContractNumber(solicitor.getAccountCode())
                 .organisation(
                         Organisation.builder()
-                        .address(Address.builder().build())
-                        .contact(Contact.builder().build())
-                        .name(solicitor.getAccountName())
-                        .build())
+                                .address(Address.builder().build())
+                                .contact(Contact.builder().build())
+                                .name(solicitor.getAccountName())
+                                .build())
                 .build();
 
         Organisation.builder()
@@ -483,24 +488,24 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
         Relationships relationships = Relationships.builder()
                 .defendant(gov.uk.courtdata.model.laastatus.Defendant.builder().data(
-                        DefendantData.builder()
-                                .id(repOrderCPDataEntity.getDefendantId())
-                                .type("defendants").build())
+                                DefendantData.builder()
+                                        .id(repOrderCPDataEntity.getDefendantId())
+                                        .type("defendants").build())
                         .build())
                 .build();
 
         return LaaStatusUpdate.builder()
                 .data(
-                    RepOrderData.builder()
-                            .type("representation_order")
-                            .attributes(
-                                    Attributes.builder()
-                                    .maatReference(inputCaseDetails.getMaatId())
-                                    .defenceOrganisation(defenceOrganisation)
-                                    .offences(List.of(mappedOffence))
-                                    .build())
-                            .relationships(relationships)
-                            .build()
+                        RepOrderData.builder()
+                                .type("representation_order")
+                                .attributes(
+                                        Attributes.builder()
+                                                .maatReference(inputCaseDetails.getMaatId())
+                                                .defenceOrganisation(defenceOrganisation)
+                                                .offences(List.of(mappedOffence))
+                                                .build())
+                                .relationships(relationships)
+                                .build()
                 ).build();
     }
 

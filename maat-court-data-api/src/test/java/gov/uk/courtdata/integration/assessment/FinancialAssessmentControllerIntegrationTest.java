@@ -73,9 +73,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private RepOrderEntity existingRepOrder;
 
     @BeforeEach
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         setupTestData();
     }
 

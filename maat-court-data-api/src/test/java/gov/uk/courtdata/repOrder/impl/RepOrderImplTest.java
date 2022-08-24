@@ -34,8 +34,8 @@ class RepOrderImplTest {
     }
 
     @Test
-    public void testRepOrderImpl_findRepOrder_whenRepIDHasRecords() {
+    public void givenRepOrderExists_whenFindIsInvoked_thenRepOrderIsRetrieved() {
         repOrderImpl.find(TestModelDataBuilder.REP_ID);
-        verify(repOrderRepository, times(1)).getById(TestModelDataBuilder.REP_ID);
+        verify(repOrderRepository, times(1)).findById(TestModelDataBuilder.REP_ID);
     }
 }

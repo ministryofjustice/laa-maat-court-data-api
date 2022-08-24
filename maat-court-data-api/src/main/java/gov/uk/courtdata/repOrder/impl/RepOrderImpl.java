@@ -18,7 +18,7 @@ public class RepOrderImpl {
     private final RepOrderRepository repOrderRepository;
 
     public RepOrderEntity find(Integer repId) {
-        return repOrderRepository.getById(repId);
+        return repOrderRepository.findById(repId).orElse(null);
     }
 
     public void updateAppDateCompleted(final Integer repId, final LocalDateTime assessmentDateCompleted) {

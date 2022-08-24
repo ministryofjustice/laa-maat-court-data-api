@@ -63,9 +63,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
     private PassportAssessmentEntity completePassportAssessmentEntity;
 
     @BeforeEach
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         setupTestData();
     }
 

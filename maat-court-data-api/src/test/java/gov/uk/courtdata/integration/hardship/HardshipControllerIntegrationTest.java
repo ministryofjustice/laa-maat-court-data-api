@@ -67,9 +67,7 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private NewWorkReasonEntity existingNewWorkReason;
 
     @BeforeEach
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         hardshipReviewRepository.deleteAll();

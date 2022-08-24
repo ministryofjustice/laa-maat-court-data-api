@@ -23,7 +23,6 @@ public class TestEntityDataBuilder {
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder()
                 .id(REP_ID)
-//                .dateModified(LocalDateTime.now())
                 .build();
     }
 

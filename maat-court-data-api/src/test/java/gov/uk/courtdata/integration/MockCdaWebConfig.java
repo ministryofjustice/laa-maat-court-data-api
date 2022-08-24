@@ -1,6 +1,7 @@
 package gov.uk.courtdata.integration;
 
 import com.amazon.sqs.javamessaging.SQSConnectionFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -12,8 +13,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class MockCdaWebConfig {
 
     @Bean(name = "cdaOAuth2WebClient")
-    public WebClient webClient() {
-        return WebClient.builder().build();
+    public WebClient webClient(@Value("${cda.url}") String baseUrl) {
+        return WebClient.builder().baseUrl(baseUrl).build();
     }
 
     @MockBean(name = "messageListenerContainer")

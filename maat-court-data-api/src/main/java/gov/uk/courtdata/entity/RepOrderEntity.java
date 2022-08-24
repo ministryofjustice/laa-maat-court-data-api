@@ -1,10 +1,14 @@
 package gov.uk.courtdata.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,7 +31,6 @@ import java.time.LocalDateTime;
         }
 )
 public class RepOrderEntity {
-
     @Id
     @Column(name = "ID")
     private Integer id;
@@ -36,7 +39,7 @@ public class RepOrderEntity {
     @Column(name = "CATY_CASE_TYPE")
     private String catyCaseType;
     @Column(name = "APTY_CODE")
-    private String aptyCode;
+    private String appealTypeCode;
     @Column(name = "ARREST_SUMMONS_NO")
     private String arrestSummonsNo;
     @Column(name = "USER_MODIFIED")
@@ -52,13 +55,16 @@ public class RepOrderEntity {
     @Column(name = "COMMITTAL_DATE")
     private LocalDate committalDate;
     @Column(name = "RDER_CODE")
-    private String rderCode;
+    private String repOrderDecisionReasonCode;
     @Column(name = "CC_REP_DECISION")
-    private String ccRepDec;
+    private String crownRepOrderDecision;
     @Column(name = "CC_REP_TYPE")
-    private String ccRepType;
+    private String crownRepOrderType;
     @Column(name = "ASS_DATE_COMPLETED")
     private LocalDateTime assessmentDateCompleted;
 
-
+    @ToString.Exclude
+    @Fetch(FetchMode.JOIN)
+    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY)
+    private final List<FinancialAssessmentEntity> financialAssessments = new ArrayList<>();
 }

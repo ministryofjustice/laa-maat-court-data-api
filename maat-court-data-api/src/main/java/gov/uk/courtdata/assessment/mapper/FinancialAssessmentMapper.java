@@ -25,6 +25,7 @@ public interface FinancialAssessmentMapper {
 
     NewWorkReasonEntity NewWorkReasonToNewWorkReasonEntity(final NewWorkReason newWorkReason);
 
+    @Mapping(target = "repId", source = "repOrder.id")
     FinancialAssessmentDTO FinancialAssessmentEntityToFinancialAssessmentDTO(final FinancialAssessmentEntity financialAssessment);
 
     FinancialAssessmentDTO UpdateFinancialAssessmentToFinancialAssessmentDTO(final UpdateFinancialAssessment assessment);
@@ -34,6 +35,7 @@ public interface FinancialAssessmentMapper {
 
     FinancialAssessmentDetails FinancialAssessmentDetailsEntityToFinancialAssessmentDetails(final FinancialAssessmentDetailEntity detailsEntity);
 
+    @Mapping(target = "repOrder.id", source = "repId")
     FinancialAssessmentEntity FinancialAssessmentDtoToFinancialAssessmentEntity(final FinancialAssessmentDTO financialAssessment);
 
     FinancialAssessmentDetailEntity FinancialAssessmentDetailsToFinancialAssessmentDetailsEntity(final FinancialAssessmentDetails details);

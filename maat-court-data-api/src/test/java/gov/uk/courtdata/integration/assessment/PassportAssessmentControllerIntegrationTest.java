@@ -16,6 +16,7 @@ import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
+import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -40,6 +41,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
 
     private final String BASE_URL = "/api/internal/v1/assessment/passport-assessments/";
     private final String ASSESSMENT_URL = BASE_URL + "{passportAssessmentId}";
+    private final Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = 1111;
     private final String ASSESSMENT_BY_REP_ID_URL = BASE_URL + "repId/{repId}";
     private final Integer INVALID_ASSESSMENT_ID = 999;
 
@@ -49,6 +51,8 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
     private HardshipReviewRepository hardshipReviewRepository;
     @Autowired
     private PassportAssessmentRepository passportAssessmentRepository;
+    @Autowired
+    private RepOrderRepository repOrderRepository;
     @Autowired
     private MockNewWorkReasonRepository newWorkReasonRepository;
     @Autowired
@@ -70,16 +74,18 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         hardshipReviewRepository.deleteAll();
         passportAssessmentRepository.deleteAll();
         newWorkReasonRepository.deleteAll();
+        repOrderRepository.deleteAll();
 
         LocalDateTime testCreationDate = LocalDateTime.of(2022, 1, 1, 12, 0);
         String testUser = "test-f";
-        Integer testRepId = 1111;
+
+        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS));
 
         NewWorkReasonEntity existingNewWorkReason = newWorkReasonRepository.save(TestEntityDataBuilder.getFmaNewWorkReasonEntity());
 
         existingPassportAssessmentEntity = passportAssessmentRepository.save(
                 PassportAssessmentEntity.builder()
-                        .repId(testRepId)
+                        .repId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS)
                         .assessmentDate(testCreationDate)
                         .userCreated(testUser)
                         .pastStatus("IN PROGRESS")
@@ -96,13 +102,13 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
                         .build());
 
         FinancialAssessmentEntity testFinancialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
-        testFinancialAssessment.setRepId(testRepId);
+        testFinancialAssessment.getRepOrder().setId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS);
 
         existingFinancialAssessmentEntity = financialAssessmentRepository.save(testFinancialAssessment);
 
         HardshipReviewEntity hardshipReview = TestEntityDataBuilder.getHardshipReviewEntity();
         hardshipReview.setId(null);
-        hardshipReview.setRepId(testRepId);
+        hardshipReview.setRepId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS);
         hardshipReview.setReplaced("N");
         hardshipReview.setNewWorkReason(existingNewWorkReason);
 
@@ -200,7 +206,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         long updatedFinancialAssessmentsCount =
                 financialAssessmentRepository.findAll()
                         .stream()
-                        .filter(assessment -> assessment.getRepId().equals(repId) && assessment.getReplaced().equals("Y"))
+                        .filter(assessment -> assessment.getRepOrder().getId().equals(repId) && assessment.getReplaced().equals("Y"))
                         .count();
 
         assertThat(updatedFinancialAssessmentsCount).isEqualTo(1L);
@@ -347,8 +353,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         assertThat(objectMapper.writeValueAsString(expectedResponse)).isEqualTo(result.getResponse().getContentAsString());
     }
 
-    private void assertPassportAssessmentsEqual(PassportAssessmentDTO expectedPassportAssessment, PassportAssessmentEntity passportAssessmentEntity)
-    {
+    private void assertPassportAssessmentsEqual(PassportAssessmentDTO expectedPassportAssessment, PassportAssessmentEntity passportAssessmentEntity) {
         assertThat(passportAssessmentEntity.getId()).isEqualTo(expectedPassportAssessment.getId());
         assertThat(passportAssessmentEntity.getRepId()).isEqualTo(expectedPassportAssessment.getRepId());
         assertThat(passportAssessmentEntity.getCmuId()).isEqualTo(expectedPassportAssessment.getCmuId());

@@ -60,7 +60,7 @@ public class ProsecutionConcludedImplTest {
         ConcludedDTO concludedDTO = getConcludedDTO();
 
         //when
-        RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType(CrownCourtCaseType.INDICTABLE.name()).aptyCode("ACV").id(123).build();
+        RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType(CrownCourtCaseType.INDICTABLE.name()).appealTypeCode("ACV").id(123).build();
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
 
         String courtCode = "1212";
@@ -128,7 +128,7 @@ public class ProsecutionConcludedImplTest {
         ConcludedDTO concludedDTO = getConcludedDTO();
 
         //when
-        RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType(CrownCourtCaseType.INDICTABLE.name()).aptyCode("ACV").id(123).build();
+        RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType(CrownCourtCaseType.INDICTABLE.name()).appealTypeCode("ACV").id(123).build();
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
 
         String courtCode = "1212";
@@ -163,7 +163,7 @@ public class ProsecutionConcludedImplTest {
         ConcludedDTO concludedDTO = getConcludedDTO();
 
         //when
-        RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType(CrownCourtCaseType.INDICTABLE.name()).aptyCode("ACV").id(123).build();
+        RepOrderEntity repOrderEntity = RepOrderEntity.builder().catyCaseType(CrownCourtCaseType.INDICTABLE.name()).appealTypeCode("ACV").id(123).build();
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
 
         String courtCode = "1212";
@@ -198,9 +198,7 @@ public class ProsecutionConcludedImplTest {
 
         prosecutionConcludedImpl.execute(concludedDTO);
 
-        Assertions.assertThrows(ValidationException.class, () -> {
-            isAppeal(null);
-        });
+        Assertions.assertThrows(ValidationException.class, () -> isAppeal(null));
     }
 
     private List<String> imprisonmentResultCodes() {
@@ -211,9 +209,7 @@ public class ProsecutionConcludedImplTest {
 
         List<XLATResultEntity> resultList = new ArrayList<>();
 
-        imprisonmentResultCodes().forEach(res -> {
-            resultList.add(XLATResultEntity.builder().cjsResultCode(Integer.valueOf(res)).build());
-        });
+        imprisonmentResultCodes().forEach(res -> resultList.add(XLATResultEntity.builder().cjsResultCode(Integer.valueOf(res)).build()));
 
         return resultList;
     }

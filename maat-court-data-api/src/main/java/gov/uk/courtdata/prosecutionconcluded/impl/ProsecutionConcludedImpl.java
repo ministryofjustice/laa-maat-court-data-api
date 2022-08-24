@@ -49,7 +49,7 @@ public class ProsecutionConcludedImpl {
                             maatId,
                             concludedDTO.getCalculatedOutcome(),
                             resultCodeHelper.isBenchWarrantIssued(concludedDTO.getCalculatedOutcome(), concludedDTO.getHearingResultCodeList()),
-                            repOrderEntity.getAptyCode(),
+                            repOrderEntity.getAppealTypeCode(),
                             resultCodeHelper.isImprisoned(concludedDTO.getCalculatedOutcome(), concludedDTO.getHearingResultCodeList()),
                             concludedDTO.getCaseUrn(),
                             crownCourtCodeHelper.getCode(concludedDTO.getOuCourtLocation()));

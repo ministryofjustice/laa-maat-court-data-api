@@ -15,10 +15,10 @@ import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
-import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,20 +27,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class, MockNewWorkReasonRepository.class})
+@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class, MockNewWorkReasonRepository.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, properties = {("spring.h2.console.enabled=true")})
 public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private final String BASE_URL = "/api/internal/v1/assessment/financial-assessments/";
@@ -83,8 +79,8 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         setupTestData();
     }
 
-    private void setupTestData() {
-
+    @AfterEach
+    public void clearUp() {
         hardshipReviewRepository.deleteAll();
         passportAssessmentRepository.deleteAll();
         childWeightingsRepository.deleteAll();
@@ -94,8 +90,15 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         childWeightHistoryRepository.deleteAll();
         financialAssessmentRepository.deleteAll();
         newWorkReasonRepository.deleteAll();
+        repOrderRepository.deleteAll();
+    }
 
-        existingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(4444));
+    private void setupTestData() {
+        Integer REP_ID_DEFAULT = 4444;
+        existingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_DEFAULT));
+        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_ASSESSMENTS));
+        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS));
+        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS));
 
         NewWorkReasonEntity newWorkReasonEntity = newWorkReasonRepository.save(
                 TestEntityDataBuilder.getFmaNewWorkReasonEntity());
@@ -235,7 +238,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         List<FinancialAssessmentEntity> matchingAssessments =
                 financialAssessmentRepository.findAll()
                         .stream()
-                        .filter(assessment -> assessment.getRepId().equals(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS))
+                        .filter(assessment -> assessment.getRepOrder().getId().equals(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS))
                         .collect(Collectors.toList());
 
         FinancialAssessmentEntity createdAssessment =
@@ -303,7 +306,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     @Test
     public void givenAValidAssessmentBody_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
         FinancialAssessmentEntity assessmentToUpdate =
-                existingAssessmentEntities.stream().filter(item -> item.getRepId().equals(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS)).findFirst().orElse(null);
+                existingAssessmentEntities.stream().filter(item -> item.getRepOrder().getId().equals(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS)).findFirst().orElse(null);
 
         Integer assessmentId = Objects.requireNonNull(assessmentToUpdate).getId();
         UpdateFinancialAssessment body = TestModelDataBuilder.getUpdateFinancialAssessment();
@@ -357,7 +360,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     private void runCreateAssessmentHistoryScenario(Boolean fullAvailable) throws Exception {
         FinancialAssessmentEntity assessmentEntity =
-                existingAssessmentEntities.stream().filter(item -> item.getRepId().equals(existingRepOrder.getId())).findFirst().orElse(null);
+                existingAssessmentEntities.stream().filter(item -> item.getRepOrder().getId().equals(existingRepOrder.getId())).findFirst().orElse(null);
 
         String CREATE_ASSESSMENT_HISTORY_URL = BASE_URL + "history/{financialAssessmentId}/fullAvailable/{fullAvailable}";
         runSuccessScenario(post(CREATE_ASSESSMENT_HISTORY_URL, Objects.requireNonNull(assessmentEntity).getId(), fullAvailable));
@@ -373,7 +376,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
         assertThat(createdHistory.getFinancialAssessment().getId()).isEqualTo(assessmentEntity.getId());
         assertThat(createdHistory.getFullAvailable()).isEqualTo(fullAvailable ? "Y" : "N");
-        assertThat(createdHistory.getRepId()).isEqualTo(assessmentEntity.getRepId());
+        assertThat(createdHistory.getRepId()).isEqualTo(assessmentEntity.getRepOrder().getId());
         assertThat(createdHistory.getInitialAscrId()).isEqualTo(assessmentEntity.getInitialAscrId());
         assertThat(createdHistory.getAssessmentType()).isEqualTo(assessmentEntity.getAssessmentType());
         assertThat(createdHistory.getNewWorkReason().getCode()).isEqualTo(assessmentEntity.getNewWorkReason().getCode());
@@ -385,9 +388,9 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         assertThat(createdHistory.getMagsOutcomeDate()).isEqualTo(existingRepOrder.getMagsOutcomeDate());
         assertThat(createdHistory.getMagsOutcomeDateSet()).isEqualTo(existingRepOrder.getMagsOutcomeDateSet());
         assertThat(createdHistory.getCommittalDate()).isEqualTo(existingRepOrder.getCommittalDate());
-        assertThat(createdHistory.getRderCode()).isEqualTo(existingRepOrder.getRderCode());
-        assertThat(createdHistory.getCcRepDec()).isEqualTo(existingRepOrder.getCcRepDec());
-        assertThat(createdHistory.getCcRepType()).isEqualTo(existingRepOrder.getCcRepType());
+        assertThat(createdHistory.getRderCode()).isEqualTo(existingRepOrder.getRepOrderDecisionReasonCode());
+        assertThat(createdHistory.getCcRepDec()).isEqualTo(existingRepOrder.getCrownRepOrderDecision());
+        assertThat(createdHistory.getCcRepType()).isEqualTo(existingRepOrder.getCrownRepOrderType());
         assertThat(createdHistory.getCaseType()).isEqualTo(existingRepOrder.getCatyCaseType());
 
         // Check child weight history.
@@ -445,7 +448,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     }
 
     private void assertFinancialAssessmentEqual(FinancialAssessmentDTO expectedAssessment, FinancialAssessmentEntity actualAssessment) {
-        assertThat(expectedAssessment.getRepId()).isEqualTo(actualAssessment.getRepId());
+        assertThat(expectedAssessment.getRepId()).isEqualTo(actualAssessment.getRepOrder().getId());
         assertThat(expectedAssessment.getInitialAscrId()).isEqualTo(actualAssessment.getInitialAscrId());
         assertThat(expectedAssessment.getNewWorkReason().getCode()).isEqualTo(actualAssessment.getNewWorkReason().getCode());
         assertThat(expectedAssessment.getUserCreated()).isEqualTo(actualAssessment.getUserCreated());
@@ -458,43 +461,5 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         assertThat(expectedAssessment.getInitResult()).isEqualTo(actualAssessment.getInitResult());
         assertThat(expectedAssessment.getInitApplicationEmploymentStatus()).isEqualTo(actualAssessment.getInitApplicationEmploymentStatus());
         assertThat(expectedAssessment.getUpdated()).isEqualTo(actualAssessment.getUpdated());
-    }
-
-
-    @Test
-    public void givenARepIdIsMissing_whenUpdateAppDateCompletedInvoked_theCorrectErrorResponseIsReturned() throws Exception{
-        runBadRequestErrorScenario(
-                "Rep Id is missing from request and is required",
-                post(BASE_URL+ "/update-date-completed").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new UpdateAppDateCompleted().builder().build())));
-
-    }
-    @Test
-    public void givenAUpdateDateCompletedIsMissing_whenUpdateAppDateCompletedInvoked_theCorrectErrorResponseIsReturned() throws Exception{
-        runBadRequestErrorScenario(
-                "Assessment Date completed is missing from request and is required",
-                post(BASE_URL+ "/update-date-completed").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(
-                        new UpdateAppDateCompleted().builder().repId(TestModelDataBuilder.REP_ORDERS_ID).build())));
-
-    }
-    @Test
-    public void givenAInvalidRepId_whenUpdateAppDateCompletedInvoked_theCorrectErrorResponseIsReturned() throws Exception{
-        runBadRequestErrorScenario(
-                "MAAT/REP ID: "+TestModelDataBuilder.MAAT_ID+" is invalid.",
-                post(BASE_URL+ "/update-date-completed").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(
-                        new UpdateAppDateCompleted().builder().repId(TestModelDataBuilder.MAAT_ID).assessmentDateCompleted(LocalDateTime.now()).build())));
-
-    }
-
-    @Test
-    public void givenAValidRepOrdersAvailable_whenUpdateAppDateCompletedInvoked_theCompletedDateShouldUpdate() throws Exception{
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        LocalDateTime expectedDate = LocalDateTime.parse(TestModelDataBuilder.APP_DATE_COMPLETED, formatter);
-        runSuccessScenario(MockMvcRequestBuilders.post(BASE_URL + "/update-date-completed").contentType(MediaType.APPLICATION_JSON)
-                .content(TestModelDataBuilder.getUpdateAppDateCompletedJson())
-                .contentType(MediaType.APPLICATION_JSON));
-        RepOrderEntity repOrderEntity = repOrderRepository.getById(TestModelDataBuilder.REP_ORDERS_ID);
-        assertThat(repOrderEntity.getId()).isEqualTo(TestModelDataBuilder.REP_ORDERS_ID);
-        assertThat(repOrderEntity.getAssessmentDateCompleted()).isEqualTo(expectedDate);
     }
 }

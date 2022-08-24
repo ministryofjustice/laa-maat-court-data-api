@@ -1,5 +1,4 @@
-package gov.uk.courtdata.assessment.impl;
-
+package gov.uk.courtdata.repOrder.impl;
 
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -11,8 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
 import java.time.LocalDateTime;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -24,7 +23,7 @@ class RepOrderImplTest {
     private RepOrderImpl repOrderImpl;
 
     @Mock
-    private  RepOrderRepository repOrderRepository;
+    private RepOrderRepository repOrderRepository;
 
 
     @Test
@@ -36,7 +35,7 @@ class RepOrderImplTest {
 
     @Test
     public void testRepOrderImpl_findRepOrder_whenRepIDHasRecords() {
-        repOrderImpl.findRepOrder(TestModelDataBuilder.REP_ORDERS_ID);
+        repOrderImpl.find(TestModelDataBuilder.REP_ORDERS_ID);
         verify(repOrderRepository, times(1)).getById(TestModelDataBuilder.REP_ORDERS_ID);
     }
 }

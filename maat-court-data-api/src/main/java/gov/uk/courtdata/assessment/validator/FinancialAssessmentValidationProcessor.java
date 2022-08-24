@@ -3,7 +3,6 @@ package gov.uk.courtdata.assessment.validator;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessment;
-import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +17,6 @@ public class FinancialAssessmentValidationProcessor {
     private final CreateAssessmentValidator createAssessmentValidator;
     private final UpdateAssessmentValidator updateAssessmentValidator;
     private final FinancialAssessmentIdValidator financialAssessmentIdValidator;
-
-    private final UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
 
     public Optional<Void> validate(Integer financialAssessmentId) {
         return financialAssessmentIdValidator.validate(financialAssessmentId);
@@ -45,9 +42,5 @@ public class FinancialAssessmentValidationProcessor {
         }
 
         return Optional.empty();
-    }
-
-    public Optional<Void> validate(final UpdateAppDateCompleted updateAppDateCompleted) {
-        return updateAppDateCompletedValidator.validate(updateAppDateCompleted);
     }
 }

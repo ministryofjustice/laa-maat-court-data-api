@@ -3,12 +3,12 @@ package gov.uk.courtdata.assessment.service;
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentHistoryImpl;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
-import gov.uk.courtdata.assessment.impl.RepOrderImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentHistoryMapper;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.repOrder.impl.RepOrderImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class FinancialAssessmentHistoryService {
         log.info("Create Assessment History - Transaction Processing - Start");
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
 
-        RepOrderEntity repOrderEntity = repOrderImpl.findRepOrder(assessmentEntity.getRepId());
+        RepOrderEntity repOrderEntity = repOrderImpl.find(assessmentEntity.getRepOrder().getId());
 
         FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO =
                 buildFinancialAssessmentHistoryDTO(assessmentEntity, repOrderEntity, fullAvailable);
@@ -57,9 +57,9 @@ public class FinancialAssessmentHistoryService {
             financialAssessmentsHistoryDTO.setMagsOutcomeDate(repOrderEntity.getMagsOutcomeDate());
             financialAssessmentsHistoryDTO.setMagsOutcomeDateSet(repOrderEntity.getMagsOutcomeDateSet());
             financialAssessmentsHistoryDTO.setCommittalDate(repOrderEntity.getCommittalDate());
-            financialAssessmentsHistoryDTO.setRderCode(repOrderEntity.getRderCode());
-            financialAssessmentsHistoryDTO.setCcRepDec(repOrderEntity.getCcRepDec());
-            financialAssessmentsHistoryDTO.setCcRepType(repOrderEntity.getCcRepType());
+            financialAssessmentsHistoryDTO.setRderCode(repOrderEntity.getRepOrderDecisionReasonCode());
+            financialAssessmentsHistoryDTO.setCcRepDec(repOrderEntity.getCrownRepOrderDecision());
+            financialAssessmentsHistoryDTO.setCcRepType(repOrderEntity.getCrownRepOrderType());
         }
         return financialAssessmentsHistoryDTO;
     }

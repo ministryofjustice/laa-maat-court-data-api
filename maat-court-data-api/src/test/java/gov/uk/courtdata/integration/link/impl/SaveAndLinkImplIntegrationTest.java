@@ -11,8 +11,8 @@ import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Result;
-import gov.uk.courtdata.model.id.CaseTxnId;
 import gov.uk.courtdata.model.id.AsnSeqTxnCaseId;
+import gov.uk.courtdata.model.id.CaseTxnId;
 import gov.uk.courtdata.model.id.ProceedingMaatId;
 import gov.uk.courtdata.repository.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +62,6 @@ public class SaveAndLinkImplIntegrationTest {
 
     @BeforeEach
     public void setup() throws Exception {
-        repOrderRepository.deleteAll();
         wqCoreRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();
         caseRepository.deleteAll();

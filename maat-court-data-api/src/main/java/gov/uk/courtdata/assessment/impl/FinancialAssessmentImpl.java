@@ -149,13 +149,13 @@ public class FinancialAssessmentImpl {
 
     public void setOldAssessmentReplaced(FinancialAssessmentEntity financialAssessment) {
         financialAssessmentRepository.updatePreviousFinancialAssessmentsAsReplaced(
-                financialAssessment.getRepId(), financialAssessment.getId()
+                financialAssessment.getRepOrder().getId(), financialAssessment.getId()
         );
         passportAssessmentRepository.updateAllPreviousPassportAssessmentsAsReplaced(
-                financialAssessment.getRepId()
+                financialAssessment.getRepOrder().getId()
         );
         hardshipReviewRepository.updateOldHardshipReviews(
-                financialAssessment.getRepId(), financialAssessment.getId()
+                financialAssessment.getRepOrder().getId(), financialAssessment.getId()
         );
     }
 

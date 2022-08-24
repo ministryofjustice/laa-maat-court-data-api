@@ -34,16 +34,16 @@ public class TestEntityDataBuilder {
                 .magsOutcomeDate(TEST_DATE.toString())
                 .magsOutcomeDateSet(TEST_DATE.toLocalDate())
                 .committalDate(TEST_DATE.toLocalDate())
-                .rderCode("rder-code")
-                .ccRepDec("cc-rep-doc")
-                .ccRepType("cc-rep-type")
+                .repOrderDecisionReasonCode("rder-code")
+                .crownRepOrderDecision("cc-rep-doc")
+                .crownRepOrderType("cc-rep-type")
                 .build();
     }
 
     public static FinancialAssessmentEntity getFinancialAssessmentEntity() {
         return FinancialAssessmentEntity.builder()
                 .id(1000)
-                .repId(5678)
+                .repOrder(getPopulatedRepOrder(5678))
                 .assessmentType(ASSESSMENT_TYPE)
                 .initialAscrId(1)
                 .newWorkReason(NewWorkReasonEntity.builder().code("FMA").build())
@@ -63,7 +63,7 @@ public class TestEntityDataBuilder {
     public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(
             Integer repId, String FassStatus, NewWorkReasonEntity newWorkReason) {
         return FinancialAssessmentEntity.builder()
-                .repId(repId)
+                .repOrder(getPopulatedRepOrder(repId))
                 .assessmentType(ASSESSMENT_TYPE)
                 .fassFullStatus(FassStatus)
                 .dateCreated(TEST_DATE)
@@ -91,7 +91,7 @@ public class TestEntityDataBuilder {
     public static FinancialAssessmentEntity getFinancialAssessmentEntityWithRelationships(Integer repId, NewWorkReasonEntity newWorkReason) {
         FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
         financialAssessment.setId(null);
-        financialAssessment.setRepId(repId);
+        financialAssessment.getRepOrder().setId(repId);
         financialAssessment.setNewWorkReason(newWorkReason);
         FinancialAssessmentDetailEntity details = getFinancialAssessmentDetailsEntity();
         details.setId(null);

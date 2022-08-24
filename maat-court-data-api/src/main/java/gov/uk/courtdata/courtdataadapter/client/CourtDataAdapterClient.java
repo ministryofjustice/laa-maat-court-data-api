@@ -47,7 +47,7 @@ public class CourtDataAdapterClient {
         WebClient.ResponseSpec clientResponse =
                 webClient
                         .post()
-                        .uri(courtDataAdapterClientConfig.getLaaStatusUrl())
+                        .uri(uriBuilder -> uriBuilder.path(courtDataAdapterClientConfig.getLaaStatusUrl()).build())
                         .headers(httpHeaders -> httpHeaders.setAll(headers))
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(laaStatusUpdateJson))

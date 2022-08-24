@@ -28,14 +28,14 @@ class RepOrderImplTest {
 
     @Test
     public void testUpdateAppDateCompleted_whenUpdateIsSuccess() {
-        when(repOrderRepository.getById(TestModelDataBuilder.REP_ORDERS_ID)).thenReturn(new RepOrderEntity());
-        repOrderImpl.updateAppDateCompleted(TestModelDataBuilder.REP_ORDERS_ID, LocalDateTime.now());
+        when(repOrderRepository.getById(TestModelDataBuilder.REP_ID)).thenReturn(new RepOrderEntity());
+        repOrderImpl.updateAppDateCompleted(TestModelDataBuilder.REP_ID, LocalDateTime.now());
         verify(repOrderRepository, times(1)).saveAndFlush(any());
     }
 
     @Test
     public void testRepOrderImpl_findRepOrder_whenRepIDHasRecords() {
-        repOrderImpl.find(TestModelDataBuilder.REP_ORDERS_ID);
-        verify(repOrderRepository, times(1)).getById(TestModelDataBuilder.REP_ORDERS_ID);
+        repOrderImpl.find(TestModelDataBuilder.REP_ID);
+        verify(repOrderRepository, times(1)).getById(TestModelDataBuilder.REP_ID);
     }
 }

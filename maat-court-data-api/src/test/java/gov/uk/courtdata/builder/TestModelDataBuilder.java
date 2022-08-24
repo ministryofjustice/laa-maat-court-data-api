@@ -24,7 +24,6 @@ import java.util.UUID;
 @Component
 public class TestModelDataBuilder {
 
-    public static final int MAAT_ID = 9988;
     public static final UUID HEARING_ID = UUID.randomUUID();
     public static final JurisdictionType JURISDICTION_TYPE_MAGISTRATES = JurisdictionType.MAGISTRATES;
     public static final String COURT_LOCATION = "London";
@@ -32,7 +31,7 @@ public class TestModelDataBuilder {
     public static final Integer IOJ_REP_ID = 5635978;
     public static final Integer FINANCIAL_ASSESSMENT_ID = 364563;
 
-    public static final Integer REP_ORDERS_ID = 4444;
+    public static final Integer REP_ID = 1234;
 
     public static final String APP_DATE_COMPLETED = "2022-07-15T15:02:25";
 
@@ -368,7 +367,7 @@ public class TestModelDataBuilder {
 
     public static PassportAssessmentDTO getPassportAssessmentDTO() {
         return PassportAssessmentDTO.builder()
-                .repId(5678)
+                .repId(REP_ID)
                 .nworCode("FMA")
                 .financialAssessmentId(FINANCIAL_ASSESSMENT_ID)
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
@@ -590,6 +589,10 @@ public class TestModelDataBuilder {
         return json + "}";
     }
 
+    public static RepOrderDTO getRepOrderDTO() {
+        return getRepOrderDTO(TestModelDataBuilder.REP_ID);
+    }
+
     public static RepOrderDTO getRepOrderDTO(Integer id) {
         return RepOrderDTO.builder()
                 .id(id)
@@ -802,7 +805,7 @@ public class TestModelDataBuilder {
     public HearingDTO getHearingDTO() {
         return HearingDTO.builder()
                 .hearingId(HEARING_ID)
-                .maatId(MAAT_ID)
+                .maatId(REP_ID)
                 .jurisdictionType(JURISDICTION_TYPE_MAGISTRATES)
                 .caseId(1234)
                 .cjsAreaCode("5")
@@ -867,22 +870,15 @@ public class TestModelDataBuilder {
 
     public static UpdateAppDateCompleted getUpdateAppDateCompleted() {
         return UpdateAppDateCompleted.builder()
-                .repId(REP_ORDERS_ID)
+                .repId(REP_ID)
                 .assessmentDateCompleted(LocalDateTime.now())
                 .build();
     }
 
     public static String getUpdateAppDateCompletedJson() {
         return "{\n" +
-                " \"repId\": "+ REP_ORDERS_ID +" ,\n" +
-                "  \"assessmentDateCompleted\":\""+APP_DATE_COMPLETED+"\"\n" +
-                "}";
-    }
-
-    public static String getInvalidRepIdUpdateAppDateCompletedJson() {
-        return "{\n" +
-                " \"repId\": 0,\n"  +
-                "  \"assessmentDateCompleted\":\""+APP_DATE_COMPLETED+"\"\n" +
+                " \"repId\": " + REP_ID + " ,\n" +
+                "  \"assessmentDateCompleted\":\"" + APP_DATE_COMPLETED + "\"\n" +
                 "}";
     }
 }

@@ -66,9 +66,9 @@ cloud-platform:
 cda:
   url: ${CDA_BASE_URL}
   laastatus:
-    url: ${CDA_LAA_STATUS_URL}
+    url: "/api/internal/v1/representation_orders"
   hearing:
-    url: ${CDA_HEARING_URL}
+    url: "/api/internal/v2/hearing_results/{hearingId}"
 
 queue:
   message:

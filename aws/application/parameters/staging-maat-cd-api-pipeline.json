@@ -17,8 +17,6 @@
     "pHearingsResultedQueue": "crime-apps-staging-hearing-resulted-queue",
     "pLaaProsecutionConcludedQueue": "crime-apps-staging-prosecution-concluded-queue",
     "pCdaOauthUrl": "https://stage.court-data-adaptor.service.justice.gov.uk/oauth/token",
-    "pCdaLaaStatusUrl": "/api/internal/v1/representation_orders",
-    "pCdaHearingUrl": "/api/internal/v2/hearing_results/{hearingId}",
     "pCdaBaseUrl": "https://stage.court-data-adaptor.service.justice.gov.uk",
     "pPostMvpEnabled": "false",
     "pLaaStatusJobQueue": "",

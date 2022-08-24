@@ -65,6 +65,9 @@ Parameters:
   pCdaHearingUrl:
     Type: String
     Default: ''
+  pCdaBaseUrl:
+    Type: String
+    Default: ''
   pPostMvpEnabled:
     Type: String
     Default: ''
@@ -535,6 +538,8 @@ Resources:
               Value: !Ref pCdaLaaStatusUrl
             - Name: CDA_HEARING_URL
               Value: !Ref pCdaHearingUrl
+            - Name: CDA_BASE_URL
+              Value: !Ref pCdaBaseUrl
             - Name: SENTRY_ENV
               Value: !Ref pEnvironment
             - Name: POST_MVP_ENABLED

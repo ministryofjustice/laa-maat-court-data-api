@@ -55,14 +55,15 @@ cloud-platform:
           messageDelayDuration: 120
 
 cda:
+  url: "http://localhost:1234/"
   oauth:
     url: cdaAuthUrl
     clientId: cdaClient
     clientSecret: cdaPass
   laastatus:
-    url: "http://localhost:1234/update"
+    url: "update"
   hearing:
-    url: "http://localhost:1234/hearing/{hearingId}"
+    url: "hearing_results/{hearingId}"
 
 queue:
   message:

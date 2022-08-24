@@ -75,11 +75,12 @@ public class CourtDataAdapterOAuth2ClientConfig {
      * @return
      */
     @Bean(name = "cdaOAuth2WebClient")
-    public WebClient webClient(OAuth2AuthorizedClientManager authorizedClientManager) {
+    public WebClient webClient(@Value("${cda.url}") String baseUrl, OAuth2AuthorizedClientManager authorizedClientManager) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =
                 new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
         oauth2Client.setDefaultClientRegistrationId(REGISTERED_ID);
         return WebClient.builder()
+                .baseUrl(baseUrl)
                 .filter(loggingRequest())
                 .filter(loggingResponse())
                 .filter(oauth2Client)

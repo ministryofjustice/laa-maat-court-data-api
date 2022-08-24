@@ -64,6 +64,7 @@ cloud-platform:
           messageDelayDuration: 120
 
 cda:
+  url: ${CDA_BASE_URL}
   laastatus:
     url: ${CDA_LAA_STATUS_URL}
   hearing:

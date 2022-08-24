@@ -28,6 +28,7 @@ import static org.mockito.Mockito.*;
 class CourtDataAdapterClientTest {
 
     private final String hearingUrl = "cda-test/hearing/{hearingId}";
+    private final String baseUrl = "http://localhost:1234/";
 
     @Mock
     private ExchangeFunction shortCircuitExchangeFunction;
@@ -45,6 +46,7 @@ class CourtDataAdapterClientTest {
     public void setup() {
         WebClient testWebClient = WebClient
                 .builder()
+                .baseUrl(baseUrl)
                 .exchangeFunction(shortCircuitExchangeFunction)
                 .build();
 
@@ -108,7 +110,7 @@ class CourtDataAdapterClientTest {
 
     private void validateRequest(ClientRequest request, String expectedUrl, Map<String, String> expectedHeaders, HttpMethod method) {
         assertEquals(request.headers().toSingleValueMap(), expectedHeaders);
-        assertEquals(request.url().toString(), expectedUrl);
+        assertEquals(request.url().toString(), String.format("%s%s", baseUrl, expectedUrl));
         assertEquals(request.method(), method);
     }
 

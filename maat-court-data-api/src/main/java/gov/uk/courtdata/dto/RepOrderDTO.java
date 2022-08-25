@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -28,4 +30,6 @@ public class RepOrderDTO {
     private String crownRepOrderDecision;
     private String crownRepOrderType;
     private LocalDateTime assessmentDateCompleted;
+    @Builder.Default
+    private List<FinancialAssessmentDTO> financialAssessments = new ArrayList<>();
 }

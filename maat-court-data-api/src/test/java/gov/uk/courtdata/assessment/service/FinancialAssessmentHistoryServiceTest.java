@@ -8,7 +8,6 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
-import gov.uk.courtdata.repOrder.impl.RepOrderImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,9 +26,6 @@ public class FinancialAssessmentHistoryServiceTest {
 
     @Mock
     private FinancialAssessmentImpl financialAssessmentImpl;
-
-    @Mock
-    private RepOrderImpl repOrderImpl;
 
     @Mock
     private FinancialAssessmentHistoryImpl financialAssessmentHistoryImpl;
@@ -55,7 +51,6 @@ public class FinancialAssessmentHistoryServiceTest {
                 .thenReturn(financialAssessmentsHistoryDTO);
         when(financialAssessmentHistoryImpl.buildAndSave(financialAssessmentsHistoryDTO, MOCK_FINANCIAL_ASSESSMENT_ID))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentsHistoryEntity());
-        when(repOrderImpl.find(assessmentEntity.getRepOrder().getId())).thenReturn(TestEntityDataBuilder.getRepOrder());
     }
 
     @Test

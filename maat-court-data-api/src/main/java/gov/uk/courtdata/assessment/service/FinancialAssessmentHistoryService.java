@@ -8,7 +8,6 @@ import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.repOrder.impl.RepOrderImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class FinancialAssessmentHistoryService {
 
     private final FinancialAssessmentImpl financialAssessmentImpl;
-    private final RepOrderImpl repOrderImpl;
     private final FinancialAssessmentHistoryImpl financialAssessmentsHistoryImpl;
     private final FinancialAssessmentHistoryMapper assessmentHistoryMapper;
     private final FinancialAssessmentMapper assessmentMapper;
@@ -31,17 +29,14 @@ public class FinancialAssessmentHistoryService {
         log.info("Create Assessment History - Transaction Processing - Start");
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
 
-        RepOrderEntity repOrderEntity = repOrderImpl.find(assessmentEntity.getRepOrder().getId());
-
         FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO =
-                buildFinancialAssessmentHistoryDTO(assessmentEntity, repOrderEntity, fullAvailable);
+                buildFinancialAssessmentHistoryDTO(assessmentEntity, fullAvailable);
 
         financialAssessmentsHistoryImpl.buildAndSave(financialAssessmentsHistoryDTO, financialAssessmentId);
         log.info("Create Assessment History - Transaction Processing - End");
     }
 
     private FinancialAssessmentsHistoryDTO buildFinancialAssessmentHistoryDTO(final FinancialAssessmentEntity assessmentEntity,
-                                                                              final RepOrderEntity repOrderEntity,
                                                                               final boolean fullAvailable) {
         log.info("Building financialAssessmentsHistoryDTO with financialAssessmentId: {}", assessmentEntity.getId());
         FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO =
@@ -50,6 +45,8 @@ public class FinancialAssessmentHistoryService {
         financialAssessmentsHistoryDTO.setFinancialAssessment(
                 assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity));
         financialAssessmentsHistoryDTO.setFullAvailable(fullAvailable);
+
+        RepOrderEntity repOrderEntity = assessmentEntity.getRepOrder();
 
         if (repOrderEntity != null) {
             financialAssessmentsHistoryDTO.setCaseType(repOrderEntity.getCatyCaseType());

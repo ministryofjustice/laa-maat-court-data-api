@@ -297,6 +297,7 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     @Test
+    @Disabled("This test should be disabled until LASB-1288 is completed.")
     public void givenSqsPayload_whenHearingEntityDoesNotExist_thenScheduleForProcessing() throws JsonProcessingException {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
         message.setHearingIdWhereChangeOccurred(UUID.randomUUID());

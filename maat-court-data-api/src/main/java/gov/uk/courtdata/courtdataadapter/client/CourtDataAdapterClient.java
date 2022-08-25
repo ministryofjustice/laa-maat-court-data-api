@@ -1,9 +1,11 @@
-package gov.uk.courtdata.laastatus.client;
+package gov.uk.courtdata.courtdataadapter.client;
 
 import com.google.gson.GsonBuilder;
 import gov.uk.courtdata.enums.MessageType;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import gov.uk.courtdata.service.QueueMessageLogService;
+import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,9 +14,11 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -28,8 +32,7 @@ public class CourtDataAdapterClient {
 
     private final QueueMessageLogService queueMessageLogService;
 
-    @Value("${cda.laastatus.url}")
-    private String laaUpdateUrl;
+    private final CourtDataAdapterClientConfig courtDataAdapterClientConfig;
 
     /**
      * @param laaStatusUpdate laa status value
@@ -44,12 +47,26 @@ public class CourtDataAdapterClient {
         WebClient.ResponseSpec clientResponse =
                 webClient
                         .post()
-                        .uri(laaUpdateUrl)
+                        .uri(uriBuilder -> uriBuilder.path(courtDataAdapterClientConfig.getLaaStatusUrl()).build())
                         .headers(httpHeaders -> httpHeaders.setAll(headers))
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(laaStatusUpdateJson))
                         .retrieve();
 
         log.info("LAA status update posted {}", Optional.of( clientResponse.toBodilessEntity().block().getStatusCode() ));
+    }
+
+    public void triggerHearingProcessing(UUID hearingId, String laaTransactionId) {
+        log.info("Triggering processing for hearing '{}' via court data adapter.", hearingId);
+        webClient
+                .get()
+                .uri(uriBuilder ->
+                        uriBuilder.path(courtDataAdapterClientConfig.getHearingUrl()).queryParam("publish_to_queue", true).build(hearingId))
+                .headers(httpHeaders -> httpHeaders.setAll(Map.of("X-Request-ID", laaTransactionId)))
+                .retrieve().toBodilessEntity()
+                .doOnError(Sentry::captureException)
+                .onErrorMap(error -> new MAATCourtDataException(String.format("Error triggering CDA processing for hearing '%s'.%s", hearingId, error.getMessage())))
+                .doOnSuccess(response -> log.info("Processing trigger successfully for hearing '{}'", hearingId))
+                .block();
     }
 }

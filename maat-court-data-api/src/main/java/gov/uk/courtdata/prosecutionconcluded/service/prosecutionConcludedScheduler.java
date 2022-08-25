@@ -32,7 +32,7 @@ public class prosecutionConcludedScheduler {
 
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;
     private final ProsecutionConcludedService prosecutionConcludedService;
-    private final WQHearingRepository wqHearingRepository;
+    private final HearingsService hearingsService;
     private final Gson gson;
 
     @Scheduled(cron = "${queue.message.log.cron.expression}")
@@ -63,15 +63,10 @@ public class prosecutionConcludedScheduler {
     }
 
     private boolean isCCConclusion(ProsecutionConcludedEntity data) {
-        WQHearingEntity wqHearingEntity = getWqHearingEntity(data.getMaatId(), data.getHearingId());
+        WQHearingEntity wqHearingEntity =
+                hearingsService.retrieveHearingForCaseConclusion(convertToObject(data.getCaseData()));
         return wqHearingEntity != null
                 && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType());
-    }
-
-    private WQHearingEntity getWqHearingEntity(Integer maatId, String hearingId) {
-        List<WQHearingEntity> wqHearingEntityList = wqHearingRepository
-                .findByMaatIdAndHearingUUID(maatId, hearingId);
-        return !wqHearingEntityList.isEmpty() ? wqHearingEntityList.get(0) : null;
     }
 
     private void processConclusion(ProsecutionConcluded prosecutionConcluded) {
@@ -102,7 +97,8 @@ public class prosecutionConcludedScheduler {
     }
 
     private boolean isMAGSConclusion(ProsecutionConcludedEntity concludedData) {
-        WQHearingEntity wqHearingEntity = getWqHearingEntity(concludedData.getMaatId(), concludedData.getHearingId());
+        WQHearingEntity wqHearingEntity =
+                hearingsService.retrieveHearingForCaseConclusion(convertToObject(concludedData.getCaseData()));
         return wqHearingEntity != null
                 && JurisdictionType.MAGISTRATES.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType());
     }

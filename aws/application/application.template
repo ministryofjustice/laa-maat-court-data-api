@@ -59,7 +59,7 @@ Parameters:
   pCdaOauthUrl:
     Type: String
     Default: ''
-  pCdaLaaStatusUrl:
+  pCdaBaseUrl:
     Type: String
     Default: ''
   pPostMvpEnabled:
@@ -528,8 +528,8 @@ Resources:
               Value: !Ref pHearingsResultedQueue
             - Name: CDA_OAUTH_URL
               Value: !Ref pCdaOauthUrl
-            - Name: CDA_LAA_STATUS_URL
-              Value: !Ref pCdaLaaStatusUrl
+            - Name: CDA_BASE_URL
+              Value: !Ref pCdaBaseUrl
             - Name: SENTRY_ENV
               Value: !Ref pEnvironment
             - Name: POST_MVP_ENABLED

@@ -1,8 +1,10 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CalculateOutcomeHelper;
@@ -27,8 +29,6 @@ public class ProsecutionConcludedService {
 
     private final CalculateOutcomeHelper calculateOutcomeHelper;
 
-    private final WQHearingRepository wqHearingRepository;
-
     private final ProsecutionConcludedValidator prosecutionConcludedValidator;
 
     private final ProsecutionConcludedImpl prosecutionConcludedImpl;
@@ -41,13 +41,19 @@ public class ProsecutionConcludedService {
 
     private final ProsecutionConcludedDataService prosecutionConcludedDataService;
 
+    private final HearingsService hearingsService;
+
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
 
         log.info("CC Outcome process is kicked off for  maat-id {}", prosecutionConcluded.getMaatId());
         prosecutionConcludedValidator.validateRequestObject(prosecutionConcluded);
 
-        WQHearingEntity wqHearingEntity = getWqHearingEntity(prosecutionConcluded);
+        WQHearingEntity wqHearingEntity = hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded);
+
+        if (wqHearingEntity == null) {
+            prosecutionConcludedDataService.execute(prosecutionConcluded);
+        }
 
         if (prosecutionConcluded.isConcluded()
                 && wqHearingEntity != null
@@ -80,16 +86,5 @@ public class ProsecutionConcludedService {
         ConcludedDTO concludedDTO = caseConclusionDTOBuilder.build(prosecutionConcluded, wqHearingEntity, calculatedOutcome);
 
         prosecutionConcludedImpl.execute(concludedDTO);
-    }
-
-
-    private WQHearingEntity getWqHearingEntity(ProsecutionConcluded prosecutionConcluded) {
-        List<WQHearingEntity> wqHearingEntityList = wqHearingRepository
-                .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
-        if (wqHearingEntityList.isEmpty() && prosecutionConcluded.isConcluded()) {
-            prosecutionConcludedDataService.execute(prosecutionConcluded);
-            return null;
-        }
-        return !wqHearingEntityList.isEmpty() ? wqHearingEntityList.get(0) : null;
     }
 }

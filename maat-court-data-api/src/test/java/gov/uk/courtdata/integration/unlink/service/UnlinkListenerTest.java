@@ -8,7 +8,7 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
-import gov.uk.courtdata.laastatus.client.CourtDataAdapterClient;
+import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.*;

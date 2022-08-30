@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChildWeightings {
+    private Integer id;
     private Integer childWeightingId;
     private Integer noOfChildren;
 }

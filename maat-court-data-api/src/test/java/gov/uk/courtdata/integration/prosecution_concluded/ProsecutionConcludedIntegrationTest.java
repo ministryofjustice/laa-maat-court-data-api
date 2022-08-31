@@ -23,19 +23,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.nio.charset.StandardCharsets;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {
@@ -173,7 +173,7 @@ public class ProsecutionConcludedIntegrationTest {
                         .builder()
                         .id(TEST_MAAT_ID)
                         .caseId("12129")
-                        .aptyCode("EITHER WAY")
+                        .appealTypeCode("EITHER WAY")
                         .catyCaseType("EITHER WAY")
                         .build()
         );
@@ -215,7 +215,7 @@ public class ProsecutionConcludedIntegrationTest {
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
         String sqsPayload = pullMessageFromSQS(message);
 
-        existingRepOrder.setAptyCode("APPEAL CC");
+        existingRepOrder.setAppealTypeCode("APPEAL CC");
         existingRepOrder.setCatyCaseType("APPEAL CC");
         repOrderRepository.save(existingRepOrder);
 
@@ -231,7 +231,7 @@ public class ProsecutionConcludedIntegrationTest {
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
         String sqsPayload = pullMessageFromSQS(message);
 
-        existingRepOrder.setAptyCode("APPEAL CC");
+        existingRepOrder.setAppealTypeCode("APPEAL CC");
         existingRepOrder.setCatyCaseType("APPEAL CC");
         repOrderRepository.save(existingRepOrder);
 

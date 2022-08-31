@@ -4,7 +4,6 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessment;
-import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,9 +27,6 @@ public class FinancialAssessmentValidationProcessorTest {
 
     @Mock
     private FinancialAssessmentIdValidator financialAssessmentIdValidator;
-
-    @Mock
-    private UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
 
     @Test
     public void testFinancialAssessmentValidationProcessor_whenIdIsPassed_thenCallsIdValidator() {
@@ -79,12 +75,4 @@ public class FinancialAssessmentValidationProcessorTest {
         when(createAssessmentValidator.validate(any(CreateFinancialAssessment.class))).thenReturn(Optional.empty());
         assertThat(financialAssessmentValidationProcessor.validate(assessment)).isEqualTo(Optional.empty());
     }
-
-    @Test
-    public void testUpdateAppDateCompletedValidator_whenRequiredFieldsPresent_thenValidationPasses() {
-        when(financialAssessmentValidationProcessor.validate(any(UpdateAppDateCompleted.class))).thenReturn(Optional.empty());
-        financialAssessmentValidationProcessor.validate(TestModelDataBuilder.getUpdateAppDateCompleted());
-        verify(updateAppDateCompletedValidator, times(1)).validate(any(UpdateAppDateCompleted.class));
-    }
-
 }

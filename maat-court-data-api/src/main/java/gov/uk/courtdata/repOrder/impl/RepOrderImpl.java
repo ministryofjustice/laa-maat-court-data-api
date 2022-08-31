@@ -1,4 +1,4 @@
-package gov.uk.courtdata.assessment.impl;
+package gov.uk.courtdata.repOrder.impl;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.RepOrderEntity;
@@ -9,16 +9,16 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-@Component
-@RequiredArgsConstructor
 @Slf4j
+@Component
 @XRayEnabled
+@RequiredArgsConstructor
 public class RepOrderImpl {
 
     private final RepOrderRepository repOrderRepository;
 
-    public RepOrderEntity findRepOrder(Integer repId) {
-        return repOrderRepository.getById(repId);
+    public RepOrderEntity find(Integer repId) {
+        return repOrderRepository.findById(repId).orElse(null);
     }
 
     public void updateAppDateCompleted(final Integer repId, final LocalDateTime assessmentDateCompleted) {

@@ -5,7 +5,6 @@ import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapperImpl;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentHistoryService;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
-import gov.uk.courtdata.assessment.service.RepOrdersService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -13,7 +12,6 @@ import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.FinancialAssessment;
-import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,8 +23,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -56,10 +52,6 @@ public class FinancialAssessmentControllerTest {
 
     @MockBean
     private FinancialAssessmentHistoryService financialAssessmentHistoryService;
-
-
-    @MockBean
-    private RepOrdersService repOrdersService;
 
     private String financialAssessmentJson;
 
@@ -200,19 +192,4 @@ public class FinancialAssessmentControllerTest {
         mvc.perform(MockMvcRequestBuilders.post(endpointUrl + "/history/1234/fullAvailable/test"))
                 .andExpect(status().isBadRequest());
     }
-
-    @Test
-    public void givenCorrectParameters_whenUpdateAppCompletedIsInvoked_thenCompletedDateShouldUpdated() throws Exception {
-        when(financialAssessmentValidationProcessor.validate(any(UpdateAppDateCompleted.class))).thenReturn(Optional.empty());
-        mvc.perform(MockMvcRequestBuilders.post(endpointUrl + "/update-date-completed")
-                .content(TestModelDataBuilder.getUpdateAppDateCompletedJson())
-                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
-    }
-    @Test
-    public void givenIncorrectParameters_whenUpdateAppCompletedIsInvoked_thenErrorIsThrown() throws Exception {
-        when(financialAssessmentValidationProcessor.validate(any(UpdateAppDateCompleted.class))).thenThrow(new ValidationException());
-        mvc.perform(MockMvcRequestBuilders.post(endpointUrl + "/update-date-completed").content("{}").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-    }
-
 }

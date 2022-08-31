@@ -20,6 +20,7 @@ public interface FinancialAssessmentHistoryMapper {
 
     FinancialAssessmentDetailsHistoryEntity FinancialAssessmentDetailsHistoryDTOToFinancialAssessmentDetailsHistoryEntity(final FinancialAssessmentDetailsHistoryDTO financialAssessmentDetailsHistoryDTO);
 
+    @Mapping(target = "repId", source = "repOrder.id")
     FinancialAssessmentsHistoryDTO FinancialAssessmentEntityToFinancialAssessmentsHistoryDTO(final FinancialAssessmentEntity assessmentEntity);
 
     FinancialAssessmentsHistoryEntity FinancialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(final FinancialAssessmentsHistoryDTO assessmentsHistoryDTO);

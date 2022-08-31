@@ -12,8 +12,8 @@ import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -158,7 +158,7 @@ public class FinancialAssessmentImplTest {
 
         financialAssessmentImpl.setOldAssessmentReplaced(financialAssessment);
 
-        Integer repId = financialAssessment.getRepId();
+        Integer repId = financialAssessment.getRepOrder().getId();
 
         verify(hardshipReviewRepository).updateOldHardshipReviews(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
         verify(passportAssessmentRepository).updateAllPreviousPassportAssessmentsAsReplaced(repId);

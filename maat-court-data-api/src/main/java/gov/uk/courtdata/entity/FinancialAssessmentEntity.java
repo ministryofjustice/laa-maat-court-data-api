@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -39,8 +40,10 @@ public class FinancialAssessmentEntity implements Serializable {
     @Column(name = "ID")
     private Integer id;
 
-    @Column(name = "REP_ID", nullable = false, updatable = false)
-    private Integer repId;
+    @JsonBackReference
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "REP_ID", nullable = false, updatable = false)
+    private RepOrderEntity repOrder;
 
     @Column(name = "INITIAL_ASCR_ID", nullable = false)
     private Integer initialAscrId;

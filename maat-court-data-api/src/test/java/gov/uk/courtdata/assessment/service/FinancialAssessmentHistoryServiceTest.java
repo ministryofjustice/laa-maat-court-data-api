@@ -2,7 +2,6 @@ package gov.uk.courtdata.assessment.service;
 
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentHistoryImpl;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
-import gov.uk.courtdata.assessment.impl.RepOrderImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentHistoryMapper;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -29,9 +28,6 @@ public class FinancialAssessmentHistoryServiceTest {
     private FinancialAssessmentImpl financialAssessmentImpl;
 
     @Mock
-    private RepOrderImpl repOrderImpl;
-
-    @Mock
     private FinancialAssessmentHistoryImpl financialAssessmentHistoryImpl;
 
     @Mock
@@ -55,7 +51,6 @@ public class FinancialAssessmentHistoryServiceTest {
                 .thenReturn(financialAssessmentsHistoryDTO);
         when(financialAssessmentHistoryImpl.buildAndSave(financialAssessmentsHistoryDTO, MOCK_FINANCIAL_ASSESSMENT_ID))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentsHistoryEntity());
-        when(repOrderImpl.findRepOrder(assessmentEntity.getRepId())).thenReturn(TestEntityDataBuilder.getRepOrder());
     }
 
     @Test

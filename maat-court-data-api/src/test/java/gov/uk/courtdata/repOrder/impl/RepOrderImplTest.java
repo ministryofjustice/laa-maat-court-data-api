@@ -1,5 +1,4 @@
-package gov.uk.courtdata.assessment.impl;
-
+package gov.uk.courtdata.repOrder.impl;
 
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -11,8 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
 import java.time.LocalDateTime;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -24,19 +23,19 @@ class RepOrderImplTest {
     private RepOrderImpl repOrderImpl;
 
     @Mock
-    private  RepOrderRepository repOrderRepository;
+    private RepOrderRepository repOrderRepository;
 
 
     @Test
     public void testUpdateAppDateCompleted_whenUpdateIsSuccess() {
-        when(repOrderRepository.getById(TestModelDataBuilder.REP_ORDERS_ID)).thenReturn(new RepOrderEntity());
-        repOrderImpl.updateAppDateCompleted(TestModelDataBuilder.REP_ORDERS_ID, LocalDateTime.now());
+        when(repOrderRepository.getById(TestModelDataBuilder.REP_ID)).thenReturn(new RepOrderEntity());
+        repOrderImpl.updateAppDateCompleted(TestModelDataBuilder.REP_ID, LocalDateTime.now());
         verify(repOrderRepository, times(1)).saveAndFlush(any());
     }
 
     @Test
-    public void testRepOrderImpl_findRepOrder_whenRepIDHasRecords() {
-        repOrderImpl.findRepOrder(TestModelDataBuilder.REP_ORDERS_ID);
-        verify(repOrderRepository, times(1)).getById(TestModelDataBuilder.REP_ORDERS_ID);
+    public void givenRepOrderExists_whenFindIsInvoked_thenRepOrderIsRetrieved() {
+        repOrderImpl.find(TestModelDataBuilder.REP_ID);
+        verify(repOrderRepository, times(1)).findById(TestModelDataBuilder.REP_ID);
     }
 }

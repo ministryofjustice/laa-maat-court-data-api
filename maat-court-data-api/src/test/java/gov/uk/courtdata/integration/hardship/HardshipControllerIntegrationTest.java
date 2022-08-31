@@ -17,9 +17,8 @@ import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.hardship.*;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
-
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,7 +27,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
@@ -45,6 +44,8 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private final String BASE_URL = "/api/internal/v1/assessment/hardship";
     private final String HARDSHIP_URL = BASE_URL + "/{hardshipId}";
     private final String HARDSHIP_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
+    private static final Integer MOCK_REP_ID = 4444;
+    private static final Integer MOCK_REP_ID_2 = 5555;
 
     @Autowired
     private HardshipReviewRepository hardshipReviewRepository;
@@ -55,6 +56,8 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     @Autowired
     private FinancialAssessmentRepository financialAssessmentRepository;
     @Autowired
+    private RepOrderRepository repOrderRepository;
+    @Autowired
     private MockNewWorkReasonRepository mockNewWorkReasonRepository;
 
     private HardshipReviewEntity existingHardshipReview;
@@ -64,9 +67,7 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private NewWorkReasonEntity existingNewWorkReason;
 
     @BeforeEach
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         hardshipReviewRepository.deleteAll();
@@ -74,6 +75,7 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         hardshipReviewDetailReasonRepository.deleteAll();
         financialAssessmentRepository.deleteAll();
         mockNewWorkReasonRepository.deleteAll();
+        repOrderRepository.deleteAll();
 
         setupTestData();
     }
@@ -121,7 +123,7 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         runCreateHardshipReviewErrorScenario(
                 "Review date cannot pre-date the means assessment date",
                 CreateHardshipReview.builder()
-                        .repId(existingFinancialAssessment.getRepId())
+                        .repId(existingFinancialAssessment.getRepOrder().getId())
                         .reviewDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0))
                         .build());
     }
@@ -130,7 +132,7 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     public void givenAValidHardshipReview_whenCreateHardshipIsInvoked_theCorrectDataIsPersisted() throws Exception {
         CreateHardshipReview body = CreateHardshipReview.builder()
                 .financialAssessmentId(existingUnlinkedFinancialAssessment.getId())
-                .repId(existingUnlinkedFinancialAssessment.getRepId())
+                .repId(existingUnlinkedFinancialAssessment.getRepOrder().getId())
                 .nworCode(existingNewWorkReason.getCode())
                 .cmuId(existingUnlinkedFinancialAssessment.getCmuId())
                 .reviewResult("FAIL")
@@ -231,7 +233,7 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                         .newWorkReason(existingNewWorkReason)
                         .userCreated(TEST_USER)
                         .updated(testDateTime)
-                        .repId(existingFinancialAssessment.getRepId())
+                        .repId(existingFinancialAssessment.getRepOrder().getId())
                         .build());
 
         runUpdateHardshipReviewErrorScenario(
@@ -374,14 +376,18 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                 TestEntityDataBuilder.getNewWorkReasonEntity());
         existingHardshipReviewDetailReason = hardshipReviewDetailReasonRepository.save(
                 HardshipReviewDetailReasonEntity.builder()
-                    .id(1)
-                    .reason("test-reason")
-                    .detailType(HardshipReviewDetailType.EXPENDITURE)
-                    .userCreated(TEST_USER).build());
-        existingFinancialAssessment = financialAssessmentRepository.save(getTestFinancialAssessment(4444));
-        existingUnlinkedFinancialAssessment = financialAssessmentRepository.save(getTestFinancialAssessment(5555));
+                        .id(1)
+                        .reason("test-reason")
+                        .detailType(HardshipReviewDetailType.EXPENDITURE)
+                        .userCreated(TEST_USER).build());
+
+        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(MOCK_REP_ID));
+        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(MOCK_REP_ID_2));
+
+        existingFinancialAssessment = financialAssessmentRepository.save(getTestFinancialAssessment(MOCK_REP_ID));
+        existingUnlinkedFinancialAssessment = financialAssessmentRepository.save(getTestFinancialAssessment(MOCK_REP_ID_2));
         existingHardshipReview = hardshipReviewRepository.save(
-                getTestHardshipReview(existingFinancialAssessment.getRepId(), existingFinancialAssessment.getId()));
+                getTestHardshipReview(existingFinancialAssessment.getRepOrder().getId(), existingFinancialAssessment.getId()));
 
     }
 
@@ -440,7 +446,7 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private FinancialAssessmentEntity getTestFinancialAssessment(Integer repId) {
         return FinancialAssessmentEntity.builder()
-                .repId(repId)
+                .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(repId))
                 .initialAscrId(1)
                 .userCreated(TEST_USER)
                 .cmuId(1)

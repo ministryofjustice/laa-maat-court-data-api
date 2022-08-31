@@ -6,8 +6,7 @@ import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
-  import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -49,9 +48,7 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
     private UserRepository userRepository;
 
     @BeforeEach
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         setupTestData();
     }
 
@@ -75,10 +72,10 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
         String ROLE_ACTION_ENABLED = "Y";
         String ROLE_ACTION_DISABLED = "N";
         List<RoleActionEntity> roleActionEntities = List.of(
-            RoleActionEntity.builder()
-                    .Id(1).roleName(AUTHORISED_ROLE).action(AUTHORISED_ACTION).enabled(ROLE_ACTION_ENABLED).build(),
-            RoleActionEntity.builder()
-                    .Id(2).roleName(DISABLED_ROLE).action(DISABLED_ACTION).enabled(ROLE_ACTION_DISABLED).build()
+                RoleActionEntity.builder()
+                        .Id(1).roleName(AUTHORISED_ROLE).action(AUTHORISED_ACTION).enabled(ROLE_ACTION_ENABLED).build(),
+                RoleActionEntity.builder()
+                        .Id(2).roleName(DISABLED_ROLE).action(DISABLED_ACTION).enabled(ROLE_ACTION_DISABLED).build()
         );
 
         roleActionsRepository.saveAll(roleActionEntities);
@@ -107,8 +104,8 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
                 .build());
 
         userRepository.save(UserEntity.builder()
-                        .username(VALID_TEST_USER)
-                        .currentSession(VALID_SESSION_ID)
+                .username(VALID_TEST_USER)
+                .currentSession(VALID_SESSION_ID)
 
                 .build());
     }
@@ -205,7 +202,7 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
     }
 
     private AuthorizationResponse getAuthorizedResponse() {
-       return AuthorizationResponse.builder().result(true).build();
+        return AuthorizationResponse.builder().result(true).build();
     }
 
     private AuthorizationResponse getUnauthorizedResponse() {

@@ -3,7 +3,6 @@ package gov.uk.courtdata.assessment.service;
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentHistoryImpl;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
-import gov.uk.courtdata.assessment.impl.RepOrderImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentHistoryMapper;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class FinancialAssessmentHistoryService {
 
     private final FinancialAssessmentImpl financialAssessmentImpl;
-    private final RepOrderImpl repOrderImpl;
     private final FinancialAssessmentHistoryImpl financialAssessmentsHistoryImpl;
     private final FinancialAssessmentHistoryMapper assessmentHistoryMapper;
     private final FinancialAssessmentMapper assessmentMapper;
@@ -31,17 +29,14 @@ public class FinancialAssessmentHistoryService {
         log.info("Create Assessment History - Transaction Processing - Start");
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
 
-        RepOrderEntity repOrderEntity = repOrderImpl.findRepOrder(assessmentEntity.getRepId());
-
         FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO =
-                buildFinancialAssessmentHistoryDTO(assessmentEntity, repOrderEntity, fullAvailable);
+                buildFinancialAssessmentHistoryDTO(assessmentEntity, fullAvailable);
 
         financialAssessmentsHistoryImpl.buildAndSave(financialAssessmentsHistoryDTO, financialAssessmentId);
         log.info("Create Assessment History - Transaction Processing - End");
     }
 
     private FinancialAssessmentsHistoryDTO buildFinancialAssessmentHistoryDTO(final FinancialAssessmentEntity assessmentEntity,
-                                                                              final RepOrderEntity repOrderEntity,
                                                                               final boolean fullAvailable) {
         log.info("Building financialAssessmentsHistoryDTO with financialAssessmentId: {}", assessmentEntity.getId());
         FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO =
@@ -51,15 +46,17 @@ public class FinancialAssessmentHistoryService {
                 assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity));
         financialAssessmentsHistoryDTO.setFullAvailable(fullAvailable);
 
+        RepOrderEntity repOrderEntity = assessmentEntity.getRepOrder();
+
         if (repOrderEntity != null) {
             financialAssessmentsHistoryDTO.setCaseType(repOrderEntity.getCatyCaseType());
             financialAssessmentsHistoryDTO.setMagsOutcome(repOrderEntity.getMagsOutcome());
             financialAssessmentsHistoryDTO.setMagsOutcomeDate(repOrderEntity.getMagsOutcomeDate());
             financialAssessmentsHistoryDTO.setMagsOutcomeDateSet(repOrderEntity.getMagsOutcomeDateSet());
             financialAssessmentsHistoryDTO.setCommittalDate(repOrderEntity.getCommittalDate());
-            financialAssessmentsHistoryDTO.setRderCode(repOrderEntity.getRderCode());
-            financialAssessmentsHistoryDTO.setCcRepDec(repOrderEntity.getCcRepDec());
-            financialAssessmentsHistoryDTO.setCcRepType(repOrderEntity.getCcRepType());
+            financialAssessmentsHistoryDTO.setRderCode(repOrderEntity.getRepOrderDecisionReasonCode());
+            financialAssessmentsHistoryDTO.setCcRepDec(repOrderEntity.getCrownRepOrderDecision());
+            financialAssessmentsHistoryDTO.setCcRepType(repOrderEntity.getCrownRepOrderType());
         }
         return financialAssessmentsHistoryDTO;
     }

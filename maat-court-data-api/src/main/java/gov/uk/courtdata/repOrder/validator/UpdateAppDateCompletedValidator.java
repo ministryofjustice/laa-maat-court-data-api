@@ -1,8 +1,7 @@
-package gov.uk.courtdata.assessment.validator;
+package gov.uk.courtdata.repOrder.validator;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.validator.IValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
@@ -11,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Component

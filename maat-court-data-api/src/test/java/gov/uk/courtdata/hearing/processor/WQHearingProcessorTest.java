@@ -12,10 +12,12 @@ import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -24,7 +26,8 @@ import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class WQHearingProcessorTest {
@@ -37,16 +40,12 @@ public class WQHearingProcessorTest {
 
     @Spy
     private WqLinkRegisterRepository wqLinkRegisterRepository;
+
     @Spy
     private IdentifierRepository identifierRepository;
 
     @Captor
     private ArgumentCaptor<WQHearingEntity> wqHearingEntityArgumentCaptor;
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void givenWQHearingProcessor_whenProcessIsInvoke_thenSaveWQHearingEntity() {
@@ -63,7 +62,7 @@ public class WQHearingProcessorTest {
 
         verify(wqHearingRepository).save(wqHearingEntityArgumentCaptor.capture());
         assertThat(wqHearingEntityArgumentCaptor.getValue().getHearingUUID()).isEqualTo("9dc76cb3-a996-4660-8386-bab551007ac7");
-        assertThat(wqHearingEntityArgumentCaptor.getValue().getMaatId()).isEqualTo(TestModelDataBuilder.MAAT_ID);
+        assertThat(wqHearingEntityArgumentCaptor.getValue().getMaatId()).isEqualTo(TestModelDataBuilder.REP_ID);
         assertThat(wqHearingEntityArgumentCaptor.getValue().getWqJurisdictionType()).isEqualTo(JurisdictionType.CROWN.name());
         assertThat(wqHearingEntityArgumentCaptor.getValue().getOuCourtLocation()).isEqualTo("1212");
         assertThat(wqHearingEntityArgumentCaptor.getValue().getResultCodes()).isEqualTo("3030,5031,4032");
@@ -72,7 +71,7 @@ public class WQHearingProcessorTest {
     private HearingResulted getHearingResulted() {
 
         return HearingResulted.builder()
-                .maatId(9988)
+                .maatId(TestModelDataBuilder.REP_ID)
 
                 .caseUrn("1211")
                 .hearingId(UUID.fromString("9dc76cb3-a996-4660-8386-bab551007ac7"))

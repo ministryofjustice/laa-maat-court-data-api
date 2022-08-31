@@ -3,13 +3,11 @@ package gov.uk.courtdata.assessment.controller;
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentHistoryService;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
-import gov.uk.courtdata.assessment.service.RepOrdersService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
-import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,8 +33,6 @@ public class FinancialAssessmentController {
     private final FinancialAssessmentService financialAssessmentService;
     private final FinancialAssessmentValidationProcessor financialAssessmentValidationProcessor;
     private final FinancialAssessmentHistoryService financialAssessmentHistoryService;
-
-    private final RepOrdersService repOrdersService;
 
     @GetMapping(value = "/{financialAssessmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a financial assessment record")
@@ -109,20 +105,4 @@ public class FinancialAssessmentController {
         financialAssessmentHistoryService.createAssessmentHistory(financialAssessmentId, fullAvailable);
         return ResponseEntity.ok().build();
     }
-
-    @PostMapping(value = "/update-date-completed", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Update application date completed")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Object> updateApplicationDateCompleted(@Parameter(description = "Update app date", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = UpdateAppDateCompleted.class)))
-                                                                     @RequestBody  UpdateAppDateCompleted updateAppDateCompleted) {
-        log.debug("Assessments Request Received for repId : {}", updateAppDateCompleted.getRepId());
-        financialAssessmentValidationProcessor.validate(updateAppDateCompleted);
-        repOrdersService.updateAppDateCompleted(updateAppDateCompleted);
-        return ResponseEntity.ok().build();
-    }
-
-
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -19,4 +20,5 @@ public class FinancialAssessmentDetails {
     private Frequency applicantFrequency;
     private BigDecimal partnerAmount;
     private Frequency partnerFrequency;
+    private LocalDateTime dateModified;
 }

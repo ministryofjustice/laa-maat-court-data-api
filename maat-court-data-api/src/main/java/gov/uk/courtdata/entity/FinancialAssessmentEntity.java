@@ -13,7 +13,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -188,4 +190,10 @@ public class FinancialAssessmentEntity implements Serializable {
         childWeightingsEntity.setFinancialAssessment(this);
         this.childWeightings.add(childWeightingsEntity);
     }
+
+    @ToString.Exclude
+    @JsonManagedReference
+    @OneToMany(mappedBy = "fias", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private final Set<FinAssIncomeEvidenceEntity> finAssIncomeEvidences = new HashSet<>();
+
 }

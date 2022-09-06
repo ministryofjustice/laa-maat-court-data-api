@@ -194,6 +194,6 @@ public class FinancialAssessmentEntity implements Serializable {
     @ToString.Exclude
     @JsonManagedReference
     @OneToMany(mappedBy = "fias", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private final Set<FinAssIncomeEvidenceEntity> finAssIncomeEvidences = new HashSet<>();
+    private final List<FinAssIncomeEvidenceEntity> finAssIncomeEvidences = new ArrayList<>();
 
 }

@@ -1,11 +1,9 @@
 package gov.uk.courtdata.repOrder.mapper;
 
+import gov.uk.courtdata.dto.FinAssIncomeEvidenceDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
-import gov.uk.courtdata.entity.ChildWeightingsEntity;
-import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
-import gov.uk.courtdata.entity.FinancialAssessmentEntity;
-import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import org.mapstruct.*;
@@ -32,4 +30,9 @@ public interface RepOrderMapper {
     ChildWeightingsEntity ChildWeightingsToChildWeightingsEntity(final ChildWeightings childWeightings);
 
     ChildWeightings ChildWeightingsEntityToChildWeightings(final ChildWeightingsEntity childWeightingsEntity);
-}
+
+    FinAssIncomeEvidenceEntity finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(final FinAssIncomeEvidenceDTO finAssIncomeEvidenceDTO);
+
+    FinAssIncomeEvidenceDTO finAssIncomeEvidenceEntityToFinAssIncomeEvidenceDTO(final FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity);
+
+    }

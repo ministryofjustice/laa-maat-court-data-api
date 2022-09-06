@@ -11,9 +11,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity
-@Table(name = "FIN_ASS_INCOME_EVIDENCE", indexes = {
+@Table(name = "FIN_ASS_INCOME_EVIDENCE", schema = "TOGDATA", indexes = {
         @Index(name = "FAIE_UK", columnList = "FIAS_ID, INEV_EVIDENCE, REMOVED_DATE, APPL_ID, OTHER_TEXT", unique = true)
 })
 public class FinAssIncomeEvidenceEntity {
@@ -23,7 +22,7 @@ public class FinAssIncomeEvidenceEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FIAS_ID", nullable = false)
-    private FinancialAssessmentEntity fias;
+    private FinancialAssessmentEntity financialAssessment;
 
     @Column(name = "DATE_RECEIVED")
     private LocalDate dateReceived;

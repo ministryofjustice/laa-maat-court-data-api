@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 @Entity
-@Table(name = "APPLICANTS")
+@Table(name = "APPLICANTS", schema = "TOGDATA")
 public class Applicant {
     @Id
     @Column(name = "ID", nullable = false)

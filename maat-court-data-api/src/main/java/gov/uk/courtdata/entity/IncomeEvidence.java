@@ -15,7 +15,7 @@ import java.time.Instant;
 @Setter
 @ToString
 @Entity
-@Table(name = "INCOME_EVIDENCE")
+@Table(name = "INCOME_EVIDENCE", schema = "TOGDATA" )
 public class IncomeEvidence {
     @Id
     @Column(name = "EVIDENCE", nullable = false, length = 20)

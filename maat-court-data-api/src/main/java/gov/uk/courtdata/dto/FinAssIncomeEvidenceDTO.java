@@ -15,7 +15,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class FinAssIncomeEvidenceDTO implements Serializable {
     private Integer id;
-    private FinancialAssessmentDTO fias;
     private LocalDate dateReceived;
     private Instant dateCreated;
     private String userCreated;
@@ -27,5 +26,4 @@ public class FinAssIncomeEvidenceDTO implements Serializable {
     private String otherText;
     private String adhoc;
     private IncomeEvidenceDTO inevEvidence;
-    private ApplicantDTO appl;
 }

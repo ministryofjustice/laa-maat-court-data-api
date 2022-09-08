@@ -73,6 +73,8 @@ public class ProsecutionConcludedIntegrationTest {
     private ProsecutionConcludedRepository prosecutionConcludedRepository;
     @Autowired
     private UpdateOutcomesRepository updateOutcomesRepository;
+    @Autowired
+    private FinancialAssessmentRepository financialAssessmentRepository;
     @MockBean
     private CrownCourtProcessingRepository crownCourtProcessingRepository;
 
@@ -89,6 +91,7 @@ public class ProsecutionConcludedIntegrationTest {
 
     @BeforeEach
     public void setUp() throws Exception {
+        financialAssessmentRepository.deleteAll();
         wqHearingRepository.deleteAll();
         offenceRepository.deleteAll();
         queueMessageLogRepository.deleteAll();

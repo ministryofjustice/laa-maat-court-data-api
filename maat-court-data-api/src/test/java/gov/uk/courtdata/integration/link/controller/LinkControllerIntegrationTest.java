@@ -9,6 +9,7 @@ import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.link.controller.LinkController;
 import gov.uk.courtdata.model.CaseDetailsValidate;
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
@@ -59,9 +60,13 @@ public class LinkControllerIntegrationTest {
     @Autowired
     private WqLinkRegisterRepository wqLinkRegisterRepository;
 
+    @Autowired
+    private FinancialAssessmentRepository financialAssessmentRepository;
+
     @BeforeEach
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        financialAssessmentRepository.deleteAll();
         repOrderRepository.deleteAll();
         repOrderCPDataRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();

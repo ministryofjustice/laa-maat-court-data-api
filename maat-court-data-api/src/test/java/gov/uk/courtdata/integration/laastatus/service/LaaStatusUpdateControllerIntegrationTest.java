@@ -79,6 +79,8 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     private RepOrderCPDataRepository repOrderCPDataRepository;
     @Autowired
     private LaaStatusUpdateController laaStatusUpdateController;
+    @Autowired
+    private FinancialAssessmentRepository financialAssessmentRepository;
 
     private MockWebServer mockCdaWebServer;
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
@@ -88,6 +90,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         setupCdaWebServer();
+        financialAssessmentRepository.deleteAll();
         wqCoreRepository.deleteAll();
         queueMessageLogRepository.deleteAll();
         identifierRepository.deleteAll();

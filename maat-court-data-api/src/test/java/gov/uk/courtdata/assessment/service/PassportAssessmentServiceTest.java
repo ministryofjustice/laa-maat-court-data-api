@@ -28,14 +28,17 @@ import static org.mockito.Mockito.*;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class PassportAssessmentServiceTest {
 
-    private static final int MOCK_REP_ID = 5678;
     private static final Integer MOCK_ASSESSMENT_ID = 1000;
-    @InjectMocks
-    private PassportAssessmentService passportAssessmentService;
+    private static final int MOCK_REP_ID = TestEntityDataBuilder.REP_ID;
+
     @Mock
     private PassportAssessmentImpl passportAssessmentImpl;
+
     @Mock
     private PassportAssessmentMapper passportAssessmentMapper;
+
+    @InjectMocks
+    private PassportAssessmentService passportAssessmentService;
 
     @Test
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
@@ -61,7 +64,10 @@ public class PassportAssessmentServiceTest {
 
     @Test
     public void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
-        PassportAssessmentEntity passportAssessmentEntity = PassportAssessmentEntity.builder().id(MOCK_ASSESSMENT_ID).repId(MOCK_REP_ID).build();
+        PassportAssessmentEntity passportAssessmentEntity = PassportAssessmentEntity.builder()
+                .id(MOCK_ASSESSMENT_ID)
+                .repOrder(TestEntityDataBuilder.getRepOrder())
+                .build();
         when(passportAssessmentImpl.findByRepId(MOCK_REP_ID)).thenReturn(passportAssessmentEntity);
         when(passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(passportAssessmentEntity))
                 .thenReturn(PassportAssessmentDTO.builder().id(MOCK_ASSESSMENT_ID).repId(MOCK_REP_ID).build());

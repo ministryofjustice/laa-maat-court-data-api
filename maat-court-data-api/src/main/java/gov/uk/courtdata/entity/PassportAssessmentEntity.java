@@ -109,6 +109,4 @@ public class PassportAssessmentEntity {
     private String whoDWPChecked;
     @Column(name = "RT_CODE")
     private String rtCode;
-    @Transient
-    private Integer financialAssessmentId;
 }

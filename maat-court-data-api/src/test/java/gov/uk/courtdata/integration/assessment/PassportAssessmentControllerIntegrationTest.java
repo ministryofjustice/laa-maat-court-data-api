@@ -195,7 +195,6 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         PassportAssessmentDTO expectedResponse = TestModelDataBuilder.getPassportAssessmentDTO();
         expectedResponse.setRepId(repId);
         expectedResponse.setUserModified(null);
-        expectedResponse.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
 
         MvcResult result =
                 runSuccessScenario(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));

@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -25,16 +26,16 @@ public class FinAssIncomeEvidenceEntity {
     private FinancialAssessmentEntity financialAssessment;
 
     @Column(name = "DATE_RECEIVED")
-    private LocalDate dateReceived;
+    private LocalDateTime dateReceived;
 
     @Column(name = "DATE_CREATED", nullable = false)
-    private Instant dateCreated;
+    private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED", nullable = false, length = 100)
     private String userCreated;
 
     @Column(name = "DATE_MODIFIED")
-    private Instant dateModified;
+    private LocalDateTime dateModified;
 
     @Column(name = "USER_MODIFIED", length = 100)
     private String userModified;
@@ -43,7 +44,7 @@ public class FinAssIncomeEvidenceEntity {
     private String active;
 
     @Column(name = "REMOVED_DATE")
-    private LocalDate removedDate;
+    private LocalDateTime removedDate;
 
     @Column(name = "MANDATORY", length = 1)
     private String mandatory;

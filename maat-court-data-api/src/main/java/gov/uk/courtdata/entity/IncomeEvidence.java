@@ -7,14 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
 @Entity
+@Data
 @Table(name = "INCOME_EVIDENCE", schema = "TOGDATA" )
 public class IncomeEvidence {
     @Id
@@ -25,13 +24,13 @@ public class IncomeEvidence {
     private String description;
 
     @Column(name = "DATE_CREATED", nullable = false)
-    private Instant dateCreated;
+    private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED", nullable = false, length = 100)
     private String userCreated;
 
     @Column(name = "DATE_MODIFIED")
-    private Instant dateModified;
+    private LocalDateTime dateModified;
 
     @Column(name = "USER_MODIFIED", length = 100)
     private String userModified;

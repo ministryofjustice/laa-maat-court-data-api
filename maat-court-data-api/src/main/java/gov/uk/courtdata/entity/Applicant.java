@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -68,13 +69,13 @@ public class Applicant {
     private String sendToCclf;
 
     @Column(name = "DATE_CREATED", nullable = false)
-    private Instant dateCreated;
+    private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED", nullable = false, length = 100)
     private String userCreated;
 
     @Column(name = "DATE_MODIFIED")
-    private Instant dateModified;
+    private LocalDateTime dateModified;
 
     @Column(name = "USER_MODIFIED", length = 100)
     private String userModified;
@@ -83,7 +84,7 @@ public class Applicant {
     private String prefPaymentDay;
 
     @Column(name = "SPECIAL_INVESTIGATION")
-    private LocalDate specialInvestigation;
+    private LocalDateTime specialInvestigation;
 
     @Column(name = "PHONE_WORK", length = 20)
     private String phoneWork;

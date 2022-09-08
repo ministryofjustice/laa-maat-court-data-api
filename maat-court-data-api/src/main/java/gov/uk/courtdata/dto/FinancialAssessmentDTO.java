@@ -1,6 +1,5 @@
 package gov.uk.courtdata.dto;
 
-import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
@@ -57,7 +56,7 @@ public class FinancialAssessmentDTO {
     private String userModified;
     private Integer usn;
     private String rtCode;
-    private RepOrderEntity repOrder;
+    private FinancialRepOrderDTO repOrder;
     @Builder.Default
     private List<FinancialAssessmentDetails> assessmentDetails = new ArrayList<>();
     @Builder.Default

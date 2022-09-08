@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -15,9 +16,9 @@ import java.time.Instant;
 public class IncomeEvidenceDTO implements Serializable {
     private String id;
     private String description;
-    private Instant dateCreated;
+    private LocalDateTime dateCreated;
     private String userCreated;
-    private Instant dateModified;
+    private LocalDateTime dateModified;
     private String userModified;
     private String letterDescription;
     private String welshLetterDescription;

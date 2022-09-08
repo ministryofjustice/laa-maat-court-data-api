@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -15,13 +16,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class FinAssIncomeEvidenceDTO implements Serializable {
     private Integer id;
-    private LocalDate dateReceived;
-    private Instant dateCreated;
+    private LocalDateTime dateReceived;
+    private LocalDateTime dateCreated;
     private String userCreated;
-    private Instant dateModified;
+    private LocalDateTime dateModified;
     private String userModified;
     private String active;
-    private LocalDate removedDate;
+    private LocalDateTime removedDate;
     private String mandatory;
     private String otherText;
     private String adhoc;

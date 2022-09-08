@@ -37,6 +37,8 @@ public class TestModelDataBuilder {
 
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
 
+    public static final String FINANCIAL_ASSESSMENT_STATUS = "COMPLETE";
+
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
 
@@ -595,6 +597,20 @@ public class TestModelDataBuilder {
 
     public static RepOrderDTO getRepOrderDTO(Integer id) {
         return RepOrderDTO.builder()
+                .id(id)
+                .catyCaseType("case-type")
+                .magsOutcome("outcome")
+                .magsOutcomeDate(TEST_DATE.toString())
+                .magsOutcomeDateSet(TEST_DATE.toLocalDate())
+                .committalDate(TEST_DATE.toLocalDate())
+                .repOrderDecisionReasonCode("rder-code")
+                .crownRepOrderDecision("cc-rep-doc")
+                .crownRepOrderType("cc-rep-type")
+                .build();
+    }
+
+    public static FinancialRepOrderDTO getRepOrdersDTO(Integer id) {
+        return FinancialRepOrderDTO.builder()
                 .id(id)
                 .catyCaseType("case-type")
                 .magsOutcome("outcome")

@@ -1,11 +1,9 @@
 package gov.uk.courtdata.repOrder.mapper;
 
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
-import gov.uk.courtdata.entity.ChildWeightingsEntity;
-import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
-import gov.uk.courtdata.entity.FinancialAssessmentEntity;
-import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import org.mapstruct.*;
@@ -21,15 +19,13 @@ public interface RepOrderMapper {
 
     RepOrderDTO RepOrderEntityToRepOrderDTO(final RepOrderEntity repOrder);
 
+    @Mapping(target = "repId", source = "repOrder.id")
     FinancialAssessmentDTO FinancialAssessmentEntityToFinancialAssessmentDTO(final FinancialAssessmentEntity financialAssessment);
-
-    FinancialAssessmentDetailEntity FinancialAssessmentDetailsToFinancialAssessmentDetailsEntity(final FinancialAssessmentDetails details);
-
-    FinancialAssessmentEntity FinancialAssessmentDTOToFinancialAssessmentEntity(final FinancialAssessmentDTO financialAssessment);
 
     FinancialAssessmentDetails FinancialAssessmentDetailsEntityToFinancialAssessmentDetails(final FinancialAssessmentDetailEntity detailsEntity);
 
-    ChildWeightingsEntity ChildWeightingsToChildWeightingsEntity(final ChildWeightings childWeightings);
+    @Mapping(target = "repId", source = "repOrder.id")
+    PassportAssessmentDTO PassportAssessmentEntityToPassportAssessmentDTO(final PassportAssessmentEntity passportAssessment);
 
     ChildWeightings ChildWeightingsEntityToChildWeightings(final ChildWeightingsEntity childWeightingsEntity);
 }

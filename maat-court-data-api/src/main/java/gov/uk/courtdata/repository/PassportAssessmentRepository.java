@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface PassportAssessmentRepository extends JpaRepository<PassportAssessmentEntity, Integer> {
 
@@ -21,6 +23,6 @@ public interface PassportAssessmentRepository extends JpaRepository<PassportAsse
     @Query(value = "SELECT count(*) FROM TOGDATA.PASSPORT_ASSESSMENTS pa WHERE pa.REP_ID = :repId AND pa.REPLACED = 'N' AND (pa.VALID IS NULL OR pa.VALID <> 'N') AND pa.PAST_STATUS = 'IN PROGRESS'", nativeQuery = true)
     Long findOutstandingPassportAssessments(@Param("repId") Integer repId);
 
-    @Query(value = "SELECT pa FROM PassportAssessmentEntity pa WHERE pa.repId = :repId AND pa.replaced = 'N'")
-    PassportAssessmentEntity findByRepId(@Param("repId") Integer repId);
+    @Query(value = "SELECT * FROM TOGDATA.PASSPORT_ASSESSMENTS pa WHERE pa.REP_ID = :repId AND pa.REPLACED = 'N'", nativeQuery = true)
+    Optional<PassportAssessmentEntity> findByRepId(@Param("repId") Integer repId);
 }

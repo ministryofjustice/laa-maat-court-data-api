@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,8 +21,10 @@ public class PassportAssessmentEntity {
     @SequenceGenerator(name = "passport_ass_seq", sequenceName = "S_PASSPORT_ID", allocationSize = 1, schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "passport_ass_seq")
     private Integer id;
-    @Column(name = "REP_ID")
-    private Integer repId;
+    @JsonBackReference
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "REP_ID", nullable = false, updatable = false)
+    private RepOrderEntity repOrder;
     @Column(name = "NWOR_CODE")
     private String nworCode;
     @CreationTimestamp

@@ -1,8 +1,6 @@
 package gov.uk.courtdata.entity;
 
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -64,7 +62,11 @@ public class RepOrderEntity {
     private LocalDateTime assessmentDateCompleted;
 
     @ToString.Exclude
-    @Fetch(FetchMode.JOIN)
+    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY)
+    private final List<PassportAssessmentEntity> passportAssessments = new ArrayList<>();
+
+    @ToString.Exclude
     @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY)
     private final List<FinancialAssessmentEntity> financialAssessments = new ArrayList<>();
+
 }

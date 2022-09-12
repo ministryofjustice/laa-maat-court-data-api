@@ -11,13 +11,10 @@ import java.util.List;
 @Repository
 public interface ProsecutionConcludedRepository extends JpaRepository<ProsecutionConcludedEntity, Integer> {
 
-    @Query(value = "SELECT * FROM MLA.XXMLA_PROSECUTION_CONCLUDED where STATUS = 'PENDING'", nativeQuery = true)
+    @Query(value = "SELECT * FROM MLA.XXMLA_PROSECUTION_CONCLUDED  where STATUS = 'PENDING' AND RETRY_COUNT <= 10", nativeQuery = true)
     List<ProsecutionConcludedEntity> getConcludedCases();
 
     List<ProsecutionConcludedEntity> getByMaatId(Integer maatId);
-
-    @Query(value = "SELECT COUNT(*) FROM MLA.XXMLA_PROSECUTION_CONCLUDED where maat_id  = ?1 AND STATUS = 'PENDING'", nativeQuery = true)
-    Integer getPendingCaseConclusions(final int maatId);
 
     List<ProsecutionConcludedEntity> getByHearingId(String hearingId);
 }

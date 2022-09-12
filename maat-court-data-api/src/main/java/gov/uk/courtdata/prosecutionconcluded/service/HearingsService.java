@@ -22,17 +22,20 @@ public class HearingsService {
 
     private final CourtDataAdapterClient courtDataAdapterClient;
 
+    private final ProsecutionConcludedDataService prosecutionConcludedDataService;
+
     public WQHearingEntity retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
         WQHearingEntity hearing = getWqHearingEntity(prosecutionConcluded);
 
         if (hearing == null && prosecutionConcluded.isConcluded()) {
             triggerHearingDataProcessing(prosecutionConcluded);
+            prosecutionConcludedDataService.execute(prosecutionConcluded);
         }
 
         return hearing;
     }
 
-    private WQHearingEntity getWqHearingEntity(ProsecutionConcluded prosecutionConcluded) {
+    public WQHearingEntity getWqHearingEntity(ProsecutionConcluded prosecutionConcluded) {
         List<WQHearingEntity> wqHearingEntityList = wqHearingRepository
                 .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
         return !wqHearingEntityList.isEmpty() ? wqHearingEntityList.get(0) : null;
@@ -47,4 +50,6 @@ public class HearingsService {
             log.info(exception.getMessage());
         }
     }
+
+
 }

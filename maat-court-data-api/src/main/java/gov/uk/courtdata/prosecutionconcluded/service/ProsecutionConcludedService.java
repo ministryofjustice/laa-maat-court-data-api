@@ -1,10 +1,8 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CalculateOutcomeHelper;
@@ -14,7 +12,6 @@ import gov.uk.courtdata.prosecutionconcluded.impl.ProsecutionConcludedImpl;
 import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
 import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.validator.ProsecutionConcludedValidator;
-import gov.uk.courtdata.repository.WQHearingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,10 +47,6 @@ public class ProsecutionConcludedService {
         prosecutionConcludedValidator.validateRequestObject(prosecutionConcluded);
 
         WQHearingEntity wqHearingEntity = hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded);
-
-        if (wqHearingEntity == null) {
-            prosecutionConcludedDataService.execute(prosecutionConcluded);
-        }
 
         if (prosecutionConcluded.isConcluded()
                 && wqHearingEntity != null

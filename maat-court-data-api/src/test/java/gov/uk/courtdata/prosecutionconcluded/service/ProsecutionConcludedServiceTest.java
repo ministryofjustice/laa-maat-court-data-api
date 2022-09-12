@@ -171,7 +171,6 @@ public class ProsecutionConcludedServiceTest {
 
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(hearingsService, atLeast(1)).retrieveHearingForCaseConclusion(any());
-        verify(prosecutionConcludedDataService, atLeast(1)).execute( any());
         verify(reservationsRepositoryHelper, never()).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, never()).execute(any());
         verify(calculateOutcomeHelper, never()).calculate(any());

@@ -57,8 +57,9 @@ public class prosecutionConcludedScheduler {
         if (hearingEntity != null) {
             if (isCCConclusion(hearingEntity)) {
                 prosecutionConcludedService.execute(prosecutionConcluded);
-            } else
+            } else {
                 updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
+            }
         }
     }
 

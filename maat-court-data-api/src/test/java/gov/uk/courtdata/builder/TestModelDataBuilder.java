@@ -609,20 +609,6 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static FinancialRepOrderDTO getRepOrdersDTO(Integer id) {
-        return FinancialRepOrderDTO.builder()
-                .id(id)
-                .catyCaseType("case-type")
-                .magsOutcome("outcome")
-                .magsOutcomeDate(TEST_DATE.toString())
-                .magsOutcomeDateSet(TEST_DATE.toLocalDate())
-                .committalDate(TEST_DATE.toLocalDate())
-                .repOrderDecisionReasonCode("rder-code")
-                .crownRepOrderDecision("cc-rep-doc")
-                .crownRepOrderType("cc-rep-type")
-                .build();
-    }
-
     public static HardshipReviewDTO getHardshipReviewDTOWithRelationships() {
         HardshipReviewDTO hardship = getHardshipReviewDTO();
         hardship.setReviewDetails(List.of(getHardshipReviewDetail()));

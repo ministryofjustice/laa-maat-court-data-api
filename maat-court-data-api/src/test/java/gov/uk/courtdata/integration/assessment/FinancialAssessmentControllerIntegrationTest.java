@@ -6,7 +6,6 @@ import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.dto.FinancialRepOrderDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
@@ -46,7 +45,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private final Integer REP_ID_WITH_OUTSTANDING_ASSESSMENTS = 1111;
     private final Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = 2222;
     private final Integer REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS = 3333;
-
     private final Integer REP_ID_DEFAULT = 4444;
 
     @Autowired
@@ -97,6 +95,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     private void setupTestData() {
 
+        Integer REP_ID_DEFAULT = 4444;
         existingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_DEFAULT));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_ASSESSMENTS));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS));
@@ -239,7 +238,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         expectedResponse.setAssessmentDetails(List.of(TestModelDataBuilder.getFinancialAssessmentDetails()));
         expectedResponse.setAssessmentType("INIT");
         expectedResponse.setInitialAssessmentDate(body.getInitialAssessmentDate());
-        expectedResponse.setRepOrder(FinancialRepOrderDTO.builder().id(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS).build());
 
         MvcResult result =
                 runSuccessScenario(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
@@ -340,7 +338,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         expectedResponse.setDateCreated(assessmentToUpdate.getDateCreated());
         expectedResponse.setCmuId(assessmentToUpdate.getCmuId());
         expectedResponse.setUsn(assessmentToUpdate.getUsn());
-        expectedResponse.setRepOrder(TestModelDataBuilder.getRepOrdersDTO(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS));
+
 
         MvcResult result =
                 runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));

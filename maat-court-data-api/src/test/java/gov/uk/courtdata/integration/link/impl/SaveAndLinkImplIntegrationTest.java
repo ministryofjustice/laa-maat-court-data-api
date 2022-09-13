@@ -59,9 +59,12 @@ public class SaveAndLinkImplIntegrationTest {
     private RepOrderRepository repOrderRepository;
     @Autowired
     private TestEntityDataBuilder testEntityDataBuilder;
+    @Autowired
+    private FinancialAssessmentRepository financialAssessmentRepository;
 
     @BeforeEach
     public void setup() throws Exception {
+        financialAssessmentRepository.deleteAll();
         wqCoreRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();
         caseRepository.deleteAll();

@@ -35,7 +35,7 @@ public class HearingsService {
         return hearing;
     }
 
-    public WQHearingEntity getWqHearingEntity(ProsecutionConcluded prosecutionConcluded) {
+    private WQHearingEntity getWqHearingEntity(ProsecutionConcluded prosecutionConcluded) {
         List<WQHearingEntity> wqHearingEntityList = wqHearingRepository
                 .findByMaatIdAndHearingUUID(prosecutionConcluded.getMaatId(), prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
         return !wqHearingEntityList.isEmpty() ? wqHearingEntityList.get(0) : null;

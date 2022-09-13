@@ -46,7 +46,6 @@ public class prosecutionConcludedScheduler {
                 .values()
                 .stream()
                 .map(this::convertToObject)
-                .filter(prosecutionConcluded -> null != hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded))
                 .forEach(this::processCaseConclusion);
 
         log.info("Case conclusions are processed");
@@ -54,15 +53,17 @@ public class prosecutionConcludedScheduler {
     }
 
     private void processCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
-        if (isCCConclusion(prosecutionConcluded)) {
-            prosecutionConcludedService.execute(prosecutionConcluded);
-        } else if (isMAGSConclusion(prosecutionConcluded)) {
-            updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
+        WQHearingEntity hearingEntity = hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded);
+        if (hearingEntity != null) {
+            if (isCCConclusion(hearingEntity)) {
+                prosecutionConcludedService.execute(prosecutionConcluded);
+            } else
+                updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
         }
     }
 
-    private boolean isCCConclusion(ProsecutionConcluded data) {
-        WQHearingEntity wqHearingEntity = hearingsService.getWqHearingEntity(data);
+    private boolean isCCConclusion(WQHearingEntity wqHearingEntity) {
+
         return JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType());
     }
 
@@ -80,11 +81,6 @@ public class prosecutionConcludedScheduler {
             concludedCase.setUpdatedTime(LocalDateTime.now());
         });
         prosecutionConcludedRepository.saveAll(processedCases);
-    }
-
-    private boolean isMAGSConclusion(ProsecutionConcluded concludedData) {
-        WQHearingEntity wqHearingEntity = hearingsService.getWqHearingEntity(concludedData);
-        return JurisdictionType.MAGISTRATES.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType());
     }
 
 

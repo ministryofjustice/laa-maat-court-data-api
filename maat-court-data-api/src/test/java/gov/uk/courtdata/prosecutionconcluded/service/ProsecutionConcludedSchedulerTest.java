@@ -40,13 +40,10 @@ public class ProsecutionConcludedSchedulerTest {
                 .maatId(1234)
                 .caseData("test".getBytes(StandardCharsets.UTF_8))
                 .build()));
-        WQHearingEntity wqHearingEntity = WQHearingEntity.builder().wqJurisdictionType("CROWN").build();
-        when(hearingsService.retrieveHearingForCaseConclusion(any())).
-                thenReturn(wqHearingEntity);
-        when(hearingsService.getWqHearingEntity(any())).
-                thenReturn(wqHearingEntity);
-
         //when
+        when(hearingsService.retrieveHearingForCaseConclusion(any())).
+                thenReturn(WQHearingEntity.builder().wqJurisdictionType("CROWN").build());
+
         prosecutionConcludedScheduler.process();
 
         //then
@@ -69,7 +66,7 @@ public class ProsecutionConcludedSchedulerTest {
         prosecutionConcludedScheduler.process();
 
         //then
-        verify(prosecutionConcludedService,never()).execute(any());
-        verify(prosecutionConcludedRepository,never()).saveAll(any());
+        verify(prosecutionConcludedService, never()).execute(any());
+        verify(prosecutionConcludedRepository, never()).saveAll(any());
     }
 }

@@ -32,7 +32,7 @@ public class ProsecutionConcludedSchedulerTest {
     private Gson gson;
 
     @Test
-    public void test_process() {
+    public void givenHearingISFound_whenSchedulerIsCalledThenCCtProcessIsTriggered() {
 
         //given
         when(prosecutionConcludedRepository.getConcludedCases()).thenReturn(List.of(ProsecutionConcludedEntity
@@ -40,13 +40,33 @@ public class ProsecutionConcludedSchedulerTest {
                 .maatId(1234)
                 .caseData("test".getBytes(StandardCharsets.UTF_8))
                 .build()));
+        //when
         when(hearingsService.retrieveHearingForCaseConclusion(any())).
                 thenReturn(WQHearingEntity.builder().wqJurisdictionType("CROWN").build());
 
-        //when
         prosecutionConcludedScheduler.process();
 
         //then
         verify(prosecutionConcludedService, atLeast(1)).execute(any());
+    }
+
+    @Test
+    public void givenHearingISNOTFound_whenSchedulerIsCalledThenCaseConclusionIsNotProcessIsTriggered() {
+
+        //given
+        when(prosecutionConcludedRepository.getConcludedCases()).thenReturn(List.of(ProsecutionConcludedEntity
+                .builder()
+                .maatId(1234)
+                .caseData("hearingIdWhereChangeOccurred".getBytes(StandardCharsets.UTF_8))
+                .build()));
+
+        when(hearingsService.retrieveHearingForCaseConclusion(any())).
+                thenReturn(null);
+        //when
+        prosecutionConcludedScheduler.process();
+
+        //then
+        verify(prosecutionConcludedService, never()).execute(any());
+        verify(prosecutionConcludedRepository, never()).saveAll(any());
     }
 }

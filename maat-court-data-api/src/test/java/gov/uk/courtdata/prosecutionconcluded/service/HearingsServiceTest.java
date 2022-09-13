@@ -35,6 +35,8 @@ class HearingsServiceTest {
     @Mock
     private WQHearingRepository wqHearingRepository;
 
+    @Mock
+    private ProsecutionConcludedDataService prosecutionConcludedDataService;
     @Test
     void givenAHearingThatDoesNotExist_whenRetrieveHearingForCaseConclusionIsInvoked_thenHearingProcessingIsTriggered() {
         runMissingHearingScenario();
@@ -58,6 +60,8 @@ class HearingsServiceTest {
 
         verify(wqHearingRepository, atLeast(1)).findByMaatIdAndHearingUUID(maatId, hearingUuid.toString());
         verify(courtDataAdapterClient, never()).triggerHearingProcessing(hearingUuid, laaTransactionId);
+        verify(wqHearingRepository, atLeast(1)).findByMaatIdAndHearingUUID(maatId, hearingUuid.toString());
+
     }
 
 
@@ -69,7 +73,8 @@ class HearingsServiceTest {
         assertNull(hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded));
 
         verify(wqHearingRepository, atLeast(1)).findByMaatIdAndHearingUUID(maatId, hearingUuid.toString());
-        verify(courtDataAdapterClient, atLeastOnce()).triggerHearingProcessing(hearingUuid, laaTransactionId);
+        verify(prosecutionConcludedDataService, atLeastOnce()).execute(prosecutionConcluded);
+
     }
 
     private ProsecutionConcluded getProsecutionConcluded() {

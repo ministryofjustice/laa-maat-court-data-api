@@ -22,11 +22,14 @@ public class HearingsService {
 
     private final CourtDataAdapterClient courtDataAdapterClient;
 
+    private final ProsecutionConcludedDataService prosecutionConcludedDataService;
+
     public WQHearingEntity retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
         WQHearingEntity hearing = getWqHearingEntity(prosecutionConcluded);
 
         if (hearing == null && prosecutionConcluded.isConcluded()) {
             triggerHearingDataProcessing(prosecutionConcluded);
+            prosecutionConcludedDataService.execute(prosecutionConcluded);
         }
 
         return hearing;
@@ -47,4 +50,6 @@ public class HearingsService {
             log.info(exception.getMessage());
         }
     }
+
+
 }

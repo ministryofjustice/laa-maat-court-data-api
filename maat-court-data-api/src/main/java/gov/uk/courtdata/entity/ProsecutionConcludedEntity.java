@@ -36,6 +36,8 @@ public class ProsecutionConcludedEntity {
     private LocalDateTime createdTime;
     @Column(name = "UPDATED_TIME")
     private LocalDateTime updatedTime;
+    @Column(name = "RETRY_COUNT")
+    private Integer retryCount;
 
 
 }

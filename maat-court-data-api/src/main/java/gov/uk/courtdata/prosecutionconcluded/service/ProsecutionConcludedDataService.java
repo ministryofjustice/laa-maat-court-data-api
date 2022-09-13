@@ -26,19 +26,35 @@ public class ProsecutionConcludedDataService {
 
     @Transactional
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
-        log.info("Scheduling MAAT -ID {} for later processing", prosecutionConcluded.getMaatId());
-        ProsecutionConcludedEntity prosecutionConcludedEntity = ProsecutionConcludedEntity
+
+        Integer maatId = prosecutionConcluded.getMaatId();
+        log.info("Scheduling MAAT -ID {} for later processing", maatId);
+
+        List<ProsecutionConcludedEntity> prosecutionConcludedEntityList = prosecutionConcludedRepository.getByMaatId(maatId);
+        if (prosecutionConcludedEntityList.isEmpty()) {
+            ProsecutionConcludedEntity prosecutionConcludedEntity = build(prosecutionConcluded, maatId);
+            prosecutionConcludedRepository.save(prosecutionConcludedEntity);
+        } else {
+            prosecutionConcludedEntityList.forEach(entity -> {
+                entity.setRetryCount(entity.getRetryCount() + 1);
+                entity.setUpdatedTime(LocalDateTime.now());
+            });
+            prosecutionConcludedRepository.saveAll(prosecutionConcludedEntityList);
+        }
+        log.info("MAAT -ID {} scheduling is complete", maatId);
+    }
+
+    private ProsecutionConcludedEntity build(ProsecutionConcluded prosecutionConcluded, Integer maatId) {
+        return ProsecutionConcludedEntity
                 .builder()
-                .maatId(prosecutionConcluded.getMaatId())
+                .maatId(maatId)
                 .hearingId(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString())
                 .caseData(convertAsByte(prosecutionConcluded))
                 .status(CaseConclusionStatus.PENDING.name())
                 .createdTime(LocalDateTime.now())
+                .retryCount(0)
                 .updatedTime(LocalDateTime.now())
                 .build();
-
-        prosecutionConcludedRepository.save(prosecutionConcludedEntity);
-        log.info("MAAT -ID {} scheduling is complete", prosecutionConcluded.getMaatId());
     }
 
     private byte[] convertAsByte(final ProsecutionConcluded message) {
@@ -52,7 +68,7 @@ public class ProsecutionConcludedDataService {
         List<ProsecutionConcludedEntity> processedCases = prosecutionConcludedRepository.getByMaatId(maatId);
         processedCases.forEach(concludedCase -> {
             concludedCase.setStatus(CaseConclusionStatus.PROCESSED.name());
-            concludedCase.setCreatedTime(LocalDateTime.now());
+            concludedCase.setUpdatedTime(LocalDateTime.now());
         });
         prosecutionConcludedRepository.saveAll(processedCases);
     }

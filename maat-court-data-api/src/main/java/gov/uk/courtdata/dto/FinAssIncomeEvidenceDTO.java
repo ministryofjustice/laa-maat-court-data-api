@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -26,5 +24,6 @@ public class FinAssIncomeEvidenceDTO implements Serializable {
     private String mandatory;
     private String otherText;
     private String adhoc;
-    private IncomeEvidenceDTO inevEvidence;
+    private String inevEvidence;
+    private ApplicantDTO appl;
 }

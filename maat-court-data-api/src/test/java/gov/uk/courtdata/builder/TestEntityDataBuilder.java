@@ -371,15 +371,8 @@ public class TestEntityDataBuilder {
                 .userCreated(TEST_USER)
                 .userModified(TEST_USER)
                 .active("Y")
-                .inevEvidence(getIncomeEvidence())
+                .inevEvidence("INE")
                 .build();
     }
 
-    public static IncomeEvidence getIncomeEvidence() {
-       return IncomeEvidence.builder().id("1")
-               .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-               .description("34324")
-               .userCreated(TEST_USER)
-               .build();
-    }
 }

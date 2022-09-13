@@ -47,7 +47,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private final Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = 2222;
     private final Integer REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS = 3333;
 
-    private final Integer  REP_ID_DEFAULT = 4444;
+    private final Integer REP_ID_DEFAULT = 4444;
 
     @Autowired
     private FinancialAssessmentRepository financialAssessmentRepository;
@@ -74,8 +74,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     private List<FinancialAssessmentEntity> existingAssessmentEntities;
     private RepOrderEntity existingRepOrder;
-    @Autowired
-    private IncomeEvidenceRepository incomeEvidenceRepository;
 
 
     @BeforeEach
@@ -95,7 +93,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         financialAssessmentRepository.deleteAll();
         newWorkReasonRepository.deleteAll();
         repOrderRepository.deleteAll();
-        incomeEvidenceRepository.deleteAll();
     }
 
     private void setupTestData() {
@@ -104,7 +101,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_ASSESSMENTS));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS));
-        incomeEvidenceRepository.save(TestEntityDataBuilder.getIncomeEvidence());
 
         NewWorkReasonEntity newWorkReasonEntity = newWorkReasonRepository.save(
                 TestEntityDataBuilder.getFmaNewWorkReasonEntity());
@@ -152,7 +148,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
                 assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(testAssessment),
                 get(ASSESSMENT_URL, testAssessment.getId()));
     }
-    
+
     @Test
     public void givenAValidAssessmentId_whenGetAssessmentIsInvoked_theCorrectRelationshipsResponseIsReturned() throws Exception {
         var testAssessment = existingAssessmentEntities.get(3);

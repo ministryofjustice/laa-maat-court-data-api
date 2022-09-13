@@ -3,8 +3,6 @@ package gov.uk.courtdata.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
@@ -55,9 +53,8 @@ public class FinAssIncomeEvidenceEntity {
     @Column(name = "ADHOC", length = 20)
     private String adhoc;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "INEV_EVIDENCE", nullable = false)
-    private IncomeEvidence inevEvidence;
+    @Column(name = "INEV_EVIDENCE", length = 20)
+    private String inevEvidence;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "APPL_ID")

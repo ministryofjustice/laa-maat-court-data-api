@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -30,11 +30,11 @@ public class ApplicantDTO implements Serializable {
     private String bankAccountNo;
     private String bankAccountName;
     private String sendToCclf;
-    private Instant dateCreated;
+    private LocalDateTime dateCreated;
     private String userCreated;
-    private Instant dateModified;
+    private LocalDateTime dateModified;
     private String userModified;
     private String prefPaymentDay;
-    private LocalDate specialInvestigation;
+    private LocalDateTime specialInvestigation;
     private String phoneWork;
 }

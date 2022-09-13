@@ -29,7 +29,7 @@ public class PassportAssessmentImpl {
     }
 
     public PassportAssessmentEntity findByRepId(int repId) {
-        return passportAssessmentRepository.findByRepId(repId);
+        return passportAssessmentRepository.findByRepId(repId).orElse(null);
     }
 
     public PassportAssessmentEntity update(PassportAssessmentDTO passportAssessmentDTO) {
@@ -75,13 +75,13 @@ public class PassportAssessmentImpl {
 
     public void setOldPassportAssessmentAsReplaced(PassportAssessmentEntity passportAssessment, Integer financialAssessmentId) {
         passportAssessmentRepository.updatePreviousPassportAssessmentsAsReplaced(
-                passportAssessment.getRepId(), passportAssessment.getId()
+                passportAssessment.getRepOrder().getId(), passportAssessment.getId()
         );
         financialAssessmentRepository.updateAllPreviousFinancialAssessmentsAsReplaced(
-                passportAssessment.getRepId()
+                passportAssessment.getRepOrder().getId()
         );
         hardshipReviewRepository.updateOldHardshipReviews(
-                passportAssessment.getRepId(), financialAssessmentId
+                passportAssessment.getRepOrder().getId(), financialAssessmentId
         );
     }
 }

@@ -121,7 +121,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
         passportAssessmentRepository.save(
                 PassportAssessmentEntity.builder()
-                        .repId(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS)
+                        .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS))
                         .pastStatus("IN PROGRESS")
                         .build());
     }

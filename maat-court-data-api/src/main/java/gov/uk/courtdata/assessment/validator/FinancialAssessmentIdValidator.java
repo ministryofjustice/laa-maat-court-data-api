@@ -1,7 +1,6 @@
 package gov.uk.courtdata.assessment.validator;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.validator.IValidator;
@@ -23,14 +22,12 @@ public class FinancialAssessmentIdValidator implements IValidator<Void, Integer>
     public Optional<Void> validate(final Integer assessmentId) {
 
         if (assessmentId != null && assessmentId > 0) {
-            Optional<FinancialAssessmentEntity> assessmentEntity = financialAssessmentRepository.findById(assessmentId);
-            if (assessmentEntity.isEmpty())
+            if (!financialAssessmentRepository.existsById(assessmentId))
                 throw new ValidationException(assessmentId + " is invalid");
             return Optional.empty();
 
         } else {
             throw new ValidationException("Financial Assessment id is required");
         }
-
     }
 }

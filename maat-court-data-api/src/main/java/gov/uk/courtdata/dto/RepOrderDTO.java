@@ -31,5 +31,7 @@ public class RepOrderDTO {
     private String crownRepOrderType;
     private LocalDateTime assessmentDateCompleted;
     @Builder.Default
+    private List<PassportAssessmentDTO> passportAssessments = new ArrayList<>();
+    @Builder.Default
     private List<FinancialAssessmentDTO> financialAssessments = new ArrayList<>();
 }

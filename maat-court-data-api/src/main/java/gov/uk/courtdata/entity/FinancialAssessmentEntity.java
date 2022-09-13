@@ -40,8 +40,9 @@ public class FinancialAssessmentEntity implements Serializable {
     @Column(name = "ID")
     private Integer id;
 
+    @ToString.Exclude
     @JsonBackReference
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "REP_ID", nullable = false, updatable = false)
     private RepOrderEntity repOrder;
 
@@ -53,7 +54,7 @@ public class FinancialAssessmentEntity implements Serializable {
 
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "NWOR_CODE", nullable = false)
     private NewWorkReasonEntity newWorkReason;
 
@@ -165,7 +166,7 @@ public class FinancialAssessmentEntity implements Serializable {
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
     @JsonManagedReference
-    @OneToMany(mappedBy = "financialAssessment", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "financialAssessment", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<FinancialAssessmentDetailEntity> assessmentDetails = new ArrayList<>();
 
     public void addAssessmentDetail(FinancialAssessmentDetailEntity assessmentDetailEntity) {
@@ -178,7 +179,7 @@ public class FinancialAssessmentEntity implements Serializable {
 
     @ToString.Exclude
     @JsonManagedReference
-    @OneToMany(mappedBy = "financialAssessment", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "financialAssessment", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ChildWeightingsEntity> childWeightings = new ArrayList<>();
 
     public void addChildWeighting(ChildWeightingsEntity childWeightingsEntity) {

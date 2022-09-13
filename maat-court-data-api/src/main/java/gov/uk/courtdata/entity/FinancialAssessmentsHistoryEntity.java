@@ -48,7 +48,7 @@ public class FinancialAssessmentsHistoryEntity {
 
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "NWOR_CODE", nullable = false)
     private NewWorkReasonEntity newWorkReason;
 
@@ -210,9 +210,9 @@ public class FinancialAssessmentsHistoryEntity {
 
     @Builder.Default()
     @ToString.Exclude()
-    @Fetch(FetchMode.JOIN)
     @JsonManagedReference
-    @OneToMany(mappedBy = "financialAssessmentsHistory", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.JOIN)
+    @OneToMany(mappedBy = "financialAssessmentsHistory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FinancialAssessmentDetailsHistoryEntity> assessmentDetails = new ArrayList<>();
 
     public void addFinancialAssessmentDetailsHistoryEntity(FinancialAssessmentDetailsHistoryEntity assessmentDetail) {
@@ -223,7 +223,7 @@ public class FinancialAssessmentsHistoryEntity {
     @Builder.Default()
     @ToString.Exclude()
     @JsonManagedReference
-    @OneToMany(mappedBy = "financialAssessmentHistory", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "financialAssessmentHistory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChildWeightHistoryEntity> childWeightings = new ArrayList<>();
 
     public void addChildWeightHistoryEntity(ChildWeightHistoryEntity childWeighting) {

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.assessment.validator;
 
-import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +13,8 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.any;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,27 +28,31 @@ public class FinancialAssessmentIdValidatorTest {
 
     @Test
     public void testWhenFinancialAssessmentIdIsNull_thenThrowsException() {
-        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
-                () -> financialAssessmentIdValidator.validate(null));
-        assertThat(validationException.getMessage()).isEqualTo("Financial Assessment id is required");
+        assertThatThrownBy(
+                () -> financialAssessmentIdValidator.validate(null)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessage("Financial Assessment id is required");
     }
 
     @Test
     public void testWhenFinancialAssessmentIdIsInvalid_thenThrowsException() {
-        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
-                () -> financialAssessmentIdValidator.validate(-1));
-        assertThat(validationException.getMessage()).isEqualTo("Financial Assessment id is required");
+        assertThatThrownBy(
+                () -> financialAssessmentIdValidator.validate(-1)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessage("Financial Assessment id is required");
     }
 
     @Test
     public void testWhenFinancialAssessmentIdExists_thenValidationPasses() {
-        when(financialAssessmentRepository.findById(any())).thenReturn(java.util.Optional.of(new FinancialAssessmentEntity()));
+        when(financialAssessmentRepository.existsById(anyInt()))
+                .thenReturn(true);
         assertThat(financialAssessmentIdValidator.validate(1000)).isEqualTo(Optional.empty());
     }
 
     @Test
     public void testWhenFinancialAssessmentIdDoesNotExist_thenThrowsException() {
-        when(financialAssessmentRepository.findById(any())).thenReturn(Optional.empty());
+        when(financialAssessmentRepository.existsById(anyInt()))
+                .thenReturn(false);
         ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> financialAssessmentIdValidator.validate(1000));
         assertThat(validationException.getMessage()).isEqualTo(format("%d is invalid", 1000));

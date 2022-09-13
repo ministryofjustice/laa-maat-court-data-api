@@ -104,14 +104,14 @@ public class HardshipReviewEntity {
 
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "NWOR_CODE", nullable = false)
     private NewWorkReasonEntity newWorkReason;
 
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
     @JsonManagedReference
-    @OneToMany(mappedBy = "hardshipReview", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "hardshipReview", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<HardshipReviewDetailEntity> reviewDetails = new ArrayList<>();
 
     public void addReviewDetail(HardshipReviewDetailEntity detailEntity) {
@@ -129,7 +129,7 @@ public class HardshipReviewEntity {
 
     @ToString.Exclude
     @JoinColumn(name = "HARE_ID", nullable = false)
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<HardshipReviewProgressEntity> reviewProgressItems = new ArrayList<>();
 
     public void addReviewProgressItem(HardshipReviewProgressEntity progressEntity) {

@@ -369,7 +369,6 @@ public class TestModelDataBuilder {
         return PassportAssessmentDTO.builder()
                 .repId(REP_ID)
                 .nworCode("FMA")
-                .financialAssessmentId(FINANCIAL_ASSESSMENT_ID)
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("test-f")
                 .cmuId(30)

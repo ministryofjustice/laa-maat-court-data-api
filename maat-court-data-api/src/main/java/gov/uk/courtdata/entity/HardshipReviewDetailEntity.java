@@ -92,7 +92,7 @@ public class HardshipReviewDetailEntity {
 
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "HRDR_ID", nullable = false)
     private HardshipReviewDetailReasonEntity detailReason;
 

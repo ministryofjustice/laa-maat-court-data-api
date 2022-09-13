@@ -37,6 +37,8 @@ public class TestModelDataBuilder {
 
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
 
+    public static final String FINANCIAL_ASSESSMENT_STATUS = "COMPLETE";
+
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
 

@@ -180,4 +180,15 @@ public class FinancialAssessmentEntity implements Serializable {
         childWeightingsEntity.setFinancialAssessment(this);
         this.childWeightings.add(childWeightingsEntity);
     }
+
+    @ToString.Exclude
+    @JsonManagedReference
+    @OneToMany(mappedBy = "financialAssessment", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private final List<FinAssIncomeEvidenceEntity> finAssIncomeEvidences = new ArrayList<>();
+
+    public void addFinAssIncomeEvidences(FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity) {
+        finAssIncomeEvidenceEntity.setFinancialAssessment(this);
+        this.finAssIncomeEvidences.add(finAssIncomeEvidenceEntity);
+    }
+
 }

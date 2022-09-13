@@ -45,6 +45,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private final Integer REP_ID_WITH_OUTSTANDING_ASSESSMENTS = 1111;
     private final Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = 2222;
     private final Integer REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS = 3333;
+    private final Integer REP_ID_DEFAULT = 4444;
 
     @Autowired
     private FinancialAssessmentRepository financialAssessmentRepository;
@@ -72,6 +73,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private List<FinancialAssessmentEntity> existingAssessmentEntities;
     private RepOrderEntity existingRepOrder;
 
+
     @BeforeEach
     public void setUp() throws Exception {
         setupTestData();
@@ -92,6 +94,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     }
 
     private void setupTestData() {
+
         Integer REP_ID_DEFAULT = 4444;
         existingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_DEFAULT));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_ASSESSMENTS));
@@ -143,6 +146,12 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         runSuccessScenario(
                 assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(testAssessment),
                 get(ASSESSMENT_URL, testAssessment.getId()));
+    }
+
+    @Test
+    public void givenAValidAssessmentId_whenGetAssessmentIsInvoked_theCorrectRelationshipsResponseIsReturned() throws Exception {
+        var testAssessment = existingAssessmentEntities.get(3);
+        runSuccessScenario(assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(testAssessment), get(ASSESSMENT_URL, testAssessment.getId()));
     }
 
     @Test
@@ -249,6 +258,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         expectedResponse.getChildWeightings().get(0).setId(createdAssessment.getChildWeightings().get(0).getId());
         expectedResponse.getAssessmentDetails().get(0).setDateModified(createdAssessment.getAssessmentDetails().get(0).getDateModified());
 
+
         SoftAssertions.assertSoftly(softly -> {
             assertThat(matchingAssessments.size()).isEqualTo(2);
             assertThat((int) matchingAssessments.stream().filter(assessment -> assessment.getReplaced().equals("Y")).count())
@@ -328,6 +338,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         expectedResponse.setDateCreated(assessmentToUpdate.getDateCreated());
         expectedResponse.setCmuId(assessmentToUpdate.getCmuId());
         expectedResponse.setUsn(assessmentToUpdate.getUsn());
+
 
         MvcResult result =
                 runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));

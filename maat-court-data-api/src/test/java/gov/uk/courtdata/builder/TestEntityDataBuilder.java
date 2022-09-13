@@ -52,8 +52,8 @@ public class TestEntityDataBuilder {
                 .cmuId(30)
                 .fassInitStatus("COMPLETE")
                 .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
-                .initTotAggregatedIncome(BigDecimal.valueOf(15600.00))
-                .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
+                .initTotAggregatedIncome(BigDecimal.valueOf(15600.00).setScale(2))
+                .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00).setScale(2))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
                 .userModified("test-f")
@@ -97,6 +97,7 @@ public class TestEntityDataBuilder {
         details.setId(null);
         financialAssessment.addAssessmentDetail(details);
         financialAssessment.addChildWeighting(getChildWeightingsEntity());
+        financialAssessment.addFinAssIncomeEvidences(getFinAssIncomeEvidenceEntity());
         return financialAssessment;
     }
 
@@ -104,9 +105,9 @@ public class TestEntityDataBuilder {
         return FinancialAssessmentDetailEntity.builder()
                 .id(23456)
                 .criteriaDetailId(40)
-                .applicantAmount(BigDecimal.valueOf(1650.00))
+                .applicantAmount(BigDecimal.valueOf(1650.00).setScale(2))
                 .applicantFrequency(Frequency.MONTHLY)
-                .partnerAmount(BigDecimal.valueOf(1650.00))
+                .partnerAmount(BigDecimal.valueOf(1650.00).setScale(2))
                 .partnerFrequency(Frequency.TWO_WEEKLY)
                 .userCreated("test-f")
                 .userModified("test-f")
@@ -361,4 +362,17 @@ public class TestEntityDataBuilder {
                 .caseUrn("testCaseURN")
                 .build();
     }
+
+    public static FinAssIncomeEvidenceEntity getFinAssIncomeEvidenceEntity() {
+
+        return FinAssIncomeEvidenceEntity.builder().id(1)
+                .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated(TEST_USER)
+                .userModified(TEST_USER)
+                .active("Y")
+                .inevEvidence("INE")
+                .build();
+    }
+
 }

@@ -23,7 +23,9 @@ public class RepOrderService {
 
     @Transactional(readOnly = true)
     public RepOrderDTO find(Integer repId) {
+        System.out.println("REP_ID ------------ : " + repId);
         RepOrderEntity repOrderEntity = repOrderImpl.find(repId);
+        System.out.println("&&&&&&& repOrderEntity &&&&&& : " + repOrderEntity.toString());
         if (repOrderEntity == null) {
             throw new RequestedObjectNotFoundException(String.format("No Rep Order found for ID: %s", repId));
         }

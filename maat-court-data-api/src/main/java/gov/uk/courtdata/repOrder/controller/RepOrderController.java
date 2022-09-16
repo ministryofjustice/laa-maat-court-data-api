@@ -2,9 +2,19 @@ package gov.uk.courtdata.repOrder.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.repOrder.service.RepOrderService;
 import gov.uk.courtdata.repOrder.validator.UpdateAppDateCompletedValidator;
+import gov.uk.courtdata.repository.RepOrderRepository;
+import graphql.ExecutionResult;
+import graphql.GraphQL;
+import graphql.schema.DataFetcher;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.idl.RuntimeWiring;
+import graphql.schema.idl.SchemaGenerator;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,9 +23,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 @Slf4j
 @XRayEnabled
@@ -27,6 +46,54 @@ public class RepOrderController {
 
     private final RepOrderService repOrderService;
     private final UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
+    private final RepOrderRepository repOrderRepository;
+
+    @Value("classpath:schema.graphql")
+    private Resource schemaResource;
+
+    private GraphQL graphQL;
+
+    @PostConstruct
+    public void loadSchema() {
+        try {
+            InputStream schemaFile = schemaResource.getInputStream();
+            TypeDefinitionRegistry registry = new SchemaParser().parse(schemaFile);
+            RuntimeWiring wiring = buildWiring();
+            GraphQLSchema schema = new SchemaGenerator().makeExecutableSchema(registry, wiring);
+            graphQL = GraphQL.newGraphQL(schema).build();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private RuntimeWiring buildWiring() {
+        DataFetcher<List<RepOrderEntity>> f1 = d -> {
+            return (List<RepOrderEntity>) repOrderRepository.findAll();
+        };
+
+        DataFetcher<RepOrderEntity> f2 = d -> {
+            System.out.println("REP_ID ******************* : " + d.getArgument("repId"));
+            return (RepOrderEntity) repOrderRepository.findById(d.getArgument("repId")).get();
+        };
+
+        return RuntimeWiring.newRuntimeWiring().type("Query",
+                typeWriting -> typeWriting.dataFetcher("findAll", f1).
+                        dataFetcher("findById", f2)).build();
+    }
+
+    @PostMapping("/getAll")
+    public ResponseEntity<Object> getAll(@RequestBody String query) {
+        ExecutionResult r = graphQL.execute(query);
+        return new ResponseEntity<Object>(r, HttpStatus.OK);
+    }
+
+    @PostMapping("/getRepOrderById")
+    @Transactional
+    public ResponseEntity<Object> getRepOrderById(@RequestBody String query) {
+        System.out.println("GRAPHQL query : " + query);
+        ExecutionResult r = graphQL.execute(query);
+        return new ResponseEntity<Object>(r, HttpStatus.OK);
+    }
 
     @GetMapping(
             value = "/{repId}",

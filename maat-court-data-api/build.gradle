@@ -118,6 +118,8 @@ dependencies {
     implementation group: 'org.codehaus.sonar-plugins', name: 'sonar-pitest-plugin', version: versions.sonarPitest
     implementation group: 'org.pitest', name: 'pitest', version: versions.pitest
 
+    implementation 'com.graphql-java:graphql-java:19.2'
+
     // Test Only
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

@@ -57,6 +57,8 @@ public class TestEntityDataBuilder {
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
                 .userModified("test-f")
+                .firstReminderDate(LocalDateTime.parse("2021-10-09T15:02:25"))
+                .secondReminderDate(LocalDateTime.parse("2022-10-09T15:02:25"))
                 .build();
     }
 

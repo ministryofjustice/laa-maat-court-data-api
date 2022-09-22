@@ -160,6 +160,9 @@ public class FinancialAssessmentEntity implements Serializable {
     @Column(name = "SECOND_INCOME_REMINDER_DATE")
     private LocalDateTime secondReminderDate;
 
+    @Column(name = "ALL_INC_EVIDENCE_REC_DATE")
+    private LocalDateTime evidenceReceivedDate;
+
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
     @JsonManagedReference

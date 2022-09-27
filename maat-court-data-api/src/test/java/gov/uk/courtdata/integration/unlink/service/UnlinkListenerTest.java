@@ -56,9 +56,12 @@ public class UnlinkListenerTest {
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
     @Autowired
     private FinancialAssessmentRepository financialAssessmentRepository;
+    @Autowired
+    private PassportAssessmentRepository passportAssessmentRepository;
 
     @BeforeEach
     public void setUp() {
+        passportAssessmentRepository.deleteAll();
         financialAssessmentRepository.deleteAll();
         wqCoreRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();

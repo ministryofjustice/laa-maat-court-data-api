@@ -81,6 +81,8 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     private LaaStatusUpdateController laaStatusUpdateController;
     @Autowired
     private FinancialAssessmentRepository financialAssessmentRepository;
+    @Autowired
+    private PassportAssessmentRepository passportAssessmentRepository;
 
     private MockWebServer mockCdaWebServer;
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
@@ -100,6 +102,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         defendantRepository.deleteAll();
         sessionRepository.deleteAll();
         offenceRepository.deleteAll();
+        passportAssessmentRepository.deleteAll();
         repOrderRepository.deleteAll();
         solicitorMAATDataRepository.deleteAll();
         defendantMAATDataRepository.deleteAll();

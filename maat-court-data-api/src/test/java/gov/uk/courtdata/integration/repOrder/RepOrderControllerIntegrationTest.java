@@ -7,6 +7,7 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import org.junit.jupiter.api.AfterAll;
@@ -32,8 +33,6 @@ public class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Autowired
     private RepOrderRepository repOrderRepository;
-    @Autowired
-    private FinancialAssessmentRepository financialAssessmentRepository;
 
     public static final Integer INVALID_REP_ID = 2345;
     public static final String BASE_URL = "/api/internal/v1/assessment/rep-orders/";
@@ -44,8 +43,11 @@ public class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @AfterAll
-    static void cleanUp(@Autowired RepOrderRepository repOrderRepository, @Autowired FinancialAssessmentRepository financialAssessmentRepository) {
+    static void cleanUp(@Autowired RepOrderRepository repOrderRepository,
+                        @Autowired FinancialAssessmentRepository financialAssessmentRepository,
+                        @Autowired PassportAssessmentRepository passportAssessmentRepository) {
         financialAssessmentRepository.deleteAll();
+        passportAssessmentRepository.deleteAll();
         repOrderRepository.deleteAll();
     }
 

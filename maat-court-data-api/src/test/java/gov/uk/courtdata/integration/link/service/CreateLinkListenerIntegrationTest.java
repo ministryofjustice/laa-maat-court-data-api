@@ -55,10 +55,13 @@ public class CreateLinkListenerIntegrationTest {
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
     @Autowired
     private FinancialAssessmentRepository financialAssessmentRepository;
+    @Autowired
+    private PassportAssessmentRepository passportAssessmentRepository;
 
     @BeforeEach
     public void setUp() {
         financialAssessmentRepository.deleteAll();
+        passportAssessmentRepository.deleteAll();
         repOrderRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();
         repOrderDataRepository.deleteAll();

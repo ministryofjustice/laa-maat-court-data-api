@@ -61,10 +61,13 @@ public class SaveAndLinkImplIntegrationTest {
     private TestEntityDataBuilder testEntityDataBuilder;
     @Autowired
     private FinancialAssessmentRepository financialAssessmentRepository;
+    @Autowired
+    private PassportAssessmentRepository passportAssessmentRepository;
 
     @BeforeEach
     public void setup() throws Exception {
         financialAssessmentRepository.deleteAll();
+        passportAssessmentRepository.deleteAll();
         wqCoreRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();
         caseRepository.deleteAll();
@@ -76,8 +79,6 @@ public class SaveAndLinkImplIntegrationTest {
         resultRepository.deleteAll();
         repOrderDataRepository.deleteAll();
         repOrderRepository.deleteAll();
-
-
     }
 
     @Test

@@ -59,6 +59,8 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private RepOrderRepository repOrderRepository;
     @Autowired
     private MockNewWorkReasonRepository mockNewWorkReasonRepository;
+    @Autowired
+    private PassportAssessmentRepository passportAssessmentRepository;
 
     private HardshipReviewEntity existingHardshipReview;
     private HardshipReviewDetailReasonEntity existingHardshipReviewDetailReason;
@@ -75,6 +77,7 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         hardshipReviewDetailReasonRepository.deleteAll();
         financialAssessmentRepository.deleteAll();
         mockNewWorkReasonRepository.deleteAll();
+        passportAssessmentRepository.deleteAll();
         repOrderRepository.deleteAll();
 
         setupTestData();

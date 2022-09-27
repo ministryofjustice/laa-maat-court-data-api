@@ -47,7 +47,7 @@ public class ProsecutionConcludedSchedulerTest {
         prosecutionConcludedScheduler.process();
 
         //then
-        verify(prosecutionConcludedService, atLeast(1)).execute(any());
+        verify(prosecutionConcludedService, atLeast(1)).executeCCOutCome(any(),any());
     }
 
     @Test

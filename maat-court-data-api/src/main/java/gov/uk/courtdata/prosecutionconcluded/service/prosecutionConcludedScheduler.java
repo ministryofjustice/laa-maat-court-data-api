@@ -53,13 +53,19 @@ public class prosecutionConcludedScheduler {
     }
 
     private void processCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
-        WQHearingEntity hearingEntity = hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded);
-        if (hearingEntity != null) {
-            if (isCCConclusion(hearingEntity)) {
-                prosecutionConcludedService.execute(prosecutionConcluded);
-            } else {
-                updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
+        try {
+            WQHearingEntity hearingEntity = hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded);
+            if (hearingEntity != null) {
+                if (isCCConclusion(hearingEntity)) {
+                    prosecutionConcludedService.executeCCOutCome(prosecutionConcluded,hearingEntity);
+                } else {
+                    updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(),CaseConclusionStatus.PROCESSED);
+                }
             }
+        } catch (Exception exception){
+            log.error("Prosecution Conclusion failed for MAAT ID :" + prosecutionConcluded.getMaatId());
+            updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(),CaseConclusionStatus.ERROR);
+
         }
     }
 
@@ -75,10 +81,10 @@ public class prosecutionConcludedScheduler {
 
 
     @Transactional
-    public void updateConclusion(String hearingId) {
+    public void updateConclusion(String hearingId, CaseConclusionStatus caseConclusionStatus) {
         List<ProsecutionConcludedEntity> processedCases = prosecutionConcludedRepository.getByHearingId(hearingId);
         processedCases.forEach(concludedCase -> {
-            concludedCase.setStatus(CaseConclusionStatus.PROCESSED.name());
+            concludedCase.setStatus(caseConclusionStatus.name());
             concludedCase.setUpdatedTime(LocalDateTime.now());
         });
         prosecutionConcludedRepository.saveAll(processedCases);

@@ -55,19 +55,23 @@ public class ProsecutionConcludedService {
             if (reservationsRepositoryHelper.isMaatRecordLocked(prosecutionConcluded.getMaatId())) {
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
             } else {
-                List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummary();
-                List<OffenceSummary> trialOffences = offenceHelper
-                        .getTrialOffences(offenceSummaryList, prosecutionConcluded.getMaatId());
-
-                if (!trialOffences.isEmpty()) {
-                    log.info("Number of Valid offences for CC Outcome Calculations : {}", trialOffences.size());
-                    processOutcome(prosecutionConcluded, wqHearingEntity, trialOffences);
-                }
-                prosecutionConcludedDataService.updateConclusion(prosecutionConcluded.getMaatId());
-                log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
+                executeCCOutCome(prosecutionConcluded, wqHearingEntity);
             }
         }
 
+    }
+
+    public void executeCCOutCome(ProsecutionConcluded prosecutionConcluded, WQHearingEntity wqHearingEntity) {
+        List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummary();
+        List<OffenceSummary> trialOffences = offenceHelper
+                .getTrialOffences(offenceSummaryList, prosecutionConcluded.getMaatId());
+
+        if (!trialOffences.isEmpty()) {
+            log.info("Number of Valid offences for CC Outcome Calculations : {}", trialOffences.size());
+            processOutcome(prosecutionConcluded, wqHearingEntity, trialOffences);
+        }
+        prosecutionConcludedDataService.updateConclusion(prosecutionConcluded.getMaatId());
+        log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
     }
 
     private void processOutcome(ProsecutionConcluded prosecutionConcluded, WQHearingEntity wqHearingEntity, List<OffenceSummary> trialOffences) {

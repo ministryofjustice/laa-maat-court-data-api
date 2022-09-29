@@ -58,6 +58,7 @@ public class FinancialAssessmentDTO {
     private String rtCode;
     private LocalDateTime firstReminderDate;
     private LocalDateTime secondReminderDate;
+    private LocalDateTime evidenceReceivedDate;
     @Builder.Default
     private List<FinancialAssessmentDetails> assessmentDetails = new ArrayList<>();
     @Builder.Default

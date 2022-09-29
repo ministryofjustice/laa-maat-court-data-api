@@ -2,12 +2,10 @@ package gov.uk.courtdata.hearing.processor;
 
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +25,6 @@ public class HearingWQProcessor {
 
     private final WQSessionProcessor wqSessionProcessor;
 
-    @Transactional(rollbackFor = MAATCourtDataException.class)
     public void process(final HearingDTO hearingDTO) {
 
         log.info("Create WQ case");

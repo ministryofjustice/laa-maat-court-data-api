@@ -142,7 +142,7 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
             assertThat(receivedRequest.getBody().readUtf8()).isEmpty();
         });
 
-        assertThat(prosecutionConcludedRepository.findAll().size()).hasSisEqualTo(1);
+        assertThat(prosecutionConcludedRepository.findAll().size()).isEqualTo(1);
         assertThat(prosecutionConcludedRepository.findAll().get(0).getMaatId()).isEqualTo(56456);
     }
 

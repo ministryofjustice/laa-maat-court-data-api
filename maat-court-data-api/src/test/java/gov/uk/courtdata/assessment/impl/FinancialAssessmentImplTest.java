@@ -139,7 +139,7 @@ public class FinancialAssessmentImplTest {
     public void givenOutstandingFinancialAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentFoundResultIsRetrieved() {
         when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(1L);
         OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
-        assertThat(result.isOutstandingAssessments()).isEqualTo(true);
+        assertThat(result.isOutstandingAssessments()).isTrue();
         assertThat(result.getMessage()).isEqualTo(MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
     }
 
@@ -148,7 +148,7 @@ public class FinancialAssessmentImplTest {
         when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(0L);
         when(passportAssessmentRepository.findOutstandingPassportAssessments(any())).thenReturn(1L);
         OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
-        assertThat(result.isOutstandingAssessments()).isEqualTo(true);
+        assertThat(result.isOutstandingAssessments()).isTrue();
         assertThat(result.getMessage()).isEqualTo(MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
     }
 
@@ -170,7 +170,7 @@ public class FinancialAssessmentImplTest {
         when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(0L);
         when(passportAssessmentRepository.findOutstandingPassportAssessments(any())).thenReturn(0L);
         OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
-        assertThat(result.isOutstandingAssessments()).isEqualTo(false);
+        assertThat(result.isOutstandingAssessments()).isFalse();
     }
 
     @Test
@@ -182,7 +182,7 @@ public class FinancialAssessmentImplTest {
         );
 
         financialAssessmentImpl.updateAssessmentDetails(financialAssessment, existingAssessment);
-        assertThat(existingAssessment.getAssessmentDetails().size()).isEqualTo(0);
+        assertThat(existingAssessment.getAssessmentDetails().size()).isZero();
     }
 
     @Test

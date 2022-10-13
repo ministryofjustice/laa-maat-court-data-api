@@ -25,8 +25,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FinancialAssessmentImpl {
 
-    public static final String MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND = "An incomplete means assessment is associated with the current application";
-    public static final String MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND = "An incomplete passport assessment is associated with the current application";
+    public static final String MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND =
+            "An incomplete means assessment is associated with the current application";
+    public static final String MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND =
+            "An incomplete passport assessment is associated with the current application";
 
     private final FinancialAssessmentMapper assessmentMapper;
     private final PassportAssessmentRepository passportAssessmentRepository;
@@ -39,37 +41,38 @@ public class FinancialAssessmentImpl {
 
     public FinancialAssessmentEntity update(FinancialAssessmentDTO financialAssessment) {
         FinancialAssessmentEntity existingAssessment = financialAssessmentRepository.getById(financialAssessment.getId());
-        existingAssessment.setFassInitStatus(financialAssessment.getFassInitStatus());
-        existingAssessment.setFassFullStatus(financialAssessment.getFassFullStatus());
-        existingAssessment.setInitialAssessmentDate(financialAssessment.getInitialAssessmentDate());
-        existingAssessment.setFullAssessmentDate(financialAssessment.getFullAssessmentDate());
-        existingAssessment.setInitApplicationEmploymentStatus(financialAssessment.getInitApplicationEmploymentStatus());
-        existingAssessment.setInitialAscrId(financialAssessment.getInitialAscrId());
-        existingAssessment.setInitOtherBenefitNote(financialAssessment.getInitOtherBenefitNote());
-        existingAssessment.setInitOtherIncomeNote(financialAssessment.getInitOtherIncomeNote());
-        existingAssessment.setInitTotAggregatedIncome(financialAssessment.getInitTotAggregatedIncome());
-        existingAssessment.setInitAdjustedIncomeValue(financialAssessment.getInitAdjustedIncomeValue());
-        existingAssessment.setInitNotes(financialAssessment.getInitNotes());
-        existingAssessment.setInitResult(financialAssessment.getInitResult());
-        existingAssessment.setInitResultReason(financialAssessment.getInitResultReason());
-        existingAssessment.setFullResultReason(financialAssessment.getFullResultReason());
-        existingAssessment.setFullAssessmentNotes(financialAssessment.getFullAssessmentNotes());
-        existingAssessment.setFullResult(financialAssessment.getFullResult());
-        existingAssessment.setFullAdjustedLivingAllowance(financialAssessment.getFullAdjustedLivingAllowance());
-        existingAssessment.setFullTotalAnnualDisposableIncome(financialAssessment.getFullTotalAnnualDisposableIncome());
-        existingAssessment.setFullOtherHousingNote(financialAssessment.getFullOtherHousingNote());
-        existingAssessment.setFullTotalAggregatedExpenses(financialAssessment.getFullTotalAggregatedExpenses());
-        existingAssessment.setFullAscrId(financialAssessment.getFullAscrId());
-        existingAssessment.setIncomeEvidenceDueDate(financialAssessment.getIncomeEvidenceDueDate());
-        existingAssessment.setIncomeEvidenceNotes(financialAssessment.getIncomeEvidenceNotes());
-        existingAssessment.setDateCompleted(financialAssessment.getDateCompleted());
-        existingAssessment.setUserModified(financialAssessment.getUserModified());
 
-        if (existingAssessment.getFullAssessmentDate() != null) {
+        if (financialAssessment.getFullAssessmentDate() != null) {
             existingAssessment.setAssessmentType(FinancialAssessmentType.FULL.getValue());
+            existingAssessment.setFassFullStatus(financialAssessment.getFassFullStatus());
+            existingAssessment.setFullAssessmentDate(financialAssessment.getFullAssessmentDate());
+            existingAssessment.setFullResultReason(financialAssessment.getFullResultReason());
+            existingAssessment.setFullAssessmentNotes(financialAssessment.getFullAssessmentNotes());
+            existingAssessment.setFullResult(financialAssessment.getFullResult());
+            existingAssessment.setFullAdjustedLivingAllowance(financialAssessment.getFullAdjustedLivingAllowance());
+            existingAssessment.setFullTotalAnnualDisposableIncome(financialAssessment.getFullTotalAnnualDisposableIncome());
+            existingAssessment.setFullOtherHousingNote(financialAssessment.getFullOtherHousingNote());
+            existingAssessment.setFullTotalAggregatedExpenses(financialAssessment.getFullTotalAggregatedExpenses());
+            existingAssessment.setFullAscrId(financialAssessment.getFullAscrId());
         } else {
             existingAssessment.setAssessmentType(FinancialAssessmentType.INIT.getValue());
+            existingAssessment.setFassInitStatus(financialAssessment.getFassInitStatus());
+            existingAssessment.setInitialAssessmentDate(financialAssessment.getInitialAssessmentDate());
+            existingAssessment.setInitialAscrId(financialAssessment.getInitialAscrId());
+            existingAssessment.setInitOtherBenefitNote(financialAssessment.getInitOtherBenefitNote());
+            existingAssessment.setInitOtherIncomeNote(financialAssessment.getInitOtherIncomeNote());
+            existingAssessment.setInitTotAggregatedIncome(financialAssessment.getInitTotAggregatedIncome());
+            existingAssessment.setInitAdjustedIncomeValue(financialAssessment.getInitAdjustedIncomeValue());
+            existingAssessment.setInitNotes(financialAssessment.getInitNotes());
+            existingAssessment.setInitResult(financialAssessment.getInitResult());
+            existingAssessment.setInitResultReason(financialAssessment.getInitResultReason());
+            existingAssessment.setInitApplicationEmploymentStatus(financialAssessment.getInitApplicationEmploymentStatus());
         }
+
+        existingAssessment.setUserModified(financialAssessment.getUserModified());
+        existingAssessment.setIncomeEvidenceNotes(financialAssessment.getIncomeEvidenceNotes());
+        existingAssessment.setDateCompleted(financialAssessment.getDateCompleted());
+        existingAssessment.setIncomeEvidenceDueDate(financialAssessment.getIncomeEvidenceDueDate());
 
         if (!financialAssessment.getAssessmentDetails().isEmpty()) {
             updateAssessmentDetails(financialAssessment, existingAssessment);
@@ -108,11 +111,17 @@ public class FinancialAssessmentImpl {
     }
 
     void updateAssessmentDetails(FinancialAssessmentDTO financialAssessment, FinancialAssessmentEntity existingAssessment) {
-        existingAssessment.getAssessmentDetails()
-                .removeIf(detail -> !financialAssessment.getAssessmentDetails()
-                        .stream()
-                        .map(FinancialAssessmentDetails::getCriteriaDetailId).collect(Collectors.toList())
-                        .contains(detail.getCriteriaDetailId()));
+
+        boolean hasAssessmentTypeChanged =
+                !existingAssessment.getAssessmentType().equals(financialAssessment.getAssessmentType());
+
+        if (!hasAssessmentTypeChanged) {
+            existingAssessment.getAssessmentDetails()
+                    .removeIf(detail -> !financialAssessment.getAssessmentDetails()
+                            .stream()
+                            .map(FinancialAssessmentDetails::getCriteriaDetailId).collect(Collectors.toList())
+                            .contains(detail.getCriteriaDetailId()));
+        }
 
         for (FinancialAssessmentDetails detail : financialAssessment.getAssessmentDetails()) {
             FinancialAssessmentDetailEntity detailEntity =
@@ -163,7 +172,7 @@ public class FinancialAssessmentImpl {
 
         Long outstandingFinancialAssessments =
                 financialAssessmentRepository.findOutstandingFinancialAssessments(repId);
-        if (outstandingFinancialAssessments != null && outstandingFinancialAssessments > 0l) {
+        if (outstandingFinancialAssessments != null && outstandingFinancialAssessments > 0L) {
             return new OutstandingAssessmentResultDTO(
                     true, MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND
             );
@@ -171,7 +180,7 @@ public class FinancialAssessmentImpl {
 
         Long outstandingPassportAssessments =
                 passportAssessmentRepository.findOutstandingPassportAssessments(repId);
-        if (outstandingPassportAssessments != null && outstandingPassportAssessments > 0l) {
+        if (outstandingPassportAssessments != null && outstandingPassportAssessments > 0L) {
             return new OutstandingAssessmentResultDTO(
                     true, MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND
             );

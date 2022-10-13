@@ -50,14 +50,14 @@ public class FinancialAssessmentImplTest {
 
 
     @Test
-    public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
+    void whenFindIsInvoked_thenAssessmentIsRetrieved() {
         when(financialAssessmentRepository.getById(any())).thenReturn(FinancialAssessmentEntity.builder().id(MOCK_FINANCIAL_ASSESSMENT_ID).build());
         FinancialAssessmentEntity returned = financialAssessmentImpl.find(MOCK_FINANCIAL_ASSESSMENT_ID);
         assertThat(returned.getId()).isEqualTo(MOCK_FINANCIAL_ASSESSMENT_ID);
     }
 
     @Test
-    public void whenCreateIsInvoked_thenAssessmentIsSaved() {
+    void whenCreateIsInvoked_thenAssessmentIsSaved() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTO();
 
         when(financialAssessmentMapper.FinancialAssessmentDtoToFinancialAssessmentEntity(any()))
@@ -69,7 +69,7 @@ public class FinancialAssessmentImplTest {
     }
 
     @Test
-    public void givenInitAssessmentWithNoRelationships_whenUpdateIsInvoked_thenAssessmentIsUpdated() {
+    void givenInitAssessmentWithNoRelationships_whenUpdateIsInvoked_thenAssessmentIsUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTO();
 
         when(financialAssessmentRepository.getById(any()))
@@ -85,7 +85,7 @@ public class FinancialAssessmentImplTest {
     }
 
     @Test
-    public void givenFullAssessmentWithNoRelationships_whenUpdateIsInvoked_thenAssessmentIsUpdated() {
+    void givenFullAssessmentWithNoRelationships_whenUpdateIsInvoked_thenAssessmentIsUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTO();
         financialAssessment.setFullAssessmentDate(LocalDateTime.now());
 
@@ -102,7 +102,7 @@ public class FinancialAssessmentImplTest {
     }
 
     @Test
-    public void givenInitAssessmentWithDetails_whenUpdateIsInvoked_thenAssessmentDetailsAreUpdated() {
+    void givenInitAssessmentWithDetails_whenUpdateIsInvoked_thenAssessmentDetailsAreUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTOWithDetails();
         when(financialAssessmentRepository.getById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntityWithDetails());
@@ -116,7 +116,7 @@ public class FinancialAssessmentImplTest {
     }
 
     @Test
-    public void givenInitAssessmentWithChildWeightings_whenUpdateIsInvoked_thenChildWeightingsAreUpdated() {
+    void givenInitAssessmentWithChildWeightings_whenUpdateIsInvoked_thenChildWeightingsAreUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentWithChildWeightings();
         when(financialAssessmentRepository.getById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntityWithChildWeightings());
@@ -130,30 +130,30 @@ public class FinancialAssessmentImplTest {
     }
 
     @Test
-    public void whenDeleteIsInvoked_thenAssessmentIsDeleted() {
+    void whenDeleteIsInvoked_thenAssessmentIsDeleted() {
         financialAssessmentImpl.delete(MOCK_FINANCIAL_ASSESSMENT_ID);
         verify(financialAssessmentRepository).deleteById(any());
     }
 
     @Test
-    public void givenOutstandingFinancialAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentFoundResultIsRetrieved() {
+    void givenOutstandingFinancialAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentFoundResultIsRetrieved() {
         when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(1L);
         OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
-        assertThat(result.isOutstandingAssessments()).isEqualTo(true);
+        assertThat(result.isOutstandingAssessments()).isTrue();
         assertThat(result.getMessage()).isEqualTo(MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
     }
 
     @Test
-    public void givenOutstandingPassportAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentFoundResultIsRetrieved() {
+    void givenOutstandingPassportAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentFoundResultIsRetrieved() {
         when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(0L);
         when(passportAssessmentRepository.findOutstandingPassportAssessments(any())).thenReturn(1L);
         OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
-        assertThat(result.isOutstandingAssessments()).isEqualTo(true);
+        assertThat(result.isOutstandingAssessments()).isTrue();
         assertThat(result.getMessage()).isEqualTo(MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
     }
 
     @Test
-    public void givenFinancialAssessment_whenSetOldAssessmentReplacedIsInvoked_thenOldAssessmentsAreReplaced() {
+    void givenFinancialAssessment_whenSetOldAssessmentReplacedIsInvoked_thenOldAssessmentsAreReplaced() {
         FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
 
         financialAssessmentImpl.setOldAssessmentReplaced(financialAssessment);
@@ -166,15 +166,15 @@ public class FinancialAssessmentImplTest {
     }
 
     @Test
-    public void givenNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentNotFoundResultIsRetrieved() {
+    void givenNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentNotFoundResultIsRetrieved() {
         when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(0L);
         when(passportAssessmentRepository.findOutstandingPassportAssessments(any())).thenReturn(0L);
         OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
-        assertThat(result.isOutstandingAssessments()).isEqualTo(false);
+        assertThat(result.isOutstandingAssessments()).isFalse();
     }
 
     @Test
-    public void givenExistingDetailsToBeRemoved_whenUpdateAssessmentDetailsIsInvoked_thenDetailsAreDeleted() {
+    void givenExistingDetailsToBeRemoved_whenUpdateAssessmentDetailsIsInvoked_thenDetailsAreDeleted() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTO();
         FinancialAssessmentEntity existingAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
         existingAssessment.addAssessmentDetail(
@@ -182,11 +182,11 @@ public class FinancialAssessmentImplTest {
         );
 
         financialAssessmentImpl.updateAssessmentDetails(financialAssessment, existingAssessment);
-        assertThat(existingAssessment.getAssessmentDetails().size()).isEqualTo(0);
+        assertThat(existingAssessment.getAssessmentDetails().size()).isZero();
     }
 
     @Test
-    public void givenExistingDetailsToBeUpdated_whenUpdateAssessmentDetailsIsInvoked_thenDetailsAreUpdated() {
+    void givenExistingDetailsToBeUpdated_whenUpdateAssessmentDetailsIsInvoked_thenDetailsAreUpdated() {
         FinancialAssessmentDTO financialAssessment =
                 TestModelDataBuilder.getFinancialAssessmentDTOWithDetails();
         FinancialAssessmentEntity existingAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
@@ -205,7 +205,7 @@ public class FinancialAssessmentImplTest {
     }
 
     @Test
-    public void givenNewDetails_whenUpdateAssessmentDetailsIsInvoked_thenDetailsAreAdded() {
+    void givenNewDetails_whenUpdateAssessmentDetailsIsInvoked_thenDetailsAreAdded() {
         FinancialAssessmentDTO financialAssessment =
                 TestModelDataBuilder.getFinancialAssessmentDTOWithDetails();
         FinancialAssessmentEntity existingAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
@@ -222,7 +222,7 @@ public class FinancialAssessmentImplTest {
     }
 
     @Test
-    public void givenExistingChildWeightingsToBeRemoved_whenUpdateChildWeightingsIsInvoked_thenWeightingsAreDeleted() {
+    void givenExistingChildWeightingsToBeRemoved_whenUpdateChildWeightingsIsInvoked_thenWeightingsAreDeleted() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTO();
         FinancialAssessmentEntity existingAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
         existingAssessment.addChildWeighting(
@@ -234,7 +234,7 @@ public class FinancialAssessmentImplTest {
     }
 
     @Test
-    public void givenExistingChildWeightingsToBeUpdated_whenUpdateChildWeightingsIsInvoked_thenWeightingsAreUpdated() {
+    void givenExistingChildWeightingsToBeUpdated_whenUpdateChildWeightingsIsInvoked_thenWeightingsAreUpdated() {
         FinancialAssessmentDTO financialAssessment =
                 TestModelDataBuilder.getFinancialAssessmentWithChildWeightings();
         FinancialAssessmentEntity existingAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
@@ -248,7 +248,7 @@ public class FinancialAssessmentImplTest {
     }
 
     @Test
-    public void givenNewChildWeightings_whenUpdateChildWeightingsIsInvoked_thenWeightingsAreAdded() {
+    void givenNewChildWeightings_whenUpdateChildWeightingsIsInvoked_thenWeightingsAreAdded() {
         FinancialAssessmentDTO financialAssessment =
                 TestModelDataBuilder.getFinancialAssessmentWithChildWeightings();
         FinancialAssessmentEntity existingAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();

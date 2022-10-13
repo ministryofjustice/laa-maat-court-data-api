@@ -68,7 +68,7 @@ public class TestEntityDataBuilder {
         return FinancialAssessmentEntity.builder()
                 .repOrder(getPopulatedRepOrder(repId))
                 .assessmentType(ASSESSMENT_TYPE)
-                .fassFullStatus(FassStatus)
+                .fassInitStatus(FassStatus)
                 .dateCreated(TEST_DATE)
                 .userCreated(TEST_USER)
                 .initialAscrId(1)

@@ -1,12 +1,12 @@
-package gov.uk.courtdata.repOrder.controller;
+package gov.uk.courtdata.reporder.controller;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
-import gov.uk.courtdata.repOrder.service.RepOrderService;
-import gov.uk.courtdata.repOrder.validator.UpdateAppDateCompletedValidator;
+import gov.uk.courtdata.reporder.service.RepOrderService;
+import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

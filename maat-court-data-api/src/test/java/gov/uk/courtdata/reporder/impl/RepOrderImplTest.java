@@ -1,4 +1,4 @@
-package gov.uk.courtdata.repOrder.impl;
+package gov.uk.courtdata.reporder.impl;
 
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;

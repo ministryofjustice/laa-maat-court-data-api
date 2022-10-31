@@ -49,6 +49,6 @@ public class RepOrderMvoEntity {
     private String userModified;
 
     @OneToMany(mappedBy = "mvo")
-    private Set<RepOrderMvoRegEntity> repOrderMvoRegEntities = new LinkedHashSet<>();
+    private final Set<RepOrderMvoRegEntity> repOrderMvoRegEntities = new LinkedHashSet<>();
 
 }

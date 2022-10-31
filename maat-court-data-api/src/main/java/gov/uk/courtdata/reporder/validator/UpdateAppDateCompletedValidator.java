@@ -1,4 +1,4 @@
-package gov.uk.courtdata.repOrder.validator;
+package gov.uk.courtdata.reporder.validator;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.exception.ValidationException;

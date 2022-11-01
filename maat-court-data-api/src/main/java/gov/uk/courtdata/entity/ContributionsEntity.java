@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -38,13 +39,13 @@ public class ContributionsEntity {
     private LocalDate calcDate;
 
     @Column(name = "CONTRIBUTION_CAP", nullable = false)
-    private Integer contributionCap;
+    private BigDecimal contributionCap;
 
     @Column(name = "MONTHLY_CONTRIBS", nullable = false)
-    private Integer monthlyContributions;
+    private BigDecimal monthlyContributions;
 
     @Column(name = "UPFRONT_CONTRIBS")
-    private Integer upfrontContributions;
+    private BigDecimal upfrontContributions;
 
     @Column(name = "UPLIFT_APPLIED", length = 1)
     private String upliftApplied;

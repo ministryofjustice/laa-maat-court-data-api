@@ -2,10 +2,14 @@ package gov.uk.courtdata.builder;
 
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.*;
+import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
+import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
+import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,6 +20,8 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 public class TestEntityDataBuilder {
 
     public static final Integer REP_ID = 1234;
+    public static final Integer MVO_ID = 5678;
+
     public static final String TEST_USER = "test-f";
     public static final String ASSESSMENT_TYPE = "INIT";
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
@@ -39,6 +45,49 @@ public class TestEntityDataBuilder {
                 .crownRepOrderType("cc-rep-type")
                 .build();
     }
+
+    public static RepOrderMvoEntityInfo getRepOrderMvoEntityInfo() {
+        return new RepOrderMvoEntityInfo(){
+            public Integer getId() {
+                return MVO_ID;
+            }
+
+            public String getVehicleOwner() {
+                return "Y";
+            }
+            public RepOrderEntityInfo getRep(){
+                return getRepOrderEntityInfo();
+            }
+
+        };
+    }
+
+
+    public static RepOrderEntityInfo getRepOrderEntityInfo() {
+        return new RepOrderEntityInfo(){
+            public Integer getId(){
+                return REP_ID;
+            }
+            public LocalDateTime getDateCreated(){
+                return LocalDateTime.now();
+            }
+        };
+    }
+
+
+    public static List<RepOrderMvoRegEntityInfo> getRepOrderMvoRegEntityInfo() {
+        return List.of(new RepOrderMvoRegEntityInfo(){
+            public LocalDate getDateDeleted() {
+                return LocalDate.now();
+            }
+
+            public String getRegistration() {
+                return "TEST-REG";
+            }
+
+        });
+    }
+
 
     public static FinancialAssessmentEntity getFinancialAssessmentEntity() {
         return FinancialAssessmentEntity.builder()
@@ -317,6 +366,18 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static FinAssIncomeEvidenceEntity getFinAssIncomeEvidenceEntity() {
+
+        return FinAssIncomeEvidenceEntity.builder().id(1)
+                .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated(TEST_USER)
+                .userModified(TEST_USER)
+                .active("Y")
+                .inevEvidence("INE")
+                .build();
+    }
+
     public RepOrderCPDataEntity getRepOrderEntity() {
         return RepOrderCPDataEntity.builder()
                 .repOrderId(REP_ID)
@@ -363,18 +424,6 @@ public class TestEntityDataBuilder {
                 .repOrderId(REP_ID)
                 .defendantId("556677")
                 .caseUrn("testCaseURN")
-                .build();
-    }
-
-    public static FinAssIncomeEvidenceEntity getFinAssIncomeEvidenceEntity() {
-
-        return FinAssIncomeEvidenceEntity.builder().id(1)
-                .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated(TEST_USER)
-                .userModified(TEST_USER)
-                .active("Y")
-                .inevEvidence("INE")
                 .build();
     }
 

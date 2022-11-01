@@ -34,6 +34,7 @@ public class TestModelDataBuilder {
     public static final Integer FINANCIAL_ASSESSMENT_ID = 364563;
 
     public static final Integer REP_ID = 1234;
+    public static final Integer MVO_ID = 4567;
 
     public static final String APP_DATE_COMPLETED = "2022-07-15T15:02:25";
 
@@ -613,6 +614,10 @@ public class TestModelDataBuilder {
                 .crownRepOrderDecision("cc-rep-doc")
                 .crownRepOrderType("cc-rep-type")
                 .build();
+    }
+
+    public static List<RepOrderMvoRegDTO> getRepOrderMvoRegDTOList() {
+        return List.of(getRepOrderMvoRegDTO(TestModelDataBuilder.REP_ID));
     }
 
     public static RepOrderMvoRegDTO getRepOrderMvoRegDTO() {

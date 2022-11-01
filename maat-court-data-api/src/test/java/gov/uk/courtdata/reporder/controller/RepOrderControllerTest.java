@@ -60,10 +60,6 @@ public class RepOrderControllerTest {
 
     private static final String DATE_DELETED_NULL = "date-deleted-null";
 
-    public RepOrderControllerTest() {
-    }
-
-
     @Test
     public void givenValidRepId_whenGetRepOrderIsInvoked_thenAssessmentIsRetrieved() throws Exception {
         RepOrderDTO expected = TestModelDataBuilder.getRepOrderDTO();

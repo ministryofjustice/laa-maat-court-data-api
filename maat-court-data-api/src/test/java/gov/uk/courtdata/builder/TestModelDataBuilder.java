@@ -17,7 +17,9 @@ import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,6 +40,11 @@ public class TestModelDataBuilder {
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
 
     public static final String FINANCIAL_ASSESSMENT_STATUS = "COMPLETE";
+
+    public static final String REGISTRATION = "1234";
+
+    public static final Instant INSTANT = Instant.now();
+
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -605,6 +612,39 @@ public class TestModelDataBuilder {
                 .repOrderDecisionReasonCode("rder-code")
                 .crownRepOrderDecision("cc-rep-doc")
                 .crownRepOrderType("cc-rep-type")
+                .build();
+    }
+
+    public static RepOrderMvoRegDTO getRepOrderMvoRegDTO() {
+        return getRepOrderMvoRegDTO(TestModelDataBuilder.REP_ID);
+    }
+
+    public static RepOrderMvoRegDTO getRepOrderMvoRegDTO(Integer id) {
+        return RepOrderMvoRegDTO.builder()
+                .id(id)
+                .mvo(getRepOrderMvoDTO())
+                .registration(REGISTRATION)
+                .dateCreated(INSTANT)
+                .userCreated("test-s")
+                .dateDeleted(TEST_DATE.toLocalDate())
+                .dateModified(INSTANT)
+                .userModified("test-s")
+                .build();
+    }
+
+    public static RepOrderMvoDTO getRepOrderMvoDTO() {
+        return getRepOrderMvoDTO(TestModelDataBuilder.REP_ID);
+    }
+
+    public static RepOrderMvoDTO getRepOrderMvoDTO(Integer id) {
+        return RepOrderMvoDTO.builder()
+                .id(id)
+                .rep(getRepOrderDTO())
+                .vehicleOwner("Y")
+                .dateCreated(INSTANT)
+                .userCreated("test-s")
+                .dateModified(INSTANT)
+                .userModified("test-s")
                 .build();
     }
 

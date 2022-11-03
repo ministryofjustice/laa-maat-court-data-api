@@ -5,8 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -32,7 +31,7 @@ public class RepOrderMvoRegEntity {
 
     @NotNull
     @Column(name = "DATE_CREATED", nullable = false)
-    private Instant dateCreated;
+    private LocalDateTime dateCreated;
 
     @Size(max = 100)
     @NotNull
@@ -40,10 +39,10 @@ public class RepOrderMvoRegEntity {
     private String userCreated;
 
     @Column(name = "DATE_DELETED")
-    private LocalDate dateDeleted;
+    private LocalDateTime dateDeleted;
 
     @Column(name = "DATE_MODIFIED")
-    private Instant dateModified;
+    private LocalDateTime dateModified;
 
     @Size(max = 100)
     @Column(name = "USER_MODIFIED", length = 100)

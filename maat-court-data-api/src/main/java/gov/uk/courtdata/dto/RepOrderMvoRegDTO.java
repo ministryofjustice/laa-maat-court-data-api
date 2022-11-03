@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * A DTO for the {@link gov.uk.courtdata.entity.RepOrderMvoRegEntity} entity
@@ -25,12 +26,12 @@ public class RepOrderMvoRegDTO implements Serializable {
     @Size(max = 10)
     private String registration;
     @NotNull
-    private Instant dateCreated;
+    private LocalDateTime dateCreated;
     @Size(max = 100)
     @NotNull
     private String userCreated;
     private LocalDate dateDeleted;
-    private Instant dateModified;
+    private LocalDateTime dateModified;
     @Size(max = 100)
     private String userModified;
 }

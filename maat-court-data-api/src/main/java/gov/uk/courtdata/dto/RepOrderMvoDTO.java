@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * A DTO for the {@link gov.uk.courtdata.entity.RepOrderMvoEntity} entity
@@ -25,11 +26,11 @@ public class RepOrderMvoDTO implements Serializable {
     @NotNull
     private String vehicleOwner;
     @NotNull
-    private Instant dateCreated;
+    private LocalDateTime dateCreated;
     @Size(max = 100)
     @NotNull
     private String userCreated;
-    private Instant dateModified;
+    private LocalDateTime dateModified;
     @Size(max = 100)
     private String userModified;
 }

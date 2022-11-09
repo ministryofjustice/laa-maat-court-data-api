@@ -28,7 +28,7 @@ class RepOrderMvoServiceTest {
     private RepOrderMvoService repOrderMvoService;
 
     @Test
-    public void givenValidRepIdAndVehicleOwner_whenFindRepOrderMvoByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoIsReturned() {
+    void givenValidRepIdAndVehicleOwner_whenFindRepOrderMvoByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoIsReturned() {
         when(repOrderMvoImpl.findRepOrderMvoByRepIdAndVehicleOwner(anyInt(), anyString()))
                 .thenReturn(TestEntityDataBuilder.getRepOrderMvoEntityInfo());
         when(repOrderMvoMapper.repOrderMvoEntityInfoToRepOrderMvoDTO(any(RepOrderMvoEntityInfo.class)))

@@ -3,7 +3,6 @@ package gov.uk.courtdata.integration.repOrder;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
@@ -36,8 +35,7 @@ public class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     public static final String BASE_URL = "/api/internal/v1/assessment/rep-orders/";
     private static final String MVO_REG_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo-reg";
     private static final String MVO_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo";
-    private static final String DATE_DELETED_NULL = "date-deleted-null";
-    private static final String VEHICLE_OWNER = "vehicle-owner";
+    private static final String CURRENT_REGISTRATION = "current-registration";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
     @Autowired
     private RepOrderRepository repOrderRepository;
@@ -102,22 +100,22 @@ public class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     public void givenInvalidMvoId_whenGetDateDeletedIsNullFromRepOrderMvoRegIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        runNotFoundErrorScenario("No Rep Order MVO Reg found for ID: " + INVALID_MVO_ID, get(MVO_REG_ENDPOINT_URL + "/" + INVALID_MVO_ID + "/" + DATE_DELETED_NULL));
+        runNotFoundErrorScenario("No Rep Order MVO Reg found for ID: " + INVALID_MVO_ID, get(MVO_REG_ENDPOINT_URL + "/" + INVALID_MVO_ID + "/" + CURRENT_REGISTRATION));
     }
 
     @Test
     public void givenValidMvoId_whenGetDateDeletedIsNullFromRepOrderMvoRegIsInvoked_thenRepOrderMvoRegIsReturned() throws Exception {
-        runSuccessScenario(List.of(TestModelDataBuilder.getRepOrderMvoRegDTO()), get(MVO_REG_ENDPOINT_URL + "/" + TestEntityDataBuilder.MVO_ID + "/" + DATE_DELETED_NULL));
+        runSuccessScenario(List.of(TestModelDataBuilder.getRepOrderMvoRegDTO()), get(MVO_REG_ENDPOINT_URL + "/" + TestEntityDataBuilder.MVO_ID + "/" + CURRENT_REGISTRATION));
     }
 
     @Test
     public void givenInvalidRepId_whenGetRepOrderMvoByRepIdAndVehicleOwnerIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        runNotFoundErrorScenario("No Rep Order MVO found for ID: " + INVALID_REP_ID, get(MVO_ENDPOINT_URL + "/" + INVALID_REP_ID + "/" + VEHICLE_OWNER + "/" + VEHICLE_OWNER_INDICATOR_YES));
+        runNotFoundErrorScenario("No Rep Order MVO found for ID: " + INVALID_REP_ID, get(MVO_ENDPOINT_URL + "/" + INVALID_REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES));
     }
 
     @Test
     public void givenValidRepId_whenGetRepOrderMvoByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoIsReturned() throws Exception {
-        runSuccessScenario(TestModelDataBuilder.getRepOrderMvoDTO(), get(MVO_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "/" + VEHICLE_OWNER + "/" + VEHICLE_OWNER_INDICATOR_YES));
+        runSuccessScenario(TestModelDataBuilder.getRepOrderMvoDTO(), get(MVO_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES));
     }
 
 }

@@ -16,7 +16,7 @@ import java.util.Set;
 @Setter
 @ToString
 @Entity
-@Table(name = "REP_ORDER_MVO")
+@Table(name = "REP_ORDER_MVO", schema = "TOGDATA")
 public class RepOrderMvoEntity {
     @OneToMany(mappedBy = "mvo")
     private final Set<RepOrderMvoRegEntity> repOrderMvoRegEntities = new LinkedHashSet<>();

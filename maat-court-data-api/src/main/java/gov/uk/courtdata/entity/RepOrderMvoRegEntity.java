@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Entity
-@Table(name = "REP_ORDER_MVO_REG")
+@Table(name = "REP_ORDER_MVO_REG", schema = "TOGDATA")
 public class RepOrderMvoRegEntity {
     @Id
     @Column(name = "ID", nullable = false)

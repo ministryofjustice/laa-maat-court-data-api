@@ -24,7 +24,7 @@ class RepOrderMvoRegImplTest {
 
     @Test
     public void givenMvoIdAndVehicleOwner_whenFindRepOrderMvoByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoEntityInfoIsRetrieved() {
-        repOrderMvoRegImpl.findByDateDeletedIsNull(TestModelDataBuilder.MVO_ID);
-        verify(repOrderMvoRegRepository, times(1)).findByMvo_IdAndDateDeletedIsNull(TestModelDataBuilder.MVO_ID);
+        repOrderMvoRegImpl.findByCurrentMvoRegistration(TestModelDataBuilder.MVO_ID);
+        verify(repOrderMvoRegRepository, times(1)).findByMvoIdAndAndDateDeletedIsNull(TestModelDataBuilder.MVO_ID);
     }
 }

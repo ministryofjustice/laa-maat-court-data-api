@@ -17,8 +17,8 @@ public class RepOrderMvoRegImpl {
 
     private final RepOrderMvoRegRepository repOrderMvoRegRepository;
 
-    public List<RepOrderMvoRegEntityInfo> findByDateDeletedIsNull(Integer mvoId) {
-        return repOrderMvoRegRepository.findByMvo_IdAndDateDeletedIsNull(mvoId);
+    public List<RepOrderMvoRegEntityInfo> findByCurrentMvoRegistration(Integer mvoId) {
+        return repOrderMvoRegRepository.findByMvoIdAndAndDateDeletedIsNull(mvoId);
     }
 
 }

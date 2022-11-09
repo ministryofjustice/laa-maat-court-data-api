@@ -38,8 +38,8 @@ public class RepOrderController {
     @GetMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a rep order record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Object> getRepOrder(@PathVariable int repId) {
         log.info("Get Rep Order Request Received");
         return ResponseEntity.ok(repOrderService.find(repId));
@@ -59,23 +59,23 @@ public class RepOrderController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/rep-order-mvo-reg/{mvoId}/date-deleted-null", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/rep-order-mvo-reg/{mvoId}/current-registration", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a rep order record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Object> getDateDeletedIsNullFromRepOrderMvoReg(@PathVariable int mvoId) {
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<Object> getCurrentRegistrationFromRepOrderMvoReg(@PathVariable int mvoId) {
         log.info("Get Rep Order MVO Reg Request Received");
-        return ResponseEntity.ok(repOrderMvoRegService.findByDateDeletedIsNull(mvoId));
+        return ResponseEntity.ok(repOrderMvoRegService.findByCurrentMvoRegistration(mvoId));
     }
 
 
-    @GetMapping(value = {"/rep-order-mvo/{repId}/vehicle-owner/{vehicleOwner}"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = {"/rep-order-mvo/{repId}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a rep order record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Object> getRepOrderMvoByRepIdAndVehicleOwner(@PathVariable int repId, @PathVariable(required = false) String vehicleOwner) {
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<Object> getRepOrderMvoByRepIdAndVehicleOwner(@PathVariable int repId, @RequestParam(value = "owner",   required = false) String vehicleOwner) {
         log.info("Get Rep Order MVO Request Received");
         return ResponseEntity.ok(repOrderMvoService.findRepOrderMvoByRepIdAndVehicleOwner(repId, Objects.requireNonNullElse(vehicleOwner, "N")));
 

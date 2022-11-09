@@ -23,8 +23,8 @@ public class RepOrderMvoRegService {
     private final RepOrderMvoRegMapper repOrderMvoRegMapper;
 
     @Transactional(readOnly = true)
-    public List<RepOrderMvoRegDTO> findByDateDeletedIsNull(Integer mvoId) {
-        List<RepOrderMvoRegEntityInfo> repOrderMvoRegEntityInfo = repOrderMvoRegImpl.findByDateDeletedIsNull(mvoId);
+    public List<RepOrderMvoRegDTO> findByCurrentMvoRegistration(Integer mvoId) {
+        List<RepOrderMvoRegEntityInfo> repOrderMvoRegEntityInfo = repOrderMvoRegImpl.findByCurrentMvoRegistration(mvoId);
         if (repOrderMvoRegEntityInfo == null || repOrderMvoRegEntityInfo.isEmpty()) {
             throw new RequestedObjectNotFoundException(String.format("No Rep Order MVO Reg found for ID: %s", mvoId));
         }

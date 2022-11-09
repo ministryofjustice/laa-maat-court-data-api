@@ -13,15 +13,12 @@ import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
@@ -58,7 +55,7 @@ public class RepOrderControllerTest {
     private static final String VEHICLE_OWNER = "vehicle-owner";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
 
-    private static final String DATE_DELETED_NULL = "date-deleted-null";
+    private static final String CURRENT_REGISTRATION = "current-registration";
 
     @Test
     public void givenValidRepId_whenGetRepOrderIsInvoked_thenAssessmentIsRetrieved() throws Exception {
@@ -99,21 +96,21 @@ public class RepOrderControllerTest {
     }
 
     @Test
-    public void givenValidMvoId_whenGetDateDeletedIsNullFromRepOrderMvoRegIsInvoked_thenDataIsRetrieved() throws Exception {
+    public void givenValidMvoId_whenGetCurrentRegistrationFromRepOrderMvoRegIsInvoked_thenDataIsRetrieved() throws Exception {
         List<RepOrderMvoRegDTO> expected = List.of(TestModelDataBuilder.getRepOrderMvoRegDTO());
-        when(repOrderMvoRegService.findByDateDeletedIsNull(anyInt()))
+        when(repOrderMvoRegService.findByCurrentMvoRegistration(anyInt()))
                 .thenReturn(expected);
-        mvc.perform(MockMvcRequestBuilders.get(MVO_REG_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "/" + DATE_DELETED_NULL))
+        mvc.perform(MockMvcRequestBuilders.get(MVO_REG_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "/" + CURRENT_REGISTRATION))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].registration").value(expected.get(0).getRegistration()));
     }
 
     @Test
-    public void givenInvalidMvoId_whenGetDateDeletedIsNullFromRepOrderMvoRegIsInvoked_thenErrorIsThrown() throws Exception {
-        when(repOrderMvoRegService.findByDateDeletedIsNull(anyInt()))
+    public void givenInvalidMvoId_whenCurrentRegistrationFromRepOrderMvoRegIsInvoked_thenErrorIsThrown() throws Exception {
+        when(repOrderMvoRegService.findByCurrentMvoRegistration(anyInt()))
                 .thenThrow(new RequestedObjectNotFoundException("No Rep Order MVO Reg found for ID: 1234"));
-        mvc.perform(MockMvcRequestBuilders.get(MVO_REG_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "/" + DATE_DELETED_NULL))
+        mvc.perform(MockMvcRequestBuilders.get(MVO_REG_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "/" + CURRENT_REGISTRATION))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.message").value("No Rep Order MVO Reg found for ID: 1234"));
     }
@@ -123,7 +120,7 @@ public class RepOrderControllerTest {
         RepOrderMvoDTO expected = TestModelDataBuilder.getRepOrderMvoDTO();
         when(repOrderMvoService.findRepOrderMvoByRepIdAndVehicleOwner(anyInt(), anyString()))
                 .thenReturn(expected);
-        mvc.perform(MockMvcRequestBuilders.get(MVO_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "/" + VEHICLE_OWNER + "/" + VEHICLE_OWNER_INDICATOR_YES))
+        mvc.perform(MockMvcRequestBuilders.get(MVO_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.vehicleOwner").value(expected.getVehicleOwner()));
@@ -133,7 +130,7 @@ public class RepOrderControllerTest {
     public void givenInvalidRepId_whenGetRepOrderMvoByRepIdAndVehicleOwnerIsInvoked_thenErrorIsThrown() throws Exception {
         when(repOrderMvoService.findRepOrderMvoByRepIdAndVehicleOwner(anyInt(), anyString()))
                 .thenThrow(new RequestedObjectNotFoundException("No Rep Order MVO found for ID: 1234"));
-        mvc.perform(MockMvcRequestBuilders.get(MVO_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "/" + VEHICLE_OWNER + "/" + VEHICLE_OWNER_INDICATOR_YES))
+        mvc.perform(MockMvcRequestBuilders.get(MVO_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.message").value("No Rep Order MVO found for ID: 1234"));
     }

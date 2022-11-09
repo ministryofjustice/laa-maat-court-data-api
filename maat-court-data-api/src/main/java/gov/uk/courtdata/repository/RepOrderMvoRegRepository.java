@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface RepOrderMvoRegRepository extends JpaRepository<RepOrderMvoRegEntity, Integer>, JpaSpecificationExecutor<RepOrderMvoRegEntity> {
-    List<RepOrderMvoRegEntityInfo> findByMvo_IdAndDateDeletedIsNull(Integer mvoId);
+    List<RepOrderMvoRegEntityInfo> findByMvoIdAndAndDateDeletedIsNull(Integer mvoId);
 }

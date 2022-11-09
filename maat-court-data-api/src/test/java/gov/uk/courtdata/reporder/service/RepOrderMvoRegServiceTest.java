@@ -27,9 +27,9 @@ class RepOrderMvoRegServiceTest {
     private RepOrderMvoRegService repOrderMvoRegService;
 
     @Test
-    public void givenValidMvoId_whenFindByDateDeletedIsNullIsInvoked_thenRepOrderMvoRegIsReturned() {
-        when(repOrderMvoRegImpl.findByDateDeletedIsNull(anyInt())).thenReturn(TestEntityDataBuilder.getRepOrderMvoRegEntityInfo());
+    void givenValidMvoId_whenFindByCurrentMvoRegistrationIsInvoked_thenRepOrderMvoRegIsReturned() {
+        when(repOrderMvoRegImpl.findByCurrentMvoRegistration(anyInt())).thenReturn(TestEntityDataBuilder.getRepOrderMvoRegEntityInfo());
         when(repOrderMvoRegMapper.repOrderMvoRegEntityInfoToRepOrderMvoRegDTO(anyList())).thenReturn(TestModelDataBuilder.getRepOrderMvoRegDTOList());
-        assertThat(repOrderMvoRegService.findByDateDeletedIsNull(TestModelDataBuilder.MVO_ID)).isEqualTo(TestModelDataBuilder.getRepOrderMvoRegDTOList());
+        assertThat(repOrderMvoRegService.findByCurrentMvoRegistration(TestModelDataBuilder.MVO_ID)).isEqualTo(TestModelDataBuilder.getRepOrderMvoRegDTOList());
     }
 }

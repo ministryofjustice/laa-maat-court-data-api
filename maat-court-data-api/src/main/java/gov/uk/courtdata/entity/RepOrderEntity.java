@@ -60,6 +60,8 @@ public class RepOrderEntity {
     private String crownRepOrderType;
     @Column(name = "ASS_DATE_COMPLETED")
     private LocalDateTime assessmentDateCompleted;
+    @Column(name = "SENTENCE_ORDER_DATE")
+    private LocalDateTime sentenceOrderDate;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY)

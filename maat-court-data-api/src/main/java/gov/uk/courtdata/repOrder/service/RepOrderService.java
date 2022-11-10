@@ -4,6 +4,7 @@ import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.repOrder.impl.RepOrderImpl;
 import gov.uk.courtdata.repOrder.mapper.RepOrderMapper;
@@ -35,5 +36,12 @@ public class RepOrderService {
         log.info("update app date completed - Transaction Processing - Start");
         repOrderImpl.updateAppDateCompleted(updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted());
         log.info("update app date completed  - Transaction Processing - End");
+    }
+
+    @Transactional
+    public void updateRepOrder(final UpdateRepOrder updateRepOrder) {
+        log.info("update rep order - Transaction Processing - Start");
+        repOrderImpl.updateRepOrder(updateRepOrder);
+        log.info("update rep order  - Transaction Processing - End");
     }
 }

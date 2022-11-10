@@ -4,9 +4,11 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.repOrder.service.RepOrderService;
 import gov.uk.courtdata.repOrder.validator.UpdateAppDateCompletedValidator;
+import gov.uk.courtdata.repOrder.validator.UpdateRepOrderValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class RepOrderControllerTest {
 
     @MockBean
     private UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
+
+    @MockBean
+    private UpdateRepOrderValidator updateRepOrderValidator;
 
     @MockBean
     private RepOrderService repOrderService;
@@ -75,5 +80,22 @@ public class RepOrderControllerTest {
                 .thenThrow(new ValidationException());
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/update-date-completed").content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void givenIncorrectParameters_whenUpdateRepOrderInvoked_thenErrorIsThrown() throws Exception {
+        when(updateRepOrderValidator.validate(any(UpdateRepOrder.class)))
+                .thenThrow(new ValidationException());
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void givenCorrectParameters_whenUpdateRepOrderInvoked_thenUpdateRepOrderIsSuccess() throws Exception {
+        when(updateRepOrderValidator.validate(any(UpdateRepOrder.class)))
+                .thenReturn(Optional.empty());
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
+                .content(TestModelDataBuilder.getUpdateRepOrderJson())
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 }

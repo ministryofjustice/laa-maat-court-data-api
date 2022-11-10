@@ -3,6 +3,7 @@ package gov.uk.courtdata.repOrder.impl;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,5 +38,12 @@ class RepOrderImplTest {
     public void givenRepOrderExists_whenFindIsInvoked_thenRepOrderIsRetrieved() {
         repOrderImpl.find(TestModelDataBuilder.REP_ID);
         verify(repOrderRepository, times(1)).findById(TestModelDataBuilder.REP_ID);
+    }
+
+    @Test
+    public void givenAValidRepId_whenUpdateRepOrderInvoked_thenUpdateRepOrdersIsSuccess() {
+        when(repOrderRepository.getById(TestModelDataBuilder.REP_ID)).thenReturn(new RepOrderEntity());
+        repOrderImpl.updateRepOrder(TestModelDataBuilder.getUpdateRepOrder());
+        verify(repOrderRepository, times(1)).saveAndFlush(any());
     }
 }

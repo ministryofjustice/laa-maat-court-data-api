@@ -4,6 +4,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.repOrder.impl.RepOrderImpl;
 import gov.uk.courtdata.repOrder.mapper.RepOrderMapper;
@@ -55,5 +56,11 @@ class RepOrderServiceTest {
     public void testRepOrdersService_updateAppDateCompleted_shouldSuccess() {
         repOrderService.updateAppDateCompleted(new UpdateAppDateCompleted());
         verify(repOrderImpl).updateAppDateCompleted(any(), any());
+    }
+
+    @Test
+    public void givenAValidRepId_whenUpdateRepOrderInvoked_shouldSuccess() {
+        repOrderService.updateRepOrder(new UpdateRepOrder());
+        verify(repOrderImpl).updateRepOrder(any());
     }
 }

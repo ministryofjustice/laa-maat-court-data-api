@@ -1,12 +1,12 @@
-package gov.uk.courtdata.repOrder.service;
+package gov.uk.courtdata.reporder.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
-import gov.uk.courtdata.repOrder.impl.RepOrderImpl;
-import gov.uk.courtdata.repOrder.mapper.RepOrderMapper;
+import gov.uk.courtdata.reporder.impl.RepOrderImpl;
+import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

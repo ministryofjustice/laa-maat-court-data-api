@@ -17,7 +17,9 @@ import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,12 +34,15 @@ public class TestModelDataBuilder {
     public static final Integer FINANCIAL_ASSESSMENT_ID = 364563;
 
     public static final Integer REP_ID = 1234;
-
+    public static final Integer MVO_ID = 5678;
     public static final String APP_DATE_COMPLETED = "2022-07-15T15:02:25";
 
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
 
     public static final String FINANCIAL_ASSESSMENT_STATUS = "COMPLETE";
+
+    public static final String REGISTRATION = "SD51ZDW";
+
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -607,6 +612,38 @@ public class TestModelDataBuilder {
                 .crownRepOrderType("cc-rep-type")
                 .build();
     }
+
+    public static List<RepOrderMvoRegDTO> getRepOrderMvoRegDTOList() {
+        return List.of(getRepOrderMvoRegDTO(TestModelDataBuilder.REP_ID));
+    }
+
+    public static RepOrderMvoRegDTO getRepOrderMvoRegDTO() {
+        return getRepOrderMvoRegDTO(TestModelDataBuilder.REP_ID);
+    }
+
+    public static RepOrderMvoRegDTO getRepOrderMvoRegDTO(Integer id) {
+        return RepOrderMvoRegDTO.builder()
+                .id(id)
+                .registration(REGISTRATION)
+                .build();
+    }
+
+    public static RepOrderMvoDTO getRepOrderMvoDTO() {
+        return getRepOrderMvoDTO(TestModelDataBuilder.MVO_ID);
+    }
+
+    public static RepOrderMvoDTO getRepOrderMvoDTO(Integer id) {
+        return RepOrderMvoDTO.builder()
+                .id(id)
+                .rep(RepOrderDTO.builder()
+                        .id(REP_ID)
+                        .build())
+                .vehicleOwner("Y")
+                .build();
+    }
+
+
+
 
     public static HardshipReviewDTO getHardshipReviewDTOWithRelationships() {
         HardshipReviewDTO hardship = getHardshipReviewDTO();

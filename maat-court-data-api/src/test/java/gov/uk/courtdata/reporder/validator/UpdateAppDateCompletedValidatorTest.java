@@ -1,4 +1,4 @@
-package gov.uk.courtdata.repOrder.validator;
+package gov.uk.courtdata.reporder.validator;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;

@@ -1,4 +1,4 @@
-package gov.uk.courtdata.repOrder.impl;
+package gov.uk.courtdata.reporder.impl;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.RepOrderEntity;

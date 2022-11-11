@@ -23,7 +23,7 @@ public class RepOrderMvoRegEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "MVO_ID", nullable = false)
-    private gov.uk.courtdata.entity.RepOrderMvoEntity mvo;
+    private RepOrderMvoEntity mvo;
 
     @Size(max = 10)
     @Column(name = "REGISTRATION", length = 10)

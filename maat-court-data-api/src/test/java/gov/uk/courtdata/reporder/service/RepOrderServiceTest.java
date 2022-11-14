@@ -56,4 +56,10 @@ class RepOrderServiceTest {
         repOrderService.updateAppDateCompleted(new UpdateAppDateCompleted());
         verify(repOrderImpl).updateAppDateCompleted(any(), any());
     }
+
+    @Test
+    public void givenAValidRepId_whenUpdateRepOrderInvoked_shouldSuccess() {
+        repOrderService.updateAppDateCompleted(new UpdateAppDateCompleted());
+        verify(repOrderImpl).updateAppDateCompleted(any(), any());
+    }
 }

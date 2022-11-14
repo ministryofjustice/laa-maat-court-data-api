@@ -6,6 +6,7 @@ import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.NewWorkReason;
+import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.*;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
@@ -42,6 +43,8 @@ public class TestModelDataBuilder {
     public static final String FINANCIAL_ASSESSMENT_STATUS = "COMPLETE";
 
     public static final String REGISTRATION = "SD51ZDW";
+
+    public static final String TEST_USER = "test-f";
 
 
     TestEntityDataBuilder testEntityDataBuilder;
@@ -917,6 +920,20 @@ public class TestModelDataBuilder {
         return "{\n" +
                 " \"repId\": " + REP_ID + " ,\n" +
                 "  \"assessmentDateCompleted\":\"" + APP_DATE_COMPLETED + "\"\n" +
+                "}";
+    }
+
+    public static UpdateRepOrder getUpdateRepOrder() {
+        return UpdateRepOrder.builder()
+                .repId(REP_ID)
+                .build();
+    }
+
+    public static String getUpdateRepOrderJson() {
+        return "{\n" +
+                " \"repId\": " + REP_ID + " ,\n" +
+                "\"sentenceOrderDate\": \"" + APP_DATE_COMPLETED + "\",\n" +
+                "  \"userModified\": \"" +TEST_USER+ "\" " +
                 "}";
     }
 }

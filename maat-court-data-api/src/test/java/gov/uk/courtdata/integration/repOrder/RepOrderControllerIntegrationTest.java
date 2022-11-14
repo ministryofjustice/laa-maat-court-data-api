@@ -5,12 +5,11 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
+import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,8 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
@@ -44,15 +42,15 @@ public class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Autowired
     private RepOrderMvoRegRepository repOrderMvoRegRepository;
 
-    @BeforeAll
-    static void setUp(@Autowired RepOrderRepository repOrderRepository, @Autowired RepOrderMvoRepository repOrderMvoRepository, @Autowired RepOrderMvoRegRepository repOrderMvoRegRepository) {
+    @BeforeEach
+    void setUp(@Autowired RepOrderRepository repOrderRepository, @Autowired RepOrderMvoRepository repOrderMvoRepository, @Autowired RepOrderMvoRegRepository repOrderMvoRegRepository) {
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
         repOrderMvoRepository.save(TestEntityDataBuilder.getRepOrderMvoEntity(TestEntityDataBuilder.MVO_ID));
         repOrderMvoRegRepository.save(TestEntityDataBuilder.getRepOrderMvoRegEntity(TestEntityDataBuilder.REP_ID));
     }
 
-    @AfterAll
-    static void cleanUp(@Autowired RepOrderRepository repOrderRepository, @Autowired FinancialAssessmentRepository financialAssessmentRepository, @Autowired PassportAssessmentRepository passportAssessmentRepository, @Autowired RepOrderMvoRepository repOrderMvoRepository, @Autowired RepOrderMvoRegRepository repOrderMvoRegRepository) {
+    @AfterEach
+    void cleanUp(@Autowired RepOrderRepository repOrderRepository, @Autowired FinancialAssessmentRepository financialAssessmentRepository, @Autowired PassportAssessmentRepository passportAssessmentRepository, @Autowired RepOrderMvoRepository repOrderMvoRepository, @Autowired RepOrderMvoRegRepository repOrderMvoRegRepository) {
         financialAssessmentRepository.deleteAll();
         passportAssessmentRepository.deleteAll();
         repOrderMvoRegRepository.deleteAll();
@@ -116,6 +114,51 @@ public class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     public void givenValidRepId_whenGetRepOrderMvoByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoIsReturned() throws Exception {
         runSuccessScenario(TestModelDataBuilder.getRepOrderMvoDTO(), get(MVO_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES));
+    }
+
+    @Test
+    public void givenRepIdIsMissing_whenUpdateRepOrderIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
+        runBadRequestErrorScenario(
+                "Rep Id is missing from request and is required",
+                put(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                UpdateRepOrder.builder()
+                                        .build())
+                        )
+        );
+    }
+
+    @Test
+    public void givenInvalidRepId_whenUpdateRepOrderIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
+        runBadRequestErrorScenario(
+                "MAAT/REP ID: " + INVALID_REP_ID + " is invalid.",
+                put(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                UpdateRepOrder.builder()
+                                        .repId(INVALID_REP_ID)
+                                        .build())
+                        )
+        );
+    }
+
+
+    @Test
+    public void givenValidParameters_whenUpdateRepOrderIsInvoked_theCompletedDateShouldUpdate() throws Exception {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDateTime expectedDate = LocalDateTime.parse(TestModelDataBuilder.APP_DATE_COMPLETED, formatter);
+
+        runSuccessScenario(MockMvcRequestBuilders.put(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestModelDataBuilder.getUpdateRepOrderJson())
+                .contentType(MediaType.APPLICATION_JSON));
+
+        RepOrderEntity repOrderEntity = repOrderRepository.getById(TestModelDataBuilder.REP_ID);
+        assertThat(repOrderEntity.getId()).isEqualTo(TestModelDataBuilder.REP_ID);
+        assertThat(repOrderEntity.getSentenceOrderDate()).isEqualTo(expectedDate);
+        assertThat(repOrderEntity.getUserModified()).isEqualTo(TestModelDataBuilder.TEST_USER);
     }
 
 }

@@ -2,11 +2,13 @@ package gov.uk.courtdata.reporder.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
+import gov.uk.courtdata.reporder.validator.UpdateRepOrderValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,6 +36,8 @@ public class RepOrderController {
     private final RepOrderMvoService repOrderMvoService;
 
     private final UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
+
+    private final UpdateRepOrderValidator updateRepOrderValidator;
 
     @GetMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a rep order record")
@@ -79,6 +83,19 @@ public class RepOrderController {
         log.info("Get Rep Order MVO Request Received");
         return ResponseEntity.ok(repOrderMvoService.findRepOrderMvoByRepIdAndVehicleOwner(repId, Objects.requireNonNullElse(vehicleOwner, "N")));
 
+    }
+
+
+    @PutMapping
+    @Operation(description = "Update a rep order record")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<Object> updateRepOrder(@Parameter(description = "Update a rep order record", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UpdateRepOrder.class))) @RequestBody UpdateRepOrder updateRepOrder) {
+        log.debug("Assessments Request Received for repId : {}", updateRepOrder.getRepId());
+        updateRepOrderValidator.validate(updateRepOrder);
+        repOrderService.updateRepOrder(updateRepOrder);
+        return ResponseEntity.ok().build();
     }
 
 }

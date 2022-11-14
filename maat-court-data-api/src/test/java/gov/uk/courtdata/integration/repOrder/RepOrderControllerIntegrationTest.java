@@ -157,7 +157,7 @@ public class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
         RepOrderEntity repOrderEntity = repOrderRepository.getById(TestModelDataBuilder.REP_ID);
         assertThat(repOrderEntity.getId()).isEqualTo(TestModelDataBuilder.REP_ID);
-        assertThat(repOrderEntity.getSentenceOrderDate()).isEqualTo(expectedDate);
+        assertThat(repOrderEntity.getAppealSentenceOrderDate()).isEqualTo(expectedDate);
         assertThat(repOrderEntity.getUserModified()).isEqualTo(TestModelDataBuilder.TEST_USER);
     }
 

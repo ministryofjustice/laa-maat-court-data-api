@@ -28,6 +28,6 @@ public class UpdateRepOrder {
     private String crownRepOrderDecision;
     private String crownRepOrderType;
     private LocalDateTime assessmentDateCompleted;
-    private LocalDateTime sentenceOrderDate;
+    private LocalDateTime appealSentenceOrderDate;
 
 }

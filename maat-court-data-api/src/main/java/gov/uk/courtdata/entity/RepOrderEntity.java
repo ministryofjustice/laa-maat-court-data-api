@@ -62,8 +62,8 @@ public class RepOrderEntity {
     private LocalDateTime assessmentDateCompleted;
     @Column(name = "DATE_CREATED")
     private LocalDateTime dateCreated;
-    @Column(name = "SENTENCE_ORDER_DATE")
-    private LocalDateTime sentenceOrderDate;
+    @Column(name = "APPEAL_SENTENCE_ORDER_DATE")
+    private LocalDateTime appealSentenceOrderDate;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY)

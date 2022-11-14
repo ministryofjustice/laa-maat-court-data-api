@@ -92,7 +92,7 @@ public class RepOrderController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Object> updateRepOrder(@Parameter(description = "Update a rep order record", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UpdateRepOrder.class))) @RequestBody UpdateRepOrder updateRepOrder) {
-        log.debug("Assessments Request Received for repId : {}", updateRepOrder.getRepId());
+        log.debug("Update Rep order request received for repId : {}", updateRepOrder.getRepId());
         updateRepOrderValidator.validate(updateRepOrder);
         repOrderService.updateRepOrder(updateRepOrder);
         return ResponseEntity.ok().build();

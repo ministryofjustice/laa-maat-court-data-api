@@ -932,7 +932,7 @@ public class TestModelDataBuilder {
     public static String getUpdateRepOrderJson() {
         return "{\n" +
                 " \"repId\": " + REP_ID + " ,\n" +
-                "\"sentenceOrderDate\": \"" + APP_DATE_COMPLETED + "\",\n" +
+                "\"appealSentenceOrderDate\": \"" + APP_DATE_COMPLETED + "\",\n" +
                 "  \"userModified\": \"" +TEST_USER+ "\" " +
                 "}";
     }

@@ -6,13 +6,12 @@ import gov.uk.courtdata.dto.RepOrderMvoDTO;
 import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
-import gov.uk.courtdata.reporder.validator.UpdateRepOrderValidator;
+import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class RepOrderControllerTest {
     private UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
 
     @MockBean
-    private UpdateRepOrderValidator updateRepOrderValidator;
+    private MaatIdValidator maatIdValidator;
 
     @MockBean
     private RepOrderService repOrderService;
@@ -142,7 +141,7 @@ public class RepOrderControllerTest {
 
     @Test
     public void givenIncorrectParameters_whenUpdateRepOrderInvoked_thenErrorIsThrown() throws Exception {
-        when(updateRepOrderValidator.validate(any(UpdateRepOrder.class)))
+        when(maatIdValidator.validate(any()))
                 .thenThrow(new ValidationException());
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
@@ -150,7 +149,7 @@ public class RepOrderControllerTest {
 
     @Test
     public void givenCorrectParameters_whenUpdateRepOrderInvoked_thenUpdateRepOrderIsSuccess() throws Exception {
-        when(updateRepOrderValidator.validate(any(UpdateRepOrder.class)))
+        when(maatIdValidator.validate(any()))
                 .thenReturn(Optional.empty());
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
                 .content(TestModelDataBuilder.getUpdateRepOrderJson())

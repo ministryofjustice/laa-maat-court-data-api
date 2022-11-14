@@ -8,7 +8,7 @@ import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
-import gov.uk.courtdata.reporder.validator.UpdateRepOrderValidator;
+import gov.uk.courtdata.validator.MaatIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,7 +37,7 @@ public class RepOrderController {
 
     private final UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
 
-    private final UpdateRepOrderValidator updateRepOrderValidator;
+    private final MaatIdValidator maatIdValidator;
 
     @GetMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a rep order record")
@@ -93,7 +93,7 @@ public class RepOrderController {
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Object> updateRepOrder(@Parameter(description = "Update a rep order record", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UpdateRepOrder.class))) @RequestBody UpdateRepOrder updateRepOrder) {
         log.debug("Update Rep order request received for repId : {}", updateRepOrder.getRepId());
-        updateRepOrderValidator.validate(updateRepOrder);
+        maatIdValidator.validate(updateRepOrder.getRepId());
         repOrderService.updateRepOrder(updateRepOrder);
         return ResponseEntity.ok().build();
     }

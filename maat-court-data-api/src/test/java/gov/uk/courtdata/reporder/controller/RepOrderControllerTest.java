@@ -11,6 +11,7 @@ import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
+import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,9 @@ public class RepOrderControllerTest {
     @MockBean
     private RepOrderMvoService repOrderMvoService;
 
+    @MockBean
+    private MaatIdValidator maatIdValidator;
+
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders";
     private static final String MVO_REG_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo-reg";
 
@@ -56,6 +60,8 @@ public class RepOrderControllerTest {
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
 
     private static final String CURRENT_REGISTRATION = "current-registration";
+
+    private static final String REP_ORDER_COUNT_WITH_SENTENCE_ORDER_DATE = "/rep-order-count-with-sentence-order-date";
 
     @Test
     public void givenValidRepId_whenGetRepOrderIsInvoked_thenAssessmentIsRetrieved() throws Exception {
@@ -135,5 +141,20 @@ public class RepOrderControllerTest {
                 .andExpect(jsonPath("$.message").value("No Rep Order MVO found for ID: 1234"));
     }
 
+    @Test
+    public void givenInvalidRepId_whenRepOrderCountWithSentenceOrderDateIsInvoked_thenErrorIsThrown() throws Exception {
+        when(maatIdValidator.validate(TestModelDataBuilder.REP_ID))
+                .thenThrow(new ValidationException());
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + REP_ORDER_COUNT_WITH_SENTENCE_ORDER_DATE))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void givenAValidRepId_whenRepOrderCountWithSentenceOrderDateIsInvoked_thenDataIsRetrieved() throws Exception {
+        when(maatIdValidator.validate(TestModelDataBuilder.REP_ID))
+                .thenReturn(Optional.empty());
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + REP_ORDER_COUNT_WITH_SENTENCE_ORDER_DATE))
+                .andExpect(status().isOk());
+    }
 
 }

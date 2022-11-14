@@ -36,4 +36,11 @@ public class RepOrderService {
         repOrderImpl.updateAppDateCompleted(updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted());
         log.info("update app date completed  - Transaction Processing - End");
     }
+
+    @Transactional
+    public Boolean repOrderCountWithSentenceOrderDate(Integer repId) {
+        log.info("Get Rep order by appeal sentence order date is null - Transaction Processing - Start");
+        long count =  repOrderImpl.repOrderCountWithSentenceOrderDate(repId);
+        return count > 0;
+    }
 }

@@ -8,4 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Integer>, JpaSpecificationExecutor<RepOrderEntity> {
+
+    long countByIdAndSentenceOrderDateIsNotNull(Integer id);
+
 }

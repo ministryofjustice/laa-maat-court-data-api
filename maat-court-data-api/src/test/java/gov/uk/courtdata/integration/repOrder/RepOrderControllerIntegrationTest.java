@@ -44,6 +44,8 @@ public class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Autowired
     private RepOrderMvoRegRepository repOrderMvoRegRepository;
 
+    private static final String REP_ORDER_COUNT_WITH_SENTENCE_ORDER_DATE = "/rep-order-count-with-sentence-order-date";
+
     @BeforeAll
     static void setUp(@Autowired RepOrderRepository repOrderRepository, @Autowired RepOrderMvoRepository repOrderMvoRepository, @Autowired RepOrderMvoRegRepository repOrderMvoRegRepository) {
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
@@ -116,6 +118,16 @@ public class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     public void givenValidRepId_whenGetRepOrderMvoByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoIsReturned() throws Exception {
         runSuccessScenario(TestModelDataBuilder.getRepOrderMvoDTO(), get(MVO_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES));
+    }
+
+    @Test
+    public void givenAInvalidRepId_wheRepOrderCountWithSentenceOrderDateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
+        runBadRequestErrorScenario("MAAT/REP ID: 9999 is invalid.", get(BASE_URL + "/" + INVALID_REP_ID + REP_ORDER_COUNT_WITH_SENTENCE_ORDER_DATE).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(UpdateAppDateCompleted.builder().build())));
+    }
+
+    @Test
+    public void givenAValidRepIdAndRepOrderSentenceDateIsNotNull_wheRepOrderCountWithSentenceOrderDateIsInvoked_thenReturnTrue() throws Exception {
+        runSuccessScenario(Boolean.TRUE, get(BASE_URL + "/" + TestModelDataBuilder.REP_ID + REP_ORDER_COUNT_WITH_SENTENCE_ORDER_DATE).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(UpdateAppDateCompleted.builder().build())));
     }
 
 }

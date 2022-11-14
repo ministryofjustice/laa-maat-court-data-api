@@ -56,4 +56,16 @@ class RepOrderServiceTest {
         repOrderService.updateAppDateCompleted(new UpdateAppDateCompleted());
         verify(repOrderImpl).updateAppDateCompleted(any(), any());
     }
+
+    @Test
+    public void givenAValidRepId_whenRepOrderSentenceDateIsNotNull_thenReturnTrue() {
+        when(repOrderImpl.repOrderCountWithSentenceOrderDate(any())).thenReturn(1l);
+        assertThat(repOrderService.repOrderCountWithSentenceOrderDate(TestModelDataBuilder.REP_ID)).isTrue();
+    }
+
+    @Test
+    public void givenAValidRepId_whenRepOrderSentenceDateIsNull_thenReturnFalse() {
+        when(repOrderImpl.repOrderCountWithSentenceOrderDate(any())).thenReturn(0l);
+        assertThat(repOrderService.repOrderCountWithSentenceOrderDate(TestModelDataBuilder.REP_ID)).isFalse();
+    }
 }

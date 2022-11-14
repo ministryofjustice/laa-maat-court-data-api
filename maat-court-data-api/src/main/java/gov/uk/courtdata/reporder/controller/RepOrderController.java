@@ -7,6 +7,7 @@ import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
+import gov.uk.courtdata.validator.MaatIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,6 +35,8 @@ public class RepOrderController {
     private final RepOrderMvoService repOrderMvoService;
 
     private final UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
+
+    private final MaatIdValidator maatIdValidator;
 
     @GetMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a rep order record")
@@ -79,6 +82,17 @@ public class RepOrderController {
         log.info("Get Rep Order MVO Request Received");
         return ResponseEntity.ok(repOrderMvoService.findRepOrderMvoByRepIdAndVehicleOwner(repId, Objects.requireNonNullElse(vehicleOwner, "N")));
 
+    }
+
+    @GetMapping(value = {"/{repId}/rep-order-count-with-sentence-order-date"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve a rep order record")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<Boolean> repOrderCountWithSentenceOrderDate(@PathVariable int repId) {
+        log.info("Retrieve rep Order Count With Sentence Order Date");
+        maatIdValidator.validate(repId);
+        return ResponseEntity.ok(repOrderService.repOrderCountWithSentenceOrderDate(repId));
     }
 
 }

@@ -38,4 +38,10 @@ class RepOrderImplTest {
         repOrderImpl.find(TestModelDataBuilder.REP_ID);
         verify(repOrderRepository, times(1)).findById(TestModelDataBuilder.REP_ID);
     }
+
+    @Test
+    public void givenAValidRepId_whenCountByIdAndSentenceOrderDateIsNotNullInvoked_thenRepOrderCountIsRetrieved() {
+        repOrderImpl.repOrderCountWithSentenceOrderDate(TestModelDataBuilder.REP_ID);
+        verify(repOrderRepository, times(1)).countByIdAndSentenceOrderDateIsNotNull(TestModelDataBuilder.REP_ID);
+    }
 }

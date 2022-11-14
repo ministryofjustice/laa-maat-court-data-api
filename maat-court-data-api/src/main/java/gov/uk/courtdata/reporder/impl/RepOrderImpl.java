@@ -26,4 +26,8 @@ public class RepOrderImpl {
         repOrderEntity.setAssessmentDateCompleted(assessmentDateCompleted);
         repOrderRepository.saveAndFlush(repOrderEntity);
     }
+
+    public long repOrderCountWithSentenceOrderDate(Integer repId) {
+        return repOrderRepository.countByIdAndSentenceOrderDateIsNotNull(repId);
+    }
 }

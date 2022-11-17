@@ -4,6 +4,7 @@ import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
@@ -38,9 +39,18 @@ public class RepOrderService {
     }
 
     @Transactional
+    public void updateRepOrder(final UpdateRepOrder updateRepOrder) {
+        log.info("update rep order - Transaction Processing - Start");
+        RepOrderEntity repOrderEntity = repOrderImpl.find(updateRepOrder.getRepId());
+        repOrderMapper.updateRepOrderToRepOrderEntity(updateRepOrder, repOrderEntity);
+        repOrderImpl.updateRepOrder(repOrderEntity);
+        log.info("update rep order  - Transaction Processing - End");
+    }
+
+    @Transactional
     public Boolean repOrderCountWithSentenceOrderDate(Integer repId) {
-        log.info("Get Rep order by appeal sentence order date is null - Transaction Processing - Start");
-        long count =  repOrderImpl.repOrderCountWithSentenceOrderDate(repId);
+        log.info("Retrieve rep Order Count With Sentence Order Date - Transaction Processing - Start");
+        long count = repOrderImpl.repOrderCountWithSentenceOrderDate(repId);
         return count > 0;
     }
 }

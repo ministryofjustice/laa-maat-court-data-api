@@ -58,6 +58,11 @@ class RepOrderServiceTest {
     }
 
     @Test
+    public void givenAValidRepId_whenUpdateRepOrderInvoked_shouldSuccess() {
+        repOrderService.updateAppDateCompleted(new UpdateAppDateCompleted());
+        verify(repOrderImpl).updateAppDateCompleted(any(), any());
+    }
+
     public void givenAValidRepId_whenRepOrderSentenceDateIsNotNull_thenReturnTrue() {
         when(repOrderImpl.repOrderCountWithSentenceOrderDate(any())).thenReturn(1l);
         assertThat(repOrderService.repOrderCountWithSentenceOrderDate(TestModelDataBuilder.REP_ID)).isTrue();

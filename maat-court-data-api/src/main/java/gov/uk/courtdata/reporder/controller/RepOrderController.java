@@ -2,6 +2,7 @@ package gov.uk.courtdata.reporder.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
@@ -84,8 +85,20 @@ public class RepOrderController {
 
     }
 
+    @PutMapping
+    @Operation(description = "Update a rep order record")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<Object> updateRepOrder(@Parameter(description = "Update a rep order record", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UpdateRepOrder.class))) @RequestBody UpdateRepOrder updateRepOrder) {
+        log.debug("Update Rep order request received for repId : {}", updateRepOrder.getRepId());
+        maatIdValidator.validate(updateRepOrder.getRepId());
+        repOrderService.updateRepOrder(updateRepOrder);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping(value = {"/{repId}/rep-order-count-with-sentence-order-date"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Retrieve a rep order record")
+    @Operation(description = "Retrieve rep order count for a given sentence order date")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))

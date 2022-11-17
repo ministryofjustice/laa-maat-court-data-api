@@ -40,6 +40,9 @@ public class RepOrderControllerTest {
     private UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
 
     @MockBean
+    private MaatIdValidator maatIdValidator;
+
+    @MockBean
     private RepOrderService repOrderService;
 
     @MockBean
@@ -47,9 +50,6 @@ public class RepOrderControllerTest {
 
     @MockBean
     private RepOrderMvoService repOrderMvoService;
-
-    @MockBean
-    private MaatIdValidator maatIdValidator;
 
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders";
     private static final String MVO_REG_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo-reg";
@@ -142,10 +142,10 @@ public class RepOrderControllerTest {
     }
 
     @Test
-    public void givenInvalidRepId_whenRepOrderCountWithSentenceOrderDateIsInvoked_thenErrorIsThrown() throws Exception {
-        when(maatIdValidator.validate(TestModelDataBuilder.REP_ID))
+    public void givenIncorrectParameters_whenUpdateRepOrderInvoked_thenErrorIsThrown() throws Exception {
+        when(maatIdValidator.validate(any()))
                 .thenThrow(new ValidationException());
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + REP_ORDER_COUNT_WITH_SENTENCE_ORDER_DATE))
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -157,4 +157,19 @@ public class RepOrderControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void givenCorrectParameters_whenUpdateRepOrderInvoked_thenUpdateRepOrderIsSuccess() throws Exception {
+        when(maatIdValidator.validate(any()))
+                .thenReturn(Optional.empty());
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
+                .content(TestModelDataBuilder.getUpdateRepOrderJson())
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+    }
+
+    @Test
+    public void givenInvalidRepId_whenRepOrderCountWithSentenceOrderDateIsInvoked_thenErrorIsThrown() throws Exception {
+        when(maatIdValidator.validate(TestModelDataBuilder.REP_ID))
+                .thenThrow(new ValidationException());
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + REP_ORDER_COUNT_WITH_SENTENCE_ORDER_DATE));
+    }
 }

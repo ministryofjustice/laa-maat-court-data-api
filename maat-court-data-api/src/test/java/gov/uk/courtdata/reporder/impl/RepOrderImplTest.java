@@ -1,6 +1,7 @@
 package gov.uk.courtdata.reporder.impl;
 
 
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.repository.RepOrderRepository;
@@ -40,6 +41,11 @@ class RepOrderImplTest {
     }
 
     @Test
+    public void givenAValidRepId_whenUpdateRepOrderInvoked_thenUpdateRepOrdersIsSuccess() {
+        repOrderImpl.updateRepOrder(TestEntityDataBuilder.getRepOrder());
+        verify(repOrderRepository, times(1)).saveAndFlush(any());
+    }
+
     public void givenAValidRepId_whenCountByIdAndSentenceOrderDateIsNotNullInvoked_thenRepOrderCountIsRetrieved() {
         repOrderImpl.repOrderCountWithSentenceOrderDate(TestModelDataBuilder.REP_ID);
         verify(repOrderRepository, times(1)).countByIdAndSentenceOrderDateIsNotNull(TestModelDataBuilder.REP_ID);

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.entity;
 
 import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -42,6 +43,7 @@ public class RepOrderEntity {
     private String arrestSummonsNo;
     @Column(name = "USER_MODIFIED")
     private String userModified;
+    @UpdateTimestamp
     @Column(name = "DATE_MODIFIED")
     private LocalDateTime dateModified;
     @Column(name = "MCOO_OUTCOME")

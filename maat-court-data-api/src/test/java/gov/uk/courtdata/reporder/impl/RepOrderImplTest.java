@@ -1,6 +1,7 @@
 package gov.uk.courtdata.reporder.impl;
 
 
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.repository.RepOrderRepository;
@@ -37,5 +38,11 @@ class RepOrderImplTest {
     public void givenRepOrderExists_whenFindIsInvoked_thenRepOrderIsRetrieved() {
         repOrderImpl.find(TestModelDataBuilder.REP_ID);
         verify(repOrderRepository, times(1)).findById(TestModelDataBuilder.REP_ID);
+    }
+
+    @Test
+    public void givenAValidRepId_whenUpdateRepOrderInvoked_thenUpdateRepOrdersIsSuccess() {
+        repOrderImpl.updateRepOrder(TestEntityDataBuilder.getRepOrder());
+        verify(repOrderRepository, times(1)).saveAndFlush(any());
     }
 }

@@ -83,6 +83,29 @@ public class IOJAppealControllerTest {
     }
 
     @Test
+    public void givenCorrectParameters_whenGetCurrentPassedIOJAppealByRepIdIsCalled_thenReturnValidIOJAppealResponse_Success() throws Exception {
+        IOJAppealDTO iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
+        when(iojAppealService.findCurrentPassedAppealByRepId(IOJ_REP_ID)).thenReturn(iojAppealDTO);
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/" + IOJ_REP_ID + "/current-passed"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(String.valueOf(IOJ_APPEAL_ID)))
+                .andExpect(jsonPath("$.repId").value(String.valueOf(IOJ_REP_ID)));
+
+        verify(iojAppealService).findCurrentPassedAppealByRepId(IOJ_REP_ID);
+    }
+
+    @Test
+    public void givenInvalidRepId_whenGetCurrentPassedIOJAppealByRepIdIsCalled_then404NotFoundErrorIsThrown() throws Exception {
+        when(iojAppealService.findCurrentPassedAppealByRepId(INVALID_REP_ID))
+                .thenThrow(new RequestedObjectNotFoundException(String.format("No IOJAppeal object found for repId %s", INVALID_REP_ID)));
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/" + INVALID_REP_ID + "/current-passed"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void givenNullRepId_whenGetIOJAppealByRepIdIsInvoked_thenBadRequestIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + "/repId/null"))
                 .andExpect(status().isBadRequest());

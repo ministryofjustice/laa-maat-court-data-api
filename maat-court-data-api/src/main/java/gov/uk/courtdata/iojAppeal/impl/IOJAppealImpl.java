@@ -51,4 +51,8 @@ public class IOJAppealImpl {
 
         return iojAppealRepository.save(existingIOJAppealEntity);
     }
+
+    public IOJAppealEntity findCurrentPassedByRepId(int repId) {
+        return iojAppealRepository.findCurrentPassedByRepId(repId);
+    }
 }

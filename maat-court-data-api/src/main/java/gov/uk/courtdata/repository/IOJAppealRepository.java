@@ -16,4 +16,7 @@ public interface IOJAppealRepository extends JpaRepository<IOJAppealEntity, Inte
 
     @Query(value = "SELECT ioj_ae FROM IOJAppealEntity ioj_ae WHERE ioj_ae.repId = :repId AND ioj_ae.replaced = 'N'")
     IOJAppealEntity findByRepId(int repId);
+
+    @Query(value = "SELECT ioj_ae FROM IOJAppealEntity ioj_ae WHERE ioj_ae.repId = :repId AND ioj_ae.decisionResult = 'PASS' AND ioj_ae.replaced = 'N'")
+    IOJAppealEntity findCurrentPassedByRepId(int repId);
 }

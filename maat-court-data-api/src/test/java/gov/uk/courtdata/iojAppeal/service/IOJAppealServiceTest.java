@@ -79,6 +79,30 @@ public class IOJAppealServiceTest {
     }
 
     @Test
+    public void whenFindCurrentPassedAppealByRepIdIsInvoked_thenIOJAppealIsRetrieved() {
+        IOJAppealEntity iojAppealEntity = IOJAppealEntity.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build();
+        when(iojAppealImpl.findCurrentPassedByRepId(IOJ_REP_ID)).thenReturn(iojAppealEntity);
+        when(iojAppealMapper.toIOJAppealDTO(iojAppealEntity))
+                .thenReturn(IOJAppealDTO.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build());
+
+        IOJAppealDTO returnedIOJAppeal = iojAppealService.findCurrentPassedAppealByRepId(IOJ_REP_ID);
+
+        verify(iojAppealImpl).findCurrentPassedByRepId(IOJ_REP_ID);
+        verify(iojAppealMapper).toIOJAppealDTO(iojAppealEntity);
+        assertThat(returnedIOJAppeal.getId()).isEqualTo(IOJ_APPEAL_ID);
+        assertThat(returnedIOJAppeal.getRepId()).isEqualTo(IOJ_REP_ID);
+    }
+
+    @Test
+    public void whenFindCurrentPassedAppealByRepIdIsInvokedWithInvalidRepId_thenNotFoundExceptionIsThrown() {
+        when(iojAppealImpl.findCurrentPassedByRepId(IOJ_REP_ID)).thenReturn(null);
+
+        assertThatExceptionOfType(RequestedObjectNotFoundException.class)
+                .isThrownBy(() -> iojAppealService.findCurrentPassedAppealByRepId(IOJ_REP_ID))
+                .withMessageContaining(String.format("No IOJ Appeal found for REP ID: %d", IOJ_REP_ID));
+    }
+
+    @Test
     public void whenCreateIsInvoked_thenIOJAppealIsCreated() {
         var createdIOJAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
         var createIOJAppeal = TestModelDataBuilder.getCreateIOJAppealObject();

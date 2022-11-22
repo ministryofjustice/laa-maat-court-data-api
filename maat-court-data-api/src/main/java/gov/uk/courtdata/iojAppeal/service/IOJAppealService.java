@@ -43,7 +43,7 @@ public class IOJAppealService {
     @Transactional(rollbackFor = RuntimeException.class)
     public IOJAppealDTO create(CreateIOJAppeal iojAppeal) {
         log.info("Create IOJ Appeal - Transaction Processing - Start");
-        var iojAppealDTO =  iojAppealMapper.toIOJAppealDTO(iojAppeal);
+        var iojAppealDTO = iojAppealMapper.toIOJAppealDTO(iojAppeal);
 
         log.info("Creating new IOJAppeal record");
         var iojAppealEntity = iojAppealImpl.create(iojAppealDTO);
@@ -59,12 +59,21 @@ public class IOJAppealService {
     @Transactional(rollbackFor = RuntimeException.class)
     public IOJAppealDTO update(UpdateIOJAppeal iojAppeal) {
         log.info("Update IOJ Appeal - Transaction Processing - Start");
-        var iojAppealDTO =  iojAppealMapper.toIOJAppealDTO(iojAppeal);
+        var iojAppealDTO = iojAppealMapper.toIOJAppealDTO(iojAppeal);
 
         log.info("Updating IOJAppeal record");
         var updatedIOJAppealEntity = iojAppealImpl.update(iojAppealDTO);
 
         log.info("Update IOJ Appeal - Transaction Processing - end");
         return iojAppealMapper.toIOJAppealDTO(updatedIOJAppealEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public IOJAppealDTO findCurrentPassedAppealByRepId(int repId) {
+        IOJAppealEntity iojAppealEntity = iojAppealImpl.findCurrentPassedByRepId(repId);
+        if (iojAppealEntity == null) {
+            throw new RequestedObjectNotFoundException(String.format("No IOJ Appeal found for REP ID: %s", repId));
+        }
+        return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
     }
 }

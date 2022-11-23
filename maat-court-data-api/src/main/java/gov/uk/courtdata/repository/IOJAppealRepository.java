@@ -1,7 +1,6 @@
 package gov.uk.courtdata.repository;
 
 import gov.uk.courtdata.entity.IOJAppealEntity;
-import gov.uk.courtdata.entity.RepOrderMvoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;

@@ -53,6 +53,6 @@ public class IOJAppealImpl {
     }
 
     public IOJAppealEntity findCurrentPassedByRepId(int repId) {
-        return iojAppealRepository.findCurrentPassedByRepId(repId);
+        return iojAppealRepository.findByRepIdAndReplacedAndDecisionResult(repId, "N", "PASS");
     }
 }

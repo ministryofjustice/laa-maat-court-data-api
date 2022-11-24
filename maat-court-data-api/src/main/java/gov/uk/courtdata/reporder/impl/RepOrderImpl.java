@@ -2,13 +2,15 @@ package gov.uk.courtdata.reporder.impl;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+
+import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasId;
+import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasSentenceOrderDate;
 
 @Slf4j
 @Component
@@ -22,6 +24,10 @@ public class RepOrderImpl {
         return repOrderRepository.findById(repId).orElse(null);
     }
 
+    public RepOrderEntity findWithSentenceOrderDate(Integer repId) {
+        return repOrderRepository.findOne(hasId(repId).and(hasSentenceOrderDate())).orElse(null);
+    }
+
     public void updateAppDateCompleted(final Integer repId, final LocalDateTime assessmentDateCompleted) {
         RepOrderEntity repOrderEntity = repOrderRepository.getById(repId);
         repOrderEntity.setAssessmentDateCompleted(assessmentDateCompleted);
@@ -32,7 +38,7 @@ public class RepOrderImpl {
         repOrderRepository.saveAndFlush(repOrderEntity);
     }
 
-    public long repOrderCountWithSentenceOrderDate(Integer repId) {
-        return repOrderRepository.countByIdAndSentenceOrderDateIsNotNull(repId);
+    public long countWithSentenceOrderDate(Integer repId) {
+        return repOrderRepository.count(hasId(repId).and(hasSentenceOrderDate()));
     }
 }

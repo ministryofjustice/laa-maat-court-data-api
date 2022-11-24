@@ -34,43 +34,53 @@ class RepOrderServiceTest {
     private RepOrderService repOrderService;
 
     @Test
-    public void givenValidRepId_whenFindIsInvoked_thenRepOrderIsReturned() {
+    void givenValidRepIdAndSentenceOrderFlagIsFalse_whenFindIsInvoked_thenRepOrderIsReturned() {
         when(repOrderImpl.find(anyInt()))
                 .thenReturn(TestEntityDataBuilder.getRepOrder());
-        when(repOrderMapper.RepOrderEntityToRepOrderDTO(any(RepOrderEntity.class)))
-                .thenReturn(TestModelDataBuilder.getRepOrderDTO());
-        assertThat(repOrderService.find(TestModelDataBuilder.REP_ID))
-                .isEqualTo(TestModelDataBuilder.getRepOrderDTO());
 
+        when(repOrderMapper.repOrderEntityToRepOrderDTO(any(RepOrderEntity.class)))
+                .thenReturn(TestModelDataBuilder.getRepOrderDTO());
+
+        repOrderService.find(TestModelDataBuilder.REP_ID, false);
+        verify(repOrderImpl).find(anyInt());
     }
 
     @Test
-    public void givenInValidRepId_whenFindIsInvoked_thenErrorIsThrown() {
-        assertThatThrownBy(() -> repOrderService.find(TestModelDataBuilder.REP_ID))
+    void givenValidRepIdAndSentenceOrderFlagIsTrue_whenFindIsInvoked_thenRepOrderIsReturned() {
+        when(repOrderImpl.findWithSentenceOrderDate(anyInt()))
+                .thenReturn(TestEntityDataBuilder.getRepOrder());
+
+        when(repOrderMapper.repOrderEntityToRepOrderDTO(any(RepOrderEntity.class)))
+                .thenReturn(TestModelDataBuilder.getRepOrderDTO());
+
+        repOrderService.find(TestModelDataBuilder.REP_ID, true);
+        verify(repOrderImpl).findWithSentenceOrderDate(anyInt());
+    }
+
+    @Test
+    void givenInvalidRepId_whenFindIsInvoked_thenErrorIsThrown() {
+        assertThatThrownBy(() -> repOrderService.find(TestModelDataBuilder.REP_ID, false))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("No Rep Order found for ID: " + TestModelDataBuilder.REP_ID);
     }
 
     @Test
-    public void testRepOrdersService_updateAppDateCompleted_shouldSuccess() {
-        repOrderService.updateAppDateCompleted(new UpdateAppDateCompleted());
+    void givenDateCompletedObject_whenUpdateAppDateCompletedIsInvoked_thenAppDateIsUpdated() {
+        repOrderService.updateDateCompleted(new UpdateAppDateCompleted());
         verify(repOrderImpl).updateAppDateCompleted(any(), any());
     }
 
     @Test
-    public void givenAValidRepId_whenUpdateRepOrderInvoked_shouldSuccess() {
-        repOrderService.updateAppDateCompleted(new UpdateAppDateCompleted());
-        verify(repOrderImpl).updateAppDateCompleted(any(), any());
-    }
-
-    public void givenAValidRepId_whenRepOrderSentenceDateIsNotNull_thenReturnTrue() {
-        when(repOrderImpl.repOrderCountWithSentenceOrderDate(any())).thenReturn(1l);
-        assertThat(repOrderService.repOrderCountWithSentenceOrderDate(TestModelDataBuilder.REP_ID)).isTrue();
+    void givenValidRepId_whenExistsIsInvoked_thenReturnTrue() {
+        when(repOrderImpl.countWithSentenceOrderDate(any()))
+                .thenReturn(1L);
+        assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID)).isTrue();
     }
 
     @Test
-    public void givenAValidRepId_whenRepOrderSentenceDateIsNull_thenReturnFalse() {
-        when(repOrderImpl.repOrderCountWithSentenceOrderDate(any())).thenReturn(0l);
-        assertThat(repOrderService.repOrderCountWithSentenceOrderDate(TestModelDataBuilder.REP_ID)).isFalse();
+    void givenInvalidRepId_whenExistsIsInvoked_thenReturnFalse() {
+        when(repOrderImpl.countWithSentenceOrderDate(any()))
+                .thenReturn(0L);
+        assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID)).isFalse();
     }
 }

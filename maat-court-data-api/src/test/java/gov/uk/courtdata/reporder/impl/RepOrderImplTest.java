@@ -7,14 +7,17 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -28,26 +31,27 @@ class RepOrderImplTest {
 
 
     @Test
-    public void testUpdateAppDateCompleted_whenUpdateIsSuccess() {
+    void testUpdateAppDateCompleted_whenUpdateIsSuccess() {
         when(repOrderRepository.getById(TestModelDataBuilder.REP_ID)).thenReturn(new RepOrderEntity());
         repOrderImpl.updateAppDateCompleted(TestModelDataBuilder.REP_ID, LocalDateTime.now());
-        verify(repOrderRepository, times(1)).saveAndFlush(any());
+        verify(repOrderRepository).saveAndFlush(any());
     }
 
     @Test
-    public void givenRepOrderExists_whenFindIsInvoked_thenRepOrderIsRetrieved() {
+    void givenRepOrderExists_whenFindIsInvoked_thenRepOrderIsRetrieved() {
         repOrderImpl.find(TestModelDataBuilder.REP_ID);
-        verify(repOrderRepository, times(1)).findById(TestModelDataBuilder.REP_ID);
+        verify(repOrderRepository).findById(TestModelDataBuilder.REP_ID);
     }
 
     @Test
-    public void givenAValidRepId_whenUpdateRepOrderInvoked_thenUpdateRepOrdersIsSuccess() {
+    void givenAValidRepId_whenUpdateRepOrderInvoked_thenUpdateRepOrdersIsSuccess() {
         repOrderImpl.updateRepOrder(TestEntityDataBuilder.getRepOrder());
-        verify(repOrderRepository, times(1)).saveAndFlush(any());
+        verify(repOrderRepository).saveAndFlush(any());
     }
 
-    public void givenAValidRepId_whenCountByIdAndSentenceOrderDateIsNotNullInvoked_thenRepOrderCountIsRetrieved() {
-        repOrderImpl.repOrderCountWithSentenceOrderDate(TestModelDataBuilder.REP_ID);
-        verify(repOrderRepository, times(1)).countByIdAndSentenceOrderDateIsNotNull(TestModelDataBuilder.REP_ID);
+    @Test
+    void givenAValidRepId_whenCountByIdAndSentenceOrderDateIsNotNullInvoked_thenRepOrderCountIsRetrieved() {
+        repOrderImpl.countWithSentenceOrderDate(TestModelDataBuilder.REP_ID);
+        verify(repOrderRepository).count(ArgumentMatchers.<Specification<RepOrderEntity>>any());
     }
 }

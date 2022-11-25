@@ -23,27 +23,39 @@ public class RepOrderService {
     private final RepOrderMapper repOrderMapper;
 
     @Transactional(readOnly = true)
-    public RepOrderDTO find(Integer repId) {
-        RepOrderEntity repOrderEntity = repOrderImpl.find(repId);
-        if (repOrderEntity == null) {
+    public RepOrderDTO find(Integer repId, boolean hasSentenceOrderDate) {
+        RepOrderEntity repOrder;
+        if (hasSentenceOrderDate) {
+            repOrder = repOrderImpl.findWithSentenceOrderDate(repId);
+        } else {
+            repOrder = repOrderImpl.find(repId);
+        }
+
+        if (repOrder == null) {
             throw new RequestedObjectNotFoundException(String.format("No Rep Order found for ID: %s", repId));
         }
-        return repOrderMapper.RepOrderEntityToRepOrderDTO(repOrderEntity);
+        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrder);
     }
 
     @Transactional
-    public void updateAppDateCompleted(final UpdateAppDateCompleted updateAppDateCompleted) {
+    public void updateDateCompleted(final UpdateAppDateCompleted updateAppDateCompleted) {
         log.info("update app date completed - Transaction Processing - Start");
         repOrderImpl.updateAppDateCompleted(updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted());
         log.info("update app date completed  - Transaction Processing - End");
     }
 
     @Transactional
-    public void updateRepOrder(final UpdateRepOrder updateRepOrder) {
+    public void update(final UpdateRepOrder updateRepOrder) {
         log.info("update rep order - Transaction Processing - Start");
         RepOrderEntity repOrderEntity = repOrderImpl.find(updateRepOrder.getRepId());
         repOrderMapper.updateRepOrderToRepOrderEntity(updateRepOrder, repOrderEntity);
         repOrderImpl.updateRepOrder(repOrderEntity);
         log.info("update rep order  - Transaction Processing - End");
+    }
+
+    @Transactional
+    public boolean exists(Integer repId) {
+        log.info("Retrieve rep Order Count With Sentence Order Date - Transaction Processing - Start");
+        return repOrderImpl.countWithSentenceOrderDate(repId) > 0;
     }
 }

@@ -31,7 +31,7 @@ public class TestEntityDataBuilder {
     }
 
     public static RepOrderEntity getPopulatedRepOrder(Integer id) {
-        return RepOrderEntity.builder().id(id).catyCaseType("case-type").magsOutcome("outcome").magsOutcomeDate(TEST_DATE.toString()).magsOutcomeDateSet(TEST_DATE.toLocalDate()).committalDate(TEST_DATE.toLocalDate()).repOrderDecisionReasonCode("rder-code").crownRepOrderDecision("cc-rep-doc").crownRepOrderType("cc-rep-type").build();
+        return RepOrderEntity.builder().id(id).catyCaseType("case-type").magsOutcome("outcome").magsOutcomeDate(TEST_DATE.toString()).magsOutcomeDateSet(TEST_DATE.toLocalDate()).committalDate(TEST_DATE.toLocalDate()).repOrderDecisionReasonCode("rder-code").crownRepOrderDecision("cc-rep-doc").crownRepOrderType("cc-rep-type").sentenceOrderDate(TEST_DATE).build();
     }
 
     public static RepOrderMvoEntity getRepOrderMvoEntity(Integer id) {

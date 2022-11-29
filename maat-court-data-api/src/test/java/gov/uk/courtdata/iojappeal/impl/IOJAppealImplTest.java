@@ -1,9 +1,9 @@
-package gov.uk.courtdata.iojAppeal.impl;
+package gov.uk.courtdata.iojappeal.impl;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.IOJAppealEntity;
-import gov.uk.courtdata.iojAppeal.mapper.IOJAppealMapper;
+import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.repository.IOJAppealRepository;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

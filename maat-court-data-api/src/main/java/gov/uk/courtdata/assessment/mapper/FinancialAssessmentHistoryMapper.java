@@ -16,21 +16,21 @@ import org.mapstruct.*;
 )
 public interface FinancialAssessmentHistoryMapper {
     @Mapping(source = "id", target = "fasdId")
-    FinancialAssessmentDetailsHistoryDTO FinancialAssessmentDetailEntityToFinancialAssessmentDetailsHistoryDTO(final FinancialAssessmentDetailEntity financialAssessmentDetailEntity);
+    FinancialAssessmentDetailsHistoryDTO financialAssessmentDetailEntityToFinancialAssessmentDetailsHistoryDTO(final FinancialAssessmentDetailEntity financialAssessmentDetailEntity);
 
-    FinancialAssessmentDetailsHistoryEntity FinancialAssessmentDetailsHistoryDTOToFinancialAssessmentDetailsHistoryEntity(final FinancialAssessmentDetailsHistoryDTO financialAssessmentDetailsHistoryDTO);
+    FinancialAssessmentDetailsHistoryEntity financialAssessmentDetailsHistoryDTOToFinancialAssessmentDetailsHistoryEntity(final FinancialAssessmentDetailsHistoryDTO financialAssessmentDetailsHistoryDTO);
 
     @Mapping(target = "repId", source = "repOrder.id")
-    FinancialAssessmentsHistoryDTO FinancialAssessmentEntityToFinancialAssessmentsHistoryDTO(final FinancialAssessmentEntity assessmentEntity);
+    FinancialAssessmentsHistoryDTO financialAssessmentEntityToFinancialAssessmentsHistoryDTO(final FinancialAssessmentEntity assessmentEntity);
 
-    FinancialAssessmentsHistoryEntity FinancialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(final FinancialAssessmentsHistoryDTO assessmentsHistoryDTO);
+    FinancialAssessmentsHistoryEntity financialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(final FinancialAssessmentsHistoryDTO assessmentsHistoryDTO);
 
     @Mapping(source = "id", target = "facwId")
-    ChildWeightHistoryDTO ChildWeightingsEntityToChildWeightHistoryDTO(final ChildWeightingsEntity childWeightingsEntity);
+    ChildWeightHistoryDTO childWeightingsEntityToChildWeightHistoryDTO(final ChildWeightingsEntity childWeightingsEntity);
 
-    ChildWeightHistoryEntity ChildWeightHistoryDTOToChildWeightHistoryEntity(final ChildWeightHistoryDTO childWeightHistoryDTO);
+    ChildWeightHistoryEntity childWeightHistoryDTOToChildWeightHistoryEntity(final ChildWeightHistoryDTO childWeightHistoryDTO);
 
     default String booleanToString(final Boolean bool) {
-        return bool == null ? "N" : (bool ? "Y" : "N");
+        return (bool == null || !bool) ? "N" : "Y";
     }
 }

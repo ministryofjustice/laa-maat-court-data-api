@@ -1,9 +1,9 @@
-package gov.uk.courtdata.iojAppeal.impl;
+package gov.uk.courtdata.iojappeal.impl;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
-import gov.uk.courtdata.iojAppeal.mapper.IOJAppealMapper;
+import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.repository.IOJAppealRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

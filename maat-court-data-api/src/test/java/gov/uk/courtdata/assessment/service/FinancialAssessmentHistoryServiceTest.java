@@ -47,7 +47,7 @@ public class FinancialAssessmentHistoryServiceTest {
         assessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntity();
         financialAssessmentsHistoryDTO = TestModelDataBuilder.getFinancialAssessmentsHistoryDTO();
         when(financialAssessmentImpl.find(MOCK_FINANCIAL_ASSESSMENT_ID)).thenReturn(assessmentEntity);
-        when(assessmentHistoryMapper.FinancialAssessmentEntityToFinancialAssessmentsHistoryDTO(assessmentEntity))
+        when(assessmentHistoryMapper.financialAssessmentEntityToFinancialAssessmentsHistoryDTO(assessmentEntity))
                 .thenReturn(financialAssessmentsHistoryDTO);
         when(financialAssessmentHistoryImpl.buildAndSave(financialAssessmentsHistoryDTO, MOCK_FINANCIAL_ASSESSMENT_ID))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentsHistoryEntity());
@@ -58,8 +58,8 @@ public class FinancialAssessmentHistoryServiceTest {
         financialAssessmentHistoryService.createAssessmentHistory(MOCK_FINANCIAL_ASSESSMENT_ID, true);
 
         verify(financialAssessmentImpl).find(MOCK_FINANCIAL_ASSESSMENT_ID);
-        verify(assessmentHistoryMapper).FinancialAssessmentEntityToFinancialAssessmentsHistoryDTO(assessmentEntity);
-        verify(assessmentMapper).FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
+        verify(assessmentHistoryMapper).financialAssessmentEntityToFinancialAssessmentsHistoryDTO(assessmentEntity);
+        verify(assessmentMapper).financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
         verify(financialAssessmentHistoryImpl).buildAndSave(financialAssessmentsHistoryDTO, MOCK_FINANCIAL_ASSESSMENT_ID);
     }
 }

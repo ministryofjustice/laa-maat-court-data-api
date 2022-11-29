@@ -144,14 +144,14 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     void givenAValidAssessmentId_whenGetAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
         var testAssessment = existingAssessmentEntities.get(0);
         runSuccessScenario(
-                assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(testAssessment),
+                assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(testAssessment),
                 get(ASSESSMENT_URL, testAssessment.getId()));
     }
 
     @Test
     void givenAValidAssessmentId_whenGetAssessmentIsInvoked_theCorrectRelationshipsResponseIsReturned() throws Exception {
         var testAssessment = existingAssessmentEntities.get(3);
-        runSuccessScenario(assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(testAssessment), get(ASSESSMENT_URL, testAssessment.getId()));
+        runSuccessScenario(assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(testAssessment), get(ASSESSMENT_URL, testAssessment.getId()));
     }
 
     @Test

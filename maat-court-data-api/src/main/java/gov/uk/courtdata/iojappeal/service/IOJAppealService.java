@@ -1,11 +1,11 @@
-package gov.uk.courtdata.iojAppeal.service;
+package gov.uk.courtdata.iojappeal.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.iojAppeal.impl.IOJAppealImpl;
-import gov.uk.courtdata.iojAppeal.mapper.IOJAppealMapper;
+import gov.uk.courtdata.iojappeal.impl.IOJAppealImpl;
+import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import lombok.RequiredArgsConstructor;

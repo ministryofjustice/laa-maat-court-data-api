@@ -93,7 +93,7 @@ public class FinancialAssessmentImpl {
 
         for (ChildWeightings weighting : financialAssessment.getChildWeightings()) {
             ChildWeightingsEntity childWeightingEntity =
-                    assessmentMapper.ChildWeightingsToChildWeightingsEntity(weighting);
+                    assessmentMapper.childWeightingsToChildWeightingsEntity(weighting);
             ChildWeightingsEntity existingChildWeightingEntity =
                     existingAssessment.getChildWeightings()
                             .stream()
@@ -125,7 +125,7 @@ public class FinancialAssessmentImpl {
 
         for (FinancialAssessmentDetails detail : financialAssessment.getAssessmentDetails()) {
             FinancialAssessmentDetailEntity detailEntity =
-                    assessmentMapper.FinancialAssessmentDetailsToFinancialAssessmentDetailsEntity(detail);
+                    assessmentMapper.financialAssessmentDetailsToFinancialAssessmentDetailsEntity(detail);
             FinancialAssessmentDetailEntity existingDetailEntity =
                     existingAssessment.getAssessmentDetails()
                             .stream()
@@ -151,7 +151,7 @@ public class FinancialAssessmentImpl {
 
     public FinancialAssessmentEntity create(FinancialAssessmentDTO financialAssessment) {
         FinancialAssessmentEntity assessmentEntity =
-                assessmentMapper.FinancialAssessmentDtoToFinancialAssessmentEntity(financialAssessment);
+                assessmentMapper.financialAssessmentDtoToFinancialAssessmentEntity(financialAssessment);
         assessmentEntity.setAssessmentType(FinancialAssessmentType.INIT.getValue());
         return financialAssessmentRepository.saveAndFlush(assessmentEntity);
     }

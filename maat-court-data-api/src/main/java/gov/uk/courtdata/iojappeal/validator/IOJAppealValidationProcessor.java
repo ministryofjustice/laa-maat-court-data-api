@@ -1,4 +1,4 @@
-package gov.uk.courtdata.iojAppeal.validator;
+package gov.uk.courtdata.iojappeal.validator;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.IOJAppealEntity;

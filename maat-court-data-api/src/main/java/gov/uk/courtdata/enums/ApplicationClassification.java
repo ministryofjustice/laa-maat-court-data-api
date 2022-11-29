@@ -1,7 +1,6 @@
 package gov.uk.courtdata.enums;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public enum ApplicationClassification {
 
@@ -26,7 +25,7 @@ public enum ApplicationClassification {
 
     }
 
-    private static final HashMap<String,String> MAP = new HashMap<String,String>();
+    private static final HashMap<String,String> MAP = new HashMap<>();
 
     static {
         for (ApplicationClassification s : ApplicationClassification.values()) {

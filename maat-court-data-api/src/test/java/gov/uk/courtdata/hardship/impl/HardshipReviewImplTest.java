@@ -64,7 +64,7 @@ public class HardshipReviewImplTest {
     @Test
     public void givenHardshipDTO_whenCreateIsInvoked_thenHardshipIsPersisted() {
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
-        when(hardshipReviewMapper.HardshipReviewDTOToHardshipReviewEntity(any(HardshipReviewDTO.class))).thenReturn(
+        when(hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(any(HardshipReviewDTO.class))).thenReturn(
                 TestEntityDataBuilder.getHardshipReviewEntityWithRelationships());
         when(hardshipReviewDetailReasonRepository.getById(any(Integer.class))).thenReturn(
                 HardshipReviewDetailReasonEntity.builder()
@@ -85,11 +85,11 @@ public class HardshipReviewImplTest {
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
         HardshipReviewEntity mockHardshipEntity = TestEntityDataBuilder.getHardshipReviewEntityWithRelationships();
         when(hardshipReviewRepository.getById(any(Integer.class))).thenReturn(mockHardshipEntity);
-        when(hardshipReviewMapper.HardshipReviewDetailToHardshipReviewDetailEntity(any(HardshipReviewDetail.class))).thenReturn(
+        when(hardshipReviewMapper.hardshipReviewDetailToHardshipReviewDetailEntity(any(HardshipReviewDetail.class))).thenReturn(
                 TestEntityDataBuilder.getHardshipReviewDetailsEntity());
-        when(hardshipReviewMapper.HardshipReviewProgressToHardshipReviewProgressEntity(any(HardshipReviewProgress.class))).thenReturn(
+        when(hardshipReviewMapper.hardshipReviewProgressToHardshipReviewProgressEntity(any(HardshipReviewProgress.class))).thenReturn(
                 TestEntityDataBuilder.getHardshipReviewProgressEntity());
-        when(hardshipReviewMapper.NewWorkReasonToNewWorkReasonEntity(any(NewWorkReason.class))).thenReturn(
+        when(hardshipReviewMapper.newWorkReasonToNewWorkReasonEntity(any(NewWorkReason.class))).thenReturn(
                 TestEntityDataBuilder.getNewWorkReasonEntity());
 
         hardshipReviewImpl.update(hardshipReviewDTO);

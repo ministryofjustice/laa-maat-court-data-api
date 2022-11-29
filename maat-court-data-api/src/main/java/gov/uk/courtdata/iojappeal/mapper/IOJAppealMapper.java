@@ -1,4 +1,4 @@
-package gov.uk.courtdata.iojAppeal.mapper;
+package gov.uk.courtdata.iojappeal.mapper;
 
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;

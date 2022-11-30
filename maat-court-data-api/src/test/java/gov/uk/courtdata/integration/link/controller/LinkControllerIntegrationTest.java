@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.link.controller.LinkController;
 import gov.uk.courtdata.model.CaseDetailsValidate;
@@ -155,38 +154,6 @@ public class LinkControllerIntegrationTest {
                 .andExpect(jsonPath("$.message", is("CaseURN can't be null or empty on request.")));
     }
 
-
-    @Test
-    public void testWhenMaatIdAlreadyLinked_Returns400ClientError() throws Exception {
-
-        final Integer maatId = 1000;
-
-        // Rep order with maat
-        repOrderRepository.save(createRepOrderEntity(maatId));
-
-        repOrderCPDataRepository.save(createRepOrderCPDataEntity(maatId, "testUrn"));
-
-        //Create link to validate exists.
-        wqLinkRegisterRepository.save(createWqLinkRegisterEntity(maatId));
-
-        final CaseDetailsValidate caseDetailsValidate =
-                CaseDetailsValidate
-                        .builder()
-                        .maatId(1000)
-                        .caseUrn("testUrn")
-                        .build();
-
-        String json = objectMapper.writeValueAsString(caseDetailsValidate);
-
-        // Assert Http Response.
-        this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
-                .contentType(MediaType.APPLICATION_JSON)).andDo(print())
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message",
-                        is("1000 is already linked to a case.")));
-    }
-
-
     @Test
     public void testWhenPreConditionValidationPasses_Returns200Success() throws Exception {
 
@@ -218,21 +185,6 @@ public class LinkControllerIntegrationTest {
         repOrderCPDataRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();
     }
-
-
-    private WqLinkRegisterEntity createWqLinkRegisterEntity(final Integer maatId) {
-        return WqLinkRegisterEntity.builder()
-                .caseId(100)
-                .createdTxId(10)
-                .proceedingId(100)
-                .removedTxId(null)
-                .cjsAreaCode("16")
-                .maatCat(1)
-                .mlrCat(1)
-                .maatId(maatId)
-                .build();
-    }
-
 
     public RepOrderCPDataEntity createRepOrderCPDataEntity(final Integer maatId, final String caseUrn) {
         return RepOrderCPDataEntity.builder()

@@ -14,14 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static java.lang.String.format;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PreConditionsValidatorTest {
-
-    @Mock
-    private LinkExistsValidator linkExistsValidator;
 
     @Mock
     private MaatIdValidator maatIdValidator;
@@ -50,21 +46,6 @@ public class PreConditionsValidatorTest {
     }
 
 
-    @Test
-    public void testLinkAlreadyExistsValidator_throwsValidationException() {
-
-        final int testMaatId = 1000;
-
-        when(linkExistsValidator.validate(testMaatId))
-                .thenThrow(new
-                        ValidationException(format("%s: MaatId already linked to the application.", testMaatId)));
-
-        Assertions.assertThrows(ValidationException.class, ()-> preConditionsValidator.validate(
-                CaseDetailsValidate
-                        .builder()
-                        .maatId(testMaatId)
-                        .build()),"1000: MaatId already linked to the application.");
-    }
 
 
     @Test
@@ -108,8 +89,6 @@ public class PreConditionsValidatorTest {
         // when
         when(maatIdValidator.validate(testMaatId))
                 .thenReturn(Optional.empty());
-        when(linkExistsValidator.validate(testMaatId))
-                .thenReturn(Optional.empty());
 
         when(cpDataValidator.validate(CaseDetails
                 .builder()
@@ -122,7 +101,6 @@ public class PreConditionsValidatorTest {
 
         //then
         verify(maatIdValidator, times(1)).validate(testMaatId);
-        verify(linkExistsValidator, times(1)).validate(testMaatId);
         verify(cpDataValidator, times(1)).validate(caseDetails);
 
     }

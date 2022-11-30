@@ -63,7 +63,7 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenCorrectParameters_whenCreateFinancialAssessmentIsInvoked_thenAssessmentIsCreated() throws Exception {
         FinancialAssessmentDTO returnedFinancialAssessment =
-                financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
+                financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
         returnedFinancialAssessment.setId(MOCK_ASSESSMENT_ID);
 
         when(financialAssessmentService.create(any())).thenReturn(returnedFinancialAssessment);
@@ -85,7 +85,7 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenCorrectParameters_whenSearchFinancialAssessmentIsInvoked_thenAssessmentIsReturned() throws Exception {
         FinancialAssessmentDTO returnedFinancialAssessment =
-                financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
+                financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
 
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenReturn(Optional.empty());
         when(financialAssessmentService.find(MOCK_ASSESSMENT_ID)).thenReturn(returnedFinancialAssessment);
@@ -106,7 +106,7 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenCorrectParameters_whenUpdateFinancialAssessmentIsInvoked_thenAssessmentIsUpdated() throws Exception {
         FinancialAssessmentDTO returnedFinancialAssessment =
-                financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
+                financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
         returnedFinancialAssessment.setAssessmentType("FULL");
 
         when(financialAssessmentValidationProcessor.validate(any(FinancialAssessment.class))).thenReturn(Optional.empty());

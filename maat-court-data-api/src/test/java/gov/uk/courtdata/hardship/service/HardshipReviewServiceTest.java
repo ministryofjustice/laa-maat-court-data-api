@@ -39,7 +39,7 @@ public class HardshipReviewServiceTest {
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
         when(hardshipReviewImpl.find(any())).thenReturn(
                 HardshipReviewEntity.builder().id(MOCK_HARDSHIP_ID).build());
-        when(hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
+        when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
                 HardshipReviewDTO.builder().id(MOCK_HARDSHIP_ID).build());
 
         HardshipReviewDTO returnedAssessment = hardshipReviewService.findHardshipReview(MOCK_HARDSHIP_ID);
@@ -61,13 +61,13 @@ public class HardshipReviewServiceTest {
     public void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
         HardshipReviewEntity hardshipReviewEntity = HardshipReviewEntity.builder().id(MOCK_HARDSHIP_ID).repId(MOCK_REP_ID).build();
         when(hardshipReviewImpl.findByRepId(MOCK_REP_ID)).thenReturn(hardshipReviewEntity);
-        when(hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity))
+        when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity))
                 .thenReturn(HardshipReviewDTO.builder().id(MOCK_HARDSHIP_ID).repId(MOCK_REP_ID).build());
 
         HardshipReviewDTO returnedAssessment = hardshipReviewService.findHardshipReviewByRepId(MOCK_REP_ID);
 
         verify(hardshipReviewImpl).findByRepId(MOCK_REP_ID);
-        verify(hardshipReviewMapper).HardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
+        verify(hardshipReviewMapper).hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
         assertThat(returnedAssessment.getId()).isEqualTo(MOCK_HARDSHIP_ID);
         assertThat(returnedAssessment.getRepId()).isEqualTo(MOCK_REP_ID);
     }
@@ -83,9 +83,9 @@ public class HardshipReviewServiceTest {
 
     @Test
     public void whenCreateIsInvoked_thenAssessmentIsPersisted() {
-        when(hardshipReviewMapper.CreateHardshipReviewToHardshipReviewDTO(any())).thenReturn(
+        when(hardshipReviewMapper.createHardshipReviewToHardshipReviewDTO(any())).thenReturn(
                 TestModelDataBuilder.getHardshipReviewDTO());
-        when(hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
+        when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
                 TestModelDataBuilder.getHardshipReviewDTO());
         hardshipReviewService.createHardshipReview(CreateHardshipReview.builder().build());
         verify(hardshipReviewImpl).create(any());
@@ -93,9 +93,9 @@ public class HardshipReviewServiceTest {
 
     @Test
     public void whenUpdateIsInvoked_thenAssessmentIsPersisted() {
-        when(hardshipReviewMapper.UpdateHardshipReviewToHardshipReviewDTO(any())).thenReturn(
+        when(hardshipReviewMapper.updateHardshipReviewToHardshipReviewDTO(any())).thenReturn(
                 TestModelDataBuilder.getHardshipReviewDTO());
-        when(hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
+        when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
                 TestModelDataBuilder.getHardshipReviewDTO());
 
         hardshipReviewService.updateHardshipReview(UpdateHardshipReview.builder().build());

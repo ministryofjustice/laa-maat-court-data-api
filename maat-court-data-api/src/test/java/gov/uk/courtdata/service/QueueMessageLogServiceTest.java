@@ -1,7 +1,7 @@
 package gov.uk.courtdata.service;
 
 
- import gov.uk.courtdata.entity.QueueMessageLogEntity;
+import gov.uk.courtdata.entity.QueueMessageLogEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
@@ -144,7 +144,7 @@ public class QueueMessageLogServiceTest {
                 () -> assertNotNull(savedQueueMsg.getMessage()),
                 () -> assertNotNull(savedQueueMsg.getCreatedTime()),
                 () -> assertEquals(savedQueueMsg.getMaatId(), maatId),
-                () -> assertEquals(savedQueueMsg.getLaaTransactionId(), "8720c683-39ef-4168-a8cc-058668a2dcca"),
+                () -> assertEquals("8720c683-39ef-4168-a8cc-058668a2dcca", savedQueueMsg.getLaaTransactionId()),
                 () -> assertEquals(savedQueueMsg.getType(), MessageType.LAA_STATUS.name())
 
         );
@@ -168,7 +168,7 @@ public class QueueMessageLogServiceTest {
                 () -> assertNotNull(savedQueueMsg.getType()),
                 () -> assertNotNull(savedQueueMsg.getMessage()),
                 () -> assertNotNull(savedQueueMsg.getCreatedTime()),
-                () -> assertEquals(savedQueueMsg.getLaaTransactionId(), "8720c683-39ef-4168-a8cc-058668a2dcca"),
+                () -> assertEquals("8720c683-39ef-4168-a8cc-058668a2dcca", savedQueueMsg.getLaaTransactionId()),
                 () -> assertEquals(savedQueueMsg.getMaatId(), maatId)
         );
     }
@@ -217,7 +217,7 @@ public class QueueMessageLogServiceTest {
                 () -> assertNotNull(savedQueueMsg.getMaatId()),
                 () -> assertNull(savedQueueMsg.getLaaTransactionId()),
                 () -> assertNotNull(savedQueueMsg.getType()),
-                () -> assertEquals(savedQueueMsg.getMaatId(), 324334)
+                () -> assertEquals(324334, savedQueueMsg.getMaatId())
         );
     }
 

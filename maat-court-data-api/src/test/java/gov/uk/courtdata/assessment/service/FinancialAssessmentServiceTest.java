@@ -34,7 +34,7 @@ public class FinancialAssessmentServiceTest {
 
     @Test
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
-        when(financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(any()))
+        when(financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(any()))
                 .thenReturn(FinancialAssessmentDTO.builder().id(1000).build());
         when(financialAssessmentImpl.find(any())).thenReturn(FinancialAssessmentEntity.builder().id(1000).build());
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.find(1000);
@@ -54,10 +54,10 @@ public class FinancialAssessmentServiceTest {
         FinancialAssessmentDTO financialAssessmentDTO = TestModelDataBuilder.getFinancialAssessmentDTO();
         CreateFinancialAssessment financialAssessment = TestModelDataBuilder.getCreateFinancialAssessment();
 
-        when(financialAssessmentMapper.CreateFinancialAssessmentToFinancialAssessmentDTO(any()))
+        when(financialAssessmentMapper.createFinancialAssessmentToFinancialAssessmentDTO(any()))
                 .thenReturn(financialAssessmentDTO);
         when(financialAssessmentImpl.create(any())).thenReturn(FinancialAssessmentEntity.builder().id(1000).build());
-        when(financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(any()))
+        when(financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(any()))
                 .thenReturn(FinancialAssessmentDTO.builder().id(1000).build());
 
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.create(financialAssessment);
@@ -71,10 +71,10 @@ public class FinancialAssessmentServiceTest {
         FinancialAssessmentDTO financialAssessmentDTO = TestModelDataBuilder.getFinancialAssessmentDTO();
         UpdateFinancialAssessment financialAssessment = TestModelDataBuilder.getUpdateFinancialAssessment();
 
-        when(financialAssessmentMapper.UpdateFinancialAssessmentToFinancialAssessmentDTO(any(UpdateFinancialAssessment.class)))
+        when(financialAssessmentMapper.updateFinancialAssessmentToFinancialAssessmentDTO(any(UpdateFinancialAssessment.class)))
                 .thenReturn(financialAssessmentDTO);
         when(financialAssessmentImpl.update(any())).thenReturn(FinancialAssessmentEntity.builder().id(1000).build());
-        when(financialAssessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(any()))
+        when(financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(any()))
                 .thenReturn(FinancialAssessmentDTO.builder().id(1000).build());
 
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.update(financialAssessment);

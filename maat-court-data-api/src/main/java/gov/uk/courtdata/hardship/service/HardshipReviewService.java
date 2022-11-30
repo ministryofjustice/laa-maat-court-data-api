@@ -28,7 +28,7 @@ public class HardshipReviewService {
         if (hardshipReview == null) {
             throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for ID: %s", hardshipReviewId));
         }
-        return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReview);
+        return hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReview);
     }
 
     @Transactional(readOnly = true)
@@ -37,22 +37,22 @@ public class HardshipReviewService {
         if (hardshipReviewEntity == null) {
             throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for REP ID: %s", repId));
         }
-        return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
+        return hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
     }
 
     @Transactional
     public HardshipReviewDTO createHardshipReview(final CreateHardshipReview createHardshipReview) {
         HardshipReviewDTO hardshipReviewDTO =
-                hardshipReviewMapper.CreateHardshipReviewToHardshipReviewDTO(createHardshipReview);
+                hardshipReviewMapper.createHardshipReviewToHardshipReviewDTO(createHardshipReview);
         HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.create(hardshipReviewDTO);
-        return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
+        return hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
     }
 
     @Transactional
     public HardshipReviewDTO updateHardshipReview(UpdateHardshipReview updateHardshipReview) {
         HardshipReviewDTO hardshipReviewDTO =
-                hardshipReviewMapper.UpdateHardshipReviewToHardshipReviewDTO(updateHardshipReview);
+                hardshipReviewMapper.updateHardshipReviewToHardshipReviewDTO(updateHardshipReview);
         HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.update(hardshipReviewDTO);
-        return hardshipReviewMapper.HardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
+        return hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
     }
 }

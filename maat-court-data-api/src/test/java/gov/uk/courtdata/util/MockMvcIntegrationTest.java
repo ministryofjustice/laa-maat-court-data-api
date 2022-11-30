@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -26,31 +25,28 @@ public abstract class MockMvcIntegrationTest {
         return mockMvc.perform(request).andExpect(status().isOk()).andReturn();
     }
 
-    public <T> void runSuccessScenario(T expectedResponseBody, MockHttpServletRequestBuilder request) throws Exception {
+    public <T> boolean runSuccessScenario(T expectedResponseBody, MockHttpServletRequestBuilder request) throws Exception {
         MvcResult result = runSuccessScenario(request);
-
-        assertThat(result.getResponse().getContentAsString())
-                .isEqualTo(objectMapper.writeValueAsString(expectedResponseBody));
+        return result.getResponse().getContentAsString().equals(objectMapper.writeValueAsString(expectedResponseBody));
     }
 
-    public void runBadRequestErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
+    public boolean runBadRequestErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
         ErrorDTO expectedError = ErrorDTO.builder().code(HttpStatus.BAD_REQUEST.name()).message(expectedErrorMessage).build();
-        runErrorScenario(expectedError, request, status().isBadRequest());
+        return runErrorScenario(expectedError, request, status().isBadRequest());
     }
 
-    public void runNotFoundErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
+    public boolean runNotFoundErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
         ErrorDTO expectedError = ErrorDTO.builder().code(HttpStatus.NOT_FOUND.name()).message(expectedErrorMessage).build();
-        runErrorScenario(expectedError, request, status().isNotFound());
+        return runErrorScenario(expectedError, request, status().isNotFound());
     }
     
-    public void runServerErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
+    public boolean runServerErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
         ErrorDTO expectedError = ErrorDTO.builder().message(expectedErrorMessage).build();
-        runErrorScenario(expectedError, request, status().is5xxServerError());
+        return runErrorScenario(expectedError, request, status().is5xxServerError());
     }
 
-    private void runErrorScenario(ErrorDTO expectedError, MockHttpServletRequestBuilder request, ResultMatcher resultMatcher) throws Exception {
+    private boolean runErrorScenario(ErrorDTO expectedError, MockHttpServletRequestBuilder request, ResultMatcher resultMatcher) throws Exception {
         MvcResult result = mockMvc.perform(request).andExpect(resultMatcher).andReturn();
-        assertThat(result.getResponse().getContentAsString())
-                .isEqualTo(objectMapper.writeValueAsString(expectedError));
+        return result.getResponse().getContentAsString().equals(objectMapper.writeValueAsString(expectedError));
     }
 }

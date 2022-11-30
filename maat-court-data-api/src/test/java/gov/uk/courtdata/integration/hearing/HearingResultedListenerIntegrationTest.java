@@ -112,7 +112,7 @@ public class HearingResultedListenerIntegrationTest {
         ValidationException error = Assert.assertThrows(
                 ValidationException.class, () -> hearingResultedListener.receive(payloadMissingMaatId));
 
-        Assert.assertEquals(error.getMessage(), "MAAT ID is required.");
+        Assert.assertEquals("MAAT ID is required.", error.getMessage());
         queueMessageLogTestHelper.assertQueueMessageLogged(
                 payloadMissingMaatId, 1, LAA_TRANSACTION_ID, -1);}
 

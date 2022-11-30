@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @ExtendWith(SpringExtension.class)
@@ -131,49 +132,49 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     @Test
     void givenAZeroAssessmentId_whenGetAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runBadRequestErrorScenario("Financial Assessment id is required", get(ASSESSMENT_URL, 0));
+        assertTrue(runBadRequestErrorScenario("Financial Assessment id is required", get(ASSESSMENT_URL, 0)));
     }
 
     @Test
     void givenAnInvalidAssessmentId_whenGetAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
         Integer invalidAssessmentId = 999;
-        runBadRequestErrorScenario(String.format("%d is invalid", invalidAssessmentId), get(ASSESSMENT_URL, invalidAssessmentId));
+        assertTrue(runBadRequestErrorScenario(String.format("%d is invalid", invalidAssessmentId), get(ASSESSMENT_URL, invalidAssessmentId)));
     }
 
     @Test
     void givenAValidAssessmentId_whenGetAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
         var testAssessment = existingAssessmentEntities.get(0);
-        runSuccessScenario(
-                assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(testAssessment),
-                get(ASSESSMENT_URL, testAssessment.getId()));
+        assertTrue(runSuccessScenario(
+                assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(testAssessment),
+                get(ASSESSMENT_URL, testAssessment.getId())));
     }
 
     @Test
     void givenAValidAssessmentId_whenGetAssessmentIsInvoked_theCorrectRelationshipsResponseIsReturned() throws Exception {
         var testAssessment = existingAssessmentEntities.get(3);
-        runSuccessScenario(assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(testAssessment), get(ASSESSMENT_URL, testAssessment.getId()));
+        assertTrue(runSuccessScenario(assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(testAssessment), get(ASSESSMENT_URL, testAssessment.getId())));
     }
 
     @Test
     void givenAZeroAssessmentId_whenDeleteAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runBadRequestErrorScenario("Financial Assessment id is required", delete(ASSESSMENT_URL, 0));
+        assertTrue(runBadRequestErrorScenario("Financial Assessment id is required", delete(ASSESSMENT_URL, 0)));
     }
 
     @Test
     void givenAnInvalidAssessmentId_whenDeleteAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
         Integer invalidAssessmentId = 999;
-        runBadRequestErrorScenario(String.format("%d is invalid", invalidAssessmentId), delete(ASSESSMENT_URL, invalidAssessmentId));
+        assertTrue(runBadRequestErrorScenario(String.format("%d is invalid", invalidAssessmentId), delete(ASSESSMENT_URL, invalidAssessmentId)));
     }
 
     @Test
     void givenAValidAssessmentId_whenDeleteAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runSuccessScenario(delete(ASSESSMENT_URL, existingAssessmentEntities.get(0).getId()));
+        assertThat(runSuccessScenario(delete(ASSESSMENT_URL, existingAssessmentEntities.get(0).getId())).getResponse().getStatus()).isEqualTo(200);
     }
 
     @Test
     void givenARepIdWithNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_theCorrectResponseIsReturned() throws Exception {
         OutstandingAssessmentResultDTO expectedResponse = OutstandingAssessmentResultDTO.builder().build();
-        runSuccessScenario(expectedResponse, get(CHECK_OUTSTANDING_URL, REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS));
+        assertTrue(runSuccessScenario(expectedResponse, get(CHECK_OUTSTANDING_URL, REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS)));
     }
 
     @Test
@@ -182,7 +183,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
                 OutstandingAssessmentResultDTO.builder()
                         .outstandingAssessments(true)
                         .message(FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND).build();
-        runSuccessScenario(expectedResponse, get(CHECK_OUTSTANDING_URL, REP_ID_WITH_OUTSTANDING_ASSESSMENTS));
+        assertTrue(runSuccessScenario(expectedResponse, get(CHECK_OUTSTANDING_URL, REP_ID_WITH_OUTSTANDING_ASSESSMENTS)));
     }
 
     @Test
@@ -191,40 +192,40 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
                 OutstandingAssessmentResultDTO.builder()
                         .outstandingAssessments(true)
                         .message(FinancialAssessmentImpl.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND).build();
-        runSuccessScenario(expectedResponse, get(CHECK_OUTSTANDING_URL, REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS));
+        assertTrue(runSuccessScenario(expectedResponse, get(CHECK_OUTSTANDING_URL, REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS)));
     }
 
     @Test
     void givenAnAssessmentWithNoRepId_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreateAssessmentErrorScenario("Rep Order ID is required", CreateFinancialAssessment.builder().build());
+        assertTrue(runCreateAssessmentErrorScenario("Rep Order ID is required", CreateFinancialAssessment.builder().build()));
     }
 
     @Test
     void givenAnAssessmentWithNoCriteriaId_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreateAssessmentErrorScenario(
+        assertTrue(runCreateAssessmentErrorScenario(
                 "Assessment Criteria ID is required",
-                CreateFinancialAssessment.builder().repId(1).build());
+                CreateFinancialAssessment.builder().repId(1).build()));
     }
 
     @Test
     void givenAnAssessmentWithNoCmuId_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreateAssessmentErrorScenario(
+        assertTrue(runCreateAssessmentErrorScenario(
                 "Case management unit ID is required",
-                CreateFinancialAssessment.builder().repId(1).initialAscrId(1).build());
+                CreateFinancialAssessment.builder().repId(1).initialAscrId(1).build()));
     }
 
     @Test
     void givenAnAssessmentWithNoNewWorkReason_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreateAssessmentErrorScenario(
+        assertTrue(runCreateAssessmentErrorScenario(
                 "New work reason code is required",
-                CreateFinancialAssessment.builder().repId(1).initialAscrId(1).cmuId(1).build());
+                CreateFinancialAssessment.builder().repId(1).initialAscrId(1).cmuId(1).build()));
     }
 
     @Test
     void givenAnAssessmentWithNoUser_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreateAssessmentErrorScenario(
+        assertTrue(runCreateAssessmentErrorScenario(
                 "Username is required",
-                CreateFinancialAssessment.builder().repId(1).initialAscrId(1).cmuId(1).nworCode("FMA").build());
+                CreateFinancialAssessment.builder().repId(1).initialAscrId(1).cmuId(1).nworCode("FMA").build()));
     }
 
     @Test
@@ -273,44 +274,44 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     @Test
     void givenAnAssessmentWithNoRepId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdateAssessmentErrorScenario("Rep Order ID is required", UpdateFinancialAssessment.builder().build());
+        assertTrue(runUpdateAssessmentErrorScenario("Rep Order ID is required", UpdateFinancialAssessment.builder().build()));
     }
 
     @Test
     void givenAnAssessmentWithNoCriteriaId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdateAssessmentErrorScenario(
+        assertTrue(runUpdateAssessmentErrorScenario(
                 "Assessment Criteria ID is required",
-                UpdateFinancialAssessment.builder().repId(1).build());
+                UpdateFinancialAssessment.builder().repId(1).build()));
     }
 
     @Test
     void givenAnAssessmentWithNoCmuId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdateAssessmentErrorScenario(
+        assertTrue(runUpdateAssessmentErrorScenario(
                 "Case management unit ID is required",
-                UpdateFinancialAssessment.builder().repId(1).initialAscrId(1).build());
+                UpdateFinancialAssessment.builder().repId(1).initialAscrId(1).build()));
     }
 
     @Test
     void givenAnAssessmentWithAnInvalidId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
         Integer assessmentId = 0;
-        runUpdateAssessmentErrorScenario(
+        assertTrue(runUpdateAssessmentErrorScenario(
                 "Financial Assessment id is required",
-                UpdateFinancialAssessment.builder().id(assessmentId).repId(1).initialAscrId(1).cmuId(1).build());
+                UpdateFinancialAssessment.builder().id(assessmentId).repId(1).initialAscrId(1).cmuId(1).build()));
     }
 
     @Test
     void givenAnAssessmentWithAnIdThatDoesNotExist_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
         Integer assessmentId = 999;
-        runUpdateAssessmentErrorScenario(
+        assertTrue(runUpdateAssessmentErrorScenario(
                 String.format("%d is invalid", assessmentId),
-                UpdateFinancialAssessment.builder().id(assessmentId).repId(1).initialAscrId(1).cmuId(1).build());
+                UpdateFinancialAssessment.builder().id(assessmentId).repId(1).initialAscrId(1).cmuId(1).build()));
     }
 
     @Test
     void givenAnAssessmentWithNoUserModifiedSet_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdateAssessmentErrorScenario(
+        assertTrue(runUpdateAssessmentErrorScenario(
                 "Username is required",
-                UpdateFinancialAssessment.builder().id(existingAssessmentEntities.get(0).getId()).repId(1).initialAscrId(1).cmuId(1).build());
+                UpdateFinancialAssessment.builder().id(existingAssessmentEntities.get(0).getId()).repId(1).initialAscrId(1).cmuId(1).build()));
     }
 
     @Test
@@ -365,23 +366,25 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     @Test
     void givenAValidAssessmentIdWithoutAFullAssessmentAvailable_whenCreateAssessmentHistoryIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreateAssessmentHistoryScenario(false);
-    }
-
-    @Test
-    void givenAValidAssessmentIdWithAFullAssessmentAvailable_whenCreateAssessmentHistoryIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreateAssessmentHistoryScenario(true);
-    }
-
-    private void runCreateAssessmentHistoryScenario(Boolean fullAvailable) throws Exception {
+        boolean fullAvailable = false;
         FinancialAssessmentEntity assessmentEntity =
                 existingAssessmentEntities.stream().filter(item -> item.getRepOrder().getId().equals(existingRepOrder.getId())).findFirst().orElse(null);
 
         String CREATE_ASSESSMENT_HISTORY_URL = BASE_URL + "history/{financialAssessmentId}/fullAvailable/{fullAvailable}";
-        runSuccessScenario(post(CREATE_ASSESSMENT_HISTORY_URL, Objects.requireNonNull(assessmentEntity).getId(), fullAvailable));
+        assertThat(runSuccessScenario(post(CREATE_ASSESSMENT_HISTORY_URL, Objects.requireNonNull(assessmentEntity).getId(), fullAvailable)).getResponse().getStatus()).isEqualTo(200);
         assertAssessmentHistoryCreated(assessmentEntity, fullAvailable, existingRepOrder);
     }
 
+    @Test
+    void givenAValidAssessmentIdWithAFullAssessmentAvailable_whenCreateAssessmentHistoryIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        boolean fullAvailable = true;
+        FinancialAssessmentEntity assessmentEntity =
+                existingAssessmentEntities.stream().filter(item -> item.getRepOrder().getId().equals(existingRepOrder.getId())).findFirst().orElse(null);
+
+        String CREATE_ASSESSMENT_HISTORY_URL = BASE_URL + "history/{financialAssessmentId}/fullAvailable/{fullAvailable}";
+        assertThat(runSuccessScenario(post(CREATE_ASSESSMENT_HISTORY_URL, Objects.requireNonNull(assessmentEntity).getId(), fullAvailable)).getResponse().getStatus()).isEqualTo(200);
+        assertAssessmentHistoryCreated(assessmentEntity, fullAvailable, existingRepOrder);
+    }
     public void assertAssessmentHistoryCreated(
             FinancialAssessmentEntity assessmentEntity, Boolean fullAvailable, RepOrderEntity existingRepOrder) {
 
@@ -425,14 +428,14 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         assertThat(assessmentDetailsHistory.getUserCreated()).isEqualTo(expectedDetailsHistory.getUserCreated());
     }
 
-    private void runCreateAssessmentErrorScenario(String errorMessage, CreateFinancialAssessment body) throws Exception {
-        runBadRequestErrorScenario(
+    private boolean runCreateAssessmentErrorScenario(String errorMessage, CreateFinancialAssessment body) throws Exception {
+        return runBadRequestErrorScenario(
                 errorMessage,
                 post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }
 
-    private void runUpdateAssessmentErrorScenario(String errorMessage, UpdateFinancialAssessment body) throws Exception {
-        runBadRequestErrorScenario(
+    private boolean runUpdateAssessmentErrorScenario(String errorMessage, UpdateFinancialAssessment body) throws Exception {
+        return runBadRequestErrorScenario(
                 errorMessage,
                 put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }

@@ -29,18 +29,18 @@ public class FinancialAssessmentService {
         if (assessmentEntity == null) {
             throw new RequestedObjectNotFoundException(String.format("No Financial Assessment found for ID: %s", financialAssessmentId));
         }
-        return assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
+        return assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
     }
 
     @Transactional
     public FinancialAssessmentDTO update(UpdateFinancialAssessment financialAssessment) {
         log.info("Update Financial Assessment - Transaction Processing - Start");
         FinancialAssessmentDTO assessmentDTO =
-                assessmentMapper.UpdateFinancialAssessmentToFinancialAssessmentDTO(financialAssessment);
+                assessmentMapper.updateFinancialAssessmentToFinancialAssessmentDTO(financialAssessment);
         log.info("Updating existing financial assessment record");
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.update(assessmentDTO);
         log.info("Update Financial Assessment - Transaction Processing - End");
-        return assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
+        return assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
     }
 
     @Transactional
@@ -52,12 +52,12 @@ public class FinancialAssessmentService {
     public FinancialAssessmentDTO create(CreateFinancialAssessment financialAssessment) {
         log.info("Create Financial Assessment - Transaction Processing - Start");
         FinancialAssessmentDTO assessmentDTO =
-                assessmentMapper.CreateFinancialAssessmentToFinancialAssessmentDTO(financialAssessment);
+                assessmentMapper.createFinancialAssessmentToFinancialAssessmentDTO(financialAssessment);
         log.info("Creating new financial assessment record");
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.create(assessmentDTO);
         financialAssessmentImpl.setOldAssessmentReplaced(assessmentEntity);
         log.info("Create Financial Assessment - Transaction Processing - End");
-        return assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
+        return assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
     }
 
     public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId) {

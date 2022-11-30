@@ -1,12 +1,12 @@
-package gov.uk.courtdata.iojAppeal.controller;
+package gov.uk.courtdata.iojappeal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.iojAppeal.service.IOJAppealService;
-import gov.uk.courtdata.iojAppeal.validator.IOJAppealValidationProcessor;
+import gov.uk.courtdata.iojappeal.service.IOJAppealService;
+import gov.uk.courtdata.iojappeal.validator.IOJAppealValidationProcessor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

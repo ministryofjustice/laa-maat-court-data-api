@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PreConditionsValidator {
 
-    private final LinkExistsValidator linkExistsValidator;
-
     private final MaatIdValidator maatIdValidator;
 
     private final CPDataValidator cpDataValidator;
@@ -26,7 +24,6 @@ public class PreConditionsValidator {
         final Integer maatId = caseDetails.getMaatId();
 
         maatIdValidator.validate(maatId);
-        linkExistsValidator.validate(maatId);
         cpDataValidator.validate(CaseDetails.builder()
                 .caseUrn(caseDetails.getCaseUrn())
                 .maatId(maatId).build());

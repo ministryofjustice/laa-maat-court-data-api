@@ -42,7 +42,7 @@ public class IOJAppealServiceTest {
         when(iojAppealImpl.find(any())).thenReturn(TestEntityDataBuilder.getIOJAppealEntity());
         when(iojAppealMapper.toIOJAppealDTO(any(IOJAppealEntity.class))).thenReturn(iojAppealDTO);
         var returnedIOJAppeal = iojAppealService.find(IOJ_APPEAL_ID);
-        assertEquals(returnedIOJAppeal.getId(), IOJ_APPEAL_ID);
+        assertEquals(IOJ_APPEAL_ID, returnedIOJAppeal.getId());
     }
 
     @Test
@@ -115,7 +115,7 @@ public class IOJAppealServiceTest {
 
         var newlyCreatedIOJAppealDTO = iojAppealService.create(createIOJAppeal);
 
-        assertEquals(newlyCreatedIOJAppealDTO.getId(), IOJ_APPEAL_ID);
+        assertEquals(IOJ_APPEAL_ID, newlyCreatedIOJAppealDTO.getId());
 
         verify(iojAppealImpl).setOldIOJAppealsReplaced(IOJ_REP_ID, IOJ_APPEAL_ID);
     }

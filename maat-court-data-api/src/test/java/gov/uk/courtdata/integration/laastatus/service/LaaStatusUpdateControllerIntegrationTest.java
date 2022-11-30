@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UPDATE_CASE_EVENT;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @ExtendWith(SpringExtension.class)
@@ -119,24 +120,28 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     public void givenNullMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         String testPayload = objectMapper
                 .writeValueAsString(CaseDetails.builder().laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID)).build());
-        runServerErrorScenario("MAAT APT Call failed MAAT ID is required.", getPostRequest(testPayload));
+        assertTrue(runServerErrorScenario("MAAT APT Call failed MAAT ID is required.", getPostRequest(testPayload)));
     }
 
     @Test
     public void givenAMissingMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         String payloadMissingMaatId = String.format("{\"laaTransactionId\":\"%s\"}", LAA_TRANSACTION_ID);
-        runServerErrorScenario("MAAT APT Call failed MAAT ID is required.", getPostRequest(payloadMissingMaatId));
+        assertTrue(runServerErrorScenario("MAAT APT Call failed MAAT ID is required.", getPostRequest(payloadMissingMaatId)));
     }
 
     @Test
     public void givenAnInvalidMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         runValidationFailureScenario(String.format("MAAT APT Call failed MAAT/REP ID: %d is invalid.", TEST_MAAT_ID));
+        assertThat(mockCdaWebServer.getRequestCount())
+                .isEqualTo(0);
     }
 
     @Test
     public void givenAMaatIdThatIsNotLinked_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         runValidationFailureScenario(String.format("MAAT APT Call failed MAAT Id : %s not linked.", TEST_MAAT_ID));
+        assertThat(mockCdaWebServer.getRequestCount())
+                .isEqualTo(0);
     }
 
     @Test
@@ -144,6 +149,8 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createTestRepoOrder();
         createTestLinkData(2);
         runValidationFailureScenario(String.format("MAAT APT Call failed Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
+        assertThat(mockCdaWebServer.getRequestCount())
+                .isEqualTo(0);
     }
 
     @Test
@@ -151,6 +158,8 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createTestRepoOrder();
         createTestLinkData(1);
         runValidationFailureScenario(String.format("MAAT APT Call failed Solicitor not found for maatId %s", TEST_MAAT_ID));
+        assertThat(mockCdaWebServer.getRequestCount())
+                .isEqualTo(0);
     }
 
     @Test
@@ -160,6 +169,8 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createSolicitorData("");
         createDefendantData();
         runValidationFailureScenario(String.format("MAAT APT Call failed Solicitor account code not available for maatId %s.", TEST_MAAT_ID));
+        assertThat(mockCdaWebServer.getRequestCount())
+                .isEqualTo(0);
     }
 
     @Test
@@ -168,6 +179,8 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createTestLinkData(1);
         createSolicitorData("test-account-code");
         runValidationFailureScenario("MAAT APT Call failed MAAT Defendant details not found.");
+        assertThat(mockCdaWebServer.getRequestCount())
+                .isEqualTo(0);
     }
 
     @Test
@@ -266,11 +279,8 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     private void runValidationFailureScenario(String expectedErrorMessage) throws Exception {
         String testPayload = generateCaseDetailsJsonPayload(
                 CaseDetails.builder().laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID)).maatId(TEST_MAAT_ID).build());
-
-        runServerErrorScenario(expectedErrorMessage, getPostRequest(testPayload));
-
+        assertTrue(runServerErrorScenario(expectedErrorMessage, getPostRequest(testPayload)));
         queueMessageLogTestHelper.assertQueueMessageLogged(testPayload, 1, LAA_TRANSACTION_ID, TEST_MAAT_ID);
-        assertCdaNotCalled();
     }
 
     private void assertMlaUpdatesPerformedCorrectly(
@@ -395,12 +405,6 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
             }
         });
     }
-
-    private void assertCdaNotCalled() {
-        assertThat(mockCdaWebServer.getRequestCount())
-                .isEqualTo(0);
-    }
-
     private String generateCaseDetailsJsonPayload(CaseDetails inputCaseDetails) throws JsonProcessingException {
         String testPayload = objectMapper.writeValueAsString(inputCaseDetails);
         return testPayload.replace("\"active\"", "\"isActive\"");

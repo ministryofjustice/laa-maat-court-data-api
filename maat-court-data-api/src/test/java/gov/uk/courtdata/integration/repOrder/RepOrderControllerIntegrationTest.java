@@ -29,6 +29,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @ExtendWith(SpringExtension.class)
@@ -93,34 +95,34 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenInvalidRepId_whenFindInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        runNotFoundErrorScenario("No Rep Order found for ID: " + INVALID_REP_ID,
-                get(BASE_URL + INVALID_REP_ID));
+        assertTrue(runNotFoundErrorScenario("No Rep Order found for ID: " + INVALID_REP_ID,
+                get(BASE_URL + INVALID_REP_ID)));
     }
 
     @Test
     void givenIncorrectRepIdAndSentenceOrderDateFlagIsTrue_whenFindIsInvoked_thenRepOrderIsReturned() throws Exception {
-        runNotFoundErrorScenario("No Rep Order found for ID: " + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE,
+        assertTrue(runNotFoundErrorScenario("No Rep Order found for ID: " + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE,
                 get(BASE_URL + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE + "?has_sentence_order_date=true")
-        );
+        ));
     }
 
     @Test
     void givenValidRepId_whenFindIsInvoked_thenRepOrderIsReturned() throws Exception {
         RepOrderDTO repOrderDTO = getUpdatedRepOrderDTO();
-        runSuccessScenario(repOrderDTO, get(BASE_URL + TestEntityDataBuilder.REP_ID));
+        assertTrue(runSuccessScenario(repOrderDTO, get(BASE_URL + TestEntityDataBuilder.REP_ID)));
     }
 
     @Test
     void givenValidRepIdAndSentenceOrderDateFlagIsTrue_whenFindIsInvoked_thenRepOrderIsReturned() throws Exception {
         RepOrderDTO repOrderDTO = getUpdatedRepOrderDTO();
-        runSuccessScenario(repOrderDTO,
+        assertTrue(runSuccessScenario(repOrderDTO,
                 get(BASE_URL + TestEntityDataBuilder.REP_ID + "?has_sentence_order_date=true")
-        );
+        ));
     }
 
     @Test
     void givenRepIdIsMissing_whenUpdateAppDateCompletedIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
-        runBadRequestErrorScenario("Rep Id is missing from request and is required",
+        assertTrue(runBadRequestErrorScenario("Rep Id is missing from request and is required",
                 post(BASE_URL + "update-date-completed")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
@@ -128,12 +130,12 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                                                 .build()
                                 )
                         )
-        );
+        ));
     }
 
     @Test
     void givenDateIsMissing_whenUpdateAppDateCompletedIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
-        runBadRequestErrorScenario("Assessment Date completed is missing from request and is required",
+        assertTrue(runBadRequestErrorScenario("Assessment Date completed is missing from request and is required",
                 post(BASE_URL + "update-date-completed")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
@@ -142,12 +144,12 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                                                 .build()
                                 )
                         )
-        );
+        ));
     }
 
     @Test
     void givenInvalidRepId_whenUpdateAppDateCompletedIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
-        runBadRequestErrorScenario("MAAT/REP ID: " + INVALID_REP_ID + " is invalid.",
+        assertTrue(runBadRequestErrorScenario("MAAT/REP ID: " + INVALID_REP_ID + " is invalid.",
                 post(BASE_URL + "update-date-completed")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
@@ -157,7 +159,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                                                 .build()
                                 )
                         )
-        );
+        ));
     }
 
     @Test
@@ -178,35 +180,35 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenInvalidMvoId_whenfindByCurrentRegistrationIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        runNotFoundErrorScenario("No Rep Order MVO Reg found for ID: " + INVALID_MVO_ID,
+        assertTrue(runNotFoundErrorScenario("No Rep Order MVO Reg found for ID: " + INVALID_MVO_ID,
                 get(MVO_REG_ENDPOINT_URL + "/" + INVALID_MVO_ID + "/" + CURRENT_REGISTRATION)
-        );
+        ));
     }
 
     @Test
     void givenValidMvoId_whenfindByCurrentRegistrationIsInvoked_thenRepOrderMvoRegIsReturned() throws Exception {
-        runSuccessScenario(List.of(TestModelDataBuilder.getRepOrderMvoRegDTO()),
+        assertTrue(runSuccessScenario(List.of(TestModelDataBuilder.getRepOrderMvoRegDTO()),
                 get(MVO_REG_ENDPOINT_URL + "/" + TestEntityDataBuilder.MVO_ID + "/" + CURRENT_REGISTRATION)
-        );
+        ));
     }
 
     @Test
     void givenInvalidRepId_whenfindByRepIdAndVehicleOwnerIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        runNotFoundErrorScenario("No Rep Order MVO found for ID: " + INVALID_REP_ID,
+        assertTrue(runNotFoundErrorScenario("No Rep Order MVO found for ID: " + INVALID_REP_ID,
                 get(MVO_ENDPOINT_URL + "/" + INVALID_REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES)
-        );
+        ));
     }
 
     @Test
     void givenValidRepId_whenfindByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoIsReturned() throws Exception {
-        runSuccessScenario(TestModelDataBuilder.getRepOrderMvoDTO(),
+        assertTrue(runSuccessScenario(TestModelDataBuilder.getRepOrderMvoDTO(),
                 get(MVO_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES)
-        );
+        ));
     }
 
     @Test
     void givenRepIdIsMissing_whenUpdateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
-        runBadRequestErrorScenario(
+        assertTrue(runBadRequestErrorScenario(
                 "MAAT ID is required.",
                 put(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -214,12 +216,12 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                                 UpdateRepOrder.builder()
                                         .build())
                         )
-        );
+        ));
     }
 
     @Test
     void givenInvalidRepId_whenUpdateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
-        runBadRequestErrorScenario(
+        assertTrue(runBadRequestErrorScenario(
                 "MAAT/REP ID: " + INVALID_REP_ID + " is invalid.",
                 put(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -228,7 +230,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                                         .repId(INVALID_REP_ID)
                                         .build())
                         )
-        );
+        ));
     }
 
     @Test
@@ -265,5 +267,6 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
         softly.assertThat(content).isEqualTo("");
         softly.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
+        softly.assertAll();
     }
 }

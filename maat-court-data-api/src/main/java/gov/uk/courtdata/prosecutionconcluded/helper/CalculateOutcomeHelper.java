@@ -3,9 +3,7 @@ package gov.uk.courtdata.prosecutionconcluded.helper;
 import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
 import gov.uk.courtdata.enums.PleaTrialOutcome;
 import gov.uk.courtdata.enums.VerdictTrialOutcome;
-import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

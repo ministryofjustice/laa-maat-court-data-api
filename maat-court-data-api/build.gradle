@@ -162,7 +162,7 @@ tasks['sonarqube'].dependsOn test
 
 sonarqube {
     properties {
-        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java, **/**StoredProcedureRepository.java"
+        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java, **/enums/**.java, **/aspect/**.java, **/**StoredProcedureRepository.java, **/helper/BooleanConverter.java"
         property "sonar.coverage.exclusions", "**/MAATCourtDataApplication.java"
         property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
         property "sonar.projectKey", "maat-court-data-api"

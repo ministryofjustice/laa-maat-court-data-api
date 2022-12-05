@@ -11,6 +11,7 @@ import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -21,6 +22,15 @@ public class RepOrderService {
 
     private final RepOrderImpl repOrderImpl;
     private final RepOrderMapper repOrderMapper;
+
+    public RepOrderEntity findByRepId(Integer repId) {
+        RepOrderEntity repOrder;
+        repOrder = repOrderImpl.find(repId);
+        if (repOrder == null) {
+            throw new RequestedObjectNotFoundException(String.format("No Rep Order found for ID: %s", repId));
+        }
+        return repOrder;
+    }
 
     @Transactional(readOnly = true)
     public RepOrderDTO find(Integer repId, boolean hasSentenceOrderDate) {

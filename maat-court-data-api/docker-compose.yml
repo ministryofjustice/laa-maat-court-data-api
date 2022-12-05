@@ -8,5 +8,6 @@ services:
     - DATASOURCE_URL=jdbc:oracle:thin:@host.docker.internal:1521:maatdb
     - DATASOURCE_USERNAME=mla
     ports:
+    - 8080:8080
     - 8090:8090
     - 8091:8091

@@ -1,8 +1,6 @@
 package gov.uk.courtdata.entity;
 
 import lombok.*;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -32,6 +30,12 @@ import java.util.List;
         }
 )
 public class RepOrderEntity {
+    @ToString.Exclude
+    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY)
+    private final List<PassportAssessmentEntity> passportAssessments = new ArrayList<>();
+    @ToString.Exclude
+    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY)
+    private final List<FinancialAssessmentEntity> financialAssessments = new ArrayList<>();
     @Id
     @Column(name = "ID")
     private Integer id;
@@ -68,13 +72,5 @@ public class RepOrderEntity {
     private LocalDateTime dateCreated;
     @Column(name = "SENTENCE_ORDER_DATE")
     private LocalDateTime sentenceOrderDate;
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY)
-    private final List<PassportAssessmentEntity> passportAssessments = new ArrayList<>();
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY)
-    private final List<FinancialAssessmentEntity> financialAssessments = new ArrayList<>();
 
 }

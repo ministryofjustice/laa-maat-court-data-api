@@ -2,10 +2,6 @@ server:
   port : 8090
 
 spring:
-  graphql:
-    graphiql:
-      enabled: true
-
   application:
     name: maat-cd-api
 

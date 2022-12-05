@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @XRayEnabled
 @Slf4j
 @RequiredArgsConstructor
-public class prosecutionConcludedScheduler {
+public class ProsecutionConcludedScheduler {
 
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;
     private final ProsecutionConcludedService prosecutionConcludedService;

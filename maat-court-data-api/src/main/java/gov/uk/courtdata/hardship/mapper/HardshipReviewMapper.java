@@ -20,28 +20,28 @@ public interface HardshipReviewMapper {
     @Mapping(target = "solicitorCosts.solicitorVat", source = "solicitorVat")
     @Mapping(target = "solicitorCosts.solicitorDisb", source = "solicitorDisb")
     @Mapping(target = "solicitorCosts.solicitorEstTotalCost", source = "solicitorEstTotalCost")
-    HardshipReviewDTO HardshipReviewEntityToHardshipReviewDTO(final HardshipReviewEntity hardshipReview);
+    HardshipReviewDTO hardshipReviewEntityToHardshipReviewDTO(final HardshipReviewEntity hardshipReview);
 
-    HardshipReviewDetail HardshipReviewDetailEntityToHardshipReviewDetail(final HardshipReviewDetailEntity reviewDetailEntity);
+    HardshipReviewDetail hardshipReviewDetailEntityToHardshipReviewDetail(final HardshipReviewDetailEntity reviewDetailEntity);
 
-    HardshipReviewDetailEntity HardshipReviewDetailToHardshipReviewDetailEntity(final HardshipReviewDetail reviewDetail);
+    HardshipReviewDetailEntity hardshipReviewDetailToHardshipReviewDetailEntity(final HardshipReviewDetail reviewDetail);
 
-    HardshipReviewProgress HardshipReviewProgressEntityToHardshipReviewProgress(final HardshipReviewProgressEntity reviewProgressEntity);
+    HardshipReviewProgress hardshipReviewProgressEntityToHardshipReviewProgress(final HardshipReviewProgressEntity reviewProgressEntity);
 
-    HardshipReviewProgressEntity HardshipReviewProgressToHardshipReviewProgressEntity(final HardshipReviewProgress reviewProgress);
+    HardshipReviewProgressEntity hardshipReviewProgressToHardshipReviewProgressEntity(final HardshipReviewProgress reviewProgress);
 
-    NewWorkReason NewWorkReasonEntityToNewWorkReason(final NewWorkReasonEntity newWorkReason);
+    NewWorkReason newWorkReasonEntityToNewWorkReason(final NewWorkReasonEntity newWorkReason);
 
-    NewWorkReasonEntity NewWorkReasonToNewWorkReasonEntity(final NewWorkReason newWorkReason);
+    NewWorkReasonEntity newWorkReasonToNewWorkReasonEntity(final NewWorkReason newWorkReason);
 
-    HardshipReviewDetailReason HardshipReviewDetailReasonEntityToHardshipReviewDetailReason(final HardshipReviewDetailReasonEntity detailReasonEntity);
-
-    @Mapping(target = "newWorkReason.code", source = "nworCode")
-    HardshipReviewDTO CreateHardshipReviewToHardshipReviewDTO(final CreateHardshipReview hardshipReview);
+    HardshipReviewDetailReason hardshipReviewDetailReasonEntityToHardshipReviewDetailReason(final HardshipReviewDetailReasonEntity detailReasonEntity);
 
     @Mapping(target = "newWorkReason.code", source = "nworCode")
-    HardshipReviewDTO UpdateHardshipReviewToHardshipReviewDTO(final UpdateHardshipReview hardshipReview);
+    HardshipReviewDTO createHardshipReviewToHardshipReviewDTO(final CreateHardshipReview hardshipReview);
+
+    @Mapping(target = "newWorkReason.code", source = "nworCode")
+    HardshipReviewDTO updateHardshipReviewToHardshipReviewDTO(final UpdateHardshipReview hardshipReview);
 
     @InheritInverseConfiguration
-    HardshipReviewEntity HardshipReviewDTOToHardshipReviewEntity(final HardshipReviewDTO hardshipReviewDTO);
+    HardshipReviewEntity hardshipReviewDTOToHardshipReviewEntity(final HardshipReviewDTO hardshipReviewDTO);
 }

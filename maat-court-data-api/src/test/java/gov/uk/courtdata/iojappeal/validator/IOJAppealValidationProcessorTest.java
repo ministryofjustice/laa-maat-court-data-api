@@ -1,4 +1,4 @@
-package gov.uk.courtdata.iojAppeal.validator;
+package gov.uk.courtdata.iojappeal.validator;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;

@@ -35,7 +35,7 @@ public class HardshipReviewImpl {
     }
 
     public HardshipReviewEntity create(final HardshipReviewDTO hardshipReviewDTO) {
-        HardshipReviewEntity hardshipReview = hardshipReviewMapper.HardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
+        HardshipReviewEntity hardshipReview = hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
         hardshipReview.getReviewDetails().forEach(
                 detail -> detail.setDetailReason(
                         hardshipReviewDetailReasonRepository.getById(detail.getDetailReason().getId())
@@ -63,14 +63,14 @@ public class HardshipReviewImpl {
         existing.setDisposableIncomeAfterHardship(hardshipReviewDTO.getDisposableIncomeAfterHardship());
         existing.setStatus(hardshipReviewDTO.getStatus());
         existing.setUserModified(hardshipReviewDTO.getUserModified());
-        existing.setNewWorkReason(hardshipReviewMapper.NewWorkReasonToNewWorkReasonEntity(hardshipReviewDTO.getNewWorkReason()));
+        existing.setNewWorkReason(hardshipReviewMapper.newWorkReasonToNewWorkReasonEntity(hardshipReviewDTO.getNewWorkReason()));
 
         List<HardshipReviewDetail> detailItems = hardshipReviewDTO.getReviewDetails();
         existing.getReviewDetails().clear();
         if (!detailItems.isEmpty()) {
             detailItems.forEach(
                     detail -> {
-                        HardshipReviewDetailEntity reviewDetailEntity = hardshipReviewMapper.HardshipReviewDetailToHardshipReviewDetailEntity(detail);
+                        HardshipReviewDetailEntity reviewDetailEntity = hardshipReviewMapper.hardshipReviewDetailToHardshipReviewDetailEntity(detail);
                         existing.addReviewDetail(reviewDetailEntity);
                     }
             );
@@ -81,7 +81,7 @@ public class HardshipReviewImpl {
         if (!progressItems.isEmpty()) {
             progressItems.forEach(
                     progress -> {
-                        HardshipReviewProgressEntity reviewProgressEntity = hardshipReviewMapper.HardshipReviewProgressToHardshipReviewProgressEntity(progress);
+                        HardshipReviewProgressEntity reviewProgressEntity = hardshipReviewMapper.hardshipReviewProgressToHardshipReviewProgressEntity(progress);
                         existing.addReviewProgressItem(reviewProgressEntity);
                     }
             );

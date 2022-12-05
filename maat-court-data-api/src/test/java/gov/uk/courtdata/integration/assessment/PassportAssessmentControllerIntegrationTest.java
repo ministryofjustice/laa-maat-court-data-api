@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @ExtendWith(SpringExtension.class)
@@ -120,74 +121,74 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
 
     @Test
     public void givenAZeroAssessmentId_whenGetAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runBadRequestErrorScenario("Passport Assessment Id is required", get(ASSESSMENT_URL, 0));
+        assertTrue(runBadRequestErrorScenario("Passport Assessment Id is required", get(ASSESSMENT_URL, 0)));
     }
 
     @Test
     public void givenAnInvalidAssessmentId_whenGetAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runBadRequestErrorScenario(String.format("%d is invalid", INVALID_ASSESSMENT_ID), get(ASSESSMENT_URL, INVALID_ASSESSMENT_ID));
+        assertTrue(runBadRequestErrorScenario(String.format("%d is invalid", INVALID_ASSESSMENT_ID), get(ASSESSMENT_URL, INVALID_ASSESSMENT_ID)));
     }
 
     @Test
     public void givenAValidAssessmentId_whenGetAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runSuccessScenario(
+        assertTrue(runSuccessScenario(
                 passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(existingPassportAssessmentEntity),
-                get(ASSESSMENT_URL, existingPassportAssessmentEntity.getId()));
+                get(ASSESSMENT_URL, existingPassportAssessmentEntity.getId())));
     }
 
     @Test
     public void givenAnInvalidRepId_whenGetAssessmentByRepIdIsInvoked_theCorrectResponseIsReturned() throws Exception {
         Integer invalidRepId = 0;
-        runNotFoundErrorScenario(
+        assertTrue(runNotFoundErrorScenario(
                 String.format("No Passport Assessment found for REP ID: %s", invalidRepId),
-                get(ASSESSMENT_BY_REP_ID_URL, invalidRepId));
+                get(ASSESSMENT_BY_REP_ID_URL, invalidRepId)));
     }
 
     @Test
     public void givenAValidRepId_whenGetAssessmentByRepIdIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runSuccessScenario(
+        assertTrue(runSuccessScenario(
                 passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(existingPassportAssessmentEntity),
-                get(ASSESSMENT_BY_REP_ID_URL, existingPassportAssessmentEntity.getRepOrder().getId()));
+                get(ASSESSMENT_BY_REP_ID_URL, existingPassportAssessmentEntity.getRepOrder().getId())));
     }
 
     @Test
     public void givenAMissingRepId_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreatePassportAssessmentErrorScenario("Rep Order ID is required", CreatePassportAssessment.builder().build());
+        assertTrue(runCreatePassportAssessmentErrorScenario("Rep Order ID is required", CreatePassportAssessment.builder().build()));
     }
 
     @Test
     public void givenAMissingCmuId_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreatePassportAssessmentErrorScenario(
+        assertTrue(runCreatePassportAssessmentErrorScenario(
                 "Case Management Unit (CMU) ID is required",
-                CreatePassportAssessment.builder().repId(1).build());
+                CreatePassportAssessment.builder().repId(1).build()));
     }
 
     @Test
     public void givenAMissingNewWorkReasonCode_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreatePassportAssessmentErrorScenario(
+        assertTrue(runCreatePassportAssessmentErrorScenario(
                 "New Work Reason (NWOR) code is required",
-                CreatePassportAssessment.builder().repId(1).cmuId(2).build());
+                CreatePassportAssessment.builder().repId(1).cmuId(2).build()));
     }
 
     @Test
     public void givenAMissingPastStatus_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreatePassportAssessmentErrorScenario(
+        assertTrue(runCreatePassportAssessmentErrorScenario(
                 "Past Status is required",
-                CreatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").build());
+                CreatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").build()));
     }
 
     @Test
     public void givenAMissingUserCreated_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreatePassportAssessmentErrorScenario(
+        assertTrue(runCreatePassportAssessmentErrorScenario(
                 "Username is required",
-                CreatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").pastStatus("test").build());
+                CreatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").pastStatus("test").build()));
     }
 
     @Test
     public void givenAMissingFinancialAssessmentId_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreatePassportAssessmentErrorScenario(
+        assertTrue(runCreatePassportAssessmentErrorScenario(
                 "Financial Assessment ID is required",
-                CreatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").pastStatus("test").userCreated("test").build());
+                CreatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").pastStatus("test").userCreated("test").build()));
     }
 
     @Test
@@ -253,58 +254,58 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
 
     @Test
     public void givenAMissingRepId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdatePassportAssessmentErrorScenario("Rep Order ID is required", UpdatePassportAssessment.builder().build());
+        assertTrue(runUpdatePassportAssessmentErrorScenario("Rep Order ID is required", UpdatePassportAssessment.builder().build()));
     }
 
     @Test
     public void givenAMissingCmuId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdatePassportAssessmentErrorScenario(
+        assertTrue(runUpdatePassportAssessmentErrorScenario(
                 "Case Management Unit (CMU) ID is required",
-                UpdatePassportAssessment.builder().repId(1).build());
+                UpdatePassportAssessment.builder().repId(1).build()));
     }
 
     @Test
     public void givenAMissingNewWorkReasonCode_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdatePassportAssessmentErrorScenario(
+        assertTrue(runUpdatePassportAssessmentErrorScenario(
                 "New Work Reason (NWOR) code is required",
-                UpdatePassportAssessment.builder().repId(1).cmuId(2).build());
+                UpdatePassportAssessment.builder().repId(1).cmuId(2).build()));
     }
 
     @Test
     public void givenAMissingPastStatus_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdatePassportAssessmentErrorScenario(
+        assertTrue(runUpdatePassportAssessmentErrorScenario(
                 "Past Status is required",
-                UpdatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").build());
+                UpdatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").build()));
     }
 
     @Test
     public void givenAMissingUserModified_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdatePassportAssessmentErrorScenario(
+        assertTrue(runUpdatePassportAssessmentErrorScenario(
                 "Username is required",
                 UpdatePassportAssessment.builder()
                         .repId(1).cmuId(2).nworCode("FMA").pastStatus("test").id(existingPassportAssessmentEntity.getId())
-                        .build());
+                        .build()));
     }
 
     @Test
     public void givenAMissingPassportAssessmentId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdatePassportAssessmentErrorScenario(
+        assertTrue(runUpdatePassportAssessmentErrorScenario(
                 "Passport Assessment Id is required",
-                UpdatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").pastStatus("test").build());
+                UpdatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").pastStatus("test").build()));
     }
 
     @Test
     public void givenAPassportAssessmentIdThatDoesNotExist_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdatePassportAssessmentErrorScenario(
+        assertTrue(runUpdatePassportAssessmentErrorScenario(
                 String.format("%d is invalid", INVALID_ASSESSMENT_ID),
-                UpdatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").pastStatus("test").id(INVALID_ASSESSMENT_ID).build());
+                UpdatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").pastStatus("test").id(INVALID_ASSESSMENT_ID).build()));
     }
 
     @Test
     public void givenAZeroPassportAssessmentId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdatePassportAssessmentErrorScenario(
+        assertTrue(runUpdatePassportAssessmentErrorScenario(
                 "Passport Assessment Id is required",
-                UpdatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").pastStatus("test").id(0).build());
+                UpdatePassportAssessment.builder().repId(1).cmuId(2).nworCode("FMA").pastStatus("test").id(0).build()));
     }
 
     @Test
@@ -313,7 +314,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         body.setRepId(completePassportAssessmentEntity.getRepOrder().getId());
         body.setId(completePassportAssessmentEntity.getId());
 
-        runUpdatePassportAssessmentErrorScenario("User cannot modify a completed assessment", body);
+        assertTrue(runUpdatePassportAssessmentErrorScenario("User cannot modify a completed assessment", body));
     }
 
     @Test
@@ -390,14 +391,14 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         assertThat(passportAssessmentEntity.getWhoDWPChecked()).isEqualTo(expectedPassportAssessment.getWhoDWPChecked());
     }
 
-    private void runCreatePassportAssessmentErrorScenario(String errorMessage, CreatePassportAssessment body) throws Exception {
-        runBadRequestErrorScenario(
+    private boolean runCreatePassportAssessmentErrorScenario(String errorMessage, CreatePassportAssessment body) throws Exception {
+        return runBadRequestErrorScenario(
                 errorMessage,
                 post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }
 
-    private void runUpdatePassportAssessmentErrorScenario(String errorMessage, UpdatePassportAssessment body) throws Exception {
-        runBadRequestErrorScenario(
+    private boolean runUpdatePassportAssessmentErrorScenario(String errorMessage, UpdatePassportAssessment body) throws Exception {
+        return runBadRequestErrorScenario(
                 errorMessage,
                 put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }

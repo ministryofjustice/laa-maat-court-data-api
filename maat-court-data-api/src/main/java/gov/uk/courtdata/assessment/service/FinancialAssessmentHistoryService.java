@@ -40,10 +40,10 @@ public class FinancialAssessmentHistoryService {
                                                                               final boolean fullAvailable) {
         log.info("Building financialAssessmentsHistoryDTO with financialAssessmentId: {}", assessmentEntity.getId());
         FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO =
-                assessmentHistoryMapper.FinancialAssessmentEntityToFinancialAssessmentsHistoryDTO(assessmentEntity);
+                assessmentHistoryMapper.financialAssessmentEntityToFinancialAssessmentsHistoryDTO(assessmentEntity);
 
         financialAssessmentsHistoryDTO.setFinancialAssessment(
-                assessmentMapper.FinancialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity));
+                assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity));
         financialAssessmentsHistoryDTO.setFullAvailable(fullAvailable);
 
         RepOrderEntity repOrderEntity = assessmentEntity.getRepOrder();

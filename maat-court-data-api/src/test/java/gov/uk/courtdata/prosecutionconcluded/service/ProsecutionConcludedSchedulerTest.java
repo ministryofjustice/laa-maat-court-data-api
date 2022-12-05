@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 public class ProsecutionConcludedSchedulerTest {
 
     @InjectMocks
-    private prosecutionConcludedScheduler prosecutionConcludedScheduler;
+    private ProsecutionConcludedScheduler prosecutionConcludedScheduler;
     @Mock
     private ProsecutionConcludedRepository prosecutionConcludedRepository;
     @Mock

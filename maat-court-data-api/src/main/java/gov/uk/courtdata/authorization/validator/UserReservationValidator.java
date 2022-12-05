@@ -48,11 +48,12 @@ public class UserReservationValidator implements IValidator<Void, UserReservatio
         UserEntity user = userRepository.findById(session.getUsername())
                 .orElse(null);
 
-        if (user != null) {
-            if (session.getId().equals(user.getCurrentSession()) || RESERVATION_SPECIAL_USERNAMES.contains(session.getUsername())) {
-                return;
-            }
+        if (user != null && isValidSessionOrUserName(user, session)) {
+            return;
         }
         throw new ValidationException("Stale user session, reservation not allowed");
+    }
+    private boolean isValidSessionOrUserName(UserEntity user, UserSession session) {
+        return session.getId().equals(user.getCurrentSession()) || RESERVATION_SPECIAL_USERNAMES.contains(session.getUsername());
     }
 }

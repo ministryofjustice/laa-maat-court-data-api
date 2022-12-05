@@ -42,12 +42,12 @@ public class FinancialAssessmentHistoryImplTest {
 
     @Test
     public void givenFinancialAssessmentsHistoryDTOAndFinancialAssessmentId_whenBuildAndSaveIsInvoked_thenFinancialAssessmentsHistoryEntityIsPersisted() {
-        when(assessmentHistoryMapper.FinancialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(financialAssessmentsHistoryDTO))
+        when(assessmentHistoryMapper.financialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(financialAssessmentsHistoryDTO))
                 .thenReturn(financialAssessmentsHistoryEntity);
 
         financialAssessmentHistoryImpl.buildAndSave(financialAssessmentsHistoryDTO, MOCK_FINANCIAL_ASSESSMENT_ID);
 
-        verify(assessmentHistoryMapper).FinancialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(financialAssessmentsHistoryDTO);
+        verify(assessmentHistoryMapper).financialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(financialAssessmentsHistoryDTO);
         verify(financialAssessmentsHistoryRepository).save(financialAssessmentsHistoryEntity);
     }
 

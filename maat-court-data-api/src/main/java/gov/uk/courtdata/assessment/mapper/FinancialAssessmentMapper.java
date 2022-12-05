@@ -19,28 +19,28 @@ import org.mapstruct.*;
 )
 public interface FinancialAssessmentMapper {
 
-    NewWorkReason NewWorkReasonEntityToNewWorkReason(final NewWorkReasonEntity newWorkReason);
+    NewWorkReason newWorkReasonEntityToNewWorkReason(final NewWorkReasonEntity newWorkReason);
 
-    NewWorkReasonEntity NewWorkReasonToNewWorkReasonEntity(final NewWorkReason newWorkReason);
+    NewWorkReasonEntity newWorkReasonToNewWorkReasonEntity(final NewWorkReason newWorkReason);
 
     @Mapping(target = "repId", source = "repOrder.id")
-    FinancialAssessmentDTO FinancialAssessmentEntityToFinancialAssessmentDTO(final FinancialAssessmentEntity financialAssessment);
+    FinancialAssessmentDTO financialAssessmentEntityToFinancialAssessmentDTO(final FinancialAssessmentEntity financialAssessment);
 
-    FinancialAssessmentDTO UpdateFinancialAssessmentToFinancialAssessmentDTO(final UpdateFinancialAssessment assessment);
+    FinancialAssessmentDTO updateFinancialAssessmentToFinancialAssessmentDTO(final UpdateFinancialAssessment assessment);
 
     @Mapping(target = "newWorkReason.code", source = "nworCode")
-    FinancialAssessmentDTO CreateFinancialAssessmentToFinancialAssessmentDTO(final CreateFinancialAssessment assessment);
+    FinancialAssessmentDTO createFinancialAssessmentToFinancialAssessmentDTO(final CreateFinancialAssessment assessment);
 
-    FinancialAssessmentDetails FinancialAssessmentDetailsEntityToFinancialAssessmentDetails(final FinancialAssessmentDetailEntity detailsEntity);
+    FinancialAssessmentDetails financialAssessmentDetailsEntityToFinancialAssessmentDetails(final FinancialAssessmentDetailEntity detailsEntity);
 
     @Mapping(target = "repOrder.id", source = "repId")
-    FinancialAssessmentEntity FinancialAssessmentDtoToFinancialAssessmentEntity(final FinancialAssessmentDTO financialAssessment);
+    FinancialAssessmentEntity financialAssessmentDtoToFinancialAssessmentEntity(final FinancialAssessmentDTO financialAssessment);
 
-    FinancialAssessmentDetailEntity FinancialAssessmentDetailsToFinancialAssessmentDetailsEntity(final FinancialAssessmentDetails details);
+    FinancialAssessmentDetailEntity financialAssessmentDetailsToFinancialAssessmentDetailsEntity(final FinancialAssessmentDetails details);
 
-    ChildWeightingsEntity ChildWeightingsToChildWeightingsEntity(final ChildWeightings childWeightings);
+    ChildWeightingsEntity childWeightingsToChildWeightingsEntity(final ChildWeightings childWeightings);
 
-    ChildWeightings ChildWeightingsEntityToChildWeightings(final ChildWeightingsEntity childWeightingsEntity);
+    ChildWeightings childWeightingsEntityToChildWeightings(final ChildWeightingsEntity childWeightingsEntity);
 
     FinAssIncomeEvidenceEntity finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(final FinAssIncomeEvidenceDTO finAssIncomeEvidenceDTO);
 

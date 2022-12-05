@@ -60,7 +60,7 @@ public class FinancialAssessmentImplTest {
     void whenCreateIsInvoked_thenAssessmentIsSaved() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTO();
 
-        when(financialAssessmentMapper.FinancialAssessmentDtoToFinancialAssessmentEntity(any()))
+        when(financialAssessmentMapper.financialAssessmentDtoToFinancialAssessmentEntity(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntity());
 
         financialAssessmentImpl.create(financialAssessment);
@@ -106,7 +106,7 @@ public class FinancialAssessmentImplTest {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTOWithDetails();
         when(financialAssessmentRepository.getById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntityWithDetails());
-        when(financialAssessmentMapper.FinancialAssessmentDetailsToFinancialAssessmentDetailsEntity(any()))
+        when(financialAssessmentMapper.financialAssessmentDetailsToFinancialAssessmentDetailsEntity(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentDetailsEntity());
 
         financialAssessmentImpl.update(financialAssessment);
@@ -120,7 +120,7 @@ public class FinancialAssessmentImplTest {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentWithChildWeightings();
         when(financialAssessmentRepository.getById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntityWithChildWeightings());
-        when(financialAssessmentMapper.ChildWeightingsToChildWeightingsEntity(any()))
+        when(financialAssessmentMapper.childWeightingsToChildWeightingsEntity(any()))
                 .thenReturn(TestEntityDataBuilder.getChildWeightingsEntity());
 
         financialAssessmentImpl.update(financialAssessment);
@@ -210,7 +210,7 @@ public class FinancialAssessmentImplTest {
                 TestModelDataBuilder.getFinancialAssessmentDTOWithDetails();
         FinancialAssessmentEntity existingAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
 
-        when(financialAssessmentMapper.FinancialAssessmentDetailsToFinancialAssessmentDetailsEntity(any()))
+        when(financialAssessmentMapper.financialAssessmentDetailsToFinancialAssessmentDetailsEntity(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentDetailsEntity());
 
         financialAssessmentImpl.updateAssessmentDetails(financialAssessment, existingAssessment);
@@ -253,7 +253,7 @@ public class FinancialAssessmentImplTest {
                 TestModelDataBuilder.getFinancialAssessmentWithChildWeightings();
         FinancialAssessmentEntity existingAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
 
-        when(financialAssessmentMapper.ChildWeightingsToChildWeightingsEntity(any()))
+        when(financialAssessmentMapper.childWeightingsToChildWeightingsEntity(any()))
                 .thenReturn(TestEntityDataBuilder.getChildWeightingsEntity());
 
         financialAssessmentImpl.updateChildWeightings(financialAssessment, existingAssessment);

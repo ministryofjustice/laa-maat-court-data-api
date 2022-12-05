@@ -1,9 +1,9 @@
-package gov.uk.courtdata.iojAppeal.impl;
+package gov.uk.courtdata.iojappeal.impl;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.IOJAppealEntity;
-import gov.uk.courtdata.iojAppeal.mapper.IOJAppealMapper;
+import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.repository.IOJAppealRepository;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,15 +38,15 @@ public class IOJAppealImplTest {
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
         when(iojAppealRepository.getById(any())).thenReturn(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).build());
         var iojAppeal = iojAppealImpl.find(IOJ_APPEAL_ID);
-        assertEquals(iojAppeal.getId(), IOJ_APPEAL_ID);
+        assertEquals(IOJ_APPEAL_ID, iojAppeal.getId());
     }
 
     @Test
     public void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
         when(iojAppealRepository.findByRepId(IOJ_REP_ID)).thenReturn(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build());
         var iojAppeal = iojAppealImpl.findByRepId(IOJ_REP_ID);
-        assertEquals(iojAppeal.getId(), IOJ_APPEAL_ID);
-        assertEquals(iojAppeal.getRepId(), IOJ_REP_ID);
+        assertEquals(IOJ_APPEAL_ID, iojAppeal.getId());
+        assertEquals(IOJ_REP_ID, iojAppeal.getRepId());
     }
 
     @Test

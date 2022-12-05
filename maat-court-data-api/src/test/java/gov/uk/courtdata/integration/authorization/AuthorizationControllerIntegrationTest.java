@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @ExtendWith(SpringExtension.class)
@@ -112,93 +113,93 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
 
     @Test
     public void givenAValidRoleAction_whenIsRoleActionAuthorizedIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runSuccessScenario(getAuthorizedResponse(), get(ROLE_ACTION_AUTHORIZED_URL, VALID_TEST_USER, AUTHORISED_ACTION));
+        assertTrue(runSuccessScenario(getAuthorizedResponse(), get(ROLE_ACTION_AUTHORIZED_URL, VALID_TEST_USER, AUTHORISED_ACTION)));
     }
 
     @Test
     public void givenAValidUserAnInvalidRoleAction_whenIsRoleActionAuthorizedIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runSuccessScenario(getUnauthorizedResponse(), get(ROLE_ACTION_AUTHORIZED_URL, VALID_TEST_USER, "UNKNOWN_ACTION"));
+        assertTrue(runSuccessScenario(getUnauthorizedResponse(), get(ROLE_ACTION_AUTHORIZED_URL, VALID_TEST_USER, "UNKNOWN_ACTION")));
     }
 
     @Test
     public void givenAnInvalidUserAndValidRoleAction_whenIsRoleActionAuthorizedIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runSuccessScenario(getUnauthorizedResponse(), get(ROLE_ACTION_AUTHORIZED_URL, "INVALID_USER", AUTHORISED_ACTION));
+        assertTrue(runSuccessScenario(getUnauthorizedResponse(), get(ROLE_ACTION_AUTHORIZED_URL, "INVALID_USER", AUTHORISED_ACTION)));
     }
 
     @Test
     public void givenADisabledRoleAction_whenIsRoleActionAuthorizedIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runSuccessScenario(getUnauthorizedResponse(), get(ROLE_ACTION_AUTHORIZED_URL, VALID_TEST_USER, DISABLED_ACTION));
+        assertTrue(runSuccessScenario(getUnauthorizedResponse(), get(ROLE_ACTION_AUTHORIZED_URL, VALID_TEST_USER, DISABLED_ACTION)));
     }
 
     @Test
     public void givenMissingUsername_whenIsRoleActionAuthorizedIsInvoked_theCorrectErrorIsThrown() throws Exception {
-        runBadRequestErrorScenario(MISSING_USER_NAME_OR_ACTION_ERROR, get(ROLE_ACTION_AUTHORIZED_URL, " ", AUTHORISED_ACTION));
+        assertTrue(runBadRequestErrorScenario(MISSING_USER_NAME_OR_ACTION_ERROR, get(ROLE_ACTION_AUTHORIZED_URL, " ", AUTHORISED_ACTION)));
     }
 
     @Test
     public void givenMissingAction_whenIsRoleActionAuthorizedIsInvoked_theCorrectErrorIsThrown() throws Exception {
-        runBadRequestErrorScenario(MISSING_USER_NAME_OR_ACTION_ERROR, get(ROLE_ACTION_AUTHORIZED_URL, VALID_TEST_USER, " "));
+        assertTrue(runBadRequestErrorScenario(MISSING_USER_NAME_OR_ACTION_ERROR, get(ROLE_ACTION_AUTHORIZED_URL, VALID_TEST_USER, " ")));
     }
 
     @Test
     public void givenValidUsernameAndNWorCode_whenIsNewWorkReasonAuthorizedIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runSuccessScenario(getAuthorizedResponse(), get(NEW_WORK_REASON_AUTHORIZED_URL, VALID_TEST_USER, VALID_NWORCODE));
+        assertTrue(runSuccessScenario(getAuthorizedResponse(), get(NEW_WORK_REASON_AUTHORIZED_URL, VALID_TEST_USER, VALID_NWORCODE)));
     }
 
     @Test
     public void givenValidUsernameAndInvalidNWorCode_whenIsNewWorkReasonAuthorizedIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runSuccessScenario(getUnauthorizedResponse(), get(NEW_WORK_REASON_AUTHORIZED_URL, VALID_TEST_USER, "INVALID_WORK_REASON"));
+        assertTrue(runSuccessScenario(getUnauthorizedResponse(), get(NEW_WORK_REASON_AUTHORIZED_URL, VALID_TEST_USER, "INVALID_WORK_REASON")));
     }
 
     @Test
     public void givenAnInvalidUsernameAndValidNWorCode_whenIsNewWorkReasonAuthorizedIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runSuccessScenario(getUnauthorizedResponse(), get(NEW_WORK_REASON_AUTHORIZED_URL, "invalid-user", VALID_NWORCODE));
+        assertTrue(runSuccessScenario(getUnauthorizedResponse(), get(NEW_WORK_REASON_AUTHORIZED_URL, "invalid-user", VALID_NWORCODE)));
     }
 
     @Test
     public void givenMissingNWorCode_whenIsNewWorkReasonAuthorizedIsInvoked_theCorrectErrorIsThrown() throws Exception {
-        runBadRequestErrorScenario(MISSING_USER_NAME_OR_NWORCODE_ERROR, get(NEW_WORK_REASON_AUTHORIZED_URL, VALID_TEST_USER, " "));
+        assertTrue(runBadRequestErrorScenario(MISSING_USER_NAME_OR_NWORCODE_ERROR, get(NEW_WORK_REASON_AUTHORIZED_URL, VALID_TEST_USER, " ")));
     }
 
     @Test
     public void givenMissingUsername_whenIsNewWorkReasonAuthorizedIsInvoked_theCorrectErrorIsThrown() throws Exception {
-        runBadRequestErrorScenario(MISSING_USER_NAME_OR_NWORCODE_ERROR, get(NEW_WORK_REASON_AUTHORIZED_URL, " ", VALID_NWORCODE));
+        assertTrue(runBadRequestErrorScenario(MISSING_USER_NAME_OR_NWORCODE_ERROR, get(NEW_WORK_REASON_AUTHORIZED_URL, " ", VALID_NWORCODE)));
     }
 
     @Test
     public void givenAReservedRecord_whenIsReservedIsInvoked_theCorrectResponseIsReturnedAndTheReservationTimeIsUpdated() throws Exception {
-        runSuccessScenario(getAuthorizedResponse(), get(IS_RESERVED_URL, VALID_TEST_USER, VALID_RESERVATION_ID, VALID_SESSION_ID));
+        assertTrue(runSuccessScenario(getAuthorizedResponse(), get(IS_RESERVED_URL, VALID_TEST_USER, VALID_RESERVATION_ID, VALID_SESSION_ID)));
     }
 
     @Test
     public void givenAnUnreservedRecord_whenIsReservedIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runSuccessScenario(getUnauthorizedResponse(), get(IS_RESERVED_URL, VALID_TEST_USER, 5678, VALID_SESSION_ID));
+        assertTrue(runSuccessScenario(getUnauthorizedResponse(), get(IS_RESERVED_URL, VALID_TEST_USER, 5678, VALID_SESSION_ID)));
     }
 
     @Test
     public void givenAStaleUserSession_whenIsReservedIsInvoked_theCorrectErrorIsThrown() throws Exception {
-        runBadRequestErrorScenario(
+        assertTrue(runBadRequestErrorScenario(
                 "Stale user session, reservation not allowed",
-                get(IS_RESERVED_URL, VALID_TEST_USER, VALID_RESERVATION_ID, "Stale-session"));
+                get(IS_RESERVED_URL, VALID_TEST_USER, VALID_RESERVATION_ID, "Stale-session")));
     }
 
     @Test
     public void givenAMissingUsername_whenIsReservedIsInvoked_theCorrectErrorIsThrown() throws Exception {
-        runBadRequestErrorScenario(MISSING_USER_ATTRIBUTES_ERROR, get(IS_RESERVED_URL, " ", VALID_RESERVATION_ID, VALID_SESSION_ID));
+        assertTrue(runBadRequestErrorScenario(MISSING_USER_ATTRIBUTES_ERROR, get(IS_RESERVED_URL, " ", VALID_RESERVATION_ID, VALID_SESSION_ID)));
     }
 
     @Test
     public void givenAMissingSessionId_whenIsReservedIsInvoked_theCorrectErrorIsThrown() throws Exception {
-        runBadRequestErrorScenario(MISSING_USER_ATTRIBUTES_ERROR, get(IS_RESERVED_URL, VALID_TEST_USER, VALID_RESERVATION_ID, " "));
+        assertTrue(runBadRequestErrorScenario(MISSING_USER_ATTRIBUTES_ERROR, get(IS_RESERVED_URL, VALID_TEST_USER, VALID_RESERVATION_ID, " ")));
     }
 
     @Test
     public void givenAStringTypeReservationId_whenIsReservedIsInvoked_theCorrectErrorIsThrown() throws Exception {
         String reservationIdString = "incorrect-type";
 
-        runBadRequestErrorScenario(
+        assertTrue(runBadRequestErrorScenario(
                 String.format("The provided value '%s' is the incorrect type for the 'reservationId' parameter.", reservationIdString),
-                get(IS_RESERVED_URL, VALID_TEST_USER, reservationIdString, VALID_SESSION_ID));
+                get(IS_RESERVED_URL, VALID_TEST_USER, reservationIdString, VALID_SESSION_ID)));
     }
 
     private AuthorizationResponse getAuthorizedResponse() {

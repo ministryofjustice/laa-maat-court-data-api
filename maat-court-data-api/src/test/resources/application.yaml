@@ -42,9 +42,7 @@ cloud-platform:
       queue:
         link: link
         unlink: unlink
-        laaStatus:  laaStatus
         hearingResulted: hearing
-        laaStatusJob: laaStatusJob
         createLinkCpStatusJob: createLinkCpStatusJob
         prosecutionConcluded: prosecutionConcluded
         meansAssessmentPostProcessing: meansAssessmentPostProcessing

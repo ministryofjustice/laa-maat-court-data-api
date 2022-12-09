@@ -31,16 +31,43 @@ public class TestEntityDataBuilder {
     }
 
     public static RepOrderEntity getPopulatedRepOrder(Integer id) {
-        return RepOrderEntity.builder().id(id).catyCaseType("case-type").magsOutcome("outcome").magsOutcomeDate(TEST_DATE.toString()).magsOutcomeDateSet(TEST_DATE.toLocalDate()).committalDate(TEST_DATE.toLocalDate()).repOrderDecisionReasonCode("rder-code").crownRepOrderDecision("cc-rep-doc").crownRepOrderType("cc-rep-type").sentenceOrderDate(TEST_DATE).build();
+        return RepOrderEntity.builder()
+                .id(id)
+                .catyCaseType("case-type")
+                .magsOutcome("outcome")
+                .magsOutcomeDate(TEST_DATE.toString())
+                .magsOutcomeDateSet(TEST_DATE.toLocalDate())
+                .committalDate(TEST_DATE.toLocalDate())
+                .repOrderDecisionReasonCode("rder-code")
+                .crownRepOrderDecision("cc-rep-doc")
+                .crownRepOrderType("cc-rep-type")
+                .sentenceOrderDate(TEST_DATE)
+                .build();
     }
 
     public static RepOrderMvoEntity getRepOrderMvoEntity(Integer id) {
-        return RepOrderMvoEntity.builder().id(id).rep(getPopulatedRepOrder(REP_ID)).vehicleOwner("Y").dateCreated(TEST_DATE).userCreated(TEST_USER).dateModified(TEST_DATE).userModified(TEST_USER).build();
+        return RepOrderMvoEntity.builder()
+                .id(id)
+                .rep(getPopulatedRepOrder(REP_ID))
+                .vehicleOwner("Y")
+                .dateCreated(TEST_DATE)
+                .userCreated(TEST_USER)
+                .dateModified(TEST_DATE)
+                .userModified(TEST_USER)
+                .build();
     }
 
 
     public static RepOrderMvoRegEntity getRepOrderMvoRegEntity(Integer id) {
-        return RepOrderMvoRegEntity.builder().id(id).mvo(getRepOrderMvoEntity(MVO_ID)).registration(TEST_REGISTRATION).dateCreated(TEST_DATE).userCreated(TEST_USER).dateModified(TEST_DATE).userModified(TEST_USER).build();
+        return RepOrderMvoRegEntity.builder()
+                .id(id)
+                .mvo(getRepOrderMvoEntity(MVO_ID))
+                .registration(TEST_REGISTRATION)
+                .dateCreated(TEST_DATE)
+                .userCreated(TEST_USER)
+                .dateModified(TEST_DATE)
+                .userModified(TEST_USER)
+                .build();
     }
 
     public static RepOrderMvoEntityInfo getRepOrderMvoEntityInfo() {
@@ -93,11 +120,46 @@ public class TestEntityDataBuilder {
 
 
     public static FinancialAssessmentEntity getFinancialAssessmentEntity() {
-        return FinancialAssessmentEntity.builder().id(1000).repOrder(getPopulatedRepOrder(REP_ID)).assessmentType(ASSESSMENT_TYPE).initialAscrId(1).newWorkReason(NewWorkReasonEntity.builder().code("FMA").build()).dateCreated(LocalDateTime.parse("2021-10-09T15:01:25")).userCreated("test-f").cmuId(30).fassInitStatus("COMPLETE").initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25")).initTotAggregatedIncome(BigDecimal.valueOf(15600.00).setScale(2)).initAdjustedIncomeValue(BigDecimal.valueOf(15600.00).setScale(2)).initResult("FULL").initApplicationEmploymentStatus("NONPASS").userModified("test-f").firstReminderDate(LocalDateTime.parse("2021-10-09T15:02:25")).secondReminderDate(LocalDateTime.parse("2022-10-09T15:02:25")).evidenceReceivedDate(LocalDateTime.parse("2021-10-09T15:02:25")).build();
+        return FinancialAssessmentEntity.builder()
+                .id(1000)
+                .repOrder(getPopulatedRepOrder(REP_ID))
+                .assessmentType(ASSESSMENT_TYPE)
+                .initialAscrId(1)
+                .newWorkReason(
+                        NewWorkReasonEntity.builder()
+                                .code("FMA")
+                                .build()
+                )
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("test-f")
+                .cmuId(30)
+                .fassInitStatus("COMPLETE")
+                .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
+                .initTotAggregatedIncome(BigDecimal.valueOf(15600.00).setScale(2))
+                .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00).setScale(2))
+                .initResult("FULL")
+                .initApplicationEmploymentStatus("NONPASS")
+                .userModified("test-f")
+                .firstReminderDate(LocalDateTime.parse("2021-10-09T15:02:25"))
+                .secondReminderDate(LocalDateTime.parse("2022-10-09T15:02:25"))
+                .evidenceReceivedDate(LocalDateTime.parse("2021-10-09T15:02:25"))
+                .build();
     }
 
-    public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(Integer repId, String FassStatus, NewWorkReasonEntity newWorkReason) {
-        return FinancialAssessmentEntity.builder().repOrder(getPopulatedRepOrder(repId)).assessmentType(ASSESSMENT_TYPE).fassInitStatus(FassStatus).dateCreated(TEST_DATE).userCreated(TEST_USER).initialAscrId(1).usn(2).cmuId(3).replaced("N").newWorkReason(newWorkReason).build();
+    public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(Integer repId, String assessmentStatus,
+                                                                               NewWorkReasonEntity newWorkReason) {
+        return FinancialAssessmentEntity.builder()
+                .repOrder(getPopulatedRepOrder(repId))
+                .assessmentType(ASSESSMENT_TYPE)
+                .fassInitStatus(assessmentStatus)
+                .dateCreated(TEST_DATE)
+                .userCreated(TEST_USER)
+                .initialAscrId(1)
+                .usn(2)
+                .cmuId(3)
+                .replaced("N")
+                .newWorkReason(newWorkReason)
+                .build();
     }
 
     public static FinancialAssessmentEntity getFinancialAssessmentEntityWithDetails() {
@@ -112,7 +174,8 @@ public class TestEntityDataBuilder {
         return financialAssessment;
     }
 
-    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithRelationships(Integer repId, NewWorkReasonEntity newWorkReason) {
+    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithRelationships(Integer repId,
+                                                                                          NewWorkReasonEntity newWorkReason) {
         FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
         financialAssessment.setId(null);
         financialAssessment.getRepOrder().setId(repId);
@@ -126,11 +189,34 @@ public class TestEntityDataBuilder {
     }
 
     public static FinancialAssessmentDetailEntity getFinancialAssessmentDetailsEntity() {
-        return FinancialAssessmentDetailEntity.builder().id(23456).criteriaDetailId(40).applicantAmount(BigDecimal.valueOf(1650.00).setScale(2)).applicantFrequency(Frequency.MONTHLY).partnerAmount(BigDecimal.valueOf(1650.00).setScale(2)).partnerFrequency(Frequency.TWO_WEEKLY).userCreated("test-f").userModified("test-f").build();
+        return FinancialAssessmentDetailEntity.builder()
+                .id(23456).criteriaDetailId(40)
+                .applicantAmount(BigDecimal.valueOf(1650.00).setScale(2))
+                .applicantFrequency(Frequency.MONTHLY)
+                .partnerAmount(BigDecimal.valueOf(1650.00).setScale(2))
+                .partnerFrequency(Frequency.TWO_WEEKLY)
+                .userCreated("test-f")
+                .userModified("test-f")
+                .build();
     }
 
     public static IOJAppealEntity getIOJAppealEntity(LocalDateTime dateModified, String iapStatus) {
-        return IOJAppealEntity.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).appealSetupDate(LocalDateTime.of(2022, 1, 1, 10, 0)).nworCode("NEW").userCreated("test-s").cmuId(86679086).iapsStatus(StringUtils.isBlank(iapStatus) ? "COMPLETE" : iapStatus).appealSetupResult("GRANT").iderCode("NOTUNDPROC").decisionDate(LocalDateTime.of(2022, 1, 1, 10, 0)).decisionResult("PASS").notes("notes test notes").replaced("N").dateModified(dateModified).build();
+        return IOJAppealEntity.builder()
+                .id(IOJ_APPEAL_ID)
+                .repId(IOJ_REP_ID)
+                .appealSetupDate(LocalDateTime.of(2022, 1, 1, 10, 0))
+                .nworCode("NEW")
+                .userCreated("test-s")
+                .cmuId(86679086)
+                .iapsStatus(StringUtils.isBlank(iapStatus) ? "COMPLETE" : iapStatus)
+                .appealSetupResult("GRANT")
+                .iderCode("NOTUNDPROC")
+                .decisionDate(LocalDateTime.of(2022, 1, 1, 10, 0))
+                .decisionResult("PASS")
+                .notes("notes test notes")
+                .replaced("N")
+                .dateModified(dateModified)
+                .build();
     }
 
     public static IOJAppealEntity getIOJAppealEntity() {
@@ -146,7 +232,41 @@ public class TestEntityDataBuilder {
     }
 
     public static PassportAssessmentEntity getPassportAssessmentEntity() {
-        return PassportAssessmentEntity.builder().id(1000).repOrder(getPopulatedRepOrder(REP_ID)).nworCode("FMA").dateCreated(LocalDateTime.parse("2021-10-09T15:01:25")).userCreated("test-f").cmuId(30).assessmentDate(LocalDateTime.parse("2021-10-09T15:01:25")).partnerBenefitClaimed("Y").partnerFirstName("Test").partnerSurname("Partner").partnerNiNumber("AB123456C").partnerDob(LocalDateTime.parse("1978-10-09T06:00:00")).incomeSupport("Y").jobSeekers("Y").statePensionCredit("N").under18FullEducation("N").under16("N").pcobConfirmation("DWP").result("PASS").dateModified(LocalDateTime.parse("2021-10-09T15:01:25")).userModified("test-f").dwpResult("Yes").between16And17("N").under18HeardInYouthCourt("N").under18HeardInMagsCourt("N").lastSignOnDate(LocalDateTime.parse("2021-08-09T12:12:48")).esa("N").pastStatus("COMPLETE").replaced("N").valid("Y").dateCompleted(LocalDateTime.parse("2021-10-09T15:01:25")).usn(1234).whoDWPChecked("ABC").rtCode("DEF").build();
+        return PassportAssessmentEntity.builder()
+                .id(1000)
+                .repOrder(getPopulatedRepOrder(REP_ID))
+                .nworCode("FMA")
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("test-f").cmuId(30)
+                .assessmentDate(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .partnerBenefitClaimed("Y")
+                .partnerFirstName("Test")
+                .partnerSurname("Partner")
+                .partnerNiNumber("AB123456C")
+                .partnerDob(LocalDateTime.parse("1978-10-09T06:00:00"))
+                .incomeSupport("Y")
+                .jobSeekers("Y")
+                .statePensionCredit("N")
+                .under18FullEducation("N")
+                .under16("N")
+                .pcobConfirmation("DWP")
+                .result("PASS")
+                .dateModified(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userModified("test-f")
+                .dwpResult("Yes")
+                .between16And17("N")
+                .under18HeardInYouthCourt("N")
+                .under18HeardInMagsCourt("N")
+                .lastSignOnDate(LocalDateTime.parse("2021-08-09T12:12:48"))
+                .esa("N")
+                .pastStatus("COMPLETE")
+                .replaced("N")
+                .valid("Y")
+                .dateCompleted(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .usn(1234)
+                .whoDWPChecked("ABC")
+                .rtCode("DEF")
+                .build();
     }
 
     public static HardshipReviewEntity getHardshipReviewEntityWithRelationships() {
@@ -157,64 +277,192 @@ public class TestEntityDataBuilder {
     }
 
     public static HardshipReviewEntity getHardshipReviewEntity() {
-        return HardshipReviewEntity.builder().id(1000).repId(REP_ID).newWorkReason(NewWorkReasonEntity.builder().code("NEW").type("HARDIOJ").description("New").build()).cmuId(253).reviewResult("FAIL").solicitorRate(BigDecimal.valueOf(183.0)).solicitorHours(BigDecimal.valueOf(12.0)).solicitorVat(BigDecimal.valueOf(384.25)).solicitorDisb(BigDecimal.valueOf(0.0)).solicitorEstTotalCost(BigDecimal.valueOf(2580.25)).disposableIncome(BigDecimal.valueOf(4215.46)).disposableIncomeAfterHardship(BigDecimal.valueOf(2921.38)).status(HardshipReviewStatus.COMPLETE).userCreated("test-s").userModified("test-s").courtType("MAGISTRATE").financialAssessmentId(349211).valid("Y").build();
+        return HardshipReviewEntity.builder()
+                .id(1000)
+                .repId(REP_ID)
+                .newWorkReason(
+                        NewWorkReasonEntity.builder()
+                                .code("NEW")
+                                .type("HARDIOJ")
+                                .description("New")
+                                .build()
+                )
+                .cmuId(253)
+                .reviewResult("FAIL")
+                .solicitorRate(BigDecimal.valueOf(183.0))
+                .solicitorHours(BigDecimal.valueOf(12.0))
+                .solicitorVat(BigDecimal.valueOf(384.25))
+                .solicitorDisb(BigDecimal.valueOf(0.0))
+                .solicitorEstTotalCost(BigDecimal.valueOf(2580.25))
+                .disposableIncome(BigDecimal.valueOf(4215.46))
+                .disposableIncomeAfterHardship(BigDecimal.valueOf(2921.38))
+                .status(HardshipReviewStatus.COMPLETE)
+                .userCreated("test-s")
+                .userModified("test-s")
+                .courtType("MAGISTRATE")
+                .financialAssessmentId(349211)
+                .valid("Y")
+                .build();
     }
 
     public static HardshipReviewDetailEntity getHardshipReviewDetailsEntity() {
-        return HardshipReviewDetailEntity.builder().id(4253).detailType(HardshipReviewDetailType.EXPENDITURE).userCreated("test-s").frequency(Frequency.MONTHLY).description("Pension").amount(BigDecimal.valueOf(107.84)).accepted("Y").reasonResponse("evidence provided").active("false").detailReason(HardshipReviewDetailReasonEntity.builder().id(1000).build()).build();
+        return HardshipReviewDetailEntity.builder()
+                .id(4253)
+                .detailType(HardshipReviewDetailType.EXPENDITURE)
+                .userCreated("test-s")
+                .frequency(Frequency.MONTHLY)
+                .description("Pension")
+                .amount(BigDecimal.valueOf(107.84))
+                .accepted("Y")
+                .reasonResponse("evidence provided")
+                .active("false")
+                .detailReason(
+                        HardshipReviewDetailReasonEntity.builder()
+                                .id(1000)
+                                .build()
+                )
+                .build();
     }
 
     public static HardshipReviewProgressEntity getHardshipReviewProgressEntity() {
-        return HardshipReviewProgressEntity.builder().id(1254).userCreated("test-s").userModified("test-s").progressAction(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE).progressResponse(HardshipReviewProgressResponse.FURTHER_RECEIVED).build();
+        return HardshipReviewProgressEntity.builder()
+                .id(1254)
+                .userCreated("test-s")
+                .userModified("test-s")
+                .progressAction(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE)
+                .progressResponse(HardshipReviewProgressResponse.FURTHER_RECEIVED)
+                .build();
     }
 
     public static NewWorkReasonEntity getNewWorkReasonEntity() {
-        return NewWorkReasonEntity.builder().code("NEW").type("HARDIOJ").description("New").dateCreated(LocalDateTime.now()).userCreated("TOGDATA").sequence(1).enabled("Y").initialDefault("Y").build();
+        return NewWorkReasonEntity.builder()
+                .code("NEW")
+                .type("HARDIOJ")
+                .description("New")
+                .dateCreated(LocalDateTime.now())
+                .userCreated("TOGDATA")
+                .sequence(1)
+                .enabled("Y")
+                .initialDefault("Y")
+                .build();
     }
 
     public static NewWorkReasonEntity getFmaNewWorkReasonEntity() {
-        return NewWorkReasonEntity.builder().code("FMA").type("ASS").description("").dateCreated(TEST_DATE).userCreated(TEST_USER).build();
+        return NewWorkReasonEntity.builder()
+                .code("FMA")
+                .type("ASS")
+                .description("")
+                .dateCreated(TEST_DATE)
+                .userCreated(TEST_USER)
+                .build();
     }
 
     public static FinancialAssessmentsHistoryEntity getFinancialAssessmentsHistoryEntity() {
-        return FinancialAssessmentsHistoryEntity.builder().id(4321).repId(REP_ID).initialAscrId(1).newWorkReason(getNewWorkReasonEntity()).dateCreated(LocalDateTime.parse("2021-10-09T15:01:25")).userCreated("test-f").cmuId(30).fassInitStatus("COMPLETE").initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25")).initTotAggregatedIncome(BigDecimal.valueOf(15600.00)).initAdjustedIncomeValue(BigDecimal.valueOf(15600.00)).initResult("FULL").initApplicationEmploymentStatus("NONPASS").userModified("test-f").assessmentDetails(List.of(TestEntityDataBuilder.getFinancialAssessmentDetailsHistoryEntity())).childWeightings(List.of(TestEntityDataBuilder.getChildWeightHistoryEntity())).build();
+        return FinancialAssessmentsHistoryEntity.builder()
+                .id(4321)
+                .repId(REP_ID)
+                .initialAscrId(1)
+                .newWorkReason(getNewWorkReasonEntity())
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("test-f")
+                .cmuId(30)
+                .fassInitStatus("COMPLETE")
+                .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
+                .initTotAggregatedIncome(BigDecimal.valueOf(15600.00))
+                .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
+                .initResult("FULL")
+                .initApplicationEmploymentStatus("NONPASS")
+                .userModified("test-f")
+                .assessmentDetails(List.of(TestEntityDataBuilder.getFinancialAssessmentDetailsHistoryEntity()))
+                .childWeightings(List.of(TestEntityDataBuilder.getChildWeightHistoryEntity()))
+                .build();
     }
 
     public static FinancialAssessmentDetailsHistoryEntity getFinancialAssessmentDetailsHistoryEntity() {
-        return FinancialAssessmentDetailsHistoryEntity.builder().id(23456).criteriaDetailId(40).applicantAmount(BigDecimal.valueOf(1650.00)).partnerAmount(BigDecimal.valueOf(1650.00)).userCreated("test-f").userModified("test-f").build();
+        return FinancialAssessmentDetailsHistoryEntity.builder()
+                .id(23456)
+                .criteriaDetailId(40)
+                .applicantAmount(BigDecimal.valueOf(1650.00))
+                .partnerAmount(BigDecimal.valueOf(1650.00))
+                .userCreated("test-f")
+                .userModified("test-f")
+                .build();
     }
 
     public static ChildWeightingsEntity getChildWeightingsEntity() {
-        return ChildWeightingsEntity.builder().noOfChildren(1).childWeightingId(12).build();
+        return ChildWeightingsEntity.builder()
+                .noOfChildren(1)
+                .childWeightingId(12)
+                .build();
     }
 
     public static ChildWeightHistoryEntity getChildWeightHistoryEntity() {
-        return ChildWeightHistoryEntity.builder().noOfChildren(1).childWeightingId(12).build();
+        return ChildWeightHistoryEntity.builder()
+                .noOfChildren(1)
+                .childWeightingId(12)
+                .build();
     }
 
     public static FinAssIncomeEvidenceEntity getFinAssIncomeEvidenceEntity() {
 
-        return FinAssIncomeEvidenceEntity.builder().id(1).dateReceived(LocalDateTime.parse("2021-10-09T15:01:25")).dateCreated(LocalDateTime.parse("2021-10-09T15:01:25")).userCreated(TEST_USER).userModified(TEST_USER).active("Y").inevEvidence("INE").build();
+        return FinAssIncomeEvidenceEntity.builder()
+                .id(1)
+                .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated(TEST_USER)
+                .userModified(TEST_USER)
+                .active("Y")
+                .incomeEvidence("INE")
+                .build();
     }
 
     public RepOrderCPDataEntity getRepOrderEntity() {
-        return RepOrderCPDataEntity.builder().repOrderId(REP_ID).caseUrn("caseurn1").dateCreated(LocalDateTime.now()).userCreated("user").dateModified(LocalDateTime.now()).build();
+        return RepOrderCPDataEntity.builder()
+                .repOrderId(REP_ID)
+                .caseUrn("caseurn1")
+                .dateCreated(LocalDateTime.now())
+                .userCreated("user")
+                .dateModified(LocalDateTime.now())
+                .build();
     }
 
     public WqLinkRegisterEntity getWqLinkRegisterEntity() {
-        return WqLinkRegisterEntity.builder().caseId(345).createdTxId(123).proceedingId(345).cjsAreaCode("16").maatCat(1).mlrCat(1).maatId(REP_ID).build();
+        return WqLinkRegisterEntity.builder()
+                .caseId(345)
+                .createdTxId(123)
+                .proceedingId(345)
+                .cjsAreaCode("16")
+                .maatCat(1)
+                .mlrCat(1)
+                .maatId(REP_ID)
+                .build();
     }
 
     public DefendantMAATDataEntity getDefendantMAATDataEntity() {
-        return DefendantMAATDataEntity.builder().maatId(REP_ID).firstName("T First Name").lastName("T Last Name").libraId("libra id").dob("07041960").build();
+        return DefendantMAATDataEntity.builder()
+                .maatId(REP_ID)
+                .firstName("T First Name")
+                .lastName("T Last Name")
+                .libraId("libra id")
+                .dob("07041960")
+                .build();
     }
 
     public SolicitorMAATDataEntity getSolicitorMAATDataEntity() {
-        return SolicitorMAATDataEntity.builder().maatId(REP_ID).accountCode("Acc").accountName("Acc Name").cmuId(123).build();
+        return SolicitorMAATDataEntity.builder()
+                .maatId(REP_ID)
+                .accountCode("Acc")
+                .accountName("Acc Name")
+                .cmuId(123)
+                .build();
     }
 
     public RepOrderCPDataEntity getRepOrderCPDataEntity() {
-        return RepOrderCPDataEntity.builder().repOrderId(REP_ID).defendantId("556677").caseUrn("testCaseURN").build();
+        return RepOrderCPDataEntity.builder()
+                .repOrderId(REP_ID)
+                .defendantId("556677")
+                .caseUrn("testCaseURN")
+                .build();
     }
 
 }

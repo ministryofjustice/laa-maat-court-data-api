@@ -1,5 +1,7 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,6 +21,7 @@ public class FinAssIncomeEvidenceEntity {
     @Column(name = "ID", nullable = false)
     private Integer id;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FIAS_ID", nullable = false)
     private FinancialAssessmentEntity financialAssessment;
@@ -54,10 +57,11 @@ public class FinAssIncomeEvidenceEntity {
     private String adhoc;
 
     @Column(name = "INEV_EVIDENCE", length = 20)
-    private String inevEvidence;
+    private String incomeEvidence;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonManagedReference
     @JoinColumn(name = "APPL_ID")
-    private Applicant appl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Applicant applicant;
 
 }

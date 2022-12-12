@@ -24,6 +24,6 @@ public class FinAssIncomeEvidenceDTO implements Serializable {
     private String mandatory;
     private String otherText;
     private String adhoc;
-    private String inevEvidence;
-    private ApplicantDTO appl;
+    private String incomeEvidence;
+    private ApplicantDTO applicant;
 }

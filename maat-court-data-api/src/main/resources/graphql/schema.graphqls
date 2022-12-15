@@ -1,9 +1,12 @@
 type Query {
-    findAll: [RepOrderEntity]
-    findByRepId(repId: Int) : RepOrderEntity
+    findAll: [RepOrderDTO]
+    findByRepId(repId: Int) : RepOrderDTO
+    findByRepOrderFilter(filter: RepOrderFilter) : RepOrderDTO
+
+    #findByRepId(repId: Int, filter: RepOrderFilter) : RepOrderEntity
 }
 
-type RepOrderEntity {
+type RepOrderDTO {
     id: Int
     caseId: String
     catyCaseType: String
@@ -23,6 +26,11 @@ type RepOrderEntity {
     sentenceOrderDate: String
     passportAssessments: [PassportAssessments]
     financialAssessments: [FinancialAssessments]
+}
+
+input RepOrderFilter {
+    id: Int
+    sentenceOrderDate: String!
 }
 
 type PassportAssessments {
@@ -73,7 +81,7 @@ type PassportAssessments {
 
 type FinancialAssessments {
     id: Int
-    repOrder: RepOrderEntity
+    repOrder: RepOrderDTO
     initialAscrId: Int
     assessmentType: String
     dateCreated: String

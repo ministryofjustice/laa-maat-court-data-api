@@ -1,27 +1,45 @@
 package gov.uk.courtdata.reporder.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.reporder.gqlfilter.RepOrderFilter;
 import gov.uk.courtdata.reporder.service.RepOrderService;
+import graphql.kickstart.tools.GraphQLQueryResolver;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @XRayEnabled
-@Controller
+@RestController
 @RequiredArgsConstructor
-@Tag(name = "RepOrders", description = "Rest API for rep orders")
-public class RepOrderGQLController {
+@Tag(name = "RepOrdersGQL", description = "Rest API for rep orders")
+public class RepOrderGQLController implements GraphQLQueryResolver {
 
     private final RepOrderService repOrderService;
 
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @QueryMapping
-    public RepOrderEntity findByRepId(@Argument Integer repId) {
-        return repOrderService.findByRepId(repId);
+    public RepOrderDTO findByRepId(@Argument Integer repId) {
+        return repOrderService.find(repId, false);
+    }
+
+
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @QueryMapping
+    public RepOrderDTO findByRepOrderFilter(@Argument("filter") RepOrderFilter filter) {
+        RepOrderDTO repOrderDTO = null;
+        if (filter.getId() > 0) {
+            repOrderDTO = repOrderService.find(filter.getId(), Boolean.valueOf(filter.getSentenceOrderDate()));
+        }
+        return repOrderDTO;
     }
 
 }

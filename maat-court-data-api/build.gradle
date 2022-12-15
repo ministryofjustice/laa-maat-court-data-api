@@ -33,7 +33,8 @@ def versions = [
         mockWebServerVersion: '4.9.3',
         xRayVersion         : '2.11.2',
         hibernateJpaModelGen: '5.6.14.Final',
-        gqlVersion: '2.7.5'
+        gqlVersion: '2.7.5',
+        graphqlJavaTools: '13.0.2'
 ]
 
 dependencyManagement {
@@ -125,6 +126,8 @@ dependencies {
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-graphql'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    implementation group: 'com.graphql-java-kickstart', name: 'graphql-java-tools', version: versions.graphqlJavaTools
+
 
     // Test Only
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {

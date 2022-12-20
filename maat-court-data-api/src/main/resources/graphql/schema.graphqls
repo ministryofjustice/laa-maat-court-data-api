@@ -1,0 +1,121 @@
+type Query {
+    findAll: [RepOrderDTO]
+    findByRepId(repId: Int) : RepOrderDTO
+    findByRepOrderFilter(filter: RepOrderFilter) : RepOrderDTO
+
+    #findByRepId(repId: Int, filter: RepOrderFilter) : RepOrderEntity
+}
+
+type RepOrderDTO {
+    id: Int
+    caseId: String
+    catyCaseType: String
+    appealTypeCode: String
+    arrestSummonsNo: String
+    userModified: String
+    dateModified: String
+    magsOutcome: String
+    magsOutcomeDate: String
+    magsOutcomeDateSet: String
+    committalDate: String
+    repOrderDecisionReasonCode: String
+    crownRepOrderDecision: String
+    crownRepOrderType: String
+    assessmentDateCompleted: String
+    dateCreated: String
+    sentenceOrderDate: String
+    passportAssessments: [PassportAssessments]
+    financialAssessments: [FinancialAssessments]
+}
+
+input RepOrderFilter {
+    id: Int
+    sentenceOrderDate: String!
+}
+
+type PassportAssessments {
+    id: Int
+    nworCode: String
+    dateCreated: String
+    userCreated: String
+    cmuId: Int
+    assessmentDate: String
+    partnerBenefitClaimed: String
+    partnerFirstName: String
+    partnerSurname: String
+    partnerOtherNames: String
+    partnerNiNumber: String
+    partnerDob: String
+    incomeSupport: String
+    jobSeekers: String
+    statePensionCredit: String
+    under18FullEducation: String
+    under16: String
+    pcobConfirmation: String
+    result: String
+    dateModified: String
+    userModified: String
+    dwpResult: String
+    passportNote: String
+    between16And17: String
+    under18HeardInYouthCourt: String
+    under18HeardInMagsCourt: String
+    lastSignOnDate: String
+    esa: String
+    pastStatus: String
+    replaced: String
+    passportEvidenceDueDate: String
+    allPassportEvidenceReceivedDate: String
+    passportUpliftPercentage: Int
+    passportUpliftApplyDate: String
+    passportUpliftRemoveDate: String
+    passportEvidenceNotes: String
+    firstPassportReminderDate: String
+    secondPassportReminderDate: String
+    valid: String
+    dateCompleted: String
+    usn: Int
+    whoDWPChecked: String
+    rtCode: String
+}
+
+type FinancialAssessments {
+    id: Int
+    repOrder: RepOrderDTO
+    initialAscrId: Int
+    assessmentType: String
+    dateCreated: String
+    userCreated: String
+    cmuId: Int
+    fassInitStatus: String
+    initialAssessmentDate: String
+    initOtherBenefitNote: String
+    initOtherIncomeNote: String
+    initTotAggregatedIncome: Float
+    initAdjustedIncomeValue: Float
+    initNotes: String
+    initResult: String
+    initResultReason: String
+    incomeEvidenceDueDate: String
+    incomeUpliftRemoveDate: String
+    incomeUpliftApplyDate: String
+    incomeEvidenceNotes: String
+    initApplicationEmploymentStatus: String
+    fassFullStatus: String
+    fullAssessmentDate: String
+    fullResultReason: String
+    fullAssessmentNotes: String
+    fullResult: String
+    fullAdjustedLivingAllowance: String
+    fullTotalAnnualDisposableIncome: String
+    fullOtherHousingNote: String
+    fullTotalAggregatedExpenses: Float
+    fullAscrId: Int
+    dateCompleted: String
+    updated: String
+    userModified: String
+    usn: Int
+    rtCode: String
+    replaced: String
+    valid: String
+}

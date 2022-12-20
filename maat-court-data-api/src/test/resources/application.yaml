@@ -7,7 +7,6 @@ spring:
     password:
     driver-class-name: org.h2.Driver
     initilization-mode: embedded
-    platform: h2
     name: MLA
 
   security:
@@ -30,8 +29,10 @@ spring:
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate:
-        default_schema: mla
         enable_lazy_load_no_trans: true
+  sql:
+    init:
+      platform: h2
 
 cloud-platform:
   aws:

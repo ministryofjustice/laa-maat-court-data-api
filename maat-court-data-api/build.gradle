@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
-    id 'org.springframework.boot' version '2.6.6'
+    id 'org.springframework.boot' version '2.7.5'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'net.ltgt.apt' version '0.21'
     id 'net.ltgt.apt-idea' version '0.21'
@@ -32,13 +32,15 @@ def versions = [
         okhttpVersion       : '4.9.3',
         mockWebServerVersion: '4.9.3',
         xRayVersion         : '2.11.2',
-        hibernateJpaModelGen: '5.6.14.Final'
+        hibernateJpaModelGen: '5.6.14.Final',
+        gqlVersion: '2.7.5',
+        graphqlJavaTools: '13.0.2'
 ]
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:2.6.6"
-        mavenBom "org.springframework:spring-framework-bom:5.3.18"
+        mavenBom "org.springframework.boot:spring-boot-dependencies:2.7.5"
+        mavenBom "org.springframework:spring-framework-bom:5.3.24"
         mavenBom "com.amazonaws:aws-java-sdk-bom:1.12.110"
         mavenBom "org.springframework.security:spring-security-bom:5.5.3"
     }
@@ -80,6 +82,8 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-jms'
     implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client'
 
+
+
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springdocVersion
 
     implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
@@ -119,6 +123,11 @@ dependencies {
     implementation group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
     implementation group: 'org.codehaus.sonar-plugins', name: 'sonar-pitest-plugin', version: versions.sonarPitest
     implementation group: 'org.pitest', name: 'pitest', version: versions.pitest
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-graphql'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    implementation group: 'com.graphql-java-kickstart', name: 'graphql-java-tools', version: versions.graphqlJavaTools
+
 
     // Test Only
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {

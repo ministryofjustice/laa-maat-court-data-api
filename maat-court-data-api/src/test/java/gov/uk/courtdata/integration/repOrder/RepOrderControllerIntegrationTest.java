@@ -90,6 +90,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         RepOrderEntity repOrderEntity = repOrderRepository.getById(TestModelDataBuilder.REP_ID);
         RepOrderDTO repOrderDTO = TestModelDataBuilder.getRepOrderDTO();
         repOrderDTO.setDateModified(repOrderEntity.getDateModified());
+        repOrderDTO.setSentenceOrderDate(repOrderEntity.getSentenceOrderDate());
         return repOrderDTO;
     }
 

@@ -83,6 +83,10 @@ Parameters:
   pAwsXRayEnabled:
     Type: String
     Default: ''
+  pModPlatformVpcCidr:
+    Type: String
+    Default: ''
+    Description: The CIDR of the Modernisation Platform VPC for LAA, as part of migration
 
   ###### API-Gateway parameters
   pApiScope1:
@@ -216,6 +220,14 @@ Resources:
       FromPort: '80'
       ToPort: '80'
       SourceSecurityGroupId: !Ref AppApiGatewaySecurityGroup
+  AppAlbSecurityGroupModPlatformIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref AppAlbSecurityGroup
+      IpProtocol: tcp
+      FromPort: '80'
+      ToPort: '80'
+      CidrIp: !Ref pModPlatformVpcCidr
 
   AppApiGatewaySecurityGroup:
     Type: AWS::EC2::SecurityGroup

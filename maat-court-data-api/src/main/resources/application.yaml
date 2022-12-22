@@ -2,6 +2,9 @@ server:
   port : 8090
 
 spring:
+  graphql:
+    path: ${api-endpoints.assessments-domain}/graphql
+
   application:
     name: maat-cd-api
 

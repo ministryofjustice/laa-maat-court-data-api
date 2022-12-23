@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WQOffenceRepository extends JpaRepository<WQOffenceEntity,Integer> {
 
-    @Query(value = "SELECT COUNT(*) FROM MLA.XXMLA_WQ_OFFENCE WHERE CASE_ID = ?1 AND OFFENCE_ID = ?2 AND CC_NEW_OFFENCE = 'Y'", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM MLA.XXMLA_WQ_OFFENCE WHERE CASE_ID = ?1 AND OFFENCE_ID = ?2 AND CC_NEW_OFFENCE = 'Y' AND APPLICATION_FLAG = 0", nativeQuery = true)
     Integer getNewOffenceCount(Integer caseId, String offenceId);
 }

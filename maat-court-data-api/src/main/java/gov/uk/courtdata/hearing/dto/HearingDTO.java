@@ -23,7 +23,7 @@ public class HearingDTO {
     private String cjsAreaCode;
     private String inActive;
     private DefendantDTO defendant;
-    private OffenceDTO offence;
+    private HearingOffenceDTO offence;
     private ResultDTO result;
     private SessionDTO session;
     private boolean prosecutionConcluded;

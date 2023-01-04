@@ -31,7 +31,7 @@ public interface HearingDTOMapper {
     @Mapping(source = "sessionValidateDate", target = "sessionValidatedDate")
     SessionDTO toSessionDTO(final Session session);
 
-    OffenceDTO toOffenceDTO(final Offence offence);
+    HearingOffenceDTO toOffenceDTO(final Offence offence);
 
     ResultDTO toResultDTO(final Result result);
 }

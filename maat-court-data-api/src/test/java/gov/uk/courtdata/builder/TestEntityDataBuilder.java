@@ -26,6 +26,9 @@ public class TestEntityDataBuilder {
     public static final String ASSESSMENT_TYPE = "INIT";
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
 
+    public static final Integer TEST_CASE_ID = 665313;
+    public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
+
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder().id(REP_ID).build();
     }
@@ -462,6 +465,24 @@ public class TestEntityDataBuilder {
                 .repOrderId(REP_ID)
                 .defendantId("556677")
                 .caseUrn("testCaseURN")
+                .build();
+    }
+
+    public  static  OffenceEntity getOffenceEntity(Integer offenceTxId) {
+
+        return OffenceEntity.builder()
+                .txId(offenceTxId)
+                .caseId(TEST_CASE_ID)
+                .asnSeq("001")
+                .offenceShortTitle("Robbery")
+                .offenceClassification("Classification")
+                .offenceWording("Offence Details")
+                .modeOfTrial(1)
+                .legalAidStatus("GQ")
+                .offenceCode("AA06035")
+                .offenceId(TEST_OFFENCE_ID)
+                .isCCNewOffence("Y")
+                .applicationFlag(0)
                 .build();
     }
 

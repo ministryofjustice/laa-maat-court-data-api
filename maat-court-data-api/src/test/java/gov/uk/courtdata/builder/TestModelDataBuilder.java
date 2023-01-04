@@ -18,9 +18,7 @@ import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,6 +44,9 @@ public class TestModelDataBuilder {
 
     public static final String TEST_USER = "test-f";
 
+    public static final Integer TEST_CASE_ID = 665313;
+
+    public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -855,7 +856,7 @@ public class TestModelDataBuilder {
                 .caseUrn("caseurn")
                 .docLanguage("en")
                 .defendant(DefendantDTO.builder().surname("Smith").postcode("LU3 111").build())
-                .offence(OffenceDTO.builder().legalAidStatus("AP").asnSeq("0").asnSeq("1").legalAidReason("some aid reason").build())
+                .offence(HearingOffenceDTO.builder().legalAidStatus("AP").asnSeq("0").asnSeq("1").legalAidReason("some aid reason").build())
                 .result(getResultDTO())
                 .session(getSessionDTO())
                 .build();
@@ -885,7 +886,7 @@ public class TestModelDataBuilder {
                 .builder()
                 .maatId(789034)
                 .prosecutionConcluded(true)
-                .offence(OffenceDTO
+                .offence(HearingOffenceDTO
                         .builder()
                         .plea(PleaDTO
                                 .builder()
@@ -935,5 +936,23 @@ public class TestModelDataBuilder {
                 "\"sentenceOrderDate\": \"" + APP_DATE_COMPLETED + "\",\n" +
                 "  \"userModified\": \"" +TEST_USER+ "\" " +
                 "}";
+    }
+
+    public static OffenceDTO getOffenceDTO(Integer offenceTxId) {
+
+        return OffenceDTO.builder()
+                .txId(offenceTxId)
+                .caseId(TEST_CASE_ID)
+                .asnSeq("001")
+                .offenceShortTitle("Robbery")
+                .offenceClassification("Classification")
+                .offenceWording("Offence Details")
+                .modeOfTrial(1)
+                .legalAidStatus("GQ")
+                .offenceCode("AA06035")
+                .offenceId(TEST_OFFENCE_ID)
+                .isCCNewOffence("Y")
+                .applicationFlag(0)
+                .build();
     }
 }

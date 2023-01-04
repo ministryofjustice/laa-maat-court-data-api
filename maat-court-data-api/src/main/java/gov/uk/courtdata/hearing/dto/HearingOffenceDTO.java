@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OffenceDTO {
+public class HearingOffenceDTO {
     private String offenceCode;
     private String asnSeq;
     private String offenceId;

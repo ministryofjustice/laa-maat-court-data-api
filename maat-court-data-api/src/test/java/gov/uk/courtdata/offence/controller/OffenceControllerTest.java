@@ -29,7 +29,6 @@ public class OffenceControllerTest {
     private OffenceService offenceService;
 
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/offence";
-    private static final String CASE_URL = "/case";
 
     @Test
     void givenIncorrectParameters_whenFindOffenceByCaseIdIsInvoked_thenErrorIsThrown() throws Exception {
@@ -41,7 +40,7 @@ public class OffenceControllerTest {
     void givenAValidParameters_whenFindOffenceByCaseIdIsInvoked_thenReturnOffence() throws Exception {
         List offenceDTOList = List.of(TestModelDataBuilder.getOffenceDTO(313123));
         when(offenceService.findByCaseId(TestModelDataBuilder.TEST_CASE_ID)).thenReturn(offenceDTOList);
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + CASE_URL + "/" + TestModelDataBuilder.TEST_CASE_ID))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/case/" + TestModelDataBuilder.TEST_CASE_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].caseId").value(String.valueOf(TestModelDataBuilder.TEST_CASE_ID)));
@@ -50,7 +49,7 @@ public class OffenceControllerTest {
     @Test
     void givenAValidParameters_whenGetNewOffenceCountIsInvoked_thenReturnNewOffenceCount() throws Exception {
         when(offenceService.getNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID)).thenReturn(1);
-        mvc.perform(MockMvcRequestBuilders.head(ENDPOINT_URL + "/" + TestModelDataBuilder.TEST_OFFENCE_ID + CASE_URL + "/" + TestModelDataBuilder.TEST_CASE_ID))
+        mvc.perform(MockMvcRequestBuilders.head(ENDPOINT_URL + "/" + TestModelDataBuilder.TEST_OFFENCE_ID + "/case/" + TestModelDataBuilder.TEST_CASE_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""))
                 .andExpect(header().string(HttpHeaders.CONTENT_LENGTH, "1"));

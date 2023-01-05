@@ -26,7 +26,7 @@ public class OffenceServiceTest {
     private OffenceService offenceService;
 
     @Test
-    public void givenAValidCaseId_whenFindByCaseIdInvoked_shouldReturnOffenceDTO() {
+    public void givenAValidCaseId_whenFindByCaseIdIsInvoked_shouldReturnOffenceDTO() {
         List offenceEntityList = List.of(TestEntityDataBuilder.getOffenceEntity(8064716));
         List offenceDTOList = List.of(TestModelDataBuilder.getOffenceDTO(8064716));
         when(offenceImpl.findByCaseId(TestEntityDataBuilder.TEST_CASE_ID)).thenReturn(offenceEntityList);
@@ -37,7 +37,7 @@ public class OffenceServiceTest {
     }
 
     @Test
-    public void givenAValidInput_whenGetNewOffenceCount_shouldReturnNewOffenceCount() {
+    public void givenAValidInput_whenGetNewOffenceCountIsInvoked_shouldReturnNewOffenceCount() {
         when(offenceImpl.getNewOffenceCount(anyInt(), anyString())).thenReturn(1);
         offenceService.getNewOffenceCount(TestEntityDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
         verify(offenceImpl, atLeastOnce()).getNewOffenceCount(anyInt(), anyString());

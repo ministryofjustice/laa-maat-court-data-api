@@ -24,13 +24,13 @@ public class OffenceImplTest {
     private OffenceImpl offenceImpl;
 
     @Test
-    public void givenAValidCaseId_whenFindByCaseIdInvoked_shouldReturnOffenceEntity() {
+    public void givenAValidCaseId_whenFindByCaseIdIsInvoked_shouldReturnOffenceEntity() {
         offenceImpl.findByCaseId(TestModelDataBuilder.TEST_CASE_ID);
         verify(offenceRepository, atLeastOnce()).findByCaseId(anyInt());
     }
 
     @Test
-    public void givenAValidCaseIdAndOffenceId_whenGetNewOffenceCountInvoked_shouldReturnOffenceCount() {
+    public void givenAValidCaseIdAndOffenceId_whenGetNewOffenceCountIsInvoked_shouldReturnOffenceCount() {
         offenceImpl.getNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
         verify(offenceRepository, atLeastOnce()).getNewOffenceCount(anyInt(), anyString());
     }

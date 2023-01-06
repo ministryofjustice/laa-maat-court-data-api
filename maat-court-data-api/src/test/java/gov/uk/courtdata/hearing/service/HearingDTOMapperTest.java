@@ -63,10 +63,10 @@ public class HearingDTOMapperTest {
         Offence offence = Offence.builder().asnSeq("as12").build();
 
         //when
-        OffenceDTO offenceDTO = hearingDTOMapper.toOffenceDTO(offence);
+        HearingOffenceDTO hearingOffenceDTO = hearingDTOMapper.toOffenceDTO(offence);
 
         //then
-        assertThat(offenceDTO.getAsnSeq()).isEqualTo("as12");
+        assertThat(hearingOffenceDTO.getAsnSeq()).isEqualTo("as12");
     }
 
     @Test

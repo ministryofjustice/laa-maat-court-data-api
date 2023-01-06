@@ -4,7 +4,7 @@ import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WQOffenceEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
-import gov.uk.courtdata.hearing.dto.OffenceDTO;
+import gov.uk.courtdata.hearing.dto.HearingOffenceDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.OffenceHelper;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import gov.uk.courtdata.util.DateUtil;
@@ -25,7 +25,7 @@ public class WQOffenceProcessor {
     public void process(final HearingDTO magsCourtDTO) {
 
 
-        final OffenceDTO offence = magsCourtDTO.getOffence();
+        final HearingOffenceDTO offence = magsCourtDTO.getOffence();
 
         WQOffenceEntity wqOffenceEntity = WQOffenceEntity.builder()
                 .caseId(magsCourtDTO.getCaseId())

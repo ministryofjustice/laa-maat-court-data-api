@@ -5,7 +5,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WQOffenceEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
-import gov.uk.courtdata.hearing.dto.OffenceDTO;
+import gov.uk.courtdata.hearing.dto.HearingOffenceDTO;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,7 +59,7 @@ public class WQOffenceProcessorTest {
 
         //given
         HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
-        hearingDTO.setOffence(OffenceDTO.builder().legalAidStatus(null).asnSeq("1").build());
+        hearingDTO.setOffence(HearingOffenceDTO.builder().legalAidStatus(null).asnSeq("1").build());
 
         //when
         wqOffenceProcessor.process(hearingDTO);
@@ -74,7 +74,7 @@ public class WQOffenceProcessorTest {
 
         //given
         HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
-        hearingDTO.setOffence(OffenceDTO.builder().legalAidStatus("RE").asnSeq("1").build());
+        hearingDTO.setOffence(HearingOffenceDTO.builder().legalAidStatus("RE").asnSeq("1").build());
 
         //when
         wqOffenceProcessor.process(hearingDTO);
@@ -89,7 +89,7 @@ public class WQOffenceProcessorTest {
 
         //given
         HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
-        hearingDTO.setOffence(OffenceDTO.builder().legalAidStatus("VA").asnSeq("1").build());
+        hearingDTO.setOffence(HearingOffenceDTO.builder().legalAidStatus("VA").asnSeq("1").build());
 
         //when
         wqOffenceProcessor.process(hearingDTO);
@@ -104,7 +104,7 @@ public class WQOffenceProcessorTest {
 
         //given
         HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
-        hearingDTO.setOffence(OffenceDTO.builder().legalAidStatus("WI").applicationFlag(1).asnSeq("1").build());
+        hearingDTO.setOffence(HearingOffenceDTO.builder().legalAidStatus("WI").applicationFlag(1).asnSeq("1").build());
 
         //when
         wqOffenceProcessor.process(hearingDTO);

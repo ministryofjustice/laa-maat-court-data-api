@@ -61,9 +61,9 @@ public class RepOrderEntity {
     @Column(name = "COMMITTAL_DATE")
     private LocalDate committalDate;
     @Column(name = "RDER_CODE")
-    private String repOrderDecisionReasonCode;
+    private String decisionReasonCode;
     @Column(name = "CC_REP_ID")
-    private Integer repId;
+    private Integer crownRepId;
     @Column(name = "CC_REP_DECISION")
     private String crownRepOrderDecision;
     @Column(name = "CC_REP_TYPE")

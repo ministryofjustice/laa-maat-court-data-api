@@ -54,7 +54,7 @@ public class FinancialAssessmentHistoryService {
             financialAssessmentsHistoryDTO.setMagsOutcomeDate(repOrderEntity.getMagsOutcomeDate());
             financialAssessmentsHistoryDTO.setMagsOutcomeDateSet(repOrderEntity.getMagsOutcomeDateSet());
             financialAssessmentsHistoryDTO.setCommittalDate(repOrderEntity.getCommittalDate());
-            financialAssessmentsHistoryDTO.setRderCode(repOrderEntity.getRepOrderDecisionReasonCode());
+            financialAssessmentsHistoryDTO.setRderCode(repOrderEntity.getDecisionReasonCode());
             financialAssessmentsHistoryDTO.setCcRepDec(repOrderEntity.getCrownRepOrderDecision());
             financialAssessmentsHistoryDTO.setCcRepType(repOrderEntity.getCrownRepOrderType());
         }

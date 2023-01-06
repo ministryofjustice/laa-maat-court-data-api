@@ -62,15 +62,37 @@ public class RepOrderEntity {
     private LocalDate committalDate;
     @Column(name = "RDER_CODE")
     private String repOrderDecisionReasonCode;
+    @Column(name = "CC_REP_ID")
+    private Integer repId;
     @Column(name = "CC_REP_DECISION")
     private String crownRepOrderDecision;
     @Column(name = "CC_REP_TYPE")
     private String crownRepOrderType;
+    @Column(name = "CC_REPORDER_DATE")
+    private LocalDate crownRepOrderDate;
+    @Column(name = "CC_WITHDRAWAL_DATE")
+    private LocalDate crownWithdrawalDate;
+    @Column(name = "CC_IMPRISONED")
+    private Boolean isImprisoned;
     @Column(name = "ASS_DATE_COMPLETED")
     private LocalDateTime assessmentDateCompleted;
     @Column(name = "DATE_CREATED")
     private LocalDateTime dateCreated;
     @Column(name = "SENTENCE_ORDER_DATE")
     private LocalDateTime sentenceOrderDate;
+    @Column(name = "APHI_ID")
+    private Integer applicantHistoryId;
+    @Column(name = "EFEL_FEE_LEVEL")
+    private String evidenceFeeLevel;
+    @Column(name = "BANK_ACCOUNT_NO")
+    private Integer bankAccountNo;
+    @Column(name = "BANK_ACCOUNT_NAME")
+    private String bankAccountName;
+    @Column(name = "PAME_PAYMENT_METHOD")
+    private String paymentMethod;
+    @Column(name = "PREF_PAYMENT_DAY")
+    private Integer preferredPaymentDay;
+    @Column(name = "SORT_CODE")
+    private String sortCode;
 
 }

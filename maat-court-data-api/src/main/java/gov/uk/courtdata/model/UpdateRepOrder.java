@@ -27,7 +27,17 @@ public class UpdateRepOrder {
     private String repOrderDecisionReasonCode;
     private String crownRepOrderDecision;
     private String crownRepOrderType;
+    private LocalDate crownRepOrderDate;
+    private LocalDate crownWithdrawalDate;
+    private Boolean isImprisoned;
     private LocalDateTime assessmentDateCompleted;
     private LocalDateTime sentenceOrderDate;
+    private Integer applicantHistoryId;
+    private String evidenceFeeLevel;
+    private Integer bankAccountNo;
+    private String bankAccountName;
+    private String paymentMethod;
+    private Integer preferredPaymentDay;
+    private String sortCode;
 
 }

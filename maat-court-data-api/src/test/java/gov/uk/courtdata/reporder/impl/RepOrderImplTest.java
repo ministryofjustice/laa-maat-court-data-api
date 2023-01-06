@@ -32,7 +32,7 @@ class RepOrderImplTest {
 
     @Test
     void testUpdateAppDateCompleted_whenUpdateIsSuccess() {
-        when(repOrderRepository.getById(TestModelDataBuilder.REP_ID)).thenReturn(new RepOrderEntity());
+        when(repOrderRepository.getReferenceById(TestModelDataBuilder.REP_ID)).thenReturn(new RepOrderEntity());
         repOrderImpl.updateAppDateCompleted(TestModelDataBuilder.REP_ID, LocalDateTime.now());
         verify(repOrderRepository).saveAndFlush(any());
     }

@@ -29,7 +29,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -66,10 +65,18 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                @Autowired RepOrderMvoRegRepository repOrderMvoRegRepository) {
 
 
-        repOrderRepository.save(RepOrderEntity.builder().id(REP_ORDER_ID_NO_SENTENCE_ORDER_DATE).build());
-        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
-        repOrderMvoRepository.save(TestEntityDataBuilder.getRepOrderMvoEntity(TestEntityDataBuilder.MVO_ID));
-        repOrderMvoRegRepository.save(TestEntityDataBuilder.getRepOrderMvoRegEntity(TestEntityDataBuilder.REP_ID));
+        repOrderRepository.save(
+                RepOrderEntity.builder().id(REP_ORDER_ID_NO_SENTENCE_ORDER_DATE).build()
+        );
+        repOrderRepository.save(
+                TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID)
+        );
+        repOrderMvoRepository.save(
+                TestEntityDataBuilder.getRepOrderMvoEntity(TestEntityDataBuilder.MVO_ID)
+        );
+        repOrderMvoRegRepository.save(
+                TestEntityDataBuilder.getRepOrderMvoRegEntity(TestEntityDataBuilder.REP_ID)
+        );
     }
 
     @AfterEach
@@ -87,7 +94,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     private RepOrderDTO getUpdatedRepOrderDTO() {
-        RepOrderEntity repOrderEntity = repOrderRepository.getById(TestModelDataBuilder.REP_ID);
+        RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(TestModelDataBuilder.REP_ID);
         RepOrderDTO repOrderDTO = TestModelDataBuilder.getRepOrderDTO();
         repOrderDTO.setDateModified(repOrderEntity.getDateModified());
         repOrderDTO.setSentenceOrderDate(repOrderEntity.getSentenceOrderDate());
@@ -174,34 +181,34 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                 .content(TestModelDataBuilder.getUpdateAppDateCompletedJson())
                 .contentType(MediaType.APPLICATION_JSON));
 
-        RepOrderEntity repOrderEntity = repOrderRepository.getById(TestModelDataBuilder.REP_ID);
+        RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(TestModelDataBuilder.REP_ID);
         assertThat(repOrderEntity.getId()).isEqualTo(TestModelDataBuilder.REP_ID);
         assertThat(repOrderEntity.getAssessmentDateCompleted()).isEqualTo(expectedDate);
     }
 
     @Test
-    void givenInvalidMvoId_whenfindByCurrentRegistrationIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenInvalidMvoId_whenFindByCurrentRegistrationIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         assertTrue(runNotFoundErrorScenario("No Rep Order MVO Reg found for ID: " + INVALID_MVO_ID,
                 get(MVO_REG_ENDPOINT_URL + "/" + INVALID_MVO_ID + "/" + CURRENT_REGISTRATION)
         ));
     }
 
     @Test
-    void givenValidMvoId_whenfindByCurrentRegistrationIsInvoked_thenRepOrderMvoRegIsReturned() throws Exception {
+    void givenValidMvoId_whenFindByCurrentRegistrationIsInvoked_thenRepOrderMvoRegIsReturned() throws Exception {
         assertTrue(runSuccessScenario(List.of(TestModelDataBuilder.getRepOrderMvoRegDTO()),
                 get(MVO_REG_ENDPOINT_URL + "/" + TestEntityDataBuilder.MVO_ID + "/" + CURRENT_REGISTRATION)
         ));
     }
 
     @Test
-    void givenInvalidRepId_whenfindByRepIdAndVehicleOwnerIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenInvalidRepId_whenFindByRepIdAndVehicleOwnerIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         assertTrue(runNotFoundErrorScenario("No Rep Order MVO found for ID: " + INVALID_REP_ID,
                 get(MVO_ENDPOINT_URL + "/" + INVALID_REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES)
         ));
     }
 
     @Test
-    void givenValidRepId_whenfindByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoIsReturned() throws Exception {
+    void givenValidRepId_whenFindByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoIsReturned() throws Exception {
         assertTrue(runSuccessScenario(TestModelDataBuilder.getRepOrderMvoDTO(),
                 get(MVO_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES)
         ));
@@ -235,7 +242,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenValidParameters_whenUpdateIsInvoked_theCompletedDateShouldUpdate() throws Exception {
+    void givenValidParameters_whenUpdateIsInvoked_theRepOrderIsUpdated() throws Exception {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         LocalDateTime expectedDate = LocalDateTime.parse(TestModelDataBuilder.APP_DATE_COMPLETED, formatter);
@@ -245,10 +252,10 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                 .content(TestModelDataBuilder.getUpdateRepOrderJson())
                 .contentType(MediaType.APPLICATION_JSON));
 
-        RepOrderEntity repOrderEntity = repOrderRepository.getById(TestModelDataBuilder.REP_ID);
-        assertThat(repOrderEntity.getId()).isEqualTo(TestModelDataBuilder.REP_ID);
-        assertThat(repOrderEntity.getSentenceOrderDate()).isEqualTo(expectedDate);
-        assertThat(repOrderEntity.getUserModified()).isEqualTo(TestModelDataBuilder.TEST_USER);
+        RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(TestModelDataBuilder.REP_ID);
+        softly.assertThat(repOrderEntity.getId()).isEqualTo(TestModelDataBuilder.REP_ID);
+        softly.assertThat(repOrderEntity.getSentenceOrderDate()).isEqualTo(expectedDate);
+        softly.assertThat(repOrderEntity.getUserModified()).isEqualTo(TestModelDataBuilder.TEST_USER);
     }
 
     @Test
@@ -268,6 +275,5 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
         softly.assertThat(content).isEqualTo("");
         softly.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
-        softly.assertAll();
     }
 }

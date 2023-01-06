@@ -25,7 +25,7 @@ public class PassportAssessmentImpl {
     private final HardshipReviewRepository hardshipReviewRepository;
 
     public PassportAssessmentEntity find(Integer passportAssessmentId) {
-        return passportAssessmentRepository.getById(passportAssessmentId);
+        return passportAssessmentRepository.getReferenceById(passportAssessmentId);
     }
 
     public PassportAssessmentEntity findByRepId(int repId) {
@@ -33,7 +33,7 @@ public class PassportAssessmentImpl {
     }
 
     public PassportAssessmentEntity update(PassportAssessmentDTO passportAssessmentDTO) {
-        PassportAssessmentEntity existingPassportAssessment = passportAssessmentRepository.getById(passportAssessmentDTO.getId());
+        PassportAssessmentEntity existingPassportAssessment = passportAssessmentRepository.getReferenceById(passportAssessmentDTO.getId());
         existingPassportAssessment.setNworCode(passportAssessmentDTO.getNworCode());
         existingPassportAssessment.setCmuId(passportAssessmentDTO.getCmuId());
         existingPassportAssessment.setAssessmentDate(passportAssessmentDTO.getAssessmentDate());

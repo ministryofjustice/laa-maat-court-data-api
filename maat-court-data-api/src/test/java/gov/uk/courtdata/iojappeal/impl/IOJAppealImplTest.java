@@ -36,7 +36,7 @@ public class IOJAppealImplTest {
 
     @Test
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
-        when(iojAppealRepository.getById(any())).thenReturn(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).build());
+        when(iojAppealRepository.getReferenceById(any())).thenReturn(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).build());
         var iojAppeal = iojAppealImpl.find(IOJ_APPEAL_ID);
         assertEquals(IOJ_APPEAL_ID, iojAppeal.getId());
     }
@@ -76,7 +76,7 @@ public class IOJAppealImplTest {
         var dateModified = LocalDateTime.of(2022, 1, 1, 10, 0);
         var updatedIOJAppealEntity = TestEntityDataBuilder.getIOJAppealEntity(dateModified);
 
-        when(iojAppealRepository.getById(any())).thenReturn(updatedIOJAppealEntity);
+        when(iojAppealRepository.getReferenceById(any())).thenReturn(updatedIOJAppealEntity);
 
         iojAppealImpl.update(iojAppealDTO);
 

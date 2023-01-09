@@ -955,4 +955,20 @@ public class TestModelDataBuilder {
                 .applicationFlag(0)
                 .build();
     }
+
+    public static WQLinkRegisterDTO getWQLinkRegisterDTO(Integer createdTxId) {
+
+        return WQLinkRegisterDTO.builder()
+                .createdTxId(createdTxId)
+                .caseId(TEST_CASE_ID)
+                .maatId(REP_ID)
+                .cjsAreaCode("16")
+                .cjsLocation("B16BG")
+                .maatCat(253)
+                .createdUserId(TEST_USER)
+                .mlrCat(253)
+                .caseUrn("52SB0067421")
+                .libraId("CP665371")
+                .build();
+    }
 }

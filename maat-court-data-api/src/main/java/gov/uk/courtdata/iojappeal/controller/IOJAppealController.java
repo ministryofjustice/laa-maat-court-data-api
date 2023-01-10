@@ -63,7 +63,7 @@ public class IOJAppealController {
         return ResponseEntity.ok(iojAppealService.findByRepId(repId));
     }
 
-    @GetMapping(value = "repId/{repId}/current-passed", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/repId/{repId}/current-passed", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve an IOJ Appeal record by repId")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = IOJAppealDTO.class)))
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))

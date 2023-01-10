@@ -25,7 +25,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class FinancialAssessmentImplTest {
+class FinancialAssessmentImplTest {
 
     @Spy
     @InjectMocks
@@ -51,7 +51,7 @@ public class FinancialAssessmentImplTest {
 
     @Test
     void whenFindIsInvoked_thenAssessmentIsRetrieved() {
-        when(financialAssessmentRepository.getById(any())).thenReturn(FinancialAssessmentEntity.builder().id(MOCK_FINANCIAL_ASSESSMENT_ID).build());
+        when(financialAssessmentRepository.getReferenceById(any())).thenReturn(FinancialAssessmentEntity.builder().id(MOCK_FINANCIAL_ASSESSMENT_ID).build());
         FinancialAssessmentEntity returned = financialAssessmentImpl.find(MOCK_FINANCIAL_ASSESSMENT_ID);
         assertThat(returned.getId()).isEqualTo(MOCK_FINANCIAL_ASSESSMENT_ID);
     }
@@ -72,7 +72,7 @@ public class FinancialAssessmentImplTest {
     void givenInitAssessmentWithNoRelationships_whenUpdateIsInvoked_thenAssessmentIsUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTO();
 
-        when(financialAssessmentRepository.getById(any()))
+        when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntity());
 
         financialAssessmentImpl.update(financialAssessment);
@@ -89,7 +89,7 @@ public class FinancialAssessmentImplTest {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTO();
         financialAssessment.setFullAssessmentDate(LocalDateTime.now());
 
-        when(financialAssessmentRepository.getById(any()))
+        when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntity());
 
         financialAssessmentImpl.update(financialAssessment);
@@ -104,7 +104,7 @@ public class FinancialAssessmentImplTest {
     @Test
     void givenInitAssessmentWithDetails_whenUpdateIsInvoked_thenAssessmentDetailsAreUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTOWithDetails();
-        when(financialAssessmentRepository.getById(any()))
+        when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntityWithDetails());
         when(financialAssessmentMapper.financialAssessmentDetailsToFinancialAssessmentDetailsEntity(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentDetailsEntity());
@@ -118,7 +118,7 @@ public class FinancialAssessmentImplTest {
     @Test
     void givenInitAssessmentWithChildWeightings_whenUpdateIsInvoked_thenChildWeightingsAreUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentWithChildWeightings();
-        when(financialAssessmentRepository.getById(any()))
+        when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntityWithChildWeightings());
         when(financialAssessmentMapper.childWeightingsToChildWeightingsEntity(any()))
                 .thenReturn(TestEntityDataBuilder.getChildWeightingsEntity());
@@ -182,7 +182,7 @@ public class FinancialAssessmentImplTest {
         );
 
         financialAssessmentImpl.updateAssessmentDetails(financialAssessment, existingAssessment);
-        assertThat(existingAssessment.getAssessmentDetails().size()).isZero();
+        assertThat(existingAssessment.getAssessmentDetails()).asList().isEmpty();
     }
 
     @Test
@@ -230,7 +230,7 @@ public class FinancialAssessmentImplTest {
         );
 
         financialAssessmentImpl.updateAssessmentDetails(financialAssessment, existingAssessment);
-        assertThat(existingAssessment.getAssessmentDetails().size()).isEqualTo(0);
+        assertThat(existingAssessment.getAssessmentDetails()).asList().isEmpty();
     }
 
     @Test

@@ -27,7 +27,7 @@ public class UpdateHardshipReviewValidator implements IValidator<Void, UpdateHar
     @Override
     @Transactional(readOnly = true)
     public Optional<Void> validate(final UpdateHardshipReview updateHardshipReview) {
-        HardshipReviewEntity existing = hardshipReviewRepository.getById(updateHardshipReview.getId());
+        HardshipReviewEntity existing = hardshipReviewRepository.getReferenceById(updateHardshipReview.getId());
 
         LocalDateTime timestamp = existing.getUpdated() != null ? existing.getUpdated() : existing.getDateCreated();
 

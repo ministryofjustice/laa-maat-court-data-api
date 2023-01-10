@@ -19,7 +19,7 @@ public class IOJAppealImpl {
     private final IOJAppealMapper iojAppealMapper;
 
     public IOJAppealEntity find(Integer iojAppealId) {
-        return iojAppealRepository.getById(iojAppealId);
+        return iojAppealRepository.getReferenceById(iojAppealId);
     }
 
     public IOJAppealEntity findByRepId(int repId) {
@@ -36,7 +36,7 @@ public class IOJAppealImpl {
     }
 
     public IOJAppealEntity update(IOJAppealDTO iojAppealDTO) {
-        var existingIOJAppealEntity = iojAppealRepository.getById(iojAppealDTO.getId());
+        var existingIOJAppealEntity = iojAppealRepository.getReferenceById(iojAppealDTO.getId());
 
         existingIOJAppealEntity.setAppealSetupDate(iojAppealDTO.getAppealSetupDate());
         existingIOJAppealEntity.setNworCode(iojAppealDTO.getNworCode());

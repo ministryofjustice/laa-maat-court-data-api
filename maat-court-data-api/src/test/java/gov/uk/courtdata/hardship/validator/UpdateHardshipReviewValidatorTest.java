@@ -13,14 +13,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UpdateHardshipReviewValidatorTest {
+class UpdateHardshipReviewValidatorTest {
 
     @InjectMocks
     private UpdateHardshipReviewValidator updateHardshipReviewValidator;
@@ -29,7 +28,7 @@ public class UpdateHardshipReviewValidatorTest {
     private HardshipReviewRepository hardshipReviewRepository;
 
     @Test
-    public void givenStaleTimestamp_whenValidateIsInvoked_thenThrowsException() {
+    void givenStaleTimestamp_whenValidateIsInvoked_thenThrowsException() {
         UpdateHardshipReview mockReview = UpdateHardshipReview.builder()
                 .id(1000)
                 .updated(LocalDateTime.parse("2022-01-01T15:00:01"))
@@ -38,22 +37,22 @@ public class UpdateHardshipReviewValidatorTest {
                 .dateCreated(LocalDateTime.parse("2022-01-01T15:00:00"))
                 .status(HardshipReviewStatus.IN_PROGRESS)
                 .build();
-        when(hardshipReviewRepository.getById(any(Integer.class))).thenReturn(mockExisting);
+        when(hardshipReviewRepository.getReferenceById(any(Integer.class))).thenReturn(mockExisting);
         ValidationException validationException = Assertions.assertThrows(ValidationException.class,
                 () -> updateHardshipReviewValidator.validate(mockReview));
         assertThat(validationException.getMessage()).isEqualTo("Hardship has been modified by another user");
 
         mockExisting.setUpdated(LocalDateTime.parse("2022-01-01T15:00:01"));
-        assertThat(updateHardshipReviewValidator.validate(mockReview)).isEqualTo(Optional.empty());
+        assertThat(updateHardshipReviewValidator.validate(mockReview)).isNotPresent();
     }
 
     @Test
-    public void givenCompletedReview_whenValidateIsInvoked_thenThrowsException() {
+    void givenCompletedReview_whenValidateIsInvoked_thenThrowsException() {
         UpdateHardshipReview mockReview = UpdateHardshipReview.builder()
                 .id(1000)
                 .updated(LocalDateTime.parse("2022-01-01T15:00:00"))
                 .build();
-        when(hardshipReviewRepository.getById(any(Integer.class))).thenReturn(
+        when(hardshipReviewRepository.getReferenceById(any(Integer.class))).thenReturn(
                 HardshipReviewEntity.builder()
                         .dateCreated(LocalDateTime.parse("2022-01-01T15:00:00"))
                         .status(HardshipReviewStatus.COMPLETE)
@@ -65,18 +64,18 @@ public class UpdateHardshipReviewValidatorTest {
     }
 
     @Test
-    public void givenCorrectParameters_whenValidateIsInvoked_thenValidationPassed() {
+    void givenCorrectParameters_whenValidateIsInvoked_thenValidationPassed() {
         UpdateHardshipReview mockReview = UpdateHardshipReview.builder()
                 .id(1000)
                 .updated(LocalDateTime.parse("2022-01-01T15:00:00"))
                 .build();
-        when(hardshipReviewRepository.getById(any(Integer.class))).thenReturn(
+        when(hardshipReviewRepository.getReferenceById(any(Integer.class))).thenReturn(
                 HardshipReviewEntity.builder()
                         .dateCreated(LocalDateTime.parse("2022-01-01T15:00:00"))
                         .status(HardshipReviewStatus.IN_PROGRESS)
                         .build()
         );
-        assertThat(updateHardshipReviewValidator.validate(mockReview)).isEqualTo(Optional.empty());
+        assertThat(updateHardshipReviewValidator.validate(mockReview)).isNotPresent();
     }
 
 }

@@ -1,4 +1,4 @@
-package gov.uk.courtdata.helper;
+package gov.uk.courtdata.enums;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

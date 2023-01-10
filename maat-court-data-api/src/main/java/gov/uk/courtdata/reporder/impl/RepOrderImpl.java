@@ -29,7 +29,7 @@ public class RepOrderImpl {
     }
 
     public void updateAppDateCompleted(final Integer repId, final LocalDateTime assessmentDateCompleted) {
-        RepOrderEntity repOrderEntity = repOrderRepository.getById(repId);
+        RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(repId);
         repOrderEntity.setAssessmentDateCompleted(assessmentDateCompleted);
         repOrderRepository.saveAndFlush(repOrderEntity);
     }

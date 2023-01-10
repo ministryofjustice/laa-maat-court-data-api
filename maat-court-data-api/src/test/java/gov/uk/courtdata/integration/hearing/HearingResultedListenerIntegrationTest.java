@@ -17,13 +17,13 @@ import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.junit.Assert;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -300,12 +300,12 @@ public class HearingResultedListenerIntegrationTest {
     }
 
     private void assertNoWqProcessingChanges() {
-        assertThat(wqCaseRepository.findAll().size()).isEqualTo(0);
-        assertThat(wqSessionRepository.findAll().size()).isEqualTo(0);
-        assertThat(wqDefendantRepository.findAll().size()).isEqualTo(0);
-        assertThat(wqResultRepository.findAll().size()).isEqualTo(0);
-        assertThat(wqOffenceRepository.findAll().size()).isEqualTo(0);
-        assertThat(wqCoreRepository.findAll().size()).isEqualTo(0);
+        assertThat(wqCaseRepository.findAll()).isEmpty();
+        assertThat(wqSessionRepository.findAll()).isEmpty();
+        assertThat(wqDefendantRepository.findAll()).isEmpty();
+        assertThat(wqResultRepository.findAll()).isEmpty();
+        assertThat(wqOffenceRepository.findAll()).isEmpty();
+        assertThat(wqCoreRepository.findAll()).isEmpty();
     }
 
     private void assertWqProcessingCorrect(HearingResulted hearingResultedData, WqLinkRegisterEntity linkRegisterEntity) {
@@ -349,32 +349,32 @@ public class HearingResultedListenerIntegrationTest {
 
     private void assertWqResultProcessingCorrect(HearingResulted hearingResultedData, Offence offence, Result result, WqLinkRegisterEntity linkRegisterEntity, Integer expectedTxId) {
 
-        WQResultEntity resultEntity = wqResultRepository.getById(expectedTxId);
+        WQResultEntity resultEntity = wqResultRepository.getReferenceById(expectedTxId);
         assertThat(resultEntity).isNotNull();
         assertThat(resultEntity.getCaseId()).isEqualTo(linkRegisterEntity.getCaseId());
         assertThat(resultEntity.getAsn()).isEqualTo(hearingResultedData.getAsn());
         assertThat(resultEntity.getAsnSeq()).isEqualTo(offence.getAsnSeq());
-        assertThat(resultEntity.getResultCode().toString()).isEqualTo(result.getResultCode());
+        assertThat(resultEntity.getResultCode()).hasToString(result.getResultCode());
         assertThat(resultEntity.getResultShortTitle()).isEqualTo(result.getResultShortTitle());
         assertThat(resultEntity.getResultText()).isEqualTo(result.getResultText());
         assertThat(resultEntity.getResultCodeQualifiers()).isEqualTo(result.getResultCodeQualifiers());
-        assertThat(resultEntity.getNextHearingDate().toString()).isEqualTo(result.getNextHearingDate());
+        assertThat(resultEntity.getNextHearingDate()).hasToString(result.getNextHearingDate());
         assertThat(resultEntity.getNextHearingLocation()).isEqualTo(result.getNextHearingLocation());
         assertThat(resultEntity.getFirmName()).isEqualTo(result.getFirstName());
         assertThat(resultEntity.getContactName()).isEqualTo(result.getContactName());
         assertThat(resultEntity.getLaaOfficeAccount()).isEqualTo(result.getLaaOfficeAccount());
         assertThat(resultEntity.getFirmName()).isEqualTo(result.getFirstName());
-        assertThat(resultEntity.getLegalAidWithdrawalDate().toString()).isEqualTo(result.getLegalAidWithdrawalDate());
-        assertThat(resultEntity.getDateOfHearing().toString()).isEqualTo(result.getDateOfHearing());
+        assertThat(resultEntity.getLegalAidWithdrawalDate()).hasToString(result.getLegalAidWithdrawalDate());
+        assertThat(resultEntity.getDateOfHearing()).hasToString(result.getDateOfHearing());
         assertThat(resultEntity.getCourtLocation()).isEqualTo(hearingResultedData.getSession().getCourtLocation());
-        assertThat(resultEntity.getSessionValidateDate().toString()).isEqualTo(hearingResultedData.getSession().getSessionValidateDate());
+        assertThat(resultEntity.getSessionValidateDate()).hasToString(hearingResultedData.getSession().getSessionValidateDate());
         assertThat(resultEntity.getJurisdictionType()).isEqualTo(hearingResultedData.getJurisdictionType().name());
     }
 
     private void assertWqCoreProcessingCorrect(
             HearingResulted hearingResultedData, WqLinkRegisterEntity linkRegisterEntity, Integer resultCode, Integer expectedTxId, Boolean extendedProcessing) {
 
-        WqCoreEntity coreEntity = wqCoreRepository.getById(expectedTxId);
+        WqCoreEntity coreEntity = wqCoreRepository.getReferenceById(expectedTxId);
         Optional<XLATResultEntity> resultEntity = xlatResultRepository.findById(resultCode);
         Integer wqType = resultEntity.map(XLATResultEntity::getWqType).orElse(null);
         assertThat(coreEntity).isNotNull();
@@ -389,16 +389,16 @@ public class HearingResultedListenerIntegrationTest {
 
     private void assertWqOffenceProcessingCorrect(Offence offence, WqLinkRegisterEntity linkRegisterEntity, Integer expectedTxId, Boolean newOffence) {
 
-        WQOffenceEntity offenceEntity = wqOffenceRepository.getById(expectedTxId);
+        WQOffenceEntity offenceEntity = wqOffenceRepository.getReferenceById(expectedTxId);
 
         assertThat(offenceEntity).isNotNull();
         assertThat(offenceEntity.getCaseId()).isEqualTo(linkRegisterEntity.getCaseId());
         assertThat(offenceEntity.getAsnSeq()).isEqualTo(String.format(LEADING_ZERO_3, Integer.parseInt(offence.getAsnSeq())));
         assertThat(offenceEntity.getOffenceClassification()).isEqualTo(offence.getOffenceClassification());
         assertThat(offenceEntity.getLegalAidStatus()).isEqualTo(offence.getLegalAidStatus());
-        assertThat(offenceEntity.getLegalAidStatusDate().toString()).isEqualTo(offence.getLegalAidStatusDate());
+        assertThat(offenceEntity.getLegalAidStatusDate()).hasToString(offence.getLegalAidStatusDate());
         assertThat(offenceEntity.getLegalaidReason()).isEqualTo(offence.getLegalAidReason());
-        assertThat(offenceEntity.getOffenceDate().toString()).isEqualTo(offence.getOffenceDate());
+        assertThat(offenceEntity.getOffenceDate()).hasToString(offence.getOffenceDate());
         assertThat(offenceEntity.getOffenceShortTitle()).isEqualTo(offence.getOffenceShortTitle());
         assertThat(offenceEntity.getModeOfTrial()).isEqualTo(offence.getModeOfTrial());
         assertThat(offenceEntity.getWqOffence()).isNull();
@@ -409,12 +409,12 @@ public class HearingResultedListenerIntegrationTest {
     }
 
     private void assertWqDefendantProcessingCorrect(Defendant defendant, WqLinkRegisterEntity linkRegisterEntity, Integer expectedTxId) {
-        WQDefendant defendantEntity = wqDefendantRepository.getById(expectedTxId);
+        WQDefendant defendantEntity = wqDefendantRepository.getReferenceById(expectedTxId);
         assertThat(defendantEntity).isNotNull();
         assertThat(defendantEntity.getCaseId()).isEqualTo(linkRegisterEntity.getCaseId());
         assertThat(defendantEntity.getForename()).isEqualTo(defendant.getForename());
         assertThat(defendantEntity.getSurname()).isEqualTo(defendant.getSurname());
-        assertThat(defendantEntity.getDateOfBirth().toString()).isEqualTo(defendant.getDateOfBirth());
+        assertThat(defendantEntity.getDateOfBirth()).hasToString(defendant.getDateOfBirth());
         assertThat(defendantEntity.getAddressLine1()).isEqualTo(defendant.getAddressLine1());
         assertThat(defendantEntity.getAddressLine2()).isEqualTo(defendant.getAddressLine2());
         assertThat(defendantEntity.getAddressLine3()).isEqualTo(defendant.getAddressLine3());
@@ -430,13 +430,13 @@ public class HearingResultedListenerIntegrationTest {
     }
 
     private void assertWqSessionProcessingCorrect(Session session, WqLinkRegisterEntity linkRegisterEntity, Integer expectedTxId) {
-        WQSessionEntity sessionEntity = wqSessionRepository.getById(expectedTxId);
+        WQSessionEntity sessionEntity = wqSessionRepository.getReferenceById(expectedTxId);
         assertThat(sessionEntity).isNotNull();
         assertThat(sessionEntity.getCaseId()).isEqualTo(linkRegisterEntity.getCaseId());
-        assertThat(sessionEntity.getDateOfHearing().toString()).isEqualTo(session.getDateOfHearing());
+        assertThat(sessionEntity.getDateOfHearing()).hasToString(session.getDateOfHearing());
         assertThat(sessionEntity.getCourtLocation()).isEqualTo(session.getCourtLocation());
         assertThat(sessionEntity.getPostHearingCustody()).isEqualTo(session.getPostHearingCustody());
-        assertThat(sessionEntity.getSessionvalidatedate().toString()).isEqualTo(session.getSessionValidateDate());
+        assertThat(sessionEntity.getSessionvalidatedate()).hasToString(session.getSessionValidateDate());
     }
 
     private void assertWqCaseProcessingCorrect(HearingResulted hearingResultedData, WqLinkRegisterEntity linkRegisterEntity, Integer expectedTxId) {
@@ -504,7 +504,7 @@ public class HearingResultedListenerIntegrationTest {
                 wqHearingRepository.findByMaatIdAndHearingUUID(testPayload.getMaatId(), testPayload.getHearingId().toString());
         WqLinkRegisterEntity linkEntity = wqLinkRegisterRepository.findBymaatId(testPayload.getMaatId()).get(0);
 
-        assertThat(matchingWqHearingEntities.size()).isEqualTo(1);
+        assertThat(matchingWqHearingEntities).hasSize(1);
         WQHearingEntity createWqHearingEntity = matchingWqHearingEntities.get(0);
 
         assertThat(createWqHearingEntity.getMaatId()).isEqualTo(testPayload.getMaatId());

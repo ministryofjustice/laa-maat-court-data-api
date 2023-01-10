@@ -1,8 +1,7 @@
 package gov.uk.courtdata.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import gov.uk.courtdata.helper.AbstractEnumConverter;
-import gov.uk.courtdata.helper.PersistableEnum;
+import gov.uk.courtdata.converter.AbstractEnumConverter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

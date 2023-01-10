@@ -1,9 +1,9 @@
-package gov.uk.courtdata.helper;
+package gov.uk.courtdata.converter;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-//@Converter(autoApply = true)
+@Converter(autoApply = true)
 public class BooleanConverter implements AttributeConverter<Boolean, String> {
 
     private static final String STRING_Y = "Y";
@@ -26,7 +26,7 @@ public class BooleanConverter implements AttributeConverter<Boolean, String> {
         if (dbData != null) {
             return dbData.equals(STRING_Y);
         }
-        return null;
+        return false;
     }
 
 }

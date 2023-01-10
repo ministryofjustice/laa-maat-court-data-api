@@ -1,4 +1,6 @@
-package gov.uk.courtdata.helper;
+package gov.uk.courtdata.converter;
+
+import gov.uk.courtdata.enums.PersistableEnum;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -8,7 +10,7 @@ import java.util.stream.Stream;
 public abstract class AbstractEnumConverter<T extends Enum<T> & PersistableEnum<E>, E> implements AttributeConverter<T, E> {
     private final Class<T> enumClass;
 
-    public AbstractEnumConverter(Class<T> enumClass) {
+    protected AbstractEnumConverter(Class<T> enumClass) {
         this.enumClass = enumClass;
     }
 

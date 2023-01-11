@@ -47,6 +47,8 @@ public class TestModelDataBuilder {
     public static final Integer TEST_CASE_ID = 665313;
 
     public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
+    public static final String TEST_ASN_SEQ = "123";
+    public static final Integer TEST_RESULT_CODE = 12345;
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;

@@ -936,7 +936,7 @@ public class TestModelDataBuilder {
         return "{\n" +
                 " \"repId\": " + REP_ID + " ,\n" +
                 "\"sentenceOrderDate\": \"" + APP_DATE_COMPLETED + "\",\n" +
-                "  \"userModified\": \"" +TEST_USER+ "\" " +
+                "  \"userModified\": \"" +TEST_USER+ "\"\n" +
                 "}";
     }
 

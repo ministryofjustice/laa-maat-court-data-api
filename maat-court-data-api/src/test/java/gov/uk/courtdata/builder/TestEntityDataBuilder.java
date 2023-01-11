@@ -42,7 +42,7 @@ public class TestEntityDataBuilder {
                 .magsOutcomeDate(TEST_DATE.toString())
                 .magsOutcomeDateSet(TEST_DATE.toLocalDate())
                 .committalDate(TEST_DATE.toLocalDate())
-                .repOrderDecisionReasonCode("rder-code")
+                .decisionReasonCode("rder-code")
                 .crownRepOrderDecision("cc-rep-doc")
                 .crownRepOrderType("cc-rep-type")
                 .sentenceOrderDate(TEST_DATE)
@@ -472,6 +472,40 @@ public class TestEntityDataBuilder {
     public  static  OffenceEntity getOffenceEntity(Integer offenceTxId) {
 
         return OffenceEntity.builder()
+                .txId(offenceTxId)
+                .caseId(TEST_CASE_ID)
+                .asnSeq("001")
+                .offenceShortTitle("Robbery")
+                .offenceClassification("Classification")
+                .offenceWording("Offence Details")
+                .modeOfTrial(1)
+                .legalAidStatus("GQ")
+                .offenceCode("AA06035")
+                .offenceId(TEST_OFFENCE_ID)
+                .isCCNewOffence("Y")
+                .applicationFlag(0)
+                .build();
+    }
+
+    public  static  WqLinkRegisterEntity getWQLinkRegisterEntity(Integer createdTxId) {
+
+        return WqLinkRegisterEntity.builder()
+                .createdTxId(createdTxId)
+                .caseId(TEST_CASE_ID)
+                .maatId(REP_ID)
+                .cjsAreaCode("16")
+                .cjsLocation("B16BG")
+                .maatCat(253)
+                .createdUserId(TEST_USER)
+                .mlrCat(253)
+                .caseUrn("52SB0067421")
+                .libraId("CP665371")
+                .build();
+    }
+
+    public  static  WQOffenceEntity getWQOffenceEntity(Integer offenceTxId) {
+
+        return WQOffenceEntity.builder()
                 .txId(offenceTxId)
                 .caseId(TEST_CASE_ID)
                 .asnSeq("001")

@@ -406,7 +406,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         assertThat(createdHistory.getMagsOutcomeDate()).isEqualTo(existingRepOrder.getMagsOutcomeDate());
         assertThat(createdHistory.getMagsOutcomeDateSet()).isEqualTo(existingRepOrder.getMagsOutcomeDateSet());
         assertThat(createdHistory.getCommittalDate()).isEqualTo(existingRepOrder.getCommittalDate());
-        assertThat(createdHistory.getRderCode()).isEqualTo(existingRepOrder.getRepOrderDecisionReasonCode());
+        assertThat(createdHistory.getRderCode()).isEqualTo(existingRepOrder.getDecisionReasonCode());
         assertThat(createdHistory.getCcRepDec()).isEqualTo(existingRepOrder.getCrownRepOrderDecision());
         assertThat(createdHistory.getCcRepType()).isEqualTo(existingRepOrder.getCrownRepOrderType());
         assertThat(createdHistory.getCaseType()).isEqualTo(existingRepOrder.getCatyCaseType());

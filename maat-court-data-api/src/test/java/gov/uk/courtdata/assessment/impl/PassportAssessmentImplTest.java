@@ -19,7 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PassportAssessmentImplTest {
+class PassportAssessmentImplTest {
 
     @Spy
     @InjectMocks
@@ -40,14 +40,14 @@ public class PassportAssessmentImplTest {
 
 
     @Test
-    public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
-        when(passportAssessmentRepository.getById(any())).thenReturn(PassportAssessmentEntity.builder().id(MOCK_ASSESSMENT_ID).build());
+    void whenFindIsInvoked_thenAssessmentIsRetrieved() {
+        when(passportAssessmentRepository.getReferenceById(any())).thenReturn(PassportAssessmentEntity.builder().id(MOCK_ASSESSMENT_ID).build());
         PassportAssessmentEntity returned = passportAssessmentImpl.find(MOCK_ASSESSMENT_ID);
         assertThat(returned.getId()).isEqualTo(MOCK_ASSESSMENT_ID);
     }
 
     @Test
-    public void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
+    void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
         when(passportAssessmentRepository.findByRepId(MOCK_REP_ID))
                 .thenReturn(
                         Optional.of(
@@ -65,7 +65,7 @@ public class PassportAssessmentImplTest {
     }
 
     @Test
-    public void whenCreateIsInvoked_thenAssessmentIsSaved() {
+    void whenCreateIsInvoked_thenAssessmentIsSaved() {
         PassportAssessmentDTO passportAssessment = TestModelDataBuilder.getPassportAssessmentDTO();
 
         when(passportAssessmentMapper.passportAssessmentDtoToPassportAssessmentEntity(any())).thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
@@ -80,12 +80,12 @@ public class PassportAssessmentImplTest {
     }
 
     @Test
-    public void whenUpdateIsInvoked_thenAssessmentIsUpdated() {
+    void whenUpdateIsInvoked_thenAssessmentIsUpdated() {
         LocalDateTime now = LocalDateTime.now();
         PassportAssessmentDTO passportAssessment = TestModelDataBuilder.getPassportAssessmentDTO();
         passportAssessment.setDateCompleted(now);
 
-        when(passportAssessmentRepository.getById(any())).thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
+        when(passportAssessmentRepository.getReferenceById(any())).thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
 
         passportAssessmentImpl.update(passportAssessment);
 
@@ -96,7 +96,7 @@ public class PassportAssessmentImplTest {
     }
 
     @Test
-    public void whenDeleteIsInvoked_thenAssessmentIsDeleted() {
+    void whenDeleteIsInvoked_thenAssessmentIsDeleted() {
         Integer id = MOCK_ASSESSMENT_ID;
         passportAssessmentImpl.delete(id);
         verify(passportAssessmentRepository).deleteById(id);

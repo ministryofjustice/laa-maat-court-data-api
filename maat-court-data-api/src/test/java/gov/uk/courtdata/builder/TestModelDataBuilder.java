@@ -18,6 +18,7 @@ import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +36,7 @@ public class TestModelDataBuilder {
     public static final Integer REP_ID = 1234;
     public static final Integer MVO_ID = 5678;
     public static final String APP_DATE_COMPLETED = "2022-07-15T15:02:25";
+    public static final String TEST_ARREST_SUMMONS_NUMBER = "1000000000000259068J";
 
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
 
@@ -613,7 +615,7 @@ public class TestModelDataBuilder {
                 .magsOutcomeDate(TEST_DATE.toString())
                 .magsOutcomeDateSet(TEST_DATE.toLocalDate())
                 .committalDate(TEST_DATE.toLocalDate())
-                .repOrderDecisionReasonCode("rder-code")
+                .decisionReasonCode("rder-code")
                 .crownRepOrderDecision("cc-rep-doc")
                 .crownRepOrderType("cc-rep-type")
                 .build();
@@ -647,8 +649,6 @@ public class TestModelDataBuilder {
                 .vehicleOwner("Y")
                 .build();
     }
-
-
 
 
     public static HardshipReviewDTO getHardshipReviewDTOWithRelationships() {
@@ -929,6 +929,31 @@ public class TestModelDataBuilder {
     public static UpdateRepOrder getUpdateRepOrder() {
         return UpdateRepOrder.builder()
                 .repId(REP_ID)
+                .sentenceOrderDate(LocalDateTime.parse(APP_DATE_COMPLETED))
+                .userModified(TEST_USER)
+                .caseId(String.valueOf(TEST_CASE_ID))
+                .catyCaseType(String.valueOf(CrownCourtCaseType.APPEAL_CC))
+                .appealTypeCode("ACN")
+                .arrestSummonsNo(TEST_ARREST_SUMMONS_NUMBER)
+                .magsOutcome("COMMITTED FOR TRIAL")
+                .magsOutcomeDate(String.valueOf(LocalDate.now().minusDays(10)))
+                .magsOutcomeDateSet(LocalDate.now().minusDays(10))
+                .committalDate(LocalDate.now().minusDays(5))
+                .decisionReasonCode("GRANTED")
+                .crownRepId(REP_ID)
+                .crownRepOrderDecision("Granted - Passed Means Test")
+                .crownRepOrderType("Crown Court Only")
+                .crownRepOrderDate(LocalDate.now().minusDays(5))
+                .crownWithdrawalDate(LocalDate.now().minusDays(3))
+                .isImprisoned(true)
+                .assessmentDateCompleted(LocalDateTime.now().minusDays(15))
+                .applicantHistoryId(8954)
+                .evidenceFeeLevel(null)
+                .bankAccountNo(14536598)
+                .bankAccountName("John Doe")
+                .paymentMethod("STANDING ORDER")
+                .preferredPaymentDay(1)
+                .sortCode("00-01-02")
                 .build();
     }
 
@@ -955,6 +980,22 @@ public class TestModelDataBuilder {
                 .offenceId(TEST_OFFENCE_ID)
                 .isCCNewOffence("Y")
                 .applicationFlag(0)
+                .build();
+    }
+
+    public static WQLinkRegisterDTO getWQLinkRegisterDTO(Integer createdTxId) {
+
+        return WQLinkRegisterDTO.builder()
+                .createdTxId(createdTxId)
+                .caseId(TEST_CASE_ID)
+                .maatId(REP_ID)
+                .cjsAreaCode("16")
+                .cjsLocation("B16BG")
+                .maatCat(253)
+                .createdUserId(TEST_USER)
+                .mlrCat(253)
+                .caseUrn("52SB0067421")
+                .libraId("CP665371")
                 .build();
     }
 }

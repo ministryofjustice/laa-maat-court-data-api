@@ -27,7 +27,7 @@ public class HardshipReviewImpl {
     private final HardshipReviewDetailReasonRepository hardshipReviewDetailReasonRepository;
 
     public HardshipReviewEntity find(Integer hardshipReviewId) {
-        return hardshipReviewRepository.getById(hardshipReviewId);
+        return hardshipReviewRepository.getReferenceById(hardshipReviewId);
     }
 
     public HardshipReviewEntity findByRepId(int repId) {
@@ -38,7 +38,7 @@ public class HardshipReviewImpl {
         HardshipReviewEntity hardshipReview = hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
         hardshipReview.getReviewDetails().forEach(
                 detail -> detail.setDetailReason(
-                        hardshipReviewDetailReasonRepository.getById(detail.getDetailReason().getId())
+                        hardshipReviewDetailReasonRepository.getReferenceById(detail.getDetailReason().getId())
                 )
         );
         return hardshipReviewRepository.saveAndFlush(hardshipReview);
@@ -46,7 +46,7 @@ public class HardshipReviewImpl {
 
     public HardshipReviewEntity update(final HardshipReviewDTO hardshipReviewDTO) {
 
-        HardshipReviewEntity existing = hardshipReviewRepository.getById(hardshipReviewDTO.getId());
+        HardshipReviewEntity existing = hardshipReviewRepository.getReferenceById(hardshipReviewDTO.getId());
 
         existing.setCmuId(hardshipReviewDTO.getCmuId());
         existing.setReviewResult(hardshipReviewDTO.getReviewResult());

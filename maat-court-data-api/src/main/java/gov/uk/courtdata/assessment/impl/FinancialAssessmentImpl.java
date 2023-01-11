@@ -36,11 +36,11 @@ public class FinancialAssessmentImpl {
     private final FinancialAssessmentRepository financialAssessmentRepository;
 
     public FinancialAssessmentEntity find(Integer financialAssessmentId) {
-        return financialAssessmentRepository.getById(financialAssessmentId);
+        return financialAssessmentRepository.getReferenceById(financialAssessmentId);
     }
 
     public FinancialAssessmentEntity update(FinancialAssessmentDTO financialAssessment) {
-        FinancialAssessmentEntity existingAssessment = financialAssessmentRepository.getById(financialAssessment.getId());
+        FinancialAssessmentEntity existingAssessment = financialAssessmentRepository.getReferenceById(financialAssessment.getId());
 
         if (financialAssessment.getFullAssessmentDate() != null) {
             existingAssessment.setAssessmentType(FinancialAssessmentType.FULL.getValue());

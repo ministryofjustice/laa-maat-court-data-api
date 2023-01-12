@@ -49,6 +49,8 @@ public class TestModelDataBuilder {
     public static final Integer TEST_CASE_ID = 665313;
 
     public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
+    public static final String TEST_ASN_SEQ = "123";
+    public static final Integer TEST_RESULT_CODE = 12345;
 
 
     TestEntityDataBuilder testEntityDataBuilder;
@@ -954,6 +956,14 @@ public class TestModelDataBuilder {
                 .preferredPaymentDay(1)
                 .sortCode("00-01-02")
                 .build();
+    }
+
+    public static String getUpdateRepOrderJson() {
+        return "{\n" +
+                " \"repId\": " + REP_ID + " ,\n" +
+                "\"sentenceOrderDate\": \"" + APP_DATE_COMPLETED + "\",\n" +
+                "  \"userModified\": \"" +TEST_USER+ "\"\n" +
+                "}";
     }
 
     public static OffenceDTO getOffenceDTO(Integer offenceTxId) {

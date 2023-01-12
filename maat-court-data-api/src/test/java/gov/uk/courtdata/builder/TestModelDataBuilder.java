@@ -50,6 +50,7 @@ public class TestModelDataBuilder {
 
     public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
 
+
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
 
@@ -987,5 +988,26 @@ public class TestModelDataBuilder {
                 .caseUrn("52SB0067421")
                 .libraId("CP665371")
                 .build();
+    }
+
+    public  static WQHearingDTO getWQHearingDTO(Integer createdTxId) {
+        return WQHearingDTO.builder()
+                .txId(createdTxId)
+                .caseId(TEST_CASE_ID)
+                .maatId(REP_ID)
+                .hearingUUID(TEST_OFFENCE_ID)
+                .wqJurisdictionType("CROWN")
+                .ouCourtLocation("C22SR")
+                .caseUrn("EITHERWAY")
+                .resultCodes("4028")
+                .build();
+    }
+
+    public static String getUpdateRepOrderJson() {
+        return "{\n" +
+                " \"repId\": " + REP_ID + " ,\n" +
+                "\"sentenceOrderDate\": \"" + APP_DATE_COMPLETED + "\",\n" +
+                "  \"userModified\": \"" +TEST_USER+ "\"\n" +
+                "}";
     }
 }

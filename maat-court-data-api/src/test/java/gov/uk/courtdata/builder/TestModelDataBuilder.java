@@ -1012,12 +1012,4 @@ public class TestModelDataBuilder {
                 .resultCodes("4028")
                 .build();
     }
-
-    public static String getUpdateRepOrderJson() {
-        return "{\n" +
-                " \"repId\": " + REP_ID + " ,\n" +
-                "\"sentenceOrderDate\": \"" + APP_DATE_COMPLETED + "\",\n" +
-                "  \"userModified\": \"" +TEST_USER+ "\"\n" +
-                "}";
-    }
 }

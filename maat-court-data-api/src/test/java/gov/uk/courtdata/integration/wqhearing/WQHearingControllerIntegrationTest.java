@@ -40,7 +40,7 @@ class WQHearingControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAInvalidParameter_whenFindByMaatIdAndHearingUUIDIsInvoked_thenEmptyRecordsIsReturned() throws Exception {
-        assertTrue(runSuccessScenario(List.of(), get(ENDPOINT_URL + INVALID_OFFENCE_ID + "/maat/" + INVALID_REP_ID)));
+        assertTrue(runSuccessScenario(List.of(), get(ENDPOINT_URL + INVALID_OFFENCE_ID + "/maatId/" + INVALID_REP_ID)));
     }
 
     @Test
@@ -49,6 +49,6 @@ class WQHearingControllerIntegrationTest extends MockMvcIntegrationTest {
         WQHearingEntity wqHearing = wqHearingRepository.getReferenceById(8064716);
         wqHearingEntityList.get(0).setCreatedDateTime(wqHearing.getCreatedDateTime());
         wqHearingEntityList.get(0).setUpdatedDateTime(wqHearing.getUpdatedDateTime());
-        assertTrue(runSuccessScenario(wqHearingEntityList, get(ENDPOINT_URL + TestModelDataBuilder.TEST_OFFENCE_ID + "/maat/" + TestModelDataBuilder.REP_ID)));
+        assertTrue(runSuccessScenario(wqHearingEntityList, get(ENDPOINT_URL + TestModelDataBuilder.TEST_OFFENCE_ID + "/maatId/" + TestModelDataBuilder.REP_ID)));
     }
 }

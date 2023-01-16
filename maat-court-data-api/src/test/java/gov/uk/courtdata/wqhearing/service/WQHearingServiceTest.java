@@ -30,11 +30,11 @@ class WQHearingServiceTest {
     @Test
     public void givenAValidMaatIdAndHearingUuid_whenFindByMaatIdAndHearingUUIDIsInvoked_shouldReturnWQHearningDTO() {
         List wqHearingEntityList = List.of(TestEntityDataBuilder.getWQHearingEntity(8064716));
-        when(wqHearingImpl.findByMaatIdAndHearingUUID(TestEntityDataBuilder.TEST_OFFENCE_ID, TestEntityDataBuilder.TEST_CASE_ID)).thenReturn(wqHearingEntityList);
+        when(wqHearingImpl.findByMaatIdAndHearingUUID(TestEntityDataBuilder.REP_ID, TestEntityDataBuilder.TEST_OFFENCE_ID)).thenReturn(wqHearingEntityList);
         List wqHearingDTOList = List.of(TestModelDataBuilder.getWQHearingDTO(8064716));
         when(mapper.WQHearingEntityToWQHearingDTO(anyList())).thenReturn(wqHearingDTOList);
-        wqHearingService.findByMaatIdAndHearingUUID(TestEntityDataBuilder.TEST_OFFENCE_ID, TestEntityDataBuilder.TEST_CASE_ID);
-        verify(wqHearingImpl, atLeastOnce()).findByMaatIdAndHearingUUID(anyString(), anyInt());
+        wqHearingService.findByMaatIdAndHearingUUID(TestEntityDataBuilder.REP_ID, TestEntityDataBuilder.TEST_OFFENCE_ID);
+        verify(wqHearingImpl, atLeastOnce()).findByMaatIdAndHearingUUID(anyInt(), anyString());
         verify(mapper, atLeastOnce()).WQHearingEntityToWQHearingDTO(anyList());
     }
 

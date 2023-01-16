@@ -17,8 +17,8 @@ public class WQHearingImpl {
 
     private final WQHearingRepository wqHearingRepository;
 
-    public List<WQHearingEntity> findByMaatIdAndHearingUUID(String hearingUuid, Integer maatId) {
-        return wqHearingRepository.findByMaatIdAndHearingUUID(maatId, hearingUuid);
+    public List<WQHearingEntity> findByMaatIdAndHearingUUID(Integer maatId, String hearingUUID) {
+        return wqHearingRepository.findByMaatIdAndHearingUUID(maatId, hearingUUID);
     }
 
 

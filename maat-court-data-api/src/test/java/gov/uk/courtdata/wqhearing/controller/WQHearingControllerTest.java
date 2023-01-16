@@ -37,8 +37,8 @@ class WQHearingControllerTest {
     @Test
     void givenAValidParameters_whenFindByMaatIdAndHearingUUIDIsInvoked_thenReturnOffence() throws Exception {
         List wqHearingDTOList = List.of(TestModelDataBuilder.getWQHearingDTO(313123));
-        when(wqHearingService.findByMaatIdAndHearingUUID(TestModelDataBuilder.TEST_OFFENCE_ID, TestModelDataBuilder.REP_ID)).thenReturn(wqHearingDTOList);
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + TestModelDataBuilder.TEST_OFFENCE_ID + "/maat/" + TestModelDataBuilder.REP_ID))
+        when(wqHearingService.findByMaatIdAndHearingUUID(TestModelDataBuilder.REP_ID, TestModelDataBuilder.TEST_OFFENCE_ID)).thenReturn(wqHearingDTOList);
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + TestModelDataBuilder.TEST_OFFENCE_ID + "/maatId/" + TestModelDataBuilder.REP_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].maatId").value(String.valueOf(TestModelDataBuilder.REP_ID)));

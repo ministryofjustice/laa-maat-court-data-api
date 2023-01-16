@@ -30,7 +30,7 @@ public class WQHearingController {
 
     private final WQHearingService wqHearingService;
 
-    @GetMapping(value = "{hearingUuid}/maat/{maatId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{hearingUUID}/maatId/{maatId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve WQ Hearing record")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
@@ -47,8 +47,8 @@ public class WQHearingController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<List<WQHearingDTO>> findOffenceByMaatId(@PathVariable String hearingUuid, @PathVariable int maatId) {
+    public ResponseEntity<List<WQHearingDTO>> findByMaatIdAndHearingUUID(@PathVariable int maatId, @PathVariable String hearingUUID) {
         log.info("Find WQ hearing  Request Received");
-        return ResponseEntity.ok(wqHearingService.findByMaatIdAndHearingUUID(hearingUuid, maatId));
+        return ResponseEntity.ok(wqHearingService.findByMaatIdAndHearingUUID(maatId, hearingUUID));
     }
 }

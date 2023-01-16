@@ -24,7 +24,7 @@ class WQHearingImplTest {
 
     @Test
     public void givenAValidParameter_whenFindByMaatIdAndHearingUUIDIsInvoked_shouldReturnWQHearing() {
-        wqHearingImpl.findByMaatIdAndHearingUUID(TestModelDataBuilder.HEARING_ID.toString(), TestModelDataBuilder.REP_ID);
+        wqHearingImpl.findByMaatIdAndHearingUUID(TestModelDataBuilder.REP_ID, TestModelDataBuilder.HEARING_ID.toString());
         verify(wqHearingRepository, atLeastOnce()).findByMaatIdAndHearingUUID(anyInt(), anyString());
     }
 

@@ -88,6 +88,7 @@ sentry:
   servername: aws-ecs-container
   send-default-pii: true
   attach-stacktrace: true
+  sample-rate: 0.05
 
 api-endpoints:
   assessments-domain: /api/internal/v1/assessment

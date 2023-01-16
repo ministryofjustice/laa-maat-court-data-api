@@ -52,6 +52,7 @@ public class TestModelDataBuilder {
     public static final String TEST_ASN_SEQ = "123";
     public static final Integer TEST_RESULT_CODE = 12345;
 
+
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
 
@@ -996,6 +997,19 @@ public class TestModelDataBuilder {
                 .mlrCat(253)
                 .caseUrn("52SB0067421")
                 .libraId("CP665371")
+                .build();
+    }
+
+    public  static WQHearingDTO getWQHearingDTO(Integer createdTxId) {
+        return WQHearingDTO.builder()
+                .txId(createdTxId)
+                .caseId(TEST_CASE_ID)
+                .maatId(REP_ID)
+                .hearingUUID(TEST_OFFENCE_ID)
+                .wqJurisdictionType("CROWN")
+                .ouCourtLocation("C22SR")
+                .caseUrn("EITHERWAY")
+                .resultCodes("4028")
                 .build();
     }
 }

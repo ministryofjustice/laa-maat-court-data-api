@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface WQHearingRepository extends JpaRepository<WQHearingEntity, String> {
+public interface WQHearingRepository extends JpaRepository<WQHearingEntity, Integer> {
 
     List<WQHearingEntity> findByMaatIdAndHearingUUID(Integer maatId, String hearingUuid);
 

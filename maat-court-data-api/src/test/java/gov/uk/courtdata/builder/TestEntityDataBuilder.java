@@ -1,5 +1,6 @@
 package gov.uk.courtdata.builder;
 
+import gov.uk.courtdata.dto.WQHearingDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
@@ -518,6 +519,19 @@ public class TestEntityDataBuilder {
                 .offenceId(TEST_OFFENCE_ID)
                 .isCCNewOffence("Y")
                 .applicationFlag(0)
+                .build();
+    }
+
+    public  static WQHearingEntity getWQHearingEntity(Integer createdTxId) {
+        return WQHearingEntity.builder()
+                .txId(createdTxId)
+                .caseId(TEST_CASE_ID)
+                .maatId(REP_ID)
+                .hearingUUID(TEST_OFFENCE_ID)
+                .wqJurisdictionType("CROWN")
+                .ouCourtLocation("C22SR")
+                .caseUrn("EITHERWAY")
+                .resultCodes("4028")
                 .build();
     }
 

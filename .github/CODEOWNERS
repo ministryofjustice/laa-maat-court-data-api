@@ -4,4 +4,5 @@
 # GitHub users/groups requested to review Build and Test Specs used by AWS
 *.yml @ministryofjustice/laa-aws-infrastructure
 
-
+# GitHub users/groups requested to review all other AWS Code<Paste>
+/aws/ @ministryofjustice/laa-aws-infrastructure

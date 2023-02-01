@@ -30,7 +30,7 @@ public class RepOrderImpl {
 
     public void updateAppDateCompleted(final Integer repId, final LocalDateTime assessmentDateCompleted) {
         RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(repId);
-        repOrderEntity.setAssessmentDateCompleted(assessmentDateCompleted);
+        repOrderEntity.setAssessmentDateCompleted(assessmentDateCompleted.toLocalDate());
         repOrderRepository.saveAndFlush(repOrderEntity);
     }
 

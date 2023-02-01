@@ -1,6 +1,5 @@
 package gov.uk.courtdata.builder;
 
-import gov.uk.courtdata.dto.WQHearingDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
@@ -46,7 +45,7 @@ public class TestEntityDataBuilder {
                 .decisionReasonCode("rder-code")
                 .crownRepOrderDecision("cc-rep-doc")
                 .crownRepOrderType("cc-rep-type")
-                .sentenceOrderDate(TEST_DATE)
+                .sentenceOrderDate(TEST_DATE.toLocalDate())
                 .build();
     }
 
@@ -421,6 +420,71 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static OffenceEntity getOffenceEntity(Integer offenceTxId) {
+
+        return OffenceEntity.builder()
+                .txId(offenceTxId)
+                .caseId(TEST_CASE_ID)
+                .asnSeq("001")
+                .offenceShortTitle("Robbery")
+                .offenceClassification("Classification")
+                .offenceWording("Offence Details")
+                .modeOfTrial(1)
+                .legalAidStatus("GQ")
+                .offenceCode("AA06035")
+                .offenceId(TEST_OFFENCE_ID)
+                .isCCNewOffence("Y")
+                .applicationFlag(0)
+                .build();
+    }
+
+    public static WqLinkRegisterEntity getWQLinkRegisterEntity(Integer createdTxId) {
+
+        return WqLinkRegisterEntity.builder()
+                .createdTxId(createdTxId)
+                .caseId(TEST_CASE_ID)
+                .maatId(REP_ID)
+                .cjsAreaCode("16")
+                .cjsLocation("B16BG")
+                .maatCat(253)
+                .createdUserId(TEST_USER)
+                .mlrCat(253)
+                .caseUrn("52SB0067421")
+                .libraId("CP665371")
+                .build();
+    }
+
+    public static WQOffenceEntity getWQOffenceEntity(Integer offenceTxId) {
+
+        return WQOffenceEntity.builder()
+                .txId(offenceTxId)
+                .caseId(TEST_CASE_ID)
+                .asnSeq("001")
+                .offenceShortTitle("Robbery")
+                .offenceClassification("Classification")
+                .offenceWording("Offence Details")
+                .modeOfTrial(1)
+                .legalAidStatus("GQ")
+                .offenceCode("AA06035")
+                .offenceId(TEST_OFFENCE_ID)
+                .isCCNewOffence("Y")
+                .applicationFlag(0)
+                .build();
+    }
+
+    public static WQHearingEntity getWQHearingEntity(Integer createdTxId) {
+        return WQHearingEntity.builder()
+                .txId(createdTxId)
+                .caseId(TEST_CASE_ID)
+                .maatId(REP_ID)
+                .hearingUUID(TEST_OFFENCE_ID)
+                .wqJurisdictionType("CROWN")
+                .ouCourtLocation("C22SR")
+                .caseUrn("EITHERWAY")
+                .resultCodes("4028")
+                .build();
+    }
+
     public RepOrderCPDataEntity getRepOrderEntity() {
         return RepOrderCPDataEntity.builder()
                 .repOrderId(REP_ID)
@@ -470,72 +534,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public  static  OffenceEntity getOffenceEntity(Integer offenceTxId) {
-
-        return OffenceEntity.builder()
-                .txId(offenceTxId)
-                .caseId(TEST_CASE_ID)
-                .asnSeq("001")
-                .offenceShortTitle("Robbery")
-                .offenceClassification("Classification")
-                .offenceWording("Offence Details")
-                .modeOfTrial(1)
-                .legalAidStatus("GQ")
-                .offenceCode("AA06035")
-                .offenceId(TEST_OFFENCE_ID)
-                .isCCNewOffence("Y")
-                .applicationFlag(0)
-                .build();
-    }
-
-    public  static  WqLinkRegisterEntity getWQLinkRegisterEntity(Integer createdTxId) {
-
-        return WqLinkRegisterEntity.builder()
-                .createdTxId(createdTxId)
-                .caseId(TEST_CASE_ID)
-                .maatId(REP_ID)
-                .cjsAreaCode("16")
-                .cjsLocation("B16BG")
-                .maatCat(253)
-                .createdUserId(TEST_USER)
-                .mlrCat(253)
-                .caseUrn("52SB0067421")
-                .libraId("CP665371")
-                .build();
-    }
-
-    public  static  WQOffenceEntity getWQOffenceEntity(Integer offenceTxId) {
-
-        return WQOffenceEntity.builder()
-                .txId(offenceTxId)
-                .caseId(TEST_CASE_ID)
-                .asnSeq("001")
-                .offenceShortTitle("Robbery")
-                .offenceClassification("Classification")
-                .offenceWording("Offence Details")
-                .modeOfTrial(1)
-                .legalAidStatus("GQ")
-                .offenceCode("AA06035")
-                .offenceId(TEST_OFFENCE_ID)
-                .isCCNewOffence("Y")
-                .applicationFlag(0)
-                .build();
-    }
-
-    public  static WQHearingEntity getWQHearingEntity(Integer createdTxId) {
-        return WQHearingEntity.builder()
-                .txId(createdTxId)
-                .caseId(TEST_CASE_ID)
-                .maatId(REP_ID)
-                .hearingUUID(TEST_OFFENCE_ID)
-                .wqJurisdictionType("CROWN")
-                .ouCourtLocation("C22SR")
-                .caseUrn("EITHERWAY")
-                .resultCodes("4028")
-                .build();
-    }
-
-    public  static RepOrderCCOutComeEntity getRepOrderCCOutComeEntity() {
+    public static RepOrderCCOutComeEntity getRepOrderCCOutComeEntity() {
         return RepOrderCCOutComeEntity.builder()
                 .repId(REP_ID)
                 .ccooOutcome("CONVICTED")
@@ -544,5 +543,4 @@ public class TestEntityDataBuilder {
                 .crownCourtCode("430")
                 .build();
     }
-
 }

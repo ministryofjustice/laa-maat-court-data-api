@@ -3,6 +3,7 @@ package gov.uk.courtdata.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.service.CrownCourtOutcomeService;
+import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -27,6 +32,9 @@ public class CrownCourtControllerTest {
     @MockBean
     private CrownCourtOutcomeService crownCourtOutcomeService;
 
+    @MockBean
+    private MaatIdValidator maatIdValidator;
+
     @Autowired
     private ObjectMapper objectMapper;
     @Test
@@ -37,6 +45,8 @@ public class CrownCourtControllerTest {
 
     @Test
     void givenAValidParameters_whenUpdateCCOutcomeIsInvoked_thenReturnStatusOK() throws Exception {
+        when(maatIdValidator.validate(any()))
+                .thenReturn(Optional.empty());
         doNothing().when(crownCourtOutcomeService).update(TestModelDataBuilder.getUpdateCCOutcome());
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/updateCCOutcome/")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateCCOutcome())))

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.service.CrownCourtOutcomeService;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,8 @@ public class CrownCourtControllerTest {
     @MockBean
     private CrownCourtOutcomeService crownCourtOutcomeService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
     @Test
     void givenIncorrectParameters_whenUpdateCCOutcomeIsInvoked_thenErrorIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/updateCCOutcome").contentType(MediaType.APPLICATION_JSON))
@@ -36,6 +39,7 @@ public class CrownCourtControllerTest {
     void givenAValidParameters_whenUpdateCCOutcomeIsInvoked_thenReturnStatusOK() throws Exception {
         doNothing().when(crownCourtOutcomeService).update(TestModelDataBuilder.getUpdateCCOutcome());
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/updateCCOutcome/")
-                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().is2xxSuccessful());
+                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateCCOutcome())))
+                .andExpect(status().is2xxSuccessful());
     }
 }

@@ -47,9 +47,41 @@ public class CrownCourtControllerTest {
     void givenAValidParameters_whenUpdateCCOutcomeIsInvoked_thenReturnStatusOK() throws Exception {
         when(maatIdValidator.validate(any()))
                 .thenReturn(Optional.empty());
-        doNothing().when(crownCourtOutcomeService).update(TestModelDataBuilder.getUpdateCCOutcome());
+        doNothing().when(crownCourtOutcomeService).updateCCOutcome(TestModelDataBuilder.getUpdateCCOutcome());
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/updateCCOutcome/")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateCCOutcome())))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    void givenIncorrectParameters_whenUpdateCCSentenceOrderDateIsInvoked_thenErrorIsThrown() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/update-cc-sentence").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void givenAValidParameters_whenUpdateCCSentenceOrderDateIsInvoked_thenReturnStatusOK() throws Exception {
+        when(maatIdValidator.validate(any()))
+                .thenReturn(Optional.empty());
+        doNothing().when(crownCourtOutcomeService).updateCCSentenceOrderDate(TestModelDataBuilder.getUpdateSentenceOrder());
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/update-cc-sentence")
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateSentenceOrder())))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    void givenIncorrectParameters_whenUpdateAppealCCSentenceOrderDateIsInvoked_thenErrorIsThrown() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/update-appeal-cc-sentence").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void givenAValidParameters_whenUpdateAppealCCSentenceOrderDateIsInvoked_thenReturnStatusOK() throws Exception {
+        when(maatIdValidator.validate(any()))
+                .thenReturn(Optional.empty());
+        doNothing().when(crownCourtOutcomeService).updateAppealCCSentenceOrderDate(TestModelDataBuilder.getUpdateSentenceOrder());
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/update-appeal-cc-sentence")
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateSentenceOrder())))
                 .andExpect(status().is2xxSuccessful());
     }
 }

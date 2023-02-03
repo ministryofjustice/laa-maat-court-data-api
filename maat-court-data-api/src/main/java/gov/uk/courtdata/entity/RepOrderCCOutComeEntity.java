@@ -24,9 +24,9 @@ public class RepOrderCCOutComeEntity {
     @Column(name = "REP_ID")
     private int repId;
     @Column(name = "CCOO_OUTCOME")
-    private String ccooOutcome;
+    private String outcome;
     @Column(name = "CCOO_OUTCOME_DATE")
-    private LocalDateTime ccooOutcomeDate;
+    private LocalDateTime outcomeDate;
     @Column(name = "USER_CREATED")
     private String userCreated;
     @Column(name = "DATE_CREATED")

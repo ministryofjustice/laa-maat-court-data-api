@@ -1,4 +1,4 @@
-package gov.uk.courtdata.ccoutcome.impl;
+package gov.uk.courtdata.reporder.impl;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.RepOrderCCOutComeEntity;
@@ -14,18 +14,18 @@ import java.util.Optional;
 @Component
 @XRayEnabled
 @RequiredArgsConstructor
-public class CCOutComeImpl {
+public class CCOutcomeImpl {
 
     private final CrownCourtProcessingRepository courtProcessingRepository;
 
-    public RepOrderCCOutComeEntity createCCOutCome(RepOrderCCOutComeEntity repOrderCCOutComeEntity) {
+    public RepOrderCCOutComeEntity create(RepOrderCCOutComeEntity repOrderCCOutComeEntity) {
         return courtProcessingRepository.saveAndFlush(repOrderCCOutComeEntity);
     }
 
     public RepOrderCCOutComeEntity find(Integer id) {
-        return courtProcessingRepository.getReferenceById(id);
+        return courtProcessingRepository.findById(id).orElse(null);
     }
-    public void updateCCOutcome(RepOrderCCOutComeEntity repOrderCCOutComeEntity) {
+    public void update(RepOrderCCOutComeEntity repOrderCCOutComeEntity) {
          courtProcessingRepository.saveAndFlush(repOrderCCOutComeEntity);
     }
 

@@ -537,7 +537,7 @@ public class TestEntityDataBuilder {
     public static RepOrderCCOutComeEntity getRepOrderCCOutComeEntity() {
         return RepOrderCCOutComeEntity.builder()
                 .repId(REP_ID)
-                .ccooOutcome("CONVICTED")
+                .outcome("CONVICTED")
                 .userCreated(TEST_USER)
                 .caseNumber(TEST_CASE_ID.toString())
                 .crownCourtCode("430")

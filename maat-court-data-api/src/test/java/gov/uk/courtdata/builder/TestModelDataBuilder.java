@@ -6,11 +6,11 @@ import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.NewWorkReason;
+import gov.uk.courtdata.model.RepOrderCCOutcome;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.*;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
-import gov.uk.courtdata.model.ccoutcome.RepOrderCCOutCome;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
@@ -1053,33 +1053,34 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static RepOrderCCOutCome getRepOrderCCOutCome() {
-        return RepOrderCCOutCome.builder()
+    public static RepOrderCCOutcome getRepOrderCCOutCome() {
+        return RepOrderCCOutcome.builder()
                 .repId(REP_ID)
-                .ccooOutcome("CONVICTED")
+                .outcome("CONVICTED")
                 .crownCourtCode("430")
                 .userCreated(TEST_USER)
-                .ccooOutcomeDate(TEST_DATE)
+                .outcomeDate(TEST_DATE)
                 .id(1)
                 .build();
     }
-    public static RepOrderCCOutCome getUpdateRepOrderCCOutCome(Integer ccOutComeId) {
-        return RepOrderCCOutCome.builder()
+    public static RepOrderCCOutcome getUpdateRepOrderCCOutCome(Integer ccOutComeId) {
+        return RepOrderCCOutcome.builder()
                 .repId(REP_ID)
                 .caseNumber(TEST_CASE_ID.toString())
-                .ccooOutcome("CONVICTED")
+                .outcome("CONVICTED")
                 .crownCourtCode("430")
                 .id(ccOutComeId)
                 .userModified(TEST_USER)
                 .build();
     }
-    public static RepOrderCCOutComeDTO getRepOrderCCOutComeDTO() {
-        return RepOrderCCOutComeDTO.builder()
+    public static RepOrderCCOutcomeDTO getRepOrderCCOutComeDTO(Integer outcomeId) {
+        return RepOrderCCOutcomeDTO.builder()
                 .repId(REP_ID)
                 .caseNumber(TEST_CASE_ID.toString())
                 .ccooOutcome("PART CONVICTED")
                 .crownCourtCode("459")
                 .userCreated(TEST_USER)
+                .id(outcomeId)
                 .build();
     }
 }

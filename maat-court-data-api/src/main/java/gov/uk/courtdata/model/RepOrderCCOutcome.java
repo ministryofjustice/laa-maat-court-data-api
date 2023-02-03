@@ -1,4 +1,4 @@
-package gov.uk.courtdata.model.ccoutcome;
+package gov.uk.courtdata.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RepOrderCCOutCome {
+public class RepOrderCCOutcome {
 
     private Integer id;
     private int repId;
-    private String ccooOutcome;
-    private LocalDateTime ccooOutcomeDate;
+    private String outcome;
+    private LocalDateTime outcomeDate;
     private String userCreated;
     private LocalDateTime dateCreated;
     private String caseNumber;

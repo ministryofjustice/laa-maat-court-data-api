@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @XRayEnabled
-@Tag(name = "crown-court", description = "Rest API for invoking stored procedures in CrownCourt package")
+@Tag(name = "crown-court", description = "Rest API for invoking stored procedures related to Crown Court")
 public class CrownCourtController {
 
     private final CrownCourtOutcomeService crownCourtOutcomeService;

@@ -7,6 +7,7 @@ import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
+import gov.uk.courtdata.model.UpdateCCOutcome;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.*;
 import gov.uk.courtdata.model.authorization.UserReservation;
@@ -1050,6 +1051,17 @@ public class TestModelDataBuilder {
                 .ouCourtLocation("C22SR")
                 .caseUrn("EITHERWAY")
                 .resultCodes("4028")
+                .build();
+    }
+    public static UpdateCCOutcome getUpdateCCOutcome() {
+        return UpdateCCOutcome.builder()
+                .repId(5678)
+                .ccOutcome("TEST-OUTCOME")
+                .benchWarrantIssued("N")
+                .appealType("TEST-APPEAL-TYPE")
+                .imprisoned("N")
+                .caseNumber("123456")
+                .crownCourtCode("30")
                 .build();
     }
 

@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
-import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.NewWorkReason;
-import gov.uk.courtdata.model.UpdateCCOutcome;
-import gov.uk.courtdata.model.UpdateRepOrder;
+import gov.uk.courtdata.model.*;
 import gov.uk.courtdata.model.assessment.*;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
@@ -1053,10 +1050,9 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-
     public static UpdateCCOutcome getUpdateCCOutcome() {
         return UpdateCCOutcome.builder()
-                .repId(5678)
+                .repId(REP_ID)
                 .ccOutcome("TEST-OUTCOME")
                 .benchWarrantIssued("N")
                 .appealType("TEST-APPEAL-TYPE")
@@ -1066,4 +1062,12 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+    public static UpdateSentenceOrder getUpdateSentenceOrder() {
+        return UpdateSentenceOrder.builder()
+                .repId(REP_ID)
+                .dbUser("TEST_USER")
+                .sentenceOrderDate(LocalDate.now())
+                .dateChanged(LocalDate.now())
+                .build();
+    }
 }

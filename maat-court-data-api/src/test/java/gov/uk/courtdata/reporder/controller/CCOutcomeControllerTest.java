@@ -57,8 +57,8 @@ class CCOutcomeControllerTest {
     @Test
     void givenAValidParameters_whenCreateIsInvoked_thenCreateIsSuccess() throws Exception {
         when(validator.validate(any(RepOrderCCOutcome.class))).thenReturn(Optional.empty());
-        when(service.create(any())).thenReturn(TestModelDataBuilder.getRepOrderCCOutComeDTO(1));
-        mvc.perform(MockMvcRequestBuilders.post(endpointUrl).content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutCome()))
+        when(service.create(any())).thenReturn(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
+        mvc.perform(MockMvcRequestBuilders.post(endpointUrl).content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutcome()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -75,8 +75,8 @@ class CCOutcomeControllerTest {
     @Test
     void givenACorrectParameters_whenUpdateCCOutComeIsInvoked_thenShouldSuccess() throws Exception {
         when(validator.validate(any(RepOrderCCOutcome.class))).thenReturn(Optional.empty());
-        doNothing().when(service).update(any(RepOrderCCOutcome.class));
-        mvc.perform(MockMvcRequestBuilders.put(endpointUrl).content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutCome()))
+        when(service.update(any())).thenReturn(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1234));
+        mvc.perform(MockMvcRequestBuilders.put(endpointUrl).content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutcome()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -90,7 +90,7 @@ class CCOutcomeControllerTest {
     @Test
     void givenACorrectParameters_whenFindByRepIdIsInvoked_thenOutcomeIsSuccess() throws Exception {
         when(validator.validate(TestModelDataBuilder.REP_ID)).thenReturn(Optional.empty());
-        List repOrderCCOutComeDTOS = List.of(TestModelDataBuilder.getRepOrderCCOutComeDTO(1));
+        List repOrderCCOutComeDTOS = List.of(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
         when(service.findByRepId(TestModelDataBuilder.REP_ID)).thenReturn(repOrderCCOutComeDTOS);
         mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/reporder/" + TestModelDataBuilder.REP_ID))
                 .andExpect(status().isOk())

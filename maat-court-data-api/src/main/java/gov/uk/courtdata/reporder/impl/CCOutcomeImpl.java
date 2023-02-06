@@ -25,8 +25,8 @@ public class CCOutcomeImpl {
     public RepOrderCCOutComeEntity find(Integer id) {
         return courtProcessingRepository.findById(id).orElse(null);
     }
-    public void update(RepOrderCCOutComeEntity repOrderCCOutComeEntity) {
-         courtProcessingRepository.saveAndFlush(repOrderCCOutComeEntity);
+    public RepOrderCCOutComeEntity update(RepOrderCCOutComeEntity repOrderCCOutComeEntity) {
+         return courtProcessingRepository.saveAndFlush(repOrderCCOutComeEntity);
     }
 
     public List<RepOrderCCOutComeEntity> findByRepId(Integer repId) {

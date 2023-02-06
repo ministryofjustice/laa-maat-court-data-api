@@ -31,15 +31,15 @@ public class CCOutcomeService {
     }
 
     @Transactional
-    public void update(RepOrderCCOutcome repOrderCCOutCome) {
+    public RepOrderCCOutcomeDTO update(RepOrderCCOutcome repOrderCCOutCome) {
         log.info("Update repOrder CC OutCome  - Transaction Processing - Start");
         RepOrderCCOutComeEntity repOrderCCOutComeEntity = ccOutComeImpl.find(repOrderCCOutCome.getId());
         if (repOrderCCOutComeEntity == null) {
             throw new RequestedObjectNotFoundException(String.format("No CC Outcome found for ID: %s", repOrderCCOutCome.getId()));
         }
         mapper.RepOrderCCOutComeToRepOrderCCOutcomeEntity(repOrderCCOutCome, repOrderCCOutComeEntity);
-        ccOutComeImpl.update(repOrderCCOutComeEntity);
         log.info("update repOrder CC OutCome  - Transaction Processing - End");
+        return mapper.RepOrderCCOutComeEntityToRepOrderCCOutcomeDTO(ccOutComeImpl.update(repOrderCCOutComeEntity));
     }
 
     @Transactional(readOnly = true)

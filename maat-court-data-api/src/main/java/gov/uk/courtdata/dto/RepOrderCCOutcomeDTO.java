@@ -15,8 +15,8 @@ public class RepOrderCCOutcomeDTO {
 
     private int id;
     private int repId;
-    private String ccooOutcome;
-    private LocalDateTime ccooOutcomeDate;
+    private String outcome;
+    private LocalDateTime outcomeDate;
     private String userCreated;
     private LocalDateTime dateCreated;
     private String caseNumber;

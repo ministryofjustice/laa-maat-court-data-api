@@ -1065,7 +1065,7 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static RepOrderCCOutcome getRepOrderCCOutCome() {
+    public static RepOrderCCOutcome getRepOrderCCOutcome() {
         return RepOrderCCOutcome.builder()
                 .repId(REP_ID)
                 .outcome("CONVICTED")
@@ -1075,7 +1075,7 @@ public class TestModelDataBuilder {
                 .id(1)
                 .build();
     }
-    public static RepOrderCCOutcome getUpdateRepOrderCCOutCome(Integer ccOutComeId) {
+    public static RepOrderCCOutcome getUpdateRepOrderCCOutcome(Integer ccOutComeId) {
         return RepOrderCCOutcome.builder()
                 .repId(REP_ID)
                 .caseNumber(TEST_CASE_ID.toString())
@@ -1085,11 +1085,11 @@ public class TestModelDataBuilder {
                 .userModified(TEST_USER)
                 .build();
     }
-    public static RepOrderCCOutcomeDTO getRepOrderCCOutComeDTO(Integer outcomeId) {
+    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId) {
         return RepOrderCCOutcomeDTO.builder()
                 .repId(REP_ID)
                 .caseNumber(TEST_CASE_ID.toString())
-                .ccooOutcome("PART CONVICTED")
+                .outcome("PART CONVICTED")
                 .crownCourtCode("459")
                 .userCreated(TEST_USER)
                 .id(outcomeId)

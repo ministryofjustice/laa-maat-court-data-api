@@ -31,22 +31,22 @@ class CCOutcomeServiceTest {
     @Test
     void givenAValidInput_whenCreateIsInvoked_thenCreateOutcomeIsSuccess() {
         when(repOrderCCOutcomeImpl.create(any()))
-                .thenReturn(TestEntityDataBuilder.getRepOrderCCOutComeEntity());
-        service.create(TestModelDataBuilder.getRepOrderCCOutCome());
+                .thenReturn(TestEntityDataBuilder.getRepOrderCCOutcomeEntity());
+        service.create(TestModelDataBuilder.getRepOrderCCOutcome());
         verify(repOrderCCOutcomeImpl, atLeastOnce()).create(any());
     }
 
     @Test
     void givenAValidInput_whenUpdateIsInvoked_thenUpdatedCCOutComeIsSuccess() {
         when(repOrderCCOutcomeImpl.find(anyInt())).thenReturn(RepOrderCCOutComeEntity.builder().build());
-        service.update(TestModelDataBuilder.getRepOrderCCOutCome());
+        service.update(TestModelDataBuilder.getRepOrderCCOutcome());
         verify(repOrderCCOutcomeImpl, atLeastOnce()).update(any());
     }
 
     @Test
     void givenAInvalidOutcomeId_whenUpdateIsInvoked_thenReturnException() {
         when(repOrderCCOutcomeImpl.find(anyInt())).thenThrow(new RequestedObjectNotFoundException(""));
-        assertThatThrownBy(() -> service.update(TestModelDataBuilder.getRepOrderCCOutCome()))
+        assertThatThrownBy(() -> service.update(TestModelDataBuilder.getRepOrderCCOutcome()))
                 .isInstanceOf(RequestedObjectNotFoundException.class);
     }
 

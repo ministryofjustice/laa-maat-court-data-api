@@ -74,7 +74,7 @@ public class CCOutcomeController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<Object> update(@Parameter(description = "RepOrder CC outcome data",
+    public ResponseEntity<RepOrderCCOutcomeDTO> update(@Parameter(description = "RepOrder CC outcome data",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = RepOrderCCOutcome.class))) @RequestBody RepOrderCCOutcome repOrderCCOutCome) {
         log.info("Update RepOrder CC outcome  Request Received");

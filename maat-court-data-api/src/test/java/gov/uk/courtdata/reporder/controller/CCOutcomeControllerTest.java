@@ -66,14 +66,14 @@ class CCOutcomeControllerTest {
     }
 
     @Test
-    void givenIncorrectParameters_whenUpdateCCOutComeIsInvoked_thenErrorIsThrown() throws Exception {
+    void givenIncorrectParameters_whenUpdateIsInvoked_thenErrorIsThrown() throws Exception {
         when(validator.validate(any(RepOrderCCOutcome.class))).thenThrow(new ValidationException());
         mvc.perform(MockMvcRequestBuilders.put(endpointUrl).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void givenACorrectParameters_whenUpdateCCOutComeIsInvoked_thenShouldSuccess() throws Exception {
+    void givenACorrectParameters_whenUpdateIsInvoked_thenShouldSuccess() throws Exception {
         when(validator.validate(any(RepOrderCCOutcome.class))).thenReturn(Optional.empty());
         when(service.update(any())).thenReturn(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1234));
         mvc.perform(MockMvcRequestBuilders.put(endpointUrl).content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutcome()))

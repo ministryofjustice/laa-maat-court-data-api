@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -75,10 +74,12 @@ class CCOutcomeControllerTest {
     @Test
     void givenACorrectParameters_whenUpdateIsInvoked_thenShouldSuccess() throws Exception {
         when(validator.validate(any(RepOrderCCOutcome.class))).thenReturn(Optional.empty());
-        when(service.update(any())).thenReturn(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1234));
+        when(service.update(any())).thenReturn(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
         mvc.perform(MockMvcRequestBuilders.put(endpointUrl).content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutcome()))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value("1"));
     }
 
     @Test
@@ -95,6 +96,7 @@ class CCOutcomeControllerTest {
         mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/reporder/" + TestModelDataBuilder.REP_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id").value(String.valueOf("1")))
                 .andExpect(jsonPath("$[0].crownCourtCode").value(String.valueOf("459")));
     }
 }

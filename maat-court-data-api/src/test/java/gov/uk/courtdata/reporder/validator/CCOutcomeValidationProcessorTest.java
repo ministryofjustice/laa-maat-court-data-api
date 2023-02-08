@@ -55,14 +55,14 @@ class CCOutcomeValidationProcessorTest {
         repOrderCCOutcome.setId(0);
         repOrderCCOutcome.setUserCreated("");
         when(createCCOutComeValidator.validate(any())).thenThrow(new ValidationException());
-        assertThatThrownBy(() -> CCOutComeValidationProcessor.validate(repOrderCCOutcome)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> CCOutComeValidationProcessor.validate(repOrderCCOutcome))
+                .isInstanceOf(ValidationException.class);
         verify(createCCOutComeValidator, atLeastOnce()).validate(any());
         verify(maatIdValidator, never()).validate(any());
     }
 
     @Test
     void givenAValidRepId_whenValidateIsInvoked_thenRepIdValidationIsSuccess() {
-        when(maatIdValidator.validate(any())).thenReturn(Optional.empty());
         CCOutComeValidationProcessor.validate(TestModelDataBuilder.REP_ID);
         verify(maatIdValidator, atLeastOnce()).validate(any());
     }
@@ -70,7 +70,8 @@ class CCOutcomeValidationProcessorTest {
     @Test
     void givenAInvalidValidRepId_whenValidateIsInvoked_thenReturnValidationException() {
         when(maatIdValidator.validate(any())).thenThrow(new ValidationException());
-        assertThatThrownBy(() -> CCOutComeValidationProcessor.validate(INVALID_REP_ID)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> CCOutComeValidationProcessor.validate(INVALID_REP_ID))
+                .isInstanceOf(ValidationException.class);
         verify(maatIdValidator, atLeastOnce()).validate(any());
     }
 

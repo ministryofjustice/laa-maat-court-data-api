@@ -78,9 +78,8 @@ public class CCOutcomeController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = RepOrderCCOutcome.class))) @RequestBody RepOrderCCOutcome repOrderCCOutCome) {
         log.info("Update RepOrder CC outcome  Request Received");
-        validator.validate(repOrderCCOutCome);
-        service.update(repOrderCCOutCome);
-        return ResponseEntity.ok().build();
+        validator.validate(repOrderCCOutCome);;
+        return ResponseEntity.ok(service.update(repOrderCCOutCome));
     }
 
     @GetMapping(value = "/reporder/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)

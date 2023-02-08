@@ -20,9 +20,9 @@ public class CreateCCOutcomeValidator implements IValidator<Void, RepOrderCCOutc
 
 
     @Override
-    public Optional<Void> validate(RepOrderCCOutcome RepOrderCCOutCome) {
+    public Optional<Void> validate(RepOrderCCOutcome repOrderCCOutCome) {
 
-        if (isBlank(RepOrderCCOutCome.getUserCreated())) {
+        if (isBlank(repOrderCCOutCome.getUserCreated())) {
             throw new ValidationException("User created is required");
         }
         return Optional.empty();

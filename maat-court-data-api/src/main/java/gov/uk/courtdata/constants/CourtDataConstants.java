@@ -38,5 +38,6 @@ public final class CourtDataConstants {
     public static final List<String> RESERVATION_SPECIAL_USERNAMES = List.of("HUB", "MLA");
     public static final Integer COMMITTAL_FOR_TRIAL_SUB_TYPE = 2;
     public static final Integer COMMITTAL_FOR_SENTENCE_SUB_TYPE = 1;
+    public static final String LAA_TRANSACTION_ID = "Laa-Transaction-Id";
 
 }

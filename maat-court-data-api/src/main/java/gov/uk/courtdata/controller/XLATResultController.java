@@ -1,6 +1,7 @@
 package gov.uk.courtdata.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.service.ResultsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,11 +35,11 @@ public class XLATResultController {
     @Operation(description = "Retrieve list of XLAT ResultCodes for CC Imprisonment")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<Integer>> getResultCodesForCCImprisonment(
             @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+            @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
         MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info("Get XLAT Result Codes for CC Imprisonment");
         return ResponseEntity.ok(resultService.findXLATResultCodesForCCImprisonment());
@@ -48,11 +49,11 @@ public class XLATResultController {
     @Operation(description = "Retrieve list of XLAT ResultCodes for CC Bench Warrant")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<Integer>> getResultCodesForCCBenchWarrant(
             @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+            @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
         MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info("Get XLAT Result Codes for CC Bench Warrant");
         return ResponseEntity.ok(resultService.findXLATResultCodesForCCBenchWarrant());
@@ -62,13 +63,13 @@ public class XLATResultController {
     @Operation(description = "Retrieve list of WQ ResultCodes for given caseId and asnSeq")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<Integer>> getResultCodesByWqTypeAndSubType(
             @PathVariable int wqType,
             @PathVariable int subType,
             @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+            @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
         MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info(String.format("Get XLAT Result Codes by WqType - %d and SubType: %s {}", wqType, subType));
         return ResponseEntity.ok(resultService.findXLATResultCodesByWQTypeAndSubTypeCode(wqType, subType));

@@ -34,7 +34,8 @@ def versions = [
         xRayVersion         : '2.11.2',
         hibernateJpaModelGen: '5.6.14.Final',
         gqlVersion: '2.7.5',
-        graphqlJavaTools: '13.0.2'
+        graphqlJavaTools: '13.0.2',
+        jacksonXml: '2.14.2'
 ]
 
 dependencyManagement {
@@ -123,6 +124,7 @@ dependencies {
     implementation group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
     implementation group: 'org.codehaus.sonar-plugins', name: 'sonar-pitest-plugin', version: versions.sonarPitest
     implementation group: 'org.pitest', name: 'pitest', version: versions.pitest
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: versions.jacksonXml
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-graphql'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'

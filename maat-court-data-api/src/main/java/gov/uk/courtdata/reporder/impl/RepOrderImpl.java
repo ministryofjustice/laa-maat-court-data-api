@@ -34,8 +34,8 @@ public class RepOrderImpl {
         repOrderRepository.saveAndFlush(repOrderEntity);
     }
 
-    public void updateRepOrder(RepOrderEntity repOrderEntity) {
-        repOrderRepository.saveAndFlush(repOrderEntity);
+    public RepOrderEntity updateRepOrder(RepOrderEntity repOrderEntity) {
+        return repOrderRepository.saveAndFlush(repOrderEntity);
     }
 
     public long countWithSentenceOrderDate(Integer repId) {

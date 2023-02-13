@@ -8,8 +8,10 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -22,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
@@ -55,6 +58,9 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Autowired
     private RepOrderMvoRegRepository repOrderMvoRegRepository;
+
+    @Autowired
+    private RepOrderMapper mapper;
 
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -247,204 +253,14 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
         UpdateRepOrder request = TestModelDataBuilder.getUpdateRepOrder();
 
-        runSuccessScenario(MockMvcRequestBuilders.put(BASE_URL)
+        MvcResult result =runSuccessScenario(MockMvcRequestBuilders.put(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
-                .contentType(MediaType.APPLICATION_JSON));
+                .content(objectMapper.writeValueAsString(request)));
 
-        RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(TestModelDataBuilder.REP_ID);
+         RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(TestModelDataBuilder.REP_ID);
 
-        softly.assertThat(repOrderEntity.getCaseId())
-                .isEqualTo(request.getCaseId());
-
-        softly.assertThat(repOrderEntity.getCatyCaseType())
-                .isEqualTo(request.getCatyCaseType());
-
-        softly.assertThat(repOrderEntity.getAppealTypeCode())
-                .isEqualTo(request.getAppealTypeCode());
-
-        softly.assertThat(repOrderEntity.getArrestSummonsNo())
-                .isEqualTo(request.getArrestSummonsNo());
-
-        softly.assertThat(repOrderEntity.getUserModified())
-                .isEqualTo(TestModelDataBuilder.TEST_USER);
-
-        softly.assertThat(repOrderEntity.getMagsOutcome())
-                .isEqualTo(request.getMagsOutcome());
-
-        softly.assertThat(repOrderEntity.getMagsOutcomeDate())
-                .isEqualTo(request.getMagsOutcomeDate());
-
-        softly.assertThat(repOrderEntity.getMagsOutcomeDateSet())
-                .isEqualTo(request.getMagsOutcomeDateSet());
-
-        softly.assertThat(repOrderEntity.getCommittalDate())
-                .isEqualTo(request.getCommittalDate());
-
-        softly.assertThat(repOrderEntity.getDecisionReasonCode())
-                .isEqualTo(request.getDecisionReasonCode());
-
-        softly.assertThat(repOrderEntity.getCrownRepId())
-                .isEqualTo(request.getCrownRepId());
-
-        softly.assertThat(repOrderEntity.getCrownRepOrderDecision())
-                .isEqualTo(request.getCrownRepOrderDecision());
-
-        softly.assertThat(repOrderEntity.getCrownRepOrderType())
-                .isEqualTo(request.getCrownRepOrderType());
-
-        softly.assertThat(repOrderEntity.getCrownRepOrderDate())
-                .isEqualTo(request.getCrownRepOrderDate());
-
-        softly.assertThat(repOrderEntity.getCrownWithdrawalDate())
-                .isEqualTo(request.getCrownWithdrawalDate());
-
-        softly.assertThat(repOrderEntity.getIsImprisoned())
-                .isEqualTo(request.getIsImprisoned());
-
-        softly.assertThat(repOrderEntity.getAssessmentDateCompleted())
-                .isEqualTo(request.getAssessmentDateCompleted());
-
-        softly.assertThat(repOrderEntity.getSentenceOrderDate())
-                .isEqualTo(request.getSentenceOrderDate());
-
-        softly.assertThat(repOrderEntity.getApplicantHistoryId())
-                .isEqualTo(request.getApplicantHistoryId());
-
-        softly.assertThat(repOrderEntity.getEvidenceFeeLevel())
-                .isEqualTo(request.getEvidenceFeeLevel());
-
-        softly.assertThat(repOrderEntity.getBankAccountNo())
-                .isEqualTo(request.getBankAccountNo());
-
-        softly.assertThat(repOrderEntity.getBankAccountName())
-                .isEqualTo(request.getBankAccountName());
-
-        softly.assertThat(repOrderEntity.getPaymentMethod())
-                .isEqualTo(request.getPaymentMethod());
-
-        softly.assertThat(repOrderEntity.getPreferredPaymentDay())
-                .isEqualTo(request.getPreferredPaymentDay());
-
-        softly.assertThat(repOrderEntity.getSortCode())
-                .isEqualTo(request.getSortCode());
-
-        softly.assertThat(repOrderEntity.getIsSendToCCLF())
-                .isEqualTo(request.getIsSendToCCLF());
-
-        softly.assertThat(repOrderEntity.getAreaId())
-                .isEqualTo(request.getAreaId());
-
-        softly.assertThat(repOrderEntity.getCmuId())
-                .isEqualTo(request.getCmuId());
-
-        softly.assertThat(repOrderEntity.getIsCaseTransferred())
-                .isEqualTo(request.getIsCaseTransferred());
-
-        softly.assertThat(repOrderEntity.getIsBenchWarrantIssued())
-                .isEqualTo(request.getIsBenchWarrantIssued());
-
-        softly.assertThat(repOrderEntity.getAppealSentenceOrderChangedDate())
-                .isEqualTo(request.getAppealSentenceOrderChangedDate());
-
-        softly.assertThat(repOrderEntity.getAppealSentenceOrderDate())
-                .isEqualTo(request.getAppealSentenceOrderDate());
-
-        softly.assertThat(repOrderEntity.getAppealReceivedDate())
-                .isEqualTo(request.getAppealReceivedDate());
-
-        softly.assertThat(repOrderEntity.getAppealTypeDate())
-                .isEqualTo(request.getAppealTypeDate());
-
-        softly.assertThat(repOrderEntity.getFirstCapitalReminderDate())
-                .isEqualTo(request.getFirstCapitalReminderDate());
-
-        softly.assertThat(repOrderEntity.getAllCapitalEvidenceReceivedDate())
-                .isEqualTo(request.getAllCapitalEvidenceReceivedDate());
-
-        softly.assertThat(repOrderEntity.getApplicationId())
-                .isEqualTo(request.getApplicationId());
-
-        softly.assertThat(repOrderEntity.getCapitalAllowanceReinstatedDate())
-                .isEqualTo(request.getCapitalAllowanceReinstatedDate());
-
-        softly.assertThat(repOrderEntity.getCapitalAllowanceWithheldDate())
-                .isEqualTo(request.getCapitalAllowanceWithheldDate());
-
-        softly.assertThat(repOrderEntity.getCapitalEvidenceDueDate())
-                .isEqualTo(request.getCapitalEvidenceDueDate());
-
-        softly.assertThat(repOrderEntity.getCapitalNote())
-                .isEqualTo(request.getCapitalNote());
-
-        softly.assertThat(repOrderEntity.getCapitalAllowance())
-                .isEqualTo(request.getCapitalAllowance());
-
-        softly.assertThat(repOrderEntity.getIsCourtCustody())
-                .isEqualTo(request.getIsCourtCustody());
-
-        softly.assertThat(repOrderEntity.getDateReceived())
-                .isEqualTo(request.getDateReceived());
-
-        softly.assertThat(repOrderEntity.getDateStatusDue())
-                .isEqualTo(request.getDateStatusDue());
-
-        softly.assertThat(repOrderEntity.getDateStatusSet())
-                .isEqualTo(request.getDateStatusSet());
-
-        softly.assertThat(repOrderEntity.getDecisionDate())
-                .isEqualTo(request.getDecisionDate());
-
-        softly.assertThat(repOrderEntity.getIojResultNote())
-                .isEqualTo(request.getIojResultNote());
-
-        softly.assertThat(repOrderEntity.getMacoCourt())
-                .isEqualTo(request.getMacoCourt());
-
-        softly.assertThat(repOrderEntity.getMagsWithdrawalDate())
-                .isEqualTo(request.getMagsWithdrawalDate());
-
-        softly.assertThat(repOrderEntity.getIsNoCapitalDeclared())
-                .isEqualTo(request.getIsNoCapitalDeclared());
-
-        softly.assertThat(repOrderEntity.getOftyOffenceType())
-                .isEqualTo(request.getOftyOffenceType());
-
-        softly.assertThat(repOrderEntity.getUseSuppAddressForPost())
-                .isEqualTo(request.getUseSuppAddressForPost());
-
-        softly.assertThat(repOrderEntity.getPostalAddressId())
-                .isEqualTo(request.getPostalAddressId());
-
-        softly.assertThat(repOrderEntity.getRorsStatus())
-                .isEqualTo(request.getRorsStatus());
-
-        softly.assertThat(repOrderEntity.getStatusReason())
-                .isEqualTo(request.getStatusReason());
-
-        softly.assertThat(repOrderEntity.getSuppAccountCode())
-                .isEqualTo(request.getSuppAccountCode());
-
-        softly.assertThat(repOrderEntity.getIsWelshCorrespondence())
-                .isEqualTo(request.getIsWelshCorrespondence());
-
-        softly.assertThat(repOrderEntity.getCinrCode())
-                .isEqualTo(request.getCinrCode());
-
-        softly.assertThat(repOrderEntity.getIsPartner())
-                .isEqualTo(request.getIsPartner());
-
-        softly.assertThat(repOrderEntity.getIsRetrial())
-                .isEqualTo(request.getIsRetrial());
-
-        softly.assertThat(repOrderEntity.getEfmDateStamp())
-                .isEqualTo(request.getEfmDateStamp());
-
-        softly.assertThat(repOrderEntity.getSolicitorName())
-                .isEqualTo(request.getSolicitorName());
-
-        softly.assertThat(repOrderEntity.getHearingDate())
-                .isEqualTo(request.getHearingDate());
+         Assertions.assertThat(objectMapper.writeValueAsString(mapper.repOrderEntityToRepOrderDTO(repOrderEntity)))
+                 .isEqualTo(result.getResponse().getContentAsString());
 
     }
 

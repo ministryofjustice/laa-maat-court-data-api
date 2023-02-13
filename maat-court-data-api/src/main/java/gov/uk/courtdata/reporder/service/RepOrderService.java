@@ -55,12 +55,11 @@ public class RepOrderService {
     }
 
     @Transactional
-    public void update(final UpdateRepOrder updateRepOrder) {
+    public RepOrderDTO update(final UpdateRepOrder updateRepOrder) {
         log.info("update rep order - Transaction Processing - Start");
         RepOrderEntity repOrderEntity = repOrderImpl.find(updateRepOrder.getRepId());
         repOrderMapper.updateRepOrderToRepOrderEntity(updateRepOrder, repOrderEntity);
-        repOrderImpl.updateRepOrder(repOrderEntity);
-        log.info("update rep order  - Transaction Processing - End");
+        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderImpl.updateRepOrder(repOrderEntity));
     }
 
     @Transactional

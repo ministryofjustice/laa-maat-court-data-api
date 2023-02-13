@@ -193,9 +193,12 @@ class RepOrderControllerTest {
     void givenCorrectParameters_whenUpdateIsInvoked_thenUpdateRepOrderIsSuccess() throws Exception {
         when(maatIdValidator.validate(any()))
                 .thenReturn(Optional.empty());
-
+        when(repOrderService.update(any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
                 .content(TestModelDataBuilder.getUpdateRepOrderJson())
-                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(TestModelDataBuilder.REP_ID));
     }
 }

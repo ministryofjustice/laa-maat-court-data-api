@@ -2,6 +2,7 @@ package gov.uk.courtdata.reporder.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
@@ -167,10 +168,9 @@ public class RepOrderController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<Object> update(@RequestBody UpdateRepOrder updateRepOrder) {
+    public ResponseEntity<RepOrderDTO> update(@RequestBody UpdateRepOrder updateRepOrder) {
         log.debug("Update Rep order request received for repId : {}", updateRepOrder.getRepId());
         maatIdValidator.validate(updateRepOrder.getRepId());
-        repOrderService.update(updateRepOrder);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(repOrderService.update(updateRepOrder));
     }
 }

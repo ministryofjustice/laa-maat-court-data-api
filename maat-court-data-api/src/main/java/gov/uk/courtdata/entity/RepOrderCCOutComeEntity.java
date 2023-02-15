@@ -1,6 +1,8 @@
 package gov.uk.courtdata.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -22,12 +24,13 @@ public class RepOrderCCOutComeEntity {
     @Column(name = "REP_ID")
     private int repId;
     @Column(name = "CCOO_OUTCOME")
-    private String ccooOutcome;
+    private String outcome;
     @Column(name = "CCOO_OUTCOME_DATE")
-    private LocalDate ccooOutcomeDate;
+    private LocalDateTime outcomeDate;
     @Column(name = "USER_CREATED")
     private String userCreated;
     @Column(name = "DATE_CREATED")
+    @CreationTimestamp
     private LocalDateTime dateCreated;
     @Column(name = "CASE_NUMBER")
     private String caseNumber;
@@ -36,5 +39,6 @@ public class RepOrderCCOutComeEntity {
     @Column(name = "USER_MODIFIED")
     private String userModified;
     @Column(name = "DATE_MODIFIED")
+    @UpdateTimestamp
     private LocalDateTime dateModified;
 }

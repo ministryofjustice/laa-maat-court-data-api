@@ -2,12 +2,15 @@ package gov.uk.courtdata.repository;
 
 import gov.uk.courtdata.entity.RepOrderCCOutComeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface CrownCourtProcessingRepository extends JpaRepository<RepOrderCCOutComeEntity, Integer> {
@@ -28,4 +31,5 @@ public interface CrownCourtProcessingRepository extends JpaRepository<RepOrderCC
             @Param("p_user") String dbUser,
             @Param("p_sentence_order_date") LocalDate sentenceOrderDate);
 
+    List<RepOrderCCOutComeEntity> findByRepId(Integer repId);
 }

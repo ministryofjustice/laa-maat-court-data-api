@@ -535,4 +535,14 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity() {
+        return RepOrderCCOutComeEntity.builder()
+                .repId(REP_ID)
+                .outcome("CONVICTED")
+                .userCreated(TEST_USER)
+                .caseNumber(TEST_CASE_ID.toString())
+                .crownCourtCode("430")
+                .outcomeDate(TEST_DATE)
+                .build();
+    }
 }

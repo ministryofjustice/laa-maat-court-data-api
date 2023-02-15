@@ -1070,4 +1070,36 @@ public class TestModelDataBuilder {
                 .dateChanged(LocalDate.now())
                 .build();
     }
+
+    public static RepOrderCCOutcome getRepOrderCCOutcome() {
+        return RepOrderCCOutcome.builder()
+                .repId(REP_ID)
+                .outcome("CONVICTED")
+                .crownCourtCode("430")
+                .userCreated(TEST_USER)
+                .outcomeDate(TEST_DATE)
+                .id(1)
+                .build();
+    }
+    public static RepOrderCCOutcome getUpdateRepOrderCCOutcome(Integer ccOutComeId) {
+        return RepOrderCCOutcome.builder()
+                .repId(REP_ID)
+                .caseNumber(TEST_CASE_ID.toString())
+                .outcome("CONVICTED")
+                .crownCourtCode("430")
+                .id(ccOutComeId)
+                .userModified(TEST_USER)
+                .build();
+    }
+    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId) {
+        return RepOrderCCOutcomeDTO.builder()
+                .repId(REP_ID)
+                .caseNumber(TEST_CASE_ID.toString())
+                .outcome("PART CONVICTED")
+                .crownCourtCode("459")
+                .userCreated(TEST_USER)
+                .id(outcomeId)
+                .build();
+
+    }
 }

@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Charges {
+public class Charge {
     @JsonProperty("Charge")
     protected String charge;
     @JsonProperty("Offence_when")
     protected String offenceWhen;
+    @JsonProperty("Offence_date_1")
+    protected LocalDateTime offenceDate1;
     @JsonProperty("Offence_date_2")
     protected LocalDateTime offenceDate2;
-    @JsonProperty("Offence_date_3")
-    protected LocalDateTime offenceDate3;
 }

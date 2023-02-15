@@ -25,8 +25,8 @@ public class EformsStagingEntity {
     private String type;
 
     @Lob
-    @Column(name = "XML_DOC")
-    private Clob xmlDoc;
+    @Column(name = "XML_DOC", columnDefinition="CLOB")
+    private String xmlDoc;
 
     @Column(name = "MAAT_REF")
     private String maatRef;

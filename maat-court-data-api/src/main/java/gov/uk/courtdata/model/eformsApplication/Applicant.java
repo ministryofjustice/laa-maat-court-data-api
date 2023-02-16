@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -24,7 +26,7 @@ public class Applicant {
 
     @JsonProperty("date_of_birth")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @JsonProperty("telephone_number")
     private String telephoneNumber;

@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -17,9 +19,9 @@ public class FromDateToDate {
 
     @JsonProperty("date_from")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date dateFrom;
+    private LocalDate dateFrom;
 
     @JsonProperty("date_to")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date dateTo;
+    private LocalDate dateTo;
 }

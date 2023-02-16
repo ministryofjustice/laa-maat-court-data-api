@@ -22,7 +22,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EformsApplication {
-    private Integer id;
+    private String id;
 
     @JsonProperty("schema_version")
     private BigDecimal schemaVersion;

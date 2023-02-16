@@ -1,6 +1,7 @@
 package gov.uk.courtdata.model.eformsApplication.xmlModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.*;
 
@@ -80,6 +81,8 @@ public class EformsApplicationFieldData {
     private boolean lateApplicationCc;
     @JsonProperty("Hearing_date_imminent")
     private boolean hearingDateImminent;
+    @JsonProperty("Urn")
+    private String urn;
     @JsonProperty("Title")
     private String title;
     @JsonProperty("Title_other")
@@ -286,6 +289,8 @@ public class EformsApplicationFieldData {
     private LocalDateTime legalRepSignDate;
     @JsonProperty("Charges_brought")
     private List<Charge> chargesBrought;
+
+    private LaaAdded laaAdded;
 
 
 }

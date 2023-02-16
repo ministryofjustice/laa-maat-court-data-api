@@ -1,6 +1,7 @@
 package gov.uk.courtdata.model.eformsApplication.xmlModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JacksonXmlRootElement(localName = "row")
 public class Charge {
     @JsonProperty("Charge")
     protected String charge;

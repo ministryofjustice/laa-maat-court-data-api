@@ -2,7 +2,7 @@ package gov.uk.courtdata.model.eformsApplication.xmlModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,8 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JacksonXmlRootElement(localName = "fielddata")
-public class EformsApplicationFieldData {
+public class FieldData {
 
     @JsonProperty("Formtype")
     private String formType;
@@ -287,10 +286,9 @@ public class EformsApplicationFieldData {
     private String legalRepSign;
     @JsonProperty("Legal_rep_sign_date")
     private LocalDateTime legalRepSignDate;
-    @JsonProperty("Charges_brought")
+    @JacksonXmlElementWrapper(localName = "Charges_brought")
+    @JacksonXmlProperty(localName = "row")
     private List<Charge> chargesBrought;
 
     private LaaAdded laaAdded;
-
-
 }

@@ -288,7 +288,7 @@ public class FieldData {
     private LocalDateTime legalRepSignDate;
     @JacksonXmlElementWrapper(localName = "Charges_brought")
     @JacksonXmlProperty(localName = "row")
-    private List<Charge> chargesBrought;
+    private List<Row> chargesBrought;
 
     private LaaAdded laaAdded;
 }

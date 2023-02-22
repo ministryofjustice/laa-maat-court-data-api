@@ -6,9 +6,9 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import gov.uk.courtdata.eformsApplication.dto.EformsStagingDTO;
 import gov.uk.courtdata.model.eformsApplication.*;
-import gov.uk.courtdata.model.eformsApplication.xmlModels.Charge;
-import gov.uk.courtdata.model.eformsApplication.xmlModels.EformsApplicationFieldData;
-import gov.uk.courtdata.model.eformsApplication.xmlModels.EformsApplicationFormData;
+import gov.uk.courtdata.model.eformsApplication.xmlModels.Row;
+import gov.uk.courtdata.model.eformsApplication.xmlModels.FieldData;
+import gov.uk.courtdata.model.eformsApplication.xmlModels.FormData;
 import gov.uk.courtdata.model.eformsApplication.xmlModels.LaaAdded;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -44,11 +44,11 @@ public class EformsStagingBuilder {
         return xmlMapper.writeValueAsString(buildFormData(eformsApplication));
     }
 
-    public EformsApplicationFormData buildFormData(EformsApplication eformsApplication) {
-        return EformsApplicationFormData.builder().fieldData(buildFieldData(eformsApplication)).build();
+    public FormData buildFormData(EformsApplication eformsApplication) {
+        return FormData.builder().fieldData(buildFieldData(eformsApplication)).build();
     }
 
-    public EformsApplicationFieldData buildFieldData(EformsApplication eformsApplication) {
+    public FieldData buildFieldData(EformsApplication eformsApplication) {
         ProviderDetails provider = eformsApplication.getProviderDetails();
         Applicant applicant = eformsApplication.getClientDetails().getApplicant();
         Address homeAddress = applicant.getHomeAddress();
@@ -56,7 +56,8 @@ public class EformsStagingBuilder {
             homeAddress : applicant.getCorrespondenceAddress();
         CaseDetails caseDetails = eformsApplication.getCaseDetails();
 
-        return EformsApplicationFieldData.builder()
+        return FieldData.builder()
+                .formType(APPLICATION_TYPE)
                 .dateReceived(eformsApplication.getCreatedAt())
                 .datestampDate(eformsApplication.getDateStamp())
                 .legalRepLaaAccount(provider.getOfficeCode())
@@ -76,6 +77,7 @@ public class EformsStagingBuilder {
                 .contactAddress3(contactAddress.getCity())
                 .contactPostcode(contactAddress.getPostcode())
                 .urn(caseDetails.getUrn())
+                .usn(eformsApplication.getReference().longValue())
                 .chargesBrought(buildChargeList(eformsApplication.getCaseDetails().getOffences()))
                 .offenceType(getOffenceType(eformsApplication.getCaseDetails().getOffences()))
                 .laaAdded(LaaAdded.builder().caseType(caseDetails.getCaseType()).build())
@@ -86,14 +88,14 @@ public class EformsStagingBuilder {
                 .build();
     }
 
-    private List<Charge> buildChargeList(List<Offence> offences) {
+    private List<Row> buildChargeList(List<Offence> offences) {
 
-        List<Charge> charges = new ArrayList<>();
+        List<Row> charges = new ArrayList<>();
 
         for (Offence offence : offences) {
             charges.addAll(
                     offence.getDates().stream().map(dates ->
-                            Charge.builder()
+                            Row.builder()
                                     .charge(offence.getName())
                                     .offenceWhen(dates.getDateTo() != null ? "BETWEEN" : "ON")
                                     .offenceDate1(toLocalDateTime(dates.getDateFrom()))

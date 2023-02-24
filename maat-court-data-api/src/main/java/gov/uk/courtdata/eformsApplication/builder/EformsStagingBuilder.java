@@ -6,10 +6,11 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import gov.uk.courtdata.eformsApplication.dto.EformsStagingDTO;
 import gov.uk.courtdata.model.eformsApplication.*;
-import gov.uk.courtdata.model.eformsApplication.xmlModels.Row;
 import gov.uk.courtdata.model.eformsApplication.xmlModels.FieldData;
 import gov.uk.courtdata.model.eformsApplication.xmlModels.FormData;
 import gov.uk.courtdata.model.eformsApplication.xmlModels.LaaAdded;
+import gov.uk.courtdata.model.eformsApplication.xmlModels.ParentFormData;
+import gov.uk.courtdata.model.eformsApplication.xmlModels.Row;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -40,10 +41,12 @@ public class EformsStagingBuilder {
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.registerModule(new JSR310Module());
         xmlMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
-        return xmlMapper.writeValueAsString(buildFormData(eformsApplication));
+        return xmlMapper.writeValueAsString(buildParentFormData(eformsApplication)).replace("wstxns1", "fd");
     }
 
+    public ParentFormData buildParentFormData(EformsApplication eformsApplication) {
+        return ParentFormData.builder().formData(buildFormData(eformsApplication)).build();
+    }
     public FormData buildFormData(EformsApplication eformsApplication) {
         return FormData.builder().fieldData(buildFieldData(eformsApplication)).build();
     }
@@ -60,6 +63,7 @@ public class EformsStagingBuilder {
                 .formType(APPLICATION_TYPE)
                 .dateReceived(eformsApplication.getCreatedAt())
                 .datestampDate(eformsApplication.getDateStamp())
+                .applicationType("New application") // hardcoded for testing
                 .legalRepLaaAccount(provider.getOfficeCode())
                 .legalRepFullName(String.format("%s %s", provider.getLegalRepFirstName(), provider.getLegalRepLastName()))
                 .solicitorPhoneLandline(provider.getLegalRepTelephone())
@@ -68,6 +72,7 @@ public class EformsStagingBuilder {
                 .niNumber(applicant.getNino())
                 .dateOfBirth(toLocalDateTime(applicant.getDateOfBirth()))
                 .phoneLandline(applicant.getTelephoneNumber())
+                .haveHomeAddress("Yes") // hardcoded for testing
                 .homeAddress1(homeAddress.getAddressLineOne())
                 .homeAddress2(homeAddress.getAddressLineTwo())
                 .homeAddress3(homeAddress.getCity())
@@ -81,6 +86,7 @@ public class EformsStagingBuilder {
                 .chargesBrought(buildChargeList(eformsApplication.getCaseDetails().getOffences()))
                 .offenceType(getOffenceType(eformsApplication.getCaseDetails().getOffences()))
                 .laaAdded(LaaAdded.builder().caseType(caseDetails.getCaseType()).build())
+                .disabled("No")// hardcoded for testing
                 .codefendantsDetails(
                         caseDetails.getCodefendants().stream().map(defendant ->
                                         String.format("%s %s", defendant.getFirstName(), defendant.getLastName()))

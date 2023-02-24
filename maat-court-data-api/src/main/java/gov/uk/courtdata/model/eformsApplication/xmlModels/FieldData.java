@@ -286,6 +286,10 @@ public class FieldData {
     private String legalRepSign;
     @JsonProperty("Legal_rep_sign_date")
     private LocalDateTime legalRepSignDate;
+    @JsonProperty("Disabled")
+    private String disabled;
+    @JsonProperty("Disabled_definition")
+    private String disabledDefinition;
     @JacksonXmlElementWrapper(localName = "Charges_brought")
     @JacksonXmlProperty(localName = "row")
     private List<Row> chargesBrought;

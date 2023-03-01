@@ -545,4 +545,17 @@ public class TestEntityDataBuilder {
                 .outcomeDate(TEST_DATE)
                 .build();
     }
+
+    public static RepOrderCapitalEntity getRepOrderCapitalEntity(Integer id ,Integer repId, String capitalType) {
+
+        return RepOrderCapitalEntity.builder()
+                .id(id)
+                .repId(repId)
+                .captCapitalType(capitalType)
+                .active("Y")
+                .dateCreated(LocalDateTime.now())
+                .userCreated(TEST_USER)
+                .dateAllEvidenceReceived(LocalDateTime.now())
+                .build();
+    }
 }

@@ -663,6 +663,7 @@ Resources:
           - !Ref CognitoUserPoolClientCda
           - !Ref CognitoUserPoolClientCrimeMeansAssessment
           - !Ref CognitoUserPoolClientCrownCourtProceeding
+          - !Ref CognitoUserPoolClientCrownCourtContribution
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiStage:
     Type: 'AWS::ApiGatewayV2::Stage'
@@ -752,6 +753,20 @@ Resources:
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'
   CognitoUserPoolClientCrownCourtProceeding:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: CognitoUserPoolResourceServer1
+    Properties:
+      ClientName: "Crown Court Proceeding"
+      UserPoolId: !Ref CognitoUserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      GenerateSecret: true
+      SupportedIdentityProviders: [COGNITO]
+      AllowedOAuthFlows: [client_credentials]
+      AllowedOAuthScopes: [!Sub '${pAppName}/${pApiScope1}']
+      PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - 'ALLOW_REFRESH_TOKEN_AUTH'
+  CognitoUserPoolClientCrownCourtContribution:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1
     Properties:

@@ -22,49 +22,49 @@ public class RepOrderCapitalEntity {
 
 
     @Id
-    @Column(name = "ID", nullable = false, precision = 0)
+    @Column(name = "ID")
     private int id;
-    @Column(name = "REP_ID", nullable = false, precision = 0)
+    @Column(name = "REP_ID")
     private int repId;
-    @Column(name = "CAPT_CAPITAL_TYPE", nullable = false, length = 20)
+    @Column(name = "CAPT_CAPITAL_TYPE")
     private String captCapitalType;
-    @Column(name = "ROPD_ID", precision = 0)
+    @Column(name = "ROPD_ID")
     private Integer ropdId;
-    @Column(name = "OTHER_DESCRIPTION", length = 250)
+    @Column(name = "OTHER_DESCRIPTION")
     private String otherDescription;
-    @Column(name = "CAPITAL_AMOUNT", precision = 2)
+    @Column(name = "CAPITAL_AMOUNT")
     private Integer capitalAmount;
-    @Column(name = "VERIFIED_CAPITAL_AMOUNT", precision = 2)
+    @Column(name = "VERIFIED_CAPITAL_AMOUNT")
     private Integer verifiedCapitalAmount;
-    @Column(name = "ASST_ASSET_STATUS", length = 20)
+    @Column(name = "ASST_ASSET_STATUS")
     private String asstAssetStatus;
-    @Column(name = "VERIFIED_BY", length = 50)
+    @Column(name = "VERIFIED_BY")
     private String verifiedBy;
     @Column(name = "VERIFIED_DATE")
     private LocalDateTime verifiedDate;
-    @Column(name = "UNDECLARED", length = 1)
+    @Column(name = "UNDECLARED")
     private String undeclared;
     @Column(name = "DATE_ENTERED")
     private LocalDateTime dateEntered;
     @CreationTimestamp
-    @Column(name = "DATE_CREATED", nullable = false)
+    @Column(name = "DATE_CREATED")
     private LocalDateTime dateCreated;
-    @Column(name = "USER_CREATED", nullable = false, length = 100)
+    @Column(name = "USER_CREATED")
     private String userCreated;
     @Column(name = "DATE_MODIFIED")
     private LocalDateTime dateModified;
-    @Column(name = "USER_MODIFIED", length = 100)
+    @Column(name = "USER_MODIFIED")
     private String userModified;
-    @Column(name = "ACTIVE", length = 1)
+    @Column(name = "ACTIVE")
     private String active;
     @Column(name = "REMOVED_DATE")
     private LocalDateTime removedDate;
     @Column(name = "DATE_ALL_EVIDENCE_RECEIVED")
     private LocalDateTime dateAllEvidenceReceived;
-    @Column(name = "BANK_NAME", length = 50)
+    @Column(name = "BANK_NAME")
     private String bankName;
-    @Column(name = "BRANCH", length = 30)
+    @Column(name = "BRANCH")
     private String branch;
-    @Column(name = "ACCOUNT_OWNER", length = 10)
+    @Column(name = "ACCOUNT_OWNER")
     private String accountOwner;
 }

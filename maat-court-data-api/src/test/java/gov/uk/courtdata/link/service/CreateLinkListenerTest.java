@@ -32,7 +32,7 @@ public class CreateLinkListenerTest {
         String message = "Test JSON";
         //when
         when(gson.fromJson(message, CaseDetails.class)).thenReturn(caseDetails);
-        createLinkListener.receive(message);
+        createLinkListener.receive(message, "1");
         //then
         verify(createLinkService, times(1)).saveAndLink(caseDetails);
         verify(queueMessageLogService, times(1)).createLog(MessageType.LINK, message);

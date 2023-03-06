@@ -34,12 +34,23 @@ spring:
     init:
       platform: h2
 
+cloud:
+  aws:
+    stack:
+      auto: false
+    region:
+      static: eu-west-2
+      auto: false
+    credentials:
+      access-key: access
+      secret-key: access
+
 cloud-platform:
   aws:
     sqs:
       region: eu-west-2
       accesskey: access
-      secretkey: secret
+      secretkey: access
       queue:
         link: link
         unlink: unlink

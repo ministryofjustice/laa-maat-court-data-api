@@ -39,6 +39,17 @@ spring:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate.enable_lazy_load_no_trans: true
 
+cloud:
+  aws:
+    stack:
+      auto: false
+    region:
+      static: ${CLOUD_PLATFORM_QUEUE_REGION}
+      auto: false
+    credentials:
+      access-key: ${CLOUD_PLATFORM_QUEUE_ACCESS_KEY}
+      secret-key: ${CLOUD_PLATFORM_QUEUE_SECRET_KEY}
+
 springdoc:
   packagesToScan: gov.uk.courtdata
   show-actuator: true

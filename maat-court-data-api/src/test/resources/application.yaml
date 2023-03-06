@@ -39,7 +39,7 @@ cloud-platform:
     sqs:
       region: eu-west-2
       accesskey: access
-      secretkey: access
+      secretkey: secret
       queue:
         link: link
         unlink: unlink

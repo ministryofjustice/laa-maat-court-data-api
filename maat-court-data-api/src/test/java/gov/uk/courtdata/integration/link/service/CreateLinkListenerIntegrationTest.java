@@ -59,9 +59,6 @@ public class CreateLinkListenerIntegrationTest {
     @Autowired
     private PassportAssessmentRepository passportAssessmentRepository;
 
-//    @Autowired
-//    private SpringCloudAwsConfig springCloudAwsConfig;
-
     @BeforeEach
     public void setUp() {
         financialAssessmentRepository.deleteAll();

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.integration;
 
 import com.amazon.sqs.javamessaging.SQSConnectionFactory;
+import io.awspring.cloud.messaging.listener.SimpleMessageListenerContainer;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
@@ -29,4 +30,7 @@ public class MockServicesConfig {
 
     @MockBean(name = "cdaOAuth2WebClient")
     private WebClient cdaOAuth2WebClient;
+
+    @MockBean(name = "simpleMessageListenerContainer")
+    private SimpleMessageListenerContainer simpleMessageListenerContainer;
 }

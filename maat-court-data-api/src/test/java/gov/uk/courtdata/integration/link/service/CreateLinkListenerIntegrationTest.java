@@ -4,6 +4,7 @@ package gov.uk.courtdata.integration.link.service;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.config.SpringCloudAwsConfig;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.CourtHouseCodesEntity;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
@@ -84,7 +85,7 @@ public class CreateLinkListenerIntegrationTest {
         String saveAndLinkMessage = testModelDataBuilder.getSaveAndLinkString();
 
         //when
-        createLinkListener.receive(saveAndLinkMessage);
+        createLinkListener.receive(saveAndLinkMessage, "2");
 
         //then
         CourtDataDTO courtDataDTO = testModelDataBuilder.getSaveAndLinkModelRaw();

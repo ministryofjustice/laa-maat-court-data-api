@@ -23,7 +23,8 @@
     "pCloudwatchStep":"1m",
     "pCloudwatchBatchSize":"10",
     "pEnableCloudwatchMetrics":"true",
-    "pAwsXRayEnabled": "true"
+    "pAwsXRayEnabled": "true",
+    "pModPlatformVpcCidr": "10.26.96.0/21"
   },
   "Tags" : {
     "business-unit" : "LAA",

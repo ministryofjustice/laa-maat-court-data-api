@@ -89,26 +89,34 @@ docker-compose up
 
 laa-maat-court-data-api application will be running on http://localhost:8090 
 
+
 ### Cloud Platform Set Up 
 
 MAAT API speaks to AWS SQS which exists on cloud platform. It is advisable to have the cloud platform set up locally. 
 
 Follow this link to on board yourself with the LAA cloud platform environment. - https://user-guide.cloud-platform.service.justice.gov.uk/documentation/getting-started/kubectl-config.html#how-to-use-kubectl-to-connect-to-the-cluster
 
-Once you are on board with Cloud Platform, Run the following Command.  
-
-
-```sh
-kubectl -n laa-court-data-adaptor-dev get secrets ca-messaging-queues-output -o yaml
-```
-
-You'll need to decode the secrets using the following command. 
+Once you are on board with Cloud Platform, run the following command to display the list of secrets for the messaging queues:
 
 ```sh
-echo 'Your Secret' | base64 --decode
+kubectl -n laa-court-data-adaptor-dev get secrets cda-messaging-queues-output -o yaml
 ```
 
-Configure AWS details using aws cli (command - ```aws configure```) Set up AWS Access Key ID & AWS Secret Access Key. All other values can be default. 
+In order to see their actual values you'll need to decode each secret using the following command:
+
+```sh
+echo "<encoded-secret-value>" | base64 --decode
+```
+
+Configure AWS details using aws cli command:
+
+```sh
+aws configure
+``` 
+
+When prompted provide the decoded AWS Access Key ID & AWS Secret Access Key. All other values can be default.
+ 
+*NOTE: You will need the awscli installed using homebrew or other method for this.*
 
 Now you can test the applications by firing Messages on AWS Queue. 
 

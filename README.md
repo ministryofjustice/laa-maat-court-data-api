@@ -108,6 +108,12 @@ In order to see their actual values you'll need to decode each secret using the 
 echo "<encoded-secret-value>" | base64 --decode
 ```
 
+If you have [jq](https://stedolan.github.io/jq/) installed then you can retrieve the secrets and decode them with just the following command:
+
+```sh
+kubectl -n laa-court-data-adaptor-dev get secret cda-messaging-queues-output -o json | jq '.data|map_values(@base64d)'
+```
+
 Configure AWS details using aws cli command:
 
 ```sh

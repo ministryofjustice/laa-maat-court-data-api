@@ -676,6 +676,7 @@ Resources:
           - !Ref CognitoUserPoolClientCrimeMeansAssessment
           - !Ref CognitoUserPoolClientCrownCourtProceeding
           - !Ref CognitoUserPoolClientCrownCourtContribution
+          - !Ref CognitoUserPoolClientCrimeEvidence
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiStage:
     Type: 'AWS::ApiGatewayV2::Stage'
@@ -783,6 +784,20 @@ Resources:
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
       ClientName: "Crown Court Contribution"
+      UserPoolId: !Ref CognitoUserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      GenerateSecret: true
+      SupportedIdentityProviders: [COGNITO]
+      AllowedOAuthFlows: [client_credentials]
+      AllowedOAuthScopes: [!Sub '${pAppName}/${pApiScope1}']
+      PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - 'ALLOW_REFRESH_TOKEN_AUTH'
+  CognitoUserPoolClientCrimeEvidence:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: CognitoUserPoolResourceServer1
+    Properties:
+      ClientName: "Crime Evidence"
       UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlowsUserPoolClient: true
       GenerateSecret: true

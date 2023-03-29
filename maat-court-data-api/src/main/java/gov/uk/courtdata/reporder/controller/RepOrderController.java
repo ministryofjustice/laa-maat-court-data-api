@@ -91,11 +91,10 @@ public class RepOrderController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<Object> updateApplicationDateCompleted(@RequestBody UpdateAppDateCompleted updateAppDateCompleted) {
+    public ResponseEntity<RepOrderDTO> updateApplicationDateCompleted(@RequestBody UpdateAppDateCompleted updateAppDateCompleted) {
         log.debug("Assessments Request Received for repId : {}", updateAppDateCompleted.getRepId());
         updateAppDateCompletedValidator.validate(updateAppDateCompleted);
-        repOrderService.updateDateCompleted(updateAppDateCompleted);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(repOrderService.updateDateCompleted(updateAppDateCompleted));
     }
 
 

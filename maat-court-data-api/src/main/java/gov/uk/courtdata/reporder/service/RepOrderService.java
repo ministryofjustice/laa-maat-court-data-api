@@ -48,10 +48,10 @@ public class RepOrderService {
     }
 
     @Transactional
-    public void updateDateCompleted(final UpdateAppDateCompleted updateAppDateCompleted) {
+    public RepOrderDTO updateDateCompleted(final UpdateAppDateCompleted updateAppDateCompleted) {
         log.info("update app date completed - Transaction Processing - Start");
-        repOrderImpl.updateAppDateCompleted(updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted());
-        log.info("update app date completed  - Transaction Processing - End");
+        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderImpl
+                .updateAppDateCompleted(updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted()));
     }
 
     @Transactional

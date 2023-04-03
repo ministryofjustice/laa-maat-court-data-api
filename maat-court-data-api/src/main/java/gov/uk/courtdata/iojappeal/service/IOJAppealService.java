@@ -34,9 +34,7 @@ public class IOJAppealService {
     @Transactional(readOnly = true)
     public IOJAppealDTO findByRepId(int repId) {
         IOJAppealEntity iojAppealEntity = iojAppealImpl.findByRepId(repId);
-        if (iojAppealEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No IOJ Appeal found for REP ID: %s", repId));
-        }
+        if (iojAppealEntity == null) return null;
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
     }
 

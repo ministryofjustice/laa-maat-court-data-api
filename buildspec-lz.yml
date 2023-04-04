@@ -3,7 +3,6 @@ phases:
   install:
     runtime-versions:
       java: corretto11
-      docker: 18
 
   pre_build:
     commands: |

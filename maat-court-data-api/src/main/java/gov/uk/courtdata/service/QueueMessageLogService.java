@@ -41,15 +41,12 @@ public class QueueMessageLogService {
                         .getAsJsonObject().get("maat_reference")
                 : msgObject.get("maatId");
 
-        JsonElement laaTransactionUUID = msgObject.has("metadata") ?
-                msgObject.get("metadata").getAsJsonObject().get("laaTransactionId") :
-                msgObject.get("laaTransactionId");
+        String laaTransactionId = extractLaaTransactionId(msgObject);
 
         QueueMessageLogEntity queueMessageLogEntity =
                 QueueMessageLogEntity.builder()
                         .transactionUUID(UUID.randomUUID().toString())
-                        .laaTransactionId(Optional.ofNullable(laaTransactionUUID).map(JsonElement::getAsString)
-                                .orElse(null))
+                        .laaTransactionId(laaTransactionId)
                         .maatId(Optional
                                 .ofNullable(maatId)
                                 .map(JsonElement::getAsInt)
@@ -60,6 +57,18 @@ public class QueueMessageLogService {
                         .build();
 
         queueMessageLogRepository.save(queueMessageLogEntity);
+    }
+
+    private String extractLaaTransactionId(JsonObject msgObject) {
+        JsonElement laaTransactionUUID = msgObject.has("metadata") ?
+                msgObject.get("metadata").getAsJsonObject().get("laaTransactionId") :
+                msgObject.get("laaTransactionId");
+
+        if (laaTransactionUUID == null || laaTransactionUUID.isJsonNull()) {
+            return null;
+        }
+
+        return laaTransactionUUID.getAsString();
     }
 
 

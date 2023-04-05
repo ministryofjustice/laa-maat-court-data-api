@@ -155,7 +155,9 @@ public class QueueMessageLogServiceTest {
     public void testWhenProsecutionConcluded_thenCheckLogEntryCreated() {
 
         final Integer maatId = 1000;
-        queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, getQueueMessage(maatId, JurisdictionType.CROWN));
+        final String laaTransactionId = "8720c683-39ef-4168-a8cc-058668a2dcca";
+        queueMessageLogService.createLog(
+                MessageType.PROSECUTION_CONCLUDED, getQueueMessage(maatId, JurisdictionType.CROWN, laaTransactionId));
 
         verify(queueMessageLogRepository, times(1)).save(queueMessageCaptor.capture());
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
@@ -168,7 +170,7 @@ public class QueueMessageLogServiceTest {
                 () -> assertNotNull(savedQueueMsg.getType()),
                 () -> assertNotNull(savedQueueMsg.getMessage()),
                 () -> assertNotNull(savedQueueMsg.getCreatedTime()),
-                () -> assertEquals("8720c683-39ef-4168-a8cc-058668a2dcca", savedQueueMsg.getLaaTransactionId()),
+                () -> assertEquals(laaTransactionId, savedQueueMsg.getLaaTransactionId()),
                 () -> assertEquals(savedQueueMsg.getMaatId(), maatId)
         );
     }
@@ -177,22 +179,17 @@ public class QueueMessageLogServiceTest {
     public void testWhenMetadataIsNull_thenProcessAsExpected() {
 
         final Integer maatId = 1000;
-
         queueMessageLogService.createLog(MessageType.LAA_STATUS, newQueueMessageWithoutMetaData(maatId));
+        assertNullLaaTransactionIdIsHandled(maatId);
+    }
 
-        verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
+    @Test
+    public void testWhenMetadataLaaTransactionIdIsNull_thenProcessAsExpected() {
 
-        QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
-
-        assertAll("SQSMessage",
-                () -> assertNotNull(savedQueueMsg),
-                () -> assertNotNull(savedQueueMsg.getMaatId()),
-                () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
-                () -> assertNull(savedQueueMsg.getLaaTransactionId()),
-                () -> assertNotNull(savedQueueMsg.getType()),
-                () -> assertNotNull(savedQueueMsg.getMessage()),
-                () -> assertEquals(savedQueueMsg.getMaatId(), maatId)
-        );
+        final Integer maatId = 1000;
+        queueMessageLogService.createLog(
+                MessageType.LAA_STATUS, getQueueMessage(maatId, JurisdictionType.MAGISTRATES, null));
+        assertNullLaaTransactionIdIsHandled(maatId);
     }
 
     @Test
@@ -221,6 +218,22 @@ public class QueueMessageLogServiceTest {
         );
     }
 
+    private void assertNullLaaTransactionIdIsHandled(Integer maatId) {
+        verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
+
+        QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
+
+        assertAll("SQSMessage",
+                () -> assertNotNull(savedQueueMsg),
+                () -> assertNotNull(savedQueueMsg.getMaatId()),
+                () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
+                () -> assertNull(savedQueueMsg.getLaaTransactionId()),
+                () -> assertNotNull(savedQueueMsg.getType()),
+                () -> assertNotNull(savedQueueMsg.getMessage()),
+                () -> assertEquals(savedQueueMsg.getMaatId(), maatId)
+        );
+    }
+
     private String newQueueMessage(Integer maatId) {
 
         return new StringBuilder()
@@ -237,17 +250,17 @@ public class QueueMessageLogServiceTest {
                 "}";
     }
 
-    private String getQueueMessage(Integer maatId, JurisdictionType jurisdictionType) {
+    private String getQueueMessage(Integer maatId, JurisdictionType jurisdictionType, String laaTransactionId) {
 
         return  "{" +
                 "    \"maatId\": " + maatId + ",\n" +
                 "    \"jurisdictionType\": " + jurisdictionType.name() + ",\n" +
                 "    \"metadata\": {\n" +
-                "        \"laaTransactionId\":\"8720c683-39ef-4168-a8cc-058668a2dcca\" \n" +
+                "        \"laaTransactionId\": " + laaTransactionId + "\n" +
                 "    }\n" +
                 "}";
 
-}
+    }
 
     private String newHearingQueueMessage(Integer maatId, JurisdictionType jurisdictionType) {
 

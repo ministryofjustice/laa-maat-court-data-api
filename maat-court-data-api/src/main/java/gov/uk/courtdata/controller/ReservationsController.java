@@ -1,8 +1,14 @@
 package gov.uk.courtdata.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.authorization.service.AuthorizationService;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.entity.ReservationsEntity;
+import gov.uk.courtdata.enums.LoggingData;
+import gov.uk.courtdata.model.authorization.AuthorizationResponse;
+import gov.uk.courtdata.model.authorization.UserReservation;
+import gov.uk.courtdata.model.authorization.UserSession;
 import gov.uk.courtdata.prosecutionconcluded.helper.ReservationsRepositoryHelper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,6 +22,8 @@ import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
 
@@ -43,4 +51,39 @@ public class ReservationsController {
         log.info(String.format("Check if maatId is locked - %d {}", maatId));
         return ResponseEntity.ok(reservationsRepositoryHelper.isMaatRecordLocked(maatId));
     }
+
+
+    @GetMapping(value = "/recordname/{recordName}/recordid/{recordId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Get the reservation status object of a record")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AuthorizationResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<ReservationsEntity> getReservationByRecordNameAndRecordId(
+            @PathVariable String recordName, @PathVariable Integer recordId,
+            @Parameter(description = "Used for tracing calls")
+            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        log.info("Check reservation status - request received");
+        Optional<ReservationsEntity> reservationsEntity = reservationsRepositoryHelper.getReservationByRecordNameAndRecordId(recordName,recordId);
+        return reservationsEntity.map(c -> ResponseEntity.ok().body(c))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
+
+    @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Get the reservation status object of a record")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AuthorizationResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<ReservationsEntity> getReservationByUsername(
+            @PathVariable String username,
+            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        log.info("Check reservation status - request received");
+        Optional<ReservationsEntity> reservationsEntity = reservationsRepositoryHelper.getReservationByUserName(username);
+        return reservationsEntity.map(c -> ResponseEntity.ok().body(c))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }

@@ -5,6 +5,7 @@ import gov.uk.courtdata.repository.ReservationsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -26,5 +27,16 @@ public class ReservationsRepositoryHelper {
             log.info("Maat Record is not locked");
             return false;
         }
+    }
+
+
+    @Transactional
+    public Optional<ReservationsEntity> getReservationByRecordNameAndRecordId(String recordName, Integer recordId) {
+        return reservationsRepository.findReservationByRecordNameAndRecordId(recordName, recordId);
+    }
+
+    @Transactional
+    public Optional<ReservationsEntity> getReservationByUserName(String userName) {
+        return reservationsRepository.findReservationByUserName(userName);
     }
 }

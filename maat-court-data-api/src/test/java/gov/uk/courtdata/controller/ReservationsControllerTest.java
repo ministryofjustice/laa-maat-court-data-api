@@ -50,10 +50,10 @@ class ReservationsControllerTest {
     void givenAValidParameters_whenGetReservationByRecordNameAndRecordIdIsInvoked_thenReturnReservationsEntity() throws Exception {
         when(reservationsRepositoryHelper.getReservationByRecordNameAndRecordId(CourtDataConstants.RESERVATION_RECORD_NAME, TestModelDataBuilder.REP_ID))
                 .thenReturn(Optional.ofNullable(ReservationsEntity.builder()
-                        .recordName(CourtDataConstants.RESERVATION_RECORD_NAME)
+                        .recordName(TestModelDataBuilder.RESERVATION_RECORD_NAME)
                         .recordId(TestModelDataBuilder.REP_ID)
-                        .userSession(CourtDataConstants.USER_SESSION)
-                        .userName(CourtDataConstants.USER_NAME)
+                        .userSession(TestModelDataBuilder.USER_SESSION)
+                        .userName(TestModelDataBuilder.USER_NAME)
                         .reservationDate(LocalDateTime.now())
                         .expiryDate(LocalDateTime.now())
                         .build()
@@ -72,17 +72,17 @@ class ReservationsControllerTest {
 
     @Test
     void givenAValidParameters_whenGetReservationByUserNameIsInvoked_thenReturnReservationsEntity() throws Exception {
-        when(reservationsRepositoryHelper.getReservationByUserName(CourtDataConstants.USER_NAME))
+        when(reservationsRepositoryHelper.getReservationByUserName(TestModelDataBuilder.USER_NAME))
                 .thenReturn(Optional.ofNullable(ReservationsEntity.builder()
-                        .recordName(CourtDataConstants.RESERVATION_RECORD_NAME)
+                        .recordName(TestModelDataBuilder.RESERVATION_RECORD_NAME)
                         .recordId(TestModelDataBuilder.REP_ID)
-                        .userSession(CourtDataConstants.USER_SESSION)
-                        .userName(CourtDataConstants.USER_NAME)
+                        .userSession(TestModelDataBuilder.USER_SESSION)
+                        .userName(TestModelDataBuilder.USER_NAME)
                         .reservationDate(LocalDateTime.now())
                         .expiryDate(LocalDateTime.now())
                         .build()
                 ));
-        mvc.perform(MockMvcRequestBuilders.get( ENDPOINT_URL + "/username/" + CourtDataConstants.USER_NAME))
+        mvc.perform(MockMvcRequestBuilders.get( ENDPOINT_URL + "/username/" + TestModelDataBuilder.USER_NAME))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.recordId").value(TestModelDataBuilder.REP_ID));

@@ -49,7 +49,9 @@ public class TestModelDataBuilder {
     public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
     public static final String TEST_ASN_SEQ = "123";
     public static final Integer TEST_RESULT_CODE = 12345;
-
+    public static final String RESERVATION_RECORD_NAME = "REP_ORDER";
+    public static final String USER_SESSION = "User Session";
+    public static final String USER_NAME = "ONE-T";
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;

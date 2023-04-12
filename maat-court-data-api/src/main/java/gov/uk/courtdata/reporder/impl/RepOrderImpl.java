@@ -28,10 +28,10 @@ public class RepOrderImpl {
         return repOrderRepository.findOne(hasId(repId).and(hasSentenceOrderDate())).orElse(null);
     }
 
-    public void updateAppDateCompleted(final Integer repId, final LocalDateTime assessmentDateCompleted) {
+    public RepOrderEntity updateAppDateCompleted(final Integer repId, final LocalDateTime assessmentDateCompleted) {
         RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(repId);
         repOrderEntity.setAssessmentDateCompleted(assessmentDateCompleted.toLocalDate());
-        repOrderRepository.saveAndFlush(repOrderEntity);
+        return repOrderRepository.saveAndFlush(repOrderEntity);
     }
 
     public RepOrderEntity updateRepOrder(RepOrderEntity repOrderEntity) {

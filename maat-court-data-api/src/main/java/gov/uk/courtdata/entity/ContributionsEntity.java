@@ -86,8 +86,8 @@ public class ContributionsEntity {
     @Column(name = "REPLACED_DATE")
     private LocalDate replacedDate;
 
-    @Column(name = "LATEST", length = 1)
-    private String latest;
+    @Column(name = "LATEST")
+    private Boolean latest;
 
     @Column(name = "CC_OUTCOME_COUNT")
     private Integer ccOutcomeCount;

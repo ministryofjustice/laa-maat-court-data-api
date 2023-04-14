@@ -11,10 +11,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ContributionsDTO {
     private Integer id;
-    private Integer contFileId;
+    private Integer contributionsFileId;
     private LocalDate effectiveDate;
     private LocalDate calcDate;
-    private Integer monthlyContribs;
-    private Integer upfrontContribs;
-    private String transfreStatus;
+    private Integer monthlyContributions;
+    private Integer upfrontContributions;
+    private String transferStatus;
 }

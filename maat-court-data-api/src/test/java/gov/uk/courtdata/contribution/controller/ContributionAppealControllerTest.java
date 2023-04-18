@@ -1,5 +1,6 @@
 package gov.uk.courtdata.contribution.controller;
 
+import gov.uk.courtdata.contribution.dto.ContributionAppealDTO;
 import gov.uk.courtdata.contribution.service.ContributionAppealService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,14 +35,22 @@ public class ContributionAppealControllerTest {
     private ContributionAppealService contributionAppealService;
 
     @Test
-    void greetingShouldReturnMessageFromService() throws Exception {
-        when(contributionAppealService.getContributionAmount(CASE_TYPE, APTY_CODE, OUTCOME, ASSESSMENT_RESULT)).thenReturn(CONTRIBUTION_AMOUNT);
+    void givenCorrectParameters_whenGetContributionAmountIsInvoked_thenCorrectContributionAmountIsReturned() throws Exception {
+        ContributionAppealDTO contributionAppealDTO = new ContributionAppealDTO(CASE_TYPE, APTY_CODE, OUTCOME, ASSESSMENT_RESULT);
+        when(contributionAppealService.getContributionAmount(contributionAppealDTO)).thenReturn(CONTRIBUTION_AMOUNT);
 
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/caty-case-type/" + CASE_TYPE + "/apty-code/"
-                                + APTY_CODE + "/cc-outcome/" + OUTCOME + "/assessmentResult/" + ASSESSMENT_RESULT))
+                        + APTY_CODE + "/cc-outcome/" + OUTCOME + "/assessmentResult/" + ASSESSMENT_RESULT))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(CONTRIBUTION_AMOUNT.toString()));
+    }
+
+    @Test
+    public void givenNullAptyCode_whenGetContributionAmountIsInvoked_thenBadRequestIsThrown() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/caty-case-type/" + CASE_TYPE + "/apty-code/"
+                        + null + "/cc-outcome/" + OUTCOME + "/assessmentResult/" + ASSESSMENT_RESULT))
+                .andExpect(status().isBadRequest());
     }
 
 }

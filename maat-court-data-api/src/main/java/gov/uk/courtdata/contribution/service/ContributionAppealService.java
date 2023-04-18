@@ -1,6 +1,7 @@
 package gov.uk.courtdata.contribution.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.contribution.dto.ContributionAppealDTO;
 import gov.uk.courtdata.repository.ContribAppealRulesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,8 @@ public class ContributionAppealService {
     private final ContribAppealRulesRepository contribAppealRulesRepository;
 
     @Transactional
-    public Integer getContributionAmount(final String caseType, final String appealType, final String outcome, final String result) {
-        return contribAppealRulesRepository.findContributionAmount(caseType, appealType, outcome, result);
+    public Integer getContributionAmount(final ContributionAppealDTO contribAppealDTO) {
+        return contribAppealRulesRepository.findContributionAmount(contribAppealDTO.getCaseType(), contribAppealDTO.getAppealType(),
+                contribAppealDTO.getOutcome(), contribAppealDTO.getAssessmentResult());
     }
 }

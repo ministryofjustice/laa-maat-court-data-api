@@ -1,8 +1,10 @@
 package gov.uk.courtdata.contributions.controller;
 
 import gov.uk.courtdata.contributions.service.ContributionsService;
+import gov.uk.courtdata.contributions.validator.UpdateContributionsValidator;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.model.contributions.UpdateContributions;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,6 +26,7 @@ import javax.validation.constraints.NotNull;
 public class ContributionsController {
 
     private final ContributionsService contributionsService;
+    private final UpdateContributionsValidator updateContributionsValidator;
 
     @GetMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve latest contributions entry")
@@ -32,6 +35,12 @@ public class ContributionsController {
     )
     @ApiResponse(responseCode = "400",
             description = "Bad request",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "404",
+            description = "Not found",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ErrorDTO.class)
             )
@@ -45,5 +54,34 @@ public class ContributionsController {
     public ResponseEntity<ContributionsDTO> findLatest(@PathVariable @NotNull Integer repId) {
         log.info("Request to retrieve latest contributions entry for repId {}", repId);
         return ResponseEntity.ok(contributionsService.findLatest(repId));
+    }
+
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Set contributions entry as inactive")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+    @ApiResponse(responseCode = "400",
+            description = "Bad request",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "404",
+            description = "Not found",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Internal server error",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<ContributionsDTO> update(@RequestBody UpdateContributions updateContributions) {
+        log.info("Request to update contributions entry for ID {}", updateContributions.getId());
+        updateContributionsValidator.validate(updateContributions);
+        return ResponseEntity.ok(contributionsService.update(updateContributions));
     }
 }

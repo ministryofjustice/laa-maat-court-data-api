@@ -1,6 +1,8 @@
 package gov.uk.courtdata.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -62,12 +64,14 @@ public class ContributionsEntity {
     @Column(name = "DATE_UPLIFT_REMOVED")
     private LocalDate dateUpliftRemoved;
 
+    @CreationTimestamp
     @Column(name = "DATE_CREATED", nullable = false)
     private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED", nullable = false, length = 100)
     private String userCreated;
 
+    @UpdateTimestamp
     @Column(name = "DATE_MODIFIED")
     private LocalDateTime dateModified;
 

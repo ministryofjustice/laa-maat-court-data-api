@@ -21,9 +21,9 @@ public interface ContributionsRepository extends JpaRepository<ContributionsEnti
 
     @Modifying
     @Query(value = "UPDATE TOGDATA.CONTRIBUTIONS SET REPLACED_DATE = TRUNC(SYSDATE), ACTIVE = 'N' WHERE REP_ID = :repId AND EFFECTIVE_DATE >= :effDate", nativeQuery = true)
-    void setContributionAsInactive(@Param("repId") Integer repId, @Param("effDate") LocalDate effDate);
+    void setEntryAsInactive(@Param("repId") Integer repId, @Param("effDate") LocalDate effDate);
 
     @Modifying
     @Query(value = "UPDATE TOGDATA.CONTRIBUTIONS SET LATEST = 'N' WHERE REP_ID = :repId", nativeQuery = true)
-    void setContributionAsOld(@Param("repId") Integer repId);
+    void setEntryAsPrior(@Param("repId") Integer repId);
 }

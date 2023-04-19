@@ -5,6 +5,7 @@ import gov.uk.courtdata.contributions.mapper.ContributionsMapper;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.model.contributions.CreateContributions;
 import gov.uk.courtdata.model.contributions.UpdateContributions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,5 +29,10 @@ public class ContributionsService {
         ContributionsEntity contributionsEntity = contributionsImpl.findLatest(updateContributions.getId());
         contributionsMapper.updateContributionsToContributionsEntity(updateContributions, contributionsEntity);
         return contributionsMapper.mapEntityToDTO(contributionsImpl.update(contributionsEntity));
+    }
+
+    public ContributionsDTO create(CreateContributions createContributions) {
+        ContributionsEntity contributionsEntity = contributionsMapper.createContributionsToContributionsEntity(createContributions);
+        return contributionsMapper.mapEntityToDTO(contributionsImpl.create(contributionsEntity));
     }
 }

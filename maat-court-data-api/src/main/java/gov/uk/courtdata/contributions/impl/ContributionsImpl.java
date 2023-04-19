@@ -19,4 +19,11 @@ public class ContributionsImpl {
     public ContributionsEntity update(ContributionsEntity contributionsEntity) {
         return contributionsRepository.saveAndFlush(contributionsEntity);
     }
+
+    public ContributionsEntity create(ContributionsEntity contributionsEntity) {
+        contributionsRepository.setEntryAsInactive(contributionsEntity.getRepId(), contributionsEntity.getEffectiveDate());
+        contributionsRepository.setEntryAsPrior(contributionsEntity.getRepId());
+        // Handle if the above queries don't run correctly???
+        return contributionsRepository.saveAndFlush(contributionsEntity);
+    }
 }

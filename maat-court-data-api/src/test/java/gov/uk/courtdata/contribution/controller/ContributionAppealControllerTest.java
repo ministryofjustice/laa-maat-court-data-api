@@ -12,6 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static gov.uk.courtdata.builder.TestModelDataBuilder.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,12 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ContributionAppealControllerTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/contribution-appeal";
-
-    private static final String CASE_TYPE = "APPEAL CC";
-    private static final String APTY_CODE = "ASE";
-    private static final String OUTCOME = "SUCCESSFUL";
-    private static final String ASSESSMENT_RESULT = "PASS";
-    private static final Integer CONTRIBUTION_AMOUNT = 500;
 
     @Autowired
     private MockMvc mockMvc;
@@ -47,10 +42,10 @@ public class ContributionAppealControllerTest {
     }
 
     @Test
-    public void givenNullAptyCode_whenGetContributionAmountIsInvoked_thenBadRequestIsThrown() throws Exception {
+    public void givenInvalidAptyCode_whenGetContributionAmountIsInvoked_thenNotFoundIsThrown() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/caty-case-type/" + CASE_TYPE + "/apty-code/"
-                        + null + "/cc-outcome/" + OUTCOME + "/assessmentResult/" + ASSESSMENT_RESULT))
-                .andExpect(status().isBadRequest());
+                        + "/cc-outcome/" + OUTCOME + "/assessmentResult/" + ASSESSMENT_RESULT))
+                .andExpect(status().isNotFound());
     }
 
 }

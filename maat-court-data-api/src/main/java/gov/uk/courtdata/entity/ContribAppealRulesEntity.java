@@ -48,5 +48,4 @@ public class ContribAppealRulesEntity {
 
     @Column(name = "ASSESSMENT_RESULT", length = 4)
     private String assessmentResult;
-
 }

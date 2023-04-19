@@ -15,5 +15,4 @@ public interface ContribAppealRulesRepository extends JpaRepository<ContribAppea
             "AND car.APTY_CODE = :aptyCode AND car.CCOO_OUTCOME = :outcome AND car.ASSESSMENT_RESULT = :assessmentResult", nativeQuery = true)
     BigDecimal findContributionAmount(@Param("caseType") String caseType, @Param("aptyCode") String appealType,
                                       @Param("outcome") String outcome, @Param("assessmentResult") String assessmentResult);
-
 }

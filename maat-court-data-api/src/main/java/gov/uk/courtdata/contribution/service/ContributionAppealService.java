@@ -20,7 +20,7 @@ public class ContributionAppealService {
 
     @Transactional(readOnly = true)
     public BigDecimal getContributionAmount(final ContributionAppealDTO contribAppealDTO) {
-        log.info("Get contribution amount for ContributionAppealDTO " + contribAppealDTO);
+        log.info("Get contribution amount for " + contribAppealDTO);
         return contribAppealRulesRepository.findContributionAmount(contribAppealDTO.getCaseType(), contribAppealDTO.getAppealType(),
                 contribAppealDTO.getOutcome(), contribAppealDTO.getAssessmentResult());
     }

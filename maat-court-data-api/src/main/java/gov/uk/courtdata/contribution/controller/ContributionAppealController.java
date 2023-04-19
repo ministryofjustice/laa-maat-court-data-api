@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("${api-endpoints.assessments-domain}/contribution-appeal")
@@ -35,7 +36,7 @@ public class ContributionAppealController {
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @GetMapping(value = "/caty-case-type/{caseType}/apty-code/{appealType}/cc-outcome/{outcome}/assessmentResult/{assessmentResult}")
-    public ResponseEntity<Integer> getContributionAmount(@Valid ContributionAppealDTO contribAppealDTO) {
+    public ResponseEntity<BigDecimal> getContributionAmount(@Valid ContributionAppealDTO contribAppealDTO) {
         log.info("Get contribution amount for caty_case_type=" + contribAppealDTO.getCaseType() + ", apty_code=" + contribAppealDTO.getAppealType()
                 + ", ccoo_outcome=" + contribAppealDTO.getOutcome() + ", assessment_result=" + contribAppealDTO.getAssessmentResult());
         return ResponseEntity.ok(contributionAppealService.getContributionAmount(contribAppealDTO));

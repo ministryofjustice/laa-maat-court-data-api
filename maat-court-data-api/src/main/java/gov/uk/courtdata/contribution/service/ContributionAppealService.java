@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -16,8 +18,9 @@ public class ContributionAppealService {
 
     private final ContribAppealRulesRepository contribAppealRulesRepository;
 
-    @Transactional
-    public Integer getContributionAmount(final ContributionAppealDTO contribAppealDTO) {
+    @Transactional(readOnly = true)
+    public BigDecimal getContributionAmount(final ContributionAppealDTO contribAppealDTO) {
+        log.info("Get contribution amount for ContributionAppealDTO " + contribAppealDTO);
         return contribAppealRulesRepository.findContributionAmount(contribAppealDTO.getCaseType(), contribAppealDTO.getAppealType(),
                 contribAppealDTO.getOutcome(), contribAppealDTO.getAssessmentResult());
     }

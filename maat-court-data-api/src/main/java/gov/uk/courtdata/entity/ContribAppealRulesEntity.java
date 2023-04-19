@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Builder
@@ -31,7 +32,7 @@ public class ContribAppealRulesEntity {
     private String ccooOutcome;
 
     @Column(name = "CONTRIB_AMOUNT")
-    private Integer contribAmount;
+    private BigDecimal contribAmount;
 
     @Column(name = "DATE_CREATED", nullable = false)
     private LocalDateTime dateCreated;

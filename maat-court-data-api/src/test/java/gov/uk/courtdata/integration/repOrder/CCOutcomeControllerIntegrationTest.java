@@ -50,7 +50,9 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        existingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
+        existingRepOrder = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
+        repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(500));
+        repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(501));
     }
 
     @AfterEach
@@ -97,7 +99,7 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenAValidData_whenUpdateIsInvoked_thenShouldUpdatedCCOutCome() throws Exception {
         courtProcessingRepository.deleteAll();
-        RepOrderCCOutComeEntity savedOutcome = courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity());
+        RepOrderCCOutComeEntity savedOutcome = courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(1, TestModelDataBuilder.REP_ID));
         runSuccessScenario(MockMvcRequestBuilders.put(endpointUrl).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateRepOrderCCOutcome(savedOutcome.getId()))));
         RepOrderCCOutComeEntity ccOutCome = courtProcessingRepository.findById(savedOutcome.getId()).get();
@@ -121,28 +123,27 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAValidRepId_whenFindIsInvoked_thenReturnOutcome() throws Exception {
-        List<RepOrderCCOutComeEntity> expectedResponse = List.of(TestEntityDataBuilder.getRepOrderCCOutcomeEntity());
-        courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity());
+        List<RepOrderCCOutComeEntity> expectedResponse = List.of(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(2, TestEntityDataBuilder.REP_ID));
+        RepOrderCCOutComeEntity repOrderCCOutComeEntity = courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(2, TestEntityDataBuilder.REP_ID));
         MvcResult result = runSuccessScenario(MockMvcRequestBuilders.get(endpointUrl + "/reporder/" + TestEntityDataBuilder.REP_ID));
-        RepOrderCCOutComeEntity repOrderCCOutComeEntity = courtProcessingRepository.getReferenceById(1);
         expectedResponse.get(0).setDateCreated(repOrderCCOutComeEntity.getDateCreated());
-        expectedResponse.get(0).setId(1);
+        expectedResponse.get(0).setId(repOrderCCOutComeEntity.getId());
         expectedResponse.get(0).setDateModified(repOrderCCOutComeEntity.getDateModified());
         assertThat(objectMapper.writeValueAsString(expectedResponse)).isEqualTo(result.getResponse().getContentAsString());
     }
     @Test
     void givenAValidRepId_whenFindIsInvoked_thenReturnOutcomeCount() throws Exception {
-        courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity());
-        MvcResult result = runSuccessScenario(MockMvcRequestBuilders.head(endpointUrl + "/reporder/" + TestEntityDataBuilder.REP_ID));
+        RepOrderCCOutComeEntity repOrderCCOutComeEntity = TestEntityDataBuilder.getRepOrderCCOutcomeEntity(3, 500);
+        courtProcessingRepository.saveAndFlush(repOrderCCOutComeEntity);
+        MvcResult result = runSuccessScenario(MockMvcRequestBuilders.head(endpointUrl + "/reporder/" + 500));
         assertThat(result.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
     }
 
     @Test
     void givenAEmptyRepIdInRepOrderOutcome_whenFindIsInvoked_thenReturnOutcomeCountAsZero() throws Exception {
-        RepOrderCCOutComeEntity repOrderCCOutComeEntity = TestEntityDataBuilder.getRepOrderCCOutcomeEntity();
-        repOrderCCOutComeEntity.setRepId(50);
-        courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity());
-        MvcResult result = runSuccessScenario(MockMvcRequestBuilders.head(endpointUrl + "/reporder/" + TestEntityDataBuilder.REP_ID));
+        RepOrderCCOutComeEntity repOrderCCOutComeEntity = TestEntityDataBuilder.getRepOrderCCOutcomeEntity(4, 500);
+        courtProcessingRepository.saveAndFlush(repOrderCCOutComeEntity);
+        MvcResult result = runSuccessScenario(MockMvcRequestBuilders.head(endpointUrl + "/reporder/" + 501));
         assertThat(result.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
     }
 }

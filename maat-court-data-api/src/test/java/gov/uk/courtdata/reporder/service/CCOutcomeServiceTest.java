@@ -31,7 +31,7 @@ class CCOutcomeServiceTest {
     @Test
     void givenAValidInput_whenCreateIsInvoked_thenCreateOutcomeIsSuccess() {
         when(repOrderCCOutcomeImpl.create(any()))
-                .thenReturn(TestEntityDataBuilder.getRepOrderCCOutcomeEntity());
+                .thenReturn(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(1, TestEntityDataBuilder.REP_ID));
         service.create(TestModelDataBuilder.getRepOrderCCOutcome());
         verify(repOrderCCOutcomeImpl, atLeastOnce()).create(any());
     }

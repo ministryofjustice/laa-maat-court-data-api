@@ -2,11 +2,11 @@ package gov.uk.courtdata.eforms.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import gov.uk.courtdata.eformsApplication.builder.EformsStagingBuilder;
-import gov.uk.courtdata.eformsApplication.dto.EformsStagingDTO;
+import gov.uk.courtdata.eforms.builder.EformsStagingBuilder;
+import gov.uk.courtdata.dto.EformsStagingDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
-import gov.uk.courtdata.model.eformsApplication.EformsApplication;
+import gov.uk.courtdata.model.eforms.EformsApplication;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

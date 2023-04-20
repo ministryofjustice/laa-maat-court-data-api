@@ -26,7 +26,7 @@ public class EformsStagingRestController {
     private final EformsStagingBuilder eformsStagingBuilder;
 
 
-    //todo: this rest controller is just for testing and will replace with the Queue listener.
+    // TODO: this rest controller is just for testing and will replace with the Queue listener.
     @PostMapping("/eform")
     public ResponseEntity<Object> processEforms(
             @RequestBody EformsApplication eformsApplication,
@@ -42,7 +42,5 @@ public class EformsStagingRestController {
 
         log.info("Finishing and returning response as OK!");
         return ResponseEntity.ok().build();
-
-
     }
 }

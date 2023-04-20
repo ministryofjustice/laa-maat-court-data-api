@@ -4,7 +4,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.sql.Clob;
 import java.time.LocalDateTime;
 
 @Getter
@@ -25,7 +24,7 @@ public class EformsStagingEntity {
     private String type;
 
     @Lob
-    @Column(name = "XML_DOC", columnDefinition="CLOB")
+    @Column(name = "XML_DOC", columnDefinition = "CLOB")
     private String xmlDoc;
 
     @Column(name = "MAAT_REF")

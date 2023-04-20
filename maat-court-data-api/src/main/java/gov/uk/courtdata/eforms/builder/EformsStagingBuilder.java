@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,6 +26,8 @@ public class EformsStagingBuilder {
     private static final String APPLICATION_TYPE = "CRM14";
     private static final String OFFENCE_CLASS_PREFIX = "Class ";
     private static final String HOME_ADDRESS_TYPE = "home_address";
+    private static final Function<Offence, Character> LAST_OFFENCE_CLASS_CHARACTER =
+            offence -> offence.getOffenceClass().charAt(offence.getOffenceClass().length() - 1);
 
     public EformsStagingDTO build(EformsApplication eformsApplication) throws SQLException, JsonProcessingException {
         return EformsStagingDTO
@@ -61,7 +64,7 @@ public class EformsStagingBuilder {
                 .formType(APPLICATION_TYPE)
                 .dateReceived(eformsApplication.getCreatedAt())
                 .datestampDate(eformsApplication.getDateStamp())
-                .applicationType("New application") // hardcoded for testing
+                .applicationType("New application") // TODO hardcoded for testing
                 .legalRepLaaAccount(provider.getOfficeCode())
                 .legalRepFullName(String.format("%s %s", provider.getLegalRepFirstName(), provider.getLegalRepLastName()))
                 .solicitorPhoneLandline(provider.getLegalRepTelephone())
@@ -70,7 +73,7 @@ public class EformsStagingBuilder {
                 .niNumber(applicant.getNino())
                 .dateOfBirth(toLocalDateTime(applicant.getDateOfBirth()))
                 .phoneLandline(applicant.getTelephoneNumber())
-                .haveHomeAddress("Yes") // hardcoded for testing
+                .haveHomeAddress("Yes") // TODO hardcoded for testing
                 .homeAddress1(homeAddress.getAddressLineOne())
                 .homeAddress2(homeAddress.getAddressLineTwo())
                 .homeAddress3(homeAddress.getCity())
@@ -84,7 +87,7 @@ public class EformsStagingBuilder {
                 .chargesBrought(buildChargeList(eformsApplication.getCaseDetails().getOffences()))
                 .offenceType(getOffenceType(eformsApplication.getCaseDetails().getOffences()))
                 .laaAdded(LaaAdded.builder().caseType(caseDetails.getCaseType()).build())
-                .disabled("No")// hardcoded for testing
+                .disabled("No") // TODO hardcoded for testing
                 .codefendantsDetails(
                         caseDetails.getCodefendants().stream().map(defendant ->
                                         String.format("%s %s", defendant.getFirstName(), defendant.getLastName()))
@@ -113,8 +116,10 @@ public class EformsStagingBuilder {
     private String getOffenceType(List<Offence> offences) {
         List<Offence> offencesWithClass = offences.stream()
                 .filter(item -> item.getOffenceClass() != null &&
-                        item.getOffenceClass().startsWith(OFFENCE_CLASS_PREFIX)).sorted(Comparator.comparing(
-                        offence -> offence.getOffenceClass().charAt(offence.getOffenceClass().length() - 1))).collect(Collectors.toList());
+                        item.getOffenceClass().startsWith(OFFENCE_CLASS_PREFIX))
+                .sorted(Comparator.comparing(LAST_OFFENCE_CLASS_CHARACTER))
+                .collect(Collectors.toList());
+
         return offencesWithClass.get(0).getOffenceClass();
     }
 

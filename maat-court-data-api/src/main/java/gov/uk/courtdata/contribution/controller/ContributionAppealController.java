@@ -36,8 +36,11 @@ public class ContributionAppealController {
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @GetMapping(value = "/caty-case-type/{caseType}/apty-code/{appealType}/cc-outcome/{outcome}/assessmentResult/{assessmentResult}")
     public ResponseEntity<BigDecimal> getContributionAmount(@Valid ContributionAppealDTO contribAppealDTO) {
-        log.info("Get contribution amount for caty_case_type=" + contribAppealDTO.getCaseType() + ", apty_code=" + contribAppealDTO.getAppealType()
-                + ", ccoo_outcome=" + contribAppealDTO.getOutcome() + ", assessment_result=" + contribAppealDTO.getAssessmentResult());
+        log.info("Get contribution amount for caty_case_type={}, apty_code={}, ccoo_outcome={}, assessment_result={}",
+                contribAppealDTO.getCaseType(),
+                contribAppealDTO.getAppealType(),
+                contribAppealDTO.getOutcome(),
+                contribAppealDTO.getAssessmentResult());
         return ResponseEntity.ok(contributionAppealService.getContributionAmount(contribAppealDTO));
     }
 

@@ -3,7 +3,6 @@ package gov.uk.courtdata.contribution.service;
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.contribution.dto.ContributionAppealDTO;
 import gov.uk.courtdata.contribution.projection.ContributionAmountView;
-import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.ContribAppealRulesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +39,7 @@ public class ContributionAppealService {
                     contribAppealDTO.getAssessmentResult());
             return contributionAmount;
         } else {
-            throw new RequestedObjectNotFoundException("No contribution amount found for caty_case_type=" + contribAppealDTO.getCaseType()
-                    + ", apty_code=" + contribAppealDTO.getAppealType()
-                    + ", ccoo_outcome=" + contribAppealDTO.getOutcome()
-                    + ", assessment_result=" + contribAppealDTO.getAssessmentResult());
+            return null;
         }
     }
 }

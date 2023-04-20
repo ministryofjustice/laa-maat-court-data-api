@@ -1,7 +1,6 @@
 package gov.uk.courtdata.contribution.service;
 
 import gov.uk.courtdata.contribution.dto.ContributionAppealDTO;
-import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.ContribAppealRulesRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.*;
 import static java.util.Optional.of;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,9 +43,10 @@ public class ContributionAppealServiceTest {
                 .findByCatyCaseTypeAndAptyCodeAndAndCcooOutcomeAndAssessmentResult(CASE_TYPE, "INVALID_APTY_CODE", OUTCOME, ASSESSMENT_RESULT))
                 .thenReturn(Optional.empty());
 
-        assertThatExceptionOfType(RequestedObjectNotFoundException.class).isThrownBy(() -> contributionAppealService.getContributionAmount(contributionAppealDTO));
+        BigDecimal contributionAmount = contributionAppealService.getContributionAmount(contributionAppealDTO);
+        assertThat(contributionAmount).isNull();
         verify(contribAppealRulesRepository)
                 .findByCatyCaseTypeAndAptyCodeAndAndCcooOutcomeAndAssessmentResult(CASE_TYPE, "INVALID_APTY_CODE", OUTCOME, ASSESSMENT_RESULT);
-    }
 
+    }
 }

@@ -53,6 +53,12 @@ public class TestModelDataBuilder {
     public static final String USER_SESSION = "User Session";
     public static final String USER_NAME = "ONE-T";
 
+    public static final String CASE_TYPE = "APPEAL CC";
+    public static final String APTY_CODE = "ASE";
+    public static final String OUTCOME = "SUCCESSFUL";
+    public static final String ASSESSMENT_RESULT = "PASS";
+    public static final BigDecimal CONTRIBUTION_AMOUNT = BigDecimal.valueOf(500.00);
+
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
 

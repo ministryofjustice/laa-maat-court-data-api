@@ -11,5 +11,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class UpdateContributions extends Contributions {
     private Integer id;
+
     private String userModified;
 }

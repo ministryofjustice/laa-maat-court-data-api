@@ -17,7 +17,7 @@ public interface ContributionsRepository extends JpaRepository<ContributionsEnti
 
     List<ContributionsEntity> findAllByRepId(Integer repId);
 
-    ContributionsEntity findByRepIdAndLatestIsTrue(Integer repId);
+    ContributionsEntity findByRepIdAndLatestIsTrue(int repId);
 
     @Modifying
     @Query(value = "UPDATE TOGDATA.CONTRIBUTIONS SET REPLACED_DATE = TRUNC(SYSDATE), ACTIVE = 'N' WHERE REP_ID = :repId AND EFFECTIVE_DATE >= :effDate", nativeQuery = true)

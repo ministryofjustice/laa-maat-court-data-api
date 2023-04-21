@@ -18,10 +18,6 @@ public class UpdateContributionsValidator extends ContributionsValidator impleme
     @Override
     public Optional<Void> validate(UpdateContributions updateContributions) {
         validateId(updateContributions.getId());
-        validateEffectiveDate(updateContributions.getEffectiveDate());
-        validateCalcDate(updateContributions.getCalcDate());
-        validateContributionsCap(updateContributions.getContributionCap());
-        validateMonthlyContribs(updateContributions.getMonthlyContributions());
         validateTransferStatus(updateContributions.getTransferStatus());
         return Optional.empty();
     }

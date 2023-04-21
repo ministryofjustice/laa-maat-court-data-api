@@ -1,18 +1,30 @@
 package gov.uk.courtdata.contributions.impl;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.repository.ContributionsRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
+@Slf4j
 @Component
+@XRayEnabled
 @RequiredArgsConstructor
 public class ContributionsImpl {
 
     private final ContributionsRepository contributionsRepository;
-    public ContributionsEntity findLatest(Integer repId) {
+
+    public ContributionsEntity find(int id) {
+        log.debug("Retrieving contributions entry for ID {}", id);
+        return contributionsRepository.findById(id).orElse(null);
+    }
+
+    public ContributionsEntity findLatest(int repId) {
+        log.debug("Retrieving latest contributions entry for rep ID {}", repId);
         return contributionsRepository.findByRepIdAndLatestIsTrue(repId);
     }
 
@@ -20,10 +32,16 @@ public class ContributionsImpl {
         return contributionsRepository.saveAndFlush(contributionsEntity);
     }
 
+    public Optional<Void> updateInactiveAndPrior(Integer repId, LocalDate effectiveDate) {
+        log.debug("Setting existing contributions row as prior and inactive");
+        contributionsRepository.setEntryAsInactive(repId, effectiveDate);
+        contributionsRepository.setEntryAsPrior(repId);
+        return Optional.empty();
+    }
+
     public ContributionsEntity create(ContributionsEntity contributionsEntity) {
-        contributionsRepository.setEntryAsInactive(contributionsEntity.getRepId(), contributionsEntity.getEffectiveDate());
-        contributionsRepository.setEntryAsPrior(contributionsEntity.getRepId());
-        // Handle if the above queries don't run correctly???
+        log.debug("Inserting new contributions row and setting as latest");
+        contributionsEntity.setLatest(true);
         return contributionsRepository.saveAndFlush(contributionsEntity);
     }
 }

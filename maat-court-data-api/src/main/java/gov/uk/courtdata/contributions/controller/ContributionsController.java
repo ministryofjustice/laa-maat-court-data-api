@@ -1,5 +1,6 @@
 package gov.uk.courtdata.contributions.controller;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.contributions.service.ContributionsService;
 import gov.uk.courtdata.contributions.validator.CreateContributionsValidator;
 import gov.uk.courtdata.contributions.validator.UpdateContributionsValidator;
@@ -18,10 +19,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @Slf4j
 @RestController
+@XRayEnabled
 @RequiredArgsConstructor
 @RequestMapping("${api-endpoints.assessments-domain}/contributions")
 @Tag(name = "Contributions", description = "Rest API for contributions")
@@ -54,9 +57,9 @@ public class ContributionsController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<ContributionsDTO> findLatest(@PathVariable @NotNull Integer repId) {
-        log.info("Request to retrieve latest contributions entry for repId {}", repId);
-        return ResponseEntity.ok(contributionsService.findLatest(repId));
+    public ResponseEntity<ContributionsDTO> find(@PathVariable @NotNull int repId) {
+        log.info("Request to retrieve contributions entry for repId {}", repId);
+        return ResponseEntity.ok(contributionsService.find(repId));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -105,7 +108,7 @@ public class ContributionsController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<ContributionsDTO> create(@RequestBody CreateContributions createContributions) {
+    public ResponseEntity<ContributionsDTO> create(@Valid @RequestBody CreateContributions createContributions) {
         log.info("Request to create contributions entry");
         createContributionsValidator.validate(createContributions);
         return ResponseEntity.ok(contributionsService.create(createContributions));

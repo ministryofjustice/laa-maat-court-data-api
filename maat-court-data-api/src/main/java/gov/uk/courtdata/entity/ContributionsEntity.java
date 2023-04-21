@@ -4,10 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +19,8 @@ import java.time.LocalDateTime;
 @Table(name = "CONTRIBUTIONS", schema = "TOGDATA")
 public class ContributionsEntity {
     @Id
+    @SequenceGenerator(name = "contributions_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contributions_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
 

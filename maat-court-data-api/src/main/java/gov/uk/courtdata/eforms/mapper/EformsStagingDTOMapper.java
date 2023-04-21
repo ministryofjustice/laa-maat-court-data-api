@@ -8,4 +8,5 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface EformsStagingDTOMapper {
     EformsStagingEntity toEformsStagingEntity(final EformsStagingDTO eformsStagingDTO);
+    EformsStagingDTO toEformsStagingDTO(final EformsStagingEntity eformsStagingEntity);
 }

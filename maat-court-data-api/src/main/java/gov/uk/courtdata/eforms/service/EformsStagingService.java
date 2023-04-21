@@ -1,6 +1,5 @@
 package gov.uk.courtdata.eforms.service;
 
-
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.EformsStagingDTO;
 import gov.uk.courtdata.eforms.mapper.EformsStagingDTOMapper;
@@ -19,28 +18,23 @@ public class EformsStagingService {
 
     private final EformsStagingRepository eformsStagingRepository;
     private final EformsStagingDTOMapper eformsStagingDTOMapper;
-
-    public void execute(final EformsStagingDTO eformsStagingDTO ) {
-
-        if (eformsStagingDTO == null)
-            throw new MAATCourtDataException("New work reason code is required");
-
-        log.info("Mapping EformsStagingEntity from EformsStagingDTO");
+    public void create(final EformsStagingDTO eformsStagingDTO){
         EformsStagingEntity eformsStagingEntity = eformsStagingDTOMapper.toEformsStagingEntity(eformsStagingDTO);
 
         eformsStagingRepository.save(eformsStagingEntity);
     }
 
-
-    public EformsStagingDTO retrieveEformsStagingDTO(Integer usn) {
-        return null;
+    public void update(final EformsStagingDTO eformsStagingDTO){
+        this.create(eformsStagingDTO);
     }
 
-    public void deleteEformsStagingDTO(Integer usn) {
-
+    public EformsStagingDTO retrieve(final EformsStagingDTO eformsStagingDTO){
+        EformsStagingEntity eformsStagingEntity = eformsStagingDTOMapper.toEformsStagingEntity(eformsStagingDTO);
+        return eformsStagingDTOMapper.toEformsStagingDTO(eformsStagingRepository.findById(eformsStagingEntity.getUsn()).get());
     }
 
-    public void createEformsStagingDTO(EformsStagingDTO eformsStagingDTO) {
-
+    public void delete(final EformsStagingDTO eformsStagingDTO){
+        EformsStagingEntity eformsStagingEntity = eformsStagingDTOMapper.toEformsStagingEntity(eformsStagingDTO);
+        eformsStagingRepository.deleteById(eformsStagingEntity.getUsn());
     }
 }

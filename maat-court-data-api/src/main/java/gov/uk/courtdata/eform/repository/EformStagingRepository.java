@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface EformsStagingRepository extends JpaRepository<EformsStagingEntity,Integer> {
+public interface EformStagingRepository extends JpaRepository<EformsStagingEntity,Integer> {
 
 
 }

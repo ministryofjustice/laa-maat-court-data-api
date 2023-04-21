@@ -1,10 +1,10 @@
 package gov.uk.courtdata.eform.service;
 
-import gov.uk.courtdata.dto.EformsStagingDTO;
-import gov.uk.courtdata.eform.mapper.EformsStagingDTOMapper;
+import gov.uk.courtdata.eform.dto.EformStagingDTO;
+import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.entity.EformsStagingEntity;
 
-import gov.uk.courtdata.eform.repository.EformsStagingRepository;
+import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -15,17 +15,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class EformsStagingServiceTest {
+class EformStagingDAOImplTest {
 
     @InjectMocks
-    private EformsStagingService eformsStagingService;
+    private EformStagingDAOImpl eformStagingDAOImpl;
 
 
     @Mock
-    private EformsStagingDTOMapper eformsStagingDTOMapper;
+    private EformStagingDTOMapper eformStagingDTOMapper;
 
     @Spy
-    private EformsStagingRepository eformsStagingRepositorySpy;
+    private EformStagingRepository eformStagingRepositorySpy;
     @Captor
     private ArgumentCaptor<EformsStagingEntity> eformsStagingEntityArgumentCaptor;
 
@@ -34,11 +34,11 @@ class EformsStagingServiceTest {
     @Test
     public void givenEformsDetail_whenServiceIncolved_thenSaveEformsInfoToDatabase() {
 
-        when(eformsStagingDTOMapper.toEformsStagingEntity(getEformsStagingDTO())).thenReturn(getEformsStagingEntity());
+        when(eformStagingDTOMapper.toEformsStagingEntity(getEformsStagingDTO())).thenReturn(getEformsStagingEntity());
 
-        eformsStagingService.create(getEformsStagingDTO());
+        eformStagingDAOImpl.create(getEformsStagingDTO());
 
-        verify(eformsStagingRepositorySpy).save(eformsStagingEntityArgumentCaptor.capture());
+        verify(eformStagingRepositorySpy).save(eformsStagingEntityArgumentCaptor.capture());
         assertThat(eformsStagingEntityArgumentCaptor.getValue().getUsn()).isEqualTo(1233);
         assertThat(eformsStagingEntityArgumentCaptor.getValue().getMaatStatus()).isEqualTo("mys status type");
         assertThat(eformsStagingEntityArgumentCaptor.getValue().getUserCreated()).isEqualTo("AM");
@@ -58,9 +58,9 @@ class EformsStagingServiceTest {
 //    }
 
 
-    private EformsStagingDTO getEformsStagingDTO() {
+    private EformStagingDTO getEformsStagingDTO() {
 
-        return EformsStagingDTO
+        return EformStagingDTO
                 .builder()
                 .usn(1233)
                 .maatStatus("mys status type")

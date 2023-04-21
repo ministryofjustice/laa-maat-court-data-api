@@ -2,11 +2,11 @@ package gov.uk.courtdata.eform.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import gov.uk.courtdata.eform.builder.EformsApplicationMapperImpl;
-import gov.uk.courtdata.dto.EformsStagingDTO;
+import gov.uk.courtdata.eform.builder.EformApplicationMapperImpl;
+import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
-import gov.uk.courtdata.eform.model.EformsApplication;
+import gov.uk.courtdata.eform.model.EformApplication;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +21,11 @@ import java.sql.SQLException;
 @RequiredArgsConstructor
 @Service
 @XRayEnabled
-public class EformsStagingListener {
+public class EformStagingListener {
 
-    private final EformsApplicationMapperImpl eformsApplicationMapper;
+    private final EformApplicationMapperImpl eformsApplicationMapper;
     private final QueueMessageLogService queueMessageLogService;
-    private final EformsStagingService eformsStagingService;
+    private final EformStagingDAO eformsStagingDAOImpl;
 
     //todo: get a sqs name and configure in the Cloud Formation and app yaml etc.
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.hearingResulted}", concurrency = "1")
@@ -36,9 +36,9 @@ public class EformsStagingListener {
         queueMessageLogService.createLog(MessageType.CRIME_APPLY_EFORMS, message);
         //gson model - tp
         //todo: maybe call a mapper here before sending it to the
-        EformsApplication eformsApplication = EformsApplication.builder().build();
-        EformsStagingDTO eformsStagingDTO= eformsApplicationMapper.map(eformsApplication);
+        EformApplication eformApplication = EformApplication.builder().build();
+        EformStagingDTO eformStagingDTO = eformsApplicationMapper.map(eformApplication);
 
-        eformsStagingService.create(eformsStagingDTO);
+        eformsStagingDAOImpl.create(eformStagingDTO);
     }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-import gov.uk.courtdata.dto.EformsStagingDTO;
+import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.model.*;
 import gov.uk.courtdata.exception.DataTransformationException;
 import gov.uk.courtdata.eform.model.xmlModels.*;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 @Slf4j
-public class EformsApplicationMapperImpl implements EformsApplicationMapper {
+public class EformApplicationMapperImpl implements EformApplicationMapper {
 
     private static final String APPLICATION_TYPE = "CRM14";
     private static final String OFFENCE_CLASS_PREFIX = "Class ";
@@ -32,46 +32,46 @@ public class EformsApplicationMapperImpl implements EformsApplicationMapper {
             offence -> offence.getOffenceClass().charAt(offence.getOffenceClass().length() - 1);
 
     @Override
-    public EformsStagingDTO map(EformsApplication eformsApplication) {
-        return EformsStagingDTO
+    public EformStagingDTO map(EformApplication eformApplication) {
+        return EformStagingDTO
                 .builder()
-                .usn(eformsApplication.getReference())
+                .usn(eformApplication.getReference())
                 .type(APPLICATION_TYPE)
-                .xmlDoc(generateXmlString(eformsApplication))
+                .xmlDoc(generateXmlString(eformApplication))
                 .build();
     }
 
-    public String generateXmlString(EformsApplication eformsApplication) {
+    public String generateXmlString(EformApplication eformApplication) {
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.registerModule(new JSR310Module());
         xmlMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         try {
-            return xmlMapper.writeValueAsString(buildParentFormData(eformsApplication)).replace("wstxns1", "fd");
+            return xmlMapper.writeValueAsString(buildParentFormData(eformApplication)).replace("wstxns1", "fd");
         } catch (JsonProcessingException e) {
             log.info("Unable to serialise eformsApplication to XML: " + e.getMessage(), e);
             throw new DataTransformationException("Unable to serialise eformsApplication");
         }
     }
 
-    public ParentFormData buildParentFormData(EformsApplication eformsApplication) {
-        return ParentFormData.builder().formData(buildFormData(eformsApplication)).build();
+    public ParentFormData buildParentFormData(EformApplication eformApplication) {
+        return ParentFormData.builder().formData(buildFormData(eformApplication)).build();
     }
-    public FormData buildFormData(EformsApplication eformsApplication) {
-        return FormData.builder().fieldData(buildFieldData(eformsApplication)).build();
+    public FormData buildFormData(EformApplication eformApplication) {
+        return FormData.builder().fieldData(buildFieldData(eformApplication)).build();
     }
 
-    public FieldData buildFieldData(EformsApplication eformsApplication) {
-        ProviderDetails provider = eformsApplication.getProviderDetails();
-        Applicant applicant = eformsApplication.getClientDetails().getApplicant();
+    public FieldData buildFieldData(EformApplication eformApplication) {
+        ProviderDetails provider = eformApplication.getProviderDetails();
+        Applicant applicant = eformApplication.getClientDetails().getApplicant();
         Address homeAddress = applicant.getHomeAddress();
         Address contactAddress = applicant.getCorrespondenceAddressType().equals(HOME_ADDRESS_TYPE) ?
             homeAddress : applicant.getCorrespondenceAddress();
-        CaseDetails caseDetails = eformsApplication.getCaseDetails();
+        CaseDetails caseDetails = eformApplication.getCaseDetails();
 
         return FieldData.builder()
                 .formType(APPLICATION_TYPE)
-                .dateReceived(eformsApplication.getCreatedAt())
-                .datestampDate(eformsApplication.getDateStamp())
+                .dateReceived(eformApplication.getCreatedAt())
+                .datestampDate(eformApplication.getDateStamp())
                 .applicationType("New application") // TODO hardcoded for testing
                 .legalRepLaaAccount(provider.getOfficeCode())
                 .legalRepFullName(String.format("%s %s", provider.getLegalRepFirstName(), provider.getLegalRepLastName()))
@@ -91,9 +91,9 @@ public class EformsApplicationMapperImpl implements EformsApplicationMapper {
                 .contactAddress3(contactAddress.getCity())
                 .contactPostcode(contactAddress.getPostcode())
                 .urn(caseDetails.getUrn())
-                .usn(eformsApplication.getReference().longValue())
-                .chargesBrought(buildChargeList(eformsApplication.getCaseDetails().getOffences()))
-                .offenceType(getOffenceType(eformsApplication.getCaseDetails().getOffences()))
+                .usn(eformApplication.getReference().longValue())
+                .chargesBrought(buildChargeList(eformApplication.getCaseDetails().getOffences()))
+                .offenceType(getOffenceType(eformApplication.getCaseDetails().getOffences()))
                 .laaAdded(LaaAdded.builder().caseType(caseDetails.getCaseType()).build())
                 .disabled("No") // TODO hardcoded for testing
                 .codefendantsDetails(

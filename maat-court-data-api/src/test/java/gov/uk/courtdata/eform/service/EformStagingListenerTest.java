@@ -9,13 +9,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class EformsStagingListenerTest {
+class EformStagingListenerTest {
 
     @InjectMocks
-    private EformsStagingListener eformsStagingListener;
+    private EformStagingListener eformsStagingListener;
 
     @Mock
-    private EformsStagingService eformsStagingService;
+    private EformStagingDAO eformsStagingDAOImpl;
 
     @Mock
     private QueueMessageLogService queueMessageLogService;

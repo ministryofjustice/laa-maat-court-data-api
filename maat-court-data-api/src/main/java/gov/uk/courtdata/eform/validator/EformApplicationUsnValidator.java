@@ -1,12 +1,12 @@
 package gov.uk.courtdata.eform.validator;
 
-import gov.uk.courtdata.eform.model.EformsApplication;
+import gov.uk.courtdata.eform.model.EformApplication;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EformsApplicationUsnValidator {
+public class EformApplicationUsnValidator {
 
-    public void validate(EformsApplication eformsApplication, Integer usn) {
+    public void validate(EformApplication eformApplication, Integer usn) {
         // TODO validate non-null usn and matching or throw exception
     }
 }

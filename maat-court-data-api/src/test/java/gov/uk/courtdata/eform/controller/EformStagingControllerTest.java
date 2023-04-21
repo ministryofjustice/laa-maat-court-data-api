@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class EformsStagingRestControllerTest {
+class EformStagingControllerTest {
 
     @BeforeEach
     void setUp() {

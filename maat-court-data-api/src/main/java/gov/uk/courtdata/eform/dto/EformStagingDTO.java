@@ -1,4 +1,4 @@
-package gov.uk.courtdata.dto;
+package gov.uk.courtdata.eform.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EformsStagingDTO implements Serializable {
+public class EformStagingDTO implements Serializable {
     private Integer usn;
     private String type;
     private String xmlDoc;

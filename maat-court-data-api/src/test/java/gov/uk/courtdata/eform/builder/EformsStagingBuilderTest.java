@@ -1,33 +1,31 @@
 package gov.uk.courtdata.eform.builder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import gov.uk.courtdata.dto.EformsStagingDTO;
+import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.model.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class EformsStagingBuilderTest {
-    private static EformsApplicationMapperImpl testBuilder;
+    private static EformApplicationMapperImpl testBuilder;
 
     @BeforeAll
     public static void setUp() {
-        testBuilder = new EformsApplicationMapperImpl();
+        testBuilder = new EformApplicationMapperImpl();
     }
 
     @Test
-    void build() throws SQLException, JsonProcessingException {
+    void build() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime testDate = LocalDateTime.of(1, 1, 1, 1, 1);
-        EformsApplication testApplication = EformsApplication.builder()
+        EformApplication testApplication = EformApplication.builder()
                 .id("696dd4fd-b619-4637-ab42-a5f4565bcf4a")
                 .schemaVersion(BigDecimal.valueOf(1.0))
                 .reference(6000001)
@@ -95,7 +93,7 @@ class EformsStagingBuilderTest {
                         .build())
                 .build();
 
-        EformsStagingDTO result = testBuilder.map(testApplication);
+        EformStagingDTO result = testBuilder.map(testApplication);
         assertNotNull(result);
     }
 }

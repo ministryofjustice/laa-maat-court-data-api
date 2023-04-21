@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EformsApplication {
+public class EformApplication {
     private String id;
 
     @JsonProperty("schema_version")

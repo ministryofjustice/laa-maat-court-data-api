@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
-public class EformsStagingBuilder {
+public class EformsStagingMapper {
 
     private static final String APPLICATION_TYPE = "CRM14";
     private static final String OFFENCE_CLASS_PREFIX = "Class ";
@@ -29,7 +29,7 @@ public class EformsStagingBuilder {
     private static final Function<Offence, Character> LAST_OFFENCE_CLASS_CHARACTER =
             offence -> offence.getOffenceClass().charAt(offence.getOffenceClass().length() - 1);
 
-    public EformsStagingDTO build(EformsApplication eformsApplication) throws SQLException, JsonProcessingException {
+    public EformsStagingDTO map(EformsApplication eformsApplication) throws JsonProcessingException {
         return EformsStagingDTO
                 .builder()
                 .usn(eformsApplication.getReference())

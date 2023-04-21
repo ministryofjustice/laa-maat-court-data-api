@@ -16,11 +16,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EformsStagingBuilderTest {
-    private static EformsStagingBuilder testBuilder;
+    private static EformsStagingMapper testBuilder;
 
     @BeforeAll
     public static void setUp() {
-        testBuilder = new EformsStagingBuilder();
+        testBuilder = new EformsStagingMapper();
     }
     @Test
     void build() throws SQLException, JsonProcessingException {
@@ -94,7 +94,7 @@ class EformsStagingBuilderTest {
                         .build())
                 .build();
 
-        EformsStagingDTO result = testBuilder.build(testApplication);
+        EformsStagingDTO result = testBuilder.map(testApplication);
         assertNotNull(result);
     }
 }

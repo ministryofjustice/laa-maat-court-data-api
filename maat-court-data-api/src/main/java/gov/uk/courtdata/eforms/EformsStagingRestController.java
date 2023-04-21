@@ -2,7 +2,7 @@ package gov.uk.courtdata.eforms;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import gov.uk.courtdata.eforms.builder.EformsStagingBuilder;
+import gov.uk.courtdata.eforms.builder.EformsStagingMapper;
 import gov.uk.courtdata.dto.EformsStagingDTO;
 import gov.uk.courtdata.eforms.service.EformsStagingService;
 import gov.uk.courtdata.model.eforms.EformsApplication;
@@ -23,7 +23,7 @@ public class EformsStagingRestController {
 
     private final EformsStagingService eformsStagingService;
 
-    private final EformsStagingBuilder eformsStagingBuilder;
+    private final EformsStagingMapper eformsStagingMapper;
 
 
     // TODO: this rest controller is just for testing and will replace with the Queue listener.
@@ -35,7 +35,7 @@ public class EformsStagingRestController {
 
         log.info("Inside rest controller to process eforms {}", laaTransactionId);
 
-        EformsStagingDTO eformsStagingDTO= eformsStagingBuilder.build(eformsApplication);
+        EformsStagingDTO eformsStagingDTO= eformsStagingMapper.map(eformsApplication);
 
         eformsStagingService.execute(eformsStagingDTO);
 

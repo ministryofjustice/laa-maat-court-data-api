@@ -38,7 +38,7 @@ public class EformsApplication {
     @JsonProperty("date_stamp")
     private LocalDateTime dateStamp;
 
-    // Transfer to ENUM
+    // TODO Transfer to ENUM
     private String status;
 
     @JsonProperty("ioj_passport")

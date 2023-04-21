@@ -2,7 +2,7 @@ package gov.uk.courtdata.eforms.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import gov.uk.courtdata.eforms.builder.EformsStagingBuilder;
+import gov.uk.courtdata.eforms.builder.EformsStagingMapper;
 import gov.uk.courtdata.dto.EformsStagingDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
@@ -22,7 +22,7 @@ import java.sql.SQLException;
 @Service
 @XRayEnabled
 public class EformsStagingListener {
-    private final EformsStagingBuilder eformsStagingBuilder;
+    private final EformsStagingMapper eformsStagingBuilder;
     private final QueueMessageLogService queueMessageLogService;
     private final EformsStagingService eformsStagingService;
     //todo: get a sqs name and configure in the Cloud Formation and app yaml etc.
@@ -35,7 +35,7 @@ public class EformsStagingListener {
         //gson model - tp
         //todo: maybe call a mapper here before sending it to the
         EformsApplication eformsApplication = EformsApplication.builder().build();
-        EformsStagingDTO eformsStagingDTO= eformsStagingBuilder.build(eformsApplication);
+        EformsStagingDTO eformsStagingDTO= eformsStagingBuilder.map(eformsApplication);
 
         eformsStagingService.execute(eformsStagingDTO);
     }

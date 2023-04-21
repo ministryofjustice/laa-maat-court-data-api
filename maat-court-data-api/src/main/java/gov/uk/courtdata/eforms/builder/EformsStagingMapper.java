@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import gov.uk.courtdata.dto.EformsStagingDTO;
+import gov.uk.courtdata.exception.DataTransformationException;
 import gov.uk.courtdata.model.eforms.*;
 import gov.uk.courtdata.model.eforms.xmlModels.*;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class EformsStagingMapper {
 
     private static final String APPLICATION_TYPE = "CRM14";
@@ -29,7 +32,7 @@ public class EformsStagingMapper {
     private static final Function<Offence, Character> LAST_OFFENCE_CLASS_CHARACTER =
             offence -> offence.getOffenceClass().charAt(offence.getOffenceClass().length() - 1);
 
-    public EformsStagingDTO map(EformsApplication eformsApplication) throws JsonProcessingException {
+    public EformsStagingDTO map(EformsApplication eformsApplication) {
         return EformsStagingDTO
                 .builder()
                 .usn(eformsApplication.getReference())
@@ -38,11 +41,16 @@ public class EformsStagingMapper {
                 .build();
     }
 
-    public String generateXmlString(EformsApplication eformsApplication) throws JsonProcessingException {
+    public String generateXmlString(EformsApplication eformsApplication) {
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.registerModule(new JSR310Module());
         xmlMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        return xmlMapper.writeValueAsString(buildParentFormData(eformsApplication)).replace("wstxns1", "fd");
+        try {
+            return xmlMapper.writeValueAsString(buildParentFormData(eformsApplication)).replace("wstxns1", "fd");
+        } catch (JsonProcessingException e) {
+            log.info("Unable to serialise eformsApplication to XML: " + e.getMessage(), e);
+            throw new DataTransformationException("Unable to serialise eformsApplication");
+        }
     }
 
     public ParentFormData buildParentFormData(EformsApplication eformsApplication) {

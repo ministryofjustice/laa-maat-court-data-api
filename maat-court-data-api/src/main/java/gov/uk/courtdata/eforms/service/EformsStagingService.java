@@ -32,4 +32,15 @@ public class EformsStagingService {
     }
 
 
+    public EformsStagingDTO retrieveEformsStagingDTO(Integer usn) {
+        return null;
+    }
+
+    public void deleteEformsStagingDTO(Integer usn) {
+
+    }
+
+    public void createEformsStagingDTO(EformsStagingDTO eformsStagingDTO) {
+
+    }
 }

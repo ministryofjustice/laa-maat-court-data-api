@@ -31,7 +31,7 @@ public class EformsStagingRestController {
         // TODO validate usn against EformsApplication usn
         EformsStagingDTO eformsStagingDTO = eformsStagingMapper.map(eformsApplication);
 
-        eformsStagingService.execute(eformsStagingDTO);
+        eformsStagingService.update(eformsStagingDTO);
 
         return ResponseEntity.ok().build();
     }
@@ -40,7 +40,7 @@ public class EformsStagingRestController {
     public ResponseEntity<EformsApplication> getEformsApplication(@PathVariable Integer usn,
                                                                   @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        eformsStagingService.retrieveEformsStagingDTO(usn);
+        eformsStagingService.retrieve(usn);
         // TODO complete logic
 
         return ResponseEntity.ok().build();
@@ -50,7 +50,7 @@ public class EformsStagingRestController {
     public ResponseEntity<EformsApplication> deleteEformsApplication(@PathVariable Integer usn,
                                                                      @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        eformsStagingService.deleteEformsStagingDTO(usn);
+        eformsStagingService.delete(usn);
         // TODO add logic for if not found
 
         return ResponseEntity.ok().build();
@@ -64,7 +64,7 @@ public class EformsStagingRestController {
         // TODO add usn validation logic
         EformsStagingDTO eformsStagingDTO = eformsStagingMapper.map(eformsApplication);
 
-        eformsStagingService.createEformsStagingDTO(eformsStagingDTO);
+        eformsStagingService.create(eformsStagingDTO);
 
         return ResponseEntity.ok().build();
     }

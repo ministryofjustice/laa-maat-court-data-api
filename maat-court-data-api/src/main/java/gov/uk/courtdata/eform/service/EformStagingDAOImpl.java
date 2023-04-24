@@ -5,6 +5,7 @@ import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.entity.EformsStagingEntity;
+import gov.uk.courtdata.exception.RefIdAlreadyExsistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,9 @@ public class EformStagingDAOImpl implements EformStagingDAO {
 
         if (!eformStagingRepository.existsById(eformsStagingEntity.getUsn())) {
             eformStagingRepository.save(eformsStagingEntity);
+        } else {
+            throw new RefIdAlreadyExsistException("The USN number entered already exists.");
         }
-        // TODO throw exception
     }
 
     public void update(EformStagingDTO eformStagingDTO) {

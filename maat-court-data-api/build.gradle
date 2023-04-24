@@ -83,6 +83,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
     implementation group: 'org.springframework', name: 'spring-jms'
     implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client'
+    implementation group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.0.0'
 
 
     implementation 'io.awspring.cloud:spring-cloud-starter-aws-messaging:2.4.1'
@@ -133,6 +134,8 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-graphql'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
     implementation group: 'com.graphql-java-kickstart', name: 'graphql-java-tools', version: versions.graphqlJavaTools
+
+    implementation group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.0.0'
 
 
     // Test Only

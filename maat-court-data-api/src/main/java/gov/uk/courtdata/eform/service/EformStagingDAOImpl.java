@@ -17,19 +17,25 @@ import java.util.Optional;
 @XRayEnabled
 public class EformStagingDAOImpl implements EformStagingDAO {
 
-    // TODO create interface for this
     private final EformStagingRepository eformStagingRepository;
     private final EformStagingDTOMapper eformStagingDTOMapper;
 
     public void create(EformStagingDTO eformStagingDTO) {
-        // TODO Check if exists, if so error
         EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
-        eformStagingRepository.save(eformsStagingEntity);
+
+        if(!eformStagingRepository.existsById(eformsStagingEntity.getUsn())){
+            eformStagingRepository.save(eformsStagingEntity);
+        }
     }
 
     public void update(EformStagingDTO eformStagingDTO) {
-        // TODO Check if exists, if not, throw error
-        this.create(eformStagingDTO);
+        EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
+
+        if(eformStagingRepository.existsById(eformsStagingEntity.getUsn())){
+            eformStagingRepository.save(eformsStagingEntity);
+        }else{
+            this.create(eformStagingDTO);
+        }
     }
 
     public Optional<EformStagingDTO> retrieve(int usn) {

@@ -23,24 +23,25 @@ public class EformStagingDAOImpl implements EformStagingDAO {
     public void create(EformStagingDTO eformStagingDTO) {
         EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
 
-        if(!eformStagingRepository.existsById(eformsStagingEntity.getUsn())){
+        if (!eformStagingRepository.existsById(eformsStagingEntity.getUsn())) {
             eformStagingRepository.save(eformsStagingEntity);
         }
+        // TODO throw exception
     }
 
     public void update(EformStagingDTO eformStagingDTO) {
         EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
 
-        if(eformStagingRepository.existsById(eformsStagingEntity.getUsn())){
+        if (eformStagingRepository.existsById(eformsStagingEntity.getUsn())) {
             eformStagingRepository.save(eformsStagingEntity);
-        }else{
-            this.create(eformStagingDTO);
+        } else {
+            this.create(eformStagingDTO); // TODO determine correct behaviour here?
         }
     }
 
     public Optional<EformStagingDTO> retrieve(int usn) {
         Optional<EformsStagingEntity> eformsStagingEntity = eformStagingRepository.findById(usn);
-        if(eformsStagingEntity.isEmpty()){
+        if (eformsStagingEntity.isEmpty()) {
             return Optional.empty();
         }
 

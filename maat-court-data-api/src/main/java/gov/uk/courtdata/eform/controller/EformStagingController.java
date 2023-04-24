@@ -60,11 +60,11 @@ public class EformStagingController {
     }
 
     @PostMapping("/eform/{usn}")
-    public ResponseEntity<Object> createEformsApplication(@PathVariable Integer usn,
+    public ResponseEntity<Object> createEformsApplication(@PathVariable(required = true)Integer usn,
                                                                      @RequestBody EformApplication eformApplication,
                                                                      @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        // TODO add usn validation logic
+        // TODO add usn validation logic non-null and >0
 
         EformStagingDTO eformStagingDTO = eformApplicationMapper.map(eformApplication);
 

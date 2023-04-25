@@ -14,8 +14,4 @@ import java.io.Serializable;
 public class EformStagingDTO implements Serializable {
     private Integer usn;
     private String type;
-    private String xmlDoc;
-    private String maatRef;
-    private String maatStatus;
-    private String userCreated;
 }

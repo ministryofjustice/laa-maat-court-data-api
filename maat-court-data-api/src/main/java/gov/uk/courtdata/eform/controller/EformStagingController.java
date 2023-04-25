@@ -29,6 +29,8 @@ public class EformStagingController {
     private final UsnValidator usnValidator;
     private final TypeValidator typeValidator;
 
+    // TODO add boiler plate response statuses swagger annotations
+
     @PatchMapping("/eform/{usn}")
     public ResponseEntity<Void> updateEformApplication(@PathVariable Integer usn,
                                                        @RequestParam(name = "type", required = false, value = DEFAULT_EFORM_TYPE) String type,

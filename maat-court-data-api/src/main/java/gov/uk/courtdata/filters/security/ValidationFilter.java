@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.SyncFailedException;
 
 public class ValidationFilter implements Filter {
 
@@ -21,8 +22,14 @@ public class ValidationFilter implements Filter {
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         LOG.info("Starting Transaction for req :{}", req.getRequestURI());
-        chain.doFilter(request, response);
-        LOG.info("Committing Transaction for req :{}", req.getRequestURI());
+        if (true) {
+            chain.doFilter(request, response);
+            LOG.info("Committing Transaction for req :{}", req.getRequestURI());
+        } else {
+            throw new SyncFailedException("");
+        }
+
+
     }
 
     @Override

@@ -2,7 +2,7 @@ package gov.uk.courtdata.eform.mapper;
 
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.model.EformStagingResponse;
-import gov.uk.courtdata.entity.EformsStagingEntity;
+import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

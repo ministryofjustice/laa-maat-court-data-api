@@ -5,6 +5,10 @@ import gov.uk.courtdata.exception.USNValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/**
+ * The responsibility of this class it to verify that the USN provided is valid by checking that exists in
+ * the EformStagingRepository.
+ */
 @Component
 @RequiredArgsConstructor
 public class UsnValidator {
@@ -13,8 +17,8 @@ public class UsnValidator {
 
     public void validate(Integer usn) {
         if (!eformStagingRepository.existsById(usn)) {
-            throw new USNValidationException("The USN number entered is not valid.");
+            String message = String.format("The USN number [%d] is not valid as it is not present in the eForm Repository", usn);
+            throw new USNValidationException(message);
         }
-        // TODO
     }
 }

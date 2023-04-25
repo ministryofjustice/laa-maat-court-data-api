@@ -1,4 +1,4 @@
-package gov.uk.courtdata.entity;
+package gov.uk.courtdata.eform.repository.entity;
 
 import lombok.*;
 

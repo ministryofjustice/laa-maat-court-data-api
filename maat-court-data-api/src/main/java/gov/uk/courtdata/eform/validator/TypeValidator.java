@@ -12,7 +12,8 @@ public class TypeValidator {
 
     public void validate(String type) throws ValidationException {
         if (StringUtils.isBlank(type)) {
-            throw new ValidationException("Expected non-null, non-empty, non-blank type but found [" + type + "]");
+            String message = String.format("Expected non-null, non-empty, non-blank type but found [%s]", type);
+            throw new ValidationException(message);
         }
     }
 }

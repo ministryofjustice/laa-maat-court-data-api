@@ -23,13 +23,15 @@ public class EformStagingDAOImpl implements EformStagingDAO {
     private final EformStagingDTOMapper eformStagingDTOMapper;
     private final UsnValidator usnValidator;
 
+    @Override
     public void create(EformStagingDTO eformStagingDTO) {
         EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
 
-        usnValidator.validate(eformsStagingEntity, eformStagingDTO, eformStagingRepository);
+        usnValidator.validate(eformStagingDTO.getUsn());
         eformStagingRepository.save(eformsStagingEntity);
     }
 
+    @Override
     public void update(EformStagingDTO eformStagingDTO) {
         EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
 
@@ -40,6 +42,7 @@ public class EformStagingDAOImpl implements EformStagingDAO {
         }
     }
 
+    @Override
     public Optional<EformStagingDTO> retrieve(int usn) {
         Optional<EformsStagingEntity> eformsStagingEntity = eformStagingRepository.findById(usn);
         if (eformsStagingEntity.isEmpty()) {
@@ -49,6 +52,7 @@ public class EformStagingDAOImpl implements EformStagingDAO {
         return Optional.of(eformStagingDTOMapper.toEformsStagingDTO(eformsStagingEntity.get()));
     }
 
+    @Override
     public void delete(int usn) {
         eformStagingRepository.deleteById(usn);
     }

@@ -1,26 +1,20 @@
 package gov.uk.courtdata.eform.validator;
 
-import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
-import gov.uk.courtdata.entity.EformsStagingEntity;
 import gov.uk.courtdata.exception.USNValidationException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UsnValidator {
 
-    public void validate() {
-    }
-
-    public boolean validate(EformsStagingEntity eformsStagingEntity, EformStagingDTO eformStagingDTO, EformStagingRepository eformStagingRepository) {
-        if (eformStagingRepository.existsById(eformsStagingEntity.getUsn())) {
-            return true;
-        } else {
-            throw new USNValidationException("The USN number entered is not valid.");
-        }
-    }
+    private final EformStagingRepository eformStagingRepository;
 
     public void validate(Integer usn) {
+        if (!eformStagingRepository.existsById(usn)) {
+            throw new USNValidationException("The USN number entered is not valid.");
+        }
         // TODO
     }
 }

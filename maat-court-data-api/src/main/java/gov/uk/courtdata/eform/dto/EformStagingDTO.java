@@ -12,6 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EformStagingDTO implements Serializable {
+    
     private Integer usn;
     private String type;
 }

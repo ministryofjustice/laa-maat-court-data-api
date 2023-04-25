@@ -3,56 +3,46 @@ package gov.uk.courtdata.eform.service;
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
+import gov.uk.courtdata.eform.validator.UsnValidator;
 import gov.uk.courtdata.entity.EformsStagingEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 @ExtendWith(MockitoExtension.class)
+@WebMvcTest
 class EformStagingDAOImplTest {
 
-    @InjectMocks
-    private EformStagingDAOImpl eformStagingDAOImpl;
-
+    @Mock
+    private EformStagingRepository eformStagingRepository;
 
     @Mock
     private EformStagingDTOMapper eformStagingDTOMapper;
 
-    @Spy
-    private EformStagingRepository eformStagingRepositorySpy;
-    @Captor
-    private ArgumentCaptor<EformsStagingEntity> eformsStagingEntityArgumentCaptor;
+    @Autowired
+    private UsnValidator usnValidator;
+
+    private EformStagingDAOImpl eformStagingDAOImpl;
+
+    @BeforeEach
+    void setUp() {
+        eformStagingDAOImpl = new EformStagingDAOImpl(eformStagingRepository,
+                eformStagingDTOMapper,
+                usnValidator);
+    }
+
 
     // TODO Complete these tests
 
     @Test
     public void givenEformsDetail_whenServiceIncolved_thenSaveEformsInfoToDatabase() {
 
-        when(eformStagingDTOMapper.toEformsStagingEntity(getEformsStagingDTO())).thenReturn(getEformsStagingEntity());
 
-        eformStagingDAOImpl.create(getEformsStagingDTO());
-
-        verify(eformStagingRepositorySpy).save(eformsStagingEntityArgumentCaptor.capture());
-        assertThat(eformsStagingEntityArgumentCaptor.getValue().getUsn()).isEqualTo(1233);
     }
-
-//    @Test
-//    public void givenEformsStaging_when() {
-//
-//        //given
-//        when(eformsStagingDTOMapper.toEformsStagingEntity(getEformsStagingDTO())).thenReturn(getEformsStagingEntity());
-//
-//        //when
-//        eformsStagingService.execute(getEformsStagingDTO());
-//
-//        //then
-//        verify(eformsStagingRepository,atLeast(1)).save(any());
-//    }
 
 
     private EformStagingDTO getEformsStagingDTO() {

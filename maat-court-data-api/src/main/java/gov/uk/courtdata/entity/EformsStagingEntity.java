@@ -1,10 +1,11 @@
 package gov.uk.courtdata.entity;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Getter
 @Setter
@@ -22,27 +23,4 @@ public class EformsStagingEntity {
 
     @Column(name = "TYPE")
     private String type;
-
-    @Lob
-    @Column(name = "XML_DOC", columnDefinition = "CLOB")
-    private String xmlDoc;
-
-    @Column(name = "MAAT_REF")
-    private String maatRef;
-
-    @Column(name = "MAAT_STATUS")
-    private String maatStatus;
-
-    @Column(name = "USER_CREATED", updatable = false)
-    private String userCreated;
-
-    @CreationTimestamp
-    @Column(name = "DATE_CREATED", updatable = false)
-    private LocalDateTime dateCreated;
-
-    @Column(name = "USER_MODIFIED")
-    private String userModified;
-
-    @Column(name = "DATE_MODIFIED")
-    private LocalDateTime dateModified;
 }

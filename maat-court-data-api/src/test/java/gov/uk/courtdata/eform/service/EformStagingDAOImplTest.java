@@ -2,17 +2,16 @@ package gov.uk.courtdata.eform.service;
 
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
-import gov.uk.courtdata.entity.EformsStagingEntity;
-
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
+import gov.uk.courtdata.entity.EformsStagingEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EformStagingDAOImplTest {
@@ -40,8 +39,6 @@ class EformStagingDAOImplTest {
 
         verify(eformStagingRepositorySpy).save(eformsStagingEntityArgumentCaptor.capture());
         assertThat(eformsStagingEntityArgumentCaptor.getValue().getUsn()).isEqualTo(1233);
-        assertThat(eformsStagingEntityArgumentCaptor.getValue().getMaatStatus()).isEqualTo("mys status type");
-        assertThat(eformsStagingEntityArgumentCaptor.getValue().getUserCreated()).isEqualTo("AM");
     }
 
 //    @Test
@@ -63,8 +60,6 @@ class EformStagingDAOImplTest {
         return EformStagingDTO
                 .builder()
                 .usn(1233)
-                .maatStatus("mys status type")
-                .userCreated("AM")
                 .build();
     }
 
@@ -73,8 +68,6 @@ class EformStagingDAOImplTest {
         return EformsStagingEntity
                 .builder()
                 .usn(1233)
-                .maatStatus("mys status type")
-                .userCreated("AM")
                 .build();
     }
 }

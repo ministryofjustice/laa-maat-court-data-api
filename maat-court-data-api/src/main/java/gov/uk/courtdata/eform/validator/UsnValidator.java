@@ -1,14 +1,13 @@
 package gov.uk.courtdata.eform.validator;
 
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
-import gov.uk.courtdata.eform.model.EformApplication;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.entity.EformsStagingEntity;
 import gov.uk.courtdata.exception.USNValidationException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EformApplicationUsnValidator {
+public class UsnValidator {
 
     public void validate() {
     }
@@ -21,6 +20,7 @@ public class EformApplicationUsnValidator {
         }
     }
 
-    public void validate(EformApplication eformApplication, Integer usn) {
+    public void validate(Integer usn) {
+        // TODO
     }
 }

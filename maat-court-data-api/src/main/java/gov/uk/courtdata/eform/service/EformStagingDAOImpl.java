@@ -4,7 +4,7 @@ import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
-import gov.uk.courtdata.eform.validator.EformApplicationUsnValidator;
+import gov.uk.courtdata.eform.validator.UsnValidator;
 import gov.uk.courtdata.entity.EformsStagingEntity;
 import gov.uk.courtdata.exception.USNValidationException;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +21,12 @@ public class EformStagingDAOImpl implements EformStagingDAO {
 
     private final EformStagingRepository eformStagingRepository;
     private final EformStagingDTOMapper eformStagingDTOMapper;
-    private final EformApplicationUsnValidator eformApplicationUsnValidator;
+    private final UsnValidator usnValidator;
 
     public void create(EformStagingDTO eformStagingDTO) {
         EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
 
-        eformApplicationUsnValidator.validate(eformsStagingEntity, eformStagingDTO, eformStagingRepository);
+        usnValidator.validate(eformsStagingEntity, eformStagingDTO, eformStagingRepository);
         eformStagingRepository.save(eformsStagingEntity);
     }
 

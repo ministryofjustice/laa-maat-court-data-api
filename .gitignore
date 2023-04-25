@@ -5,6 +5,7 @@ build/
 !**/src/main/**
 !**/src/test/**
 bin/
+.java-version
 
 ### STS ###
 .apt_generated

@@ -3,8 +3,7 @@ package gov.uk.courtdata.filters.logging;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -15,27 +14,30 @@ import java.io.IOException;
  */
 @Component
 @Order(2)
+@Slf4j
 public class RequestResponseLoggingFilter implements Filter {
-
-    private final static Logger LOG = LoggerFactory.getLogger(RequestResponseLoggingFilter.class);
 
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
-        LOG.info("Initializing filter :{}", this);
+        log.info("Initializing filter :{}", this);
     }
 
     @Override
-    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
+    public void doFilter(final ServletRequest request,
+                         final ServletResponse response,
+                         final FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        LOG.info("Logging Request  {} : {}", req.getMethod(), req.getRequestURI());
+        // TODO ensure the following is logged: full URL including host name and any query parameters
+        // along with Headers and Body
+        log.info("Logging Request  {} : {}", req.getMethod(), req.getRequestURI());
         chain.doFilter(request, response);
-        LOG.info("Logging Response :{} : {}", res.getContentType(), res.getStatus());
+        log.info("Logging Response :{} : {}", res.getContentType(), res.getStatus());
     }
 
     @Override
     public void destroy() {
-        LOG.warn("Destructing filter :{}", this);
+        log.warn("Destructing filter :{}", this);
     }
 }

@@ -35,10 +35,8 @@ public class EformStagingController {
     private final UsnValidator usnValidator;
     private final TypeValidator typeValidator;
 
-    // TODO add boiler plate response statuses swagger annotations
-
     @PatchMapping("/eform/{usn}")
-    @Operation(description = "Update  a RepOrder CCOutCome record")
+    @Operation(description = "Update an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
@@ -60,6 +58,10 @@ public class EformStagingController {
     }
 
     @GetMapping("/eform/{usn}")
+    @Operation(description = "Retrieve an EFORMS_STAGING record")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<EformStagingResponse> getEformsApplication(@PathVariable Integer usn,
                                                                      @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
@@ -75,6 +77,10 @@ public class EformStagingController {
     }
 
     @DeleteMapping("/eform/{usn}")
+    @Operation(description = "Delete an EFORMS_STAGING record")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Void> deleteEformsApplication(@PathVariable Integer usn,
                                                         @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
@@ -86,6 +92,10 @@ public class EformStagingController {
     }
 
     @PostMapping("/eform/{usn}")
+    @Operation(description = "Create an EFORMS_STAGING record")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Void> createEformsApplication(@PathVariable Integer usn,
                                                         @RequestParam(name = "type", required = false, value = DEFAULT_EFORM_TYPE) String type,
                                                         @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {

@@ -31,8 +31,11 @@ class EformStagingControllerTest {
 
     private static final String ENDPOINT_FORMAT = "/api/eform/";
     private static final int USN = 123;
-    private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse.builder().usn(USN).type("CRM14").build();
-    private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO.builder().usn(USN).type("CRM14").build();
+    private static final String TYPE = "CRM14";
+    private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse.builder().usn(USN).type(TYPE).build();
+    private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO.builder().usn(USN).type(TYPE).build();
+    private static final USNValidationException USN_VALIDATION_EXCEPTION =
+            new USNValidationException("The USN number is not valid as it is not present in the eForm Repository");
 
     @MockBean
     private EformStagingDAO mockEFormStagingDAO;
@@ -53,7 +56,7 @@ class EformStagingControllerTest {
     void setUp() {
         // Setup some happy path stubbing behaviour, to be overridden when needed in non-happy path scenario tests
         when(mockEformStagingDTOMapper.toEformsStagingEntity(any(EformStagingDTO.class)))
-                .thenReturn(EformsStagingEntity.builder().usn(USN).type("CRM14").build());
+                .thenReturn(EformsStagingEntity.builder().usn(USN).type(TYPE).build());
         when(mockEformStagingDTOMapper.toEformStagingDTO(any(EformsStagingEntity.class)))
                 .thenReturn(EFORM_STAGING_DTO);
         when(mockEformStagingDTOMapper.toEformStagingResponse(any(EformStagingDTO.class)))
@@ -62,17 +65,17 @@ class EformStagingControllerTest {
 
     @Test
     void shouldSuccessfullyUpdateEformApplication() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.patch(url(USN))
+        mvc.perform(MockMvcRequestBuilders.patch(url())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
     void shouldFailToUpdateEformApplicationAsUsnValidationFails() throws Exception {
-        doThrow(new USNValidationException("The USN number is not valid as it is not present in the eForm Repository"))
+        doThrow(USN_VALIDATION_EXCEPTION)
                 .when(mockUsnValidator).verifyUsnExists(USN);
 
-        mvc.perform(MockMvcRequestBuilders.patch(url(USN))
+        mvc.perform(MockMvcRequestBuilders.patch(url())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json(String.valueOf("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN number is not valid as it is not present in the eForm Repository\"}")));
@@ -85,7 +88,7 @@ class EformStagingControllerTest {
         when(mockEformStagingDTOMapper.toEformStagingResponse(EFORM_STAGING_DTO))
                 .thenReturn(EFORM_STAGING_RESPONSE);
 
-        mvc.perform(MockMvcRequestBuilders.get(url(USN))
+        mvc.perform(MockMvcRequestBuilders.get(url())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(String.valueOf("{\"usn\":123,\"type\":\"CRM14\"}")));
@@ -94,9 +97,9 @@ class EformStagingControllerTest {
     @Test
     void shouldFailToFindEformApplicationWhenItDoesNotExistInTheRepo() throws Exception {
         when(mockEFormStagingDAO.retrieve(USN))
-                .thenThrow(new USNValidationException("The USN number is not valid as it is not present in the eForm Repository"));
+                .thenThrow(USN_VALIDATION_EXCEPTION);
 
-        mvc.perform(MockMvcRequestBuilders.get(url(USN))
+        mvc.perform(MockMvcRequestBuilders.get(url())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json(String.valueOf("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN number is not valid as it is not present in the eForm Repository\"}")));
@@ -104,7 +107,7 @@ class EformStagingControllerTest {
 
     @Test
     void shouldSuccessfullyDeleteEformApplication() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete(url(USN))
+        mvc.perform(MockMvcRequestBuilders.delete(url())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -113,13 +116,13 @@ class EformStagingControllerTest {
 
     @Test
     void shouldSuccessfullyCreateEformApplication() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post(url(USN))
+        mvc.perform(MockMvcRequestBuilders.post(url())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @NotNull
-    private String url(int usn) {
-        return ENDPOINT_FORMAT + usn;
+    private String url() {
+        return ENDPOINT_FORMAT + USN;
     }
 }

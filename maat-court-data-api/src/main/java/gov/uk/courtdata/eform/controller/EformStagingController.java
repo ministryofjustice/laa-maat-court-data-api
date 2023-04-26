@@ -30,7 +30,7 @@ public class EformStagingController {
 
     private static final String DEFAULT_EFORM_TYPE = "CRM14";
 
-    private final EformStagingDAO eformsStagingDAOImpl;
+    private final EformStagingDAO eormStagingDAO;
     private final EformStagingDTOMapper eformStagingDTOMapper;
     private final UsnValidator usnValidator;
     private final TypeValidator typeValidator;
@@ -41,8 +41,9 @@ public class EformStagingController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Void> updateEformApplication(@PathVariable Integer usn,
-                                                       @RequestParam(name = "type", required = false, value = DEFAULT_EFORM_TYPE) String type,
-                                                       @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+                                                       @RequestParam(name = "type", required = false, defaultValue = DEFAULT_EFORM_TYPE) String type,
+                                                       @Parameter(description = "Used for tracing calls")
+                                                       @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
         usnValidator.validate(usn);
         typeValidator.validate(type);
@@ -52,7 +53,7 @@ public class EformStagingController {
                 .type(type)
                 .build();
 
-        eformsStagingDAOImpl.update(eformStagingDTO);
+        eormStagingDAO.update(eformStagingDTO);
 
         return ResponseEntity.ok().build();
     }
@@ -62,11 +63,12 @@ public class EformStagingController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<EformStagingResponse> getEformsApplication(@PathVariable Integer usn,
-                                                                     @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+    public ResponseEntity<EformStagingResponse> getEformApplication(@PathVariable Integer usn,
+                                                                    @Parameter(description = "Used for tracing calls")
+                                                                    @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
         usnValidator.validate(usn);
-        Optional<EformStagingDTO> eformStagingDtoOptional = eformsStagingDAOImpl.retrieve(usn);
+        Optional<EformStagingDTO> eformStagingDtoOptional = eormStagingDAO.retrieve(usn);
         if (eformStagingDtoOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -81,12 +83,13 @@ public class EformStagingController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Void> deleteEformsApplication(@PathVariable Integer usn,
-                                                        @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+    public ResponseEntity<Void> deleteEformApplication(@PathVariable Integer usn,
+                                                       @Parameter(description = "Used for tracing calls")
+                                                       @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
         usnValidator.validate(usn);
 
-        eformsStagingDAOImpl.delete(usn);
+        eormStagingDAO.delete(usn);
 
         return ResponseEntity.ok().build();
     }
@@ -96,9 +99,10 @@ public class EformStagingController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Void> createEformsApplication(@PathVariable Integer usn,
-                                                        @RequestParam(name = "type", required = false, value = DEFAULT_EFORM_TYPE) String type,
-                                                        @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+    public ResponseEntity<Void> createEformApplication(@PathVariable Integer usn,
+                                                       @RequestParam(name = "type", required = false, defaultValue = DEFAULT_EFORM_TYPE) String type,
+                                                       @Parameter(description = "Used for tracing calls")
+                                                       @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
         usnValidator.validate(usn);
         typeValidator.validate(type);
@@ -108,7 +112,7 @@ public class EformStagingController {
                 .type(type)
                 .build();
 
-        eformsStagingDAOImpl.create(eformStagingDTO);
+        eormStagingDAO.create(eformStagingDTO);
 
         return ResponseEntity.ok().build();
     }

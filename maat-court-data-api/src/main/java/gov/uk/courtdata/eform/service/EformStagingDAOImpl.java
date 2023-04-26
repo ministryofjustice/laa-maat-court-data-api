@@ -9,11 +9,11 @@ import gov.uk.courtdata.eform.validator.UsnValidator;
 import gov.uk.courtdata.exception.USNValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Service
+@Component
 @RequiredArgsConstructor
 @Slf4j
 @XRayEnabled
@@ -49,7 +49,7 @@ public class EformStagingDAOImpl implements EformStagingDAO {
             return Optional.empty();
         }
 
-        return Optional.of(eformStagingDTOMapper.toEformsStagingDTO(eformsStagingEntity.get()));
+        return Optional.of(eformStagingDTOMapper.toEformStagingDTO(eformsStagingEntity.get()));
     }
 
     @Override

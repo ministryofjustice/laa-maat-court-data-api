@@ -19,8 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/api")
 @Slf4j
@@ -30,7 +28,7 @@ public class EformStagingController {
 
     private static final String DEFAULT_EFORM_TYPE = "CRM14";
 
-    private final EformStagingDAO eormStagingDAO;
+    private final EformStagingDAO eformStagingDAO;
     private final EformStagingDTOMapper eformStagingDTOMapper;
     private final UsnValidator usnValidator;
     private final TypeValidator typeValidator;
@@ -45,7 +43,10 @@ public class EformStagingController {
                                                        @Parameter(description = "Used for tracing calls")
                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        usnValidator.validate(usn);
+        //USN Should Already be in DB
+        //Validation will throw an error only when not in DB
+        usnValidator.verifyUsnExists(usn);
+        //This will pass on
         typeValidator.validate(type);
 
         EformStagingDTO eformStagingDTO = gov.uk.courtdata.eform.dto.EformStagingDTO.builder()
@@ -53,7 +54,7 @@ public class EformStagingController {
                 .type(type)
                 .build();
 
-        eormStagingDAO.update(eformStagingDTO);
+        eformStagingDAO.update(eformStagingDTO);
 
         return ResponseEntity.ok().build();
     }
@@ -67,13 +68,10 @@ public class EformStagingController {
                                                                     @Parameter(description = "Used for tracing calls")
                                                                     @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        usnValidator.validate(usn);
-        Optional<EformStagingDTO> eformStagingDtoOptional = eormStagingDAO.retrieve(usn);
-        if (eformStagingDtoOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        usnValidator.verifyUsnExists(usn);
+        EformStagingDTO eformStagingDtoOptional = eformStagingDAO.retrieve(usn);
 
-        EformStagingResponse eformStagingResponse = eformStagingDTOMapper.toEformStagingResponse(eformStagingDtoOptional.get());
+        EformStagingResponse eformStagingResponse = eformStagingDTOMapper.toEformStagingResponse(eformStagingDtoOptional);
 
         return ResponseEntity.ok(eformStagingResponse);
     }
@@ -87,9 +85,9 @@ public class EformStagingController {
                                                        @Parameter(description = "Used for tracing calls")
                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        usnValidator.validate(usn);
+        usnValidator.verifyUsnExists(usn);
 
-        eormStagingDAO.delete(usn);
+        eformStagingDAO.delete(usn);
 
         return ResponseEntity.ok().build();
     }
@@ -104,7 +102,8 @@ public class EformStagingController {
                                                        @Parameter(description = "Used for tracing calls")
                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        usnValidator.validate(usn);
+        usnValidator.verifyUsnDoesNotExist(usn);
+        //This will pass fail/stop here
         typeValidator.validate(type);
 
         EformStagingDTO eformStagingDTO = gov.uk.courtdata.eform.dto.EformStagingDTO.builder()
@@ -112,7 +111,7 @@ public class EformStagingController {
                 .type(type)
                 .build();
 
-        eormStagingDAO.create(eformStagingDTO);
+        eformStagingDAO.create(eformStagingDTO);
 
         return ResponseEntity.ok().build();
     }

@@ -5,14 +5,17 @@ import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
-import gov.uk.courtdata.eform.validator.UsnValidator;
-import gov.uk.courtdata.exception.USNValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+/**
+ * The responsibility of this class is to provide data repository access without verification,
+ * verification is the responsibility of the calling class.
+ * e.g. verify that a given entity exists before attempting to delete it
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -21,13 +24,11 @@ public class EformStagingDAOImpl implements EformStagingDAO {
 
     private final EformStagingRepository eformStagingRepository;
     private final EformStagingDTOMapper eformStagingDTOMapper;
-    private final UsnValidator usnValidator;
 
     @Override
     public void create(EformStagingDTO eformStagingDTO) {
         EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
 
-        usnValidator.validate(eformStagingDTO.getUsn());
         eformStagingRepository.save(eformsStagingEntity);
     }
 
@@ -35,25 +36,23 @@ public class EformStagingDAOImpl implements EformStagingDAO {
     public void update(EformStagingDTO eformStagingDTO) {
         EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
 
-        if (eformStagingRepository.existsById(eformsStagingEntity.getUsn())) {
-            eformStagingRepository.save(eformsStagingEntity);
-        } else {
-            throw new USNValidationException("The USN number entered is not valid.");
-        }
+        eformStagingRepository.save(eformsStagingEntity);
     }
 
     @Override
-    public Optional<EformStagingDTO> retrieve(int usn) {
+    public EformStagingDTO retrieve(int usn) {
         Optional<EformsStagingEntity> eformsStagingEntity = eformStagingRepository.findById(usn);
-        if (eformsStagingEntity.isEmpty()) {
-            return Optional.empty();
-        }
 
-        return Optional.of(eformStagingDTOMapper.toEformStagingDTO(eformsStagingEntity.get()));
+        return eformStagingDTOMapper.toEformStagingDTO(eformsStagingEntity.get());
     }
 
     @Override
     public void delete(int usn) {
         eformStagingRepository.deleteById(usn);
+    }
+
+    @Override
+    public boolean isUsnPresentInDB(int usn) {
+        return eformStagingRepository.existsById(usn);
     }
 }

@@ -19,8 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Optional;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -64,15 +62,14 @@ class EformStagingControllerTest {
     @Test
     void shouldSuccessfullyUpdateEformApplication() throws Exception {
         mvc.perform(MockMvcRequestBuilders.patch(url(USN))
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
     void shouldSuccessfullyGetEformApplication() throws Exception {
         when(mockEFormStagingDAO.retrieve(USN))
-                .thenReturn(Optional.of(EFORM_STAGING_DTO));
+                .thenReturn(EFORM_STAGING_DTO);
         when(mockEformStagingDTOMapper.toEformStagingResponse(EFORM_STAGING_DTO))
                 .thenReturn(EFORM_STAGING_RESPONSE);
 

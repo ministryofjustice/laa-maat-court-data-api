@@ -5,6 +5,7 @@ import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import gov.uk.courtdata.eform.validator.UsnValidator;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,24 +24,31 @@ class EformStagingDAOImplTest {
     @Mock
     private EformStagingDTOMapper eformStagingDTOMapper;
 
-    @Autowired
-    private UsnValidator usnValidator;
-
     private EformStagingDAOImpl eformStagingDAOImpl;
 
     @BeforeEach
     void setUp() {
         eformStagingDAOImpl = new EformStagingDAOImpl(eformStagingRepository,
-                eformStagingDTOMapper,
-                usnValidator);
+                eformStagingDTOMapper);
     }
 
+    @Test
+    public void givenUSN_whenServiceIncolved_thenSaveToDatabase() {
 
-    // TODO Complete these tests
+    }
 
     @Test
-    public void givenEformsDetail_whenServiceIncolved_thenSaveEformsInfoToDatabase() {
+    public void givenUSN_whenServiceIncolved_thenUpdateTheDatabase() {
 
+    }
+
+    @Test
+    public void givenUSN_whenServiceIncolved_thenPullFromTheDatabase() {
+
+    }
+
+    @Test
+    public void givenUSN_whenServiceIncolved_thenDeletefromDatabase() {
 
     }
 

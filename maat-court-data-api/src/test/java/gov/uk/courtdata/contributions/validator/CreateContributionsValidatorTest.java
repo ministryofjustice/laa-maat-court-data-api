@@ -3,7 +3,7 @@ package gov.uk.courtdata.contributions.validator;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.contributions.CreateContributions;
 import gov.uk.courtdata.validator.MaatIdValidator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -17,29 +17,42 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateContributionsValidatorTest {
+class CreateContributionsValidatorTest {
+
+    private static final Integer TEST_REP_ID = 999;
+    private static final String TEST_TRANSFER_STATUS = "RECEIVED";
 
     @InjectMocks
     private CreateContributionsValidator createContributionsValidator;
-
     @Mock
     private MaatIdValidator maatIdValidator;
 
     @Test
-    public void givenValidContributionsData_whenValidateIsInvoked_thenValidationPasses() {
-        CreateContributions createContributions = CreateContributions.builder().build();
-        when(maatIdValidator.validate(any())).thenReturn(Optional.empty());
-        when(createContributionsValidator.validateTransferStatus(any())).thenReturn(Optional.empty());
+    void whenValidateIsInvoked_thenValidationPasses() {
+        CreateContributions createContributions = CreateContributions.builder().repId(TEST_REP_ID)
+                .transferStatus(TEST_TRANSFER_STATUS).build();
+        when(maatIdValidator.validate(anyInt())).thenReturn(Optional.empty());
 
         Optional<Void> result = createContributionsValidator.validate(createContributions);
 
-        assertThat(result).isEqualTo(Optional.empty());
+        assertThat(result).isNotPresent();
     }
 
     @Test
-    public void givenInvalidContributionsData_whenValidateIsInvoked_thenValidationFails() {
-        CreateContributions createContributions = CreateContributions.builder().build();
-        when(maatIdValidator.validate(any())).thenThrow(ValidationException.class);
+    void givenInvalidId_whenValidateIsInvoked_thenValidationFails() {
+        CreateContributions createContributions = CreateContributions.builder().repId(666)
+                .transferStatus(TEST_TRANSFER_STATUS).build();
+        when(maatIdValidator.validate(anyInt())).thenThrow(ValidationException.class);
+
+        assertThatExceptionOfType(ValidationException.class)
+                .isThrownBy(() -> createContributionsValidator.validate(createContributions));
+    }
+
+    @Test
+    void givenInvalidTransferStatus_whenValidateIsInvoked_thenValidationFails() {
+        CreateContributions createContributions = CreateContributions.builder().repId(TEST_REP_ID)
+                .transferStatus("INVALID").build();
+        when(maatIdValidator.validate(anyInt())).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(ValidationException.class)
                 .isThrownBy(() -> createContributionsValidator.validate(createContributions));

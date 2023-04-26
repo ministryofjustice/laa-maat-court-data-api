@@ -677,6 +677,7 @@ Resources:
           - !Ref CognitoUserPoolClientCrownCourtProceeding
           - !Ref CognitoUserPoolClientCrownCourtContribution
           - !Ref CognitoUserPoolClientCrimeEvidence
+          - !Ref CognitoUserPoolClientCrimeApplyAdaptor
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiStage:
     Type: 'AWS::ApiGatewayV2::Stage'
@@ -804,6 +805,20 @@ Resources:
       SupportedIdentityProviders: [COGNITO]
       AllowedOAuthFlows: [client_credentials]
       AllowedOAuthScopes: [!Sub '${pAppName}/${pApiScope1}']
+      PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - 'ALLOW_REFRESH_TOKEN_AUTH'
+  CognitoUserPoolClientCrimeApplyAdaptor:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: CognitoUserPoolResourceServer1
+    Properties:
+      ClientName: "Crime Apply Adapter"
+      UserPoolId: !Ref CognitoUserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      GenerateSecret: true
+      SupportedIdentityProviders: [ COGNITO ]
+      AllowedOAuthFlows: [ client_credentials ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'

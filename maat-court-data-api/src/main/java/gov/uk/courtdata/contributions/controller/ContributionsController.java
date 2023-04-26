@@ -85,7 +85,7 @@ public class ContributionsController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<ContributionsDTO> update(@RequestBody UpdateContributions updateContributions) {
+    public ResponseEntity<ContributionsDTO> update(@Valid @RequestBody UpdateContributions updateContributions) {
         log.info("Request to update contributions entry for ID {}", updateContributions.getId());
         updateContributionsValidator.validate(updateContributions);
         return ResponseEntity.ok(contributionsService.update(updateContributions));

@@ -221,6 +221,95 @@ public class TestModelDataBuilder {
                 "}";
     }
 
+    public static String getUpdateContributionsJson() {
+        return "{\n" +
+                "\"id\": 999,\n" +
+                "\"userModified\": \"test\",\n" +
+                "\"contributionFileId\": 9,\n" +
+                "\"effectiveDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"calcDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"contributionCap\": 9999,\n" +
+                "\"monthlyContributions\": 99,\n" +
+                "\"upfrontContributions\": 9,\n" +
+                "\"upliftApplied\": \"Y\",\n" +
+                "\"basedOn\": \"Means\",\n" +
+                "\"transferStatus\": \"RECEIVED\",\n" +
+                "\"dateUpliftApplied\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"dateUpliftRemoved\": \"2023-04-02T00:00:00.00\",\n" +
+                "\"createContributionOrder\": \"Y\",\n" +
+                "\"correspondenceId\": 9,\n" +
+                "\"ccOutcomeCount\": 9,\n" +
+                "\"seHistoryId\": 9,\n" +
+                "}";
+    }
+
+    public static String getInvalidUpdateContributionsJson() {
+        return "{\n" +
+                "\"id\": 999,\n" +
+                "\"userModified\": \"test\",\n" +
+                "\"contributionFileId\": 9,\n" +
+                "\"calcDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"contributionCap\": 9999,\n" +
+                "\"monthlyContributions\": 99,\n" +
+                "\"upfrontContributions\": 9,\n" +
+                "\"upliftApplied\": \"Y\",\n" +
+                "\"basedOn\": \"Means\",\n" +
+                "\"transferStatus\": \"RECEIVED\",\n" +
+                "\"dateUpliftApplied\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"dateUpliftRemoved\": \"2023-04-02T00:00:00.00\",\n" +
+                "\"createContributionOrder\": \"Y\",\n" +
+                "\"correspondenceId\": 9,\n" +
+                "\"ccOutcomeCount\": 9,\n" +
+                "\"seHistoryId\": 9,\n" +
+                "}";
+    }
+
+    public static String getCreateContributionsJson() {
+        return "{\n" +
+                "\"repId\": 999,\n" +
+                "\"applId\": 999,\n" +
+                "\"userCreated\": \"test\",\n" +
+                "\"contributionFileId\": 9,\n" +
+                "\"effectiveDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"calcDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"contributionCap\": 9999,\n" +
+                "\"monthlyContributions\": 99,\n" +
+                "\"upfrontContributions\": 9,\n" +
+                "\"upliftApplied\": \"Y\",\n" +
+                "\"basedOn\": \"Means\",\n" +
+                "\"transferStatus\": \"RECEIVED\",\n" +
+                "\"dateUpliftApplied\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"dateUpliftRemoved\": \"2023-04-02T00:00:00.00\",\n" +
+                "\"createContributionOrder\": \"Y\",\n" +
+                "\"correspondenceId\": 9,\n" +
+                "\"ccOutcomeCount\": 9,\n" +
+                "\"seHistoryId\": 9,\n" +
+                "}";
+    }
+
+    public static String getInvalidCreateContributionsJson() {
+        return "{\n" +
+                "\"repId\": 999,\n" +
+                "\"applId\": 999,\n" +
+                "\"userCreated\": \"\",\n" +
+                "\"contributionFileId\": 9,\n" +
+                "\"effectiveDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"calcDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"contributionCap\": 9999,\n" +
+                "\"monthlyContributions\": 99,\n" +
+                "\"upfrontContributions\": 9,\n" +
+                "\"upliftApplied\": \"Y\",\n" +
+                "\"basedOn\": \"Means\",\n" +
+                "\"transferStatus\": \"RECEIVED\",\n" +
+                "\"dateUpliftApplied\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"dateUpliftRemoved\": \"2023-04-02T00:00:00.00\",\n" +
+                "\"createContributionOrder\": \"Y\",\n" +
+                "\"correspondenceId\": 9,\n" +
+                "\"ccOutcomeCount\": 9,\n" +
+                "\"seHistoryId\": 9,\n" +
+                "}";
+    }
+
     public static IOJAppealDTO getIOJAppealDTO(LocalDateTime dateModified) {
         return IOJAppealDTO.builder()
                 .id(IOJ_APPEAL_ID)

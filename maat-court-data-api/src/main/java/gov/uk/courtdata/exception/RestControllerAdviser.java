@@ -110,4 +110,15 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
                 .message(errorMessage)
                 .build());
     }
+
+    @ExceptionHandler(USNValidationException.class)
+    public ResponseEntity<ErrorDTO> handleUSNValidationException(USNValidationException ex) {
+        String errorMessage = ex.getMessage();
+        log.error(errorMessage);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder()
+                .code(HttpStatus.BAD_REQUEST.name())
+                .message(errorMessage)
+                .build());
+    }
+
 }

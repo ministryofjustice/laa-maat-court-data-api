@@ -15,7 +15,7 @@ public class UsnValidator {
 
     private final EformStagingRepository eformStagingRepository;
 
-    public void validate(Integer usn) {
+    public void validate(Integer usn) throws USNValidationException {
         if (!eformStagingRepository.existsById(usn)) {
             String message = String.format("The USN number [%d] is not valid as it is not present in the eForm Repository", usn);
             throw new USNValidationException(message);

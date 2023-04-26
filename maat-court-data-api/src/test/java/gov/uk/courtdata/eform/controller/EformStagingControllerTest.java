@@ -7,6 +7,7 @@ import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import gov.uk.courtdata.eform.service.EformStagingDAO;
 import gov.uk.courtdata.eform.validator.TypeValidator;
 import gov.uk.courtdata.eform.validator.UsnValidator;
+import gov.uk.courtdata.exception.USNValidationException;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,9 +65,19 @@ class EformStagingControllerTest {
     @Test
     void shouldSuccessfullyUpdateEformApplication() throws Exception {
         mvc.perform(MockMvcRequestBuilders.patch(url(USN))
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldFailToUpdateEformApplicationAsUsnValidationFails() throws Exception {
+        doThrow(new USNValidationException("The USN number is not valid as it is not present in the eForm Repository"))
+                .when(mockUsnValidator).validate(USN);
+
+        mvc.perform(MockMvcRequestBuilders.patch(url(USN))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json(String.valueOf("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN number is not valid as it is not present in the eForm Repository\"}")));
     }
 
     @Test
@@ -80,6 +91,16 @@ class EformStagingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(String.valueOf("{\"usn\":123,\"type\":\"CRM14\"}")));
+    }
+
+    @Test
+    void shouldFailToFindEformApplicationWhenItDoesNotExistInTheRepo() throws Exception {
+        when(mockEFormStagingDAO.retrieve(USN))
+                .thenReturn(Optional.empty());
+
+        mvc.perform(MockMvcRequestBuilders.get(url(USN))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test

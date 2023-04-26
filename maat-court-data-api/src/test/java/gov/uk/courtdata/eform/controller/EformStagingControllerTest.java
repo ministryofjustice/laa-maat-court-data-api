@@ -70,7 +70,7 @@ class EformStagingControllerTest {
     @Test
     void shouldFailToUpdateEformApplicationAsUsnValidationFails() throws Exception {
         doThrow(new USNValidationException("The USN number is not valid as it is not present in the eForm Repository"))
-                .when(mockUsnValidator).validate(USN);
+                .when(mockUsnValidator).verifyUsnExists(USN);
 
         mvc.perform(MockMvcRequestBuilders.patch(url(USN))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -94,11 +94,12 @@ class EformStagingControllerTest {
     @Test
     void shouldFailToFindEformApplicationWhenItDoesNotExistInTheRepo() throws Exception {
         when(mockEFormStagingDAO.retrieve(USN))
-                .thenReturn(Optional.empty());
+                .thenThrow(new USNValidationException("The USN number is not valid as it is not present in the eForm Repository"));
 
         mvc.perform(MockMvcRequestBuilders.get(url(USN))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json(String.valueOf("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN number is not valid as it is not present in the eForm Repository\"}")));
     }
 
     @Test

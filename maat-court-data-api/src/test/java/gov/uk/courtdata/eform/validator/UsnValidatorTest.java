@@ -22,32 +22,32 @@ class UsnValidatorTest {
     private UsnValidator usnValidator;
 
     @Test
-    void shouldThrowValidationExceptionWhenValidatingNullUsn() {
+    void shouldThrowValidationException_When_Calling_VerifyUsnExists_withNullUsn() {
         when(mockEformStagingRepository.existsById(null))
                 .thenReturn(false);
 
         USNValidationException exception = Assertions.assertThrows(
-                USNValidationException.class, () -> usnValidator.validate(null));
+                USNValidationException.class, () -> usnValidator.verifyUsnExists(null));
 
         assertEquals("The USN number [null] is not valid as it is not present in the eForm Repository", exception.getMessage());
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenValidatingNonexistentUsn() {
+    void shouldThrowValidationException_When_Calling_VerifyUsnExists_withNonexistentUsn() {
         when(mockEformStagingRepository.existsById(654321))
                 .thenReturn(false);
 
         USNValidationException exception = Assertions.assertThrows(
-                USNValidationException.class, () -> usnValidator.validate(654321));
+                USNValidationException.class, () -> usnValidator.verifyUsnExists(654321));
 
         assertEquals("The USN number [654321] is not valid as it is not present in the eForm Repository", exception.getMessage());
     }
 
     @Test
-    void shouldNotThrowValidationExceptionWhenValidatingValidUsn() {
+    void shouldNotThrowValidationException_When_Calling_VerifyUsnExists_withValidatingValidUsn() {
         when(mockEformStagingRepository.existsById(123))
                 .thenReturn(true);
 
-        usnValidator.validate(123);
+        usnValidator.verifyUsnExists(123);
     }
 }

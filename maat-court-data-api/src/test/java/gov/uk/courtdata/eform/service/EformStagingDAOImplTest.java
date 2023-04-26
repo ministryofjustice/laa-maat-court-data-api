@@ -4,18 +4,30 @@ import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
-import gov.uk.courtdata.eform.validator.UsnValidator;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest
 class EformStagingDAOImplTest {
+
+    private static final int USN = 1233;
+    private static final EformsStagingEntity EFORMS_STAGING_ENTITY = EformsStagingEntity
+            .builder()
+            .usn(USN)
+            .build();
+    private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO
+            .builder()
+            .usn(USN)
+            .build();
 
     @Mock
     private EformStagingRepository eformStagingRepository;
@@ -23,41 +35,46 @@ class EformStagingDAOImplTest {
     @Mock
     private EformStagingDTOMapper eformStagingDTOMapper;
 
-    @Autowired
-    private UsnValidator usnValidator;
-
     private EformStagingDAOImpl eformStagingDAOImpl;
 
     @BeforeEach
     void setUp() {
         eformStagingDAOImpl = new EformStagingDAOImpl(eformStagingRepository,
-                eformStagingDTOMapper,
-                usnValidator);
+                eformStagingDTOMapper);
     }
-
-
-    // TODO Complete these tests
 
     @Test
-    public void givenEformsDetail_whenServiceIncolved_thenSaveEformsInfoToDatabase() {
+    void givenUSN_whenServiceIncolved_thenSaveToDatabase() {
 
+        eformStagingDAOImpl.create(EFORM_STAGING_DTO);
 
+        Mockito.verify(eformStagingRepository, Mockito.times(1)).save(EFORMS_STAGING_ENTITY);
     }
 
+    @Test
+    void givenUSN_whenServiceIncolved_thenUpdateTheDatabase() {
 
-    private EformStagingDTO getEformsStagingDTO() {
+        eformStagingDAOImpl.update(EFORM_STAGING_DTO);
 
-        return EformStagingDTO
-                .builder()
-                .usn(1233)
-                .build();
+        Mockito.verify(eformStagingRepository, Mockito.times(1)).save(EFORMS_STAGING_ENTITY);
     }
 
-    private EformsStagingEntity getEformsStagingEntity(){
+    @Test
+    void givenUSN_whenServiceInvocated_thenPullFromTheDatabase() {
+        Mockito.when(eformStagingRepository.findById(USN))
+                .thenReturn(Optional.of(EFORMS_STAGING_ENTITY));
 
-        return EformsStagingEntity
-                .builder()
-                .usn(1233)
-                .build();
+        EformStagingDTO retrieve = eformStagingDAOImpl.retrieve(EFORM_STAGING_DTO.getUsn());
+
+        Assertions.assertEquals(EFORM_STAGING_DTO, retrieve);
+    }
+
+    @Test
+    void givenUSN_whenServiceIncolved_thenDeletefromDatabase() {
+
+        Integer usn = EFORM_STAGING_DTO.getUsn();
+        eformStagingDAOImpl.delete(usn);
+
+        Mockito.verify(eformStagingRepository, Mockito.times(1)).deleteById(usn);
     }
 }

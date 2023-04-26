@@ -14,58 +14,53 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static java.lang.String.format;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PreConditionsValidatorTest {
 
+    private static final Integer TEST_MAAT_ID = 1000;
     @Mock
     private MaatIdValidator maatIdValidator;
-
     @Mock
     private CPDataValidator cpDataValidator;
-
+    @Mock
+    private LinkExistsValidator linkExistsValidator;
     @InjectMocks
     private PreConditionsValidator preConditionsValidator;
 
-
     @Test
     public void testMaatIdValidator_throwsValidationException() {
+        final CaseDetailsValidate request = getTestCaseDetailsValidate();
+        final String expectedErrorMessage = "MAAT id is missing.";
 
-        final int testMaatId = 1000;
+        when(maatIdValidator.validate(TEST_MAAT_ID)).thenThrow(new ValidationException(expectedErrorMessage));
 
-        when(maatIdValidator.validate(testMaatId))
-                .thenThrow(
-                        new ValidationException("MAAT id is missing."));
-        Assertions.assertThrows(ValidationException.class, ()-> preConditionsValidator.validate(
-                CaseDetailsValidate
-                        .builder()
-                        .maatId(testMaatId)
-                        .build()),"MAAT id is missing.");
-
+        Assertions.assertThrows(ValidationException.class, () -> preConditionsValidator.validate(request), expectedErrorMessage);
     }
-
-
 
 
     @Test
     public void testCPDataValidator_throwsValidationException() {
 
-        final int testMaatId = 1000;
+        final CaseDetailsValidate request = getTestCaseDetailsValidate();
+        final CaseDetails caseDetails = getTestCaseDetails();
+        final String expectedErrorMessage = "CaseURN can't be null or empty on request.";
 
-        CaseDetailsValidate request = CaseDetailsValidate
-                .builder()
-                .maatId(testMaatId)
-                .build();
+        when(cpDataValidator.validate(caseDetails)).thenThrow(new ValidationException(expectedErrorMessage));
 
-        when(cpDataValidator.validate(CaseDetails
-                .builder()
-                .maatId(testMaatId)
-                .build()))
-                .thenThrow(new
-                        ValidationException("CaseURN can't be null or empty on request."));
-        Assertions.assertThrows(ValidationException.class, ()-> preConditionsValidator.validate(
-                request),"CaseURN can't be null or empty on request.");
+        Assertions.assertThrows(ValidationException.class, () -> preConditionsValidator.validate(request), expectedErrorMessage);
+    }
+
+    @Test
+    public void testLinkExistsValidator_throwsValidationException() {
+        final CaseDetailsValidate request = getTestCaseDetailsValidate();
+        final String expectedErrorMessage = format("%s is already linked to a case.", TEST_MAAT_ID);
+
+        when(linkExistsValidator.validate(TEST_MAAT_ID)).thenThrow(new ValidationException(expectedErrorMessage));
+
+        Assertions.assertThrows(ValidationException.class, () -> preConditionsValidator.validate(request), expectedErrorMessage);
     }
 
 
@@ -73,36 +68,31 @@ public class PreConditionsValidatorTest {
     public void testWhenAllValidatorsExecuted_validationPasses() {
 
         //given
-        final int testMaatId = 1000;
-
-        final CaseDetailsValidate caseDetailsValidate =
-                CaseDetailsValidate
-                        .builder()
-                        .maatId(testMaatId)
-                        .build();
-
-        final CaseDetails caseDetails = CaseDetails
-                .builder()
-                .maatId(testMaatId)
-                .build();
+        final CaseDetailsValidate caseDetailsValidate = getTestCaseDetailsValidate();
+        final CaseDetails caseDetails = getTestCaseDetails();
 
         // when
-        when(maatIdValidator.validate(testMaatId))
-                .thenReturn(Optional.empty());
+        when(maatIdValidator.validate(TEST_MAAT_ID)).thenReturn(Optional.empty());
 
-        when(cpDataValidator.validate(CaseDetails
-                .builder()
-                .maatId(testMaatId)
-                .build()))
-                .thenReturn(Optional.empty());
+        when(linkExistsValidator.validate(TEST_MAAT_ID)).thenReturn(Optional.empty());
 
+        when(cpDataValidator.validate(caseDetails)).thenReturn(Optional.empty());
 
         preConditionsValidator.validate(caseDetailsValidate);
 
         //then
-        verify(maatIdValidator, times(1)).validate(testMaatId);
+        verify(maatIdValidator, times(1)).validate(TEST_MAAT_ID);
+        verify(linkExistsValidator, times(1)).validate(TEST_MAAT_ID);
         verify(cpDataValidator, times(1)).validate(caseDetails);
 
+    }
+
+    private CaseDetails getTestCaseDetails() {
+        return CaseDetails.builder().maatId(TEST_MAAT_ID).build();
+    }
+
+    private CaseDetailsValidate getTestCaseDetailsValidate() {
+        return CaseDetailsValidate.builder().maatId(TEST_MAAT_ID).build();
     }
 
 

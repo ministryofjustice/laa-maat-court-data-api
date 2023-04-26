@@ -78,7 +78,7 @@ class EformStagingControllerTest {
         mvc.perform(MockMvcRequestBuilders.patch(url())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().json(String.valueOf("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN number is not valid as it is not present in the eForm Repository\"}")));
+                .andExpect(content().json("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN number is not valid as it is not present in the eForm Repository\"}"));
     }
 
     @Test
@@ -91,7 +91,7 @@ class EformStagingControllerTest {
         mvc.perform(MockMvcRequestBuilders.get(url())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(String.valueOf("{\"usn\":123,\"type\":\"CRM14\"}")));
+                .andExpect(content().json("{\"usn\":123,\"type\":\"CRM14\"}"));
     }
 
     @Test
@@ -102,7 +102,7 @@ class EformStagingControllerTest {
         mvc.perform(MockMvcRequestBuilders.get(url())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().json(String.valueOf("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN number is not valid as it is not present in the eForm Repository\"}")));
+                .andExpect(content().json("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN number is not valid as it is not present in the eForm Repository\"}"));
     }
 
     @Test

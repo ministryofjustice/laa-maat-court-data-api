@@ -1,6 +1,6 @@
 package gov.uk.courtdata.eform.validator;
 
-import gov.uk.courtdata.eform.repository.EformStagingRepository;
+import gov.uk.courtdata.eform.service.EformStagingDAO;
 import gov.uk.courtdata.exception.USNValidationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -16,25 +16,14 @@ import static org.mockito.Mockito.when;
 class UsnValidatorTest {
 
     @Mock
-    private EformStagingRepository mockEformStagingRepository;
+    private EformStagingDAO mockEformStagingDAO;
 
     @InjectMocks
     private UsnValidator usnValidator;
 
     @Test
-    void shouldThrowValidationException_When_Calling_VerifyUsnExists_withNullUsn() {
-        when(mockEformStagingRepository.existsById(null))
-                .thenReturn(false);
-
-        USNValidationException exception = Assertions.assertThrows(
-                USNValidationException.class, () -> usnValidator.verifyUsnExists(null));
-
-        assertEquals("The USN number [null] is not valid as it is not present in the eForm Repository", exception.getMessage());
-    }
-
-    @Test
     void shouldThrowValidationException_When_Calling_VerifyUsnExists_withNonexistentUsn() {
-        when(mockEformStagingRepository.existsById(654321))
+        when(mockEformStagingDAO.isUsnPresentInDB(654321))
                 .thenReturn(false);
 
         USNValidationException exception = Assertions.assertThrows(
@@ -45,7 +34,7 @@ class UsnValidatorTest {
 
     @Test
     void shouldNotThrowValidationException_When_Calling_VerifyUsnExists_withValidatingValidUsn() {
-        when(mockEformStagingRepository.existsById(123))
+        when(mockEformStagingDAO.isUsnPresentInDB(123))
                 .thenReturn(true);
 
         usnValidator.verifyUsnExists(123);

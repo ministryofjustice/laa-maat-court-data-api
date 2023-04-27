@@ -20,32 +20,31 @@ import static org.mockito.Mockito.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class ContributionsServiceTest {
+class ContributionsServiceTest {
+
+    private static final Integer TEST_REP_ID = 999;
 
     @InjectMocks
     private ContributionsService contributionsService;
-
     @Mock
     private ContributionsImpl contributionsImpl;
-
     @Mock
     private ContributionsMapper contributionsMapper;
 
     @Test
-    public void whenFindIsInvoked_thenContributionsEntryIsRetrieved() {
-        Integer testRepId = 999;
-        when(contributionsImpl.findLatest(any())).thenReturn(ContributionsEntity.builder().repId(testRepId).build());
-        when(contributionsMapper.mapEntityToDTO(any())).thenReturn(ContributionsDTO.builder().repId(testRepId).build());
+    void whenFindIsInvoked_thenContributionsEntryIsRetrieved() {
+        when(contributionsImpl.findLatest(anyInt())).thenReturn(ContributionsEntity.builder().repId(TEST_REP_ID).build());
+        when(contributionsMapper.mapEntityToDTO(any(ContributionsEntity.class))).thenReturn(ContributionsDTO.builder().repId(TEST_REP_ID).build());
 
-        ContributionsDTO contributionsDTO = contributionsService.find(testRepId);
+        ContributionsDTO contributionsDTO = contributionsService.find(TEST_REP_ID);
 
-        assertThat(contributionsDTO.getRepId()).isEqualTo(testRepId);
+        assertThat(contributionsDTO.getRepId()).isEqualTo(TEST_REP_ID);
     }
 
     @Test
-    public void givenContributionsEntryDoesntExist_whenFindIsInvoked_thenExceptionIsRaised() {
+    void givenContributionsEntryDoesntExist_whenFindIsInvoked_thenExceptionIsRaised() {
         Integer testRepId = 666;
-        when(contributionsImpl.findLatest(any())).thenReturn(null);
+        when(contributionsImpl.findLatest(anyInt())).thenReturn(null);
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> contributionsService.find(testRepId))
@@ -54,11 +53,12 @@ public class ContributionsServiceTest {
     }
 
     @Test
-    public void whenUpdateIsInvoked_thenContributionsEntryIsUpdated() {
+    void whenUpdateIsInvoked_thenContributionsEntryIsUpdated() {
         Integer testId = 999;
         ContributionsEntity contributionsEntity = ContributionsEntity.builder().build();
-        when(contributionsImpl.find(any())).thenReturn(contributionsEntity);
-        when(contributionsMapper.mapEntityToDTO(any())).thenReturn(ContributionsDTO.builder().id(testId).build());
+        when(contributionsImpl.find(anyInt())).thenReturn(contributionsEntity);
+        when(contributionsImpl.update(any(ContributionsEntity.class))).thenReturn(contributionsEntity);
+        when(contributionsMapper.mapEntityToDTO(any(ContributionsEntity.class))).thenReturn(ContributionsDTO.builder().id(testId).build());
 
         ContributionsDTO contributionsDTO = contributionsService.update(UpdateContributions.builder().id(testId).build());
 
@@ -67,9 +67,9 @@ public class ContributionsServiceTest {
     }
 
     @Test
-    public void givenContributionsEntryDoesntExist_whenUpdateIsInvoked_thenExceptionIsRaised() {
+    void givenContributionsEntryDoesntExist_whenUpdateIsInvoked_thenExceptionIsRaised() {
         Integer testId = 666;
-        when(contributionsImpl.find(any())).thenReturn(null);
+        when(contributionsImpl.find(anyInt())).thenReturn(null);
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> contributionsService.update(UpdateContributions.builder().id(testId).build()))
@@ -77,32 +77,32 @@ public class ContributionsServiceTest {
     }
 
     @Test
-    public void whenCreateIsInvoked_thenContributionsEntryIsCreated() {
-        Integer testRepId = 999;
+    void whenCreateIsInvoked_thenContributionsEntryIsCreated() {
         ContributionsEntity contributionsEntity = ContributionsEntity.builder().build();
-        when(contributionsImpl.findLatest(any())).thenReturn(null);
-        when(contributionsMapper.mapEntityToDTO(any())).thenReturn(ContributionsDTO.builder().repId(testRepId).build());
-        when(contributionsMapper.createContributionsToContributionsEntity(any())).thenReturn(contributionsEntity);
+        when(contributionsImpl.findLatest(anyInt())).thenReturn(null);
+        when(contributionsMapper.createContributionsToContributionsEntity(any(CreateContributions.class))).thenReturn(contributionsEntity);
+        when(contributionsImpl.create(any(ContributionsEntity.class))).thenReturn(contributionsEntity);
+        when(contributionsMapper.mapEntityToDTO(any(ContributionsEntity.class))).thenReturn(ContributionsDTO.builder().repId(TEST_REP_ID).build());
 
-        ContributionsDTO contributionsDTO = contributionsService.create(CreateContributions.builder().repId(testRepId).build());
+        ContributionsDTO contributionsDTO = contributionsService.create(CreateContributions.builder().repId(TEST_REP_ID).build());
 
-        assertThat(contributionsDTO.getRepId()).isEqualTo(testRepId);
+        assertThat(contributionsDTO.getRepId()).isEqualTo(TEST_REP_ID);
         verify(contributionsImpl).create(contributionsEntity);
     }
 
     @Test
-    public void givenContributionsEntryAlreadyExists_whenCreateIsInvoked_thenExistingEntryIsUpdated_andNewContributionsEntryIsCreated() {
-        Integer testRepId = 999;
+    void givenContributionsEntryAlreadyExists_whenCreateIsInvoked_thenExistingEntryIsUpdated_andNewContributionsEntryIsCreated() {
         LocalDate testEffectiveDate = LocalDate.now();
         ContributionsEntity contributionsEntity = ContributionsEntity.builder().build();
-        when(contributionsImpl.findLatest(any())).thenReturn(contributionsEntity);
-        when(contributionsMapper.mapEntityToDTO(any())).thenReturn(ContributionsDTO.builder().repId(testRepId).build());
-        when(contributionsMapper.createContributionsToContributionsEntity(any())).thenReturn(contributionsEntity);
+        when(contributionsImpl.findLatest(anyInt())).thenReturn(contributionsEntity);
+        when(contributionsMapper.createContributionsToContributionsEntity(any(CreateContributions.class))).thenReturn(contributionsEntity);
+        when(contributionsImpl.create(any(ContributionsEntity.class))).thenReturn(contributionsEntity);
+        when(contributionsMapper.mapEntityToDTO(any(ContributionsEntity.class))).thenReturn(ContributionsDTO.builder().repId(TEST_REP_ID).build());
 
-        ContributionsDTO contributionsDTO = contributionsService.create(CreateContributions.builder().repId(testRepId).effectiveDate(testEffectiveDate).build());
+        ContributionsDTO contributionsDTO = contributionsService.create(CreateContributions.builder().repId(TEST_REP_ID).effectiveDate(testEffectiveDate).build());
 
-        assertThat(contributionsDTO.getRepId()).isEqualTo(testRepId);
-        verify(contributionsImpl).updateInactiveAndPrior(testRepId, testEffectiveDate);
+        assertThat(contributionsDTO.getRepId()).isEqualTo(TEST_REP_ID);
+        verify(contributionsImpl).updateInactiveAndPrior(TEST_REP_ID, testEffectiveDate);
         verify(contributionsImpl).create(contributionsEntity);
     }
 }

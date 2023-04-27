@@ -2,7 +2,7 @@ package gov.uk.courtdata.contributions.impl;
 
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.repository.ContributionsRepository;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -16,18 +16,19 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class ContributionsImplTest {
+class ContributionsImplTest {
+
+    private static final Integer TEST_REP_ID = 999;
 
     @InjectMocks
     private ContributionsImpl contributionsImpl;
-
     @Mock
     private ContributionsRepository contributionsRepository;
 
     @Test
-    public void whenFindIsInvoked_thenContributionsEntriesAreRetrieved() {
+    void whenFindIsInvoked_thenContributionsEntriesAreRetrieved() {
         Integer testId = 999;
-        when(contributionsRepository.findById(any())).thenReturn(Optional.ofNullable(ContributionsEntity.builder().id(testId).build()));
+        when(contributionsRepository.findById(anyInt())).thenReturn(Optional.ofNullable(ContributionsEntity.builder().id(testId).build()));
 
         ContributionsEntity contributionsEntity = contributionsImpl.find(testId);
 
@@ -35,19 +36,18 @@ public class ContributionsImplTest {
     }
 
     @Test
-    public void whenFindLatestIsInvoked_thenLatestContributionsEntryIsRetrieved() {
-        Integer testRepId = 999;
-        when(contributionsRepository.findByRepIdAndLatestIsTrue(any())).thenReturn(ContributionsEntity.builder().id(testRepId).build());
+    void whenFindLatestIsInvoked_thenLatestContributionsEntryIsRetrieved() {
+        when(contributionsRepository.findByRepIdAndLatestIsTrue(anyInt())).thenReturn(ContributionsEntity.builder().id(TEST_REP_ID).build());
 
-        ContributionsEntity contributionsEntity = contributionsImpl.findLatest(testRepId);
+        ContributionsEntity contributionsEntity = contributionsImpl.findLatest(TEST_REP_ID);
 
-        assertThat(contributionsEntity.getId()).isEqualTo(testRepId);
+        assertThat(contributionsEntity.getId()).isEqualTo(TEST_REP_ID);
     }
 
     @Test
-    public void whenUpdateIsInvoked_thenContributionsEntryIsUpdated() {
+    void whenUpdateIsInvoked_thenContributionsEntryIsUpdated() {
         ContributionsEntity contributionsEntity = ContributionsEntity.builder().build();
-        when(contributionsRepository.saveAndFlush(any())).thenReturn(contributionsEntity);
+        when(contributionsRepository.saveAndFlush(any(ContributionsEntity.class))).thenReturn(contributionsEntity);
 
         ContributionsEntity updatedContributionsEntity = contributionsImpl.update(contributionsEntity);
 
@@ -56,25 +56,24 @@ public class ContributionsImplTest {
     }
 
     @Test
-    public void whenUpdateInactivePriorIsInvoked_thenContributionsEntryIsSetInactiveAndPrior() {
-        Integer testRepId = 999;
+    void whenUpdateInactivePriorIsInvoked_thenContributionsEntryIsSetInactiveAndPrior() {
         LocalDate testEffectiveDate = LocalDate.now();
 
-        Optional<Void> response = contributionsImpl.updateInactiveAndPrior(testRepId, testEffectiveDate);
+        Optional<Void> response = contributionsImpl.updateInactiveAndPrior(TEST_REP_ID, testEffectiveDate);
 
-        assertThat(response).isEqualTo(Optional.empty());
-        verify(contributionsRepository).setEntryAsInactive(testRepId, testEffectiveDate);
-        verify(contributionsRepository).setEntryAsPrior(testRepId);
+        assertThat(response).isNotPresent();
+        verify(contributionsRepository).setEntryAsInactive(TEST_REP_ID, testEffectiveDate);
+        verify(contributionsRepository).setEntryAsPrior(TEST_REP_ID);
     }
 
     @Test
-    public void whenCreateIsInvoked_thenContributionsEntryIsInserted() {
+    void whenCreateIsInvoked_thenContributionsEntryIsInserted() {
         ContributionsEntity contributionsEntity = ContributionsEntity.builder().latest(true).build();
-        when(contributionsRepository.saveAndFlush(any())).thenReturn(contributionsEntity);
+        when(contributionsRepository.saveAndFlush(any(ContributionsEntity.class))).thenReturn(contributionsEntity);
 
         ContributionsEntity newContributionsEntity = contributionsImpl.update(contributionsEntity);
 
-        assertThat(newContributionsEntity.getLatest()).isEqualTo(true);
+        assertThat(newContributionsEntity.getLatest()).isTrue();
         verify(contributionsRepository).saveAndFlush(contributionsEntity);
     }
 }

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CorrespondenceStateServiceTest {
 
-    private static int INVALID_REP_ID = 1235;
+    private static final int INVALID_REP_ID = 1235;
     @InjectMocks
     private CorrespondenceStateService correspondenceStateService;
     @Mock
@@ -80,7 +80,5 @@ public class CorrespondenceStateServiceTest {
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> correspondenceStateService.updateCorrespondenceState(correspondenceStateDTO))
                 .withMessageContaining("No corresponsdence state found for repId=" + INVALID_REP_ID);
-
     }
-
 }

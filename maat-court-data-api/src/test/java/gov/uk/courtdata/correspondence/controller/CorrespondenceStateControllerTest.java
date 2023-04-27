@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CorrespondenceStateControllerTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/correspondence-state";
-    private static int INVALID_REP_ID = 1235;
+    private static final int INVALID_REP_ID = 1235;
     private final ObjectMapper mapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
@@ -124,6 +124,5 @@ public class CorrespondenceStateControllerTest {
 
         verify(correspondenceStateService).updateCorrespondenceState(correspondenceStateDTO);
     }
-
 
 }

@@ -8,6 +8,7 @@ import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -26,23 +27,23 @@ public class EformStagingDAOImpl implements EformStagingDAO {
     private final EformStagingRepository eformStagingRepository;
     private final EformStagingDTOMapper eformStagingDTOMapper;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void create(EformStagingDTO eformStagingDTO) {
         EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
 
-        eformStagingRepository.save(eformsStagingEntity);
+        eformStagingRepository.saveAndFlush(eformsStagingEntity);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void update(EformStagingDTO eformStagingDTO) {
         EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
 
-        eformStagingRepository.save(eformsStagingEntity);
+        eformStagingRepository.saveAndFlush(eformsStagingEntity);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     @Override
     public EformStagingDTO retrieve(int usn) {
         Optional<EformsStagingEntity> eformsStagingEntity = eformStagingRepository.findById(usn);
@@ -50,7 +51,7 @@ public class EformStagingDAOImpl implements EformStagingDAO {
         return eformStagingDTOMapper.toEformStagingDTO(eformsStagingEntity.get());
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void delete(int usn) {
         eformStagingRepository.deleteById(usn);

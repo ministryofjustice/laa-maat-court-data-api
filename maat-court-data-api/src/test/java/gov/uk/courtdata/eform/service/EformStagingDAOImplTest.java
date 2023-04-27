@@ -48,7 +48,7 @@ class EformStagingDAOImplTest {
 
         eformStagingDAOImpl.create(EFORM_STAGING_DTO);
 
-        Mockito.verify(eformStagingRepository, Mockito.times(1)).save(EFORMS_STAGING_ENTITY);
+        Mockito.verify(eformStagingRepository, Mockito.times(1)).saveAndFlush(EFORMS_STAGING_ENTITY);
     }
 
     @Test
@@ -56,7 +56,7 @@ class EformStagingDAOImplTest {
 
         eformStagingDAOImpl.update(EFORM_STAGING_DTO);
 
-        Mockito.verify(eformStagingRepository, Mockito.times(1)).save(EFORMS_STAGING_ENTITY);
+        Mockito.verify(eformStagingRepository, Mockito.times(1)).saveAndFlush(EFORMS_STAGING_ENTITY);
     }
 
     @Test

@@ -93,7 +93,7 @@ public class ContributionsController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create contributions entry")
-    @ApiResponse(responseCode = "201",
+    @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
     @ApiResponse(responseCode = "400",

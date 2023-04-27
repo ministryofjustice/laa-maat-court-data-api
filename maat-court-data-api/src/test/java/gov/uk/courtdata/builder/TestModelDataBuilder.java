@@ -239,7 +239,7 @@ public class TestModelDataBuilder {
                 "\"createContributionOrder\": \"Y\",\n" +
                 "\"correspondenceId\": 9,\n" +
                 "\"ccOutcomeCount\": 9,\n" +
-                "\"seHistoryId\": 9,\n" +
+                "\"seHistoryId\": 9\n" +
                 "}";
     }
 
@@ -260,7 +260,7 @@ public class TestModelDataBuilder {
                 "\"createContributionOrder\": \"Y\",\n" +
                 "\"correspondenceId\": 9,\n" +
                 "\"ccOutcomeCount\": 9,\n" +
-                "\"seHistoryId\": 9,\n" +
+                "\"seHistoryId\": 9\n" +
                 "}";
     }
 
@@ -283,7 +283,7 @@ public class TestModelDataBuilder {
                 "\"createContributionOrder\": \"Y\",\n" +
                 "\"correspondenceId\": 9,\n" +
                 "\"ccOutcomeCount\": 9,\n" +
-                "\"seHistoryId\": 9,\n" +
+                "\"seHistoryId\": 9\n" +
                 "}";
     }
 
@@ -306,7 +306,7 @@ public class TestModelDataBuilder {
                 "\"createContributionOrder\": \"Y\",\n" +
                 "\"correspondenceId\": 9,\n" +
                 "\"ccOutcomeCount\": 9,\n" +
-                "\"seHistoryId\": 9,\n" +
+                "\"seHistoryId\": 9\n" +
                 "}";
     }
 

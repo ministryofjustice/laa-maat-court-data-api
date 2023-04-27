@@ -32,8 +32,8 @@ public class CorrespondenceStateController {
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @GetMapping(value = "repId/{repId}")
-    public ResponseEntity<String> get(@PathVariable int repId) {
-        log.info("Get correspondence status for repId={}", repId);
+    public ResponseEntity<String> getStatus(@PathVariable int repId) {
+        log.info("Get correspondence status request for repId={}", repId);
         return ResponseEntity.ok(correspondenceStateService.getCorrespondenceStatus(repId));
     }
 
@@ -43,7 +43,7 @@ public class CorrespondenceStateController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<CorrespondenceStateDTO> create(@RequestBody @Valid CorrespondenceStateDTO correspondenceState) {
-        log.info("Create Correspondence State Request Received");
+        log.info("Create correspondence state request received");
         return ResponseEntity.ok(correspondenceStateService.createCorrespondenceState(correspondenceState));
     }
 
@@ -54,7 +54,7 @@ public class CorrespondenceStateController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<CorrespondenceStateDTO> update(@RequestBody @Valid CorrespondenceStateDTO correspondenceState) {
-        log.info("Update Correspondence State Request Received");
+        log.info("Update correspondence state request received");
         return ResponseEntity.ok(correspondenceStateService.updateCorrespondenceState(correspondenceState));
     }
 

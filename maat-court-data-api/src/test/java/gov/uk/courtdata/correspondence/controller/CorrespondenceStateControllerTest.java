@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -25,55 +25,57 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CorrespondenceStateControllerTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/correspondence-state";
-
+    private static int INVALID_REP_ID = 1235;
+    private final ObjectMapper mapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private CorrespondenceStateService correspondenceStateService;
 
-    private ObjectMapper mapper = new ObjectMapper();
-
     @Test
-    void givenCorrectRepId_whenGetIsInvoked_thenCorrectStatusIsReturned() throws Exception {
-        when(correspondenceStateService.getCorrespondenceStatus(REP_ID)).thenReturn("appealCC");
+    void givenCorrectRepId_whenGetStatusIsInvoked_thenCorrectStatusIsReturned() throws Exception {
+        when(correspondenceStateService.getCorrespondenceStatus(REP_ID)).thenReturn(CORRESPONDENCE_STATUS);
+
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/" + REP_ID))
                 .andExpect(status().isOk())
-                .andExpect(content().string("appealCC"));
+                .andExpect(content().string(CORRESPONDENCE_STATUS));
         verify(correspondenceStateService).getCorrespondenceStatus(REP_ID);
     }
 
     @Test
-    void givenInvalidRepId_whenGetIsInvoked_thenNotFoundIsThrown() throws Exception {
-        when(correspondenceStateService.getCorrespondenceStatus(0))
-                .thenThrow(new RequestedObjectNotFoundException("No Rep Order found for ID: 0"));
-        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/0"))
+    void givenInvalidRepId_whenGetStatusIsInvoked_thenNotFoundIsThrown() throws Exception {
+        when(correspondenceStateService.getCorrespondenceStatus(INVALID_REP_ID))
+                .thenThrow(new RequestedObjectNotFoundException("No Rep Order found for ID: " + INVALID_REP_ID));
+
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/"+INVALID_REP_ID))
                 .andExpect(status().isNotFound());
-        verify(correspondenceStateService).getCorrespondenceStatus(0);
+        verify(correspondenceStateService).getCorrespondenceStatus(INVALID_REP_ID);
     }
 
     @Test
-    void givenNullRepId_whenGetIsInvoked_thenBadRequestIsThrown() throws Exception {
+    void givenNullRepId_whenGetStatucIsInvoked_thenBadRequestIsThrown() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/null"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void givenCorrectParameters_whenCreateIsInvoked_thenCorrespondenceStateIsCreated() throws Exception {
-        CorrespondenceStateDTO correspondenceStateDTO = buildCorrespondenceStateDTO(REP_ID, "none");
-        when(correspondenceStateService.createCorrespondenceState(correspondenceStateDTO))
-                .thenReturn(correspondenceStateDTO);
+        CorrespondenceStateDTO correspondenceStateDTO = buildCorrespondenceStateDTO(REP_ID, CORRESPONDENCE_STATUS);
+        when(correspondenceStateService.createCorrespondenceState(correspondenceStateDTO)).thenReturn(correspondenceStateDTO);
+        String jsonBody = mapper.writeValueAsString(correspondenceStateDTO);
+
         mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
-                        .content(mapper.writeValueAsString(correspondenceStateDTO))
+                        .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(correspondenceStateDTO)));
+                .andExpect(content().json(jsonBody));
         verify(correspondenceStateService).createCorrespondenceState(correspondenceStateDTO);
     }
 
     @Test
     void givenNullRepId_whenCreateIsInvoked_thenBadRequestIsThrown() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
-                        .content(mapper.writeValueAsString(buildCorrespondenceStateDTO(null, "appealCC")))
+                        .content(mapper.writeValueAsString(buildCorrespondenceStateDTO(null, CORRESPONDENCE_STATUS)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -88,30 +90,32 @@ public class CorrespondenceStateControllerTest {
 
     @Test
     void givenCorrectParameters_whenUpdateIsInvoked_thenCorrespondenceStateIsUpdated() throws Exception {
-        CorrespondenceStateDTO correspondenceStateDTO = buildCorrespondenceStateDTO(REP_ID, "none");
+        CorrespondenceStateDTO correspondenceStateDTO = buildCorrespondenceStateDTO(REP_ID, CORRESPONDENCE_STATUS);
         when(correspondenceStateService.updateCorrespondenceState(correspondenceStateDTO))
                 .thenReturn(correspondenceStateDTO);
+        String jsonBody = mapper.writeValueAsString(correspondenceStateDTO);
+
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                        .content(mapper.writeValueAsString(correspondenceStateDTO))
+                        .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(correspondenceStateDTO)));
+                .andExpect(content().json(jsonBody));
         verify(correspondenceStateService).updateCorrespondenceState(correspondenceStateDTO);
     }
 
     @Test
     void givenNullRepId_whenUpdateIsInvoked_thenBadRequestIsThrown() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                        .content(mapper.writeValueAsString(buildCorrespondenceStateDTO(null, "appealCC")))
+                        .content(mapper.writeValueAsString(buildCorrespondenceStateDTO(null, CORRESPONDENCE_STATUS)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void givenNonExistentRepId_whenUpdateIsInvoked_thenNotFoundIsThrown() throws Exception {
-        CorrespondenceStateDTO correspondenceStateDTO = buildCorrespondenceStateDTO(REP_ID, "appealCC");
+        CorrespondenceStateDTO correspondenceStateDTO = buildCorrespondenceStateDTO(REP_ID, CORRESPONDENCE_STATUS);
         when(correspondenceStateService.updateCorrespondenceState(correspondenceStateDTO))
-                .thenThrow(new RequestedObjectNotFoundException("No corresponsdence state found for repId: 1234"));
+                .thenThrow(new RequestedObjectNotFoundException("No corresponsdence state found for repId:" + CORRESPONDENCE_STATUS));
 
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
                         .content(mapper.writeValueAsString(correspondenceStateDTO))
@@ -121,11 +125,5 @@ public class CorrespondenceStateControllerTest {
         verify(correspondenceStateService).updateCorrespondenceState(correspondenceStateDTO);
     }
 
-    private CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
-        return CorrespondenceStateDTO.builder()
-                .repId(repId)
-                .status(status)
-                .build();
-    }
 
 }

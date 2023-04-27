@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CorrespondenceStateServiceTest {
 
+    private static int INVALID_REP_ID = 1235;
     @InjectMocks
     private CorrespondenceStateService correspondenceStateService;
     @Mock
@@ -28,65 +29,58 @@ public class CorrespondenceStateServiceTest {
     @Test
     void givenValidRepId_whenGetCorrespondenceStatusIsInvoked_thenStatusIsReturned() {
         when(correspondenceStateRepository.findByRepId(REP_ID))
-                .thenReturn(CorrespondenceStateEntity.builder().repId(REP_ID).status("none").build());
+                .thenReturn(buildCorrespondenceStateEntity(REP_ID, CORRESPONDENCE_STATUS));
 
         String status = correspondenceStateService.getCorrespondenceStatus(REP_ID);
-
         verify(correspondenceStateRepository).findByRepId(REP_ID);
-        assertThat(status).isEqualTo("none");
+        assertThat(status).isEqualTo(CORRESPONDENCE_STATUS);
     }
 
     @Test
     void givenInvalidRepId_whenGetCorrespondenceStatusIsInvoked_thenStatusIsReturned() {
-        when(correspondenceStateRepository.findByRepId(1211)).thenReturn(null);
+        when(correspondenceStateRepository.findByRepId(INVALID_REP_ID)).thenReturn(null);
+
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
-                .isThrownBy(() -> correspondenceStateService.getCorrespondenceStatus(1211))
-                .withMessageContaining("No corresponsdence state found for repId: 1211");
-        verify(correspondenceStateRepository).findByRepId(1211);
+                .isThrownBy(() -> correspondenceStateService.getCorrespondenceStatus(INVALID_REP_ID))
+                .withMessageContaining("No corresponsdence state found for repId= 1235");
+        verify(correspondenceStateRepository).findByRepId(INVALID_REP_ID);
     }
 
     @Test
     void givenCorrespondenceStateDTO_whenCreateCorrespondenceStateIsInvoked_thenCorrespondenceStateIsCreated() throws Exception {
-        CorrespondenceStateEntity entity = CorrespondenceStateEntity.builder().repId(REP_ID).status("none").build();
-        when(correspondenceStateRepository.saveAndFlush(any(CorrespondenceStateEntity.class))).thenReturn(entity);
+        when(correspondenceStateRepository.saveAndFlush(any(CorrespondenceStateEntity.class)))
+                .thenReturn(buildCorrespondenceStateEntity(REP_ID, CORRESPONDENCE_STATUS));
 
         CorrespondenceStateDTO correspondenceStateDTO = correspondenceStateService
-                .createCorrespondenceState(buildCorrespondenceStateDTO(REP_ID, "none"));
+                .createCorrespondenceState(buildCorrespondenceStateDTO(REP_ID, CORRESPONDENCE_STATUS));
         assertThat(correspondenceStateDTO.getRepId()).isEqualTo(REP_ID);
-        assertThat(correspondenceStateDTO.getStatus()).isEqualTo("none");
+        assertThat(correspondenceStateDTO.getStatus()).isEqualTo(CORRESPONDENCE_STATUS);
         verify(correspondenceStateRepository).saveAndFlush(any(CorrespondenceStateEntity.class));
     }
 
     @Test
     void givenCorrespondenceStateDTO_whenUpdateCorrespondenceStateIsInvoked_thenCorrespondenceStateIsUpdated() throws Exception {
-        CorrespondenceStateEntity entity = CorrespondenceStateEntity.builder().repId(REP_ID).status("none").build();
         when(correspondenceStateRepository.findByRepId(REP_ID))
-                .thenReturn(CorrespondenceStateEntity.builder().repId(REP_ID).status("appealCC").build());
-        when(correspondenceStateRepository.saveAndFlush(any(CorrespondenceStateEntity.class))).thenReturn(entity);
+                .thenReturn(CorrespondenceStateEntity.builder().repId(REP_ID).status(CORRESPONDENCE_STATUS).build());
+        when(correspondenceStateRepository.saveAndFlush(any(CorrespondenceStateEntity.class)))
+                .thenReturn(buildCorrespondenceStateEntity(REP_ID, "none"));
 
-        CorrespondenceStateDTO response = correspondenceStateService.updateCorrespondenceState(buildCorrespondenceStateDTO(REP_ID, "none"));
-        assertThat(response.getRepId()).isEqualTo(REP_ID);
-        assertThat(response.getStatus()).isEqualTo("none");
+        CorrespondenceStateDTO responseDTO = correspondenceStateService.updateCorrespondenceState(buildCorrespondenceStateDTO(REP_ID, "none"));
+        assertThat(responseDTO.getRepId()).isEqualTo(REP_ID);
+        assertThat(responseDTO.getStatus()).isEqualTo("none");
         verify(correspondenceStateRepository).findByRepId(REP_ID);
         verify(correspondenceStateRepository).saveAndFlush(any(CorrespondenceStateEntity.class));
     }
 
     @Test
     void givenInvalidCorrespondenceStateDTO_whenUpdateCorrespondenceStateIsInvoked_thenNotFoundIsThrown() throws Exception {
-        when(correspondenceStateRepository.findByRepId(1211)).thenReturn(null);
-        CorrespondenceStateDTO correspondenceStateDTO = buildCorrespondenceStateDTO(1211, "appealCC");
+        when(correspondenceStateRepository.findByRepId(INVALID_REP_ID)).thenReturn(null);
+        CorrespondenceStateDTO correspondenceStateDTO = buildCorrespondenceStateDTO(INVALID_REP_ID, CORRESPONDENCE_STATUS);
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> correspondenceStateService.updateCorrespondenceState(correspondenceStateDTO))
-                .withMessageContaining("No corresponsdence state found for repId: 1211");
+                .withMessageContaining("No corresponsdence state found for repId=" + INVALID_REP_ID);
 
-    }
-
-    private CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
-        return CorrespondenceStateDTO.builder()
-                .repId(repId)
-                .status(status)
-                .build();
     }
 
 }

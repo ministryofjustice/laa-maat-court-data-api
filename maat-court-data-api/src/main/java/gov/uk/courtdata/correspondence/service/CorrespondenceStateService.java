@@ -20,10 +20,10 @@ public class CorrespondenceStateService {
 
     @Transactional(readOnly = true)
     public String getCorrespondenceStatus(final int repId) {
-        log.info("Get correspondence status for repId {}", repId);
+        log.info("Get correspondence status for repId: {}", repId);
         CorrespondenceStateEntity correspondenceState = correspondenceStateRepository.findByRepId(repId);
         if (correspondenceState == null) {
-            throw new RequestedObjectNotFoundException(String.format("No corresponsdence state found for repId: %s", repId));
+            throw new RequestedObjectNotFoundException(String.format("No corresponsdence state found for repId= %s", repId));
         }
         return correspondenceState.getStatus();
     }
@@ -46,13 +46,13 @@ public class CorrespondenceStateService {
         log.info("Update correspondence state for repId {}", corrStateDTO.getRepId());
         CorrespondenceStateEntity entity = correspondenceStateRepository.findByRepId(corrStateDTO.getRepId());
         if (entity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No corresponsdence state found for repId: %s", corrStateDTO.getRepId()));
+            throw new RequestedObjectNotFoundException(String.format("No corresponsdence state found for repId=%s", corrStateDTO.getRepId()));
         } else {
             entity.setStatus(corrStateDTO.getStatus());
-            CorrespondenceStateEntity savedCorrespondenceState = correspondenceStateRepository.saveAndFlush(entity);
+            CorrespondenceStateEntity savedEntity = correspondenceStateRepository.saveAndFlush(entity);
             return CorrespondenceStateDTO.builder()
-                    .status(savedCorrespondenceState.getStatus())
-                    .repId(savedCorrespondenceState.getRepId())
+                    .status(savedEntity.getStatus())
+                    .repId(savedEntity.getRepId())
                     .build();
         }
     }

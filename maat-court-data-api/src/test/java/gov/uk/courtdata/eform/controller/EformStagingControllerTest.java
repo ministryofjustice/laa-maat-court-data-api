@@ -65,7 +65,7 @@ class EformStagingControllerTest {
 
     @Test
     void shouldSuccessfullyUpdateEformApplication() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.patch(url())
+        mvc.perform(MockMvcRequestBuilders.put(url())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -75,7 +75,7 @@ class EformStagingControllerTest {
         doThrow(USN_VALIDATION_EXCEPTION)
                 .when(mockUsnValidator).verifyUsnExists(USN);
 
-        mvc.perform(MockMvcRequestBuilders.patch(url())
+        mvc.perform(MockMvcRequestBuilders.put(url())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN number is not valid as it is not present in the eForm Repository\"}"));

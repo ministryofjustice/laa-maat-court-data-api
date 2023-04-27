@@ -33,7 +33,7 @@ public class EformStagingController {
     private final UsnValidator usnValidator;
     private final TypeValidator typeValidator;
 
-    @PatchMapping("/eform/{usn}")
+    @PutMapping("/eform/{usn}")
     @Operation(description = "Update an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
@@ -43,13 +43,10 @@ public class EformStagingController {
                                                        @Parameter(description = "Used for tracing calls")
                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        //USN Should Already be in DB
-        //Validation will throw an error only when not in DB
         usnValidator.verifyUsnExists(usn);
-        //This will pass on
         typeValidator.validate(type);
 
-        EformStagingDTO eformStagingDTO = gov.uk.courtdata.eform.dto.EformStagingDTO.builder()
+        EformStagingDTO eformStagingDTO = EformStagingDTO.builder()
                 .usn(usn)
                 .type(type)
                 .build();
@@ -103,10 +100,9 @@ public class EformStagingController {
                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
         usnValidator.verifyUsnDoesNotExist(usn);
-        //This will pass fail/stop here
         typeValidator.validate(type);
 
-        EformStagingDTO eformStagingDTO = gov.uk.courtdata.eform.dto.EformStagingDTO.builder()
+        EformStagingDTO eformStagingDTO = EformStagingDTO.builder()
                 .usn(usn)
                 .type(type)
                 .build();

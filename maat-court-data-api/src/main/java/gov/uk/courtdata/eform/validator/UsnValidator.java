@@ -17,14 +17,14 @@ public class UsnValidator {
 
     public void verifyUsnExists(Integer usn) {
         if (!eformStagingDAO.isUsnPresentInDB(usn)) {
-            String message = String.format("The USN number [%d] is not valid as it is not present in the eForm Repository", usn);
+            String message = String.format("The USN number [%d] is not valid.", usn);
             throw new USNValidationException(message);
         }
     }
 
     public void verifyUsnDoesNotExist(Integer usn) {
         if (eformStagingDAO.isUsnPresentInDB(usn)) {
-            String message = String.format("The USN number [%d] is not valid as it is not present in the eForm Repository", usn);
+            String message = String.format("The USN number [%d] is not valid.", usn);
             throw new USNValidationException(message);
         }
     }

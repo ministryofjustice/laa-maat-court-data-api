@@ -29,7 +29,7 @@ class UsnValidatorTest {
         USNValidationException exception = Assertions.assertThrows(
                 USNValidationException.class, () -> usnValidator.verifyUsnExists(654321));
 
-        assertEquals("The USN number [654321] is not valid as it is not present in the eForm Repository", exception.getMessage());
+        assertEquals("The USN number [654321] is not valid.", exception.getMessage());
     }
 
     @Test
@@ -38,5 +38,24 @@ class UsnValidatorTest {
                 .thenReturn(true);
 
         usnValidator.verifyUsnExists(123);
+    }
+
+    @Test
+    void shouldNotThrowValidationException_When_Calling_VerifyUsnDoesNotExist_withNonexistentUsn() {
+        when(mockEformStagingDAO.isUsnPresentInDB(654321))
+                .thenReturn(true);
+
+        USNValidationException exception = Assertions.assertThrows(
+                USNValidationException.class, () -> usnValidator.verifyUsnDoesNotExist(654321));
+
+        assertEquals("The USN number [654321] is not valid.", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowValidationException_When_Calling_VerifyUsnDoesNotExist_withValidatingValidUsn() {
+        when(mockEformStagingDAO.isUsnPresentInDB(123))
+                .thenReturn(false);
+
+        usnValidator.verifyUsnDoesNotExist(123);
     }
 }

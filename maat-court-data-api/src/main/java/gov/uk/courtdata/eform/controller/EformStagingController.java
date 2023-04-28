@@ -33,25 +33,31 @@ public class EformStagingController {
     private final UsnValidator usnValidator;
     private final TypeValidator typeValidator;
 
-    @PutMapping("/eform/{usn}")
+    @PatchMapping("/eform/{oldusn}/{newusn}")
     @Operation(description = "Update an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Void> updateEformApplication(@PathVariable Integer usn,
+    public ResponseEntity<Void> updateEformApplication(@PathVariable Integer oldusn,
+                                                       @PathVariable Integer newusn,
                                                        @RequestParam(name = "type", required = false, defaultValue = DEFAULT_EFORM_TYPE) String type,
                                                        @Parameter(description = "Used for tracing calls")
                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        usnValidator.verifyUsnExists(usn);
+        usnValidator.verifyUsnExists(oldusn);
         typeValidator.validate(type);
 
-        EformStagingDTO eformStagingDTO = EformStagingDTO.builder()
-                .usn(usn)
+        EformStagingDTO oldEformStagingDTO = EformStagingDTO.builder()
+                .usn(oldusn)
                 .type(type)
                 .build();
 
-        eformStagingDAO.update(eformStagingDTO);
+        EformStagingDTO newEformStagingDTO = EformStagingDTO.builder()
+                .usn(newusn)
+                .type(type)
+                .build();
+
+        eformStagingDAO.update(oldEformStagingDTO, newEformStagingDTO);
 
         return ResponseEntity.ok().build();
     }

@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 class EformStagingDAOImplTest {
 
     private static final int USN = 1233;
+    private static final int NEWUSN = 3321;
     private static final String TYPE = "CRM14";
     private static final EformsStagingEntity EFORMS_STAGING_ENTITY = EformsStagingEntity
             .builder()
@@ -33,6 +34,12 @@ class EformStagingDAOImplTest {
     private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO
             .builder()
             .usn(USN)
+            .type(TYPE)
+            .build();
+
+    private static final EformStagingDTO NEW_EFORM_STAGING_DTO = EformStagingDTO
+            .builder()
+            .usn(NEWUSN)
             .type(TYPE)
             .build();
 
@@ -74,7 +81,7 @@ class EformStagingDAOImplTest {
     @Test
     void givenUSN_whenServiceIncolved_thenUpdateTheDatabase() {
 
-        eformStagingDAOImpl.update(EFORM_STAGING_DTO);
+        eformStagingDAOImpl.update(EFORM_STAGING_DTO, NEW_EFORM_STAGING_DTO);
 
         Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(EFORMS_STAGING_ENTITY);
     }

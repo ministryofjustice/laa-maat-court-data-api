@@ -8,7 +8,7 @@ import gov.uk.courtdata.eform.dto.EformStagingDTO;
  */
 public interface EformStagingDAO {
 
-    void update(EformStagingDTO eformStagingDTO);
+    void update(EformStagingDTO oldEformStagingDTO, EformStagingDTO newEformStagingDTO);
 
     EformStagingDTO retrieve(int usn);
 

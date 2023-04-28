@@ -31,6 +31,7 @@ class EformStagingControllerTest {
 
     private static final String ENDPOINT_FORMAT = "/api/eform/";
     private static final int USN = 123;
+    private static final int NEW_USN = 456;
     private static final String TYPE = "CRM14";
     private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse.builder().usn(USN).type(TYPE).build();
     private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO.builder().usn(USN).type(TYPE).build();
@@ -65,7 +66,8 @@ class EformStagingControllerTest {
 
     @Test
     void shouldSuccessfullyUpdateEformApplication() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.put(url())
+        mvc.perform(MockMvcRequestBuilders.patch(url())
+                        .param("newUsn", String.valueOf(NEW_USN))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -75,7 +77,8 @@ class EformStagingControllerTest {
         doThrow(USN_VALIDATION_EXCEPTION)
                 .when(mockUsnValidator).verifyUsnExists(USN);
 
-        mvc.perform(MockMvcRequestBuilders.put(url())
+        mvc.perform(MockMvcRequestBuilders.patch(url())
+                        .param("newUsn", String.valueOf(NEW_USN))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN number is not valid as it is not present in the eForm Repository\"}"));

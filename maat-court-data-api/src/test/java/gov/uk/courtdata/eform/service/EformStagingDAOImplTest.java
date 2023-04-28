@@ -79,7 +79,9 @@ class EformStagingDAOImplTest {
     }
 
     @Test
-    void givenUSN_whenServiceIncolved_thenUpdateTheDatabase() {
+    void givenUSN_whenServiceInvoked_thenUpdateTheDatabase() {
+        Mockito.when(mockEformStagingRepository.findById(USN))
+                .thenReturn(Optional.of(EFORMS_STAGING_ENTITY));
 
         eformStagingDAOImpl.update(EFORM_STAGING_DTO, NEW_EFORM_STAGING_DTO);
 

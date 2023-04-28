@@ -33,27 +33,27 @@ public class EformStagingController {
     private final UsnValidator usnValidator;
     private final TypeValidator typeValidator;
 
-    @PatchMapping("/eform/{oldusn}/{newusn}")
+    @PatchMapping("/eform/{oldUsn}")
     @Operation(description = "Update an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Void> updateEformApplication(@PathVariable Integer oldusn,
-                                                       @PathVariable Integer newusn,
+    public ResponseEntity<Void> updateEformApplication(@PathVariable Integer oldUsn,
+                                                       @RequestParam(name = "newUsn", required = true) Integer newUsn,
                                                        @RequestParam(name = "type", required = false, defaultValue = DEFAULT_EFORM_TYPE) String type,
                                                        @Parameter(description = "Used for tracing calls")
                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        usnValidator.verifyUsnExists(oldusn);
+        usnValidator.verifyUsnExists(oldUsn);
         typeValidator.validate(type);
 
         EformStagingDTO oldEformStagingDTO = EformStagingDTO.builder()
-                .usn(oldusn)
+                .usn(oldUsn)
                 .type(type)
                 .build();
 
         EformStagingDTO newEformStagingDTO = EformStagingDTO.builder()
-                .usn(newusn)
+                .usn(newUsn)
                 .type(type)
                 .build();
 

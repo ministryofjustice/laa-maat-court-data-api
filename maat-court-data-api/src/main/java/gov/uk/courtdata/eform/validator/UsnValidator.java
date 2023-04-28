@@ -13,18 +13,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UsnValidator {
 
+    private static final String EXCEPTION_MESSAGE_FORMAT = "The USN number [%d] is not valid.";
+
     private final EformStagingDAO eformStagingDAO;
 
     public void verifyUsnExists(Integer usn) {
         if (!eformStagingDAO.isUsnPresentInDB(usn)) {
-            String message = String.format("The USN number [%d] is not valid.", usn);
+            String message = String.format(EXCEPTION_MESSAGE_FORMAT, usn);
             throw new USNValidationException(message);
         }
     }
 
     public void verifyUsnDoesNotExist(Integer usn) {
         if (eformStagingDAO.isUsnPresentInDB(usn)) {
-            String message = String.format("The USN number [%d] is not valid.", usn);
+            String message = String.format(EXCEPTION_MESSAGE_FORMAT, usn);
             throw new USNValidationException(message);
         }
     }

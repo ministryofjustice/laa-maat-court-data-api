@@ -130,6 +130,7 @@ public class LinkControllerIntegrationTest {
         repOrderRepository.save(createRepOrderEntity(TEST_MAAT_ID));
 
         final CaseDetailsValidate caseDetailsValidate = getTestCaseDetailsValidate();
+        caseDetailsValidate.setCaseUrn(null);
 
         String json = objectMapper.writeValueAsString(caseDetailsValidate);
 

@@ -14,4 +14,6 @@ public interface EformStagingDTOMapper {
     EformStagingDTO toEformStagingDTO(EformsStagingEntity eformsStagingEntity);
 
     EformStagingResponse toEformStagingResponse(EformStagingDTO eformStagingDTO);
+
+    EformsStagingEntity toEformsStagingEntity(EformsStagingEntity eformsStagingEntity);
 }

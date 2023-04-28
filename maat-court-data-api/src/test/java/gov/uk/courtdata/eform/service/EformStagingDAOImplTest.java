@@ -31,6 +31,12 @@ class EformStagingDAOImplTest {
             .usn(USN)
             .type(TYPE)
             .build();
+
+    private static final EformsStagingEntity NEW_EFORMS_STAGING_ENTITY = EformsStagingEntity
+            .builder()
+            .usn(NEWUSN)
+            .type(TYPE)
+            .build();
     private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO
             .builder()
             .usn(USN)
@@ -62,8 +68,10 @@ class EformStagingDAOImplTest {
         eformStagingDAOImpl = new EformStagingDAOImpl(mockEformStagingRepository,
                 mockEformStagingDTOMapper);
 
-        when(mockEformStagingDTOMapper.toEformsStagingEntity(any(EformStagingDTO.class)))
+        when(mockEformStagingDTOMapper.toEformsStagingEntity(EFORM_STAGING_DTO))
                 .thenReturn(EFORMS_STAGING_ENTITY);
+        when(mockEformStagingDTOMapper.toEformsStagingEntity(NEW_EFORM_STAGING_DTO))
+                .thenReturn(NEW_EFORMS_STAGING_ENTITY);
         when(mockEformStagingDTOMapper.toEformStagingDTO(any(EformsStagingEntity.class)))
                 .thenReturn(EFORM_STAGING_DTO);
         when(mockEformStagingDTOMapper.toEformStagingResponse(any(EformStagingDTO.class)))
@@ -71,7 +79,7 @@ class EformStagingDAOImplTest {
     }
 
     @Test
-    void givenUSN_whenServiceIncolved_thenSaveToDatabase() {
+    void givenUSN_whenServiceInvoked_thenSaveToDatabase() {
 
         eformStagingDAOImpl.create(EFORM_STAGING_DTO);
 
@@ -80,16 +88,14 @@ class EformStagingDAOImplTest {
 
     @Test
     void givenUSN_whenServiceInvoked_thenUpdateTheDatabase() {
-        Mockito.when(mockEformStagingRepository.findById(USN))
-                .thenReturn(Optional.of(EFORMS_STAGING_ENTITY));
 
         eformStagingDAOImpl.update(EFORM_STAGING_DTO, NEW_EFORM_STAGING_DTO);
 
-        Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(EFORMS_STAGING_ENTITY);
+        Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(NEW_EFORMS_STAGING_ENTITY);
     }
 
     @Test
-    void givenUSN_whenServiceInvocated_thenPullFromTheDatabase() {
+    void givenUSN_whenServiceInvoked_thenPullFromTheDatabase() {
         Mockito.when(mockEformStagingRepository.findById(USN))
                 .thenReturn(Optional.of(EFORMS_STAGING_ENTITY));
 
@@ -99,7 +105,7 @@ class EformStagingDAOImplTest {
     }
 
     @Test
-    void givenUSN_whenServiceIncolved_thenDeletefromDatabase() {
+    void givenUSN_whenServiceInvoked_thenDeletefromDatabase() {
 
         Integer usn = EFORM_STAGING_DTO.getUsn();
         eformStagingDAOImpl.delete(usn);

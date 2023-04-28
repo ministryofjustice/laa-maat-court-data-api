@@ -38,13 +38,8 @@ public class EformStagingDAOImpl implements EformStagingDAO {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void update(EformStagingDTO oldEformStagingDTO, EformStagingDTO newEformStagingDTO) {
-        EformsStagingEntity oldEformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(oldEformStagingDTO);
-        EformsStagingEntity newEformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(newEformStagingDTO);
-
-        EformsStagingEntity oldEntryFromRepository = eformStagingRepository.findById(oldEformsStagingEntity.getUsn()).get();
-
-        oldEntryFromRepository.setUsn(newEformsStagingEntity.getUsn());
-        eformStagingRepository.saveAndFlush(oldEntryFromRepository);
+        this.delete(oldEformStagingDTO.getUsn());
+        this.create(newEformStagingDTO);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)

@@ -4,6 +4,8 @@ import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentHistoryService;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
+import gov.uk.courtdata.common.annotations.MaatApiReadErrorResponses;
+import gov.uk.courtdata.common.annotations.MaatApiWriteErrorResponses;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.enums.LoggingData;
@@ -37,8 +39,7 @@ public class FinancialAssessmentController {
     @GetMapping(value = "/{financialAssessmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a financial assessment record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @MaatApiReadErrorResponses
     public ResponseEntity<Object> getAssessment(@PathVariable int financialAssessmentId) {
         log.info("Get Financial Assessment Request Received");
         financialAssessmentValidationProcessor.validate(financialAssessmentId);
@@ -48,8 +49,7 @@ public class FinancialAssessmentController {
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update a financial assessment record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @MaatApiWriteErrorResponses
     public ResponseEntity<Object> updateAssessment(
             @Parameter(description = "Financial assessment data", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = UpdateFinancialAssessment.class))) @RequestBody UpdateFinancialAssessment financialAssessment) {
@@ -61,8 +61,7 @@ public class FinancialAssessmentController {
     @DeleteMapping("/{financialAssessmentId}")
     @Operation(description = "Delete a financial assessment record")
     @ApiResponse(responseCode = "200", content = @Content())
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @MaatApiWriteErrorResponses
     public ResponseEntity<Object> deleteAssessment(@PathVariable int financialAssessmentId) {
         financialAssessmentValidationProcessor.validate(financialAssessmentId);
         financialAssessmentService.delete(financialAssessmentId);
@@ -72,8 +71,7 @@ public class FinancialAssessmentController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create a new financial assessment record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @MaatApiWriteErrorResponses
     public ResponseEntity<Object> createAssessment(@Parameter(description = "Financial assessment data", content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = CreateFinancialAssessment.class))) @RequestBody CreateFinancialAssessment financialAssessment) {
         log.info("Create Financial Assessment Request Received");
@@ -84,8 +82,7 @@ public class FinancialAssessmentController {
     @GetMapping(value = "/check-outstanding/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Check if there are outstanding assessments for a given repId")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = OutstandingAssessmentResultDTO.class)))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @MaatApiReadErrorResponses
     public ResponseEntity<OutstandingAssessmentResultDTO> checkForOutstandingAssessments(@PathVariable Integer repId,
                                                                                          @Parameter(description = "Used for tracing calls")
                                                                                          @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
@@ -98,8 +95,7 @@ public class FinancialAssessmentController {
     @PostMapping(value = "/history/{financialAssessmentId}/fullAvailable/{fullAvailable}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create financial assessment, details and child weight history record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+    @MaatApiWriteErrorResponses
     public ResponseEntity<Object> createAssessmentHistory(@PathVariable int financialAssessmentId, @PathVariable boolean fullAvailable) {
         log.info("Create Assessment History Request Received");
         financialAssessmentHistoryService.createAssessmentHistory(financialAssessmentId, fullAvailable);

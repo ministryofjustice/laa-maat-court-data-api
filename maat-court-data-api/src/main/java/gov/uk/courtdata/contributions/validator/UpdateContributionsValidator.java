@@ -22,11 +22,11 @@ public class UpdateContributionsValidator extends ContributionsValidator impleme
         return Optional.empty();
     }
 
-    private Optional<Void> validateId(Integer Id) {
-        if (Id != null && Id > 0) {
-            Boolean contributionsExists = contributionsRepository.existsById(Id);
+    private Optional<Void> validateId(Integer id) {
+        if (id != null && id > 0) {
+            boolean contributionsExists = contributionsRepository.existsById(id);
             if (!contributionsExists) {
-                throw new ValidationException(String.format("Contributions ID: %d is invalid.", Id));
+                throw new ValidationException(String.format("Contributions ID: %d is invalid.", id));
             }
             return Optional.empty();
         } else {

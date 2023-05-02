@@ -2,7 +2,6 @@ package gov.uk.courtdata.builder;
 
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.*;
-import gov.uk.courtdata.model.UpdateCCOutcome;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
@@ -486,6 +485,55 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity() {
+        return RepOrderCCOutComeEntity.builder()
+                .repId(REP_ID)
+                .outcome("CONVICTED")
+                .userCreated(TEST_USER)
+                .caseNumber(TEST_CASE_ID.toString())
+                .crownCourtCode("430")
+                .outcomeDate(TEST_DATE)
+                .build();
+    }
+
+    public static RepOrderCapitalEntity getRepOrderCapitalEntity(Integer id, Integer repId, String capitalType) {
+
+        return RepOrderCapitalEntity.builder()
+                .id(id)
+                .repId(repId)
+                .captCapitalType(capitalType)
+                .active("Y")
+                .dateCreated(LocalDateTime.now())
+                .userCreated(TEST_USER)
+                .dateAllEvidenceReceived(LocalDateTime.now())
+                .build();
+    }
+
+    public static ContributionsEntity getContributionsEntity() {
+
+        return ContributionsEntity.builder()
+                .repId(REP_ID)
+                .applId(REP_ID)
+                .userCreated(USER_NAME)
+                .contributionFileId(1)
+                .effectiveDate(TEST_DATE.toLocalDate())
+                .calcDate(TEST_DATE.toLocalDate())
+                .contributionCap(new BigDecimal(9999))
+                .monthlyContributions(new BigDecimal(99))
+                .upfrontContributions(new BigDecimal(9))
+                .upliftApplied("Y")
+                .basedOn("Means")
+                .transferStatus("RECEIVED")
+                .dateUpliftApplied(TEST_DATE.toLocalDate())
+                .dateUpliftRemoved(TEST_DATE.toLocalDate())
+                .createContributionOrder("Y")
+                .correspondenceId(9)
+                .ccOutcomeCount(9)
+                .seHistoryId(9)
+                .latest(true)
+                .build();
+    }
+
     public RepOrderCPDataEntity getRepOrderEntity() {
         return RepOrderCPDataEntity.builder()
                 .repOrderId(REP_ID)
@@ -532,30 +580,6 @@ public class TestEntityDataBuilder {
                 .repOrderId(REP_ID)
                 .defendantId("556677")
                 .caseUrn("testCaseURN")
-                .build();
-    }
-
-    public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity() {
-        return RepOrderCCOutComeEntity.builder()
-                .repId(REP_ID)
-                .outcome("CONVICTED")
-                .userCreated(TEST_USER)
-                .caseNumber(TEST_CASE_ID.toString())
-                .crownCourtCode("430")
-                .outcomeDate(TEST_DATE)
-                .build();
-    }
-
-    public static RepOrderCapitalEntity getRepOrderCapitalEntity(Integer id ,Integer repId, String capitalType) {
-
-        return RepOrderCapitalEntity.builder()
-                .id(id)
-                .repId(repId)
-                .captCapitalType(capitalType)
-                .active("Y")
-                .dateCreated(LocalDateTime.now())
-                .userCreated(TEST_USER)
-                .dateAllEvidenceReceived(LocalDateTime.now())
                 .build();
     }
 }

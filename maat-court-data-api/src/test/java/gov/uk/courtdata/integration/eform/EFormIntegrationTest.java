@@ -60,18 +60,7 @@ public class EFormIntegrationTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         eformStagingRepository.deleteAll();
     }
-
-    //Create - Happy Path - USN and Type should appear in the DB
-    //Create - Sad Path - USN appears in the DB already and error thrown
-
-    //Update - Happy Path - USN should be changed to the new on provided in the parameter
-    //Update - Sad Path - USN does not appear in the DB and error should be thrown
-
-    //Retrieve - Happy Path - USN and Type should be returned from the DB to the caller
-    //Retrieve - Sad Path - USN does not appear in the DB and should return an error
-
-    //Delete - Happy Path - USN that was in the DB should no longer be there
-    //Delete - Sad Path - USN not found in DB and should return nothing
+    
     @Test
     public void givenAUSN_whenPOSTeformCalled_thenNewFieldIsInDB() throws Exception {
         this.mockMvc.perform(post(EFORM_USN_PROVIDED_URL)

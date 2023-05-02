@@ -9,6 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.messaging.MessageHeaders;
+
+import java.util.HashMap;
 
 import static org.mockito.Mockito.*;
 
@@ -32,7 +35,7 @@ public class CreateLinkListenerTest {
         String message = "Test JSON";
         //when
         when(gson.fromJson(message, CaseDetails.class)).thenReturn(caseDetails);
-        createLinkListener.receive(message, "1");
+        createLinkListener.receive(message, new MessageHeaders(new HashMap<>()));
         //then
         verify(createLinkService, times(1)).saveAndLink(caseDetails);
         verify(queueMessageLogService, times(1)).createLog(MessageType.LINK, message);

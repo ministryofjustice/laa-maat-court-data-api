@@ -19,9 +19,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -89,7 +92,11 @@ public class UnlinkListenerTest {
                 .build());
 
         //when
-        unlinkListener.receive(testModelDataBuilder.getUnLinkString());
+        Map<String, Object> header = new HashMap<>();
+        header.put("MessageId","AIDAIU3GACVJITZULQ2RQ");
+        MessageHeaders headers = new MessageHeaders(header);
+        unlinkListener.receive(testModelDataBuilder.getUnLinkString(), headers);
+
 
         //then
         assertWQLinkRegister(unlinkModel);

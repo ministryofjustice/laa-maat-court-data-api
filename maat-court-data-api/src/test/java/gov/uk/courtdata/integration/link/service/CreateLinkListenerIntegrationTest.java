@@ -4,7 +4,6 @@ package gov.uk.courtdata.integration.link.service;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.config.SpringCloudAwsConfig;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.CourtHouseCodesEntity;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
@@ -19,10 +18,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -85,7 +87,11 @@ public class CreateLinkListenerIntegrationTest {
         String saveAndLinkMessage = testModelDataBuilder.getSaveAndLinkString();
 
         //when
-        createLinkListener.receive(saveAndLinkMessage, "2");
+        Map<String, Object> header = new HashMap<>();
+        header.put("MessageId", "AIDAIU3GACVJITZULQ2RQ");
+        MessageHeaders headers = new MessageHeaders(header);
+        //when
+        createLinkListener.receive(saveAndLinkMessage, headers);
 
         //then
         CourtDataDTO courtDataDTO = testModelDataBuilder.getSaveAndLinkModelRaw();

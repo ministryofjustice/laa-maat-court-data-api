@@ -103,6 +103,28 @@ public class CreateLinkListenerIntegrationTest {
 
     }
 
+    @Test
+    public void givenNewMessageInSqs_whenMaatIsNull_thenThrowException() {
+
+        //given
+        repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
+        repOrderRepository.save(TestEntityDataBuilder.getRepOrder());
+        courtHouseCodesRepository.save(CourtHouseCodesEntity.builder().code("B16BG").effectiveDateFrom(LocalDateTime.now()).build());
+        solicitorMAATDataRepository.save(testEntityDataBuilder.getSolicitorMAATDataEntity());
+        defendantMAATDataRepository.save(testEntityDataBuilder.getDefendantMAATDataEntity());
+
+       String saveAndLinkMessage = getSaveAndLinkString();
+
+        //when
+        Map<String, Object> header = new HashMap<>();
+        header.put("MessageId", "AIDAIU3GACVJITZULQ2RQ");
+        MessageHeaders headers = new MessageHeaders(header);
+        //when
+        createLinkListener.receive(saveAndLinkMessage, headers);
+        //then
+        assertThat(wqLinkRegisterRepository.findAll().size()).isEqualTo(0);
+    }
+
     private void verifyRepOrder(CourtDataDTO courtDataDTO) {
         // Verify CP Rep Order Record is created
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
@@ -122,7 +144,20 @@ public class CreateLinkListenerIntegrationTest {
         assert wqLinkRegisterEntity != null;
         assertThat(wqLinkRegisterEntity.getMaatId()).isEqualTo(courtDataDTO.getCaseDetails().getMaatId());
     }
+    public String getSaveAndLinkString() {
+        return "{\n" +
 
-
+                "  \"category\": 12,\n" +
+                "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
+                "  \"caseUrn\":\"caseurn1\",\n" +
+                "  \"asn\": \"123456754\",\n" +
+                "  \"docLanguage\": \"EN\",\n" +
+                "  \"caseCreationDate\": \"2019-08-16\",\n" +
+                "  \"cjsAreaCode\": \"16\",\n" +
+                "  \"createdUser\": \"testUser\",\n" +
+                "  \"cjsLocation\": \"B16BG\",\n" +
+                "  \"isActive\" : true\n" +
+                "}";
+    }
 }
 

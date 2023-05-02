@@ -1,7 +1,9 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
+import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.*;
@@ -54,6 +56,13 @@ public class TestModelDataBuilder {
     public static final String RESERVATION_RECORD_NAME = "REP_ORDER";
     public static final String USER_SESSION = "User Session";
     public static final String USER_NAME = "ONE-T";
+
+    public static final String CASE_TYPE = "APPEAL CC";
+    public static final String APTY_CODE = "ASE";
+    public static final String OUTCOME = "SUCCESSFUL";
+    public static final String ASSESSMENT_RESULT = "PASS";
+    public static final BigDecimal CONTRIBUTION_AMOUNT = BigDecimal.valueOf(500.00);
+    public static final String CORRESPONDENCE_STATUS = "appealCC";
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -1264,6 +1273,20 @@ public class TestModelDataBuilder {
                         .build()
                 )
 
+                .build();
+    }
+
+    public static CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
+        return CorrespondenceStateDTO.builder()
+                .repId(repId)
+                .status(status)
+                .build();
+    }
+
+    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, String status) {
+        return CorrespondenceStateEntity.builder()
+                .repId(repId)
+                .status(status)
                 .build();
     }
 }

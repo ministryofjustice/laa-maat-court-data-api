@@ -34,20 +34,10 @@ The `docker-compose.override.yml` is encrypted using [git-crypt](https://github.
 
 To run the app locally you need to be able to decrypt this file.
 
-You will first need to create a GPG key. See [Create a GPG Key](https://docs.publishing.service.gov.uk/manual/create-a-gpg-key.html) for details on how to do this with `GPGTools` (GUI) or `gpg` (command line).
-You can install either from a terminal or just download the UI version. 
+See the Confluence page [GPG and git-crypt](https://dsdmoj.atlassian.net/wiki/spaces/ASLST/pages/3761963077/Java+Project+Setup+with+CircleCI+and+Helm+on+Cloud+Platform#GPG-and-git-crypt) for details.
+In summary you will need to generate a GPG key, publish your key to a key server and have a member of the dev team who already has git-crypt setup for this repo.
 
-``` 
-brew update
-brew install gpg
-brew install git-crypt
-```
-
-Once you have done this, a team member who already has access can add your key by running `git-crypt add-gpg-user USER_ID`* and creating a pull request to this repo.
-
-Once this has been merged you can decrypt your local copy of the repository by running `git-crypt unlock`. 
-
-*`USER_ID` can be your key ID, a full fingerprint, an email address, or anything else that uniquely identifies a public key to GPG (see "HOW TO SPECIFY A USER ID" in the gpg man page).
+Once the steps have been completed you can decrypt your local copy of the repository by running `git-crypt unlock`. 
 
 ### DB Configuration
 

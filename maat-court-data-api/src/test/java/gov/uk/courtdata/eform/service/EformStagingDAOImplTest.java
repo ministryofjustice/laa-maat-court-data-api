@@ -105,7 +105,7 @@ class EformStagingDAOImplTest {
     }
 
     @Test
-    void givenUSN_whenServiceInvoked_thenDeletefromDatabase() {
+    void givenUSN_whenServiceInvoked_thenDeleteFromDatabase() {
 
         Integer usn = EFORM_STAGING_DTO.getUsn();
         eformStagingDAOImpl.delete(usn);

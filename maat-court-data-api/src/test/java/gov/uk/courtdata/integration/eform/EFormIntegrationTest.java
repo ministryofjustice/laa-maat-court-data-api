@@ -26,51 +26,47 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 @WebAppConfiguration
 public class EFormIntegrationTest {
+
     private static final int USN = 12334455;
-    private static final int NEWUSN = 3321;
+    private static final int NEW_USN = 3321;
     private static final String TYPE = "CRM14";
     private static final EformsStagingEntity EFORMS_STAGING_ENTITY = EformsStagingEntity
             .builder()
             .usn(USN)
             .type(TYPE)
             .build();
-    private static final EformsStagingEntity EFORMS_STAGING_ENTITY_NO_USN = EformsStagingEntity
-            .builder()
-            .type(TYPE)
-            .build();
-    private static final EformsStagingEntity NEW_EFORMS_STAGING_ENTITY = EformsStagingEntity
-            .builder()
-            .usn(NEWUSN)
-            .type(TYPE)
-            .build();
-    private final String BASE_URL = "/api";
-    private final String EFORM_URL = BASE_URL + "/eform/";
-    private final String EFORM_USN_NOTPROVIDED_URL = EFORM_URL;
-    private final String EFORM_USN_PROVIDED_URL = EFORM_URL + USN;
+    private static final String BASE_URL = "/api";
+    private static final String EFORM_URL = BASE_URL + "/eform/";
+    private static final String EFORM_USN_NOT_PROVIDED_URL = EFORM_URL;
+    private static final String EFORM_USN_PROVIDED_URL = EFORM_URL + USN;
+    private static final String NOT_VALID_USN_MESSAGE = String.format("The USN [%d] is not valid.", USN);
+    private static final String NOT_VALID_USN_RETURN = "{\"code\":\"BAD_REQUEST\",\"message\":\"" + NOT_VALID_USN_MESSAGE + "\"}";
+
     private MockMvc mockMvc;
+
     @Autowired
     private WebApplicationContext wac;
+
     @Autowired
     private EformStagingRepository eformStagingRepository;
-    private String NOT_VALID_USN_MESSAGE = String.format("The USN number [%d] is not valid.", USN);
-    private String NOT_VALID_USN_RETURN = "{\"code\":\"BAD_REQUEST\",\"message\":\"" + NOT_VALID_USN_MESSAGE + "\"}";
+
 
     @BeforeEach
     public void setUp() throws Exception {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         eformStagingRepository.deleteAll();
     }
     
     @Test
     public void givenAUSN_whenPOSTeformCalled_thenNewFieldIsInDB() throws Exception {
-        this.mockMvc.perform(post(EFORM_USN_PROVIDED_URL)
+        mockMvc.perform(post(EFORM_USN_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     public void givenNoUSN_whenPOSTeformCalled_thenErrorReturned() throws Exception {
-        this.mockMvc.perform(post(EFORM_USN_NOTPROVIDED_URL)
+        mockMvc.perform(post(EFORM_USN_NOT_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError());
     }
@@ -79,18 +75,18 @@ public class EFormIntegrationTest {
     public void givenExistingUSN_whenPOSTeformCalled_thenErrorReturned() throws Exception {
         eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
 
-        this.mockMvc.perform(post(EFORM_USN_PROVIDED_URL)
+        mockMvc.perform(post(EFORM_USN_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().json(NOT_VALID_USN_RETURN));
     }
 
     @Test
-    public void givenAUSNAndNewUSNProvided_whenPATCHefromCalled_thenUpdateUSNInDB() throws Exception {
+    public void givenAUSNAndNewUSNProvided_whenPATCHeformCalled_thenUpdateUSNInDB() throws Exception {
         eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
 
-        this.mockMvc.perform(patch(EFORM_USN_PROVIDED_URL)
-                        .param("newUsn", String.valueOf(NEWUSN))
+        mockMvc.perform(patch(EFORM_USN_PROVIDED_URL)
+                        .param("newUsn", String.valueOf(NEW_USN))
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk());
     }
@@ -99,25 +95,25 @@ public class EFormIntegrationTest {
     public void givenAUSNandNoNewUSNProvided_whenPATCHeformCalled_thenReturnError() throws Exception {
         eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
 
-        this.mockMvc.perform(patch(EFORM_USN_NOTPROVIDED_URL)
+        mockMvc.perform(patch(EFORM_USN_NOT_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     public void givenANonExsistingUSN_whenPATCHefromCalled_thenReturnError() throws Exception {
-        this.mockMvc.perform(patch(EFORM_USN_PROVIDED_URL)
-                        .param("newUsn", String.valueOf(NEWUSN))
+        mockMvc.perform(patch(EFORM_USN_PROVIDED_URL)
+                        .param("newUsn", String.valueOf(NEW_USN))
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().json(NOT_VALID_USN_RETURN));
     }
 
     @Test
-    public void givenAUSN_whenGETeformCalled_thenReturnEnteryFromDB() throws Exception {
+    public void givenAUSN_whenGETeformCalled_thenReturnEntryFromDB() throws Exception {
         eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
 
-        this.mockMvc.perform(get(EFORM_USN_PROVIDED_URL)
+        mockMvc.perform(get(EFORM_USN_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"usn\":" + USN + ",\"type\":\"CRM14\"}"));
@@ -125,14 +121,14 @@ public class EFormIntegrationTest {
 
     @Test
     public void givenNoUSN_whenGETeformCalled_thenReturnError() throws Exception {
-        this.mockMvc.perform(get(EFORM_USN_NOTPROVIDED_URL)
+        mockMvc.perform(get(EFORM_USN_NOT_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void givenANonExsistingUSN_whenGETeformCalled_thenReturnError() throws Exception {
-        this.mockMvc.perform(get(EFORM_USN_PROVIDED_URL)
+    public void givenANonExistingUSN_whenGETeformCalled_thenReturnError() throws Exception {
+        mockMvc.perform(get(EFORM_USN_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().json(NOT_VALID_USN_RETURN));
@@ -142,21 +138,21 @@ public class EFormIntegrationTest {
     public void givenAUSN_whenDELETEeformCalled_thenEntryRemovedFromDB() throws Exception {
         eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
 
-        this.mockMvc.perform(delete(EFORM_USN_PROVIDED_URL)
+        mockMvc.perform(delete(EFORM_USN_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void givenNoUSN_whenDELETEeformCalled_thenErrorReturned() throws Exception {
-        this.mockMvc.perform(delete(EFORM_USN_NOTPROVIDED_URL)
+    public void givenNoUSN_whenDELETEeFormCalled_thenErrorReturned() throws Exception {
+        mockMvc.perform(delete(EFORM_USN_NOT_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void givenANonExsistantUSN_whenDELETEeformCalled_thenReturnError() throws Exception {
-        this.mockMvc.perform(delete(EFORM_USN_PROVIDED_URL)
+    public void givenANonExistentUSN_whenDELETEeFormCalled_thenReturnError() throws Exception {
+        mockMvc.perform(delete(EFORM_USN_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().json(NOT_VALID_USN_RETURN));

@@ -1,7 +1,9 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
+import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.*;
@@ -58,6 +60,7 @@ public class TestModelDataBuilder {
     public static final String OUTCOME = "SUCCESSFUL";
     public static final String ASSESSMENT_RESULT = "PASS";
     public static final BigDecimal CONTRIBUTION_AMOUNT = BigDecimal.valueOf(500.00);
+    public static final String CORRESPONDENCE_STATUS = "appealCC";
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -1109,5 +1112,19 @@ public class TestModelDataBuilder {
                 .id(outcomeId)
                 .build();
 
+    }
+
+    public static CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
+        return CorrespondenceStateDTO.builder()
+                .repId(repId)
+                .status(status)
+                .build();
+    }
+
+    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, String status) {
+        return CorrespondenceStateEntity.builder()
+                .repId(repId)
+                .status(status)
+                .build();
     }
 }

@@ -1,7 +1,7 @@
 package gov.uk.courtdata.eform.validator;
 
 import gov.uk.courtdata.eform.service.EformStagingDAO;
-import gov.uk.courtdata.exception.USNValidationException;
+import gov.uk.courtdata.exception.UsnValidationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,10 +26,10 @@ class UsnValidatorTest {
         when(mockEformStagingDAO.isUsnPresentInDB(654321))
                 .thenReturn(false);
 
-        USNValidationException exception = Assertions.assertThrows(
-                USNValidationException.class, () -> usnValidator.verifyUsnExists(654321));
+        UsnValidationException exception = Assertions.assertThrows(
+                UsnValidationException.class, () -> usnValidator.verifyUsnExists(654321));
 
-        assertEquals("The USN number [654321] is not valid.", exception.getMessage());
+        assertEquals("The USN [654321] is not valid.", exception.getMessage());
     }
 
     @Test
@@ -45,10 +45,10 @@ class UsnValidatorTest {
         when(mockEformStagingDAO.isUsnPresentInDB(654321))
                 .thenReturn(true);
 
-        USNValidationException exception = Assertions.assertThrows(
-                USNValidationException.class, () -> usnValidator.verifyUsnDoesNotExist(654321));
+        UsnValidationException exception = Assertions.assertThrows(
+                UsnValidationException.class, () -> usnValidator.verifyUsnDoesNotExist(654321));
 
-        assertEquals("The USN number [654321] is not valid.", exception.getMessage());
+        assertEquals("The USN [654321] is not valid.", exception.getMessage());
     }
 
     @Test

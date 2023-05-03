@@ -7,7 +7,7 @@ import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import gov.uk.courtdata.eform.service.EformStagingDAO;
 import gov.uk.courtdata.eform.validator.TypeValidator;
 import gov.uk.courtdata.eform.validator.UsnValidator;
-import gov.uk.courtdata.exception.USNValidationException;
+import gov.uk.courtdata.exception.UsnValidationException;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,8 +35,8 @@ class EformStagingControllerTest {
     private static final String TYPE = "CRM14";
     private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse.builder().usn(USN).type(TYPE).build();
     private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO.builder().usn(USN).type(TYPE).build();
-    private static final USNValidationException USN_VALIDATION_EXCEPTION =
-            new USNValidationException("The USN number is not valid as it is not present in the eForm Repository");
+    private static final UsnValidationException USN_VALIDATION_EXCEPTION =
+            new UsnValidationException("The USN is not valid as it is not present in the eForm Repository");
 
     @MockBean
     private EformStagingDAO mockEFormStagingDAO;
@@ -81,7 +81,7 @@ class EformStagingControllerTest {
                         .param("newUsn", String.valueOf(NEW_USN))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().json("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN number is not valid as it is not present in the eForm Repository\"}"));
+                .andExpect(content().json("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN is not valid as it is not present in the eForm Repository\"}"));
     }
 
     @Test
@@ -105,7 +105,7 @@ class EformStagingControllerTest {
         mvc.perform(MockMvcRequestBuilders.get(url())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().json("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN number is not valid as it is not present in the eForm Repository\"}"));
+                .andExpect(content().json("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN is not valid as it is not present in the eForm Repository\"}"));
     }
 
     @Test

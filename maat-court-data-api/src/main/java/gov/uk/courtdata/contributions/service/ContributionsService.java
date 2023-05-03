@@ -51,7 +51,7 @@ public class ContributionsService {
         ContributionsEntity existingContributionsEntity = contributionsImpl.findLatest(repId);
 
         if (existingContributionsEntity != null) {
-            contributionsImpl.updateInactiveAndPrior(repId, createContributions.getEffectiveDate());
+            contributionsImpl.updateExistingContributions(repId, createContributions.getEffectiveDate());
         }
 
         ContributionsEntity newContributionsEntity = contributionsMapper.createContributionsToContributionsEntity(createContributions);

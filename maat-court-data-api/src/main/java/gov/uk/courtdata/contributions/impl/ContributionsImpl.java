@@ -23,7 +23,7 @@ public class ContributionsImpl {
         return contributionsRepository.findById(id).orElse(null);
     }
 
-    public ContributionsEntity findLatest(int repId) {
+    public ContributionsEntity findLatest(Integer repId) {
         log.debug("Retrieving latest contributions entry for rep ID {}", repId);
         return contributionsRepository.findByRepIdAndLatestIsTrue(repId);
     }
@@ -32,10 +32,10 @@ public class ContributionsImpl {
         return contributionsRepository.saveAndFlush(contributionsEntity);
     }
 
-    public Optional<Void> updateInactiveAndPrior(Integer repId, LocalDate effectiveDate) {
+    public Optional<Void> updateExistingContributions(Integer repId, LocalDate effectiveDate) {
         log.debug("Setting existing contributions row as prior and inactive");
-        contributionsRepository.setEntryAsInactive(repId, effectiveDate);
-        contributionsRepository.setEntryAsPrior(repId);
+        contributionsRepository.updateExistingContributionToInactive(repId, effectiveDate);
+        contributionsRepository.updateExistingContributionToPrior(repId);
         return Optional.empty();
     }
 

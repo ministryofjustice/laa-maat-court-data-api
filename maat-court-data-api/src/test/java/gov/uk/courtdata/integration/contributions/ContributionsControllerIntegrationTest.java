@@ -51,7 +51,7 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     private ContributionsEntity contributionsEntity;
 
     @BeforeEach
-    public void setUP(@Autowired RepOrderRepository repOrderRepository,
+    public void setUp(@Autowired RepOrderRepository repOrderRepository,
                       @Autowired ContributionsRepository contributionsRepository) {
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
         contributionsEntity = contributionsRepository.saveAndFlush(TestEntityDataBuilder.getContributionsEntity());
@@ -107,7 +107,6 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
 
     @Test
     void givenAValidContent_whenUpdateIsInvoked_theCorrectResponseIsReturned() throws Exception {
-
 
         MvcResult result = runSuccessScenario(MockMvcRequestBuilders.put(ENDPOINT_URL)
                 .contentType(MediaType.APPLICATION_JSON)

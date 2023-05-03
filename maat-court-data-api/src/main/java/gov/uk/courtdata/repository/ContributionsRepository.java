@@ -17,13 +17,13 @@ public interface ContributionsRepository extends JpaRepository<ContributionsEnti
 
     List<ContributionsEntity> findAllByRepId(Integer repId);
 
-    ContributionsEntity findByRepIdAndLatestIsTrue(int repId);
+    ContributionsEntity findByRepIdAndLatestIsTrue(Integer repId);
 
     @Modifying
     @Query(value = "UPDATE TOGDATA.CONTRIBUTIONS SET REPLACED_DATE = TRUNC(SYSDATE), ACTIVE = 'N' WHERE REP_ID = :repId AND EFFECTIVE_DATE >= :effDate", nativeQuery = true)
-    void setEntryAsInactive(@Param("repId") Integer repId, @Param("effDate") LocalDate effDate);
+    void updateExistingContributionToInactive(@Param("repId") Integer repId, @Param("effDate") LocalDate effDate);
 
     @Modifying
     @Query(value = "UPDATE TOGDATA.CONTRIBUTIONS SET LATEST = 'N' WHERE REP_ID = :repId", nativeQuery = true)
-    void setEntryAsPrior(@Param("repId") Integer repId);
+    void updateExistingContributionToPrior(@Param("repId") Integer repId);
 }

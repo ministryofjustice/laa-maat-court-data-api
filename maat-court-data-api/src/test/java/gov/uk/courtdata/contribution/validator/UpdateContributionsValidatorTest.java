@@ -1,5 +1,6 @@
-package gov.uk.courtdata.contributions.validator;
+package gov.uk.courtdata.contribution.validator;
 
+import gov.uk.courtdata.contribution.validator.UpdateContributionsValidator;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.contributions.UpdateContributions;
 import gov.uk.courtdata.repository.ContributionsRepository;
@@ -28,7 +29,7 @@ class UpdateContributionsValidatorTest {
     private ContributionsRepository contributionsRepository;
 
     @Test
-    void whenValidateIsInvoked_thenValidationPasses() {
+    void givenAValidId_whenValidateIsInvoked_thenValidationPasses() {
         UpdateContributions updateContributions = UpdateContributions.builder().id(TEST_ID)
                 .transferStatus(TEST_TRANSFER_STATUS).build();
         when(contributionsRepository.existsById(anyInt())).thenReturn(true);

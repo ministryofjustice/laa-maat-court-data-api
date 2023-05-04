@@ -1,16 +1,14 @@
-package gov.uk.courtdata.contributions.service;
+package gov.uk.courtdata.contribution.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.contributions.impl.ContributionsImpl;
-import gov.uk.courtdata.contributions.mapper.ContributionsMapper;
+import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.contributions.CreateContributions;
 import gov.uk.courtdata.model.contributions.UpdateContributions;
+import gov.uk.courtdata.repository.ContributionsRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ContributionsService {
 
-    private final ContributionsImpl contributionsImpl;
     private final ContributionsMapper contributionsMapper;
 
+    private final ContributionsRepository contributionsRepository;
+
     public ContributionsDTO find(int repId) {
-        ContributionsEntity contributionsEntity = contributionsImpl.findLatest(repId);
+        ContributionsEntity contributionsEntity = contributionsRepository.findByRepIdAndLatestIsTrue(repId);
 
         if (contributionsEntity == null) {
             throw new RequestedObjectNotFoundException(String.format("Contributions entry not found for repId %d", repId));
@@ -35,26 +34,27 @@ public class ContributionsService {
     @Transactional
     public ContributionsDTO update(UpdateContributions updateContributions) {
         Integer id = updateContributions.getId();
-        ContributionsEntity contributionsEntity = contributionsImpl.find(id);
+        ContributionsEntity contributionsEntity = contributionsRepository.findById(id).orElse(null);
 
         if (contributionsEntity == null) {
             throw new RequestedObjectNotFoundException(String.format("Contributions entry not found for id %d", id));
         }
 
         contributionsMapper.updateContributionsToContributionsEntity(updateContributions, contributionsEntity);
-        return contributionsMapper.mapEntityToDTO(contributionsImpl.update(contributionsEntity));
+        return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(contributionsEntity));
     }
 
     @Transactional
     public ContributionsDTO create(CreateContributions createContributions) {
         Integer repId = createContributions.getRepId();
-        ContributionsEntity existingContributionsEntity = contributionsImpl.findLatest(repId);
+        ContributionsEntity existingContributionsEntity = contributionsRepository.findByRepIdAndLatestIsTrue(repId);
 
         if (existingContributionsEntity != null) {
-            contributionsImpl.updateExistingContributions(repId, createContributions.getEffectiveDate());
+            contributionsRepository.updateExistingContributionToInactive(repId, createContributions.getEffectiveDate());
+            contributionsRepository.updateExistingContributionToPrior(repId);
         }
-
         ContributionsEntity newContributionsEntity = contributionsMapper.createContributionsToContributionsEntity(createContributions);
-        return contributionsMapper.mapEntityToDTO(contributionsImpl.create(newContributionsEntity));
+        newContributionsEntity.setLatest(true);
+        return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(newContributionsEntity));
     }
 }

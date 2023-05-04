@@ -1,4 +1,4 @@
-package gov.uk.courtdata.contributions.mapper;
+package gov.uk.courtdata.contribution.mapper;
 
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;

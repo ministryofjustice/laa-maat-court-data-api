@@ -1,6 +1,5 @@
-package gov.uk.courtdata.contributions.validator;
+package gov.uk.courtdata.contribution.validator;
 
-import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.contributions.CreateContributions;
 import gov.uk.courtdata.validator.IValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;

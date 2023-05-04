@@ -1,9 +1,9 @@
-package gov.uk.courtdata.contributions.controller;
+package gov.uk.courtdata.contribution.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.contributions.service.ContributionsService;
-import gov.uk.courtdata.contributions.validator.CreateContributionsValidator;
-import gov.uk.courtdata.contributions.validator.UpdateContributionsValidator;
+import gov.uk.courtdata.contribution.service.ContributionsService;
+import gov.uk.courtdata.contribution.validator.CreateContributionsValidator;
+import gov.uk.courtdata.contribution.validator.UpdateContributionsValidator;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.model.contributions.CreateContributions;

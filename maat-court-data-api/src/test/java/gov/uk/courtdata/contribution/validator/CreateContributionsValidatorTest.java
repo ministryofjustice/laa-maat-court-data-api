@@ -1,5 +1,6 @@
-package gov.uk.courtdata.contributions.validator;
+package gov.uk.courtdata.contribution.validator;
 
+import gov.uk.courtdata.contribution.validator.CreateContributionsValidator;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.contributions.CreateContributions;
 import gov.uk.courtdata.validator.MaatIdValidator;
@@ -28,7 +29,7 @@ class CreateContributionsValidatorTest {
     private MaatIdValidator maatIdValidator;
 
     @Test
-    void whenValidateIsInvoked_thenValidationPasses() {
+    void givenAValidId_whenValidateIsInvoked_thenValidationPasses() {
         CreateContributions createContributions = CreateContributions.builder().repId(TEST_REP_ID)
                 .transferStatus(TEST_TRANSFER_STATUS).build();
         when(maatIdValidator.validate(anyInt())).thenReturn(Optional.empty());

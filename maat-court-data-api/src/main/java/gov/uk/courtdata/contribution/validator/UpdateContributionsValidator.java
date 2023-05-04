@@ -1,4 +1,4 @@
-package gov.uk.courtdata.contributions.validator;
+package gov.uk.courtdata.contribution.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.contributions.UpdateContributions;

@@ -35,8 +35,7 @@ def versions = [
         xRayVersion         : '2.11.2',
         hibernateJpaModelGen: '5.6.14.Final',
         gqlVersion: '2.7.5',
-        graphqlJavaTools: '13.0.2',
-        jacksonXml: '2.14.2'
+        graphqlJavaTools: '13.0.2'
 ]
 
 dependencyManagement {
@@ -83,7 +82,6 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
     implementation group: 'org.springframework', name: 'spring-jms'
     implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client'
-    implementation group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.0.0'
 
 
     implementation 'io.awspring.cloud:spring-cloud-starter-aws-messaging:2.4.1'

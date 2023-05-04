@@ -7,7 +7,7 @@ import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,32 +18,23 @@ import java.util.Optional;
  * verification is the responsibility of the calling class.
  * e.g. verify that a given entity exists before attempting to delete it
  */
-@Component
+@Service
 @RequiredArgsConstructor
 @Slf4j
 @XRayEnabled
-public class EformStagingDAOImpl implements EformStagingDAO {
+public class EformStagingService {
 
     private final EformStagingRepository eformStagingRepository;
     private final EformStagingDTOMapper eformStagingDTOMapper;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @Override
     public void create(EformStagingDTO eformStagingDTO) {
         EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
 
         eformStagingRepository.saveAndFlush(eformsStagingEntity);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @Override
-    public void update(EformStagingDTO oldEformStagingDTO, EformStagingDTO newEformStagingDTO) {
-        this.delete(oldEformStagingDTO.getUsn());
-        this.create(newEformStagingDTO);
-    }
-
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
-    @Override
     public EformStagingDTO retrieve(int usn) {
         Optional<EformsStagingEntity> eformsStagingEntity = eformStagingRepository.findById(usn);
 
@@ -51,12 +42,10 @@ public class EformStagingDAOImpl implements EformStagingDAO {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @Override
     public void delete(int usn) {
         eformStagingRepository.deleteById(usn);
     }
 
-    @Override
     public boolean isUsnPresentInDB(int usn) {
         return eformStagingRepository.existsById(usn);
     }

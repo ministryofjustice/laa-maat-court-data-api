@@ -4,8 +4,7 @@ import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.model.EformStagingResponse;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
-import gov.uk.courtdata.eform.service.EformStagingDAO;
-import gov.uk.courtdata.eform.validator.TypeValidator;
+import gov.uk.courtdata.eform.service.EformStagingService;
 import gov.uk.courtdata.eform.validator.UsnValidator;
 import gov.uk.courtdata.exception.UsnValidationException;
 import org.jetbrains.annotations.NotNull;
@@ -39,16 +38,13 @@ class EformStagingControllerTest {
             new UsnValidationException("The USN is not valid as it is not present in the eForm Repository");
 
     @MockBean
-    private EformStagingDAO mockEFormStagingDAO;
+    private EformStagingService mockEFormStagingService;
 
     @MockBean
     private EformStagingDTOMapper mockEformStagingDTOMapper;
 
     @MockBean
     private UsnValidator mockUsnValidator;
-
-    @MockBean
-    private TypeValidator mockTypeValidator;
 
     @Autowired
     private MockMvc mvc;
@@ -65,28 +61,8 @@ class EformStagingControllerTest {
     }
 
     @Test
-    void shouldSuccessfullyUpdateEformApplication() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.patch(url())
-                        .param("newUsn", String.valueOf(NEW_USN))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void shouldFailToUpdateEformApplicationAsUsnValidationFails() throws Exception {
-        doThrow(USN_VALIDATION_EXCEPTION)
-                .when(mockUsnValidator).verifyUsnExists(USN);
-
-        mvc.perform(MockMvcRequestBuilders.patch(url())
-                        .param("newUsn", String.valueOf(NEW_USN))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().json("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN is not valid as it is not present in the eForm Repository\"}"));
-    }
-
-    @Test
     void shouldSuccessfullyGetEformApplication() throws Exception {
-        when(mockEFormStagingDAO.retrieve(USN))
+        when(mockEFormStagingService.retrieve(USN))
                 .thenReturn(EFORM_STAGING_DTO);
         when(mockEformStagingDTOMapper.toEformStagingResponse(EFORM_STAGING_DTO))
                 .thenReturn(EFORM_STAGING_RESPONSE);
@@ -99,7 +75,7 @@ class EformStagingControllerTest {
 
     @Test
     void shouldFailToFindEformApplicationWhenItDoesNotExistInTheRepo() throws Exception {
-        when(mockEFormStagingDAO.retrieve(USN))
+        when(mockEFormStagingService.retrieve(USN))
                 .thenThrow(USN_VALIDATION_EXCEPTION);
 
         mvc.perform(MockMvcRequestBuilders.get(url())
@@ -114,7 +90,7 @@ class EformStagingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(mockEFormStagingDAO, times(1)).delete(USN);
+        verify(mockEFormStagingService, times(1)).delete(USN);
     }
 
     @Test

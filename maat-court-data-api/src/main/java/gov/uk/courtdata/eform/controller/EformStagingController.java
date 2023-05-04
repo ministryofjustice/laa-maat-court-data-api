@@ -5,8 +5,7 @@ import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.model.EformStagingResponse;
-import gov.uk.courtdata.eform.service.EformStagingDAO;
-import gov.uk.courtdata.eform.validator.TypeValidator;
+import gov.uk.courtdata.eform.service.EformStagingService;
 import gov.uk.courtdata.eform.validator.UsnValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/eform/{usn}")
 @Slf4j
 @XRayEnabled
 @RequiredArgsConstructor
@@ -28,41 +27,11 @@ public class EformStagingController {
 
     private static final String DEFAULT_EFORM_TYPE = "CRM14";
 
-    private final EformStagingDAO eformStagingDAO;
+    private final EformStagingService eformStagingService;
     private final EformStagingDTOMapper eformStagingDTOMapper;
     private final UsnValidator usnValidator;
-    private final TypeValidator typeValidator;
 
-    @PatchMapping("/eform/{oldUsn}")
-    @Operation(description = "Update an EFORMS_STAGING record")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Void> updateEformApplication(@PathVariable Integer oldUsn,
-                                                       @RequestParam(name = "newUsn", required = true) Integer newUsn,
-                                                       @RequestParam(name = "type", required = false, defaultValue = DEFAULT_EFORM_TYPE) String type,
-                                                       @Parameter(description = "Used for tracing calls")
-                                                       @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-
-        usnValidator.verifyUsnExists(oldUsn);
-        typeValidator.validate(type);
-
-        EformStagingDTO oldEformStagingDTO = EformStagingDTO.builder()
-                .usn(oldUsn)
-                .type(type)
-                .build();
-
-        EformStagingDTO newEformStagingDTO = EformStagingDTO.builder()
-                .usn(newUsn)
-                .type(type)
-                .build();
-
-        eformStagingDAO.update(oldEformStagingDTO, newEformStagingDTO);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/eform/{usn}")
+    @GetMapping()
     @Operation(description = "Retrieve an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
@@ -72,14 +41,14 @@ public class EformStagingController {
                                                                     @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
         usnValidator.verifyUsnExists(usn);
-        EformStagingDTO eformStagingDtoOptional = eformStagingDAO.retrieve(usn);
+        EformStagingDTO eformStagingDtoOptional = eformStagingService.retrieve(usn);
 
         EformStagingResponse eformStagingResponse = eformStagingDTOMapper.toEformStagingResponse(eformStagingDtoOptional);
 
         return ResponseEntity.ok(eformStagingResponse);
     }
 
-    @DeleteMapping("/eform/{usn}")
+    @DeleteMapping()
     @Operation(description = "Delete an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
@@ -90,12 +59,12 @@ public class EformStagingController {
 
         usnValidator.verifyUsnExists(usn);
 
-        eformStagingDAO.delete(usn);
+        eformStagingService.delete(usn);
 
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/eform/{usn}")
+    @PostMapping()
     @Operation(description = "Create an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
@@ -106,14 +75,13 @@ public class EformStagingController {
                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
         usnValidator.verifyUsnDoesNotExist(usn);
-        typeValidator.validate(type);
 
         EformStagingDTO eformStagingDTO = EformStagingDTO.builder()
                 .usn(usn)
                 .type(type)
                 .build();
 
-        eformStagingDAO.create(eformStagingDTO);
+        eformStagingService.create(eformStagingDTO);
 
         return ResponseEntity.ok().build();
     }

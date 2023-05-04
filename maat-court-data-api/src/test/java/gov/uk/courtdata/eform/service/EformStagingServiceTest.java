@@ -20,8 +20,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@WebMvcTest(EformStagingDAOImpl.class)
-class EformStagingDAOImplTest {
+@WebMvcTest(EformStagingService.class)
+class EformStagingServiceTest {
 
     private static final int USN = 1233;
     private static final int NEWUSN = 3321;
@@ -61,11 +61,11 @@ class EformStagingDAOImplTest {
     @MockBean
     private EformStagingDTOMapper mockEformStagingDTOMapper;
 
-    private EformStagingDAOImpl eformStagingDAOImpl;
+    private EformStagingService eformStagingService;
 
     @BeforeEach
     void setUp() {
-        eformStagingDAOImpl = new EformStagingDAOImpl(mockEformStagingRepository,
+        eformStagingService = new EformStagingService(mockEformStagingRepository,
                 mockEformStagingDTOMapper);
 
         when(mockEformStagingDTOMapper.toEformsStagingEntity(EFORM_STAGING_DTO))
@@ -81,17 +81,9 @@ class EformStagingDAOImplTest {
     @Test
     void givenUSN_whenServiceInvoked_thenSaveToDatabase() {
 
-        eformStagingDAOImpl.create(EFORM_STAGING_DTO);
+        eformStagingService.create(EFORM_STAGING_DTO);
 
         Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(EFORMS_STAGING_ENTITY);
-    }
-
-    @Test
-    void givenUSN_whenServiceInvoked_thenUpdateTheDatabase() {
-
-        eformStagingDAOImpl.update(EFORM_STAGING_DTO, NEW_EFORM_STAGING_DTO);
-
-        Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(NEW_EFORMS_STAGING_ENTITY);
     }
 
     @Test
@@ -99,7 +91,7 @@ class EformStagingDAOImplTest {
         Mockito.when(mockEformStagingRepository.findById(USN))
                 .thenReturn(Optional.of(EFORMS_STAGING_ENTITY));
 
-        EformStagingDTO retrieve = eformStagingDAOImpl.retrieve(EFORM_STAGING_DTO.getUsn());
+        EformStagingDTO retrieve = eformStagingService.retrieve(EFORM_STAGING_DTO.getUsn());
 
         Assertions.assertEquals(EFORM_STAGING_DTO, retrieve);
     }
@@ -108,7 +100,7 @@ class EformStagingDAOImplTest {
     void givenUSN_whenServiceInvoked_thenDeleteFromDatabase() {
 
         Integer usn = EFORM_STAGING_DTO.getUsn();
-        eformStagingDAOImpl.delete(usn);
+        eformStagingService.delete(usn);
 
         Mockito.verify(mockEformStagingRepository, Mockito.times(1)).deleteById(usn);
     }

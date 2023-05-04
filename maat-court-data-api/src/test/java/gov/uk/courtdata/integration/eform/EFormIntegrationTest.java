@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 @WebAppConfiguration
-public class EFormIntegrationTest {
+class EFormIntegrationTest {
 
     private static final int USN = 12334455;
     private static final int NEW_USN = 3321;
@@ -56,23 +56,23 @@ public class EFormIntegrationTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         eformStagingRepository.deleteAll();
     }
-    
+
     @Test
-    public void givenAUSN_whenPOSTeformCalled_thenNewFieldIsInDB() throws Exception {
+    void givenAUSN_whenPOSTeformCalled_thenNewFieldIsInDB() throws Exception {
         mockMvc.perform(post(EFORM_USN_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void givenNoUSN_whenPOSTeformCalled_thenErrorReturned() throws Exception {
+    void givenNoUSN_whenPOSTeformCalled_thenErrorReturned() throws Exception {
         mockMvc.perform(post(EFORM_USN_NOT_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void givenExistingUSN_whenPOSTeformCalled_thenErrorReturned() throws Exception {
+    void givenExistingUSN_whenPOSTeformCalled_thenErrorReturned() throws Exception {
         eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
 
         mockMvc.perform(post(EFORM_USN_PROVIDED_URL)
@@ -82,35 +82,7 @@ public class EFormIntegrationTest {
     }
 
     @Test
-    public void givenAUSNAndNewUSNProvided_whenPATCHeformCalled_thenUpdateUSNInDB() throws Exception {
-        eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
-
-        mockMvc.perform(patch(EFORM_USN_PROVIDED_URL)
-                        .param("newUsn", String.valueOf(NEW_USN))
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void givenAUSNandNoNewUSNProvided_whenPATCHeformCalled_thenReturnError() throws Exception {
-        eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
-
-        mockMvc.perform(patch(EFORM_USN_NOT_PROVIDED_URL)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
-                .andExpect(status().is4xxClientError());
-    }
-
-    @Test
-    public void givenANonExsistingUSN_whenPATCHefromCalled_thenReturnError() throws Exception {
-        mockMvc.perform(patch(EFORM_USN_PROVIDED_URL)
-                        .param("newUsn", String.valueOf(NEW_USN))
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().json(NOT_VALID_USN_RETURN));
-    }
-
-    @Test
-    public void givenAUSN_whenGETeformCalled_thenReturnEntryFromDB() throws Exception {
+    void givenAUSN_whenGETeformCalled_thenReturnEntryFromDB() throws Exception {
         eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
 
         mockMvc.perform(get(EFORM_USN_PROVIDED_URL)
@@ -120,14 +92,14 @@ public class EFormIntegrationTest {
     }
 
     @Test
-    public void givenNoUSN_whenGETeformCalled_thenReturnError() throws Exception {
+    void givenNoUSN_whenGETeformCalled_thenReturnError() throws Exception {
         mockMvc.perform(get(EFORM_USN_NOT_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void givenANonExistingUSN_whenGETeformCalled_thenReturnError() throws Exception {
+    void givenANonExistingUSN_whenGETeformCalled_thenReturnError() throws Exception {
         mockMvc.perform(get(EFORM_USN_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
@@ -135,7 +107,7 @@ public class EFormIntegrationTest {
     }
 
     @Test
-    public void givenAUSN_whenDELETEeformCalled_thenEntryRemovedFromDB() throws Exception {
+    void givenAUSN_whenDELETEeformCalled_thenEntryRemovedFromDB() throws Exception {
         eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
 
         mockMvc.perform(delete(EFORM_USN_PROVIDED_URL)
@@ -144,14 +116,14 @@ public class EFormIntegrationTest {
     }
 
     @Test
-    public void givenNoUSN_whenDELETEeFormCalled_thenErrorReturned() throws Exception {
+    void givenNoUSN_whenDELETEeFormCalled_thenErrorReturned() throws Exception {
         mockMvc.perform(delete(EFORM_USN_NOT_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void givenANonExistentUSN_whenDELETEeFormCalled_thenReturnError() throws Exception {
+    void givenANonExistentUSN_whenDELETEeFormCalled_thenReturnError() throws Exception {
         mockMvc.perform(delete(EFORM_USN_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())

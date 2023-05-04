@@ -48,7 +48,7 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorDTO> handleValidationError(ValidationException ex) {
-        log.error(ex.getMessage());
+        log.warn(ex.getMessage());
         return ResponseEntity.badRequest().body(ErrorDTO.builder()
                 .code(HttpStatus.BAD_REQUEST.name())
                 .message(ex.getMessage())
@@ -93,7 +93,7 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(RequestedObjectNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleRequestedObjectNotFoundException(RequestedObjectNotFoundException ex) {
-        log.error(ex.getMessage());
+        log.warn(ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorDTO.builder()
                 .code(HttpStatus.NOT_FOUND.name())
                 .message(ex.getMessage())
@@ -104,7 +104,7 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDTO> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         String errorMessage = String.format(
                 "The provided value '%s' is the incorrect type for the '%s' parameter.", ex.getValue(), ex.getName());
-        log.error(errorMessage);
+        log.warn(errorMessage);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder()
                 .code(HttpStatus.BAD_REQUEST.name())
                 .message(errorMessage)

@@ -62,7 +62,6 @@ public class CourtDataAdapterClient {
                         uriBuilder.path(courtDataAdapterClientConfig.getHearingUrl()).queryParam("publish_to_queue", true).build(hearingId))
                 .headers(httpHeaders -> httpHeaders.setAll(Map.of("X-Request-ID", laaTransactionId)))
                 .retrieve().toBodilessEntity()
-                .doOnError(Sentry::captureException)
                 .onErrorMap(error -> new MAATCourtDataException(String.format("Error triggering CDA processing for hearing '%s'.%s", hearingId, error.getMessage())))
                 .doOnSuccess(response -> log.info("Processing trigger successfully for hearing '{}'", hearingId))
                 .block();

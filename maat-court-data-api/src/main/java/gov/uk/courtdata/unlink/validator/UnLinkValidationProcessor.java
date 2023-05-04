@@ -2,7 +2,7 @@ package gov.uk.courtdata.unlink.validator;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
@@ -31,7 +31,7 @@ public class UnLinkValidationProcessor {
     public void validate(Unlink unlink) {
 
         if (unlink == null) {
-            throw new MAATCourtDataException("Unlink Request is empty");
+            throw new ValidationException("Unlink Request is empty");
         }
 
         maatIdValidator.validate(unlink.getMaatId());
@@ -48,10 +48,10 @@ public class UnLinkValidationProcessor {
     public void validateWQLinkRegister(List<WqLinkRegisterEntity> linkRegisterEntities, Integer maatId) {
 
         if (linkRegisterEntities == null || linkRegisterEntities.isEmpty()) {
-            throw new MAATCourtDataException("There is No link established for MAAT ID : " + maatId);
+            throw new ValidationException("There is No link established for MAAT ID : " + maatId);
         }
         if (linkRegisterEntities.size() > 1) {
-            throw new MAATCourtDataException("There are multiple links found for  MAAT ID : " + maatId);
+            throw new ValidationException("There are multiple links found for  MAAT ID : " + maatId);
         }
     }
 

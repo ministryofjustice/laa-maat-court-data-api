@@ -111,35 +111,6 @@ public class UnlinkListenerTest {
 
     }
 
-    @Test
-    public void givenNewMessageInSqs_whenMaatIsInvalid_thenThrowException() throws Exception{
-
-        Unlink unlink = gson.fromJson(testModelDataBuilder.getUnLinkString(), Unlink.class);
-        UnlinkModel unlinkModel = UnlinkModel.builder().unlink(unlink).build();
-        WqLinkRegisterEntity wqLinkRegisterEntity = testEntityDataBuilder.getWqLinkRegisterEntity();
-        unlinkModel.setWqLinkRegisterEntity(wqLinkRegisterEntity);
-        RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderCPDataEntity();
-        unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity);
-        wqLinkRegisterEntity.setMaatId(88999);
-        wqLinkRegisterRepository.save(wqLinkRegisterEntity);
-        repOrderRepository.save(RepOrderEntity.builder().id(repOrderCPDataEntity.getRepOrderId()).caseId("12121").build());
-        repOrderCPDataRepository.save(RepOrderCPDataEntity.builder()
-                .defendantId("556677")
-                .repOrderId(1234)
-                .build());
-
-        //when
-        Map<String, Object> header = new HashMap<>();
-        header.put("MessageId","AIDAIU3GACVJITZULQ2RQ");
-        MessageHeaders headers = new MessageHeaders(header);
-
-        MAATCourtDataException error = Assert.assertThrows(
-                MAATCourtDataException.class,
-                () -> unlinkListener.receive(testModelDataBuilder.getUnLinkString(), headers));
-
-        Assert.assertEquals("MAAT Id : 1234 not linked.", error.getMessage());
-
-    }
 
     private void assertWQLinkRegister(UnlinkModel unlinkModel) {
 

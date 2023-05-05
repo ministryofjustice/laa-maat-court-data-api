@@ -90,7 +90,7 @@ class EFormIntegrationTest {
         mockMvc.perform(get(EFORM_USN_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"usn\":" + USN + ",\"type\":" + TYPE + ", \"maat_ref\": " + MAAT_REF + "}"));
+                .andExpect(content().json("{\"usn\":" + USN + ",\"type\":" + TYPE + ", \"maatref\": " + MAAT_REF + "}"));
     }
 
     @Test

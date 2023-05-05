@@ -24,29 +24,34 @@ import static org.mockito.Mockito.when;
 class EformStagingServiceTest {
 
     private static final int USN = 1233;
-    private static final int NEWUSN = 3321;
+    private static final int NEW_USN = 3321;
     private static final String TYPE = "CRM14";
     private static final int MAAT_ID = 3290392;
+
     private static final EformsStagingEntity EFORMS_STAGING_ENTITY = EformsStagingEntity
             .builder()
             .usn(USN)
             .type(TYPE)
+            .maatRef(MAAT_ID)
             .build();
 
     private static final EformsStagingEntity NEW_EFORMS_STAGING_ENTITY = EformsStagingEntity
             .builder()
-            .usn(NEWUSN)
+            .usn(NEW_USN)
             .type(TYPE)
+            .maatRef(MAAT_ID)
             .build();
+
     private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO
             .builder()
             .usn(USN)
             .type(TYPE)
+            .maatRef(MAAT_ID)
             .build();
 
     private static final EformStagingDTO NEW_EFORM_STAGING_DTO = EformStagingDTO
             .builder()
-            .usn(NEWUSN)
+            .usn(NEW_USN)
             .type(TYPE)
             .build();
 
@@ -54,6 +59,7 @@ class EformStagingServiceTest {
             .builder()
             .usn(USN)
             .type(TYPE)
+            .maatRef(MAAT_ID)
             .build();
 
     @MockBean

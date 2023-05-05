@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class EformStagingResponse {
     private Integer usn;
     private String type;
-    private Integer maatref;
+    private Integer maatRef;
 }

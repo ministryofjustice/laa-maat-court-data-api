@@ -27,5 +27,5 @@ public class EformsStagingEntity {
     private String type;
 
     @Column(name = "MAAT_REF")
-    private Integer maatref;
+    private Integer maatRef;
 }

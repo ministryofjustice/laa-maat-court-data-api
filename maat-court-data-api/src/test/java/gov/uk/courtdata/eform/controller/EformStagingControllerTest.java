@@ -30,7 +30,6 @@ class EformStagingControllerTest {
 
     private static final String ENDPOINT_FORMAT = "/api/eform/";
     private static final int USN = 123;
-    private static final int NEW_USN = 456;
     private static final String TYPE = "CRM14";
     private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse.builder().usn(USN).type(TYPE).build();
     private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO.builder().usn(USN).type(TYPE).build();

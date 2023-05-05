@@ -10,6 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.messaging.MessageHeaders;
+
+import java.util.HashMap;
 
 import static org.mockito.Mockito.*;
 
@@ -36,7 +39,7 @@ public class UnlinkListenerTest {
                 .maatId(1111111)
                 .build();
         when(gson.fromJson(message, Unlink.class)).thenReturn(unlink);
-        unlinkListener.receive(message);
+        unlinkListener.receive(message, new MessageHeaders(new HashMap<>()));
 
         verify(unLinkProcessor).process(any());
         verify(queueMessageLogService).createLog(MessageType.UNLINK, message);

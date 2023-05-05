@@ -26,6 +26,7 @@ class EformStagingServiceTest {
     private static final int USN = 1233;
     private static final int NEWUSN = 3321;
     private static final String TYPE = "CRM14";
+    private static final int MAAT_ID = 3290392;
     private static final EformsStagingEntity EFORMS_STAGING_ENTITY = EformsStagingEntity
             .builder()
             .usn(USN)

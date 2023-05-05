@@ -71,7 +71,7 @@ public class EformStagingController {
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Void> createEformApplication(@PathVariable Integer usn,
                                                        @RequestParam(name = "type", required = false, defaultValue = DEFAULT_EFORM_TYPE) String type,
-                                                       @RequestParam(name = "maatid", required = false) String maatid,
+                                                       @RequestParam(name = "maatid", required = false) Integer maatid,
                                                        @Parameter(description = "Used for tracing calls")
                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 

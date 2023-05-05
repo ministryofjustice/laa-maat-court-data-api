@@ -13,5 +13,5 @@ public class EformStagingDTO {
 
     private Integer usn;
     private String type;
-    private Integer maat_ref;
+    private Integer maatref;
 }

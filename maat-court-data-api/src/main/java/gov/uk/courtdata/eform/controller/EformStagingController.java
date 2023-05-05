@@ -80,7 +80,7 @@ public class EformStagingController {
         EformStagingDTO eformStagingDTO = EformStagingDTO.builder()
                 .usn(usn)
                 .type(type)
-                .maat_ref(maatref)
+                .maatref(maatref)
                 .build();
 
         eformStagingService.create(eformStagingDTO);

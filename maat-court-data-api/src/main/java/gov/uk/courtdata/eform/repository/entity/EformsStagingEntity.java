@@ -27,5 +27,5 @@ public class EformsStagingEntity {
     private String type;
 
     @Column(name = "MAAT_REF")
-    private Integer maat_id;
+    private Integer maat_ref;
 }

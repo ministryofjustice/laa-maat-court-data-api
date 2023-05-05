@@ -30,12 +30,12 @@ class EFormIntegrationTest {
     private static final int USN = 12334455;
     private static final int NEW_USN = 3321;
     private static final String TYPE = "CRM14";
-    private static final int MAAT_ID = 12334455;
+    private static final int MAAT_REF = 12334455;
     private static final EformsStagingEntity EFORMS_STAGING_ENTITY = EformsStagingEntity
             .builder()
             .usn(USN)
             .type(TYPE)
-            .maat_id(MAAT_ID)
+            .maat_ref(MAAT_REF)
             .build();
     private static final String BASE_URL = "/api";
     private static final String EFORM_URL = BASE_URL + "/eform/";
@@ -90,7 +90,7 @@ class EFormIntegrationTest {
         mockMvc.perform(get(EFORM_USN_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"usn\":" + USN + ",\"type\":" + TYPE + ", \"maat_id\": " + MAAT_ID + "}"));
+                .andExpect(content().json("{\"usn\":" + USN + ",\"type\":" + TYPE + ", \"maat_ref\": " + MAAT_REF + "}"));
     }
 
     @Test

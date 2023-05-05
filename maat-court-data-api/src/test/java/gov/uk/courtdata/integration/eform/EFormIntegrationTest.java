@@ -35,7 +35,7 @@ class EFormIntegrationTest {
             .builder()
             .usn(USN)
             .type(TYPE)
-            .maat_ref(MAAT_REF)
+            .maatref(MAAT_REF)
             .build();
     private static final String BASE_URL = "/api";
     private static final String EFORM_URL = BASE_URL + "/eform/";

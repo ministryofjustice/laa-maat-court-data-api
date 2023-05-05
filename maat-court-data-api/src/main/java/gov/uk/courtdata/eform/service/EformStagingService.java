@@ -8,7 +8,6 @@ import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -27,21 +26,21 @@ public class EformStagingService {
     private final EformStagingRepository eformStagingRepository;
     private final EformStagingDTOMapper eformStagingDTOMapper;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void create(EformStagingDTO eformStagingDTO) {
         EformsStagingEntity eformsStagingEntity = eformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO);
 
         eformStagingRepository.saveAndFlush(eformsStagingEntity);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    @Transactional(readOnly = true)
     public EformStagingDTO retrieve(int usn) {
         Optional<EformsStagingEntity> eformsStagingEntity = eformStagingRepository.findById(usn);
 
         return eformStagingDTOMapper.toEformStagingDTO(eformsStagingEntity.get());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void delete(int usn) {
         eformStagingRepository.deleteById(usn);
     }

@@ -1,8 +1,7 @@
 package gov.uk.courtdata.contribution.validator;
 
-import gov.uk.courtdata.contribution.validator.CreateContributionsValidator;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.model.contributions.CreateContributions;
+import gov.uk.courtdata.model.contribution.CreateContributions;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

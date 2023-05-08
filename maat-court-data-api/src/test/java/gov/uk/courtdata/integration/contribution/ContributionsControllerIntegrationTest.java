@@ -1,4 +1,4 @@
-package gov.uk.courtdata.integration.contributions;
+package gov.uk.courtdata.integration.contribution;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
@@ -7,8 +7,8 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
-import gov.uk.courtdata.model.contributions.CreateContributions;
-import gov.uk.courtdata.model.contributions.UpdateContributions;
+import gov.uk.courtdata.model.contribution.CreateContributions;
+import gov.uk.courtdata.model.contribution.UpdateContributions;
 import gov.uk.courtdata.repository.ContributionsRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;

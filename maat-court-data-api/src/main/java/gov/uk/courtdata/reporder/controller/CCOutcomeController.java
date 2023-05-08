@@ -14,10 +14,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -81,8 +83,11 @@ public class CCOutcomeController {
         validator.validate(repOrderCCOutCome);;
         return ResponseEntity.ok(service.update(repOrderCCOutCome));
     }
-
-    @GetMapping(value = "/reporder/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    
+    @RequestMapping(value = "/reporder/{repId}",
+            method = {RequestMethod.GET, RequestMethod.HEAD},
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @Operation(description = "Retrieve a RepOrder CCOutCome record")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
@@ -98,9 +103,14 @@ public class CCOutcomeController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepId(@PathVariable int repId) {
+    public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepId(HttpServletRequest request, @PathVariable int repId) {
         log.info("Find RepOrder CC Outcome Request Received");
         validator.validate(repId);
+        if (request.getMethod().equals(RequestMethod.HEAD.name())) {
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.setContentLength(service.findByRepId(repId).size());
+            return ResponseEntity.ok().headers(responseHeaders).build();
+        }
         return ResponseEntity.ok(service.findByRepId(repId));
     }
 }

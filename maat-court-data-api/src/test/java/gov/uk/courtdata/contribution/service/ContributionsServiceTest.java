@@ -93,4 +93,11 @@ class ContributionsServiceTest {
         verify(repository).updateExistingContributionToPrior(TestModelDataBuilder.REP_ID);
         verify(repository).saveAndFlush(any(ContributionsEntity.class));
     }
+
+    @Test
+    void givenAValidRepId_whenGetContributionCountIsInvoked_thenReturnContributionCount() {
+        when(repository.getContributionCount(TestModelDataBuilder.REP_ID)).thenReturn(1);
+        contributionsService.getContributionCount(TestModelDataBuilder.REP_ID);
+        verify(repository).getContributionCount(TestModelDataBuilder.REP_ID);
+    }
 }

@@ -26,4 +26,9 @@ public interface ContributionsRepository extends JpaRepository<ContributionsEnti
     @Modifying
     @Query(value = "UPDATE TOGDATA.CONTRIBUTIONS SET LATEST = 'N' WHERE REP_ID = :repId", nativeQuery = true)
     void updateExistingContributionToPrior(@Param("repId") Integer repId);
+
+    @Query(value = "SELECT count(*) from TOGDATA.CONTRIBUTIONS c join TOGDATA.CORRESPONDENCE co on ( CO.ID = C.CORR_ID ) " +
+            "where C.REP_ID = :repId and (  CO.COTY_CORRESPONDENCE_TYPE = 'CONTRIBUTION_ORDER' or" +
+            " CO.COTY_CORRESPONDENCE_TYPE = 'CONTRIBUTION_NOTICE')", nativeQuery = true)
+    Integer getContributionCount(@Param("repId") Integer repId);
 }

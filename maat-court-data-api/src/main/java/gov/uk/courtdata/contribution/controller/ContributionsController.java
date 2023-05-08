@@ -8,6 +8,7 @@ import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.model.contributions.CreateContributions;
 import gov.uk.courtdata.model.contributions.UpdateContributions;
+import gov.uk.courtdata.validator.MaatIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,8 @@ public class ContributionsController {
     private final ContributionsService contributionsService;
     private final UpdateContributionsValidator updateContributionsValidator;
     private final CreateContributionsValidator createContributionsValidator;
+
+    private final MaatIdValidator maatIdValidator;
 
     @GetMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve latest contributions entry")
@@ -112,5 +116,33 @@ public class ContributionsController {
         log.info("Request to create contributions entry");
         createContributionsValidator.validate(createContributions);
         return ResponseEntity.ok(contributionsService.create(createContributions));
+    }
+
+    @RequestMapping(value = "/{repId}",
+            method = {RequestMethod.HEAD},
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(description = "Retrieve contribution count")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+    @ApiResponse(responseCode = "400",
+            description = "Bad Request.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<Object> getContributionCount( @PathVariable int repId) {
+        log.info("Get contribution count");
+        maatIdValidator.validate(repId);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentLength(contributionsService.getContributionCount(repId));
+        return ResponseEntity.ok().headers(responseHeaders).build();
     }
 }

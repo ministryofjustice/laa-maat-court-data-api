@@ -57,4 +57,9 @@ public class ContributionsService {
         newContributionsEntity.setLatest(true);
         return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(newContributionsEntity));
     }
+
+    @Transactional
+    public Integer getContributionCount(Integer repId) {
+        return contributionsRepository.getContributionCount(repId);
+    }
 }

@@ -1,4 +1,4 @@
-package gov.uk.courtdata.model.contribution;
+package gov.uk.courtdata.contribution.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package gov.uk.courtdata.contribution.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.model.contribution.UpdateContributions;
+import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.repository.ContributionsRepository;
 import gov.uk.courtdata.validator.IValidator;
 import lombok.RequiredArgsConstructor;

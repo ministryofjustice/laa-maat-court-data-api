@@ -1,6 +1,6 @@
 package gov.uk.courtdata.contribution.validator;
 
-import gov.uk.courtdata.model.contribution.CreateContributions;
+import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.validator.IValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import lombok.RequiredArgsConstructor;

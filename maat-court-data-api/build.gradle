@@ -132,6 +132,7 @@ dependencies {
     implementation group: 'com.graphql-java-kickstart', name: 'graphql-java-tools', version: versions.graphqlJavaTools
 
 
+
     // Test Only
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -187,4 +188,3 @@ sonarqube {
 
     }
 }
-

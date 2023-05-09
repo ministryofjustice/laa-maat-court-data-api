@@ -6,10 +6,12 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
+import gov.uk.courtdata.entity.CorrespondenceEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.contributions.CreateContributions;
 import gov.uk.courtdata.model.contributions.UpdateContributions;
 import gov.uk.courtdata.repository.ContributionsRepository;
+import gov.uk.courtdata.repository.CorrespondenceRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import org.assertj.core.api.Assertions;
@@ -43,6 +45,8 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     protected ObjectMapper objectMapper;
     @Autowired
     ContributionsRepository contributionsRepository;
+
+    CorrespondenceRepository correspondenceRepository;
     @Autowired
     MockMvc mvc;
     @Autowired
@@ -54,7 +58,10 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     public void setUp(@Autowired RepOrderRepository repOrderRepository,
                       @Autowired ContributionsRepository contributionsRepository) {
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
-        contributionsEntity = contributionsRepository.saveAndFlush(TestEntityDataBuilder.getContributionsEntity());
+        CorrespondenceEntity correspondenceEntity = correspondenceRepository.saveAndFlush(TestEntityDataBuilder.getCorrespondenceEntity(1));
+        ContributionsEntity contributions = TestEntityDataBuilder.getContributionsEntity();
+        contributions.setcor
+        contributionsEntity = contributionsRepository.saveAndFlush(contributions);
     }
 
     @AfterEach

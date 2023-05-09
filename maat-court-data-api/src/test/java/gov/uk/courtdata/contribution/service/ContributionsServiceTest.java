@@ -2,11 +2,11 @@ package gov.uk.courtdata.contribution.service;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
+import gov.uk.courtdata.contribution.model.CreateContributions;
+import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.repository.ContributionsRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -92,5 +92,12 @@ class ContributionsServiceTest {
         verify(repository).updateExistingContributionToInactive(TestModelDataBuilder.REP_ID, testEffectiveDate);
         verify(repository).updateExistingContributionToPrior(TestModelDataBuilder.REP_ID);
         verify(repository).saveAndFlush(any(ContributionsEntity.class));
+    }
+
+    @Test
+    void givenAValidRepId_whenGetContributionCountIsInvoked_thenReturnContributionCount() {
+        when(repository.getContributionCount(TestModelDataBuilder.REP_ID)).thenReturn(1);
+        contributionsService.getContributionCount(TestModelDataBuilder.REP_ID);
+        verify(repository).getContributionCount(TestModelDataBuilder.REP_ID);
     }
 }

@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.dto.ContributionsDTO;
-import gov.uk.courtdata.entity.ContributionsEntity;
-import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
+import gov.uk.courtdata.dto.ContributionsDTO;
+import gov.uk.courtdata.entity.ContributionsEntity;
+import gov.uk.courtdata.entity.CorrespondenceEntity;
+import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.repository.ContributionsRepository;
+import gov.uk.courtdata.repository.CorrespondenceRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import org.assertj.core.api.Assertions;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,6 +46,9 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     protected ObjectMapper objectMapper;
     @Autowired
     ContributionsRepository contributionsRepository;
+
+    @Autowired
+    CorrespondenceRepository correspondenceRepository;
     @Autowired
     MockMvc mvc;
     @Autowired
@@ -54,7 +60,15 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     public void setUp(@Autowired RepOrderRepository repOrderRepository,
                       @Autowired ContributionsRepository contributionsRepository) {
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
-        contributionsEntity = contributionsRepository.saveAndFlush(TestEntityDataBuilder.getContributionsEntity());
+        CorrespondenceEntity correspondenceEntity = correspondenceRepository.saveAndFlush(TestEntityDataBuilder.getCorrespondenceEntity(1));
+        ContributionsEntity contributions = TestEntityDataBuilder.getContributionsEntity();
+        contributions.setCorrespondenceId(correspondenceEntity.getId());
+        contributionsEntity = contributionsRepository.saveAndFlush(contributions);
+
+        repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID + 1));
+        ContributionsEntity contributionsEntity = TestEntityDataBuilder.getContributionsEntity();
+        contributionsEntity.setRepId(TestEntityDataBuilder.REP_ID + 1);
+        contributionsRepository.saveAndFlush(contributionsEntity);
     }
 
     @AfterEach
@@ -143,4 +157,15 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
                 .isEqualTo(objectMapper.writeValueAsString(contributionsEntity));
     }
 
+    @Test
+    public void givenAValidRepId_whenGetContributionCountIsInvoked_thenContributionCountIsReturned() throws Exception {
+        var response = runSuccessScenario(head(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID));
+        Assertions.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
+    }
+
+    @Test
+    public void givenAValidRepIdAndEmptyCorrespondence_whenGetContributionCountIsInvoked_thenZeroIsReturned() throws Exception {
+        var response = runSuccessScenario(head(ENDPOINT_URL + "/1235"));
+        Assertions.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
+    }
 }

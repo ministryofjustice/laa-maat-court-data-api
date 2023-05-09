@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -98,5 +99,16 @@ class CCOutcomeControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].id").value(String.valueOf("1")))
                 .andExpect(jsonPath("$[0].crownCourtCode").value(String.valueOf("459")));
+    }
+
+    @Test
+    void givenACorrectParameters_whenFindByRepIdIsInvoked_thenReturnOutcomeCount() throws Exception {
+        when(validator.validate(TestModelDataBuilder.REP_ID)).thenReturn(Optional.empty());
+        List repOrderCCOutComeDTOS = List.of(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
+        when(service.findByRepId(TestModelDataBuilder.REP_ID)).thenReturn(repOrderCCOutComeDTOS);
+        mvc.perform(MockMvcRequestBuilders.head(endpointUrl + "/reporder/" + TestModelDataBuilder.REP_ID))
+                .andExpect(status().isOk())
+                .andExpect(content().string(""))
+                .andExpect(header().string(HttpHeaders.CONTENT_LENGTH, "1"));
     }
 }

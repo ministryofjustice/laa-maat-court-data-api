@@ -1,13 +1,17 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
+import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.*;
 import gov.uk.courtdata.model.assessment.*;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
+import gov.uk.courtdata.contribution.model.CreateContributions;
+import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
@@ -58,6 +62,7 @@ public class TestModelDataBuilder {
     public static final String OUTCOME = "SUCCESSFUL";
     public static final String ASSESSMENT_RESULT = "PASS";
     public static final BigDecimal CONTRIBUTION_AMOUNT = BigDecimal.valueOf(500.00);
+    public static final String CORRESPONDENCE_STATUS = "appealCC";
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -224,6 +229,95 @@ public class TestModelDataBuilder {
                 "\"fullAscrId\": 1,\n" +
                 "\"dateCompleted\": \"2006-10-09T00:00:00\",\n" +
                 "\"userModified\": \"dohe-f\"\n" +
+                "}";
+    }
+
+    public static String getUpdateContributionsJson() {
+        return "{\n" +
+                "\"id\": 999,\n" +
+                "\"userModified\": \"test\",\n" +
+                "\"contributionFileId\": 9,\n" +
+                "\"effectiveDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"calcDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"contributionCap\": 9999,\n" +
+                "\"monthlyContributions\": 99,\n" +
+                "\"upfrontContributions\": 9,\n" +
+                "\"upliftApplied\": \"Y\",\n" +
+                "\"basedOn\": \"Means\",\n" +
+                "\"transferStatus\": \"RECEIVED\",\n" +
+                "\"dateUpliftApplied\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"dateUpliftRemoved\": \"2023-04-02T00:00:00.00\",\n" +
+                "\"createContributionOrder\": \"Y\",\n" +
+                "\"correspondenceId\": 9,\n" +
+                "\"ccOutcomeCount\": 9,\n" +
+                "\"seHistoryId\": 9\n" +
+                "}";
+    }
+
+    public static String getInvalidUpdateContributionsJson() {
+        return "{\n" +
+                "\"id\": 999,\n" +
+                "\"userModified\": \"test\",\n" +
+                "\"contributionFileId\": 9,\n" +
+                "\"calcDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"contributionCap\": 9999,\n" +
+                "\"monthlyContributions\": 99,\n" +
+                "\"upfrontContributions\": 9,\n" +
+                "\"upliftApplied\": \"Y\",\n" +
+                "\"basedOn\": \"Means\",\n" +
+                "\"transferStatus\": \"RECEIVED\",\n" +
+                "\"dateUpliftApplied\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"dateUpliftRemoved\": \"2023-04-02T00:00:00.00\",\n" +
+                "\"createContributionOrder\": \"Y\",\n" +
+                "\"correspondenceId\": 9,\n" +
+                "\"ccOutcomeCount\": 9,\n" +
+                "\"seHistoryId\": 9\n" +
+                "}";
+    }
+
+    public static String getCreateContributionsJson() {
+        return "{\n" +
+                "\"repId\": 999,\n" +
+                "\"applId\": 999,\n" +
+                "\"userCreated\": \"test\",\n" +
+                "\"contributionFileId\": 9,\n" +
+                "\"effectiveDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"calcDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"contributionCap\": 9999,\n" +
+                "\"monthlyContributions\": 99,\n" +
+                "\"upfrontContributions\": 9,\n" +
+                "\"upliftApplied\": \"Y\",\n" +
+                "\"basedOn\": \"Means\",\n" +
+                "\"transferStatus\": \"RECEIVED\",\n" +
+                "\"dateUpliftApplied\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"dateUpliftRemoved\": \"2023-04-02T00:00:00.00\",\n" +
+                "\"createContributionOrder\": \"Y\",\n" +
+                "\"correspondenceId\": 9,\n" +
+                "\"ccOutcomeCount\": 9,\n" +
+                "\"seHistoryId\": 9\n" +
+                "}";
+    }
+
+    public static String getInvalidCreateContributionsJson() {
+        return "{\n" +
+                "\"repId\": 999,\n" +
+                "\"applId\": 999,\n" +
+                "\"userCreated\": \"\",\n" +
+                "\"contributionFileId\": 9,\n" +
+                "\"effectiveDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"calcDate\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"contributionCap\": 9999,\n" +
+                "\"monthlyContributions\": 99,\n" +
+                "\"upfrontContributions\": 9,\n" +
+                "\"upliftApplied\": \"Y\",\n" +
+                "\"basedOn\": \"Means\",\n" +
+                "\"transferStatus\": \"RECEIVED\",\n" +
+                "\"dateUpliftApplied\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"dateUpliftRemoved\": \"2023-04-02T00:00:00.00\",\n" +
+                "\"createContributionOrder\": \"Y\",\n" +
+                "\"correspondenceId\": 9,\n" +
+                "\"ccOutcomeCount\": 9,\n" +
+                "\"seHistoryId\": 9\n" +
                 "}";
     }
 
@@ -732,6 +826,269 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+    public static UpdateAppDateCompleted getUpdateAppDateCompleted() {
+        return UpdateAppDateCompleted.builder()
+                .repId(REP_ID)
+                .assessmentDateCompleted(LocalDateTime.now())
+                .build();
+    }
+
+    public static String getUpdateAppDateCompletedJson() {
+        return "{\n" +
+                " \"repId\": " + REP_ID + " ,\n" +
+                "  \"assessmentDateCompleted\":\"" + APP_DATE_COMPLETED + "\"\n" +
+                "}";
+    }
+
+    public static UpdateRepOrder getUpdateRepOrder() {
+        return UpdateRepOrder.builder()
+                .repId(REP_ID)
+                .sentenceOrderDate(LocalDateTime.parse(APP_DATE_COMPLETED).toLocalDate())
+                .userModified(TEST_USER)
+                .caseId(String.valueOf(TEST_CASE_ID))
+                .catyCaseType(String.valueOf(CrownCourtCaseType.APPEAL_CC))
+                .appealTypeCode("ACN")
+                .arrestSummonsNo(TEST_ARREST_SUMMONS_NUMBER)
+                .magsOutcome("COMMITTED FOR TRIAL")
+                .magsOutcomeDate(String.valueOf(LocalDate.now().minusDays(10)))
+                .magsOutcomeDateSet(LocalDate.now().minusDays(10))
+                .committalDate(LocalDate.now().minusDays(5))
+                .decisionReasonCode("GRANTED")
+                .crownRepId(REP_ID)
+                .crownRepOrderDecision("Granted - Passed Means Test")
+                .crownRepOrderType("Crown Court Only")
+                .crownRepOrderDate(LocalDate.now().minusDays(5))
+                .crownWithdrawalDate(LocalDate.now().minusDays(3))
+                .isImprisoned(true)
+                .assessmentDateCompleted(LocalDateTime.now().minusDays(15).toLocalDate())
+                .applicantHistoryId(8954)
+                .evidenceFeeLevel(null)
+                .bankAccountNo(14536598)
+                .bankAccountName("John Doe")
+                .paymentMethod("STANDING ORDER")
+                .preferredPaymentDay(1)
+                .sortCode("00-01-02")
+                .isSendToCCLF(false)
+                .areaId(16)
+                .cmuId(245)
+                .isCaseTransferred(false)
+                .isBenchWarrantIssued(false)
+                .appealSentenceOrderChangedDate(null)
+                .appealSentenceOrderDate(null)
+                .appealReceivedDate(null)
+                .appealTypeDate(null)
+                .firstCapitalReminderDate(null)
+                .allCapitalEvidenceReceivedDate(null)
+                .applicationId(2343245)
+                .capitalAllowanceReinstatedDate(null)
+                .capitalAllowanceWithheldDate(null)
+                .capitalEvidenceDueDate(null)
+                .capitalNote("Test capital note")
+                .capitalAllowance(0)
+                .isCourtCustody(false)
+                .dateReceived(null)
+                .dateStatusDue(null)
+                .dateStatusSet(null)
+                .decisionDate(null)
+                .iojResultNote("Test IOJ Result Note")
+                .macoCourt("220")
+                .magsWithdrawalDate(null)
+                .isNoCapitalDeclared(true)
+                .oftyOffenceType("LESSER VIOL/DRUGS")
+                .useSuppAddressForPost(true)
+                .postalAddressId(38908834)
+                .rorsStatus("CURR")
+                .statusReason("Test Status Reason")
+                .suppAccountCode("0U224X")
+                .isWelshCorrespondence(true)
+                .cinrCode("NOCON")
+                .isPartner(true)
+                .isRetrial(true)
+                .efmDateStamp(null)
+                .solicitorName("Jay Shah")
+                .hearingDate(null)
+                .build();
+    }
+
+    public static String getUpdateRepOrderJson() {
+        return "{\n" +
+                " \"repId\": " + REP_ID + " ,\n" +
+                "\"sentenceOrderDate\": \"" + APP_DATE_COMPLETED + "\",\n" +
+                "  \"userModified\": \"" + TEST_USER + "\"\n" +
+                "}";
+    }
+
+    public static OffenceDTO getOffenceDTO(Integer offenceTxId) {
+
+        return OffenceDTO.builder()
+                .txId(offenceTxId)
+                .caseId(TEST_CASE_ID)
+                .asnSeq("001")
+                .offenceShortTitle("Robbery")
+                .offenceClassification("Classification")
+                .offenceWording("Offence Details")
+                .modeOfTrial(1)
+                .legalAidStatus("GQ")
+                .offenceCode("AA06035")
+                .offenceId(TEST_OFFENCE_ID)
+                .isCCNewOffence("Y")
+                .applicationFlag(0)
+                .build();
+    }
+
+    public static WQLinkRegisterDTO getWQLinkRegisterDTO(Integer createdTxId) {
+
+        return WQLinkRegisterDTO.builder()
+                .createdTxId(createdTxId)
+                .caseId(TEST_CASE_ID)
+                .maatId(REP_ID)
+                .cjsAreaCode("16")
+                .cjsLocation("B16BG")
+                .maatCat(253)
+                .createdUserId(TEST_USER)
+                .mlrCat(253)
+                .caseUrn("52SB0067421")
+                .libraId("CP665371")
+                .build();
+    }
+
+    public static WQHearingDTO getWQHearingDTO(Integer createdTxId) {
+        return WQHearingDTO.builder()
+                .txId(createdTxId)
+                .caseId(TEST_CASE_ID)
+                .maatId(REP_ID)
+                .hearingUUID(TEST_OFFENCE_ID)
+                .wqJurisdictionType("CROWN")
+                .ouCourtLocation("C22SR")
+                .caseUrn("EITHERWAY")
+                .resultCodes("4028")
+                .build();
+    }
+
+    public static UpdateCCOutcome getUpdateCCOutcome() {
+        return UpdateCCOutcome.builder()
+                .repId(REP_ID)
+                .ccOutcome("TEST-OUTCOME")
+                .benchWarrantIssued("N")
+                .appealType("TEST-APPEAL-TYPE")
+                .imprisoned("N")
+                .caseNumber("123456")
+                .crownCourtCode("30")
+                .build();
+    }
+
+    public static UpdateSentenceOrder getUpdateSentenceOrder() {
+        return UpdateSentenceOrder.builder()
+                .repId(REP_ID)
+                .dbUser("TEST_USER")
+                .sentenceOrderDate(LocalDate.now())
+                .dateChanged(LocalDate.now())
+                .build();
+    }
+
+    public static RepOrderCCOutcome getRepOrderCCOutcome() {
+        return RepOrderCCOutcome.builder()
+                .repId(REP_ID)
+                .outcome("CONVICTED")
+                .crownCourtCode("430")
+                .userCreated(TEST_USER)
+                .outcomeDate(TEST_DATE)
+                .id(1)
+                .build();
+    }
+
+    public static RepOrderCCOutcome getUpdateRepOrderCCOutcome(Integer ccOutComeId) {
+        return RepOrderCCOutcome.builder()
+                .repId(REP_ID)
+                .caseNumber(TEST_CASE_ID.toString())
+                .outcome("CONVICTED")
+                .crownCourtCode("430")
+                .id(ccOutComeId)
+                .userModified(TEST_USER)
+                .build();
+    }
+
+    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId) {
+        return RepOrderCCOutcomeDTO.builder()
+                .repId(REP_ID)
+                .caseNumber(TEST_CASE_ID.toString())
+                .outcome("PART CONVICTED")
+                .crownCourtCode("459")
+                .userCreated(TEST_USER)
+                .id(outcomeId)
+                .build();
+
+    }
+
+    public static CreateContributions getCreateContributions() {
+        return CreateContributions.builder()
+                .repId(REP_ID)
+                .applId(REP_ID)
+                .userCreated(USER_NAME)
+                .contributionFileId(1)
+                .effectiveDate(TEST_DATE.toLocalDate())
+                .calcDate(TEST_DATE.toLocalDate())
+                .contributionCap(new BigDecimal(9999))
+                .monthlyContributions(new BigDecimal(99))
+                .upfrontContributions(new BigDecimal(9))
+                .upliftApplied("Y")
+                .basedOn("Means")
+                .transferStatus("RECEIVED")
+                .dateUpliftApplied(TEST_DATE.toLocalDate())
+                .dateUpliftRemoved(TEST_DATE.toLocalDate())
+                .createContributionOrder("Y")
+                .correspondenceId(9)
+                .ccOutcomeCount(9)
+                .seHistoryId(9)
+                .build();
+    }
+
+    public static UpdateContributions getUpdateContributions(Integer contributionId) {
+        return UpdateContributions.builder()
+                .id(contributionId)
+                .userModified(USER_NAME)
+                .contributionFileId(2)
+                .effectiveDate(TEST_DATE.toLocalDate())
+                .calcDate(TEST_DATE.toLocalDate())
+                .contributionCap(new BigDecimal("8.00"))
+                .monthlyContributions(new BigDecimal("8888.00"))
+                .upfrontContributions(new BigDecimal("87.00"))
+                .upliftApplied("Y")
+                .basedOn("Means")
+                .transferStatus("RECEIVED")
+                .dateUpliftApplied(TEST_DATE.toLocalDate())
+                .dateUpliftRemoved(TEST_DATE.toLocalDate())
+                .createContributionOrder("Y")
+                .correspondenceId(10)
+                .ccOutcomeCount(10)
+                .seHistoryId(10)
+                .build();
+    }
+
+    public static ContributionsDTO getContributionsDTO() {
+        return ContributionsDTO.builder()
+                .repId(REP_ID)
+                .applId(REP_ID)
+                .userCreated(USER_NAME)
+                .contributionFileId(1)
+                .effectiveDate(TEST_DATE.toLocalDate())
+                .calcDate(TEST_DATE.toLocalDate())
+                .contributionCap(new BigDecimal(9999))
+                .monthlyContributions(new BigDecimal(99))
+                .upfrontContributions(new BigDecimal(9))
+                .upliftApplied("Y")
+                .basedOn("Means")
+                .transferStatus("RECEIVED")
+                .dateUpliftApplied(TEST_DATE.toLocalDate())
+                .dateUpliftRemoved(TEST_DATE.toLocalDate())
+                .createContributionOrder("Y")
+                .correspondenceId(9)
+                .ccOutcomeCount(9)
+                .seHistoryId(9)
+                .id(1)
+                .build();
+    }
+
     public CourtDataDTO getSaveAndLinkModelRaw() {
         return CourtDataDTO.builder()
 
@@ -919,195 +1276,17 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static UpdateAppDateCompleted getUpdateAppDateCompleted() {
-        return UpdateAppDateCompleted.builder()
-                .repId(REP_ID)
-                .assessmentDateCompleted(LocalDateTime.now())
+    public static CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
+        return CorrespondenceStateDTO.builder()
+                .repId(repId)
+                .status(status)
                 .build();
     }
 
-    public static String getUpdateAppDateCompletedJson() {
-        return "{\n" +
-                " \"repId\": " + REP_ID + " ,\n" +
-                "  \"assessmentDateCompleted\":\"" + APP_DATE_COMPLETED + "\"\n" +
-                "}";
-    }
-
-    public static UpdateRepOrder getUpdateRepOrder() {
-        return UpdateRepOrder.builder()
-                .repId(REP_ID)
-                .sentenceOrderDate(LocalDateTime.parse(APP_DATE_COMPLETED).toLocalDate())
-                .userModified(TEST_USER)
-                .caseId(String.valueOf(TEST_CASE_ID))
-                .catyCaseType(String.valueOf(CrownCourtCaseType.APPEAL_CC))
-                .appealTypeCode("ACN")
-                .arrestSummonsNo(TEST_ARREST_SUMMONS_NUMBER)
-                .magsOutcome("COMMITTED FOR TRIAL")
-                .magsOutcomeDate(String.valueOf(LocalDate.now().minusDays(10)))
-                .magsOutcomeDateSet(LocalDate.now().minusDays(10))
-                .committalDate(LocalDate.now().minusDays(5))
-                .decisionReasonCode("GRANTED")
-                .crownRepId(REP_ID)
-                .crownRepOrderDecision("Granted - Passed Means Test")
-                .crownRepOrderType("Crown Court Only")
-                .crownRepOrderDate(LocalDate.now().minusDays(5))
-                .crownWithdrawalDate(LocalDate.now().minusDays(3))
-                .isImprisoned(true)
-                .assessmentDateCompleted(LocalDateTime.now().minusDays(15).toLocalDate())
-                .applicantHistoryId(8954)
-                .evidenceFeeLevel(null)
-                .bankAccountNo(14536598)
-                .bankAccountName("John Doe")
-                .paymentMethod("STANDING ORDER")
-                .preferredPaymentDay(1)
-                .sortCode("00-01-02")
-                .isSendToCCLF(false)
-                .areaId(16)
-                .cmuId(245)
-                .isCaseTransferred(false)
-                .isBenchWarrantIssued(false)
-                .appealSentenceOrderChangedDate(null)
-                .appealSentenceOrderDate(null)
-                .appealReceivedDate(null)
-                .appealTypeDate(null)
-                .firstCapitalReminderDate(null)
-                .allCapitalEvidenceReceivedDate(null)
-                .applicationId(2343245)
-                .capitalAllowanceReinstatedDate(null)
-                .capitalAllowanceWithheldDate(null)
-                .capitalEvidenceDueDate(null)
-                .capitalNote("Test capital note")
-                .capitalAllowance(0)
-                .isCourtCustody(false)
-                .dateReceived(null)
-                .dateStatusDue(null)
-                .dateStatusSet(null)
-                .decisionDate(null)
-                .iojResultNote("Test IOJ Result Note")
-                .macoCourt("220")
-                .magsWithdrawalDate(null)
-                .isNoCapitalDeclared(true)
-                .oftyOffenceType("LESSER VIOL/DRUGS")
-                .useSuppAddressForPost(true)
-                .postalAddressId(38908834)
-                .rorsStatus("CURR")
-                .statusReason("Test Status Reason")
-                .suppAccountCode("0U224X")
-                .isWelshCorrespondence(true)
-                .cinrCode("NOCON")
-                .isPartner(true)
-                .isRetrial(true)
-                .efmDateStamp(null)
-                .solicitorName("Jay Shah")
-                .hearingDate(null)
+    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, String status) {
+        return CorrespondenceStateEntity.builder()
+                .repId(repId)
+                .status(status)
                 .build();
-    }
-
-    public static String getUpdateRepOrderJson() {
-        return "{\n" +
-                " \"repId\": " + REP_ID + " ,\n" +
-                "\"sentenceOrderDate\": \"" + APP_DATE_COMPLETED + "\",\n" +
-                "  \"userModified\": \"" +TEST_USER+ "\"\n" +
-                "}";
-    }
-
-    public static OffenceDTO getOffenceDTO(Integer offenceTxId) {
-
-        return OffenceDTO.builder()
-                .txId(offenceTxId)
-                .caseId(TEST_CASE_ID)
-                .asnSeq("001")
-                .offenceShortTitle("Robbery")
-                .offenceClassification("Classification")
-                .offenceWording("Offence Details")
-                .modeOfTrial(1)
-                .legalAidStatus("GQ")
-                .offenceCode("AA06035")
-                .offenceId(TEST_OFFENCE_ID)
-                .isCCNewOffence("Y")
-                .applicationFlag(0)
-                .build();
-    }
-
-    public static WQLinkRegisterDTO getWQLinkRegisterDTO(Integer createdTxId) {
-
-        return WQLinkRegisterDTO.builder()
-                .createdTxId(createdTxId)
-                .caseId(TEST_CASE_ID)
-                .maatId(REP_ID)
-                .cjsAreaCode("16")
-                .cjsLocation("B16BG")
-                .maatCat(253)
-                .createdUserId(TEST_USER)
-                .mlrCat(253)
-                .caseUrn("52SB0067421")
-                .libraId("CP665371")
-                .build();
-    }
-
-    public  static WQHearingDTO getWQHearingDTO(Integer createdTxId) {
-        return WQHearingDTO.builder()
-                .txId(createdTxId)
-                .caseId(TEST_CASE_ID)
-                .maatId(REP_ID)
-                .hearingUUID(TEST_OFFENCE_ID)
-                .wqJurisdictionType("CROWN")
-                .ouCourtLocation("C22SR")
-                .caseUrn("EITHERWAY")
-                .resultCodes("4028")
-                .build();
-    }
-
-    public static UpdateCCOutcome getUpdateCCOutcome() {
-        return UpdateCCOutcome.builder()
-                .repId(REP_ID)
-                .ccOutcome("TEST-OUTCOME")
-                .benchWarrantIssued("N")
-                .appealType("TEST-APPEAL-TYPE")
-                .imprisoned("N")
-                .caseNumber("123456")
-                .crownCourtCode("30")
-                .build();
-    }
-
-    public static UpdateSentenceOrder getUpdateSentenceOrder() {
-        return UpdateSentenceOrder.builder()
-                .repId(REP_ID)
-                .dbUser("TEST_USER")
-                .sentenceOrderDate(LocalDate.now())
-                .dateChanged(LocalDate.now())
-                .build();
-    }
-
-    public static RepOrderCCOutcome getRepOrderCCOutcome() {
-        return RepOrderCCOutcome.builder()
-                .repId(REP_ID)
-                .outcome("CONVICTED")
-                .crownCourtCode("430")
-                .userCreated(TEST_USER)
-                .outcomeDate(TEST_DATE)
-                .id(1)
-                .build();
-    }
-    public static RepOrderCCOutcome getUpdateRepOrderCCOutcome(Integer ccOutComeId) {
-        return RepOrderCCOutcome.builder()
-                .repId(REP_ID)
-                .caseNumber(TEST_CASE_ID.toString())
-                .outcome("CONVICTED")
-                .crownCourtCode("430")
-                .id(ccOutComeId)
-                .userModified(TEST_USER)
-                .build();
-    }
-    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId) {
-        return RepOrderCCOutcomeDTO.builder()
-                .repId(REP_ID)
-                .caseNumber(TEST_CASE_ID.toString())
-                .outcome("PART CONVICTED")
-                .crownCourtCode("459")
-                .userCreated(TEST_USER)
-                .id(outcomeId)
-                .build();
-
     }
 }

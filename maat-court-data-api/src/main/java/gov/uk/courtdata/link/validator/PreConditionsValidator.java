@@ -18,15 +18,16 @@ public class PreConditionsValidator {
 
     private final CPDataValidator cpDataValidator;
 
+    private final LinkExistsValidator linkExistsValidator;
+
 
     public void validate(final CaseDetailsValidate caseDetails) {
 
         final Integer maatId = caseDetails.getMaatId();
 
         maatIdValidator.validate(maatId);
-        cpDataValidator.validate(CaseDetails.builder()
-                .caseUrn(caseDetails.getCaseUrn())
-                .maatId(maatId).build());
+        linkExistsValidator.validate(maatId);
+        cpDataValidator.validate(CaseDetails.builder().caseUrn(caseDetails.getCaseUrn()).maatId(maatId).build());
 
     }
 }

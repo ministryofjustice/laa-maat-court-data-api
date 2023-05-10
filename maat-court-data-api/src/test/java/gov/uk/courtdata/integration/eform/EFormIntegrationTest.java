@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class EFormIntegrationTest {
 
     private static final int USN = 12334455;
-    private static final String TYPE = "\"CRM14\"";
+    private static final String TYPE = "CRM14";
     private static final int MAAT_REF = 12334455;
     private static final EformsStagingEntity EFORMS_STAGING_ENTITY = EformsStagingEntity
             .builder()
@@ -86,10 +86,11 @@ class EFormIntegrationTest {
     void givenAUSN_whenGETeformCalled_thenReturnEntryFromDB() throws Exception {
         eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
 
+        String type = String.format("\"%s\"", TYPE);
         mockMvc.perform(get(EFORM_USN_PROVIDED_URL)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"usn\":" + USN + ",\"type\":" + TYPE + ", \"maatRef\": " + MAAT_REF + "}"));
+                .andExpect(content().json("{\"usn\":" + USN + ",\"type\":" + type + ", \"maatRef\": " + MAAT_REF + "}"));
     }
 
     @Test

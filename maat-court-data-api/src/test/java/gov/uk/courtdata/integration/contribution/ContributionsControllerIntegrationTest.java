@@ -59,11 +59,14 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
 
     @AfterEach
     public void clearUp() {
-        repOrderRepository.deleteAll();
-        contributionsRepository.deleteAll();
+
         contributionsEntity = null;
-        repOrderRepository.flush();
+        contributionsRepository.deleteAllInBatch();
         contributionsRepository.flush();
+        
+        repOrderRepository.deleteAllInBatch();
+        repOrderRepository.flush();
+
     }
 
     @Test

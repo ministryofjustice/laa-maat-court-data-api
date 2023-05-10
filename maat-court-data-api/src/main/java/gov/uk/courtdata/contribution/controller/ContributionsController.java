@@ -122,7 +122,7 @@ public class ContributionsController {
             method = {RequestMethod.HEAD},
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @Operation(description = "Retrieve contribution count")
+    @Operation(description = "Retrieve contribution count by either contribution order and contribution notice")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )

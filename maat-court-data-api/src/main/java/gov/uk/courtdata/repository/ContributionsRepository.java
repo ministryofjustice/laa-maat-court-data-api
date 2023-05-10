@@ -30,5 +30,5 @@ public interface ContributionsRepository extends JpaRepository<ContributionsEnti
     @Query(value = "SELECT count(*) from TOGDATA.CONTRIBUTIONS c join TOGDATA.CORRESPONDENCE co on ( CO.ID = C.CORR_ID ) " +
             "where C.REP_ID = :repId and (  CO.COTY_CORRESPONDENCE_TYPE = 'CONTRIBUTION_ORDER' or" +
             " CO.COTY_CORRESPONDENCE_TYPE = 'CONTRIBUTION_NOTICE')", nativeQuery = true)
-    Integer getContributionCount(@Param("repId") Integer repId);
+    int getContributionCount(@Param("repId") Integer repId);
 }

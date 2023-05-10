@@ -33,16 +33,16 @@ class ContributionsControllerTest {
     private static final String endpointUrl = "/api/internal/v1/assessment/contributions";
     private static Integer TEST_CONTRIBUTIONS_ID = 999;
     @Autowired
-    MockMvc mvc;
+    private MockMvc mvc;
     @MockBean
-    ContributionsService contributionsService;
+    private ContributionsService contributionsService;
     @MockBean
-    UpdateContributionsValidator updateContributionsValidator;
+    private UpdateContributionsValidator updateContributionsValidator;
     @MockBean
-    CreateContributionsValidator createContributionsValidator;
+    private CreateContributionsValidator createContributionsValidator;
 
     @MockBean
-    MaatIdValidator validator;
+    private MaatIdValidator validator;
 
     @Test
     void givenAValidParameter_whenFindIsInvoked_thenOKResponseWithContributionsEntryIsReturned() throws Exception {

@@ -57,7 +57,7 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     private ContributionsEntity contributionsEntity;
 
     @BeforeEach
-    public void setUp(@Autowired RepOrderRepository repOrderRepository,
+    void setUp(@Autowired RepOrderRepository repOrderRepository,
                       @Autowired ContributionsRepository contributionsRepository) {
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
         CorrespondenceEntity correspondenceEntity = correspondenceRepository.saveAndFlush(TestEntityDataBuilder.getCorrespondenceEntity(1));
@@ -72,13 +72,13 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @AfterEach
-    public void clearUp() {
+    void clearUp() {
         repOrderRepository.deleteAll();
         contributionsRepository.deleteAll();
     }
 
     @Test
-    public void givenAEmptyContent_whenCreateIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenAEmptyContent_whenCreateIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -137,13 +137,13 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    public void givenAInvalidContributionId_whenFindIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenAInvalidContributionId_whenFindIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         assertTrue(runNotFoundErrorScenario("Contributions entry not found for repId " + INVALID_REP_ID,
                 get(ENDPOINT_URL + "/" + INVALID_REP_ID).contentType(MediaType.APPLICATION_JSON)));
     }
 
     @Test
-    public void givenAValidParameter_whenFindIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAValidParameter_whenFindIsInvoked_theCorrectResponseIsReturned() throws Exception {
         MvcResult result = runSuccessScenario(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID)
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -158,13 +158,13 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    public void givenAValidRepId_whenGetContributionCountIsInvoked_thenContributionCountIsReturned() throws Exception {
+    void givenAValidRepId_whenGetContributionCountIsInvoked_thenContributionCountIsReturned() throws Exception {
         var response = runSuccessScenario(head(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID));
         Assertions.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
     }
 
     @Test
-    public void givenAValidRepIdAndEmptyCorrespondence_whenGetContributionCountIsInvoked_thenZeroIsReturned() throws Exception {
+    void givenAValidRepIdAndEmptyCorrespondence_whenGetContributionCountIsInvoked_thenZeroIsReturned() throws Exception {
         var response = runSuccessScenario(head(ENDPOINT_URL + "/1235"));
         Assertions.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
     }

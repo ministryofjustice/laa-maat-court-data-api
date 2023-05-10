@@ -59,7 +59,7 @@ public class ContributionsService {
     }
 
     @Transactional
-    public Integer getContributionCount(Integer repId) {
+    public int getContributionCount(Integer repId) {
         return contributionsRepository.getContributionCount(repId);
     }
 }

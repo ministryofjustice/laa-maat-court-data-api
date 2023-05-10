@@ -51,8 +51,7 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     private ContributionsEntity contributionsEntity;
 
     @BeforeEach
-    public void setUp(@Autowired RepOrderRepository repOrderRepository,
-                      @Autowired ContributionsRepository contributionsRepository) {
+    public void setUp() {
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
         contributionsEntity = contributionsRepository.saveAndFlush(TestEntityDataBuilder.getContributionsEntity());
     }

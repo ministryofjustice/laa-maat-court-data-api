@@ -103,7 +103,7 @@ class EformStagingControllerTest {
     void shoudSucessfullyVerifyAndInsertUsn() throws Exception {
         when(mockEFormStagingService.createOrRetrieve(USN))
                 .thenReturn(EFORM_STAGING_DTO);
-        mvc.perform(MockMvcRequestBuilders.post("/api/eform/validate/123")
+        mvc.perform(MockMvcRequestBuilders.post("/api/eform/initialise/123")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"usn\":123,\"type\":\"CRM14\"}"));

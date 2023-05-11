@@ -9,4 +9,3 @@ services:
     - DATASOURCE_USERNAME=mla
     ports:
     - 8090:8090
-    - 8091:8091

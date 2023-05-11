@@ -30,11 +30,16 @@ class EFormIntegrationTest {
     private static final int USN = 12334455;
     private static final String TYPE = "CRM14";
     private static final int MAAT_REF = 12334455;
+    private static final String XML_DOC = "";
+    private static final String USER_CREATED= "";
+
     private static final EformsStagingEntity EFORMS_STAGING_ENTITY = EformsStagingEntity
             .builder()
             .usn(USN)
             .type(TYPE)
             .maatRef(MAAT_REF)
+            .xmlDoc(XML_DOC)
+            .userCreated(USER_CREATED)
             .build();
     private static final String BASE_URL = "/api";
     private static final String EFORM_URL = BASE_URL + "/eform/";

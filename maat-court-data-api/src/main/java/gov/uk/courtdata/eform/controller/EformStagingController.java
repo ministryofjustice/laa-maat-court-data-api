@@ -31,7 +31,7 @@ public class EformStagingController {
     private final EformStagingDTOMapper eformStagingDTOMapper;
     private final UsnValidator usnValidator;
 
-    @GetMapping(value ="/{usn}")
+    @GetMapping(value ="/{usn}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))

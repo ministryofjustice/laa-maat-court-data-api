@@ -72,6 +72,8 @@ public class EformStagingController {
     public ResponseEntity<Void> createEformApplication(@PathVariable Integer usn,
                                                        @RequestParam(name = "type", required = false, defaultValue = DEFAULT_EFORM_TYPE) String type,
                                                        @RequestParam(name = "maatRef", required = false) Integer maatRef,
+                                                       @RequestParam(name = "userCreated", required = false) String userCreated,
+                                                       @RequestBody String xmlDoc,
                                                        @Parameter(description = "Used for tracing calls")
                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
@@ -81,6 +83,8 @@ public class EformStagingController {
                 .usn(usn)
                 .type(type)
                 .maatRef(maatRef)
+                .userCreated(userCreated)
+                .xmlDoc(xmlDoc)
                 .build();
 
         eformStagingService.create(eformStagingDTO);

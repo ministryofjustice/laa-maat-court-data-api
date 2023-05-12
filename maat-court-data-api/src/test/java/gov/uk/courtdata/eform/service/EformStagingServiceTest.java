@@ -25,7 +25,6 @@ import static org.mockito.Mockito.when;
 class EformStagingServiceTest {
 
     private static final int USN = 1233;
-    private static final int NEW_USN = 3321;
     private static final String TYPE = "CRM14";
     private static final int MAAT_ID = 3290392;
     private static final String XML_DOC = "<formData xmlns=\\\"http://eforms.legalservices.gov.uk/lscservice\\\"></formData>";
@@ -98,29 +97,36 @@ class EformStagingServiceTest {
     @Test
     void givenUSN_whenServiceInvoked_thenDeleteFromDatabase() {
         Integer usn = EFORM_STAGING_DTO.getUsn();
+
         eformStagingService.delete(usn);
 
         Mockito.verify(mockEformStagingRepository, Mockito.times(1)).deleteById(usn);
     }
 
     @Test
-    void givenUsnExistInEformStaging_whenCreateOrRetrieveServiceIsInvoked_then_returnRetrievedDataFromEformStaging(){
+    void givenUsnExistInEformStaging_whenCreateOrRetrieveServiceIsInvoked_then_returnRetrievedDataFromEformStaging() {
         when(mockEformStagingRepository.existsById(any()))
                 .thenReturn(true);
         when(mockEformStagingRepository.findById(any()))
                 .thenReturn(Optional.of(EFORMS_STAGING_ENTITY));
-        Assertions.assertEquals(EFORM_STAGING_DTO, eformStagingService.createOrRetrieve(1001));
+
+        EformStagingDTO eformStagingDTO = eformStagingService.createOrRetrieve(1001);
+
+        assertEquals(EFORM_STAGING_DTO, eformStagingDTO);
     }
 
     @Test
-    void givenUsnNotInEformStaging_whenCreateOrRetrieveServiceIsInvoked_then_insertUsnInEformStagingAndBuildEformStagingDtoWithUsnAndRetrun(){
+    void givenUsnNotInEformStaging_whenCreateOrRetrieveServiceIsInvoked_then_insertUsnInEformStagingAndBuildEformStagingDtoWithUsnAndRetrun() {
         when(mockEformStagingRepository.existsById(any()))
                 .thenReturn(false);
         EformStagingDTO expectedDto = EformStagingDTO.builder().usn(1001).build();
         EformsStagingEntity entity = EformsStagingEntity.builder().usn(1001).build();
         when(mockEformStagingDTOMapper.toEformsStagingEntity(expectedDto))
                 .thenReturn(entity);
-        Assertions.assertEquals(expectedDto, eformStagingService.createOrRetrieve(1001));
+
+        EformStagingDTO eformStagingDTO = eformStagingService.createOrRetrieve(1001);
+
+        assertEquals(expectedDto, eformStagingDTO);
         Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(entity);
     }
 }

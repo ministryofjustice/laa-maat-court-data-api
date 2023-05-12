@@ -5,6 +5,7 @@ import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,8 +51,9 @@ public class EformStagingService {
 
     @Transactional
     public EformStagingDTO createOrRetrieve(int usn) {
-        if(isUsnPresentInDB(usn)){
-            return retrieve(usn);
+        if (isUsnPresentInDB(usn)) {
+            return retrieve(usn)
+                    .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("The USN [%d] just verified to exist, now no longer exists.", usn)));
         }
         EformStagingDTO eformStagingDTO = EformStagingDTO.builder().usn(usn).build();
         create(eformStagingDTO);

@@ -5,7 +5,6 @@ import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.model.EformStagingResponse;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +15,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -87,7 +88,6 @@ class EformStagingServiceTest {
 
     @Test
     void givenUSN_whenServiceInvoked_thenSaveToDatabase() {
-
         eformStagingService.create(EFORM_STAGING_DTO);
 
         Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(EFORMS_STAGING_ENTITY);
@@ -98,14 +98,14 @@ class EformStagingServiceTest {
         Mockito.when(mockEformStagingRepository.findById(USN))
                 .thenReturn(Optional.of(EFORMS_STAGING_ENTITY));
 
-        EformStagingDTO retrieve = eformStagingService.retrieve(EFORM_STAGING_DTO.getUsn());
+        Optional<EformStagingDTO> retrieve = eformStagingService.retrieve(EFORM_STAGING_DTO.getUsn());
 
-        Assertions.assertEquals(EFORM_STAGING_DTO, retrieve);
+        assertTrue(retrieve.isPresent());
+        assertEquals(EFORM_STAGING_DTO, retrieve.get());
     }
 
     @Test
     void givenUSN_whenServiceInvoked_thenDeleteFromDatabase() {
-
         Integer usn = EFORM_STAGING_DTO.getUsn();
         eformStagingService.delete(usn);
 

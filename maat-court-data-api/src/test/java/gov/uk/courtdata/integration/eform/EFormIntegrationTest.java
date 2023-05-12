@@ -4,6 +4,7 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -20,7 +22,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
@@ -30,8 +31,8 @@ class EFormIntegrationTest {
     private static final int USN = 12334455;
     private static final String TYPE = "CRM14";
     private static final int MAAT_REF = 12334455;
-    private static final String XML_DOC = "";
-    private static final String USER_CREATED= "";
+    private static final String XML_DOC = "<formData xmlns=\\\"http://eforms.legalservices.gov.uk/lscservice\\\"></formData>";
+    private static final String USER_CREATED = "";
 
     private static final EformsStagingEntity EFORMS_STAGING_ENTITY = EformsStagingEntity
             .builder()
@@ -56,24 +57,35 @@ class EFormIntegrationTest {
     @Autowired
     private EformStagingRepository eformStagingRepository;
 
-
     @BeforeEach
     public void setUp() throws Exception {
+        eformStagingRepository.deleteAllInBatch();
+        eformStagingRepository.flush();
         mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-        eformStagingRepository.deleteAll();
+    }
+
+    @AfterEach
+    public void clearUp() {
+        eformStagingRepository.deleteAllInBatch();
+        eformStagingRepository.flush();
     }
 
     @Test
     void givenAUSN_whenPOSTeformCalled_thenNewFieldIsInDB() throws Exception {
-        mockMvc.perform(post(EFORM_USN_PROVIDED_URL)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        MockHttpServletRequestBuilder requestBuilder = post(EFORM_USN_PROVIDED_URL)
+                .content(XML_DOC)
+                .contentType(MediaType.APPLICATION_XML);
+
+        mockMvc.perform(requestBuilder).andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     void givenNoUSN_whenPOSTeformCalled_thenErrorReturned() throws Exception {
-        mockMvc.perform(post(EFORM_USN_NOT_PROVIDED_URL)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        MockHttpServletRequestBuilder requestBuilder = post(EFORM_USN_NOT_PROVIDED_URL)
+                .contentType(MediaType.APPLICATION_XML);
+
+        mockMvc.perform(requestBuilder).andDo(print())
                 .andExpect(status().is4xxClientError());
     }
 
@@ -81,8 +93,11 @@ class EFormIntegrationTest {
     void givenExistingUSN_whenPOSTeformCalled_thenErrorReturned() throws Exception {
         eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
 
-        mockMvc.perform(post(EFORM_USN_PROVIDED_URL)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        MockHttpServletRequestBuilder requestBuilder = post(EFORM_USN_PROVIDED_URL)
+                .content(XML_DOC)
+                .contentType(MediaType.APPLICATION_XML);
+
+        mockMvc.perform(requestBuilder).andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().json(NOT_VALID_USN_RETURN));
     }
@@ -92,23 +107,29 @@ class EFormIntegrationTest {
         eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
 
         String type = String.format("\"%s\"", TYPE);
-        mockMvc.perform(get(EFORM_USN_PROVIDED_URL)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        MockHttpServletRequestBuilder requestBuilder = get(EFORM_USN_PROVIDED_URL)
+                .contentType(MediaType.APPLICATION_XML);
+
+        mockMvc.perform(requestBuilder).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"usn\":" + USN + ",\"type\":" + type + ", \"maatRef\": " + MAAT_REF + "}"));
     }
 
     @Test
     void givenNoUSN_whenGETeformCalled_thenReturnError() throws Exception {
-        mockMvc.perform(get(EFORM_USN_NOT_PROVIDED_URL)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        MockHttpServletRequestBuilder requestBuilder = get(EFORM_USN_NOT_PROVIDED_URL)
+                .contentType(MediaType.APPLICATION_XML);
+
+        mockMvc.perform(requestBuilder).andDo(print())
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     void givenANonExistingUSN_whenGETeformCalled_thenReturnError() throws Exception {
-        mockMvc.perform(get(EFORM_USN_PROVIDED_URL)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        MockHttpServletRequestBuilder requestBuilder = get(EFORM_USN_PROVIDED_URL)
+                .contentType(MediaType.APPLICATION_XML);
+
+        mockMvc.perform(requestBuilder).andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().json(NOT_VALID_USN_RETURN));
     }
@@ -117,22 +138,28 @@ class EFormIntegrationTest {
     void givenAUSN_whenDELETEeformCalled_thenEntryRemovedFromDB() throws Exception {
         eformStagingRepository.saveAndFlush(EFORMS_STAGING_ENTITY);
 
-        mockMvc.perform(delete(EFORM_USN_PROVIDED_URL)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        MockHttpServletRequestBuilder requestBuilder = delete(EFORM_USN_PROVIDED_URL)
+                .contentType(MediaType.APPLICATION_XML);
+
+        mockMvc.perform(requestBuilder).andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     void givenNoUSN_whenDELETEeFormCalled_thenErrorReturned() throws Exception {
-        mockMvc.perform(delete(EFORM_USN_NOT_PROVIDED_URL)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        MockHttpServletRequestBuilder requestBuilder = delete(EFORM_USN_NOT_PROVIDED_URL)
+                .contentType(MediaType.APPLICATION_XML);
+
+        mockMvc.perform(requestBuilder).andDo(print())
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     void givenANonExistentUSN_whenDELETEeFormCalled_thenReturnError() throws Exception {
-        mockMvc.perform(delete(EFORM_USN_PROVIDED_URL)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        MockHttpServletRequestBuilder requestBuilder = delete(EFORM_USN_PROVIDED_URL)
+                .contentType(MediaType.APPLICATION_XML);
+
+        mockMvc.perform(requestBuilder).andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().json(NOT_VALID_USN_RETURN));
     }

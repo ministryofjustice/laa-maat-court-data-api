@@ -96,7 +96,8 @@ class EformStagingControllerTest {
 
     @Test
     void shouldSuccessfullyCreateEformApplication() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post(url())
+        String requestBodyXML = "<formData xmlns=\"http://eforms.legalservices.gov.uk/lscservice\"></formData>";
+        mvc.perform(MockMvcRequestBuilders.post(url()).content(requestBodyXML)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

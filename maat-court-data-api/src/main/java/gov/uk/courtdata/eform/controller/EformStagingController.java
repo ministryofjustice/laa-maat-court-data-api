@@ -7,7 +7,6 @@ import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.model.EformStagingResponse;
 import gov.uk.courtdata.eform.service.EformStagingService;
 import gov.uk.courtdata.eform.validator.UsnValidator;
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,7 +34,7 @@ public class EformStagingController {
     private final EformStagingDTOMapper eformStagingDTOMapper;
     private final UsnValidator usnValidator;
 
-    @GetMapping()
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
@@ -46,10 +45,11 @@ public class EformStagingController {
 
         usnValidator.verifyUsnExists(usn);
         Optional<EformStagingDTO> eformStagingDtoOptional = eformStagingService.retrieve(usn);
-        if(eformStagingDtoOptional.isEmpty()){
-            throw new RequestedObjectNotFoundException("The given USN, previously verified on current call does not exist.");
-        }
-        EformStagingResponse eformStagingResponse = eformStagingDTOMapper.toEformStagingResponse(eformStagingDtoOptional.get());
+
+        EformStagingDTO eformStagingDTO = eformStagingDtoOptional
+                .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("The USN [%d] just verified to exist, now no longer exists.", usn)));
+
+        EformStagingResponse eformStagingResponse = eformStagingDTOMapper.toEformStagingResponse(eformStagingDTO);
 
         return ResponseEntity.ok(eformStagingResponse);
     }
@@ -70,7 +70,7 @@ public class EformStagingController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping()
+    @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE)
     @Operation(description = "Create an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))

@@ -35,6 +35,6 @@ public class EformsStagingEntity {
     private String userCreated;
 
     @CreationTimestamp
-    @Column(name = "DATE_CREATED")
+    @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
 }

@@ -10,6 +10,8 @@ import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.repository.ContributionsRepository;
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import org.assertj.core.api.Assertions;
@@ -48,11 +50,16 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     @Autowired
     private RepOrderRepository repOrderRepository;
 
+    @Autowired
+    private PassportAssessmentRepository passportAssessmentRepository;
+
+    @Autowired
+    private FinancialAssessmentRepository financialAssessmentRepository;
+
     private ContributionsEntity contributionsEntity;
 
     @BeforeEach
-    public void setUp(@Autowired RepOrderRepository repOrderRepository,
-                      @Autowired ContributionsRepository contributionsRepository) {
+    public void setUp() {
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
         contributionsEntity = contributionsRepository.saveAndFlush(TestEntityDataBuilder.getContributionsEntity());
     }
@@ -61,10 +68,16 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     public void clearUp() {
 
         contributionsEntity = null;
-        contributionsRepository.deleteAllInBatch();
+        contributionsRepository.deleteAll();
         contributionsRepository.flush();
-        
-        repOrderRepository.deleteAllInBatch();
+
+        passportAssessmentRepository.deleteAll();
+        passportAssessmentRepository.flush();
+
+        financialAssessmentRepository.deleteAll();
+        financialAssessmentRepository.flush();
+
+        repOrderRepository.deleteAll();
         repOrderRepository.flush();
 
     }

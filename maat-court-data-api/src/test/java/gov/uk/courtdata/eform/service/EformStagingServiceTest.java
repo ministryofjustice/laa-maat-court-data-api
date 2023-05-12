@@ -102,4 +102,25 @@ class EformStagingServiceTest {
 
         Mockito.verify(mockEformStagingRepository, Mockito.times(1)).deleteById(usn);
     }
+
+    @Test
+    void givenUsnExistInEformStaging_whenCreateOrRetrieveServiceIsInvoked_then_returnRetrievedDataFromEformStaging(){
+        when(mockEformStagingRepository.existsById(any()))
+                .thenReturn(true);
+        when(mockEformStagingRepository.findById(any()))
+                .thenReturn(Optional.of(EFORMS_STAGING_ENTITY));
+        Assertions.assertEquals(EFORM_STAGING_DTO, eformStagingService.createOrRetrieve(1001));
+    }
+
+    @Test
+    void givenUsnNotInEformStaging_whenCreateOrRetrieveServiceIsInvoked_then_insertUsnInEformStagingAndBuildEformStagingDtoWithUsnAndRetrun(){
+        when(mockEformStagingRepository.existsById(any()))
+                .thenReturn(false);
+        EformStagingDTO expectedDto = EformStagingDTO.builder().usn(1001).build();
+        EformsStagingEntity entity = EformsStagingEntity.builder().usn(1001).build();
+        when(mockEformStagingDTOMapper.toEformsStagingEntity(expectedDto))
+                .thenReturn(entity);
+        Assertions.assertEquals(expectedDto, eformStagingService.createOrRetrieve(1001));
+        Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(entity);
+    }
 }

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/eform/{usn}")
+@RequestMapping("/api/eform")
 @Slf4j
 @XRayEnabled
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class EformStagingController {
     private final EformStagingDTOMapper eformStagingDTOMapper;
     private final UsnValidator usnValidator;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value ="/{usn}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
@@ -54,7 +54,7 @@ public class EformStagingController {
         return ResponseEntity.ok(eformStagingResponse);
     }
 
-    @DeleteMapping()
+    @DeleteMapping(value ="/{usn}")
     @Operation(description = "Delete an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
@@ -70,7 +70,7 @@ public class EformStagingController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value ="/{usn}", consumes = MediaType.APPLICATION_XML_VALUE)
     @Operation(description = "Create an EFORMS_STAGING record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
@@ -96,5 +96,19 @@ public class EformStagingController {
         eformStagingService.create(eformStagingDTO);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value ="/initialise/{usn}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Create an EFORMS_STAGING record for Crime Apply")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<EformStagingResponse> retriveOrInsertDummyUsnRecord(@PathVariable Integer usn) {
+
+        EformStagingDTO eformStagingDto = eformStagingService.createOrRetrieve(usn);
+
+        EformStagingResponse eformStagingResponse = eformStagingDTOMapper.toEformStagingResponse(eformStagingDto);
+
+        return ResponseEntity.ok(eformStagingResponse);
     }
 }

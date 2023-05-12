@@ -28,22 +28,6 @@ public class XRayInspector extends AbstractXRayInterceptor {
     private String AWS_XRAY_SEGMENT_NAME;
 
     @Override
-    protected Map<String, Map<String, Object>> generateMetadata(ProceedingJoinPoint proceedingJoinPoint, Subsegment subsegment) {
-        Map<String, Map<String, Object>> metadata = super.generateMetadata(proceedingJoinPoint, subsegment);
-
-        Map<String, Object> argumentsInfo = new HashMap<>();
-
-        Object[] methodArgs = proceedingJoinPoint.getArgs();
-        if (methodArgs != null) {
-            Arrays.stream(methodArgs)
-                    .filter(Objects::nonNull)
-                    .forEach(arg -> argumentsInfo.put(arg.getClass().getSimpleName(), arg));
-            metadata.put("Arguments", argumentsInfo);
-        }
-        return metadata;
-    }
-
-    @Override
     @Pointcut(
             "@within(com.amazonaws.xray.spring.aop.XRayEnabled) && " +
                     "(bean(*Controller) || bean(*Service) || bean(*Validator) || bean(*Impl) || bean(*Processor))"

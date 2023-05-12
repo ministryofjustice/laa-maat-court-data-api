@@ -19,6 +19,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -32,7 +34,7 @@ class EformStagingControllerTest {
     private static final int USN = 123;
     private static final String TYPE = "CRM14";
     private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse.builder().usn(USN).type(TYPE).build();
-    private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO.builder().usn(USN).type(TYPE).build();
+    private static final Optional<EformStagingDTO> EFORM_STAGING_DTO = Optional.ofNullable(EformStagingDTO.builder().usn(USN).type(TYPE).build());
     private static final UsnValidationException USN_VALIDATION_EXCEPTION =
             new UsnValidationException("The USN is not valid as it is not present in the eForm Repository");
 
@@ -54,7 +56,7 @@ class EformStagingControllerTest {
         when(mockEformStagingDTOMapper.toEformsStagingEntity(any(EformStagingDTO.class)))
                 .thenReturn(EformsStagingEntity.builder().usn(USN).type(TYPE).build());
         when(mockEformStagingDTOMapper.toEformStagingDTO(any(EformsStagingEntity.class)))
-                .thenReturn(EFORM_STAGING_DTO);
+                .thenReturn(EFORM_STAGING_DTO.get());
         when(mockEformStagingDTOMapper.toEformStagingResponse(any(EformStagingDTO.class)))
                 .thenReturn(EFORM_STAGING_RESPONSE);
     }
@@ -63,7 +65,7 @@ class EformStagingControllerTest {
     void shouldSuccessfullyGetEformApplication() throws Exception {
         when(mockEFormStagingService.retrieve(USN))
                 .thenReturn(EFORM_STAGING_DTO);
-        when(mockEformStagingDTOMapper.toEformStagingResponse(EFORM_STAGING_DTO))
+        when(mockEformStagingDTOMapper.toEformStagingResponse(EFORM_STAGING_DTO.get()))
                 .thenReturn(EFORM_STAGING_RESPONSE);
 
         mvc.perform(MockMvcRequestBuilders.get(url())

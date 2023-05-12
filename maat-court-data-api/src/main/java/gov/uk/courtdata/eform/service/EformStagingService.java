@@ -34,10 +34,9 @@ public class EformStagingService {
     }
 
     @Transactional(readOnly = true)
-    public EformStagingDTO retrieve(int usn) {
+    public Optional<EformStagingDTO> retrieve(int usn) {
         Optional<EformsStagingEntity> eformsStagingEntity = eformStagingRepository.findById(usn);
-
-        return eformStagingDTOMapper.toEformStagingDTO(eformsStagingEntity.get());
+        return eformsStagingEntity.map(eformStagingDTOMapper::toEformStagingDTO);
     }
 
     @Transactional

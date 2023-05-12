@@ -7,6 +7,8 @@ import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.model.EformStagingResponse;
 import gov.uk.courtdata.eform.service.EformStagingService;
 import gov.uk.courtdata.eform.validator.UsnValidator;
+import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/eform/{usn}")
@@ -41,9 +45,11 @@ public class EformStagingController {
                                                                     @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
         usnValidator.verifyUsnExists(usn);
-        EformStagingDTO eformStagingDtoOptional = eformStagingService.retrieve(usn);
-
-        EformStagingResponse eformStagingResponse = eformStagingDTOMapper.toEformStagingResponse(eformStagingDtoOptional);
+        Optional<EformStagingDTO> eformStagingDtoOptional = eformStagingService.retrieve(usn);
+        if(eformStagingDtoOptional.isEmpty()){
+            throw new RequestedObjectNotFoundException("The given USN, previously verified on current call does not exist.");
+        }
+        EformStagingResponse eformStagingResponse = eformStagingDTOMapper.toEformStagingResponse(eformStagingDtoOptional.get());
 
         return ResponseEntity.ok(eformStagingResponse);
     }

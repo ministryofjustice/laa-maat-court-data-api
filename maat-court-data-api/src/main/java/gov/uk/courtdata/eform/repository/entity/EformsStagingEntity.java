@@ -30,7 +30,7 @@ public class EformsStagingEntity {
     @Column(name = "USER_CREATED")
     private String userCreated;
 
-    @Column(name = "XML_DOC")
     @Lob
+    @Column(name = "XML_DOC")
     private String xmlDoc;
 }

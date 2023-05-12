@@ -28,19 +28,16 @@ class EformStagingServiceTest {
     private static final int NEW_USN = 3321;
     private static final String TYPE = "CRM14";
     private static final int MAAT_ID = 3290392;
+    private static final String XML_DOC = "<formData xmlns=\\\"http://eforms.legalservices.gov.uk/lscservice\\\"></formData>";
+    private static final String USER_CREATED = "";
 
     private static final EformsStagingEntity EFORMS_STAGING_ENTITY = EformsStagingEntity
             .builder()
             .usn(USN)
             .type(TYPE)
             .maatRef(MAAT_ID)
-            .build();
-
-    private static final EformsStagingEntity NEW_EFORMS_STAGING_ENTITY = EformsStagingEntity
-            .builder()
-            .usn(NEW_USN)
-            .type(TYPE)
-            .maatRef(MAAT_ID)
+            .xmlDoc(XML_DOC)
+            .userCreated(USER_CREATED)
             .build();
 
     private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO
@@ -48,12 +45,8 @@ class EformStagingServiceTest {
             .usn(USN)
             .type(TYPE)
             .maatRef(MAAT_ID)
-            .build();
-
-    private static final EformStagingDTO NEW_EFORM_STAGING_DTO = EformStagingDTO
-            .builder()
-            .usn(NEW_USN)
-            .type(TYPE)
+            .xmlDoc(XML_DOC)
+            .userCreated(USER_CREATED)
             .build();
 
     private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse
@@ -78,8 +71,6 @@ class EformStagingServiceTest {
 
         when(mockEformStagingDTOMapper.toEformsStagingEntity(EFORM_STAGING_DTO))
                 .thenReturn(EFORMS_STAGING_ENTITY);
-        when(mockEformStagingDTOMapper.toEformsStagingEntity(NEW_EFORM_STAGING_DTO))
-                .thenReturn(NEW_EFORMS_STAGING_ENTITY);
         when(mockEformStagingDTOMapper.toEformStagingDTO(any(EformsStagingEntity.class)))
                 .thenReturn(EFORM_STAGING_DTO);
         when(mockEformStagingDTOMapper.toEformStagingResponse(any(EformStagingDTO.class)))

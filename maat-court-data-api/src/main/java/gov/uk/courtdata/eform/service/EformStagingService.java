@@ -48,4 +48,14 @@ public class EformStagingService {
     public boolean isUsnPresentInDB(int usn) {
         return eformStagingRepository.existsById(usn);
     }
+
+    @Transactional
+    public EformStagingDTO createOrRetrieve(int usn) {
+        if(isUsnPresentInDB(usn)){
+            return retrieve(usn);
+        }
+        EformStagingDTO eformStagingDTO = EformStagingDTO.builder().usn(usn).build();
+        create(eformStagingDTO);
+        return eformStagingDTO;
+    }
 }

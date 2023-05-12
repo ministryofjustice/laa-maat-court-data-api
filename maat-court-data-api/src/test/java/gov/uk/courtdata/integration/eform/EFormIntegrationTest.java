@@ -83,6 +83,7 @@ class EFormIntegrationTest {
     @Test
     void givenNoUSN_whenPOSTeformCalled_thenErrorReturned() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = post(EFORM_USN_NOT_PROVIDED_URL)
+                .content(XML_DOC)
                 .contentType(MediaType.APPLICATION_XML);
 
         mockMvc.perform(requestBuilder).andDo(print())

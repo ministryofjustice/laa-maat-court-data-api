@@ -57,8 +57,7 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     private ContributionsEntity contributionsEntity;
 
     @BeforeEach
-    void setUp(@Autowired RepOrderRepository repOrderRepository,
-                      @Autowired ContributionsRepository contributionsRepository) {
+    public void setUp() {
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
         CorrespondenceEntity correspondenceEntity = correspondenceRepository.saveAndFlush(TestEntityDataBuilder.getCorrespondenceEntity(1));
         ContributionsEntity contributions = TestEntityDataBuilder.getContributionsEntity();
@@ -72,9 +71,10 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @AfterEach
-    void clearUp() {
-        repOrderRepository.deleteAll();
+    public void clearUp() {
+        contributionsEntity = null;
         contributionsRepository.deleteAll();
+        repOrderRepository.deleteAll();
     }
 
     @Test

@@ -16,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -88,10 +87,9 @@ class EformStagingServiceTest {
         Mockito.when(mockEformStagingRepository.findById(USN))
                 .thenReturn(Optional.of(EFORMS_STAGING_ENTITY));
 
-        Optional<EformStagingDTO> retrieve = eformStagingService.retrieve(EFORM_STAGING_DTO.getUsn());
+       EformStagingDTO eformStagingDTO = eformStagingService.retrieve(EFORM_STAGING_DTO.getUsn());
 
-        assertTrue(retrieve.isPresent());
-        assertEquals(EFORM_STAGING_DTO, retrieve.get());
+        assertEquals(EFORM_STAGING_DTO, eformStagingDTO);
     }
 
     @Test

@@ -7,7 +7,6 @@ import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.model.EformStagingResponse;
 import gov.uk.courtdata.eform.service.EformStagingService;
 import gov.uk.courtdata.eform.validator.UsnValidator;
-import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,8 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/eform")
@@ -43,11 +40,7 @@ public class EformStagingController {
                                                                     @Parameter(description = "Used for tracing calls")
                                                                     @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        usnValidator.verifyUsnExists(usn);
-        Optional<EformStagingDTO> eformStagingDtoOptional = eformStagingService.retrieve(usn);
-
-        EformStagingDTO eformStagingDTO = eformStagingDtoOptional
-                .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("The USN [%d] just verified to exist, now no longer exists.", usn)));
+        EformStagingDTO eformStagingDTO = eformStagingService.retrieve(usn);
 
         EformStagingResponse eformStagingResponse = eformStagingDTOMapper.toEformStagingResponse(eformStagingDTO);
 

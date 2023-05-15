@@ -5,13 +5,11 @@ import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
-import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.exception.UsnException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 /**
  * The responsibility of this class is to provide data repository access without verification,
@@ -35,9 +33,11 @@ public class EformStagingService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<EformStagingDTO> retrieve(int usn) {
-        Optional<EformsStagingEntity> eformsStagingEntity = eformStagingRepository.findById(usn);
-        return eformsStagingEntity.map(eformStagingDTOMapper::toEformStagingDTO);
+    public EformStagingDTO retrieve(int usn) {
+        EformsStagingEntity eformsStagingEntity = eformStagingRepository.findById(usn)
+                .orElseThrow(() -> UsnException.nonexistent(usn));
+
+        return eformStagingDTOMapper.toEformStagingDTO(eformsStagingEntity);
     }
 
     @Transactional
@@ -52,8 +52,7 @@ public class EformStagingService {
     @Transactional
     public EformStagingDTO createOrRetrieve(int usn) {
         if (isUsnPresentInDB(usn)) {
-            return retrieve(usn)
-                    .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("The USN [%d] just verified to exist, now no longer exists.", usn)));
+            return retrieve(usn);
         }
         EformStagingDTO eformStagingDTO = EformStagingDTO.builder().usn(usn).build();
         create(eformStagingDTO);

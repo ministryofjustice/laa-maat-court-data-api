@@ -6,7 +6,7 @@ import gov.uk.courtdata.eform.model.EformStagingResponse;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import gov.uk.courtdata.eform.service.EformStagingService;
 import gov.uk.courtdata.eform.validator.UsnValidator;
-import gov.uk.courtdata.exception.UsnValidationException;
+import gov.uk.courtdata.exception.UsnException;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -35,8 +33,7 @@ class EformStagingControllerTest {
     private static final String TYPE = "CRM14";
     private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse.builder().usn(USN).type(TYPE).build();
     private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO.builder().usn(USN).type(TYPE).build();
-    private static final UsnValidationException USN_VALIDATION_EXCEPTION =
-            new UsnValidationException("The USN is not valid as it is not present in the eForm Repository");
+    private static final UsnException USN_VALIDATION_EXCEPTION = UsnException.nonexistent(987);
 
     @MockBean
     private EformStagingService mockEFormStagingService;
@@ -64,7 +61,7 @@ class EformStagingControllerTest {
     @Test
     void shouldSuccessfullyGetEformApplication() throws Exception {
         when(mockEFormStagingService.retrieve(USN))
-                .thenReturn(Optional.of(EFORM_STAGING_DTO));
+                .thenReturn(EFORM_STAGING_DTO);
         when(mockEformStagingDTOMapper.toEformStagingResponse(EFORM_STAGING_DTO))
                 .thenReturn(EFORM_STAGING_RESPONSE);
 
@@ -81,8 +78,8 @@ class EformStagingControllerTest {
 
         mvc.perform(MockMvcRequestBuilders.get(url())
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().json("{\"code\":\"BAD_REQUEST\",\"message\":\"The USN is not valid as it is not present in the eForm Repository\"}"));
+                .andExpect(status().isNotFound())
+                .andExpect(content().json("{\"code\":\"NOT_FOUND\",\"message\":\"The USN [987] does not exist in the data store.\"}"));
     }
 
     @Test
@@ -103,7 +100,7 @@ class EformStagingControllerTest {
     }
 
     @Test
-    void shoudSucessfullyVerifyAndInsertUsn() throws Exception {
+    void shouldSuccessfullyVerifyAndInsertUsn() throws Exception {
         when(mockEFormStagingService.createOrRetrieve(USN))
                 .thenReturn(EFORM_STAGING_DTO);
         mvc.perform(MockMvcRequestBuilders.post("/api/eform/initialise/123")

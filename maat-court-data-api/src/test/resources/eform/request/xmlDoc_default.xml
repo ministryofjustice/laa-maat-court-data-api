@@ -1,0 +1,169 @@
+<formData xmlns="http://eforms.legalservices.gov.uk/lscservice">
+    <fd:formdata xmlns:fd="urn:www-toplev-com:officeformsofd">
+        <fielddata xmlns="">
+            <laaAdded>
+                <CaseType>appeal_to_crown_court</CaseType>
+            </laaAdded>
+            <Formtype>CRM14</Formtype>
+            <Provider_uniquename/>
+            <Provider_displayname/>
+            <Provider_firm_id/>
+            <Usn>7000001</Usn>
+            <Date_received/>
+            <Time_received/>
+            <Submitter_language/>
+            <Datestamp_usn/>
+            <Datestamp_date/>
+            <Datestamp_time/>
+            <Datestamp_clientname/>
+            <Datestamp_clientdob/>
+            <Application_type>New application</Application_type>
+            <Prev_app_maat_cifc/>
+            <Summary>false</Summary>
+            <Either_way>false</Either_way>
+            <Indictable>false</Indictable>
+            <Trial_in_crown_court>false</Trial_in_crown_court>
+            <Committal>false</Committal>
+            <Appeal_to_crown_court>false</Appeal_to_crown_court>
+            <Appeal_no_changes>false</Appeal_no_changes>
+            <Prev_app_maat/>
+            <Court_originating/>
+            <Court_originating_display/>
+            <Court_name/>
+            <Court_name_display/>
+            <Priority/>
+            <Custody>false</Custody>
+            <Vulnerable>false</Vulnerable>
+            <Youth>false</Youth>
+            <Late_application_cc>false</Late_application_cc>
+            <Hearing_date_imminent>false</Hearing_date_imminent>
+            <Urn></Urn>
+            <Title/>
+            <Title_other/>
+            <Forenames>Kit</Forenames>
+            <Other_names/>
+            <Surname>Pound</Surname>
+            <Date_of_birth>2011-06-09T00:00:00</Date_of_birth>
+            <Ni_number>AJ123456C</Ni_number>
+            <Arc_number/>
+            <Welsh_corr_flag>false</Welsh_corr_flag>
+            <Have_home_address>Yes</Have_home_address>
+            <Home_address_1>1 Road</Home_address_1>
+            <Home_address_2>Village</Home_address_2>
+            <Home_address_3>Some nice city</Home_address_3>
+            <Home_postcode>SW1A 2AA</Home_postcode>
+            <What_contact_address/>
+            <Contact_address_1>1 Road</Contact_address_1>
+            <Contact_address_2>Village</Contact_address_2>
+            <Contact_address_3>Some nice city</Contact_address_3>
+            <Contact_postcode>SW1A 2AA</Contact_postcode>
+            <Email/>
+            <Phone_landline>07771231231</Phone_landline>
+            <Phone_mobile/>
+            <Phone_work/>
+            <Home_address_type/>
+            <Relationship_to_home_owner/>
+            <Under_18/>
+            <Charged_with_adult/>
+            <Have_partner>0</Have_partner>
+            <Marital_status/>
+            <Marital_status_2/>
+            <Have_partner_copy>0</Have_partner_copy>
+            <Partner_title/>
+            <Partner_title_other/>
+            <Partner_forenames/>
+            <Partner_other_names/>
+            <Partner_surname/>
+            <Partner_ni/>
+            <Partner_arc/>
+            <Partner_involved_in_case/>
+            <Partner_involvement/>
+            <Partner_conflict_of_interest/>
+            <Partner_different_home/>
+            <Partner_usual_address_1/>
+            <Partner_usual_address_2/>
+            <Partner_usual_address_3/>
+            <Partner_usual_postcode/>
+            <Offence_type>Class C</Offence_type>
+            <Any_codefendants/>
+            <Codefendants_details>
+                <Codefendants_details>Zoe Blogs</Codefendants_details>
+            </Codefendants_details>
+            <Why_not_rep_same_solicitor/>
+            <Why_not_rep_same_solicitor_reasons/>
+            <Other_cases/>
+            <Other_case_charges/>
+            <Other_case_court/>
+            <Partner_other_case_charges/>
+            <Partner_other_case_court/>
+            <Hearing_date/>
+            <Case_type_calc>0</Case_type_calc>
+            <Lose_liberty>false</Lose_liberty>
+            <Lose_liberty_details/>
+            <Suspended_sentence>false</Suspended_sentence>
+            <Suspended_sentence_details/>
+            <Lose_livelihood>false</Lose_livelihood>
+            <Lose_livelihood_details/>
+            <Damage_reputation>false</Damage_reputation>
+            <Damage_reputation_details/>
+            <Question_of_law>false</Question_of_law>
+            <Question_of_law_details/>
+            <Cant_present_own_case>false</Cant_present_own_case>
+            <Cant_present_own_case_details/>
+            <Witness_trace>false</Witness_trace>
+            <Witness_trace_details/>
+            <Expert_cross_exam>false</Expert_cross_exam>
+            <Expert_cross_exam_details/>
+            <Interests_of_another>false</Interests_of_another>
+            <Interests_of_another_details/>
+            <Other_reason_to_be_represented>false</Other_reason_to_be_represented>
+            <Other_reason_to_be_represented_details/>
+            <Remanded_in_custody>0</Remanded_in_custody>
+            <Heard_in_magistrates_court/>
+            <Indictable_offence>0</Indictable_offence>
+            <Firm_office/>
+            <Legal_rep_laa_account>1A123B</Legal_rep_laa_account>
+            <Solicitor_title/>
+            <Solicitor_title_other/>
+            <Legal_rep_fullname>John Doe</Legal_rep_fullname>
+            <Solicitor_firm/>
+            <Solicitor_address_1/>
+            <Solicitor_address_2/>
+            <Solicitor_address_3/>
+            <Solicitor_postcode/>
+            <Solicitor_phone_landline>123456789</Solicitor_phone_landline>
+            <Solicitor_phone_mobile/>
+            <Solicitor_firm_dx/>
+            <Solicitor_fax/>
+            <Solicitor_email/>
+            <Firm_administrator_email/>
+            <Legal_rep_declaration/>
+            <Legal_rep_declaration_2/>
+            <Legal_rep_declaration_confirm>false</Legal_rep_declaration_confirm>
+            <Legal_rep_sign/>
+            <Legal_rep_sign_date/>
+            <Disabled>No</Disabled>
+            <Disabled_definition/>
+            <Charges_brought>
+                <row>
+                    <Charge>Attempt robbery</Charge>
+                    <Offence_when>BETWEEN</Offence_when>
+                    <Offence_date_1>2020-05-11T00:00:00</Offence_date_1>
+                    <Offence_date_2>2020-05-12T00:00:00</Offence_date_2>
+                </row>
+                <row>
+                    <Charge>Attempt robbery</Charge>
+                    <Offence_when>ON</Offence_when>
+                    <Offence_date_1>2020-08-11T00:00:00</Offence_date_1>
+                    <Offence_date_2/>
+                </row>
+                <row>
+                    <Charge>Non-listed offence, manually entered</Charge>
+                    <Offence_when>ON</Offence_when>
+                    <Offence_date_1>2020-09-15T00:00:00</Offence_date_1>
+                    <Offence_date_2/>
+                </row>
+            </Charges_brought>
+        </fielddata>
+    </fd:formdata>
+</formData>

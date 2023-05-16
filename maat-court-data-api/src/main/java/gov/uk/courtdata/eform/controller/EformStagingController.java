@@ -91,8 +91,8 @@ public class EformStagingController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(value ="/initialise/{usn}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Create an EFORMS_STAGING record for Crime Apply")
+    @PostMapping(value = "/initialise/{usn}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Create an dummy/placeholder EFORMS_STAGING record for Crime Apply")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))

@@ -1,6 +1,6 @@
 package gov.uk.courtdata.reporder.impl;
 
-import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
+import gov.uk.courtdata.common.repository.CrownCourtProcessingRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

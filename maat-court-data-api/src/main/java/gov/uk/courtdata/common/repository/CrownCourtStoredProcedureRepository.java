@@ -1,4 +1,4 @@
-package gov.uk.courtdata.repository;
+package gov.uk.courtdata.common.repository;
 
 import org.hibernate.Session;
 import org.hibernate.procedure.ProcedureCall;

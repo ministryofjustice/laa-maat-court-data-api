@@ -1,8 +1,8 @@
 package gov.uk.courtdata.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.constants.CourtDataConstants;
-import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.service.ResultsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

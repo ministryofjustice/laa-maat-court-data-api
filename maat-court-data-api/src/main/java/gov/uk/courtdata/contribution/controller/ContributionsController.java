@@ -1,13 +1,13 @@
 package gov.uk.courtdata.contribution.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.common.dto.ErrorDTO;
+import gov.uk.courtdata.contribution.model.CreateContributions;
+import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.service.ContributionsService;
 import gov.uk.courtdata.contribution.validator.CreateContributionsValidator;
 import gov.uk.courtdata.contribution.validator.UpdateContributionsValidator;
 import gov.uk.courtdata.dto.ContributionsDTO;
-import gov.uk.courtdata.dto.ErrorDTO;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

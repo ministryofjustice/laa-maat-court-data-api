@@ -1,14 +1,13 @@
 package gov.uk.courtdata.reporder.impl;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.common.repository.CrownCourtProcessingRepository;
 import gov.uk.courtdata.entity.RepOrderCCOutComeEntity;
-import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component

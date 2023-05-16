@@ -1,9 +1,10 @@
 package gov.uk.courtdata.service;
 
-import gov.uk.courtdata.model.UpdateCCOutcome;
-import gov.uk.courtdata.model.UpdateSentenceOrder;
-import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
-import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
+import gov.uk.courtdata.common.repository.CrownCourtProcessingRepository;
+import gov.uk.courtdata.common.repository.CrownCourtStoredProcedureRepository;
+import gov.uk.courtdata.crowncourt.model.UpdateCCOutcome;
+import gov.uk.courtdata.crowncourt.model.UpdateSentenceOrder;
+import gov.uk.courtdata.crowncourt.service.CrownCourtOutcomeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

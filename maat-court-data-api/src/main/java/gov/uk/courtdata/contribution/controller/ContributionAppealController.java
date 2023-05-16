@@ -1,9 +1,9 @@
 package gov.uk.courtdata.contribution.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.contribution.dto.ContributionAppealDTO;
 import gov.uk.courtdata.contribution.service.ContributionAppealService;
-import gov.uk.courtdata.dto.ErrorDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,14 +1,11 @@
 package gov.uk.courtdata.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.authorization.service.AuthorizationService;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.constants.CourtDataConstants;
-import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
-import gov.uk.courtdata.model.authorization.UserReservation;
-import gov.uk.courtdata.model.authorization.UserSession;
 import gov.uk.courtdata.prosecutionconcluded.helper.ReservationsRepositoryHelper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

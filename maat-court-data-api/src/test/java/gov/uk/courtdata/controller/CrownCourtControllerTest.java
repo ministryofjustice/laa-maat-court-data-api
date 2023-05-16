@@ -2,7 +2,8 @@ package gov.uk.courtdata.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.service.CrownCourtOutcomeService;
+import gov.uk.courtdata.crowncourt.controller.CrownCourtController;
+import gov.uk.courtdata.crowncourt.service.CrownCourtOutcomeService;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

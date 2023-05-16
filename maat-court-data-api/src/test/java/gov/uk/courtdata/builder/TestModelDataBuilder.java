@@ -1,17 +1,22 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.contribution.model.CreateContributions;
+import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
+import gov.uk.courtdata.crowncourt.model.UpdateCCOutcome;
+import gov.uk.courtdata.crowncourt.model.UpdateSentenceOrder;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
-import gov.uk.courtdata.model.*;
+import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.NewWorkReason;
+import gov.uk.courtdata.model.RepOrderCCOutcome;
+import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.*;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;

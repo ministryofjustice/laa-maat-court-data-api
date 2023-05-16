@@ -1,7 +1,7 @@
 package gov.uk.courtdata.iojappeal.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.iojappeal.service.IOJAppealService;
 import gov.uk.courtdata.iojappeal.validator.IOJAppealValidationProcessor;

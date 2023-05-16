@@ -16,14 +16,6 @@ class UsnExceptionTest {
     }
 
     @Test
-    void shouldReturnNonexistentUsnException_whenNonexistentIsCalledWithNullUsn() {
-        UsnException validationException = UsnException.nonexistent(null);
-
-        assertEquals("The USN [null] does not exist in the data store.", validationException.getMessage());
-        assertEquals(HttpStatus.NOT_FOUND, validationException.getHttpResponseCode());
-    }
-
-    @Test
     void shouldReturnNonexistentUsnException_whenNonexistentIsCalledWithMissingUsn() {
         UsnException validationException = UsnException.nonexistent(123456);
 

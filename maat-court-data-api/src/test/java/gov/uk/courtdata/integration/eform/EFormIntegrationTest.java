@@ -77,6 +77,16 @@ class EFormIntegrationTest {
     }
 
     @Test
+    void givenAUSN_whenPOSTeformCalled_thenNewFieldI55sInDB() throws Exception {
+        MockHttpServletRequestBuilder requestBuilder = post(EFORM_USN_PROVIDED_URL)
+                .content("<InvalidXML//<<")
+                .contentType(MediaType.APPLICATION_XML);
+
+        mockMvc.perform(requestBuilder).andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void givenAUSN_whenPOSTeformCalled_thenNewFieldIsInDB() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = post(EFORM_USN_PROVIDED_URL)
                 .content(xmlDoc)

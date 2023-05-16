@@ -15,13 +15,13 @@ public class UsnValidator {
 
     private final EformStagingService eformStagingService;
 
-    public void verifyUsnExists(Integer usn) {
+    public void verifyUsnExists(int usn) {
         if (!eformStagingService.isUsnPresentInDB(usn)) {
             throw UsnException.nonexistent(usn);
         }
     }
 
-    public void verifyUsnDoesNotExist(Integer usn) {
+    public void verifyUsnDoesNotExist(int usn) {
         if (eformStagingService.isUsnPresentInDB(usn)) {
             throw UsnException.alreadyExists(usn);
         }

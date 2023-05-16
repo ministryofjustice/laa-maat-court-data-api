@@ -21,7 +21,7 @@ public class UsnException extends RuntimeException {
                 String.format(ALREADY_EXISTS_MESSAGE_FORMAT, usn));
     }
 
-    public static UsnException nonexistent(Integer usn) {
+    public static UsnException nonexistent(int usn) {
         return new UsnException(HttpStatus.NOT_FOUND,
                 String.format(NONEXISTENT_MESSAGE_FORMAT, usn));
     }

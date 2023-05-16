@@ -4,7 +4,7 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
-import org.jetbrains.annotations.NotNull;
+import gov.uk.courtdata.testutils.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,12 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -65,7 +59,7 @@ class EFormIntegrationTest {
         eformStagingRepository.flush();
         mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 
-        xmlDoc = readTestResource("eform/request/xmlDoc_default.xml");
+        xmlDoc = FileUtils.readResourceToString("eform/request/xmlDoc_default.xml");
         eformsStagingEntity = EformsStagingEntity
                 .builder()
                 .usn(USN)
@@ -74,23 +68,6 @@ class EFormIntegrationTest {
                 .xmlDoc(xmlDoc)
                 .userCreated(USER_CREATED)
                 .build();
-    }
-
-    @NotNull
-    private String readTestResource(String path) throws IOException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream resourceAsStream = classLoader.getResourceAsStream(path);
-        InputStreamReader streamReader = new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8);
-        BufferedReader bufferedReader = new BufferedReader(streamReader);
-        StringBuilder fileContents = new StringBuilder();
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            fileContents.append(line);
-        }
-        bufferedReader.close();
-        streamReader.close();
-        resourceAsStream.close();
-        return fileContents.toString();
     }
 
     @AfterEach

@@ -159,13 +159,13 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
 
     @Test
     void givenAValidRepId_whenGetContributionCountIsInvoked_thenContributionCountIsReturned() throws Exception {
-        var response = runSuccessScenario(head(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID));
+        var response = runSuccessScenario(head(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "/contribution"));
         Assertions.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
     }
 
     @Test
     void givenAValidRepIdAndEmptyCorrespondence_whenGetContributionCountIsInvoked_thenZeroIsReturned() throws Exception {
-        var response = runSuccessScenario(head(ENDPOINT_URL + "/1235"));
+        var response = runSuccessScenario(head(ENDPOINT_URL + "/1235" + "/contribution"));
         Assertions.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
     }
 }

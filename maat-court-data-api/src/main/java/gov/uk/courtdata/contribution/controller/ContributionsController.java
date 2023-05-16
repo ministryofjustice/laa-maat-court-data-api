@@ -118,11 +118,11 @@ public class ContributionsController {
         return ResponseEntity.ok(contributionsService.create(createContributions));
     }
 
-    @RequestMapping(value = "/{repId}",
+    @RequestMapping(value = "/{repId}/contribution",
             method = {RequestMethod.HEAD},
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @Operation(description = "Retrieve contribution count by either contribution order and contribution notice")
+    @Operation(description = "Retrieve the number of contributions where the correspondence type is CONTRIBUTION_ORDER or CONTRIBUTION_NOTICE")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )

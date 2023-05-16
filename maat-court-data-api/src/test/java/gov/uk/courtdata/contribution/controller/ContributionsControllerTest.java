@@ -106,7 +106,7 @@ class ContributionsControllerTest {
     void givenAValidRepId_whenGetContributionCountIsInvoked_thenReturnContributionCount() throws Exception {
         when(validator.validate(TestModelDataBuilder.REP_ID)).thenReturn(Optional.empty());
         when(contributionsService.getContributionCount(TestModelDataBuilder.REP_ID)).thenReturn(1);
-        mvc.perform(MockMvcRequestBuilders.head(endpointUrl + "/" + TestModelDataBuilder.REP_ID))
+        mvc.perform(MockMvcRequestBuilders.head(endpointUrl + "/" + TestModelDataBuilder.REP_ID + "/contribution"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""))
                 .andExpect(header().string(HttpHeaders.CONTENT_LENGTH, "1"));

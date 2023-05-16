@@ -4,7 +4,7 @@ import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentHistoryService;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
-import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;

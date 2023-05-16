@@ -1,4 +1,4 @@
-package gov.uk.courtdata.dto;
+package gov.uk.courtdata.common.dto;
 
 
 import lombok.Builder;

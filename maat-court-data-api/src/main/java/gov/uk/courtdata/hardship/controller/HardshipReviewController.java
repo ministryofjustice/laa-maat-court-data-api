@@ -1,7 +1,7 @@
 package gov.uk.courtdata.hardship.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.hardship.service.HardshipReviewService;
 import gov.uk.courtdata.hardship.validator.HardshipReviewValidationProcessor;

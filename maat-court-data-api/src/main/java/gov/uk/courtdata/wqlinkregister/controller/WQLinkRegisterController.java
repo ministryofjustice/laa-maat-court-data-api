@@ -1,7 +1,7 @@
 package gov.uk.courtdata.wqlinkregister.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.dto.WQLinkRegisterDTO;
 import gov.uk.courtdata.wqlinkregister.service.WQLinkRegisterService;
 import io.swagger.v3.oas.annotations.Operation;

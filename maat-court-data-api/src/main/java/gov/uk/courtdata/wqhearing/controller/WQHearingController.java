@@ -1,7 +1,7 @@
 package gov.uk.courtdata.wqhearing.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.dto.WQHearingDTO;
 import gov.uk.courtdata.wqhearing.service.WQHearingService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,7 +1,7 @@
 package gov.uk.courtdata.prosecutionconcluded.impl;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
+import gov.uk.courtdata.common.repository.CrownCourtProcessingRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

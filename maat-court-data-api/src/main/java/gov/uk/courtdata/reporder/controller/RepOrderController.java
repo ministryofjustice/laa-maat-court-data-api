@@ -1,7 +1,7 @@
 package gov.uk.courtdata.reporder.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;

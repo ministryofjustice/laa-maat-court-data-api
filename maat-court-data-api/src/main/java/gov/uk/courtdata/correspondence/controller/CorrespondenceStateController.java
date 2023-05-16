@@ -1,9 +1,9 @@
 package gov.uk.courtdata.correspondence.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.correspondence.service.CorrespondenceStateService;
-import gov.uk.courtdata.dto.ErrorDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

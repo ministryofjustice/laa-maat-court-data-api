@@ -3,7 +3,7 @@ package gov.uk.courtdata.authorization.controller;
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.authorization.service.AuthorizationService;
 import gov.uk.courtdata.authorization.validator.UserReservationValidator;
-import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
 import gov.uk.courtdata.model.authorization.UserReservation;

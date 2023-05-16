@@ -1,7 +1,7 @@
 package gov.uk.courtdata.unlink.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.unlink.validator.UnLinkValidationProcessor;

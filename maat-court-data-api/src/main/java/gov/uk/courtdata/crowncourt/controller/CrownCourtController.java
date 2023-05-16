@@ -1,10 +1,10 @@
-package gov.uk.courtdata.controller;
+package gov.uk.courtdata.crowncourt.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.dto.ErrorDTO;
-import gov.uk.courtdata.model.UpdateCCOutcome;
-import gov.uk.courtdata.model.UpdateSentenceOrder;
-import gov.uk.courtdata.service.CrownCourtOutcomeService;
+import gov.uk.courtdata.common.dto.ErrorDTO;
+import gov.uk.courtdata.crowncourt.model.UpdateCCOutcome;
+import gov.uk.courtdata.crowncourt.model.UpdateSentenceOrder;
+import gov.uk.courtdata.crowncourt.service.CrownCourtOutcomeService;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

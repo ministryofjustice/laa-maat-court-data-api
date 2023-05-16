@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import gov.uk.MAATCourtDataApplication;
+import gov.uk.courtdata.common.repository.CrownCourtProcessingRepository;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.CaseConclusionStatus;
 import gov.uk.courtdata.enums.JurisdictionType;

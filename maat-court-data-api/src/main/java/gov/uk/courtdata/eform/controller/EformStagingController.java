@@ -1,7 +1,7 @@
 package gov.uk.courtdata.eform.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.common.dto.ErrorDTO;
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.model.EformStagingResponse;

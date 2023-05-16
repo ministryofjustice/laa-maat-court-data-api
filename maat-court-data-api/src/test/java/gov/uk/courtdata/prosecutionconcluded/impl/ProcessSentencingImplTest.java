@@ -1,6 +1,6 @@
 package gov.uk.courtdata.prosecutionconcluded.impl;
 
-import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
+import gov.uk.courtdata.common.repository.CrownCourtProcessingRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,7 +10,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 
 import static gov.uk.courtdata.enums.CrownCourtCaseType.APPEAL_CC;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class ProcessSentencingImplTest {

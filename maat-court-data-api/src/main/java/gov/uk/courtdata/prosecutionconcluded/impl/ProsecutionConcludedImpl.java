@@ -1,12 +1,12 @@
 package gov.uk.courtdata.prosecutionconcluded.impl;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.common.repository.CrownCourtStoredProcedureRepository;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CrownCourtCodeHelper;
 import gov.uk.courtdata.prosecutionconcluded.helper.ResultCodeHelper;
-import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

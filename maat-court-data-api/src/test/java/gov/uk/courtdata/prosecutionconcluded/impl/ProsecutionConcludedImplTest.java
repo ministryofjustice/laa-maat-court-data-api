@@ -1,5 +1,6 @@
 package gov.uk.courtdata.prosecutionconcluded.impl;
 
+import gov.uk.courtdata.common.repository.CrownCourtStoredProcedureRepository;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.XLATResultEntity;
 import gov.uk.courtdata.enums.CrownCourtCaseType;
@@ -9,7 +10,6 @@ import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CrownCourtCodeHelper;
 import gov.uk.courtdata.prosecutionconcluded.helper.ResultCodeHelper;
 import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
-import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.repository.XLATResultRepository;
 import org.junit.jupiter.api.Assertions;

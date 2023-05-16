@@ -1,10 +1,10 @@
-package gov.uk.courtdata.service;
+package gov.uk.courtdata.crowncourt.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.model.UpdateCCOutcome;
-import gov.uk.courtdata.model.UpdateSentenceOrder;
-import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
-import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
+import gov.uk.courtdata.common.repository.CrownCourtProcessingRepository;
+import gov.uk.courtdata.common.repository.CrownCourtStoredProcedureRepository;
+import gov.uk.courtdata.crowncourt.model.UpdateCCOutcome;
+import gov.uk.courtdata.crowncourt.model.UpdateSentenceOrder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

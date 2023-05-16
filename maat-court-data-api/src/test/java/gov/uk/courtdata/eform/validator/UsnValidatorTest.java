@@ -1,7 +1,7 @@
 package gov.uk.courtdata.eform.validator;
 
+import gov.uk.courtdata.eform.exception.UsnException;
 import gov.uk.courtdata.eform.service.EformStagingService;
-import gov.uk.courtdata.exception.UsnException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,4 +1,4 @@
-package gov.uk.courtdata.exception;
+package gov.uk.courtdata.eform.exception;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;

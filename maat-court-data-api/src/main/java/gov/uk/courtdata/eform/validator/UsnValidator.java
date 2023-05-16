@@ -1,7 +1,7 @@
 package gov.uk.courtdata.eform.validator;
 
+import gov.uk.courtdata.eform.exception.UsnException;
 import gov.uk.courtdata.eform.service.EformStagingService;
-import gov.uk.courtdata.exception.UsnException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,13 +15,13 @@ public class UsnValidator {
 
     private final EformStagingService eformStagingService;
 
-    public void verifyUsnExists(int usn) {
+    public void verifyUsnExists(int usn) throws UsnException {
         if (!eformStagingService.isUsnPresentInDB(usn)) {
             throw UsnException.nonexistent(usn);
         }
     }
 
-    public void verifyUsnDoesNotExist(int usn) {
+    public void verifyUsnDoesNotExist(int usn) throws UsnException {
         if (eformStagingService.isUsnPresentInDB(usn)) {
             throw UsnException.alreadyExists(usn);
         }

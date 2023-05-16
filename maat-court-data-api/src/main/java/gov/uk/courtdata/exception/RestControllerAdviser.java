@@ -3,6 +3,7 @@ package gov.uk.courtdata.exception;
 
 import gov.uk.courtdata.constants.ErrorCodes;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.eform.exception.UsnException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;

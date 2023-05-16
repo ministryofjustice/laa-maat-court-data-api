@@ -1,4 +1,4 @@
-package gov.uk.courtdata.exception;
+package gov.uk.courtdata.eform.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

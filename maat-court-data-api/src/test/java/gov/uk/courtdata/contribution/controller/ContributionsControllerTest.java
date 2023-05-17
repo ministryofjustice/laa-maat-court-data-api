@@ -1,25 +1,29 @@
 package gov.uk.courtdata.contribution.controller;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.contribution.model.CreateContributions;
+import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.service.ContributionsService;
 import gov.uk.courtdata.contribution.validator.CreateContributionsValidator;
 import gov.uk.courtdata.contribution.validator.UpdateContributionsValidator;
 import gov.uk.courtdata.dto.ContributionsDTO;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
+import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,13 +33,16 @@ class ContributionsControllerTest {
     private static final String endpointUrl = "/api/internal/v1/assessment/contributions";
     private static Integer TEST_CONTRIBUTIONS_ID = 999;
     @Autowired
-    MockMvc mvc;
+    private MockMvc mvc;
     @MockBean
-    ContributionsService contributionsService;
+    private ContributionsService contributionsService;
     @MockBean
-    UpdateContributionsValidator updateContributionsValidator;
+    private UpdateContributionsValidator updateContributionsValidator;
     @MockBean
-    CreateContributionsValidator createContributionsValidator;
+    private CreateContributionsValidator createContributionsValidator;
+
+    @MockBean
+    private MaatIdValidator validator;
 
     @Test
     void givenAValidParameter_whenFindIsInvoked_thenOKResponseWithContributionsEntryIsReturned() throws Exception {
@@ -93,5 +100,22 @@ class ContributionsControllerTest {
         String contributionsJson = TestModelDataBuilder.getInvalidCreateContributionsJson();
         mvc.perform(MockMvcRequestBuilders.post(endpointUrl).content(contributionsJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenAValidRepId_whenGetContributionCountIsInvoked_thenReturnContributionCount() throws Exception {
+        when(validator.validate(TestModelDataBuilder.REP_ID)).thenReturn(Optional.empty());
+        when(contributionsService.getContributionCount(TestModelDataBuilder.REP_ID)).thenReturn(1);
+        mvc.perform(MockMvcRequestBuilders.head(endpointUrl + "/" + TestModelDataBuilder.REP_ID + "/contribution"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(""))
+                .andExpect(header().string(HttpHeaders.CONTENT_LENGTH, "1"));
+    }
+
+    @Test
+    void givenAInValidRepId_whenGetContributionCountIsInvoked_thenReturnContributionCount() throws Exception {
+        when(validator.validate(TestModelDataBuilder.REP_ID)).thenThrow(new ValidationException());
+        mvc.perform(MockMvcRequestBuilders.post(endpointUrl).content("{}").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 }

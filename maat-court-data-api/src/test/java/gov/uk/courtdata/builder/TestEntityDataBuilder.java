@@ -593,4 +593,17 @@ public class TestEntityDataBuilder {
                 .id(repOderOutComeId)
                 .build();
     }
+
+    public static CorrespondenceEntity getCorrespondenceEntity(Integer id) {
+
+        return CorrespondenceEntity.builder()
+                .repId(REP_ID)
+                .id(id)
+                .generateDate(LocalDateTime.now())
+                .printDate(LocalDateTime.now())
+                .dateCreated(LocalDateTime.now())
+                .userCreated(USER_NAME)
+                .cotyCorresType("CONTRIBUTION_ORDER")
+                .build();
+    }
 }

@@ -31,10 +31,10 @@ import java.util.List;
 )
 public class RepOrderEntity {
     @ToString.Exclude
-    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<PassportAssessmentEntity> passportAssessments = new ArrayList<>();
     @ToString.Exclude
-    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<FinancialAssessmentEntity> financialAssessments = new ArrayList<>();
     @Id
     @Column(name = "ID")

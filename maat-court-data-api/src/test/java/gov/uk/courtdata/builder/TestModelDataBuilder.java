@@ -1,6 +1,7 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
@@ -63,6 +64,7 @@ public class TestModelDataBuilder {
     public static final String ASSESSMENT_RESULT = "PASS";
     public static final BigDecimal CONTRIBUTION_AMOUNT = BigDecimal.valueOf(500.00);
     public static final String CORRESPONDENCE_STATUS = "appealCC";
+    public static final String EFFECTIVE_DATE = "01-JAN-20233";
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -1086,6 +1088,18 @@ public class TestModelDataBuilder {
                 .ccOutcomeCount(9)
                 .seHistoryId(9)
                 .id(1)
+                .build();
+    }
+
+    public static ContributionCalcParametersDTO getContributionCalcParametersDTO() {
+        return ContributionCalcParametersDTO.builder()
+                .fromDate(LocalDateTime.now())
+                .disposableIncomePercent(BigDecimal.TEN)
+                .upliftedIncomePercent(BigDecimal.ONE)
+                .totalMonths(6)
+                .upfrontTotalMonths(5)
+                .firstReminderDaysDue(28)
+                .secondReminderDaysDue(7)
                 .build();
     }
 

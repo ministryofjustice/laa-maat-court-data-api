@@ -9,7 +9,7 @@ class UsnExceptionTest {
 
     @Test
     void shouldReturnAlreadyExistsUsnException_whenAlreadyExistsIsCalledWithAUsn() {
-        UsnException validationException = UsnException.alreadyExists(7000001);
+        UsnException validationException = USNExceptionUtil.alreadyExists(7000001);
 
         assertEquals("The USN [7000001] already exists in the data store.", validationException.getMessage());
         assertEquals(HttpStatus.BAD_REQUEST, validationException.getHttpResponseCode());
@@ -17,7 +17,7 @@ class UsnExceptionTest {
 
     @Test
     void shouldReturnNonexistentUsnException_whenNonexistentIsCalledWithMissingUsn() {
-        UsnException validationException = UsnException.nonexistent(123456);
+        UsnException validationException = USNExceptionUtil.nonexistent(123456);
 
         assertEquals("The USN [123456] does not exist in the data store.", validationException.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, validationException.getHttpResponseCode());

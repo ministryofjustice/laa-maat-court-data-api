@@ -2,7 +2,7 @@ package gov.uk.courtdata.eform.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
-import gov.uk.courtdata.eform.exception.UsnException;
+import gov.uk.courtdata.eform.exception.USNExceptionUtil;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
@@ -35,7 +35,7 @@ public class EformStagingService {
     @Transactional(readOnly = true)
     public EformStagingDTO retrieve(int usn) {
         EformsStagingEntity eformsStagingEntity = eformStagingRepository.findById(usn)
-                .orElseThrow(() -> UsnException.nonexistent(usn));
+                .orElseThrow(() -> USNExceptionUtil.nonexistent(usn));
 
         return eformStagingDTOMapper.toEformStagingDTO(eformsStagingEntity);
     }

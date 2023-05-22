@@ -1,5 +1,6 @@
 package gov.uk.courtdata.eform.validator;
 
+import gov.uk.courtdata.eform.exception.USNExceptionUtil;
 import gov.uk.courtdata.eform.exception.UsnException;
 import gov.uk.courtdata.eform.service.EformStagingService;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +18,13 @@ public class UsnValidator {
 
     public void verifyUsnExists(int usn) throws UsnException {
         if (!eformStagingService.isUsnPresentInDB(usn)) {
-            throw UsnException.nonexistent(usn);
+            throw USNExceptionUtil.nonexistent(usn);
         }
     }
 
     public void verifyUsnDoesNotExist(int usn) throws UsnException {
         if (eformStagingService.isUsnPresentInDB(usn)) {
-            throw UsnException.alreadyExists(usn);
+            throw USNExceptionUtil.alreadyExists(usn);
         }
     }
 }

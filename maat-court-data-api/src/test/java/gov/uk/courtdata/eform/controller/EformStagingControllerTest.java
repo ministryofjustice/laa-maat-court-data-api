@@ -1,6 +1,7 @@
 package gov.uk.courtdata.eform.controller;
 
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
+import gov.uk.courtdata.eform.exception.USNExceptionUtil;
 import gov.uk.courtdata.eform.exception.UsnException;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.model.EformStagingResponse;
@@ -33,7 +34,7 @@ class EformStagingControllerTest {
     private static final String TYPE = "CRM14";
     private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse.builder().usn(USN).type(TYPE).build();
     private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO.builder().usn(USN).type(TYPE).build();
-    private static final UsnException USN_VALIDATION_EXCEPTION = UsnException.nonexistent(987);
+    private static final UsnException USN_VALIDATION_EXCEPTION = USNExceptionUtil.nonexistent(987);
 
     @MockBean
     private EformStagingService mockEFormStagingService;

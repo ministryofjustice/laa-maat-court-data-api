@@ -22,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 @XRayEnabled
 public class EformStagingService {
 
-    private static final String NONEXISTENT_MESSAGE_FORMAT = "The USN [%d] does not exist in the data store.";
-
     private final EformStagingRepository eformStagingRepository;
     private final EformStagingDTOMapper eformStagingDTOMapper;
 
@@ -37,7 +35,7 @@ public class EformStagingService {
     @Transactional(readOnly = true)
     public EformStagingDTO retrieve(int usn) {
         EformsStagingEntity eformsStagingEntity = eformStagingRepository.findById(usn)
-                .orElseThrow(() -> UsnException.nonexistent(String.format(NONEXISTENT_MESSAGE_FORMAT, usn)));
+                .orElseThrow(() -> UsnException.nonexistent(usn));
 
         return eformStagingDTOMapper.toEformStagingDTO(eformsStagingEntity);
     }

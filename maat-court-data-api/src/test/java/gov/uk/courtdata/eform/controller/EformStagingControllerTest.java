@@ -33,7 +33,8 @@ class EformStagingControllerTest {
     private static final String TYPE = "CRM14";
     private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse.builder().usn(USN).type(TYPE).build();
     private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO.builder().usn(USN).type(TYPE).build();
-    private static final UsnException USN_VALIDATION_EXCEPTION = UsnException.nonexistent(987);
+    private static final String NONEXISTENT_MESSAGE_FORMAT = "The USN [%d] does not exist in the data store.";
+    private static final UsnException USN_VALIDATION_EXCEPTION = UsnException.nonexistent(String.format(NONEXISTENT_MESSAGE_FORMAT, 987));
 
     @MockBean
     private EformStagingService mockEFormStagingService;

@@ -8,18 +8,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class UsnExceptionTest {
 
     @Test
-    void shouldReturnAlreadyExistsUsnException_whenAlreadyExistsIsCalledWithAUsn() {
-        UsnException validationException = USNExceptionUtil.alreadyExists(7000001);
+    void shouldReturnMessage_whenCreatingUsnExceptionWithMessage() {
+        String exceptionMessage = "Sample exception message";
+        UsnException exception = new UsnException(HttpStatus.OK, exceptionMessage);
 
-        assertEquals("The USN [7000001] already exists in the data store.", validationException.getMessage());
-        assertEquals(HttpStatus.BAD_REQUEST, validationException.getHttpResponseCode());
+        assertEquals(exceptionMessage, exception.getMessage());
     }
 
     @Test
-    void shouldReturnNonexistentUsnException_whenNonexistentIsCalledWithMissingUsn() {
-        UsnException validationException = USNExceptionUtil.nonexistent(123456);
+    void shouldReturnHttpResponseCode_whenCreatingUsnExceptionWithHttpResponseCode() {
+        HttpStatus httpStatus = HttpStatus.OK;
+        UsnException exception = new UsnException(httpStatus, "Sample exception message");
 
-        assertEquals("The USN [123456] does not exist in the data store.", validationException.getMessage());
-        assertEquals(HttpStatus.NOT_FOUND, validationException.getHttpResponseCode());
+        assertEquals(httpStatus, exception.getHttpResponseCode());
     }
 }

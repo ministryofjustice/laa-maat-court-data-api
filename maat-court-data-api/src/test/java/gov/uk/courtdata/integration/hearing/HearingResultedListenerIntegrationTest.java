@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -110,7 +112,7 @@ public class HearingResultedListenerIntegrationTest {
     public void givenAHearingMessageWithNoMaatId_whenMessageIsReceived_thenErrorIsReturned() {
         String payloadMissingMaatId = String.format("{\"laaTransactionId\":\"%s\"}", LAA_TRANSACTION_ID);
         ValidationException error = Assert.assertThrows(
-                ValidationException.class, () -> hearingResultedListener.receive(payloadMissingMaatId));
+                ValidationException.class, () -> hearingResultedListener.receive(payloadMissingMaatId, new MessageHeaders(new HashMap<>())));
 
         Assert.assertEquals("MAAT ID is required.", error.getMessage());
         queueMessageLogTestHelper.assertQueueMessageLogged(
@@ -122,6 +124,19 @@ public class HearingResultedListenerIntegrationTest {
                 .maatId(0)
                 .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
                 .jurisdictionType(JurisdictionType.CROWN).build();
+
+        runValidationErrorScenario(testData, "MAAT ID is required.");
+    }
+
+    @Test
+    public void givenAHearingMessageWithAZeroMaatId_whenMessageIsReceived_thenErrorIsReturned1() throws JsonProcessingException {
+        HearingResulted testData = HearingResulted.builder()
+                .maatId(0)
+                .functionType(FunctionType.OFFENCE)
+                .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
+                .jurisdictionType(JurisdictionType.CROWN).build();
+        String messageBlob = objectMapper.writeValueAsString(testData);
+        hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>()));
 
         runValidationErrorScenario(testData, "MAAT ID is required.");
     }
@@ -278,7 +293,7 @@ public class HearingResultedListenerIntegrationTest {
                         WqLinkRegisterEntity.builder().createdTxId(1).maatId(TEST_MAAT_ID).caseId(TEST_CASE_ID).proceedingId(1).build());
 
         String messageBlob = objectMapper.writeValueAsString(testData);
-        hearingResultedListener.receive(messageBlob);
+        hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>()));
 
         if (testData.getFunctionType() == FunctionType.APPLICATION) {
             modifyTestDataForCourtPreProcessing(testData);
@@ -565,7 +580,7 @@ public class HearingResultedListenerIntegrationTest {
 
     private <T extends Exception> void runErrorScenario(Class<T> exceptionClass, HearingResulted testPayload, String expectedErrorMessage) throws JsonProcessingException {
         String messageBlob = objectMapper.writeValueAsString(testPayload);
-        T error = Assert.assertThrows(exceptionClass, () -> hearingResultedListener.receive(messageBlob));
+        T error = Assert.assertThrows(exceptionClass, () -> hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>())));
         Assert.assertEquals(error.getMessage(), expectedErrorMessage);
         queueMessageLogTestHelper.assertQueueMessageLogged(
                 messageBlob, 1, testPayload.getLaaTransactionId().toString(), testPayload.getMaatId());

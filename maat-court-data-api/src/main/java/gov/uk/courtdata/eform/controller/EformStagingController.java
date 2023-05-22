@@ -84,7 +84,7 @@ public class EformStagingController {
     @PostMapping(value = "/initialise/{usn}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create an dummy/placeholder EFORMS_STAGING record for Crime Apply")
     @StandardApiResponseCodes
-    public ResponseEntity<EformStagingResponse> retriveOrInsertDummyUsnRecord(@PathVariable Integer usn) {
+    public ResponseEntity<EformStagingResponse> retrieveOrInsertDummyUsnRecord(@PathVariable Integer usn) {
 
         EformStagingDTO eformStagingDto = eformStagingService.createOrRetrieve(usn);
 

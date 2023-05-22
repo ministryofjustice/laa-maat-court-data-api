@@ -129,7 +129,8 @@ class EFormIntegrationTest {
 
         mockMvc.perform(requestBuilder).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"usn\":" + USN + ",\"type\":" + type + ", \"maatRef\": " + MAAT_REF + "}"));
+                .andExpect(content().json("{\"usn\":" + USN + ",\"type\":" + type + ", \"maatRef\": " + MAAT_REF + "}"))
+                .andExpect(content().json("{\"userCreated\":" + USER_CREATED + "}"));
     }
 
     @Test

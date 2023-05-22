@@ -2,41 +2,29 @@ package gov.uk.courtdata.testutils;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class FileUtils {
 
-    private static final String UNABLE_TO_READ_FILE = "Unable to read file with path [%s]";
+    private static final String ERROR_MESSAGE_FORMAT = "Unable to read file with filePath [%s]";
 
     @NotNull
-    public static String readResourceToString(String path) {
+    public static String readResourceToString(String filePath) {
+
         ClassLoader classLoader = FileUtils.class.getClassLoader();
-        InputStream resourceAsStream = classLoader.getResourceAsStream(path);
-
-        if (resourceAsStream == null) {
-            throw new IllegalStateException(String.format(UNABLE_TO_READ_FILE, path));
+        URL path = classLoader.getResource(filePath);
+        if (path == null) {
+            throw new RuntimeException(String.format(ERROR_MESSAGE_FORMAT, filePath));
         }
 
-        InputStreamReader streamReader = new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8);
-        BufferedReader bufferedReader = new BufferedReader(streamReader);
-        StringBuilder fileContents = new StringBuilder();
-        String line;
+        File file = new File(path.getFile());
         try {
-            while ((line = bufferedReader.readLine()) != null) {
-                fileContents.append(line);
-            }
-
-            bufferedReader.close();
-            streamReader.close();
-            resourceAsStream.close();
+            return org.apache.commons.io.FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IllegalStateException(String.format(UNABLE_TO_READ_FILE, path), e);
+            throw new RuntimeException(String.format(ERROR_MESSAGE_FORMAT, filePath));
         }
-
-        return fileContents.toString();
     }
 }

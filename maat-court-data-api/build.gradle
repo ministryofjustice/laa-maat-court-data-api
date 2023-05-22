@@ -11,31 +11,31 @@ plugins {
 
 
 def versions = [
-        mapstructVersion    : '1.3.1.Final',
-        sentryVersion       : '5.0.1',
-        springdocVersion    : '1.6.6',
-        springCloudAwsMessagingVersion : '2.4.1',
-        amazonSQSVersion    : '1.0.8',
-        ojdbc8Version       : '19.7.0.0',
-        gsonVersion         : '2.8.6',
-        commLan3Vriosn      : '3.10',
-        lombokVersion       : '1.18.6',
-        sonarVersion        : '2.7',
-        h2DBVersion         : '1.4.200',
-        mockitoVersion      : '3.3.3',
-        harmcrestVersion    : '1.3',
-        testngVersion       : '6.10',
-        festVersion         : '1.4',
-        jupiterVersion      : '5.8.2',
-        gradlePitest        : '1.4.6',
-        pitest              : '1.4.10',
-        sonarPitest         : '0.5',
-        okhttpVersion       : '4.9.3',
-        mockWebServerVersion: '4.9.3',
-        xRayVersion         : '2.11.2',
-        hibernateJpaModelGen: '5.6.14.Final',
-        gqlVersion: '2.7.5',
-        graphqlJavaTools: '13.0.2'
+        mapstructVersion              : '1.3.1.Final',
+        sentryVersion                 : '5.0.1',
+        springdocVersion              : '1.6.6',
+        springCloudAwsMessagingVersion: '2.4.1',
+        amazonSQSVersion              : '1.0.8',
+        ojdbc8Version                 : '19.7.0.0',
+        gsonVersion                   : '2.8.6',
+        commLan3Vriosn                : '3.10',
+        lombokVersion                 : '1.18.6',
+        sonarVersion                  : '2.7',
+        h2DBVersion                   : '1.4.200',
+        mockitoVersion                : '3.3.3',
+        harmcrestVersion              : '1.3',
+        festVersion                   : '1.4',
+        jupiterVersion                : '5.8.2',
+        gradlePitest                  : '1.4.6',
+        pitest                        : '1.4.10',
+        sonarPitest                   : '0.5',
+        okhttpVersion                 : '4.9.3',
+        mockWebServerVersion          : '4.9.3',
+        xRayVersion                   : '2.11.2',
+        hibernateJpaModelGen          : '5.6.14.Final',
+        gqlVersion                    : '2.7.5',
+        graphqlJavaTools              : '13.0.2',
+        commonsIOVersion              : '2.11.0'
 ]
 
 dependencyManagement {
@@ -142,7 +142,7 @@ dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.jupiterVersion
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.jupiterVersion
     testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: versions.harmcrestVersion
-    testImplementation group: 'org.testng', name: 'testng', version: versions.testngVersion
+    testImplementation group: 'commons-io', name: 'commons-io', version: versions.commonsIOVersion
     testImplementation group: 'org.easytesting', name: 'fest-assert', version: versions.festVersion
     testImplementation group: 'com.squareup.okhttp3', name: 'okhttp', version: versions.okhttpVersion
     testImplementation group: 'com.squareup.okhttp3', name: 'mockwebserver', version: versions.mockWebServerVersion

@@ -5,7 +5,7 @@ import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.model.EformStagingResponse;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
-import org.junit.jupiter.api.Assertions;
+import gov.uk.courtdata.testutils.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -23,38 +24,10 @@ import static org.mockito.Mockito.when;
 @WebMvcTest(EformStagingService.class)
 class EformStagingServiceTest {
 
-    private static final int USN = 1233;
-    private static final int NEW_USN = 3321;
+    private static final int USN = 7000001;
     private static final String TYPE = "CRM14";
     private static final int MAAT_ID = 3290392;
-
-    private static final EformsStagingEntity EFORMS_STAGING_ENTITY = EformsStagingEntity
-            .builder()
-            .usn(USN)
-            .type(TYPE)
-            .maatRef(MAAT_ID)
-            .build();
-
-    private static final EformsStagingEntity NEW_EFORMS_STAGING_ENTITY = EformsStagingEntity
-            .builder()
-            .usn(NEW_USN)
-            .type(TYPE)
-            .maatRef(MAAT_ID)
-            .build();
-
-    private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO
-            .builder()
-            .usn(USN)
-            .type(TYPE)
-            .maatRef(MAAT_ID)
-            .build();
-
-    private static final EformStagingDTO NEW_EFORM_STAGING_DTO = EformStagingDTO
-            .builder()
-            .usn(NEW_USN)
-            .type(TYPE)
-            .build();
-
+    private static final String USER_CREATED = "MLA";
     private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse
             .builder()
             .usn(USN)
@@ -69,67 +42,92 @@ class EformStagingServiceTest {
     private EformStagingDTOMapper mockEformStagingDTOMapper;
 
     private EformStagingService eformStagingService;
+    private EformsStagingEntity eformsStagingEntity;
+    private EformStagingDTO eformStagingDTO;
 
     @BeforeEach
     void setUp() {
+        String xmlDoc = FileUtils.readResourceToString("eform/request/xmlDoc_default.xml");
+
+        eformsStagingEntity = EformsStagingEntity
+                .builder()
+                .usn(USN)
+                .type(TYPE)
+                .maatRef(MAAT_ID)
+                .xmlDoc(xmlDoc)
+                .userCreated(USER_CREATED)
+                .build();
+
+        eformStagingDTO = EformStagingDTO
+                .builder()
+                .usn(USN)
+                .type(TYPE)
+                .maatRef(MAAT_ID)
+                .xmlDoc(xmlDoc)
+                .userCreated(USER_CREATED)
+                .build();
+
         eformStagingService = new EformStagingService(mockEformStagingRepository,
                 mockEformStagingDTOMapper);
 
-        when(mockEformStagingDTOMapper.toEformsStagingEntity(EFORM_STAGING_DTO))
-                .thenReturn(EFORMS_STAGING_ENTITY);
-        when(mockEformStagingDTOMapper.toEformsStagingEntity(NEW_EFORM_STAGING_DTO))
-                .thenReturn(NEW_EFORMS_STAGING_ENTITY);
+        when(mockEformStagingDTOMapper.toEformsStagingEntity(eformStagingDTO))
+                .thenReturn(eformsStagingEntity);
         when(mockEformStagingDTOMapper.toEformStagingDTO(any(EformsStagingEntity.class)))
-                .thenReturn(EFORM_STAGING_DTO);
+                .thenReturn(eformStagingDTO);
         when(mockEformStagingDTOMapper.toEformStagingResponse(any(EformStagingDTO.class)))
                 .thenReturn(EFORM_STAGING_RESPONSE);
     }
 
     @Test
     void givenUSN_whenServiceInvoked_thenSaveToDatabase() {
+        eformStagingService.create(eformStagingDTO);
 
-        eformStagingService.create(EFORM_STAGING_DTO);
-
-        Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(EFORMS_STAGING_ENTITY);
+        Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(eformsStagingEntity);
     }
 
     @Test
     void givenUSN_whenServiceInvoked_thenPullFromTheDatabase() {
         Mockito.when(mockEformStagingRepository.findById(USN))
-                .thenReturn(Optional.of(EFORMS_STAGING_ENTITY));
+                .thenReturn(Optional.of(eformsStagingEntity));
 
-        EformStagingDTO retrieve = eformStagingService.retrieve(EFORM_STAGING_DTO.getUsn());
+        EformStagingDTO eformStagingDTO = eformStagingService.retrieve(this.eformStagingDTO.getUsn());
 
-        Assertions.assertEquals(EFORM_STAGING_DTO, retrieve);
+        assertEquals(this.eformStagingDTO, eformStagingDTO);
     }
 
     @Test
     void givenUSN_whenServiceInvoked_thenDeleteFromDatabase() {
+        Integer usn = eformStagingDTO.getUsn();
 
-        Integer usn = EFORM_STAGING_DTO.getUsn();
         eformStagingService.delete(usn);
 
         Mockito.verify(mockEformStagingRepository, Mockito.times(1)).deleteById(usn);
     }
 
     @Test
-    void givenUsnExistInEformStaging_whenCreateOrRetrieveServiceIsInvoked_then_returnRetrievedDataFromEformStaging(){
+    void givenUsnExistInEformStaging_whenCreateOrRetrieveServiceIsInvoked_then_returnRetrievedDataFromEformStaging() {
         when(mockEformStagingRepository.existsById(any()))
                 .thenReturn(true);
         when(mockEformStagingRepository.findById(any()))
-                .thenReturn(Optional.of(EFORMS_STAGING_ENTITY));
-        Assertions.assertEquals(EFORM_STAGING_DTO, eformStagingService.createOrRetrieve(1001));
+                .thenReturn(Optional.of(eformsStagingEntity));
+
+        EformStagingDTO eformStagingDTO = eformStagingService.createOrRetrieve(USN);
+
+        assertEquals(this.eformStagingDTO, eformStagingDTO);
     }
 
     @Test
-    void givenUsnNotInEformStaging_whenCreateOrRetrieveServiceIsInvoked_then_insertUsnInEformStagingAndBuildEformStagingDtoWithUsnAndRetrun(){
+    void givenUsnNotInEformStaging_whenCreateOrRetrieveServiceIsInvoked_then_insertUsnInEformStagingAndBuildEformStagingDtoWithUsnAndRetrun() {
         when(mockEformStagingRepository.existsById(any()))
                 .thenReturn(false);
-        EformStagingDTO expectedDto = EformStagingDTO.builder().usn(1001).build();
-        EformsStagingEntity entity = EformsStagingEntity.builder().usn(1001).build();
+        EformStagingDTO expectedDto = EformStagingDTO.builder().usn(USN).build();
+        EformsStagingEntity entity = EformsStagingEntity.builder().usn(USN).build();
         when(mockEformStagingDTOMapper.toEformsStagingEntity(expectedDto))
                 .thenReturn(entity);
-        Assertions.assertEquals(expectedDto, eformStagingService.createOrRetrieve(1001));
+
+        EformStagingDTO eformStagingDTO = eformStagingService.createOrRetrieve(USN);
+
+        assertEquals(expectedDto, eformStagingDTO);
         Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(entity);
     }
 }

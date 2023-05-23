@@ -41,7 +41,7 @@ public class WQOffenceProcessorTest {
 
         //given
         HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
-
+        hearingDTO.getOffence().setOffenceWording("This is a short title");
         //when
         wqOffenceProcessor.process(hearingDTO);
 
@@ -52,6 +52,7 @@ public class WQOffenceProcessorTest {
         assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalAidStatus()).isEqualTo("AP");
         assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalaidReason()).isEqualTo("some aid reason");
         assertThat(wqOffenceEntityArgumentCaptor.getValue().getAsnSeq()).isEqualTo("001");
+        assertThat(wqOffenceEntityArgumentCaptor.getValue().getOffenceWording()).isEqualTo("This is a short title");
     }
 
     @Test

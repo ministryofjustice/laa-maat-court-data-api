@@ -1,5 +1,4 @@
-```mermaid
-  sequenceDiagram
+sequenceDiagram
     participant External Client
 
     participant LinkController
@@ -37,4 +36,3 @@
     CpDataValidator->>PreConditionsValidator: Return validation response
     PreConditionsValidator->>LinkController: Return overall validation response
     LinkController->>External Client: HTTP Return overall validation response
-```

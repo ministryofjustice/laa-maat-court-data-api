@@ -2,11 +2,11 @@ package gov.uk.courtdata.contribution.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
+import gov.uk.courtdata.contribution.model.CreateContributions;
+import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.repository.ContributionsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,5 +56,10 @@ public class ContributionsService {
         ContributionsEntity newContributionsEntity = contributionsMapper.createContributionsToContributionsEntity(createContributions);
         newContributionsEntity.setLatest(true);
         return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(newContributionsEntity));
+    }
+
+    @Transactional
+    public int getContributionCount(Integer repId) {
+        return contributionsRepository.getContributionCount(repId);
     }
 }

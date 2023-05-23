@@ -9,7 +9,6 @@ import gov.uk.courtdata.prosecutionconcluded.helper.OffenceHelper;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.*;

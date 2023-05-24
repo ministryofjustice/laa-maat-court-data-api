@@ -24,7 +24,7 @@ public class RepOrderDTO {
     private LocalDateTime dateModified;
     private String magsOutcome;
     private String magsOutcomeDate;
-    private LocalDate magsOutcomeDateSet;
+    private LocalDateTime magsOutcomeDateSet;
     private LocalDate committalDate;
     private String decisionReasonCode;
     private String crownRepOrderDecision;

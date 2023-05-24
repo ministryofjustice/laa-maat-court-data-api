@@ -2,6 +2,8 @@ package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
+import gov.uk.courtdata.contribution.model.CreateContributions;
+import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
@@ -11,8 +13,6 @@ import gov.uk.courtdata.model.*;
 import gov.uk.courtdata.model.assessment.*;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
@@ -716,7 +716,7 @@ public class TestModelDataBuilder {
                 .catyCaseType("case-type")
                 .magsOutcome("outcome")
                 .magsOutcomeDate(TEST_DATE.toString())
-                .magsOutcomeDateSet(TEST_DATE.toLocalDate())
+                .magsOutcomeDateSet(TEST_DATE)
                 .committalDate(TEST_DATE.toLocalDate())
                 .decisionReasonCode("rder-code")
                 .crownRepOrderDecision("cc-rep-doc")
@@ -853,7 +853,7 @@ public class TestModelDataBuilder {
                 .arrestSummonsNo(TEST_ARREST_SUMMONS_NUMBER)
                 .magsOutcome("COMMITTED FOR TRIAL")
                 .magsOutcomeDate(String.valueOf(LocalDate.now().minusDays(10)))
-                .magsOutcomeDateSet(LocalDate.now().minusDays(10))
+                .magsOutcomeDateSet(LocalDateTime.now().minusDays(10))
                 .committalDate(LocalDate.now().minusDays(5))
                 .decisionReasonCode("GRANTED")
                 .crownRepId(REP_ID)

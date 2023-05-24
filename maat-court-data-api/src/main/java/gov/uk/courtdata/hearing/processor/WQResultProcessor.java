@@ -1,10 +1,12 @@
 package gov.uk.courtdata.hearing.processor;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.WQResultEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQResultRepository;
 import gov.uk.courtdata.util.DateUtil;
+import gov.uk.courtdata.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +30,8 @@ public class WQResultProcessor {
                 .asnSeq(magsCourtDTO.getOffence().getAsnSeq())
                 .resultCode(magsCourtDTO.getResult().getResultCode())
                 .resultShortTitle(magsCourtDTO.getResult().getResultShortTitle())
-                .resultText(magsCourtDTO.getResult().getResultText())
+                .resultText(StringUtils.applyMaxLengthLimitToString(
+                                magsCourtDTO.getResult().getResultText(), CourtDataConstants.ORACLE_VARCHAR_MAX))
                 .resultCodeQualifiers(magsCourtDTO.getResult().getResultCodeQualifiers())
                 .nextHearingDate(DateUtil.parse(magsCourtDTO.getResult().getNextHearingDate()))
                 .nextHearingLocation(magsCourtDTO.getResult().getNextHearingLocation())

@@ -3,6 +3,7 @@ package gov.uk.courtdata.hearing.processor;
 import com.google.gson.Gson;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.WQOffenceEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.hearing.dto.HearingOffenceDTO;
@@ -114,5 +115,20 @@ public class WQOffenceProcessorTest {
         verify(wqOffenceRepository).save(wqOffenceEntityArgumentCaptor.capture());
         assertThat(wqOffenceEntityArgumentCaptor.getValue().getLegalAidStatus()).isEqualTo("WD");
         assertThat(wqOffenceEntityArgumentCaptor.getValue().getApplicationFlag()).isEqualTo(1);
+    }
+
+    @Test
+    public void givenOffenceWordingIsGreaterThan4000Characters_whenProcessIsInvoked_thenSaveOffenceWithTruncatedOffenceWording() {
+        //given
+        String expectedOffenceWording = "a".repeat(CourtDataConstants.ORACLE_VARCHAR_MAX);
+        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        hearingDTO.getOffence().setOffenceWording("a".repeat(CourtDataConstants.ORACLE_VARCHAR_MAX + 1));
+
+        //when
+        wqOffenceProcessor.process(hearingDTO);
+
+        //then
+        verify(wqOffenceRepository).save(wqOffenceEntityArgumentCaptor.capture());
+        assertThat(wqOffenceEntityArgumentCaptor.getValue().getOffenceWording()).isEqualTo(expectedOffenceWording);
     }
 }

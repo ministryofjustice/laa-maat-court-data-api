@@ -40,7 +40,7 @@ public class TestEntityDataBuilder {
                 .catyCaseType("case-type")
                 .magsOutcome("outcome")
                 .magsOutcomeDate(TEST_DATE.toString())
-                .magsOutcomeDateSet(TEST_DATE.toLocalDate())
+                .magsOutcomeDateSet(TEST_DATE)
                 .committalDate(TEST_DATE.toLocalDate())
                 .decisionReasonCode("rder-code")
                 .crownRepOrderDecision("cc-rep-doc")

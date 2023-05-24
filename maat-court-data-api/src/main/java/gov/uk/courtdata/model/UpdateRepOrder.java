@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @SuperBuilder
@@ -21,7 +22,7 @@ public class UpdateRepOrder {
     private String userModified;
     private String magsOutcome;
     private String magsOutcomeDate;
-    private LocalDate magsOutcomeDateSet;
+    private LocalDateTime magsOutcomeDateSet;
     private LocalDate committalDate;
     private String decisionReasonCode;
     private Integer crownRepId;

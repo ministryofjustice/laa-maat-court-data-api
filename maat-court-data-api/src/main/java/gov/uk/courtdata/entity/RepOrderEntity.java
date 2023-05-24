@@ -57,7 +57,7 @@ public class RepOrderEntity {
     @Column(name = "MAGS_OUTCOME_DATE")
     private String magsOutcomeDate;
     @Column(name = "MAGS_OUTCOME_DATE_SET")
-    private LocalDate magsOutcomeDateSet;
+    private LocalDateTime magsOutcomeDateSet;
     @Column(name = "COMMITTAL_DATE")
     private LocalDate committalDate;
     @Column(name = "RDER_CODE")

@@ -6,8 +6,8 @@ import gov.uk.courtdata.entity.WQResultEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQResultRepository;
 import gov.uk.courtdata.util.DateUtil;
-import gov.uk.courtdata.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,8 +30,8 @@ public class WQResultProcessor {
                 .asnSeq(magsCourtDTO.getOffence().getAsnSeq())
                 .resultCode(magsCourtDTO.getResult().getResultCode())
                 .resultShortTitle(magsCourtDTO.getResult().getResultShortTitle())
-                .resultText(StringUtils.applyMaxLengthLimitToString(
-                                magsCourtDTO.getResult().getResultText(), CourtDataConstants.ORACLE_VARCHAR_MAX))
+                .resultText(StringUtils.truncate(
+                        magsCourtDTO.getResult().getResultText(), CourtDataConstants.ORACLE_VARCHAR_MAX))
                 .resultCodeQualifiers(magsCourtDTO.getResult().getResultCodeQualifiers())
                 .nextHearingDate(DateUtil.parse(magsCourtDTO.getResult().getNextHearingDate()))
                 .nextHearingLocation(magsCourtDTO.getResult().getNextHearingLocation())

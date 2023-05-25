@@ -9,8 +9,8 @@ import gov.uk.courtdata.hearing.dto.HearingOffenceDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.OffenceHelper;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import gov.uk.courtdata.util.DateUtil;
-import gov.uk.courtdata.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.*;
@@ -41,8 +41,7 @@ public class WQOffenceProcessor {
                 .offenceDate(DateUtil.parse(offence.getOffenceDate()))
                 .offenceShortTitle(offence.getOffenceShortTitle())
                 .modeOfTrial(offence.getModeOfTrial())
-                .offenceWording(StringUtils.applyMaxLengthLimitToString(
-                        offence.getOffenceWording(), CourtDataConstants.ORACLE_VARCHAR_MAX))
+                .offenceWording(StringUtils.truncate(offence.getOffenceWording(), CourtDataConstants.ORACLE_VARCHAR_MAX))
                 .wqOffence(null)
                 .applicationFlag(offence.getApplicationFlag() != null ? offence.getApplicationFlag() : G_NO)
                 .offenceId(offence.getOffenceId())

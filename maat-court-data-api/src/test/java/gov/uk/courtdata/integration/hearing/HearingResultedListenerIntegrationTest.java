@@ -18,12 +18,12 @@ import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static gov.uk.courtdata.enums.WQStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 public class HearingResultedListenerIntegrationTest {
 
@@ -85,7 +85,7 @@ public class HearingResultedListenerIntegrationTest {
 
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         identifierRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();

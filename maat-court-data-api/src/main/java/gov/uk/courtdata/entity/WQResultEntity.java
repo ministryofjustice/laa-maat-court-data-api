@@ -29,7 +29,7 @@ public class WQResultEntity {
     private Integer resultCode;
     @Column(name = "RESULT_SHORT_TITLE")
     private String resultShortTitle;
-    @Column(name = "RESULT_TEXT")
+    @Column(name = "RESULT_TEXT", length = 4000)
     private String resultText;
     @Column(name = "RESULT_CODE_QUALIFIERS")
     private String resultCodeQualifiers;

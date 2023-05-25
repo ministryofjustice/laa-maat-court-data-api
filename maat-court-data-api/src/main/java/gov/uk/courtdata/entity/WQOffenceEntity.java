@@ -30,7 +30,7 @@ public class WQOffenceEntity {
     private String offenceClassification;
     @Column(name = "OFFENCE_DATE")
     private LocalDate offenceDate;
-    @Column(name = "OFFENCE_WORDING")
+    @Column(name = "OFFENCE_WORDING", length = 4000)
     private String offenceWording;
     @Column(name = "MODE_OF_TRIAL")
     private Integer modeOfTrial;

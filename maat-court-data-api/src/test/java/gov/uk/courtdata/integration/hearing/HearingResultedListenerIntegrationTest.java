@@ -4,6 +4,7 @@ package gov.uk.courtdata.integration.hearing;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
+import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -17,13 +18,14 @@ import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static gov.uk.courtdata.enums.WQStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 public class HearingResultedListenerIntegrationTest {
 
@@ -85,7 +87,7 @@ public class HearingResultedListenerIntegrationTest {
 
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         identifierRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();
@@ -144,7 +146,7 @@ public class HearingResultedListenerIntegrationTest {
                 .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
                 .jurisdictionType(JurisdictionType.CROWN).build();
 
-        runMaatErrorScenario(testData, String.format("MAAT Id : %s not linked.", TEST_MAAT_ID));
+        runValidationErrorScenario(testData, String.format("MAAT Id : %s not linked.", TEST_MAAT_ID));
     }
 
     @Test
@@ -159,7 +161,7 @@ public class HearingResultedListenerIntegrationTest {
                 .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
                 .jurisdictionType(JurisdictionType.CROWN).build();
 
-        runMaatErrorScenario(testData, String.format("Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
+        runValidationErrorScenario(testData, String.format("Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
     }
 
     @Test
@@ -248,6 +250,18 @@ public class HearingResultedListenerIntegrationTest {
         });
 
         runSuccessScenario(testData, false, true, true);
+    }
+
+    @Test
+    public void givenAValidHearingRequiringTextTruncation_whenMessageIsReceived_thenTheCorrectDataIsPersisted() throws JsonProcessingException {
+        String stringRequiringTruncation = "a".repeat(ORACLE_VARCHAR_MAX + 10);
+        HearingResulted testData = getTemplateResultedHearingData();
+        Offence testOffence = testData.getDefendant().getOffences().get(0);
+        testOffence.setOffenceWording(stringRequiringTruncation);
+        Result testResult = testOffence.getResults().get(0);
+        testResult.setResultText(stringRequiringTruncation);
+
+        runSuccessScenario(testData, true, true, true);
     }
 
     private String generateTestAsnSeq(Offence offence) {
@@ -356,7 +370,7 @@ public class HearingResultedListenerIntegrationTest {
         assertThat(resultEntity.getAsnSeq()).isEqualTo(offence.getAsnSeq());
         assertThat(resultEntity.getResultCode()).hasToString(result.getResultCode());
         assertThat(resultEntity.getResultShortTitle()).isEqualTo(result.getResultShortTitle());
-        assertThat(resultEntity.getResultText()).isEqualTo(result.getResultText());
+        assertThat(resultEntity.getResultText()).isEqualTo(StringUtils.truncate(result.getResultText(), ORACLE_VARCHAR_MAX));
         assertThat(resultEntity.getResultCodeQualifiers()).isEqualTo(result.getResultCodeQualifiers());
         assertThat(resultEntity.getNextHearingDate()).hasToString(result.getNextHearingDate());
         assertThat(resultEntity.getNextHearingLocation()).isEqualTo(result.getNextHearingLocation());
@@ -400,6 +414,7 @@ public class HearingResultedListenerIntegrationTest {
         assertThat(offenceEntity.getLegalaidReason()).isEqualTo(offence.getLegalAidReason());
         assertThat(offenceEntity.getOffenceDate()).hasToString(offence.getOffenceDate());
         assertThat(offenceEntity.getOffenceShortTitle()).isEqualTo(offence.getOffenceShortTitle());
+        assertThat(offenceEntity.getOffenceWording()).isEqualTo(StringUtils.truncate(offence.getOffenceWording(), ORACLE_VARCHAR_MAX));
         assertThat(offenceEntity.getModeOfTrial()).isEqualTo(offence.getModeOfTrial());
         assertThat(offenceEntity.getWqOffence()).isNull();
         assertThat(offenceEntity.getOffenceCode()).isEqualTo(offence.getOffenceCode());

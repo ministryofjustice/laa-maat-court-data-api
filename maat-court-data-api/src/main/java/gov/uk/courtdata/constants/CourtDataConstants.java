@@ -40,5 +40,6 @@ public final class CourtDataConstants {
     public static final Integer COMMITTAL_FOR_TRIAL_SUB_TYPE = 2;
     public static final Integer COMMITTAL_FOR_SENTENCE_SUB_TYPE = 1;
     public static final String LAA_TRANSACTION_ID = "Laa-Transaction-Id";
+    public static final int ORACLE_VARCHAR_MAX = 4000;
 
 }

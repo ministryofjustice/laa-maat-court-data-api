@@ -18,11 +18,13 @@ import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.MessageHeaders;
@@ -40,6 +42,9 @@ import java.util.stream.Collectors;
 import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static gov.uk.courtdata.enums.WQStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
@@ -56,6 +61,8 @@ public class HearingResultedListenerIntegrationTest {
     private IdentifierRepository identifierRepository;
     @Autowired
     private WqLinkRegisterRepository wqLinkRegisterRepository;
+    @Mock
+    private WqLinkRegisterRepository wqLinkRegisterRepository1;
     @Autowired
     private XLATResultRepository xlatResultRepository;
     @Autowired
@@ -113,12 +120,11 @@ public class HearingResultedListenerIntegrationTest {
     @Test
     public void givenAHearingMessageWithNoMaatId_whenMessageIsReceived_thenErrorIsReturned() {
         String payloadMissingMaatId = String.format("{\"laaTransactionId\":\"%s\"}", LAA_TRANSACTION_ID);
-        ValidationException error = Assert.assertThrows(
-                ValidationException.class, () -> hearingResultedListener.receive(payloadMissingMaatId, new MessageHeaders(new HashMap<>())));
-
-        Assert.assertEquals("MAAT ID is required.", error.getMessage());
+        hearingResultedListener.receive(payloadMissingMaatId, new MessageHeaders(new HashMap<>()));
+        verify(wqLinkRegisterRepository1, times(0)).findBymaatId(anyInt());
         queueMessageLogTestHelper.assertQueueMessageLogged(
-                payloadMissingMaatId, 1, LAA_TRANSACTION_ID, -1);}
+                payloadMissingMaatId, 1, LAA_TRANSACTION_ID, -1);
+    }
 
     @Test
     public void givenAHearingMessageWithAZeroMaatId_whenMessageIsReceived_thenErrorIsReturned() throws JsonProcessingException {
@@ -137,8 +143,6 @@ public class HearingResultedListenerIntegrationTest {
                 .functionType(FunctionType.OFFENCE)
                 .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
                 .jurisdictionType(JurisdictionType.CROWN).build();
-        String messageBlob = objectMapper.writeValueAsString(testData);
-        hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>()));
 
         runValidationErrorScenario(testData, "MAAT ID is required.");
     }
@@ -522,7 +526,7 @@ public class HearingResultedListenerIntegrationTest {
     }
 
     private void runValidationErrorScenario(HearingResulted testPayload, String expectedErrorMessage) throws JsonProcessingException {
-        runErrorScenario(ValidationException.class, testPayload, expectedErrorMessage);
+        runValidationErrorScenario(ValidationException.class, testPayload, expectedErrorMessage);
     }
 
     private void runMaatErrorScenario(HearingResulted testPayload, String expectedErrorMessage) throws JsonProcessingException {
@@ -595,8 +599,17 @@ public class HearingResultedListenerIntegrationTest {
 
     private <T extends Exception> void runErrorScenario(Class<T> exceptionClass, HearingResulted testPayload, String expectedErrorMessage) throws JsonProcessingException {
         String messageBlob = objectMapper.writeValueAsString(testPayload);
-        T error = Assert.assertThrows(exceptionClass, () -> hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>())));
-        Assert.assertEquals(error.getMessage(), expectedErrorMessage);
+        T error = Assertions.assertThrows(exceptionClass, () -> hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>())));
+        Assertions.assertEquals(error.getMessage(), expectedErrorMessage);
+        queueMessageLogTestHelper.assertQueueMessageLogged(
+                messageBlob, 1, testPayload.getLaaTransactionId().toString(), testPayload.getMaatId());
+    }
+
+
+    private <T extends Exception> void runValidationErrorScenario(Class<T> exceptionClass, HearingResulted testPayload, String expectedErrorMessage) throws JsonProcessingException {
+        String messageBlob = objectMapper.writeValueAsString(testPayload);
+        hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>()));
+        verify(wqLinkRegisterRepository1, times(0)).findBymaatId(testPayload.getMaatId());
         queueMessageLogTestHelper.assertQueueMessageLogged(
                 messageBlob, 1, testPayload.getLaaTransactionId().toString(), testPayload.getMaatId());
     }

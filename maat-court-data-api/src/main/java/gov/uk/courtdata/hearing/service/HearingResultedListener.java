@@ -43,7 +43,7 @@ public class HearingResultedListener {
             if (hearingResulted.getHearingId() == null) hearingResulted.setHearingId(UUID.randomUUID());
             hearingResultedService.execute(hearingResulted);
 
-        } catch (ValidationException exception) {
+        }  catch (ValidationException exception) {
             log.warn(exception.getMessage());
         }
     }

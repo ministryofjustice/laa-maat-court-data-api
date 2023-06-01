@@ -188,7 +188,7 @@ public class FinancialAssessmentsHistoryEntity {
     private String magsOutcomeDate;
 
     @Column(name = "MAGS_OUTCOME_DATE_SET")
-    private LocalDate magsOutcomeDateSet;
+    private LocalDateTime magsOutcomeDateSet;
 
     @Column(name = "COMMITTAL_DATE")
     private LocalDate committalDate;

@@ -3,23 +3,20 @@ package gov.uk.courtdata.exception;
 
 import gov.uk.courtdata.constants.ErrorCodes;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.eform.exception.UsnException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -126,12 +123,14 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
                 .build());
     }
 
-    @ExceptionHandler(UsnValidationException.class)
-    public ResponseEntity<ErrorDTO> handleUsnValidationException(UsnValidationException ex) {
+    @ExceptionHandler(UsnException.class)
+    public ResponseEntity<ErrorDTO> handleUsnValidationException(UsnException ex) {
         String errorMessage = ex.getMessage();
-        log.error(errorMessage);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder()
-                .code(HttpStatus.BAD_REQUEST.name())
+        log.warn(errorMessage);
+        HttpStatus httpStatus = ex.getHttpResponseCode();
+        
+        return ResponseEntity.status(httpStatus).body(ErrorDTO.builder()
+                .code(httpStatus.name())
                 .message(errorMessage)
                 .build());
     }

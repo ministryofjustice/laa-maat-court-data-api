@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Builder
 @Data
@@ -26,6 +24,17 @@ public class EformsStagingEntity {
     @Column(name = "TYPE")
     private String type;
 
+    @Lob
+    @Column(name = "XML_DOC")
+    private String xmlDoc;
+
     @Column(name = "MAAT_REF")
     private Integer maatRef;
+
+    @Column(name = "USER_CREATED")
+    private String userCreated;
+
+    @CreationTimestamp
+    @Column(name = "DATE_CREATED", nullable = false, updatable = false)
+    private LocalDateTime dateCreated;
 }

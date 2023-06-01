@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import gov.uk.courtdata.constants.CourtDataConstants;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -29,7 +30,7 @@ public class WQResultEntity {
     private Integer resultCode;
     @Column(name = "RESULT_SHORT_TITLE")
     private String resultShortTitle;
-    @Column(name = "RESULT_TEXT")
+    @Column(name = "RESULT_TEXT", length = CourtDataConstants.ORACLE_VARCHAR_MAX)
     private String resultText;
     @Column(name = "RESULT_CODE_QUALIFIERS")
     private String resultCodeQualifiers;

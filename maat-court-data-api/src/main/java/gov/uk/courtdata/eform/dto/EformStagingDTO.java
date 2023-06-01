@@ -14,4 +14,6 @@ public class EformStagingDTO {
     private Integer usn;
     private String type;
     private Integer maatRef;
+    private String userCreated;
+    private String xmlDoc;
 }

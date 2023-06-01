@@ -1,7 +1,7 @@
 package gov.uk.courtdata.eform.validator;
 
+import gov.uk.courtdata.eform.exception.UsnException;
 import gov.uk.courtdata.eform.service.EformStagingService;
-import gov.uk.courtdata.exception.UsnValidationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,40 +22,40 @@ class UsnValidatorTest {
     private UsnValidator usnValidator;
 
     @Test
-    void shouldThrowValidationException_When_Calling_VerifyUsnExists_withNonexistentUsn() {
+    void shouldThrowUsnException_When_Calling_VerifyUsnExists_withNonexistentUsn() {
         when(mockEformStagingService.isUsnPresentInDB(654321))
                 .thenReturn(false);
 
-        UsnValidationException exception = Assertions.assertThrows(
-                UsnValidationException.class, () -> usnValidator.verifyUsnExists(654321));
+        UsnException exception = Assertions.assertThrows(
+                UsnException.class, () -> usnValidator.verifyUsnExists(654321));
 
-        assertEquals("The USN [654321] is not valid.", exception.getMessage());
+        assertEquals("The USN [654321] does not exist in the data store.", exception.getMessage());
     }
 
     @Test
     void shouldNotThrowValidationException_When_Calling_VerifyUsnExists_withValidatingValidUsn() {
-        when(mockEformStagingService.isUsnPresentInDB(123))
+        when(mockEformStagingService.isUsnPresentInDB(7000001))
                 .thenReturn(true);
 
-        usnValidator.verifyUsnExists(123);
+        usnValidator.verifyUsnExists(7000001);
     }
 
     @Test
-    void shouldNotThrowValidationException_When_Calling_VerifyUsnDoesNotExist_withNonexistentUsn() {
-        when(mockEformStagingService.isUsnPresentInDB(654321))
+    void shouldThrowUsnException_When_Calling_VerifyUsnDoesNotExist_withExistentUsn() {
+        when(mockEformStagingService.isUsnPresentInDB(7000001))
                 .thenReturn(true);
 
-        UsnValidationException exception = Assertions.assertThrows(
-                UsnValidationException.class, () -> usnValidator.verifyUsnDoesNotExist(654321));
+        UsnException exception = Assertions.assertThrows(
+                UsnException.class, () -> usnValidator.verifyUsnDoesNotExist(7000001));
 
-        assertEquals("The USN [654321] is not valid.", exception.getMessage());
+        assertEquals("The USN [7000001] already exists in the data store.", exception.getMessage());
     }
 
     @Test
     void shouldThrowValidationException_When_Calling_VerifyUsnDoesNotExist_withValidatingValidUsn() {
-        when(mockEformStagingService.isUsnPresentInDB(123))
+        when(mockEformStagingService.isUsnPresentInDB(654321))
                 .thenReturn(false);
 
-        usnValidator.verifyUsnDoesNotExist(123);
+        usnValidator.verifyUsnDoesNotExist(654321);
     }
 }

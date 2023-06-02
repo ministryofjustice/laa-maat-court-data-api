@@ -9,6 +9,7 @@ import gov.uk.courtdata.prosecutionconcluded.helper.ResultCodeHelper;
 import gov.uk.courtdata.repository.CrownCourtStoredProcedureRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -21,6 +22,7 @@ import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.isTrial;
 @Component
 @XRayEnabled
 @RequiredArgsConstructor
+@Slf4j
 public class ProsecutionConcludedImpl {
 
     private final RepOrderRepository repOrderRepository;
@@ -37,7 +39,7 @@ public class ProsecutionConcludedImpl {
 
         Integer maatId = concludedDTO.getProsecutionConcluded().getMaatId();
         final Optional<RepOrderEntity> optionalRepEntity = repOrderRepository.findById(maatId);
-
+        log.debug("Maat-id found and processing ProsecutionConcluded");
         if (optionalRepEntity.isPresent()) {
 
             RepOrderEntity repOrderEntity = optionalRepEntity.get();
@@ -61,7 +63,7 @@ public class ProsecutionConcludedImpl {
     private void verifyCaseTypeValidator(RepOrderEntity repOrder, String calculatedOutcome) {
 
         String caseType = repOrder.getCatyCaseType();
-
+        log.debug("Crown Court - verifying case Type validator");
         if (isTrial(calculatedOutcome) && !caseTypeForTrial(caseType)) {
 
             throw new ValidationException("Crown Court - Case type not valid for Trial.");

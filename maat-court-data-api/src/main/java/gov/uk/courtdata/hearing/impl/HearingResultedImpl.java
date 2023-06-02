@@ -28,7 +28,6 @@ import java.util.List;
 @XRayEnabled
 public class HearingResultedImpl {
 
-
     private final HearingDTOMapper hearingDTOMapper;
     private final IdentifierRepository identifierRepository;
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
@@ -38,10 +37,6 @@ public class HearingResultedImpl {
     private final WQCoreProcessor wqCoreProcessor;
     private final OffenceHelper offenceHelper;
 
-
-    /**
-     * @param hearingResulted
-     */
     public void execute(final HearingResulted hearingResulted) {
 
         List<WqLinkRegisterEntity> wqLinkRegisterEntities =

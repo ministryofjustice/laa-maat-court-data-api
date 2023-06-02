@@ -44,7 +44,4 @@ public class HearingResultedListenerTest {
         verify(queueMessageLogService, times(1)).createLog(MessageType.HEARING, message);
         assertNotNull(laaHearingDetails.getHearingId());
     }
-
-    //todo maybe add test that throw the validatoin exception and also scenarios.
-
 }

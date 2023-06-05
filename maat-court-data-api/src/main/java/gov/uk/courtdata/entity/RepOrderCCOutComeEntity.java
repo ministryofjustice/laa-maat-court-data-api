@@ -18,7 +18,8 @@ import java.time.LocalDateTime;
 public class RepOrderCCOutComeEntity {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @SequenceGenerator(name = "rep_order_cc_outcomes_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rep_order_cc_outcomes_gen_seq")
     @Column(name = "ID")
     private int id;
     @Column(name = "REP_ID")

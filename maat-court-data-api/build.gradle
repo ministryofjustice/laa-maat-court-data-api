@@ -149,6 +149,11 @@ dependencies {
 
     testImplementation 'io.awspring.cloud:spring-cloud-aws-test:2.4.1'
 
+    // for AWS infrastructure (SQS) integration tests
+    testImplementation 'org.testcontainers:testcontainers:1.16.0'
+    testImplementation 'org.testcontainers:localstack:1.16.0'
+    testImplementation 'org.testcontainers:junit-jupiter:1.16.0'
+    testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
 

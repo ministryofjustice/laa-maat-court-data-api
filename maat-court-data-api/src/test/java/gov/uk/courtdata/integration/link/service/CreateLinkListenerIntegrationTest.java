@@ -106,13 +106,6 @@ public class CreateLinkListenerIntegrationTest {
     @Test
     public void givenNewMessageInSqs_whenMaatIsNull_thenThrowException() {
 
-        //given
-        repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
-        repOrderRepository.save(TestEntityDataBuilder.getRepOrder());
-        courtHouseCodesRepository.save(CourtHouseCodesEntity.builder().code("B16BG").effectiveDateFrom(LocalDateTime.now()).build());
-        solicitorMAATDataRepository.save(testEntityDataBuilder.getSolicitorMAATDataEntity());
-        defendantMAATDataRepository.save(testEntityDataBuilder.getDefendantMAATDataEntity());
-
        String saveAndLinkMessage = getSaveAndLinkString();
 
         //when

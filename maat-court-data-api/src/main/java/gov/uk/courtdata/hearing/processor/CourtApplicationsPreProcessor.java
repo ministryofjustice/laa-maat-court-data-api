@@ -38,15 +38,12 @@ public class CourtApplicationsPreProcessor {
         mapApplicationFlag(hearingResulted);
         mapASNSeq(hearingResulted);
         mapApplicationDefaults(hearingResulted);
-
-
     }
 
     private void mapASNSeq(HearingResulted hearingResulted) {
 
         List<WqLinkRegisterEntity> wqLinkRegisterEntity = wqLinkRegisterRepository
                 .findBymaatId(hearingResulted.getMaatId());
-
 
         if (!wqLinkRegisterEntity.isEmpty()) {
 
@@ -58,10 +55,7 @@ public class CourtApplicationsPreProcessor {
 
             processASNSeqForNewApp(offenceList);
 
-
         }
-
-
     }
 
     private void processASNSeqForNewApp(List<Offence> offenceList) {

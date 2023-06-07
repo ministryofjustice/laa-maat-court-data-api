@@ -55,7 +55,7 @@ class DebtCollectionControllerTest {
     }
 
     @Test
-    public void givenIncorrectDateParameter_whenApiIsInvoked_then400ErrorIsThrown() throws Exception {
+    void givenIncorrectDateParameter_whenApiIsInvoked_then400ErrorIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(String.format(endpointUrl+"/final-defence-cost"))
                         .queryParam("fromDate", LocalDate.now().toString())
                         .queryParam("toDate", "notValidDate")

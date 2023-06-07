@@ -19,15 +19,11 @@ public class DebtCollectionService {
 
     public List<String> getContributionFiles(final LocalDate fromDate, final LocalDate toDate) {
 
-        List<String> contributionFileList = contributionFilesRepository.getContribution(fromDate, toDate);
-        return contributionFileList;
-
+        return contributionFilesRepository.getContribution(fromDate, toDate);
     }
 
-    public List<String> getFDC(final LocalDate fromDate,final LocalDate toDate){
+    public List<String> getFDC(final LocalDate fromDate, final LocalDate toDate){
 
-        List<String> contributionFileList = contributionFilesRepository.getFDC(fromDate, toDate);
-        return contributionFileList;
-
+        return contributionFilesRepository.getFDC(fromDate, toDate);
     }
 }

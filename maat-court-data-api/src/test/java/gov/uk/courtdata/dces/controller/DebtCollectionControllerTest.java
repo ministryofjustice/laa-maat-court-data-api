@@ -1,10 +1,6 @@
 package gov.uk.courtdata.dces.controller;
 
-import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.dces.mapper.ContributionFilesMapper;
-import gov.uk.courtdata.dces.mapper.ContributionFilesMapperImpl;
 import gov.uk.courtdata.dces.service.DebtCollectionService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class DebtCollectionControllerTest {
 
     private static final String endpointUrl = "/api/internal/v1/debt-collection-enforcement/";
-    private final ContributionFilesMapper contributionFilesMapper = new ContributionFilesMapperImpl();
 
     @Autowired
     private MockMvc mvc;
@@ -34,14 +29,8 @@ class DebtCollectionControllerTest {
     @MockBean
     private DebtCollectionService debtCollectionService;
 
-    private String contributionFileDto;
-
-    @BeforeEach
-    public void setUp() {
-        contributionFileDto = TestModelDataBuilder.getContributeFileDtoJson();
-    }
     @Test
-    public void testContributionFileContent() throws Exception {
+    void testContributionFileContent() throws Exception {
 
         final LocalDate fromDate = LocalDate.of(2020,9,1);
         final LocalDate toDate = LocalDate.of(2020,11,1);
@@ -49,7 +38,6 @@ class DebtCollectionControllerTest {
         when(debtCollectionService.getContributionFiles(fromDate, toDate)).thenReturn(List.of("Hello"));
 
         mvc.perform(MockMvcRequestBuilders.get(String.format(endpointUrl+"contributions"))
-                        .content(contributionFileDto)
                         .queryParam("fromDate", LocalDate.now().toString())
                         .queryParam("toDate", LocalDate.now().toString())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -57,13 +45,21 @@ class DebtCollectionControllerTest {
     }
 
     @Test
-    public void testFdcFileContent() throws Exception {
+    void testFdcFileContent() throws Exception {
 
         mvc.perform(MockMvcRequestBuilders.get(String.format(endpointUrl+"/final-defence-cost"))
-                        .content(contributionFileDto)
                         .queryParam("fromDate", LocalDate.now().toString())
                         .queryParam("toDate", LocalDate.now().toString())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void givenIncorrectDateParameter_whenApiIsInvoked_then400ErrorIsThrown() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(String.format(endpointUrl+"/final-defence-cost"))
+                        .queryParam("fromDate", LocalDate.now().toString())
+                        .queryParam("toDate", "notValidDate")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
     }
 }

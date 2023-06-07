@@ -34,6 +34,10 @@ spring:
     init:
       platform: h2
 
+  mvc:
+    format:
+      date: iso
+
 cloud:
   aws:
     stack:

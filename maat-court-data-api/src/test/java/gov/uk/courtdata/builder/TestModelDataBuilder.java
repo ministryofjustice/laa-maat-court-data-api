@@ -173,45 +173,6 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static ContributionFilesEntity getContributeFile() {
-        return ContributionFilesEntity.builder()
-                .id(1234)
-                .dateReceived(LocalDate.now())
-                .dateCreated(LocalDate.now())
-                .userCreated("test")
-                .userModified("test")
-                .recordsReceived(1)
-                .xmlContent("test xml data")
-                .ackXmlContent("ack test xml data")
-                .build();
-    }
-    public static ContributionFilesDTO getContributeFileDto() {
-        return ContributionFilesDTO.builder()
-                .id(1234)
-                .dateReceived(LocalDate.now())
-                .dateCreated(LocalDate.now())
-                .userCreated("test")
-                .userModified("test")
-                .recordsReceived(1)
-                .xmlContent("test xml data")
-                .ackXmlContent("ack test xml data")
-                .build();
-    }
-
-
-    public static String getContributeFileDtoJson() {
-        return "{\n" +
-                "\"id\": 4351623,\n" +
-                "\"dateReceived\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"dateCreated\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"userCreated\": \"test-f\",\n" +
-                "\"userModified\": \"test user\",\n" +
-                "\"recordsReceived\": 1,\n" +
-                "\"xmlContent\": \"sample xml data\",\n" +
-                "\"ackXmlContent\": \"sample xml data\"\n" +
-                "}";
-    }
-
     public static String getCreateFinancialAssessmentJson() {
         return "{\n" +
                 "\"repId\": 4351623,\n" +

@@ -22,12 +22,6 @@ public class ContributionFilesEntity {
     @Column(name = "FILE_NAME", length = 45,  nullable = false)
     private String upliftApplied;
 
-    @Column(name = "RECORDS_SENT",  nullable = false)
-    private Integer recordsSent;
-
-    @Column(name = "RECORDS_RECEIVED")
-    private Integer recordsReceived;
-
     @Column(name = "DATE_CREATED",  nullable = false)
     private LocalDate dateCreated;
 
@@ -49,7 +43,5 @@ public class ContributionFilesEntity {
     @Column(name = "XML_CONTENT")
     private String xmlContent;
 
-    @Column(name = "ACK_XML_CONTENT")
-    private String ackXmlContent;
 
 }

@@ -5,7 +5,9 @@ import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
+import gov.uk.courtdata.dces.dto.ContributionFilesDTO;
 import gov.uk.courtdata.dto.*;
+import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
@@ -169,6 +171,45 @@ public class TestModelDataBuilder {
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
                 .build();
+    }
+
+    public static ContributionFilesEntity getContributeFile() {
+        return ContributionFilesEntity.builder()
+                .id(1234)
+                .dateReceived(LocalDate.now())
+                .dateCreated(LocalDate.now())
+                .userCreated("test")
+                .userModified("test")
+                .recordsReceived(1)
+                .xmlContent("test xml data")
+                .ackXmlContent("ack test xml data")
+                .build();
+    }
+    public static ContributionFilesDTO getContributeFileDto() {
+        return ContributionFilesDTO.builder()
+                .id(1234)
+                .dateReceived(LocalDate.now())
+                .dateCreated(LocalDate.now())
+                .userCreated("test")
+                .userModified("test")
+                .recordsReceived(1)
+                .xmlContent("test xml data")
+                .ackXmlContent("ack test xml data")
+                .build();
+    }
+
+
+    public static String getContributeFileDtoJson() {
+        return "{\n" +
+                "\"id\": 4351623,\n" +
+                "\"dateReceived\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"dateCreated\": \"2023-04-01T00:00:00.00\",\n" +
+                "\"userCreated\": \"test-f\",\n" +
+                "\"userModified\": \"test user\",\n" +
+                "\"recordsReceived\": 1,\n" +
+                "\"xmlContent\": \"sample xml data\",\n" +
+                "\"ackXmlContent\": \"sample xml data\"\n" +
+                "}";
     }
 
     public static String getCreateFinancialAssessmentJson() {

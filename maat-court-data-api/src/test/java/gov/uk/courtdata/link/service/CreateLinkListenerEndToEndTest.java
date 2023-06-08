@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class CreateLinkListenerEndToEndTest extends SqsIntegrationTest {
+class CreateLinkListenerEndToEndTest extends SqsIntegrationTest {
 
     private static final int ONCE = 1;
 
@@ -47,7 +47,7 @@ public class CreateLinkListenerEndToEndTest extends SqsIntegrationTest {
     }
 
     @Test
-    public void givenJSONMessageIsReceived_whenCreateLinkListenerIsInvoked_thenCreateLinkServiceIsCalled() {
+    void givenJSONMessageIsReceived_whenCreateLinkListenerIsInvoked_thenCreateLinkServiceIsCalled() {
         String messageJson = "{\"caseUrn\":\"123\", \"maatId\":4321, \"asn\":null, \"docLanguage\":null, " +
                 "\"caseCreationDate\":null, \"cjsAreaCode\":null, \"cjsLocation\":null, \"createdUser\":null, " +
                 "\"defendant\":null, \"isActive\":false, \"sessions\":null, \"category\":null, " +

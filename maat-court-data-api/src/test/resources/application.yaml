@@ -46,7 +46,6 @@ cloud:
       secret-key: secret
     sqs:
       listener:
-        auto-startup: false
         queue-stop-timeout: 500
 
 

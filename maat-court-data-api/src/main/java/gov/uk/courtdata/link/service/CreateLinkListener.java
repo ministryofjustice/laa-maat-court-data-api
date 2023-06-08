@@ -12,7 +12,6 @@ import io.awspring.cloud.messaging.listener.annotation.SqsListener;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -25,9 +24,6 @@ import org.springframework.stereotype.Service;
 @XRayEnabled
 @Service
 @AllArgsConstructor
-@ConditionalOnProperty(
-        name = "cloud.aws.sqs.listener.auto-startup", havingValue = "true"
-)
 public class CreateLinkListener {
 
     private final CreateLinkService createLinkService;

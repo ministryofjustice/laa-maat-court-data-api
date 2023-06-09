@@ -44,6 +44,9 @@ cloud:
     credentials:
       access-key: access
       secret-key: secret
+    sqs:
+      listener:
+        queue-stop-timeout: 500
 
 
 cloud-platform:

@@ -17,27 +17,30 @@ import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static gov.uk.courtdata.enums.WQStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 public class HearingResultedListenerIntegrationTest {
 
@@ -52,6 +55,8 @@ public class HearingResultedListenerIntegrationTest {
     private IdentifierRepository identifierRepository;
     @Autowired
     private WqLinkRegisterRepository wqLinkRegisterRepository;
+    @Mock
+    private WqLinkRegisterRepository wqLinkRegisterRepository1;
     @Autowired
     private XLATResultRepository xlatResultRepository;
     @Autowired
@@ -85,7 +90,7 @@ public class HearingResultedListenerIntegrationTest {
 
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         identifierRepository.deleteAll();
         wqLinkRegisterRepository.deleteAll();
@@ -109,17 +114,27 @@ public class HearingResultedListenerIntegrationTest {
     @Test
     public void givenAHearingMessageWithNoMaatId_whenMessageIsReceived_thenErrorIsReturned() {
         String payloadMissingMaatId = String.format("{\"laaTransactionId\":\"%s\"}", LAA_TRANSACTION_ID);
-        ValidationException error = Assert.assertThrows(
-                ValidationException.class, () -> hearingResultedListener.receive(payloadMissingMaatId));
-
-        Assert.assertEquals("MAAT ID is required.", error.getMessage());
+        hearingResultedListener.receive(payloadMissingMaatId, new MessageHeaders(new HashMap<>()));
+        verify(wqLinkRegisterRepository1, times(0)).findBymaatId(anyInt());
         queueMessageLogTestHelper.assertQueueMessageLogged(
-                payloadMissingMaatId, 1, LAA_TRANSACTION_ID, -1);}
+                payloadMissingMaatId, 1, LAA_TRANSACTION_ID, -1);
+    }
 
     @Test
     public void givenAHearingMessageWithAZeroMaatId_whenMessageIsReceived_thenErrorIsReturned() throws JsonProcessingException {
         HearingResulted testData = HearingResulted.builder()
                 .maatId(0)
+                .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
+                .jurisdictionType(JurisdictionType.CROWN).build();
+
+        runValidationErrorScenario(testData, "MAAT ID is required.");
+    }
+
+    @Test
+    public void givenAHearingMessageWithAZeroMaatId_whenMessageIsReceived_thenErrorIsReturned1() throws JsonProcessingException {
+        HearingResulted testData = HearingResulted.builder()
+                .maatId(0)
+                .functionType(FunctionType.OFFENCE)
                 .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
                 .jurisdictionType(JurisdictionType.CROWN).build();
 
@@ -144,7 +159,7 @@ public class HearingResultedListenerIntegrationTest {
                 .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
                 .jurisdictionType(JurisdictionType.CROWN).build();
 
-        runMaatErrorScenario(testData, String.format("MAAT Id : %s not linked.", TEST_MAAT_ID));
+        runValidationErrorScenario(testData, String.format("MAAT Id : %s not linked.", TEST_MAAT_ID));
     }
 
     @Test
@@ -159,7 +174,7 @@ public class HearingResultedListenerIntegrationTest {
                 .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
                 .jurisdictionType(JurisdictionType.CROWN).build();
 
-        runMaatErrorScenario(testData, String.format("Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
+        runValidationErrorScenario(testData, String.format("Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
     }
 
     @Test
@@ -250,6 +265,18 @@ public class HearingResultedListenerIntegrationTest {
         runSuccessScenario(testData, false, true, true);
     }
 
+    @Test
+    public void givenAValidHearingRequiringTextTruncation_whenMessageIsReceived_thenTheCorrectDataIsPersisted() throws JsonProcessingException {
+        String stringRequiringTruncation = "a".repeat(ORACLE_VARCHAR_MAX + 10);
+        HearingResulted testData = getTemplateResultedHearingData();
+        Offence testOffence = testData.getDefendant().getOffences().get(0);
+        testOffence.setOffenceWording(stringRequiringTruncation);
+        Result testResult = testOffence.getResults().get(0);
+        testResult.setResultText(stringRequiringTruncation);
+
+        runSuccessScenario(testData, true, true, true);
+    }
+
     private String generateTestAsnSeq(Offence offence) {
         return String.format("123%s", offence.getOffenceId());
     }
@@ -278,7 +305,7 @@ public class HearingResultedListenerIntegrationTest {
                         WqLinkRegisterEntity.builder().createdTxId(1).maatId(TEST_MAAT_ID).caseId(TEST_CASE_ID).proceedingId(1).build());
 
         String messageBlob = objectMapper.writeValueAsString(testData);
-        hearingResultedListener.receive(messageBlob);
+        hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>()));
 
         if (testData.getFunctionType() == FunctionType.APPLICATION) {
             modifyTestDataForCourtPreProcessing(testData);
@@ -356,7 +383,7 @@ public class HearingResultedListenerIntegrationTest {
         assertThat(resultEntity.getAsnSeq()).isEqualTo(offence.getAsnSeq());
         assertThat(resultEntity.getResultCode()).hasToString(result.getResultCode());
         assertThat(resultEntity.getResultShortTitle()).isEqualTo(result.getResultShortTitle());
-        assertThat(resultEntity.getResultText()).isEqualTo(result.getResultText());
+        assertThat(resultEntity.getResultText()).isEqualTo(StringUtils.truncate(result.getResultText(), ORACLE_VARCHAR_MAX));
         assertThat(resultEntity.getResultCodeQualifiers()).isEqualTo(result.getResultCodeQualifiers());
         assertThat(resultEntity.getNextHearingDate()).hasToString(result.getNextHearingDate());
         assertThat(resultEntity.getNextHearingLocation()).isEqualTo(result.getNextHearingLocation());
@@ -400,6 +427,7 @@ public class HearingResultedListenerIntegrationTest {
         assertThat(offenceEntity.getLegalaidReason()).isEqualTo(offence.getLegalAidReason());
         assertThat(offenceEntity.getOffenceDate()).hasToString(offence.getOffenceDate());
         assertThat(offenceEntity.getOffenceShortTitle()).isEqualTo(offence.getOffenceShortTitle());
+        assertThat(offenceEntity.getOffenceWording()).isEqualTo(StringUtils.truncate(offence.getOffenceWording(), ORACLE_VARCHAR_MAX));
         assertThat(offenceEntity.getModeOfTrial()).isEqualTo(offence.getModeOfTrial());
         assertThat(offenceEntity.getWqOffence()).isNull();
         assertThat(offenceEntity.getOffenceCode()).isEqualTo(offence.getOffenceCode());
@@ -492,7 +520,7 @@ public class HearingResultedListenerIntegrationTest {
     }
 
     private void runValidationErrorScenario(HearingResulted testPayload, String expectedErrorMessage) throws JsonProcessingException {
-        runErrorScenario(ValidationException.class, testPayload, expectedErrorMessage);
+        runValidationErrorScenario(ValidationException.class, testPayload, expectedErrorMessage);
     }
 
     private void runMaatErrorScenario(HearingResulted testPayload, String expectedErrorMessage) throws JsonProcessingException {
@@ -565,8 +593,17 @@ public class HearingResultedListenerIntegrationTest {
 
     private <T extends Exception> void runErrorScenario(Class<T> exceptionClass, HearingResulted testPayload, String expectedErrorMessage) throws JsonProcessingException {
         String messageBlob = objectMapper.writeValueAsString(testPayload);
-        T error = Assert.assertThrows(exceptionClass, () -> hearingResultedListener.receive(messageBlob));
-        Assert.assertEquals(error.getMessage(), expectedErrorMessage);
+        T error = Assertions.assertThrows(exceptionClass, () -> hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>())));
+        Assertions.assertEquals(error.getMessage(), expectedErrorMessage);
+        queueMessageLogTestHelper.assertQueueMessageLogged(
+                messageBlob, 1, testPayload.getLaaTransactionId().toString(), testPayload.getMaatId());
+    }
+
+
+    private <T extends Exception> void runValidationErrorScenario(Class<T> exceptionClass, HearingResulted testPayload, String expectedErrorMessage) throws JsonProcessingException {
+        String messageBlob = objectMapper.writeValueAsString(testPayload);
+        hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>()));
+        verify(wqLinkRegisterRepository1, times(0)).findBymaatId(testPayload.getMaatId());
         queueMessageLogTestHelper.assertQueueMessageLogged(
                 messageBlob, 1, testPayload.getLaaTransactionId().toString(), testPayload.getMaatId());
     }

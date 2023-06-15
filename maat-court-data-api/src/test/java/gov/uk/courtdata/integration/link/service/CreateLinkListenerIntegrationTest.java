@@ -4,7 +4,6 @@ package gov.uk.courtdata.integration.link.service;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.config.SpringCloudAwsConfig;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.CourtHouseCodesEntity;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
@@ -19,10 +18,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -85,7 +87,11 @@ public class CreateLinkListenerIntegrationTest {
         String saveAndLinkMessage = testModelDataBuilder.getSaveAndLinkString();
 
         //when
-        createLinkListener.receive(saveAndLinkMessage, "2");
+        Map<String, Object> header = new HashMap<>();
+        header.put("MessageId", "AIDAIU3GACVJITZULQ2RQ");
+        MessageHeaders headers = new MessageHeaders(header);
+        //when
+        createLinkListener.receive(saveAndLinkMessage, headers);
 
         //then
         CourtDataDTO courtDataDTO = testModelDataBuilder.getSaveAndLinkModelRaw();
@@ -95,6 +101,21 @@ public class CreateLinkListenerIntegrationTest {
 
         queueMessageLogTestHelper.assertQueueMessageLogged(saveAndLinkMessage, 1, "e439dfc8-664e-4c8e-a999-d756dcf112c2", 1234);
 
+    }
+
+    @Test
+    public void givenNewMessageInSqs_whenMaatIsNull_thenThrowException() {
+
+       String saveAndLinkMessage = getSaveAndLinkString();
+
+        //when
+        Map<String, Object> header = new HashMap<>();
+        header.put("MessageId", "AIDAIU3GACVJITZULQ2RQ");
+        MessageHeaders headers = new MessageHeaders(header);
+        //when
+        createLinkListener.receive(saveAndLinkMessage, headers);
+        //then
+        assertThat(wqLinkRegisterRepository.findAll().size()).isEqualTo(0);
     }
 
     private void verifyRepOrder(CourtDataDTO courtDataDTO) {
@@ -116,7 +137,20 @@ public class CreateLinkListenerIntegrationTest {
         assert wqLinkRegisterEntity != null;
         assertThat(wqLinkRegisterEntity.getMaatId()).isEqualTo(courtDataDTO.getCaseDetails().getMaatId());
     }
+    public String getSaveAndLinkString() {
+        return "{\n" +
 
-
+                "  \"category\": 12,\n" +
+                "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
+                "  \"caseUrn\":\"caseurn1\",\n" +
+                "  \"asn\": \"123456754\",\n" +
+                "  \"docLanguage\": \"EN\",\n" +
+                "  \"caseCreationDate\": \"2019-08-16\",\n" +
+                "  \"cjsAreaCode\": \"16\",\n" +
+                "  \"createdUser\": \"testUser\",\n" +
+                "  \"cjsLocation\": \"B16BG\",\n" +
+                "  \"isActive\" : true\n" +
+                "}";
+    }
 }
 

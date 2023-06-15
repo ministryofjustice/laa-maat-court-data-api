@@ -5,10 +5,11 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.CpJobStatus;
 import gov.uk.courtdata.service.QueueMessageLogService;
+import io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy;
+import io.awspring.cloud.messaging.listener.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,9 @@ public class CreateLinkCpJobStatusListener {
     private final Gson gson;
     private final QueueMessageLogService queueMessageLogService;
 
-    @JmsListener(destination = "${cloud-platform.aws.sqs.queue.createLinkCpStatusJob}")
+//This queue is not in use anymore - May 2023
+@SqsListener(value = "${cloud-platform.aws.sqs.queue.createLinkCpStatusJob}",
+        deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
     public void receive(@Payload final String message) {
 
         queueMessageLogService.createLog(MessageType.CREATE_LINK_CP_STATUS_JOB, message);

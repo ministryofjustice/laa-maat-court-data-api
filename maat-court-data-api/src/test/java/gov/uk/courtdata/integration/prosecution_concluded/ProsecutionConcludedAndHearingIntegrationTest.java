@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
@@ -124,7 +125,7 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
         String sqsPayload = pullMessageFromSQS(prosecutionConcluded);
 
         //when
-        prosecutionConcludedListener.receive(sqsPayload);
+        prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
 
         //then
         queueMessageLogTestHelper.assertQueueMessageLogged(

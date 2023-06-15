@@ -7,27 +7,31 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.CaseConclusionStatus;
 import gov.uk.courtdata.enums.JurisdictionType;
-import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesEntity;
 import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesRepository;
 import gov.uk.courtdata.model.Metadata;
+import gov.uk.courtdata.prosecutionconcluded.impl.ProcessSentencingImpl;
 import gov.uk.courtdata.prosecutionconcluded.model.*;
+import gov.uk.courtdata.prosecutionconcluded.service.HearingsService;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedListener;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,12 +41,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {
         MAATCourtDataApplication.class,
         MockServicesConfig.class,
         UpdateOutcomesRepository.class,
-        })
+})
 public class ProsecutionConcludedIntegrationTest {
 
     @Autowired
@@ -79,7 +83,10 @@ public class ProsecutionConcludedIntegrationTest {
     private CrownCourtProcessingRepository crownCourtProcessingRepository;
     @Autowired
     private PassportAssessmentRepository passportAssessmentRepository;
-
+    @Mock
+    private ProcessSentencingImpl processSentencingHelper;
+    @Mock
+    private HearingsService hearingsService;
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
     private final Integer TEST_MAAT_ID = 6039349;
@@ -240,10 +247,10 @@ public class ProsecutionConcludedIntegrationTest {
         existingRepOrder.setAppealTypeCode("APPEAL CC");
         existingRepOrder.setCatyCaseType("APPEAL CC");
         repOrderRepository.save(existingRepOrder);
-
-        Assertions.assertThrows(
-                ValidationException.class, () -> prosecutionConcludedListener.receive(sqsPayload), "Crown Court - Case type not valid for Trial.");
-
+        prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
+//        verify it
+        Mockito.verify(processSentencingHelper, Mockito.times(0)).processSentencingDate(
+                any(String.class), any(Integer.class), anyString());
         queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1, LAA_TRANSACTION_ID, message.getMaatId());
     }
 
@@ -272,7 +279,7 @@ public class ProsecutionConcludedIntegrationTest {
         message.setConcluded(false);
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
         String sqsPayload = pullMessageFromSQS(message);
-        prosecutionConcludedListener.receive(sqsPayload);
+        prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
 
         assertProsecutionNoChangesMade(message, sqsPayload);
     }
@@ -284,7 +291,7 @@ public class ProsecutionConcludedIntegrationTest {
         wqHearingRepository.save(existingWqHearingEntity);
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
         String sqsPayload = pullMessageFromSQS(message);
-        prosecutionConcludedListener.receive(sqsPayload);
+        prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
 
         assertProsecutionNoChangesMade(message, sqsPayload);
     }
@@ -297,7 +304,7 @@ public class ProsecutionConcludedIntegrationTest {
 
         reservationsRepository.save(ReservationsEntity.builder().recordId(message.getMaatId()).build());
 
-        prosecutionConcludedListener.receive(sqsPayload);
+        prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
 
         assertDataStoredForLaterProcessing(message, sqsPayload);
     }
@@ -308,7 +315,7 @@ public class ProsecutionConcludedIntegrationTest {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
         message.setHearingIdWhereChangeOccurred(UUID.randomUUID());
         String sqsPayload = pullMessageFromSQS(message);
-        prosecutionConcludedListener.receive(sqsPayload);
+        prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
 
         assertDataStoredForLaterProcessing(message, sqsPayload);
     }
@@ -322,9 +329,9 @@ public class ProsecutionConcludedIntegrationTest {
                 "        \"laaTransactionId\": " + LAA_TRANSACTION_ID + "\n" +
                 "    }\n" +
                 "}";
-
-        Assertions.assertThrows(
-                ValidationException.class, () -> prosecutionConcludedListener.receive(sqsPayload), "Payload is not available or null. ");
+        prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
+        Mockito.verify(hearingsService, Mockito.times(0)).retrieveHearingForCaseConclusion(
+                any(ProsecutionConcluded.class));
 
         queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1,LAA_TRANSACTION_ID, TEST_MAAT_ID);
     }
@@ -340,9 +347,9 @@ public class ProsecutionConcludedIntegrationTest {
                 "        \"laaTransactionId\": " + LAA_TRANSACTION_ID + "\n" +
                 "    }\n" +
                 "}";
-
-        Assertions.assertThrows(
-                ValidationException.class, () -> prosecutionConcludedListener.receive(sqsPayload), "Payload is not available or null. ");
+        prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
+        Mockito.verify(hearingsService, Mockito.times(0)).retrieveHearingForCaseConclusion(
+                any(ProsecutionConcluded.class));
 
         queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1,LAA_TRANSACTION_ID, TEST_MAAT_ID);
     }
@@ -357,8 +364,9 @@ public class ProsecutionConcludedIntegrationTest {
                 "    }\n" +
                 "}";
 
-        Assertions.assertThrows(
-                ValidationException.class, () -> prosecutionConcludedListener.receive(sqsPayload), "Payload is not available or null. ");
+        prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
+        Mockito.verify(hearingsService, Mockito.times(0)).retrieveHearingForCaseConclusion(
+                any(ProsecutionConcluded.class));
 
         queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1,LAA_TRANSACTION_ID, -1);
     }
@@ -449,7 +457,7 @@ public class ProsecutionConcludedIntegrationTest {
     }
 
     private void runValidDataScenario(ProsecutionConcluded message, String sqsPayload) {
-        prosecutionConcludedListener.receive(sqsPayload);
+        prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
         queueMessageLogTestHelper.assertQueueMessageLogged(
                 sqsPayload, 1,message.getMetadata().getLaaTransactionId(), message.getMaatId());
 

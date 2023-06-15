@@ -7,3 +7,6 @@ aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --usern
 DOCKER_TAG="$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
 echo Created docker tag $DOCKER_TAG
 IMAGE_URI="${REPOSITORY_URI}:${DOCKER_TAG}"
+echo "Pulling in SQS integration test Docker image dependencies"
+docker pull localstack/localstack
+echo "Finished pulling localstack/localstack test dependency"

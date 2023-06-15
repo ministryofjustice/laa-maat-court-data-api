@@ -1,7 +1,7 @@
 package gov.uk.courtdata.validator;
 
 
-import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class LinkRegisterValidatorTest {
 
         when(wqLinkRegisterRepository.getCountByMaatId(Mockito.anyInt()))
                 .thenReturn(0);
-        exceptionRule.expect(MAATCourtDataException.class);
+        exceptionRule.expect(ValidationException.class);
         exceptionRule.expectMessage("MAAT Id : "+10+" not linked.");
         linkRegisterValidator.validate(10);
     }
@@ -49,7 +49,7 @@ public class LinkRegisterValidatorTest {
 
         when(wqLinkRegisterRepository.getCountByMaatId(Mockito.anyInt()))
                 .thenReturn(2);
-        exceptionRule.expect(MAATCourtDataException.class);
+        exceptionRule.expect(ValidationException.class);
         exceptionRule.expectMessage("Multiple Links found for  MAAT Id : " + 10);
         linkRegisterValidator.validate(10);
     }

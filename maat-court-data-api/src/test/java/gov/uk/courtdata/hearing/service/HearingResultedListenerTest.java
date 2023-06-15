@@ -9,6 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.messaging.MessageHeaders;
+
+import java.util.HashMap;
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertNotNull;
@@ -35,7 +38,7 @@ public class HearingResultedListenerTest {
                 "  \"maatId\": \"null\"}";
         //when
         when(gson.fromJson(message, HearingResulted.class)).thenReturn(laaHearingDetails);
-        hearingResultedListener.receive(message);
+        hearingResultedListener.receive(message, new MessageHeaders(new HashMap<>()));
         //then
         verify(hearingResultedService, times(1)).execute(laaHearingDetails);
         verify(queueMessageLogService, times(1)).createLog(MessageType.HEARING, message);

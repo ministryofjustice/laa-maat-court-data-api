@@ -13,6 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.messaging.MessageHeaders;
+
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -42,7 +45,7 @@ public class ProsecutionConcludedListenerTest {
 
         //when
         when(gson.fromJson(message, ProsecutionConcluded.class)).thenReturn(prosecutionConcluded);
-        prosecutionConcludedListener.receive(message);
+        prosecutionConcludedListener.receive(message, new MessageHeaders(new HashMap<>()));
         //then
         verify(prosecutionConcludedService).execute(prosecutionConcluded);
         verify(queueMessageLogService).createLog(MessageType.PROSECUTION_CONCLUDED, message);

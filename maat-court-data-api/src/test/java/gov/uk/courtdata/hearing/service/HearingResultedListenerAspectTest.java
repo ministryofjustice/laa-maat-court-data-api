@@ -5,11 +5,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
+import org.springframework.messaging.MessageHeaders;
+
+import java.util.HashMap;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
@@ -44,10 +46,10 @@ public class HearingResultedListenerAspectTest {
                     "  \"maatId\": \"null\"}";
             //when
             lenient().when(hearingResultedListener).getMock();
-            doThrow(new RuntimeException()).when(hearingResultedListener).receive(message);
+            doThrow(new RuntimeException()).when(hearingResultedListener).receive(message, new MessageHeaders(new HashMap<>()));
 
             //then
-            hearingResultedListenerProxy.receive(message);
+            hearingResultedListenerProxy.receive(message, new MessageHeaders(new HashMap<>()));
         });
     }
 }

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import gov.uk.courtdata.constants.CourtDataConstants;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -30,7 +31,7 @@ public class WQOffenceEntity {
     private String offenceClassification;
     @Column(name = "OFFENCE_DATE")
     private LocalDate offenceDate;
-    @Column(name = "OFFENCE_WORDING")
+    @Column(name = "OFFENCE_WORDING", length = CourtDataConstants.ORACLE_VARCHAR_MAX)
     private String offenceWording;
     @Column(name = "MODE_OF_TRIAL")
     private Integer modeOfTrial;

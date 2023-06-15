@@ -3,6 +3,7 @@ package gov.uk.courtdata.hearing.processor;
 import com.google.gson.Gson;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.WQResultEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQResultRepository;
@@ -52,5 +53,20 @@ public class WQResultProcessorTest {
         assertThat(wqResultEntityArgumentCaptor.getValue().getFirmName()).isEqualTo("Bristol Law Service");
         assertThat(wqResultEntityArgumentCaptor.getValue().getResultShortTitle()).isEqualTo("Next call");
 
+    }
+
+    @Test
+    public void givenInputWhereResultTextIsGreaterThan4000Characters_whenProcessIsInvoke_thenSaveCaseWithTruncatedResultText() {
+        //given
+        String expectedResultText = "a".repeat(CourtDataConstants.ORACLE_VARCHAR_MAX);
+        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        hearingDTO.getResult().setResultText("a".repeat(CourtDataConstants.ORACLE_VARCHAR_MAX + 1));
+
+        //when
+        wqResultProcessor.process(hearingDTO);
+
+        //then
+        verify(wqResultRepository).save(wqResultEntityArgumentCaptor.capture());
+        assertThat(wqResultEntityArgumentCaptor.getValue().getResultText()).isEqualTo(expectedResultText);
     }
 }

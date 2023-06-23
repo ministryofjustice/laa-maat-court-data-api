@@ -53,8 +53,8 @@ public class CourtDataAdapterClient {
                         .body(BodyInserters.fromValue(laaStatusUpdateJson))
                         .retrieve();
 
-        Optional<ResponseEntity<Void>> block = Optional.ofNullable(clientResponse.toBodilessEntity().block());
-        block.ifPresent(voidResponseEntity -> log.info("LAA status update posted {}", Optional.of(voidResponseEntity.getStatusCode())));
+        Optional<ResponseEntity<Void>> optionalClientResponse = Optional.ofNullable(clientResponse.toBodilessEntity().block());
+        optionalClientResponse.ifPresent(voidResponseEntity -> log.info("LAA status update posted {}", Optional.of(voidResponseEntity.getStatusCode())));
     }
 
     public void triggerHearingProcessing(UUID hearingId, String laaTransactionId) {

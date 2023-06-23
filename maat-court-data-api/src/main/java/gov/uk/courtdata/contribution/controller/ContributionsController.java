@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -67,6 +68,31 @@ public class ContributionsController {
                                                        boolean findLatestContribution) {
         log.info("Request to retrieve contributions entry for repId {}", repId);
         return ResponseEntity.ok(contributionsService.find(repId, findLatestContribution));
+    }
+
+    @GetMapping(value = "/summary/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve a summary of contributions for a given representation order")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+    @ApiResponse(responseCode = "400",
+            description = "Bad request",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class))
+    )
+    @ApiResponse(responseCode = "404",
+            description = "Not found",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = @Schema(implementation = ErrorDTO.class))
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Internal server error",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = @Schema(implementation = ErrorDTO.class))
+    )
+    public ResponseEntity<String> getContributionsSummary(@PathVariable @NotNull int repId) {
+        log.info("Request to retrieve contributions summary for repId {}", repId);
+        return ResponseEntity.ok("The controller is working ok =D");
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)

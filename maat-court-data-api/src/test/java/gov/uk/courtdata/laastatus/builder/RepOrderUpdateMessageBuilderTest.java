@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -183,7 +184,7 @@ RepOrderUpdateMessageBuilderTest {
 
         //then
         assertAll("VerifyHeaders",
-                () -> assertEquals("6f5b34ea-e038-4f1c-bfe5-d6bf622444f0", headers.get("Laa-Transaction-Id")),
+                () -> assertEquals("6f5b34ea-e038-4f1c-bfe5-d6bf622444f0", headers.get(CDA_TRANSACTION_ID_HEADER)),
                 () -> assertEquals("123456", headers.get("Laa-Status-Transaction-Id")));
     }
 
@@ -200,7 +201,7 @@ RepOrderUpdateMessageBuilderTest {
 
         //then
         assertAll("VerifyHeaders",
-                () -> assertNull(headers.get("Laa-Transaction-Id")),
+                () -> assertNull(headers.get(CDA_TRANSACTION_ID_HEADER)),
                 () -> assertEquals("123456", headers.get("Laa-Status-Transaction-Id")));
     }
 

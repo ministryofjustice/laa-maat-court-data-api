@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -60,7 +62,7 @@ public class CourtDataAdapterClient {
                 .get()
                 .uri(uriBuilder ->
                         uriBuilder.path(courtDataAdapterClientConfig.getHearingUrl()).queryParam("publish_to_queue", true).build(hearingId))
-                .headers(httpHeaders -> httpHeaders.setAll(Map.of("X-Request-ID", laaTransactionId)))
+                .headers(httpHeaders -> httpHeaders.setAll(Map.of(CDA_TRANSACTION_ID_HEADER, laaTransactionId)))
                 .retrieve().toBodilessEntity()
                 .onErrorMap(error -> new MAATCourtDataException(String.format("Error triggering CDA processing for hearing '%s'.%s", hearingId, error.getMessage())))
                 .doOnSuccess(response -> log.info("Processing trigger successfully for hearing '{}'", hearingId))

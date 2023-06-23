@@ -5,11 +5,11 @@ import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import gov.uk.courtdata.service.QueueMessageLogService;
-import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -53,7 +53,8 @@ public class CourtDataAdapterClient {
                         .body(BodyInserters.fromValue(laaStatusUpdateJson))
                         .retrieve();
 
-        log.info("LAA status update posted {}", Optional.of( clientResponse.toBodilessEntity().block().getStatusCode() ));
+        Optional<ResponseEntity<Void>> block = Optional.ofNullable(clientResponse.toBodilessEntity().block());
+        block.ifPresent(voidResponseEntity -> log.info("LAA status update posted {}", Optional.of(voidResponseEntity.getStatusCode())));
     }
 
     public void triggerHearingProcessing(UUID hearingId, String laaTransactionId) {

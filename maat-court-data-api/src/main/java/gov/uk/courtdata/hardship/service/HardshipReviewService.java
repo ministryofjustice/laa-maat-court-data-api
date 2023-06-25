@@ -45,7 +45,7 @@ public class HardshipReviewService {
     @Transactional(readOnly = true)
     public HardshipReviewDTO findHardshipReviewByDetailType(String detailType, int repId) {
         Optional<HardshipReviewEntity> hardshipReviewEntity = hardshipReviewImpl.findByDetailType(detailType, repId);
-        if (hardshipReviewEntity == null || hardshipReviewEntity.isEmpty()) {
+        if (hardshipReviewEntity.isEmpty()) {
             throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for Detail Type: %s and REP ID: %d", detailType, repId));
         }
         return hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity.get());

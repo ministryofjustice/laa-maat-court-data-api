@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(HardshipReviewController.class)
-public class HardshipReviewControllerTest {
+class HardshipReviewControllerTest {
 
     private static final int MOCK_REP_ID = 621580;
     private static final int INVALID_REP_ID = 3456;
@@ -43,7 +43,7 @@ public class HardshipReviewControllerTest {
     private HardshipReviewValidationProcessor hardshipReviewValidationProcessor;
 
     @Test
-    public void givenCorrectParameters_whenGetHardshipIsInvoked_thenHardshipIsReturned() throws Exception {
+    void givenCorrectParameters_whenGetHardshipIsInvoked_thenHardshipIsReturned() throws Exception {
 
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
 
@@ -58,7 +58,7 @@ public class HardshipReviewControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenGetHardshipIsInvoked_then4xxIsThrown() throws Exception {
+    void givenIncorrectParameters_whenGetHardshipIsInvoked_then4xxIsThrown() throws Exception {
         when(hardshipReviewValidationProcessor.validate(any(Integer.class))).thenThrow(new ValidationException());
         when(hardshipReviewService.findHardshipReview(MOCK_HARDSHIP_ID)).thenReturn(null);
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/" + MOCK_HARDSHIP_ID))
@@ -66,7 +66,7 @@ public class HardshipReviewControllerTest {
     }
 
     @Test
-    public void givenCorrectParameters_whenGetHardshipByRepIdIsInvoked_thenHardshipReviewIsReturned() throws Exception {
+    void givenCorrectParameters_whenGetHardshipByRepIdIsInvoked_thenHardshipReviewIsReturned() throws Exception {
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTO();
         when(hardshipReviewService.findHardshipReviewByRepId(MOCK_REP_ID)).thenReturn(hardshipReviewDTO);
 
@@ -79,7 +79,7 @@ public class HardshipReviewControllerTest {
     }
 
     @Test
-    public void givenInvalidRepId_whenGetHardshipByRepIdIsInvoked_then404NotFoundErrorIsThrown() throws Exception {
+    void givenInvalidRepId_whenGetHardshipByRepIdIsInvoked_then404NotFoundErrorIsThrown() throws Exception {
         when(hardshipReviewService.findHardshipReviewByRepId(INVALID_REP_ID))
                 .thenThrow(new RequestedObjectNotFoundException(String.format("Hardship Review with repId %s not found", INVALID_REP_ID)));
 
@@ -88,13 +88,13 @@ public class HardshipReviewControllerTest {
     }
 
     @Test
-    public void givenNullRepId_whenGetHardshipByRepIdIsInvoked_thenBadRequestIsThrown() throws Exception {
+    void givenNullRepId_whenGetHardshipByRepIdIsInvoked_thenBadRequestIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/null"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void givenCorrectParameters_whenGetHardshipByDetailTypeIsInvoked_thenHardshipReviewIsReturned() throws Exception {
+    void givenCorrectParameters_whenGetHardshipByDetailTypeIsInvoked_thenHardshipReviewIsReturned() throws Exception {
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTO();
         when(hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID)).thenReturn(hardshipReviewDTO);
 
@@ -107,7 +107,7 @@ public class HardshipReviewControllerTest {
     }
 
     @Test
-    public void givenInvalidRepId_whenGetHardshipByDetailTypeIsInvoked_then404NotFoundErrorIsThrown() throws Exception {
+    void givenInvalidRepId_whenGetHardshipByDetailTypeIsInvoked_then404NotFoundErrorIsThrown() throws Exception {
         when(hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, INVALID_REP_ID))
                 .thenThrow(new RequestedObjectNotFoundException(String.format("Hardship Review with detail type %s and repId %d not found", MOCK_DETAIL_TYPE, INVALID_REP_ID)));
 
@@ -116,13 +116,13 @@ public class HardshipReviewControllerTest {
     }
 
     @Test
-    public void givenNullRepId_whenGetHardshipByDetailTypeIsInvoked_thenBadRequestIsThrown() throws Exception {
+    void givenNullRepId_whenGetHardshipByDetailTypeIsInvoked_thenBadRequestIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/null/detailType/null"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void givenCorrectParameters_whenCreateHardshipIsInvoked_thenHardshipIsPersisted() throws Exception {
+    void givenCorrectParameters_whenCreateHardshipIsInvoked_thenHardshipIsPersisted() throws Exception {
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
         String requestJson = TestModelDataBuilder.getCreateHardshipReviewJson(true);
 
@@ -138,13 +138,13 @@ public class HardshipReviewControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenCreateHardshipIsInvoked_then4xxIsThrown() throws Exception {
+    void givenIncorrectParameters_whenCreateHardshipIsInvoked_then4xxIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void givenCorrectParameters_whenUpdateHardshipIsInvoked_thenHardshipIsPersisted() throws Exception {
+    void givenCorrectParameters_whenUpdateHardshipIsInvoked_thenHardshipIsPersisted() throws Exception {
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
         String requestJson = TestModelDataBuilder.getUpdateHardshipReviewJson(true);
 
@@ -160,7 +160,7 @@ public class HardshipReviewControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenUpdateHardshipIsInvoked_then4xxIsThrown() throws Exception {
+    void givenIncorrectParameters_whenUpdateHardshipIsInvoked_then4xxIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }

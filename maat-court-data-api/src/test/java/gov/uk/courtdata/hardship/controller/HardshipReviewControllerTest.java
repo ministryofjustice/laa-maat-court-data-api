@@ -32,6 +32,7 @@ public class HardshipReviewControllerTest {
 
     private static final int MOCK_REP_ID = 621580;
     private static final int INVALID_REP_ID = 3456;
+    private static final String MOCK_DETAIL_TYPE = "EXPENDITURE";
     private static final Integer MOCK_HARDSHIP_ID = 1000;
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/hardship";
     @Autowired
@@ -89,6 +90,34 @@ public class HardshipReviewControllerTest {
     @Test
     public void givenNullRepId_whenGetHardshipByRepIdIsInvoked_thenBadRequestIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/null"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void givenCorrectParameters_whenGetHardshipByDetailTypeIsInvoked_thenHardshipReviewIsReturned() throws Exception {
+        HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTO();
+        when(hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID)).thenReturn(hardshipReviewDTO);
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/" + MOCK_REP_ID + "/detailType/" + MOCK_DETAIL_TYPE))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(String.valueOf(MOCK_HARDSHIP_ID)));
+
+        verify(hardshipReviewService).findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
+    }
+
+    @Test
+    public void givenInvalidRepId_whenGetHardshipByDetailTypeIsInvoked_then404NotFoundErrorIsThrown() throws Exception {
+        when(hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, INVALID_REP_ID))
+                .thenThrow(new RequestedObjectNotFoundException(String.format("Hardship Review with detail type %s and repId %d not found", MOCK_DETAIL_TYPE, INVALID_REP_ID)));
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/" + INVALID_REP_ID + "/detailType/" + MOCK_DETAIL_TYPE))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void givenNullRepId_whenGetHardshipByDetailTypeIsInvoked_thenBadRequestIsThrown() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/null/detailType/null"))
                 .andExpect(status().isBadRequest());
     }
 

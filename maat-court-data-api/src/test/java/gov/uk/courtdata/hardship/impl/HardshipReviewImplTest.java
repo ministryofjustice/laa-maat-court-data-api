@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,6 +32,7 @@ import static org.mockito.Mockito.when;
 class HardshipReviewImplTest {
 
     private static final int MOCK_REP_ID = 5678;
+    private static final String MOCK_DETAIL_TYPE = "EXPENDITURE";
     private static final Integer MOCK_HARDSHIP_ID = 1000;
     @InjectMocks
     private HardshipReviewImpl hardshipReviewImpl;
@@ -59,6 +61,23 @@ class HardshipReviewImplTest {
 
         assertThat(returnedEntity.getId()).isEqualTo(MOCK_HARDSHIP_ID);
         assertThat(returnedEntity.getRepId()).isEqualTo(MOCK_REP_ID);
+    }
+
+    @Test
+    void givenExistingRepId_whenFindByDetailTypeIsInvoked_thenHardshipIsRetrieved() {
+        when(hardshipReviewRepository.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID))
+                .thenReturn(Optional.of(
+                        HardshipReviewEntity.builder()
+                                .id(MOCK_HARDSHIP_ID)
+                                .repId(MOCK_REP_ID)
+                                .build()));
+
+        Optional<HardshipReviewEntity> returnedEntity = hardshipReviewImpl.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
+
+        if (returnedEntity.isPresent()) {
+            assertThat(returnedEntity.get().getId()).isEqualTo(MOCK_HARDSHIP_ID);
+            assertThat(returnedEntity.get().getRepId()).isEqualTo(MOCK_REP_ID);
+        }
     }
 
     @Test

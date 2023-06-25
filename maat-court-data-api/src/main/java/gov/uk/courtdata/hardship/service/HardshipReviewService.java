@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -38,6 +40,15 @@ public class HardshipReviewService {
             throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for REP ID: %s", repId));
         }
         return hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public HardshipReviewDTO findHardshipReviewByDetailType(String detailType, int repId) {
+        Optional<HardshipReviewEntity> hardshipReviewEntity = hardshipReviewImpl.findByDetailType(detailType, repId);
+        if (hardshipReviewEntity == null || hardshipReviewEntity.isEmpty()) {
+            throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for Detail Type: %s and REP ID: %d", detailType, repId));
+        }
+        return hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity.get());
     }
 
     @Transactional

@@ -176,6 +176,17 @@ We want to make sure that the Mutation Coverage for new classes are covered prop
 ./gradlew pitest
 ```
 
+### Running SQS Integration Tests
+
+To ensure the SqsIntegrationTests run as part of the build or individually:
+* Ensure at least JDK 11 is installed (OpenJDK 11.0.19 tested working)
+* Ensure Gradle is installed (Gradle 8.1.1 tested working)
+* Ensure Docker is running with Docker Desktop (Docker Desktop 4.20.1 tested working)
+* Pull localstack/localstack image to your local Docker registry with the command:
+```sh
+docker pull localstack/localstack
+```
+
 ### Further reading
  
 

@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -32,6 +33,10 @@ public class HardshipReviewImpl {
 
     public HardshipReviewEntity findByRepId(int repId) {
         return hardshipReviewRepository.findByRepId(repId);
+    }
+
+    public Optional<HardshipReviewEntity> findByDetailType(String detailType, int repId) {
+        return hardshipReviewRepository.findByDetailType(detailType, repId);
     }
 
     public HardshipReviewEntity create(final HardshipReviewDTO hardshipReviewDTO) {

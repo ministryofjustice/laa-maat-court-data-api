@@ -64,6 +64,21 @@ public class HardshipReviewController {
         return ResponseEntity.ok(hardshipReviewService.findHardshipReviewByRepId(repId));
     }
 
+    @GetMapping(value = "repId/{repId}/detailType/{detailType}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve a hardship review record by repId and detail type")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HardshipReviewDTO.class)))
+    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<HardshipReviewDTO> getHardshipByDetailType(@PathVariable int repId,
+                                                                     @PathVariable String detailType,
+                                                                     @Parameter(description = "Used for tracing calls")
+                                                                     @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        log.info("Get Hardship Review by detail type = {} and repId = {}", detailType, repId);
+        return ResponseEntity.ok(hardshipReviewService.findHardshipReviewByDetailType(detailType, repId));
+    }
+
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a hardship review record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HardshipReviewDTO.class)))

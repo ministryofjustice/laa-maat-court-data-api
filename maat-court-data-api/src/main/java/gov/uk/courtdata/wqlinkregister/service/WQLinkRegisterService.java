@@ -23,6 +23,6 @@ public class WQLinkRegisterService {
     @Transactional(readOnly = true)
     public List<WQLinkRegisterDTO> findByMaatId(Integer maatID) {
         log.info("WQ Link Register - Find by maat id  - Start");
-        return wqLinkRegisterMapper.WQLinkRegisterToWQLinkRegisterDTO(wqLinkRegisterImpl.findByMaatId(maatID));
+        return wqLinkRegisterMapper.wQLinkRegisterToWQLinkRegisterDTO(wqLinkRegisterImpl.findByMaatId(maatID));
     }
 }

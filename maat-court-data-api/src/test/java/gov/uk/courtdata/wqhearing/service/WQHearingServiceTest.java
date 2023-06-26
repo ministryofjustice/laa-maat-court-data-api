@@ -32,10 +32,10 @@ class WQHearingServiceTest {
         List wqHearingEntityList = List.of(TestEntityDataBuilder.getWQHearingEntity(8064716));
         when(wqHearingImpl.findByMaatIdAndHearingUUID(TestEntityDataBuilder.REP_ID, TestEntityDataBuilder.TEST_OFFENCE_ID)).thenReturn(wqHearingEntityList);
         List wqHearingDTOList = List.of(TestModelDataBuilder.getWQHearingDTO(8064716));
-        when(mapper.WQHearingEntityToWQHearingDTO(anyList())).thenReturn(wqHearingDTOList);
+        when(mapper.wQHearingEntityToWQHearingDTO(anyList())).thenReturn(wqHearingDTOList);
         wqHearingService.findByMaatIdAndHearingUUID(TestEntityDataBuilder.REP_ID, TestEntityDataBuilder.TEST_OFFENCE_ID);
         verify(wqHearingImpl, atLeastOnce()).findByMaatIdAndHearingUUID(anyInt(), anyString());
-        verify(mapper, atLeastOnce()).WQHearingEntityToWQHearingDTO(anyList());
+        verify(mapper, atLeastOnce()).wQHearingEntityToWQHearingDTO(anyList());
     }
 
 }

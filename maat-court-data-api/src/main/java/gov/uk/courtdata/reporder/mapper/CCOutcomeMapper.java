@@ -15,12 +15,12 @@ import java.util.List;
         builder = @Builder(disableBuilder = true))
 public interface CCOutcomeMapper {
 
-    List<RepOrderCCOutcomeDTO> RepOrderCCOutComeEntityToRepOrderCCOutcomeDTO(List<RepOrderCCOutComeEntity> repOrderCCOutComeEntities);
+    List<RepOrderCCOutcomeDTO> repOrderCCOutComeEntityToRepOrderCCOutcomeDTO(List<RepOrderCCOutComeEntity> repOrderCCOutComeEntities);
 
-    RepOrderCCOutcomeDTO RepOrderCCOutComeEntityToRepOrderCCOutcomeDTO(RepOrderCCOutComeEntity repOrderCCOutComeEntities);
+    RepOrderCCOutcomeDTO repOrderCCOutComeEntityToRepOrderCCOutcomeDTO(RepOrderCCOutComeEntity repOrderCCOutComeEntities);
 
-    RepOrderCCOutComeEntity RepOrderCCOutcomeToRepOrderCCOutcomeEntity(RepOrderCCOutcome outCome);
+    RepOrderCCOutComeEntity repOrderCCOutcomeToRepOrderCCOutcomeEntity(RepOrderCCOutcome outCome);
 
-    void RepOrderCCOutComeToRepOrderCCOutcomeEntity(RepOrderCCOutcome updateRepOrder, @MappingTarget RepOrderCCOutComeEntity repOrderEntity);
+    void repOrderCCOutComeMappedToRepOrderCCOutcomeEntity(RepOrderCCOutcome updateRepOrder, @MappingTarget RepOrderCCOutComeEntity repOrderEntity);
 
 }

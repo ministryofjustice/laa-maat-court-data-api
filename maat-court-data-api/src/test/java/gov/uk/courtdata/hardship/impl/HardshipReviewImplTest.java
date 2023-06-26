@@ -74,10 +74,9 @@ class HardshipReviewImplTest {
 
         Optional<HardshipReviewEntity> returnedEntity = hardshipReviewImpl.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
 
-        if (returnedEntity.isPresent()) {
-            assertThat(returnedEntity.get().getId()).isEqualTo(MOCK_HARDSHIP_ID);
-            assertThat(returnedEntity.get().getRepId()).isEqualTo(MOCK_REP_ID);
-        }
+        assertThat(returnedEntity.isPresent()).isTrue();
+        assertThat(returnedEntity.get().getId()).isEqualTo(MOCK_HARDSHIP_ID);
+        assertThat(returnedEntity.get().getRepId()).isEqualTo(MOCK_REP_ID);
     }
 
     @Test

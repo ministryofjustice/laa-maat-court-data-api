@@ -14,5 +14,5 @@ import java.util.List;
         builder = @Builder(disableBuilder = true))
 public interface WQHearingMapper {
 
-    List<WQHearingDTO> WQHearingEntityToWQHearingDTO(List<WQHearingEntity> wqHearingEntityList);
+    List<WQHearingDTO> wQHearingEntityToWQHearingDTO(List<WQHearingEntity> wqHearingEntityList);
 }

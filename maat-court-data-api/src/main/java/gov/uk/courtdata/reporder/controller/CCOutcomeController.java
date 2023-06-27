@@ -80,12 +80,12 @@ public class CCOutcomeController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = RepOrderCCOutcome.class))) @RequestBody RepOrderCCOutcome repOrderCCOutCome) {
         log.info("Update RepOrder CC outcome  Request Received");
-        validator.validate(repOrderCCOutCome);;
+        validator.validate(repOrderCCOutCome);
         return ResponseEntity.ok(service.update(repOrderCCOutCome));
     }
     
     @RequestMapping(value = "/reporder/{repId}",
-            method = {RequestMethod.GET, RequestMethod.HEAD},
+            method = {RequestMethod.GET},
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Operation(description = "Retrieve a RepOrder CCOutCome record")
@@ -106,11 +106,33 @@ public class CCOutcomeController {
     public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepId(HttpServletRequest request, @PathVariable int repId) {
         log.info("Find RepOrder CC Outcome Request Received");
         validator.validate(repId);
-        if (request.getMethod().equals(RequestMethod.HEAD.name())) {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.setContentLength(service.findByRepId(repId).size());
-            return ResponseEntity.ok().headers(responseHeaders).build();
-        }
         return ResponseEntity.ok(service.findByRepId(repId));
+    }
+
+    @RequestMapping(value = "/reporder/{repId}",
+            method = {RequestMethod.HEAD},
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(description = "Retrieve a RepOrder CCOutCome size in the header")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "400",
+            description = "Bad Request.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepIdLengthInHeader(HttpServletRequest request, @PathVariable int repId) {
+        log.info("Find RepOrder CC Outcome Request Received");
+        validator.validate(repId);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentLength(service.findByRepId(repId).size());
+        return ResponseEntity.ok().headers(responseHeaders).build();
     }
 }

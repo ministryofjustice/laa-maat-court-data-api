@@ -10,9 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,7 +32,7 @@ public class ReservationsRepositoryHelperTest {
                 .build());
         when(reservationsRepository.findById(anyInt())).thenReturn(reservationsEntity);
 
-        boolean status = reservationsRepositoryHelper.isMaatRecordLocked(anyInt());
+        Boolean status = reservationsRepositoryHelper.isMaatRecordLocked(anyInt());
 
         verify(reservationsRepository).findById(anyInt());
 
@@ -49,7 +47,7 @@ public class ReservationsRepositoryHelperTest {
         Optional<ReservationsEntity> reservationsEntity = Optional.empty();
         when(reservationsRepository.findById(anyInt())).thenReturn(reservationsEntity);
 
-        boolean status = reservationsRepositoryHelper.isMaatRecordLocked(anyInt());
+        Boolean status = reservationsRepositoryHelper.isMaatRecordLocked(anyInt());
 
         verify(reservationsRepository).findById(anyInt());
 

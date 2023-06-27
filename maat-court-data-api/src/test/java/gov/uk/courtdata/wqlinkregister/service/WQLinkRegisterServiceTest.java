@@ -29,10 +29,10 @@ class WQLinkRegisterServiceTest {
         List wqLinkRegisterEntityList = List.of(TestEntityDataBuilder.getWQLinkRegisterEntity(8064716));
         when(wqLinkRegisterImpl.findByMaatId(TestEntityDataBuilder.TEST_CASE_ID)).thenReturn(wqLinkRegisterEntityList);
         List wqLinkRegisterDTOList = List.of(TestModelDataBuilder.getWQLinkRegisterDTO(8064716));
-        when(mapper.WQLinkRegisterToWQLinkRegisterDTO(anyList())).thenReturn(wqLinkRegisterDTOList);
+        when(mapper.wQLinkRegisterToWQLinkRegisterDTO(anyList())).thenReturn(wqLinkRegisterDTOList);
         wqLinkRegisterService.findByMaatId(TestEntityDataBuilder.TEST_CASE_ID);
         verify(wqLinkRegisterImpl, atLeastOnce()).findByMaatId(anyInt());
-        verify(mapper, atLeastOnce()).WQLinkRegisterToWQLinkRegisterDTO(anyList());
+        verify(mapper, atLeastOnce()).wQLinkRegisterToWQLinkRegisterDTO(anyList());
     }
 
 }

@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,12 +45,13 @@ public class HardshipReviewService {
 
     @Transactional(readOnly = true)
     public List<HardshipReviewDTO> findHardshipReviewByDetailType(String detailType, int repId) {
-        Optional<List<HardshipReviewEntity>> optionalHardshipReviewEntityList = hardshipReviewImpl.findByDetailType(detailType, repId);
-        if (optionalHardshipReviewEntityList.isEmpty()) {
+
+        List<HardshipReviewEntity> hardshipReviewEntityList = hardshipReviewImpl.findByDetailType(detailType, repId);
+        if (hardshipReviewEntityList == null || hardshipReviewEntityList.isEmpty()) {
             throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for Detail Type: %s and REP ID: %d", detailType, repId));
         }
         List<HardshipReviewDTO> hardshipReviewDTOList = new ArrayList<>();
-        for (HardshipReviewEntity hardshipReviewEntity : optionalHardshipReviewEntityList.get()) {
+        for (HardshipReviewEntity hardshipReviewEntity : hardshipReviewEntityList) {
             hardshipReviewDTOList.add(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity));
         }
         return hardshipReviewDTOList;

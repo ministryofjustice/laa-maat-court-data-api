@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -87,7 +86,7 @@ class HardshipReviewServiceTest {
 
     @Test
     void whenFindHardshipReviewByDetailTypeIsInvokedWithInvalidRepId_thenNotFoundExceptionIsThrown() {
-        when(hardshipReviewImpl.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID)).thenReturn(Optional.empty());
+        when(hardshipReviewImpl.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID)).thenReturn(null);
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID))
@@ -96,16 +95,16 @@ class HardshipReviewServiceTest {
 
     @Test
     void whenFindHardshipReviewByDetailTypeIsInvoked_thenHardshipReviewIsRetrieved() {
-        Optional<List<HardshipReviewEntity>> hardshipReviewEntity = Optional.of(List.of(HardshipReviewEntity.builder()
-                .id(MOCK_HARDSHIP_ID).repId(MOCK_REP_ID).build()));
+        List<HardshipReviewEntity> hardshipReviewEntity = List.of(HardshipReviewEntity.builder()
+                .id(MOCK_HARDSHIP_ID).repId(MOCK_REP_ID).build());
         when(hardshipReviewImpl.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID)).thenReturn(hardshipReviewEntity);
-        when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity.get().get(0)))
+        when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity.get(0)))
                 .thenReturn(HardshipReviewDTO.builder().id(MOCK_HARDSHIP_ID).repId(MOCK_REP_ID).build());
 
         List<HardshipReviewDTO> hardshipReviewList = hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
 
         verify(hardshipReviewImpl).findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
-        verify(hardshipReviewMapper).hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity.get().get(0));
+        verify(hardshipReviewMapper).hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity.get(0));
         assertThat(hardshipReviewList.get(0).getId()).isEqualTo(MOCK_HARDSHIP_ID);
         assertThat(hardshipReviewList.get(0).getRepId()).isEqualTo(MOCK_REP_ID);
     }

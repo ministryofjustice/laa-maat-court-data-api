@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -95,18 +96,18 @@ class HardshipReviewServiceTest {
 
     @Test
     void whenFindHardshipReviewByDetailTypeIsInvoked_thenHardshipReviewIsRetrieved() {
-        Optional<HardshipReviewEntity> hardshipReviewEntity = Optional.of(HardshipReviewEntity.builder()
-                .id(MOCK_HARDSHIP_ID).repId(MOCK_REP_ID).build());
+        Optional<List<HardshipReviewEntity>> hardshipReviewEntity = Optional.of(List.of(HardshipReviewEntity.builder()
+                .id(MOCK_HARDSHIP_ID).repId(MOCK_REP_ID).build()));
         when(hardshipReviewImpl.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID)).thenReturn(hardshipReviewEntity);
-        when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity.get()))
+        when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity.get().get(0)))
                 .thenReturn(HardshipReviewDTO.builder().id(MOCK_HARDSHIP_ID).repId(MOCK_REP_ID).build());
 
-        HardshipReviewDTO hardshipReview = hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
+        List<HardshipReviewDTO> hardshipReviewList = hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
 
         verify(hardshipReviewImpl).findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
-        verify(hardshipReviewMapper).hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity.get());
-        assertThat(hardshipReview.getId()).isEqualTo(MOCK_HARDSHIP_ID);
-        assertThat(hardshipReview.getRepId()).isEqualTo(MOCK_REP_ID);
+        verify(hardshipReviewMapper).hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity.get().get(0));
+        assertThat(hardshipReviewList.get(0).getId()).isEqualTo(MOCK_HARDSHIP_ID);
+        assertThat(hardshipReviewList.get(0).getRepId()).isEqualTo(MOCK_REP_ID);
     }
 
     @Test

@@ -20,6 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
 
 @RestController
@@ -63,9 +65,9 @@ public class HardshipReviewController {
     @Operation(description = "Retrieve a hardship review record by repId and detail type")
     @StandardApiResponseCodes
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<HardshipReviewDTO> getHardshipByDetailType(@PathVariable int repId,
-                                                                     @PathVariable String detailType,
-                                                                     @Parameter(description = "Used for tracing calls")
+    public ResponseEntity<List<HardshipReviewDTO>> getHardshipByDetailType(@PathVariable int repId,
+                                                                           @PathVariable String detailType,
+                                                                           @Parameter(description = "Used for tracing calls")
                                                                      @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
         MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info("Get Hardship Review by detail type = {} and repId = {}", detailType, repId);

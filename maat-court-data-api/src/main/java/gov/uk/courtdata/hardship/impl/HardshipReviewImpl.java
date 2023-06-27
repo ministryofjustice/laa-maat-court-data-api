@@ -34,6 +34,10 @@ public class HardshipReviewImpl {
         return hardshipReviewRepository.findByRepId(repId);
     }
 
+    public List<HardshipReviewEntity> findByDetailType(String detailType, int repId) {
+        return hardshipReviewRepository.findByDetailType(detailType, repId);
+    }
+
     public HardshipReviewEntity create(final HardshipReviewDTO hardshipReviewDTO) {
         HardshipReviewEntity hardshipReview = hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
         hardshipReview.getReviewDetails().forEach(

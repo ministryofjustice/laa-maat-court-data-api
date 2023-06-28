@@ -9,6 +9,8 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ContributionsMapper {
 
@@ -17,4 +19,6 @@ public interface ContributionsMapper {
     void updateContributionsToContributionsEntity(UpdateContributions updatecontributions, @MappingTarget ContributionsEntity contributionsEntity);
 
     ContributionsEntity createContributionsToContributionsEntity(CreateContributions createContributions);
+
+    List<ContributionsDTO> mapEntityToDTO(List<ContributionsEntity> entity);
 }

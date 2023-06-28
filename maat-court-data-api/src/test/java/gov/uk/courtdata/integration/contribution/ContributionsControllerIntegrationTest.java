@@ -66,6 +66,13 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
         contributions.setCorrespondenceId(correspondenceEntity.getId());
         contributionsEntity = contributionsRepository.saveAndFlush(contributions);
 
+        ContributionsEntity conEntity = TestEntityDataBuilder.getContributionsEntity();
+        conEntity.setLatest(false);
+        contributions.setCorrespondenceId(correspondenceEntity.getId());
+        contributionsRepository.saveAndFlush(conEntity);
+
+
+
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID + 1));
         ContributionsEntity contributionsEntity = TestEntityDataBuilder.getContributionsEntity();
         contributionsEntity.setRepId(TestEntityDataBuilder.REP_ID + 1);
@@ -151,6 +158,15 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
         List<ContributionsEntity> contributionsEntityList = contributionsRepository.findAllByRepId(TestModelDataBuilder.REP_ID);
         Assertions.assertThat(result.getResponse().getContentAsString())
                 .isEqualTo(objectMapper.writeValueAsString(contributionsEntityList));
+    }
+
+    @Test
+    void givenAValidRepIdAndLatestContributionAsTrue_whenFindIsInvoked_theCorrectResponseIsReturned() throws Exception {
+        MvcResult result = runSuccessScenario(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID
+                + "?findLatestContribution=true").contentType(MediaType.APPLICATION_JSON));
+        ContributionsEntity contributionsEntityList = contributionsRepository.findByRepIdAndLatestIsTrue(TestModelDataBuilder.REP_ID);
+        Assertions.assertThat(result.getResponse().getContentAsString())
+                .isEqualTo(objectMapper.writeValueAsString(List.of(contributionsEntityList)));
     }
 
     @Test

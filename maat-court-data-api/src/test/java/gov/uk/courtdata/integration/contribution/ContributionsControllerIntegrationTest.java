@@ -29,6 +29,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -146,15 +148,9 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     void givenAValidParameter_whenFindIsInvoked_theCorrectResponseIsReturned() throws Exception {
         MvcResult result = runSuccessScenario(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID)
                 .contentType(MediaType.APPLICATION_JSON));
-
-        ContributionsEntity currentEntity = objectMapper.readValue(result.getResponse().getContentAsString(), ContributionsEntity.class);
-
-        contributionsEntity.setContributionCap(currentEntity.getContributionCap());
-        contributionsEntity.setMonthlyContributions(currentEntity.getMonthlyContributions());
-        contributionsEntity.setUpfrontContributions(currentEntity.getUpfrontContributions());
-
+        List<ContributionsEntity> contributionsEntityList = contributionsRepository.findAllByRepId(TestModelDataBuilder.REP_ID);
         Assertions.assertThat(result.getResponse().getContentAsString())
-                .isEqualTo(objectMapper.writeValueAsString(contributionsEntity));
+                .isEqualTo(objectMapper.writeValueAsString(contributionsEntityList));
     }
 
     @Test

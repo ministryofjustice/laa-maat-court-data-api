@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.any;
@@ -47,12 +48,12 @@ class ContributionsControllerTest {
     @Test
     void givenAValidParameter_whenFindIsInvoked_thenOKResponseWithContributionsEntryIsReturned() throws Exception {
         ContributionsDTO contributionsDTO = ContributionsDTO.builder().id(TEST_CONTRIBUTIONS_ID).build();
-        when(contributionsService.find(TEST_CONTRIBUTIONS_ID)).thenReturn(contributionsDTO);
+        when(contributionsService.find(TEST_CONTRIBUTIONS_ID, false)).thenReturn(List.of(contributionsDTO));
 
         mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/" + TEST_CONTRIBUTIONS_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(TEST_CONTRIBUTIONS_ID));
+                .andExpect(jsonPath("$[0].id").value(TEST_CONTRIBUTIONS_ID));
     }
 
     @Test

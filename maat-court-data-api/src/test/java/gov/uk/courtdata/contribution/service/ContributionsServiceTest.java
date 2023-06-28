@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -33,9 +34,17 @@ class ContributionsServiceTest {
     @Test
     void givenAValidRepId_whenFindIsInvoked_thenContributionsEntryIsRetrieved() {
         when(repository.findByRepIdAndLatestIsTrue(anyInt())).thenReturn(ContributionsEntity.builder().repId(TestModelDataBuilder.REP_ID).build());
-        contributionsService.find(TestModelDataBuilder.REP_ID);
+        contributionsService.find(TestModelDataBuilder.REP_ID, true);
         verify(repository).findByRepIdAndLatestIsTrue(TestModelDataBuilder.REP_ID);
-        verify(contributionsMapper).mapEntityToDTO(any(ContributionsEntity.class));
+        verify(contributionsMapper).mapEntityToDTO(any(List.class));
+    }
+
+    @Test
+    void givenAValidRepIdAndFindAllRepId_whenFindIsInvoked_thenContributionsEntryIsRetrieved() {
+        when(repository.findAllByRepId(anyInt())).thenReturn(List.of(ContributionsEntity.builder().repId(TestModelDataBuilder.REP_ID).build()));
+        contributionsService.find(TestModelDataBuilder.REP_ID, false);
+        verify(repository).findAllByRepId(TestModelDataBuilder.REP_ID);
+        verify(contributionsMapper).mapEntityToDTO(any(List.class));
     }
 
     @Test
@@ -43,7 +52,7 @@ class ContributionsServiceTest {
         Integer testRepId = 666;
         when(repository.findByRepIdAndLatestIsTrue(anyInt())).thenReturn(null);
         assertThatThrownBy(() -> {
-            contributionsService.find(testRepId);
+            contributionsService.find(testRepId, true);
         }).isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Contributions entry not found for repId");
     }

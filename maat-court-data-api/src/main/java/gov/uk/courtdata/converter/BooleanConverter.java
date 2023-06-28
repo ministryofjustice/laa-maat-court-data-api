@@ -11,14 +11,13 @@ public class BooleanConverter implements AttributeConverter<Boolean, String> {
 
     @Override
     public String convertToDatabaseColumn(Boolean attribute) {
-        if (attribute != null) {
-            if (attribute) {
-                return STRING_Y;
-            } else {
-                return STRING_N;
-            }
+        if (Boolean.TRUE.equals(attribute)) {
+            return STRING_Y;
+        } else if (Boolean.FALSE.equals(attribute)) {
+            return STRING_N;
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override

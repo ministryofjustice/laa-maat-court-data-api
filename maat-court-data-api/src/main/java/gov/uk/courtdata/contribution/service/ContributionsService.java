@@ -12,6 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Service
 @XRayEnabled
 @RequiredArgsConstructor
@@ -21,14 +25,22 @@ public class ContributionsService {
 
     private final ContributionsRepository contributionsRepository;
 
-    public ContributionsDTO find(int repId) {
-        ContributionsEntity contributionsEntity = contributionsRepository.findByRepIdAndLatestIsTrue(repId);
+    public List<ContributionsDTO> find(int repId, boolean findLatestContribution) {
 
-        if (contributionsEntity == null) {
+        List<ContributionsEntity> contributionsEntityList = new ArrayList<>();
+        if (findLatestContribution) {
+            ContributionsEntity contributions = contributionsRepository.findByRepIdAndLatestIsTrue(repId);
+            if (null != contributions) {
+                contributionsEntityList.add(contributions);
+            }
+        } else {
+            contributionsEntityList = contributionsRepository.findAllByRepId(repId);
+        }
+        if (contributionsEntityList.isEmpty()) {
             throw new RequestedObjectNotFoundException(String.format("Contributions entry not found for repId %d", repId));
         }
 
-        return contributionsMapper.mapEntityToDTO(contributionsEntity);
+        return contributionsMapper.mapEntityToDTO(contributionsEntityList);
     }
 
     @Transactional

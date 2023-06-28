@@ -14,5 +14,5 @@ import java.util.List;
         builder = @Builder(disableBuilder = true)
 )public interface WQLinkRegisterMapper {
 
-    List<WQLinkRegisterDTO> WQLinkRegisterToWQLinkRegisterDTO(List<WqLinkRegisterEntity> wqLinkRegisterEntities);
+    List<WQLinkRegisterDTO> wQLinkRegisterToWQLinkRegisterDTO(List<WqLinkRegisterEntity> wqLinkRegisterEntities);
 }

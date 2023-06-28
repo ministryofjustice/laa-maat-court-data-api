@@ -24,6 +24,6 @@ public class WQHearingService {
     @Transactional(readOnly = true)
     public List<WQHearingDTO> findByMaatIdAndHearingUUID(Integer maatId, String hearingUUID) {
         log.info("WQ Hearing service - Find by maat id  - Start");
-        return mapper.WQHearingEntityToWQHearingDTO(wqHearingImpl.findByMaatIdAndHearingUUID(maatId, hearingUUID));
+        return mapper.wQHearingEntityToWQHearingDTO(wqHearingImpl.findByMaatIdAndHearingUUID(maatId, hearingUUID));
     }
 }

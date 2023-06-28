@@ -26,8 +26,8 @@ public class CCOutcomeService {
     @Transactional
     public RepOrderCCOutcomeDTO create(RepOrderCCOutcome repOrderCCOutCome) {
         log.info("Create repOrder CC OutCome  - Transaction Processing -Start");
-        RepOrderCCOutComeEntity savedEntity = ccOutComeImpl.create(mapper.RepOrderCCOutcomeToRepOrderCCOutcomeEntity(repOrderCCOutCome));
-        return mapper.RepOrderCCOutComeEntityToRepOrderCCOutcomeDTO(savedEntity);
+        RepOrderCCOutComeEntity savedEntity = ccOutComeImpl.create(mapper.repOrderCCOutcomeToRepOrderCCOutcomeEntity(repOrderCCOutCome));
+        return mapper.repOrderCCOutComeEntityToRepOrderCCOutcomeDTO(savedEntity);
     }
 
     @Transactional
@@ -37,15 +37,15 @@ public class CCOutcomeService {
         if (repOrderCCOutComeEntity == null) {
             throw new RequestedObjectNotFoundException(String.format("No CC Outcome found for ID: %s", repOrderCCOutCome.getId()));
         }
-        mapper.RepOrderCCOutComeToRepOrderCCOutcomeEntity(repOrderCCOutCome, repOrderCCOutComeEntity);
+        mapper.repOrderCCOutComeMappedToRepOrderCCOutcomeEntity(repOrderCCOutCome, repOrderCCOutComeEntity);
         log.info("update repOrder CC OutCome  - Transaction Processing - End");
-        return mapper.RepOrderCCOutComeEntityToRepOrderCCOutcomeDTO(ccOutComeImpl.update(repOrderCCOutComeEntity));
+        return mapper.repOrderCCOutComeEntityToRepOrderCCOutcomeDTO(ccOutComeImpl.update(repOrderCCOutComeEntity));
     }
 
     @Transactional(readOnly = true)
     public List<RepOrderCCOutcomeDTO> findByRepId(Integer repId) {
         log.info("Find repOrder CC OutCome  - Transaction Processing - Start");
-        return mapper.RepOrderCCOutComeEntityToRepOrderCCOutcomeDTO(ccOutComeImpl.findByRepId(repId));
+        return mapper.repOrderCCOutComeEntityToRepOrderCCOutcomeDTO(ccOutComeImpl.findByRepId(repId));
     }
 
 }

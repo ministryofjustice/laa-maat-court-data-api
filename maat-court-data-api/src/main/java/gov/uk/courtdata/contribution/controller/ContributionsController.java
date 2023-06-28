@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -61,9 +62,11 @@ public class ContributionsController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<ContributionsDTO> find(@PathVariable @NotNull int repId) {
+    public ResponseEntity<List<ContributionsDTO>> find(@PathVariable @NotNull int repId,
+                                                       @RequestParam(value = "findLatestContribution", defaultValue = "false")
+                                                       boolean findLatestContribution) {
         log.info("Request to retrieve contributions entry for repId {}", repId);
-        return ResponseEntity.ok(contributionsService.find(repId));
+        return ResponseEntity.ok(contributionsService.find(repId, findLatestContribution));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)

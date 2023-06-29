@@ -9,12 +9,14 @@ import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.ContributionsRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @XRayEnabled
@@ -73,5 +75,16 @@ public class ContributionsService {
     @Transactional
     public int getContributionCount(Integer repId) {
         return contributionsRepository.getContributionCount(repId);
+    }
+
+    public List<ContributionsDTO> getContributionsSummary(int repId) {
+        List<ContributionsEntity> contributionsEntities = contributionsRepository.findAllByRepId(repId);
+
+        // TODO: What to do if SQL query returns no rows
+
+        // TODO: Map entity to DTO and return to controller
+        return contributionsEntities.stream()
+                .map(contributionsEntity -> contributionsMapper.mapEntityToDTO(contributionsEntity))
+                .collect(Collectors.toList());
     }
 }

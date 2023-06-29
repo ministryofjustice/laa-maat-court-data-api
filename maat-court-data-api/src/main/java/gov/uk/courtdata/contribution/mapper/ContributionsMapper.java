@@ -1,6 +1,8 @@
 package gov.uk.courtdata.contribution.mapper;
 
+import gov.uk.courtdata.contribution.dto.ContributionFilesDTO;
 import gov.uk.courtdata.dto.ContributionsDTO;
+import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
@@ -15,6 +17,8 @@ import java.util.List;
 public interface ContributionsMapper {
 
     ContributionsDTO mapEntityToDTO(ContributionsEntity entity);
+
+    ContributionFilesDTO contributionFilesEntityToContributionFilesDTO(ContributionFilesEntity contributionsFilesEntity);
 
     void updateContributionsToContributionsEntity(UpdateContributions updatecontributions, @MappingTarget ContributionsEntity contributionsEntity);
 

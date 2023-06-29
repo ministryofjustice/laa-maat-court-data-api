@@ -70,31 +70,6 @@ public class ContributionsController {
         return ResponseEntity.ok(contributionsService.find(repId, findLatestContribution));
     }
 
-    @GetMapping(value = "/summary/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Retrieve a summary of contributions for a given representation order")
-    @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-    )
-    @ApiResponse(responseCode = "400",
-            description = "Bad request",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class))
-    )
-    @ApiResponse(responseCode = "404",
-            description = "Not found",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = ErrorDTO.class))
-    )
-    @ApiResponse(responseCode = "500",
-            description = "Internal server error",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = ErrorDTO.class))
-    )
-    public ResponseEntity<String> getContributionsSummary(@PathVariable @NotNull int repId) {
-        log.info("Request to retrieve contributions summary for repId {}", repId);
-        return ResponseEntity.ok("The controller is working ok =D");
-    }
-
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update contributions entry")
     @ApiResponse(responseCode = "200",
@@ -173,5 +148,30 @@ public class ContributionsController {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentLength(contributionsService.getContributionCount(repId));
         return ResponseEntity.ok().headers(responseHeaders).build();
+    }
+
+    @GetMapping(value = "/summary/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve a summary of contributions for a given representation order")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+    @ApiResponse(responseCode = "400",
+            description = "Bad request",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class))
+    )
+    @ApiResponse(responseCode = "404",
+            description = "Not found",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class))
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Internal server error",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class))
+    )
+    public ResponseEntity<List<ContributionsDTO>> getContributionsSummary(@PathVariable @NotNull int repId) {
+        log.info("Request to retrieve contributions summary for repId {}", repId);
+        return ResponseEntity.ok(contributionsService.getContributionsSummary(repId));
     }
 }

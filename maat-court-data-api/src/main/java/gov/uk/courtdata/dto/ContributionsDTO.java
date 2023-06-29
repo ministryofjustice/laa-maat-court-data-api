@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dto;
 
+import gov.uk.courtdata.contribution.dto.ContributionFilesDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,4 +43,5 @@ public class ContributionsDTO {
     private Boolean latest;
     private Integer ccOutcomeCount;
     private Integer seHistoryId;
+    private ContributionFilesDTO contributionFile;
 }

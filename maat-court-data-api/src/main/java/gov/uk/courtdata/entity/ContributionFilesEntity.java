@@ -62,6 +62,6 @@ public class ContributionFilesEntity {
 
     @ToString.Exclude
     @JsonManagedReference
-    @OneToMany(mappedBy = "contributionFile")
+    @OneToMany(mappedBy = "contributionFile", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContributionsEntity> contributionsEntities;
 }

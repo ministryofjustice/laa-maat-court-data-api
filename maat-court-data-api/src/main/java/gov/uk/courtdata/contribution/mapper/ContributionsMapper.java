@@ -6,23 +6,23 @@ import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ContributionsMapper {
 
+    @Mapping(target = "contributionFileId", source = "contributionFile.id")
     ContributionsDTO contributionsEntityToContributionsDTO(ContributionsEntity contributionsEntity);
+
+    List<ContributionsDTO> contributionsEntityToContributionsDTO(List<ContributionsEntity> contributionsEntities);
 
     ContributionFilesDTO contributionFilesEntityToContributionFilesDTO(ContributionFilesEntity contributionsFilesEntity);
 
+    @Mapping(target = "contributionFile.id", source = "contributionFileId")
     void updateContributionsToContributionsEntity(UpdateContributions updatecontributions, @MappingTarget ContributionsEntity contributionsEntity);
 
+    @Mapping(target = "contributionFile.id", source = "contributionFileId")
     ContributionsEntity createContributionsToContributionsEntity(CreateContributions createContributions);
-
-    List<ContributionsDTO> contributionsEntityToContributionsDTO(List<ContributionsEntity> contributionsEntities);
 }

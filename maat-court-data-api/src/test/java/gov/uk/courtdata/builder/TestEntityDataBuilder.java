@@ -515,7 +515,7 @@ public class TestEntityDataBuilder {
                 .repId(REP_ID)
                 .applId(REP_ID)
                 .userCreated(USER_NAME)
-                .contributionFileId(1)
+                .contributionFile(getContributionFilesEntity())
                 .effectiveDate(TEST_DATE.toLocalDate())
                 .calcDate(TEST_DATE.toLocalDate())
                 .contributionCap(new BigDecimal(9999))
@@ -531,6 +531,17 @@ public class TestEntityDataBuilder {
                 .ccOutcomeCount(9)
                 .seHistoryId(9)
                 .latest(true)
+                .build();
+    }
+
+    public static ContributionFilesEntity getContributionFilesEntity() {
+        return ContributionFilesEntity.builder()
+                .id(1)
+                .fileName("CONTRIBUTIONS_7357.xml")
+                .recordsSent(1)
+                .dateCreated(LocalDateTime.now())
+                .userCreated("TEST")
+                .dateSent(LocalDateTime.now())
                 .build();
     }
 

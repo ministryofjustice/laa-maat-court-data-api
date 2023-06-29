@@ -31,6 +31,7 @@ public class ContributionsEntity {
     @Column(name = "REP_ID", nullable = false)
     private Integer repId;
 
+    @ToString.Exclude
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CONT_FILE_ID")

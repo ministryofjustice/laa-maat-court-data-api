@@ -42,7 +42,7 @@ public class ContributionsService {
             throw new RequestedObjectNotFoundException(String.format("Contributions entry not found for repId %d", repId));
         }
 
-        return contributionsMapper.mapEntityToDTO(contributionsEntityList);
+        return contributionsMapper.contributionsEntityToContributionsDTO(contributionsEntityList);
     }
 
     @Transactional
@@ -55,7 +55,7 @@ public class ContributionsService {
         }
 
         contributionsMapper.updateContributionsToContributionsEntity(updateContributions, contributionsEntity);
-        return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(contributionsEntity));
+        return contributionsMapper.contributionsEntityToContributionsDTO(contributionsRepository.saveAndFlush(contributionsEntity));
     }
 
     @Transactional
@@ -69,22 +69,11 @@ public class ContributionsService {
         }
         ContributionsEntity newContributionsEntity = contributionsMapper.createContributionsToContributionsEntity(createContributions);
         newContributionsEntity.setLatest(true);
-        return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(newContributionsEntity));
+        return contributionsMapper.contributionsEntityToContributionsDTO(contributionsRepository.saveAndFlush(newContributionsEntity));
     }
 
     @Transactional
     public int getContributionCount(Integer repId) {
         return contributionsRepository.getContributionCount(repId);
-    }
-
-    public List<ContributionsDTO> getContributionsSummary(int repId) {
-        List<ContributionsEntity> contributionsEntities = contributionsRepository.findAllByRepId(repId);
-
-        // TODO: What to do if SQL query returns no rows
-
-        // TODO: Map entity to DTO and return to controller
-        return contributionsEntities.stream()
-                .map(contributionsEntity -> contributionsMapper.mapEntityToDTO(contributionsEntity))
-                .collect(Collectors.toList());
     }
 }

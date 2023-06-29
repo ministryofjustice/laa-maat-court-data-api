@@ -34,7 +34,7 @@ class ContributionCalcServiceTest {
         when(contribCalcParametersRepository.findCurrentContribCalcParameters(EFFECTIVE_DATE))
                 .thenReturn(new ContribCalcParametersEntity());
         ContributionCalcParametersDTO expected = TestModelDataBuilder.getContributionCalcParametersDTO();
-        when(contributionsCalcParametersMapper.mapEntityToDTO(any(ContribCalcParametersEntity.class)))
+        when(contributionsCalcParametersMapper.contributionsEntityToContributionsDTO(any(ContribCalcParametersEntity.class)))
                 .thenReturn(expected);
 
         ContributionCalcParametersDTO contributionCalcParametersDTO = contributionCalcService.getContributionCalcParameters(EFFECTIVE_DATE);

@@ -16,7 +16,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ContributionsMapper {
 
-    ContributionsDTO mapEntityToDTO(ContributionsEntity entity);
+    ContributionsDTO contributionsEntityToContributionsDTO(ContributionsEntity contributionsEntity);
 
     ContributionFilesDTO contributionFilesEntityToContributionFilesDTO(ContributionFilesEntity contributionsFilesEntity);
 
@@ -24,5 +24,5 @@ public interface ContributionsMapper {
 
     ContributionsEntity createContributionsToContributionsEntity(CreateContributions createContributions);
 
-    List<ContributionsDTO> mapEntityToDTO(List<ContributionsEntity> entity);
+    List<ContributionsDTO> contributionsEntityToContributionsDTO(List<ContributionsEntity> contributionsEntities);
 }

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface ContributionsRepository extends JpaRepository<ContributionsEntity, Integer>, JpaSpecificationExecutor<ContributionsEntity> {
+public interface ContributionsRepository extends JpaRepository<ContributionsEntity, Integer> {
 
     Integer countAllByRepId(Integer repId);
 

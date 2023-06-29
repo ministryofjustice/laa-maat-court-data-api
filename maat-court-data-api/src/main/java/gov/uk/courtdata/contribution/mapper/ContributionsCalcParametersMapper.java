@@ -9,5 +9,5 @@ import org.mapstruct.*;
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         builder = @Builder(disableBuilder = true))
 public interface ContributionsCalcParametersMapper {
-    ContributionCalcParametersDTO mapEntityToDTO(final ContribCalcParametersEntity entity);
+    ContributionCalcParametersDTO contributionsEntityToContributionsDTO(final ContribCalcParametersEntity entity);
 }

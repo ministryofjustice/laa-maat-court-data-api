@@ -34,7 +34,7 @@ public class ContributionsEntity {
     @ToString.Exclude
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CONT_FILE_ID")
+    @JoinColumn(name = "CONT_FILE_ID", nullable = true)
     private ContributionFilesEntity contributionFile;
 
     @Column(name = "EFFECTIVE_DATE", nullable = false)

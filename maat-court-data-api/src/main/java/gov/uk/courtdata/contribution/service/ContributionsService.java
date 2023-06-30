@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -60,6 +59,9 @@ public class ContributionsService {
     public ContributionsDTO create(CreateContributions createContributions) {
         Integer repId = createContributions.getRepId();
         ContributionsEntity existingContributionsEntity = contributionsRepository.findByRepIdAndLatestIsTrue(repId);
+
+        // Triggers lazy loading of dependent entities
+        existingContributionsEntity.getContributionFile().toString();
 
         if (existingContributionsEntity != null) {
             contributionsRepository.updateExistingContributionToInactive(repId, createContributions.getEffectiveDate());

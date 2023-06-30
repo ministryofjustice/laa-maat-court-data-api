@@ -2,8 +2,8 @@ package gov.uk.courtdata.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -43,8 +43,8 @@ public class ContributionFilesEntity {
     @Column(name = "DATE_MODIFIED")
     private LocalDateTime dateModified;
 
-    @ColumnTransformer(read = "to_clob(XML_CONTENT)", write = "?")
-    @Column(name = "XML_CONTENT", columnDefinition = "XMLType")
+    @Type(type = "gov.uk.courtdata.contribution.projection.SQLXMLType")
+    @Column(name = "XML_CONTENT", columnDefinition = "SYS.XMLType")
     private String xmlContent;
 
     @Column(name = "USER_MODIFIED", length = 250)
@@ -56,8 +56,8 @@ public class ContributionFilesEntity {
     @Column(name = "DATE_RECEIVED")
     private LocalDateTime dateReceived;
 
-    @ColumnTransformer(read = "to_clob(ACK_XML_CONTENT)", write = "?")
-    @Column(name = "ACK_XML_CONTENT", columnDefinition = "XMLType")
+    @Type(type = "gov.uk.courtdata.contribution.projection.SQLXMLType")
+    @Column(name = "ACK_XML_CONTENT", columnDefinition = "SYS.XMLType")
     private String ackXmlContent;
 
     @ToString.Exclude

@@ -1,5 +1,8 @@
 package gov.uk.courtdata.courtdataadapter.client;
 
+import gov.uk.courtdata.exception.ApiClientException;
+import gov.uk.courtdata.exception.RetryableWebClientResponseException;
+import io.netty.handler.timeout.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +15,11 @@ import org.springframework.security.oauth2.client.web.reactive.function.client.S
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import reactor.core.publisher.Mono;
+
+import reactor.util.retry.Retry;
+import java.time.Duration;
 
 /**
  * <code>CourtDataAdapterOAuth2ClientConfig</code>
@@ -22,6 +29,9 @@ import reactor.core.publisher.Mono;
 public class CourtDataAdapterOAuth2ClientConfig {
 
     private static final String REGISTERED_ID = "cda";
+    @Value("${cda.retry-config.max-retries}") private Integer maxRetries;
+    @Value("${cda.retry-config.min-back-off-period}") private Integer minBackoffPeriod;
+    @Value("${cda.retry-config.jitter-value}") private Double jitter;
 
     /**
      * @param tokenUri
@@ -84,6 +94,7 @@ public class CourtDataAdapterOAuth2ClientConfig {
                 .filter(loggingRequest())
                 .filter(loggingResponse())
                 .filter(oauth2Client)
+                .filter(retryFilter(maxRetries, minBackoffPeriod, jitter))
                 .build();
     }
 
@@ -109,6 +120,52 @@ public class CourtDataAdapterOAuth2ClientConfig {
             log.info("Response status: {}",clientResponse.statusCode());
             return Mono.just(clientResponse);
         });
+    }
+
+    /**
+     * Retry exchange filter function.
+     * Retries error responses on <code>RetryableWebClientResponseException</code> and request timeouts.
+     * Progress is logged to the console after each retry and after all retries are exhausted at INFO level.
+     * The number of retries, jitter and back of period are provided via fields.
+     *
+     * @return the exchange filter function
+     */
+    public static ExchangeFilterFunction retryFilter(Integer maxRetries, Integer minBackoffPeriod, Double jitter) {
+        return (request, next) ->
+                next.exchange(request)
+                        .retryWhen(
+                                Retry.backoff(
+                                                maxRetries,
+                                                Duration.ofSeconds(
+                                                        minBackoffPeriod
+                                                )
+                                        )
+                                        .jitter(jitter)
+                                        .filter(
+                                                throwable ->
+                                                        throwable instanceof RetryableWebClientResponseException ||
+                                                                throwable instanceof WebClientRequestException
+                                                                        && throwable.getCause() instanceof TimeoutException
+                                        ).onRetryExhaustedThrow(
+                                                (retryBackoffSpec, retrySignal) ->
+                                                        new ApiClientException(
+                                                                String.format(
+                                                                        "Call to service failed. Retries exhausted: %d/%d.",
+                                                                        retrySignal.totalRetries(), maxRetries
+                                                                ), retrySignal.failure()
+                                                        )
+                                        ).doAfterRetry(
+                                                retrySignal -> {
+                                                    if (retrySignal.totalRetries() > 0) {
+                                                        log.warn(
+                                                                String.format("Call to service failed, retrying: %d/%d",
+                                                                        retrySignal.totalRetries(), maxRetries
+                                                                )
+                                                        );
+                                                    }
+                                                }
+                                        )
+                        );
     }
 
 }

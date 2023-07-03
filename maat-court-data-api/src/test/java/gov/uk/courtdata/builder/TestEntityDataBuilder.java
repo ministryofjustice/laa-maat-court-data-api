@@ -606,4 +606,11 @@ public class TestEntityDataBuilder {
                 .cotyCorresType("CONTRIBUTION_ORDER")
                 .build();
     }
+
+    public static CorrespondenceStateEntity getCorrespondenceStateEntity(Integer repId, String status) {
+        return CorrespondenceStateEntity.builder()
+                .repId(repId)
+                .status(status)
+                .build();
+    }
 }

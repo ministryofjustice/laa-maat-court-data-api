@@ -177,7 +177,7 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
 
     @Test
     void givenAValidRepIdAndEmptyCorrespondence_whenGetContributionCountIsInvoked_thenZeroIsReturned() throws Exception {
-        var response = runSuccessScenario(head(ENDPOINT_URL + "/1235" + "/contribution"));
-        Assertions.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
+        assertTrue(runNotFoundErrorScenario("Contributions entry not found for repId " + INVALID_REP_ID,
+                get(ENDPOINT_URL + "/" + INVALID_REP_ID).contentType(MediaType.APPLICATION_JSON)));
     }
 }

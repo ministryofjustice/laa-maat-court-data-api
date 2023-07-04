@@ -35,26 +35,29 @@ public class CorrespondenceStateService {
                 .repId(corrStateDTO.getRepId())
                 .status(corrStateDTO.getStatus()).build();
         CorrespondenceStateEntity savedEntity = correspondenceStateRepository.saveAndFlush(correspondenceStateEntity);
-        return CorrespondenceStateDTO.builder()
-                .status(savedEntity.getStatus())
-                .repId(savedEntity.getRepId())
-                .build();
+        return getCorrespondenceStateDTO(savedEntity);
     }
 
     @Transactional
     public CorrespondenceStateDTO updateCorrespondenceState(final CorrespondenceStateDTO corrStateDTO) {
-        log.info("Update correspondence state for repId {}", corrStateDTO.getRepId());
+        log.info("Create or Update correspondence state for repId {}", corrStateDTO.getRepId());
         CorrespondenceStateEntity entity = correspondenceStateRepository.findByRepId(corrStateDTO.getRepId());
         if (entity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No corresponsdence state found for repId=%s", corrStateDTO.getRepId()));
+            entity = CorrespondenceStateEntity.builder()
+                    .repId(corrStateDTO.getRepId())
+                    .status(corrStateDTO.getStatus()).build();
         } else {
             entity.setStatus(corrStateDTO.getStatus());
-            CorrespondenceStateEntity savedEntity = correspondenceStateRepository.saveAndFlush(entity);
-            return CorrespondenceStateDTO.builder()
-                    .status(savedEntity.getStatus())
-                    .repId(savedEntity.getRepId())
-                    .build();
         }
+        CorrespondenceStateEntity savedEntity = correspondenceStateRepository.saveAndFlush(entity);
+        return getCorrespondenceStateDTO(savedEntity);
+    }
+
+    private static CorrespondenceStateDTO getCorrespondenceStateDTO(CorrespondenceStateEntity newEntity) {
+        return CorrespondenceStateDTO.builder()
+                .status(newEntity.getStatus())
+                .repId(newEntity.getRepId())
+                .build();
     }
 
 }

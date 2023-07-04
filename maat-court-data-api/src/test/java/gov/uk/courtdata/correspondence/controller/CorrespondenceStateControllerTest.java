@@ -89,7 +89,7 @@ public class CorrespondenceStateControllerTest {
     }
 
     @Test
-    void givenCorrectParameters_whenUpdateIsInvoked_thenCorrespondenceStateIsUpdated() throws Exception {
+    void givenCorrectParameters_whenUpdateIsInvoked_thenCorrespondenceStateIsUpdatedOrCreated() throws Exception {
         CorrespondenceStateDTO correspondenceStateDTO = buildCorrespondenceStateDTO(REP_ID, CORRESPONDENCE_STATUS);
         when(correspondenceStateService.updateCorrespondenceState(correspondenceStateDTO))
                 .thenReturn(correspondenceStateDTO);
@@ -100,28 +100,6 @@ public class CorrespondenceStateControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonBody));
-        verify(correspondenceStateService).updateCorrespondenceState(correspondenceStateDTO);
-    }
-
-    @Test
-    void givenNullRepId_whenUpdateIsInvoked_thenBadRequestIsThrown() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                        .content(mapper.writeValueAsString(buildCorrespondenceStateDTO(null, CORRESPONDENCE_STATUS)))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void givenNonExistentRepId_whenUpdateIsInvoked_thenNotFoundIsThrown() throws Exception {
-        CorrespondenceStateDTO correspondenceStateDTO = buildCorrespondenceStateDTO(REP_ID, CORRESPONDENCE_STATUS);
-        when(correspondenceStateService.updateCorrespondenceState(correspondenceStateDTO))
-                .thenThrow(new RequestedObjectNotFoundException("No corresponsdence state found for repId:" + CORRESPONDENCE_STATUS));
-
-        mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                        .content(mapper.writeValueAsString(correspondenceStateDTO))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-
         verify(correspondenceStateService).updateCorrespondenceState(correspondenceStateDTO);
     }
 

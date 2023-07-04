@@ -59,7 +59,7 @@ public class CorrespondenceStateServiceTest {
     }
 
     @Test
-    void givenCorrespondenceStateDTO_whenUpdateCorrespondenceStateIsInvoked_thenCorrespondenceStateIsUpdated() throws Exception {
+    void givenCorrespondenceStateDTO_whenUpdateCorrespondenceStateIsInvokedAndRecordExist_thenCorrespondenceStateIsUpdated() throws Exception {
         when(correspondenceStateRepository.findByRepId(REP_ID))
                 .thenReturn(CorrespondenceStateEntity.builder().repId(REP_ID).status(CORRESPONDENCE_STATUS).build());
         when(correspondenceStateRepository.saveAndFlush(any(CorrespondenceStateEntity.class)))
@@ -73,12 +73,12 @@ public class CorrespondenceStateServiceTest {
     }
 
     @Test
-    void givenInvalidCorrespondenceStateDTO_whenUpdateCorrespondenceStateIsInvoked_thenNotFoundIsThrown() throws Exception {
-        when(correspondenceStateRepository.findByRepId(INVALID_REP_ID)).thenReturn(null);
-        CorrespondenceStateDTO correspondenceStateDTO = buildCorrespondenceStateDTO(INVALID_REP_ID, CORRESPONDENCE_STATUS);
-
-        assertThatExceptionOfType(RequestedObjectNotFoundException.class)
-                .isThrownBy(() -> correspondenceStateService.updateCorrespondenceState(correspondenceStateDTO))
-                .withMessageContaining("No corresponsdence state found for repId=" + INVALID_REP_ID);
+    void givenInvalidCorrespondenceStateDTO_whenUpdateCorrespondenceStateIsInvokedAndRecordNotExist_thenCreateNewRecord() throws Exception {
+        when(correspondenceStateRepository.findByRepId(REP_ID)).thenReturn(null);
+        when(correspondenceStateRepository.saveAndFlush(any(CorrespondenceStateEntity.class)))
+                .thenReturn(buildCorrespondenceStateEntity(REP_ID, "appealCC"));
+        correspondenceStateService.updateCorrespondenceState(buildCorrespondenceStateDTO(REP_ID, "appealCC"));
+        verify(correspondenceStateRepository).findByRepId(REP_ID);
+        verify(correspondenceStateRepository).saveAndFlush(any(CorrespondenceStateEntity.class));
     }
 }

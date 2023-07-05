@@ -5,6 +5,7 @@ import gov.uk.courtdata.contribution.entity.ContributionsSummaryEntity;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
+import gov.uk.courtdata.contribution.projection.ContributionsSummary;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -77,7 +78,7 @@ public class ContributionsService {
 
     public String getContributionsSummary(int repId) {
         // TODO: Call off to repository to run custom join query
-        List<ContributionsSummaryEntity> contributionsSummaryEntities = contributionsRepository.getContributionsSummary(repId);
+        List<ContributionsSummary> contributionsSummaryEntities = contributionsRepository.getContributionsSummary(repId);
         // TODO: Handle where no result is returned due to invalid repId
         // TODO: Map query result to DTO to return to calling application
         if (contributionsSummaryEntities.isEmpty()) {

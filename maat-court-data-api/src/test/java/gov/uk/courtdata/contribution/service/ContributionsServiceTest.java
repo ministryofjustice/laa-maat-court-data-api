@@ -7,7 +7,7 @@ import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.repository.ContributionsRepository;
+import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

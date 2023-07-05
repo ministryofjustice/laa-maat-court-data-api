@@ -2,7 +2,7 @@ package gov.uk.courtdata.contribution.validator;
 
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
-import gov.uk.courtdata.repository.ContributionsRepository;
+import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

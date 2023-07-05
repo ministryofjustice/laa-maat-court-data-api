@@ -1,19 +1,19 @@
 package gov.uk.courtdata.contribution.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.contribution.entity.ContributionsSummaryEntity;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.repository.ContributionsRepository;
+import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -73,5 +73,17 @@ public class ContributionsService {
     @Transactional
     public int getContributionCount(Integer repId) {
         return contributionsRepository.getContributionCount(repId);
+    }
+
+    public String getContributionsSummary(int repId) {
+        // TODO: Call off to repository to run custom join query
+        List<ContributionsSummaryEntity> contributionsSummaryEntities = contributionsRepository.getContributionsSummary(repId);
+        // TODO: Handle where no result is returned due to invalid repId
+        // TODO: Map query result to DTO to return to calling application
+        if (contributionsSummaryEntities.isEmpty()) {
+            return "No entry for repId";
+        } else {
+            return "I got a contributions summary!";
+        }
     }
 }

@@ -1,5 +1,6 @@
-package gov.uk.courtdata.repository;
+package gov.uk.courtdata.contribution.repository;
 
+import gov.uk.courtdata.contribution.entity.ContributionsSummaryEntity;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -31,4 +32,10 @@ public interface ContributionsRepository extends JpaRepository<ContributionsEnti
             "where C.REP_ID = :repId and (  CO.COTY_CORRESPONDENCE_TYPE = 'CONTRIBUTION_ORDER' or" +
             " CO.COTY_CORRESPONDENCE_TYPE = 'CONTRIBUTION_NOTICE')", nativeQuery = true)
     int getContributionCount(@Param("repId") Integer repId);
+
+    @Query(value = "SELECT C.ID, C.MONTHLY_CONTRIBS, C.UPFRONT_CONTRIBS, C.BASED_ON, C.UPLIFT_APPLIED, " +
+            "C.EFFECTIVE_DATE, C.CALC_DATE, F.FILE_NAME, F.DATE_SENT, F.DATE_RECEIVED " +
+            "FROM TOGDATA.CONTRIBUTIONS C LEFT JOIN TOGDATA.CONTRIBUTION_FILES F ON (F.ID = C.CONT_FILE_ID) " +
+            "WHERE C.REP_ID = :repId ORDER BY C.EFFECTIVE_DATE DESC, C.ID DESC", nativeQuery = true)
+    List<ContributionsSummaryEntity> getContributionsSummary(@Param("repId") Integer repId);
 }

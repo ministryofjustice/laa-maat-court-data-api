@@ -172,6 +172,7 @@ public class ContributionsController {
     )
     public ResponseEntity<String> getContributionsSummary(@PathVariable int repId) {
         log.info("Request to retrieve contributions summary for repId: {}", repId);
-        return ResponseEntity.ok("Summary controller test");
+        // TODO: Decide if we need to validate the request data (repId)
+        return ResponseEntity.ok(contributionsService.getContributionsSummary(repId));
     }
 }

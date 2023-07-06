@@ -14,9 +14,12 @@ import org.springframework.security.oauth2.client.registration.InMemoryClientReg
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunctions;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
+import org.springframework.web.client.HttpServerErrorException;
 
 import reactor.util.retry.Retry;
 import java.time.Duration;
@@ -95,6 +98,7 @@ public class CourtDataAdapterOAuth2ClientConfig {
                 .filter(loggingResponse())
                 .filter(oauth2Client)
                 .filter(retryFilter(maxRetries, minBackoffPeriod, jitter))
+                .filter(errorResponse())
                 .build();
     }
 
@@ -122,11 +126,31 @@ public class CourtDataAdapterOAuth2ClientConfig {
         });
     }
 
+    public static ExchangeFilterFunction errorResponse() {
+        return ExchangeFilterFunctions.statusError(
+                HttpStatus::isError, r -> {
+                    String errorMessage =
+                            String.format("Received error %s due to %s", r.statusCode().value(), r.statusCode().getReasonPhrase());
+                    if (r.statusCode().is5xxServerError()) {
+                        return new HttpServerErrorException(
+                                r.statusCode(),
+                                errorMessage
+                        );
+                    }
+                    return new ApiClientException(errorMessage);
+                });
+    }
+
     /**
      * Retry exchange filter function.
      * Retries error responses on <code>RetryableWebClientResponseException</code> and request timeouts.
      * Progress is logged to the console after each retry and after all retries are exhausted at INFO level.
      * The number of retries, jitter and back of period are provided via fields.
+     *
+     * This method was copied from the following class in the laa-crime-commons library. This class was not
+     * implemented as the laa-crime-commons library has prerequisites of JDK 17 and Spring Boot 3 that
+     * are not implemented yet in this project.
+     * https://github.com/ministryofjustice/laa-crime-commons/blob/5f0b82a23ef5a10d3b203acfde7ed92d0ce08895/crime-commons-spring-boot-starter-rest-client/src/main/java/uk/gov/justice/laa/crime/commons/filters/WebClientFilters.java
      *
      * @return the exchange filter function
      */
@@ -144,8 +168,9 @@ public class CourtDataAdapterOAuth2ClientConfig {
                                         .filter(
                                                 throwable ->
                                                         throwable instanceof RetryableWebClientResponseException ||
-                                                                throwable instanceof WebClientRequestException
-                                                                        && throwable.getCause() instanceof TimeoutException
+                                                                (throwable instanceof WebClientRequestException
+                                                                        && throwable.getCause() instanceof TimeoutException) ||
+                                                                throwable instanceof HttpServerErrorException
                                         ).onRetryExhaustedThrow(
                                                 (retryBackoffSpec, retrySignal) ->
                                                         new ApiClientException(

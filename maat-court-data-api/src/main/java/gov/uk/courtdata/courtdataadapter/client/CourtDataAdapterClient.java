@@ -2,6 +2,7 @@ package gov.uk.courtdata.courtdataadapter.client;
 
 import com.google.gson.GsonBuilder;
 import gov.uk.courtdata.enums.MessageType;
+import gov.uk.courtdata.exception.ApiClientException;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import gov.uk.courtdata.service.QueueMessageLogService;
@@ -15,7 +16,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
@@ -38,23 +38,12 @@ public class CourtDataAdapterClient {
      * @param laaStatusUpdate laa status value
      */
     public void postLaaStatus(LaaStatusUpdate laaStatusUpdate, Map<String,String> headers) {
-
-
         final String laaStatusUpdateJson = gsonBuilder.create().toJson(laaStatusUpdate);
         queueMessageLogService.createLog(MessageType.LAA_STATUS_UPDATE,laaStatusUpdateJson);
 
         log.info("Post Laa status to CDA.");
-        WebClient.ResponseSpec clientResponse =
-                webClient
-                        .post()
-                        .uri(uriBuilder -> uriBuilder.path(courtDataAdapterClientConfig.getLaaStatusUrl()).build())
-                        .headers(httpHeaders -> httpHeaders.setAll(headers))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(laaStatusUpdateJson))
-                        .retrieve();
-
-        Optional<ResponseEntity<Void>> optionalClientResponse = Optional.ofNullable(clientResponse.toBodilessEntity().block());
-        optionalClientResponse.ifPresent(voidResponseEntity -> log.info("LAA status update posted {}", Optional.of(voidResponseEntity.getStatusCode())));
+        ResponseEntity<Void> clientResponse = getApiResponseViaPOST(BodyInserters.fromValue(laaStatusUpdateJson), ResponseEntity.class, courtDataAdapterClientConfig.getLaaStatusUrl(), headers);
+        log.info("LAA status update posted {}", clientResponse.getStatusCode());
     }
 
     public void triggerHearingProcessing(UUID hearingId, String laaTransactionId) {
@@ -68,5 +57,25 @@ public class CourtDataAdapterClient {
                 .onErrorMap(error -> new MAATCourtDataException(String.format("Error triggering CDA processing for hearing '%s'.%s", hearingId, error.getMessage())))
                 .doOnSuccess(response -> log.info("Processing trigger successfully for hearing '{}'", hearingId))
                 .block();
+    }
+
+    private <T, R> R getApiResponseViaPOST(T postBody, Class<R> responseClass, String url, Map<String, String> headers) {
+        return webClient
+                .post()
+                .uri(uriBuilder -> uriBuilder.path(url).build())
+                .headers(httpHeaders -> httpHeaders.setAll(headers))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(postBody))
+                .retrieve()
+                .bodyToMono(responseClass)
+                .onErrorMap(this::handleError)
+                .block();
+    }
+
+    private Throwable handleError(Throwable error) {
+        if (error instanceof ApiClientException) {
+            return error;
+        }
+        return new ApiClientException("Call to Court Data Adapter failed, invalid response.", error);
     }
 }

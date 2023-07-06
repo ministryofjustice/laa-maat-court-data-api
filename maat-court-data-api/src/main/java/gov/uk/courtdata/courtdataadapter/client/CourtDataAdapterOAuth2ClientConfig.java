@@ -32,9 +32,6 @@ import java.time.Duration;
 public class CourtDataAdapterOAuth2ClientConfig {
 
     private static final String REGISTERED_ID = "cda";
-    @Value("${cda.retry-config.max-retries}") private Integer maxRetries;
-    @Value("${cda.retry-config.min-back-off-period}") private Integer minBackoffPeriod;
-    @Value("${cda.retry-config.jitter-value}") private Double jitter;
 
     /**
      * @param tokenUri
@@ -88,7 +85,11 @@ public class CourtDataAdapterOAuth2ClientConfig {
      * @return
      */
     @Bean(name = "cdaOAuth2WebClient")
-    public WebClient webClient(@Value("${cda.url}") String baseUrl, OAuth2AuthorizedClientManager authorizedClientManager) {
+    public WebClient webClient(@Value("${cda.url}") String baseUrl, OAuth2AuthorizedClientManager authorizedClientManager,
+                               @Value("${cda.retry-config.max-retries}") Integer maxRetries,
+                               @Value("${cda.retry-config.min-back-off-period}") Integer minBackoffPeriod,
+                               @Value("${cda.retry-config.jitter-value}") Double jitter) {
+
         ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =
                 new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
         oauth2Client.setDefaultClientRegistrationId(REGISTERED_ID);

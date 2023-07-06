@@ -5,6 +5,7 @@ import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import gov.uk.courtdata.model.laastatus.RepOrderData;
 import gov.uk.courtdata.service.QueueMessageLogService;
+import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,17 +16,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.web.reactive.function.client.ClientRequest;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -50,6 +47,9 @@ class CourtDataAdapterClientIntegrationTest {
     private CourtDataAdapterClient courtDataAdapterClient;
     private WebClient webClient;
 
+    @Mock
+    private OAuth2AuthorizedClientManager authClientManager;
+
     @BeforeEach
     public void setup() throws IOException {
         gsonBuilder = new GsonBuilder();
@@ -57,28 +57,24 @@ class CourtDataAdapterClientIntegrationTest {
         mockCourtDataAdapterApi.start();
         baseUrl = String.format("http://localhost:%s", mockCourtDataAdapterApi.getPort());
 
-        webClient = WebClient.builder()
-                .baseUrl(baseUrl)
-                .exchangeFunction(shortCircuitExchangeFunction)
-                .filter(CourtDataAdapterOAuth2ClientConfig.retryFilter(3,5, 0.75))
-                .filter(CourtDataAdapterOAuth2ClientConfig.errorResponse())
-                .build();
+        webClient = buildWebClient();
+        System.out.println("Test");
+    }
+
+    private WebClient buildWebClient() {
+        CourtDataAdapterOAuth2ClientConfig courtDataAdapterOAuth2ClientConfig = new CourtDataAdapterOAuth2ClientConfig();
+        return courtDataAdapterOAuth2ClientConfig.webClient(baseUrl, authClientManager, 3, 5, 0.75);
     }
 
     @Test
     public void testBlah() {
         courtDataAdapterClient = new CourtDataAdapterClient(webClient, gsonBuilder, queueMessageLogService, courtDataAdapterClientConfig);
+
         String laaStatusUrl = "cda-test/laaStatus";
         when(courtDataAdapterClientConfig.getLaaStatusUrl()).thenReturn(laaStatusUrl);
 
-        ClientResponse errorResponse = ClientResponse.create(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        ClientResponse successResponse = ClientResponse.create(HttpStatus.ACCEPTED).build();
-
-        LinkedList<Object> responses = Stream.of(errorResponse, successResponse)
-                .collect(Collectors.toCollection(LinkedList::new));
-
-        when(shortCircuitExchangeFunction.exchange(requestCaptor.capture()))
-                .thenReturn(Mono.just((ClientResponse) responses.pop()));
+        mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.ACCEPTED.value()));
 
         Map<String, String> headers = Map.of("test-header", "test-header-value");
         LaaStatusUpdate testStatusObject = getTestLaaStatusObject();

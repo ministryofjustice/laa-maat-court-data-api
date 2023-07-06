@@ -81,6 +81,8 @@ class CourtDataAdapterClientIntegrationTest {
         // TODO: verify that accepted message is in the logs
     }
 
+    // TODO: test for exhausted retries
+
     private LaaStatusUpdate getTestLaaStatusObject() {
         return LaaStatusUpdate.builder().data(RepOrderData.builder().type("test-representation_order").build()).build();
     }

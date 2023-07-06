@@ -10,26 +10,25 @@ import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
-import org.springframework.web.reactive.function.client.ClientRequest;
-import org.springframework.web.reactive.function.client.ExchangeFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CourtDataAdapterClientIntegrationTest {
 
+    private static final Integer MAX_RETRIES = 3;
+    private static final Integer MIN_BACKOFF_PERIOD = 5;
+    private static final Double JITTER = 0.75;
+    private static final String LOCALHOST = "http://localhost:%s";
+    private static final String LAA_STATUS_URL = "cda-test/laaStatus";
     public static MockWebServer mockCourtDataAdapterApi;
 
     private String baseUrl;
@@ -51,38 +50,35 @@ class CourtDataAdapterClientIntegrationTest {
         gsonBuilder = new GsonBuilder();
         mockCourtDataAdapterApi = new MockWebServer();
         mockCourtDataAdapterApi.start();
-        baseUrl = String.format("http://localhost:%s", mockCourtDataAdapterApi.getPort());
-
+        baseUrl = String.format(LOCALHOST, mockCourtDataAdapterApi.getPort());
         webClient = buildWebClient();
-        System.out.println("Test");
     }
 
     private WebClient buildWebClient() {
         CourtDataAdapterOAuth2ClientConfig courtDataAdapterOAuth2ClientConfig = new CourtDataAdapterOAuth2ClientConfig();
-        return courtDataAdapterOAuth2ClientConfig.webClient(baseUrl, authClientManager, 3, 5, 0.75);
+        return courtDataAdapterOAuth2ClientConfig.webClient(baseUrl, authClientManager, MAX_RETRIES, MIN_BACKOFF_PERIOD, JITTER);
     }
 
     @Test
-    public void testBlah() {
+    public void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_andTwoInternalServerErrorsOccurInCDA_thenTheRequestIsSentCorrectlyAndAnAcceptedResponseIsReceived() {
+        // given
         courtDataAdapterClient = new CourtDataAdapterClient(webClient, gsonBuilder, queueMessageLogService, courtDataAdapterClientConfig);
-
-        String laaStatusUrl = "cda-test/laaStatus";
-        when(courtDataAdapterClientConfig.getLaaStatusUrl()).thenReturn(laaStatusUrl);
-
+        when(courtDataAdapterClientConfig.getLaaStatusUrl()).thenReturn(LAA_STATUS_URL);
         mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
         mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
         mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.ACCEPTED.value()));
-
         Map<String, String> headers = Map.of("test-header", "test-header-value");
         LaaStatusUpdate testStatusObject = getTestLaaStatusObject();
 
+        // when
         courtDataAdapterClient.postLaaStatus(testStatusObject, headers);
 
+        //then
         String jsonBody = gsonBuilder.create().toJson(testStatusObject);
-
         verify(queueMessageLogService, atLeastOnce())
                 .createLog(MessageType.LAA_STATUS_UPDATE, jsonBody);
-
+        // TODO: verify that retry messages are in the logs
+        // TODO: verify that accepted message is in the logs
     }
 
     private LaaStatusUpdate getTestLaaStatusObject() {

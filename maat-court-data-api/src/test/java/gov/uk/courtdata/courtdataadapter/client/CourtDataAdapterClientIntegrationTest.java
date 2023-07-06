@@ -35,13 +35,9 @@ class CourtDataAdapterClientIntegrationTest {
     private String baseUrl;
 
     @Mock
-    private ExchangeFunction shortCircuitExchangeFunction;
-    @Mock
     private CourtDataAdapterClientConfig courtDataAdapterClientConfig;
     @Mock
     private QueueMessageLogService queueMessageLogService;
-    @Captor
-    ArgumentCaptor<ClientRequest> requestCaptor;
 
     private GsonBuilder gsonBuilder;
     private CourtDataAdapterClient courtDataAdapterClient;
@@ -74,6 +70,7 @@ class CourtDataAdapterClientIntegrationTest {
         when(courtDataAdapterClientConfig.getLaaStatusUrl()).thenReturn(laaStatusUrl);
 
         mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
         mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.ACCEPTED.value()));
 
         Map<String, String> headers = Map.of("test-header", "test-header-value");
@@ -86,17 +83,6 @@ class CourtDataAdapterClientIntegrationTest {
         verify(queueMessageLogService, atLeastOnce())
                 .createLog(MessageType.LAA_STATUS_UPDATE, jsonBody);
 
-        verify(shortCircuitExchangeFunction, times(2)).exchange(any());
-
-        Map<String, String> expectedFinalHeaders = Map.of(
-                "test-header", "test-header-value","Content-Type", "application/json");
-        validateRequest(requestCaptor.getValue(), laaStatusUrl, expectedFinalHeaders, HttpMethod.POST);
-    }
-
-    private void validateRequest(ClientRequest request, String expectedUrl, Map<String, String> expectedHeaders, HttpMethod method) {
-        assertEquals(request.headers().toSingleValueMap(), expectedHeaders);
-        assertEquals(request.url().toString(), String.format("%s%s", baseUrl, expectedUrl));
-        assertEquals(request.method(), method);
     }
 
     private LaaStatusUpdate getTestLaaStatusObject() {

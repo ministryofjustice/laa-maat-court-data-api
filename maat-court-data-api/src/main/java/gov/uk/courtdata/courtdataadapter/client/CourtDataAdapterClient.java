@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
@@ -42,8 +43,17 @@ public class CourtDataAdapterClient {
         queueMessageLogService.createLog(MessageType.LAA_STATUS_UPDATE,laaStatusUpdateJson);
 
         log.info("Post Laa status to CDA.");
-        ResponseEntity<Void> clientResponse = getApiResponseViaPOST(BodyInserters.fromValue(laaStatusUpdateJson), ResponseEntity.class, courtDataAdapterClientConfig.getLaaStatusUrl(), headers);
-        log.info("LAA status update posted {}", clientResponse.getStatusCode());
+        WebClient.ResponseSpec clientResponse =
+                webClient
+                        .post()
+                        .uri(uriBuilder -> uriBuilder.path(courtDataAdapterClientConfig.getLaaStatusUrl()).build())
+                        .headers(httpHeaders -> httpHeaders.setAll(headers))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(BodyInserters.fromValue(laaStatusUpdateJson))
+                        .retrieve();
+
+        Optional<ResponseEntity<Void>> optionalClientResponse = Optional.ofNullable(clientResponse.toBodilessEntity().block());
+        optionalClientResponse.ifPresent(voidResponseEntity -> log.info("LAA status update posted {}", Optional.of(voidResponseEntity.getStatusCode())));
     }
 
     public void triggerHearingProcessing(UUID hearingId, String laaTransactionId) {

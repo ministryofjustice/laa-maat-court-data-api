@@ -1,7 +1,6 @@
 package gov.uk.courtdata.contribution.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.contribution.entity.ContributionsSummaryEntity;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
@@ -77,14 +76,14 @@ public class ContributionsService {
     }
 
     public String getContributionsSummary(int repId) {
-        // TODO: Call off to repository to run custom join query
         List<ContributionsSummary> contributionsSummaryEntities = contributionsRepository.getContributionsSummary(repId);
+
         // TODO: Handle where no result is returned due to invalid repId
-        // TODO: Map query result to DTO to return to calling application
         if (contributionsSummaryEntities.isEmpty()) {
             return "No entry for repId";
-        } else {
-            return "I got a contributions summary!";
         }
+
+        // TODO: Map query result to DTO to return to calling application
+        return "I got a contributions summary!";
     }
 }

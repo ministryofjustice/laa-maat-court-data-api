@@ -1,6 +1,5 @@
 package gov.uk.courtdata.contribution.repository;
 
-import gov.uk.courtdata.contribution.entity.ContributionsSummaryEntity;
 import gov.uk.courtdata.contribution.projection.ContributionsSummary;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

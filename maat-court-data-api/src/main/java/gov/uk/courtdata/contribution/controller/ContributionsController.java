@@ -150,7 +150,7 @@ public class ContributionsController {
         return ResponseEntity.ok().headers(responseHeaders).build();
     }
 
-    @GetMapping(value = "{repId}/summary", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{repId}/summary", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a summary of contributions for the specified representation order")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400",

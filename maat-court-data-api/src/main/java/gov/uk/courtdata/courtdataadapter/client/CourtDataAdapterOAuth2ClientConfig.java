@@ -19,7 +19,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
-import org.springframework.web.client.HttpServerErrorException;
 
 import reactor.util.retry.Retry;
 import java.time.Duration;
@@ -133,10 +132,7 @@ public class CourtDataAdapterOAuth2ClientConfig {
                     String errorMessage =
                             String.format("Received error %s due to %s", r.statusCode().value(), r.statusCode().getReasonPhrase());
                     if (r.statusCode().is5xxServerError()) {
-                        return new HttpServerErrorException(
-                                r.statusCode(),
-                                errorMessage
-                        );
+                        return new RetryableWebClientResponseException(errorMessage);
                     }
                     return new ApiClientException(errorMessage);
                 });
@@ -170,8 +166,7 @@ public class CourtDataAdapterOAuth2ClientConfig {
                                                 throwable ->
                                                         throwable instanceof RetryableWebClientResponseException ||
                                                                 (throwable instanceof WebClientRequestException
-                                                                        && throwable.getCause() instanceof TimeoutException) ||
-                                                                throwable instanceof HttpServerErrorException
+                                                                        && throwable.getCause() instanceof TimeoutException)
                                         ).onRetryExhaustedThrow(
                                                 (retryBackoffSpec, retrySignal) ->
                                                         new ApiClientException(

@@ -3,7 +3,7 @@ package gov.uk.courtdata.contribution.projection;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public interface ContributionsSummary {
+public interface ContributionsSummaryView {
 
     Integer getId();
     BigDecimal getMonthlyContributions();

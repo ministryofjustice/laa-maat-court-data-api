@@ -1,11 +1,11 @@
 package gov.uk.courtdata.contribution.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.contribution.dto.ContributionSummaryDTO;
+import gov.uk.courtdata.contribution.dto.ContributionsSummaryDTO;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
-import gov.uk.courtdata.contribution.projection.ContributionsSummary;
+import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -78,12 +78,12 @@ public class ContributionsService {
         return contributionsRepository.getContributionCount(repId);
     }
 
-    public List<ContributionSummaryDTO> getContributionsSummary(int repId) {
-        List<ContributionsSummary> contributionsSummaryEntities = contributionsRepository.getContributionsSummary(repId);
+    public List<ContributionsSummaryDTO> getContributionsSummary(int repId) {
+        List<ContributionsSummaryView> contributionsSummaryViewEntities = contributionsRepository.getContributionsSummary(repId);
 
-        if (contributionsSummaryEntities.isEmpty()) {
+        if (contributionsSummaryViewEntities.isEmpty()) {
             throw new RequestedObjectNotFoundException(String.format("No contribution entries found for repId: %d", repId));
         }
-        return contributionsMapper.mapProjectionToDTO(contributionsSummaryEntities);
+        return contributionsMapper.contributionsSummaryToContributionsSummaryDTO(contributionsSummaryViewEntities);
     }
 }

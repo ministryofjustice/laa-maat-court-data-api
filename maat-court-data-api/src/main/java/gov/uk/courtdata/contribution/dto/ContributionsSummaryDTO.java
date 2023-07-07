@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ContributionSummaryDTO {
+public class ContributionsSummaryDTO {
     private Integer id;
     private BigDecimal monthlyContributions;
     private BigDecimal upfrontContributions;

@@ -1,10 +1,8 @@
 package gov.uk.courtdata.contribution.repository;
 
-import gov.uk.courtdata.contribution.projection.ContributionsSummary;
+import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.entity.ContributionsEntity;
-import gov.uk.courtdata.entity.RepOrderMvoRegEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,10 +34,9 @@ public interface ContributionsRepository extends JpaRepository<ContributionsEnti
     int getContributionCount(@Param("repId") Integer repId);
 
     @Query(value = "SELECT C.ID, C.MONTHLY_CONTRIBS monthlyContributions, C.UPFRONT_CONTRIBS upfrontContributions, " +
-            " C.BASED_ON basedOn, C.UPLIFT_APPLIED upliftApplied, " +
-            " C.EFFECTIVE_DATE effectiveDate, C.CALC_DATE calcDate, F.FILE_NAME fileName, F.DATE_SENT dateSent, " +
-            " F.DATE_RECEIVED dateReceived" +
-            " FROM TOGDATA.CONTRIBUTIONS C LEFT JOIN TOGDATA.CONTRIBUTION_FILES F ON (F.ID = C.CONT_FILE_ID) " +
-            " WHERE C.REP_ID = :repId ORDER BY C.EFFECTIVE_DATE DESC, C.ID DESC", nativeQuery = true)
-    List<ContributionsSummary> getContributionsSummary(@Param("repId") Integer repId);
+            "C.BASED_ON basedOn, C.UPLIFT_APPLIED upliftApplied, C.EFFECTIVE_DATE effectiveDate, " +
+            "C.CALC_DATE calcDate, F.FILE_NAME fileName, F.DATE_SENT dateSent, F.DATE_RECEIVED dateReceived " +
+            "FROM TOGDATA.CONTRIBUTIONS C LEFT JOIN TOGDATA.CONTRIBUTION_FILES F ON (F.ID = C.CONT_FILE_ID) " +
+            "WHERE C.REP_ID = :repId ORDER BY C.EFFECTIVE_DATE DESC, C.ID DESC", nativeQuery = true)
+    List<ContributionsSummaryView> getContributionsSummary(@Param("repId") Integer repId);
 }

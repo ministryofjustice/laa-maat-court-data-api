@@ -177,10 +177,10 @@ public class CourtDataAdapterOAuth2ClientConfig {
                                                         )
                                         ).doAfterRetry(
                                                 retrySignal -> {
-                                                    if (retrySignal.totalRetries() > 0) {
+                                                    if (retrySignal.totalRetries() >= 0) {
                                                         log.warn(
                                                                 String.format("Call to service failed, retrying: %d/%d",
-                                                                        retrySignal.totalRetries(), maxRetries
+                                                                        retrySignal.totalRetries() + 1, maxRetries
                                                                 )
                                                         );
                                                     }

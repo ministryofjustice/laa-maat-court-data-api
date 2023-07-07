@@ -1,6 +1,7 @@
 package gov.uk.courtdata.contribution.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.contribution.dto.ContributionSummaryDTO;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.service.ContributionsService;
@@ -170,7 +171,7 @@ public class ContributionsController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<String> getContributionsSummary(@PathVariable int repId) {
+    public ResponseEntity<List<ContributionSummaryDTO>> getContributionsSummary(@PathVariable int repId) {
         log.info("Request to retrieve contributions summary for repId: {}", repId);
         // TODO: Decide if we need to validate the request data (repId)
         return ResponseEntity.ok(contributionsService.getContributionsSummary(repId));

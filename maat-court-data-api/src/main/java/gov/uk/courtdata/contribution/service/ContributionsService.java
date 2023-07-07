@@ -1,6 +1,7 @@
 package gov.uk.courtdata.contribution.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.contribution.dto.ContributionSummaryDTO;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
@@ -10,12 +11,14 @@ import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @XRayEnabled
 @RequiredArgsConstructor
@@ -75,15 +78,17 @@ public class ContributionsService {
         return contributionsRepository.getContributionCount(repId);
     }
 
-    public String getContributionsSummary(int repId) {
+    public List<ContributionSummaryDTO> getContributionsSummary(int repId) {
         List<ContributionsSummary> contributionsSummaryEntities = contributionsRepository.getContributionsSummary(repId);
 
-        // TODO: Handle where no result is returned due to invalid repId
         if (contributionsSummaryEntities.isEmpty()) {
-            return "No entry for repId";
+            throw new RequestedObjectNotFoundException(String.format("No contribution entries found for repId: %d", repId));
         }
 
-        // TODO: Map query result to DTO to return to calling application
-        return "I got a contributions summary!";
+        for (ContributionsSummary summary : contributionsSummaryEntities) {
+            log.info("*******Based on is: {}", summary.getBasedOn());
+        }
+
+        return contributionsMapper.mapProjectionToDTO(contributionsSummaryEntities);
     }
 }

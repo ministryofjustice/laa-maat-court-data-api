@@ -1,5 +1,7 @@
 package gov.uk.courtdata.contribution.mapper;
 
+import gov.uk.courtdata.contribution.dto.ContributionSummaryDTO;
+import gov.uk.courtdata.contribution.projection.ContributionsSummary;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.contribution.model.CreateContributions;
@@ -21,4 +23,6 @@ public interface ContributionsMapper {
     ContributionsEntity createContributionsToContributionsEntity(CreateContributions createContributions);
 
     List<ContributionsDTO> mapEntityToDTO(List<ContributionsEntity> entity);
+
+    List<ContributionSummaryDTO> mapProjectionToDTO(List<ContributionsSummary> projections);
 }

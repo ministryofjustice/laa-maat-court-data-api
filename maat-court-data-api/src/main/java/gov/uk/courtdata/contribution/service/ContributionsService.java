@@ -84,11 +84,6 @@ public class ContributionsService {
         if (contributionsSummaryEntities.isEmpty()) {
             throw new RequestedObjectNotFoundException(String.format("No contribution entries found for repId: %d", repId));
         }
-
-        for (ContributionsSummary summary : contributionsSummaryEntities) {
-            log.info("*******Based on is: {}", summary.getBasedOn());
-        }
-
         return contributionsMapper.mapProjectionToDTO(contributionsSummaryEntities);
     }
 }

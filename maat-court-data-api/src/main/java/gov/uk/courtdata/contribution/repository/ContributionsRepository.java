@@ -35,9 +35,11 @@ public interface ContributionsRepository extends JpaRepository<ContributionsEnti
             " CO.COTY_CORRESPONDENCE_TYPE = 'CONTRIBUTION_NOTICE')", nativeQuery = true)
     int getContributionCount(@Param("repId") Integer repId);
 
-    @Query(value = "SELECT C.ID, C.MONTHLY_CONTRIBS, C.UPFRONT_CONTRIBS, C.BASED_ON, C.UPLIFT_APPLIED, " +
-            "C.EFFECTIVE_DATE, C.CALC_DATE, F.FILE_NAME, F.DATE_SENT, F.DATE_RECEIVED " +
-            "FROM TOGDATA.CONTRIBUTIONS C LEFT JOIN TOGDATA.CONTRIBUTION_FILES F ON (F.ID = C.CONT_FILE_ID) " +
-            "WHERE C.REP_ID = :repId ORDER BY C.EFFECTIVE_DATE DESC, C.ID DESC", nativeQuery = true)
+    @Query(value = "SELECT C.ID, C.MONTHLY_CONTRIBS monthlyContributions, C.UPFRONT_CONTRIBS upfrontContributions, " +
+            " C.BASED_ON basedOn, C.UPLIFT_APPLIED upliftApplied, " +
+            " C.EFFECTIVE_DATE effectiveDate, C.CALC_DATE calcDate, F.FILE_NAME fileName, F.DATE_SENT dateSent, " +
+            " F.DATE_RECEIVED dateReceived" +
+            " FROM TOGDATA.CONTRIBUTIONS C LEFT JOIN TOGDATA.CONTRIBUTION_FILES F ON (F.ID = C.CONT_FILE_ID) " +
+            " WHERE C.REP_ID = :repId ORDER BY C.EFFECTIVE_DATE DESC, C.ID DESC", nativeQuery = true)
     List<ContributionsSummary> getContributionsSummary(@Param("repId") Integer repId);
 }

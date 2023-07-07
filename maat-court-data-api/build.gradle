@@ -154,9 +154,6 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter:1.16.0'
     testImplementation 'org.awaitility:awaitility:4.2.0'
 
-    // for retry integration tests on Mac M1 hardware
-    implementation group: 'io.netty', name: 'netty-resolver-dns-native-macos', version: '4.1.75.Final', classifier: 'osx-aarch_64'
-
 }
 
 

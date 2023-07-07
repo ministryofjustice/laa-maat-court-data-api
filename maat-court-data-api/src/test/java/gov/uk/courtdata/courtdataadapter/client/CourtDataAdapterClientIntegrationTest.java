@@ -76,14 +76,34 @@ class CourtDataAdapterClientIntegrationTest {
     }
 
     @Test
-    public void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_andSomeErrorResponsesReceivedFromCDAAreUnderMaxRetries_thenTheRequestIsSentCorrectlyAndAnAcceptedResponseIsReceived() {
+    void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_andSomeErrorResponsesReceivedFromCDAAreUnderMaxRetries_thenTheRequestIsSentCorrectlyAndAnAcceptedResponseIsReceived() {
         // given
         courtDataAdapterClient = new CourtDataAdapterClient(webClient, gsonBuilder, queueMessageLogService, courtDataAdapterClientConfig);
         when(courtDataAdapterClientConfig.getLaaStatusUrl()).thenReturn(LAA_STATUS_URL);
-        mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.ACCEPTED.value()));
+        setupMockApiResponses(MAX_RETRIES - 1);
+        Map<String, String> headers = Map.of("test-header", "test-header-value");
+        LaaStatusUpdate testStatusObject = getTestLaaStatusObject();
+
+        // when
+        courtDataAdapterClient.postLaaStatus(testStatusObject, headers);
+
+        //then
+        String jsonBody = gsonBuilder.create().toJson(testStatusObject);
+        verify(queueMessageLogService, atLeastOnce())
+                .createLog(MessageType.LAA_STATUS_UPDATE, jsonBody);
+
+        assertTrue(listAppender.list.stream()
+                .anyMatch(event -> event.getLevel() == Level.WARN && event.getFormattedMessage().contains("Call to service failed, retrying: 2/3")));
+        assertTrue(listAppender.list.stream()
+                .anyMatch(event -> event.getLevel() == Level.INFO && event.getFormattedMessage().contains("LAA status update posted Optional[202 ACCEPTED]")));
+    }
+
+    @Test
+    void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_andSomeErrorResponsesReceivedFromCDAEqualMaxRetries_thenTheRequestIsSentCorrectlyAndAnAcceptedResponseIsReceived() {
+        // given
+        courtDataAdapterClient = new CourtDataAdapterClient(webClient, gsonBuilder, queueMessageLogService, courtDataAdapterClientConfig);
+        when(courtDataAdapterClientConfig.getLaaStatusUrl()).thenReturn(LAA_STATUS_URL);
+        setupMockApiResponses(MAX_RETRIES);
         Map<String, String> headers = Map.of("test-header", "test-header-value");
         LaaStatusUpdate testStatusObject = getTestLaaStatusObject();
 
@@ -102,14 +122,11 @@ class CourtDataAdapterClientIntegrationTest {
     }
 
     @Test
-    public void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_andErrorResponsesReceivedFromCDAExceedMaxRetries_thenAnErrorIsThrown() {
+    void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_andErrorResponsesReceivedFromCDAExceedMaxRetries_thenAnErrorIsThrown() {
         // given
         courtDataAdapterClient = new CourtDataAdapterClient(webClient, gsonBuilder, queueMessageLogService, courtDataAdapterClientConfig);
         when(courtDataAdapterClientConfig.getLaaStatusUrl()).thenReturn(LAA_STATUS_URL);
-        mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        setupMockApiResponses(MAX_RETRIES + 1);
         Map<String, String> headers = Map.of("test-header", "test-header-value");
         LaaStatusUpdate testStatusObject = getTestLaaStatusObject();
 
@@ -127,6 +144,15 @@ class CourtDataAdapterClientIntegrationTest {
 
     private LaaStatusUpdate getTestLaaStatusObject() {
         return LaaStatusUpdate.builder().data(RepOrderData.builder().type("test-representation_order").build()).build();
+    }
+
+    private void setupMockApiResponses(Integer attemptsBeforeSuccess) {
+        for (int i = 0; i < attemptsBeforeSuccess; i++) {
+            mockCourtDataAdapterApi.enqueue(new MockResponse()
+                    .setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        }
+
+        mockCourtDataAdapterApi.enqueue(new MockResponse().setResponseCode(HttpStatus.ACCEPTED.value()));
     }
 
 }

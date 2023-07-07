@@ -69,23 +69,4 @@ public class CourtDataAdapterClient {
                 .block();
     }
 
-    private <T, R> R getApiResponseViaPOST(T postBody, Class<R> responseClass, String url, Map<String, String> headers) {
-        return webClient
-                .post()
-                .uri(uriBuilder -> uriBuilder.path(url).build())
-                .headers(httpHeaders -> httpHeaders.setAll(headers))
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(postBody))
-                .retrieve()
-                .bodyToMono(responseClass)
-                .onErrorMap(this::handleError)
-                .block();
-    }
-
-    private Throwable handleError(Throwable error) {
-        if (error instanceof ApiClientException) {
-            return error;
-        }
-        return new ApiClientException("Call to Court Data Adapter failed, invalid response.", error);
-    }
 }

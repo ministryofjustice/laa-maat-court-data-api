@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 class CourtDataAdapterClientIntegrationTest {
 
     private static final Integer MAX_RETRIES = 3;
-    private static final Integer MIN_BACKOFF_PERIOD = 5;
+    private static final Integer MIN_BACKOFF_PERIOD = 1;
     private static final Double JITTER = 0.75;
     private static final String LOCALHOST = "http://localhost:%s";
     private static final String LAA_STATUS_URL = "cda-test/laaStatus";

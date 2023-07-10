@@ -76,6 +76,10 @@ cda:
     url: "update"
   hearing:
     url: "hearing_results/{hearingId}"
+  retry-config:
+    max-retries: 3
+    min-back-off-period: 5
+    jitter-value: 0.75
 
 queue:
   message:

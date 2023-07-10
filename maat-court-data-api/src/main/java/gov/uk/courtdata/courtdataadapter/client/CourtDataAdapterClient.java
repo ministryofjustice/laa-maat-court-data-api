@@ -38,8 +38,6 @@ public class CourtDataAdapterClient {
      * @param laaStatusUpdate laa status value
      */
     public void postLaaStatus(LaaStatusUpdate laaStatusUpdate, Map<String,String> headers) {
-
-
         final String laaStatusUpdateJson = gsonBuilder.create().toJson(laaStatusUpdate);
         queueMessageLogService.createLog(MessageType.LAA_STATUS_UPDATE,laaStatusUpdateJson);
 
@@ -69,4 +67,5 @@ public class CourtDataAdapterClient {
                 .doOnSuccess(response -> log.info("Processing trigger successfully for hearing '{}'", hearingId))
                 .block();
     }
+
 }

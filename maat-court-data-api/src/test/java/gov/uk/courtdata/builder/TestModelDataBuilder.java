@@ -1111,19 +1111,19 @@ public class TestModelDataBuilder {
             public String getUpliftApplied() { return "N"; }
 
             @Override
-            public LocalDateTime getEffectiveDate() { return LocalDateTime.now(); }
+            public LocalDate getEffectiveDate() { return LocalDate.now(); }
 
             @Override
-            public LocalDateTime getCalcDate() { return LocalDateTime.now(); }
+            public LocalDate getCalcDate() { return LocalDate.now(); }
 
             @Override
             public String getFileName() { return "CONTRIBUTIONS_20230707999.xml"; }
 
             @Override
-            public LocalDateTime getDateSent() { return LocalDateTime.now(); }
+            public LocalDate getDateSent() { return LocalDate.now(); }
 
             @Override
-            public LocalDateTime getDateReceived() { return null; }
+            public LocalDate getDateReceived() { return null; }
         };
     }
 

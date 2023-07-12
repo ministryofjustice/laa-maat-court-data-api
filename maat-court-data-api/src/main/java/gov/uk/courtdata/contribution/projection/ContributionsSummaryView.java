@@ -1,6 +1,7 @@
 package gov.uk.courtdata.contribution.projection;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public interface ContributionsSummaryView {
@@ -10,9 +11,9 @@ public interface ContributionsSummaryView {
     BigDecimal getUpfrontContributions();
     String getBasedOn();
     String getUpliftApplied();
-    LocalDateTime getEffectiveDate();
-    LocalDateTime getCalcDate();
+    LocalDate getEffectiveDate();
+    LocalDate getCalcDate();
     String getFileName();
-    LocalDateTime getDateSent();
-    LocalDateTime getDateReceived();
+    LocalDate getDateSent();
+    LocalDate getDateReceived();
 }

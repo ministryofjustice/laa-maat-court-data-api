@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
@@ -18,9 +19,9 @@ public class ContributionsSummaryDTO {
     private BigDecimal upfrontContributions;
     private String basedOn;
     private String upliftApplied;
-    private LocalDateTime effectiveDate;
-    private LocalDateTime calcDate;
+    private LocalDate effectiveDate;
+    private LocalDate calcDate;
     private String fileName;
-    private LocalDateTime dateSent;
-    private LocalDateTime dateReceived;
+    private LocalDate dateSent;
+    private LocalDate dateReceived;
 }

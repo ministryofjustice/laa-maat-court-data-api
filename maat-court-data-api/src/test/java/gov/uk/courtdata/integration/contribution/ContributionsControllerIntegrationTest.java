@@ -180,4 +180,19 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
         assertTrue(runNotFoundErrorScenario("Contributions entry not found for repId " + INVALID_REP_ID,
                 get(ENDPOINT_URL + "/" + INVALID_REP_ID).contentType(MediaType.APPLICATION_JSON)));
     }
+
+    @Test
+    void givenValidRepId_whenGetContributionsSummaryIsInvoked_thenCorrectResponseIsReturned() throws Exception {
+        MvcResult result = runSuccessScenario(get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID
+                + "/summary").contentType(MediaType.APPLICATION_JSON));
+
+        Assertions.assertThat(result.getResponse().getContentAsString())
+                .contains("CONTRIBUTIONS_202307111234.xml");
+    }
+
+    @Test
+    void givenRepIdWithNoContributions_whenGetContributionsSummaryIsInvoked_thenNotFoundResponseIsReturned() throws Exception {
+        assertTrue(runNotFoundErrorScenario(String.format("No contribution entries found for repId: %d", INVALID_REP_ID),
+                get(ENDPOINT_URL + "/" + INVALID_REP_ID + "/summary").contentType(MediaType.APPLICATION_JSON)));
+    }
 }

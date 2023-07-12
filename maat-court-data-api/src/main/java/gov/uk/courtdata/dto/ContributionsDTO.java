@@ -1,13 +1,11 @@
 package gov.uk.courtdata.dto;
 
+import gov.uk.courtdata.contribution.dto.ContributionFilesDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,4 +40,5 @@ public class ContributionsDTO {
     private Boolean latest;
     private Integer ccOutcomeCount;
     private Integer seHistoryId;
+    private ContributionFilesDTO contributionFile;
 }

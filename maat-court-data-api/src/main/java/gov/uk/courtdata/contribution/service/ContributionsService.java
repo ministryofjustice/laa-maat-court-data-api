@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -40,7 +39,7 @@ public class ContributionsService {
             throw new RequestedObjectNotFoundException(String.format("Contributions entry not found for repId %d", repId));
         }
 
-        return contributionsMapper.mapEntityToDTO(contributionsEntityList);
+        return contributionsMapper.contributionsEntityToContributionsDTO(contributionsEntityList);
     }
 
     @Transactional
@@ -53,7 +52,7 @@ public class ContributionsService {
         }
 
         contributionsMapper.updateContributionsToContributionsEntity(updateContributions, contributionsEntity);
-        return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(contributionsEntity));
+        return contributionsMapper.contributionsEntityToContributionsDTO(contributionsRepository.saveAndFlush(contributionsEntity));
     }
 
     @Transactional
@@ -61,13 +60,16 @@ public class ContributionsService {
         Integer repId = createContributions.getRepId();
         ContributionsEntity existingContributionsEntity = contributionsRepository.findByRepIdAndLatestIsTrue(repId);
 
+        // Triggers lazy loading of dependent entities
+        existingContributionsEntity.getContributionFile().toString();
+
         if (existingContributionsEntity != null) {
             contributionsRepository.updateExistingContributionToInactive(repId, createContributions.getEffectiveDate());
             contributionsRepository.updateExistingContributionToPrior(repId);
         }
         ContributionsEntity newContributionsEntity = contributionsMapper.createContributionsToContributionsEntity(createContributions);
         newContributionsEntity.setLatest(true);
-        return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(newContributionsEntity));
+        return contributionsMapper.contributionsEntityToContributionsDTO(contributionsRepository.saveAndFlush(newContributionsEntity));
     }
 
     @Transactional

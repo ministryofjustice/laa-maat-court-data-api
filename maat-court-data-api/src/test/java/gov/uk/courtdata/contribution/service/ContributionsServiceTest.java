@@ -36,7 +36,7 @@ class ContributionsServiceTest {
         when(repository.findByRepIdAndLatestIsTrue(anyInt())).thenReturn(ContributionsEntity.builder().repId(TestModelDataBuilder.REP_ID).build());
         contributionsService.find(TestModelDataBuilder.REP_ID, true);
         verify(repository).findByRepIdAndLatestIsTrue(TestModelDataBuilder.REP_ID);
-        verify(contributionsMapper).mapEntityToDTO(any(List.class));
+        verify(contributionsMapper).contributionsEntityToContributionsDTO(any(List.class));
     }
 
     @Test
@@ -44,7 +44,7 @@ class ContributionsServiceTest {
         when(repository.findAllByRepId(anyInt())).thenReturn(List.of(ContributionsEntity.builder().repId(TestModelDataBuilder.REP_ID).build()));
         contributionsService.find(TestModelDataBuilder.REP_ID, false);
         verify(repository).findAllByRepId(TestModelDataBuilder.REP_ID);
-        verify(contributionsMapper).mapEntityToDTO(any(List.class));
+        verify(contributionsMapper).contributionsEntityToContributionsDTO(any(List.class));
     }
 
     @Test
@@ -65,7 +65,7 @@ class ContributionsServiceTest {
         when(repository.saveAndFlush(any(ContributionsEntity.class))).thenReturn(contributionsEntity);
         contributionsService.update(UpdateContributions.builder().id(testId).build());
         verify(repository).saveAndFlush(contributionsEntity);
-        verify(contributionsMapper).mapEntityToDTO(any(ContributionsEntity.class));
+        verify(contributionsMapper).contributionsEntityToContributionsDTO(any(ContributionsEntity.class));
     }
 
     @Test
@@ -95,7 +95,7 @@ class ContributionsServiceTest {
         when(repository.findByRepIdAndLatestIsTrue(TestModelDataBuilder.REP_ID)).thenReturn(contributionsEntity);
         when(contributionsMapper.createContributionsToContributionsEntity(any(CreateContributions.class))).thenReturn(contributionsEntity);
         when(repository.saveAndFlush(any(ContributionsEntity.class))).thenReturn(contributionsEntity);
-        when(contributionsMapper.mapEntityToDTO(any(ContributionsEntity.class))).thenReturn(ContributionsDTO.builder().repId(TestModelDataBuilder.REP_ID).build());
+        when(contributionsMapper.contributionsEntityToContributionsDTO(any(ContributionsEntity.class))).thenReturn(ContributionsDTO.builder().repId(TestModelDataBuilder.REP_ID).build());
 
         contributionsService.create(CreateContributions.builder().repId(TestModelDataBuilder.REP_ID).effectiveDate(testEffectiveDate).build());
         verify(repository).updateExistingContributionToInactive(TestModelDataBuilder.REP_ID, testEffectiveDate);

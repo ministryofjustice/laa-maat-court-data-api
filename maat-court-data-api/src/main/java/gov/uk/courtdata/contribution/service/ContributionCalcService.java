@@ -28,6 +28,6 @@ public class ContributionCalcService {
             throw new RequestedObjectNotFoundException(String.format("No Contribution Calc Parameters found with the effective date: %s",
                     effectiveDate));
         }
-        return contributionsCalcParametersMapper.mapEntityToDTO(contribCalcParametersEntity);
+        return contributionsCalcParametersMapper.contributionsEntityToContributionsDTO(contribCalcParametersEntity);
     }
 }

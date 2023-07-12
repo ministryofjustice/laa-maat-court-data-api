@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(DebtCollectionController.class)
 class DebtCollectionControllerTest {
 
-    private static final String endpointUrl = "/api/internal/v1/debt-collection-enforcement/";
+    private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/";
 
     @Autowired
     private MockMvc mvc;
@@ -30,16 +30,32 @@ class DebtCollectionControllerTest {
     private DebtCollectionService debtCollectionService;
 
     @Test
-    void testContributionFileContent() throws Exception {
+    void testContributionFileContent_FailScenario() throws Exception {
 
-        final LocalDate fromDate = LocalDate.of(2020,9,1);
+        final LocalDate fromDate = LocalDate.of(2020,1,1);
         final LocalDate toDate = LocalDate.of(2020,11,1);
 
         when(debtCollectionService.getContributionFiles(fromDate, toDate)).thenReturn(List.of("Hello"));
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(endpointUrl+"contributions"))
-                        .queryParam("fromDate", LocalDate.now().toString())
-                        .queryParam("toDate", LocalDate.now().toString())
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL +"contributions"))
+                        .queryParam("fromDate", "01-01-2021")
+                        .queryParam("toDate", "01-11-2021")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    void testContributionFileContent() throws Exception {
+
+        final LocalDate fromDate = LocalDate.of(2020,1,1);
+        final LocalDate toDate = LocalDate.of(2020,11,1);
+
+        when(debtCollectionService.getContributionFiles(fromDate, toDate)).thenReturn(List.of("Hello"));
+
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL +"contributions"))
+                        .queryParam("fromDate", "01.05.2021")
+                        .queryParam("toDate", "01.05.2021")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
     }
@@ -47,18 +63,21 @@ class DebtCollectionControllerTest {
     @Test
     void testFdcFileContent() throws Exception {
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(endpointUrl+"/final-defence-cost"))
-                        .queryParam("fromDate", LocalDate.now().toString())
-                        .queryParam("toDate", LocalDate.now().toString())
+        final LocalDate fromDate = LocalDate.of(2020,9,1);
+        final LocalDate toDate = LocalDate.of(2020,11,1);
+        when(debtCollectionService.getFdcFiles(fromDate, toDate)).thenReturn(List.of("Hello"));
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL +"final-defence-cost"))
+                        .queryParam("fromDate", "01.01.2021")
+                        .queryParam("toDate", "01.01.2021")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
     }
 
     @Test
     void givenIncorrectDateParameter_whenApiIsInvoked_then400ErrorIsThrown() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get(String.format(endpointUrl+"/final-defence-cost"))
-                        .queryParam("fromDate", LocalDate.now().toString())
-                        .queryParam("toDate", "notValidDate")
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL +"/final-defence-cost"))
+                        .queryParam("fromDate", "01-01-2021")
+                        .queryParam("toDate", "asdf")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
     }

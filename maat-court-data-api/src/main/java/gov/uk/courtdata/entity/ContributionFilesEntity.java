@@ -1,8 +1,15 @@
 package gov.uk.courtdata.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
 
 @Data
@@ -11,21 +18,26 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "CONTRIBUTION_FILES", schema = "TOGDATA")
+@XmlType
 public class ContributionFilesEntity {
 
     @Id
-    @SequenceGenerator(name = "contribution_files_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contribution_files_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-    @Column(name = "FILE_NAME", length = 45,  nullable = false)
-    private String upliftApplied;
+    @Column(name = "FILE_NAME", length = 100, nullable = false)
+    private String fileName;
 
-    @Column(name = "DATE_CREATED",  nullable = false)
+    @Column(name = "RECORDS_SENT")
+    private Integer recordsSent;
+
+    @Column(name = "RECORDS_RECEIVED")
+    private Integer recordsReceived;
+
+    @Column(name = "DATE_CREATED")
     private LocalDate dateCreated;
 
-    @Column(name = "USER_CREATED", length = 225, nullable = false)
+    @Column(name = "USER_CREATED")
     private String userCreated;
 
     @Column(name = "DATE_MODIFIED")
@@ -34,14 +46,15 @@ public class ContributionFilesEntity {
     @Column(name = "USER_MODIFIED", length = 225)
     private String userModified;
 
+    @Column(name = "XML_CONTENT")
+    private String xmlContent;
+
     @Column(name = "DATE_SENT")
     private LocalDate dateSent;
 
     @Column(name = "DATE_RECEIVED")
     private LocalDate dateReceived;
 
-    @Column(name = "XML_CONTENT")
-    private String xmlContent;
-
-
+    @Column(name = "ACK_XML_CONTENT")
+    private String ackXmlContent;
 }

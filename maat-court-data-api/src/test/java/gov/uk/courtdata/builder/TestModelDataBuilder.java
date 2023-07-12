@@ -5,7 +5,6 @@ import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
-import gov.uk.courtdata.dces.dto.ContributionFilesDTO;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
@@ -1303,6 +1302,18 @@ public class TestModelDataBuilder {
         return CorrespondenceStateEntity.builder()
                 .repId(repId)
                 .status(status)
+                .build();
+    }
+
+    public static ContributionFilesEntity getContributionFile(String xmlContent, String fileName, LocalDate dateCreated){
+
+        return ContributionFilesEntity.builder()
+                .xmlContent(xmlContent)
+                .dateCreated(dateCreated)
+                .userCreated("test-f")
+                .dateReceived(LocalDate.now())
+                .dateSent(LocalDate.now())
+        //        .upliftApplied(fileName)
                 .build();
     }
 }

@@ -7,10 +7,12 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.dto.ContributionsDTO;
+import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.entity.CorrespondenceEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.contribution.repository.ContributionsRepository;
+import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.repository.CorrespondenceRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
@@ -48,7 +50,8 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     protected ObjectMapper objectMapper;
     @Autowired
     ContributionsRepository contributionsRepository;
-
+    @Autowired
+    ContributionFilesRepository contributionFilesRepository;
     @Autowired
     CorrespondenceRepository correspondenceRepository;
     @Autowired
@@ -71,7 +74,9 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
         contributions.setCorrespondenceId(correspondenceEntity.getId());
         contributionsRepository.saveAndFlush(conEntity);
 
-
+        ContributionFilesEntity contributionFilesEntity = TestEntityDataBuilder.getContributionFilesEntity();
+        contributionFilesEntity.setId(contributions.getContributionFileId());
+        contributionFilesRepository.saveAndFlush(contributionFilesEntity);
 
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID + 1));
         ContributionsEntity contributionsEntity = TestEntityDataBuilder.getContributionsEntity();

@@ -534,6 +534,15 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static ContributionFilesEntity getContributionFilesEntity() {
+        return ContributionFilesEntity.builder()
+                .fileName("CONTRIBUTIONS_202307111234.xml")
+                .recordsSent(0)
+                .dateCreated(TEST_DATE.toLocalDate())
+                .userCreated(TEST_USER)
+                .build();
+    }
+
     public RepOrderCPDataEntity getRepOrderEntity() {
         return RepOrderCPDataEntity.builder()
                 .repOrderId(REP_ID)

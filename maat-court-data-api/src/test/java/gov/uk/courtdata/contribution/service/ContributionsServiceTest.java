@@ -4,10 +4,11 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
+import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.repository.ContributionsRepository;
+import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -108,5 +109,28 @@ class ContributionsServiceTest {
         when(repository.getContributionCount(TestModelDataBuilder.REP_ID)).thenReturn(1);
         contributionsService.getContributionCount(TestModelDataBuilder.REP_ID);
         verify(repository).getContributionCount(TestModelDataBuilder.REP_ID);
+    }
+
+    @Test
+    void givenAValidRepId_whenGetContributionsSummaryIsInvoked_thenContributionsSummaryIsReturned() {
+        List<ContributionsSummaryView> contributionsSummaryViewEntities = List.of(TestModelDataBuilder.getContributionsSummaryView());
+        when(repository.getContributionsSummary(TestModelDataBuilder.REP_ID)).thenReturn(contributionsSummaryViewEntities);
+
+        contributionsService.getContributionsSummary(TestModelDataBuilder.REP_ID);
+
+        verify(repository).getContributionsSummary(TestModelDataBuilder.REP_ID);
+        verify(contributionsMapper).contributionsSummaryToContributionsSummaryDTO(contributionsSummaryViewEntities);
+    }
+
+    @Test
+    void givenAnInvalidRepId_whenGetContributionsSummaryIsInvoked_thenNotFoundExceptionIsRaised() {
+        Integer repId = 666;
+        List<ContributionsSummaryView> contributionsSummaryViewEntities = List.of();
+        when(repository.getContributionsSummary(repId)).thenReturn(contributionsSummaryViewEntities);
+
+        assertThatThrownBy(() -> {
+            contributionsService.getContributionsSummary(repId);
+        }).isInstanceOf(RequestedObjectNotFoundException.class)
+                .hasMessageContaining(String.format("No contribution entries found for repId: %d", repId));
     }
 }

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.contribution.controller;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.contribution.dto.ContributionsSummaryDTO;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.service.ContributionsService;
@@ -147,5 +148,31 @@ public class ContributionsController {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentLength(contributionsService.getContributionCount(repId));
         return ResponseEntity.ok().headers(responseHeaders).build();
+    }
+
+    @GetMapping(value = "/{repId}/summary", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve a summary of contributions for the specified representation order")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "400",
+            description = "Bad request",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "404",
+            description = "Not found",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Internal server error",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<List<ContributionsSummaryDTO>> getContributionsSummary(@PathVariable int repId) {
+        log.info("Request to retrieve contributions summary for repId: {}", repId);
+        return ResponseEntity.ok(contributionsService.getContributionsSummary(repId));
     }
 }

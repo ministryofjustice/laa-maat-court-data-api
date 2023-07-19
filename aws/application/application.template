@@ -670,6 +670,15 @@ Resources:
       AuthorizationScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
       AuthorizerId: !Ref ApiAuthorizer
       Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
+  ApiRouteDCESService:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ApiGateway
+      RouteKey: 'ANY /api/internal/v1/debt-collection-enforcement/{proxy+}'
+      AuthorizationType: JWT
+      AuthorizationScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
+      AuthorizerId: !Ref ApiAuthorizer
+      Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
   ApiAuthorizer:
     Type: 'AWS::ApiGatewayV2::Authorizer'
     Properties:

@@ -687,7 +687,6 @@ Resources:
           - !Ref CognitoUserPoolClientCrownCourtContribution
           - !Ref CognitoUserPoolClientCrimeEvidence
           - !Ref CognitoUserPoolClientCrimeApplyAdaptor
-
           - !Ref CognitoUserPoolCrimeHardshipService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiStage:

@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
+import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
+import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
@@ -1091,6 +1093,40 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+    public static ContributionsSummaryView getContributionsSummaryView() {
+        return new ContributionsSummaryView() {
+            @Override
+            public Integer getId() { return 999; }
+
+            @Override
+            public BigDecimal getMonthlyContributions() { return BigDecimal.valueOf(50); }
+
+            @Override
+            public BigDecimal getUpfrontContributions() { return BigDecimal.valueOf(250); }
+
+            @Override
+            public String getBasedOn() { return null; }
+
+            @Override
+            public String getUpliftApplied() { return "N"; }
+
+            @Override
+            public LocalDate getEffectiveDate() { return LocalDate.now(); }
+
+            @Override
+            public LocalDate getCalcDate() { return LocalDate.now(); }
+
+            @Override
+            public String getFileName() { return "CONTRIBUTIONS_20230707999.xml"; }
+
+            @Override
+            public LocalDate getDateSent() { return LocalDate.now(); }
+
+            @Override
+            public LocalDate getDateReceived() { return null; }
+        };
+    }
+
     public static ContributionCalcParametersDTO getContributionCalcParametersDTO() {
         return ContributionCalcParametersDTO.builder()
                 .fromDate(LocalDateTime.now())
@@ -1301,6 +1337,18 @@ public class TestModelDataBuilder {
         return CorrespondenceStateEntity.builder()
                 .repId(repId)
                 .status(status)
+                .build();
+    }
+
+    public static ContributionFilesEntity getContributionFile(String xmlContent, String fileName, LocalDate dateCreated){
+
+        return ContributionFilesEntity.builder()
+                .xmlContent(xmlContent)
+                .dateCreated(dateCreated)
+                .userCreated("test-f")
+                .dateReceived(LocalDate.now())
+                .dateSent(LocalDate.now())
+        //        .upliftApplied(fileName)
                 .build();
     }
 }

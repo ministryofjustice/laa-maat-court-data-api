@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -38,6 +41,20 @@ public class HardshipReviewService {
             throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for REP ID: %s", repId));
         }
         return hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<HardshipReviewDTO> findHardshipReviewByDetailType(String detailType, int repId) {
+
+        List<HardshipReviewEntity> hardshipReviewEntityList = hardshipReviewImpl.findByDetailType(detailType, repId);
+        if (hardshipReviewEntityList == null || hardshipReviewEntityList.isEmpty()) {
+            throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for Detail Type: %s and REP ID: %d", detailType, repId));
+        }
+        List<HardshipReviewDTO> hardshipReviewDTOList = new ArrayList<>();
+        for (HardshipReviewEntity hardshipReviewEntity : hardshipReviewEntityList) {
+            hardshipReviewDTOList.add(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity));
+        }
+        return hardshipReviewDTOList;
     }
 
     @Transactional

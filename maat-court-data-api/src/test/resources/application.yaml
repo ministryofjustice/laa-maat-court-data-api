@@ -34,6 +34,10 @@ spring:
     init:
       platform: h2
 
+  mvc:
+    format:
+      date: iso
+
 cloud:
   aws:
     stack:
@@ -76,6 +80,10 @@ cda:
     url: "update"
   hearing:
     url: "hearing_results/{hearingId}"
+  retry-config:
+    max-retries: 3
+    min-back-off-period: 5
+    jitter-value: 0.75
 
 queue:
   message:
@@ -104,6 +112,7 @@ version: 0.0.1
 
 api-endpoints:
   assessments-domain: /api/internal/v1/assessment
+  debt-collection-enforcement: /api/internal/v1/debt-collection-enforcement
 
 xray:
   enabled: false

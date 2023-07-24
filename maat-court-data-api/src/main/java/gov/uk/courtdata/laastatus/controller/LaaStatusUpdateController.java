@@ -73,7 +73,7 @@ public class LaaStatusUpdateController {
                 log.info("LAA Status Update Validation Failed - Messages {}", messageCollection.getMessages());
             }
         } catch (Exception exception) {
-            throw new MAATCourtDataException("MAAT APT Call failed " + exception.getMessage());
+            throw new MAATCourtDataException("MAAT API Call failed - " + exception.getMessage());
         }
         return messageCollection;
     }

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
+
 
 @Component
 @AllArgsConstructor
@@ -48,7 +50,7 @@ public class RepOrderUpdateMessageBuilder {
     public Map<String, String> buildHeaders(CourtDataDTO courtDataDTO) {
         Map<String, String> headers = new HashMap<>();
         final UUID laaTransactionId = courtDataDTO.getCaseDetails().getLaaTransactionId();
-        headers.put("Laa-Transaction-Id", laaTransactionId != null ? laaTransactionId.toString() : null);
+        headers.put(CDA_TRANSACTION_ID_HEADER, laaTransactionId != null ? laaTransactionId.toString() : null);
         headers.put("Laa-Status-Transaction-Id", String.valueOf(courtDataDTO.getTxId()));
         return headers;
     }

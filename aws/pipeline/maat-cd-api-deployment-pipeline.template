@@ -236,7 +236,7 @@ Resources:
           - Name: SONARQUBE_TOKEN
             Type: PARAMETER_STORE
             Value: /maat-cd-api/SONARQUBE_TOKEN
-      TimeoutInMinutes: 15
+      TimeoutInMinutes: 25
 
   Pipeline:
     Type: AWS::CodePipeline::Pipeline

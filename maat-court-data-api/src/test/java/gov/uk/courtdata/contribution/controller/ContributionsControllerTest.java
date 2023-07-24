@@ -1,14 +1,20 @@
 package gov.uk.courtdata.contribution.controller;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.contribution.dto.ContributionsSummaryDTO;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.service.ContributionsService;
 import gov.uk.courtdata.contribution.validator.CreateContributionsValidator;
 import gov.uk.courtdata.contribution.validator.UpdateContributionsValidator;
 import gov.uk.courtdata.dto.ContributionsDTO;
+import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.validator.MaatIdValidator;
+import org.hibernate.MappingException;
+import org.hibernate.ObjectNotFoundException;
+import org.hibernate.exception.JDBCConnectionException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.any;
@@ -47,12 +54,12 @@ class ContributionsControllerTest {
     @Test
     void givenAValidParameter_whenFindIsInvoked_thenOKResponseWithContributionsEntryIsReturned() throws Exception {
         ContributionsDTO contributionsDTO = ContributionsDTO.builder().id(TEST_CONTRIBUTIONS_ID).build();
-        when(contributionsService.find(TEST_CONTRIBUTIONS_ID)).thenReturn(contributionsDTO);
+        when(contributionsService.find(TEST_CONTRIBUTIONS_ID, false)).thenReturn(List.of(contributionsDTO));
 
         mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/" + TEST_CONTRIBUTIONS_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(TEST_CONTRIBUTIONS_ID));
+                .andExpect(jsonPath("$[0].id").value(TEST_CONTRIBUTIONS_ID));
     }
 
     @Test
@@ -118,4 +125,52 @@ class ContributionsControllerTest {
         mvc.perform(MockMvcRequestBuilders.post(endpointUrl).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
+
+    @Test
+    void givenAValidRepId_whenGetContributionSummaryIsInvoked_thenOkResponseIsReturned() throws Exception {
+        List<ContributionsSummaryDTO> contributionsSummaryDTOs = List.of(ContributionsSummaryDTO.builder()
+                .id(TEST_CONTRIBUTIONS_ID).build());
+        when(contributionsService.getContributionsSummary(TEST_CONTRIBUTIONS_ID)).thenReturn(contributionsSummaryDTOs);
+
+        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/" + TEST_CONTRIBUTIONS_ID + "/summary"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id").value(TEST_CONTRIBUTIONS_ID));
+    }
+
+    @Test
+    void givenInvalidRepId_whenGetContributionsSummaryIsInvoked_thenBadRequestResponseIsReturned() throws Exception {
+        String invalidRepId = "INVALID";
+
+        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/" + invalidRepId + "/summary"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(String.format(
+                        "The provided value '%s' is the incorrect type for the 'repId' parameter.", invalidRepId)));
+    }
+
+    @Test
+    void givenNoContributionsForRepId_whenGetContributionsSummaryIsInvoked_thenNotFoundResponseIsReturned() throws Exception {
+        String exceptionMessage = "Test not found exception";
+        when(contributionsService.getContributionsSummary(TEST_CONTRIBUTIONS_ID))
+                .thenThrow(new RequestedObjectNotFoundException(exceptionMessage));
+
+        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/" + TEST_CONTRIBUTIONS_ID + "/summary"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(exceptionMessage));
+    }
+
+    @Test
+    void givenDatabaseIsDown_whenGetContributionSummaryIsInvoked_thenInternalServerErrorResponseIsReturned() throws Exception {
+        String exceptionMessage = "Test maat court data exception";
+        when(contributionsService.getContributionsSummary(TEST_CONTRIBUTIONS_ID))
+                .thenThrow(new MAATCourtDataException(exceptionMessage));
+
+        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/" + TEST_CONTRIBUTIONS_ID + "/summary"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(exceptionMessage));
+    }
+
 }

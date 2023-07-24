@@ -6,6 +6,8 @@ import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.hardship.*;
 import org.mapstruct.*;
 
+import java.util.List;
+
 @Mapper(
         componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,

@@ -4,10 +4,11 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
+import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.repository.ContributionsRepository;
+import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -33,9 +35,17 @@ class ContributionsServiceTest {
     @Test
     void givenAValidRepId_whenFindIsInvoked_thenContributionsEntryIsRetrieved() {
         when(repository.findByRepIdAndLatestIsTrue(anyInt())).thenReturn(ContributionsEntity.builder().repId(TestModelDataBuilder.REP_ID).build());
-        contributionsService.find(TestModelDataBuilder.REP_ID);
+        contributionsService.find(TestModelDataBuilder.REP_ID, true);
         verify(repository).findByRepIdAndLatestIsTrue(TestModelDataBuilder.REP_ID);
-        verify(contributionsMapper).mapEntityToDTO(any(ContributionsEntity.class));
+        verify(contributionsMapper).mapEntityToDTO(any(List.class));
+    }
+
+    @Test
+    void givenAValidRepIdAndFindAllRepId_whenFindIsInvoked_thenContributionsEntryIsRetrieved() {
+        when(repository.findAllByRepId(anyInt())).thenReturn(List.of(ContributionsEntity.builder().repId(TestModelDataBuilder.REP_ID).build()));
+        contributionsService.find(TestModelDataBuilder.REP_ID, false);
+        verify(repository).findAllByRepId(TestModelDataBuilder.REP_ID);
+        verify(contributionsMapper).mapEntityToDTO(any(List.class));
     }
 
     @Test
@@ -43,7 +53,7 @@ class ContributionsServiceTest {
         Integer testRepId = 666;
         when(repository.findByRepIdAndLatestIsTrue(anyInt())).thenReturn(null);
         assertThatThrownBy(() -> {
-            contributionsService.find(testRepId);
+            contributionsService.find(testRepId, true);
         }).isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Contributions entry not found for repId");
     }
@@ -99,5 +109,28 @@ class ContributionsServiceTest {
         when(repository.getContributionCount(TestModelDataBuilder.REP_ID)).thenReturn(1);
         contributionsService.getContributionCount(TestModelDataBuilder.REP_ID);
         verify(repository).getContributionCount(TestModelDataBuilder.REP_ID);
+    }
+
+    @Test
+    void givenAValidRepId_whenGetContributionsSummaryIsInvoked_thenContributionsSummaryIsReturned() {
+        List<ContributionsSummaryView> contributionsSummaryViewEntities = List.of(TestModelDataBuilder.getContributionsSummaryView());
+        when(repository.getContributionsSummary(TestModelDataBuilder.REP_ID)).thenReturn(contributionsSummaryViewEntities);
+
+        contributionsService.getContributionsSummary(TestModelDataBuilder.REP_ID);
+
+        verify(repository).getContributionsSummary(TestModelDataBuilder.REP_ID);
+        verify(contributionsMapper).contributionsSummaryToContributionsSummaryDTO(contributionsSummaryViewEntities);
+    }
+
+    @Test
+    void givenAnInvalidRepId_whenGetContributionsSummaryIsInvoked_thenNotFoundExceptionIsRaised() {
+        Integer repId = 666;
+        List<ContributionsSummaryView> contributionsSummaryViewEntities = List.of();
+        when(repository.getContributionsSummary(repId)).thenReturn(contributionsSummaryViewEntities);
+
+        assertThatThrownBy(() -> {
+            contributionsService.getContributionsSummary(repId);
+        }).isInstanceOf(RequestedObjectNotFoundException.class)
+                .hasMessageContaining(String.format("No contribution entries found for repId: %d", repId));
     }
 }

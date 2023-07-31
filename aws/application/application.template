@@ -702,7 +702,7 @@ Resources:
   ApiAuthorizerForDces:
     Type: 'AWS::ApiGatewayV2::Authorizer'
     Properties:
-      Name: !Sub '${pAppName}_Authorizer'
+      Name: !Sub '${pAppName}_DCES_Authorizer'
       ApiId: !Ref ApiGateway
       AuthorizerType: JWT  # Json Cognito Web Tokens
       IdentitySource:

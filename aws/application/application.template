@@ -858,7 +858,7 @@ Resources:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
-      ClientName: "DCES (Debt collection) Report Service"
+      ClientName: "DCES Debt collection Report Service"
       UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlowsUserPoolClient: true
       GenerateSecret: true

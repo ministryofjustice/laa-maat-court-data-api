@@ -696,7 +696,6 @@ Resources:
           - !Ref CognitoUserPoolClientCrownCourtContribution
           - !Ref CognitoUserPoolClientCrimeEvidence
           - !Ref CognitoUserPoolClientCrimeApplyAdaptor
-          - !Ref CognitoUserPoolClientDcesReportService
           - !Ref CognitoUserPoolCrimeHardshipService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiAuthorizerForDces:

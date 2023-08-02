@@ -8,6 +8,7 @@ import gov.uk.courtdata.hardship.service.HardshipReviewService;
 import gov.uk.courtdata.hardship.validator.HardshipReviewValidationProcessor;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReview;
+import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,7 +55,7 @@ class HardshipReviewControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(String.valueOf(MOCK_HARDSHIP_ID)))
-                .andExpect(jsonPath("$.reviewDetails[0].id").value(String.valueOf(4253)))
+                .andExpect(jsonPath("$.reviewDetails[0].id").value(String.valueOf(TestModelDataBuilder.MOCK_HRD_ID)))
                 .andExpect(jsonPath("$.reviewProgressItems[0].id").value(String.valueOf(1254)));
     }
 
@@ -96,13 +97,13 @@ class HardshipReviewControllerTest {
 
     @Test
     void givenCorrectParameters_whenGetHardshipByDetailTypeIsInvoked_thenHardshipReviewIsReturned() throws Exception {
-        HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTO();
-        when(hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID)).thenReturn(List.of(hardshipReviewDTO));
+        HardshipReviewDetail hardshipReviewDetail = TestModelDataBuilder.getHardshipReviewDetail();
+        when(hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID)).thenReturn(List.of(hardshipReviewDetail));
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/" + MOCK_REP_ID + "/detailType/" + MOCK_DETAIL_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id").value(String.valueOf(MOCK_HARDSHIP_ID)));
+                .andExpect(jsonPath("$[0].id").value(String.valueOf(TestModelDataBuilder.MOCK_HRD_ID)));
 
         verify(hardshipReviewService).findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
     }
@@ -134,7 +135,7 @@ class HardshipReviewControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").hasJsonPath())
-                .andExpect(jsonPath("$.reviewDetails[0].id").value(String.valueOf(4253)))
+                .andExpect(jsonPath("$.reviewDetails[0].id").value(String.valueOf(TestModelDataBuilder.MOCK_HRD_ID)))
                 .andExpect(jsonPath("$.reviewProgressItems[0].id").value(String.valueOf(1254)));
     }
 
@@ -156,7 +157,7 @@ class HardshipReviewControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").hasJsonPath())
-                .andExpect(jsonPath("$.reviewDetails[0].id").value(String.valueOf(4253)))
+                .andExpect(jsonPath("$.reviewDetails[0].id").value(String.valueOf(TestModelDataBuilder.MOCK_HRD_ID)))
                 .andExpect(jsonPath("$.reviewProgressItems[0].id").value(String.valueOf(1254)));
     }
 

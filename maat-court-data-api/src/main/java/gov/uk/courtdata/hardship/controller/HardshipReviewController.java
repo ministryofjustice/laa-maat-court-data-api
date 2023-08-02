@@ -6,6 +6,7 @@ import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.hardship.service.HardshipReviewService;
 import gov.uk.courtdata.hardship.validator.HardshipReviewValidationProcessor;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
+import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -65,9 +66,9 @@ public class HardshipReviewController {
     @Operation(description = "Retrieve a hardship review record by repId and detail type")
     @StandardApiResponseCodes
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<List<HardshipReviewDTO>> getHardshipByDetailType(@PathVariable int repId,
-                                                                           @PathVariable String detailType,
-                                                                           @Parameter(description = "Used for tracing calls")
+    public ResponseEntity<List<HardshipReviewDetail>> getHardshipByDetailType(@PathVariable int repId,
+                                                                              @PathVariable String detailType,
+                                                                              @Parameter(description = "Used for tracing calls")
                                                                      @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
         MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info("Get Hardship Review by detail type = {} and repId = {}", detailType, repId);

@@ -67,6 +67,7 @@ public class TestModelDataBuilder {
     public static final BigDecimal CONTRIBUTION_AMOUNT = BigDecimal.valueOf(500.00);
     public static final String CORRESPONDENCE_STATUS = "appealCC";
     public static final String EFFECTIVE_DATE = "01-JAN-20233";
+    public static final int MOCK_HRD_ID = 4253;
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -765,7 +766,7 @@ public class TestModelDataBuilder {
 
     public static HardshipReviewDetail getHardshipReviewDetail() {
         return HardshipReviewDetail.builder()
-                .id(4253)
+                .id(MOCK_HRD_ID)
                 .detailType(HardshipReviewDetailType.EXPENDITURE)
                 .userCreated("test-s")
                 .frequency(Frequency.MONTHLY)

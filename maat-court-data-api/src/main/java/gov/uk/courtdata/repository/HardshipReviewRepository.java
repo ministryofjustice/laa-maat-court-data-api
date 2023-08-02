@@ -1,5 +1,6 @@
 package gov.uk.courtdata.repository;
 
+import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,7 +19,7 @@ public interface HardshipReviewRepository extends JpaRepository<HardshipReviewEn
     @Query(value = "SELECT hr FROM HardshipReviewEntity hr WHERE hr.repId = :repId AND hr.replaced = 'N'")
     HardshipReviewEntity findByRepId(@Param("repId") Integer repId);
 
-    @Query(value = "SELECT hr.* FROM TOGDATA.HARDSHIP_REVIEWS hr, TOGDATA.HARDSHIP_REVIEW_DETAILS hrd " +
-            "WHERE HR.ID = HRD.HARD_ID and HRD.HRDT_TYPE = :detailType AND HR.REP_ID = :repId", nativeQuery = true)
-    List<HardshipReviewEntity> findByDetailType(@Param("detailType") String detailType, @Param("repId") Integer repId);
+    @Query(value = "SELECT hrd.* FROM TOGDATA.HARDSHIP_REVIEWS hr, TOGDATA.HARDSHIP_REVIEW_DETAILS hrd " +
+            "WHERE HR.ID = HRD.HARD_ID and HRD.HRDT_TYPE = :detailType AND hr.replaced = 'N' AND HR.REP_ID = :repId", nativeQuery = true)
+    List<HardshipReviewDetailEntity> findByDetailType(@Param("detailType") String detailType, @Param("repId") Integer repId);
 }

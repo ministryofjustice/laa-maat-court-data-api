@@ -1,5 +1,6 @@
 package gov.uk.courtdata.hardship.service;
 
+import com.amazonaws.util.CollectionUtils;
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
@@ -49,7 +50,7 @@ public class HardshipReviewService {
     public List<HardshipReviewDetail> findHardshipReviewByDetailType(String detailType, int repId) {
 
         List<HardshipReviewDetailEntity> hardshipReviewDetailEntityList = hardshipReviewImpl.findByDetailType(detailType, repId);
-        if (hardshipReviewDetailEntityList == null || hardshipReviewDetailEntityList.isEmpty()) {
+        if (CollectionUtils.isNullOrEmpty(hardshipReviewDetailEntityList)) {
             throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for Detail Type: %s and REP ID: %d", detailType, repId));
         }
         List<HardshipReviewDetail> hardshipReviewDetailList = new ArrayList<>();

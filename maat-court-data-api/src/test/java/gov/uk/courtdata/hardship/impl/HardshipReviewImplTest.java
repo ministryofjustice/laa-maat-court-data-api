@@ -3,7 +3,6 @@ package gov.uk.courtdata.hardship.impl;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
 import gov.uk.courtdata.entity.HardshipReviewDetailReasonEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
@@ -67,12 +66,13 @@ class HardshipReviewImplTest {
     @Test
     void givenExistingRepId_whenFindByDetailTypeIsInvoked_thenHardshipIsRetrieved() {
         when(hardshipReviewRepository.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID))
-                .thenReturn(List.of(HardshipReviewDetailEntity.builder().id(MOCK_HARDSHIP_ID).build()));
+                .thenReturn(List.of(HardshipReviewEntity.builder().id(MOCK_HARDSHIP_ID).repId(MOCK_REP_ID).build()));
 
-        List<HardshipReviewDetailEntity> returnedEntity = hardshipReviewImpl.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
+        List<HardshipReviewEntity> returnedEntity = hardshipReviewImpl.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
 
         assertThat(returnedEntity.isEmpty()).isFalse();
         assertThat(returnedEntity.get(0).getId()).isEqualTo(MOCK_HARDSHIP_ID);
+        assertThat(returnedEntity.get(0).getRepId()).isEqualTo(MOCK_REP_ID);
     }
 
     @Test

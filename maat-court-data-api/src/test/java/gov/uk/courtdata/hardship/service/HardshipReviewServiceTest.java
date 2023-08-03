@@ -97,16 +97,21 @@ class HardshipReviewServiceTest {
 
     @Test
     void whenFindHardshipReviewByDetailTypeIsInvoked_thenHardshipReviewIsRetrieved() {
-        List<HardshipReviewDetailEntity> hardshipReviewDetailEntityList = List.of(HardshipReviewDetailEntity.builder()
-                .id(MOCK_HARDSHIP_ID).build());
-        when(hardshipReviewImpl.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID)).thenReturn(hardshipReviewDetailEntityList);
-        when(hardshipReviewMapper.hardshipReviewDetailEntityToHardshipReviewDetail(hardshipReviewDetailEntityList.get(0)))
+        HardshipReviewEntity hardshipReviewEntity = HardshipReviewEntity.builder()
+                .id(MOCK_HARDSHIP_ID)
+                .repId(MOCK_REP_ID)
+                .build();
+        hardshipReviewEntity.addReviewDetail(HardshipReviewDetailEntity.builder().id(MOCK_HARDSHIP_ID).build());
+        List<HardshipReviewEntity> hardshipReviewEntityList = List.of(hardshipReviewEntity);
+        when(hardshipReviewImpl.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID)).thenReturn(hardshipReviewEntityList);
+
+        when(hardshipReviewMapper.hardshipReviewDetailEntityToHardshipReviewDetail(hardshipReviewEntity.getReviewDetails().get(0)))
                 .thenReturn(HardshipReviewDetail.builder().id(MOCK_HARDSHIP_ID).build());
 
         List<HardshipReviewDetail> hardshipReviewDetailList = hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
 
         verify(hardshipReviewImpl).findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
-        verify(hardshipReviewMapper).hardshipReviewDetailEntityToHardshipReviewDetail(hardshipReviewDetailEntityList.get(0));
+        verify(hardshipReviewMapper).hardshipReviewDetailEntityToHardshipReviewDetail(hardshipReviewEntity.getReviewDetails().get(0));
         assertThat(hardshipReviewDetailList.get(0).getId()).isEqualTo(MOCK_HARDSHIP_ID);
     }
 

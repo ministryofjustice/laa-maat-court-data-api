@@ -49,13 +49,15 @@ public class HardshipReviewService {
     @Transactional(readOnly = true)
     public List<HardshipReviewDetail> findHardshipReviewByDetailType(String detailType, int repId) {
 
-        List<HardshipReviewDetailEntity> hardshipReviewDetailEntityList = hardshipReviewImpl.findByDetailType(detailType, repId);
-        if (CollectionUtils.isNullOrEmpty(hardshipReviewDetailEntityList)) {
+        List<HardshipReviewEntity> hardshipReviewEntityList = hardshipReviewImpl.findByDetailType(detailType, repId);
+        if (CollectionUtils.isNullOrEmpty(hardshipReviewEntityList)) {
             throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for Detail Type: %s and REP ID: %d", detailType, repId));
         }
         List<HardshipReviewDetail> hardshipReviewDetailList = new ArrayList<>();
-        for (HardshipReviewDetailEntity hardshipReviewDetailEntity : hardshipReviewDetailEntityList) {
-            hardshipReviewDetailList.add(hardshipReviewMapper.hardshipReviewDetailEntityToHardshipReviewDetail(hardshipReviewDetailEntity));
+        for (HardshipReviewEntity hardshipReviewEntity : hardshipReviewEntityList) {
+            for (HardshipReviewDetailEntity hardshipReviewDetailEntity : hardshipReviewEntity.getReviewDetails()) {
+                hardshipReviewDetailList.add(hardshipReviewMapper.hardshipReviewDetailEntityToHardshipReviewDetail(hardshipReviewDetailEntity));
+            }
         }
         return hardshipReviewDetailList;
     }

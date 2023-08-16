@@ -11,6 +11,7 @@ import gov.uk.courtdata.repository.ProsecutionConcludedRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,18 +22,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Configuration
-@EnableScheduling
+@Slf4j
 @Getter
 @XRayEnabled
-@Slf4j
+@Configuration
+@EnableScheduling
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "feature.prosecution-concluded-schedule.enabled", havingValue = "true")
 public class ProsecutionConcludedScheduler {
 
-    private final ProsecutionConcludedRepository prosecutionConcludedRepository;
-    private final ProsecutionConcludedService prosecutionConcludedService;
-    private final HearingsService hearingsService;
     private final Gson gson;
+    private final HearingsService hearingsService;
+    private final ProsecutionConcludedService prosecutionConcludedService;
+    private final ProsecutionConcludedRepository prosecutionConcludedRepository;
 
     @Scheduled(cron = "${queue.message.log.cron.expression}")
     public void process() {

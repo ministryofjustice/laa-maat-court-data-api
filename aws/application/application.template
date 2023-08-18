@@ -691,7 +691,6 @@ Resources:
         Audience:
           - !Ref CognitoUserPoolClient
           - !Ref CognitoUserPoolClientCda
-          - !Ref CognitoUserPoolClientCrimeMeansAssessment
           - !Ref CognitoUserPoolClientCrownCourtProceeding
           - !Ref CognitoUserPoolClientCrownCourtContribution
           - !Ref CognitoUserPoolClientCrimeEvidence
@@ -783,20 +782,6 @@ Resources:
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - "ALLOW_REFRESH_TOKEN_AUTH"
-  CognitoUserPoolClientCrimeMeansAssessment:
-    Type: AWS::Cognito::UserPoolClient
-    DependsOn: CognitoUserPoolResourceServer1
-    Properties:
-      ClientName: "Crime Means Assessment"
-      UserPoolId: !Ref CognitoUserPool
-      AllowedOAuthFlowsUserPoolClient: true
-      GenerateSecret: true
-      SupportedIdentityProviders: [COGNITO]
-      AllowedOAuthFlows: [client_credentials]
-      AllowedOAuthScopes: [!Sub '${pAppName}/${pApiScope1}']
-      PreventUserExistenceErrors: ENABLED
-      ExplicitAuthFlows:
-        - 'ALLOW_REFRESH_TOKEN_AUTH'
   CognitoUserPoolClientCrownCourtProceeding:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1

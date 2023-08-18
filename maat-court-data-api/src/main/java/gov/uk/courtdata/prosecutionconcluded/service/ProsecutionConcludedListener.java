@@ -12,28 +12,27 @@ import io.awspring.cloud.messaging.listener.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 @XRayEnabled
+@RequiredArgsConstructor
+@ConditionalOnProperty(value = "feature.prosecution-concluded-listener.enabled", havingValue = "true")
 public class ProsecutionConcludedListener {
 
     private final Gson gson;
-
-    private final ProsecutionConcludedService prosecutionConcludedService;
-
     private final QueueMessageLogService queueMessageLogService;
+    private final ProsecutionConcludedService prosecutionConcludedService;
 
     @SqsListener(value = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}",
             deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
-    public void receive(@Payload final String message,
-                        final @Headers MessageHeaders headers) {
-        try{
+    public void receive(@Payload final String message, final @Headers MessageHeaders headers) {
+        try {
             log.debug("message-id {}", headers.get("MessageId"));
             MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.PROSECUTION_CONCLUDED.name());
             queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);

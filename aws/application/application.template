@@ -62,10 +62,10 @@ Parameters:
   pPostMvpEnabled:
     Type: String
     Default: ''
-  pProsecutionConcludedListenerEnabled
+  pProsecutionConcludedListenerEnabled:
     Type: String
     Default: ''
-  pProsecutionConcludedScheduleEnabled
+  pProsecutionConcludedScheduleEnabled:
     Type: String
     Default: ''
   pCreateLinkCpStatusJobQueue:

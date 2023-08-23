@@ -62,6 +62,12 @@ Parameters:
   pPostMvpEnabled:
     Type: String
     Default: ''
+  pProsecutionConcludedListenerEnabled:
+    Type: String
+    Default: ''
+  pProsecutionConcludedScheduleEnabled:
+    Type: String
+    Default: ''
   pCreateLinkCpStatusJobQueue:
     Type: String
     Default: ''
@@ -538,6 +544,10 @@ Resources:
               Value: !Ref pEnvironment
             - Name: POST_MVP_ENABLED
               Value: !Ref pPostMvpEnabled
+            - Name: PROSECUTION_CONCLUDED_LISTENER_ENABLED
+              Value: !Ref pProsecutionConcludedListenerEnabled
+            - Name: PROSECUTION_CONCLUDED_SCHEDULE_ENABLED
+              Value: !Ref pProsecutionConcludedScheduleEnabled
             - Name: CREATE_LINK_CP_STATUS_JOB_QUEUE
               Value: !Ref pCreateLinkCpStatusJobQueue
             - Name: LAA_PROSECUTION_CONCLUDED_QUEUE
@@ -677,7 +687,7 @@ Resources:
       RouteKey: 'ANY /api/internal/v1/debt-collection-enforcement/{proxy+}'
       AuthorizationType: JWT
       AuthorizationScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
-      AuthorizerId: !Ref ApiAuthorizer
+      AuthorizerId: !Ref ApiAuthorizerForDces
       Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
   ApiAuthorizer:
     Type: 'AWS::ApiGatewayV2::Authorizer'
@@ -697,6 +707,18 @@ Resources:
           - !Ref CognitoUserPoolClientCrimeEvidence
           - !Ref CognitoUserPoolClientCrimeApplyAdaptor
           - !Ref CognitoUserPoolCrimeHardshipService
+        Issuer: !GetAtt CognitoUserPool.ProviderURL
+  ApiAuthorizerForDces:
+    Type: 'AWS::ApiGatewayV2::Authorizer'
+    Properties:
+      Name: !Sub '${pAppName}_DCES_Authorizer'
+      ApiId: !Ref ApiGateway
+      AuthorizerType: JWT  # Json Cognito Web Tokens
+      IdentitySource:
+        - '$request.header.Authorization'
+      JwtConfiguration:
+        Audience:
+          - !Ref CognitoUserPoolClientDcesReportService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiStage:
     Type: 'AWS::ApiGatewayV2::Stage'
@@ -832,6 +854,20 @@ Resources:
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
       ClientName: "Crime Apply Adapter"
+      UserPoolId: !Ref CognitoUserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      GenerateSecret: true
+      SupportedIdentityProviders: [ COGNITO ]
+      AllowedOAuthFlows: [ client_credentials ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
+      PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - 'ALLOW_REFRESH_TOKEN_AUTH'
+  CognitoUserPoolClientDcesReportService:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: CognitoUserPoolResourceServer1
+    Properties:
+      ClientName: "DCES Debt collection Report Service"
       UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlowsUserPoolClient: true
       GenerateSecret: true

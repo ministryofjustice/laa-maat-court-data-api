@@ -70,7 +70,9 @@ public class ContributionsService {
         }
         ContributionsEntity newContributionsEntity = contributionsMapper.createContributionsToContributionsEntity(createContributions);
         newContributionsEntity.setLatest(true);
-        return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(newContributionsEntity));
+        ContributionsDTO contributionsDTO = contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(newContributionsEntity));
+        contributionsDTO.setCalculationRan("Y");
+        return contributionsDTO;
     }
 
     @Transactional

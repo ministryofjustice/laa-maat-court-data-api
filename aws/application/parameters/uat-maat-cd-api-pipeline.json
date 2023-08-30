@@ -18,6 +18,8 @@
     "pCdaOauthUrl": "https://uat.court-data-adaptor.service.justice.gov.uk/oauth/token",
     "pCdaBaseUrl": "https://uat.court-data-adaptor.service.justice.gov.uk",
     "pPostMvpEnabled": "false",
+    "pProsecutionConcludedListenerEnabled": "true",
+    "pProsecutionConcludedScheduleEnabled": "true",
     "pCreateLinkCpStatusJobQueue": "",
     "pAwsDefaultRegion":"eu-west-2",
     "pCloudwatchStep":"1m",

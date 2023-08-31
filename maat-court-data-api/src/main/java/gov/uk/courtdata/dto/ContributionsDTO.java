@@ -42,5 +42,4 @@ public class ContributionsDTO {
     private Boolean latest;
     private Integer ccOutcomeCount;
     private Integer seHistoryId;
-    private String calculationRan;
 }

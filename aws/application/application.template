@@ -465,6 +465,10 @@ Resources:
                 - 'logs:PutLogEvents'
                 # Allow ECS tasks to push metrics to CloudWatch
                 - 'cloudwatch:PutMetricData'
+                # Allow access to SQS queues.
+                - "sqs:ReceiveMessage"
+                - "sqs:DeleteMessage"
+                - "sqs:GetQueueAttributes"
               Resource: '*'
             - Effect: Allow
               Action:

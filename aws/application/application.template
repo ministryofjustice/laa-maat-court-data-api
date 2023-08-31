@@ -517,10 +517,6 @@ Resources:
               ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/DATASOURCE_USERNAME'
             - Name: DATASOURCE_PASSWORD
               ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/APP_MAATDB_DBPASSWORD_MLA1'
-            - Name: CLOUD_PLATFORM_QUEUE_ACCESS_KEY
-              ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/CLOUD_PLATFORM_QUEUE_ACCESS_KEY'
-            - Name: CLOUD_PLATFORM_QUEUE_SECRET_KEY
-              ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/CLOUD_PLATFORM_QUEUE_SECRET_KEY'
             - Name: CDA_OAUTH_CLIENT_ID
               ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/CDA_OAUTH_CLIENT_ID'
             - Name: CDA_OAUTH_CLIENT_SECRET

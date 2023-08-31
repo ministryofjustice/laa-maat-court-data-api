@@ -18,18 +18,6 @@ public class MockCdaWebConfig {
         return WebClient.builder().baseUrl(baseUrl).build();
     }
 
-    @MockBean(name = "messageListenerContainer")
-    private DefaultJmsListenerContainerFactory messageListenerContainer;
-
-    @MockBean(name = "jmsTemplate")
-    private JmsTemplate jmsTemplate;
-
-    @MockBean(name = "sqsConnectionFactory")
-    private SQSConnectionFactory sqsConnectionFactory;
-
-    @MockBean(name = "cmaSQSConnectionFactory")
-    private SQSConnectionFactory cmaSQSConnectionFactory;
-
     @MockBean(name = "simpleMessageListenerContainer")
     private SimpleMessageListenerContainer simpleMessageListenerContainer;
 }

@@ -46,8 +46,7 @@ cloud:
       static: eu-west-2
       auto: false
     credentials:
-      access-key: access
-      secret-key: secret
+      use-default-aws-credentials-chain: true
     sqs:
       listener:
         queue-stop-timeout: 500
@@ -57,8 +56,6 @@ cloud-platform:
   aws:
     sqs:
       region: eu-west-2
-      accesskey: access
-      secretkey: secret
       queue:
         link: link
         unlink: unlink

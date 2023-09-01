@@ -440,6 +440,7 @@ Resources:
         Statement:
         - Effect: Allow
           Principal:
+            AWS: [arn:aws:iam::902837325998:role/LAA2ndLineRole]
             Service: [ecs-tasks.amazonaws.com]
           Action: ['sts:AssumeRole']
       Path: /

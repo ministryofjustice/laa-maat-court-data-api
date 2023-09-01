@@ -440,7 +440,6 @@ Resources:
         Statement:
         - Effect: Allow
           Principal:
-            AWS: [arn:aws:iam::902837325998:role/LAA2ndLineRole]
             Service: [ecs-tasks.amazonaws.com]
           Action: ['sts:AssumeRole']
       Path: /
@@ -467,10 +466,7 @@ Resources:
                 # Allow ECS tasks to push metrics to CloudWatch
                 - 'cloudwatch:PutMetricData'
                 # Allow access to SQS queues.
-                - 'sqs:ReceiveMessage'
-                - 'sqs:DeleteMessage'
-                - 'sqs:GetQueueAttributes'
-                - 'sqs:GetQueueUrl'
+                - 'sqs:*'
               Resource: '*'
             - Effect: Allow
               Action:

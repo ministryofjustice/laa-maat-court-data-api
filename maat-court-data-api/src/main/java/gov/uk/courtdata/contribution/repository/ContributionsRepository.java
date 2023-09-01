@@ -20,6 +20,13 @@ public interface ContributionsRepository extends JpaRepository<ContributionsEnti
 
     ContributionsEntity findByRepIdAndLatestIsTrue(Integer repId);
 
+    @Query(value = "select * from TOGDATA.CONTRIBUTIONS where C.REP_ID = :repId and C.TRANSFER_STATUS = 'SENT'\n" +
+            "             and not exists (select 1 from contributions where C2.REP_ID = p_application_object.rep_id\n" +
+            "                                and C2.TRANSFER_STATUS = 'SENT' and C2.DATE_created > C.date_created)",
+                    nativeQuery = true)
+    ContributionsEntity findByRepIdAndLatestSentContribution(@Param("repId") Integer repId);
+
+
     @Modifying
     @Query(value = "UPDATE TOGDATA.CONTRIBUTIONS SET REPLACED_DATE = TRUNC(SYSDATE), ACTIVE = 'N' WHERE REP_ID = :repId AND EFFECTIVE_DATE >= :effDate", nativeQuery = true)
     void updateExistingContributionToInactive(@Param("repId") Integer repId, @Param("effDate") LocalDate effDate);

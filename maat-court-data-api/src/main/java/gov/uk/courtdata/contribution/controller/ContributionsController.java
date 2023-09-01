@@ -70,7 +70,7 @@ public class ContributionsController {
         return ResponseEntity.ok(contributionsService.find(repId, findLatestContribution));
     }
 
-    @GetMapping(value = "/{repId}/latestSent", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{repId}/latest-sent", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve Latest Sent contributions entry")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))

@@ -178,7 +178,7 @@ class ContributionsControllerTest {
         ContributionsDTO contributionsDTO = ContributionsDTO.builder().id(TEST_CONTRIBUTIONS_ID).build();
         when(contributionsService.findByRepIdAndLatestSentContribution(TEST_CONTRIBUTIONS_ID)).thenReturn(contributionsDTO);
 
-        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/" + TEST_CONTRIBUTIONS_ID + "/latestSent"))
+        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/" + TEST_CONTRIBUTIONS_ID + "/latest-sent"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(TEST_CONTRIBUTIONS_ID));

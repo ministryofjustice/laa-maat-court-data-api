@@ -82,44 +82,9 @@ laa-maat-court-data-api application will be running on http://localhost:8090
 
 ### Cloud Platform Set Up 
 
-MAAT API speaks to AWS SQS which exists on cloud platform. It is advisable to have the cloud platform set up locally. 
-
-Follow this link to on board yourself with the LAA cloud platform environment. - https://user-guide.cloud-platform.service.justice.gov.uk/documentation/getting-started/kubectl-config.html#how-to-use-kubectl-to-connect-to-the-cluster
-
-Once you are on board with Cloud Platform, run the following command to display the list of secrets for the messaging queues:
-
-```sh
-kubectl -n laa-court-data-adaptor-dev get secrets cda-messaging-queues-output -o yaml
-```
-
-In order to see their actual values you'll need to decode each secret using the following command:
-
-```sh
-echo "<encoded-secret-value>" | base64 --decode
-```
-
-If you have [jq](https://stedolan.github.io/jq/) installed then you can retrieve the secrets and decode them with just the following command:
-
-```sh
-kubectl -n laa-court-data-adaptor-dev get secret cda-messaging-queues-output -o json | jq '.data|map_values(@base64d)'
-```
-
-Configure AWS details using aws cli command:
-
-```sh
-aws configure
-``` 
-
-When prompted provide the decoded AWS Access Key ID & AWS Secret Access Key. All other values can be default.
- 
-*NOTE: You will need the awscli installed using homebrew or other method for this.*
-
-Now you can test the applications by firing Messages on AWS Queue. 
-
-More detail can be found on https://dsdmoj.atlassian.net/wiki/spaces/LAACP/pages/edit-v2/1756201359.
-
-The terraform scripts for the SQS can be found on https://github.com/ministryofjustice/cloud-platform-environments/tree/master/namespaces/live-1.cloud-platform.service.justice.gov.uk/laa-court-data-adaptor-dev
-
+MAAT API speaks to AWS SQS which exists on cloud platform. Due to recent changes we have moved away from using long lived access keys to authenticate with the queue in favour of using the IAM role attached to the ECS task MAAT API is running in.
+As such we are currently not able to run the SQS queue listeners in MAAT locally. [LASB-2405](https://dsdmoj.atlassian.net/browse/LASB-2405) is a spike that will investigate the best method of running MAAT API locally with the SQS listeners and once a method has been determine the documentation here will be updated.
+For now there is a `ENABLE_SPRING_CLOUD_SQS` that is set to `false` in the `docker-compose.override.yml` file when running MAAT API locally and will default to `true` in all other conditions.
 
 ### Deployment 
 

@@ -1,10 +1,9 @@
 package gov.uk.courtdata.hardship.service;
 
-import com.amazonaws.util.CollectionUtils;
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
+import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
@@ -16,8 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,17 +48,15 @@ public class HardshipReviewService {
     @Transactional(readOnly = true)
     public List<HardshipReviewDetail> findHardshipReviewByDetailType(String detailType, int repId) {
 
-        List<HardshipReviewEntity> hardshipReviewEntityList = hardshipReviewImpl.findByDetailType(detailType, repId);
-        if (CollectionUtils.isNullOrEmpty(hardshipReviewEntityList)) {
-            throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for Detail Type: %s and REP ID: %d", detailType, repId));
+        HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.findByRepId(repId);
+        if (hardshipReviewEntity == null) {
+            throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for REP ID: %s", repId));
         }
-        List<HardshipReviewDetail> hardshipReviewDetailList = new ArrayList<>();
-        for (HardshipReviewEntity hardshipReviewEntity : hardshipReviewEntityList) {
-            for (HardshipReviewDetailEntity hardshipReviewDetailEntity : hardshipReviewEntity.getReviewDetails()) {
-                hardshipReviewDetailList.add(hardshipReviewMapper.hardshipReviewDetailEntityToHardshipReviewDetail(hardshipReviewDetailEntity));
-            }
-        }
-        return hardshipReviewDetailList;
+
+        return hardshipReviewEntity.getReviewDetails().stream()
+                .filter(item -> item.getDetailType() == HardshipReviewDetailType.valueOf(detailType))
+                .map(hardshipReviewMapper::hardshipReviewDetailEntityToHardshipReviewDetail)
+                .collect(Collectors.toList());
     }
 
     @Transactional

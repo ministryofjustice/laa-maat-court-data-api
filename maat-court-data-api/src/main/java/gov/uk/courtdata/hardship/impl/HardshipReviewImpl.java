@@ -16,6 +16,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static gov.uk.courtdata.hardship.specification.HardshipSpecification.hasRepId;
+import static gov.uk.courtdata.hardship.specification.HardshipSpecification.isCurrent;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -32,10 +35,6 @@ public class HardshipReviewImpl {
 
     public HardshipReviewEntity findByRepId(int repId) {
         return hardshipReviewRepository.findOne(hasRepId(repId).and(isCurrent())).orElse(null);
-    }
-
-    public List<HardshipReviewEntity> findByDetailType(String detailType, int repId) {
-        return hardshipReviewRepository.findByDetailType(detailType, repId);
     }
 
     public HardshipReviewEntity create(final HardshipReviewDTO hardshipReviewDTO) {

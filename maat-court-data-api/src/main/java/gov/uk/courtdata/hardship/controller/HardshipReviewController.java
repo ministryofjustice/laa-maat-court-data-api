@@ -47,7 +47,7 @@ public class HardshipReviewController {
         log.info("Get Hardship Review Request Received");
 
         validationProcessor.validate(hardshipId);
-        return ResponseEntity.ok(hardshipReviewService.findHardshipReview(hardshipId));
+        return ResponseEntity.ok(hardshipReviewService.find(hardshipId));
     }
 
     @GetMapping(value = "repId/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -59,7 +59,7 @@ public class HardshipReviewController {
                                                                 @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
         MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info("Get Hardship Review by repId = {}", repId);
-        return ResponseEntity.ok(hardshipReviewService.findHardshipReviewByRepId(repId));
+        return ResponseEntity.ok(hardshipReviewService.findByRepId(repId));
     }
 
     @GetMapping(value = "repId/{repId}/detailType/{detailType}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -72,7 +72,7 @@ public class HardshipReviewController {
                                                                      @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
         MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info("Get Hardship Review by detail type = {} and repId = {}", detailType, repId);
-        return ResponseEntity.ok(hardshipReviewService.findHardshipReviewByDetailType(detailType, repId));
+        return ResponseEntity.ok(hardshipReviewService.findDetails(detailType, repId));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -88,7 +88,7 @@ public class HardshipReviewController {
         log.info("Create Hardship Review Request Received");
 
         validationProcessor.validate(hardshipReview);
-        return ResponseEntity.ok(hardshipReviewService.createHardshipReview(hardshipReview));
+        return ResponseEntity.ok(hardshipReviewService.create(hardshipReview));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -104,6 +104,6 @@ public class HardshipReviewController {
         log.info("Update Hardship Review Request Received");
 
         validationProcessor.validate(hardshipReview);
-        return ResponseEntity.ok(hardshipReviewService.updateHardshipReview(hardshipReview));
+        return ResponseEntity.ok(hardshipReviewService.update(hardshipReview));
     }
 }

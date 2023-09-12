@@ -28,7 +28,7 @@ public class HardshipReviewService {
     private final HardshipReviewMapper hardshipReviewMapper;
 
     @Transactional(readOnly = true)
-    public HardshipReviewDTO findHardshipReview(final Integer hardshipReviewId) {
+    public HardshipReviewDTO find(final Integer hardshipReviewId) {
         HardshipReviewEntity hardshipReview = hardshipReviewImpl.find(hardshipReviewId);
         if (hardshipReview == null) {
             throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for ID: %s", hardshipReviewId));
@@ -37,7 +37,7 @@ public class HardshipReviewService {
     }
 
     @Transactional(readOnly = true)
-    public HardshipReviewDTO findHardshipReviewByRepId(final int repId) {
+    public HardshipReviewDTO findByRepId(final int repId) {
         HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.findByRepId(repId);
         if (hardshipReviewEntity == null) {
             throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for REP ID: %s", repId));
@@ -46,7 +46,7 @@ public class HardshipReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<HardshipReviewDetail> findHardshipReviewByDetailType(String detailType, int repId) {
+    public List<HardshipReviewDetail> findDetails(String detailType, int repId) {
 
         HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.findByRepId(repId);
         if (hardshipReviewEntity == null) {
@@ -60,7 +60,7 @@ public class HardshipReviewService {
     }
 
     @Transactional
-    public HardshipReviewDTO createHardshipReview(final CreateHardshipReview createHardshipReview) {
+    public HardshipReviewDTO create(final CreateHardshipReview createHardshipReview) {
         HardshipReviewDTO hardshipReviewDTO =
                 hardshipReviewMapper.createHardshipReviewToHardshipReviewDTO(createHardshipReview);
         HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.create(hardshipReviewDTO);
@@ -68,7 +68,7 @@ public class HardshipReviewService {
     }
 
     @Transactional
-    public HardshipReviewDTO updateHardshipReview(UpdateHardshipReview updateHardshipReview) {
+    public HardshipReviewDTO update(UpdateHardshipReview updateHardshipReview) {
         HardshipReviewDTO hardshipReviewDTO =
                 hardshipReviewMapper.updateHardshipReviewToHardshipReviewDTO(updateHardshipReview);
         HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.update(hardshipReviewDTO);

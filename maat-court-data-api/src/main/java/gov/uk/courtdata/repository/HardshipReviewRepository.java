@@ -1,8 +1,8 @@
 package gov.uk.courtdata.repository;
 
-import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface HardshipReviewRepository extends JpaRepository<HardshipReviewEntity, Integer> {
+public interface HardshipReviewRepository extends JpaRepository<HardshipReviewEntity, Integer>, JpaSpecificationExecutor<HardshipReviewEntity> {
     @Modifying
     @Query(value = "UPDATE HardshipReviewEntity hr set hr.replaced = 'Y' WHERE hr.repId = :repId and hr.financialAssessmentId <> :financialAssessmentId")
     void updateOldHardshipReviews(@Param("repId") Integer repId, @Param("financialAssessmentId") Integer financialAssessmentId);

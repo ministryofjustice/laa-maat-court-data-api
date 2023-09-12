@@ -31,7 +31,7 @@ public class HardshipReviewImpl {
     }
 
     public HardshipReviewEntity findByRepId(int repId) {
-        return hardshipReviewRepository.findByRepId(repId);
+        return hardshipReviewRepository.findOne(hasRepId(repId).and(isCurrent())).orElse(null);
     }
 
     public List<HardshipReviewEntity> findByDetailType(String detailType, int repId) {

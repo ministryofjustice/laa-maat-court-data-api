@@ -4,6 +4,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
+import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
@@ -42,15 +43,22 @@ class HardshipReviewServiceTest {
 
     @Test
     void whenFindIsInvoked_thenAssessmentIsRetrieved() {
-        when(hardshipReviewImpl.find(any())).thenReturn(
-                HardshipReviewEntity.builder().id(MOCK_HARDSHIP_ID).build());
-        when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
-                HardshipReviewDTO.builder().id(MOCK_HARDSHIP_ID).build());
+        when(hardshipReviewImpl.find(any()))
+                .thenReturn(HardshipReviewEntity.builder()
+                        .id(MOCK_HARDSHIP_ID)
+                        .build()
+                );
+
+        when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(any()))
+                .thenReturn(HardshipReviewDTO.builder()
+                        .id(MOCK_HARDSHIP_ID)
+                        .build()
+                );
 
         HardshipReviewDTO returnedAssessment = hardshipReviewService.findHardshipReview(MOCK_HARDSHIP_ID);
 
-        verify(hardshipReviewImpl).find(any());
-        assertThat(returnedAssessment.getId()).isEqualTo(MOCK_HARDSHIP_ID);
+        assertThat(returnedAssessment.getId())
+                .isEqualTo(MOCK_HARDSHIP_ID);
     }
 
     @Test
@@ -64,17 +72,23 @@ class HardshipReviewServiceTest {
 
     @Test
     void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
-        HardshipReviewEntity hardshipReviewEntity = HardshipReviewEntity.builder().id(MOCK_HARDSHIP_ID).repId(MOCK_REP_ID).build();
-        when(hardshipReviewImpl.findByRepId(MOCK_REP_ID)).thenReturn(hardshipReviewEntity);
+        HardshipReviewEntity hardshipReviewEntity = HardshipReviewEntity.builder()
+                .id(MOCK_HARDSHIP_ID)
+                .repId(MOCK_REP_ID)
+                .build();
+
+        when(hardshipReviewImpl.findByRepId(MOCK_REP_ID))
+                .thenReturn(hardshipReviewEntity);
+
         when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity))
                 .thenReturn(HardshipReviewDTO.builder().id(MOCK_HARDSHIP_ID).repId(MOCK_REP_ID).build());
 
         HardshipReviewDTO returnedAssessment = hardshipReviewService.findHardshipReviewByRepId(MOCK_REP_ID);
 
-        verify(hardshipReviewImpl).findByRepId(MOCK_REP_ID);
-        verify(hardshipReviewMapper).hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
-        assertThat(returnedAssessment.getId()).isEqualTo(MOCK_HARDSHIP_ID);
-        assertThat(returnedAssessment.getRepId()).isEqualTo(MOCK_REP_ID);
+        assertThat(returnedAssessment.getId())
+                .isEqualTo(MOCK_HARDSHIP_ID);
+        assertThat(returnedAssessment.getRepId())
+                .isEqualTo(MOCK_REP_ID);
     }
 
     @Test
@@ -88,11 +102,12 @@ class HardshipReviewServiceTest {
 
     @Test
     void whenFindHardshipReviewByDetailTypeIsInvokedWithInvalidRepId_thenNotFoundExceptionIsThrown() {
-        when(hardshipReviewImpl.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID)).thenReturn(null);
+        when(hardshipReviewImpl.findByRepId(MOCK_REP_ID))
+                .thenReturn(null);
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID))
-                .withMessageContaining(String.format("No Hardship Review found for Detail Type: %s and REP ID: %d", MOCK_DETAIL_TYPE, MOCK_REP_ID));
+                .withMessageContaining(String.format("No Hardship Review found for REP ID: %d", MOCK_REP_ID));
     }
 
     @Test
@@ -101,17 +116,23 @@ class HardshipReviewServiceTest {
                 .id(MOCK_HARDSHIP_ID)
                 .repId(MOCK_REP_ID)
                 .build();
-        hardshipReviewEntity.addReviewDetail(HardshipReviewDetailEntity.builder().id(MOCK_HARDSHIP_ID).build());
-        List<HardshipReviewEntity> hardshipReviewEntityList = List.of(hardshipReviewEntity);
-        when(hardshipReviewImpl.findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID)).thenReturn(hardshipReviewEntityList);
 
-        when(hardshipReviewMapper.hardshipReviewDetailEntityToHardshipReviewDetail(hardshipReviewEntity.getReviewDetails().get(0)))
+        HardshipReviewDetailEntity reviewDetail = HardshipReviewDetailEntity.builder()
+                .id(MOCK_HARDSHIP_ID)
+                .detailType(HardshipReviewDetailType.EXPENDITURE)
+                .build();
+
+        hardshipReviewEntity.addReviewDetail(reviewDetail);
+
+        when(hardshipReviewImpl.findByRepId(MOCK_REP_ID))
+                .thenReturn(hardshipReviewEntity);
+
+        when(hardshipReviewMapper.hardshipReviewDetailEntityToHardshipReviewDetail(reviewDetail))
                 .thenReturn(HardshipReviewDetail.builder().id(MOCK_HARDSHIP_ID).build());
 
-        List<HardshipReviewDetail> hardshipReviewDetailList = hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
+        List<HardshipReviewDetail> hardshipReviewDetailList =
+                hardshipReviewService.findHardshipReviewByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
 
-        verify(hardshipReviewImpl).findByDetailType(MOCK_DETAIL_TYPE, MOCK_REP_ID);
-        verify(hardshipReviewMapper).hardshipReviewDetailEntityToHardshipReviewDetail(hardshipReviewEntity.getReviewDetails().get(0));
         assertThat(hardshipReviewDetailList.get(0).getId()).isEqualTo(MOCK_HARDSHIP_ID);
     }
 
@@ -119,8 +140,10 @@ class HardshipReviewServiceTest {
     void whenCreateIsInvoked_thenAssessmentIsPersisted() {
         when(hardshipReviewMapper.createHardshipReviewToHardshipReviewDTO(any())).thenReturn(
                 TestModelDataBuilder.getHardshipReviewDTO());
+
         when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
                 TestModelDataBuilder.getHardshipReviewDTO());
+
         hardshipReviewService.createHardshipReview(CreateHardshipReview.builder().build());
         verify(hardshipReviewImpl).create(any());
     }
@@ -129,6 +152,7 @@ class HardshipReviewServiceTest {
     void whenUpdateIsInvoked_thenAssessmentIsPersisted() {
         when(hardshipReviewMapper.updateHardshipReviewToHardshipReviewDTO(any())).thenReturn(
                 TestModelDataBuilder.getHardshipReviewDTO());
+
         when(hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(any())).thenReturn(
                 TestModelDataBuilder.getHardshipReviewDTO());
 

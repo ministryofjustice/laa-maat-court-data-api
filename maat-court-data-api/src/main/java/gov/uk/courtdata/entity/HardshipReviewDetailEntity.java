@@ -90,10 +90,10 @@ public class HardshipReviewDetailEntity {
     @JoinColumn(name = "HARD_ID", nullable = false)
     private HardshipReviewEntity hardshipReview;
 
+    @ManyToOne()
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "HRDR_ID", nullable = false)
+    @JoinColumn(name = "HRDR_ID")
     private HardshipReviewDetailReasonEntity detailReason;
 
 }

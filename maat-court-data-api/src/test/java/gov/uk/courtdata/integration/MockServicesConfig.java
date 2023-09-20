@@ -13,15 +13,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 @TestConfiguration
 public class MockServicesConfig {
 
-    @MockBean(name = "messageListenerContainer")
-    private DefaultJmsListenerContainerFactory messageListenerContainer;
-
-    @MockBean(name = "jmsTemplate")
-    private JmsTemplate jmsTemplate;
-
-    @MockBean(name = "sqsConnectionFactory")
-    private SQSConnectionFactory sqsConnectionFactory;
-
     @MockBean(name = "clientRegistrationRepository")
     private ClientRegistrationRepository clientRegistrationRepository;
 

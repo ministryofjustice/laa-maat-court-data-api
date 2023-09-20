@@ -14,7 +14,7 @@ public class DebtCollectionRepository {
     List<String> getContributionFiles(final String fromDate, final String toDate) {
         String query = "SELECT cf.xml_content FROM TOGDATA.CONTRIBUTION_FILES CF " +
                 "WHERE CF.FILE_NAME LIKE '%%CONTRIBUTIONS%%' " +
-                "AND CF.DATE_CREATED BETWEEN TO_DATE(?, 'dd/mm/yyyy') AND TO_DATE(?, 'dd/mm/yyyy')";
+                "AND TO_DATE(CF.DATE_CREATED) BETWEEN TO_DATE(?, 'dd/mm/yyyy') AND TO_DATE(?, 'dd/mm/yyyy') Order by CF.ID ASC";
 
         return jdbcTemplate.queryForList(query, String.class, fromDate, toDate);
     }
@@ -22,7 +22,7 @@ public class DebtCollectionRepository {
     List<String> getFdcFiles(final String fromDate, final String toDate) {
         String query = "SELECT cf.xml_content FROM TOGDATA.CONTRIBUTION_FILES CF " +
                 "WHERE CF.FILE_NAME LIKE '%%FDC%%' " +
-                "AND CF.DATE_CREATED BETWEEN TO_DATE(?, 'dd/mm/yyyy') AND TO_DATE(?, 'dd/mm/yyyy')";
+                "AND TO_DATE(CF.DATE_CREATED) BETWEEN TO_DATE(?, 'dd/mm/yyyy') AND TO_DATE(?, 'dd/mm/yyyy') Order by CF.ID ASC";
 
         return jdbcTemplate.queryForList(query, String.class, fromDate, toDate);
     }

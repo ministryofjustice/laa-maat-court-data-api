@@ -7,6 +7,7 @@ import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class WQHearingControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @BeforeAll
     static void setUp(@Autowired WQHearingRepository wqHearingRepository) {
-        wqHearingRepository.deleteAll();
+        RepositoryUtil.clearUp(wqHearingRepository);
         wqHearingRepository.save(TestEntityDataBuilder.getWQHearingEntity(8064716));
     }
 

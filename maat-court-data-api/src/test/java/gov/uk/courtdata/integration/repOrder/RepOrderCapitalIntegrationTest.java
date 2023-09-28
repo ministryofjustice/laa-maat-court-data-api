@@ -7,6 +7,7 @@ import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.repository.RepOrderCapitalRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,11 +54,9 @@ public class RepOrderCapitalIntegrationTest extends MockMvcIntegrationTest {
 
     @AfterEach
     void clearUp() {
-        repOrderRepository.deleteAll();
-        capitalRepository.deleteAll();
+        RepositoryUtil.clearUp(repOrderRepository, capitalRepository);
     }
-
-
+    
     @Test
     void givenAInvalidRepId_whenGetCapitalAssetCountIsInvoked_thenErrorReturn() throws Exception {
         runBadRequestErrorScenario("MAAT ID is required.", head(ENDPOINT_URL + "/reporder/" + INVALID_REP_ID));

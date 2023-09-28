@@ -16,6 +16,7 @@ import gov.uk.courtdata.repository.WQHearingRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import gov.uk.courtdata.util.RepositoryUtil;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -30,8 +31,10 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
-import java.util.*;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -70,10 +73,10 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
 
     @BeforeEach
     public void setUp() throws Exception {
-        wqHearingRepository.deleteAll();
-        queueMessageLogRepository.deleteAll();
-        wqLinkRegisterRepository.deleteAll();
-        prosecutionConcludedRepository.deleteAll();
+        RepositoryUtil.clearUp(wqHearingRepository,
+                queueMessageLogRepository,
+                wqLinkRegisterRepository,
+                prosecutionConcludedRepository);
         loadData();
         setupCdaWebServer();
         queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);

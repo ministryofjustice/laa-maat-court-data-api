@@ -15,6 +15,7 @@ import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -65,11 +66,11 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
     }
 
     private void setupTestData() {
-        financialAssessmentRepository.deleteAll();
-        hardshipReviewRepository.deleteAll();
-        passportAssessmentRepository.deleteAll();
-        newWorkReasonRepository.deleteAll();
-        repOrderRepository.deleteAll();
+        RepositoryUtil.clearUp(financialAssessmentRepository,
+                hardshipReviewRepository,
+                passportAssessmentRepository,
+                newWorkReasonRepository,
+                repOrderRepository);
 
         LocalDateTime testCreationDate = LocalDateTime.of(2022, 1, 1, 12, 0);
         String testUser = "test-f";

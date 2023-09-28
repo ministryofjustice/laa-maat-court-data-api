@@ -15,6 +15,7 @@ import gov.uk.courtdata.model.laastatus.*;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import gov.uk.courtdata.util.RepositoryUtil;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -94,21 +95,21 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         setupCdaWebServer();
-        financialAssessmentRepository.deleteAll();
-        wqCoreRepository.deleteAll();
-        queueMessageLogRepository.deleteAll();
-        identifierRepository.deleteAll();
-        caseRepository.deleteAll();
-        wqLinkRegisterRepository.deleteAll();
-        solicitorRepository.deleteAll();
-        defendantRepository.deleteAll();
-        sessionRepository.deleteAll();
-        offenceRepository.deleteAll();
-        passportAssessmentRepository.deleteAll();
-        repOrderRepository.deleteAll();
-        solicitorMAATDataRepository.deleteAll();
-        defendantMAATDataRepository.deleteAll();
-        repOrderCPDataRepository.deleteAll();
+        RepositoryUtil.clearUp(financialAssessmentRepository,
+                wqCoreRepository,
+                queueMessageLogRepository,
+                identifierRepository,
+                caseRepository,
+                wqLinkRegisterRepository,
+                solicitorRepository,
+                defendantRepository,
+                sessionRepository,
+                offenceRepository,
+                passportAssessmentRepository,
+                repOrderRepository,
+                solicitorMAATDataRepository,
+                defendantMAATDataRepository,
+                repOrderCPDataRepository);
         queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
     }
 

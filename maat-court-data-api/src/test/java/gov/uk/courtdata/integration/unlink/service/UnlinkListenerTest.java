@@ -4,21 +4,17 @@ import com.google.gson.Gson;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.entity.CourtHouseCodesEntity;
+import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.integration.MockServicesConfig;
-import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.unlink.service.UnlinkListener;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import org.junit.Assert;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,14 +65,14 @@ public class UnlinkListenerTest {
 
     @BeforeEach
     public void setUp() {
-        passportAssessmentRepository.deleteAll();
-        financialAssessmentRepository.deleteAll();
-        wqCoreRepository.deleteAll();
-        wqLinkRegisterRepository.deleteAll();
-        unlinkReasonRepository.deleteAll();
-        repOrderRepository.deleteAll();
-        repOrderCPDataRepository.deleteAll();
-        queueMessageLogRepository.deleteAll();
+        RepositoryUtil.clearUp(passportAssessmentRepository,
+                financialAssessmentRepository,
+                wqCoreRepository,
+                wqLinkRegisterRepository,
+                unlinkReasonRepository,
+                repOrderRepository,
+                repOrderCPDataRepository,
+                queueMessageLogRepository);
     }
 
     @Test

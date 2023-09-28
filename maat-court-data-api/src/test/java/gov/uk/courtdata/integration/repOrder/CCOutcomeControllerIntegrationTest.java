@@ -10,6 +10,7 @@ import gov.uk.courtdata.model.RepOrderCCOutcome;
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -58,7 +59,7 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
     @AfterEach
     void clearUp() {
         existingRepOrder = null;
-        courtProcessingRepository.deleteAll();
+        RepositoryUtil.clearUp(courtProcessingRepository, repOrderRepository);
     }
 
     @Test
@@ -98,7 +99,6 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAValidData_whenUpdateIsInvoked_thenShouldUpdatedCCOutCome() throws Exception {
-        courtProcessingRepository.deleteAll();
         RepOrderCCOutComeEntity savedOutcome = courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(1, TestModelDataBuilder.REP_ID));
         runSuccessScenario(MockMvcRequestBuilders.put(endpointUrl).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateRepOrderCCOutcome(savedOutcome.getId()))));

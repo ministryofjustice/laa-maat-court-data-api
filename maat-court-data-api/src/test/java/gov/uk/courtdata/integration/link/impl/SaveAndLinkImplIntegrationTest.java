@@ -15,6 +15,7 @@ import gov.uk.courtdata.model.id.AsnSeqTxnCaseId;
 import gov.uk.courtdata.model.id.CaseTxnId;
 import gov.uk.courtdata.model.id.ProceedingMaatId;
 import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,19 +67,19 @@ public class SaveAndLinkImplIntegrationTest {
 
     @BeforeEach
     public void setup() throws Exception {
-        financialAssessmentRepository.deleteAll();
-        passportAssessmentRepository.deleteAll();
-        wqCoreRepository.deleteAll();
-        wqLinkRegisterRepository.deleteAll();
-        caseRepository.deleteAll();
-        solicitorRepository.deleteAll();
-        proceedingRepository.deleteAll();
-        defendantRepository.deleteAll();
-        sessionRepository.deleteAll();
-        offenceRepository.deleteAll();
-        resultRepository.deleteAll();
-        repOrderDataRepository.deleteAll();
-        repOrderRepository.deleteAll();
+        RepositoryUtil.clearUp(financialAssessmentRepository,
+                passportAssessmentRepository,
+                wqCoreRepository,
+                wqLinkRegisterRepository,
+                caseRepository,
+                solicitorRepository,
+                proceedingRepository,
+                defendantRepository,
+                sessionRepository,
+                offenceRepository,
+                resultRepository,
+                repOrderDataRepository,
+                repOrderRepository);
     }
 
     @Test

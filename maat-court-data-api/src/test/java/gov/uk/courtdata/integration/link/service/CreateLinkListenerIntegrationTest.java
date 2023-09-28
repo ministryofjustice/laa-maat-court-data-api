@@ -13,6 +13,7 @@ import gov.uk.courtdata.link.service.CreateLinkListener;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,15 +64,15 @@ public class CreateLinkListenerIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        financialAssessmentRepository.deleteAll();
-        passportAssessmentRepository.deleteAll();
-        repOrderRepository.deleteAll();
-        wqLinkRegisterRepository.deleteAll();
-        repOrderDataRepository.deleteAll();
-        solicitorMAATDataRepository.deleteAll();
-        defendantMAATDataRepository.deleteAll();
-        courtHouseCodesRepository.deleteAll();
-        queueMessageLogRepository.deleteAll();
+        RepositoryUtil.clearUp(financialAssessmentRepository,
+                passportAssessmentRepository,
+                repOrderRepository,
+                wqLinkRegisterRepository,
+                repOrderDataRepository,
+                solicitorMAATDataRepository,
+                defendantMAATDataRepository,
+                courtHouseCodesRepository,
+                queueMessageLogRepository);
     }
 
     @Test

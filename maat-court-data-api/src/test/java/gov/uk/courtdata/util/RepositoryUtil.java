@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 @UtilityClass
 public class RepositoryUtil {
 
-    private static final Consumer<JpaRepository<?, ?>> DELETE_ALL_AND_FLUSH = repository -> {
+    private final Consumer<JpaRepository<?, ?>> DELETE_ALL_AND_FLUSH = repository -> {
         repository.deleteAll();
         repository.flush();
     };

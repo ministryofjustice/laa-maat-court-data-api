@@ -11,6 +11,7 @@ import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
@@ -93,11 +94,11 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                  @Autowired RepOrderMvoRepository repOrderMvoRepository,
                  @Autowired RepOrderMvoRegRepository repOrderMvoRegRepository) {
 
-        financialAssessmentRepository.deleteAll();
-        passportAssessmentRepository.deleteAll();
-        repOrderMvoRegRepository.deleteAll();
-        repOrderMvoRepository.deleteAll();
-        repOrderRepository.deleteAll();
+        RepositoryUtil.clearUp(financialAssessmentRepository,
+                passportAssessmentRepository,
+                repOrderMvoRegRepository,
+                repOrderMvoRepository,
+                repOrderRepository);
     }
 
     private RepOrderDTO getUpdatedRepOrderDTO() {

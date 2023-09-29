@@ -17,6 +17,7 @@ import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,16 +83,16 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     @AfterEach
     public void clearUp() {
-        hardshipReviewRepository.deleteAll();
-        passportAssessmentRepository.deleteAll();
-        childWeightingsRepository.deleteAll();
-        financialAssessmentDetailsRepository.deleteAll();
-        financialAssessmentsHistoryRepository.deleteAll();
-        financialAssessmentDetailsHistoryRepository.deleteAll();
-        childWeightHistoryRepository.deleteAll();
-        financialAssessmentRepository.deleteAll();
-        newWorkReasonRepository.deleteAll();
-        repOrderRepository.deleteAll();
+        RepositoryUtil.clearUp(hardshipReviewRepository,
+                passportAssessmentRepository,
+                childWeightingsRepository,
+                financialAssessmentDetailsRepository,
+                financialAssessmentsHistoryRepository,
+                financialAssessmentDetailsHistoryRepository,
+                childWeightHistoryRepository,
+                financialAssessmentRepository,
+                newWorkReasonRepository,
+                repOrderRepository);
     }
 
     private void setupTestData() {

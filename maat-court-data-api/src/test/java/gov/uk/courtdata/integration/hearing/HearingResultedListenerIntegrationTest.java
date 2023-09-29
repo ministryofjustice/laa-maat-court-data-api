@@ -17,6 +17,7 @@ import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,20 +93,20 @@ public class HearingResultedListenerIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        identifierRepository.deleteAll();
-        wqLinkRegisterRepository.deleteAll();
-        xlatResultRepository.deleteAll();
-        xlatOffenceRepository.deleteAll();
-        wqCoreRepository.deleteAll();
-        offenceRepository.deleteAll();
-        resultRepository.deleteAll();
-        wqResultRepository.deleteAll();
-        wqHearingRepository.deleteAll();
-        queueMessageLogRepository.deleteAll();
-        wqCaseRepository.deleteAll();
-        wqSessionRepository.deleteAll();
-        wqDefendantRepository.deleteAll();
-        wqOffenceRepository.deleteAll();
+        RepositoryUtil.clearUp(identifierRepository,
+                wqLinkRegisterRepository,
+                xlatResultRepository,
+                xlatOffenceRepository,
+                wqCoreRepository,
+                offenceRepository,
+                resultRepository,
+                wqResultRepository,
+                wqHearingRepository,
+                queueMessageLogRepository,
+                wqCaseRepository,
+                wqSessionRepository,
+                wqDefendantRepository,
+                wqOffenceRepository);
 
         setupTestData();
         queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);

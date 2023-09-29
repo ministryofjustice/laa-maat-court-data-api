@@ -17,6 +17,7 @@ import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.hardship.*;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -73,13 +74,13 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     public void setUp() throws Exception {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
-        hardshipReviewRepository.deleteAll();
-        hardshipReviewDetailRepository.deleteAll();
-        hardshipReviewDetailReasonRepository.deleteAll();
-        financialAssessmentRepository.deleteAll();
-        mockNewWorkReasonRepository.deleteAll();
-        passportAssessmentRepository.deleteAll();
-        repOrderRepository.deleteAll();
+        RepositoryUtil.clearUp(hardshipReviewRepository,
+                hardshipReviewDetailRepository,
+                hardshipReviewDetailReasonRepository,
+                financialAssessmentRepository,
+                mockNewWorkReasonRepository,
+                passportAssessmentRepository,
+                repOrderRepository);
 
         setupTestData();
     }

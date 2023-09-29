@@ -4,6 +4,7 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ public class QueueMessageMaintenanceSchedulerTest {
 
     @BeforeEach
     public void setUp() {
-        getQueueMessageLogRepository().deleteAll();
+        RepositoryUtil.clearUp(getQueueMessageLogRepository());
     }
 
     @Test
@@ -105,7 +106,7 @@ public class QueueMessageMaintenanceSchedulerTest {
 
     @AfterEach
     public void tearDown() {
-        getQueueMessageLogRepository().deleteAll();
+        RepositoryUtil.clearUp(getQueueMessageLogRepository());
     }
 
     private QueueMessageLogRepository getQueueMessageLogRepository() {

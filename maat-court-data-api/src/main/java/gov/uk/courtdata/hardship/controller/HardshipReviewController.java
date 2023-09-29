@@ -135,4 +135,25 @@ public class HardshipReviewController {
         validationProcessor.validate(hardshipReview);
         return ResponseEntity.ok(hardshipReviewService.update(hardshipReview));
     }
+
+    @PutMapping(value = "/detail/{hardshipId}/archive", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Set an old hardship review detail record to inactive")
+    @StandardApiResponseCodes
+    @ApiResponse(responseCode = "404",
+            description = "Not found",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<Object> archiveHardshipDetail(
+            @PathVariable int hardshipReviewId,
+            @Parameter(description = "Used for tracing calls")
+            @RequestHeader(value = "laa-Transaction-Id", required = false) String laaTransactionId) {
+        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        log.info("Archive hardship review detail request received");
+
+        validationProcessor.validate(hardshipReviewId);
+        hardshipReviewService.archiveDetails(hardshipReviewId);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -10,11 +10,13 @@ import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
+import gov.uk.courtdata.repository.HardshipReviewDetailRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,7 @@ public class HardshipReviewService {
 
     private final HardshipReviewImpl hardshipReviewImpl;
     private final HardshipReviewMapper hardshipReviewMapper;
+    private final HardshipReviewDetailRepository hardshipReviewDetailRepository;
 
     @Transactional(readOnly = true)
     public HardshipReviewDTO find(final Integer hardshipReviewId) {
@@ -73,5 +76,10 @@ public class HardshipReviewService {
                 hardshipReviewMapper.updateHardshipReviewToHardshipReviewDTO(updateHardshipReview);
         HardshipReviewEntity hardshipReviewEntity = hardshipReviewImpl.update(hardshipReviewDTO);
         return hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReviewEntity);
+    }
+
+    @Transactional
+    public void archiveDetails(int hardshipReviewId) {
+        hardshipReviewDetailRepository.archive(hardshipReviewId, LocalDateTime.now());
     }
 }

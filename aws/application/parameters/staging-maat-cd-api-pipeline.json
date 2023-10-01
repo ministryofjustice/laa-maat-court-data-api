@@ -18,7 +18,7 @@
     "pCdaOauthUrl": "https://stage.court-data-adaptor.service.justice.gov.uk/oauth/token",
     "pCdaBaseUrl": "https://stage.court-data-adaptor.service.justice.gov.uk",
     "pPostMvpEnabled": "false",
-    "pProsecutionConcludedListenerEnabled": "true",
+    "pProsecutionConcludedListenerEnabled": "false",
     "pProsecutionConcludedScheduleEnabled": "true",
     "pCreateLinkCpStatusJobQueue": "",
     "pAwsDefaultRegion":"eu-west-2",

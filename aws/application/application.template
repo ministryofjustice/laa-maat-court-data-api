@@ -703,7 +703,6 @@ Resources:
           - !Ref CognitoUserPoolClientCrownCourtProceeding
           - !Ref CognitoUserPoolClientCrownCourtContribution
           - !Ref CognitoUserPoolClientCrimeEvidence
-          - !Ref CognitoUserPoolClientCrimeApplyAdaptor
           - !Ref CognitoUserPoolCrimeHardshipService
           - !Ref CognitoUserPoolMAATOrchestrationService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
@@ -718,6 +717,18 @@ Resources:
       JwtConfiguration:
         Audience:
           - !Ref CognitoUserPoolClientDcesReportService
+        Issuer: !GetAtt CognitoUserPool.ProviderURL
+  ApiAuthorizerForCAA:
+    Type: 'AWS::ApiGatewayV2::Authorizer'
+    Properties:
+      Name: !Sub '${pAppName}_CAA_Authorizer'
+      ApiId: !Ref ApiGateway
+      AuthorizerType: JWT  # Json Cognito Web Tokens
+      IdentitySource:
+        - '$request.header.Authorization'
+      JwtConfiguration:
+        Audience:
+          - !Ref CognitoUserPoolClientCrimeApplyAdaptor
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiStage:
     Type: 'AWS::ApiGatewayV2::Stage'

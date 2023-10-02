@@ -10,12 +10,11 @@ import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.link.service.CreateLinkCpJobStatusListener;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -37,9 +36,7 @@ public class CreateLinkCpJobStatusServiceIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        wqCoreRepository.deleteAll();
-        wqLinkRegisterRepository.deleteAll();
-
+        RepositoryUtil.clearUp(wqCoreRepository, wqLinkRegisterRepository);
     }
 
     @Test

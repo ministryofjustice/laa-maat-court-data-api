@@ -17,6 +17,7 @@ import gov.uk.courtdata.prosecutionconcluded.service.HearingsService;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedListener;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -100,19 +101,19 @@ public class ProsecutionConcludedIntegrationTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        financialAssessmentRepository.deleteAll();
-        passportAssessmentRepository.deleteAll();
-        wqHearingRepository.deleteAll();
-        offenceRepository.deleteAll();
-        queueMessageLogRepository.deleteAll();
-        wqLinkRegisterRepository.deleteAll();
-        xlatResultRepository.deleteAll();
-        resultRepository.deleteAll();
-        repOrderRepository.deleteAll();
-        crownCourtCodeRepository.deleteAll();
-        updateOutcomesRepository.deleteAll();
-        reservationsRepository.deleteAll();
-        prosecutionConcludedRepository.deleteAll();
+        RepositoryUtil.clearUp(financialAssessmentRepository,
+                passportAssessmentRepository,
+                wqHearingRepository,
+                offenceRepository,
+                queueMessageLogRepository,
+                wqLinkRegisterRepository,
+                xlatResultRepository,
+                resultRepository,
+                repOrderRepository,
+                crownCourtCodeRepository,
+                updateOutcomesRepository,
+                reservationsRepository,
+                prosecutionConcludedRepository);
         loadData();
         queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
         doNothing().when(crownCourtProcessingRepository).invokeUpdateAppealSentenceOrderDate(any(Integer.class), anyString(), any(LocalDate.class), any(LocalDate.class));

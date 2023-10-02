@@ -5,6 +5,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,7 +39,7 @@ public class WQOffenceControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @AfterAll
     static void cleanUp(@Autowired WQOffenceRepository wqOffenceRepository) {
-        wqOffenceRepository.deleteAll();
+        RepositoryUtil.clearUp(wqOffenceRepository);
     }
 
     @Test

@@ -15,6 +15,7 @@ import gov.uk.courtdata.repository.UnlinkReasonRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.unlink.impl.UnLinkImpl;
+import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,9 +49,9 @@ public class UnLinkImplIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        wqCoreRepository.deleteAll();
-        wqLinkRegisterRepository.deleteAll();
-        unlinkReasonRepository.deleteAll();
+        RepositoryUtil.clearUp(wqCoreRepository,
+                wqLinkRegisterRepository,
+                unlinkReasonRepository);
     }
 
     @Test

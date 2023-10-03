@@ -136,15 +136,9 @@ public class HardshipReviewController {
         return ResponseEntity.ok(hardshipReviewService.update(hardshipReview));
     }
 
-    @PutMapping(value = "/detail/{hardshipId}/archive", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/detail/{hardshipReviewId}/archive")
     @Operation(description = "Set an old hardship review detail record to inactive")
     @StandardApiResponseCodes
-    @ApiResponse(responseCode = "404",
-            description = "Not found",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
     public ResponseEntity<Object> archiveHardshipDetail(
             @PathVariable int hardshipReviewId,
             @Parameter(description = "Used for tracing calls")

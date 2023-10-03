@@ -2,6 +2,7 @@ package gov.uk.courtdata.hardship.controller;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.hardship.service.HardshipReviewService;
@@ -12,9 +13,11 @@ import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,8 +27,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -165,5 +168,22 @@ class HardshipReviewControllerTest {
     void givenIncorrectParameters_whenUpdateHardshipIsInvoked_then4xxIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void givenValidHardshipReviewId_whenArchiveHardshipDetailIsInvoked_thenOkResponseReceived() throws Exception {
+        when(hardshipReviewValidationProcessor.validate(anyInt())).thenReturn(Optional.empty());
+        doNothing().when(hardshipReviewService).archiveDetails(anyInt());
+
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/detail/" + MOCK_HARDSHIP_ID + "/archive"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenInvalidHardshipReviewId_whenArchiveHardshipDetailIsInvoked_thenBadRequestResponseReceived() throws Exception {
+        when(hardshipReviewValidationProcessor.validate(anyInt())).thenThrow(new ValidationException());
+
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/detail/" + 666 + "/archive"))
+                .andExpect(status().isBadRequest());
     }
 }

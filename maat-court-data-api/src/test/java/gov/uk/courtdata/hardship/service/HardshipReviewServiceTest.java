@@ -11,17 +11,20 @@ import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
+import gov.uk.courtdata.repository.HardshipReviewDetailRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,6 +39,9 @@ class HardshipReviewServiceTest {
 
     @Mock
     private HardshipReviewMapper hardshipReviewMapper;
+
+    @Mock
+    private HardshipReviewDetailRepository hardshipReviewDetailRepository;
 
     private static final int MOCK_REP_ID = 621580;
     private static final String MOCK_DETAIL_TYPE = "EXPENDITURE";
@@ -158,5 +164,12 @@ class HardshipReviewServiceTest {
 
         hardshipReviewService.update(UpdateHardshipReview.builder().build());
         verify(hardshipReviewImpl).update(any());
+    }
+
+    @Test
+    void whenArchiveDetailsIsInvoked_thenHardshipReviewDetailsAreArchived() {
+        hardshipReviewService.archiveDetails(MOCK_HARDSHIP_ID);
+
+        verify(hardshipReviewDetailRepository).archive(anyInt(), any(LocalDateTime.class));
     }
 }

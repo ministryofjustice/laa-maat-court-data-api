@@ -19,7 +19,7 @@
     "pCdaBaseUrl": "https://test.court-data-adaptor.service.justice.gov.uk",
     "pPostMvpEnabled": "false",
     "pProsecutionConcludedListenerEnabled": "false",
-    "pProsecutionConcludedScheduleEnabled": "true",
+    "pProsecutionConcludedScheduleEnabled": "false",
     "pCreateLinkCpStatusJobQueue": "",
     "pAwsDefaultRegion":"eu-west-2",
     "pCloudwatchStep":"1m",

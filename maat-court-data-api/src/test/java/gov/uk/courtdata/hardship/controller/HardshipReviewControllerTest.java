@@ -10,6 +10,8 @@ import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
+import gov.uk.courtdata.repository.HardshipReviewProgressRepository;
+import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -43,6 +44,8 @@ class HardshipReviewControllerTest {
     private HardshipReviewService hardshipReviewService;
     @MockBean
     private HardshipReviewValidationProcessor hardshipReviewValidationProcessor;
+    @MockBean
+    private MaatIdValidator maatIdValidator;
 
     @Test
     void givenCorrectParameters_whenGetHardshipIsInvoked_thenHardshipIsReturned() throws Exception {
@@ -165,5 +168,21 @@ class HardshipReviewControllerTest {
     void givenIncorrectParameters_whenUpdateHardshipIsInvoked_then4xxIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
+    }
+
+
+    @Test
+    void givenIncorrectParameters_whenUpdateHardshipProgressIsInvoked_then4xxIsThrown() throws Exception {
+        when(maatIdValidator.validate(any(Integer.class))).thenThrow(new ValidationException());
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/review-progress/repId/" + MOCK_HARDSHIP_ID))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void givenCorrectParameters_whenUpdateHardshipProgressIsInvoked_thenHardshipReviewProgressDetailsAreUpdated() throws Exception {
+        when(maatIdValidator.validate(any(Integer.class))).thenReturn(Optional.empty());
+        doNothing().when(hardshipReviewService).updateHardshipReviewProgress(anyInt());
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/review-progress/repId/" + MOCK_HARDSHIP_ID))
+                .andExpect(status().isOk());
     }
 }

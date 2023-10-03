@@ -1,9 +1,12 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import gov.uk.courtdata.enums.HardshipReviewProgressAction;
 import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -24,6 +27,11 @@ public class HardshipReviewProgressEntity {
     @SequenceGenerator(name = "hardship_review_progress_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hardship_review_progress_seq")
     private Integer id;
+
+    @JsonBackReference
+    @ManyToOne(targetEntity = HardshipReviewEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "HARE_ID", referencedColumnName = "REP_ID")
+    private HardshipReviewEntity hrProgress;
 
     @Column(name = "HRPA_ACTION", nullable = false)
     private HardshipReviewProgressAction progressAction;

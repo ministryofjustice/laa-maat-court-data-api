@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -33,7 +34,7 @@ import java.util.List;
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @ExtendWith(SpringExtension.class)
@@ -48,6 +49,7 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private final String HARDSHIP_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
     private static final Integer MOCK_REP_ID = 4444;
     private static final Integer MOCK_REP_ID_2 = 5555;
+    private static final Integer MOCK_REP_ID_1 = 6666;
 
     @Autowired
     private HardshipReviewRepository hardshipReviewRepository;
@@ -63,12 +65,19 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private MockNewWorkReasonRepository mockNewWorkReasonRepository;
     @Autowired
     private PassportAssessmentRepository passportAssessmentRepository;
+    @Autowired
+    private HardshipReviewProgressRepository hardshipReviewProgressRepository;
 
     private HardshipReviewEntity existingHardshipReview;
+
+    private HardshipReviewEntity existingHardshipReviewWithProgress;
     private HardshipReviewDetailReasonEntity existingHardshipReviewDetailReason;
     private FinancialAssessmentEntity existingFinancialAssessment;
+
+    private FinancialAssessmentEntity existingFinancialAssessmentWithProgress;
     private FinancialAssessmentEntity existingUnlinkedFinancialAssessment;
     private NewWorkReasonEntity existingNewWorkReason;
+    private HardshipReviewProgressEntity existingHardshipReviewProgress;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -80,7 +89,8 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                 financialAssessmentRepository,
                 mockNewWorkReasonRepository,
                 passportAssessmentRepository,
-                repOrderRepository);
+                repOrderRepository,
+                hardshipReviewProgressRepository);
 
         setupTestData();
     }
@@ -238,12 +248,24 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                         .newWorkReason(existingNewWorkReason)
                         .userCreated(TEST_USER)
                         .updated(testDateTime)
-                        .repId(existingFinancialAssessment.getRepOrder().getId())
+                        .repId(existingFinancialAssessment.getRepOrder().getId()+1)
                         .build());
 
         assertTrue(runUpdateHardshipReviewErrorScenario(
                 "Hardship has been modified by another user",
                 UpdateHardshipReview.builder().id(completedHardshipReview.getId()).updated(testDateTime.minusMinutes(20)).build()));
+    }
+
+    @Test
+    public void givenAValidRepId_whenUpdateHardshipReviewProgressIsInvoked_thenCorrectDataIsPersisted() throws Exception {
+        HardshipReviewProgressEntity entity = hardshipReviewProgressRepository.findAll().get(0);
+        assertEquals("Y", entity.getActive());
+        MvcResult result =
+                runSuccessScenario(put(BASE_URL+"/review-progress/repId/"+ MOCK_REP_ID_1));
+        HardshipReviewProgressEntity updatedEntity = hardshipReviewProgressRepository.findAll().get(0);
+        assertNull(updatedEntity.getActive());
+        assertEquals(ResponseEntity.ok(), result.getResponse().getStatus());
+
     }
 
     @Test
@@ -388,11 +410,15 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
 
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(MOCK_REP_ID));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(MOCK_REP_ID_2));
+        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(MOCK_REP_ID_1));
 
         existingFinancialAssessment = financialAssessmentRepository.save(getTestFinancialAssessment(MOCK_REP_ID));
+        existingFinancialAssessmentWithProgress = financialAssessmentRepository.save(getTestFinancialAssessment(MOCK_REP_ID_1));
         existingUnlinkedFinancialAssessment = financialAssessmentRepository.save(getTestFinancialAssessment(MOCK_REP_ID_2));
         existingHardshipReview = hardshipReviewRepository.save(
                 getTestHardshipReview(existingFinancialAssessment.getRepOrder().getId(), existingFinancialAssessment.getId()));
+        existingHardshipReviewWithProgress = hardshipReviewRepository.save(
+                getTestHardshipReviewWithProgress(existingFinancialAssessmentWithProgress.getRepOrder().getId(), existingFinancialAssessmentWithProgress.getId()));
 
     }
 
@@ -402,6 +428,18 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         hardshipReview.setFinancialAssessmentId(supportingAssessmentId);
         hardshipReview.setRepId(repId);
         hardshipReview.setStatus(HardshipReviewStatus.IN_PROGRESS);
+        return hardshipReview;
+    }
+
+    private HardshipReviewEntity getTestHardshipReviewWithProgress(Integer repId, Integer supportingAssessmentId) {
+        HardshipReviewEntity hardshipReview = TestEntityDataBuilder.getHardshipReviewEntity();
+        hardshipReview.addReviewDetail(getTestHardshipReviewDetailEntity());
+        hardshipReview.setFinancialAssessmentId(supportingAssessmentId);
+        hardshipReview.setRepId(repId);
+        hardshipReview.setStatus(HardshipReviewStatus.IN_PROGRESS);
+        HardshipReviewProgressEntity hrProgress = TestEntityDataBuilder.getHardshipReviewProgressEntity();
+        hardshipReview.addReviewProgressItem(hrProgress);
+        hrProgress.setHrProgress(hardshipReview);
         return hardshipReview;
     }
 

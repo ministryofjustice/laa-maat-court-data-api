@@ -3,12 +3,13 @@ package gov.uk.courtdata.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import gov.uk.courtdata.enums.HardshipReviewStatus;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "HARDSHIP_REVIEWS", schema = "TOGDATA")
-public class HardshipReviewEntity {
+public class HardshipReviewEntity implements Serializable {
 
     @Id
     @Column(name = "ID")
@@ -128,7 +129,9 @@ public class HardshipReviewEntity {
     }
 
     @ToString.Exclude
-    @JoinColumn(name = "HARE_ID", nullable = false)
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "hrProgress", nullable = false)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<HardshipReviewProgressEntity> reviewProgressItems = new ArrayList<>();
 

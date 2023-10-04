@@ -8,10 +8,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public interface HardshipReviewProgressRepository extends JpaRepository<HardshipReviewProgressEntity, Integer> {
     @Modifying
     @Query(value = "UPDATE TOGDATA.HARDSHIP_REVIEW_PROGRESS SET ACTIVE = null, REMOVED_DATE = :currDate WHERE HARE_ID = :hardshipReviewId AND ACTIVE = 'Y' AND nvl(DATE_MODIFIED, DATE_CREATED) < :currDate", nativeQuery = true)
     void updateHardshipReviewProgress(@Param("hardshipReviewId") Integer hardshipReviewId, @Param("currDate") LocalDateTime currDate);
+    Optional<HardshipReviewProgressEntity> findHardshipReviewProgressEntitiesByHrProgressId(Integer hrId);
 }

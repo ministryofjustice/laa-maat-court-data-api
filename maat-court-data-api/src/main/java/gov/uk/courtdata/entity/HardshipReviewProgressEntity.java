@@ -30,7 +30,7 @@ public class HardshipReviewProgressEntity {
 
     @JsonBackReference
     @ManyToOne(targetEntity = HardshipReviewEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "HARE_ID", referencedColumnName = "REP_ID")
+    @JoinColumn(name = "HARE_ID", referencedColumnName = "id")
     private HardshipReviewEntity hrProgress;
 
     @Column(name = "HRPA_ACTION", nullable = false)

@@ -329,7 +329,7 @@ public class TestEntityDataBuilder {
     }
 
     public static HardshipReviewProgressEntity getHardshipReviewProgressEntity() {
-        LocalDateTime testDate = LocalDateTime.now().minusMonths(1);
+        LocalDateTime hrDateTime = LocalDateTime.now().minusMonths(1);
         return HardshipReviewProgressEntity.builder()
                 .id(4444)
                 .userCreated("test-s")
@@ -337,9 +337,9 @@ public class TestEntityDataBuilder {
                 .progressAction(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE)
                 .progressResponse(HardshipReviewProgressResponse.FURTHER_RECEIVED)
                 .active("Y")
-                .dateModified(testDate)
-                .dateCreated(testDate)
-                .dateRequested(testDate)
+                .dateModified(hrDateTime)
+                .dateCreated(hrDateTime)
+                .dateRequested(hrDateTime)
                 .build();
     }
 

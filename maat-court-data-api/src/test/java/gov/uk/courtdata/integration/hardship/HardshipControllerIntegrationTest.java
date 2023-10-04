@@ -18,23 +18,27 @@ import gov.uk.courtdata.model.hardship.*;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.RepositoryUtil;
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
+import org.testcontainers.shaded.org.apache.commons.lang.math.NumberUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @ExtendWith(SpringExtension.class)
@@ -74,10 +78,9 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private HardshipReviewDetailReasonEntity existingHardshipReviewDetailReason;
     private FinancialAssessmentEntity existingFinancialAssessment;
 
-    private FinancialAssessmentEntity existingFinancialAssessmentWithProgress;
+    private FinancialAssessmentEntity existingFinancialAssessmentWithHrProgress;
     private FinancialAssessmentEntity existingUnlinkedFinancialAssessment;
     private NewWorkReasonEntity existingNewWorkReason;
-    private HardshipReviewProgressEntity existingHardshipReviewProgress;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -248,7 +251,7 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                         .newWorkReason(existingNewWorkReason)
                         .userCreated(TEST_USER)
                         .updated(testDateTime)
-                        .repId(existingFinancialAssessment.getRepOrder().getId()+1)
+                        .repId(MOCK_REP_ID_1)
                         .build());
 
         assertTrue(runUpdateHardshipReviewErrorScenario(
@@ -258,13 +261,16 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     public void givenAValidRepId_whenUpdateHardshipReviewProgressIsInvoked_thenCorrectDataIsPersisted() throws Exception {
-        HardshipReviewProgressEntity entity = hardshipReviewProgressRepository.findAll().get(0);
+        var hrId = existingHardshipReviewWithProgress.getId();
+        System.out.println("hrId: "+hrId);
+        HardshipReviewProgressEntity entity = hardshipReviewProgressRepository.findHardshipReviewProgressEntitiesByHrProgressId(hrId).get();
         assertEquals("Y", entity.getActive());
         MvcResult result =
-                runSuccessScenario(put(BASE_URL+"/review-progress/repId/"+ MOCK_REP_ID_1));
-        HardshipReviewProgressEntity updatedEntity = hardshipReviewProgressRepository.findAll().get(0);
+                runSuccessScenario(put(BASE_URL+"/review-progress/hrId/"+ hrId));
+        HardshipReviewProgressEntity updatedEntity = hardshipReviewProgressRepository.findHardshipReviewProgressEntitiesByHrProgressId(hrId).get();
         assertNull(updatedEntity.getActive());
-        assertEquals(ResponseEntity.ok(), result.getResponse().getStatus());
+        assertEquals(updatedEntity.getRemovedDate().toLocalDate(), LocalDate.now());
+        assertEquals(HttpStatus.SC_OK, result.getResponse().getStatus());
 
     }
 
@@ -413,12 +419,12 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(MOCK_REP_ID_1));
 
         existingFinancialAssessment = financialAssessmentRepository.save(getTestFinancialAssessment(MOCK_REP_ID));
-        existingFinancialAssessmentWithProgress = financialAssessmentRepository.save(getTestFinancialAssessment(MOCK_REP_ID_1));
+        existingFinancialAssessmentWithHrProgress = financialAssessmentRepository.save(getTestFinancialAssessment(MOCK_REP_ID_1));
         existingUnlinkedFinancialAssessment = financialAssessmentRepository.save(getTestFinancialAssessment(MOCK_REP_ID_2));
         existingHardshipReview = hardshipReviewRepository.save(
                 getTestHardshipReview(existingFinancialAssessment.getRepOrder().getId(), existingFinancialAssessment.getId()));
         existingHardshipReviewWithProgress = hardshipReviewRepository.save(
-                getTestHardshipReviewWithProgress(existingFinancialAssessmentWithProgress.getRepOrder().getId(), existingFinancialAssessmentWithProgress.getId()));
+                getTestHardshipReviewWithProgress(existingFinancialAssessmentWithHrProgress.getRepOrder().getId(), existingFinancialAssessmentWithHrProgress.getId()));
 
     }
 

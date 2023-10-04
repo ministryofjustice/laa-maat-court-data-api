@@ -36,7 +36,6 @@ public class HardshipReviewController {
 
     private final HardshipReviewService hardshipReviewService;
     private final HardshipReviewValidationProcessor validationProcessor;
-    private final MaatIdValidator maatIdValidator;
 
     @GetMapping(value = "/{hardshipId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a hardship review record")
@@ -137,17 +136,16 @@ public class HardshipReviewController {
         validationProcessor.validate(hardshipReview);
         return ResponseEntity.ok(hardshipReviewService.update(hardshipReview));
     }
-    @PutMapping(value = "/review-progress/repId/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Update hardship review progress for a repId")
+    @PutMapping(value = "/review-progress/hrId/{hrId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Update hardship review progress for a hardship review")
     @StandardApiResponseCodes
-    public ResponseEntity<Object> updateHardshipReviewProgress(@PathVariable int repId,
+    public ResponseEntity<Object> updateHardshipReviewProgress(@PathVariable int hrId,
                                                                @Parameter(description = "Used for tracing calls")
                                                                @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
         MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
         log.info("Update Hardship Review Progress Request Received");
-
-        maatIdValidator.validate(repId);
-        hardshipReviewService.updateHardshipReviewProgress(repId);
+        validationProcessor.validate(hrId);
+        hardshipReviewService.updateHardshipReviewProgress(hrId);
         return ResponseEntity.ok().build();
     }
 }

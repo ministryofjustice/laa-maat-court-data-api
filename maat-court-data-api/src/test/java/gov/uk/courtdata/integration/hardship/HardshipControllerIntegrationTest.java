@@ -262,7 +262,6 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     public void givenAValidRepId_whenUpdateHardshipReviewProgressIsInvoked_thenCorrectDataIsPersisted() throws Exception {
         var hrId = existingHardshipReviewWithProgress.getId();
-        System.out.println("hrId: "+hrId);
         HardshipReviewProgressEntity entity = hardshipReviewProgressRepository.findHardshipReviewProgressEntitiesByHrProgressId(hrId).get();
         assertEquals("Y", entity.getActive());
         MvcResult result =

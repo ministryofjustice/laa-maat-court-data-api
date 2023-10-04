@@ -15,5 +15,6 @@ public interface HardshipReviewProgressRepository extends JpaRepository<Hardship
     @Modifying
     @Query(value = "UPDATE TOGDATA.HARDSHIP_REVIEW_PROGRESS SET ACTIVE = null, REMOVED_DATE = :currDate WHERE HARE_ID = :hardshipReviewId AND ACTIVE = 'Y' AND nvl(DATE_MODIFIED, DATE_CREATED) < :currDate", nativeQuery = true)
     void updateHardshipReviewProgress(@Param("hardshipReviewId") Integer hardshipReviewId, @Param("currDate") LocalDateTime currDate);
+
     Optional<HardshipReviewProgressEntity> findHardshipReviewProgressEntitiesByHrProgressId(Integer hrId);
 }

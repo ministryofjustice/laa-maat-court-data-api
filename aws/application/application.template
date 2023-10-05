@@ -740,9 +740,7 @@ Resources:
       AccessLogSettings:
        DestinationArn: !GetAtt ApiGatewayCloudwatchLogGroup.Arn
        Format: >-
-        {"requestId":"$context.requestId","extendedRequestId":"$context.extendedRequestId","ip":"$context.identity.sourceIp",
-         "cognitoIdentityId":"$context.identity.cognitoIdentityId","cognitoIdentityPoolId":"$context.identity.cognitoIdentityPoolId",
-         "requestTime":"$context.requestTime","routeKey":"$context.routeKey","status":"$context.status"}
+        {"requestId":"$context.requestId","extendedRequestId":"$context.extendedRequestId","ip":"$context.identity.sourceIp","cognitoIdentityId":"$context.identity.cognitoIdentityId","cognitoIdentityPoolId":"$context.identity.cognitoIdentityPoolId","requestTime":"$context.requestTime","routeKey":"$context.routeKey","status":"$context.status"}
   ApiExternalDomainName:
     Type: 'AWS::ApiGatewayV2::DomainName'
     Properties:

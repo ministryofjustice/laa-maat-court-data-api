@@ -57,11 +57,11 @@ public class HardshipReviewImpl {
         existing.setReviewDate(hardshipReviewDTO.getReviewDate());
         existing.setNotes(hardshipReviewDTO.getNotes());
         existing.setDecisionNotes(hardshipReviewDTO.getDecisionNotes());
-        existing.setSolicitorRate(hardshipReviewDTO.getSolicitorCosts().getSolicitorRate());
-        existing.setSolicitorHours(hardshipReviewDTO.getSolicitorCosts().getSolicitorHours());
-        existing.setSolicitorVat(hardshipReviewDTO.getSolicitorCosts().getSolicitorVat());
-        existing.setSolicitorDisb(hardshipReviewDTO.getSolicitorCosts().getSolicitorDisb());
-        existing.setSolicitorEstTotalCost(hardshipReviewDTO.getSolicitorCosts().getSolicitorEstTotalCost());
+        existing.setSolicitorRate(hardshipReviewDTO.getSolicitorCosts().getRate());
+        existing.setSolicitorHours(hardshipReviewDTO.getSolicitorCosts().getHours());
+        existing.setSolicitorVat(hardshipReviewDTO.getSolicitorCosts().getVat());
+        existing.setSolicitorDisb(hardshipReviewDTO.getSolicitorCosts().getDisbursements());
+        existing.setSolicitorEstTotalCost(hardshipReviewDTO.getSolicitorCosts().getEstimatedTotal());
         existing.setDisposableIncome(hardshipReviewDTO.getDisposableIncome());
         existing.setDisposableIncomeAfterHardship(hardshipReviewDTO.getDisposableIncomeAfterHardship());
         existing.setStatus(hardshipReviewDTO.getStatus());

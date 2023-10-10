@@ -17,11 +17,11 @@ import java.util.List;
 )
 public interface HardshipReviewMapper {
 
-    @Mapping(target = "solicitorCosts.solicitorRate", source = "solicitorRate")
-    @Mapping(target = "solicitorCosts.solicitorHours", source = "solicitorHours")
-    @Mapping(target = "solicitorCosts.solicitorVat", source = "solicitorVat")
-    @Mapping(target = "solicitorCosts.solicitorDisb", source = "solicitorDisb")
-    @Mapping(target = "solicitorCosts.solicitorEstTotalCost", source = "solicitorEstTotalCost")
+    @Mapping(target = "solicitorCosts.rate", source = "solicitorRate")
+    @Mapping(target = "solicitorCosts.hours", source = "solicitorHours")
+    @Mapping(target = "solicitorCosts.vat", source = "solicitorVat")
+    @Mapping(target = "solicitorCosts.disbursements", source = "solicitorDisb")
+    @Mapping(target = "solicitorCosts.estimatedTotal", source = "solicitorEstTotalCost")
     HardshipReviewDTO hardshipReviewEntityToHardshipReviewDTO(final HardshipReviewEntity hardshipReview);
 
     HardshipReviewDetail hardshipReviewDetailEntityToHardshipReviewDetail(final HardshipReviewDetailEntity reviewDetailEntity);

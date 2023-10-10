@@ -144,11 +144,11 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                 .reviewDate(LocalDateTime.now())
                 .resultDate(LocalDateTime.now())
                 .solicitorCosts(SolicitorCosts.builder()
-                        .solicitorRate(DataBuilderUtil.createScaledBigDecimal(1.23))
-                        .solicitorHours(DataBuilderUtil.createScaledBigDecimal(12.00))
-                        .solicitorVat(DataBuilderUtil.createScaledBigDecimal(123.45))
-                        .solicitorDisb(DataBuilderUtil.createScaledBigDecimal(0.00))
-                        .solicitorEstTotalCost(DataBuilderUtil.createScaledBigDecimal(345.67)).build())
+                        .rate(DataBuilderUtil.createScaledBigDecimal(1.23))
+                        .hours(DataBuilderUtil.createScaledBigDecimal(12.00))
+                        .vat(DataBuilderUtil.createScaledBigDecimal(123.45))
+                        .disbursements(DataBuilderUtil.createScaledBigDecimal(0.00))
+                        .estimatedTotal(DataBuilderUtil.createScaledBigDecimal(345.67)).build())
                 .disposableIncome(DataBuilderUtil.createScaledBigDecimal(13000.00))
                 .disposableIncomeAfterHardship(DataBuilderUtil.createScaledBigDecimal(3000.00))
                 .status(HardshipReviewStatus.COMPLETE)
@@ -263,11 +263,11 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                 .reviewDate(LocalDateTime.now())
                 .resultDate(LocalDateTime.now())
                 .solicitorCosts(SolicitorCosts.builder()
-                        .solicitorRate(DataBuilderUtil.createScaledBigDecimal(1.23))
-                        .solicitorHours(DataBuilderUtil.createScaledBigDecimal(12.00))
-                        .solicitorVat(DataBuilderUtil.createScaledBigDecimal(123.45))
-                        .solicitorDisb(DataBuilderUtil.createScaledBigDecimal(0.00))
-                        .solicitorEstTotalCost(DataBuilderUtil.createScaledBigDecimal(345.67)).build())
+                        .rate(DataBuilderUtil.createScaledBigDecimal(1.23))
+                        .hours(DataBuilderUtil.createScaledBigDecimal(12.00))
+                        .vat(DataBuilderUtil.createScaledBigDecimal(123.45))
+                        .disbursements(DataBuilderUtil.createScaledBigDecimal(0.00))
+                        .estimatedTotal(DataBuilderUtil.createScaledBigDecimal(345.67)).build())
                 .disposableIncome(DataBuilderUtil.createScaledBigDecimal(13000.00))
                 .disposableIncomeAfterHardship(DataBuilderUtil.createScaledBigDecimal(3000.00))
                 .status(HardshipReviewStatus.COMPLETE)
@@ -335,11 +335,11 @@ public class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         assertThat(hardshipReviewEntity.getReviewDate()).isEqualTo(inputReviewData.getReviewDate());
         assertThat(hardshipReviewEntity.getResultDate()).isEqualTo(inputReviewData.getResultDate());
         assertThat(hardshipReviewEntity.getStatus()).isEqualTo(inputReviewData.getStatus());
-        assertThat(hardshipReviewEntity.getSolicitorDisb()).isEqualTo(inputReviewData.getSolicitorCosts().getSolicitorDisb());
-        assertThat(hardshipReviewEntity.getSolicitorEstTotalCost()).isEqualTo(inputReviewData.getSolicitorCosts().getSolicitorEstTotalCost());
-        assertThat(hardshipReviewEntity.getSolicitorHours()).isEqualTo(inputReviewData.getSolicitorCosts().getSolicitorHours());
-        assertThat(hardshipReviewEntity.getSolicitorRate()).isEqualTo(inputReviewData.getSolicitorCosts().getSolicitorRate());
-        assertThat(hardshipReviewEntity.getSolicitorVat()).isEqualTo(inputReviewData.getSolicitorCosts().getSolicitorVat());
+        assertThat(hardshipReviewEntity.getSolicitorDisb()).isEqualTo(inputReviewData.getSolicitorCosts().getDisbursements());
+        assertThat(hardshipReviewEntity.getSolicitorEstTotalCost()).isEqualTo(inputReviewData.getSolicitorCosts().getEstimatedTotal());
+        assertThat(hardshipReviewEntity.getSolicitorHours()).isEqualTo(inputReviewData.getSolicitorCosts().getHours());
+        assertThat(hardshipReviewEntity.getSolicitorRate()).isEqualTo(inputReviewData.getSolicitorCosts().getRate());
+        assertThat(hardshipReviewEntity.getSolicitorVat()).isEqualTo(inputReviewData.getSolicitorCosts().getVat());
         assertThat(hardshipReviewEntity.getReviewResult()).isEqualTo(inputReviewData.getReviewResult());
         assertThat(hardshipReviewEntity.getDisposableIncomeAfterHardship()).isEqualTo(inputReviewData.getDisposableIncomeAfterHardship());
         assertThat(hardshipReviewEntity.getDisposableIncome()).isEqualTo(inputReviewData.getDisposableIncome());

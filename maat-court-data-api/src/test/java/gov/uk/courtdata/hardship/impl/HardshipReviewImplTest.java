@@ -143,15 +143,15 @@ class HardshipReviewImplTest {
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getDecisionNotes())
                 .isEqualTo(hardshipReviewDTO.getDecisionNotes());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorRate())
-                .isEqualTo(hardshipReviewDTO.getSolicitorCosts().getSolicitorRate());
+                .isEqualTo(hardshipReviewDTO.getSolicitorCosts().getRate());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorHours())
-                .isEqualTo(hardshipReviewDTO.getSolicitorCosts().getSolicitorHours());
+                .isEqualTo(hardshipReviewDTO.getSolicitorCosts().getHours());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorVat())
-                .isEqualTo(hardshipReviewDTO.getSolicitorCosts().getSolicitorVat());
+                .isEqualTo(hardshipReviewDTO.getSolicitorCosts().getVat());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorDisb())
-                .isEqualTo(hardshipReviewDTO.getSolicitorCosts().getSolicitorDisb());
+                .isEqualTo(hardshipReviewDTO.getSolicitorCosts().getDisbursements());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorEstTotalCost())
-                .isEqualTo(hardshipReviewDTO.getSolicitorCosts().getSolicitorEstTotalCost());
+                .isEqualTo(hardshipReviewDTO.getSolicitorCosts().getEstimatedTotal());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getDisposableIncome())
                 .isEqualTo(hardshipReviewDTO.getDisposableIncome());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getDisposableIncomeAfterHardship())

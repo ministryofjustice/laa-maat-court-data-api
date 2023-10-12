@@ -30,6 +30,7 @@ public class HardshipReviewDetail {
     private HardshipReviewDetailCode detailCode;
     private HardshipReviewDetailReason detailReason;
     private LocalDateTime timestamp;
+    private String userCreated;
 
     @JsonIgnore()
     private LocalDateTime dateCreated;
@@ -41,8 +42,6 @@ public class HardshipReviewDetail {
     private String reasonResponse;
     @JsonIgnore
     private String userModified;
-    @JsonIgnore
-    private String userCreated;
     @JsonIgnore
     private Boolean active;
     @JsonIgnore

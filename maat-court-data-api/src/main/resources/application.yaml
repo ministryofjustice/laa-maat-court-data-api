@@ -7,6 +7,11 @@ spring:
 
   application:
     name: maat-cd-api
+  sleuth:
+    propagation:
+      type:
+        - b3
+        - w3c
 
   datasource:
     url: ${DATASOURCE_URL}

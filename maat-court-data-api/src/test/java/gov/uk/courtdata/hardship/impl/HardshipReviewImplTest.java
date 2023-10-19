@@ -94,14 +94,14 @@ class HardshipReviewImplTest {
         when(hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(any(HardshipReviewDTO.class)))
                 .thenReturn(TestEntityDataBuilder.getHardshipReviewEntityWithRelationships());
 
-        when(hardshipReviewDetailReasonRepository.getReferenceById(any(Integer.class)))
+        when(hardshipReviewDetailReasonRepository.getByReasonIs(any(String.class)))
                 .thenReturn(HardshipReviewDetailReasonEntity.builder()
-                        .id(MOCK_HARDSHIP_ID)
-                        .accepted("Y")
-                        .dateCreated(LocalDateTime.now())
-                        .userCreated("test-s")
-                        .detailType(HardshipReviewDetailType.INCOME)
-                        .build()
+                                    .id(MOCK_HARDSHIP_ID)
+                                    .accepted("Y")
+                                    .dateCreated(LocalDateTime.now())
+                                    .userCreated("test-s")
+                                    .detailType(HardshipReviewDetailType.INCOME)
+                                    .build()
                 );
 
         hardshipReviewImpl.create(hardshipReviewDTO);
@@ -120,11 +120,22 @@ class HardshipReviewImplTest {
         when(hardshipReviewMapper.hardshipReviewDetailToHardshipReviewDetailEntity(any(HardshipReviewDetail.class)))
                 .thenReturn(TestEntityDataBuilder.getHardshipReviewDetailsEntity());
 
-        when(hardshipReviewMapper.hardshipReviewProgressToHardshipReviewProgressEntity(any(HardshipReviewProgress.class)))
+        when(hardshipReviewMapper.hardshipReviewProgressToHardshipReviewProgressEntity(
+                any(HardshipReviewProgress.class)))
                 .thenReturn(TestEntityDataBuilder.getHardshipReviewProgressEntity());
 
         when(hardshipReviewMapper.newWorkReasonToNewWorkReasonEntity(any(NewWorkReason.class)))
                 .thenReturn(TestEntityDataBuilder.getNewWorkReasonEntity());
+
+        when(hardshipReviewDetailReasonRepository.getByReasonIs(any(String.class)))
+                .thenReturn(HardshipReviewDetailReasonEntity.builder()
+                                    .id(MOCK_HARDSHIP_ID)
+                                    .accepted("Y")
+                                    .dateCreated(LocalDateTime.now())
+                                    .userCreated("test-s")
+                                    .detailType(HardshipReviewDetailType.INCOME)
+                                    .build()
+                );
 
         hardshipReviewImpl.update(hardshipReviewDTO);
 

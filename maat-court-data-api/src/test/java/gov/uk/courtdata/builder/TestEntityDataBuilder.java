@@ -30,6 +30,8 @@ public class TestEntityDataBuilder {
     public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
     public static final String TEST_ASN_SEQ = "123";
 
+    public static final String TEST_DETAIL_REASON = "Evidence Supplied";
+
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder().id(REP_ID).build();
     }
@@ -323,6 +325,7 @@ public class TestEntityDataBuilder {
                 .detailReason(
                         HardshipReviewDetailReasonEntity.builder()
                                 .id(1000)
+                                .reason(TEST_DETAIL_REASON)
                                 .build()
                 )
                 .build();

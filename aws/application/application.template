@@ -705,6 +705,7 @@ Resources:
           - !Ref CognitoUserPoolClientCrimeEvidence
           - !Ref CognitoUserPoolCrimeHardshipService
           - !Ref CognitoUserPoolMAATOrchestrationService
+          - !Ref CognitoUserPoolClientCrimeValidationService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiAuthorizerForDces:
     Type: 'AWS::ApiGatewayV2::Authorizer'
@@ -901,6 +902,20 @@ Resources:
           PreventUserExistenceErrors: ENABLED
           ExplicitAuthFlows:
             - 'ALLOW_REFRESH_TOKEN_AUTH'
+  CognitoUserPoolClientCrimeValidationService:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: CognitoUserPoolResourceServer1
+    Properties:
+      ClientName: "Crime Validation Service"
+      UserPoolId: !Ref CognitoUserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      GenerateSecret: true
+      SupportedIdentityProviders: [ COGNITO ]
+      AllowedOAuthFlows: [ client_credentials ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
+      PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - 'ALLOW_REFRESH_TOKEN_AUTH'
   CognitoUserPoolMAATOrchestrationService:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1

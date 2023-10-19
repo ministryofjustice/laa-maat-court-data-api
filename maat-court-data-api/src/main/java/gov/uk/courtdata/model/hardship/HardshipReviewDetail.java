@@ -28,7 +28,7 @@ public class HardshipReviewDetail {
     private String reasonNote;
     private HardshipReviewDetailType detailType;
     private HardshipReviewDetailCode detailCode;
-    private HardshipReviewDetailReason detailReason;
+    private String detailReason;
     private LocalDateTime timestamp;
     private String userCreated;
 

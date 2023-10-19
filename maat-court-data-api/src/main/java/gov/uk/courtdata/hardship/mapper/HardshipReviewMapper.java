@@ -1,12 +1,16 @@
 package gov.uk.courtdata.hardship.mapper;
 
 import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
+import gov.uk.courtdata.entity.HardshipReviewEntity;
+import gov.uk.courtdata.entity.HardshipReviewProgressEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
 import gov.uk.courtdata.model.NewWorkReason;
-import gov.uk.courtdata.model.hardship.*;
+import gov.uk.courtdata.model.hardship.CreateHardshipReview;
+import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
+import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
+import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import org.mapstruct.*;
-
-import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -24,8 +28,10 @@ public interface HardshipReviewMapper {
     @Mapping(target = "solicitorCosts.estimatedTotal", source = "solicitorEstTotalCost")
     HardshipReviewDTO hardshipReviewEntityToHardshipReviewDTO(final HardshipReviewEntity hardshipReview);
 
+    @Mapping(source = "detailReason.reason", target = "detailReason")
     HardshipReviewDetail hardshipReviewDetailEntityToHardshipReviewDetail(final HardshipReviewDetailEntity reviewDetailEntity);
 
+    @Mapping(source = "detailReason", target = "detailReason.reason")
     HardshipReviewDetailEntity hardshipReviewDetailToHardshipReviewDetailEntity(final HardshipReviewDetail reviewDetail);
 
     HardshipReviewProgress hardshipReviewProgressEntityToHardshipReviewProgress(final HardshipReviewProgressEntity reviewProgressEntity);
@@ -35,8 +41,6 @@ public interface HardshipReviewMapper {
     NewWorkReason newWorkReasonEntityToNewWorkReason(final NewWorkReasonEntity newWorkReason);
 
     NewWorkReasonEntity newWorkReasonToNewWorkReasonEntity(final NewWorkReason newWorkReason);
-
-    HardshipReviewDetailReason hardshipReviewDetailReasonEntityToHardshipReviewDetailReason(final HardshipReviewDetailReasonEntity detailReasonEntity);
 
     @Mapping(target = "newWorkReason.code", source = "nworCode")
     HardshipReviewDTO createHardshipReviewToHardshipReviewDTO(final CreateHardshipReview hardshipReview);

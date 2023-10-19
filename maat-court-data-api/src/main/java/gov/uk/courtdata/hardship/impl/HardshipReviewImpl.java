@@ -38,10 +38,11 @@ public class HardshipReviewImpl {
     }
 
     public HardshipReviewEntity create(final HardshipReviewDTO hardshipReviewDTO) {
-        HardshipReviewEntity hardshipReview = hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
+        HardshipReviewEntity hardshipReview =
+                hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
         hardshipReview.getReviewDetails().forEach(
                 detail -> detail.setDetailReason(
-                        hardshipReviewDetailReasonRepository.getReferenceById(detail.getDetailReason().getId())
+                        hardshipReviewDetailReasonRepository.getByReasonIs(detail.getDetailReason().getReason())
                 )
         );
         return hardshipReviewRepository.saveAndFlush(hardshipReview);
@@ -66,14 +67,19 @@ public class HardshipReviewImpl {
         existing.setDisposableIncomeAfterHardship(hardshipReviewDTO.getDisposableIncomeAfterHardship());
         existing.setStatus(hardshipReviewDTO.getStatus());
         existing.setUserModified(hardshipReviewDTO.getUserModified());
-        existing.setNewWorkReason(hardshipReviewMapper.newWorkReasonToNewWorkReasonEntity(hardshipReviewDTO.getNewWorkReason()));
+        existing.setNewWorkReason(
+                hardshipReviewMapper.newWorkReasonToNewWorkReasonEntity(hardshipReviewDTO.getNewWorkReason()));
 
         List<HardshipReviewDetail> detailItems = hardshipReviewDTO.getReviewDetails();
         existing.getReviewDetails().clear();
         if (!detailItems.isEmpty()) {
             detailItems.forEach(
                     detail -> {
-                        HardshipReviewDetailEntity reviewDetailEntity = hardshipReviewMapper.hardshipReviewDetailToHardshipReviewDetailEntity(detail);
+                        HardshipReviewDetailEntity reviewDetailEntity =
+                                hardshipReviewMapper.hardshipReviewDetailToHardshipReviewDetailEntity(detail);
+                        reviewDetailEntity.setDetailReason(
+                                hardshipReviewDetailReasonRepository.getByReasonIs(detail.getDetailReason())
+                        );
                         existing.addReviewDetail(reviewDetailEntity);
                     }
             );
@@ -84,7 +90,8 @@ public class HardshipReviewImpl {
         if (!progressItems.isEmpty()) {
             progressItems.forEach(
                     progress -> {
-                        HardshipReviewProgressEntity reviewProgressEntity = hardshipReviewMapper.hardshipReviewProgressToHardshipReviewProgressEntity(progress);
+                        HardshipReviewProgressEntity reviewProgressEntity =
+                                hardshipReviewMapper.hardshipReviewProgressToHardshipReviewProgressEntity(progress);
                         existing.addReviewProgressItem(reviewProgressEntity);
                     }
             );

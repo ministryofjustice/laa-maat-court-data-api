@@ -28,15 +28,26 @@ public interface HardshipReviewMapper {
     @Mapping(target = "solicitorCosts.estimatedTotal", source = "solicitorEstTotalCost")
     HardshipReviewDTO hardshipReviewEntityToHardshipReviewDTO(final HardshipReviewEntity hardshipReview);
 
-    @Mapping(source = "detailReason.reason", target = "detailReason")
-    HardshipReviewDetail hardshipReviewDetailEntityToHardshipReviewDetail(final HardshipReviewDetailEntity reviewDetailEntity);
+    @Mapping(target = "detailReason",
+            expression = "java(HardshipReviewDetailReason.getFrom(reviewDetailEntity.getDetailReason().getReason()))"
+    )
+    HardshipReviewDetail hardshipReviewDetailEntityToHardshipReviewDetail(
+            final HardshipReviewDetailEntity reviewDetailEntity
+    );
 
-    @Mapping(source = "detailReason", target = "detailReason.reason")
-    HardshipReviewDetailEntity hardshipReviewDetailToHardshipReviewDetailEntity(final HardshipReviewDetail reviewDetail);
+    @Mapping(target = "detailReason.reason",
+            expression = "java(hardshipReviewDetailReason.getReason())"
+    )
+    HardshipReviewDetailEntity hardshipReviewDetailToHardshipReviewDetailEntity(
+            final HardshipReviewDetail reviewDetail);
 
-    HardshipReviewProgress hardshipReviewProgressEntityToHardshipReviewProgress(final HardshipReviewProgressEntity reviewProgressEntity);
+    HardshipReviewProgress hardshipReviewProgressEntityToHardshipReviewProgress(
+            final HardshipReviewProgressEntity reviewProgressEntity
+    );
 
-    HardshipReviewProgressEntity hardshipReviewProgressToHardshipReviewProgressEntity(final HardshipReviewProgress reviewProgress);
+    HardshipReviewProgressEntity hardshipReviewProgressToHardshipReviewProgressEntity(
+            final HardshipReviewProgress reviewProgress
+    );
 
     NewWorkReason newWorkReasonEntityToNewWorkReason(final NewWorkReasonEntity newWorkReason);
 

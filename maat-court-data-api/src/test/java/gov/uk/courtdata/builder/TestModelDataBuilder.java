@@ -774,7 +774,7 @@ public class TestModelDataBuilder {
                 .amount(BigDecimal.valueOf(107.84))
                 .accepted("Y")
                 .reasonResponse("evidence provided")
-                .detailReason("Evidence Supplied")
+                .detailReason(HardshipReviewDetailReason.EVIDENCE_SUPPLIED)
                 .active(false)
                 .build();
     }

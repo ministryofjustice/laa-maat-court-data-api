@@ -9,6 +9,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.Frequency;
+import gov.uk.courtdata.enums.HardshipReviewDetailReason;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.enums.HardshipReviewStatus;
 import gov.uk.courtdata.integration.MockCdaWebConfig;
@@ -383,7 +384,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
             assertThat(persistedReviewDetails.getAccepted()).isEqualTo(expectedReviewDetails.getAccepted());
             assertThat(persistedReviewDetails.getActive()).isEqualTo(expectedReviewDetails.getActive() ? YES : NO);
             assertThat(persistedReviewDetails.getDetailReason().getReason()).isEqualTo(
-                    expectedReviewDetails.getDetailReason());
+                    expectedReviewDetails.getDetailReason().getReason());
         }
     }
 
@@ -406,7 +407,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         existingHardshipReviewDetailReason = hardshipReviewDetailReasonRepository.save(
                 HardshipReviewDetailReasonEntity.builder()
                         .id(1)
-                        .reason("test-reason")
+                        .reason(HardshipReviewDetailReason.ESSENTIAL_ITEM.getReason())
                         .detailType(HardshipReviewDetailType.EXPENDITURE)
                         .userCreated(TEST_USER).build());
 
@@ -453,7 +454,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     private HardshipReviewDetail getTestHardshipReviewDetail(Integer id, LocalDateTime dateModified,
-                                                             String detailReason) {
+                                                             HardshipReviewDetailReason detailReason) {
         HardshipReviewDetail reviewDetail = TestModelDataBuilder.getHardshipReviewDetail();
 
         reviewDetail.setId(id);
@@ -466,8 +467,8 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         return reviewDetail;
     }
 
-    private String getTestHardshipReviewDetailReason() {
-        return existingHardshipReviewDetailReason.getReason();
+    private HardshipReviewDetailReason getTestHardshipReviewDetailReason() {
+        return HardshipReviewDetailReason.getFrom(existingHardshipReviewDetailReason.getReason());
     }
 
     private FinancialAssessmentEntity getTestFinancialAssessment(Integer repId) {

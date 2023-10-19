@@ -78,7 +78,7 @@ public class HardshipReviewImpl {
                         HardshipReviewDetailEntity reviewDetailEntity =
                                 hardshipReviewMapper.hardshipReviewDetailToHardshipReviewDetailEntity(detail);
                         reviewDetailEntity.setDetailReason(
-                                hardshipReviewDetailReasonRepository.getByReasonIs(detail.getDetailReason())
+                                hardshipReviewDetailReasonRepository.getByReasonIs(detail.getDetailReason().getReason())
                         );
                         existing.addReviewDetail(reviewDetailEntity);
                     }

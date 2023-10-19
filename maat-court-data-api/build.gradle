@@ -15,6 +15,7 @@ def versions = [
         sentryVersion                 : '5.0.1',
         springdocVersion              : '1.6.6',
         springCloudAwsMessagingVersion: '2.4.1',
+        springCloudSleuthVersion      : '3.1.9',
         amazonSQSVersion              : '1.0.8',
         ojdbc8Version                 : '19.7.0.0',
         gsonVersion                   : '2.8.6',
@@ -85,6 +86,7 @@ dependencies {
 
     implementation 'io.awspring.cloud:spring-cloud-starter-aws-messaging:2.4.1'
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.1'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-sleuth', version: versions.springCloudSleuthVersion
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springdocVersion
 

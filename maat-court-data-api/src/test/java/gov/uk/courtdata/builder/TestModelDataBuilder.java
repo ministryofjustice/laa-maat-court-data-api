@@ -7,7 +7,6 @@ import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
-import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
@@ -1339,18 +1338,6 @@ public class TestModelDataBuilder {
         return CorrespondenceStateEntity.builder()
                 .repId(repId)
                 .status(status)
-                .build();
-    }
-
-    public static ContributionFilesEntity getContributionFile(String xmlContent, String fileName, LocalDate dateCreated){
-
-        return ContributionFilesEntity.builder()
-                .xmlContent(xmlContent)
-                .dateCreated(dateCreated)
-                .userCreated("test-f")
-                .dateReceived(LocalDate.now())
-                .dateSent(LocalDate.now())
-        //        .upliftApplied(fileName)
                 .build();
     }
 }

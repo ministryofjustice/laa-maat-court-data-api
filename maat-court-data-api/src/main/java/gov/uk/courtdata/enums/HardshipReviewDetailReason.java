@@ -1,6 +1,7 @@
 package gov.uk.courtdata.enums;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -10,7 +11,6 @@ import java.util.stream.Stream;
 @Getter
 @AllArgsConstructor
 public enum HardshipReviewDetailReason {
-
 
     EVIDENCE_SUPPLIED("Evidence Supplied", HardshipReviewDetailType.EXPENDITURE.getType()),
     ESSENTIAL_NEED_FOR_WORK("Essential - need for work", HardshipReviewDetailType.EXPENDITURE.getType()),
@@ -25,6 +25,7 @@ public enum HardshipReviewDetailReason {
     ),
     NOT_IN_COMPUTATION_PERIOD("Not in computation period", HardshipReviewDetailType.EXPENDITURE.getType());
 
+    @JsonValue
     @JsonPropertyDescription("Hardship review detail reasons")
     private final String reason;
     private final String type;

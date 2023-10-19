@@ -1,10 +1,8 @@
 package gov.uk.courtdata.hardship.mapper;
 
 import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
-import gov.uk.courtdata.entity.HardshipReviewEntity;
-import gov.uk.courtdata.entity.HardshipReviewProgressEntity;
-import gov.uk.courtdata.entity.NewWorkReasonEntity;
+import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.enums.HardshipReviewDetailReason;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
@@ -28,9 +26,7 @@ public interface HardshipReviewMapper {
     @Mapping(target = "solicitorCosts.estimatedTotal", source = "solicitorEstTotalCost")
     HardshipReviewDTO hardshipReviewEntityToHardshipReviewDTO(final HardshipReviewEntity hardshipReview);
 
-    @Mapping(target = "detailReason",
-            expression = "java(HardshipReviewDetailReason.getFrom(reviewDetailEntity.getDetailReason().getReason()))"
-    )
+    @Mapping(source = "detailReason", target = "detailReason", qualifiedByName = "mapReasonToReviewDetailReasonEnum")
     HardshipReviewDetail hardshipReviewDetailEntityToHardshipReviewDetail(
             final HardshipReviewDetailEntity reviewDetailEntity
     );
@@ -61,4 +57,14 @@ public interface HardshipReviewMapper {
 
     @InheritInverseConfiguration
     HardshipReviewEntity hardshipReviewDTOToHardshipReviewEntity(final HardshipReviewDTO hardshipReviewDTO);
+
+    @Named("mapReasonToReviewDetailReasonEnum")
+    default HardshipReviewDetailReason mapReasonToReviewDetailReasonEnum(
+            HardshipReviewDetailReasonEntity detailReason) {
+        if (detailReason != null) {
+            return HardshipReviewDetailReason.getFrom(detailReason.getReason());
+        } else {
+            return null;
+        }
+    }
 }

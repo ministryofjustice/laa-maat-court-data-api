@@ -1,6 +1,7 @@
 package gov.uk.courtdata.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonValue;
 import gov.uk.courtdata.converter.AbstractEnumConverter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public enum HardshipReviewProgressAction implements PersistableEnum<String> {
     REJECTED_APP("REJECTED APP", "Rejected application"),
     OTHER("OTHER", "Other");
 
+    @JsonValue
     private String action;
     private String description;
 

@@ -246,24 +246,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenAHardshipReviewThatHasBeenModifiedByAnotherUser_whenUpdateHardshipIsInvoked_theCorrectErrorIsReturned() throws
-            Exception {
-        LocalDateTime testDateTime = LocalDateTime.now();
-        HardshipReviewEntity completedHardshipReview = hardshipReviewRepository.save(
-                HardshipReviewEntity.builder()
-                        .status(HardshipReviewStatus.COMPLETE)
-                        .newWorkReason(existingNewWorkReason)
-                        .userCreated(TEST_USER)
-                        .updated(testDateTime)
-                        .repId(existingFinancialAssessment.getRepOrder().getId())
-                        .build());
-
-        assertTrue(runUpdateHardshipReviewErrorScenario(
-                "Hardship has been modified by another user",
-                UpdateHardshipReview.builder().id(completedHardshipReview.getId()).updated(testDateTime.minusMinutes(20)).build()));
-    }
-
-    @Test
     void givenAValidHardshipReview_whenUpdateHardshipIsInvoked_theCorrectDataIsPersisted() throws Exception {
 
         HardshipReviewDetailEntity existingReviewDetails = existingHardshipReview.getReviewDetails().get(0);

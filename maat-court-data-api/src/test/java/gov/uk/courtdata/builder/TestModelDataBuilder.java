@@ -655,11 +655,12 @@ public class TestModelDataBuilder {
                     "   \"frequency\": \"MONTHLY\",\n" +
                     "   \"amount\": 107.84,\n" +
                     "   \"accepted\": \"Y\",\n" +
-                    "   \"type\": \"EXPENDITURE\"\n" +
+                    "   \"type\": \"EXPENDITURE\",\n" +
+                    "   \"detailReason\": \"Evidence Supplied\"\n" +
                     "}],\n" +
                     "\"reviewProgressItems\": [{\n" +
-                    "   \"progressAction\": \"ADDITIONAL_EVIDENCE\",\n" +
-                    "   \"progressResponse\": \"FURTHER_RECEIVED\"\n" +
+                    "   \"progressAction\": \"ADDITIONAL EVIDENCE\",\n" +
+                    "   \"progressResponse\": \"FURTHER RECEIVED\"\n" +
                     "}]\n";
         }
 
@@ -697,11 +698,12 @@ public class TestModelDataBuilder {
                     "   \"frequency\": \"MONTHLY\",\n" +
                     "   \"amount\": 107.84,\n" +
                     "   \"accepted\": \"Y\",\n" +
-                    "   \"type\": \"EXPENDITURE\"\n" +
+                    "   \"type\": \"EXPENDITURE\",\n" +
+                    "   \"detailReason\": \"Evidence Supplied\"\n" +
                     "}],\n" +
                     "\"reviewProgressItems\": [{\n" +
-                    "   \"progressAction\": \"ADDITIONAL_EVIDENCE\",\n" +
-                    "   \"progressResponse\": \"FURTHER_RECEIVED\"\n" +
+                    "   \"progressAction\": \"ADDITIONAL EVIDENCE\",\n" +
+                    "   \"progressResponse\": \"FURTHER RECEIVED\"\n" +
                     "}]\n";
         }
 

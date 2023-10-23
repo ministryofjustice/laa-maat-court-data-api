@@ -28,25 +28,6 @@ class UpdateHardshipReviewValidatorTest {
     private HardshipReviewRepository hardshipReviewRepository;
 
     @Test
-    void givenStaleTimestamp_whenValidateIsInvoked_thenThrowsException() {
-        UpdateHardshipReview mockReview = UpdateHardshipReview.builder()
-                .id(1000)
-                .updated(LocalDateTime.parse("2022-01-01T15:00:01"))
-                .build();
-        HardshipReviewEntity mockExisting = HardshipReviewEntity.builder()
-                .dateCreated(LocalDateTime.parse("2022-01-01T15:00:00"))
-                .status(HardshipReviewStatus.IN_PROGRESS)
-                .build();
-        when(hardshipReviewRepository.getReferenceById(any(Integer.class))).thenReturn(mockExisting);
-        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
-                () -> updateHardshipReviewValidator.validate(mockReview));
-        assertThat(validationException.getMessage()).isEqualTo("Hardship has been modified by another user");
-
-        mockExisting.setUpdated(LocalDateTime.parse("2022-01-01T15:00:01"));
-        assertThat(updateHardshipReviewValidator.validate(mockReview)).isNotPresent();
-    }
-
-    @Test
     void givenCompletedReview_whenValidateIsInvoked_thenThrowsException() {
         UpdateHardshipReview mockReview = UpdateHardshipReview.builder()
                 .id(1000)

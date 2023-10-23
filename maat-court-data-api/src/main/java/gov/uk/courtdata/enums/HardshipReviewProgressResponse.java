@@ -18,8 +18,8 @@ public enum HardshipReviewProgressResponse implements PersistableEnum<String> {
     ADDITIONAL_PROVIDED("ADDITIONAL PROVIDED", "Additional evidence provided");
 
     @JsonValue
-    private String response;
-    private String description;
+    private final String response;
+    private final String description;
 
     @Override
     public String getValue() {

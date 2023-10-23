@@ -14,16 +14,16 @@ import javax.persistence.Converter;
 public enum HardshipReviewProgressAction implements PersistableEnum<String> {
 
     FURTHER_INFO("FURTHER INFO", "Further Information requested"),
-    ORIG_APP_REQUESTED("ORIG APP REQUESTED", "Original Appliction Requested"),
-    ORIG_APP_RETURNED("ORIG APP RETURNED", "Original Application returned to HMCS"),
+    ORIG_APP_REQUESTED("ORIG APP REQUESTED", "Original Application Requested"),
+    ORIG_APP_RETURNED("ORIG APP RETURNED", "Original Application returned to HMCTS"),
     SOLICITOR_INFORMED("SOLICITOR INFORMED", "Solicitor Informed"),
     ADDITIONAL_EVIDENCE("ADDITIONAL EVIDENCE", "Additional Evidence Requested"),
     REJECTED_APP("REJECTED APP", "Rejected application"),
     OTHER("OTHER", "Other");
 
     @JsonValue
-    private String action;
-    private String description;
+    private final String action;
+    private final String description;
 
     @Override
     public String getValue() {

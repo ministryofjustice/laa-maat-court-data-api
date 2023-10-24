@@ -7,7 +7,6 @@ import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
-import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
@@ -607,11 +606,11 @@ public class TestModelDataBuilder {
                 .reviewResult("FAIL")
                 .solicitorCosts(
                         SolicitorCosts.builder()
-                                .solicitorRate(DataBuilderUtil.createScaledBigDecimal(183.00))
-                                .solicitorHours(DataBuilderUtil.createScaledBigDecimal(12.00))
-                                .solicitorVat(DataBuilderUtil.createScaledBigDecimal(384.25))
-                                .solicitorDisb(DataBuilderUtil.createScaledBigDecimal(0.00))
-                                .solicitorEstTotalCost(DataBuilderUtil.createScaledBigDecimal(2580.25))
+                                .rate(DataBuilderUtil.createScaledBigDecimal(183.00))
+                                .hours(DataBuilderUtil.createScaledBigDecimal(12.00))
+                                .vat(DataBuilderUtil.createScaledBigDecimal(384.25))
+                                .disbursements(DataBuilderUtil.createScaledBigDecimal(0.00))
+                                .estimatedTotal(DataBuilderUtil.createScaledBigDecimal(2580.25))
                                 .build()
                 )
                 .disposableIncome(DataBuilderUtil.createScaledBigDecimal(4215.46))
@@ -656,11 +655,12 @@ public class TestModelDataBuilder {
                     "   \"frequency\": \"MONTHLY\",\n" +
                     "   \"amount\": 107.84,\n" +
                     "   \"accepted\": \"Y\",\n" +
-                    "   \"type\": \"EXPENDITURE\"\n" +
+                    "   \"type\": \"EXPENDITURE\",\n" +
+                    "   \"detailReason\": \"Evidence Supplied\"\n" +
                     "}],\n" +
                     "\"reviewProgressItems\": [{\n" +
-                    "   \"progressAction\": \"ADDITIONAL_EVIDENCE\",\n" +
-                    "   \"progressResponse\": \"FURTHER_RECEIVED\"\n" +
+                    "   \"progressAction\": \"ADDITIONAL EVIDENCE\",\n" +
+                    "   \"progressResponse\": \"FURTHER RECEIVED\"\n" +
                     "}]\n";
         }
 
@@ -698,11 +698,12 @@ public class TestModelDataBuilder {
                     "   \"frequency\": \"MONTHLY\",\n" +
                     "   \"amount\": 107.84,\n" +
                     "   \"accepted\": \"Y\",\n" +
-                    "   \"type\": \"EXPENDITURE\"\n" +
+                    "   \"type\": \"EXPENDITURE\",\n" +
+                    "   \"detailReason\": \"Evidence Supplied\"\n" +
                     "}],\n" +
                     "\"reviewProgressItems\": [{\n" +
-                    "   \"progressAction\": \"ADDITIONAL_EVIDENCE\",\n" +
-                    "   \"progressResponse\": \"FURTHER_RECEIVED\"\n" +
+                    "   \"progressAction\": \"ADDITIONAL EVIDENCE\",\n" +
+                    "   \"progressResponse\": \"FURTHER RECEIVED\"\n" +
                     "}]\n";
         }
 
@@ -774,6 +775,7 @@ public class TestModelDataBuilder {
                 .amount(BigDecimal.valueOf(107.84))
                 .accepted("Y")
                 .reasonResponse("evidence provided")
+                .detailReason(HardshipReviewDetailReason.EVIDENCE_SUPPLIED)
                 .active(false)
                 .build();
     }
@@ -1338,18 +1340,6 @@ public class TestModelDataBuilder {
         return CorrespondenceStateEntity.builder()
                 .repId(repId)
                 .status(status)
-                .build();
-    }
-
-    public static ContributionFilesEntity getContributionFile(String xmlContent, String fileName, LocalDate dateCreated){
-
-        return ContributionFilesEntity.builder()
-                .xmlContent(xmlContent)
-                .dateCreated(dateCreated)
-                .userCreated("test-f")
-                .dateReceived(LocalDate.now())
-                .dateSent(LocalDate.now())
-        //        .upliftApplied(fileName)
                 .build();
     }
 }

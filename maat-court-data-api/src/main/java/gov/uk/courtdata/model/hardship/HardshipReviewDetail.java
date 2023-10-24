@@ -3,6 +3,7 @@ package gov.uk.courtdata.model.hardship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
+import gov.uk.courtdata.enums.HardshipReviewDetailReason;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,7 @@ public class HardshipReviewDetail {
     private HardshipReviewDetailCode detailCode;
     private HardshipReviewDetailReason detailReason;
     private LocalDateTime timestamp;
+    private String userCreated;
 
     @JsonIgnore()
     private LocalDateTime dateCreated;
@@ -41,8 +43,6 @@ public class HardshipReviewDetail {
     private String reasonResponse;
     @JsonIgnore
     private String userModified;
-    @JsonIgnore
-    private String userCreated;
     @JsonIgnore
     private Boolean active;
     @JsonIgnore

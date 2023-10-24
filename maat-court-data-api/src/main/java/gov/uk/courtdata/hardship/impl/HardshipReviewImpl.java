@@ -5,6 +5,7 @@ import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.entity.HardshipReviewProgressEntity;
+import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
@@ -38,12 +39,14 @@ public class HardshipReviewImpl {
     }
 
     public HardshipReviewEntity create(final HardshipReviewDTO hardshipReviewDTO) {
-        HardshipReviewEntity hardshipReview = hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
-        hardshipReview.getReviewDetails().forEach(
-                detail -> detail.setDetailReason(
-                        hardshipReviewDetailReasonRepository.getReferenceById(detail.getDetailReason().getId())
-                )
-        );
+        HardshipReviewEntity hardshipReview =
+                hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
+        hardshipReview.getReviewDetails().stream()
+                .filter(detailEntity -> detailEntity.getDetailType().equals(HardshipReviewDetailType.EXPENDITURE))
+                .forEach(detail -> detail.setDetailReason(
+                                 hardshipReviewDetailReasonRepository.getByReasonIs(detail.getDetailReason().getReason())
+                         )
+                );
         return hardshipReviewRepository.saveAndFlush(hardshipReview);
     }
 
@@ -57,23 +60,32 @@ public class HardshipReviewImpl {
         existing.setReviewDate(hardshipReviewDTO.getReviewDate());
         existing.setNotes(hardshipReviewDTO.getNotes());
         existing.setDecisionNotes(hardshipReviewDTO.getDecisionNotes());
-        existing.setSolicitorRate(hardshipReviewDTO.getSolicitorCosts().getSolicitorRate());
-        existing.setSolicitorHours(hardshipReviewDTO.getSolicitorCosts().getSolicitorHours());
-        existing.setSolicitorVat(hardshipReviewDTO.getSolicitorCosts().getSolicitorVat());
-        existing.setSolicitorDisb(hardshipReviewDTO.getSolicitorCosts().getSolicitorDisb());
-        existing.setSolicitorEstTotalCost(hardshipReviewDTO.getSolicitorCosts().getSolicitorEstTotalCost());
+        existing.setSolicitorRate(hardshipReviewDTO.getSolicitorCosts().getRate());
+        existing.setSolicitorHours(hardshipReviewDTO.getSolicitorCosts().getHours());
+        existing.setSolicitorVat(hardshipReviewDTO.getSolicitorCosts().getVat());
+        existing.setSolicitorDisb(hardshipReviewDTO.getSolicitorCosts().getDisbursements());
+        existing.setSolicitorEstTotalCost(hardshipReviewDTO.getSolicitorCosts().getEstimatedTotal());
         existing.setDisposableIncome(hardshipReviewDTO.getDisposableIncome());
         existing.setDisposableIncomeAfterHardship(hardshipReviewDTO.getDisposableIncomeAfterHardship());
         existing.setStatus(hardshipReviewDTO.getStatus());
         existing.setUserModified(hardshipReviewDTO.getUserModified());
-        existing.setNewWorkReason(hardshipReviewMapper.newWorkReasonToNewWorkReasonEntity(hardshipReviewDTO.getNewWorkReason()));
+        existing.setNewWorkReason(
+                hardshipReviewMapper.newWorkReasonToNewWorkReasonEntity(hardshipReviewDTO.getNewWorkReason()));
 
         List<HardshipReviewDetail> detailItems = hardshipReviewDTO.getReviewDetails();
         existing.getReviewDetails().clear();
         if (!detailItems.isEmpty()) {
             detailItems.forEach(
                     detail -> {
-                        HardshipReviewDetailEntity reviewDetailEntity = hardshipReviewMapper.hardshipReviewDetailToHardshipReviewDetailEntity(detail);
+                        HardshipReviewDetailEntity reviewDetailEntity =
+                                hardshipReviewMapper.hardshipReviewDetailToHardshipReviewDetailEntity(detail);
+                        if (detail.getDetailReason() != null) {
+                            reviewDetailEntity.setDetailReason(
+                                    hardshipReviewDetailReasonRepository.getByReasonIs(
+                                            detail.getDetailReason().getReason()
+                                    )
+                            );
+                        }
                         existing.addReviewDetail(reviewDetailEntity);
                     }
             );
@@ -84,7 +96,8 @@ public class HardshipReviewImpl {
         if (!progressItems.isEmpty()) {
             progressItems.forEach(
                     progress -> {
-                        HardshipReviewProgressEntity reviewProgressEntity = hardshipReviewMapper.hardshipReviewProgressToHardshipReviewProgressEntity(progress);
+                        HardshipReviewProgressEntity reviewProgressEntity =
+                                hardshipReviewMapper.hardshipReviewProgressToHardshipReviewProgressEntity(progress);
                         existing.addReviewProgressItem(reviewProgressEntity);
                     }
             );

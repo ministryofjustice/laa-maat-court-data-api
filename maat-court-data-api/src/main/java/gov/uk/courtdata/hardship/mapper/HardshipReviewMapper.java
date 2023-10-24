@@ -2,11 +2,13 @@ package gov.uk.courtdata.hardship.mapper;
 
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.enums.HardshipReviewDetailReason;
 import gov.uk.courtdata.model.NewWorkReason;
-import gov.uk.courtdata.model.hardship.*;
+import gov.uk.courtdata.model.hardship.CreateHardshipReview;
+import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
+import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
+import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import org.mapstruct.*;
-
-import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -17,26 +19,35 @@ import java.util.List;
 )
 public interface HardshipReviewMapper {
 
-    @Mapping(target = "solicitorCosts.solicitorRate", source = "solicitorRate")
-    @Mapping(target = "solicitorCosts.solicitorHours", source = "solicitorHours")
-    @Mapping(target = "solicitorCosts.solicitorVat", source = "solicitorVat")
-    @Mapping(target = "solicitorCosts.solicitorDisb", source = "solicitorDisb")
-    @Mapping(target = "solicitorCosts.solicitorEstTotalCost", source = "solicitorEstTotalCost")
+    @Mapping(target = "solicitorCosts.rate", source = "solicitorRate")
+    @Mapping(target = "solicitorCosts.hours", source = "solicitorHours")
+    @Mapping(target = "solicitorCosts.vat", source = "solicitorVat")
+    @Mapping(target = "solicitorCosts.disbursements", source = "solicitorDisb")
+    @Mapping(target = "solicitorCosts.estimatedTotal", source = "solicitorEstTotalCost")
     HardshipReviewDTO hardshipReviewEntityToHardshipReviewDTO(final HardshipReviewEntity hardshipReview);
 
-    HardshipReviewDetail hardshipReviewDetailEntityToHardshipReviewDetail(final HardshipReviewDetailEntity reviewDetailEntity);
+    @Mapping(source = "detailReason", target = "detailReason", qualifiedByName = "mapReasonToReviewDetailReasonEnum")
+    HardshipReviewDetail hardshipReviewDetailEntityToHardshipReviewDetail(
+            final HardshipReviewDetailEntity reviewDetailEntity
+    );
 
-    HardshipReviewDetailEntity hardshipReviewDetailToHardshipReviewDetailEntity(final HardshipReviewDetail reviewDetail);
+    @Mapping(target = "detailReason.reason",
+            expression = "java(hardshipReviewDetailReason.getReason())"
+    )
+    HardshipReviewDetailEntity hardshipReviewDetailToHardshipReviewDetailEntity(
+            final HardshipReviewDetail reviewDetail);
 
-    HardshipReviewProgress hardshipReviewProgressEntityToHardshipReviewProgress(final HardshipReviewProgressEntity reviewProgressEntity);
+    HardshipReviewProgress hardshipReviewProgressEntityToHardshipReviewProgress(
+            final HardshipReviewProgressEntity reviewProgressEntity
+    );
 
-    HardshipReviewProgressEntity hardshipReviewProgressToHardshipReviewProgressEntity(final HardshipReviewProgress reviewProgress);
+    HardshipReviewProgressEntity hardshipReviewProgressToHardshipReviewProgressEntity(
+            final HardshipReviewProgress reviewProgress
+    );
 
     NewWorkReason newWorkReasonEntityToNewWorkReason(final NewWorkReasonEntity newWorkReason);
 
     NewWorkReasonEntity newWorkReasonToNewWorkReasonEntity(final NewWorkReason newWorkReason);
-
-    HardshipReviewDetailReason hardshipReviewDetailReasonEntityToHardshipReviewDetailReason(final HardshipReviewDetailReasonEntity detailReasonEntity);
 
     @Mapping(target = "newWorkReason.code", source = "nworCode")
     HardshipReviewDTO createHardshipReviewToHardshipReviewDTO(final CreateHardshipReview hardshipReview);
@@ -46,4 +57,14 @@ public interface HardshipReviewMapper {
 
     @InheritInverseConfiguration
     HardshipReviewEntity hardshipReviewDTOToHardshipReviewEntity(final HardshipReviewDTO hardshipReviewDTO);
+
+    @Named("mapReasonToReviewDetailReasonEnum")
+    default HardshipReviewDetailReason mapReasonToReviewDetailReasonEnum(
+            HardshipReviewDetailReasonEntity detailReason) {
+        if (detailReason != null) {
+            return HardshipReviewDetailReason.getFrom(detailReason.getReason());
+        } else {
+            return null;
+        }
+    }
 }

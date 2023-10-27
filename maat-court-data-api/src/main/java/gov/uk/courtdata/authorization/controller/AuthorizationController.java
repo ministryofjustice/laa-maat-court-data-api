@@ -4,22 +4,22 @@ import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.authorization.service.AuthorizationService;
 import gov.uk.courtdata.authorization.validator.UserReservationValidator;
 import gov.uk.courtdata.dto.ErrorDTO;
-import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("${api-endpoints.assessments-domain}/authorization")
@@ -38,11 +38,7 @@ public class AuthorizationController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<AuthorizationResponse> isRoleActionAuthorized(
-            @PathVariable String username, @PathVariable String action,
-            @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-
-        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+            @PathVariable String username, @PathVariable String action) {
 
         log.info("Check role action - request received");
         boolean isAuthorized = authorizationService.isRoleActionAuthorized(username, action);
@@ -55,11 +51,7 @@ public class AuthorizationController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<AuthorizationResponse> isNewWorkReasonAuthorized(
-            @PathVariable String username, @PathVariable String nworCode,
-            @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-
-        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+            @PathVariable String username, @PathVariable String nworCode) {
 
         log.info("Check new work order reason - request received");
         boolean isAuthorized = authorizationService.isNewWorkReasonAuthorized(username, nworCode);
@@ -72,11 +64,7 @@ public class AuthorizationController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Object> isReserved(
-            @PathVariable String username, @PathVariable Integer reservationId, @PathVariable String sessionId,
-            @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-
-        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+            @PathVariable String username, @PathVariable Integer reservationId, @PathVariable String sessionId) {
 
         log.info("Check reservation status - request received");
 

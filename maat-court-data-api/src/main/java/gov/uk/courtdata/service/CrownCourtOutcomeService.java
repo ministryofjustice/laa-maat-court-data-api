@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CrownCourtOutcomeService {
 
-    CrownCourtStoredProcedureRepository crownCourtStoredProcedureRepository;
-    CrownCourtProcessingRepository crownCourtProcessingRepository;
+    private final CrownCourtStoredProcedureRepository crownCourtStoredProcedureRepository;
+    private final CrownCourtProcessingRepository crownCourtProcessingRepository;
 
     @Transactional
     public void updateCCOutcome(final UpdateCCOutcome updateCCOutcome) {

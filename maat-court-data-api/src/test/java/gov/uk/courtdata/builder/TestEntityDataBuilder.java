@@ -30,6 +30,8 @@ public class TestEntityDataBuilder {
     public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
     public static final String TEST_ASN_SEQ = "123";
 
+    public static final String TEST_DETAIL_REASON = "Evidence Supplied";
+
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder().id(REP_ID).build();
     }
@@ -323,6 +325,7 @@ public class TestEntityDataBuilder {
                 .detailReason(
                         HardshipReviewDetailReasonEntity.builder()
                                 .id(1000)
+                                .reason(TEST_DETAIL_REASON)
                                 .build()
                 )
                 .build();
@@ -482,17 +485,6 @@ public class TestEntityDataBuilder {
                 .ouCourtLocation("C22SR")
                 .caseUrn("EITHERWAY")
                 .resultCodes("4028")
-                .build();
-    }
-
-    public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity() {
-        return RepOrderCCOutComeEntity.builder()
-                .repId(REP_ID)
-                .outcome("CONVICTED")
-                .userCreated(TEST_USER)
-                .caseNumber(TEST_CASE_ID.toString())
-                .crownCourtCode("430")
-                .outcomeDate(TEST_DATE)
                 .build();
     }
 

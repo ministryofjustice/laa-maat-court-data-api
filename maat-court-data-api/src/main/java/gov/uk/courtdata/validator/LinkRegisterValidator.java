@@ -1,6 +1,5 @@
 package gov.uk.courtdata.validator;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,6 @@ import java.util.Optional;
 import static java.lang.String.format;
 
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class LinkRegisterValidator implements IValidator<Void, Integer> {
 

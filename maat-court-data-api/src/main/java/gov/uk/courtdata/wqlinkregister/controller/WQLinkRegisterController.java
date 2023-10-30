@@ -1,6 +1,5 @@
 package gov.uk.courtdata.wqlinkregister.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.WQLinkRegisterDTO;
 import gov.uk.courtdata.wqlinkregister.service.WQLinkRegisterService;
@@ -20,12 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/wq-link-register")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "WQ Link Register", description = "Rest API for WQ Link Register")
+@RequestMapping("${api-endpoints.assessments-domain}/wq-link-register")
 public class WQLinkRegisterController {
 
     private final WQLinkRegisterService wqLinkRegisterService;

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.link.validator;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.CaseDetails;
@@ -17,7 +16,6 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Slf4j
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class CPDataValidator implements IValidator<Void, CaseDetails> {
 

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.reporder.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
@@ -23,12 +22,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/rep-orders/cc-outcome")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "RepOrders", description = "Rest API for RepOrder CC OutCome")
+@RequestMapping("${api-endpoints.assessments-domain}/rep-orders/cc-outcome")
 public class CCOutcomeController {
 
     private final CCOutcomeService service;

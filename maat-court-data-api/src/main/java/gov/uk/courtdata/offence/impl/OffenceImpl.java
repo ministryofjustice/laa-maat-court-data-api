@@ -1,6 +1,5 @@
 package gov.uk.courtdata.offence.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.repository.OffenceRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,6 @@ import java.util.List;
 
 @Slf4j
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class OffenceImpl {
 

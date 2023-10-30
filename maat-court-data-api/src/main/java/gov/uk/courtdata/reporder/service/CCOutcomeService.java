@@ -1,6 +1,5 @@
 package gov.uk.courtdata.reporder.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
 import gov.uk.courtdata.entity.RepOrderCCOutComeEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -14,10 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class CCOutcomeService {
 
     private final CCOutcomeImpl ccOutComeImpl;

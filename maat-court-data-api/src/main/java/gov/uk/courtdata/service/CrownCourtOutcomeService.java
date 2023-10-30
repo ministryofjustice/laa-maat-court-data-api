@@ -1,6 +1,5 @@
 package gov.uk.courtdata.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.model.UpdateCCOutcome;
 import gov.uk.courtdata.model.UpdateSentenceOrder;
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@XRayEnabled
 @RequiredArgsConstructor
 public class CrownCourtOutcomeService {
 

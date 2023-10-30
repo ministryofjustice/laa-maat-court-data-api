@@ -1,6 +1,12 @@
 server:
   port: 8090
 
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: INFO
+
 spring:
   graphql:
     path: ${api-endpoints.assessments-domain}/graphql
@@ -39,7 +45,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle10gDialect
     open-in-view: false
-    show-sql: false
+    show-sql: true
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate.enable_lazy_load_no_trans: true
@@ -146,5 +152,3 @@ management:
 
 aws:
   region: ${AWS_DEFAULT_REGION}
-  xray-enabled: ${AWS_XRAY_SDK_ENABLED}
-

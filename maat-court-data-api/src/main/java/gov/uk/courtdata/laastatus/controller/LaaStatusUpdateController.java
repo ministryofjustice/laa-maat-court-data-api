@@ -1,6 +1,5 @@
 package gov.uk.courtdata.laastatus.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.enums.LoggingData;
@@ -27,12 +26,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-@RestController
-@XRayEnabled
-@RequiredArgsConstructor
 @Slf4j
-@RequestMapping("maatApi")
+@RestController
+@RequiredArgsConstructor
 @Tag(name = "LAA Status", description = "Rest APIs for LAA Status.")
+@RequestMapping("maatApi")
 public class LaaStatusUpdateController {
 
     private final LaaStatusValidationProcessor laaStatusValidationProcessor;

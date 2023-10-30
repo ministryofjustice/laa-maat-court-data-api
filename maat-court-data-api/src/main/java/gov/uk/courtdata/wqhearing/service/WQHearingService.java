@@ -1,6 +1,5 @@
 package gov.uk.courtdata.wqhearing.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.WQHearingDTO;
 import gov.uk.courtdata.wqhearing.impl.WQHearingImpl;
 import gov.uk.courtdata.wqhearing.mapper.WQHearingMapper;
@@ -11,10 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class WQHearingService {
 
     private final WQHearingImpl wqHearingImpl;

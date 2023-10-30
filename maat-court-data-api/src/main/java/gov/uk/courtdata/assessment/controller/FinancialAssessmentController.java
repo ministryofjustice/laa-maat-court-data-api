@@ -1,6 +1,5 @@
 package gov.uk.courtdata.assessment.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentHistoryService;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
@@ -20,12 +19,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/financial-assessments")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "Assessments", description = "Rest API for financial assessments")
+@RequestMapping("${api-endpoints.assessments-domain}/financial-assessments")
 public class FinancialAssessmentController {
 
     private final FinancialAssessmentService financialAssessmentService;

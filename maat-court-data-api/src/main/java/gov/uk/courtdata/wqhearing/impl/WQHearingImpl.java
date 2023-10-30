@@ -1,6 +1,5 @@
 package gov.uk.courtdata.wqhearing.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,6 @@ import java.util.List;
 
 @Slf4j
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class WQHearingImpl {
 

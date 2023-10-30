@@ -1,15 +1,14 @@
 package gov.uk.courtdata.contribution.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.contribution.dto.ContributionsSummaryDTO;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
+import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import java.util.List;
 
 @Slf4j
 @Service
-@XRayEnabled
 @RequiredArgsConstructor
 public class ContributionsService {
 

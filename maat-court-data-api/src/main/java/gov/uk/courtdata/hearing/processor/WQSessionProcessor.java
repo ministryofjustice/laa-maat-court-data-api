@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hearing.processor;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WQSessionEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQSessionRepository;
@@ -13,7 +12,6 @@ import java.time.LocalDate;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class WQSessionProcessor {
 

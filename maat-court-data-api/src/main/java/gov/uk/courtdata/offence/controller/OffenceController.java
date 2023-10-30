@@ -1,6 +1,5 @@
 package gov.uk.courtdata.offence.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.OffenceDTO;
 import gov.uk.courtdata.offence.service.OffenceService;
@@ -18,12 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/offence")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "offence", description = "Rest API for offence")
+@RequestMapping("${api-endpoints.assessments-domain}/offence")
 public class OffenceController {
 
     private final OffenceService offenceService;

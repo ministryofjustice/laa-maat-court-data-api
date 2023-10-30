@@ -76,19 +76,21 @@ public class CCOutcomeController {
     )
     public ResponseEntity<RepOrderCCOutcomeDTO> update(@Parameter(description = "RepOrder CC outcome data",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = RepOrderCCOutcome.class))) @RequestBody RepOrderCCOutcome repOrderCCOutCome) {
+                    schema = @Schema(implementation = RepOrderCCOutcome.class)
+            )
+    ) @RequestBody RepOrderCCOutcome repOrderCCOutCome) {
         log.info("Update RepOrder CC outcome  Request Received");
         validator.validate(repOrderCCOutCome);
         return ResponseEntity.ok(service.update(repOrderCCOutCome));
     }
-    
-    @RequestMapping(value = "/reporder/{repId}",
-            method = {RequestMethod.GET},
+
+    @GetMapping(value = "/reporder/{repId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Operation(description = "Retrieve a RepOrder CCOutCome record")
     @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
     @ApiResponse(responseCode = "400",
             description = "Bad Request.",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,

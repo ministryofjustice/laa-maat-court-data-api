@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -103,7 +102,7 @@ public class CCOutcomeController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepId(HttpServletRequest request, @PathVariable int repId) {
+    public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepId(@PathVariable int repId) {
         log.info("Find RepOrder CC Outcome Request Received");
         validator.validate(repId);
         return ResponseEntity.ok(service.findByRepId(repId));
@@ -128,7 +127,7 @@ public class CCOutcomeController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepIdLengthInHeader(HttpServletRequest request, @PathVariable int repId) {
+    public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepIdLengthInHeader(@PathVariable int repId) {
         log.info("Find RepOrder CC Outcome Request Received");
         validator.validate(repId);
         HttpHeaders responseHeaders = new HttpHeaders();

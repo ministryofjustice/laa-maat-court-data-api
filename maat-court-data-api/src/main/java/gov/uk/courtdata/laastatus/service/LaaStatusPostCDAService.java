@@ -1,9 +1,8 @@
 package gov.uk.courtdata.laastatus.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
+import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.laastatus.builder.RepOrderUpdateMessageBuilder;
-import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,6 @@ import java.util.Map;
 
 @Slf4j
 @Service
-@XRayEnabled
 @RequiredArgsConstructor
 public class LaaStatusPostCDAService {
 

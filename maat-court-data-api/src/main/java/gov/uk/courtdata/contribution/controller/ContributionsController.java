@@ -1,6 +1,5 @@
 package gov.uk.courtdata.contribution.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.contribution.dto.ContributionsSummaryDTO;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
@@ -28,10 +27,9 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@XRayEnabled
 @RequiredArgsConstructor
-@RequestMapping("${api-endpoints.assessments-domain}/contributions")
 @Tag(name = "Contributions", description = "Rest API for contributions")
+@RequestMapping("${api-endpoints.assessments-domain}/contributions")
 public class ContributionsController {
 
     private final ContributionsService contributionsService;

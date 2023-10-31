@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hearing.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.enums.FunctionType;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
@@ -14,10 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class HearingResultedService {
 
     private final HearingValidationProcessor hearingValidationProcessor;

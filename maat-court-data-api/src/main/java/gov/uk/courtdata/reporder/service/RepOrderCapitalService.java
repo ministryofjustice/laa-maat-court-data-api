@@ -1,16 +1,14 @@
 package gov.uk.courtdata.reporder.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.reporder.impl.RepOrderCapitalImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class RepOrderCapitalService {
 
     private final RepOrderCapitalImpl capitalImpl;

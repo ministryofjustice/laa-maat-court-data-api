@@ -1,6 +1,5 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 @ConditionalOnProperty(value = "feature.prosecution-concluded-listener.enabled", havingValue = "true")
 public class ProsecutionConcludedListener {

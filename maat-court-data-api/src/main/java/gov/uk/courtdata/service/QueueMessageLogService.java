@@ -1,6 +1,5 @@
 package gov.uk.courtdata.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -15,11 +14,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static gov.uk.courtdata.enums.MessageType.*;
+import static gov.uk.courtdata.enums.MessageType.LAA_STATUS_UPDATE;
 
-@Service
 @Slf4j
-@XRayEnabled
+@Service
 @RequiredArgsConstructor
 public class QueueMessageLogService {
 

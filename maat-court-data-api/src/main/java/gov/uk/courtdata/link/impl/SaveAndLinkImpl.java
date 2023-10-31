@@ -1,6 +1,5 @@
 package gov.uk.courtdata.link.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.link.processor.*;
@@ -12,9 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.COMMON_PLATFORM;
 
-@Component
-@XRayEnabled
 @Slf4j
+@Component
 @RequiredArgsConstructor
 public class SaveAndLinkImpl {
 

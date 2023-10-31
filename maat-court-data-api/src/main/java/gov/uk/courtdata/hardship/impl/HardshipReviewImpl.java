@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hardship.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
@@ -20,10 +19,9 @@ import java.util.List;
 import static gov.uk.courtdata.hardship.specification.HardshipSpecification.hasRepId;
 import static gov.uk.courtdata.hardship.specification.HardshipSpecification.isCurrent;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class HardshipReviewImpl {
 
     private final HardshipReviewMapper hardshipReviewMapper;

@@ -1,7 +1,6 @@
 package gov.uk.courtdata.job;
 
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-@Configuration
-@EnableScheduling
 @Slf4j
 @Getter
-@XRayEnabled
+@Configuration
+@EnableScheduling
 @RequiredArgsConstructor
 public class QueueMessageMaintenanceScheduler {
 

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.link.processor;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.enums.WQStatus;
@@ -16,7 +15,6 @@ import static gov.uk.courtdata.constants.CourtDataConstants.WQ_CREATION_EVENT;
 
 
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class WqCoreInfoProcessor implements Process {
 

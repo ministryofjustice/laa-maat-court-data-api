@@ -1,6 +1,5 @@
 package gov.uk.courtdata.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.XLATResultEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.ResultRepository;
@@ -14,9 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-@XRayEnabled
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class ResultsService {
 

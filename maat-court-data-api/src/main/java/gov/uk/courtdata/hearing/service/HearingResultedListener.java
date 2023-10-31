@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hearing.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
@@ -20,9 +19,8 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
-@XRayEnabled
+@RequiredArgsConstructor
 public class HearingResultedListener {
 
     private final Gson gson;

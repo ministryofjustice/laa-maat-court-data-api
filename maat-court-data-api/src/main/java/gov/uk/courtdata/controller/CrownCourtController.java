@@ -1,6 +1,5 @@
 package gov.uk.courtdata.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.model.UpdateCCOutcome;
 import gov.uk.courtdata.model.UpdateSentenceOrder;
@@ -20,12 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/crown-court")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "crown-court", description = "Rest API for invoking stored procedures related to Crown Court")
+@RequestMapping("${api-endpoints.assessments-domain}/crown-court")
 public class CrownCourtController {
 
     private final CrownCourtOutcomeService crownCourtOutcomeService;

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.link.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@XRayEnabled
 @AllArgsConstructor
 public class CreateLinkService {
 

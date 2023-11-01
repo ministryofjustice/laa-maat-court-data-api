@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hearing.processor;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.entity.XLATOffenceEntity;
@@ -22,10 +21,9 @@ import java.util.stream.Collectors;
 import static gov.uk.courtdata.constants.CourtDataConstants.APPLICATION_ASN_SEQ_INITIAL_VALUE;
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class CourtApplicationsPreProcessor {
 
     private final XLATOffenceRepository xlatOffenceRepository;
@@ -83,8 +81,10 @@ public class CourtApplicationsPreProcessor {
     }
 
     private void setASNSeqOnExistingApp(Offence offence, WqLinkRegisterEntity wqLinkRegisterEntity) {
-        Optional<OffenceEntity> offenceEntity = offenceRepository.findApplicationByOffenceCode(wqLinkRegisterEntity.getCaseId(),
-                offence.getOffenceId(), offence.getApplicationFlag());
+        Optional<OffenceEntity> offenceEntity =
+                offenceRepository.findApplicationByOffenceCode(wqLinkRegisterEntity.getCaseId(),
+                                                               offence.getOffenceId(), offence.getApplicationFlag()
+                );
         offenceEntity.ifPresent(entity -> offence.setAsnSeq(entity.getAsnSeq()));
     }
 
@@ -104,7 +104,9 @@ public class CourtApplicationsPreProcessor {
     private void mapApplicationDefaults(HearingResulted hearingResulted) {
         hearingResulted.getDefendant().getOffences().forEach(offence -> offence.setModeOfTrial(ModeOfTrial.NO_MODE_OF_TRAIL.value()));
         hearingResulted.setInActive(NO);
-        hearingResulted.getDefendant().getOffences().forEach(offence -> offence.setOffenceClassification(ApplicationClassification
-                .getDescriptionByCode(offence.getOffenceClassification())));
+        hearingResulted.getDefendant().getOffences()
+                .forEach(offence -> offence.setOffenceClassification(ApplicationClassification
+                                                                             .getDescriptionByCode(
+                                                                                     offence.getOffenceClassification())));
     }
 }

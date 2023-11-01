@@ -1,6 +1,5 @@
 package gov.uk.courtdata.link.validator;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
@@ -19,9 +18,8 @@ import java.util.Optional;
  * <code>ValidationProcessor</code> chain of validations on the create link process.
  */
 @Slf4j
-@XRayEnabled
-@AllArgsConstructor
 @Component
+@AllArgsConstructor
 public class ValidationProcessor {
 
 

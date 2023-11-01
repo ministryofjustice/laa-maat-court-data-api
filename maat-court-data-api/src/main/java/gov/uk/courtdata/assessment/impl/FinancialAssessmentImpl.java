@@ -1,6 +1,5 @@
 package gov.uk.courtdata.assessment.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class FinancialAssessmentImpl {
 

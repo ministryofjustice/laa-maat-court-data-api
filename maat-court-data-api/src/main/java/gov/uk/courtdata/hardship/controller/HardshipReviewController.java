@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hardship.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.hardship.service.HardshipReviewService;
@@ -22,12 +21,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/hardship")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "Hardship Reviews", description = "Rest API for hardship reviews")
+@RequestMapping("${api-endpoints.assessments-domain}/hardship")
 public class HardshipReviewController {
 
     private final HardshipReviewService hardshipReviewService;

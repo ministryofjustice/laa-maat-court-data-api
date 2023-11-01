@@ -1,6 +1,5 @@
 package gov.uk.courtdata.wqlinkregister.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.WQLinkRegisterDTO;
 import gov.uk.courtdata.wqlinkregister.impl.WQLinkRegisterImpl;
 import gov.uk.courtdata.wqlinkregister.mapper.WQLinkRegisterMapper;
@@ -11,10 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class WQLinkRegisterService {
 
     private final WQLinkRegisterImpl wqLinkRegisterImpl;

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.offence.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.OffenceDTO;
 import gov.uk.courtdata.offence.impl.OffenceImpl;
 import gov.uk.courtdata.offence.mapper.OffenceMapper;
@@ -11,10 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class OffenceService {
 
     private final OffenceImpl offenceImpl;

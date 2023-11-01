@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hearing.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.enums.WQType;
@@ -22,10 +21,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class HearingResultedImpl {
 
     private final HearingDTOMapper hearingDTOMapper;
@@ -66,8 +64,9 @@ public class HearingResultedImpl {
 
         HearingDTO hearingDTO =
                 hearingDTOMapper.toHearingDTO(hearingResulted,
-                        wqLinkReg.getCaseId(), wqLinkReg.getProceedingId(),
-                        getNextTxId(), offence, result);
+                                              wqLinkReg.getCaseId(), wqLinkReg.getProceedingId(),
+                                              getNextTxId(), offence, result
+                );
 
         log.debug("Hearing resulted mapped to Hearing Court DTO: {}", hearingDTO.toString());
 
@@ -95,7 +94,7 @@ public class HearingResultedImpl {
     }
 
     private boolean isConcludingNewOffence(Integer resultCode, Offence offence,
-                                             Integer caseId) {
+                                           Integer caseId) {
         boolean myReturn = false;
         if (WQType.CONCLUSION_QUEUE.value() == wqCoreProcessor.findWQType(resultCode)
                 && offenceHelper.isNewOffence(caseId, offence.getAsnSeq())) {

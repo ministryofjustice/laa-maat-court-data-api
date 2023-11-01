@@ -1,6 +1,5 @@
 package gov.uk.courtdata.link.processor;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.CaseDetails;
@@ -13,7 +12,6 @@ import java.time.LocalDateTime;
 import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
 
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class WqLinkRegisterProcessor implements Process {
 

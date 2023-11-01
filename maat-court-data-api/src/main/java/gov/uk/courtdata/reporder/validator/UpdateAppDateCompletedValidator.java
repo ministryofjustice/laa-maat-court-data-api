@@ -1,6 +1,5 @@
 package gov.uk.courtdata.reporder.validator;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.validator.IValidator;
@@ -13,7 +12,6 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-@XRayEnabled
 @AllArgsConstructor
 public class UpdateAppDateCompletedValidator implements IValidator<Void, UpdateAppDateCompleted> {
 

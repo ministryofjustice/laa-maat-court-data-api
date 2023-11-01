@@ -1,6 +1,5 @@
 package gov.uk.courtdata.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.service.ResultsService;
@@ -21,12 +20,11 @@ import java.util.List;
 
 import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/wq-result")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "wq-result", description = "Rest API for WQ Result")
+@RequestMapping("${api-endpoints.assessments-domain}/wq-result")
 public class WQResultController {
 
     private final ResultsService resultService;

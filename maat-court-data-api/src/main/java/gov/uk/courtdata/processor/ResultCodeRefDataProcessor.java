@@ -1,7 +1,6 @@
 package gov.uk.courtdata.processor;
 
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.XLATResultEntity;
 import gov.uk.courtdata.enums.WQType;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -15,9 +14,8 @@ import java.util.Optional;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.*;
 
-@Component
 @Slf4j
-@XRayEnabled
+@Component
 @RequiredArgsConstructor
 public class ResultCodeRefDataProcessor {
 

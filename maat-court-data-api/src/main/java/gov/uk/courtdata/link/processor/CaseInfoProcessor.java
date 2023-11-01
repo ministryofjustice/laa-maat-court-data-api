@@ -1,6 +1,5 @@
 package gov.uk.courtdata.link.processor;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.CaseEntity;
 import gov.uk.courtdata.model.CaseDetails;
@@ -14,7 +13,6 @@ import static gov.uk.courtdata.constants.CourtDataConstants.*;
 
 
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class CaseInfoProcessor implements Process {
 

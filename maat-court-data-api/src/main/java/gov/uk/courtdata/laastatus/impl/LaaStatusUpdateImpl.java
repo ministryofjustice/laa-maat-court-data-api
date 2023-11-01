@@ -1,6 +1,5 @@
 package gov.uk.courtdata.laastatus.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.laastatus.processor.UpdateDefendantInfoProcessor;
@@ -16,9 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@Service
-@XRayEnabled
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class LaaStatusUpdateImpl {
 

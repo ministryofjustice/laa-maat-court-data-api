@@ -1,12 +1,13 @@
 package gov.uk.courtdata.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.hibernate.procedure.ProcedureCall;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+
 
 @Repository
 public class CrownCourtStoredProcedureRepository {
@@ -28,9 +29,9 @@ public class CrownCourtStoredProcedureRepository {
 
         final ProcedureCall ccOutcomeProcedure = session.getNamedProcedureCall("update_cc_outcome");
 
-        ccOutcomeProcedure.getParameterRegistration("p_imprisoned").enablePassingNulls(true);
-        ccOutcomeProcedure.getParameterRegistration("p_bench_warrant_issued").enablePassingNulls(true);
-        ccOutcomeProcedure.getParameterRegistration("p_appeal_type").enablePassingNulls(true);
+        ccOutcomeProcedure.getParameterRegistration("p_imprisoned");
+        ccOutcomeProcedure.getParameterRegistration("p_bench_warrant_issued");
+        ccOutcomeProcedure.getParameterRegistration("p_appeal_type");
 
         ccOutcomeProcedure.setParameter("p_rep_id", repId);
         ccOutcomeProcedure.setParameter("p_imprisoned", imprisoned);

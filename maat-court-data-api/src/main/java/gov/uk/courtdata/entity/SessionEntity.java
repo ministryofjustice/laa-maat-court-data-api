@@ -3,7 +3,7 @@ package gov.uk.courtdata.entity;
 import gov.uk.courtdata.model.id.CaseTxnId;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Data

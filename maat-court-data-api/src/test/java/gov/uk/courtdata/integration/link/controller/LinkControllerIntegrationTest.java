@@ -2,11 +2,9 @@ package gov.uk.courtdata.integration.link.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.link.controller.LinkController;
 import gov.uk.courtdata.model.CaseDetailsValidate;
 import gov.uk.courtdata.repository.*;
@@ -14,11 +12,9 @@ import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -33,12 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
-@ExtendWith(SpringExtension.class)
+@SpringBootTest
 @WebAppConfiguration
 public class LinkControllerIntegrationTest {
-
-
     private static final String LINK_VALIDATE_URI = "/link/validate";
 
     private static final Integer TEST_MAAT_ID = 1000;
@@ -68,6 +61,7 @@ public class LinkControllerIntegrationTest {
 
     @Autowired
     private PassportAssessmentRepository passportAssessmentRepository;
+
 
     @BeforeEach
     public void setUp() {

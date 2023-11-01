@@ -204,7 +204,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         expectedResponse.setUserModified(null);
 
         MvcResult result =
-                runSuccessScenario(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                runSuccessScenario(post("/api/internal/v1/assessment/passport-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
 
         // Check existing financial assessment are marked as replaced.
         long updatedFinancialAssessmentsCount =
@@ -395,12 +395,12 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
     private boolean runCreatePassportAssessmentErrorScenario(String errorMessage, CreatePassportAssessment body) throws Exception {
         return runBadRequestErrorScenario(
                 errorMessage,
-                post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                post("/api/internal/v1/assessment/passport-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }
 
     private boolean runUpdatePassportAssessmentErrorScenario(String errorMessage, UpdatePassportAssessment body) throws Exception {
         return runBadRequestErrorScenario(
                 errorMessage,
-                put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                put("/api/internal/v1/assessment/passport-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }
 }

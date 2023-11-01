@@ -1,3 +1,6 @@
+server:
+  port: 52314
+
 spring:
   liquibase:
     enabled: false
@@ -45,8 +48,6 @@ spring:
         secret-key: test
       region:
         static: us-east-1
-      sqs:
-        enabled: false
 
 cloud-platform:
   aws:
@@ -112,3 +113,6 @@ version: 0.0.1
 api-endpoints:
   assessments-domain: /api/internal/v1/assessment
   debt-collection-enforcement: /api/internal/v1/debt-collection-enforcement
+
+xray:
+  enabled: false

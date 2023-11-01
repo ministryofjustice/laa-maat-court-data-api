@@ -226,7 +226,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     void givenRepIdIsMissing_whenUpdateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
         assertTrue(runBadRequestErrorScenario(
                 "MAAT ID is required.",
-                put(BASE_URL)
+                put("/api/internal/v1/assessment/rep-orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
                                 UpdateRepOrder.builder()
@@ -239,7 +239,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     void givenInvalidRepId_whenUpdateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
         assertTrue(runBadRequestErrorScenario(
                 "MAAT/REP ID: " + INVALID_REP_ID + " is invalid.",
-                put(BASE_URL)
+                put("/api/internal/v1/assessment/rep-orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
                                 UpdateRepOrder.builder()
@@ -254,7 +254,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
         UpdateRepOrder request = TestModelDataBuilder.getUpdateRepOrder();
 
-        MvcResult result =runSuccessScenario(MockMvcRequestBuilders.put(BASE_URL)
+        MvcResult result =runSuccessScenario(MockMvcRequestBuilders.put("/api/internal/v1/assessment/rep-orders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)));
 

@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
 @WebAppConfiguration
-class EFormIntegrationTest {
+class EFormIntegrationTest  {
 
     private static final int USN = 7000001;
     private static final String TYPE = "CRM14";

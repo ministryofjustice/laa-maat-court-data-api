@@ -9,7 +9,6 @@ import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
-import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
@@ -22,11 +21,9 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
@@ -36,9 +33,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class, MockNewWorkReasonRepository.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, properties = {("spring.h2.console.enabled=true")})
+@SpringBootTest(classes = {MAATCourtDataApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, properties = {("spring.h2.console.enabled=true")})
 public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private final String BASE_URL = "/api/internal/v1/assessment/financial-assessments/";
@@ -242,7 +237,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         expectedResponse.setInitialAssessmentDate(body.getInitialAssessmentDate());
 
         MvcResult result =
-                runSuccessScenario(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                runSuccessScenario(post("/api/internal/v1/assessment/financial-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
 
         List<FinancialAssessmentEntity> matchingAssessments =
                 financialAssessmentRepository.findAll()
@@ -343,7 +338,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
 
         MvcResult result =
-                runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                runSuccessScenario(put("/api/internal/v1/assessment/financial-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
 
         FinancialAssessmentEntity updatedAssessment = financialAssessmentRepository.findById(assessmentToUpdate.getId()).orElse(null);
         if (updatedAssessment != null) {
@@ -432,13 +427,13 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private boolean runCreateAssessmentErrorScenario(String errorMessage, CreateFinancialAssessment body) throws Exception {
         return runBadRequestErrorScenario(
                 errorMessage,
-                post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                post("/api/internal/v1/assessment/financial-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }
 
     private boolean runUpdateAssessmentErrorScenario(String errorMessage, UpdateFinancialAssessment body) throws Exception {
         return runBadRequestErrorScenario(
                 errorMessage,
-                put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                put("/api/internal/v1/assessment/financial-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }
 
     private void assertChildWeightingsEqual(List<ChildWeightings> expectedChildWeightingsList, List<ChildWeightingsEntity> createdEntities) {

@@ -36,9 +36,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(classes = {MAATCourtDataApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, properties = {("spring.h2.console.enabled=true")})
 public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
-    private final String BASE_URL = "/api/internal/v1/assessment/financial-assessments/";
-    private final String ASSESSMENT_URL = BASE_URL + "{financialAssessmentId}";
-    private final String CHECK_OUTSTANDING_URL = BASE_URL + "/check-outstanding/{repId}";
+    private final String BASE_URL = "/api/internal/v1/assessment/financial-assessments";
+    private final String ASSESSMENT_URL = BASE_URL + "/{financialAssessmentId}";
+    private final String CHECK_OUTSTANDING_URL = BASE_URL + "//check-outstanding/{repId}";
     private final Integer REP_ID_WITH_OUTSTANDING_ASSESSMENTS = 1111;
     private final Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = 2222;
     private final Integer REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS = 3333;
@@ -237,7 +237,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         expectedResponse.setInitialAssessmentDate(body.getInitialAssessmentDate());
 
         MvcResult result =
-                runSuccessScenario(post("/api/internal/v1/assessment/financial-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                runSuccessScenario(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
 
         List<FinancialAssessmentEntity> matchingAssessments =
                 financialAssessmentRepository.findAll()
@@ -338,7 +338,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
 
         MvcResult result =
-                runSuccessScenario(put("/api/internal/v1/assessment/financial-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
 
         FinancialAssessmentEntity updatedAssessment = financialAssessmentRepository.findById(assessmentToUpdate.getId()).orElse(null);
         if (updatedAssessment != null) {
@@ -366,7 +366,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         FinancialAssessmentEntity assessmentEntity =
                 existingAssessmentEntities.stream().filter(item -> item.getRepOrder().getId().equals(existingRepOrder.getId())).findFirst().orElse(null);
 
-        String CREATE_ASSESSMENT_HISTORY_URL = BASE_URL + "history/{financialAssessmentId}/fullAvailable/{fullAvailable}";
+        String CREATE_ASSESSMENT_HISTORY_URL = BASE_URL + "/history/{financialAssessmentId}/fullAvailable/{fullAvailable}";
         assertThat(runSuccessScenario(post(CREATE_ASSESSMENT_HISTORY_URL, Objects.requireNonNull(assessmentEntity).getId(), fullAvailable)).getResponse().getStatus()).isEqualTo(200);
         assertAssessmentHistoryCreated(assessmentEntity, fullAvailable, existingRepOrder);
     }
@@ -377,7 +377,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         FinancialAssessmentEntity assessmentEntity =
                 existingAssessmentEntities.stream().filter(item -> item.getRepOrder().getId().equals(existingRepOrder.getId())).findFirst().orElse(null);
 
-        String CREATE_ASSESSMENT_HISTORY_URL = BASE_URL + "history/{financialAssessmentId}/fullAvailable/{fullAvailable}";
+        String CREATE_ASSESSMENT_HISTORY_URL = BASE_URL + "/history/{financialAssessmentId}/fullAvailable/{fullAvailable}";
         assertThat(runSuccessScenario(post(CREATE_ASSESSMENT_HISTORY_URL, Objects.requireNonNull(assessmentEntity).getId(), fullAvailable)).getResponse().getStatus()).isEqualTo(200);
         assertAssessmentHistoryCreated(assessmentEntity, fullAvailable, existingRepOrder);
     }
@@ -427,13 +427,13 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private boolean runCreateAssessmentErrorScenario(String errorMessage, CreateFinancialAssessment body) throws Exception {
         return runBadRequestErrorScenario(
                 errorMessage,
-                post("/api/internal/v1/assessment/financial-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }
 
     private boolean runUpdateAssessmentErrorScenario(String errorMessage, UpdateFinancialAssessment body) throws Exception {
         return runBadRequestErrorScenario(
                 errorMessage,
-                put("/api/internal/v1/assessment/financial-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }
 
     private void assertChildWeightingsEqual(List<ChildWeightings> expectedChildWeightingsList, List<ChildWeightingsEntity> createdEntities) {

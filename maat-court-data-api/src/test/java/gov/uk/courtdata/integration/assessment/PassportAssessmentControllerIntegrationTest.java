@@ -38,9 +38,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class, MockNewWorkReasonRepository.class})
 public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
-    private final String BASE_URL = "/api/internal/v1/assessment/passport-assessments/";
-    private final String ASSESSMENT_URL = BASE_URL + "{passportAssessmentId}";
-    private final String ASSESSMENT_BY_REP_ID_URL = BASE_URL + "repId/{repId}";
+    private final String BASE_URL = "/api/internal/v1/assessment/passport-assessments";
+    private final String ASSESSMENT_URL = BASE_URL + "/{passportAssessmentId}";
+    private final String ASSESSMENT_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
     private final Integer INVALID_ASSESSMENT_ID = 999;
 
     @Autowired
@@ -395,12 +395,12 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
     private boolean runCreatePassportAssessmentErrorScenario(String errorMessage, CreatePassportAssessment body) throws Exception {
         return runBadRequestErrorScenario(
                 errorMessage,
-                post("/api/internal/v1/assessment/passport-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }
 
     private boolean runUpdatePassportAssessmentErrorScenario(String errorMessage, UpdatePassportAssessment body) throws Exception {
         return runBadRequestErrorScenario(
                 errorMessage,
-                put("/api/internal/v1/assessment/passport-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
     }
 }

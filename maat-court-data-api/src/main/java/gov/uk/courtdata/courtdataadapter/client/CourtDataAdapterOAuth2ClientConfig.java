@@ -138,46 +138,6 @@ public class CourtDataAdapterOAuth2ClientConfig {
                 });
     }
 
-//    public static ExchangeFilterFunction errorResponse() {
-//
-//        return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
-//            if(clientResponse.statusCode()!=null && (clientResponse.statusCode().isError()) ) {
-//                return clientResponse.bodyToMono(String.class)
-//                        .flatMap(errorBody -> {
-//                            return Mono.error(new ApiClientException(errorBody,clientResponse.statusCode()));
-//                        });
-//            }else {
-//                return Mono.just(clientResponse);
-//            }
-//        });
-
-//        return ExchangeFilterFunction
-//                .ofResponseProcessor(CourtDataAdapterOAuth2ClientConfig::exchangeFilterResponseProcessor);
-//        return ExchangeFilterFunctions.statusError(
-//                getIsError(), r -> {
-//                    String errorMessage =
-//                            String.format("Received error %s due to %s", r.statusCode().value(), r.statusCode().getReasonPhrase());
-//                    if (r.statusCode().is5xxServerError()) {
-//                        return new RetryableWebClientResponseException(errorMessage);
-//                    }
-//                    return new ApiClientException(errorMessage);
-//                });
-//    }
-
-//    private static Mono<ClientResponse> exchangeFilterResponseProcessor(ClientResponse response) {
-//        if (response.statusCode().isError()) {
-//            if(response.statusCode().is5xxServerError() ) {
-//                String errorMessage =
-//                            String.format("Received error %s due to %s", response.statusCode().value(), "Internal Server Error");
-//                return new RetryableWebClientResponseException(errorMessage);
-//            }
-//            return response.bodyToMono(String.class)
-//                    .flatMap(body -> Mono.error(new ApiClientException(body)));
-//        }
-//
-//        return Mono.just(response);
-//    }
-
     /**
      * Retry exchange filter function.
      * Retries error responses on <code>RetryableWebClientResponseException</code> and request timeouts.

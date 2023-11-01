@@ -13,11 +13,6 @@ spring:
 
   application:
     name: maat-cd-api
-  sleuth:
-    propagation:
-      type:
-        - b3
-        - w3c
 
   datasource:
     url: ${DATASOURCE_URL}
@@ -131,6 +126,9 @@ feature:
 version: 0.0.1
 
 management:
+  tracing:
+    propagation:
+      type: w3c,b3
   endpoints:
     web:
       exposure:
@@ -151,6 +149,7 @@ management:
         namespace: MAAT-COURT-DATA-API
         batch-size: ${CLOUDWATCH_BATCH_SIZE}
         step: ${CLOUDWATCH_STEP}
+
 
 aws:
   region: ${AWS_DEFAULT_REGION}

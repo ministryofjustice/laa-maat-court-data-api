@@ -34,7 +34,8 @@ def versions = [
         hibernateJpaModelGen          : '6.3.1.Final',
         gqlVersion                    : '2.7.5',
         graphqlJavaTools              : '13.0.2',
-        commonsIOVersion              : '2.11.0'
+        commonsIOVersion              : '2.11.0',
+        xercesImplVersion             : '2.12.2'
 ]
 
 group = 'gov.uk'
@@ -92,11 +93,11 @@ dependencies {
 
     implementation 'io.micrometer:micrometer-tracing'
     implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation "xerces:xercesImpl:$versions.xercesImplVersion"
+
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springdocVersion
-
     implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
-
     annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
 
     implementation "org.mapstruct:mapstruct:$versions.mapstructVersion"

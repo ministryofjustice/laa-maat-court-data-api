@@ -38,7 +38,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     private final String BASE_URL = "/api/internal/v1/assessment/financial-assessments";
     private final String ASSESSMENT_URL = BASE_URL + "/{financialAssessmentId}";
-    private final String CHECK_OUTSTANDING_URL = BASE_URL + "//check-outstanding/{repId}";
+    private final String CHECK_OUTSTANDING_URL = BASE_URL + "/check-outstanding/{repId}";
     private final Integer REP_ID_WITH_OUTSTANDING_ASSESSMENTS = 1111;
     private final Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = 2222;
     private final Integer REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS = 3333;

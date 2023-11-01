@@ -204,7 +204,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         expectedResponse.setUserModified(null);
 
         MvcResult result =
-                runSuccessScenario(post("/api/internal/v1/assessment/passport-assessments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+                runSuccessScenario(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
 
         // Check existing financial assessment are marked as replaced.
         long updatedFinancialAssessmentsCount =

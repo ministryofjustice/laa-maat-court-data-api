@@ -51,7 +51,7 @@ spring:
 cloud-platform:
   aws:
     sqs:
-      region: us-east-1
+      region: eu-west-2
       accesskey: test
       secretkey: test
       queue:

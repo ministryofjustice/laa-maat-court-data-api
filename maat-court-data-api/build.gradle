@@ -11,30 +11,39 @@ plugins {
 
 
 def versions = [
-        mapstructVersion              : '1.3.1.Final',
-        springdocVersion              : '1.6.6',
-        springAwsCloudVersion         : "3.0.1",
-        amazonSQSVersion              : "2.1.1",
-        ojdbc8Version                 : '19.7.0.0',
-        gsonVersion                   : '2.8.6',
-        commLan3Vriosn                : '3.10',
-        lombokMapStrutBinding         : '0.2.0',
-        sonarVersion                  : '2.7',
-        h2DBVersion                   : '1.4.200',
-        mockitoInlineVersion          : "5.2.0",
-        harmcrestVersion              : '1.3',
-        festVersion                   : '1.4',
-        gradlePitest                  : '1.4.6',
-        pitest                        : '1.4.10',
-        sonarPitest                   : '0.5',
-        okhttpVersion                 : '4.9.3',
-        mockWebServerVersion          : '4.9.3',
-        hibernateJpaModelGen          : '6.3.1.Final',
-        gqlVersion                    : '2.7.5',
-        graphqlJavaTools              : '13.0.2',
-        commonsIOVersion              : '2.11.0',
-        xercesImplVersion             : '2.12.2',
-        awsStsVersion                 : '2.20.69'
+        mapstructVersion                    : '1.3.1.Final',
+        springdocVersion                    : '1.6.6',
+        springAwsCloudVersion               : "3.0.1",
+        amazonSQSVersion                    : "2.1.1",
+        ojdbc8Version                       : '19.7.0.0',
+        gsonVersion                         : '2.8.6',
+        commLan3Vriosn                      : '3.10',
+        lombokMapStrutBinding               : '0.2.0',
+        sonarVersion                        : '2.7',
+        h2DBVersion                         : '1.4.200',
+        mockitoInlineVersion                : "5.2.0",
+        harmcrestVersion                    : '1.3',
+        festVersion                         : '1.4',
+        gradlePitest                        : '1.4.6',
+        pitest                              : '1.4.10',
+        sonarPitest                         : '0.5',
+        okhttpVersion                       : '4.9.3',
+        mockWebServerVersion                : '4.9.3',
+        hibernateJpaModelGen                : '6.3.1.Final',
+        gqlVersion                          : '2.7.5',
+        graphqlJavaTools                    : '13.0.2',
+        commonsIOVersion                    : '2.11.0',
+        xercesImplVersion                   : '2.12.2',
+        awsStsVersion                       : '2.20.69',
+        oracleXMLParserVersion              : '23.2.0.0',
+        micrometerCloudWatchVersion         : '1.9.0',
+        awaitilityVersion                   : '4.2.0',
+        awsJavaSdkVersion                   : '1.12.264',
+        testcontainersJunitJupiterVersion   : '1.19.0',
+        testcontainersLocalstackVersion     : '1.18.3',
+        cloudLocalstackUtilsVersion         : '0.2.23',
+        springContractStubRunnerVersion     : '4.0.1',
+        sentryBomVersion                    : '6.17.0'
 ]
 
 group = 'gov.uk'
@@ -68,7 +77,7 @@ repositories {
 
 dependencies {
 
-    implementation platform("io.sentry:sentry-bom:6.17.0")
+    implementation platform("io.sentry:sentry-bom:$versions.sentryBomVersion")
     implementation platform(SpringBootPlugin.BOM_COORDINATES)
     annotationProcessor platform(SpringBootPlugin.BOM_COORDINATES)
 
@@ -105,7 +114,7 @@ dependencies {
     //Required for lombok version > 1.18.16
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:$versions.lombokMapStrutBinding"
 
-    implementation 'io.micrometer:micrometer-registry-cloudwatch2:1.9.0'
+    implementation "io.micrometer:micrometer-registry-cloudwatch2:$versions.micrometerCloudWatchVersion"
 
     implementation group: 'io.sentry', name: 'sentry-spring-boot-starter'
     implementation group: 'io.sentry', name: 'sentry-logback'
@@ -134,8 +143,8 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
     implementation group: 'com.graphql-java-kickstart', name: 'graphql-java-tools', version: versions.graphqlJavaTools
 
-    implementation group: 'com.oracle.database.xml', name: 'xmlparserv2', version: '23.2.0.0'
-    implementation group: 'com.oracle.database.xml', name: 'xdb', version: '23.2.0.0'
+    implementation group: 'com.oracle.database.xml', name: 'xmlparserv2', version: versions.oracleXMLParserVersion
+    implementation group: 'com.oracle.database.xml', name: 'xdb', version: versions.oracleXMLParserVersion
 
     // Test Only
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
@@ -150,14 +159,14 @@ dependencies {
     testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
 
     // Only required for SQS Integration test
-    testSqsIntegrationImplementation 'org.awaitility:awaitility:4.2.0'
-    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.12.264'
-    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.12.264'
-    testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:1.19.0"
-    testSqsIntegrationImplementation 'org.testcontainers:localstack:1.18.3'
-    testSqsIntegrationImplementation 'cloud.localstack:localstack-utils:0.2.23'
+    testSqsIntegrationImplementation "org.awaitility:awaitility:$versions.awaitilityVersion"
+    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: versions.awsJavaSdkVersion
+    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: versions.awsJavaSdkVersion
+    testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainersJunitJupiterVersion"
+    testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainersLocalstackVersion"
+    testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$versions.cloudLocalstackUtilsVersion"
     testSqsIntegrationImplementation "com.h2database:h2"
-    testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:4.0.1"
+    testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.springContractStubRunnerVersion"
 }
 
 

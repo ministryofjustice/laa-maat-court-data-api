@@ -18,7 +18,6 @@ def versions = [
         ojdbc8Version                 : '19.7.0.0',
         gsonVersion                   : '2.8.6',
         commLan3Vriosn                : '3.10',
-        lombokVersion                 : '1.18.22',
         lombokMapStrutBinding         : '0.2.0',
         sonarVersion                  : '2.7',
         h2DBVersion                   : '1.4.200',

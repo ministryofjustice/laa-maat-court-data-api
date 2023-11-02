@@ -13,7 +13,7 @@ plugins {
 def versions = [
         mapstructVersion              : '1.3.1.Final',
         springdocVersion              : '1.6.6',
-        springFrameworkCloudVersion   : "3.0.1",
+        springAwsCloudVersion         : "3.0.1",
         amazonSQSVersion              : "2.1.1",
         ojdbc8Version                 : '19.7.0.0',
         gsonVersion                   : '2.8.6',
@@ -87,7 +87,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
     implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client'
 
-    implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springFrameworkCloudVersion"
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springAwsCloudVersion"
     implementation "org.springframework:spring-jms"
     implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$versions.amazonSQSVersion"
 

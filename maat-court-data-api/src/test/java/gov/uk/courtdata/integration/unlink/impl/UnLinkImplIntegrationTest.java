@@ -8,7 +8,6 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;
@@ -18,18 +17,15 @@ import gov.uk.courtdata.unlink.impl.UnLinkImpl;
 import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class UnLinkImplIntegrationTest {
 
     @Autowired

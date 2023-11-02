@@ -9,7 +9,6 @@ import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.hearing.service.HearingResultedListener;
-import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.Result;
@@ -22,12 +21,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.MessageHeaders;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -41,8 +38,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class HearingResultedListenerIntegrationTest {
 
     private final String LAA_TRANSACTION_ID = "b27b97e4-0514-42c4-8e09-fcc2c693e11f";

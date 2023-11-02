@@ -2,6 +2,7 @@ package gov.uk.courtdata.integration.link.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
@@ -29,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 @WebAppConfiguration
 public class LinkControllerIntegrationTest {
     private static final String LINK_VALIDATE_URI = "/link/validate";

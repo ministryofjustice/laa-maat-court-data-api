@@ -32,7 +32,7 @@ import static org.testcontainers.containers.localstack.LocalStackContainer.Servi
 import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 
 @Testcontainers
-@SpringBootTest(classes = {MAATCourtDataApplication.class}, properties = {("spring.h2.console.enabled=true")})
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 @AutoConfigureWireMock(port = 9999)
 class CreateLinkListenerEndToEndTest {
 

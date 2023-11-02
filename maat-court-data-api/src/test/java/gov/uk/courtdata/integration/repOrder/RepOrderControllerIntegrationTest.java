@@ -5,7 +5,6 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -37,9 +35,8 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-@ExtendWith(SpringExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
     public static final Integer INVALID_REP_ID = 9999;

@@ -29,6 +29,7 @@ public class CrownCourtStoredProcedureRepository {
 
         final ProcedureCall ccOutcomeProcedure = session.getNamedProcedureCall("update_cc_outcome");
 
+        //enablePassingNulls is Deprecated since v5.3. Hibernate determines it implicitly
         ccOutcomeProcedure.getParameterRegistration("p_imprisoned");
         ccOutcomeProcedure.getParameterRegistration("p_bench_warrant_issued");
         ccOutcomeProcedure.getParameterRegistration("p_appeal_type");

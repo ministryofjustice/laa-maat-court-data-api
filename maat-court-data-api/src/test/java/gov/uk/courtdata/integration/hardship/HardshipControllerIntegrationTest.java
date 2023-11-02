@@ -37,10 +37,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(
         properties = "spring.main.allow-bean-definition-overriding=true",
-        classes = {MAATCourtDataApplication.class, MockCdaWebConfig.class}
+        classes = {MAATCourtDataApplication.class}
 )
 class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
 

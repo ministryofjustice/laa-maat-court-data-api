@@ -48,7 +48,7 @@ public class CrownCourtControllerTest {
         when(maatIdValidator.validate(any()))
                 .thenReturn(Optional.empty());
         doNothing().when(crownCourtOutcomeService).updateCCOutcome(TestModelDataBuilder.getUpdateCCOutcome());
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/updateCCOutcome/")
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/updateCCOutcome")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateCCOutcome())))
                 .andExpect(status().is2xxSuccessful());
     }

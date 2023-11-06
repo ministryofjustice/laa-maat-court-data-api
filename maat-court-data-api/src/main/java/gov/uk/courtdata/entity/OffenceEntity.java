@@ -1,9 +1,9 @@
 package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.model.id.AsnSeqTxnCaseId;
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 
 @Getter

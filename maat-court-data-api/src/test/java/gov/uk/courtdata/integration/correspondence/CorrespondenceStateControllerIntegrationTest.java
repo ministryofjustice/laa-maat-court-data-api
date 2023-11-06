@@ -27,9 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class CorrespondenceStateControllerIntegrationTest extends MockMvcIntegrationTest {
 
 

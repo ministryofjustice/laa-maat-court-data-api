@@ -7,7 +7,6 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.CaseConclusionStatus;
 import gov.uk.courtdata.enums.JurisdictionType;
-import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesEntity;
 import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesRepository;
 import gov.uk.courtdata.model.Metadata;
@@ -21,14 +20,12 @@ import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.messaging.MessageHeaders;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -42,12 +39,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {
-        MAATCourtDataApplication.class,
-        MockServicesConfig.class,
-        UpdateOutcomesRepository.class,
-})
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ProsecutionConcludedIntegrationTest {
 
     @Autowired

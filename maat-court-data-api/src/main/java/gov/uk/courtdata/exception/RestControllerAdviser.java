@@ -26,7 +26,6 @@ import java.util.NoSuchElementException;
 @ControllerAdvice
 public class RestControllerAdviser extends ResponseEntityExceptionHandler {
 
-    @Override
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                             HttpHeaders headers, HttpStatus status, WebRequest request) {
         log.error(ex.getMessage());

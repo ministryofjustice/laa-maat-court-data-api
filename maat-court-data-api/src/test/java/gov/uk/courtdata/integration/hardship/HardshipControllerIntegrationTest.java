@@ -195,7 +195,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
 
         // Align date/id values.
         expectedResponse.setUpdated(createdHardshipReviewEntity.getUpdated());
-        expectedResponse.setDateCreated(createdHardshipReviewEntity.getDateCreated());
+        expectedResponse.setReviewDate(createdHardshipReviewEntity.getReviewDate());
 
         List<HardshipReviewDetailEntity> reviewDetailEntities = createdHardshipReviewEntity.getReviewDetails();
 
@@ -297,11 +297,11 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                 runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
 
         HardshipReviewEntity updatedHardshipReview = hardshipReviewRepository.findByRepId(existingHardshipReview.getRepId());
-
         assertPersistedHardshipReviewDataIsCorrectOnUpdate(body, updatedHardshipReview);
 
         // Align date/id values.
         expectedResponse.setUpdated(updatedHardshipReview.getUpdated());
+        expectedResponse.setReviewDate(updatedHardshipReview.getReviewDate());
 
         List<HardshipReviewDetailEntity> reviewDetailEntities = updatedHardshipReview.getReviewDetails();
 

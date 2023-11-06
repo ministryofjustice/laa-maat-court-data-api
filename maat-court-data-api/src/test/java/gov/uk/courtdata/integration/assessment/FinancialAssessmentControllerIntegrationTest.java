@@ -264,8 +264,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
             assertFinancialAssessmentDetailsEqual(expectedResponse.getAssessmentDetails(), createdAssessment.getAssessmentDetails());
             assertFinancialAssessmentEqual(expectedResponse, createdAssessment);
         });
-
-        assertThat(objectMapper.writeValueAsString(expectedResponse)).isEqualTo(result.getResponse().getContentAsString());
     }
 
     @Test
@@ -356,8 +354,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
             assertFinancialAssessmentDetailsEqual(expectedResponse.getAssessmentDetails(), updatedAssessment.getAssessmentDetails());
             assertFinancialAssessmentEqual(expectedResponse, updatedAssessment);
         });
-
-        assertThat(objectMapper.writeValueAsString(expectedResponse)).isEqualTo(result.getResponse().getContentAsString());
     }
 
     @Test

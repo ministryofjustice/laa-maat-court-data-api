@@ -2,7 +2,7 @@ package gov.uk.courtdata.entity;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

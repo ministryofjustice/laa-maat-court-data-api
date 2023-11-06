@@ -13,11 +13,6 @@ spring:
 
   application:
     name: maat-cd-api
-  sleuth:
-    propagation:
-      type:
-        - b3
-        - w3c
 
   datasource:
     url: ${DATASOURCE_URL}
@@ -43,24 +38,26 @@ spring:
             authorizationGrantType: client_credentials
 
   jpa:
-    database-platform: org.hibernate.dialect.Oracle10gDialect
+    database-platform: org.hibernate.dialect.OracleDialect
     open-in-view: false
     show-sql: true
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate.enable_lazy_load_no_trans: true
+      hibernate:
+        dialect: org.hibernate.dialect.OracleDialect
 
-cloud:
-  aws:
-    sqs:
-      enabled: ${ENABLE_SPRING_CLOUD_SQS:true}
-    stack:
-      auto: false
-    region:
-      static: ${CLOUD_PLATFORM_QUEUE_REGION}
-      auto: false
-    credentials:
-      use-default-aws-credentials-chain: true
+  cloud:
+    aws:
+      sqs:
+        enabled: ${ENABLE_SPRING_CLOUD_SQS:true}
+      stack:
+        auto: false
+      region:
+        static: ${CLOUD_PLATFORM_QUEUE_REGION}
+        auto: false
+      credentials:
+        use-default-aws-credentials-chain: true
 
 springdoc:
   packagesToScan: gov.uk.courtdata
@@ -129,6 +126,9 @@ feature:
 version: 0.0.1
 
 management:
+  tracing:
+    propagation:
+      type: w3c,b3
   endpoints:
     web:
       exposure:
@@ -149,6 +149,7 @@ management:
         namespace: MAAT-COURT-DATA-API
         batch-size: ${CLOUDWATCH_BATCH_SIZE}
         step: ${CLOUDWATCH_STEP}
+
 
 aws:
   region: ${AWS_DEFAULT_REGION}

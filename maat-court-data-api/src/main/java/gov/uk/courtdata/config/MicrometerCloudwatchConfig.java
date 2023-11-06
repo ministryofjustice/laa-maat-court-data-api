@@ -4,7 +4,6 @@ import io.micrometer.cloudwatch2.CloudWatchConfig;
 import io.micrometer.cloudwatch2.CloudWatchMeterRegistry;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.lang.Nullable;
-import org.springframework.boot.actuate.autoconfigure.metrics.export.properties.StepRegistryProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;

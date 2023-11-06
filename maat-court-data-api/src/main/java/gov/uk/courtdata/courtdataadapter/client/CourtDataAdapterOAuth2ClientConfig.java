@@ -4,24 +4,24 @@ import gov.uk.courtdata.exception.ApiClientException;
 import gov.uk.courtdata.exception.RetryableWebClientResponseException;
 import io.netty.handler.timeout.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunctions;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.*;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
 import reactor.util.retry.Retry;
 import java.time.Duration;
+import java.util.function.Predicate;
 
 /**
  * <code>CourtDataAdapterOAuth2ClientConfig</code>
@@ -128,9 +128,9 @@ public class CourtDataAdapterOAuth2ClientConfig {
 
     public static ExchangeFilterFunction errorResponse() {
         return ExchangeFilterFunctions.statusError(
-                HttpStatus::isError, r -> {
+                HttpStatusCode::isError, r -> {
                     String errorMessage =
-                            String.format("Received error %s due to %s", r.statusCode().value(), r.statusCode().getReasonPhrase());
+                            String.format("Received error %s", r.statusCode().value());
                     if (r.statusCode().is5xxServerError()) {
                         return new RetryableWebClientResponseException(errorMessage);
                     }

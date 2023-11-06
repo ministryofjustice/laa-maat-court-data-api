@@ -2,7 +2,6 @@ package gov.uk.courtdata.integration.wqoffence;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.RepositoryUtil;
@@ -14,14 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
 
-@ExtendWith(SpringExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class WQOffenceControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/wq-offence";

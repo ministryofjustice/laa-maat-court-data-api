@@ -6,7 +6,8 @@ import gov.uk.courtdata.converter.AbstractEnumConverter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import javax.persistence.Converter;
+import jakarta.persistence.Converter;
+
 
 @Getter
 @AllArgsConstructor

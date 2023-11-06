@@ -195,6 +195,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
 
         // Align date/id values.
         expectedResponse.setUpdated(createdHardshipReviewEntity.getUpdated());
+        expectedResponse.setDateCreated(createdHardshipReviewEntity.getDateCreated());
         expectedResponse.setReviewDate(createdHardshipReviewEntity.getReviewDate());
 
         List<HardshipReviewDetailEntity> reviewDetailEntities = createdHardshipReviewEntity.getReviewDetails();

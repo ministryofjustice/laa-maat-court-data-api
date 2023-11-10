@@ -79,7 +79,7 @@ public class ConvertorHelper {
      * @return
      */
     public Boolean toBoolean(String booleanString) {
-        return new Boolean((booleanString != null) ? booleanString.equalsIgnoreCase("Y") : false);
+        return Boolean.valueOf((booleanString != null) ? booleanString.equalsIgnoreCase("Y") : false);
     }
 
     /**
@@ -147,7 +147,8 @@ public class ConvertorHelper {
      * @return
      */
     public Integer toInteger(BigDecimal number) {
-        return (number != null) ? new Integer(number.intValue()) : null;
+
+        return (number != null) ?  number.intValue() : null;
     }
 
     /**
@@ -168,7 +169,7 @@ public class ConvertorHelper {
 
     public Long toLong(BigDecimal number) {
 
-        return (number != null) ? new Long(number.longValue()) : null;
+        return (number != null) ? number.longValue() : null;
     }
 
     public BigDecimal toSysGenLong(SysGenLong number) {
@@ -177,7 +178,7 @@ public class ConvertorHelper {
 
     public SysGenLong toSysGenLong(BigDecimal number) {
 
-        return new SysGenLong(number != null ? new Long(number.longValue()) : null);
+        return new SysGenLong(number != null ? number.longValue() : null);
     }
 
     public BigDecimal toDouble(Double number) {
@@ -195,7 +196,7 @@ public class ConvertorHelper {
     }
 
     public Double toDouble(BigDecimal number) {
-        return (number != null) ? new Double(number.doubleValue()) : 0.0d;
+        return (number != null) ? number.doubleValue() : 0.0d;
     }
 
     public BigDecimal toCurrency(Currency number) {

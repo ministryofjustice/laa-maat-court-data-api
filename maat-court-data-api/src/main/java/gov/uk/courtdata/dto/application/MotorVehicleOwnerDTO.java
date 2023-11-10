@@ -4,6 +4,7 @@
 package gov.uk.courtdata.dto.application;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -13,6 +14,7 @@ import java.util.Collection;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 public class MotorVehicleOwnerDTO extends GenericDTO {
 
 	/**

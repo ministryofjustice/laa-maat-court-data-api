@@ -128,7 +128,7 @@ public class HRDetailConvertor extends Convertor {
             getOracleType().setOtherDescription(convertorHelper.toString(	getDTO().getOtherDescription()));
             getOracleType().setAmountNumber(	convertorHelper.toCurrency(	getDTO().getAmountNumber()));
             getOracleType().setDateDue(			convertorHelper.toDate(		getDTO().getDateDue()));
-            getOracleType().setAccepted(		convertorHelper.toBoolean(	getDTO().getAccepted()));
+            getOracleType().setAccepted(		convertorHelper.toBoolean(	getDTO().isAccepted()));
             getOracleType().setTimeStamp(									getDTO().getTimeStamp()); 
 			getOracleType().setHrReasonNote(	convertorHelper.toString(	getDTO().getHrReasonNote()));
 			FrequencyConvertor frequencyConverter = new FrequencyConvertor();

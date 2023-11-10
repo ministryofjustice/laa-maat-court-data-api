@@ -16,8 +16,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class BreathingSpaceDTO extends GenericDTO {
 
-    private static final String pattern = "yyyy-MM-dd";
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);;
     private Long id;
     private String active;  //yes or no
     private String type; //mental health or standard

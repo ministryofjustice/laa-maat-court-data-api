@@ -7,7 +7,6 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class SearchCriteriaItemDTO {
 

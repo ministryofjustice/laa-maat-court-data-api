@@ -13,7 +13,7 @@ import java.util.Collection;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-public class MotorVehicleOwnerDTO extends GenericDTO{
+public class MotorVehicleOwnerDTO extends GenericDTO {
 
 	/**
 	 * 

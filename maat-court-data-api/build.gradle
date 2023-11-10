@@ -145,6 +145,7 @@ dependencies {
 
     implementation group: 'com.oracle.database.xml', name: 'xmlparserv2', version: versions.oracleXMLParserVersion
     implementation group: 'com.oracle.database.xml', name: 'xdb', version: versions.oracleXMLParserVersion
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 
     // Test Only
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'

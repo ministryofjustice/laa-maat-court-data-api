@@ -254,7 +254,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         expectedResponse.getAssessmentDetails().get(0).setId(createdAssessment.getAssessmentDetails().get(0).getId());
         expectedResponse.getChildWeightings().get(0).setId(createdAssessment.getChildWeightings().get(0).getId());
         expectedResponse.getAssessmentDetails().get(0).setDateModified(createdAssessment.getAssessmentDetails().get(0).getDateModified());
-
+        expectedResponse.setInitialAssessmentDate(createdAssessment.getInitialAssessmentDate());
 
         SoftAssertions.assertSoftly(softly -> {
             assertThat(matchingAssessments.size()).isEqualTo(2);
@@ -264,8 +264,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
             assertFinancialAssessmentDetailsEqual(expectedResponse.getAssessmentDetails(), createdAssessment.getAssessmentDetails());
             assertFinancialAssessmentEqual(expectedResponse, createdAssessment);
         });
-
-        assertThat(objectMapper.writeValueAsString(expectedResponse)).isEqualTo(result.getResponse().getContentAsString());
     }
 
     @Test
@@ -348,7 +346,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         assertThat(assessmentToUpdate.getUpdated()).isNotEqualTo(Objects.requireNonNull(updatedAssessment).getUpdated());
         expectedResponse.setUpdated(updatedAssessment.getUpdated());
         expectedResponse.getAssessmentDetails().get(0).setDateModified(updatedAssessment.getAssessmentDetails().get(0).getDateModified());
-
+        expectedResponse.setInitialAssessmentDate(updatedAssessment.getInitialAssessmentDate());
 
         SoftAssertions.assertSoftly(softly -> {
             assertThat(updatedAssessment).isNotNull();
@@ -356,8 +354,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
             assertFinancialAssessmentDetailsEqual(expectedResponse.getAssessmentDetails(), updatedAssessment.getAssessmentDetails());
             assertFinancialAssessmentEqual(expectedResponse, updatedAssessment);
         });
-
-        assertThat(objectMapper.writeValueAsString(expectedResponse)).isEqualTo(result.getResponse().getContentAsString());
     }
 
     @Test

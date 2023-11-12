@@ -1,0 +1,25 @@
+%%{init: { 'logLevel': 'debug', 'theme': 'dark' } }%%
+sequenceDiagram
+
+    autonumber
+
+    participant EntryPoint as Entrypoint
+    participant ApiGateway as API-Gateway+Cognito
+    participant RestApi as Springboot RestAPI
+    participant ConcorContributionsService as Concor Service
+    participant ConcorContributionsRepository as Concor Repo
+    participant MAAT_DB as MAAT DB
+
+
+    EntryPoint->>+ApiGateway : API Open Direct
+    ApiGateway->>+RestApi : Springboot - APIs
+
+    Note over RestApi, RestApi : GET - param - Status=Active
+    RestApi->>ConcorContributionsService : Getting list of Concor files.
+    ConcorContributionsService->>ConcorContributionsRepository :Getting list of Concor files.
+    Note over ConcorContributionsRepository, MAAT_DB : TOGDATA.CONCOR_CONTRIBUTIONS
+    ConcorContributionsRepository->>MAAT_DB : Filtering XML files by Status
+    MAAT_DB-->>ConcorContributionsService : Returning Collection of XML files
+    ConcorContributionsService->>ConcorContributionsService : Combine all the XML into a Collection
+    ConcorContributionsService->>RestApi : Returning Collection.
+

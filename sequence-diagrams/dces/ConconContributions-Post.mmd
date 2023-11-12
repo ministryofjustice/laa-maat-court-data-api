@@ -1,0 +1,33 @@
+%%{init: { 'logLevel': 'debug', 'theme': 'dark' } }%%
+sequenceDiagram
+
+    autonumber
+
+    participant EntryPoint as Entrypoint
+    participant ApiGateway as API-Gateway+Cognito
+    participant RestApi as Springboot RestAPI
+    participant ConcorContributionsService as Concor Service
+    participant ContributionRepository as Repo (CONTRIBUTION_FILES)
+    participant ConcorContributionsRepository as  Repo (CONCOR_CONTRIBUTIONS)
+    participant MAAT_DB as MAAT DB
+
+
+    EntryPoint->>+ApiGateway : API Open Direct
+    ApiGateway->>+RestApi : Springboot - POST API
+    Note over RestApi, ConcorContributionsService : Holding all the values in a DTO Object
+    RestApi->>ConcorContributionsService : Passing an DTO object
+
+    Note over ConcorContributionsService, MAAT_DB : Inside a JPA Transaction - Commit All or None
+    rect gray
+        ConcorContributionsService->>ContributionRepository : Passing an DTO object
+        ContributionRepository->>MAAT_DB : Insert XML file + Data
+        MAAT_DB-->>ConcorContributionsService: returning contribution_file_id
+
+        ConcorContributionsService->>ConcorContributionsRepository : Updating Row in CONCOR_CONTRIBUTIONS
+        ConcorContributionsRepository->>MAAT_DB : Update Row with file_id
+        MAAT_DB-->>ConcorContributionsService: returning status (true/false)
+
+    end
+    ConcorContributionsService->>RestApi : Returning update status.
+
+

@@ -68,7 +68,7 @@ public class PreUpdateChecksServiceIntegrationTest {
     }
 
     @Test
-    void givenAValidInput_whenUpdateIsInvoked_thenUpdateIsSuccess() {
+    void givenAValidInput_whenUpdateApplicantHistoryIsInvoked_thenUpdateIsSuccess() {
         applicantHistoryRepository.saveAndFlush(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
         Integer id = applicantHistoryRepository.findAll().get(0).getId();
         String sendToCclf = "Y";
@@ -78,7 +78,7 @@ public class PreUpdateChecksServiceIntegrationTest {
     }
 
     @Test
-    void givenAInValidInput_whenUpdateIsInvoked_thenExceptionIsRaised() {
+    void givenAInValidInput_whenUpdateApplicantHistoryIsInvoked_thenExceptionIsRaised() {
         assertThatThrownBy(() -> {
             applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(1, "N"));
         }).isInstanceOf(RequestedObjectNotFoundException.class)

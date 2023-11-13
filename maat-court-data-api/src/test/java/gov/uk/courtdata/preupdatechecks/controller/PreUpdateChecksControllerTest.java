@@ -2,6 +2,7 @@ package gov.uk.courtdata.preupdatechecks.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.preupdatechecks.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.preupdatechecks.dto.RepOrderApplicantLinksDTO;
@@ -45,7 +46,7 @@ public class PreUpdateChecksControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void givenIncorrectParameters_whenGetRepOrderApplicantLinksIsInvoked_thenErrorIsThrown() throws Exception {
+    void givenAValidationException_whenGetRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         when(validator.validate(any())).thenThrow(new ValidationException());
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/repId/" + REP_ID))
                 .andExpect(status().isBadRequest());
@@ -65,9 +66,25 @@ public class PreUpdateChecksControllerTest {
         ApplicantHistoryDTO applicantHistoryDTO = TestModelDataBuilder.getApplicantHistoryDTO(1, "N");
         when(applicantHistoryService.update(any())).thenReturn(applicantHistoryDTO);
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/applicant-history")
-                .content(objectMapper.writeValueAsString(applicantHistoryDTO))
+                        .content(objectMapper.writeValueAsString(applicantHistoryDTO))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void givenAEmptyContent_whenUpdateApplicantHistoryIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/applicant-history")
+                        .content("{}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenInValidRequest_whenUpdateApplicantHistoryIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        when(applicantHistoryService.update(any())).thenThrow(new RequestedObjectNotFoundException("Applicant History not found"));
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/applicant-history")
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(1, "Y")))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(404));
+    }
 }

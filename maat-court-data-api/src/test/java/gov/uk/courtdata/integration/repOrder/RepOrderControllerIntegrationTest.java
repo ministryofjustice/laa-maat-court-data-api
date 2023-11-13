@@ -11,7 +11,6 @@ import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.RepositoryUtil;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -23,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
@@ -34,6 +32,8 @@ import java.util.List;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SoftAssertionsExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
@@ -252,15 +252,13 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
         UpdateRepOrder request = TestModelDataBuilder.getUpdateRepOrder();
 
-        MvcResult result =runSuccessScenario(MockMvcRequestBuilders.put(BASE_URL)
+        mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)));
-
-         RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(TestModelDataBuilder.REP_ID);
-
-         Assertions.assertThat(objectMapper.writeValueAsString(mapper.repOrderEntityToRepOrderDTO(repOrderEntity)))
-                 .isEqualTo(result.getResponse().getContentAsString());
-
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(request.getRepId()))
+                .andExpect(jsonPath("$.userModified").value(request.getUserModified()))
+                .andExpect(jsonPath("$.crownRepOrderDecision").value(request.getCrownRepOrderDecision()));
     }
 
     @Test

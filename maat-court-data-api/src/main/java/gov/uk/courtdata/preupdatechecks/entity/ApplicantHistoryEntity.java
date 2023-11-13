@@ -50,6 +50,18 @@ public class ApplicantHistoryEntity {
     @Column(name = "NO_FIXED_ABODE")
     private String noFixedAbode;
 
+    @Column(name = "HOME_ADDR_ID")
+    private Integer homeAddrId;
+
+    @Column(name = "EMST_CODE")
+    private String emstCode;
+
+    @Column(name = "ETHN_ID")
+    private String ethnCode;
+
+    @Column(name = "DISABLED")
+    private String disabled;
+
     @Column(name = "PHONE_HOME")
     private String phoneHome;
 
@@ -68,9 +80,6 @@ public class ApplicantHistoryEntity {
     @Column(name = "BANK_ACCOUNT_NAME")
     private String bankAccountName;
 
-    @Column(name = "SEND_TO_CCLF")
-    private String sendToCclf;
-
     @Column(name = "DATE_CREATED", nullable = false)
     private LocalDateTime dateCreated;
 
@@ -83,8 +92,14 @@ public class ApplicantHistoryEntity {
     @Column(name = "USER_MODIFIED")
     private String userModified;
 
+    @Column(name = "PAME_PAYMENT_METHOD")
+    private String pamePaymentMethod;
+
     @Column(name = "PREF_PAYMENT_DAY")
     private String prefPaymentDay;
+
+    @Column(name = "SEND_TO_CCLF")
+    private String sendToCclf;
 
     @Column(name = "SPECIAL_INVESTIGATION")
     private LocalDateTime specialInvestigation;

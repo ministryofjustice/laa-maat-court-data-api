@@ -28,7 +28,7 @@ public class RepOrderApplicantLinksService {
             throw new RequestedObjectNotFoundException(String.format("Rep Order Applicant Links not found for repId: %d", repId));
         }
         return repOrderApplicantLinksMapper.
-                repOrderApplicantLinksEntityToRepOrderApplicantLinksDTO(repOrderApplicantLinksEntities);
+                mapEntityToDTO(repOrderApplicantLinksEntities);
     }
 
 }

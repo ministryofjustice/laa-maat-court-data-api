@@ -13,6 +13,6 @@ import java.util.List;
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         builder = @Builder(disableBuilder = true))
 public interface RepOrderApplicantLinksMapper {
-    List<RepOrderApplicantLinksDTO> repOrderApplicantLinksEntityToRepOrderApplicantLinksDTO(List<RepOrderApplicantLinksEntity> repOrderApplicantLinksEntity);
+    List<RepOrderApplicantLinksDTO> mapEntityToDTO(List<RepOrderApplicantLinksEntity> repOrderApplicantLinksEntity);
 
 }

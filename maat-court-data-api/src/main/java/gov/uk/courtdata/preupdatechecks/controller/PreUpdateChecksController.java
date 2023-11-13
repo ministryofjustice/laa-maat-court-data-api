@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -50,7 +51,7 @@ public class PreUpdateChecksController {
     @PutMapping(value = "/applicant-history", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update applicant history")
     @StandardApiResponseCodes
-    public ResponseEntity<ApplicantHistoryDTO> updateApplicatHistory(@RequestBody ApplicantHistoryDTO applicantHistoryDTO) {
+    public ResponseEntity<ApplicantHistoryDTO> updateApplicantHistory(@RequestBody @Valid ApplicantHistoryDTO applicantHistoryDTO) {
         log.info("Update Applicant History Request Received");
         return ResponseEntity.ok(applicantHistoryService.update(applicantHistoryDTO));
     }

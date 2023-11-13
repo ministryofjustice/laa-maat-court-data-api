@@ -125,9 +125,9 @@ public class TestModelDataBuilder {
                 .build());
     }
 
-    public static ApplicantHistoryDTO getApplicantHistoryDTO() {
+    public static ApplicantHistoryDTO getApplicantHistoryDTO(Integer id, String sendToCclf) {
         return ApplicantHistoryDTO.builder()
-                .id(101)
+                .id(id)
                 .applId(716)
                 .dob(LocalDate.parse("1981-10-14"))
                 .bankAccountName("test-acc-name")
@@ -138,7 +138,7 @@ public class TestModelDataBuilder {
                 .otherNames("test")
                 .niNumber("JM933396A")
                 .gender("Male")
-                .sendToCclf("N")
+                .sendToCclf(sendToCclf)
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("TEST")
                 .build();

@@ -33,7 +33,7 @@ public class ApplicantHistoryServiceTest {
     @Test
     void givenAValidInput_whenUpdateIsInvoked_thenUpdateIsSuccess() {
         when(applicantHistoryRepository.findById(anyInt())).thenReturn(Optional.of(ApplicantHistoryEntity.builder().build()));
-        applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO());
+        applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(1, "N"));
         verify(applicantHistoryRepository, atLeastOnce()).findById(any());
         verify(applicantHistoryRepository, atLeastOnce()).saveAndFlush(any());
         verify(applicantHistoryMapper, atLeastOnce()).mapEntityToDTO(any());
@@ -43,7 +43,7 @@ public class ApplicantHistoryServiceTest {
     void givenApplicantHistoryEntryDoesntExist_whenFindByIdIsInvoked_thenExceptionIsRaised() {
         when(applicantHistoryRepository.findById(anyInt())).thenReturn(Optional.empty());
         assertThatThrownBy(() -> {
-            applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO());
+            applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(1, "N"));
         }).isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant History not found for id");
     }

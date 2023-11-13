@@ -19,8 +19,8 @@ public class RepOrderApplicantLinksEntity {
 
     @Id
     @Column(name = "ID")
-    @SequenceGenerator(name = "applicant_history_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicant_history_gen_seq")
+    @SequenceGenerator(name = "rep_order_applicant_links_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rep_order_applicant_links_gen_seq")
     private Integer id;
 
     @Column(name = "REP_ID")

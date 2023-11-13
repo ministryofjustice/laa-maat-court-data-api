@@ -59,7 +59,7 @@ public class PreUpdateChecksControllerIntegrationTest {
     }
 
     @Test
-    void givenIncorrectParameters_whenGetRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenIncorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/repId/" + INVALID_REP_ID))
                 .andExpect(status().isBadRequest());
     }
@@ -83,6 +83,14 @@ public class PreUpdateChecksControllerIntegrationTest {
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/applicant-history").content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenInValidRequest_whenUpdateApplicantHistoryIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/applicant-history")
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(1, "Y")))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(404));
     }
 
 }

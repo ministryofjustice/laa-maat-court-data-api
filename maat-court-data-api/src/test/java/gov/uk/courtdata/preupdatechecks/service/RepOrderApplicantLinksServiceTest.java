@@ -41,7 +41,7 @@ public class RepOrderApplicantLinksServiceTest {
     }
 
     @Test
-    void givenRepOrderApplicantLinksEntryDoesntExist_whenFindAllIsInvoked_thenExceptionIsRaised() {
+    void givenRepOrderApplicantLinksNotFound_whenFindAllIsInvoked_thenExceptionIsRaised() {
         when(repOrderApplicantLinksRepository.findAllByRepId(anyInt())).thenReturn(List.of());
         assertThatThrownBy(() -> {
             repOrderApplicantLinksService.getRepOrderApplicantLinks(REP_ID);

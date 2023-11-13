@@ -8,6 +8,7 @@ import gov.uk.courtdata.preupdatechecks.repository.RepOrderApplicantLinksReposit
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class RepOrderApplicantLinksService {
     private final RepOrderApplicantLinksRepository repOrderApplicantLinksRepository;
     private final RepOrderApplicantLinksMapper repOrderApplicantLinksMapper;
 
+    @Transactional(readOnly = true)
     public List<RepOrderApplicantLinksDTO> getRepOrderApplicantLinks(Integer repId) {
         log.info("RepOrderApplicantLinksService - findAllByRepId - Start");
         List<RepOrderApplicantLinksEntity> repOrderApplicantLinksEntities = repOrderApplicantLinksRepository.findAllByRepId(repId);

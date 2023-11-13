@@ -40,7 +40,7 @@ public class ApplicantHistoryServiceTest {
     }
 
     @Test
-    void givenApplicantHistoryEntryDoesntExist_whenFindByIdIsInvoked_thenExceptionIsRaised() {
+    void givenApplicantHistoryNotFound_whenFindByIdIsInvoked_thenExceptionIsRaised() {
         when(applicantHistoryRepository.findById(anyInt())).thenReturn(Optional.empty());
         assertThatThrownBy(() -> {
             applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(1, "N"));

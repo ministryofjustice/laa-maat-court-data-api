@@ -1,5 +1,6 @@
 package gov.uk.courtdata.preupdatechecks.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplicantHistoryDTO {
-
+    @NotNull
     private Integer id;
     private Integer applId;
     private LocalDate asAtDate;

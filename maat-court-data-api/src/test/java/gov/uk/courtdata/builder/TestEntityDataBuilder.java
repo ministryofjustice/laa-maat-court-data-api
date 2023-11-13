@@ -2,6 +2,8 @@ package gov.uk.courtdata.builder;
 
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.*;
+import gov.uk.courtdata.preupdatechecks.entity.ApplicantHistoryEntity;
+import gov.uk.courtdata.preupdatechecks.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
@@ -361,6 +363,38 @@ public class TestEntityDataBuilder {
                 .description("")
                 .dateCreated(TEST_DATE)
                 .userCreated(TEST_USER)
+                .build();
+    }
+
+    public static RepOrderApplicantLinksEntity getRepOrderApplicantLinksEntity() {
+        return new RepOrderApplicantLinksEntity().builder()
+                .repId(REP_ID)
+                .partnerAphiId(11553872)
+                .partnerApplId(11553844)
+                .linkDate(LocalDate.parse("2021-10-09"))
+                .unlinkDate(LocalDate.parse("2021-10-21"))
+                .userCreated("test-u")
+                .userModified("test-f")
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .dateModified(LocalDateTime.parse("2021-10-21T15:01:25"))
+                .build();
+    }
+
+    public static ApplicantHistoryEntity getApplicantHistoryEntity(String sendToCclf) {
+        return new ApplicantHistoryEntity().builder()
+                .applId(716)
+                .dob(LocalDate.parse("1981-10-14"))
+                .bankAccountName("test-acc-name")
+                .email("test@test.com")
+                .asAtDate(LocalDate.parse("2006-10-06"))
+                .firstName("test_first")
+                .lastName("test_last")
+                .otherNames("test")
+                .niNumber("JM933396A")
+                .gender("Male")
+                .sendToCclf(sendToCclf)
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("TEST")
                 .build();
     }
 

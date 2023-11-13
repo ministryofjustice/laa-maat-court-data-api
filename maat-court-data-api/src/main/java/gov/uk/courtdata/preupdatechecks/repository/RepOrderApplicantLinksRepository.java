@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface RepOrderApplicantLinksRepository extends JpaRepository<RepOrderApplicantLinksEntity, Integer> {
+
     List<RepOrderApplicantLinksEntity> findAllByRepId(Integer repId);
 
 }

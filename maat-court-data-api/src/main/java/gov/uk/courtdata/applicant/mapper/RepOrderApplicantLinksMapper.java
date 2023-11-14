@@ -1,7 +1,7 @@
-package gov.uk.courtdata.preupdatechecks.mapper;
+package gov.uk.courtdata.applicant.mapper;
 
-import gov.uk.courtdata.preupdatechecks.dto.RepOrderApplicantLinksDTO;
-import gov.uk.courtdata.preupdatechecks.entity.RepOrderApplicantLinksEntity;
+import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
+import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import org.mapstruct.*;
 
 import java.util.List;

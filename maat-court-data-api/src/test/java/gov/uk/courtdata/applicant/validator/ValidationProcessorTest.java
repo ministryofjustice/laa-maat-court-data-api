@@ -1,6 +1,5 @@
-package gov.uk.courtdata.preupdatechecks.validator;
+package gov.uk.courtdata.applicant.validator;
 
-import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
@@ -15,13 +14,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PreUpdateChecksValidationProcessorTest {
+public class ValidationProcessorTest {
 
     @Mock
     private MaatIdValidator maatIdValidator;
 
     @InjectMocks
-    private PreUpdateChecksValidationProcessor preUpdateChecksValidationProcessor;
+    private ApplicantValidationProcessor preUpdateChecksValidationProcessor;
 
     @Test
     void givenAValidRepId_whenValidateIsInvoked_thenRepIdValidationIsSuccess() {

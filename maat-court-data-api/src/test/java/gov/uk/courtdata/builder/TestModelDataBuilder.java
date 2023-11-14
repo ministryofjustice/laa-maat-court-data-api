@@ -19,8 +19,8 @@ import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
-import gov.uk.courtdata.preupdatechecks.dto.ApplicantHistoryDTO;
-import gov.uk.courtdata.preupdatechecks.dto.RepOrderApplicantLinksDTO;
+import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
+import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

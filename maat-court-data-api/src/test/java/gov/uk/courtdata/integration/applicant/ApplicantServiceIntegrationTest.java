@@ -1,15 +1,15 @@
-package gov.uk.courtdata.integration.preupdatechecks;
+package gov.uk.courtdata.integration.applicant;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.preupdatechecks.dto.ApplicantHistoryDTO;
-import gov.uk.courtdata.preupdatechecks.dto.RepOrderApplicantLinksDTO;
-import gov.uk.courtdata.preupdatechecks.repository.ApplicantHistoryRepository;
-import gov.uk.courtdata.preupdatechecks.repository.RepOrderApplicantLinksRepository;
-import gov.uk.courtdata.preupdatechecks.service.ApplicantHistoryService;
-import gov.uk.courtdata.preupdatechecks.service.RepOrderApplicantLinksService;
+import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
+import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
+import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
+import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
+import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
+import gov.uk.courtdata.applicant.service.RepOrderApplicantLinksService;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.RepositoryUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 
 @Slf4j
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class PreUpdateChecksServiceIntegrationTest {
+public class ApplicantServiceIntegrationTest {
 
     @Autowired
     private RepOrderApplicantLinksRepository repOrderApplicantLinksRepository;

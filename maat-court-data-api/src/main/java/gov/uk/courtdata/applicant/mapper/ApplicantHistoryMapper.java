@@ -1,7 +1,7 @@
-package gov.uk.courtdata.preupdatechecks.mapper;
+package gov.uk.courtdata.applicant.mapper;
 
-import gov.uk.courtdata.preupdatechecks.dto.ApplicantHistoryDTO;
-import gov.uk.courtdata.preupdatechecks.entity.ApplicantHistoryEntity;
+import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
+import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import org.mapstruct.*;
 
 @Mapper(

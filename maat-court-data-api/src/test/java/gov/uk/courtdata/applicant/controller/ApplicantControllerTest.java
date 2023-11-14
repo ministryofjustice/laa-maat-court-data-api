@@ -1,14 +1,14 @@
-package gov.uk.courtdata.preupdatechecks.controller;
+package gov.uk.courtdata.applicant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.preupdatechecks.dto.ApplicantHistoryDTO;
-import gov.uk.courtdata.preupdatechecks.dto.RepOrderApplicantLinksDTO;
-import gov.uk.courtdata.preupdatechecks.service.ApplicantHistoryService;
-import gov.uk.courtdata.preupdatechecks.service.RepOrderApplicantLinksService;
-import gov.uk.courtdata.preupdatechecks.validator.PreUpdateChecksValidationProcessor;
+import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
+import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
+import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
+import gov.uk.courtdata.applicant.service.RepOrderApplicantLinksService;
+import gov.uk.courtdata.applicant.validator.ApplicantValidationProcessor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,10 +25,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(PreUpdateChecksController.class)
-public class PreUpdateChecksControllerTest {
+@WebMvcTest(ApplicantController.class)
+public class ApplicantControllerTest {
 
-    private static final String ENDPOINT_URL = "/api/internal/v1/assessment/application/pre-update-checks";
+    private static final String ENDPOINT_URL = "/api/internal/v1/assessment/applicant";
 
     @Autowired
     private MockMvc mvc;
@@ -40,7 +40,7 @@ public class PreUpdateChecksControllerTest {
     private RepOrderApplicantLinksService repOrderApplicantLinksService;
 
     @MockBean
-    private PreUpdateChecksValidationProcessor validator;
+    private ApplicantValidationProcessor validator;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -48,7 +48,7 @@ public class PreUpdateChecksControllerTest {
     @Test
     void givenAValidationException_whenGetRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         when(validator.validate(any())).thenThrow(new ValidationException());
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/repId/" + REP_ID))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + REP_ID))
                 .andExpect(status().isBadRequest());
     }
 
@@ -56,7 +56,7 @@ public class PreUpdateChecksControllerTest {
     void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenResponseIsReturned() throws Exception {
         List<RepOrderApplicantLinksDTO> response = TestModelDataBuilder.getRepOrderApplicantLinksDTO();
         when(repOrderApplicantLinksService.getRepOrderApplicantLinks(REP_ID)).thenReturn(response);
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/repId/" + REP_ID))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + REP_ID))
                 .andExpect(status().isOk());
         verify(repOrderApplicantLinksService).getRepOrderApplicantLinks(REP_ID);
     }

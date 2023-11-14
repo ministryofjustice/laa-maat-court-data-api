@@ -1,10 +1,10 @@
-package gov.uk.courtdata.preupdatechecks.service;
+package gov.uk.courtdata.applicant.service;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.preupdatechecks.entity.RepOrderApplicantLinksEntity;
-import gov.uk.courtdata.preupdatechecks.mapper.RepOrderApplicantLinksMapper;
-import gov.uk.courtdata.preupdatechecks.repository.RepOrderApplicantLinksRepository;
+import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
+import gov.uk.courtdata.applicant.mapper.RepOrderApplicantLinksMapper;
+import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

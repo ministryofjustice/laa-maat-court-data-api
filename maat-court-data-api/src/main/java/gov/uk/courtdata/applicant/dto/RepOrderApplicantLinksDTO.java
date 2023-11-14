@@ -1,4 +1,4 @@
-package gov.uk.courtdata.preupdatechecks.dto;
+package gov.uk.courtdata.applicant.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

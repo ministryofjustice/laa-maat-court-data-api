@@ -57,7 +57,7 @@ public class ApplicantHistoryEntity {
     private String emstCode;
 
     @Column(name = "ETHN_ID")
-    private String ethnCode;
+    private Integer ethnId;
 
     @Column(name = "DISABLED")
     private String disabled;
@@ -75,7 +75,7 @@ public class ApplicantHistoryEntity {
     private String sortCode;
 
     @Column(name = "BANK_ACCOUNT_NO")
-    private String bankAccountNo;
+    private Integer bankAccountNo;
 
     @Column(name = "BANK_ACCOUNT_NAME")
     private String bankAccountName;
@@ -102,7 +102,7 @@ public class ApplicantHistoryEntity {
     private String sendToCclf;
 
     @Column(name = "SPECIAL_INVESTIGATION")
-    private LocalDateTime specialInvestigation;
+    private LocalDate specialInvestigation;
 
     @Column(name = "PHONE_WORK")
     private String phoneWork;

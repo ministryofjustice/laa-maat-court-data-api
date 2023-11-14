@@ -21,7 +21,7 @@ public class RepOrderApplicantLinksService {
     private final RepOrderApplicantLinksMapper repOrderApplicantLinksMapper;
 
     @Transactional(readOnly = true)
-    public List<RepOrderApplicantLinksDTO> getRepOrderApplicantLinks(Integer repId) {
+    public List<RepOrderApplicantLinksDTO> find(Integer repId) {
         log.info("RepOrderApplicantLinksService::getRepOrderApplicantLinks - Start");
         List<RepOrderApplicantLinksEntity> repOrderApplicantLinksEntities = repOrderApplicantLinksRepository.findAllByRepId(repId);
         if (repOrderApplicantLinksEntities.isEmpty()) {

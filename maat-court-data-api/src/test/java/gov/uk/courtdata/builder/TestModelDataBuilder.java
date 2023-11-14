@@ -69,6 +69,8 @@ public class TestModelDataBuilder {
     public static final String CORRESPONDENCE_STATUS = "appealCC";
     public static final String EFFECTIVE_DATE = "01-JAN-20233";
     public static final int MOCK_HRD_ID = 4253;
+    public static final String SEND_TO_CCLF = "y";
+
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;

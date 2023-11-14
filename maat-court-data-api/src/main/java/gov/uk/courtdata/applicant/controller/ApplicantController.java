@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Application Pre Update Checks", description = "Rest API for application pre update checks")
+@Tag(name = "Applicants", description = "Rest API for applicants")
 @RequestMapping("${api-endpoints.assessments-domain}/applicant")
 public class ApplicantController {
 
@@ -45,7 +45,7 @@ public class ApplicantController {
             @PathVariable int repId) {
         log.info("Get Rep Order Applicant Links Request Received");
         applicantValidationProcessor.validate(repId);
-        return ResponseEntity.ok(repOrderApplicantLinksService.getRepOrderApplicantLinks(repId));
+        return ResponseEntity.ok(repOrderApplicantLinksService.find(repId));
     }
 
     @PutMapping(value = "/applicant-history", produces = MediaType.APPLICATION_JSON_VALUE)

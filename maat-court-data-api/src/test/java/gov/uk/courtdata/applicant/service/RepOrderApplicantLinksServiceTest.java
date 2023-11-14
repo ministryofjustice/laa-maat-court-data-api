@@ -34,7 +34,7 @@ public class RepOrderApplicantLinksServiceTest {
     @Test
     void givenAValidInput_whenGetRepOrderApplicantLinksIsInvoked_thenShouldReturnsListOfRepOrderApplicantLinksDTO() {
         when(repOrderApplicantLinksRepository.findAllByRepId(anyInt())).thenReturn(List.of(RepOrderApplicantLinksEntity.builder().repId(TestModelDataBuilder.REP_ID).build()));
-        repOrderApplicantLinksService.getRepOrderApplicantLinks(REP_ID);
+        repOrderApplicantLinksService.find(REP_ID);
         verify(repOrderApplicantLinksRepository, atLeastOnce()).findAllByRepId(REP_ID);
         verify(repOrderApplicantLinksMapper, atLeastOnce()).mapEntityToDTO(any());
     }
@@ -43,7 +43,7 @@ public class RepOrderApplicantLinksServiceTest {
     void givenRepOrderApplicantLinksNotFound_whenFindAllIsInvoked_thenExceptionIsRaised() {
         when(repOrderApplicantLinksRepository.findAllByRepId(anyInt())).thenReturn(List.of());
         assertThatThrownBy(() -> {
-            repOrderApplicantLinksService.getRepOrderApplicantLinks(REP_ID);
+            repOrderApplicantLinksService.find(REP_ID);
         }).isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Rep Order Applicant Links not found for repId");
     }

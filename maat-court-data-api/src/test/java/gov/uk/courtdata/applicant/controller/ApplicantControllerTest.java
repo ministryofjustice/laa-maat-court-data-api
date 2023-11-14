@@ -1,18 +1,20 @@
 package gov.uk.courtdata.applicant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
 import gov.uk.courtdata.applicant.service.RepOrderApplicantLinksService;
 import gov.uk.courtdata.applicant.validator.ApplicantValidationProcessor;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.constants.ErrorCodes;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.exception.ValidationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -55,10 +57,10 @@ public class ApplicantControllerTest {
     @Test
     void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenResponseIsReturned() throws Exception {
         List<RepOrderApplicantLinksDTO> response = TestModelDataBuilder.getRepOrderApplicantLinksDTO();
-        when(repOrderApplicantLinksService.getRepOrderApplicantLinks(REP_ID)).thenReturn(response);
+        when(repOrderApplicantLinksService.find(REP_ID)).thenReturn(response);
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + REP_ID))
                 .andExpect(status().isOk());
-        verify(repOrderApplicantLinksService).getRepOrderApplicantLinks(REP_ID);
+        verify(repOrderApplicantLinksService).find(REP_ID);
     }
 
     @Test
@@ -86,5 +88,16 @@ public class ApplicantControllerTest {
                         .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(1, "Y")))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(404));
+    }
+
+    @Test
+    void givenInternalServerError_whenUpdateApplicantHistoryIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        when(applicantHistoryService.update(any())).thenThrow(EmptyResultDataAccessException.class);
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/applicant-history")
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(1, "Y")))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
     }
 }

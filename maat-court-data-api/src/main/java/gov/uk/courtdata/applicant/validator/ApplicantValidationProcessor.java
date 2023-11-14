@@ -1,4 +1,4 @@
-package gov.uk.courtdata.preupdatechecks.validator;
+package gov.uk.courtdata.applicant.validator;
 
 import gov.uk.courtdata.validator.MaatIdValidator;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PreUpdateChecksValidationProcessor {
+public class ApplicantValidationProcessor {
 
     private final MaatIdValidator maatIdValidator;
     public Optional<Void> validate(Integer repId) {

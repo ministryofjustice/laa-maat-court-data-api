@@ -1,10 +1,10 @@
-package gov.uk.courtdata.preupdatechecks.service;
+package gov.uk.courtdata.applicant.service;
 
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.preupdatechecks.dto.RepOrderApplicantLinksDTO;
-import gov.uk.courtdata.preupdatechecks.entity.RepOrderApplicantLinksEntity;
-import gov.uk.courtdata.preupdatechecks.mapper.RepOrderApplicantLinksMapper;
-import gov.uk.courtdata.preupdatechecks.repository.RepOrderApplicantLinksRepository;
+import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
+import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
+import gov.uk.courtdata.applicant.mapper.RepOrderApplicantLinksMapper;
+import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class RepOrderApplicantLinksService {
 
     @Transactional(readOnly = true)
     public List<RepOrderApplicantLinksDTO> getRepOrderApplicantLinks(Integer repId) {
-        log.info("RepOrderApplicantLinksService - findAllByRepId - Start");
+        log.info("RepOrderApplicantLinksService::getRepOrderApplicantLinks - Start");
         List<RepOrderApplicantLinksEntity> repOrderApplicantLinksEntities = repOrderApplicantLinksRepository.findAllByRepId(repId);
         if (repOrderApplicantLinksEntities.isEmpty()) {
             throw new RequestedObjectNotFoundException(String.format("Rep Order Applicant Links not found for repId: %d", repId));

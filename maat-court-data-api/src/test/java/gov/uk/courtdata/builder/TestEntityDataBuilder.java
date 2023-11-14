@@ -2,8 +2,8 @@ package gov.uk.courtdata.builder;
 
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.*;
-import gov.uk.courtdata.preupdatechecks.entity.ApplicantHistoryEntity;
-import gov.uk.courtdata.preupdatechecks.entity.RepOrderApplicantLinksEntity;
+import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
+import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;

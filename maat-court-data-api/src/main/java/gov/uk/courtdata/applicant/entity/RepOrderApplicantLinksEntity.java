@@ -1,4 +1,4 @@
-package gov.uk.courtdata.preupdatechecks.entity;
+package gov.uk.courtdata.applicant.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

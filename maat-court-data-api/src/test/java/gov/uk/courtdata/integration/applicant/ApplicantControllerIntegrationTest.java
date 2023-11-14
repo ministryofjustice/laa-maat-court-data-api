@@ -1,11 +1,11 @@
-package gov.uk.courtdata.integration.preupdatechecks;
+package gov.uk.courtdata.integration.applicant;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.preupdatechecks.repository.ApplicantHistoryRepository;
-import gov.uk.courtdata.preupdatechecks.repository.RepOrderApplicantLinksRepository;
+import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
+import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.util.RepositoryUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +24,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @AutoConfigureMockMvc
-public class PreUpdateChecksControllerIntegrationTest {
+public class ApplicantControllerIntegrationTest {
 
     private static final Integer INVALID_REP_ID = 234;
-    private static final String ENDPOINT_URL = "/api/internal/v1/assessment/application/pre-update-checks";
+    private static final String ENDPOINT_URL = "/api/internal/v1/assessment/applicant";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -53,14 +53,14 @@ public class PreUpdateChecksControllerIntegrationTest {
     void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenResponseIsReturned() throws Exception {
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
         repOrderApplicantLinksRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/repId/" + REP_ID))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + REP_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
     void givenIncorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/repId/" + INVALID_REP_ID))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + INVALID_REP_ID))
                 .andExpect(status().isBadRequest());
     }
 

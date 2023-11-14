@@ -1,6 +1,6 @@
-package gov.uk.courtdata.preupdatechecks.repository;
+package gov.uk.courtdata.applicant.repository;
 
-import gov.uk.courtdata.preupdatechecks.entity.ApplicantHistoryEntity;
+import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

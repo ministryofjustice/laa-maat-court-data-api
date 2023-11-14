@@ -1,10 +1,10 @@
-package gov.uk.courtdata.preupdatechecks.service;
+package gov.uk.courtdata.applicant.service;
 
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.preupdatechecks.dto.ApplicantHistoryDTO;
-import gov.uk.courtdata.preupdatechecks.entity.ApplicantHistoryEntity;
-import gov.uk.courtdata.preupdatechecks.mapper.ApplicantHistoryMapper;
-import gov.uk.courtdata.preupdatechecks.repository.ApplicantHistoryRepository;
+import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
+import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
+import gov.uk.courtdata.applicant.mapper.ApplicantHistoryMapper;
+import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class ApplicantHistoryService {
 
     @Transactional
     public ApplicantHistoryDTO update(ApplicantHistoryDTO applicantHistoryDTO) {
-        log.info("ApplicantHistoryService - findById - Start");
+        log.info("ApplicantHistoryService::update - Start");
         Integer id = applicantHistoryDTO.getId();
         ApplicantHistoryEntity applicantHistoryEntity = applicantHistoryRepository.findById(id).orElse(null);
         if (applicantHistoryEntity == null) {

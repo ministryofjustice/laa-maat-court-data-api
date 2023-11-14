@@ -1,6 +1,5 @@
-package gov.uk.courtdata.preupdatechecks.dto;
+package gov.uk.courtdata.applicant.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

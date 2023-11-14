@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -42,4 +43,9 @@ public class RepOrderCCOutComeEntity {
     @Column(name = "DATE_MODIFIED")
     @UpdateTimestamp
     private LocalDateTime dateModified;
+    @ToString.Exclude
+    @JsonBackReference
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "REP_ID", nullable = false, updatable = false)
+    private RepOrderEntity repOrder;
 }

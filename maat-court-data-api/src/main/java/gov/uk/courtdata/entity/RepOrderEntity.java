@@ -36,6 +36,15 @@ public class RepOrderEntity {
     @ToString.Exclude
     @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<FinancialAssessmentEntity> financialAssessments = new ArrayList<>();
+    @ToString.Exclude
+    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ContributionsEntity> contributions = new ArrayList<>();
+    @ToString.Exclude
+    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<RepOrderCCOutComeEntity> repOrderCCOutCome = new ArrayList<>();
+    @ToString.Exclude
+    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<IOJAppealEntity> iojAppeal = new ArrayList<>();
     @Id
     @Column(name = "ID")
     private Integer id;

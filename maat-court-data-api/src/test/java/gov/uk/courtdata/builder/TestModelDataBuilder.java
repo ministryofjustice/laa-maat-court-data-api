@@ -19,6 +19,8 @@ import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
+import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
+import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -106,6 +108,40 @@ public class TestModelDataBuilder {
                         .build()
         ));
         return financialAssessment;
+    }
+
+    public static List<RepOrderApplicantLinksDTO> getRepOrderApplicantLinksDTO() {
+        return List.of(RepOrderApplicantLinksDTO.builder()
+                .id(11553845)
+                .repId(2522394)
+                .partnerAphiId(11553872)
+                .partnerApplId(11553844)
+                .linkDate(LocalDate.parse("2021-10-09"))
+                .unlinkDate(LocalDate.parse("2021-10-21"))
+                .userCreated("test-u")
+                .userModified("test-f")
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .dateModified(LocalDateTime.parse("2021-10-21T15:01:25"))
+                .build());
+    }
+
+    public static ApplicantHistoryDTO getApplicantHistoryDTO(Integer id, String sendToCclf) {
+        return ApplicantHistoryDTO.builder()
+                .id(id)
+                .applId(716)
+                .dob(LocalDate.parse("1981-10-14"))
+                .bankAccountName("test-acc-name")
+                .email("test@test.com")
+                .asAtDate(LocalDate.parse("2006-10-06"))
+                .firstName("test_first")
+                .lastName("test_last")
+                .otherNames("test")
+                .niNumber("JM933396A")
+                .gender("Male")
+                .sendToCclf(sendToCclf)
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("TEST")
+                .build();
     }
 
     public static FinancialAssessmentDTO getFinancialAssessmentWithChildWeightings() {

@@ -1,10 +1,8 @@
 package gov.uk.courtdata.eform.repository.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,12 +13,15 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "EFORMS_DECISION_HISTORY", schema = "TOGDATA")
 public class EformsDecisionHistory {
 
     @Id
     @Column(name = "ID")
+    @SequenceGenerator(name = "eforms_decision_history_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "eforms_decision_history_seq")
     private Integer id;
     @Column(name = "USN")
     private Integer usn;

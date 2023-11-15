@@ -36,8 +36,7 @@ public class EformAuditControllerTest {
     private MockMvc mvc;
 
     @Test
-
-    void givenUsn_whenGetEformApplicationCalled_thenReturnEformsAudit() throws Exception {
+    void givenUsn_whenGetEformAuditCalled_thenReturnEformsAudit() throws Exception {
         when(mockEformAuditService.retrieve(USN))
                 .thenReturn(EFORM_AUDIT);
 
@@ -48,7 +47,7 @@ public class EformAuditControllerTest {
     }
 
     @Test
-    void givenNonExistentUsn_whenGetEformApplicationCalled_thenReturnAnError() throws Exception {
+    void givenNonExistentUsn_whenGetEformAuditCalled_thenReturnAnError() throws Exception {
         when(mockEformAuditService.retrieve(USN))
                 .thenThrow(USN_VALIDATION_EXCEPTION);
 

@@ -1,6 +1,6 @@
 package gov.uk.courtdata.eform.controller;
 
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.eform.repository.entity.EformsDecisionHistory;
 import gov.uk.courtdata.eform.service.EformsDecisionHistoryService;
 import org.junit.jupiter.api.Test;
@@ -13,18 +13,18 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(EformsDecisionHistoryController.class)
 public class EformsDecisionHistoryControllerTest {
 
-    private static final String ENDPOINT_FORMAT = "/api/eform/decision-history";
-    private static final int USN = 123;
+    private static final String BASE_ENDPOINT_FORMAT = "/api/eform/decision-history";
 
     @MockBean
     private EformsDecisionHistoryService eformsDecisionHistoryService;
@@ -33,20 +33,88 @@ public class EformsDecisionHistoryControllerTest {
     private MockMvc mvc;
 
     @Test
-    void shouldSuccessfullyGetEformApplication() throws Exception {
-        EformsDecisionHistory eformsDecisionHistory = EformsDecisionHistory.builder().id(1).usn(USN).repId(45635).fundingDecision("Granted").iojResult("Pass").build();
-        List<EformsDecisionHistory> eformsDecisionHistoryList = List.of(eformsDecisionHistory);
-        when(eformsDecisionHistoryService.getAllEformsDecisionHistory(USN))
-                .thenReturn(eformsDecisionHistoryList);
+    void shouldSuccessfullyGetNewEformDecisionHistoryForGivenUSN() throws Exception {
+        EformsDecisionHistory eformsDecisionHistory = EformsDecisionHistory.builder().id(1).usn(12345).repId(4563578).fundingDecision("Granted").iojResult("Pass").repDecision("Granted").build();
 
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_FORMAT+ "/" +123)
+        when(eformsDecisionHistoryService.getNewEformsDecisionHistoryRecord(12345))
+                .thenReturn(eformsDecisionHistory);
+
+        mvc.perform(MockMvcRequestBuilders.get(BASE_ENDPOINT_FORMAT+ "/" +12345+"/new")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json("["+responseEformsDecisionHistory()+"]"));
-        verify(eformsDecisionHistoryService, times(1)).getAllEformsDecisionHistory(USN);
+                .andExpect(jsonPath("$.usn").value(String.valueOf(12345)))
+                .andExpect(jsonPath("$.repId").value(String.valueOf(4563578)))
+                .andExpect(jsonPath("$.fundingDecision").value("Granted"))
+                .andExpect(jsonPath("$.iojResult").value("Pass"))
+                .andExpect(jsonPath("$.repDecision").value("Granted"));
+
+        verify(eformsDecisionHistoryService, times(1)).getNewEformsDecisionHistoryRecord(12345);
     }
 
-    private String responseEformsDecisionHistory(){
+    @Test
+    void shouldSuccessfullyGetPreviousEformDecisionHistoryWroteToResultForGivenUSN() throws Exception {
+        EformsDecisionHistory eformsDecisionHistory = EformsDecisionHistory.builder().id(2).usn(12345).repId(4563578)
+                .fundingDecision("Granted").iojResult("Pass").repDecision("Granted").wroteToResults("Y").build();
+
+        when(eformsDecisionHistoryService.getPreviousEformsDecisionHistoryRecordWroteToResult(12345))
+                .thenReturn(eformsDecisionHistory);
+
+        mvc.perform(MockMvcRequestBuilders.get(BASE_ENDPOINT_FORMAT+ "/" +12345+"/previous-wrote-to-result")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.usn").value(String.valueOf(12345)))
+                .andExpect(jsonPath("$.repId").value(String.valueOf(4563578)))
+                .andExpect(jsonPath("$.fundingDecision").value("Granted"))
+                .andExpect(jsonPath("$.iojResult").value("Pass"))
+                .andExpect(jsonPath("$.repDecision").value("Granted"))
+                .andExpect(jsonPath("$.wroteToResults").value("Y"));
+
+        verify(eformsDecisionHistoryService, times(1)).getPreviousEformsDecisionHistoryRecordWroteToResult(12345);
+    }
+
+    @Test
+    void shouldSuccessfullyDeleteEformDecisionHistoryForGivenUSN() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.delete(BASE_ENDPOINT_FORMAT+ "/" +12345)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(eformsDecisionHistoryService, times(1)).deleteEformsDecisionHistory(12345);
+    }
+
+    @Test
+    void shouldSuccessfullyUpdateEformDecisionHistory() throws Exception {
+        EformsDecisionHistory eformsDecisionHistory = EformsDecisionHistory.builder().id(3).usn(12345).repId(45635).fundingDecision("Granted").iojResult("Pass").build();
+        String requestJson = "{\"wroteToResults\":\"Y\"}";
+        Map<String,Object> updateFields = new ObjectMapper().readValue(requestJson, HashMap.class);
+        mvc.perform(MockMvcRequestBuilders.patch(BASE_ENDPOINT_FORMAT+ "/" +12345).content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(eformsDecisionHistoryService, times(1)).updateEformsDecisionHistoryFields(12345, updateFields);
+    }
+
+    @Test
+    void shouldSuccessfullyCreateEformDecisionHistory() throws Exception {
+        EformsDecisionHistory eformsDecisionHistory = EformsDecisionHistory.builder().id(1).usn(123).repId(45635).fundingDecision("Granted").iojResult("Pass").build();
+        mvc.perform(MockMvcRequestBuilders.post(BASE_ENDPOINT_FORMAT).content(eformsDecisionHistory())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(eformsDecisionHistoryService, times(1)).createEformsDecisionHistory(eformsDecisionHistory);
+    }
+    @Test
+    void shouldSuccessfullyGetAllEformDecisionHistoryForGivenUSN() throws Exception {
+        EformsDecisionHistory eformsDecisionHistory = EformsDecisionHistory.builder().id(1).usn(123).repId(45635).fundingDecision("Granted").iojResult("Pass").build();
+        List<EformsDecisionHistory> eformsDecisionHistoryList = List.of(eformsDecisionHistory);
+        when(eformsDecisionHistoryService.getAllEformsDecisionHistory(123))
+                .thenReturn(eformsDecisionHistoryList);
+
+        mvc.perform(MockMvcRequestBuilders.get(BASE_ENDPOINT_FORMAT+ "/" +123)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json("["+eformsDecisionHistory()+"]"));
+        verify(eformsDecisionHistoryService, times(1)).getAllEformsDecisionHistory(123);
+    }
+
+    private String eformsDecisionHistory(){
         return "{\n" +
                 "  \"id\": 1,\n" +
                 "  \"usn\": 123,\n" +
@@ -76,5 +144,4 @@ public class EformsDecisionHistoryControllerTest {
                 "  \"magsOutcome\": null\n" +
                 "}";
     }
-
 }

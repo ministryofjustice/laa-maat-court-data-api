@@ -16,7 +16,7 @@ public class EformAuditController {
 
     @GetMapping(value ="/{usn}")
     @StandardApiResponseCodes
-    public EformsAudit getEformApplication(@PathVariable Integer usn) {
+    public EformsAudit getEformAudit(@PathVariable Integer usn) {
         return eformAuditService.retrieve(usn);
     }
 }

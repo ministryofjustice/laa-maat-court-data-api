@@ -16,12 +16,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EformsDecisionHistoryService {
 
+    private static final String WROTE_TO_RESULT = "Y";
+
     private final EformsDecisionHistoryRepository eformsDecisionHistoryRepository;
 
     @Transactional
     public List<EformsDecisionHistory> getAllEformsDecisionHistory(Integer usn) {
         return eformsDecisionHistoryRepository.findAllByUsn(usn);
     }
+
     @Transactional
     public EformsDecisionHistory getNewEformsDecisionHistoryRecord(Integer usn) {
         return eformsDecisionHistoryRepository.findTopByUsnOrderByIdDesc(usn);
@@ -29,18 +32,21 @@ public class EformsDecisionHistoryService {
 
     @Transactional
     public EformsDecisionHistory getPreviousEformsDecisionHistoryRecordWroteToResult(Integer usn) {
-        return eformsDecisionHistoryRepository.findFirstByUsnAndWroteToResultsOrderByIdDesc(usn, "Y");
+        return eformsDecisionHistoryRepository.findFirstByUsnAndWroteToResultsOrderByIdDesc(usn, WROTE_TO_RESULT);
     }
 
-   public void createEformsDecisionHistory(EformsDecisionHistory eformsDecisionHistory) {
-        eformsDecisionHistoryRepository.save(eformsDecisionHistory);
+    @Transactional
+    public void createEformsDecisionHistory(EformsDecisionHistory eformsDecisionHistory) {
+        eformsDecisionHistoryRepository.saveAndFlush(eformsDecisionHistory);
     }
 
+    @Transactional
     public void deleteEformsDecisionHistory(Integer usn) {
         eformsDecisionHistoryRepository.deleteAllByUsn(usn);
     }
 
-   public void updateEformsDecisionHistoryFields(Integer usn, Map<String, Object> updateFields) {
+    @Transactional
+    public void updateEformsDecisionHistoryFields(Integer usn, Map<String, Object> updateFields) {
 
         Optional<EformsDecisionHistory> latestEformsDecisionHistory = Optional.ofNullable(eformsDecisionHistoryRepository.findTopByUsnOrderByIdDesc(usn));
 

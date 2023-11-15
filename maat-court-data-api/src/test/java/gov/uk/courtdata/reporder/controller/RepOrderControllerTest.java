@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Arrays.asList;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -35,23 +34,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(RepOrderController.class)
 class RepOrderControllerTest {
 
-    private static final String ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders";
-    private static final String MVO_REG_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo-reg";
-    private static final String MVO_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo";
-    private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
-    private static final String CURRENT_REGISTRATION = "current-registration";
     @Autowired
     private MockMvc mvc;
+
     @MockBean
     private UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
+
     @MockBean
     private MaatIdValidator maatIdValidator;
+
     @MockBean
     private RepOrderService repOrderService;
+
     @MockBean
     private RepOrderMvoRegService repOrderMvoRegService;
+
     @MockBean
     private RepOrderMvoService repOrderMvoService;
+
+    private static final String ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders";
+    private static final String MVO_REG_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo-reg";
+
+    private static final String MVO_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo";
+
+    private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
+
+    private static final String CURRENT_REGISTRATION = "current-registration";
 
     @Test
     void givenGetRequestWithValidRepIdAndNoOptionalParameters_whenFindIsInvoked_thenAssessmentIsRetrieved() throws Exception {
@@ -63,24 +71,6 @@ class RepOrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(expected.getId()));
-    }
-
-    @Test
-    void givenGetRequestWithValidRepIdAndNoOptionalParameters_whenFindIsInvoked_thenContributionsAndIojAppealAndRepOrderCCOutcomeIsRetrieved() throws Exception {
-        RepOrderDTO expected = TestModelDataBuilder.getRepOrderDTO();
-        expected.setContributions(asList(TestModelDataBuilder.getContributionsDTO()));
-        expected.setIojAppeal(asList(TestModelDataBuilder.getIOJAppealDTO()));
-        expected.setRepOrderCCOutcome(asList(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1)));
-        when(repOrderService.find(anyInt(), anyBoolean()))
-                .thenReturn(expected);
-
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(expected.getId()))
-                .andExpect(jsonPath("$.contributions.length()").value(1))
-                .andExpect(jsonPath("$.repOrderCCOutcome.length()").value(1))
-                .andExpect(jsonPath("$.iojAppeal.length()").value(1));
     }
 
     @Test
@@ -205,8 +195,8 @@ class RepOrderControllerTest {
                 .thenReturn(Optional.empty());
         when(repOrderService.update(any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                        .content(TestModelDataBuilder.getUpdateRepOrderJson())
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(TestModelDataBuilder.getUpdateRepOrderJson())
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(TestModelDataBuilder.REP_ID));

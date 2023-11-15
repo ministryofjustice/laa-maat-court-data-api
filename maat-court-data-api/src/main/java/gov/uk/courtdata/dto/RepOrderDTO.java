@@ -38,10 +38,4 @@ public class RepOrderDTO {
     private List<PassportAssessmentDTO> passportAssessments = new ArrayList<>();
     @Builder.Default
     private List<FinancialAssessmentDTO> financialAssessments = new ArrayList<>();
-    @Builder.Default
-    private List<ContributionsDTO> contributions = new ArrayList<>();
-    @Builder.Default
-    private List<RepOrderCCOutcomeDTO> repOrderCCOutcome = new ArrayList<>();
-    @Builder.Default
-    private List<IOJAppealDTO> iojAppeal = new ArrayList<>();
 }

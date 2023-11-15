@@ -1,6 +1,5 @@
 package gov.uk.courtdata.dces.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.dces.request.ConcorContributionRequest;
 import gov.uk.courtdata.dces.enums.ConcorContributionStatus;
@@ -24,7 +23,6 @@ import java.util.List;
 @RequestMapping("/api/internal/v1")
 @Slf4j
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "Concor Contribution", description = "Rest API for Concor Contribution Files")
 public class ConcorContributionsRestController {
 

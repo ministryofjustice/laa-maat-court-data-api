@@ -1,12 +1,12 @@
 package gov.uk.courtdata.entity;
 import gov.uk.courtdata.dces.enums.ConcorContributionStatus;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
 
 @Data

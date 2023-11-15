@@ -1,9 +1,8 @@
 package gov.uk.courtdata.dces.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
-import gov.uk.courtdata.dces.request.ConcorContributionRequest;
 import gov.uk.courtdata.dces.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
+import gov.uk.courtdata.dces.request.ConcorContributionRequest;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -13,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@XRayEnabled
 @RequiredArgsConstructor
 public class ConcorContributionsService {
     private static final String DB_USER_NAME = "MLA";

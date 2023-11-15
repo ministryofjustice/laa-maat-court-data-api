@@ -115,6 +115,7 @@ sentry:
 
 api-endpoints:
   assessments-domain: /api/internal/v1/assessment
+  user-domain: /api/internal/v1/users
 
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}

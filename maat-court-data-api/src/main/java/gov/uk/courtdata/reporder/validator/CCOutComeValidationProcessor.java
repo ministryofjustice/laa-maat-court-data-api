@@ -1,6 +1,5 @@
 package gov.uk.courtdata.reporder.validator;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@XRayEnabled
 public class CCOutComeValidationProcessor {
 
     private final MaatIdValidator maatIdValidator;

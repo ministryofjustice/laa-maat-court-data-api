@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hardship.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
@@ -18,10 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class HardshipReviewService {
 
     private final HardshipReviewImpl hardshipReviewImpl;

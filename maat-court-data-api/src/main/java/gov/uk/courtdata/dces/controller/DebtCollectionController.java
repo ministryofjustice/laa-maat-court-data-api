@@ -1,6 +1,5 @@
 package gov.uk.courtdata.dces.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dces.service.DebtCollectionService;
 import gov.uk.courtdata.enums.LoggingData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,12 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/internal/v1/debt-collection-enforcement")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "Debt Collection Enforcement", description = "Rest API for Debt Collection Enforcement Service")
+@RequestMapping("/api/internal/v1/debt-collection-enforcement")
 public class DebtCollectionController {
 
     private final DebtCollectionService dceService;

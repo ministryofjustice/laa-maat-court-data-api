@@ -7,7 +7,6 @@ import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
-import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
@@ -20,6 +19,8 @@ import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
+import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
+import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -68,6 +69,8 @@ public class TestModelDataBuilder {
     public static final String CORRESPONDENCE_STATUS = "appealCC";
     public static final String EFFECTIVE_DATE = "01-JAN-20233";
     public static final int MOCK_HRD_ID = 4253;
+    public static final String SEND_TO_CCLF = "y";
+
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -107,6 +110,40 @@ public class TestModelDataBuilder {
                         .build()
         ));
         return financialAssessment;
+    }
+
+    public static List<RepOrderApplicantLinksDTO> getRepOrderApplicantLinksDTO() {
+        return List.of(RepOrderApplicantLinksDTO.builder()
+                .id(11553845)
+                .repId(2522394)
+                .partnerAphiId(11553872)
+                .partnerApplId(11553844)
+                .linkDate(LocalDate.parse("2021-10-09"))
+                .unlinkDate(LocalDate.parse("2021-10-21"))
+                .userCreated("test-u")
+                .userModified("test-f")
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .dateModified(LocalDateTime.parse("2021-10-21T15:01:25"))
+                .build());
+    }
+
+    public static ApplicantHistoryDTO getApplicantHistoryDTO(Integer id, String sendToCclf) {
+        return ApplicantHistoryDTO.builder()
+                .id(id)
+                .applId(716)
+                .dob(LocalDate.parse("1981-10-14"))
+                .bankAccountName("test-acc-name")
+                .email("test@test.com")
+                .asAtDate(LocalDate.parse("2006-10-06"))
+                .firstName("test_first")
+                .lastName("test_last")
+                .otherNames("test")
+                .niNumber("JM933396A")
+                .gender("Male")
+                .sendToCclf(sendToCclf)
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("TEST")
+                .build();
     }
 
     public static FinancialAssessmentDTO getFinancialAssessmentWithChildWeightings() {
@@ -607,11 +644,11 @@ public class TestModelDataBuilder {
                 .reviewResult("FAIL")
                 .solicitorCosts(
                         SolicitorCosts.builder()
-                                .solicitorRate(DataBuilderUtil.createScaledBigDecimal(183.00))
-                                .solicitorHours(DataBuilderUtil.createScaledBigDecimal(12.00))
-                                .solicitorVat(DataBuilderUtil.createScaledBigDecimal(384.25))
-                                .solicitorDisb(DataBuilderUtil.createScaledBigDecimal(0.00))
-                                .solicitorEstTotalCost(DataBuilderUtil.createScaledBigDecimal(2580.25))
+                                .rate(DataBuilderUtil.createScaledBigDecimal(183.00))
+                                .hours(DataBuilderUtil.createScaledBigDecimal(12.00))
+                                .vat(DataBuilderUtil.createScaledBigDecimal(384.25))
+                                .disbursements(DataBuilderUtil.createScaledBigDecimal(0.00))
+                                .estimatedTotal(DataBuilderUtil.createScaledBigDecimal(2580.25))
                                 .build()
                 )
                 .disposableIncome(DataBuilderUtil.createScaledBigDecimal(4215.46))
@@ -656,11 +693,12 @@ public class TestModelDataBuilder {
                     "   \"frequency\": \"MONTHLY\",\n" +
                     "   \"amount\": 107.84,\n" +
                     "   \"accepted\": \"Y\",\n" +
-                    "   \"type\": \"EXPENDITURE\"\n" +
+                    "   \"type\": \"EXPENDITURE\",\n" +
+                    "   \"detailReason\": \"Evidence Supplied\"\n" +
                     "}],\n" +
                     "\"reviewProgressItems\": [{\n" +
-                    "   \"progressAction\": \"ADDITIONAL_EVIDENCE\",\n" +
-                    "   \"progressResponse\": \"FURTHER_RECEIVED\"\n" +
+                    "   \"progressAction\": \"ADDITIONAL EVIDENCE\",\n" +
+                    "   \"progressResponse\": \"FURTHER RECEIVED\"\n" +
                     "}]\n";
         }
 
@@ -698,11 +736,12 @@ public class TestModelDataBuilder {
                     "   \"frequency\": \"MONTHLY\",\n" +
                     "   \"amount\": 107.84,\n" +
                     "   \"accepted\": \"Y\",\n" +
-                    "   \"type\": \"EXPENDITURE\"\n" +
+                    "   \"type\": \"EXPENDITURE\",\n" +
+                    "   \"detailReason\": \"Evidence Supplied\"\n" +
                     "}],\n" +
                     "\"reviewProgressItems\": [{\n" +
-                    "   \"progressAction\": \"ADDITIONAL_EVIDENCE\",\n" +
-                    "   \"progressResponse\": \"FURTHER_RECEIVED\"\n" +
+                    "   \"progressAction\": \"ADDITIONAL EVIDENCE\",\n" +
+                    "   \"progressResponse\": \"FURTHER RECEIVED\"\n" +
                     "}]\n";
         }
 
@@ -774,6 +813,7 @@ public class TestModelDataBuilder {
                 .amount(BigDecimal.valueOf(107.84))
                 .accepted("Y")
                 .reasonResponse("evidence provided")
+                .detailReason(HardshipReviewDetailReason.EVIDENCE_SUPPLIED)
                 .active(false)
                 .build();
     }
@@ -1338,18 +1378,6 @@ public class TestModelDataBuilder {
         return CorrespondenceStateEntity.builder()
                 .repId(repId)
                 .status(status)
-                .build();
-    }
-
-    public static ContributionFilesEntity getContributionFile(String xmlContent, String fileName, LocalDate dateCreated){
-
-        return ContributionFilesEntity.builder()
-                .xmlContent(xmlContent)
-                .dateCreated(dateCreated)
-                .userCreated("test-f")
-                .dateReceived(LocalDate.now())
-                .dateSent(LocalDate.now())
-        //        .upliftApplied(fileName)
                 .build();
     }
 }

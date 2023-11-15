@@ -1,6 +1,5 @@
 package gov.uk.courtdata.reporder.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.repository.RepOrderCapitalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class RepOrderCapitalImpl {
 

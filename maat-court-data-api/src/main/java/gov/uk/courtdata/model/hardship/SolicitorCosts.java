@@ -12,9 +12,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SolicitorCosts {
-    private BigDecimal solicitorRate;
-    private BigDecimal solicitorHours;
-    private BigDecimal solicitorVat;
-    private BigDecimal solicitorDisb;
-    private BigDecimal solicitorEstTotalCost;
+    private BigDecimal rate;
+    private BigDecimal hours;
+    private BigDecimal vat;
+    private BigDecimal disbursements;
+    private BigDecimal estimatedTotal;
 }

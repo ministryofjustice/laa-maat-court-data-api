@@ -1,11 +1,13 @@
 package gov.uk.courtdata.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonValue;
 import gov.uk.courtdata.converter.AbstractEnumConverter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import javax.persistence.Converter;
+import jakarta.persistence.Converter;
+
 
 @Getter
 @AllArgsConstructor
@@ -16,8 +18,9 @@ public enum HardshipReviewProgressResponse implements PersistableEnum<String> {
     ORIGINAL_RECEIVED("ORIGINAL RECEIVED", "Original application received from HMCS"),
     ADDITIONAL_PROVIDED("ADDITIONAL PROVIDED", "Additional evidence provided");
 
-    private String response;
-    private String description;
+    @JsonValue
+    private final String response;
+    private final String description;
 
     @Override
     public String getValue() {

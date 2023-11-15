@@ -4,7 +4,7 @@ package gov.uk.courtdata.entity;
 import gov.uk.courtdata.model.id.ProceedingMaatId;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Data
 @Builder

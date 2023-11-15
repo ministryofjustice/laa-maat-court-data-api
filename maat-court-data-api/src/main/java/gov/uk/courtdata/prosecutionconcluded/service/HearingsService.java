@@ -1,6 +1,5 @@
 package gov.uk.courtdata.prosecutionconcluded.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -12,9 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 @Slf4j
-@XRayEnabled
+@Service
 @RequiredArgsConstructor
 public class HearingsService {
 

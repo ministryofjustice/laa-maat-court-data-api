@@ -1,6 +1,5 @@
 package gov.uk.courtdata.eform.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.model.EformStagingResponse;
@@ -14,11 +13,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/eform")
 @Slf4j
-@XRayEnabled
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/eform")
 public class EformStagingController {
 
     private static final String DEFAULT_EFORM_TYPE = "CRM14";

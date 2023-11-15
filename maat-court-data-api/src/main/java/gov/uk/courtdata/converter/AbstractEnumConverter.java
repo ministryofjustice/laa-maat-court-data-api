@@ -2,8 +2,9 @@ package gov.uk.courtdata.converter;
 
 import gov.uk.courtdata.enums.PersistableEnum;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
+
 import java.util.stream.Stream;
 
 @Converter

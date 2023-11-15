@@ -1,6 +1,5 @@
 package gov.uk.courtdata.contribution.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.service.ContributionCalcService;
 import gov.uk.courtdata.dto.ErrorDTO;
@@ -18,14 +17,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/contribution-calc-params")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "ContributionCalc", description = "Rest API for Contribution Calc Parameters")
+@RequestMapping("${api-endpoints.assessments-domain}/contribution-calc-params")
 public class ContributionCalcController {
 
     private final ContributionCalcService contributionCalcService;

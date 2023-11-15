@@ -1,12 +1,11 @@
 package gov.uk.courtdata.link.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.CpJobStatus;
 import gov.uk.courtdata.service.QueueMessageLogService;
-import io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy;
-import io.awspring.cloud.messaging.listener.annotation.SqsListener;
+
+import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -14,9 +13,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
-@XRayEnabled
+@RequiredArgsConstructor
 @ConditionalOnProperty(value = "feature.postMvpEnabled", havingValue = "true")
 public class CreateLinkCpJobStatusListener {
 
@@ -25,8 +23,7 @@ public class CreateLinkCpJobStatusListener {
     private final QueueMessageLogService queueMessageLogService;
 
 //This queue is not in use anymore - May 2023
-@SqsListener(value = "${cloud-platform.aws.sqs.queue.createLinkCpStatusJob}",
-        deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+@SqsListener(value = "${cloud-platform.aws.sqs.queue.createLinkCpStatusJob}")
     public void receive(@Payload final String message) {
 
         queueMessageLogService.createLog(MessageType.CREATE_LINK_CP_STATUS_JOB, message);

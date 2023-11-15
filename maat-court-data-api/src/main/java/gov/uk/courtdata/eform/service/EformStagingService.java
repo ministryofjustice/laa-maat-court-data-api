@@ -1,6 +1,5 @@
 package gov.uk.courtdata.eform.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.exception.USNExceptionUtil;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
@@ -16,10 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
  * verification is the responsibility of the calling class.
  * e.g. verify that a given entity exists before attempting to delete it
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class EformStagingService {
 
     private final EformStagingRepository eformStagingRepository;

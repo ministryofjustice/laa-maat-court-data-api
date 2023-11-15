@@ -5,7 +5,8 @@ import gov.uk.courtdata.converter.AbstractEnumConverter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import javax.persistence.Converter;
+import jakarta.persistence.Converter;
+
 
 @Getter
 @AllArgsConstructor
@@ -27,7 +28,7 @@ public enum HardshipReviewDetailCode implements PersistableEnum<String> {
     PRESCRIPTION("PRESCRIPTION", "Prescription Costs"),
     PENSION_PAY("PENSION PAY", "Pension Payments"),
     // Typo in the data that is already in the table
-    MEDICAL_COSTS("MEDIAL COSTS", "Medical Costs"),
+    MEDICAL_COSTS("MEDICAL COSTS", "Medical Costs"),
     OTHER("OTHER", "Other"),
     MEDICAL_GROUNDS("MEDICAL GROUNDS", "Medical Grounds"),
     SUSPENDED_WORK("SUSPENDED WORK", "Suspended from work"),

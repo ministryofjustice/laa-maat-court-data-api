@@ -1,6 +1,5 @@
 package gov.uk.courtdata.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.service.ResultsService;
@@ -21,12 +20,11 @@ import java.util.List;
 
 import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/result")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "result", description = "Rest API for result")
+@RequestMapping("${api-endpoints.assessments-domain}/result")
 public class ResultController {
 
     private final ResultsService resultService;

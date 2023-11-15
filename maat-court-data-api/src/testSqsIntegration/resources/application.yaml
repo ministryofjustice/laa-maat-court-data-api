@@ -1,0 +1,118 @@
+server:
+  port: 52314
+
+spring:
+  liquibase:
+    enabled: false
+  datasource:
+    url: jdbc:h2:mem:mla;DB_CLOSE_DELAY=-1;IGNORE_CATALOGS=TRUE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    initilization-mode: embedded
+    name: MLA
+
+  security:
+    oauth2:
+      client:
+        provider:
+          cda:
+            tokenUri: dummyURL
+        registration:
+          cda:
+            clientId: dummyURL
+            clientSecret: dummyURL
+            authorizationGrantType: client_credentials
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.jdbc.lob.non_contextual_creation: true
+      hibernate:
+        enable_lazy_load_no_trans: true
+  sql:
+    init:
+      platform: h2
+
+  mvc:
+    format:
+      date: iso
+
+  cloud:
+    aws:
+      credentials:
+        access-key: test
+        secret-key: test
+      region:
+        static: us-east-1
+
+cloud-platform:
+  aws:
+    sqs:
+      region: us-east-1
+      accesskey: test
+      secretkey: test
+      queue:
+        link: link
+        unlink: unlink
+        hearingResulted: hearing
+        createLinkCpStatusJob: createLinkCpStatusJob
+        prosecutionConcluded: prosecutionConcluded
+        meansAssessmentPostProcessing: meansAssessmentPostProcessing
+        config:
+          messageDelay: 900
+          messageDelayDuration: 120
+
+cda:
+  url: "http://localhost:1234/"
+  oauth:
+    url: cdaAuthUrl
+    clientId: cdaClient
+    clientSecret: cdaPass
+  laastatus:
+    url: "update"
+  hearing:
+    url: "hearing_results/{hearingId}"
+  retry-config:
+    max-retries: 3
+    min-back-off-period: 5
+    jitter-value: 0.75
+
+queue:
+  message:
+    log:
+      cron:
+        expression: 0 0 0 * * *
+      expiryInDays: 15
+
+sentry:
+  environment: ${SENTRY_ENV}
+  dsn: https://39f002f57fb94029b7f96843e59d1b55:f14e3ee3bf7d4c72aea8b6a0b93e569b@sentry.service.dsd.io/173?stacktrace.app.packages=uk.gov
+  release: 1.1.1
+  servername: aws-ecs-con
+
+springdoc:
+  api-docs:
+    path: /maat-api
+
+swagger-ui:
+  path: /open-api/docs.html
+
+feature:
+  postMvpEnabled: true
+  prosecution-concluded-listener:
+    enabled: true
+  prosecution-concluded-schedule:
+    enabled: true
+
+version: 0.0.1
+
+api-endpoints:
+  assessments-domain: /api/internal/v1/assessment
+  debt-collection-enforcement: /api/internal/v1/debt-collection-enforcement
+
+xray:
+  enabled: false

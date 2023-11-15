@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hearing.processor;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.WQOffenceEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
@@ -17,7 +16,6 @@ import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class WQOffenceProcessor {
 

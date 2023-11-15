@@ -86,9 +86,6 @@ Parameters:
   pEnableCloudwatchMetrics:
     Type: String
     Default: ''
-  pAwsXRayEnabled:
-    Type: String
-    Default: ''
   pModPlatformVpcCidr:
     Type: String
     Default: ''
@@ -443,8 +440,6 @@ Resources:
             Service: [ecs-tasks.amazonaws.com]
           Action: ['sts:AssumeRole']
       Path: /
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
       Policies:
         - PolicyName: !Sub '${pAppName}-ecs-TaskExecutionRolePolicy'
           PolicyDocument:
@@ -487,20 +482,6 @@ Resources:
       ExecutionRoleArn: !Ref ECSTaskExecutionRole
       TaskRoleArn: !Ref ECSTaskExecutionRole
       ContainerDefinitions:
-        - Name: xray-daemon
-          Cpu: 32
-          Essential: false
-          Image: 'amazon/aws-xray-daemon'
-          Memory: 256
-          LogConfiguration:
-            LogDriver: awslogs
-            Options:
-              awslogs-group: !Ref 'CloudwatchLogsGroup'
-              awslogs-region: !Ref 'AWS::Region'
-              awslogs-stream-prefix: !Sub '${pAppName}-app'
-          PortMappings:
-            - ContainerPort: 2000
-              Protocol: udp
         - Name: !Ref pAppName
           Cpu: !If [ cNonProd, 992, 992 ]
           Essential: true
@@ -558,8 +539,6 @@ Resources:
               Value: !Ref pCloudwatchBatchSize
             - Name: ENABLE_CLOUDWATCH_METRICS
               Value: !Ref pEnableCloudwatchMetrics
-            - Name: AWS_XRAY_SDK_ENABLED
-              Value: !Ref pAwsXRayEnabled
 
 
 
@@ -705,6 +684,7 @@ Resources:
           - !Ref CognitoUserPoolClientCrimeEvidence
           - !Ref CognitoUserPoolCrimeHardshipService
           - !Ref CognitoUserPoolMAATOrchestrationService
+          - !Ref CognitoUserPoolClientCrimeValidationService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiAuthorizerForDces:
     Type: 'AWS::ApiGatewayV2::Authorizer'
@@ -740,7 +720,7 @@ Resources:
       AccessLogSettings:
        DestinationArn: !GetAtt ApiGatewayCloudwatchLogGroup.Arn
        Format: >-
-        {"requestId":"$context.requestId","extendedRequestId":"$context.extendedRequestId","ip":"$context.identity.sourceIp","principalId":"$context.authorizer.principalId","requestTime":"$context.requestTime","routeKey":"$context.routeKey","status":"$context.status"}
+        {"requestId":"$context.requestId","extendedRequestId":"$context.extendedRequestId","ip":"$context.identity.sourceIp","clientId":"$context.authorizer.claims.client_id","requestTime":"$context.requestTime","routeKey":"$context.routeKey","status":"$context.status"}
   ApiExternalDomainName:
     Type: 'AWS::ApiGatewayV2::DomainName'
     Properties:
@@ -901,6 +881,20 @@ Resources:
           PreventUserExistenceErrors: ENABLED
           ExplicitAuthFlows:
             - 'ALLOW_REFRESH_TOKEN_AUTH'
+  CognitoUserPoolClientCrimeValidationService:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: CognitoUserPoolResourceServer1
+    Properties:
+      ClientName: "Crime Validation Service"
+      UserPoolId: !Ref CognitoUserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      GenerateSecret: true
+      SupportedIdentityProviders: [ COGNITO ]
+      AllowedOAuthFlows: [ client_credentials ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
+      PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - 'ALLOW_REFRESH_TOKEN_AUTH'
   CognitoUserPoolMAATOrchestrationService:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1

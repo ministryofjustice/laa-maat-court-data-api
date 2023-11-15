@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HardshipReviewDetailReasonRepository extends JpaRepository<HardshipReviewDetailReasonEntity, Integer> {
 
+    HardshipReviewDetailReasonEntity getByReasonIs(String reasonCode);
+
 }

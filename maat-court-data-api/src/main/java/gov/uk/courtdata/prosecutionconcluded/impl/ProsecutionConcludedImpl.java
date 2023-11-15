@@ -1,6 +1,5 @@
 package gov.uk.courtdata.prosecutionconcluded.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
@@ -19,10 +18,9 @@ import static gov.uk.courtdata.enums.CrownCourtCaseType.caseTypeForAppeal;
 import static gov.uk.courtdata.enums.CrownCourtCaseType.caseTypeForTrial;
 import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.isTrial;
 
-@Component
-@XRayEnabled
-@RequiredArgsConstructor
 @Slf4j
+@Component
+@RequiredArgsConstructor
 public class ProsecutionConcludedImpl {
 
     private final RepOrderRepository repOrderRepository;

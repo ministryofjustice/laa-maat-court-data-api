@@ -48,6 +48,35 @@ public class ApplicantController {
         return ResponseEntity.ok(repOrderApplicantLinksService.find(repId));
     }
 
+    @PutMapping(value = "/rep-order-applicant-links", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Update rep order applicant links")
+    @StandardApiResponseCodes
+    @ApiResponse(responseCode = "404",
+            description = "Not Found.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<RepOrderApplicantLinksDTO> updateReOrderApplicantLinks(@RequestBody @Valid RepOrderApplicantLinksDTO repOrderApplicantLinksDTO) {
+        log.info("Update Rep Order Applicant Links Request Received");
+        return ResponseEntity.ok(repOrderApplicantLinksService.update(repOrderApplicantLinksDTO));
+    }
+
+    @GetMapping(value = "/applicant-history/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve applicant history")
+    @StandardApiResponseCodes
+    @ApiResponse(responseCode = "404",
+            description = "Not Found.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<ApplicantHistoryDTO> getApplicantHistory(
+            @PathVariable int id) {
+        log.info("Get Applicant History Request Received");
+        return ResponseEntity.ok(applicantHistoryService.find(id));
+    }
+
     @PutMapping(value = "/applicant-history", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update applicant history")
     @StandardApiResponseCodes

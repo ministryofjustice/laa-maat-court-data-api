@@ -1,5 +1,6 @@
 package gov.uk.courtdata.applicant.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RepOrderApplicantLinksDTO {
-
+    @NotNull
     private Integer id;
     private Integer repId;
     private Integer partnerApplId;
@@ -24,5 +25,4 @@ public class RepOrderApplicantLinksDTO {
     private LocalDateTime dateModified;
     private String userModified;
     private Integer partnerAphiId;
-
 }

@@ -112,19 +112,23 @@ public class TestModelDataBuilder {
         return financialAssessment;
     }
 
-    public static List<RepOrderApplicantLinksDTO> getRepOrderApplicantLinksDTO() {
-        return List.of(RepOrderApplicantLinksDTO.builder()
-                .id(11553845)
+    public static List<RepOrderApplicantLinksDTO> getRepOrderApplicantLinksDTOs(Integer id) {
+        return List.of(getRepOrderApplicantLinksDTO(id));
+    }
+
+    public static RepOrderApplicantLinksDTO getRepOrderApplicantLinksDTO(Integer id) {
+        return RepOrderApplicantLinksDTO.builder()
+                .id(id)
                 .repId(2522394)
                 .partnerAphiId(11553872)
                 .partnerApplId(11553844)
                 .linkDate(LocalDate.parse("2021-10-09"))
-                .unlinkDate(LocalDate.parse("2021-10-21"))
+                .unlinkDate(LocalDate.parse("2021-10-22"))
                 .userCreated("test-u")
-                .userModified("test-f")
+                .userModified("test-x")
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .dateModified(LocalDateTime.parse("2021-10-21T15:01:25"))
-                .build());
+                .build();
     }
 
     public static ApplicantHistoryDTO getApplicantHistoryDTO(Integer id, String sendToCclf) {

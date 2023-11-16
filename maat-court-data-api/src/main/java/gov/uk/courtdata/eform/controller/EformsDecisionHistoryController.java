@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,8 +50,8 @@ public class EformsDecisionHistoryController {
     @PatchMapping(value = "/{usn}")
     @StandardApiResponseCodes
     public ResponseEntity<Void> updateEformsDecisionHistoryFields(@PathVariable Integer usn,
-                                                                  @RequestBody Map<String, Object> updateFields) {
-        eformsDecisionHistoryService.updateEformsDecisionHistoryFields(usn, updateFields);
+                                                                  @RequestBody EformsDecisionHistory eformsDecisionHistory) {
+        eformsDecisionHistoryService.updateEformsDecisionHistoryFields(usn, eformsDecisionHistory);
         return ResponseEntity.ok().build();
     }
 

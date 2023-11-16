@@ -22,7 +22,7 @@ public class EformsDecisionHistoryController {
         return eformsDecisionHistoryService.getAllEformsDecisionHistory(usn);
     }
 
-    @GetMapping(value = "/{usn}/new")
+    @GetMapping(value = "/{usn}/latest-record")
     @StandardApiResponseCodes
     public EformsDecisionHistory getLatestEformsDecisionHistoryRecord(@PathVariable Integer usn) {
         return eformsDecisionHistoryService.getNewEformsDecisionHistoryRecord(usn);

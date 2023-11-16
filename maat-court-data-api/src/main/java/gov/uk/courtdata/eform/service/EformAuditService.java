@@ -20,4 +20,9 @@ public class EformAuditService {
         return eformAuditRepository.findByUsn(usn)
                 .orElseThrow(() -> USNExceptionUtil.nonexistent(usn));
     }
+
+    @Transactional()
+    public void create(EformsAudit eformsAudit) {
+        eformAuditRepository.save(eformsAudit);
+    }
 }

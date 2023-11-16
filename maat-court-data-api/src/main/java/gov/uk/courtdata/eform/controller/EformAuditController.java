@@ -4,6 +4,7 @@ import gov.uk.courtdata.eform.repository.entity.EformsAudit;
 import gov.uk.courtdata.eform.service.EformAuditService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -16,7 +17,15 @@ public class EformAuditController {
 
     @GetMapping(value ="/{usn}")
     @StandardApiResponseCodes
-    public EformsAudit getEformAudit(@PathVariable Integer usn) {
+    public EformsAudit getEformsAudit(@PathVariable Integer usn) {
         return eformAuditService.retrieve(usn);
+    }
+
+    @PostMapping(value ="/{usn}")
+    @StandardApiResponseCodes
+    public ResponseEntity<Void> createEformsAudit(@RequestBody EformsAudit eformsAudit) {
+        eformAuditService.create(eformsAudit);
+
+        return ResponseEntity.ok().build();
     }
 }

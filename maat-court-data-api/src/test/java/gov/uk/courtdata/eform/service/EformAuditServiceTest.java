@@ -20,13 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @WebMvcTest(EformAuditService.class)
 public class EformAuditServiceTest {
 
-    private static final int USN = 7000001;
-    private static final int NON_EXISTENT_USN = 6000001;
-    private static final int MAAT_ID = 3290392;
+    private static final int USN = 123;
+    private static final int NON_EXISTENT_USN = 789;
+    private static final int MAAT_REF = 456;
     private static final EformsAudit EFORM_AUDIT = EformsAudit
             .builder()
             .usn(USN)
-            .maatRef(MAAT_ID)
+            .maatRef(MAAT_REF)
             .build();
 
     @MockBean
@@ -40,7 +40,7 @@ public class EformAuditServiceTest {
     }
 
     @Test
-    void givenUSN_whenServiceInvoked_thenReturnAnEformsAudit() {
+    void givenUSN_whenRetrieveCalled_thenReturnAnEformsAudit() {
         Mockito.when(mockEformAuditRepository.findByUsn(USN))
                 .thenReturn(Optional.of(EFORM_AUDIT));
 
@@ -50,10 +50,17 @@ public class EformAuditServiceTest {
     }
 
     @Test
-    void givenNonExistentUSN_whenServiceInvoked_thenThrowException() {
+    void givenNonExistentUSN_whenRetrieveCalled_thenThrowException() {
         assertThatThrownBy(
                 () -> eformAuditService.retrieve(NON_EXISTENT_USN)
         ).isInstanceOf(UsnException.class)
                 .hasMessage("The USN ["+NON_EXISTENT_USN+"] does not exist in the data store.");
+    }
+
+    @Test
+    void givenValidEformsAudit_whenCreateCalled_thenSuccessfullyCreateEformsAudit() {
+        eformAuditService.create(EFORM_AUDIT);
+
+        Mockito.verify(mockEformAuditRepository, Mockito.times(1)).save(EFORM_AUDIT);
     }
 }

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.eform.repository.entity;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,9 +20,13 @@ public class EformsAudit {
 
     @Id
     @Column(name = "ID")
+    @NotNull
+    @SequenceGenerator(name = "eforms_audit_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "eforms_audit_seq")
     private Integer id;
 
     @Column(name = "USN")
+    @NotNull
     private Integer usn;
 
     @Column(name = "MAAT_REF")

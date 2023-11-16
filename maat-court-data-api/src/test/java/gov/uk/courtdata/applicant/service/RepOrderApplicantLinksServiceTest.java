@@ -1,6 +1,5 @@
 package gov.uk.courtdata.applicant.service;
 
-import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.applicant.mapper.RepOrderApplicantLinksMapper;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;

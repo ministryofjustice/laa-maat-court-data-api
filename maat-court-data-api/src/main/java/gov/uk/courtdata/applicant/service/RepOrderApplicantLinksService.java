@@ -22,7 +22,7 @@ public class RepOrderApplicantLinksService {
 
     @Transactional(readOnly = true)
     public List<RepOrderApplicantLinksDTO> find(Integer repId) {
-        log.info("RepOrderApplicantLinksService::getRepOrderApplicantLinks - Start");
+        log.info("RepOrderApplicantLinksService::find - Start");
         List<RepOrderApplicantLinksEntity> repOrderApplicantLinksEntities = repOrderApplicantLinksRepository.findAllByRepId(repId);
         if (repOrderApplicantLinksEntities.isEmpty()) {
             throw new RequestedObjectNotFoundException(String.format("Rep Order Applicant Links not found for repId: %d", repId));

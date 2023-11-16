@@ -20,7 +20,7 @@ public class ApplicantHistoryService {
 
     @Transactional(readOnly = true)
     public ApplicantHistoryDTO find(Integer id) {
-        log.info("RepOrderApplicantLinksService::getRepOrderApplicantLinks - Start");
+        log.info("ApplicantHistoryService::find - Start");
         ApplicantHistoryEntity applicantHistoryEntity = getApplicantHistoryEntity(id);
         return applicantHistoryMapper.
                 mapEntityToDTO(applicantHistoryEntity);

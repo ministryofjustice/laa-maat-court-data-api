@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
@@ -92,7 +91,7 @@ public class ApplicantServiceIntegrationTest {
     }
 
     @Test
-    void givenValidId_WhenGetApplicantHistoryIsInvoked_thenCorrectResponseIsReturned() {
+    void givenValidId_whenGetApplicantHistoryIsInvoked_thenCorrectResponseIsReturned() {
         ApplicantHistoryEntity testRecord = TestEntityDataBuilder.getApplicantHistoryEntity("N");
         applicantHistoryRepository.saveAndFlush(testRecord);
         Integer id = applicantHistoryRepository.findAll().get(0).getId();
@@ -103,7 +102,7 @@ public class ApplicantServiceIntegrationTest {
     }
 
     @Test
-    void givenInValidId_WhenGetApplicantHistoryIsInvoked_thenExceptionIsRaised() {
+    void givenInValidId_whenGetApplicantHistoryIsInvoked_thenExceptionIsRaised() {
         assertThatThrownBy(() -> {
             applicantHistoryService.find(ID);
         }).isInstanceOf(RequestedObjectNotFoundException.class)

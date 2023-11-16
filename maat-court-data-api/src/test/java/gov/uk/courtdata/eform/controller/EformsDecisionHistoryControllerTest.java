@@ -1,6 +1,5 @@
 package gov.uk.courtdata.eform.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.eform.repository.entity.EformsDecisionHistory;
 import gov.uk.courtdata.eform.service.EformsDecisionHistoryService;
 import org.junit.jupiter.api.Test;
@@ -13,9 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -83,13 +80,12 @@ public class EformsDecisionHistoryControllerTest {
 
     @Test
     void shouldSuccessfullyUpdateEformDecisionHistory() throws Exception {
-        EformsDecisionHistory eformsDecisionHistory = EformsDecisionHistory.builder().id(3).usn(12345).repId(45635).fundingDecision("Granted").iojResult("Pass").build();
+        EformsDecisionHistory eformsDecisionHistory = EformsDecisionHistory.builder().wroteToResults("Y").build();
         String requestJson = "{\"wroteToResults\":\"Y\"}";
-        Map<String,Object> updateFields = new ObjectMapper().readValue(requestJson, HashMap.class);
         mvc.perform(MockMvcRequestBuilders.patch(BASE_ENDPOINT_FORMAT+ "/" +12345).content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(eformsDecisionHistoryService, times(1)).updateEformsDecisionHistoryFields(12345, updateFields);
+        verify(eformsDecisionHistoryService, times(1)).updateEformsDecisionHistoryFields(12345, eformsDecisionHistory);
     }
 
     @Test

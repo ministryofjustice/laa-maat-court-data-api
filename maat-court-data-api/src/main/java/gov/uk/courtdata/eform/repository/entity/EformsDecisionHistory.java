@@ -23,12 +23,12 @@ public class EformsDecisionHistory {
     @SequenceGenerator(name = "eforms_decision_history_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "eforms_decision_history_seq")
     private Integer id;
-    @Column(name = "USN")
+    @Column(name = "USN", nullable = false)
     private Integer usn;
-    @Column(name = "REP_ID")
+    @Column(name = "REP_ID", nullable = false)
     private Integer repId;
     @CreationTimestamp
-    @Column(name = "DATE_RESULT_CREATED")
+    @Column(name = "DATE_RESULT_CREATED", nullable = false)
     private LocalDateTime dateResultCreated;
     @Column(name = "CASE_ID")
     private String caseId;

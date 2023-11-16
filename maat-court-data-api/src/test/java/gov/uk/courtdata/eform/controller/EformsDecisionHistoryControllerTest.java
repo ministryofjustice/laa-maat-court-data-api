@@ -39,7 +39,7 @@ public class EformsDecisionHistoryControllerTest {
         when(eformsDecisionHistoryService.getNewEformsDecisionHistoryRecord(12345))
                 .thenReturn(eformsDecisionHistory);
 
-        mvc.perform(MockMvcRequestBuilders.get(BASE_ENDPOINT_FORMAT+ "/" +12345+"/new")
+        mvc.perform(MockMvcRequestBuilders.get(BASE_ENDPOINT_FORMAT+ "/" +12345+"/latest-record")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.usn").value(String.valueOf(12345)))

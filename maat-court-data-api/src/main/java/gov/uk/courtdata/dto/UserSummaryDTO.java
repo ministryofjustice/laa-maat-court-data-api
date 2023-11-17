@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserSummaryDTO {
-    private String userName;
+    private String username;
     private List<String> newWorkReasons;
     private List<String> roleActions;
     private ReservationsEntity reservationsEntity;

@@ -15,9 +15,11 @@ import java.util.List;
 )
 public interface UserSummaryMapper {
 
-    UserSummaryDTO userToUserSummaryDTO(final String userName,
-                                               final List<String> newWorkReasons,
-                                               final List<String> roleActions,
-                                               final ReservationsEntity reservationsEntity
+    @Mapping(target = "username", source = "username")
+    @Mapping(target = "reservationsEntity", source = "reservationsEntity")
+    UserSummaryDTO userToUserSummaryDTO(final String username,
+                                        final List<String> newWorkReasons,
+                                        final List<String> roleActions,
+                                        final ReservationsEntity reservationsEntity
     );
 }

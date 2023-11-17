@@ -14,7 +14,7 @@ public interface RoleWorkReasonsRepository extends JpaRepository<RoleWorkReasonE
     @Query(value = "select wr.* from TOGDATA.ROLE_WORK_REASONS wr inner join TOGDATA.USER_ROLES ur on (wr.ROLE_NAME = ur.ROLE_NAME) where  ur.USER_NAME = :username and wr.NWOR_CODE = :nworCode FETCH FIRST 1 ROWS ONLY", nativeQuery = true)
     Optional<RoleWorkReasonEntity> getNewWorkReason(@Param("username") String username, @Param("nworCode") String nworCode);
 
-    @Query(value = "select wr.* from TOGDATA.ROLE_WORK_REASONS wr inner join TOGDATA.USER_ROLES ur " +
+    @Query(value = "select wr.NWOR_CODE from TOGDATA.ROLE_WORK_REASONS wr inner join TOGDATA.USER_ROLES ur " +
             "on (wr.ROLE_NAME = ur.ROLE_NAME) where  ur.USER_NAME = :username", nativeQuery = true)
     Optional<List<String>> getNewWorkReasonForUser(@Param("username") String username);
 

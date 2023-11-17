@@ -3,9 +3,9 @@ package gov.uk.courtdata.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.application.ApplicationDTO;
+import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.StoredProcedureRequest;
 import gov.uk.courtdata.service.StoredProcedureService;
-import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,19 +36,24 @@ class StoredProcedureControllerTest {
     private StoredProcedureService service;
 
     @Test
-    void givenInvalidContent_whenExecuteStoredProcedureIsInvoked_thenErrorIsThrown() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content("{}")
+    void givenAValidContentAndErrorWhileExecuteStoredProcedure_whenExecuteStoredProcedureIsInvoked_thenErrorIsThrown() throws Exception {
+        when(service.executeStoredProcedure(any())).thenThrow(new ValidationException());
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(objectMapper.writeValueAsBytes(
+                                StoredProcedureRequest.builder().build()
+                        ))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
     void givenAValidInput_whenExecuteStoredProcedureIsInvoked_thenReturnStatusOK() throws Exception {
         when(service.executeStoredProcedure(any())).thenReturn(ApplicationDTO.builder()
                 .repId(TestModelDataBuilder.REP_ID.longValue()).build());
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(objectMapper.writeValueAsBytes(
+                                StoredProcedureRequest.builder().build()
+                        ))
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.repId").value(TestModelDataBuilder.REP_ID.longValue()));
     }
 

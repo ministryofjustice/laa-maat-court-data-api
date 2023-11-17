@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "execute-procedure", description = "Rest API for invoking stored procedures")
+@Tag(name = "execute-stored-procedure", description = "Rest API for invoking stored procedures")
 @RequestMapping("${api-endpoints.assessments-domain}/execute-stored-procedure")
 public class StoredProcedureController {
 

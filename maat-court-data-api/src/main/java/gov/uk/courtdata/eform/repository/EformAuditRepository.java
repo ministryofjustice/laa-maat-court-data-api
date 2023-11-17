@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface EformAuditRepository extends JpaRepository<EformsAudit,Integer> {
 
-    public Optional<EformsAudit> findByUsn(int usn);
+    Optional<EformsAudit> findByUsn(int usn);
+    void deleteAllByUsn(int usn);
 }

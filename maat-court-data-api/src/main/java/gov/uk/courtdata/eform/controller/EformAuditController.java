@@ -28,4 +28,12 @@ public class EformAuditController {
 
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping(value ="/{usn}")
+    @StandardApiResponseCodes
+    public ResponseEntity<Void> deleteEformsAudit(@PathVariable Integer usn) {
+        eformAuditService.delete(usn);
+
+        return ResponseEntity.ok().build();
+    }
 }

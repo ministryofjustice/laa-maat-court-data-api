@@ -25,4 +25,9 @@ public class EformAuditService {
     public void create(EformsAudit eformsAudit) {
         eformAuditRepository.save(eformsAudit);
     }
+
+    @Transactional()
+    public void delete(int usn) {
+        eformAuditRepository.deleteAllByUsn(usn);
+    }
 }

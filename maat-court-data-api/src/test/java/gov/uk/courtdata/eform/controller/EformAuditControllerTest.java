@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(EformAuditController.class)
 public class EformAuditControllerTest {
 
-    private static final String BASE_ENDPOINT_FORMAT = "/api/eform/audit/";
+    private static final String BASE_ENDPOINT_FORMAT = "/api/eform/audit";
     private static final int USN = 123;
     private static final int NON_EXISTENT_USN = 789;
     private static final int MAAT_REF = 456;
@@ -71,7 +71,7 @@ public class EformAuditControllerTest {
                 .statusCode("Processing")
                 .build();
 
-        mvc.perform(MockMvcRequestBuilders.post(BASE_ENDPOINT_FORMAT+"/"+USN)
+        mvc.perform(MockMvcRequestBuilders.post(BASE_ENDPOINT_FORMAT)
                 .content(eformsAuditData)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

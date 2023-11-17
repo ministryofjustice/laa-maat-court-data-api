@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/eform/audit")
@@ -21,7 +20,7 @@ public class EformAuditController {
         return eformAuditService.retrieve(usn);
     }
 
-    @PostMapping(value ="/{usn}")
+    @PostMapping
     @StandardApiResponseCodes
     public ResponseEntity<Void> createEformsAudit(@RequestBody EformsAudit eformsAudit) {
         eformAuditService.create(eformsAudit);

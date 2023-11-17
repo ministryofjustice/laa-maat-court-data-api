@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EformAuditService {
@@ -16,7 +15,7 @@ public class EformAuditService {
     private final EformAuditRepository eformAuditRepository;
 
     @Transactional(readOnly = true)
-    public EformsAudit retrieve(int usn) {
+    public EformsAudit retrieve(Integer usn) {
         return eformAuditRepository.findByUsn(usn)
                 .orElseThrow(() -> USNExceptionUtil.nonexistent(usn));
     }
@@ -27,7 +26,7 @@ public class EformAuditService {
     }
 
     @Transactional()
-    public void delete(int usn) {
+    public void delete(Integer usn) {
         eformAuditRepository.deleteAllByUsn(usn);
     }
 }

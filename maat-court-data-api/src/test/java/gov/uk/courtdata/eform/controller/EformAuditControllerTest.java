@@ -5,7 +5,6 @@ import gov.uk.courtdata.eform.exception.UsnException;
 import gov.uk.courtdata.eform.repository.entity.EformsAudit;
 import gov.uk.courtdata.eform.service.EformAuditService;
 import gov.uk.courtdata.testutils.FileUtils;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +23,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(EformAuditController.class)
 public class EformAuditControllerTest {
 
-    private static final String ENDPOINT_FORMAT = "/api/eform/audit/";
+    private static final String BASE_ENDPOINT_FORMAT = "/api/eform/audit/";
     private static final int USN = 123;
+    private static final int NON_EXISTENT_USN = 789;
     private static final int MAAT_REF = 456;
-    private static final EformsAudit EFORM_AUDIT = EformsAudit.builder().usn(USN).build();
+    private static final EformsAudit EFORMS_AUDIT = EformsAudit.builder().usn(USN).build();
 
-    private static final UsnException USN_VALIDATION_EXCEPTION = USNExceptionUtil.nonexistent(987);
+    private static final UsnException USN_VALIDATION_EXCEPTION = USNExceptionUtil.nonexistent(NON_EXISTENT_USN);
 
     @MockBean
     private EformAuditService mockEformAuditService;
@@ -40,9 +40,9 @@ public class EformAuditControllerTest {
     @Test
     void givenUSN_whenGetEformsAuditCalled_thenReturnEformsAudit() throws Exception {
         when(mockEformAuditService.retrieve(USN))
-                .thenReturn(EFORM_AUDIT);
+                .thenReturn(EFORMS_AUDIT);
 
-        mvc.perform(MockMvcRequestBuilders.get(url())
+        mvc.perform(MockMvcRequestBuilders.get(BASE_ENDPOINT_FORMAT+"/"+USN)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"usn\":"+USN+"}"));
@@ -50,13 +50,13 @@ public class EformAuditControllerTest {
 
     @Test
     void givenNonExistentUSN_whenGetEformsAuditCalled_thenReturnAnError() throws Exception {
-        when(mockEformAuditService.retrieve(USN))
+        when(mockEformAuditService.retrieve(NON_EXISTENT_USN))
                 .thenThrow(USN_VALIDATION_EXCEPTION);
 
-        mvc.perform(MockMvcRequestBuilders.get(url())
+        mvc.perform(MockMvcRequestBuilders.get(BASE_ENDPOINT_FORMAT+"/"+NON_EXISTENT_USN)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(content().json("{\"code\":\"NOT_FOUND\",\"message\":\"The USN [987] does not exist in the data store.\"}"));
+                .andExpect(content().json("{\"code\":\"NOT_FOUND\",\"message\":\"The USN ["+NON_EXISTENT_USN+"] does not exist in the data store.\"}"));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class EformAuditControllerTest {
                 .statusCode("Processing")
                 .build();
 
-        mvc.perform(MockMvcRequestBuilders.post(url())
+        mvc.perform(MockMvcRequestBuilders.post(BASE_ENDPOINT_FORMAT+"/"+USN)
                 .content(eformsAuditData)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -79,8 +79,12 @@ public class EformAuditControllerTest {
         verify(mockEformAuditService, times(1)).create(eformsAudit);
     }
 
-    @NotNull
-    private String url() {
-        return ENDPOINT_FORMAT + USN;
+    @Test
+    void givenUSN_whenDeleteEformsAuditCalled_thenSuccessfullyDeleteEformsAudit() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.delete(BASE_ENDPOINT_FORMAT+"/"+USN)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(mockEformAuditService, times(1)).delete(USN);
     }
 }

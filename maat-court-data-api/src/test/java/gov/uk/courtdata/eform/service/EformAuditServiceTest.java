@@ -23,7 +23,7 @@ public class EformAuditServiceTest {
     private static final int USN = 123;
     private static final int NON_EXISTENT_USN = 789;
     private static final int MAAT_REF = 456;
-    private static final EformsAudit EFORM_AUDIT = EformsAudit
+    private static final EformsAudit EFORMS_AUDIT = EformsAudit
             .builder()
             .usn(USN)
             .maatRef(MAAT_REF)
@@ -42,11 +42,11 @@ public class EformAuditServiceTest {
     @Test
     void givenUSN_whenRetrieveCalled_thenReturnAnEformsAudit() {
         Mockito.when(mockEformAuditRepository.findByUsn(USN))
-                .thenReturn(Optional.of(EFORM_AUDIT));
+                .thenReturn(Optional.of(EFORMS_AUDIT));
 
-        EformsAudit eformsAudit = eformAuditService.retrieve(EFORM_AUDIT.getUsn());
+        EformsAudit eformsAudit = eformAuditService.retrieve(EFORMS_AUDIT.getUsn());
 
-        assertEquals(EFORM_AUDIT, eformsAudit);
+        assertEquals(EFORMS_AUDIT, eformsAudit);
     }
 
     @Test
@@ -59,8 +59,15 @@ public class EformAuditServiceTest {
 
     @Test
     void givenValidEformsAudit_whenCreateCalled_thenSuccessfullyCreateEformsAudit() {
-        eformAuditService.create(EFORM_AUDIT);
+        eformAuditService.create(EFORMS_AUDIT);
 
-        Mockito.verify(mockEformAuditRepository, Mockito.times(1)).save(EFORM_AUDIT);
+        Mockito.verify(mockEformAuditRepository, Mockito.times(1)).save(EFORMS_AUDIT);
+    }
+
+    @Test
+    void givenUSN_whenDeleteCalled_thenDeleteEformsAudit() {
+        eformAuditService.delete(USN);
+
+        Mockito.verify(mockEformAuditRepository, Mockito.times(1)).deleteAllByUsn(USN);
     }
 }

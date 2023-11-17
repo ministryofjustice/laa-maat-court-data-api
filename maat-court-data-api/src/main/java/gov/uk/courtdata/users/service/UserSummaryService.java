@@ -25,14 +25,14 @@ public class UserSummaryService {
 
     public UserSummaryDTO getUserSummary(String username) {
 
-        List<String> userRoleActions = Optional.ofNullable(roleActionsRepository.getRoleActionsForUser(username))
-                .map(x -> x.get()).orElse(null);
+        Optional<List<String>> roleActions = roleActionsRepository.getRoleActionsForUser(username);
+        List<String> userRoleActions = roleActions.isEmpty() ? null : roleActions.get();
 
-        List<String> newWorkReasonForUser = Optional.ofNullable(roleWorkReasonsRepository.getNewWorkReasonForUser(username))
-                .map(x -> x.get()).orElse(null);
+        Optional<List<String>> newWorkReason = roleWorkReasonsRepository.getNewWorkReasonForUser(username);
+        List<String> newWorkReasonForUser = newWorkReason.isEmpty() ? null : newWorkReason.get();
 
-        ReservationsEntity reservationsEntity = Optional.ofNullable(reservationsRepositoryHelper.getReservationByUserName(username))
-                .map(x -> x.get()).orElse(null);
+        Optional<ReservationsEntity> reservations = reservationsRepositoryHelper.getReservationByUserName(username);
+        ReservationsEntity reservationsEntity = reservations.isEmpty() ? null : reservations.get();
 
         return userSummaryMapper.userToUserSummaryDTO(username, newWorkReasonForUser, userRoleActions, reservationsEntity);
 

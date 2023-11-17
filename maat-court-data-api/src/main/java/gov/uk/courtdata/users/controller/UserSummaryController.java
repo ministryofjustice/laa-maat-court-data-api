@@ -27,7 +27,6 @@ public class UserSummaryController {
 
     private final UserSummaryService userSummaryService;
 
-
     @GetMapping(value = "/summary/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Check role action privileges")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AuthorizationResponse.class)))

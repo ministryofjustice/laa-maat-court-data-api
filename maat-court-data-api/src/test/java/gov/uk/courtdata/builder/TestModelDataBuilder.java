@@ -126,8 +126,6 @@ public class TestModelDataBuilder {
                 .unlinkDate(LocalDate.parse("2021-10-22"))
                 .userCreated("test-u")
                 .userModified("test-x")
-                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .dateModified(LocalDateTime.parse("2021-10-21T15:01:25"))
                 .build();
     }
 
@@ -145,7 +143,6 @@ public class TestModelDataBuilder {
                 .niNumber("JM933396A")
                 .gender("Male")
                 .sendToCclf(sendToCclf)
-                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("TEST")
                 .build();
     }

@@ -32,6 +32,6 @@ public class EformsHistory {
     @CreationTimestamp
     @Column(name = "DATE_CREATED", nullable = false)
     private LocalDateTime dateCreated;
-    @Column(name = "USER_CREATED", nullable = false)
+    @Column(name = "USER_CREATED")
     private String userCreated;
 }

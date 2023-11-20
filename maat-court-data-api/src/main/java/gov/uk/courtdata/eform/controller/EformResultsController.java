@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/eform/results")
@@ -15,8 +17,8 @@ public class EformResultsController {
 
     @GetMapping(value = "/{usn}")
     @StandardApiResponseCodes
-    public EformResultsEntity getEformResult(@PathVariable Integer usn) {
-        return eformResultsService.retrieve(usn);
+    public List<EformResultsEntity> getAllEformResults(@PathVariable Integer usn) {
+        return eformResultsService.getAllEformResults(usn);
     }
 
     @PostMapping

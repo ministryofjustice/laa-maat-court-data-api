@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,9 +23,8 @@ public class EformResultsService {
     private final EformResultsRepository eformResultsRepository;
 
     @Transactional(readOnly = true)
-    public EformResultsEntity retrieve(Integer usn) {
-        return eformResultsRepository.findByUsn(usn)
-                .orElseThrow(() -> USNExceptionUtil.nonexistent(usn));
+    public List<EformResultsEntity> getAllEformResults(Integer usn) {
+        return eformResultsRepository.findAllByUsn(usn);
     }
 
     @Transactional

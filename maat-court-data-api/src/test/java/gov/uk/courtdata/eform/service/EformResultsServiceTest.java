@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static gov.uk.courtdata.eform.controller.EformResultsControllerTest.buildEformResult;
@@ -30,9 +32,11 @@ public class EformResultsServiceTest {
     @Test
     void shouldRetrieveEformResultForGivenUSN() {
         EformResultsEntity eformResultsEntity = buildEformResult();
-        when(eformResultsRepository.findByUsn(anyInt())).thenReturn(Optional.ofNullable(eformResultsEntity));
-        eformResultsService.retrieve(anyInt());
-        verify(eformResultsRepository, times(1)).findByUsn(anyInt());
+        List<EformResultsEntity> eformResultsEntityList = new ArrayList<>();
+        eformResultsEntityList.add(eformResultsEntity);
+        when(eformResultsRepository.findAllByUsn(anyInt())).thenReturn(eformResultsEntityList);
+        eformResultsService.getAllEformResults(anyInt());
+        verify(eformResultsRepository, times(1)).findAllByUsn(anyInt());
     }
 
     @Test

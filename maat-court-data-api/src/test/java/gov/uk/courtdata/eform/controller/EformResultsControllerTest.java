@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.*;
@@ -48,34 +50,19 @@ public class EformResultsControllerTest {
     @Test
     void shouldSuccessfullyGetEformResultForGivenUSN() throws Exception {
         EformResultsEntity eformResultsEntity = buildEformResult();
+        List<EformResultsEntity> eformResultsEntityList = new ArrayList<>();
+        eformResultsEntityList.add(eformResultsEntity);
+        when(eformResultsService.getAllEformResults(USN_NUMBER))
+                .thenReturn(eformResultsEntityList);
 
-        when(eformResultsService.retrieve(USN_NUMBER))
-                .thenReturn(eformResultsEntity);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
 
         mvc.perform(MockMvcRequestBuilders.get(BASE_ENDPOINT_FORMAT+ "/" + USN_NUMBER)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(String.valueOf(ID_NUMBER)))
-                .andExpect(jsonPath("$.usn").value(String.valueOf(USN_NUMBER)))
-                .andExpect(jsonPath("$.maatRef").value(String.valueOf(MAAT_REF_NUMBER)))
-                .andExpect(jsonPath("$.dateCreated").value("2014-09-22T00:00:00"))
-                .andExpect(jsonPath("$.caseId").value(CASE_ID))
-                .andExpect(jsonPath("$.iojResult").value(IOJ_RESULT))
-                .andExpect(jsonPath("$.iojAssessorName").value(IOJ_ASSESSOR_NAME))
-                .andExpect(jsonPath("$.meansResult").value(nullValue()))
-                .andExpect(jsonPath("$.meansAssessorName").value(nullValue()))
-                .andExpect(jsonPath("$.dateMeansCreated").value(nullValue()))
-                .andExpect(jsonPath("$.fundingDecision").value(FUNDING_DECISION))
-                .andExpect(jsonPath("$.iojReason").value(nullValue()))
-                .andExpect(jsonPath("$.passportResult").value(PASSPORT_RESULT))
-                .andExpect(jsonPath("$.passportAssesorName").value(IOJ_ASSESSOR_NAME))
-                .andExpect(jsonPath("$.datePassportCreated").value("2014-09-22T00:00:00"))
-                .andExpect(jsonPath("$.dwpResult").value(DWP_RESULT))
-                .andExpect(jsonPath("$.iojAppealResult").value(nullValue()))
-                .andExpect(jsonPath("$.caseType").value(CASE_TYPE))
-                .andExpect(jsonPath("$.iojAssessorName").value(IOJ_ASSESSOR_NAME));
-
-        verify(eformResultsService, times(1)).retrieve(USN_NUMBER);
+                .andExpect(content().json("[{\"id\":94271347,\"usn\":729862,\"maatRef\":4659133,\"dateCreated\":\"2014-09-22T00:00:00\",\"caseId\":\"2209144444-1974\",\"iojResult\":\"PASS\",\"iojAssessorName\":\"Test Person\",\"meansResult\":null,\"meansAssessorName\":null,\"dateMeansCreated\":null,\"fundingDecision\":\"Granted\",\"iojReason\":null,\"passportResult\":\"PASS\",\"passportAssesorName\":\"Test Person\",\"datePassportCreated\":\"2014-09-22T00:00:00\",\"dwpResult\":\"Yes\",\"iojAppealResult\":null,\"caseType\":\"EITHER WAY\",\"stage\":\"C\"}]"));
+        verify(eformResultsService, times(1)).getAllEformResults(USN_NUMBER);
     }
 
     @Test

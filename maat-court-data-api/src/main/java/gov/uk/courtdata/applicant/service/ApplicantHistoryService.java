@@ -21,7 +21,6 @@ public class ApplicantHistoryService {
     @Transactional(readOnly = true)
     public ApplicantHistoryDTO find(Integer id) {
         log.info("ApplicantHistoryService::find - Start");
-        //return ApplicantHistoryDTO.builder().build();
         ApplicantHistoryEntity applicantHistoryEntity = getApplicantHistoryEntity(id);
         return applicantHistoryMapper.
                 mapEntityToDTO(applicantHistoryEntity);

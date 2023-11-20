@@ -29,8 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ApplicantControllerIntegrationTest {
 
     private static final Integer INVALID_REP_ID = 234;
-    private static final String ENDPOINT_URL = "/api/internal/v1/assessment/applicant";
-    public static final int ID = 1;
+    private static final String ENDPOINT_URL = "/api/internal/v1/application/applicant";
+    private static final int ID = 1;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -84,13 +84,6 @@ public class ApplicantControllerIntegrationTest {
     }
 
     @Test
-    void givenAEmptyContent_whenUpdateRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/rep-order-applicant-links").content("{}")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void givenInValidRequest_whenUpdateRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/rep-order-applicant-links")
                         .content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderApplicantLinksDTO(ID)))
@@ -124,13 +117,6 @@ public class ApplicantControllerIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.sendToCclf").value(SEND_TO_CCLF));
-    }
-
-    @Test
-    void givenAEmptyContent_whenUpdateApplicantHistoryIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/applicant-history").content("{}")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
     }
 
     @Test

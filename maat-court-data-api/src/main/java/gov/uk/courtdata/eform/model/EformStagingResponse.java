@@ -14,5 +14,6 @@ public class EformStagingResponse {
     private Integer usn;
     private String type;
     private Integer maatRef;
+    private String maatStatus;
     private String userCreated;
 }

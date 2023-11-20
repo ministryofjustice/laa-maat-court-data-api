@@ -31,6 +31,9 @@ public class EformsStagingEntity {
     @Column(name = "MAAT_REF")
     private Integer maatRef;
 
+    @Column(name = "MAAT_STATUS")
+    private String maatStatus;
+
     @Column(name = "USER_CREATED")
     private String userCreated;
 

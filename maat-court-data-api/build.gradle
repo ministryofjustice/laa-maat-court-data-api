@@ -43,7 +43,8 @@ def versions = [
         testcontainersLocalstackVersion     : '1.18.3',
         cloudLocalstackUtilsVersion         : '0.2.23',
         springContractStubRunnerVersion     : '4.0.1',
-        sentryBomVersion                    : '6.17.0'
+        sentryBomVersion                    : '6.17.0',
+        jacksonVersion                      : '2.15.3'
 ]
 
 group = 'gov.uk'
@@ -151,6 +152,7 @@ dependencies {
     testImplementation group: 'org.easytesting', name: 'fest-assert', version: versions.festVersion
     testImplementation group: 'com.squareup.okhttp3', name: 'okhttp', version: versions.okhttpVersion
     testImplementation group: 'com.squareup.okhttp3', name: 'mockwebserver', version: versions.mockWebServerVersion
+    testImplementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: versions.jacksonVersion
     testCompileOnly group: 'org.projectlombok', name: 'lombok'
     testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
 

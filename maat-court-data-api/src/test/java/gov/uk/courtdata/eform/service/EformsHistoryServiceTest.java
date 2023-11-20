@@ -33,9 +33,9 @@ public class EformsHistoryServiceTest {
     @Test
     void shouldRetrieveLatestEformDecisionHistoryForGivenUSN() {
         EformsHistory eformsHistory = EformsHistory.builder().id(1).usn(123).action("Get").userCreated("test").build();
-        when(eformsHistoryRepository.findTopByUsnOrderByIdDesc(anyInt())).thenReturn(eformsHistory);
-        eformsHistoryService.getLatestEformsHistoryRecord(anyInt());
-        verify(eformsHistoryRepository, times(1)).findTopByUsnOrderByIdDesc(anyInt());
+        when(eformsHistoryRepository.findTopByUsnOrderByIdDesc(123)).thenReturn(eformsHistory);
+        eformsHistoryService.getLatestEformsHistoryRecord(123);
+        verify(eformsHistoryRepository, times(1)).findTopByUsnOrderByIdDesc(123);
     }
 
     @Test

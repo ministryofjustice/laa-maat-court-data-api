@@ -2,6 +2,8 @@ package gov.uk.courtdata.applicant.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -80,12 +82,14 @@ public class ApplicantHistoryEntity {
     @Column(name = "BANK_ACCOUNT_NAME")
     private String bankAccountName;
 
+    @CreationTimestamp
     @Column(name = "DATE_CREATED", nullable = false)
     private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED", nullable = false)
     private String userCreated;
 
+    @UpdateTimestamp
     @Column(name = "DATE_MODIFIED")
     private LocalDateTime dateModified;
 

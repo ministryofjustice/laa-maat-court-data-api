@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -36,9 +35,7 @@ public class ApplicantHistoryDTO {
     private String sortCode;
     private Integer bankAccountNo;
     private String bankAccountName;
-    private LocalDateTime dateCreated;
     private String userCreated;
-    private LocalDateTime dateModified;
     private String userModified;
     private String pamePaymentMethod;
     private String prefPaymentDay;

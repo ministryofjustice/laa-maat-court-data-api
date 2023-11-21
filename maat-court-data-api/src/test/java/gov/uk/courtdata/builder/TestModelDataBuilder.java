@@ -8,6 +8,7 @@ import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
+import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.*;
@@ -70,6 +71,9 @@ public class TestModelDataBuilder {
     public static final String EFFECTIVE_DATE = "01-JAN-20233";
     public static final int MOCK_HRD_ID = 4253;
     public static final String SEND_TO_CCLF = "y";
+    public static final List<String> NEW_WORK_REASON_LIST = List.of("TEST_NWREASON");
+    public static final List<String> ROLE_ACTIONS_LIST = List.of("TEST_ROLE");
+    public static final ReservationsEntity RESERVATIONS_ENTITY = new ReservationsEntity();
 
 
     TestEntityDataBuilder testEntityDataBuilder;
@@ -112,19 +116,21 @@ public class TestModelDataBuilder {
         return financialAssessment;
     }
 
-    public static List<RepOrderApplicantLinksDTO> getRepOrderApplicantLinksDTO() {
-        return List.of(RepOrderApplicantLinksDTO.builder()
-                .id(11553845)
+    public static List<RepOrderApplicantLinksDTO> getRepOrderApplicantLinksDTOs(Integer id) {
+        return List.of(getRepOrderApplicantLinksDTO(id));
+    }
+
+    public static RepOrderApplicantLinksDTO getRepOrderApplicantLinksDTO(Integer id) {
+        return RepOrderApplicantLinksDTO.builder()
+                .id(id)
                 .repId(2522394)
                 .partnerAphiId(11553872)
                 .partnerApplId(11553844)
                 .linkDate(LocalDate.parse("2021-10-09"))
-                .unlinkDate(LocalDate.parse("2021-10-21"))
+                .unlinkDate(LocalDate.parse("2021-10-22"))
                 .userCreated("test-u")
-                .userModified("test-f")
-                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .dateModified(LocalDateTime.parse("2021-10-21T15:01:25"))
-                .build());
+                .userModified("test-x")
+                .build();
     }
 
     public static ApplicantHistoryDTO getApplicantHistoryDTO(Integer id, String sendToCclf) {
@@ -141,7 +147,6 @@ public class TestModelDataBuilder {
                 .niNumber("JM933396A")
                 .gender("Male")
                 .sendToCclf(sendToCclf)
-                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("TEST")
                 .build();
     }
@@ -1378,6 +1383,15 @@ public class TestModelDataBuilder {
         return CorrespondenceStateEntity.builder()
                 .repId(repId)
                 .status(status)
+                .build();
+    }
+
+    public static UserSummaryDTO getUserSummaryDTO() {
+        return UserSummaryDTO.builder()
+                .username(TEST_USER)
+                .newWorkReasons(NEW_WORK_REASON_LIST)
+                .roleActions(ROLE_ACTIONS_LIST)
+                .reservationsEntity(RESERVATIONS_ENTITY)
                 .build();
     }
 }

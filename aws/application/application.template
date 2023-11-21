@@ -634,7 +634,7 @@ Resources:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref ApiGateway
-      RouteKey: 'ANY /api/internal/v1/assessment/{assessment+}'
+      RouteKey: 'ANY /api/internal/v1/{proxy+}'
       AuthorizationType: JWT
       AuthorizationScopes: [!Sub '${pAppName}/${pApiScope1}']
       AuthorizerId: !Ref ApiAuthorizer

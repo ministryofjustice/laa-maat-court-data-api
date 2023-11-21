@@ -12,7 +12,7 @@ import java.util.Date;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class HardshipReviewDTO extends GenericDTO {
+public class ApplicationHardshipReviewDTO extends GenericDTO {
 
     private Long id;
     private SupplierDTO supplier;
@@ -22,6 +22,7 @@ public class HardshipReviewDTO extends GenericDTO {
     private Date reviewDate;
     private String notes;
     private String decisionNotes;
+    private String test;
     private HRSolicitorsCostsDTO solictorsCosts;
     private SysGenCurrency disposableIncome;
     private SysGenCurrency disposableIncomeAfterHardship;

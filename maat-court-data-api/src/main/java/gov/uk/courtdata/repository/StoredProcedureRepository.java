@@ -9,6 +9,7 @@ import gov.uk.courtdata.model.StoredProcedureRequest;
 import gov.uk.courtdata.validator.MAATApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
@@ -27,12 +28,22 @@ public class StoredProcedureRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
+
     public ApplicationDTO executeStoredProcedure(StoredProcedureRequest storedProcedure) {
+        ApplicationDTO result = null;
+
+        Session session = entityManager.unwrap(Session.class);
+        result = session.doReturningWork(connection ->  _executeStoredProcedure(connection, storedProcedure));
+
+        return result;
+    }
+
+
+    public ApplicationDTO _executeStoredProcedure(Connection conn, StoredProcedureRequest storedProcedure) {
 
         ApplicationDTO result = null;
 
         try {
-            Connection conn = entityManager.unwrap(Connection.class);
             setUserSession(conn, storedProcedure.getUser());
 
             HashMap<String, Class<?>> typeDTOMap = new HashMap<>();
@@ -90,6 +101,7 @@ public class StoredProcedureRepository {
             typeDTOMap.put(UserRoleType._SQL_NAME, UserRoleType.class);
             typeDTOMap.put(UserRoleTabType._SQL_NAME, UserRoleTabType.class);
             connection.setTypeMap(typeDTOMap);
+
 
             try (CallableStatement statement = connection.prepareCall("{call user_admin.set_user_session( ? )}")) {
                 statement.setObject(1, userSessionType);

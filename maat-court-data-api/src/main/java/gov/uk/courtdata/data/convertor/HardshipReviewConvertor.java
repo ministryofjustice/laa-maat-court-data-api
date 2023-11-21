@@ -4,7 +4,7 @@ import gov.uk.courtdata.data.convertor.helper.ConvertorHelper;
 import gov.uk.courtdata.data.oracle.*;
 import gov.uk.courtdata.dto.application.HRProgressDTO;
 import gov.uk.courtdata.dto.application.HRSectionDTO;
-import gov.uk.courtdata.dto.application.HardshipReviewDTO;
+import gov.uk.courtdata.dto.application.ApplicationHardshipReviewDTO;
 import gov.uk.courtdata.validator.MAATApplicationException;
 import gov.uk.courtdata.validator.MAATSystemException;
 
@@ -16,9 +16,9 @@ import java.util.Iterator;
 public class HardshipReviewConvertor extends Convertor {
 
 	@Override
-	public HardshipReviewDTO getDTO()
+	public ApplicationHardshipReviewDTO getDTO()
 	{
-		return (HardshipReviewDTO)getDto();
+		return (ApplicationHardshipReviewDTO)getDto();
 	}
 
 	/* (non-Javadoc)
@@ -53,13 +53,13 @@ public class HardshipReviewConvertor extends Convertor {
 	@Override
 	public void setDTO(Object dto) throws MAATApplicationException
 	{
-		if ( dto instanceof HardshipReviewDTO  )
+		if ( dto instanceof ApplicationHardshipReviewDTO)
 			this.setDto(dto);
 		else
 			throw new MAATApplicationException( " Invalid DTO type for conversion got " 
 												+ dto.getClass().getName() 
 												+ " instead of " 
-												+ HardshipReviewDTO.class.getName());
+												+ ApplicationHardshipReviewDTO.class.getName());
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class HardshipReviewConvertor extends Convertor {
 			throws MAATApplicationException, MAATSystemException {
 		// save it
 		this.setType( oracleType );
-		this.setDto( new HardshipReviewDTO() );	// create the new DTO
+		this.setDto( new ApplicationHardshipReviewDTO() );	// create the new DTO
 
 		try
 		{

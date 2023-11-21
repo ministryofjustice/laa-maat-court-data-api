@@ -115,4 +115,14 @@ class EformStagingControllerTest {
         return ENDPOINT_FORMAT + USN;
     }
 
+    @Test
+    void shouldSuccessfullyUpdateEformDecisionHistory() throws Exception {
+        EformsStagingEntity eformsStaging = EformsStagingEntity.builder().maatRef(458658).build();
+        String requestJson = "{\"maatRef\":458658}";
+        mvc.perform(MockMvcRequestBuilders.patch(url()).content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(mockEFormStagingService, times(1)).updateEformStagingFields(USN, eformsStaging);
+    }
+
 }

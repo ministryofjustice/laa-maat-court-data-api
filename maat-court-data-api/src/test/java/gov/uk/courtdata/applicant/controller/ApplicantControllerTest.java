@@ -30,7 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ApplicantController.class)
 public class ApplicantControllerTest {
 
-    private static final String ENDPOINT_URL = "/api/internal/v1/assessment/applicant";
+    private static final String ENDPOINT_URL = "/api/internal/v1/application/applicant";
+    private static final int ID = 1;
 
     @Autowired
     private MockMvc mvc;
@@ -49,24 +50,90 @@ public class ApplicantControllerTest {
 
     @Test
     void givenAValidationException_whenGetRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        when(validator.validate(any())).thenThrow(new ValidationException());
+        when(validator.validate(any()))
+                .thenThrow(new ValidationException());
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + REP_ID))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenResponseIsReturned() throws Exception {
-        List<RepOrderApplicantLinksDTO> response = TestModelDataBuilder.getRepOrderApplicantLinksDTO();
-        when(repOrderApplicantLinksService.find(REP_ID)).thenReturn(response);
+        List<RepOrderApplicantLinksDTO> response = TestModelDataBuilder.getRepOrderApplicantLinksDTOs(ID);
+        when(repOrderApplicantLinksService.find(REP_ID))
+                .thenReturn(response);
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + REP_ID))
                 .andExpect(status().isOk());
         verify(repOrderApplicantLinksService).find(REP_ID);
     }
 
     @Test
+    void givenValidRequest_whenUpdateRepOrderApplicantLinkIsInvoked_thenUpdateIsSuccess() throws Exception {
+        RepOrderApplicantLinksDTO repOrderApplicantLinksDTO = TestModelDataBuilder.getRepOrderApplicantLinksDTO(ID);
+        when(repOrderApplicantLinksService.update(any()))
+                .thenReturn(repOrderApplicantLinksDTO);
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/rep-order-applicant-links")
+                        .content(objectMapper.writeValueAsString(repOrderApplicantLinksDTO))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenAEmptyContent_whenUpdateRepOrderApplicantLinkIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/rep-order-applicant-links")
+                        .content("{}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenInValidRequest_whenUpdateRepOrderApplicantLinkIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        when(repOrderApplicantLinksService.update(any()))
+                .thenThrow(new RequestedObjectNotFoundException("Rep Order Applicant Links not found"));
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/rep-order-applicant-links")
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderApplicantLinksDTO(ID)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    void givenInternalServerError_whenUpdateRepOrderApplicantLinkIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        when(repOrderApplicantLinksService.update(any()))
+                .thenThrow(EmptyResultDataAccessException.class);
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/rep-order-applicant-links")
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderApplicantLinksDTO(ID)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
+    }
+
+    @Test
+    void givenCorrectId_whenGetApplicantHistoryIsInvoked_thenResponseIsReturned() throws Exception {
+        ApplicantHistoryDTO applicantHistoryDTO = TestModelDataBuilder.getApplicantHistoryDTO(ID, "N");
+        when(applicantHistoryService.find(ID))
+                .thenReturn(applicantHistoryDTO);
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/applicant-history/" + ID))
+                .andExpect(status().isOk());
+        verify(applicantHistoryService).find(1);
+    }
+
+    @Test
+    void givenInternalServerError_whenGetApplicantHistoryIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        when(applicantHistoryService.find(ID))
+                .thenThrow(EmptyResultDataAccessException.class);
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/applicant-history/" + ID)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(ID, "Y")))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
+    }
+
+    @Test
     void givenValidRequest_whenUpdateApplicantHistoryIsInvoked_thenUpdateIsSuccess() throws Exception {
-        ApplicantHistoryDTO applicantHistoryDTO = TestModelDataBuilder.getApplicantHistoryDTO(1, "N");
-        when(applicantHistoryService.update(any())).thenReturn(applicantHistoryDTO);
+        ApplicantHistoryDTO applicantHistoryDTO = TestModelDataBuilder.getApplicantHistoryDTO(ID, "N");
+        when(applicantHistoryService.update(any()))
+                .thenReturn(applicantHistoryDTO);
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/applicant-history")
                         .content(objectMapper.writeValueAsString(applicantHistoryDTO))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -83,18 +150,20 @@ public class ApplicantControllerTest {
 
     @Test
     void givenInValidRequest_whenUpdateApplicantHistoryIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        when(applicantHistoryService.update(any())).thenThrow(new RequestedObjectNotFoundException("Applicant History not found"));
+        when(applicantHistoryService.update(any()))
+                .thenThrow(new RequestedObjectNotFoundException("Applicant History not found"));
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/applicant-history")
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(1, "Y")))
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(ID, "Y")))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(404));
     }
 
     @Test
     void givenInternalServerError_whenUpdateApplicantHistoryIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        when(applicantHistoryService.update(any())).thenThrow(EmptyResultDataAccessException.class);
+        when(applicantHistoryService.update(any()))
+                .thenThrow(EmptyResultDataAccessException.class);
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/applicant-history")
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(1, "Y")))
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(ID, "Y")))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

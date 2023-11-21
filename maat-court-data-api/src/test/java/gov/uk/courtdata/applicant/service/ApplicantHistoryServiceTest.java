@@ -1,10 +1,10 @@
 package gov.uk.courtdata.applicant.service;
 
-import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.mapper.ApplicantHistoryMapper;
 import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +21,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ApplicantHistoryServiceTest {
 
+    public static final int ID = 1;
     @Mock
     private ApplicantHistoryRepository applicantHistoryRepository;
 
@@ -31,19 +32,35 @@ public class ApplicantHistoryServiceTest {
     private ApplicantHistoryService applicantHistoryService;
 
     @Test
+    void givenAValidInput_whenFindIsInvoked_thenShouldReturnApplicantHistoryDTO() {
+        when(applicantHistoryRepository.findById(anyInt())).thenReturn(Optional.of(ApplicantHistoryEntity.builder().id(ID).build()));
+        applicantHistoryService.find(ID);
+        verify(applicantHistoryRepository, atLeastOnce()).findById(ID);
+        verify(applicantHistoryMapper, atLeastOnce()).mapEntityToDTO(any());
+    }
+
+    @Test
+    void givenApplicantHistoryNotFound_whenFindIsInvoked_thenExceptionIsRaised() {
+        assertThatThrownBy(() -> {
+            applicantHistoryService.find(ID);
+        }).isInstanceOf(RequestedObjectNotFoundException.class)
+                .hasMessageContaining("Applicant History not found for id ");
+    }
+
+    @Test
     void givenAValidInput_whenUpdateIsInvoked_thenUpdateIsSuccess() {
         when(applicantHistoryRepository.findById(anyInt())).thenReturn(Optional.of(ApplicantHistoryEntity.builder().build()));
-        applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(1, "N"));
+        applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(ID, "N"));
         verify(applicantHistoryRepository, atLeastOnce()).findById(any());
         verify(applicantHistoryRepository, atLeastOnce()).saveAndFlush(any());
         verify(applicantHistoryMapper, atLeastOnce()).mapEntityToDTO(any());
     }
 
     @Test
-    void givenApplicantHistoryNotFound_whenFindByIdIsInvoked_thenExceptionIsRaised() {
+    void givenApplicantHistoryNotFound_whenUpdateIsInvoked_thenExceptionIsRaised() {
         when(applicantHistoryRepository.findById(anyInt())).thenReturn(Optional.empty());
         assertThatThrownBy(() -> {
-            applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(1, "N"));
+            applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(ID, "N"));
         }).isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant History not found for id");
     }

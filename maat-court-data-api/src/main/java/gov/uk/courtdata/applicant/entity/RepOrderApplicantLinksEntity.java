@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,12 +37,14 @@ public class RepOrderApplicantLinksEntity {
     @Column(name = "UNLINK_DATE")
     private LocalDate unlinkDate;
 
+    @CreationTimestamp
     @Column(name = "DATE_CREATED")
     private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED")
     private String userCreated;
 
+    @UpdateTimestamp
     @Column(name = "DATE_MODIFIED")
     private LocalDateTime dateModified;
 

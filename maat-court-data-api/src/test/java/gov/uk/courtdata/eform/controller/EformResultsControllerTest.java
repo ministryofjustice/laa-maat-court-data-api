@@ -19,7 +19,6 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -54,9 +53,6 @@ public class EformResultsControllerTest {
         eformResultsEntityList.add(eformResultsEntity);
         when(eformResultsService.getAllEformResults(USN_NUMBER))
                 .thenReturn(eformResultsEntityList);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
 
         mvc.perform(MockMvcRequestBuilders.get(BASE_ENDPOINT_FORMAT+ "/" + USN_NUMBER)
                         .contentType(MediaType.APPLICATION_JSON))

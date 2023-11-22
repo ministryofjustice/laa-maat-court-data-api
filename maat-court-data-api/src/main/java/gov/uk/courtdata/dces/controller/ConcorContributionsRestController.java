@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/internal/v1")
+@RequestMapping("/api/internal/v1/debt-collection-enforcement")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Contributions", description = "Rest API for Concor Contribution Files")

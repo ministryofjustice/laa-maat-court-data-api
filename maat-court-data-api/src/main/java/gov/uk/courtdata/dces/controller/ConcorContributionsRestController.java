@@ -43,8 +43,8 @@ public class ConcorContributionsRestController {
 
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
-    @PostMapping(value = "/update-contribution", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "update contribution file with concatenated concor files")
+    @PostMapping(value = "/create-contribution-file", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Creating a contribution file and updating the status to Sent in the concor contribution")
     public ResponseEntity<Boolean> updateContributionFileStatus(@RequestBody @NotEmpty final ConcorContributionRequest request) {
         log.info("Update concor contribution file references with request {}", request);
         boolean response = concorContributionsService.createContributionAndUpdateConcorStatus(request);

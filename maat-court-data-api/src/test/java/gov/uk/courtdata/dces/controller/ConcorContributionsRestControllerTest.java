@@ -82,7 +82,7 @@ class ConcorContributionsRestControllerTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(concorContributionRequest);
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  +"/update-contribution"))
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  +"/create-contribution-file"))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -102,7 +102,7 @@ class ConcorContributionsRestControllerTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(concorContributionRequest);
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  +"/update-contribution"))
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  +"/create-contribution-file"))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is5xxServerError());
@@ -121,7 +121,7 @@ class ConcorContributionsRestControllerTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(concorContributionRequest);
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  +"/update-contribution"))
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  +"/create-contribution-file"))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is4xxClientError())

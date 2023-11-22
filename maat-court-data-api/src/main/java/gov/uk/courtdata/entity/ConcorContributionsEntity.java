@@ -1,6 +1,6 @@
 package gov.uk.courtdata.entity;
 
-import gov.uk.courtdata.dces.enums.ConcorContributionStatus;
+import gov.uk.courtdata.enums.ConcorContributionStatus;
 import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

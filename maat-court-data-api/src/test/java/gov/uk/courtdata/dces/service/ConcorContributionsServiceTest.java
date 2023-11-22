@@ -1,10 +1,10 @@
 package gov.uk.courtdata.dces.service;
 
-import static gov.uk.courtdata.dces.enums.ConcorContributionStatus.ACTIVE;
+import static gov.uk.courtdata.enums.ConcorContributionStatus.ACTIVE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import gov.uk.courtdata.dces.enums.ConcorContributionStatus;
+import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.ConcorContributionRequest;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
@@ -26,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 class ConcorContributionsServiceTest {
@@ -83,7 +84,7 @@ class ConcorContributionsServiceTest {
     void testCreateContributionFileAndUpdateConcorContributionStatus() {
 
         final ConcorContributionRequest concorContributionRequest
-                = ConcorContributionRequest.builder().contributionIds(List.of("1")).xmlContent(getXmlDocContent()).build();
+                = ConcorContributionRequest.builder().contributionIds(Set.of("1")).xmlContent(getXmlDocContent()).build();
         final ContributionFilesEntity dummyEntity = getContributionFilesEntity();
 
         when(concorRepository.findByIdIn(any())).thenReturn(concorContributionFiles);
@@ -107,7 +108,7 @@ class ConcorContributionsServiceTest {
     @Test
     void testWhenContributionFileWithActiveStatusNotFound() {
         final ConcorContributionRequest concorContributionRequest = ConcorContributionRequest.builder()
-                .contributionIds(List.of("1")).xmlContent(getXmlDocContent()).build();
+                .contributionIds(Set.of("1")).xmlContent(getXmlDocContent()).build();
         ContributionFilesEntity dummyEntity = getContributionFilesEntity();
 
         when(concorRepository.findByIdIn(any())).thenReturn(new ArrayList<>());

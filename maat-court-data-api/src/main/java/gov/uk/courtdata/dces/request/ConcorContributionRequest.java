@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
+import lombok.ToString;
+import java.util.Set;
 
 @Data
 @Builder
@@ -12,7 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ConcorContributionRequest {
     private Integer recordsSent;
+    @ToString.Exclude
     private String xmlContent;
-    private List<String> contributionIds;
+    private Set<String> contributionIds;
     private String xmlFileName;
 }

@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.uk.courtdata.dces.enums.ConcorContributionStatus;
+import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.request.ConcorContributionRequest;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
+import java.util.Set;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ConcorContributionsRestController.class)
@@ -74,7 +75,7 @@ class ConcorContributionsRestControllerTest {
         final ConcorContributionRequest concorContributionRequest = ConcorContributionRequest.builder()
                 .recordsSent(123)
                 .xmlContent("XMLFileContent")
-                .contributionIds(List.of("1", "2"))
+                .contributionIds(Set.of("1", "2"))
                 .build();
         when(concorContributionsService.createContributionAndUpdateConcorStatus(concorContributionRequest)).thenReturn(true);
 
@@ -93,7 +94,7 @@ class ConcorContributionsRestControllerTest {
         final ConcorContributionRequest concorContributionRequest = ConcorContributionRequest.builder()
                 .recordsSent(123)
                 .xmlContent("XMLFileContent")
-                .contributionIds(List.of("1", "2"))
+                .contributionIds(Set.of("1", "2"))
                 .build();
         when(concorContributionsService.createContributionAndUpdateConcorStatus(concorContributionRequest))
                 .thenThrow(new MAATCourtDataException("Error"));
@@ -112,7 +113,7 @@ class ConcorContributionsRestControllerTest {
         final ConcorContributionRequest concorContributionRequest = ConcorContributionRequest.builder()
                 .recordsSent(123)
                 .xmlContent("XMLFileContent")
-                .contributionIds(List.of())
+                .contributionIds(Set.of())
                 .build();
         when(concorContributionsService.createContributionAndUpdateConcorStatus(concorContributionRequest))
                 .thenThrow(new ValidationException("ContributionIds are empty/null."));

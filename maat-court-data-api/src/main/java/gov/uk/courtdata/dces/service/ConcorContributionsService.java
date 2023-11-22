@@ -1,8 +1,8 @@
 package gov.uk.courtdata.dces.service;
 
-import static gov.uk.courtdata.dces.enums.ConcorContributionStatus.SENT;
+import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 
-import gov.uk.courtdata.dces.enums.ConcorContributionStatus;
+import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.ConcorContributionRequest;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -59,12 +60,12 @@ public class ConcorContributionsService {
 
             contributionFileRepository.save(contributionFileEntity);
         } catch (Exception e) {
-            throw new MAATCourtDataException("ConcorContributionRequest to ContributionEntity Mapper error.");
+            throw new MAATCourtDataException("Failed to map ConcorContributionRequest to ContributionFilesEntity and persist: [%s]".formatted(e.getMessage()));
         }
         return contributionFileEntity;
     }
 
-    private boolean updateConcorStatusForContribution(final List<String> ids, final ConcorContributionStatus status, final Integer contributionFileId ){
+    private boolean updateConcorStatusForContribution(final Set<String> ids, final ConcorContributionStatus status, final Integer contributionFileId ){
 
         final List<ConcorContributionsEntity> concorFileList = concorRepository.findByIdIn(ids);
 

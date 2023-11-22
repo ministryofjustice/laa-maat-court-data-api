@@ -8,7 +8,6 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.link.service.CreateLinkService;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;

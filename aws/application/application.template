@@ -697,6 +697,7 @@ Resources:
       JwtConfiguration:
         Audience:
           - !Ref CognitoUserPoolClientDcesReportService
+          - !Ref CognitoUserPoolClientDcesDrcReportService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiAuthorizerForCAA:
     Type: 'AWS::ApiGatewayV2::Authorizer'

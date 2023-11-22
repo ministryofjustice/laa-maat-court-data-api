@@ -27,7 +27,7 @@ import java.util.Set;
 @WebMvcTest(ConcorContributionsRestController.class)
 class ConcorContributionsRestControllerTest {
 
-    private static final String ENDPOINT_URL = "/api/internal/v1";
+    private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement";
 
     @Autowired
     private MockMvc mvc;

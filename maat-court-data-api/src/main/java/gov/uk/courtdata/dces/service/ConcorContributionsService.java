@@ -47,7 +47,7 @@ public class ConcorContributionsService {
         return updateConcorStatusForContribution(contributionRequest.getContributionIds(), SENT, contributionFilesEntity.getId());
     }
 
-    private ContributionFilesEntity createContributionFile(final ConcorContributionRequest contributionRequest) {
+    private ContributionFilesEntity createContributionFile(ConcorContributionRequest contributionRequest) {
 
         final ContributionFilesEntity contributionFileEntity;
         try {

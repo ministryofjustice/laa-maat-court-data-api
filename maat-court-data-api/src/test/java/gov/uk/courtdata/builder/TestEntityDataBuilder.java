@@ -211,7 +211,7 @@ public class TestEntityDataBuilder {
     public static IOJAppealEntity getIOJAppealEntity(LocalDateTime dateModified, String iapStatus) {
         return IOJAppealEntity.builder()
                 .id(IOJ_APPEAL_ID)
-                .repId(IOJ_REP_ID)
+                .repOrder(getPopulatedRepOrder(IOJ_REP_ID))
                 .appealSetupDate(LocalDateTime.of(2022, 1, 1, 10, 0))
                 .nworCode("NEW")
                 .userCreated("test-s")
@@ -538,7 +538,7 @@ public class TestEntityDataBuilder {
     public static ContributionsEntity getContributionsEntity() {
 
         return ContributionsEntity.builder()
-                .repId(REP_ID)
+                .repOrder(getPopulatedRepOrder(REP_ID))
                 .applId(REP_ID)
                 .userCreated(USER_NAME)
                 .contributionFileId(1)
@@ -619,7 +619,7 @@ public class TestEntityDataBuilder {
     }
     public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity(Integer repOderOutComeId, Integer repId) {
         return RepOrderCCOutComeEntity.builder()
-                .repId(repId)
+                .repOrder(getPopulatedRepOrder(REP_ID))
                 .outcome("CONVICTED")
                 .userCreated(TEST_USER)
                 .caseNumber(TEST_CASE_ID.toString())

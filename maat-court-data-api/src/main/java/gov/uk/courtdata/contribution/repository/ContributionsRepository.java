@@ -14,11 +14,11 @@ import java.util.List;
 @Repository
 public interface ContributionsRepository extends JpaRepository<ContributionsEntity, Integer> {
 
-    Integer countAllByRepId(Integer repId);
+    Integer countAllByRepOrder_Id(Integer repId);
 
-    List<ContributionsEntity> findAllByRepId(Integer repId);
+    List<ContributionsEntity> findAllByRepOrder_Id(Integer repId);
 
-    ContributionsEntity findByRepIdAndLatestIsTrue(Integer repId);
+    ContributionsEntity findByRepOrder_IdAndLatestIsTrue(Integer repId);
 
     @Query(value = "select * from TOGDATA.CONTRIBUTIONS where C.REP_ID = :repId and C.TRANSFER_STATUS = 'SENT'\n" +
             "             and not exists (select 1 from contributions where C2.REP_ID = p_application_object.rep_id\n" +

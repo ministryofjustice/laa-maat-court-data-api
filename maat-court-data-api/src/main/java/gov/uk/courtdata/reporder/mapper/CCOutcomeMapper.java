@@ -17,8 +17,10 @@ public interface CCOutcomeMapper {
 
     List<RepOrderCCOutcomeDTO> repOrderCCOutComeEntityToRepOrderCCOutcomeDTO(List<RepOrderCCOutComeEntity> repOrderCCOutComeEntities);
 
+    @Mapping(target = "repId", source = "repOrder.id")
     RepOrderCCOutcomeDTO repOrderCCOutComeEntityToRepOrderCCOutcomeDTO(RepOrderCCOutComeEntity repOrderCCOutComeEntities);
 
+    @Mapping(target = "repOrder.id", source = "repId")
     RepOrderCCOutComeEntity repOrderCCOutcomeToRepOrderCCOutcomeEntity(RepOrderCCOutcome outCome);
 
     void repOrderCCOutComeMappedToRepOrderCCOutcomeEntity(RepOrderCCOutcome updateRepOrder, @MappingTarget RepOrderCCOutComeEntity repOrderEntity);

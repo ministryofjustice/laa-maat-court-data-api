@@ -40,6 +40,7 @@ class RepOrderControllerTest {
     private static final String MVO_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
     private static final String CURRENT_REGISTRATION = "current-registration";
+
     @Autowired
     private MockMvc mvc;
     @MockBean

@@ -44,4 +44,5 @@ public class RepOrderDTO {
     private List<RepOrderCCOutcomeDTO> repOrderCCOutcome = new ArrayList<>();
     @Builder.Default
     private List<IOJAppealDTO> iojAppeal = new ArrayList<>();
+
 }

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.contribution.service;
 
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
 import gov.uk.courtdata.contribution.model.CreateContributions;
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
@@ -34,24 +36,33 @@ class ContributionsServiceTest {
 
     @Test
     void givenAValidRepId_whenFindIsInvoked_thenContributionsEntryIsRetrieved() {
-        when(repository.findByRepIdAndLatestIsTrue(anyInt())).thenReturn(ContributionsEntity.builder().repId(TestModelDataBuilder.REP_ID).build());
+        when(repository.findByRepOrder_IdAndLatestIsTrue(anyInt()))
+                .thenReturn(ContributionsEntity
+                        .builder()
+                        .repOrder(TestEntityDataBuilder
+                                .getPopulatedRepOrder(REP_ID))
+                        .build());
         contributionsService.find(TestModelDataBuilder.REP_ID, true);
-        verify(repository).findByRepIdAndLatestIsTrue(TestModelDataBuilder.REP_ID);
+        verify(repository).findByRepOrder_IdAndLatestIsTrue(TestModelDataBuilder.REP_ID);
         verify(contributionsMapper).mapEntityToDTO(any(List.class));
     }
 
     @Test
     void givenAValidRepIdAndFindAllRepId_whenFindIsInvoked_thenContributionsEntryIsRetrieved() {
-        when(repository.findAllByRepId(anyInt())).thenReturn(List.of(ContributionsEntity.builder().repId(TestModelDataBuilder.REP_ID).build()));
+        when(repository.findAllByRepOrder_Id(anyInt())).thenReturn(List.of(ContributionsEntity
+                .builder()
+                .repOrder(TestEntityDataBuilder
+                        .getPopulatedRepOrder(REP_ID))
+                .build()));
         contributionsService.find(TestModelDataBuilder.REP_ID, false);
-        verify(repository).findAllByRepId(TestModelDataBuilder.REP_ID);
+        verify(repository).findAllByRepOrder_Id(TestModelDataBuilder.REP_ID);
         verify(contributionsMapper).mapEntityToDTO(any(List.class));
     }
 
     @Test
     void givenContributionsEntryDoesntExist_whenFindIsInvoked_thenExceptionIsRaised() {
         Integer testRepId = 666;
-        when(repository.findByRepIdAndLatestIsTrue(anyInt())).thenReturn(null);
+        when(repository.findByRepOrder_IdAndLatestIsTrue(anyInt())).thenReturn(null);
         assertThatThrownBy(() -> {
             contributionsService.find(testRepId, true);
         }).isInstanceOf(RequestedObjectNotFoundException.class)
@@ -84,7 +95,7 @@ class ContributionsServiceTest {
         ContributionsEntity contributionsEntity = ContributionsEntity.builder().build();
         when(contributionsMapper.createContributionsToContributionsEntity(any(CreateContributions.class))).thenReturn(contributionsEntity);
         contributionsService.create(CreateContributions.builder().repId(TestModelDataBuilder.REP_ID).build());
-        verify(repository).findByRepIdAndLatestIsTrue(TestModelDataBuilder.REP_ID);
+        verify(repository).findByRepOrder_IdAndLatestIsTrue(TestModelDataBuilder.REP_ID);
         verify(repository).saveAndFlush(any(ContributionsEntity.class));
         verify(contributionsMapper).createContributionsToContributionsEntity(any());
     }
@@ -93,7 +104,7 @@ class ContributionsServiceTest {
     void givenContributionsEntryAlreadyExists_whenCreateIsInvoked_thenExistingEntryIsUpdated_andNewContributionsEntryIsCreated() {
         LocalDate testEffectiveDate = LocalDate.now();
         ContributionsEntity contributionsEntity = ContributionsEntity.builder().build();
-        when(repository.findByRepIdAndLatestIsTrue(TestModelDataBuilder.REP_ID)).thenReturn(contributionsEntity);
+        when(repository.findByRepOrder_IdAndLatestIsTrue(TestModelDataBuilder.REP_ID)).thenReturn(contributionsEntity);
         when(contributionsMapper.createContributionsToContributionsEntity(any(CreateContributions.class))).thenReturn(contributionsEntity);
         when(repository.saveAndFlush(any(ContributionsEntity.class))).thenReturn(contributionsEntity);
         when(contributionsMapper.mapEntityToDTO(any(ContributionsEntity.class))).thenReturn(ContributionsDTO.builder().repId(TestModelDataBuilder.REP_ID).build());
@@ -136,7 +147,11 @@ class ContributionsServiceTest {
 
     @Test
     void givenAValidRepId_whenFindByRepIdAndLatestSentContributionIsInvoked_thenContributionsEntryIsRetrieved() {
-        when(repository.findByRepIdAndLatestSentContribution(anyInt())).thenReturn(ContributionsEntity.builder().repId(TestModelDataBuilder.REP_ID).build());
+        when(repository.findByRepIdAndLatestSentContribution(anyInt())).thenReturn(ContributionsEntity
+                .builder()
+                .repOrder(TestEntityDataBuilder
+                        .getPopulatedRepOrder(REP_ID))
+                .build());
         contributionsService.findByRepIdAndLatestSentContribution(TestModelDataBuilder.REP_ID);
         verify(repository).findByRepIdAndLatestSentContribution(TestModelDataBuilder.REP_ID);
         verify(contributionsMapper).mapEntityToDTO(any(ContributionsEntity.class));
@@ -144,7 +159,11 @@ class ContributionsServiceTest {
 
     @Test
     void givenAValidRepIdAndFindByRepIdAndLatestSentContributionAllRepId_whenFindIsInvoked_thenContributionsEntryIsRetrieved() {
-        when(repository.findByRepIdAndLatestSentContribution(anyInt())).thenReturn(ContributionsEntity.builder().repId(TestModelDataBuilder.REP_ID).build());
+        when(repository.findByRepIdAndLatestSentContribution(anyInt())).thenReturn(ContributionsEntity
+                .builder()
+                .repOrder(TestEntityDataBuilder
+                        .getPopulatedRepOrder(REP_ID))
+                .build());
         contributionsService.findByRepIdAndLatestSentContribution(TestModelDataBuilder.REP_ID);
         verify(repository).findByRepIdAndLatestSentContribution(TestModelDataBuilder.REP_ID);
         verify(contributionsMapper).mapEntityToDTO(any(ContributionsEntity.class));
@@ -153,7 +172,7 @@ class ContributionsServiceTest {
     @Test
     void givenContributionsEntryDoesntExist_whenFindByRepIdAndLatestSentContributionIsInvoked_thenExceptionIsRaised() {
         Integer testRepId = 666;
-        when(repository.findByRepIdAndLatestIsTrue(anyInt())).thenReturn(null);
+        when(repository.findByRepOrder_IdAndLatestIsTrue(anyInt())).thenReturn(null);
         assertThatThrownBy(() -> {
             contributionsService.find(testRepId, true);
         }).isInstanceOf(RequestedObjectNotFoundException.class)

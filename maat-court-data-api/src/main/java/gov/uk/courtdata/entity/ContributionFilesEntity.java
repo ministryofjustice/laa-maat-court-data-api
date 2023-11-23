@@ -1,18 +1,16 @@
 package gov.uk.courtdata.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.xml.bind.annotation.XmlType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
-import jakarta.persistence.Column;
-
-import jakarta.persistence.Entity;
-
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-import jakarta.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
 
 @Data
@@ -22,42 +20,43 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "CONTRIBUTION_FILES", schema = "TOGDATA")
 @XmlType
-public class ContributionFilesEntity {
+    public class ContributionFilesEntity {
 
-    @Id
-    @Column(name = "ID", nullable = false)
-    private Integer id;
+        @Id
+        @Column(name = "ID", nullable = false)
+        private Integer id;
 
-    @Column(name = "FILE_NAME", length = 100, nullable = false)
-    private String fileName;
+        @Column(name = "FILE_NAME", length = 100, nullable = false)
+        private String fileName;
 
-    @Column(name = "RECORDS_SENT")
-    private Integer recordsSent;
+        @Column(name = "RECORDS_SENT")
+        private Integer recordsSent;
 
-    @Column(name = "RECORDS_RECEIVED")
-    private Integer recordsReceived;
+        @Column(name = "RECORDS_RECEIVED")
+        private Integer recordsReceived;
 
-    @Column(name = "DATE_CREATED")
-    private LocalDate dateCreated;
+        @CreationTimestamp
+        @Column(name = "DATE_CREATED")
+        private LocalDate dateCreated;
 
-    @Column(name = "USER_CREATED")
-    private String userCreated;
+        @Column(name = "USER_CREATED")
+        private String userCreated = "MLA";
 
-    @Column(name = "DATE_MODIFIED")
-    private LocalDate dateModified;
+        @Column(name = "DATE_MODIFIED")
+        private LocalDate dateModified;
 
-    @Column(name = "USER_MODIFIED", length = 225)
-    private String userModified;
+        @Column(name = "USER_MODIFIED", length = 225)
+        private String userModified;
 
-    @Column(name = "XML_CONTENT")
-    private String xmlContent;
+        @Column(name = "XML_CONTENT")
+        private String xmlContent;
 
-    @Column(name = "DATE_SENT")
-    private LocalDate dateSent;
+        @Column(name = "DATE_SENT")
+        private LocalDate dateSent;
 
-    @Column(name = "DATE_RECEIVED")
-    private LocalDate dateReceived;
+        @Column(name = "DATE_RECEIVED")
+        private LocalDate dateReceived;
 
-    @Column(name = "ACK_XML_CONTENT")
-    private String ackXmlContent;
-}
+        @Column(name = "ACK_XML_CONTENT")
+        private String ackXmlContent;
+    }

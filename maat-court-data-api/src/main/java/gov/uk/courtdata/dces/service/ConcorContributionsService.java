@@ -41,7 +41,7 @@ public class ConcorContributionsService {
     public boolean createContributionAndUpdateConcorStatus(final ConcorContributionRequest contributionRequest){
 
         ValidationUtils.isNull(contributionRequest,"contributionRequest object is null");
-        ValidationUtils.isEmpty(contributionRequest.getContributionIds(),"ContributionIds are empty/null.");
+        ValidationUtils.isEmptyOrHasNullElement(contributionRequest.getContributionIds(),"ContributionIds are empty/null.");
 
         final ContributionFilesEntity contributionFilesEntity = createContributionFile(contributionRequest);
         return updateConcorStatusForContribution(contributionRequest.getContributionIds(), SENT, contributionFilesEntity.getId());

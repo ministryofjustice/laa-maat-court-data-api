@@ -4,10 +4,11 @@ import gov.uk.courtdata.exception.ValidationException;
 import lombok.experimental.UtilityClass;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @UtilityClass
 public class ValidationUtils {
-    public static <T> void isEmpty(final Collection<T> collection, final String errorMessage) {
+    public static <T> void isEmptyOrHasNullElement(final Collection<T> collection, final String errorMessage) {
         if (collection == null || collection.isEmpty() || containsAnyNull(collection)) {
             raise(errorMessage);
         }
@@ -20,12 +21,7 @@ public class ValidationUtils {
     }
 
     private static <T> boolean containsAnyNull(final Collection<T> collection) {
-        for (final T element : collection) {
-            if (element == null) {
-                return true;
-            }
-        }
-        return false;
+        return collection.stream().anyMatch(Objects::isNull);
     }
 
     private static void raise(final String errorMessage) {

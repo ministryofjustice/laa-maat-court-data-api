@@ -14,7 +14,7 @@ public class ValidationUtils {
         }
     }
 
-    public static void isNull(final Object o, final String errorMessage) {
+    public static void isNull(Object o, final String errorMessage) {
         if (o == null) {
             raise(errorMessage);
         }

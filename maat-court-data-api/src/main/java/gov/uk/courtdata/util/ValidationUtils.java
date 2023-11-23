@@ -20,7 +20,7 @@ public class ValidationUtils {
         }
     }
 
-    private static <T> boolean containsAnyNull(final Collection<T> collection) {
+    private static <T> boolean containsAnyNull(Collection<T> collection) {
         return collection.stream().anyMatch(Objects::isNull);
     }
 

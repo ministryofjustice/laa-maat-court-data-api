@@ -31,7 +31,7 @@ public class ConcorContributionsService {
     private final ContributionFilesRepository contributionFileRepository;
     private final ContributionFileMapper contributionFileMapper;
 
-    public List<String> getConcorFiles(final ConcorContributionStatus status) {
+    public List<String> getConcorFiles(ConcorContributionStatus status) {
         log.info("Getting concor contribution file with status with the -> {}", status);
         final List<ConcorContributionsEntity> concorFileList = concorRepository.findByStatus(status);
         return concorFileList.stream().map(ConcorContributionsEntity::getCurrentXml).toList();

@@ -3,6 +3,7 @@ package gov.uk.courtdata.eform.controller;
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.model.EformStagingResponse;
+import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import gov.uk.courtdata.eform.service.EformStagingService;
 import gov.uk.courtdata.eform.validator.UsnValidator;
 import io.swagger.v3.oas.annotations.Operation;
@@ -89,5 +90,14 @@ public class EformStagingController {
         EformStagingResponse eformStagingResponse = eformStagingDTOMapper.toEformStagingResponse(eformStagingDto);
 
         return ResponseEntity.ok(eformStagingResponse);
+    }
+
+    @PatchMapping(value ="/{usn}")
+    @Operation(description = "Update an EFORMS_STAGING record")
+    @StandardApiResponseCodes
+    public ResponseEntity<Void> updateEformStagingRecord(@PathVariable Integer usn,
+                                                       @RequestBody EformsStagingEntity eformsStaging) {
+        eformStagingService.updateEformStagingFields(usn, eformsStaging);
+        return ResponseEntity.ok().build();
     }
 }

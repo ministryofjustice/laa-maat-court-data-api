@@ -3,6 +3,7 @@ package gov.uk.courtdata.integration.applicant;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
+import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
@@ -30,6 +31,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ApplicantServiceIntegrationTest {
 
+    public static final int ID = 1;
     @Autowired
     private RepOrderApplicantLinksRepository repOrderApplicantLinksRepository;
 
@@ -69,6 +71,45 @@ public class ApplicantServiceIntegrationTest {
     }
 
     @Test
+    void givenAValidInput_whenUpdateRepOrderApplicantLinksIsInvoked_thenUpdateIsSuccess() {
+        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
+        repOrderApplicantLinksRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
+        Integer id = repOrderApplicantLinksRepository.findAll().get(0).getId();
+        RepOrderApplicantLinksDTO recordToUpdate = TestModelDataBuilder.getRepOrderApplicantLinksDTO(id);
+        RepOrderApplicantLinksDTO repOrderApplicantLinksDTO = repOrderApplicantLinksService.update(recordToUpdate);
+        assertThat(repOrderApplicantLinksDTO.getId()).isEqualTo(id);
+        assertThat(repOrderApplicantLinksDTO.getUserModified()).isEqualTo(recordToUpdate.getUserModified());
+        assertThat(repOrderApplicantLinksDTO.getUnlinkDate()).isEqualTo(recordToUpdate.getUnlinkDate());
+    }
+
+    @Test
+    void givenAInValidInput_whenUpdateRepOrderApplicantLinksIsInvoked_thenExceptionIsRaised() {
+        assertThatThrownBy(() -> {
+            repOrderApplicantLinksService.update(TestModelDataBuilder.getRepOrderApplicantLinksDTO(ID));
+        }).isInstanceOf(RequestedObjectNotFoundException.class)
+                .hasMessageContaining("Rep Order Applicant Link not found for id");
+    }
+
+    @Test
+    void givenValidId_whenGetApplicantHistoryIsInvoked_thenCorrectResponseIsReturned() {
+        ApplicantHistoryEntity testRecord = TestEntityDataBuilder.getApplicantHistoryEntity("N");
+        applicantHistoryRepository.saveAndFlush(testRecord);
+        Integer id = applicantHistoryRepository.findAll().get(0).getId();
+        ApplicantHistoryDTO result = applicantHistoryService.find(id);
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isGreaterThan(0);
+        assertThat(result.getApplId()).isEqualTo(testRecord.getApplId());
+    }
+
+    @Test
+    void givenInValidId_whenGetApplicantHistoryIsInvoked_thenExceptionIsRaised() {
+        assertThatThrownBy(() -> {
+            applicantHistoryService.find(ID);
+        }).isInstanceOf(RequestedObjectNotFoundException.class)
+                .hasMessageContaining("Applicant History not found for id");
+    }
+
+    @Test
     void givenAValidInput_whenUpdateApplicantHistoryIsInvoked_thenUpdateIsSuccess() {
         applicantHistoryRepository.saveAndFlush(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
         Integer id = applicantHistoryRepository.findAll().get(0).getId();
@@ -80,7 +121,7 @@ public class ApplicantServiceIntegrationTest {
     @Test
     void givenAInValidInput_whenUpdateApplicantHistoryIsInvoked_thenExceptionIsRaised() {
         assertThatThrownBy(() -> {
-            applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(1, "N"));
+            applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(ID, "N"));
         }).isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant History not found for id");
     }

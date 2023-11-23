@@ -38,7 +38,7 @@ public class ConcorContributionsService {
     }
 
     @Transactional(rollbackFor = MAATCourtDataException.class)
-    public boolean createContributionAndUpdateConcorStatus(final ConcorContributionRequest contributionRequest){
+    public boolean createContributionAndUpdateConcorStatus(ConcorContributionRequest contributionRequest){
 
         ValidationUtils.isNull(contributionRequest,"contributionRequest object is null");
         ValidationUtils.isEmptyOrHasNullElement(contributionRequest.getContributionIds(),"ContributionIds are empty/null.");

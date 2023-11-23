@@ -65,7 +65,7 @@ public class ConcorContributionsService {
         return contributionFileEntity;
     }
 
-    private boolean updateConcorStatusForContribution(final Set<String> ids, final ConcorContributionStatus status, final Integer contributionFileId ){
+    private boolean updateConcorStatusForContribution(Set<String> ids, ConcorContributionStatus status, final Integer contributionFileId ){
 
         final List<ConcorContributionsEntity> concorFileList = concorRepository.findByIdIn(ids);
 

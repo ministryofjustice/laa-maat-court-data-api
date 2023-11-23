@@ -29,5 +29,5 @@ public interface CrownCourtProcessingRepository extends JpaRepository<RepOrderCC
             @Param("p_user") String dbUser,
             @Param("p_sentence_order_date") LocalDate sentenceOrderDate);
 
-    List<RepOrderCCOutComeEntity> findByRepId(Integer repId);
+    List<RepOrderCCOutComeEntity> findByRepOrder_Id(Integer id);
 }

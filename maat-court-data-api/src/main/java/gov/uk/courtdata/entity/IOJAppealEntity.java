@@ -22,8 +22,11 @@ public class IOJAppealEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ioj_appeal_seq")
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "REP_ID", nullable = false, updatable = false)
-    private Integer repId;
+    @ToString.Exclude
+    @JsonBackReference
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "REP_ID", nullable = false, updatable = false)
+    private RepOrderEntity repOrder;
     @Column(name = "APPEAL_SETUP_DATE", nullable = false)
     private LocalDateTime appealSetupDate;
     @Column(name = "NWOR_CODE", nullable = false, updatable = false)
@@ -57,9 +60,5 @@ public class IOJAppealEntity {
     @Builder.Default
     @Column(name = "REPLACED")
     private String replaced = "N";
-    @ToString.Exclude
-    @JsonBackReference
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "REP_ID", nullable = false, updatable = false)
-    private RepOrderEntity repOrder;
+
 }

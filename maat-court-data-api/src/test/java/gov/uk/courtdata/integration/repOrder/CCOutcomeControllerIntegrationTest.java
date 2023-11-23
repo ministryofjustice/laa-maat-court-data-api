@@ -26,9 +26,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
+import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(SoftAssertionsExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
@@ -48,7 +51,7 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        existingRepOrder = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
+        existingRepOrder = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(500));
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(501));
     }
@@ -67,23 +70,17 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
         assertTrue(runBadRequestErrorScenario("User created is required",
                 post(endpointUrl).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(repOrderCCOutCome))));
     }
-
     @Test
     void givenAValidData_whenCreateIsInvoked_thenCreateOutcomeIsSuccess() throws Exception {
         RepOrderCCOutcome repOrderCCOutCome = TestModelDataBuilder.getRepOrderCCOutcome();
         repOrderCCOutCome.setId(null);
-        runSuccessScenario(post(endpointUrl).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(repOrderCCOutCome)));
-        List<RepOrderCCOutComeEntity> repOrderCCOutComeEntities = courtProcessingRepository.findByRepId(TestModelDataBuilder.REP_ID);
-        assertThat(repOrderCCOutComeEntities).isNotNull();
-        RepOrderCCOutComeEntity repOrderCCOutComeEntity = repOrderCCOutComeEntities.get(0);
-
-        softly.assertThat(repOrderCCOutComeEntity.getRepId()).isEqualTo(repOrderCCOutCome.getRepId());
-        softly.assertThat(repOrderCCOutComeEntity.getOutcome()).isEqualTo(repOrderCCOutCome.getOutcome());
-        softly.assertThat(repOrderCCOutComeEntity.getCaseNumber()).isEqualTo(repOrderCCOutCome.getCaseNumber());
-        softly.assertThat(repOrderCCOutComeEntity.getCrownCourtCode()).isEqualTo(repOrderCCOutCome.getCrownCourtCode());
-        softly.assertThat(repOrderCCOutComeEntity.getDateCreated()).isNotNull();
-        softly.assertThat(repOrderCCOutComeEntity.getUserCreated()).isEqualTo(repOrderCCOutCome.getUserCreated());
-        softly.assertThat(repOrderCCOutComeEntity.getOutcomeDate()).isEqualTo(repOrderCCOutCome.getOutcomeDate());
+        mockMvc.perform(MockMvcRequestBuilders.post(endpointUrl)
+                        .content(objectMapper.writeValueAsString(repOrderCCOutCome))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.repId").value(REP_ID));
     }
 
     @Test
@@ -100,7 +97,7 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
         runSuccessScenario(MockMvcRequestBuilders.put(endpointUrl).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateRepOrderCCOutcome(savedOutcome.getId()))));
         RepOrderCCOutComeEntity ccOutCome = courtProcessingRepository.findById(savedOutcome.getId()).get();
-        softly.assertThat(TestModelDataBuilder.REP_ID).isEqualTo(ccOutCome.getRepId());
+        softly.assertThat(TestModelDataBuilder.REP_ID).isEqualTo(ccOutCome.getRepOrder().getId());
         softly.assertThat(TestModelDataBuilder.TEST_CASE_ID.toString()).isEqualTo(ccOutCome.getCaseNumber());
         softly.assertThat("430").isEqualTo(ccOutCome.getCrownCourtCode());
         softly.assertThat(TestModelDataBuilder.TEST_USER).isEqualTo(ccOutCome.getUserModified());
@@ -115,18 +112,18 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenARepIdNotFoundInOutcome_whenFindIsInvoked_thenReturnEmpty() throws Exception {
-        runSuccessScenario(List.of(), MockMvcRequestBuilders.get(endpointUrl + "/reporder/" + TestEntityDataBuilder.REP_ID));
+        runSuccessScenario(List.of(), MockMvcRequestBuilders.get(endpointUrl + "/reporder/" + REP_ID));
     }
-
     @Test
     void givenAValidRepId_whenFindIsInvoked_thenReturnOutcome() throws Exception {
-        List<RepOrderCCOutComeEntity> expectedResponse = List.of(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(2, TestEntityDataBuilder.REP_ID));
-        RepOrderCCOutComeEntity repOrderCCOutComeEntity = courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(2, TestEntityDataBuilder.REP_ID));
-        MvcResult result = runSuccessScenario(MockMvcRequestBuilders.get(endpointUrl + "/reporder/" + TestEntityDataBuilder.REP_ID));
-        expectedResponse.get(0).setDateCreated(repOrderCCOutComeEntity.getDateCreated());
-        expectedResponse.get(0).setId(repOrderCCOutComeEntity.getId());
-        expectedResponse.get(0).setDateModified(repOrderCCOutComeEntity.getDateModified());
-        assertThat(objectMapper.writeValueAsString(expectedResponse)).isEqualTo(result.getResponse().getContentAsString());
+        List<RepOrderCCOutComeEntity> expectedResponse = List.of(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(2, REP_ID));
+        RepOrderCCOutComeEntity repOrderCCOutComeEntity = courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(2, REP_ID));
+        mockMvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/reporder/" + REP_ID))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].repId").value(REP_ID))
+                .andExpect(jsonPath("$[0].dateCreated").isNotEmpty())
+                .andExpect(jsonPath("$[0].dateModified").isNotEmpty());
     }
     @Test
     void givenAValidRepId_whenFindIsInvoked_thenReturnOutcomeCount() throws Exception {

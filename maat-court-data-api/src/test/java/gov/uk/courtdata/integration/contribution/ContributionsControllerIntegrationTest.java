@@ -25,13 +25,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+<<<<<<< HEAD
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+=======
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.List;
+
+>>>>>>> b4c5bd43f558de8614cdfe6c95f533f2969ab10f
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+<<<<<<< HEAD
+=======
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+>>>>>>> b4c5bd43f558de8614cdfe6c95f533f2969ab10f
 
 @ExtendWith(SoftAssertionsExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
@@ -73,7 +86,11 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
 
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID + 1));
         ContributionsEntity contributionsEntity = TestEntityDataBuilder.getContributionsEntity();
+<<<<<<< HEAD
         contributionsEntity.setRepOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID + 1));
+=======
+        contributionsEntity.setRepOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID+1));
+>>>>>>> b4c5bd43f558de8614cdfe6c95f533f2969ab10f
         contributionsRepository.saveAndFlush(contributionsEntity);
     }
 

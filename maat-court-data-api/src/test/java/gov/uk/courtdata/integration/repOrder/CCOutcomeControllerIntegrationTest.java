@@ -116,8 +116,7 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
     }
     @Test
     void givenAValidRepId_whenFindIsInvoked_thenReturnOutcome() throws Exception {
-        List<RepOrderCCOutComeEntity> expectedResponse = List.of(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(2, REP_ID));
-        RepOrderCCOutComeEntity repOrderCCOutComeEntity = courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(2, REP_ID));
+        courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(2, REP_ID));
         mockMvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/reporder/" + REP_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

@@ -129,7 +129,7 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
     void givenAValidRepId_whenFindIsInvoked_thenReturnOutcomeCount() throws Exception {
         RepOrderCCOutComeEntity repOrderCCOutComeEntity = TestEntityDataBuilder.getRepOrderCCOutcomeEntity(3, 500);
         courtProcessingRepository.saveAndFlush(repOrderCCOutComeEntity);
-        MvcResult result = runSuccessScenario(MockMvcRequestBuilders.head(endpointUrl + "/reporder/" + REP_ID));
+        MvcResult result = runSuccessScenario(MockMvcRequestBuilders.head(endpointUrl + "/reporder/" + 500));
         assertThat(result.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
     }
 

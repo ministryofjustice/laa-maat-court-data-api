@@ -39,6 +39,7 @@ import java.time.LocalDate;
         @Column(name = "DATE_CREATED")
         private LocalDate dateCreated;
 
+        @Builder.Default
         @Column(name = "USER_CREATED")
         private String userCreated = "MLA";
 

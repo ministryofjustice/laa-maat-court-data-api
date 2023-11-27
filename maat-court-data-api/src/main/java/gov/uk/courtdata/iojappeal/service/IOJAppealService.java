@@ -48,7 +48,7 @@ public class IOJAppealService {
 
         log.info("Update previous IOJ Appeal records and set them to replaced");
 
-        iojAppealImpl.setOldIOJAppealsReplaced(iojAppealEntity.getRepId(), iojAppealEntity.getId());
+        iojAppealImpl.setOldIOJAppealsReplaced(iojAppealEntity.getRepOrder().getId(), iojAppealEntity.getId());
 
         log.info("Create IOJ Appeal - Transaction Processing - end");
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);

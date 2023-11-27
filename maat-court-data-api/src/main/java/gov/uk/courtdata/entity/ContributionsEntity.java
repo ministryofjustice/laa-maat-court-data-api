@@ -1,5 +1,6 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,8 +28,11 @@ public class ContributionsEntity {
     @Column(name = "APPL_ID", nullable = false)
     private Integer applId;
 
-    @Column(name = "REP_ID", nullable = false)
-    private Integer repId;
+    @ToString.Exclude
+    @JsonBackReference
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "REP_ID", nullable = false, updatable = false)
+    private RepOrderEntity repOrder;
 
     @Column(name = "CONT_FILE_ID")
     private Integer contributionFileId;

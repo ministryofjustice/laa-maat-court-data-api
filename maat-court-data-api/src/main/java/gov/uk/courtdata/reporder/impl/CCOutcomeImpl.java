@@ -27,6 +27,6 @@ public class CCOutcomeImpl {
     }
 
     public List<RepOrderCCOutComeEntity> findByRepId(Integer repId) {
-        return courtProcessingRepository.findByRepId(repId);
+        return courtProcessingRepository.findByRepOrder_Id(repId);
     }
 }

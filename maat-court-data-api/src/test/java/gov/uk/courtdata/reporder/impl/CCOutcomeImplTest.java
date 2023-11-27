@@ -36,7 +36,7 @@ class CCOutcomeImplTest {
     @Test
     void givenAValidParameter_whenFindByRepIdIsInvoked_thenOutcomeIsRetrieved() {
         repOrderCCOutcomeImpl.findByRepId(any());
-        verify(repository, atLeastOnce()).findByRepId(any());
+        verify(repository, atLeastOnce()).findByRepOrder_Id(any());
     }
 
     @Test

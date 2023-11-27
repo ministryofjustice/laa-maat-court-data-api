@@ -1,0 +1,14 @@
+REVOKE CREATE SESSION FROM DART_QUERY;
+commit;
+
+BEGIN
+    -- Remove TOGDATA permissions
+    FOR t IN (SELECT table_name FROM DBA_TAB_PRIVS WHERE GRANTEE = 'DART_QUERY' AND owner = 'TOGDATA') LOOP
+        EXECUTE IMMEDIATE 'REVOKE SELECT ON TOGDATA.' || t.table_name || ' FROM DART_QUERY';
+    END LOOP;
+
+    -- Remove MLA permissions
+    FOR t IN (SELECT table_name FROM DBA_TAB_PRIVS WHERE GRANTEE = 'DART_QUERY' AND owner = 'MLA') LOOP
+        EXECUTE IMMEDIATE 'REVOKE SELECT ON MLA.' || t.table_name || ' FROM DART_QUERY';
+    END LOOP;
+END;

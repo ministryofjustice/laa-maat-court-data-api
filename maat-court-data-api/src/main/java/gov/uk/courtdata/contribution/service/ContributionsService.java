@@ -30,12 +30,12 @@ public class ContributionsService {
 
         List<ContributionsEntity> contributionsEntityList = new ArrayList<>();
         if (findLatestContribution) {
-            ContributionsEntity contributions = contributionsRepository.findByRepIdAndLatestIsTrue(repId);
+            ContributionsEntity contributions = contributionsRepository.findByRepOrder_IdAndLatestIsTrue(repId);
             if (null != contributions) {
                 contributionsEntityList.add(contributions);
             }
         } else {
-            contributionsEntityList = contributionsRepository.findAllByRepId(repId);
+            contributionsEntityList = contributionsRepository.findAllByRepOrder_Id(repId);
         }
         if (contributionsEntityList.isEmpty()) {
             throw new RequestedObjectNotFoundException(String.format("Contributions entry not found for repId %d", repId));
@@ -60,7 +60,7 @@ public class ContributionsService {
     @Transactional
     public ContributionsDTO create(CreateContributions createContributions) {
         Integer repId = createContributions.getRepId();
-        ContributionsEntity existingContributionsEntity = contributionsRepository.findByRepIdAndLatestIsTrue(repId);
+        ContributionsEntity existingContributionsEntity = contributionsRepository.findByRepOrder_IdAndLatestIsTrue(repId);
 
         if (existingContributionsEntity != null) {
             contributionsRepository.updateExistingContributionToInactive(repId, createContributions.getEffectiveDate());

@@ -20,7 +20,7 @@ def versions = [
         commLan3Vriosn                      : '3.10',
         lombokMapStrutBinding               : '0.2.0',
         sonarVersion                        : '2.7',
-        h2DBVersion                         : '1.4.200',
+        h2DBVersion                         : '2.1.210',
         mockitoInlineVersion                : "5.2.0",
         harmcrestVersion                    : '1.3',
         festVersion                         : '1.4',

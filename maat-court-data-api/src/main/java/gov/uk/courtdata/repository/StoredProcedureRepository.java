@@ -9,13 +9,12 @@ import gov.uk.courtdata.model.StoredProcedureRequest;
 import gov.uk.courtdata.validator.MAATApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -25,25 +24,21 @@ import java.util.HashMap;
 public class StoredProcedureRepository {
 
     private static final String PACKAGE_NAME_NOT_SET_EXCEPTION = "The package name has not been set";
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Value("${spring.datasource.url}")
+    private String dbUrl;
+    @Value("${spring.togdata.username}")
+    private String dbUsername;
+    @Value("${spring.togdata.password}")
+    private String dbPassword;
 
-
-    public ApplicationDTO executeStoredProcedure(StoredProcedureRequest storedProcedure) {
-        ApplicationDTO result = null;
-
-        Session session = entityManager.unwrap(Session.class);
-        result = session.doReturningWork(connection ->  _executeStoredProcedure(connection, storedProcedure));
-
-        return result;
-    }
-
-
-    public ApplicationDTO _executeStoredProcedure(Connection conn, StoredProcedureRequest storedProcedure) {
+    public ApplicationDTO executeStoredProcedure(StoredProcedureRequest storedProcedure) throws MAATApplicationException, SQLException {
 
         ApplicationDTO result = null;
+        Connection conn = null;
 
         try {
+            conn = getConnectionFromDriverManager();
+            conn.setAutoCommit(false);
             setUserSession(conn, storedProcedure.getUser());
 
             HashMap<String, Class<?>> typeDTOMap = new HashMap<>();
@@ -82,11 +77,12 @@ public class StoredProcedureRepository {
                 }
             }
         } catch (Exception exception) {
+            rollbackTransactionalConnection(conn);
             throw new RuntimeException(exception);
+        } finally {
+            closeAndCommitConnection(conn);
         }
         return result;
-
-
     }
 
     private void setUserSession(Connection connection, UserDTO userDto) throws MAATApplicationException {
@@ -121,7 +117,62 @@ public class StoredProcedureRepository {
         } else if ((StringUtils.isBlank(callStoredProcedure.getProcedureName()))) {
             throw new MAATApplicationException(PACKAGE_NAME_NOT_SET_EXCEPTION);
         }
-        return connection.prepareCall("{ call " + callStoredProcedure.getDbPackageName()
-                + "." + callStoredProcedure.getProcedureName() + "(?)}");
+        String procedureName = callStoredProcedure.getDbPackageName() + "." + callStoredProcedure.getProcedureName() + "(?)";
+        return connection.prepareCall("{ call " + procedureName + "}");
+    }
+
+
+    private Connection getConnectionFromDriverManager() throws MAATApplicationException {
+        Connection wantedConnection;
+
+        try {
+           wantedConnection = DriverManager.getConnection(dbUrl,  dbUsername,  dbPassword);
+        } catch (SQLException exception) {
+            throw new MAATApplicationException("Could not retrieve a connection to the database");
+        }
+
+        return wantedConnection;
+    }
+
+    void closeAndCommitConnection(Connection connection) throws MAATApplicationException {
+        try (Connection autoClosableConnection = connection) {
+            if (isConnectionOpen(autoClosableConnection)) {
+                commitTransactionalConnection(autoClosableConnection);
+            }
+        } catch (Exception e) {
+            throw new MAATApplicationException("Could not close the Connection object", e);
+        }
+    }
+
+    private boolean isConnectionOpen(Connection connection) throws SQLException {
+        return connection != null && !connection.isClosed();
+    }
+
+    private boolean commitTransactionalConnection(Connection connection) throws SQLException {
+        try {
+            if (connectionRequiresManualCommit(connection)) {
+                connection.commit();
+            }
+            return true;
+        } catch (SQLException se) {
+            log.error(getClass().getName() + " ### Cannot commit transaction ");
+            throw se;
+        }
+    }
+
+    private boolean connectionRequiresManualCommit(Connection connection) throws SQLException {
+        return !connection.getAutoCommit();
+    }
+
+    private boolean rollbackTransactionalConnection(Connection connection) throws SQLException {
+        try {
+            if (connectionRequiresManualCommit(connection)) {
+                connection.rollback();
+            }
+            return true;
+        } catch (SQLException se) {
+            log.error(getClass().getName() + " ### Cannot rollback transaction ");
+            throw se;
+        }
     }
 }

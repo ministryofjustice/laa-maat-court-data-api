@@ -21,7 +21,7 @@ class StoredProcedureServiceTest {
     private StoredProcedureRepository repository;
 
     @Test
-    void givenAValidInput_whenExecuteStoredProcedureIsInvoked_thenApplicationDTOIsReturned() {
+    void givenAValidInput_whenExecuteStoredProcedureIsInvoked_thenApplicationDTOIsReturned() throws Exception{
         service.executeStoredProcedure(new StoredProcedureRequest());
         verify(repository).executeStoredProcedure(any());
     }

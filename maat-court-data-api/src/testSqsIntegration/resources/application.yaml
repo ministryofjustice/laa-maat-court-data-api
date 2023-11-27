@@ -49,6 +49,11 @@ spring:
       region:
         static: us-east-1
 
+  togdata:
+    username: togdata
+    password: test
+
+
 cloud-platform:
   aws:
     sqs:

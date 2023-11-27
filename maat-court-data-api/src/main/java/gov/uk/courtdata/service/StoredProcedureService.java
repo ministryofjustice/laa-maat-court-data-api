@@ -14,11 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class StoredProcedureService {
 
     private final StoredProcedureRepository repository;
-
-    @Transactional
+    
     public ApplicationDTO executeStoredProcedure(StoredProcedureRequest callStoredProcedure) {
         log.info("Calling execute Store Procedure- Start");
-        return repository.executeStoredProcedure(callStoredProcedure);
+        ApplicationDTO result = null;
+        try {
+            result = repository.executeStoredProcedure(callStoredProcedure);
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+        return result;
     }
 
 }

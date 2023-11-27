@@ -504,6 +504,9 @@ Resources:
               ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/CDA_OAUTH_CLIENT_ID'
             - Name: CDA_OAUTH_CLIENT_SECRET
               ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/CDA_OAUTH_CLIENT_SECRET'
+            - Name: TOGDATA_DATASOURCE_PASSWORD
+              ValueFrom: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/APP_MAATDB_DBPASSWORD_TOGDATA'
+
           Environment:
             - Name: DATASOURCE_URL
               Value: !Ref pDatasourceUrl
@@ -539,6 +542,8 @@ Resources:
               Value: !Ref pCloudwatchBatchSize
             - Name: ENABLE_CLOUDWATCH_METRICS
               Value: !Ref pEnableCloudwatchMetrics
+            - Name: TOGDATA_DATASOURCE_USERNAME
+              Value: !Ref pTogDataUsername
 
 
 

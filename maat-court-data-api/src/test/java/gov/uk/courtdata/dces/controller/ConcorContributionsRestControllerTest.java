@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.request.ConcorContributionRequest;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
@@ -38,23 +39,29 @@ class ConcorContributionsRestControllerTest {
     @Test
     void testContributionFileContent() throws Exception {
 
-        when(concorContributionsService.getConcorFiles(ConcorContributionStatus.ACTIVE))
-                .thenReturn(List.of("FirstXMLFile", "SecondXMLFile", "ThirdXMLFile"));
+        when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE))
+                .thenReturn(List.of(
+                        ConcorContributionResponse.builder().concorContributionId(1).xmlContent("FirstXMLFile").build(),
+                        ConcorContributionResponse.builder().concorContributionId(2).xmlContent("SecondXMLFile").build(),
+                        ConcorContributionResponse.builder().concorContributionId(3).xmlContent("ThirdXMLFile").build()));
 
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/concor-contribution-files"))
                         .queryParam("status", ConcorContributionStatus.ACTIVE.name())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0]").value("FirstXMLFile"))
-                .andExpect(jsonPath("$[1]").value("SecondXMLFile"))
-                .andExpect(jsonPath("$[2]").value("ThirdXMLFile"));
+                .andExpect(jsonPath("$[0].concorContributionId").value("1"))
+                .andExpect(jsonPath("$[0].xmlContent").value("FirstXMLFile"))
+                .andExpect(jsonPath("$[1].concorContributionId").value("2"))
+                .andExpect(jsonPath("$[1].xmlContent").value("SecondXMLFile"))
+                .andExpect(jsonPath("$[2].concorContributionId").value("3"))
+                .andExpect(jsonPath("$[2].xmlContent").value("ThirdXMLFile"));
     }
 
     @Test
     void testContributionFileContentWhenActiveFileNotAvailable() throws Exception {
 
-        when(concorContributionsService.getConcorFiles(ConcorContributionStatus.ACTIVE)).thenReturn(List.of());
+        when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE)).thenReturn(List.of());
 
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/concor-contribution-files"))
                         .queryParam("status", ConcorContributionStatus.ACTIVE.name())
@@ -75,7 +82,7 @@ class ConcorContributionsRestControllerTest {
         final ConcorContributionRequest concorContributionRequest = ConcorContributionRequest.builder()
                 .recordsSent(123)
                 .xmlContent("XMLFileContent")
-                .contributionIds(Set.of("1", "2"))
+                .concorContributionIds(Set.of())
                 .build();
         when(concorContributionsService.createContributionAndUpdateConcorStatus(concorContributionRequest)).thenReturn(true);
 
@@ -94,7 +101,7 @@ class ConcorContributionsRestControllerTest {
         final ConcorContributionRequest concorContributionRequest = ConcorContributionRequest.builder()
                 .recordsSent(123)
                 .xmlContent("XMLFileContent")
-                .contributionIds(Set.of("1", "2"))
+                .concorContributionIds(Set.of())
                 .build();
         when(concorContributionsService.createContributionAndUpdateConcorStatus(concorContributionRequest))
                 .thenThrow(new MAATCourtDataException("Error"));
@@ -113,7 +120,7 @@ class ConcorContributionsRestControllerTest {
         final ConcorContributionRequest concorContributionRequest = ConcorContributionRequest.builder()
                 .recordsSent(123)
                 .xmlContent("XMLFileContent")
-                .contributionIds(Set.of())
+                .concorContributionIds(Set.of())
                 .build();
         when(concorContributionsService.createContributionAndUpdateConcorStatus(concorContributionRequest))
                 .thenThrow(new ValidationException("ContributionIds are empty/null."));

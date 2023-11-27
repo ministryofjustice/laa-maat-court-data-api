@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.dces.request.ConcorContributionRequest;
+import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,11 +35,11 @@ public class ConcorContributionsRestController {
     @StandardApiResponse
     @GetMapping(value = "/concor-contribution-files", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Get a list of Contributions files")
-    public ResponseEntity<List<String>> getConcorContributionFiles(@RequestParam(name = "status") final ConcorContributionStatus status) {
+    public ResponseEntity<List<ConcorContributionResponse>> getConcorContributionFiles(@RequestParam(name = "status") final ConcorContributionStatus status) {
         log.info("Get Concor contribution files with status {}" ,status);
-        final List<String> concorFiles = concorContributionsService.getConcorFiles(status);
-        log.info("findContributionFiles count {}", concorFiles.size());
-        return ResponseEntity.ok(concorFiles);
+        final List<ConcorContributionResponse> contributionResponses = concorContributionsService.getConcorContributionFiles(status);
+        log.info("findContributionFiles count {}", contributionResponses.size());
+        return ResponseEntity.ok(contributionResponses);
     }
 
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))

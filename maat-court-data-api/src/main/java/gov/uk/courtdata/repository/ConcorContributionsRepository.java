@@ -10,5 +10,5 @@ import java.util.Set;
 @Repository
 public interface ConcorContributionsRepository extends JpaRepository<ConcorContributionsEntity, Integer> {
     List<ConcorContributionsEntity> findByStatus(ConcorContributionStatus status);
-    List<ConcorContributionsEntity> findByIdIn(Set<String> ids);
+    List<ConcorContributionsEntity> findByIdIn(Set<Integer> ids);
 }

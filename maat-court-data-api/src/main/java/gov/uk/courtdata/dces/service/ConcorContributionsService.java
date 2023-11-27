@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.service;
 
 import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 
+import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.ConcorContributionRequest;
@@ -31,20 +32,24 @@ public class ConcorContributionsService {
     private final ContributionFilesRepository contributionFileRepository;
     private final ContributionFileMapper contributionFileMapper;
 
-    public List<String> getConcorFiles(ConcorContributionStatus status) {
+    public List<ConcorContributionResponse> getConcorContributionFiles(ConcorContributionStatus status) {
         log.info("Getting concor contribution file with status with the -> {}", status);
         final List<ConcorContributionsEntity> concorFileList = concorRepository.findByStatus(status);
-        return concorFileList.stream().map(ConcorContributionsEntity::getCurrentXml).toList();
+
+        return concorFileList.stream().map( cc -> ConcorContributionResponse.builder()
+                        .concorContributionId(cc.getId())
+                        .xmlContent(cc.getCurrentXml())
+                        .build()).toList();
     }
 
     @Transactional(rollbackFor = MAATCourtDataException.class)
     public boolean createContributionAndUpdateConcorStatus(ConcorContributionRequest contributionRequest){
 
         ValidationUtils.isNull(contributionRequest,"contributionRequest object is null");
-        ValidationUtils.isEmptyOrHasNullElement(contributionRequest.getContributionIds(),"ContributionIds are empty/null.");
+        ValidationUtils.isEmptyOrHasNullElement(contributionRequest.getConcorContributionIds(),"ContributionIds are empty/null.");
 
         final ContributionFilesEntity contributionFilesEntity = createContributionFile(contributionRequest);
-        return updateConcorStatusForContribution(contributionRequest.getContributionIds(), SENT, contributionFilesEntity.getId());
+        return updateConcorStatusForContribution(contributionRequest.getConcorContributionIds(), SENT, contributionFilesEntity.getId());
     }
 
     private ContributionFilesEntity createContributionFile(ConcorContributionRequest contributionRequest) {
@@ -65,7 +70,7 @@ public class ConcorContributionsService {
         return contributionFileEntity;
     }
 
-    private boolean updateConcorStatusForContribution(Set<String> ids, ConcorContributionStatus status, final Integer contributionFileId ){
+    private boolean updateConcorStatusForContribution(Set<Integer> ids, ConcorContributionStatus status, final Integer contributionFileId ){
 
         final List<ConcorContributionsEntity> concorFileList = concorRepository.findByIdIn(ids);
 

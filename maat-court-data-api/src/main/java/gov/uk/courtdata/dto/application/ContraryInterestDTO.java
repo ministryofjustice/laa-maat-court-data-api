@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class ContraryInterestDTO extends GenericDTO implements Comparable<ContraryInterestDTO> 
 {
-	// Specific ref. data code Constants...
+	// Specific ref. dao code Constants...
 	public static final String NO_CONTRARY_INTEREST = "NOCON";
 	
 	

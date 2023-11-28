@@ -3,7 +3,7 @@
  * 
  * Introduced as part of the Future Initiatives Project (FIP) to support interface
  * between application and database for digitised Means Assessments. Implements a 
- * DTO design pattern to transport relevant data.
+ * DTO design pattern to transport relevant dao.
  *
  */
 

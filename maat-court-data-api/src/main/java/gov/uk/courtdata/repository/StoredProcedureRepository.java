@@ -1,8 +1,8 @@
 package gov.uk.courtdata.repository;
 
-import gov.uk.courtdata.data.convertor.ApplicationConvertor;
-import gov.uk.courtdata.data.convertor.UserSessionConvertor;
-import gov.uk.courtdata.data.oracle.*;
+import gov.uk.courtdata.dao.convertor.ApplicationConvertor;
+import gov.uk.courtdata.dao.convertor.UserSessionConvertor;
+import gov.uk.courtdata.dao.oracle.*;
 import gov.uk.courtdata.dto.application.ApplicationDTO;
 import gov.uk.courtdata.dto.application.UserDTO;
 import gov.uk.courtdata.model.StoredProcedureRequest;

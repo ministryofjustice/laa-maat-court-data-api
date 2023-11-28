@@ -186,7 +186,7 @@ jacocoTestReport {
                     "**/entity/**",
                     "**/dto/**",
                     "**/config/**",
-                    "**/data/**"
+                    "**/dao/**"
             ])
         }))
     }
@@ -201,8 +201,8 @@ task testSqsIntegration(type: Test) {
 check.dependsOn testSqsIntegration
 
 pitest {
-    targetClasses = ['gov.uk.courtdata.link.*', 'gov.uk.courtdata.unlink.*', 'gov.uk.courtdata.laastatus.*', 'gov.uk.courtdata.hearing.*', 'gov.uk.courtdata.data.*']
-    excludedClasses = ['gov.uk.courtdata.hearing.dto.*', 'gov.uk.courtdata.hearing.mapper.*', 'gov.uk.courtdata.laastatus.client.*','gov.uk.courtdata.data.convertor.*', 'gov.uk.courtdata.data.oracle.*']
+    targetClasses = ['gov.uk.courtdata.link.*', 'gov.uk.courtdata.unlink.*', 'gov.uk.courtdata.laastatus.*', 'gov.uk.courtdata.hearing.*', 'gov.uk.courtdata.dao.*']
+    excludedClasses = ['gov.uk.courtdata.hearing.dto.*', 'gov.uk.courtdata.hearing.mapper.*', 'gov.uk.courtdata.laastatus.client.*','gov.uk.courtdata.dao.convertor.*', 'gov.uk.courtdata.dao.oracle.*']
     threads = 5
     outputFormats = ['XML', 'HTML']
     timestampedReports = false
@@ -213,7 +213,7 @@ tasks['sonar'].dependsOn test
 
 sonar {
     properties {
-        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java, **/enums/**.java, **/aspect/**.java, **/**StoredProcedureRepository.java, **/helper/BooleanConverter.java, **/data/convertor/**.java, **/data/oracle/**.java"
+        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java, **/enums/**.java, **/aspect/**.java, **/**StoredProcedureRepository.java, **/helper/BooleanConverter.java, **/dao/convertor/**.java, **/dao/oracle/**.java"
         property "sonar.coverage.exclusions", "**/MAATCourtDataApplication.java"
         property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.projectKey", "ministryofjustice_laa-maat-court-data-api"

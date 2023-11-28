@@ -3,7 +3,6 @@ package gov.uk.courtdata.controller;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.application.ApplicationDTO;
 import gov.uk.courtdata.model.StoredProcedureRequest;
-import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.service.StoredProcedureService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,10 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -29,7 +25,7 @@ public class StoredProcedureController {
 
     private final StoredProcedureService service;
 
-    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Execute store procedure ")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))

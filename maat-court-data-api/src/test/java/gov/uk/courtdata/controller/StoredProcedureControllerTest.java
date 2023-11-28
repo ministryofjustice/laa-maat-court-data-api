@@ -38,7 +38,7 @@ class StoredProcedureControllerTest {
     @Test
     void givenAValidContentAndErrorWhileExecuteStoredProcedure_whenExecuteStoredProcedureIsInvoked_thenErrorIsThrown() throws Exception {
         when(service.executeStoredProcedure(any())).thenThrow(new ValidationException());
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(objectMapper.writeValueAsBytes(
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(objectMapper.writeValueAsBytes(
                                 StoredProcedureRequest.builder().build()
                         ))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -49,7 +49,7 @@ class StoredProcedureControllerTest {
     void givenAValidInput_whenExecuteStoredProcedureIsInvoked_thenReturnStatusOK() throws Exception {
         when(service.executeStoredProcedure(any())).thenReturn(ApplicationDTO.builder()
                 .repId(TestModelDataBuilder.REP_ID.longValue()).build());
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(objectMapper.writeValueAsBytes(
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(objectMapper.writeValueAsBytes(
                                 StoredProcedureRequest.builder().build()
                         ))
                         .contentType(MediaType.APPLICATION_JSON))

@@ -105,7 +105,6 @@ public class IojAppealConvertor extends Convertor {
 			/*
 			 * This will happen if the dto object has not been set
 			 */
-			nex.printStackTrace();
 			throw new MAATApplicationException( "IOJAppealConvertor - the embedded dto is null");
 		
 		}catch (SQLException ex){
@@ -166,7 +165,6 @@ public class IojAppealConvertor extends Convertor {
 			/*
 			 * This will happen if the dto object has not been set
 			 */
-			nex.printStackTrace();
 			throw new MAATApplicationException( "IOJAppealConvertor - the embedded dto is null");
 		}
 		catch (SQLException ex)

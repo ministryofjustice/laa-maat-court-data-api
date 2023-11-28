@@ -120,7 +120,8 @@ public class ConvertorHelper {
      * @return
      */
     public int toInt(BigDecimal number) {
-        return (number != null) ? number.intValue() : null;
+
+        return (number != null) ? number.intValue() : 0;
     }
 
     /**

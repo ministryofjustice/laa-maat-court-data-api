@@ -1,15 +1,14 @@
 package gov.uk.courtdata.contribution.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.contribution.dto.ContributionsSummaryDTO;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
+import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import java.util.List;
 
 @Slf4j
 @Service
-@XRayEnabled
 @RequiredArgsConstructor
 public class ContributionsService {
 
@@ -32,12 +30,12 @@ public class ContributionsService {
 
         List<ContributionsEntity> contributionsEntityList = new ArrayList<>();
         if (findLatestContribution) {
-            ContributionsEntity contributions = contributionsRepository.findByRepIdAndLatestIsTrue(repId);
+            ContributionsEntity contributions = contributionsRepository.findByRepOrder_IdAndLatestIsTrue(repId);
             if (null != contributions) {
                 contributionsEntityList.add(contributions);
             }
         } else {
-            contributionsEntityList = contributionsRepository.findAllByRepId(repId);
+            contributionsEntityList = contributionsRepository.findAllByRepOrder_Id(repId);
         }
         if (contributionsEntityList.isEmpty()) {
             throw new RequestedObjectNotFoundException(String.format("Contributions entry not found for repId %d", repId));
@@ -62,7 +60,7 @@ public class ContributionsService {
     @Transactional
     public ContributionsDTO create(CreateContributions createContributions) {
         Integer repId = createContributions.getRepId();
-        ContributionsEntity existingContributionsEntity = contributionsRepository.findByRepIdAndLatestIsTrue(repId);
+        ContributionsEntity existingContributionsEntity = contributionsRepository.findByRepOrder_IdAndLatestIsTrue(repId);
 
         if (existingContributionsEntity != null) {
             contributionsRepository.updateExistingContributionToInactive(repId, createContributions.getEffectiveDate());

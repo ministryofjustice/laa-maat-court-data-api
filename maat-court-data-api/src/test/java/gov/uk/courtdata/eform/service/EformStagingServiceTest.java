@@ -1,6 +1,8 @@
 package gov.uk.courtdata.eform.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import gov.uk.courtdata.eform.dto.EformStagingDTO;
+import gov.uk.courtdata.eform.exception.UsnException;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.model.EformStagingResponse;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
@@ -13,12 +15,14 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(EformStagingService.class)
@@ -129,5 +133,28 @@ class EformStagingServiceTest {
 
         assertEquals(expectedDto, eformStagingDTO);
         Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(entity);
+    }
+
+    @Test
+    void shouldUpdateEformsStagingRecordForGivenUSN() throws JsonProcessingException {
+        EformsStagingEntity eformsStaging = EformsStagingEntity.builder().maatStatus("PURGE").build();
+        when(mockEformStagingRepository.findById(USN)).thenReturn(Optional.ofNullable(eformsStagingEntity));
+        eformStagingService.updateEformStagingFields(USN, eformsStaging);
+        verify(mockEformStagingRepository, times(1)).findById(USN);
+        verify(mockEformStagingRepository, times(1)).save(eformsStagingEntity);
+        assertEquals(eformsStagingEntity.getMaatStatus(), "PURGE");
+    }
+
+    @Test
+    void shouldReturnDataNotFoundIfUsnNotThereInEformsDecisionHistoryTable() throws JsonProcessingException {
+        EformsStagingEntity eformsStaging = EformsStagingEntity.builder().maatStatus("PURGE").build();
+        when(mockEformStagingRepository.findById(USN)).thenReturn(Optional.empty());
+        UsnException exception = assertThrows(UsnException.class, () -> {
+            eformStagingService.updateEformStagingFields(USN, eformsStaging);
+        });
+        verify(mockEformStagingRepository, times(1)).findById(USN);
+        verify(mockEformStagingRepository, times(0)).save(eformsStagingEntity);
+        assertEquals("The USN [7000001] does not exist in the data store.", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpResponseCode());
     }
 }

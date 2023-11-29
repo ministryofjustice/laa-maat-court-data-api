@@ -1,6 +1,5 @@
 package gov.uk.courtdata.validator;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
@@ -18,7 +17,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  */
 @Slf4j
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class SolicitorValidator implements IValidator<SolicitorMAATDataEntity, Integer> {
 

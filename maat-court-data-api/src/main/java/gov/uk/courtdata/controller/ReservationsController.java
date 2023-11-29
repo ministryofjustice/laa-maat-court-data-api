@@ -1,6 +1,5 @@
 package gov.uk.courtdata.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.entity.ReservationsEntity;
@@ -24,12 +23,11 @@ import java.util.Optional;
 
 import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/reservations")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "reservations", description = "Rest API for Reservations")
+@RequestMapping("${api-endpoints.assessments-domain}/reservations")
 public class ReservationsController {
 
     private final ReservationsRepositoryHelper reservationsRepositoryHelper;

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.reporder.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.reporder.service.RepOrderCapitalService;
 import gov.uk.courtdata.validator.MaatIdValidator;
@@ -20,12 +19,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/rep-orders/capital")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "RepOrders", description = "Rest API for RepOrder Capital")
+@RequestMapping("${api-endpoints.assessments-domain}/rep-orders/capital")
 public class RepOrderCapitalController {
 
     private final RepOrderCapitalService service;

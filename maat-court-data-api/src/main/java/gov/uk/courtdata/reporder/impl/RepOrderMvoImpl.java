@@ -1,6 +1,5 @@
 package gov.uk.courtdata.reporder.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.repository.RepOrderMvoRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class RepOrderMvoImpl {
 

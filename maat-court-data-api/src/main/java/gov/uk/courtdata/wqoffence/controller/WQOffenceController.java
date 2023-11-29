@@ -1,7 +1,6 @@
 package gov.uk.courtdata.wqoffence.controller;
 
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.wqoffence.service.WQOffenceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@XRayEnabled
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "WQOffence", description = "Rest API for WQ Offence")

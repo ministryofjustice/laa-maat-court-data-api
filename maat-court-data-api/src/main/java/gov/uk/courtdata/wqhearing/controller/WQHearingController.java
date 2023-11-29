@@ -1,6 +1,5 @@
 package gov.uk.courtdata.wqhearing.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.WQHearingDTO;
 import gov.uk.courtdata.wqhearing.service.WQHearingService;
@@ -20,12 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/wq-hearing")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "WQ hearing", description = "Rest API for WQ hearing")
+@RequestMapping("${api-endpoints.assessments-domain}/wq-hearing")
 public class WQHearingController {
 
     private final WQHearingService wqHearingService;

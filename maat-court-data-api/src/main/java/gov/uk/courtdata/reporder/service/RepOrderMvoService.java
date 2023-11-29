@@ -1,6 +1,5 @@
 package gov.uk.courtdata.reporder.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.RepOrderMvoDTO;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.reporder.impl.RepOrderMvoImpl;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@XRayEnabled
 @RequiredArgsConstructor
 public class RepOrderMvoService {
 

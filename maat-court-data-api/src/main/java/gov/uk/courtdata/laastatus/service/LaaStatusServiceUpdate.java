@@ -1,6 +1,5 @@
 package gov.uk.courtdata.laastatus.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.laastatus.builder.CourtDataDTOBuilder;
 import gov.uk.courtdata.model.CaseDetails;
@@ -8,9 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Service
-@XRayEnabled
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class LaaStatusServiceUpdate {
 

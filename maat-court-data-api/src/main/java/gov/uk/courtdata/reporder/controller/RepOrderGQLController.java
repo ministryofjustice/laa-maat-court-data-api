@@ -1,6 +1,5 @@
 package gov.uk.courtdata.reporder.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.reporder.gqlfilter.RepOrderFilter;
 import gov.uk.courtdata.reporder.service.RepOrderService;
@@ -16,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@XRayEnabled
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "RepOrdersGQL", description = "Rest API for rep orders")

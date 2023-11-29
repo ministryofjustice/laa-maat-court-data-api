@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
+import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -56,7 +57,10 @@ public class IOJAppealServiceTest {
 
     @Test
     public void whenFindByRepIdIsInvoked_thenIOJAppealIsRetrieved() {
-        IOJAppealEntity iojAppealEntity = IOJAppealEntity.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build();
+        IOJAppealEntity iojAppealEntity = IOJAppealEntity
+                .builder()
+                .id(IOJ_APPEAL_ID)
+                .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID)).build();
         when(iojAppealImpl.findByRepId(IOJ_REP_ID)).thenReturn(iojAppealEntity);
         when(iojAppealMapper.toIOJAppealDTO(iojAppealEntity))
                 .thenReturn(IOJAppealDTO.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build());
@@ -80,7 +84,10 @@ public class IOJAppealServiceTest {
 
     @Test
     public void whenFindCurrentPassedAppealByRepIdIsInvoked_thenIOJAppealIsRetrieved() {
-        IOJAppealEntity iojAppealEntity = IOJAppealEntity.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build();
+        IOJAppealEntity iojAppealEntity = IOJAppealEntity
+                .builder()
+                .id(IOJ_APPEAL_ID)
+                .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID)).build();
         when(iojAppealImpl.findCurrentPassedByRepId(IOJ_REP_ID)).thenReturn(iojAppealEntity);
         when(iojAppealMapper.toIOJAppealDTO(iojAppealEntity))
                 .thenReturn(IOJAppealDTO.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build());

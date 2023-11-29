@@ -1,6 +1,5 @@
 package gov.uk.courtdata.assessment.validator;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.validator.IValidator;
@@ -12,7 +11,6 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class FinancialAssessmentIdValidator implements IValidator<Void, Integer> {
 

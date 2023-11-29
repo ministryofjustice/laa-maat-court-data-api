@@ -1,6 +1,5 @@
 package gov.uk.courtdata.iojappeal.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.iojappeal.service.IOJAppealService;
@@ -20,16 +19,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/ioj-appeal")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "ioj appeal", description = "Rest API for ioj appeal")
+@RequestMapping("${api-endpoints.assessments-domain}/ioj-appeal")
 public class IOJAppealController {
 
     private final IOJAppealService iojAppealService;

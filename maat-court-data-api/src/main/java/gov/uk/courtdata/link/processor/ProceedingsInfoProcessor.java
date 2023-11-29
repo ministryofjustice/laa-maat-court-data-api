@@ -1,6 +1,5 @@
 package gov.uk.courtdata.link.processor;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.ProceedingEntity;
 import gov.uk.courtdata.model.CaseDetails;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class ProceedingsInfoProcessor implements Process {
 

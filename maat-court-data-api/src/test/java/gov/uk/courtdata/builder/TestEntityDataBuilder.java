@@ -2,6 +2,8 @@ package gov.uk.courtdata.builder;
 
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.*;
+import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
+import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
@@ -209,7 +211,7 @@ public class TestEntityDataBuilder {
     public static IOJAppealEntity getIOJAppealEntity(LocalDateTime dateModified, String iapStatus) {
         return IOJAppealEntity.builder()
                 .id(IOJ_APPEAL_ID)
-                .repId(IOJ_REP_ID)
+                .repOrder(getPopulatedRepOrder(IOJ_REP_ID))
                 .appealSetupDate(LocalDateTime.of(2022, 1, 1, 10, 0))
                 .nworCode("NEW")
                 .userCreated("test-s")
@@ -364,6 +366,38 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static RepOrderApplicantLinksEntity getRepOrderApplicantLinksEntity() {
+        return new RepOrderApplicantLinksEntity().builder()
+                .repId(REP_ID)
+                .partnerAphiId(11553872)
+                .partnerApplId(11553844)
+                .linkDate(LocalDate.parse("2021-10-09"))
+                .unlinkDate(LocalDate.parse("2021-10-21"))
+                .userCreated("test-u")
+                .userModified("test-f")
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .dateModified(LocalDateTime.parse("2021-10-21T15:01:25"))
+                .build();
+    }
+
+    public static ApplicantHistoryEntity getApplicantHistoryEntity(String sendToCclf) {
+        return new ApplicantHistoryEntity().builder()
+                .applId(716)
+                .dob(LocalDate.parse("1981-10-14"))
+                .bankAccountName("test-acc-name")
+                .email("test@test.com")
+                .asAtDate(LocalDate.parse("2006-10-06"))
+                .firstName("test_first")
+                .lastName("test_last")
+                .otherNames("test")
+                .niNumber("JM933396A")
+                .gender("Male")
+                .sendToCclf(sendToCclf)
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("TEST")
+                .build();
+    }
+
     public static FinancialAssessmentsHistoryEntity getFinancialAssessmentsHistoryEntity() {
         return FinancialAssessmentsHistoryEntity.builder()
                 .id(4321)
@@ -504,7 +538,7 @@ public class TestEntityDataBuilder {
     public static ContributionsEntity getContributionsEntity() {
 
         return ContributionsEntity.builder()
-                .repId(REP_ID)
+                .repOrder(getPopulatedRepOrder(REP_ID))
                 .applId(REP_ID)
                 .userCreated(USER_NAME)
                 .contributionFileId(1)
@@ -585,7 +619,7 @@ public class TestEntityDataBuilder {
     }
     public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity(Integer repOderOutComeId, Integer repId) {
         return RepOrderCCOutComeEntity.builder()
-                .repId(repId)
+                .repOrder(getPopulatedRepOrder(repId))
                 .outcome("CONVICTED")
                 .userCreated(TEST_USER)
                 .caseNumber(TEST_CASE_ID.toString())

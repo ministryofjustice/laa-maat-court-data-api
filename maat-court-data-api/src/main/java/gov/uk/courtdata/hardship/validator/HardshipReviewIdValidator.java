@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hardship.validator;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.validator.IValidator;
@@ -11,9 +10,8 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
-@XRayEnabled
+@RequiredArgsConstructor
 public class HardshipReviewIdValidator implements IValidator<Void, Integer> {
 
     private final HardshipReviewRepository hardshipReviewRepository;

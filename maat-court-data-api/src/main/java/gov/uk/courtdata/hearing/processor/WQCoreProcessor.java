@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hearing.processor;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.XLATResultEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
@@ -18,7 +17,6 @@ import static gov.uk.courtdata.constants.CourtDataConstants.MAGS_PROCESSING_SYST
 import static gov.uk.courtdata.enums.WQStatus.WAITING;
 
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class WQCoreProcessor {
 

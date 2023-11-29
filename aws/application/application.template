@@ -86,9 +86,6 @@ Parameters:
   pEnableCloudwatchMetrics:
     Type: String
     Default: ''
-  pAwsXRayEnabled:
-    Type: String
-    Default: ''
   pModPlatformVpcCidr:
     Type: String
     Default: ''
@@ -443,8 +440,6 @@ Resources:
             Service: [ecs-tasks.amazonaws.com]
           Action: ['sts:AssumeRole']
       Path: /
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
       Policies:
         - PolicyName: !Sub '${pAppName}-ecs-TaskExecutionRolePolicy'
           PolicyDocument:
@@ -487,20 +482,6 @@ Resources:
       ExecutionRoleArn: !Ref ECSTaskExecutionRole
       TaskRoleArn: !Ref ECSTaskExecutionRole
       ContainerDefinitions:
-        - Name: xray-daemon
-          Cpu: 32
-          Essential: false
-          Image: 'amazon/aws-xray-daemon'
-          Memory: 256
-          LogConfiguration:
-            LogDriver: awslogs
-            Options:
-              awslogs-group: !Ref 'CloudwatchLogsGroup'
-              awslogs-region: !Ref 'AWS::Region'
-              awslogs-stream-prefix: !Sub '${pAppName}-app'
-          PortMappings:
-            - ContainerPort: 2000
-              Protocol: udp
         - Name: !Ref pAppName
           Cpu: !If [ cNonProd, 992, 992 ]
           Essential: true
@@ -558,8 +539,6 @@ Resources:
               Value: !Ref pCloudwatchBatchSize
             - Name: ENABLE_CLOUDWATCH_METRICS
               Value: !Ref pEnableCloudwatchMetrics
-            - Name: AWS_XRAY_SDK_ENABLED
-              Value: !Ref pAwsXRayEnabled
 
 
 
@@ -655,7 +634,7 @@ Resources:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref ApiGateway
-      RouteKey: 'ANY /api/internal/v1/assessment/{assessment+}'
+      RouteKey: 'ANY /api/internal/v1/{proxy+}'
       AuthorizationType: JWT
       AuthorizationScopes: [!Sub '${pAppName}/${pApiScope1}']
       AuthorizerId: !Ref ApiAuthorizer
@@ -676,7 +655,7 @@ Resources:
       RouteKey: 'ANY /api/eform/{proxy+}'
       AuthorizationType: JWT
       AuthorizationScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
-      AuthorizerId: !Ref ApiAuthorizerForCAA
+      AuthorizerId: !Ref ApiAuthorizerForATSAndCAA
       Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
   ApiRouteDCESService:
     Type: AWS::ApiGatewayV2::Route
@@ -718,11 +697,12 @@ Resources:
       JwtConfiguration:
         Audience:
           - !Ref CognitoUserPoolClientDcesReportService
+          - !Ref CognitoUserPoolClientDcesDrcReportService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
-  ApiAuthorizerForCAA:
+  ApiAuthorizerForATSAndCAA:
     Type: 'AWS::ApiGatewayV2::Authorizer'
     Properties:
-      Name: !Sub '${pAppName}_CAA_Authorizer'
+      Name: !Sub '${pAppName}_ATS_And_CAA_Authorizer'
       ApiId: !Ref ApiGateway
       AuthorizerType: JWT  # Json Cognito Web Tokens
       IdentitySource:
@@ -730,6 +710,7 @@ Resources:
       JwtConfiguration:
         Audience:
           - !Ref CognitoUserPoolClientCrimeApplyAdaptor
+          - !Ref CognitoUserPoolClientATSService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiStage:
     Type: 'AWS::ApiGatewayV2::Stage'
@@ -874,11 +855,39 @@ Resources:
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'
+  CognitoUserPoolClientATSService:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: CognitoUserPoolResourceServer1
+    Properties:
+      ClientName: "Application Tracking Service"
+      UserPoolId: !Ref CognitoUserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      GenerateSecret: true
+      SupportedIdentityProviders: [ COGNITO ]
+      AllowedOAuthFlows: [ client_credentials ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
+      PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - 'ALLOW_REFRESH_TOKEN_AUTH'
   CognitoUserPoolClientDcesReportService:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
       ClientName: "DCES Debt collection Report Service"
+      UserPoolId: !Ref CognitoUserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      GenerateSecret: true
+      SupportedIdentityProviders: [ COGNITO ]
+      AllowedOAuthFlows: [ client_credentials ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
+      PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - 'ALLOW_REFRESH_TOKEN_AUTH'
+  CognitoUserPoolClientDcesDrcReportService:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: CognitoUserPoolResourceServer1
+    Properties:
+      ClientName: "DCES DRC Integration Report Service"
       UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlowsUserPoolClient: true
       GenerateSecret: true

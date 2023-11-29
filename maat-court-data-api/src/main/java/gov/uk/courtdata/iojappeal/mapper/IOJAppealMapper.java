@@ -10,6 +10,7 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface IOJAppealMapper {
+    @Mapping(target = "repId", source = "repOrder.id")
     IOJAppealDTO toIOJAppealDTO(IOJAppealEntity iojAppealEntity);
 
     @Mapping(target = "replaced", constant = "N")
@@ -17,5 +18,6 @@ public interface IOJAppealMapper {
 
     IOJAppealDTO toIOJAppealDTO(UpdateIOJAppeal iojAppeal);
 
+    @Mapping(target = "repOrder.id", source = "repId")
     IOJAppealEntity toIOJIojAppealEntity(IOJAppealDTO iojAppealDTO);
 }

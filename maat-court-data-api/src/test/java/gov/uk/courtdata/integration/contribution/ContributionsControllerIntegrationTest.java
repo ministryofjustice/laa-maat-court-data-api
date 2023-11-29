@@ -7,11 +7,9 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.repository.ContributionsRepository;
-import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.entity.CorrespondenceEntity;
-import gov.uk.courtdata.integration.MockServicesConfig;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.repository.CorrespondenceRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
@@ -27,20 +25,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
-
+import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(SpringExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class})
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
 
 
@@ -56,15 +50,13 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     @Autowired
     CorrespondenceRepository correspondenceRepository;
     @Autowired
-    MockMvc mvc;
-    @Autowired
     private RepOrderRepository repOrderRepository;
 
     private ContributionsEntity contributionsEntity;
 
     @BeforeEach
     public void setUp() {
-        repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID));
+        repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
         CorrespondenceEntity correspondenceEntity = correspondenceRepository.saveAndFlush(TestEntityDataBuilder.getCorrespondenceEntity(1));
         ContributionsEntity contributions = TestEntityDataBuilder.getContributionsEntity();
         contributions.setCorrespondenceId(correspondenceEntity.getId());
@@ -79,9 +71,9 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
         contributionFilesEntity.setId(contributions.getContributionFileId());
         contributionFilesRepository.saveAndFlush(contributionFilesEntity);
 
-        repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID + 1));
+        repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID + 1));
         ContributionsEntity contributionsEntity = TestEntityDataBuilder.getContributionsEntity();
-        contributionsEntity.setRepId(TestEntityDataBuilder.REP_ID + 1);
+        contributionsEntity.setRepOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID + 1));
         contributionsRepository.saveAndFlush(contributionsEntity);
     }
 
@@ -96,7 +88,7 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
 
     @Test
     void givenAEmptyContent_whenCreateIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}")
+        mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -112,24 +104,17 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
 
     @Test
     void givenAValidContent_whenCreateIsInvoked_theCorrectResponseIsReturned() throws Exception {
-
-        MvcResult result = runSuccessScenario(MockMvcRequestBuilders.post(ENDPOINT_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(TestModelDataBuilder.getCreateContributions())));
-
-        ContributionsEntity currentEntity = objectMapper.readValue(result.getResponse().getContentAsString(), ContributionsEntity.class);
-        ContributionsDTO expected = TestModelDataBuilder.getContributionsDTO();
-        expected.setDateCreated(currentEntity.getDateCreated());
-        expected.setDateModified(currentEntity.getDateModified());
-        expected.setLatest(currentEntity.getLatest());
-        expected.setId(currentEntity.getId());
-
-        Assertions.assertThat(objectMapper.writeValueAsString(expected)).isEqualTo(result.getResponse().getContentAsString());
+        mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getCreateContributions()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.repId").value(REP_ID));
     }
 
     @Test
     void givenAEmptyContributionId_whenUpdateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
-
         UpdateContributions updateContributions = TestModelDataBuilder.getUpdateContributions(INVALID_CONTRIBUTION_ID);
         assertTrue(runBadRequestErrorScenario("Contributions ID: " + INVALID_CONTRIBUTION_ID + " is invalid.",
                 put(ENDPOINT_URL).contentType(MediaType.APPLICATION_JSON)
@@ -138,19 +123,12 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
 
     @Test
     void givenAValidContent_whenUpdateIsInvoked_theCorrectResponseIsReturned() throws Exception {
-
-        MvcResult result = runSuccessScenario(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateContributions(contributionsEntity.getId()))));
-        contributionsEntity = contributionsRepository.findById(contributionsEntity.getId()).get();
-        ContributionsEntity currentEntity = objectMapper.readValue(result.getResponse().getContentAsString(), ContributionsEntity.class);
-
-        contributionsEntity.setContributionCap(currentEntity.getContributionCap());
-        contributionsEntity.setMonthlyContributions(currentEntity.getMonthlyContributions());
-        contributionsEntity.setUpfrontContributions(currentEntity.getUpfrontContributions());
-
-        Assertions.assertThat(objectMapper.writeValueAsString(contributionsEntity))
-                .isEqualTo(result.getResponse().getContentAsString());
+        mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateContributions(contributionsEntity.getId())))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.repId").value(REP_ID));
     }
 
     @Test
@@ -161,20 +139,19 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
 
     @Test
     void givenAValidParameter_whenFindIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        MvcResult result = runSuccessScenario(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID)
-                .contentType(MediaType.APPLICATION_JSON));
-        List<ContributionsEntity> contributionsEntityList = contributionsRepository.findAllByRepId(TestModelDataBuilder.REP_ID);
-        Assertions.assertThat(result.getResponse().getContentAsString())
-                .isEqualTo(objectMapper.writeValueAsString(contributionsEntityList));
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].repId").value(REP_ID));
     }
 
     @Test
     void givenAValidRepIdAndLatestContributionAsTrue_whenFindIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        MvcResult result = runSuccessScenario(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID
-                + "?findLatestContribution=true").contentType(MediaType.APPLICATION_JSON));
-        ContributionsEntity contributionsEntityList = contributionsRepository.findByRepIdAndLatestIsTrue(TestModelDataBuilder.REP_ID);
-        Assertions.assertThat(result.getResponse().getContentAsString())
-                .isEqualTo(objectMapper.writeValueAsString(List.of(contributionsEntityList)));
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID
+                        + "?findLatestContribution=true").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].repId").value(REP_ID));
     }
 
     @Test

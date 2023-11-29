@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hardship.validator;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReview;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class HardshipReviewValidationProcessor {
 

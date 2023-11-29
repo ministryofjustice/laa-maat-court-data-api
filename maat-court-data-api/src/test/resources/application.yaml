@@ -48,6 +48,10 @@ spring:
       sqs:
         enabled: false
 
+  togdata:
+    username: togdata
+    password: test
+
 cloud-platform:
   aws:
     sqs:

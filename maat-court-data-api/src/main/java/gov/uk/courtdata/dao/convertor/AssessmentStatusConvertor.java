@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gov.uk.courtdata.dao.convertor;
 
 import gov.uk.courtdata.dao.convertor.helper.ConvertorHelper;
@@ -48,11 +45,7 @@ public class AssessmentStatusConvertor extends Convertor
 		}
 		else
 		{
-			/*
-			 * fatal error ???? write a handler in the GenericDTO
-			 */
-			//throw new DAOApplicationException( Constants.INVALID_DTO_TYPE_CLASS );
-			return null;  // temp fix, could cause null pointer exception
+			return null;
 		}
 	}
 	
@@ -91,10 +84,6 @@ public class AssessmentStatusConvertor extends Convertor
 		}
 		catch (NullPointerException nex)
 		{
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "AssessmentStatusConvertor - the embedded dto is null");
 		}
 		catch (SQLException ex )
@@ -126,10 +115,6 @@ public class AssessmentStatusConvertor extends Convertor
 		}		
 		catch (NullPointerException nex)
 		{
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "AssessmentStatusConvertor - the embedded dto is null");
 		}
 		catch (SQLException ex )

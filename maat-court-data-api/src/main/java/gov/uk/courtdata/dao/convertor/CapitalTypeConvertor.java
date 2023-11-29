@@ -46,11 +46,7 @@ public class CapitalTypeConvertor extends Convertor
 		}
 		else
 		{
-			/*
-			 * fatal error ???? write a handler in the GenericDTO
-			 */
-			//throw new DAOApplicationException( Constants.INVALID_DTO_TYPE_CLASS );
-			return null;  // temp fix, could cause null pointer exception
+			return null;
 		}
 	}
 
@@ -66,8 +62,6 @@ public class CapitalTypeConvertor extends Convertor
 		else
 			throw new MAATApplicationException( " Invalid DTO type for conversion got " + dto.getClass().getName() + " wanted " + CapitalTypeDTO.class.getName());
 	}
-
-
 
 
 	/**
@@ -92,10 +86,6 @@ public class CapitalTypeConvertor extends Convertor
 		}
 		catch (NullPointerException nex)
 		{
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "CapitalTypeConvertor - the embedded dto is null");
 		}
 		catch (SQLException ex )
@@ -127,10 +117,6 @@ public class CapitalTypeConvertor extends Convertor
 		}		
 		catch (NullPointerException nex)
 		{
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "CapitalTypeConvertor - the embedded dto is null");
 		}
 		catch (SQLException ex )

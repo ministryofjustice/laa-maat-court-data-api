@@ -1,10 +1,3 @@
-/*
- * Mark Whitaker  - 30/03/2017
- * 
- * Introduced as part of the Future Initiatives Project (FIP) to support passing of
- * digital means assessments between the application and the database.
- * 
- */
 
 package gov.uk.courtdata.dao.convertor;
 
@@ -94,10 +87,6 @@ public class DigitalMeansAssessmentConvertor extends Convertor
 			getDTO().setOriginalEmailDate(convertorHelper.toDate( getOracleType().getOriginalEmailDate() ));	
 		}
 		catch (NullPointerException nex){
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "CrownCourtOverviewConvertor - the embedded dto is null");
 		}
 		catch (SQLException ex )
@@ -132,10 +121,6 @@ public class DigitalMeansAssessmentConvertor extends Convertor
 		}		
 		catch (NullPointerException nex)
 		{
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "CrownCourtOverviewConvertor - the embedded dto is null");
 		}
 		catch (SQLException ex )

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gov.uk.courtdata.dao.convertor;
 
 import gov.uk.courtdata.dao.convertor.helper.ConvertorHelper;
@@ -70,19 +67,10 @@ public class AreaConvertor extends Convertor
 		}
 		else
 		{
-			/*
-			 * fatal error ???? write a handler in the GenericDTO
-			 */
-			//throw new DAOApplicationException( Constants.INVALID_DTO_TYPE_CLASS );
-			return null;  // temp fix, could cause null pointer exception
+			return null;
 		}
 	}
 
-	/**
-	 * This method will return the embedded oracle type object having first updated
-	 * it from the corresponding dto attributes.
-	 * @see uk.gov.lsc.maat.common.dto.GenericDTO#getTypeFromDTO()
-	 */
 	@Override
 	public void setTypeFromDTO(Object dto) throws MAATApplicationException, MAATSystemException
 	{	
@@ -124,10 +112,6 @@ public class AreaConvertor extends Convertor
 		}		
 		catch (NullPointerException nex)
 		{
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "CaseManagementUnitConvertor - the embedded dto is null");
 		}
 		catch (SQLException ex )
@@ -136,12 +120,6 @@ public class AreaConvertor extends Convertor
 		}
 	}
 
-
-	/**
-	 * This method stores an instance of the associated oracle type and runs a 
-	 * type conversion to populate the dto attributes.
-	 * @see uk.gov.lsc.maat.bus.data.dao.dto.GenericDTO#loadFromType(Object)
-	 */
 	@Override
 	public void setDTOFromType(Object oracleType) throws MAATApplicationException, MAATSystemException
 	{
@@ -183,10 +161,6 @@ public class AreaConvertor extends Convertor
 		}
 		catch (NullPointerException nex)
 		{
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "AreaConvertor - the embedded dto is null");
 		}
 		catch (SQLException ex )

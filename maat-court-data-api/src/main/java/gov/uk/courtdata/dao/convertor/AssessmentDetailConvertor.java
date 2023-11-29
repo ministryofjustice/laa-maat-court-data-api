@@ -32,11 +32,7 @@ public class AssessmentDetailConvertor extends Convertor {
 		}
 		else
 		{
-			/*
-			 * fatal error ???? write a handler in the GenericDTO
-			 */
-			//throw new DAOApplicationException( Constants.INVALID_DTO_TYPE_CLASS );
-			return null;  // temp fix, could cause null pointer exception
+			return null;
 		}
 	}
 

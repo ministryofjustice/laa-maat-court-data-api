@@ -47,13 +47,7 @@ public class AllowedWorkReasonConvertor extends Convertor {
 			
 			return (AllowedWorkReasonType)getDbType();
 		}else{
-			
-			/*
-			 * fatal error ???? write a handler in the GenericDTO
-			 */
-			//throw new DAOApplicationException( Constants.INVALID_DTO_TYPE_CLASS );
-			
-			return null;  // temp fix, could cause null pointer exception
+			return null;
 		}
 	}
 	
@@ -161,12 +155,7 @@ public class AllowedWorkReasonConvertor extends Convertor {
 	    	allowedWorkReasonForCrownCourtHardship();
 	    	
 		}catch (NullPointerException nex){
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "PropertyConvertor - the embedded dto is null");
-			
 		}catch (SQLException ex ){
 			
 			throw new MAATSystemException( ex );

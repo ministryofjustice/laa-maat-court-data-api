@@ -45,11 +45,7 @@ public class AppealConvertor extends Convertor {
 		}
 		else
 		{
-			/*
-			 * fatal error ???? write a handler in the GenericDTO
-			 */
-			//throw new DAOApplicationException( Constants.INVALID_DTO_TYPE_CLASS );
-			return null;  // temp fix, could cause null pointer exception
+			return null;
 		}
 	}
 
@@ -101,10 +97,6 @@ public class AppealConvertor extends Convertor {
 		}
 		catch (NullPointerException nex)
 		{
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "AppealConvertor - the embedded dto is null", nex);
 		}
 		catch (SQLException ex )

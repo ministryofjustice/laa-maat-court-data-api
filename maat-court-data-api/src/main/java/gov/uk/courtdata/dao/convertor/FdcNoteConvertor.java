@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gov.uk.courtdata.dao.convertor;
 
 import gov.uk.courtdata.dao.convertor.helper.ConvertorHelper;
@@ -45,11 +42,7 @@ public class FdcNoteConvertor extends Convertor {
 			return (FdcNotesType)getDbType();
 			
 		}else{
-			/*
-			 * fatal error ???? write a handler in the GenericDTO
-			 */
-			//throw new DAOApplicationException( Constants.INVALID_DTO_TYPE_CLASS );
-			return null;  // temp fix, could cause null pointer exception
+			return null;
 		}
 	}
 
@@ -96,10 +89,6 @@ public class FdcNoteConvertor extends Convertor {
 			getDTO().setDateCreated(convertorHelper.toDate(getOracleType().getTimeStamp()));
 			
 		}catch (NullPointerException nex){
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "FdcNoteConvertor - the embedded dto is null");
 			
 		}catch (SQLException ex ){
@@ -134,10 +123,6 @@ public class FdcNoteConvertor extends Convertor {
 			getOracleType().setTimeStamp(convertorHelper.toDate(getDTO().getDateCreated()));
 			
 		}catch (NullPointerException nex){
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "FdcNoteConvertor - the embedded dto is null");
 			
 		}catch (SQLException ex ){

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gov.uk.courtdata.dao.convertor;
 
 import gov.uk.courtdata.dao.convertor.helper.ConvertorHelper;
@@ -93,11 +90,6 @@ public class DrcFileConvertor extends Convertor {
 			//getDTO().setTimestamp(timestamp)
 			
 		}catch (NullPointerException nex){
-		
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "DrcFileConvertor - the embedded dto is null");
 			
 		}catch (SQLException ex ){
@@ -133,10 +125,6 @@ public class DrcFileConvertor extends Convertor {
 			
 			
 		}catch (NullPointerException nex){
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "DrcFileConvertor - the embedded dto is null");
 			
 		}catch (SQLException ex ){

@@ -38,11 +38,7 @@ public class EformConvertor extends Convertor {
 			}
 			else
 			{
-				/*
-				 * fatal error ???? write a handler in the GenericDTO
-				 */
-				//throw new DAOApplicationException( Constants.INVALID_DTO_TYPE_CLASS );
-				return null;  // temp fix, could cause null pointer exception
+				return null;
 			}
 		}
 
@@ -85,10 +81,6 @@ public class EformConvertor extends Convertor {
 				getDTO().setXmlDoc(convertorHelper.clobToString(getOracleType().getXmlDoc() ));
 				
 			}catch (NullPointerException nex){
-				/*
-				 * This will happen if the dto object has not been set
-				 */
-				
 				throw new MAATApplicationException( "EformConvertor - the embedded dto is null");
 			}
 			catch (SQLException ex ){
@@ -114,10 +106,6 @@ public class EformConvertor extends Convertor {
 				getOracleType().setUsn(convertorHelper.toLong( 	getDTO().getUsn() ));
 			
 			}catch (NullPointerException nex){
-				/*
-				 * This will happen if the dto object has not been set
-				 */
-				
 				throw new MAATApplicationException( "EformConvertor - the embedded dto is null");
 			}catch (SQLException ex ){
 				

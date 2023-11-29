@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gov.uk.courtdata.dao.convertor;
 
 import gov.uk.courtdata.dao.convertor.helper.ConvertorHelper;
@@ -269,10 +266,6 @@ public class FdcContributionsConvertor extends Convertor {
 	
 		}		
 		catch (NullPointerException nex){
-			/*
-			 * This will happen if the dto object has not been set
-			 */
-			
 			throw new MAATApplicationException( "FdcContributionsConvertor - the embedded dto is null");
 		}catch (SQLException ex ){
 			

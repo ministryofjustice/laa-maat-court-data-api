@@ -117,7 +117,10 @@ public class StoredProcedureRepository {
         } else if ((StringUtils.isBlank(callStoredProcedure.getProcedureName()))) {
             throw new MAATApplicationException(PACKAGE_NAME_NOT_SET_EXCEPTION);
         }
-        return connection.prepareCall("{ call " + callStoredProcedure.getDbPackageName() + "." + callStoredProcedure.getProcedureName() + "(?)" + "}");
+        return connection.prepareCall("{ call ".concat(callStoredProcedure.getDbPackageName())
+                .concat( ".")
+                .concat( callStoredProcedure.getProcedureName())
+                .concat("(?)}"));
     }
 
 

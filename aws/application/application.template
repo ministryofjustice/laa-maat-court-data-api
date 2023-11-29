@@ -546,7 +546,6 @@ Resources:
               Value: !Ref pTogDataUsername
 
 
-
   CloudwatchLogsGroup:
     Type: AWS::Logs::LogGroup
     Properties:

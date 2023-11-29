@@ -37,7 +37,7 @@ public class ConcorContributionsRestController {
     @Operation(description = "Get a list of Contributions files")
     public ResponseEntity<List<ConcorContributionResponse>> getConcorContributionFiles(@RequestParam(name = "status") final ConcorContributionStatus status) {
         log.info("Get Concor contribution files with status {}" ,status);
-        final List<ConcorContributionResponse> contributionResponses = concorContributionsService.getConcorContributionFiles(status);
+        List<ConcorContributionResponse> contributionResponses = concorContributionsService.getConcorContributionFiles(status);
         log.info("findContributionFiles count {}", contributionResponses.size());
         return ResponseEntity.ok(contributionResponses);
     }

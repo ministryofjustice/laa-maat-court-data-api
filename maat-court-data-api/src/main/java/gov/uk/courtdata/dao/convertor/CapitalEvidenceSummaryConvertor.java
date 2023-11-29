@@ -93,7 +93,7 @@ public class CapitalEvidenceSummaryConvertor extends Convertor
 		}
 		catch (NullPointerException nex)
 		{
-			throw new MAATApplicationException( "PropertyConvertor - the embedded dto is null");
+			throw new MAATApplicationException( "CapitalEvidenceSummaryConvertor - the embedded dto is null");
 		}
 		catch (SQLException ex )
 		{
@@ -130,7 +130,7 @@ public class CapitalEvidenceSummaryConvertor extends Convertor
 		}		
 		catch (NullPointerException nex)
 		{
-			throw new MAATApplicationException( "PropertyConvertor - the embedded dto is null");
+			throw new MAATApplicationException( "CapitalEvidenceSummaryConvertor - the embedded dto is null");
 		}
 		catch (SQLException ex )
 		{

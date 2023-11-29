@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gov.uk.courtdata.dao.convertor;
 
 import gov.uk.courtdata.dao.convertor.helper.ConvertorHelper;
@@ -48,11 +45,7 @@ public class IojAppealConvertor extends Convertor {
 		if ( getDbType() instanceof IOJType ){
 			return (IOJType)getDbType();
 		}else{
-			/*
-			 * fatal error ???? write a handler in the GenericDTO
-			 */
-			//throw new DAOApplicationException( Constants.INVALID_DTO_TYPE_CLASS );
-			return null;  // temp fix, could cause null pointer exception
+			return null;
 		}
 	}	
 
@@ -102,9 +95,6 @@ public class IojAppealConvertor extends Convertor {
 			getDTO().setNewWorkReasonDTO( convertor.getDTO() );
 			
 		}catch (NullPointerException nex){
-			/*
-			 * This will happen if the dto object has not been set
-			 */
 			throw new MAATApplicationException( "IOJAppealConvertor - the embedded dto is null");
 		
 		}catch (SQLException ex){
@@ -162,9 +152,6 @@ public class IojAppealConvertor extends Convertor {
 		}
 		catch (NullPointerException nex)
 		{
-			/*
-			 * This will happen if the dto object has not been set
-			 */
 			throw new MAATApplicationException( "IOJAppealConvertor - the embedded dto is null");
 		}
 		catch (SQLException ex)

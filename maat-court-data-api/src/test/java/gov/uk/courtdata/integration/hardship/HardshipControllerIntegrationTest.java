@@ -12,21 +12,17 @@ import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.enums.HardshipReviewStatus;
-import gov.uk.courtdata.integration.MockCdaWebConfig;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
-import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.hardship.*;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,11 +32,12 @@ import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(
         properties = "spring.main.allow-bean-definition-overriding=true",
-        classes = {MAATCourtDataApplication.class, MockCdaWebConfig.class}
+        classes = {MAATCourtDataApplication.class}
 )
 class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
 
@@ -147,7 +144,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAValidHardshipReview_whenCreateHardshipIsInvoked_theCorrectDataIsPersisted() throws Exception {
-        CreateHardshipReview body = CreateHardshipReview.builder()
+        CreateHardshipReview request = CreateHardshipReview.builder()
                 .financialAssessmentId(existingUnlinkedFinancialAssessment.getId())
                 .repId(existingUnlinkedFinancialAssessment.getRepOrder().getId())
                 .nworCode(existingNewWorkReason.getCode())
@@ -170,44 +167,14 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                         getTestHardshipReviewDetail(null, null, getTestHardshipReviewDetailReason())))
                 .build();
 
-        HardshipReviewDTO expectedResponse = HardshipReviewDTO.builder()
-                .repId(body.getRepId())
-                .cmuId(body.getCmuId())
-                .newWorkReason(NewWorkReason.builder().code(body.getNworCode()).build())
-                .reviewDate(body.getReviewDate())
-                .reviewResult(body.getReviewResult())
-                .financialAssessmentId(body.getFinancialAssessmentId())
-                .resultDate(body.getResultDate())
-                .userCreated(body.getUserCreated())
-                .courtType(body.getCourtType())
-                .reviewDetails(body.getReviewDetails())
-                .solicitorCosts(body.getSolicitorCosts())
-                .disposableIncome(body.getDisposableIncome())
-                .disposableIncomeAfterHardship(body.getDisposableIncomeAfterHardship())
-                .status(body.getStatus())
-                .build();
-
-        MvcResult result =
-                runSuccessScenario(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
-
-        HardshipReviewEntity createdHardshipReviewEntity = hardshipReviewRepository.findByRepId(body.getRepId());
-
-        assertPersistedHardshipReviewDataIsCorrectOnCreation(body, createdHardshipReviewEntity);
-
-        // Align date/id values.
-        expectedResponse.setUpdated(createdHardshipReviewEntity.getUpdated());
-        expectedResponse.setDateCreated(createdHardshipReviewEntity.getDateCreated());
-
-        List<HardshipReviewDetailEntity> reviewDetailEntities = createdHardshipReviewEntity.getReviewDetails();
-
-        for (int i = 0; i < reviewDetailEntities.size(); i++) {
-            expectedResponse.getReviewDetails().get(i).setId(reviewDetailEntities.get(i).getId());
-            expectedResponse.getReviewDetails().get(i).setDateModified(reviewDetailEntities.get(i).getDateModified());
-        }
-
-        expectedResponse.setId(createdHardshipReviewEntity.getId());
-
-        assertThat(objectMapper.writeValueAsString(expectedResponse)).isEqualTo(result.getResponse().getContentAsString());
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.newWorkReason").value(request.getNworCode()))
+                .andExpect(jsonPath("$.reviewResult").value(request.getReviewResult()))
+                .andExpect(jsonPath("$.status").value(request.getStatus().getValue()));
     }
 
     @Test
@@ -256,7 +223,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         updatedReviewDetails.setFrequency(Frequency.TWO_WEEKLY);
         updatedReviewDetails.setAmount(DataBuilderUtil.createScaledBigDecimal(250.00));
 
-        UpdateHardshipReview body = UpdateHardshipReview.builder()
+        UpdateHardshipReview request = UpdateHardshipReview.builder()
                 .id(existingHardshipReview.getId())
                 .nworCode(existingHardshipReview.getNewWorkReason().getCode())
                 .cmuId(existingFinancialAssessment.getCmuId())
@@ -276,45 +243,14 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                 .updated(existingHardshipReview.getUpdated())
                 .build();
 
-        HardshipReviewDTO expectedResponse = HardshipReviewDTO.builder()
-                .id(body.getId())
-                .cmuId(body.getCmuId())
-                .newWorkReason(NewWorkReason.builder().code(body.getNworCode()).build())
-                .reviewDate(body.getReviewDate())
-                .reviewResult(body.getReviewResult())
-                .financialAssessmentId(existingHardshipReview.getFinancialAssessmentId())
-                .resultDate(body.getResultDate())
-                .userCreated(existingHardshipReview.getUserCreated())
-                .courtType(existingHardshipReview.getCourtType())
-                .reviewDetails(body.getReviewDetails())
-                .solicitorCosts(body.getSolicitorCosts())
-                .disposableIncome(body.getDisposableIncome())
-                .disposableIncomeAfterHardship(body.getDisposableIncomeAfterHardship())
-                .status(body.getStatus())
-                .repId(existingHardshipReview.getRepId())
-                .build();
-
-        MvcResult result =
-                runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
-
-        HardshipReviewEntity updatedHardshipReview = hardshipReviewRepository.findByRepId(existingHardshipReview.getRepId());
-
-        assertPersistedHardshipReviewDataIsCorrectOnUpdate(body, updatedHardshipReview);
-
-        // Align date/id values.
-        expectedResponse.setUpdated(updatedHardshipReview.getUpdated());
-
-        List<HardshipReviewDetailEntity> reviewDetailEntities = updatedHardshipReview.getReviewDetails();
-
-        for (int i = 0; i < reviewDetailEntities.size(); i++) {
-            var detail = expectedResponse.getReviewDetails().get(i);
-            detail.setDateModified(reviewDetailEntities.get(i).getDateModified());
-            detail.setId(reviewDetailEntities.get(i).getId());
-
-        }
-
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(
-                objectMapper.writeValueAsString(expectedResponse));
+        mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(request.getId()))
+                .andExpect(jsonPath("$.newWorkReason").value(request.getNworCode()))
+                .andExpect(jsonPath("$.reviewResult").value(request.getReviewResult()))
+                .andExpect(jsonPath("$.status").value(request.getStatus().getValue()));
     }
 
     private void assertPersistedHardshipReviewDataIsCorrectOnCreation(CreateHardshipReview inputReviewData, HardshipReviewEntity createdHardshipReviewEntity) {

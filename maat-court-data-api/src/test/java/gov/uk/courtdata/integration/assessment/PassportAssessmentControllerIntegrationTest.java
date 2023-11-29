@@ -34,13 +34,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {MAATCourtDataApplication.class, MockServicesConfig.class, MockNewWorkReasonRepository.class})
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
-    private final String BASE_URL = "/api/internal/v1/assessment/passport-assessments/";
-    private final String ASSESSMENT_URL = BASE_URL + "{passportAssessmentId}";
-    private final String ASSESSMENT_BY_REP_ID_URL = BASE_URL + "repId/{repId}";
+    private final String BASE_URL = "/api/internal/v1/assessment/passport-assessments";
+    private final String ASSESSMENT_URL = BASE_URL + "/{passportAssessmentId}";
+    private final String ASSESSMENT_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
     private final Integer INVALID_ASSESSMENT_ID = 999;
 
     @Autowired

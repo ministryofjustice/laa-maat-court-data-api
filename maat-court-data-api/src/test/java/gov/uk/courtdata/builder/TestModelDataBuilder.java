@@ -8,6 +8,7 @@ import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
+import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
 import gov.uk.courtdata.model.*;
@@ -19,6 +20,8 @@ import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
+import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
+import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -67,6 +70,11 @@ public class TestModelDataBuilder {
     public static final String CORRESPONDENCE_STATUS = "appealCC";
     public static final String EFFECTIVE_DATE = "01-JAN-20233";
     public static final int MOCK_HRD_ID = 4253;
+    public static final String SEND_TO_CCLF = "y";
+    public static final List<String> NEW_WORK_REASON_LIST = List.of("TEST_NWREASON");
+    public static final List<String> ROLE_ACTIONS_LIST = List.of("TEST_ROLE");
+    public static final ReservationsEntity RESERVATIONS_ENTITY = new ReservationsEntity();
+
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -106,6 +114,41 @@ public class TestModelDataBuilder {
                         .build()
         ));
         return financialAssessment;
+    }
+
+    public static List<RepOrderApplicantLinksDTO> getRepOrderApplicantLinksDTOs(Integer id) {
+        return List.of(getRepOrderApplicantLinksDTO(id));
+    }
+
+    public static RepOrderApplicantLinksDTO getRepOrderApplicantLinksDTO(Integer id) {
+        return RepOrderApplicantLinksDTO.builder()
+                .id(id)
+                .repId(2522394)
+                .partnerAphiId(11553872)
+                .partnerApplId(11553844)
+                .linkDate(LocalDate.parse("2021-10-09"))
+                .unlinkDate(LocalDate.parse("2021-10-22"))
+                .userCreated("test-u")
+                .userModified("test-x")
+                .build();
+    }
+
+    public static ApplicantHistoryDTO getApplicantHistoryDTO(Integer id, String sendToCclf) {
+        return ApplicantHistoryDTO.builder()
+                .id(id)
+                .applId(716)
+                .dob(LocalDate.parse("1981-10-14"))
+                .bankAccountName("test-acc-name")
+                .email("test@test.com")
+                .asAtDate(LocalDate.parse("2006-10-06"))
+                .firstName("test_first")
+                .lastName("test_last")
+                .otherNames("test")
+                .niNumber("JM933396A")
+                .gender("Male")
+                .sendToCclf(sendToCclf)
+                .userCreated("TEST")
+                .build();
     }
 
     public static FinancialAssessmentDTO getFinancialAssessmentWithChildWeightings() {
@@ -1340,6 +1383,15 @@ public class TestModelDataBuilder {
         return CorrespondenceStateEntity.builder()
                 .repId(repId)
                 .status(status)
+                .build();
+    }
+
+    public static UserSummaryDTO getUserSummaryDTO() {
+        return UserSummaryDTO.builder()
+                .username(TEST_USER)
+                .newWorkReasons(NEW_WORK_REASON_LIST)
+                .roleActions(ROLE_ACTIONS_LIST)
+                .reservationsEntity(RESERVATIONS_ENTITY)
                 .build();
     }
 }

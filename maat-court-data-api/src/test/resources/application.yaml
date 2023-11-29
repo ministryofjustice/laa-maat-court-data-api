@@ -38,24 +38,26 @@ spring:
     format:
       date: iso
 
-cloud:
-  aws:
-    stack:
-      auto: false
-    region:
-      static: eu-west-2
-      auto: false
-    credentials:
-      use-default-aws-credentials-chain: true
-    sqs:
-      listener:
-        queue-stop-timeout: 500
+  cloud:
+    aws:
+      credentials:
+        access-key: test
+        secret-key: test
+      region:
+        static: eu-west-2
+      sqs:
+        enabled: false
 
+  togdata:
+    username: togdata
+    password: test
 
 cloud-platform:
   aws:
     sqs:
       region: eu-west-2
+      accesskey: test
+      secretkey: test
       queue:
         link: link
         unlink: unlink
@@ -113,7 +115,6 @@ version: 0.0.1
 
 api-endpoints:
   assessments-domain: /api/internal/v1/assessment
+  application-domain: /api/internal/v1/application
   debt-collection-enforcement: /api/internal/v1/debt-collection-enforcement
-
-xray:
-  enabled: false
+  user-domain: /api/internal/v1/users

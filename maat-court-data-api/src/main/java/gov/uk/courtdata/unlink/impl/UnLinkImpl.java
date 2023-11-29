@@ -1,6 +1,5 @@
 package gov.uk.courtdata.unlink.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
@@ -21,7 +20,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class UnLinkImpl {
 

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.laastatus.processor;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.link.processor.Process;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class UpdateWqLinkRegisterProcessor implements Process {
 

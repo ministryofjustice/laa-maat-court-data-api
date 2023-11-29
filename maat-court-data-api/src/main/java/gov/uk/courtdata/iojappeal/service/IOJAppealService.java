@@ -1,6 +1,5 @@
 package gov.uk.courtdata.iojappeal.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -13,9 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-@XRayEnabled
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class IOJAppealService {
 
@@ -50,7 +48,7 @@ public class IOJAppealService {
 
         log.info("Update previous IOJ Appeal records and set them to replaced");
 
-        iojAppealImpl.setOldIOJAppealsReplaced(iojAppealEntity.getRepId(), iojAppealEntity.getId());
+        iojAppealImpl.setOldIOJAppealsReplaced(iojAppealEntity.getRepOrder().getId(), iojAppealEntity.getId());
 
         log.info("Create IOJ Appeal - Transaction Processing - end");
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);

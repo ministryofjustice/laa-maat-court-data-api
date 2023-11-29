@@ -1,6 +1,5 @@
 package gov.uk.courtdata.reporder.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
@@ -19,16 +18,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/rep-orders/cc-outcome")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "RepOrders", description = "Rest API for RepOrder CC OutCome")
+@RequestMapping("${api-endpoints.assessments-domain}/rep-orders/cc-outcome")
 public class CCOutcomeController {
 
     private final CCOutcomeService service;
@@ -78,19 +75,21 @@ public class CCOutcomeController {
     )
     public ResponseEntity<RepOrderCCOutcomeDTO> update(@Parameter(description = "RepOrder CC outcome data",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = RepOrderCCOutcome.class))) @RequestBody RepOrderCCOutcome repOrderCCOutCome) {
+                    schema = @Schema(implementation = RepOrderCCOutcome.class)
+            )
+    ) @RequestBody RepOrderCCOutcome repOrderCCOutCome) {
         log.info("Update RepOrder CC outcome  Request Received");
         validator.validate(repOrderCCOutCome);
         return ResponseEntity.ok(service.update(repOrderCCOutCome));
     }
-    
-    @RequestMapping(value = "/reporder/{repId}",
-            method = {RequestMethod.GET},
+
+    @GetMapping(value = "/reporder/{repId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Operation(description = "Retrieve a RepOrder CCOutCome record")
     @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
     @ApiResponse(responseCode = "400",
             description = "Bad Request.",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -103,7 +102,7 @@ public class CCOutcomeController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepId(HttpServletRequest request, @PathVariable int repId) {
+    public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepId(@PathVariable int repId) {
         log.info("Find RepOrder CC Outcome Request Received");
         validator.validate(repId);
         return ResponseEntity.ok(service.findByRepId(repId));
@@ -128,7 +127,7 @@ public class CCOutcomeController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepIdLengthInHeader(HttpServletRequest request, @PathVariable int repId) {
+    public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepIdLengthInHeader(@PathVariable int repId) {
         log.info("Find RepOrder CC Outcome Request Received");
         validator.validate(repId);
         HttpHeaders responseHeaders = new HttpHeaders();

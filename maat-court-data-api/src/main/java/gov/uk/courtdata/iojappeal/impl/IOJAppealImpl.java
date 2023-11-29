@@ -1,6 +1,5 @@
 package gov.uk.courtdata.iojappeal.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
@@ -9,9 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Service
-@XRayEnabled
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class IOJAppealImpl {
 

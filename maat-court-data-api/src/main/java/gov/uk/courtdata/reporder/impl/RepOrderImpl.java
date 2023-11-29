@@ -1,6 +1,5 @@
 package gov.uk.courtdata.reporder.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasS
 
 @Slf4j
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class RepOrderImpl {
 

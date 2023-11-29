@@ -1,6 +1,5 @@
 package gov.uk.courtdata.correspondence.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.correspondence.service.CorrespondenceStateService;
 import gov.uk.courtdata.dto.ErrorDTO;
@@ -15,14 +14,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/correspondence-state")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "Correspondence State", description = "Rest API for correspondence state")
+@RequestMapping("${api-endpoints.assessments-domain}/correspondence-state")
 public class CorrespondenceStateController {
 
     private final CorrespondenceStateService correspondenceStateService;

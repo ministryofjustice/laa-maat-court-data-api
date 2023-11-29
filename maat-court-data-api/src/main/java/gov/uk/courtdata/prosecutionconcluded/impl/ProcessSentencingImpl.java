@@ -1,6 +1,5 @@
 package gov.uk.courtdata.prosecutionconcluded.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import static gov.uk.courtdata.enums.CrownCourtCaseType.APPEAL_CC;
 
 @Slf4j
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class ProcessSentencingImpl {
 

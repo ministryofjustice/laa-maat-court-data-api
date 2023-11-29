@@ -1,6 +1,5 @@
 package gov.uk.courtdata.contribution.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.mapper.ContributionsCalcParametersMapper;
 import gov.uk.courtdata.entity.ContribCalcParametersEntity;
@@ -11,10 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class ContributionCalcService {
 
     private final ContribCalcParametersRepository contribCalcParametersRepository;
@@ -25,8 +23,10 @@ public class ContributionCalcService {
         ContribCalcParametersEntity contribCalcParametersEntity = contribCalcParametersRepository
                 .findCurrentContribCalcParameters(effectiveDate);
         if (contribCalcParametersEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No Contribution Calc Parameters found with the effective date: %s",
-                    effectiveDate));
+            throw new RequestedObjectNotFoundException(
+                    String.format("No Contribution Calc Parameters found with the effective date: %s",
+                                  effectiveDate
+                    ));
         }
         return contributionsCalcParametersMapper.mapEntityToDTO(contribCalcParametersEntity);
     }

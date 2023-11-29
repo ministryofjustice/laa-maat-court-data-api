@@ -1,16 +1,14 @@
 package gov.uk.courtdata.wqoffence.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.wqoffence.impl.WQOffenceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@XRayEnabled
 public class WQOffenceService {
 
     private final WQOffenceImpl wqOffenceImpl;

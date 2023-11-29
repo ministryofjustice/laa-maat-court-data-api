@@ -1,6 +1,5 @@
 package gov.uk.courtdata.contribution.controller;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.contribution.dto.ContributionAppealDTO;
 import gov.uk.courtdata.contribution.service.ContributionAppealService;
 import gov.uk.courtdata.dto.ErrorDTO;
@@ -17,15 +16,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.math.BigDecimal;
 
-@RestController
-@RequestMapping("${api-endpoints.assessments-domain}/contribution-appeal")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@XRayEnabled
 @Tag(name = "ContributionAppeal", description = "Rest API for Contribution Appeal Rules")
+@RequestMapping("${api-endpoints.assessments-domain}/contribution-appeal")
 public class ContributionAppealController {
 
     private final ContributionAppealService contributionAppealService;

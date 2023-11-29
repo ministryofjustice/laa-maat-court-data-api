@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -29,5 +29,5 @@ public interface CrownCourtProcessingRepository extends JpaRepository<RepOrderCC
             @Param("p_user") String dbUser,
             @Param("p_sentence_order_date") LocalDate sentenceOrderDate);
 
-    List<RepOrderCCOutComeEntity> findByRepId(Integer repId);
+    List<RepOrderCCOutComeEntity> findByRepOrder_Id(Integer id);
 }

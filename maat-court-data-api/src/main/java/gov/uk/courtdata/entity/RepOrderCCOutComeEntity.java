@@ -1,10 +1,11 @@
 package gov.uk.courtdata.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -22,8 +23,11 @@ public class RepOrderCCOutComeEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rep_order_cc_outcomes_gen_seq")
     @Column(name = "ID")
     private int id;
-    @Column(name = "REP_ID")
-    private int repId;
+    @ToString.Exclude
+    @JsonBackReference
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "REP_ID", nullable = false, updatable = false)
+    private RepOrderEntity repOrder;
     @Column(name = "CCOO_OUTCOME")
     private String outcome;
     @Column(name = "CC_OUTCOME_DATE")
@@ -42,4 +46,5 @@ public class RepOrderCCOutComeEntity {
     @Column(name = "DATE_MODIFIED")
     @UpdateTimestamp
     private LocalDateTime dateModified;
+
 }

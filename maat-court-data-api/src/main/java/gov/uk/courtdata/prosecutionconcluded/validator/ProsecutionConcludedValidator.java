@@ -1,6 +1,5 @@
 package gov.uk.courtdata.prosecutionconcluded.validator;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import org.springframework.stereotype.Component;
@@ -10,7 +9,6 @@ import java.util.Optional;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
-@XRayEnabled
 public class ProsecutionConcludedValidator {
 
     public void validateRequestObject(ProsecutionConcluded prosecutionConcluded) {

@@ -222,5 +222,6 @@ sonar {
         property "sonar.projectName", "laa-maat-court-data-api"
         property "sonar.pitest.mode", "reuseReport"
         property "sonar.pitest.reportsDirectory", "build/reports/pitest"
+        property "sonar.verbose", "true"
     }
 }

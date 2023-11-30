@@ -4,6 +4,7 @@ import static gov.uk.courtdata.enums.ConcorContributionStatus.ACTIVE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.ConcorContributionRequest;
@@ -63,7 +64,7 @@ class ConcorContributionsServiceTest {
 
         when(concorRepository.findByStatus(statusCaptor.capture())).thenReturn(concorContributionFiles);
 
-        List<String> xmlContents = concorService.getConcorFiles(ACTIVE);
+        List<ConcorContributionResponse> xmlContents = concorService.getConcorContributionFiles(ACTIVE);
 
         assertNotNull(xmlContents);
         Assertions.assertFalse(xmlContents.isEmpty());
@@ -84,7 +85,7 @@ class ConcorContributionsServiceTest {
     void testCreateContributionFileAndUpdateConcorContributionStatus() {
 
         final ConcorContributionRequest concorContributionRequest
-                = ConcorContributionRequest.builder().contributionIds(Set.of("1")).xmlContent(getXmlDocContent()).build();
+                = ConcorContributionRequest.builder().concorContributionIds(Set.of(1)).xmlContent(getXmlDocContent()).build();
         final ContributionFilesEntity dummyEntity = getContributionFilesEntity();
 
         when(concorRepository.findByIdIn(any())).thenReturn(concorContributionFiles);
@@ -108,7 +109,8 @@ class ConcorContributionsServiceTest {
     @Test
     void testWhenContributionFileWithActiveStatusNotFound() {
         final ConcorContributionRequest concorContributionRequest = ConcorContributionRequest.builder()
-                .contributionIds(Set.of("1")).xmlContent(getXmlDocContent()).build();
+                .concorContributionIds(Set.of(1))
+                .xmlContent(getXmlDocContent()).build();
         ContributionFilesEntity dummyEntity = getContributionFilesEntity();
 
         when(concorRepository.findByIdIn(any())).thenReturn(new ArrayList<>());

@@ -1,9 +1,6 @@
 package gov.uk.courtdata.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +20,8 @@ import java.time.LocalDate;
     public class ContributionFilesEntity {
 
         @Id
+        @SequenceGenerator(name = "contributions_files_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contributions_files_gen_seq")
         @Column(name = "ID", nullable = false)
         private Integer id;
 

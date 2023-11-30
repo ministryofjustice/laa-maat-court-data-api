@@ -90,6 +90,9 @@ Parameters:
     Type: String
     Default: ''
     Description: The CIDR of the Modernisation Platform VPC for LAA, as part of migration
+  pTogDataUsername:
+    Type: String
+    Default: ''
 
   ###### API-Gateway parameters
   pApiScope1:

@@ -1,15 +1,10 @@
 package gov.uk.courtdata.dces.controller;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.uk.courtdata.dces.response.ConcorContributionResponse;
-import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.request.ConcorContributionRequest;
+import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
+import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import org.junit.jupiter.api.Test;
@@ -21,8 +16,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import java.util.List;
 import java.util.Set;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ConcorContributionsRestController.class)
@@ -50,12 +51,12 @@ class ConcorContributionsRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].concorContributionId").value("1"))
-                .andExpect(jsonPath("$[0].xmlContent").value("FirstXMLFile"))
-                .andExpect(jsonPath("$[1].concorContributionId").value("2"))
-                .andExpect(jsonPath("$[1].xmlContent").value("SecondXMLFile"))
-                .andExpect(jsonPath("$[2].concorContributionId").value("3"))
-                .andExpect(jsonPath("$[2].xmlContent").value("ThirdXMLFile"));
+                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").value(1))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==2)].concorContributionId").value(2))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==2)].xmlContent").value("SecondXMLFile"))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId").value(3))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].xmlContent").value("ThirdXMLFile"));
     }
 
     @Test

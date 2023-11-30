@@ -51,11 +51,11 @@ class ConcorContributionsRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").value(1))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").exists())
                 .andExpect(jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==2)].concorContributionId").value(2))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==2)].concorContributionId").exists())
                 .andExpect(jsonPath("$.[?(@.concorContributionId==2)].xmlContent").value("SecondXMLFile"))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId").value(3))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId").exists())
                 .andExpect(jsonPath("$.[?(@.concorContributionId==3)].xmlContent").value("ThirdXMLFile"));
     }
 

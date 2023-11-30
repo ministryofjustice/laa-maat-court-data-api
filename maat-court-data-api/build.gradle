@@ -43,7 +43,7 @@ def versions = [
         testcontainersLocalstackVersion     : '1.18.3',
         cloudLocalstackUtilsVersion         : '0.2.23',
         springContractStubRunnerVersion     : '4.0.1',
-        sentryBomVersion                    : '6.17.0'
+        sentryBomVersion                    : '7.0.0'
 ]
 
 group = 'gov.uk'
@@ -81,7 +81,7 @@ dependencies {
     implementation platform(SpringBootPlugin.BOM_COORDINATES)
     annotationProcessor platform(SpringBootPlugin.BOM_COORDINATES)
 
-    implementation("io.sentry:sentry-spring-boot-starter")
+    implementation("io.sentry:sentry-spring-boot-starter-jakarta")
     implementation("io.sentry:sentry-logback")
     //Required for Logback configuration due to a dependency having their own implementation of SAXParserFactory
     implementation "xerces:xercesImpl:$versions.xercesImplVersion"

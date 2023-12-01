@@ -57,20 +57,16 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     @BeforeEach
     public void setUp() {
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
+        ContributionFilesEntity contributionFilesEntity = contributionFilesRepository.saveAndFlush(TestEntityDataBuilder.getContributionFilesEntity());
         CorrespondenceEntity correspondenceEntity = correspondenceRepository.saveAndFlush(TestEntityDataBuilder.getCorrespondenceEntity(1));
         ContributionsEntity contributions = TestEntityDataBuilder.getContributionsEntity();
         contributions.setCorrespondenceId(correspondenceEntity.getId());
+        contributions.setContributionFileId(contributionFilesEntity.getId());
         contributionsEntity = contributionsRepository.saveAndFlush(contributions);
-
         ContributionsEntity conEntity = TestEntityDataBuilder.getContributionsEntity();
         conEntity.setLatest(false);
         contributions.setCorrespondenceId(correspondenceEntity.getId());
         contributionsRepository.saveAndFlush(conEntity);
-
-        ContributionFilesEntity contributionFilesEntity = TestEntityDataBuilder.getContributionFilesEntity();
-        contributionFilesEntity.setId(contributions.getContributionFileId());
-        contributionFilesRepository.saveAndFlush(contributionFilesEntity);
-
         repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID + 1));
         ContributionsEntity contributionsEntity = TestEntityDataBuilder.getContributionsEntity();
         contributionsEntity.setRepOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID + 1));

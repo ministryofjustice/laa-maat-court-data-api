@@ -28,7 +28,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-///api/internal/v1/assessment/contributions
 @Tag(name = "Contributions", description = "Rest API for contributions")
 @RequestMapping("${api-endpoints.assessments-domain}/contributions")
 public class ContributionsController {

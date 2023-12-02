@@ -40,7 +40,7 @@ public class ContributionsServiceIntegrationTest {
     private static final Integer INVALID_REP_ID = 9999;
 
     private static final Integer INVALID_CONTRIBUTION_ID = 8888;
-    public static final String CONTRIBUTION_FILE_NAME = "CONTRIBUTIONS_202307111234.xml";
+    private static final String CONTRIBUTION_FILE_NAME = "CONTRIBUTIONS_202307111234.xml";
 
     @Autowired
     protected ObjectMapper objectMapper;

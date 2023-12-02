@@ -9,7 +9,7 @@ import gov.uk.courtdata.iojappeal.impl.IOJAppealImpl;
 import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -22,7 +22,7 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

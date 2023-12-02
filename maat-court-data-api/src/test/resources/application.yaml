@@ -9,17 +9,19 @@ spring:
     initilization-mode: embedded
     name: MLA
 
+
+
   security:
     oauth2:
       client:
         provider:
           cda:
-            tokenUri: dummyURL
+            token-uri: http://localhost:9999/oauth2/token
         registration:
           cda:
-            clientId: dummyURL
-            clientSecret: dummyURL
-            authorizationGrantType: client_credentials
+            client-id: dummyURL
+            client-secret: dummyURL
+            authorization-grant-type: client_credentials
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
@@ -52,6 +54,11 @@ spring:
     username: togdata
     password: test
 
+retry-config:
+  max-retries: 2
+  min-back-off-period: 3
+  jitter-value: 0.5
+
 cloud-platform:
   aws:
     sqs:
@@ -70,15 +77,15 @@ cloud-platform:
           messageDelayDuration: 120
 
 cda:
-  url: "http://localhost:1234/"
+  url: "http://localhost:9999/"
   oauth:
     url: cdaAuthUrl
     clientId: cdaClient
     clientSecret: cdaPass
   laastatus:
-    url: "update"
+    url: ${cda.url}/api/internal/v1/representation_orders
   hearing:
-    url: "hearing_results/{hearingId}"
+    url: ${cda.url}/api/internal/v1/hearing_results/{hearingId}
   retry-config:
     max-retries: 3
     min-back-off-period: 5

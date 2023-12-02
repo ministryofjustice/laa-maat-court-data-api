@@ -30,12 +30,12 @@ spring:
       client:
         provider:
           cda:
-            tokenUri: ${CDA_OAUTH_URL}
+            token-uri: ${CDA_OAUTH_URL}
         registration:
           cda:
-            clientId: ${CDA_OAUTH_CLIENT_ID}
-            clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
-            authorizationGrantType: client_credentials
+            client-id: ${CDA_OAUTH_CLIENT_ID}
+            client-secret: ${CDA_OAUTH_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
 
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect

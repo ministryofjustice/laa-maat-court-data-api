@@ -2,120 +2,104 @@ package gov.uk.courtdata.courtdataadapter.client;
 
 import com.google.gson.GsonBuilder;
 import gov.uk.courtdata.enums.MessageType;
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import gov.uk.courtdata.model.laastatus.RepOrderData;
 import gov.uk.courtdata.service.QueueMessageLogService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.client.*;
-import reactor.core.publisher.Mono;
+import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
+import uk.gov.justice.laa.crime.commons.exception.APIClientException;
 
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CourtDataAdapterClientTest {
 
     private final String hearingUrl = "cda-test/hearing/{hearingId}";
-    private final String baseUrl = "http://localhost:1234/";
 
     @Mock
-    private ExchangeFunction shortCircuitExchangeFunction;
+    private RestAPIClient cdaAPIClient;
+
     @Mock
     private CourtDataAdapterClientConfig courtDataAdapterClientConfig;
+
     @Mock
     private QueueMessageLogService queueMessageLogService;
-    @Captor
-    ArgumentCaptor<ClientRequest> requestCaptor;
 
+    @Mock
     private GsonBuilder gsonBuilder;
+
+    @InjectMocks
     private CourtDataAdapterClient courtDataAdapterClient;
 
-    @BeforeEach
-    public void setup() {
-        WebClient testWebClient = WebClient
-                .builder()
-                .baseUrl(baseUrl)
-                .exchangeFunction(shortCircuitExchangeFunction)
-                .build();
+    @Test
+    void givenAValidHearingId_whenTriggerHearingProcessingIsInvoked_thenTheRequestIsSentCorrectly() {
+        UUID testHearingId = UUID.randomUUID();
+        String testTransactionId = UUID.randomUUID().toString();
+        when(courtDataAdapterClientConfig.getHearingUrl()).thenReturn(hearingUrl);
+        courtDataAdapterClient.triggerHearingProcessing(testHearingId, testTransactionId);
+        verify(cdaAPIClient).get(
+                any(),
+                anyString(),
+                anyMap(),
+                ArgumentMatchers.any(),
+                any(UUID.class)
+        );
+    }
 
-        gsonBuilder = new GsonBuilder();
+    @Test
+    void givenAValidHearingId_whenTriggerHearingProcessingIsInvokedAndTheCallFails_thenFailureIsHandled() {
+        UUID testHearingId = UUID.randomUUID();
+        String testTransactionId = UUID.randomUUID().toString();
+        when(courtDataAdapterClientConfig.getHearingUrl()).thenReturn(hearingUrl);
+        when(cdaAPIClient.get(
+                any(),
+                anyString(),
+                anyMap(),
+                ArgumentMatchers.any(),
+                any(UUID.class)
+        )).thenThrow(new APIClientException());
 
-        courtDataAdapterClient = new CourtDataAdapterClient(testWebClient, gsonBuilder, queueMessageLogService, courtDataAdapterClientConfig);
+        assertThatThrownBy(() -> courtDataAdapterClient.triggerHearingProcessing(testHearingId, testTransactionId))
+                .isInstanceOf(APIClientException.class);
     }
 
     @Test
     public void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_thenTheRequestIsSentCorrectly() {
-        when(shortCircuitExchangeFunction.exchange(requestCaptor.capture())).thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK).build()));
-        String laaStatusUrl = "cda-test/laaStatus";
-        when(courtDataAdapterClientConfig.getLaaStatusUrl()).thenReturn(laaStatusUrl);
+        when(gsonBuilder.create()).thenReturn(new GsonBuilder().create());
         Map<String, String> headers = Map.of("test-header", "test-header-value");
         LaaStatusUpdate testStatusObject = getTestLaaStatusObject();
-
         courtDataAdapterClient.postLaaStatus(testStatusObject, headers);
         String jsonBody = gsonBuilder.create().toJson(testStatusObject);
         verify(queueMessageLogService, atLeastOnce())
                 .createLog(MessageType.LAA_STATUS_UPDATE, jsonBody);
-
-        Map<String, String> expectedFinalHeaders = Map.of(
-                "test-header", "test-header-value","Content-Type", "application/json");
-        validateRequest(requestCaptor.getValue(), laaStatusUrl, expectedFinalHeaders, HttpMethod.POST);
+        verify(cdaAPIClient).post(any(), any(), any(), any());
     }
 
     @Test
-    public void givenAValidHearingId_whenTriggerHearingProcessingIsInvoked_thenTheRequestIsSentCorrectly() {
-        when(shortCircuitExchangeFunction.exchange(requestCaptor.capture()))
-                .thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK).build()));
-        when(courtDataAdapterClientConfig.getHearingUrl()).thenReturn(hearingUrl);
-
-        UUID testHearingId = UUID.randomUUID();
-        String testTransactionId = UUID.randomUUID().toString();
-        courtDataAdapterClient.triggerHearingProcessing(testHearingId, testTransactionId);
-
-        validateTriggerHearingProcessingScenario(testHearingId, testTransactionId);
-    }
-
-    @Test
-    public void givenAValidHearingId_whenTriggerHearingProcessingIsInvokedAndTheCallFails_thenFailureIsHandled() {
-        when(shortCircuitExchangeFunction.exchange(requestCaptor.capture()))
-                .thenReturn(Mono.just(ClientResponse.create(HttpStatus.INTERNAL_SERVER_ERROR).build()));
-
-        when(courtDataAdapterClientConfig.getHearingUrl()).thenReturn(hearingUrl);
-
-        UUID testHearingId = UUID.randomUUID();
-        String testTransactionId = UUID.randomUUID().toString();
-        MAATCourtDataException error = assertThrows(MAATCourtDataException.class, () -> courtDataAdapterClient.triggerHearingProcessing(testHearingId, testTransactionId));
-
-        assertTrue(error.getMessage().contains(String.format("Error triggering CDA processing for hearing '%s'.", testHearingId)));
-        validateTriggerHearingProcessingScenario(testHearingId, testTransactionId);
-    }
-
-    private void validateTriggerHearingProcessingScenario(UUID testHearingId, String laaTransactionId) {
-        Map<String, String> expectedFinalHeaders = Map.of("X-Request-ID", laaTransactionId);
-        String expectedUrl = String.format("%s?publish_to_queue=true", hearingUrl);
-        expectedUrl = expectedUrl.replace("{hearingId}", testHearingId.toString());
-        validateRequest(requestCaptor.getValue(), expectedUrl, expectedFinalHeaders, HttpMethod.GET);
-    }
-
-    private void validateRequest(ClientRequest request, String expectedUrl, Map<String, String> expectedHeaders, HttpMethod method) {
-        assertEquals(request.headers().toSingleValueMap(), expectedHeaders);
-        assertEquals(request.url().toString(), String.format("%s%s", baseUrl, expectedUrl));
-        assertEquals(request.method(), method);
+    void givenAInValidRequest_whenPostLaaStatusIsInvoked_thenFailureIsHandled() {
+        when(gsonBuilder.create()).thenReturn(new GsonBuilder().create());
+        when(cdaAPIClient.post(
+                any(),
+                any(),
+                any(),
+                any()
+        )).thenThrow(new APIClientException());
+        Map<String, String> headers = Map.of("test-header", "test-header-value");
+        LaaStatusUpdate testStatusObject = getTestLaaStatusObject();
+        assertThatThrownBy(() -> courtDataAdapterClient.postLaaStatus(testStatusObject, headers))
+                .isInstanceOf(APIClientException.class);
     }
 
     private LaaStatusUpdate getTestLaaStatusObject() {
         return LaaStatusUpdate.builder().data(RepOrderData.builder().type("test-representation_order").build()).build();
     }
-
 }

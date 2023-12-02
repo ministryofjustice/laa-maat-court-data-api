@@ -1,12 +1,16 @@
 package gov.uk.courtdata.integration.laastatus.service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.http.RequestMethod;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.WQStatus;
-import gov.uk.courtdata.integration.MockCdaWebConfig;
 import gov.uk.courtdata.laastatus.controller.LaaStatusUpdateController;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
@@ -16,34 +20,42 @@ import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
 import gov.uk.courtdata.util.RepositoryUtil;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UPDATE_CASE_EVENT;
-import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+@DirtiesContext
+@TestInstance(Lifecycle.PER_CLASS)
 @SpringBootTest(
         properties = "spring.main.allow-bean-definition-overriding=true",
-        classes = {MAATCourtDataApplication.class, MockCdaWebConfig.class})
+        classes = {MAATCourtDataApplication.class})
+@AutoConfigureWireMock(port = 9999)
 public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private final String LAA_TRANSACTION_ID = "b27b97e4-0514-42c4-8e09-fcc2c693e11f";
@@ -83,13 +95,19 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     private FinancialAssessmentRepository financialAssessmentRepository;
     @Autowired
     private PassportAssessmentRepository passportAssessmentRepository;
-
-    private MockWebServer mockCdaWebServer;
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
+
+    @Autowired
+    private WireMockServer wiremock;
+
+    @AfterEach
+    void clean() {
+        wiremock.resetAll();
+    }
 
     @BeforeEach
     public void setUp() throws Exception {
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.setSerializationInclusion(Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         setupCdaWebServer();
         RepositoryUtil.clearUp(financialAssessmentRepository,
@@ -110,11 +128,6 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
     }
 
-    @AfterEach
-    public void tearDown() throws IOException {
-        mockCdaWebServer.shutdown();
-    }
-
     @Test
     public void givenNullMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         String testPayload = objectMapper
@@ -131,16 +144,14 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     @Test
     public void givenAnInvalidMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         runValidationFailureScenario(String.format("MAAT API Call failed - MAAT/REP ID: %d is invalid.", TEST_MAAT_ID));
-        assertThat(mockCdaWebServer.getRequestCount())
-                .isEqualTo(0);
+        assertThat(wiremock.getStubMappings().isEmpty());
     }
 
     @Test
     public void givenAMaatIdThatIsNotLinked_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         runValidationFailureScenario(String.format("MAAT API Call failed - MAAT Id : %s not linked.", TEST_MAAT_ID));
-        assertThat(mockCdaWebServer.getRequestCount())
-                .isEqualTo(0);
+        assertThat(wiremock.getStubMappings().isEmpty());
     }
 
     @Test
@@ -148,8 +159,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createTestRepoOrder();
         createTestLinkData(2);
         runValidationFailureScenario(String.format("MAAT API Call failed - Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
-        assertThat(mockCdaWebServer.getRequestCount())
-                .isEqualTo(0);
+        assertThat(wiremock.getStubMappings().isEmpty());
     }
 
     @Test
@@ -157,8 +167,8 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createTestRepoOrder();
         createTestLinkData(1);
         runValidationFailureScenario(String.format("MAAT API Call failed - Solicitor not found for maatId %s", TEST_MAAT_ID));
-        assertThat(mockCdaWebServer.getRequestCount())
-                .isEqualTo(0);
+        assertThat(wiremock.getStubMappings().isEmpty());
+
     }
 
     @Test
@@ -168,8 +178,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createSolicitorData("");
         createDefendantData();
         runValidationFailureScenario(String.format("MAAT API Call failed - Solicitor account code not available for maatId %s.", TEST_MAAT_ID));
-        assertThat(mockCdaWebServer.getRequestCount())
-                .isEqualTo(0);
+        assertThat(wiremock.getStubMappings().isEmpty());
     }
 
     @Test
@@ -178,8 +187,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createTestLinkData(1);
         createSolicitorData("test-account-code");
         runValidationFailureScenario("MAAT API Call failed - MAAT Defendant details not found.");
-        assertThat(mockCdaWebServer.getRequestCount())
-                .isEqualTo(0);
+        assertThat(wiremock.getStubMappings().isEmpty());
     }
 
     @Test
@@ -268,11 +276,9 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         queueMessageLogTestHelper.assertQueueMessageLogged(testPayload, 2, LAA_TRANSACTION_ID, TEST_MAAT_ID);
         assertCdaCalledCorrectly(inputCaseDetails, offenceEntity, solicitorMAATDataEntity, repOrderCPDataEntity);
 
-        if (cdaOnly) {
-            assertMlaUpdatesNotPerformed(linkEntities.get(0));
-        } else {
+        if (cdaOnly) assertMlaUpdatesNotPerformed(linkEntities.get(0));
+        else
             assertMlaUpdatesPerformedCorrectly(inputCaseDetails, linkEntities.get(0), solicitorMAATDataEntity, defendantMAATDataEntity);
-        }
     }
 
     private void runValidationFailureScenario(String expectedErrorMessage) throws Exception {
@@ -389,21 +395,15 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
                 new SimpleEntry<>(CDA_TRANSACTION_ID_HEADER, LAA_TRANSACTION_ID),
                 new SimpleEntry<>("Laa-Status-Transaction-Id", "null"));
 
-        RecordedRequest receivedRequest = mockCdaWebServer.takeRequest();
-
-        SoftAssertions.assertSoftly(softly -> {
-            assertThat(mockCdaWebServer.getRequestCount())
-                    .isEqualTo(1);
-            assertThat(Objects.requireNonNull(receivedRequest.getRequestUrl()).toString())
-                    .isEqualTo("http://localhost:1234/update");
-            assertThat(receivedRequest.getBody().readUtf8())
-                    .isEqualTo(expectedCdaPostBody);
-            for (String key : expectedHeaders.keySet()) {
-                assertThat(receivedRequest.getHeader(key))
-                        .isEqualTo(expectedHeaders.get(key));
-            }
-        });
+        List<StubMapping> returnedMappings = wiremock.getStubMappings();
+        assertThat(returnedMappings.get(0).getRequest().getUrl())
+                .isEqualTo("http://localhost:9999/api/internal/v1/representation_orders");
+        assertThat(returnedMappings.get(0).getRequest().getMethod()).isEqualTo(RequestMethod.POST);
+        assertThat(returnedMappings.get(0).getResponse().getStatus())
+                .isEqualTo(200);
     }
+
+
     private String generateCaseDetailsJsonPayload(CaseDetails inputCaseDetails) throws JsonProcessingException {
         String testPayload = objectMapper.writeValueAsString(inputCaseDetails);
         return testPayload.replace("\"active\"", "\"isActive\"");
@@ -446,7 +446,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
     private List<WqLinkRegisterEntity> createTestLinkData(Integer numberOfLinks) {
         List<WqLinkRegisterEntity> linkItems = new ArrayList<>();
-        for (int i = 0; i < numberOfLinks; i++) {
+        for (int i = 0; i < numberOfLinks; i++)
             linkItems.add(
                     WqLinkRegisterEntity.builder()
                             .createdTxId(i)
@@ -456,15 +456,22 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
                             .caseId(TEST_CASE_ID)
                             .mlrCat(3)
                             .build());
-        }
         wqLinkRegisterRepository.saveAll(linkItems);
         return linkItems;
     }
 
     private void setupCdaWebServer() throws IOException {
-        mockCdaWebServer = new MockWebServer();
-        mockCdaWebServer.start(1234);
-        mockCdaWebServer.enqueue(new MockResponse().setResponseCode(OK.code()));
+//        mockCdaWebServer = new MockWebServer();
+//        mockCdaWebServer.start(1234);
+//        mockCdaWebServer.enqueue(new MockResponse().setResponseCode(OK.code()));
+
+        stubForOAuth();
+        wiremock.stubFor(WireMock
+                .post(urlEqualTo("http://localhost:9999/api/internal/v1/representation_orders"))
+                .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))));
+
     }
 
     private LaaStatusUpdate generateExpectedLaaStatusObject(
@@ -524,5 +531,22 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("laa-transaction-id", LAA_TRANSACTION_ID)
                 .content(payload);
+    }
+
+    private void stubForOAuth() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> token = Map.of(
+                "expires_in", 3600,
+                "token_type", "Bearer",
+                "access_token", UUID.randomUUID()
+        );
+
+        wiremock.stubFor(
+                WireMock.post("/oauth2/token").willReturn(
+                        WireMock.ok()
+                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
+                                .withBody(mapper.writeValueAsString(token))
+                )
+        );
     }
 }

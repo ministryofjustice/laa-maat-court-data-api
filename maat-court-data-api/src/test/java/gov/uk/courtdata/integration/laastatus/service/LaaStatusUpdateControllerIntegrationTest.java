@@ -461,10 +461,6 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     }
 
     private void setupCdaWebServer() throws IOException {
-//        mockCdaWebServer = new MockWebServer();
-//        mockCdaWebServer.start(1234);
-//        mockCdaWebServer.enqueue(new MockResponse().setResponseCode(OK.code()));
-
         stubForOAuth();
         wiremock.stubFor(WireMock
                 .post(urlEqualTo("http://localhost:9999/api/internal/v1/representation_orders"))

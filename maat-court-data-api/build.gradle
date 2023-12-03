@@ -44,7 +44,7 @@ def versions = [
         cloudLocalstackUtilsVersion         : '0.2.23',
         springContractStubRunnerVersion     : '4.0.1',
         sentryBomVersion                    : '6.17.0',
-        crimeCommonsVersion                 : "2.9.2",
+        crimeCommonsVersion                 : "2.1.0-dev.66.uncommitted+bc4623c",
         springCloudStubRunnerVersion        : "4.0.4"
 ]
 
@@ -91,6 +91,7 @@ dependencies {
     // Spring
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-security"
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
     implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'

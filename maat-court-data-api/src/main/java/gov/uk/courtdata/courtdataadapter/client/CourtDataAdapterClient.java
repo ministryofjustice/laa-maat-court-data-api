@@ -37,7 +37,7 @@ public class CourtDataAdapterClient {
         queueMessageLogService.createLog(MessageType.LAA_STATUS_UPDATE,laaStatusUpdateJson);
         log.info("Post Laa status to CDA.");
         cdaAPIClient.post(
-                laaStatusUpdate,
+                laaStatusUpdateJson,
                 new ParameterizedTypeReference<>() {},
                 courtDataAdapterClientConfig.getLaaStatusUrl(),
                 headers

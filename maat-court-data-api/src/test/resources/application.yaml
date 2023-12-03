@@ -86,10 +86,6 @@ cda:
     url: ${cda.url}/api/internal/v1/representation_orders
   hearing:
     url: ${cda.url}/api/internal/v1/hearing_results/{hearingId}
-  retry-config:
-    max-retries: 3
-    min-back-off-period: 5
-    jitter-value: 0.75
 
 queue:
   message:

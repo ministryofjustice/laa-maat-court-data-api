@@ -140,14 +140,17 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     @Test
     public void givenAnInvalidMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         runValidationFailureScenario(String.format("MAAT API Call failed - MAAT/REP ID: %d is invalid.", TEST_MAAT_ID));
-        assertThat(wiremock.getStubMappings().isEmpty());
+        assertThat(wiremock.getAllServeEvents().isEmpty()).isTrue();
+        verify(exactly(0), postRequestedFor(urlEqualTo("/oauth2/token")));
+        verify(exactly(0), postRequestedFor(urlEqualTo("/api/internal/v1/representation_orders")));
+
     }
 
     @Test
     public void givenAMaatIdThatIsNotLinked_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         runValidationFailureScenario(String.format("MAAT API Call failed - MAAT Id : %s not linked.", TEST_MAAT_ID));
-        assertThat(wiremock.getStubMappings().isEmpty());
+        assertThat(wiremock.getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test
@@ -155,7 +158,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createTestRepoOrder();
         createTestLinkData(2);
         runValidationFailureScenario(String.format("MAAT API Call failed - Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
-        assertThat(wiremock.getStubMappings().isEmpty());
+        assertThat(wiremock.getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test
@@ -163,8 +166,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createTestRepoOrder();
         createTestLinkData(1);
         runValidationFailureScenario(String.format("MAAT API Call failed - Solicitor not found for maatId %s", TEST_MAAT_ID));
-        assertThat(wiremock.getStubMappings().isEmpty());
-
+        assertThat(wiremock.getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test
@@ -174,7 +176,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createSolicitorData("");
         createDefendantData();
         runValidationFailureScenario(String.format("MAAT API Call failed - Solicitor account code not available for maatId %s.", TEST_MAAT_ID));
-        assertThat(wiremock.getStubMappings().isEmpty());
+        assertThat(wiremock.getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test
@@ -183,7 +185,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createTestLinkData(1);
         createSolicitorData("test-account-code");
         runValidationFailureScenario("MAAT API Call failed - MAAT Defendant details not found.");
-        assertThat(wiremock.getStubMappings().isEmpty());
+        assertThat(wiremock.getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test

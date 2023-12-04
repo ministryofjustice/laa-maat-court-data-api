@@ -153,7 +153,7 @@ dependencies {
     testImplementation group: 'org.easytesting', name: 'fest-assert', version: versions.festVersion
     testCompileOnly group: 'org.projectlombok', name: 'lombok'
     testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
-    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:4.0.1"
+    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.springCloudStubRunnerVersion"
 
     // Only required for SQS Integration test
     testSqsIntegrationImplementation "org.awaitility:awaitility:$versions.awaitilityVersion"

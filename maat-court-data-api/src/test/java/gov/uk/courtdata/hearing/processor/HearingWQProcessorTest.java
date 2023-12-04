@@ -1,27 +1,21 @@
 package gov.uk.courtdata.hearing.processor;
 
-import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.UUID;
+
 import static gov.uk.courtdata.enums.JurisdictionType.CROWN;
 import static gov.uk.courtdata.enums.JurisdictionType.MAGISTRATES;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class HearingWQProcessorTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Mock
     private WQCaseProcessor wqCaseProcessor;
@@ -38,11 +32,6 @@ public class HearingWQProcessorTest {
 
     @InjectMocks
     private HearingWQProcessor hearingWQProcessor;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void givenHearingProcessor_whenProcessIsInvoke_thenProcessForCrown(){

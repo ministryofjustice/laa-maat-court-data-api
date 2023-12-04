@@ -3,67 +3,54 @@ package gov.uk.courtdata.validator;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MaatIdValidatorTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     @InjectMocks
     private MaatIdValidator maatIdValidator;
 
     @Mock
     private RepOrderRepository repOrderRepository;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
-
     @Test
     public void testWhenMaatIdIsNull_throwsException() {
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("MAAT ID is required.");
-        maatIdValidator.validate(null);
+        ValidationException validationException = assertThrows(ValidationException.class,
+                () -> maatIdValidator.validate(null));
+        assertThat(validationException.getMessage()).isEqualTo("MAAT ID is required.");
     }
 
     @Test
     public void testWhenMaatIdIsMissingFromPayload_throwsException() {
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("MAAT ID is required.");
-        maatIdValidator.validate(0);
+        ValidationException validationException = assertThrows(ValidationException.class,
+                () -> maatIdValidator.validate(0));
+        assertThat(validationException.getMessage()).isEqualTo("MAAT ID is required.");
     }
 
     @Test
     public void testWhenMaatIsNotNullButNotOnRepOrder_validationPasses() {
         when(repOrderRepository.findById(1000)).thenReturn(Optional.empty());
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("MAAT/REP ID: 1000 is invalid.");
-        maatIdValidator.validate(1000);
+        ValidationException validationException = assertThrows(ValidationException.class,
+                () -> maatIdValidator.validate(1000));
+        assertThat(validationException.getMessage()).isEqualTo("MAAT/REP ID: 1000 is invalid.");
     }
 
     @Test
     public void testWhenMaatIsNotNullButExistOnRepOrder_validationPasses() {
         final RepOrderEntity repOrderEntity = RepOrderEntity.builder().id(1000).build();
-        when(repOrderRepository.findById(1000)).thenReturn(Optional.of(repOrderEntity));
-
+        when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
         Optional<Void> result = maatIdValidator.validate(1000);
         assertThat(result).isNotPresent();
-
     }
 }

@@ -2,12 +2,11 @@ package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.dces.service.DebtCollectionService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -15,9 +14,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(DebtCollectionController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class DebtCollectionControllerTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/";

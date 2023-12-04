@@ -6,13 +6,14 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.repository.WqCoreRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
+import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UPDATE_CASE_EVENT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
@@ -29,15 +30,9 @@ public class UpdateWqCoreInfoProcessorTest {
     @Captor
     private ArgumentCaptor<WqCoreEntity> wqCoreCaptor;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
-    }
-
     @Test
     public void givenWQCoreModel_whenProcessIsInvoked_thenWQCoreRecordIsCreated() {
-
+        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
         // given
         CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
 

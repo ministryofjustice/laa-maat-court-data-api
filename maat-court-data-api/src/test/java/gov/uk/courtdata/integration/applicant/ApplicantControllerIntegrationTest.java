@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Slf4j
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class ApplicantControllerIntegrationTest {
 
     private static final Integer INVALID_REP_ID = 234;

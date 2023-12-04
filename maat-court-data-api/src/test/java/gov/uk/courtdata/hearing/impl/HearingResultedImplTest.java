@@ -16,8 +16,8 @@ import gov.uk.courtdata.processor.ResultCodeRefDataProcessor;
 import gov.uk.courtdata.prosecutionconcluded.helper.OffenceHelper;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -60,14 +60,6 @@ public class HearingResultedImplTest {
     private WQCoreProcessor wqCoreProcessor;
     @Mock
     private OffenceHelper offenceHelper;
-
-
-    @BeforeEach
-    public void setUp() {
-        //TODO?
-        MockitoAnnotations.initMocks(this);
-    }
-
 
     @Test
     public void givenACaseDetail_whenHearingResultedImplIsInvoked_thenProcessingImplIsInvoked() {

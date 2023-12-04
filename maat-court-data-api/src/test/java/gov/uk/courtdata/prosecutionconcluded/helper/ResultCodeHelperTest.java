@@ -15,10 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

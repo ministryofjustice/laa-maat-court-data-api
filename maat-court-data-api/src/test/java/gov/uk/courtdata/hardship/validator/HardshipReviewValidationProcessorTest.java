@@ -4,7 +4,6 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReview;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -38,7 +38,7 @@ public class HardshipReviewValidationProcessorTest {
 
     @Test
     public void givenNullHardshipReview_whenValidateIsInvoked_thenThrowsException() {
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = assertThrows(ValidationException.class,
                 () -> hardshipReviewValidationProcessor.validate((HardshipReview) null));
         assertThat(validationException.getMessage()).isEqualTo("Hardship review Request is empty");
     }

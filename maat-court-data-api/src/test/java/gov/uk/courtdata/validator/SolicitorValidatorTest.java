@@ -3,26 +3,21 @@ package gov.uk.courtdata.validator;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static java.lang.String.format;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SolicitorValidatorTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Mock
     private SolicitorMAATDataRepository solicitorMAATDataRepository;
@@ -30,40 +25,29 @@ public class SolicitorValidatorTest {
     @InjectMocks
     private SolicitorValidator solicitorValidator;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
-
-
     @Test
     public void testWhenSolicitorDetailsNotFound_throwsException() {
-
-        final int testMaatId = 1000;
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage(format("Solicitor not found for maatId %s", testMaatId));
+        int testMaatId = 1000;
         when(solicitorMAATDataRepository.findBymaatId(testMaatId)).thenReturn(Optional.empty());
-        solicitorValidator.validate(testMaatId);
-
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class, () ->
+                solicitorValidator.validate(testMaatId));
+        assertThat(validationException.getMessage()).isEqualTo(format("Solicitor not found for maatId %s", testMaatId));
 
     }
 
     @Test
     public void testWhenSolicitorAccountCodeNotAvailable_throwsException() {
-
-        final int testMaatId = 1000;
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage(format("Solicitor account code not available for maatId %s.", testMaatId));
+        int testMaatId = 1000;
         when(solicitorMAATDataRepository.findBymaatId(testMaatId))
                 .thenReturn(Optional.of(SolicitorMAATDataEntity.builder().maatId(testMaatId).accountCode("  ").build()));
-        solicitorValidator.validate(testMaatId);
-
-
+        ValidationException validationException = Assertions.assertThrows(ValidationException.class, () ->
+                solicitorValidator.validate(testMaatId));
+        assertThat(validationException.getMessage()).isEqualTo(format("Solicitor account code not available for maatId %s.", testMaatId));
     }
 
     @Test
     public void testWhenSolicitorDetailsExists_validationPasses() {
-        final int testMaatId = 1000;
+        int testMaatId = 1000;
         when(solicitorMAATDataRepository.findBymaatId(testMaatId))
                 .thenReturn(Optional.of(SolicitorMAATDataEntity.builder().maatId(testMaatId).accountCode("SOC1212").build()));
         solicitorValidator.validate(testMaatId);

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.http.RequestMethod;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
@@ -142,12 +140,8 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
                 sqsPayload, 1, prosecutionConcluded.getMetadata().getLaaTransactionId(), prosecutionConcluded.getMaatId());
 
         //checked if you get request called?
-        List<StubMapping> returnedMappings = wiremock.getStubMappings();
-        assertThat(returnedMappings.get(0).getRequest().getUrl())
-                .isEqualTo("http://localhost:9999/api/internal/v1/hearing_results/" + LAA_TRANSACTION_ID + "?publish_to_queue=true");
-        assertThat(returnedMappings.get(0).getRequest().getMethod()).isEqualTo(RequestMethod.GET);
-        assertThat(returnedMappings.get(0).getResponse().getStatus())
-                .isEqualTo(200);
+        verify(exactly(1), postRequestedFor(urlEqualTo("/oauth2/token")));
+        verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/hearing_results/" + LAA_TRANSACTION_ID + "?publish_to_queue=true")));
 
         assertThat(prosecutionConcludedRepository.findAll().size()).isEqualTo(1);
         assertThat(prosecutionConcludedRepository.findAll().get(0).getMaatId()).isEqualTo(56456);

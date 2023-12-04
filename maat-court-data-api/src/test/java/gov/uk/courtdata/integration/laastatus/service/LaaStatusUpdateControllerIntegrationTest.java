@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.http.RequestMethod;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.WQStatus;
@@ -35,16 +34,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UPDATE_CASE_EVENT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -385,24 +381,17 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     private void assertCdaCalledCorrectly(CaseDetails inputCaseDetails,
                                           OffenceEntity offence,
                                           SolicitorMAATDataEntity solicitor,
-                                          RepOrderCPDataEntity repOrderCPDataEntity) throws InterruptedException, JsonProcessingException {
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+                                          RepOrderCPDataEntity repOrderCPDataEntity) throws JsonProcessingException {
 
+        verify(exactly(1), postRequestedFor(urlEqualTo("/oauth2/token")));
+        verify(exactly(1), postRequestedFor(urlEqualTo("/api/internal/v1/representation_orders")));
+
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         String expectedCdaPostBody = objectMapper.writeValueAsString(
                 generateExpectedLaaStatusObject(inputCaseDetails, offence, solicitor, repOrderCPDataEntity));
-
-        Map<String, String> expectedHeaders = Map.ofEntries(
-                new SimpleEntry<>(CDA_TRANSACTION_ID_HEADER, LAA_TRANSACTION_ID),
-                new SimpleEntry<>("Laa-Status-Transaction-Id", "null"));
-
-        List<StubMapping> returnedMappings = wiremock.getStubMappings();
-        assertThat(returnedMappings.get(0).getRequest().getUrl())
-                .isEqualTo("http://localhost:9999/api/internal/v1/representation_orders");
-        assertThat(returnedMappings.get(0).getRequest().getMethod()).isEqualTo(RequestMethod.POST);
-        assertThat(returnedMappings.get(0).getResponse().getStatus())
-                .isEqualTo(200);
+        List<ServeEvent> allServeEvents = getAllServeEvents();
+        assertThat(allServeEvents.get(0).getRequest().getBodyAsString()).isEqualTo(expectedCdaPostBody);
     }
-
 
     private String generateCaseDetailsJsonPayload(CaseDetails inputCaseDetails) throws JsonProcessingException {
         String testPayload = objectMapper.writeValueAsString(inputCaseDetails);

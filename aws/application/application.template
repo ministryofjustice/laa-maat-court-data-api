@@ -473,6 +473,7 @@ Resources:
               Resource:
                 - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maat-cd-api/*'
                 - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/APP_MAATDB_DBPASSWORD_MLA1'
+                - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/APP_MAATDB_DBPASSWORD_TOGDATA'
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:

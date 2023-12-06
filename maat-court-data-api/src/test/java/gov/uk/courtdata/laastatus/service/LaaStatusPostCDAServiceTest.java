@@ -39,6 +39,6 @@ public class LaaStatusPostCDAServiceTest {
         //then
         verify(repOrderUpdateMessageBuilder).build(courtDataDTO.getCaseDetails());
         verify(repOrderUpdateMessageBuilder).buildHeaders(courtDataDTO);
-        verify(courtDataAdapterClient).postLaaStatus(any(),any());
+        verify(courtDataAdapterClient).postLaaStatus(any(), any());
     }
 }

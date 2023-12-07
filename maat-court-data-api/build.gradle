@@ -44,7 +44,7 @@ def versions = [
         cloudLocalstackUtilsVersion         : '0.2.23',
         springContractStubRunnerVersion     : '4.0.1',
         sentryBomVersion                    : '7.0.0',
-        crimeCommonsVersion                 : "2.9.3",
+        crimeCommonsVersion                 : "2.10.0",
         springCloudStubRunnerVersion        : "4.0.4"
 ]
 

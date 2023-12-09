@@ -43,7 +43,9 @@ def versions = [
         testcontainersLocalstackVersion     : '1.18.3',
         cloudLocalstackUtilsVersion         : '0.2.23',
         springContractStubRunnerVersion     : '4.0.1',
-        sentryBomVersion                    : '6.17.0'
+        sentryBomVersion                    : '7.0.0',
+        crimeCommonsVersion                 : "2.10.0",
+        springCloudStubRunnerVersion        : "4.0.4"
 ]
 
 group = 'gov.uk'
@@ -81,7 +83,7 @@ dependencies {
     implementation platform(SpringBootPlugin.BOM_COORDINATES)
     annotationProcessor platform(SpringBootPlugin.BOM_COORDINATES)
 
-    implementation("io.sentry:sentry-spring-boot-starter")
+    implementation("io.sentry:sentry-spring-boot-starter-jakarta")
     implementation("io.sentry:sentry-logback")
     //Required for Logback configuration due to a dependency having their own implementation of SAXParserFactory
     implementation "xerces:xercesImpl:$versions.xercesImplVersion"
@@ -89,6 +91,7 @@ dependencies {
     // Spring
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-security"
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
     implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
@@ -102,8 +105,7 @@ dependencies {
 
     implementation "software.amazon.awssdk:sts:$versions.awsStsVersion"
 
-    implementation 'io.micrometer:micrometer-tracing'
-    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion"
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: versions.springdocVersion
     implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
@@ -149,10 +151,9 @@ dependencies {
     testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: versions.harmcrestVersion
     testImplementation group: 'commons-io', name: 'commons-io', version: versions.commonsIOVersion
     testImplementation group: 'org.easytesting', name: 'fest-assert', version: versions.festVersion
-    testImplementation group: 'com.squareup.okhttp3', name: 'okhttp', version: versions.okhttpVersion
-    testImplementation group: 'com.squareup.okhttp3', name: 'mockwebserver', version: versions.mockWebServerVersion
     testCompileOnly group: 'org.projectlombok', name: 'lombok'
     testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
+    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.springCloudStubRunnerVersion"
 
     // Only required for SQS Integration test
     testSqsIntegrationImplementation "org.awaitility:awaitility:$versions.awaitilityVersion"

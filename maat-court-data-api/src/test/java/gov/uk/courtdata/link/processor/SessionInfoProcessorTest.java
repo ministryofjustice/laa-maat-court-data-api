@@ -8,8 +8,8 @@ import gov.uk.courtdata.entity.SessionEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.repository.SessionRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,14 +33,9 @@ public class SessionInfoProcessorTest {
     @Captor
     private ArgumentCaptor<List<SessionEntity>> sessionsCaptor;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
-    }
-
     @Test
     public void givenSessionModel_whenProcessIsInvoked_thenSessionRecordIsCreated() {
+        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
 
         // given
         CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
@@ -60,6 +55,7 @@ public class SessionInfoProcessorTest {
 
     @Test
     public void givenSessionModelWithNullPostHearingCustody_whenProcessIsInvoked_thenSessionRecordIsCreated() {
+        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
 
         // given
         CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
@@ -80,6 +76,7 @@ public class SessionInfoProcessorTest {
 
     @Test
     public void givenSessionModelWithNullHearingDate_whenProcessIsInvoked_thenSessionRecordIsNullFiltered() {
+        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
 
         // given
         CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();

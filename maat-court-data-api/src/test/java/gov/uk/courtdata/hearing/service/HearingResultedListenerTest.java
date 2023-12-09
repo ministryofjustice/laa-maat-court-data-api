@@ -13,8 +13,8 @@ import org.springframework.messaging.MessageHeaders;
 
 import java.util.HashMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 public class HearingResultedListenerTest {
@@ -42,6 +42,6 @@ public class HearingResultedListenerTest {
         //then
         verify(hearingResultedService, times(1)).execute(laaHearingDetails);
         verify(queueMessageLogService, times(1)).createLog(MessageType.HEARING, message);
-        assertNotNull(laaHearingDetails.getHearingId());
+        assertThat(laaHearingDetails.getHearingId()).isNotNull();
     }
 }

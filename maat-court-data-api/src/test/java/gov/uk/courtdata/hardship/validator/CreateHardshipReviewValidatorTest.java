@@ -4,7 +4,6 @@ import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -29,7 +29,7 @@ public class CreateHardshipReviewValidatorTest {
 
     @Test
     public void givenIncompleteAssessment_whenValidateIsInvoked_thenThrowsException() {
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = assertThrows(ValidationException.class,
                 () -> createHardshipReviewValidator.validate(CreateHardshipReview.builder().build()));
         assertThat(validationException.getMessage()).isEqualTo("Review can only be entered after a completed assessment");
     }
@@ -47,13 +47,13 @@ public class CreateHardshipReviewValidatorTest {
         when(financialAssessmentRepository.findCompletedAssessmentByRepId(any(Integer.class))).thenReturn(
                 Optional.of(mockAssessment)
         );
-        ValidationException validationException = Assert.assertThrows(ValidationException.class,
+        ValidationException validationException = assertThrows(ValidationException.class,
                 () -> createHardshipReviewValidator.validate(mockHardship));
         assertThat(validationException.getMessage()).isEqualTo("Review date cannot pre-date the means assessment date");
 
         mockAssessment.setFullAssessmentDate(LocalDateTime.parse("2022-02-01T15:00:00"));
 
-        validationException = Assert.assertThrows(ValidationException.class,
+        validationException = assertThrows(ValidationException.class,
                 () -> createHardshipReviewValidator.validate(mockHardship));
         assertThat(validationException.getMessage()).isEqualTo("Review date cannot pre-date the means assessment date");
     }

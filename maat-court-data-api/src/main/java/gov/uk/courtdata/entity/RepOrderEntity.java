@@ -67,6 +67,9 @@ public class RepOrderEntity {
     @Column(name = "ARREST_SUMMONS_NO")
     private String arrestSummonsNo;
 
+    @Column(name = "USER_CREATED")
+    private String userCreated;
+
     @Column(name = "USER_MODIFIED")
     private String userModified;
 
@@ -164,6 +167,12 @@ public class RepOrderEntity {
     @Column(name = "APPEAL_TYPE_DATE")
     private LocalDate appealTypeDate;
 
+    @Column(name = "APP_SIGNED_DATE")
+    private LocalDate appSignedDate;
+
+    @Column(name = "USN")
+    private Integer usn;
+
     @Column(name = "FIRST_CAPITAL_REMINDER_DATE")
     private LocalDate firstCapitalReminderDate;
 
@@ -202,6 +211,9 @@ public class RepOrderEntity {
 
     @Column(name = "DECISION_DATE")
     private LocalDate decisionDate;
+
+    @Column(name = "IOJ_RESULT")
+    private String iojResult;
 
     @Column(name = "IOJ_RESULT_NOTE")
     private String iojResultNote;

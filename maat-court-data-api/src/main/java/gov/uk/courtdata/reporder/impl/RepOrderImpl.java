@@ -32,6 +32,10 @@ public class RepOrderImpl {
         return repOrderRepository.saveAndFlush(repOrderEntity);
     }
 
+    public RepOrderEntity createRepOrder(RepOrderEntity repOrderEntity) {
+        return repOrderRepository.saveAndFlush(repOrderEntity);
+    }
+
     public RepOrderEntity updateRepOrder(RepOrderEntity repOrderEntity) {
         return repOrderRepository.saveAndFlush(repOrderEntity);
     }

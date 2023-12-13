@@ -3,6 +3,7 @@ package gov.uk.courtdata.reporder.service;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Slf4j
 @Service
@@ -49,6 +52,17 @@ public class RepOrderService {
         log.info("update app date completed - Transaction Processing - Start");
         return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderImpl
                 .updateAppDateCompleted(updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted()));
+    }
+
+    @Transactional
+    public RepOrderDTO create(final CreateRepOrder createRepOrder) {
+        log.info("create rep order - Transaction Processing - Start");
+        LocalDate dateNow = LocalDate.now();
+        RepOrderEntity repOrderEntity = new RepOrderEntity();
+        repOrderEntity.setId(createRepOrder.getRepId());
+        repOrderEntity.setDateCreated(dateNow);
+        repOrderMapper.createRepOrderToRepOrderEntity(createRepOrder, repOrderEntity);
+        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderImpl.createRepOrder(repOrderEntity));
     }
 
     @Transactional

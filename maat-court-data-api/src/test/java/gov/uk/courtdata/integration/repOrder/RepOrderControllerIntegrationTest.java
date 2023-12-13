@@ -5,6 +5,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
@@ -218,6 +219,47 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         assertTrue(runSuccessScenario(TestModelDataBuilder.getRepOrderMvoDTO(),
                 get(MVO_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES)
         ));
+    }
+
+    @Test
+    void givenRepIdIsMissing_whenCreateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
+        assertTrue(runBadRequestErrorScenario(
+                "MAAT ID is required.",
+                post(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                CreateRepOrder.builder()
+                                        .build())
+                        )
+        ));
+    }
+
+    @Test
+    void givenInvalidRepId_whenCreateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
+        assertTrue(runBadRequestErrorScenario(
+                "MAAT/REP ID: " + INVALID_REP_ID + " is invalid.",
+                post(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                CreateRepOrder.builder()
+                                        .repId(INVALID_REP_ID)
+                                        .build())
+                        )
+        ));
+    }
+
+    @Test
+    void givenValidParameters_whenCreateIsInvoked_theRepOrderIsCreated() throws Exception {
+
+        CreateRepOrder request = TestModelDataBuilder.getCreateRepOrder();
+
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(request.getRepId()))
+                .andExpect(jsonPath("$.caseId").value(request.getCaseId()))
+                .andExpect(jsonPath("$.catyCaseType").value(request.getCatyCaseType()));
     }
 
     @Test

@@ -211,4 +211,27 @@ class RepOrderControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(TestModelDataBuilder.REP_ID));
     }
+
+    @Test
+    void givenCorrectParameters_whenCreateIsInvoked_thenOkResponseAndRepOrderIsReturned() throws Exception {
+        when(maatIdValidator.validate(any()))
+                .thenReturn(Optional.empty());
+        when(repOrderService.create(any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
+
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+                        .content(TestModelDataBuilder.getCreateRepOrderJson())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(TestModelDataBuilder.REP_ID));
+    }
+
+    @Test
+    void givenInvalidMaatId_whenCreateIsInvoked_thenErrorIsThrown() throws Exception {
+        when(maatIdValidator.validate(any()))
+                .thenThrow(new ValidationException());
+
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
 }

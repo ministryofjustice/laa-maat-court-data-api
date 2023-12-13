@@ -2,6 +2,7 @@ package gov.uk.courtdata.reporder.controller;
 
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
@@ -145,6 +146,30 @@ public class RepOrderController {
         ));
     }
 
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Create a rep order record")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = CreateRepOrder.class)
+            )
+    )
+    @ApiResponse(responseCode = "400",
+            description = "Bad Request.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<RepOrderDTO> create(@RequestBody CreateRepOrder createRepOrder) {
+        log.debug("Create Rep order request");
+        maatIdValidator.validate(createRepOrder.getRepId());
+        return ResponseEntity.ok(repOrderService.create(createRepOrder));
+    }
 
     @PutMapping
     @Operation(description = "Update a rep order record")

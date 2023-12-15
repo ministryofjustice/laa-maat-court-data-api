@@ -26,6 +26,9 @@ public class CourtDataAdapterClient {
     @Qualifier("cdaApiClient")
     private final RestAPIClient cdaAPIClient;
 
+    @Qualifier("cdaApiNonServletClient")
+    private final RestAPIClient cdaApiNonServletClient;
+
     private final GsonBuilder gsonBuilder;
 
     private final QueueMessageLogService queueMessageLogService;
@@ -49,13 +52,14 @@ public class CourtDataAdapterClient {
         log.info("Triggering processing for hearing '{}' via court data adapter.", hearingId);
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("publish_to_queue", "true");
-        cdaAPIClient.get(
+        cdaApiNonServletClient.get(
                 new ParameterizedTypeReference<Void>() {},
                 courtDataAdapterClientConfig.getHearingUrl(),
                 Map.of(CDA_TRANSACTION_ID_HEADER, laaTransactionId),
                 queryParams,
                 hearingId
         );
+        log.info("Completed triggering processing for hearing '{}' via court data adapter.", hearingId);
     }
 
 }

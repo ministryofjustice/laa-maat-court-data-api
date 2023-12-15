@@ -1,5 +1,6 @@
 package gov.uk.courtdata.integration.repOrder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -32,6 +33,7 @@ import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -222,28 +224,20 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenRepIdIsMissing_whenCreateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
-        assertTrue(runBadRequestErrorScenario(
-                "MAAT ID is required.",
-                post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(
-                                CreateRepOrder.builder()
-                                        .build())
-                        )
-        ));
-    }
+    void givenARepIdThatAlreadyExists_whenCreateIsInvoked_thenReturnConflictResponse() throws Exception {
+        // Set up an existing rep order
+        repOrderRepository.save(
+                TestEntityDataBuilder.getPopulatedRepOrder(123456789)
+        );
 
-    @Test
-    void givenInvalidRepId_whenCreateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
+        // Set the new one with the same ID as existing
+        CreateRepOrder request = TestModelDataBuilder.getCreateRepOrder(123456789);
+
         assertTrue(runBadRequestErrorScenario(
-                "MAAT/REP ID: " + INVALID_REP_ID + " is invalid.",
+                "There is already a record with this MAAT ID.",
                 post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(
-                                CreateRepOrder.builder()
-                                        .repId(INVALID_REP_ID)
-                                        .build())
+                        .content(objectMapper.writeValueAsString(request)
                         )
         ));
     }
@@ -251,7 +245,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenValidParameters_whenCreateIsInvoked_theRepOrderIsCreated() throws Exception {
 
-        CreateRepOrder request = TestModelDataBuilder.getCreateRepOrder();
+        CreateRepOrder request = TestModelDataBuilder.getCreateRepOrder(87928192);
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -320,5 +314,18 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
         softly.assertThat(content).isEqualTo("");
         softly.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
+    }
+
+    @Test
+    void givenValidRepId_whenDeleteIsInvoked_theRepOrderIsDeleted() throws Exception {
+
+        RepOrderEntity repOrderEntity = TestEntityDataBuilder.getPopulatedRepOrder(anyInt());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL+"/"+repOrderEntity.getId()))
+                .andExpect(status().isNoContent());
+
+        boolean exists = repOrderRepository.existsById(repOrderEntity.getId());
+
+        assertThat(exists).isFalse();
     }
 }

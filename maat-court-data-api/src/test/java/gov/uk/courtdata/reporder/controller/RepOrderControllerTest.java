@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(RepOrderController.class)
@@ -214,8 +214,6 @@ class RepOrderControllerTest {
 
     @Test
     void givenCorrectParameters_whenCreateIsInvoked_thenOkResponseAndRepOrderIsReturned() throws Exception {
-        when(maatIdValidator.validate(any()))
-                .thenReturn(Optional.empty());
         when(repOrderService.create(any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
 
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
@@ -227,11 +225,11 @@ class RepOrderControllerTest {
     }
 
     @Test
-    void givenInvalidMaatId_whenCreateIsInvoked_thenErrorIsThrown() throws Exception {
-        when(maatIdValidator.validate(any()))
-                .thenThrow(new ValidationException());
+    void givenValidRepId_whenDeleteIsInvoked_thenReturnOkResponse() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL+"/12345678")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
 
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
+        verify(repOrderService, times(1)).delete(12345678);
     }
 }

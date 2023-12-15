@@ -898,9 +898,9 @@ public class TestModelDataBuilder {
 
     }
 
-    public static CreateRepOrder getCreateRepOrder() {
+    public static CreateRepOrder getCreateRepOrder(Integer newRepId) {
         return CreateRepOrder.builder()
-                .repId(REP_ID)
+                .repId(newRepId)
                 .sentenceOrderDate(LocalDateTime.parse(APP_DATE_COMPLETED).toLocalDate())
                 .userCreated(TEST_USER)
                 .caseId(String.valueOf(TEST_CASE_ID))

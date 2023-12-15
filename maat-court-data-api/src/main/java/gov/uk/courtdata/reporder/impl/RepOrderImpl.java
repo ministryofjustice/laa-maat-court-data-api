@@ -43,4 +43,8 @@ public class RepOrderImpl {
     public long countWithSentenceOrderDate(Integer repId) {
         return repOrderRepository.count(hasId(repId).and(hasSentenceOrderDate()));
     }
+
+    public void delete(Integer repId) {
+        repOrderRepository.deleteById(repId);
+    }
 }

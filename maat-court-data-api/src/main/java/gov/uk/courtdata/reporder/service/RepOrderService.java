@@ -78,4 +78,9 @@ public class RepOrderService {
         log.info("Retrieve rep Order Count With Sentence Order Date - Transaction Processing - Start");
         return repOrderImpl.countWithSentenceOrderDate(repId) > 0;
     }
+
+    @Transactional
+    public void delete(Integer repId) {
+        repOrderImpl.delete(repId);
+    }
 }

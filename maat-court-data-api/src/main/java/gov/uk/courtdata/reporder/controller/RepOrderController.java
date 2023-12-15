@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -167,7 +168,7 @@ public class RepOrderController {
     )
     public ResponseEntity<RepOrderDTO> create(@RequestBody CreateRepOrder createRepOrder) {
         log.debug("Create Rep order request");
-        maatIdValidator.validate(createRepOrder.getRepId());
+        maatIdValidator.validateNotExists(createRepOrder.getRepId());
         return ResponseEntity.ok(repOrderService.create(createRepOrder));
     }
 
@@ -194,5 +195,30 @@ public class RepOrderController {
         log.debug("Update Rep order request received for repId : {}", updateRepOrder.getRepId());
         maatIdValidator.validate(updateRepOrder.getRepId());
         return ResponseEntity.ok(repOrderService.update(updateRepOrder));
+    }
+
+    @DeleteMapping(value ="/{repId}")
+    @Operation(description = "Delete a rep order record")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE
+            )
+    )
+    @ApiResponse(responseCode = "400",
+            description = "Bad Request.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<RepOrderDTO> delete(@PathVariable Integer repId) {
+        log.debug("Delete Rep order request");
+        repOrderService.delete(repId);
+
+        return ResponseEntity.noContent().build();
     }
 }

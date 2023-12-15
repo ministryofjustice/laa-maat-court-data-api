@@ -2,7 +2,6 @@ package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.reporderhistory.entity.RepOrderHistoryEntity;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.*;
@@ -54,7 +53,6 @@ public class RepOrderEntity {
     private final List<IOJAppealEntity> iojAppeal = new ArrayList<>();
 
     @ToString.Exclude
-    @JsonIgnore
     @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final List<RepOrderHistoryEntity> history = new ArrayList<>();
 

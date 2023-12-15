@@ -62,7 +62,8 @@ public class RepOrderService {
         repOrderEntity.setId(createRepOrder.getRepId());
         repOrderEntity.setDateCreated(dateNow);
         repOrderMapper.createRepOrderToRepOrderEntity(createRepOrder, repOrderEntity);
-        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderImpl.createRepOrder(repOrderEntity));
+        RepOrderEntity createdRepOrderEntity = repOrderImpl.createRepOrder(repOrderEntity);
+        return repOrderMapper.repOrderEntityToRepOrderDTO(createdRepOrderEntity);
     }
 
     @Transactional

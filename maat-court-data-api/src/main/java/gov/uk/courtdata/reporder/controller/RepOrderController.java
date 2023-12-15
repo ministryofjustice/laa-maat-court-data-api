@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -166,7 +167,7 @@ public class RepOrderController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<RepOrderDTO> create(@RequestBody CreateRepOrder createRepOrder) {
+    public ResponseEntity<RepOrderDTO> create(@Valid @RequestBody CreateRepOrder createRepOrder) {
         log.debug("Create Rep order request");
         maatIdValidator.validateNotExists(createRepOrder.getRepId());
         return ResponseEntity.ok(repOrderService.create(createRepOrder));

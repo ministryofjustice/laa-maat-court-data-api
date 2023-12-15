@@ -1,6 +1,5 @@
 package gov.uk.courtdata.integration.repOrder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -224,7 +223,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenARepIdThatAlreadyExists_whenCreateIsInvoked_thenReturnConflictResponse() throws Exception {
+    void givenARepIdThatAlreadyExists_whenCreateIsInvoked_thenReturnBadRequest() throws Exception {
         // Set up an existing rep order
         repOrderRepository.save(
                 TestEntityDataBuilder.getPopulatedRepOrder(123456789)

@@ -70,6 +70,11 @@ public class TestModelDataBuilder {
     public static final String CORRESPONDENCE_STATUS = "appealCC";
     public static final String EFFECTIVE_DATE = "01-JAN-20233";
     public static final int MOCK_HRD_ID = 4253;
+    public static final Integer CASE_ID = 123;
+    public static final Integer CMU_ID = 456;
+    public static final Integer AREA_ID = 789;
+    public static final String DATE_RECEIVED = "2023-12-09";
+
     public static final String SEND_TO_CCLF = "y";
     public static final List<String> NEW_WORK_REASON_LIST = List.of("TEST_NWREASON");
     public static final List<String> ROLE_ACTIONS_LIST = List.of("TEST_ROLE");
@@ -893,6 +898,10 @@ public class TestModelDataBuilder {
     public static String getCreateRepOrderJson() {
         return "{\n" +
                 " \"repId\": " + REP_ID + " ,\n" +
+                " \"caseId\": " + CASE_ID + " ,\n" +
+                " \"cmuId\": " + CMU_ID + " ,\n" +
+                " \"areaId\": " + AREA_ID + " ,\n" +
+                " \"dateReceived\": \"" + DATE_RECEIVED + "\" ,\n" +
                 "  \"userCreated\": \"" + TEST_USER + "\"\n" +
                 "}";
 
@@ -944,7 +953,7 @@ public class TestModelDataBuilder {
                 .capitalNote("Test capital note")
                 .capitalAllowance(0)
                 .isCourtCustody(false)
-                .dateReceived(null)
+                .dateReceived(LocalDate.now().minusDays(15))
                 .dateStatusDue(null)
                 .dateStatusSet(null)
                 .decisionDate(null)

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.model;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,9 @@ import java.time.LocalDateTime;
 public class UpdateRepOrder {
 
     private Integer repId;
+    @NotNull
     private String caseId;
+    private String iojResult;
     private String catyCaseType;
     private String appealTypeCode;
     private String arrestSummonsNo;
@@ -40,9 +43,10 @@ public class UpdateRepOrder {
     private String paymentMethod;
     private Integer preferredPaymentDay;
     private String sortCode;
-
     private Boolean isSendToCCLF;
+    @NotNull
     private Integer areaId;
+    @NotNull
     private Integer cmuId;
     private Boolean isCaseTransferred;
     private Boolean isBenchWarrantIssued;
@@ -50,6 +54,8 @@ public class UpdateRepOrder {
     private LocalDate appealSentenceOrderDate;
     private LocalDate appealReceivedDate;
     private LocalDate appealTypeDate;
+    private LocalDate appSignedDate;
+    private Integer usn;
     private LocalDate firstCapitalReminderDate;
     private LocalDate allCapitalEvidenceReceivedDate;
     private Integer applicationId;
@@ -59,6 +65,7 @@ public class UpdateRepOrder {
     private String capitalNote;
     private Integer capitalAllowance;
     private Boolean isCourtCustody;
+    @NotNull
     private LocalDate dateReceived;
     private LocalDate dateStatusDue;
     private LocalDate dateStatusSet;

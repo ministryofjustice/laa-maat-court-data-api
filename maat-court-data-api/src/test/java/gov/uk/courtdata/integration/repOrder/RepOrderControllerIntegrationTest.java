@@ -233,7 +233,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         CreateRepOrder request = TestModelDataBuilder.getCreateRepOrder(123456789);
 
         assertTrue(runBadRequestErrorScenario(
-                "There is already a record with this MAAT ID.",
+                "There is already a record with MAAT ID [123456789].",
                 post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)

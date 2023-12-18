@@ -70,6 +70,6 @@ public class MaatIdValidatorTest {
         when(repOrderService.exists(1000)).thenReturn(true);
         ValidationException validationException = assertThrows(ValidationException.class,
                 () -> maatIdValidator.validateNotExists(1000));
-        assertThat(validationException.getMessage()).isEqualTo("There is already a record with this MAAT ID.");
+        assertThat(validationException.getMessage()).isEqualTo("There is already a record with MAAT ID [1000].");
     }
 }

@@ -51,7 +51,7 @@ public class MaatIdValidator implements IValidator<Void, Integer> {
 
         if (maatId != null && maatId > 0) {
             if (repOrderService.exists(maatId)) {
-                throw new ValidationException(String.format("There is already a record with this MAAT ID."));
+                throw new ValidationException(String.format("There is already a record with MAAT ID [%d].", maatId));
             }
 
         } else {

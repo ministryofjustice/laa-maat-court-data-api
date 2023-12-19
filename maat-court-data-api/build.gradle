@@ -5,7 +5,7 @@ plugins {
     id 'jacoco'
     id 'org.springframework.boot' version '3.1.5'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id "org.sonarqube" version "4.4.1.3373"
+    id "org.sonarqube" version "4.0.0.2929"
     id "info.solidsoft.pitest" version "1.9.11"
 }
 
@@ -130,7 +130,7 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: versions.commLan3Vriosn
 
     annotationProcessor group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: versions.hibernateJpaModelGen
-    
+
     compileOnly "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
@@ -210,15 +210,12 @@ pitest {
     mutationThreshold = 60
 }
 
-tasks.named("sonar"){
-    dependsOn test
-}
+tasks['sonar'].dependsOn test
 
 sonar {
     properties {
         property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java, **/exception/**.java, **/enums/**.java, **/aspect/**.java, **/dao/oracle/**.java, **/**StoredProcedureRepository.java, **/helper/BooleanConverter.java"
-        property "sonar.cpd.exclusions", "**/entity/**.java , **/model/**.java, **/dto/**.java , **/config/**.java, **/jms/**.java"
-        property "sonar.coverage.exclusions", "**/MAATCourtDataApplication.java, **/entity/**.java , **/model/**.java"
+        property "sonar.coverage.exclusions", "**/MAATCourtDataApplication.java"
         property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.projectKey", "ministryofjustice_laa-maat-court-data-api"
         property "sonar.organization", "ministryofjustice"

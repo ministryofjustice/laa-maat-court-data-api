@@ -3,6 +3,7 @@ package gov.uk.courtdata.reporder.service;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Slf4j
 @Service
@@ -52,6 +55,18 @@ public class RepOrderService {
     }
 
     @Transactional
+    public RepOrderDTO create(final CreateRepOrder createRepOrder) {
+        log.info("create rep order - Transaction Processing - Start");
+        LocalDate dateNow = LocalDate.now();
+        RepOrderEntity repOrderEntity = new RepOrderEntity();
+        repOrderEntity.setId(createRepOrder.getRepId());
+        repOrderEntity.setDateCreated(dateNow);
+        repOrderMapper.createRepOrderToRepOrderEntity(createRepOrder, repOrderEntity);
+        RepOrderEntity createdRepOrderEntity = repOrderImpl.createRepOrder(repOrderEntity);
+        return repOrderMapper.repOrderEntityToRepOrderDTO(createdRepOrderEntity);
+    }
+
+    @Transactional
     public RepOrderDTO update(final UpdateRepOrder updateRepOrder) {
         log.info("update rep order - Transaction Processing - Start");
         RepOrderEntity repOrderEntity = repOrderImpl.find(updateRepOrder.getRepId());
@@ -63,5 +78,10 @@ public class RepOrderService {
     public boolean exists(Integer repId) {
         log.info("Retrieve rep Order Count With Sentence Order Date - Transaction Processing - Start");
         return repOrderImpl.countWithSentenceOrderDate(repId) > 0;
+    }
+
+    @Transactional
+    public void delete(Integer repId) {
+        repOrderImpl.delete(repId);
     }
 }

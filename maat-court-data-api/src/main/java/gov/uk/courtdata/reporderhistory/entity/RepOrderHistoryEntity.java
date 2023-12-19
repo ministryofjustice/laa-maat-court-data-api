@@ -1,60 +1,27 @@
-package gov.uk.courtdata.entity;
+package gov.uk.courtdata.reporderhistory.entity;
 
-import gov.uk.courtdata.reporderhistory.entity.RepOrderHistoryEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "REP_ORDERS", schema = "TOGDATA")
-@NamedStoredProcedureQuery(
-        name = "update_cc_outcome",
-        procedureName = "togdata.application.update_cc_outcome",
-        parameters = {
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class, name = "p_rep_id"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_cc_outcome"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_bench_warrant_issued"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_appeal_type"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_imprisoned"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_case_number"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_crown_court_code")
-        }
-)
-public class RepOrderEntity {
+@Table(name = "REP_ORDERS_HISTORY", schema = "TOGDATA")
+public class RepOrderHistoryEntity {
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<PassportAssessmentEntity> passportAssessments = new ArrayList<>();
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<FinancialAssessmentEntity> financialAssessments = new ArrayList<>();
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<ContributionsEntity> contributions = new ArrayList<>();
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<RepOrderCCOutComeEntity> repOrderCCOutCome = new ArrayList<>();
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<IOJAppealEntity> iojAppeal = new ArrayList<>();
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final List<RepOrderHistoryEntity> history = new ArrayList<>();
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "REP_ID", nullable = false, updatable = false)
+    private RepOrderEntity repOrder;
 
     @Id
     @Column(name = "ID")
@@ -270,5 +237,4 @@ public class RepOrderEntity {
 
     @Column(name = "HEARING_DATE")
     private LocalDate hearingDate;
-
 }

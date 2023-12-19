@@ -1,7 +1,9 @@
 package gov.uk.courtdata.reporder.controller;
 
+import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
@@ -14,9 +16,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,18 +49,7 @@ public class RepOrderController {
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
-    @ApiResponse(responseCode = "400",
-            description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
-            description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
+    @StandardApiResponse
     public ResponseEntity<Object> find(HttpServletRequest request, @PathVariable int repId,
                                        @RequestParam(value = "has_sentence_order_date", defaultValue = "false")
                                                boolean hasSentenceOrderDate) {
@@ -77,18 +70,7 @@ public class RepOrderController {
                     schema = @Schema(implementation = UpdateAppDateCompleted.class)
             )
     )
-    @ApiResponse(responseCode = "400",
-            description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
-            description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
+    @StandardApiResponse
     public ResponseEntity<RepOrderDTO> updateApplicationDateCompleted(@RequestBody UpdateAppDateCompleted updateAppDateCompleted) {
         log.debug("Assessments Request Received for repId : {}", updateAppDateCompleted.getRepId());
         updateAppDateCompletedValidator.validate(updateAppDateCompleted);
@@ -101,18 +83,7 @@ public class RepOrderController {
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
-    @ApiResponse(responseCode = "400",
-            description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
-            description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
+    @StandardApiResponse
     public ResponseEntity<Object> findByCurrentRegistration(@PathVariable int mvoId) {
         log.info("Get Rep Order MVO Reg Request Received");
         return ResponseEntity.ok(repOrderMvoRegService.findByCurrentMvoRegistration(mvoId));
@@ -124,18 +95,7 @@ public class RepOrderController {
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
-    @ApiResponse(responseCode = "400",
-            description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
-            description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
+    @StandardApiResponse
     public ResponseEntity<Object> findByRepIdAndVehicleOwner(@PathVariable int repId,
                                                              @RequestParam(value = "owner", required = false)
                                                                      String vehicleOwner) {
@@ -145,6 +105,19 @@ public class RepOrderController {
         ));
     }
 
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Create a rep order record")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = CreateRepOrder.class)
+            )
+    )
+    @StandardApiResponse
+    public ResponseEntity<RepOrderDTO> create(@Valid @RequestBody CreateRepOrder createRepOrder) {
+        log.debug("Create Rep order request");
+        maatIdValidator.validateNotExists(createRepOrder.getRepId());
+        return ResponseEntity.ok(repOrderService.create(createRepOrder));
+    }
 
     @PutMapping
     @Operation(description = "Update a rep order record")
@@ -153,21 +126,24 @@ public class RepOrderController {
                     schema = @Schema(implementation = UpdateRepOrder.class)
             )
     )
-    @ApiResponse(responseCode = "400",
-            description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
-            description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
+    @StandardApiResponse
     public ResponseEntity<RepOrderDTO> update(@RequestBody UpdateRepOrder updateRepOrder) {
         log.debug("Update Rep order request received for repId : {}", updateRepOrder.getRepId());
         maatIdValidator.validate(updateRepOrder.getRepId());
         return ResponseEntity.ok(repOrderService.update(updateRepOrder));
+    }
+
+    @DeleteMapping(value ="/{repId}")
+    @Operation(description = "Delete a rep order record")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE
+            )
+    )
+    @StandardApiResponse
+    public ResponseEntity<RepOrderDTO> delete(@PathVariable Integer repId) {
+        log.debug("Delete Rep order request");
+        repOrderService.delete(repId);
+
+        return ResponseEntity.noContent().build();
     }
 }

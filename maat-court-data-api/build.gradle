@@ -130,7 +130,7 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: versions.commLan3Vriosn
 
     annotationProcessor group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: versions.hibernateJpaModelGen
-    
+
     compileOnly "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"

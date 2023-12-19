@@ -2,9 +2,11 @@ package gov.uk.courtdata.validator;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class MaatIdValidator implements IValidator<Void, Integer> {
 
     private final RepOrderRepository repOrderRepository;
+    private final RepOrderService repOrderService;
 
     /**
      * @param maatId
@@ -37,5 +40,22 @@ public class MaatIdValidator implements IValidator<Void, Integer> {
             throw new ValidationException("MAAT ID is required.");
         }
 
+    }
+
+    /**
+     * @param maatId
+     * @return
+     * @throws ValidationException
+     */
+    public void validateNotExists(Integer maatId) {
+
+        if (maatId != null && maatId > 0) {
+            if (repOrderService.exists(maatId)) {
+                throw new ValidationException(String.format("There is already a record with MAAT ID [%d].", maatId));
+            }
+
+        } else {
+            throw new ValidationException("MAAT ID is required.");
+        }
     }
 }

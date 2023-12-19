@@ -1,6 +1,5 @@
 package gov.uk.courtdata.entity;
 
-import gov.uk.courtdata.reporderhistory.entity.RepOrderHistoryEntity;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 

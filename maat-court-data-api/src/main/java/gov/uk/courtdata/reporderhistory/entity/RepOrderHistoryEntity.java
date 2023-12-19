@@ -1,6 +1,7 @@
-package gov.uk.courtdata.entity;
+package gov.uk.courtdata.reporderhistory.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import gov.uk.courtdata.entity.RepOrderEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;

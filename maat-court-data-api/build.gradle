@@ -210,13 +210,15 @@ pitest {
     mutationThreshold = 60
 }
 
-tasks['sonar'].dependsOn test
+tasks.named("sonar"){
+    dependsOn test
+}
 
 sonar {
     properties {
         property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java, **/exception/**.java, **/enums/**.java, **/aspect/**.java, **/dao/oracle/**.java, **/**StoredProcedureRepository.java, **/helper/BooleanConverter.java"
-        property "sonar.cpd.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java"
-        property "sonar.coverage.exclusions", "**/MAATCourtDataApplication.java"
+        property "sonar.cpd.exclusions", "**/entity/**.java , **/model/**.java, **/dto/**.java , **/config/**.java, **/jms/**.java"
+        property "sonar.coverage.exclusions", "**/MAATCourtDataApplication.java, **/entity/**.java , **/model/**.java"
         property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.projectKey", "ministryofjustice_laa-maat-court-data-api"
         property "sonar.organization", "ministryofjustice"

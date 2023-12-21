@@ -27,7 +27,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class ConcorContributionsService {
-    private static final String DB_USER_NAME = "MLA";
+    private static final String DB_USER_NAME = "DCES";
     private final ConcorContributionsRepository concorRepository;
     private final ContributionFilesRepository contributionFileRepository;
     private final ContributionFileMapper contributionFileMapper;
@@ -61,7 +61,6 @@ public class ConcorContributionsService {
             // when file is not provided then xml generate.
             contributionFileEntity.setFileName(Optional.ofNullable(contributionRequest.getXmlFileName()).orElse(getFilename()));
             contributionFileEntity.setUserCreated(DB_USER_NAME);
-            contributionFileEntity.setUserModified(DB_USER_NAME);
 
             contributionFileRepository.save(contributionFileEntity);
         } catch (Exception e) {
@@ -78,7 +77,6 @@ public class ConcorContributionsService {
         concorFileList.forEach(cc -> {
             cc.setStatus(status);
             cc.setContribFileId(contributionFileId);
-            cc.setUserModified("TOGDATA");
         });
 
         if (!concorFileList.isEmpty()) {

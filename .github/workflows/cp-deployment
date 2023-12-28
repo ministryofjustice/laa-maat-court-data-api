@@ -1,0 +1,69 @@
+name: Build and Deploy MAAT CD API to MP
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+
+  push:
+    branches:
+      - "LAWS-3579-cicd"
+
+  workflow_dispatch:
+
+jobs:
+
+  application-image-build:
+
+    name: application-image-build
+
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/nobranch' || github.event_name == 'workflow_dispatch'
+
+    env:
+      APPLICATION_NAME: maat-api
+      ECR_SHARED_REGISTRY: 374269020027.dkr.ecr.eu-west-2.amazonaws.com
+      ECR_SHARED_REPOSITORY: "maat-ecr-repo" # TODO Update the ECR names
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+      - name: Configure AWS credentials - MP
+        id: set-ecr-creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          audience: sts.amazonaws.com
+          aws-region: eu-west-2
+          role-to-assume: arn:aws:iam::580202064026:role/modernisation-platform-oidc-cicd
+      - name: Pre-build
+        id: tag-image
+        run: |
+          echo "Connecting to ECR"
+          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${ECR_SHARED_REGISTRY}
+
+          DOCKER_TAG=${GITHUB_SHA}
+          echo "Created docker tag $DOCKER_TAG"
+          IMAGE_URI="${ECR_SHARED_REGISTRY}/${ECR_LOCAL_REPOSITORY}:${DOCKER_TAG}"
+          echo ${IMAGE_URI} >> "$GITHUB_ENV"
+          echo "Pulling in SQS integration test Docker image dependencies"
+          docker pull localstack/localstack
+          echo "Finished pulling localstack/localstack test dependency"
+      - name: Build
+        id: build-image
+        run: |
+          echo "Building the ear file and Docker image with gradle..."
+          pushd maat-court-data-api
+          chmod +x ./gradlew
+          ./gradlew build
+          docker build -t maat-cda .
+          docker tag maat-cda "${IMAGE_URI}"
+          popd
+      - name: Post-Build
+        id: build-image
+        run: |
+          echo Pushing the Docker image to... "${IMAGE_URI}"
+          docker push "${IMAGE_URI}"

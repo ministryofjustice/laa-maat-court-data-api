@@ -21,7 +21,6 @@ jobs:
     # if: github.ref != 'refs/heads/nobranch' || github.event_name == 'workflow_dispatch'
 
     env:
-      APPLICATION_NAME: maat-api
       ECR_SHARED_REGISTRY: 374269020027.dkr.ecr.eu-west-2.amazonaws.com
       ECR_SHARED_REPOSITORY: "maat-ecr-repo" # TODO Update the ECR names
 
@@ -47,7 +46,7 @@ jobs:
           DOCKER_TAG=${GITHUB_SHA}
           echo "Created docker tag $DOCKER_TAG"
           IMAGE_URI="${ECR_SHARED_REGISTRY}/${ECR_SHARED_REPOSITORY}:${DOCKER_TAG}"
-          echo ${IMAGE_URI} >> "$GITHUB_ENV"
+          # echo ${IMAGE_URI} >> "$GITHUB_ENV"
           echo "Pulling in SQS integration test Docker image dependencies"
           docker pull localstack/localstack
           echo "Finished pulling localstack/localstack test dependency"

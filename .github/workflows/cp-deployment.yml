@@ -51,6 +51,11 @@ jobs:
           docker pull localstack/localstack
           echo "Finished pulling localstack/localstack test dependency"
 
+          pip install localstack awscli-local[ver1]
+          localstack start -d
+          localstack wait -t 30
+          echo "Localstack startup complete"
+
           echo "Building the ear file and Docker image with gradle..."
           pushd maat-court-data-api
           chmod +x ./gradlew

@@ -74,13 +74,11 @@ class CreateLinkListenerEndToEndTest {
 
     @Test
     void givenJSONMessageIsReceived_whenCreateLinkListenerIsInvoked_thenCreateLinkServiceIsCalled() {
-        System.out.println(queueUrl);
-        
-        // String messageJson = "{\"caseUrn\":\"123\", \"maatId\":4321, \"asn\":null, \"docLanguage\":null, " +
-        //         "\"caseCreationDate\":null, \"cjsAreaCode\":null, \"cjsLocation\":null, \"createdUser\":null, " +
-        //         "\"defendant\":null, \"isActive\":false, \"sessions\":null, \"category\":null, " +
-        //         "\"laaTransactionId\":null, \"onlyForCDAService\":false}";
-        // amazonSQS.sendMessage(queueUrl, messageJson);
+        String messageJson = "{\"caseUrn\":\"123\", \"maatId\":4321, \"asn\":null, \"docLanguage\":null, " +
+                "\"caseCreationDate\":null, \"cjsAreaCode\":null, \"cjsLocation\":null, \"createdUser\":null, " +
+                "\"defendant\":null, \"isActive\":false, \"sessions\":null, \"category\":null, " +
+                "\"laaTransactionId\":null, \"onlyForCDAService\":false}";
+        amazonSQS.sendMessage(queueUrl, messageJson);
 
         with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(60, SECONDS)
                 .untilAsserted(() -> {

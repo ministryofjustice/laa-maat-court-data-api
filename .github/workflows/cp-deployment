@@ -5,9 +5,7 @@ permissions:
   contents: read
 
 on:
-  push:
-    branches:
-      - "LAWS-3579-cicd"
+  push
 
   # workflow_dispatch:
 

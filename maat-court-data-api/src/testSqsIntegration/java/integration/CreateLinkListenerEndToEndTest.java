@@ -74,7 +74,7 @@ class CreateLinkListenerEndToEndTest {
 
     @Test
     void givenJSONMessageIsReceived_whenCreateLinkListenerIsInvoked_thenCreateLinkServiceIsCalled() {
-        System.out.println(queueUrl)
+        System.out.println(queueUrl);
         
         // String messageJson = "{\"caseUrn\":\"123\", \"maatId\":4321, \"asn\":null, \"docLanguage\":null, " +
         //         "\"caseCreationDate\":null, \"cjsAreaCode\":null, \"cjsLocation\":null, \"createdUser\":null, " +

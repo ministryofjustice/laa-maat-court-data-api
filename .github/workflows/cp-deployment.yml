@@ -61,8 +61,8 @@ jobs:
           docker build -t maat-cda .
           docker tag maat-cda "${IMAGE_URI}"
           popd
-      - name: Post-Build
-        id: build-image
-        run: |
-          echo Pushing the Docker image to... "${IMAGE_URI}"
-          docker push "${IMAGE_URI}"
+      # - name: Post-Build
+      #   id: push-image
+      #   run: |
+      #     echo Pushing the Docker image to... "${IMAGE_URI}"
+      #     docker push "${IMAGE_URI}"

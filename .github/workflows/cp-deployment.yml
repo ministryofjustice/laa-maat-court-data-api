@@ -46,7 +46,7 @@ jobs:
 
           DOCKER_TAG=${GITHUB_SHA}
           echo "Created docker tag $DOCKER_TAG"
-          IMAGE_URI="${ECR_SHARED_REGISTRY}/${ECR_LOCAL_REPOSITORY}:${DOCKER_TAG}"
+          IMAGE_URI="${ECR_SHARED_REGISTRY}/${ECR_SHARED_REPOSITORY}:${DOCKER_TAG}"
           echo ${IMAGE_URI} >> "$GITHUB_ENV"
           echo "Pulling in SQS integration test Docker image dependencies"
           docker pull localstack/localstack

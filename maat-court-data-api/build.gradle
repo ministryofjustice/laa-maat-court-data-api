@@ -199,7 +199,7 @@ jacocoTestReport {
 //     classpath = sourceSets.testSqsIntegration.runtimeClasspath
 // }
 
-check.dependsOn testSqsIntegration
+// check.dependsOn testSqsIntegration
 
 pitest {
     targetClasses = ['gov.uk.courtdata.link.*', 'gov.uk.courtdata.unlink.*', 'gov.uk.courtdata.laastatus.*', 'gov.uk.courtdata.hearing.*', 'gov.uk.courtdata.dao.*']

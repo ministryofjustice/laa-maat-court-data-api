@@ -56,7 +56,9 @@ jobs:
           echo "Pulling in SQS integration test Docker image dependencies"
           docker pull localstack/localstack
           echo "Finished pulling localstack/localstack test dependency"
-
+      - name: Build
+        id: build-image
+        run: |
           echo "Building the ear file and Docker image with gradle..."
           pushd maat-court-data-api
           chmod +x ./gradlew
@@ -64,16 +66,6 @@ jobs:
           docker build -t maat-cda .
           docker tag maat-cda "${IMAGE_URI}"
           popd
-      # - name: Build
-      #   id: build-image
-      #   run: |
-      #     echo "Building the ear file and Docker image with gradle..."
-      #     pushd maat-court-data-api
-      #     chmod +x ./gradlew
-      #     ./gradlew build
-      #     docker build -t maat-cda .
-      #     docker tag maat-cda "${IMAGE_URI}"
-      #     popd
       # - name: Post-Build
       #   id: push-image
       #   run: |

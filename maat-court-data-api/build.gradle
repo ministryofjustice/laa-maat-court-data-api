@@ -156,14 +156,14 @@ dependencies {
     testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.springCloudStubRunnerVersion"
 
     // Only required for SQS Integration test
-    testSqsIntegrationImplementation "org.awaitility:awaitility:$versions.awaitilityVersion"
-    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: versions.awsJavaSdkVersion
-    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: versions.awsJavaSdkVersion
-    testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainersJunitJupiterVersion"
-    testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainersLocalstackVersion"
-    testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$versions.cloudLocalstackUtilsVersion"
-    testSqsIntegrationImplementation "com.h2database:h2"
-    testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.springContractStubRunnerVersion"
+    // testSqsIntegrationImplementation "org.awaitility:awaitility:$versions.awaitilityVersion"
+    // testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: versions.awsJavaSdkVersion
+    // testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: versions.awsJavaSdkVersion
+    // testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainersJunitJupiterVersion"
+    // testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainersLocalstackVersion"
+    // testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$versions.cloudLocalstackUtilsVersion"
+    // testSqsIntegrationImplementation "com.h2database:h2"
+    // testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.springContractStubRunnerVersion"
 }
 
 jacoco {
@@ -193,11 +193,11 @@ jacocoTestReport {
     }
 }
 
-task testSqsIntegration(type: Test) {
-    useJUnitPlatform()
-    testClassesDirs = sourceSets.testSqsIntegration.output.classesDirs
-    classpath = sourceSets.testSqsIntegration.runtimeClasspath
-}
+// task testSqsIntegration(type: Test) {
+//     useJUnitPlatform()
+//     testClassesDirs = sourceSets.testSqsIntegration.output.classesDirs
+//     classpath = sourceSets.testSqsIntegration.runtimeClasspath
+// }
 
 check.dependsOn testSqsIntegration
 

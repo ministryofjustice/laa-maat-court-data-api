@@ -26,10 +26,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'corretto'
-          java-version: '17'
+      # - uses: actions/setup-java@v4
+      #   with:
+      #     distribution: 'corretto'
+      #     java-version: '17'
       - name: Configure AWS credentials - MP
         id: set-ecr-creds
         uses: aws-actions/configure-aws-credentials@v4
@@ -40,6 +40,11 @@ jobs:
       - name: Pre-build
         id: tag-image
         run: |
+          echo "Installing Java 17"
+          apt-get update
+          apt install openjdk-17-jdk openjdk-17-jre
+          java -version
+
           echo "Connecting to ECR"
           aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${ECR_SHARED_REGISTRY}
 
@@ -50,11 +55,6 @@ jobs:
           echo "Pulling in SQS integration test Docker image dependencies"
           docker pull localstack/localstack
           echo "Finished pulling localstack/localstack test dependency"
-
-          pip install localstack awscli-local[ver1]
-          localstack start -d
-          localstack wait -t 30
-          echo "Localstack startup complete"
 
           echo "Building the ear file and Docker image with gradle..."
           pushd maat-court-data-api

@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.service;
 
 import static gov.uk.courtdata.enums.ConcorContributionStatus.ACTIVE;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
@@ -101,6 +102,7 @@ class ConcorContributionsServiceTest {
 
         assertTrue(actualResponse);
         assertNotNull(actualContributionFileEntity);
+        assertEquals("<xml>ackDummyContent</xml>", actualContributionFileEntity.getAckXmlContent());
         assertEquals(10, actualContributionFileEntity.getRecordsSent());
         assertEquals(1, actualContributionFileEntity.getId());
         assertNotNull(contributionEntityList);

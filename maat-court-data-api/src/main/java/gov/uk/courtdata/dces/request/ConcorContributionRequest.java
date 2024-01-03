@@ -17,4 +17,6 @@ public class ConcorContributionRequest {
     private String xmlContent;
     private Set<Integer> concorContributionIds;
     private String xmlFileName;
+    @ToString.Exclude
+    private String ackXmlContent;
 }

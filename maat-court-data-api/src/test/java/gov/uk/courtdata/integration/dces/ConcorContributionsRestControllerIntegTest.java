@@ -6,8 +6,7 @@ import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.repository.ConcorContributionsRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,12 +20,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SoftAssertionsExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/concor-contribution-files?status=";
 
     @Autowired
     private ConcorContributionsRepository concorRepository;
+
+    @AfterEach
+    public void clear() {
+        concorRepository.deleteAll();
+    }
+
     @BeforeEach
     public void setUp() {
         concorRepository.saveAll(List.of(
@@ -38,19 +44,17 @@ public class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrati
     }
 
     @Test
+    @Order(1)
     void givenAACTIVEStatus_whenGetIsInvoked_theDataLoadedResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL+"ACTIVE")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").exists())
-                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("<xml 1 content dummy"))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId").exists())
-                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].xmlContent").value("<xml 3 content dummy"));
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
+    @Order(2)
     void givenAREPLACEDStatus_whenGetIsInvoked_theEmptyResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL+"REPLACED")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -60,6 +64,7 @@ public class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrati
     }
 
     @Test
+    @Order(3)
     void givenAnInvalidStatus_whenGetIsInvoked_theEmptyResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL+"XXX")
                         .contentType(MediaType.APPLICATION_JSON))

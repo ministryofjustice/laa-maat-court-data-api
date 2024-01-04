@@ -52,7 +52,7 @@ jobs:
           DOCKER_TAG=${GITHUB_SHA}
           echo "Created docker tag $DOCKER_TAG"
           IMAGE_URI="${ECR_SHARED_REGISTRY}/${ECR_SHARED_REPOSITORY}:${DOCKER_TAG}"
-          # echo ${IMAGE_URI} >> "$GITHUB_ENV"
+          echo ${IMAGE_URI} >> "$GITHUB_ENV"
           echo "Pulling in SQS integration test Docker image dependencies"
           docker pull localstack/localstack
           echo "Finished pulling localstack/localstack test dependency"
@@ -66,8 +66,8 @@ jobs:
           docker build -t maat-cda .
           docker tag maat-cda "${IMAGE_URI}"
           popd
-      # - name: Post-Build
-      #   id: push-image
-      #   run: |
-      #     echo Pushing the Docker image to... "${IMAGE_URI}"
-      #     docker push "${IMAGE_URI}"
+      - name: Post-Build
+        id: push-image
+        run: |
+          echo Pushing the Docker image to... "${IMAGE_URI}"
+          docker push "${IMAGE_URI}"

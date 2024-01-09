@@ -47,6 +47,10 @@ class ConcorContributionsServiceTest {
     @Mock
     private ContributionFileMapper contributionFileMapper;
 
+    @Mock
+    private DebtCollectionRepository debtCollectionRepository;
+
+
     @Captor
     private ArgumentCaptor<ContributionFilesEntity> contributionEntityArgumentCaptor;
     @Captor
@@ -94,7 +98,7 @@ class ConcorContributionsServiceTest {
 
         final boolean actualResponse = concorService.createContributionAndUpdateConcorStatus(concorContributionRequest);
 
-        verify(contributionFileRepository).save(contributionEntityArgumentCaptor.capture());
+        verify(debtCollectionRepository).save(contributionEntityArgumentCaptor.capture());
         verify(concorRepository).saveAll(concorContributionEntityArgumentCaptor.capture());
 
         final ContributionFilesEntity actualContributionFileEntity = contributionEntityArgumentCaptor.getValue();
@@ -120,7 +124,7 @@ class ConcorContributionsServiceTest {
 
         boolean actualResponse = concorService.createContributionAndUpdateConcorStatus(concorContributionRequest);
 
-        verify(contributionFileRepository).save(contributionEntityArgumentCaptor.capture());
+        verify(debtCollectionRepository).save(contributionEntityArgumentCaptor.capture());
         assertFalse(actualResponse);
         assertEquals(1, contributionEntityArgumentCaptor.getValue().getId());
         verify(concorRepository, never()).saveAll(anyList());

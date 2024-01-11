@@ -20,11 +20,12 @@ This Application mainly supports 4 user Journeys. The Details of the journeys ca
 ### Pre-requisites
 
 1. Docker
-2. SSH 
-3. An editor/IDE of some sort - preferably Intellij/Ecilipse 
+2. SSH
+3. An editor/IDE of some sort - preferably Intellij/Eclipse
 4. Grade
-5. aws cli 
+5. AWS CLI
 6. kubectl
+7. Java 17
 
 We're using [Gradle](https://gradle.org/) to build the application. This also includes plugins for generating IntelliJ configuration.
 
@@ -35,7 +36,7 @@ The `docker-compose.override.yml` is encrypted using [git-crypt](https://github.
 To run the app locally you need to be able to decrypt this file.
 
 See the Confluence page [GPG and git-crypt](https://dsdmoj.atlassian.net/wiki/spaces/ASLST/pages/3761963077/Java+Project+Setup+with+CircleCI+and+Helm+on+Cloud+Platform#GPG-and-git-crypt) for details.
-In summary you will need to generate a GPG key, publish your key to a key server and have a member of the dev team who already has git-crypt setup for this repo.
+In summary, you will need to generate a GPG key, publish your key to a key server and have a member of the dev team who already has git-crypt setup for this repo.
 
 Once the steps have been completed you can decrypt your local copy of the repository by running `git-crypt unlock`. 
 
@@ -44,10 +45,13 @@ Once the steps have been completed you can decrypt your local copy of the reposi
 
 This application connects to MAAT DB which is hosted on RDS instances within LAA AWS Environment (Legacy Account) 
 
- You will need to have the relevant database accessible on port 1521 locally. This can be provided by an SSH tunnel to an RDS instance in AWS. Here is the command to tunnel to Dev (add your user Bastion user name):
+You will need to have the relevant database accessible on port 1521 locally. This can be provided by an SSH tunnel to an RDS instance in AWS.  
+The steps required to configure access via Bastions are listed [here](https://dsdmoj.atlassian.net/wiki/spaces/aws/pages/4584865935/AWS+-+).  
+The command to create an SSH tunnel (with port forwarding for 1521) to Dev is included below.  
+*Remember to replace _**astone**_ with your own Bastion username.
 
 ```sh
-ssh -L 1521:rds.maat.aws.dev.legalservices.gov.uk:1521 <username>@35.176.251.101 -i ~/.ssh/id_rsa
+ssh -vvv -L 1521:rds.maat.aws.tst.legalservices.gov.uk:1521 astone@ssmbastion-non-prod-lz
 ```
 
 
@@ -60,7 +64,7 @@ git clone git@github.com:ministryofjustice/laa-maat-court-data-api.git
 
 cd maat-court-data-api
 ```
-Makesure tests all testes are passed by running following ‘gradle’ Command  
+Make sure that all tests are passing by running the following ‘gradle’ command  
 
 ```sh
 ./gradlew clean test

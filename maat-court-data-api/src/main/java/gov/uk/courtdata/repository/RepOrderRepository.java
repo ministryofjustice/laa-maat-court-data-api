@@ -1,6 +1,7 @@
 package gov.uk.courtdata.repository;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.reporder.projection.RepOrderCreatorDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -15,8 +16,8 @@ public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Intege
                    NVL(INITCAP(U.FIRST_NAME
                                || ' '
                                || U.SURNAME),
-                       R.USER_CREATED) User_Created,
-                       R.USER_CREATED User_Name_Created
+                       R.USER_CREATED) name,
+                       R.USER_CREATED userName
                FROM
                    REP_ORDERS R
                    LEFT JOIN USERS U ON (U.USER_NAME = R.USER_CREATED)
@@ -24,5 +25,5 @@ public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Intege
                    ID = :repOrderId;
             """,
             nativeQuery = true)
-    Object findRepOrderCreator(Integer repOrderId);
+    RepOrderCreatorDetails findRepOrderCreator(int repOrderId);
 }

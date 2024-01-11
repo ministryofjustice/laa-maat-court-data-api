@@ -6,8 +6,10 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.reporder.dto.AssessorDetails;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
+import gov.uk.courtdata.reporder.projection.RepOrderCreatorDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -83,5 +85,11 @@ public class RepOrderService {
     @Transactional
     public void delete(Integer repId) {
         repOrderImpl.delete(repId);
+    }
+
+    @Transactional(readOnly = true)
+    public AssessorDetails findAssessorDetails(int repId) {
+        RepOrderCreatorDetails repOrderCreator = repOrderImpl.findRepOrderCreator(repId);
+        return repOrderMapper.repOrderCreatorDetailsToAssessorDetails(repOrderCreator);
     }
 }

@@ -8,31 +8,27 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class TestDataBuilder {
 
+    public static final String REP_ORDER_CREATOR_NAME = "Karen Greaves";
+    public static final String REP_ORDER_CREATOR_USER_NAME = "grea-k";
+
     public static AssessorDetails getAssessorDetails() {
         return AssessorDetails.builder()
-                .name("Karen Greaves")
-                .userName("grea-k")
+                .name(REP_ORDER_CREATOR_NAME)
+                .userName(REP_ORDER_CREATOR_USER_NAME)
                 .build();
     }
 
     public static RepOrderCreatorDetails getRepOrderCreatorDetails() {
-        return new RepOrderCreatorDetailsStub("Karen Greaves","grea-k");
-    }
+        return new RepOrderCreatorDetails() {
+            @Override
+            public String getName() {
+                return REP_ORDER_CREATOR_NAME;
+            }
 
-    @AllArgsConstructor
-    private static final class RepOrderCreatorDetailsStub implements RepOrderCreatorDetails{
-
-        private final String name;
-        private final String userName;
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public String getUserName() {
-            return userName;
-        }
+            @Override
+            public String getUserName() {
+                return REP_ORDER_CREATOR_USER_NAME;
+            }
+        };
     }
 }

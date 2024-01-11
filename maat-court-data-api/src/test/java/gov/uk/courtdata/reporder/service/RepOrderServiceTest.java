@@ -98,7 +98,7 @@ class RepOrderServiceTest {
         AssessorDetails actualAssessorDetails = repOrderService.findAssessorDetails(TestModelDataBuilder.REP_ID);
 
         assertAll("verifyActualAssessorDetails",
-                () -> assertEquals("Karen Greaves", actualAssessorDetails.getName()),
-                () -> assertEquals("grea-k", actualAssessorDetails.getUserName()));
+                () -> assertEquals(TestDataBuilder.REP_ORDER_CREATOR_NAME, actualAssessorDetails.getName()),
+                () -> assertEquals(TestDataBuilder.REP_ORDER_CREATOR_USER_NAME, actualAssessorDetails.getUserName()));
     }
 }

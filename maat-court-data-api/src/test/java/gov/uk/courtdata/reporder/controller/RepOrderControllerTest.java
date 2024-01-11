@@ -242,8 +242,8 @@ class RepOrderControllerTest {
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID+"/assessor-details"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("Karen Greaves"))
-                .andExpect(jsonPath("$.userName").value("grea-k"));
+                .andExpect(jsonPath("$.name").value(TestDataBuilder.REP_ORDER_CREATOR_NAME))
+                .andExpect(jsonPath("$.userName").value(TestDataBuilder.REP_ORDER_CREATOR_USER_NAME));
     }
 
     @Test

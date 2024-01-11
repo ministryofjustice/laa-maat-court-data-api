@@ -10,7 +10,7 @@ import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
-import gov.uk.courtdata.reporder.testutils.DTOTestDataBuilder;
+import gov.uk.courtdata.reporder.testutils.TestDataBuilder;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
@@ -237,7 +237,7 @@ class RepOrderControllerTest {
     @Test
     void givenValidRepId_whenAssessorDetailsGetRequestIsMade_thenAssessorDetailsAreReturned() throws Exception {
         when(repOrderService.findAssessorDetails(TestModelDataBuilder.REP_ID))
-                .thenReturn(DTOTestDataBuilder.getAssessorDetails());
+                .thenReturn(TestDataBuilder.getAssessorDetails());
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID+"/assessor-details"))
                 .andExpect(status().isOk())

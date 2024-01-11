@@ -11,16 +11,18 @@ import org.springframework.stereotype.Repository;
 public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Integer>, JpaSpecificationExecutor<RepOrderEntity> {
 
     @Query(value = """
-            SELECT
-                NVL(INITCAP(U.FIRST_NAME
-                            || ' '
-                            || U.SURNAME),
-                    R.USER_CREATED) User_Created
-            FROM
-                REP_ORDERS R
-                LEFT JOIN USERS U ON (U.USER_NAME = R.USER_CREATED)
-            WHERE
-                ID = :repOrderId;
-                """, nativeQuery = true)
+               SELECT
+                   NVL(INITCAP(U.FIRST_NAME
+                               || ' '
+                               || U.SURNAME),
+                       R.USER_CREATED) User_Created,
+                       R.USER_CREATED User_Name_Created
+               FROM
+                   REP_ORDERS R
+                   LEFT JOIN USERS U ON (U.USER_NAME = R.USER_CREATED)
+               WHERE
+                   ID = :repOrderId;
+            """,
+            nativeQuery = true)
     Object findRepOrderCreator(Integer repOrderId);
 }

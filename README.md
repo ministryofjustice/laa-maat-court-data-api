@@ -54,6 +54,13 @@ The command to create an SSH tunnel (with port forwarding for 1521) to Dev is in
 ssh -vvv -L 1521:rds.maat.aws.tst.legalservices.gov.uk:1521 astone@ssmbastion-non-prod-lz
 ```
 
+You may also need to update `docker-compose.override.yml` with the current passwords for the **mla** and **togdata**
+accounts from
+the Amazon Parameter Store.  
+To get the passwords you need to login to
+the [AWS Web Portal](https://laa-shared-services.signin.aws.amazon.com/console) as a dev role (
+see [Identity Access Management](https://dsdmoj.atlassian.net/wiki/spaces/LM/pages/293536178/Identity+Access+Management))
+then navigate to the **Parameter Store** then search for **maat** to see the corresponding database account passwords.
 
 ### Application Set up
 
@@ -74,7 +81,8 @@ Make sure that all tests are passing by running the following ‘gradle’ comma
 ```sh
 ./gradlew clean build
 ```
-The apps should then startup cleanly if you run
+
+The apps should then start cleanly if you run
 
 ```sh
 docker-compose build

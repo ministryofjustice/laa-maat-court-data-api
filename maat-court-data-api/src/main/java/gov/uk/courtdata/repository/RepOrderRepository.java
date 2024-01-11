@@ -22,7 +22,7 @@ public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Intege
                    REP_ORDERS R
                    LEFT JOIN USERS U ON (U.USER_NAME = R.USER_CREATED)
                WHERE
-                   ID = :repOrderId;
+                   ID = :repOrderId
             """,
             nativeQuery = true)
     RepOrderCreatorDetails findRepOrderCreator(int repOrderId);

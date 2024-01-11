@@ -10,6 +10,7 @@ import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
+import gov.uk.courtdata.reporder.testutils.DTOTestDataBuilder;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
@@ -231,5 +232,30 @@ class RepOrderControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(repOrderService, times(1)).delete(12345678);
+    }
+
+    @Test
+    void givenValidRepId_whenAssessorDetailsGetRequestIsMade_thenAssessorDetailsAreReturned() throws Exception {
+        when(repOrderService.findAssessorDetails(TestModelDataBuilder.REP_ID))
+                .thenReturn(DTOTestDataBuilder.getAssessorDetails());
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID+"/assessor-details"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("Karen Greaves"))
+                .andExpect(jsonPath("$.userName").value("grea-k"));
+    }
+
+    @Test
+    void givenUnknownRepId_whenAssessorDetailsGetRequestIsMade_thenNotFoundResponseIsReturned() throws Exception {
+        int unknownRepId = 1245;
+        when(repOrderService.findAssessorDetails(unknownRepId))
+                .thenThrow(new RequestedObjectNotFoundException("Unable to find RepOrderCreatorDetails for repId: [1245]"));
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + unknownRepId +"/assessor-details"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value("NOT_FOUND"))
+                .andExpect(jsonPath("$.message").value("Unable to find RepOrderCreatorDetails for repId: [1245]"));
     }
 }

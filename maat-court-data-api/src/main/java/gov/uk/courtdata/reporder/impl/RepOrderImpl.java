@@ -1,6 +1,7 @@
 package gov.uk.courtdata.reporder.impl;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.reporder.projection.RepOrderCreatorDetails;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasId;
 import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasSentenceOrderDate;
@@ -50,6 +52,11 @@ public class RepOrderImpl {
     }
 
     public RepOrderCreatorDetails findRepOrderCreator(int repId) {
-        return repOrderRepository.findRepOrderCreator(repId);
+        RepOrderCreatorDetails repOrderCreator = repOrderRepository.findRepOrderCreator(repId);
+        if (Objects.isNull(repOrderCreator)) {
+            String message = "Unable to find RepOrderCreatorDetails for repId: [%d]".formatted(repId);
+            throw new RequestedObjectNotFoundException(message);
+        }
+        return repOrderCreator;
     }
 }

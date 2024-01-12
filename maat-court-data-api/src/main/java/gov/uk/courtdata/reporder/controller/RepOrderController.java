@@ -5,7 +5,7 @@ import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
-import gov.uk.courtdata.reporder.dto.AssessorDetails;
+import gov.uk.courtdata.reporder.dto.IOJAssessorDetails;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
@@ -145,17 +145,17 @@ public class RepOrderController {
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "/{repId}/assessor-details",
+    @RequestMapping(value = "/{repId}/ioj-assessor-details",
             method = {RequestMethod.GET},
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @Operation(description = "Retrieve details of the assessor for a given rep order")
+    @Operation(description = "Retrieve details of the interests of justice assessor for a given representation order")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
     @StandardApiResponse
-    public ResponseEntity<AssessorDetails> findAssessorDetails(@PathVariable int repId) {
-        AssessorDetails assessorDetails = repOrderService.findAssessorDetails(repId);
-        return ResponseEntity.ok(assessorDetails);
+    public ResponseEntity<IOJAssessorDetails> findIOJAssessorDetails(@PathVariable int repId) {
+        IOJAssessorDetails iojAssessorDetails = repOrderService.findIOJAssessorDetails(repId);
+        return ResponseEntity.ok(iojAssessorDetails);
     }
 }

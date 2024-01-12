@@ -2,17 +2,16 @@ package gov.uk.courtdata.reporder.service;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
-import gov.uk.courtdata.reporder.dto.AssessorDetails;
+import gov.uk.courtdata.reporder.dto.IOJAssessorDetails;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.reporder.testutils.TestDataBuilder;
+import gov.uk.courtdata.repository.RepOrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
@@ -35,6 +35,9 @@ class RepOrderServiceTest {
     @Mock
     private RepOrderImpl repOrderImpl;
 
+    @Mock
+    private RepOrderRepository repOrderRepository;
+
     @Autowired
     private RepOrderMapper repOrderMapper;
 
@@ -42,7 +45,9 @@ class RepOrderServiceTest {
 
     @BeforeEach
     public void setup(){
-        repOrderService = new RepOrderService(repOrderImpl, repOrderMapper);
+        repOrderService = new RepOrderService(repOrderImpl,
+                repOrderMapper,
+                repOrderRepository);
     }
 
     @Test
@@ -91,14 +96,25 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenValidRepId_whenFindAssessorDetailsIsInvoked_thenAssessorDetailsAreReturned() {
-        when(repOrderImpl.findRepOrderCreator(TestModelDataBuilder.REP_ID))
-                .thenReturn(TestDataBuilder.getRepOrderCreatorDetails());
+    void givenValidRepId_whenFindIOJAssessorDetailsIsInvoked_thenIOJAssessorDetailsAreReturned() {
+        when(repOrderRepository.findIOJAssessorDetails(TestModelDataBuilder.REP_ID))
+                .thenReturn(TestDataBuilder.getIOJAssessorDetails());
 
-        AssessorDetails actualAssessorDetails = repOrderService.findAssessorDetails(TestModelDataBuilder.REP_ID);
+        IOJAssessorDetails actualIOJAssessorDetails = repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID);
 
-        assertAll("verifyActualAssessorDetails",
-                () -> assertEquals(TestDataBuilder.REP_ORDER_CREATOR_NAME, actualAssessorDetails.getName()),
-                () -> assertEquals(TestDataBuilder.REP_ORDER_CREATOR_USER_NAME, actualAssessorDetails.getUserName()));
+        assertAll("verify actual IOJAssessorDetails",
+                () -> assertEquals(TestDataBuilder.REP_ORDER_CREATOR_NAME, actualIOJAssessorDetails.getName()),
+                () -> assertEquals(TestDataBuilder.REP_ORDER_CREATOR_USER_NAME, actualIOJAssessorDetails.getUserName()));
+    }
+
+    @Test
+    void givenUnknownRepId_whenFindIOJAssessorDetailsIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
+        when(repOrderRepository.findIOJAssessorDetails(1245))
+                .thenThrow(new RequestedObjectNotFoundException("Unable to find IOJAssessorDetails for repId: [1245]"));
+
+        RequestedObjectNotFoundException expectedException = assertThrows(RequestedObjectNotFoundException.class,
+                () -> repOrderService.findIOJAssessorDetails(1245));
+
+        assertEquals("Unable to find IOJAssessorDetails for repId: [1245]", expectedException.getMessage());
     }
 }

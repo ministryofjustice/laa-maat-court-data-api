@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AssessorDetails {
+public class IOJAssessorDetails {
 
     @NotNull
     private String name;

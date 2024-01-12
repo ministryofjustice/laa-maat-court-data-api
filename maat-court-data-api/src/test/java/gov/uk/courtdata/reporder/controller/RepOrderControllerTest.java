@@ -235,11 +235,11 @@ class RepOrderControllerTest {
     }
 
     @Test
-    void givenValidRepId_whenAssessorDetailsGetRequestIsMade_thenAssessorDetailsAreReturned() throws Exception {
-        when(repOrderService.findAssessorDetails(TestModelDataBuilder.REP_ID))
-                .thenReturn(TestDataBuilder.getAssessorDetails());
+    void givenValidRepId_whenIOJAssessorDetailsGetRequestIsMade_thenIOJAssessorDetailsAreReturned() throws Exception {
+        when(repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID))
+                .thenReturn(TestDataBuilder.getIOJAssessorDetails());
 
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID+"/assessor-details"))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID+"/ioj-assessor-details"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(TestDataBuilder.REP_ORDER_CREATOR_NAME))
@@ -247,15 +247,15 @@ class RepOrderControllerTest {
     }
 
     @Test
-    void givenUnknownRepId_whenAssessorDetailsGetRequestIsMade_thenNotFoundResponseIsReturned() throws Exception {
+    void givenUnknownRepId_whenIOJAssessorDetailsGetRequestIsMade_thenNotFoundResponseIsReturned() throws Exception {
         int unknownRepId = 1245;
-        when(repOrderService.findAssessorDetails(unknownRepId))
-                .thenThrow(new RequestedObjectNotFoundException("Unable to find RepOrderCreatorDetails for repId: [1245]"));
+        when(repOrderService.findIOJAssessorDetails(unknownRepId))
+                .thenThrow(new RequestedObjectNotFoundException("Unable to find IOJAssessorDetails for repId: [1245]"));
 
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + unknownRepId +"/assessor-details"))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + unknownRepId +"/ioj-assessor-details"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value("NOT_FOUND"))
-                .andExpect(jsonPath("$.message").value("Unable to find RepOrderCreatorDetails for repId: [1245]"));
+                .andExpect(jsonPath("$.message").value("Unable to find IOJAssessorDetails for repId: [1245]"));
     }
 }

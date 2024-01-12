@@ -1,7 +1,7 @@
 package gov.uk.courtdata.repository;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.reporder.projection.RepOrderCreatorDetails;
+import gov.uk.courtdata.reporder.dto.IOJAssessorDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -25,5 +25,5 @@ public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Intege
                    ID = :repOrderId
             """,
             nativeQuery = true)
-    RepOrderCreatorDetails findRepOrderCreator(int repOrderId);
+    IOJAssessorDetails findIOJAssessorDetails(int repOrderId);
 }

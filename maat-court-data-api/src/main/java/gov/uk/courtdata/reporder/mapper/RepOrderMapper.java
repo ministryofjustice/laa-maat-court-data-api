@@ -4,8 +4,6 @@ import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
-import gov.uk.courtdata.reporder.dto.AssessorDetails;
-import gov.uk.courtdata.reporder.projection.RepOrderCreatorDetails;
 import org.mapstruct.Builder;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
@@ -25,6 +23,4 @@ public interface RepOrderMapper {
     void createRepOrderToRepOrderEntity(CreateRepOrder createRepOrder, @MappingTarget RepOrderEntity repOrderEntity);
 
     void updateRepOrderToRepOrderEntity(UpdateRepOrder updateRepOrder, @MappingTarget RepOrderEntity repOrderEntity);
-
-    AssessorDetails repOrderCreatorDetailsToAssessorDetails(RepOrderCreatorDetails repOrderCreator);
 }

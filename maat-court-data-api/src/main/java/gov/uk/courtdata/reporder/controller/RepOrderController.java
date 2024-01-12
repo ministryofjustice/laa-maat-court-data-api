@@ -5,7 +5,7 @@ import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
-import gov.uk.courtdata.reporder.dto.IOJAssessorDetails;
+import gov.uk.courtdata.reporder.projection.IOJAssessorDetails;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;

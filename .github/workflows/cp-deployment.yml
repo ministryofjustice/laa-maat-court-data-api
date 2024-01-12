@@ -7,9 +7,9 @@ permissions:
 on:
   push:
     branches:
-      - "LAWS-3579-cicd"
+      - "master"
 
-  # workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
 
@@ -18,11 +18,11 @@ jobs:
     name: application-image-build
 
     runs-on: ubuntu-latest
-    # if: github.ref != 'refs/heads/nobranch' || github.event_name == 'workflow_dispatch'
+    if: github.ref != 'refs/heads/nobranch' || github.event_name == 'workflow_dispatch'
 
     env:
       ECR_SHARED_REGISTRY: 374269020027.dkr.ecr.eu-west-2.amazonaws.com
-      ECR_SHARED_REPOSITORY: "maat-ecr-repo" # TODO Update the ECR names
+      ECR_SHARED_REPOSITORY: "maat-cd-api-ecr-repo" # TODO Update the ECR names
 
     steps:
       - uses: actions/checkout@v4
@@ -40,10 +40,6 @@ jobs:
       - name: Pre-build
         id: tag-image
         run: |
-          # echo "Installing Java 17"
-          # sudo apt-get update
-          # sudo apt-get upgrade
-          # sudo apt install openjdk-17-jdk openjdk-17-jre
           java -version
 
           echo "Connecting to ECR"

@@ -45,14 +45,10 @@ Once the steps have been completed you can decrypt your local copy of the reposi
 
 This application connects to MAAT DB which is hosted on RDS instances within LAA AWS Environment (Legacy Account) 
 
-You will need to have the relevant database accessible on port 1521 locally. This can be provided by an SSH tunnel to an RDS instance in AWS.  
-The steps required to configure access via Bastions are listed [here](https://dsdmoj.atlassian.net/wiki/spaces/aws/pages/4584865935/AWS+-+).  
-The command to create an SSH tunnel (with port forwarding for 1521) to Dev is included below.  
-*Remember to replace _**astone**_ with your own Bastion username.
-
-```sh
-ssh -vvv -L 1521:rds.maat.aws.tst.legalservices.gov.uk:1521 astone@ssmbastion-non-prod-lz
-```
+You will need to have the relevant database accessible on port 1521 locally. This can be provided by an SSH tunnel to an
+RDS instance in AWS (with port forwarding for 1521).  
+The steps required to configure access AWS via Bastions are
+listed [here](https://dsdmoj.atlassian.net/wiki/spaces/aws/pages/4584865935/AWS+-+).
 
 You may also need to update `docker-compose.override.yml` with the current passwords for the **mla** and **togdata**
 accounts from

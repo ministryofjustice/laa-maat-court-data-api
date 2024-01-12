@@ -7,7 +7,7 @@ permissions:
 on:
   push:
     branches:
-      - "master"
+      - "LAWS-3579-cicd"
 
   workflow_dispatch:
 
@@ -58,7 +58,7 @@ jobs:
           echo "Building the ear file and Docker image with gradle..."
           pushd maat-court-data-api
           chmod +x ./gradlew
-          ./gradlew build
+          ./gradlew build --build-file=build-cp.gradle
           docker build -t maat-cda .
           docker tag maat-cda "${IMAGE_URI}"
           popd

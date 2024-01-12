@@ -2,6 +2,7 @@ package gov.uk.courtdata.validator;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,9 @@ public class MaatIdValidatorTest {
 
     @Mock
     private RepOrderRepository repOrderRepository;
+
+    @Mock
+    private RepOrderService repOrderService;
 
     @Test
     public void testWhenMaatIdIsNull_throwsException() {
@@ -52,5 +56,20 @@ public class MaatIdValidatorTest {
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
         Optional<Void> result = maatIdValidator.validate(1000);
         assertThat(result).isNotPresent();
+    }
+
+    @Test
+    public void testWhenMaatIdIsMissingFromPayloadWhenValidatingMaatIdDoesntExist_throwsException() {
+        ValidationException validationException = assertThrows(ValidationException.class,
+                () -> maatIdValidator.validateNotExists(0));
+        assertThat(validationException.getMessage()).isEqualTo("MAAT ID is required.");
+    }
+
+    @Test
+    public void testWhenMaatIsNotNullButAlreadyExistsOnRepOrderWhenValidatingThatItDoesntExist_validationFails() {
+        when(repOrderService.exists(1000)).thenReturn(true);
+        ValidationException validationException = assertThrows(ValidationException.class,
+                () -> maatIdValidator.validateNotExists(1000));
+        assertThat(validationException.getMessage()).isEqualTo("There is already a record with MAAT ID [1000].");
     }
 }

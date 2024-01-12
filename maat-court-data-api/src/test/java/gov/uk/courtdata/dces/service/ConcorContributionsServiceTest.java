@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.service;
 
 import static gov.uk.courtdata.enums.ConcorContributionStatus.ACTIVE;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
@@ -45,6 +46,10 @@ class ConcorContributionsServiceTest {
 
     @Mock
     private ContributionFileMapper contributionFileMapper;
+
+    @Mock
+    private DebtCollectionRepository debtCollectionRepository;
+
 
     @Captor
     private ArgumentCaptor<ContributionFilesEntity> contributionEntityArgumentCaptor;
@@ -93,7 +98,7 @@ class ConcorContributionsServiceTest {
 
         final boolean actualResponse = concorService.createContributionAndUpdateConcorStatus(concorContributionRequest);
 
-        verify(contributionFileRepository).save(contributionEntityArgumentCaptor.capture());
+        verify(debtCollectionRepository).save(contributionEntityArgumentCaptor.capture());
         verify(concorRepository).saveAll(concorContributionEntityArgumentCaptor.capture());
 
         final ContributionFilesEntity actualContributionFileEntity = contributionEntityArgumentCaptor.getValue();
@@ -101,6 +106,7 @@ class ConcorContributionsServiceTest {
 
         assertTrue(actualResponse);
         assertNotNull(actualContributionFileEntity);
+        assertEquals("<xml>ackDummyContent</xml>", actualContributionFileEntity.getAckXmlContent());
         assertEquals(10, actualContributionFileEntity.getRecordsSent());
         assertEquals(1, actualContributionFileEntity.getId());
         assertNotNull(contributionEntityList);
@@ -118,7 +124,7 @@ class ConcorContributionsServiceTest {
 
         boolean actualResponse = concorService.createContributionAndUpdateConcorStatus(concorContributionRequest);
 
-        verify(contributionFileRepository).save(contributionEntityArgumentCaptor.capture());
+        verify(debtCollectionRepository).save(contributionEntityArgumentCaptor.capture());
         assertFalse(actualResponse);
         assertEquals(1, contributionEntityArgumentCaptor.getValue().getId());
         verify(concorRepository, never()).saveAll(anyList());

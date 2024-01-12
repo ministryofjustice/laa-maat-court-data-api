@@ -2,18 +2,18 @@ package gov.uk.courtdata.model;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateRepOrder {
+public class CreateRepOrder {
 
     private Integer repId;
     @NotNull
@@ -23,6 +23,8 @@ public class UpdateRepOrder {
     private String appealTypeCode;
     private String arrestSummonsNo;
     private String userModified;
+    @NotNull
+    private String userCreated;
     private String magsOutcome;
     private String magsOutcomeDate;
     private LocalDateTime magsOutcomeDateSet;

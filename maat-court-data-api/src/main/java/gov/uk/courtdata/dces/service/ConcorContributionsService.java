@@ -10,7 +10,6 @@ import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.ConcorContributionsRepository;
-import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +26,10 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class ConcorContributionsService {
-    private static final String DB_USER_NAME = "MLA";
+    private static final String DB_USER_NAME = "DCES";
     private final ConcorContributionsRepository concorRepository;
-    private final ContributionFilesRepository contributionFileRepository;
     private final ContributionFileMapper contributionFileMapper;
+    private final DebtCollectionRepository debtCollectionRepository;
 
     public List<ConcorContributionResponse> getConcorContributionFiles(ConcorContributionStatus status) {
         log.info("Getting concor contribution file with status with the -> {}", status);
@@ -61,9 +60,8 @@ public class ConcorContributionsService {
             // when file is not provided then xml generate.
             contributionFileEntity.setFileName(Optional.ofNullable(contributionRequest.getXmlFileName()).orElse(getFilename()));
             contributionFileEntity.setUserCreated(DB_USER_NAME);
-            contributionFileEntity.setUserModified(DB_USER_NAME);
+            debtCollectionRepository.save(contributionFileEntity);
 
-            contributionFileRepository.save(contributionFileEntity);
         } catch (Exception e) {
             throw new MAATCourtDataException("Failed to map ConcorContributionRequest to ContributionFilesEntity and persist: [%s]".formatted(e.getMessage()));
         }
@@ -78,7 +76,6 @@ public class ConcorContributionsService {
         concorFileList.forEach(cc -> {
             cc.setStatus(status);
             cc.setContribFileId(contributionFileId);
-            cc.setUserModified("TOGDATA");
         });
 
         if (!concorFileList.isEmpty()) {

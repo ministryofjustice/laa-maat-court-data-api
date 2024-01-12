@@ -70,6 +70,11 @@ public class TestModelDataBuilder {
     public static final String CORRESPONDENCE_STATUS = "appealCC";
     public static final String EFFECTIVE_DATE = "01-JAN-20233";
     public static final int MOCK_HRD_ID = 4253;
+    public static final Integer CASE_ID = 123;
+    public static final Integer CMU_ID = 456;
+    public static final Integer AREA_ID = 789;
+    public static final String DATE_RECEIVED = "2023-12-09";
+
     public static final String SEND_TO_CCLF = "y";
     public static final List<String> NEW_WORK_REASON_LIST = List.of("TEST_NWREASON");
     public static final List<String> ROLE_ACTIONS_LIST = List.of("TEST_ROLE");
@@ -888,6 +893,90 @@ public class TestModelDataBuilder {
                 " \"repId\": " + REP_ID + " ,\n" +
                 "  \"assessmentDateCompleted\":\"" + APP_DATE_COMPLETED + "\"\n" +
                 "}";
+    }
+
+    public static String getCreateRepOrderJson() {
+        return "{\n" +
+                " \"repId\": " + REP_ID + " ,\n" +
+                " \"caseId\": " + CASE_ID + " ,\n" +
+                " \"cmuId\": " + CMU_ID + " ,\n" +
+                " \"areaId\": " + AREA_ID + " ,\n" +
+                " \"dateReceived\": \"" + DATE_RECEIVED + "\" ,\n" +
+                "  \"userCreated\": \"" + TEST_USER + "\"\n" +
+                "}";
+
+    }
+
+    public static CreateRepOrder getCreateRepOrder(Integer newRepId) {
+        return CreateRepOrder.builder()
+                .repId(newRepId)
+                .sentenceOrderDate(LocalDateTime.parse(APP_DATE_COMPLETED).toLocalDate())
+                .userCreated(TEST_USER)
+                .caseId(String.valueOf(TEST_CASE_ID))
+                .catyCaseType(String.valueOf(CrownCourtCaseType.APPEAL_CC))
+                .appealTypeCode("ACN")
+                .arrestSummonsNo(TEST_ARREST_SUMMONS_NUMBER)
+                .magsOutcome("COMMITTED FOR TRIAL")
+                .magsOutcomeDate(String.valueOf(LocalDate.now().minusDays(10)))
+                .magsOutcomeDateSet(LocalDateTime.now().minusDays(10))
+                .committalDate(LocalDate.now().minusDays(5))
+                .decisionReasonCode("GRANTED")
+                .crownRepId(REP_ID)
+                .crownRepOrderDecision("Granted - Passed Means Test")
+                .crownRepOrderType("Crown Court Only")
+                .crownRepOrderDate(LocalDate.now().minusDays(5))
+                .crownWithdrawalDate(LocalDate.now().minusDays(3))
+                .isImprisoned(true)
+                .assessmentDateCompleted(LocalDateTime.now().minusDays(15).toLocalDate())
+                .applicantHistoryId(8954)
+                .evidenceFeeLevel(null)
+                .bankAccountNo(14536598)
+                .bankAccountName("John Doe")
+                .paymentMethod("STANDING ORDER")
+                .preferredPaymentDay(1)
+                .sortCode("00-01-02")
+                .isSendToCCLF(false)
+                .areaId(16)
+                .cmuId(245)
+                .isCaseTransferred(false)
+                .isBenchWarrantIssued(false)
+                .appealSentenceOrderChangedDate(null)
+                .appealSentenceOrderDate(null)
+                .appealReceivedDate(null)
+                .appealTypeDate(null)
+                .firstCapitalReminderDate(null)
+                .allCapitalEvidenceReceivedDate(null)
+                .applicationId(2343245)
+                .capitalAllowanceReinstatedDate(null)
+                .capitalAllowanceWithheldDate(null)
+                .capitalEvidenceDueDate(null)
+                .capitalNote("Test capital note")
+                .capitalAllowance(0)
+                .isCourtCustody(false)
+                .dateReceived(LocalDate.now().minusDays(15))
+                .dateStatusDue(null)
+                .dateStatusSet(null)
+                .decisionDate(null)
+                .iojResultNote("Test IOJ Result Note")
+                .macoCourt("220")
+                .magsWithdrawalDate(null)
+                .isNoCapitalDeclared(true)
+                .oftyOffenceType("LESSER VIOL/DRUGS")
+                .useSuppAddressForPost(true)
+                .postalAddressId(38908834)
+                .rorsStatus("CURR")
+                .statusReason("Test Status Reason")
+                .suppAccountCode("0U224X")
+                .isWelshCorrespondence(true)
+                .cinrCode("NOCON")
+                .isPartner(true)
+                .isRetrial(true)
+                .efmDateStamp(null)
+                .solicitorName("Jay Shah")
+                .hearingDate(null)
+                .appSignedDate(null)
+                .usn(333333335)
+                .build();
     }
 
     public static UpdateRepOrder getUpdateRepOrder() {

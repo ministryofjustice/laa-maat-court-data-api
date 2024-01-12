@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 
@@ -40,7 +41,7 @@ import java.time.LocalDate;
 
         @Builder.Default
         @Column(name = "USER_CREATED")
-        private String userCreated = "MLA";
+        private String userCreated = "DCES";
 
         @Column(name = "DATE_MODIFIED")
         private LocalDate dateModified;
@@ -51,6 +52,7 @@ import java.time.LocalDate;
         @Column(name = "XML_CONTENT")
         private String xmlContent;
 
+        @UpdateTimestamp
         @Column(name = "DATE_SENT")
         private LocalDate dateSent;
 

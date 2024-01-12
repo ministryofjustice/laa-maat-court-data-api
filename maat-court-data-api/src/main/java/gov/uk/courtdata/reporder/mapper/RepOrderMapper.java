@@ -2,6 +2,7 @@ package gov.uk.courtdata.reporder.mapper;
 
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import org.mapstruct.*;
 
@@ -9,6 +10,8 @@ import org.mapstruct.*;
 public interface RepOrderMapper {
 
     RepOrderDTO repOrderEntityToRepOrderDTO(final RepOrderEntity repOrder);
+
+    void createRepOrderToRepOrderEntity(CreateRepOrder createRepOrder, @MappingTarget RepOrderEntity repOrderEntity);
 
     void updateRepOrderToRepOrderEntity(UpdateRepOrder updateRepOrder, @MappingTarget RepOrderEntity repOrderEntity);
 }

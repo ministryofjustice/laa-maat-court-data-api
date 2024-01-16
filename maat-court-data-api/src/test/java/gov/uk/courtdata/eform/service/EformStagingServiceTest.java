@@ -30,6 +30,7 @@ class EformStagingServiceTest {
 
     private static final int USN = 7000001;
     private static final String TYPE = "CRM14";
+    private static final String CA_USER = "causer";
     private static final int MAAT_ID = 3290392;
     private static final String USER_CREATED = "MLA";
     private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse
@@ -115,7 +116,7 @@ class EformStagingServiceTest {
         when(mockEformStagingRepository.findById(any()))
                 .thenReturn(Optional.of(eformsStagingEntity));
 
-        EformStagingDTO eformStagingDTO = eformStagingService.createOrRetrieve(USN);
+        EformStagingDTO eformStagingDTO = eformStagingService.createOrRetrieve(USN, CA_USER);
 
         assertEquals(this.eformStagingDTO, eformStagingDTO);
     }
@@ -124,12 +125,12 @@ class EformStagingServiceTest {
     void givenUsnNotInEformStaging_whenCreateOrRetrieveServiceIsInvoked_then_insertUsnInEformStagingAndBuildEformStagingDtoWithUsnAndRetrun() {
         when(mockEformStagingRepository.existsById(any()))
                 .thenReturn(false);
-        EformStagingDTO expectedDto = EformStagingDTO.builder().usn(USN).build();
+        EformStagingDTO expectedDto = EformStagingDTO.builder().usn(USN).userCreated(CA_USER).build();
         EformsStagingEntity entity = EformsStagingEntity.builder().usn(USN).build();
         when(mockEformStagingDTOMapper.toEformsStagingEntity(expectedDto))
                 .thenReturn(entity);
 
-        EformStagingDTO eformStagingDTO = eformStagingService.createOrRetrieve(USN);
+        EformStagingDTO eformStagingDTO = eformStagingService.createOrRetrieve(USN, CA_USER);
 
         assertEquals(expectedDto, eformStagingDTO);
         Mockito.verify(mockEformStagingRepository, Mockito.times(1)).saveAndFlush(entity);

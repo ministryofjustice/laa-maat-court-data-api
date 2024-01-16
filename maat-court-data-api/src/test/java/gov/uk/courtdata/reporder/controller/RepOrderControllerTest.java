@@ -7,7 +7,7 @@ import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
-import gov.uk.courtdata.reporder.dto.IOJAssessorDetails;
+import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;

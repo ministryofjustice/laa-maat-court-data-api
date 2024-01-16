@@ -2,16 +2,14 @@ package gov.uk.courtdata.reporder.service;
 
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
-import gov.uk.courtdata.reporder.dto.IOJAssessorDetails;
+import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.util.NameUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

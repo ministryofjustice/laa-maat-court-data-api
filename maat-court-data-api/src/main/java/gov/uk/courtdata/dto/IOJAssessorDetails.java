@@ -1,4 +1,4 @@
-package gov.uk.courtdata.reporder.dto;
+package gov.uk.courtdata.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

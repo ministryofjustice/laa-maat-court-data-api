@@ -3,6 +3,7 @@ package gov.uk.courtdata.assessment.service;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -62,4 +63,8 @@ public class FinancialAssessmentService {
         return financialAssessmentImpl.checkForOutstandingAssessments(repId);
     }
 
+    public IOJAssessorDetails findIOJAssessorDetails(int financialAssessmentId) {
+        // TODO Alex
+        return null;
+    }
 }

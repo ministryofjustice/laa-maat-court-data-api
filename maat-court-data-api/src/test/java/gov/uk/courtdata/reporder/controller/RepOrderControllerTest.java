@@ -7,10 +7,10 @@ import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.reporder.dto.IOJAssessorDetails;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
-import gov.uk.courtdata.reporder.testutils.TestDataBuilder;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
@@ -237,13 +237,16 @@ class RepOrderControllerTest {
     @Test
     void givenValidRepId_whenIOJAssessorDetailsGetRequestIsMade_thenIOJAssessorDetailsAreReturned() throws Exception {
         when(repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID))
-                .thenReturn(TestDataBuilder.getIOJAssessorDetails());
+                .thenReturn(IOJAssessorDetails.builder()
+                        .fullName("Karen Greaves")
+                        .userName("grea-k")
+                        .build());
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID+"/ioj-assessor-details"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value(TestDataBuilder.REP_ORDER_CREATOR_NAME))
-                .andExpect(jsonPath("$.userName").value(TestDataBuilder.REP_ORDER_CREATOR_USER_NAME));
+                .andExpect(jsonPath("$.fullName").value("Karen Greaves"))
+                .andExpect(jsonPath("$.userName").value("grea-k"));
     }
 
     @Test

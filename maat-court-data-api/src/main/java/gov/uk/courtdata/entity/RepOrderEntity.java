@@ -1,6 +1,7 @@
 package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.reporderhistory.entity.RepOrderHistoryEntity;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -56,6 +57,11 @@ public class RepOrderEntity {
     @OneToMany(mappedBy = "repOrder", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final List<RepOrderHistoryEntity> history = new ArrayList<>();
 
+    @ToString.Exclude
+    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME")
+    private UserEntity userCreatedEntity;
+
     @Id
     @Column(name = "ID")
     private Integer id;
@@ -72,7 +78,7 @@ public class RepOrderEntity {
     @Column(name = "ARREST_SUMMONS_NO")
     private String arrestSummonsNo;
 
-    @Column(name = "USER_CREATED")
+    @Column(name = "USER_CREATED", insertable = false, updatable = false)
     private String userCreated;
 
     @Column(name = "USER_MODIFIED")

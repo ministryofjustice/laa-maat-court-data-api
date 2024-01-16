@@ -7,6 +7,7 @@ import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.reporder.dto.IOJAssessorDetails;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
@@ -231,5 +232,33 @@ class RepOrderControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(repOrderService, times(1)).delete(12345678);
+    }
+
+    @Test
+    void givenValidRepId_whenIOJAssessorDetailsGetRequestIsMade_thenIOJAssessorDetailsAreReturned() throws Exception {
+        when(repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID))
+                .thenReturn(IOJAssessorDetails.builder()
+                        .fullName("Karen Greaves")
+                        .userName("grea-k")
+                        .build());
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID+"/ioj-assessor-details"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.fullName").value("Karen Greaves"))
+                .andExpect(jsonPath("$.userName").value("grea-k"));
+    }
+
+    @Test
+    void givenUnknownRepId_whenIOJAssessorDetailsGetRequestIsMade_thenNotFoundResponseIsReturned() throws Exception {
+        int unknownRepId = 1245;
+        when(repOrderService.findIOJAssessorDetails(unknownRepId))
+                .thenThrow(new RequestedObjectNotFoundException("Unable to find IOJAssessorDetails for repId: [1245]"));
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + unknownRepId +"/ioj-assessor-details"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value("NOT_FOUND"))
+                .andExpect(jsonPath("$.message").value("Unable to find IOJAssessorDetails for repId: [1245]"));
     }
 }

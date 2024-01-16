@@ -2,18 +2,23 @@ package gov.uk.courtdata.reporder.service;
 
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.reporder.dto.IOJAssessorDetails;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
+import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.util.NameUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -22,6 +27,7 @@ public class RepOrderService {
 
     private final RepOrderImpl repOrderImpl;
     private final RepOrderMapper repOrderMapper;
+    private final RepOrderRepository repOrderRepository;
 
     public RepOrderEntity findByRepId(Integer repId) {
         RepOrderEntity repOrder;
@@ -83,5 +89,17 @@ public class RepOrderService {
     @Transactional
     public void delete(Integer repId) {
         repOrderImpl.delete(repId);
+    }
+
+    @Transactional(readOnly = true)
+    public IOJAssessorDetails findIOJAssessorDetails(int repId) {
+        Optional<RepOrderEntity> repOrderOptional = repOrderRepository.findById(repId);
+
+        if (repOrderOptional.isEmpty()) {
+            String message = "Unable to find IOJAssessorDetails for repId: [%d]".formatted(repId);
+            throw new RequestedObjectNotFoundException(message);
+        }
+
+        return repOrderMapper.createIOJAssessorDetails(repOrderOptional.get());
     }
 }

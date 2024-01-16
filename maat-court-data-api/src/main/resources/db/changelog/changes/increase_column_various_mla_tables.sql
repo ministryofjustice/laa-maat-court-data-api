@@ -30,3 +30,15 @@ ALTER TABLE "MLA"."XXMLA_RESULT" modify RESULT_TEXT varchar2(4000 char);
 --The following script is to roll back the changes in case of any problem :
 
 ALTER TABLE "MLA"."XXMLA_RESULT" modify RESULT_TEXT varchar2(2500 char);
+
+--LASB-2905 - - SQL Queries executed on 8th Jan 2024
+ALTER TABLE "MLA"."XXMLA_DEFENDANT" modify FORENAME varchar2(100 char);
+ALTER TABLE "MLA"."XXMLA_DEFENDANT" modify ADDRESS_LINE1 varchar2(100 char);
+ALTER TABLE "MLA"."XXMLA_DEFENDANT" modify ADDRESS_LINE2 varchar2(100 char);
+ALTER TABLE "MLA"."XXMLA_DEFENDANT" modify ADDRESS_LINE3 varchar2(100 char);
+
+--Rollback
+ALTER TABLE "MLA"."XXMLA_DEFENDANT" modify FORENAME varchar2(35 char);
+ALTER TABLE "MLA"."XXMLA_DEFENDANT" modify ADDRESS_LINE1 varchar2(50 char);
+ALTER TABLE "MLA"."XXMLA_DEFENDANT" modify ADDRESS_LINE2 varchar2(50 char);
+ALTER TABLE "MLA"."XXMLA_DEFENDANT" modify ADDRESS_LINE3 varchar2(35 char);

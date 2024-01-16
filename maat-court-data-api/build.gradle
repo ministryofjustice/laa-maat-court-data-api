@@ -17,7 +17,6 @@ def versions = [
         amazonSQSVersion                    : "2.1.1",
         ojdbc8Version                       : '19.7.0.0',
         gsonVersion                         : '2.8.6',
-        commLan3Vriosn                      : '3.10',
         lombokMapStrutBinding               : '0.2.0',
         sonarVersion                        : '2.7',
         h2DBVersion                         : '1.4.200',
@@ -27,8 +26,6 @@ def versions = [
         gradlePitest                        : '1.4.6',
         pitest                              : '1.4.10',
         sonarPitest                         : '0.5',
-        okhttpVersion                       : '4.9.3',
-        mockWebServerVersion                : '4.9.3',
         hibernateJpaModelGen                : '6.3.1.Final',
         gqlVersion                          : '2.7.5',
         graphqlJavaTools                    : '13.0.2',
@@ -43,8 +40,8 @@ def versions = [
         testcontainersLocalstackVersion     : '1.18.3',
         cloudLocalstackUtilsVersion         : '0.2.23',
         springContractStubRunnerVersion     : '4.0.1',
-        sentryBomVersion                    : '7.0.0',
-        crimeCommonsVersion                 : "2.10.0",
+        sentryBomVersion                    : '7.1.0',
+        crimeCommonsVersion                 : "2.13.6",
         springCloudStubRunnerVersion        : "4.0.4"
 ]
 
@@ -80,24 +77,20 @@ repositories {
 dependencies {
 
     implementation platform("io.sentry:sentry-bom:$versions.sentryBomVersion")
-    implementation platform(SpringBootPlugin.BOM_COORDINATES)
-    annotationProcessor platform(SpringBootPlugin.BOM_COORDINATES)
 
-    implementation("io.sentry:sentry-spring-boot-starter-jakarta")
-    implementation("io.sentry:sentry-logback")
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion:all"
+
     //Required for Logback configuration due to a dependency having their own implementation of SAXParserFactory
     implementation "xerces:xercesImpl:$versions.xercesImplVersion"
 
     // Spring
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
     implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-activemq'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
-    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-graphql'
+
 
     implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springAwsCloudVersion"
     implementation "org.springframework:spring-jms"
@@ -105,12 +98,10 @@ dependencies {
 
     implementation "software.amazon.awssdk:sts:$versions.awsStsVersion"
 
-    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion"
-
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: versions.springdocVersion
     implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
-    annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
 
+    annotationProcessor "org.projectlombok:lombok"
     implementation "org.mapstruct:mapstruct:$versions.mapstructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$versions.mapstructVersion"
     //Required for lombok version > 1.18.16
@@ -118,34 +109,18 @@ dependencies {
 
     implementation "io.micrometer:micrometer-registry-cloudwatch2:$versions.micrometerCloudWatchVersion"
 
-    implementation group: 'io.sentry', name: 'sentry-spring-boot-starter'
-    implementation group: 'io.sentry', name: 'sentry-logback'
-
     // DB Dependencies
     implementation group: 'com.oracle.database.jdbc', name: 'ojdbc8', version: versions.ojdbc8Version
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
-
-
-    implementation group: 'com.google.code.gson', name: 'gson', version: versions.gsonVersion
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: versions.commLan3Vriosn
-
-    annotationProcessor group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: versions.hibernateJpaModelGen
-
-    compileOnly "org.projectlombok:lombok"
-    annotationProcessor "org.projectlombok:lombok"
-    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-
-
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-graphql'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
-    implementation group: 'com.graphql-java-kickstart', name: 'graphql-java-tools', version: versions.graphqlJavaTools
-
     implementation group: 'com.oracle.database.xml', name: 'xmlparserv2', version: versions.oracleXMLParserVersion
     implementation group: 'com.oracle.database.xml', name: 'xdb', version: versions.oracleXMLParserVersion
 
+    annotationProcessor group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: versions.hibernateJpaModelGen
+    implementation group: 'com.graphql-java-kickstart', name: 'graphql-java-tools', version: versions.graphqlJavaTools
+
+    implementation group: 'com.google.code.gson', name: 'gson', version: versions.gsonVersion
+
     // Test Only
     testImplementation "org.pitest:pitest:$versions.pitest"
-    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
     testImplementation group: 'com.h2database', name: 'h2', version: versions.h2DBVersion
     testImplementation "org.mockito:mockito-inline:$versions.mockitoInlineVersion"
     testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: versions.harmcrestVersion

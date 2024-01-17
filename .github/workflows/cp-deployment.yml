@@ -83,7 +83,7 @@ jobs:
         with:
           audience: sts.amazonaws.com
           aws-region: eu-west-2
-          role-to-assume: arn:aws:iam::${ACCOUNT_ID}:role/modernisation-platform-oidc-cicd
+          role-to-assume: "arn:aws:iam::${ACCOUNT_ID}:role/modernisation-platform-oidc-cicd"
       
       - name: Tag and push image to Amazon ECR
         id: retag-and-push-image

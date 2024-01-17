@@ -14,16 +14,17 @@ on:
 env:
   ECR_SHARED_REGISTRY: 374269020027.dkr.ecr.eu-west-2.amazonaws.com
   APPLICATION_NAME: "maat-cd-api"
-  ECR_SHARED_REPOSITORY: "${{ env.APPLICATION_NAME }}-ecr-repo" # TODO Update the ECR names
+  ECR_SHARED_REPOSITORY: "maat-cd-api-ecr-repo" # TODO Update the ECR names
   SOURCE_APP_TAG: "development"
-  SOURCE_IMAGE: "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
   
-
 jobs:
 
   application-image-build:
 
     name: application-image-build
+
+    env:
+      SOURCE_IMAGE: "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
 
     runs-on: ubuntu-latest
     if: github.ref != 'refs/heads/nobranch' || github.event_name == 'workflow_dispatch'
@@ -47,7 +48,7 @@ jobs:
           java -version
 
           echo "Connecting to ECR"
-          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${ECR_SHARED_REGISTRY}
+          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin "${{" env.ECR_SHARED_REGISTRY }}"
 
           echo "Pulling in SQS integration test Docker image dependencies"
           docker pull localstack/localstack
@@ -75,7 +76,6 @@ jobs:
     environment: development
     
     env:
-      TASK_DEFINITION_NAME: maat-api-task-definition
       APP_TAG: "development"
       ACCOUNT_ID: "580202064026"
 
@@ -91,12 +91,12 @@ jobs:
       - name: Tag and push image to Amazon ECR
         id: retag-and-push-image
         run: |
-          MANIFEST=$(aws ecr batch-get-image --repository-name ${ECR_SHARED_REPOSITORY} --registry-id ${ACCOUNT_ID} --region eu-west-2 --image-ids imageTag=${SOURCE_APP_TAG} --query 'images[].imageManifest' --output text)
-          aws ecr put-image --repository-name ${ECR_SHARED_REPOSITORY} --image-tag ${APP_TAG} --registry-id ${ACCOUNT_ID} --image-manifest "$MANIFEST" --region eu-west-2
+          MANIFEST=$(aws ecr batch-get-image --repository-name "${{ env.ECR_SHARED_REPOSITORY }}" --registry-id ${ACCOUNT_ID} --region eu-west-2 --image-ids imageTag="${{ env.SOURCE_APP_TAG }}"" --query 'images[].imageManifest' --output text)
+          aws ecr put-image --repository-name "${{ env.ECR_SHARED_REPOSITORY }}"" --image-tag ${APP_TAG} --registry-id ${ACCOUNT_ID} --image-manifest "$MANIFEST" --region eu-west-2
 
       - name: Trigger Restart of ECS with new image
         id: run-restart
         run: |
           echo "Restarting the ECS Tasks which will pick up the new images"
-          aws ecs update-service --cluster ${APPLICATION_NAME} --service ${APPLICATION_NAME}-ecs-service --force-new-deployment
+          aws ecs update-service --cluster "${{ env.APPLICATION_NAME }}"" --service "${{ env.APPLICATION_NAME }}-ecs-service" --force-new-deployment
           

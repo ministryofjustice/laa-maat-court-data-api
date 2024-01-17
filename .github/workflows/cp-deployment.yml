@@ -23,9 +23,6 @@ jobs:
 
     name: application-image-build
 
-    env:
-      SOURCE_IMAGE: "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
-
     runs-on: ubuntu-latest
     if: github.ref != 'refs/heads/nobranch' || github.event_name == 'workflow_dispatch'
 
@@ -61,13 +58,13 @@ jobs:
           chmod +x ./gradlew
           ./gradlew build
           docker build -t maat-cda .
-          docker tag maat-cda ${SOURCE_IMAGE}
+          docker tag maat-cda "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
           popd
       # - name: Post-Build
       #   id: push-image
       #   run: |
-      #     echo Pushing the Docker image to... ${SOURCE_IMAGE}
-      #     docker push ${SOURCE_IMAGE}
+      #     echo Pushing the Docker image to... "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
+      #     docker push "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
 
   deploy-to-development:
     name: deploy-to-development

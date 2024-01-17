@@ -1,7 +1,8 @@
-package gov.uk.courtdata.job;
+package gov.uk.courtdata.integration.job;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
+import gov.uk.courtdata.job.QueueMessageMaintenanceScheduler;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
 import gov.uk.courtdata.util.RepositoryUtil;
 import org.junit.jupiter.api.AfterEach;

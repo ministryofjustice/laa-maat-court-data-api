@@ -7,6 +7,7 @@ import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.util.NameUtils;
+import gov.uk.courtdata.util.UserEntityUtils;
 import org.mapstruct.Builder;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
@@ -30,12 +31,7 @@ public interface RepOrderMapper {
     void updateRepOrderToRepOrderEntity(UpdateRepOrder updateRepOrder, @MappingTarget RepOrderEntity repOrderEntity);
 
     default IOJAssessorDetails createIOJAssessorDetails(RepOrderEntity repOrder) {
-        UserEntity userEntity = repOrder.getUserCreatedEntity();
-
-        String fullName = null;
-        if (Objects.nonNull(userEntity)) {
-            fullName = NameUtils.toCapitalisedFullName(userEntity.getFirstName(), userEntity.getSurname());
-        }
+        String fullName = UserEntityUtils.extractFullName(repOrder.getUserCreatedEntity());
 
         return IOJAssessorDetails.builder()
                 .fullName(fullName)

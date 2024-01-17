@@ -9,6 +9,7 @@ import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.repository.RepOrderRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -126,7 +127,7 @@ class RepOrderServiceTest {
         IOJAssessorDetails actualIOJAssessorDetails = repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID);
 
         assertAll("verify actual IOJAssessorDetails",
-                () -> assertNull(actualIOJAssessorDetails.getFullName()),
+                () -> assertEquals(StringUtils.EMPTY, actualIOJAssessorDetails.getFullName()),
                 () -> assertEquals("grea-k", actualIOJAssessorDetails.getUserName()));
     }
 

@@ -39,11 +39,11 @@ public class FinancialAssessmentServiceTest {
         when(financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(any()))
                 .thenReturn(FinancialAssessmentDTO.builder().id(1000).build());
         FinancialAssessmentEntity financialAssessment = FinancialAssessmentEntity.builder().id(1000).build();
-        when(financialAssessmentImpl.find(any())).thenReturn(Optional.of(financialAssessment));
+        when(financialAssessmentImpl.find(1000)).thenReturn(Optional.of(financialAssessment));
 
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.find(1000);
 
-        verify(financialAssessmentImpl).find(any());
+        verify(financialAssessmentImpl).find(1000);
         assertThat(returnedAssessment.getId()).isEqualTo(1000);
     }
 
@@ -100,11 +100,11 @@ public class FinancialAssessmentServiceTest {
 
     @Test
     public void givenNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenNotFoundResultIsReturned() {
-        when(financialAssessmentImpl.checkForOutstandingAssessments(any(Integer.class))).thenReturn(
+        when(financialAssessmentImpl.checkForOutstandingAssessments(TEST_REP_ID)).thenReturn(
                 OutstandingAssessmentResultDTO.builder().build()
         );
         OutstandingAssessmentResultDTO result = financialAssessmentService.checkForOutstandingAssessments(TEST_REP_ID);
-        verify(financialAssessmentImpl).checkForOutstandingAssessments(any());
+        verify(financialAssessmentImpl).checkForOutstandingAssessments(TEST_REP_ID);
         assertThat(result.isOutstandingAssessments()).isEqualTo(false);
     }
 }

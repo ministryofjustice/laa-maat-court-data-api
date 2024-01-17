@@ -13,8 +13,9 @@ on:
 
 env:
   ECR_SHARED_REGISTRY: 374269020027.dkr.ecr.eu-west-2.amazonaws.com
+  ECR_ACCOUNT_ID: "374269020027"
   APPLICATION_NAME: "maat-cd-api"
-  ECR_SHARED_REPOSITORY: "maat-ecr-repo"
+  ECR_SHARED_REPOSITORY: "maat-cd-api-ecr-repo"
   SOURCE_APP_TAG: "development"
   
 jobs:
@@ -74,7 +75,6 @@ jobs:
     
     env:
       APP_TAG: "development"
-      ACCOUNT_ID: "580202064026"
 
     steps:
       - name: Configure AWS credentials - MP
@@ -89,9 +89,9 @@ jobs:
         id: retag-and-push-image
         run: |
           echo "Retagging the image with '${APP_TAG}'"
-          MANIFEST=$(aws ecr batch-get-image --repository-name "${{ env.ECR_SHARED_REPOSITORY }}" --registry-id "${ACCOUNT_ID}" --region eu-west-2 --image-ids imageTag="${{ env.SOURCE_APP_TAG }}" --query 'images[].imageManifest' --output text)
+          MANIFEST=$(aws ecr batch-get-image --repository-name "${{ env.ECR_SHARED_REPOSITORY }}" --registry-id "${{ env.ACCOUNT_ID }}" --region eu-west-2 --image-ids imageTag="${{ env.SOURCE_APP_TAG }}" --query 'images[].imageManifest' --output text)
           
-          aws ecr put-image --repository-name "${{ env.ECR_SHARED_REPOSITORY }}" --image-tag ${APP_TAG} --registry-id "${ACCOUNT_ID}" --image-manifest "$MANIFEST" --region eu-west-2
+          aws ecr put-image --repository-name "${{ env.ECR_SHARED_REPOSITORY }}" --image-tag ${APP_TAG} --registry-id "${{ env.ACCOUNT_ID }}" --image-manifest "$MANIFEST" --region eu-west-2
 
       - name: Trigger Restart of ECS with new image
         id: run-restart

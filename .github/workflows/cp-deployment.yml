@@ -49,6 +49,7 @@ jobs:
           echo "Created docker tag $DOCKER_TAG"
           IMAGE_URI="${ECR_SHARED_REGISTRY}/${ECR_SHARED_REPOSITORY}:${DOCKER_TAG}"
           echo "IMAGE_URI=$IMAGE_URI" >> "$GITHUB_ENV"
+          echo "IMAGE_URI=$IMAGE_URI" >> "$GITHUB_OUTPUT"
           echo "Pulling in SQS integration test Docker image dependencies"
           docker pull localstack/localstack
           echo "Finished pulling localstack/localstack test dependency"
@@ -67,3 +68,35 @@ jobs:
         run: |
           echo Pushing the Docker image to... "${IMAGE_URI}"
           docker push "${IMAGE_URI}"
+
+  deploy-to-development:
+    name: deploy-to-development
+    needs: [application-image-build]
+    runs-on: ubuntu-latest
+    environment: development
+    
+    env:
+      ECR_SHARED_REGISTRY: 374269020027.dkr.ecr.eu-west-2.amazonaws.com
+      ECR_SHARED_REPOSITORY: "maat-ecr-repo"
+      TASK_DEFINITION_NAME: maat-api-task-definition
+
+    steps:
+
+      - name: Configure AWS credentials - MP
+        id: set-creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          audience: sts.amazonaws.com
+          aws-region: eu-west-2
+          role-to-assume: arn:aws:iam::580202064026:role/modernisation-platform-oidc-cicd
+
+      - name: Trigger Restart of ECS with new image
+        id: run-restart
+        run: |
+          TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}:latest")
+          UPDATED_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$FULL_IMAGE" '.taskDefinition | .containerDefinitions[0].image = ${{ needs.tag-image.outputs.IMAGE_URI }} | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) |  del(.registeredAt)  | del(.registeredBy)')
+          UPDATED_TASK_INFO=$(aws ecs register-task-definition --cli-input-json "$UPDATED_TASK_DEFINITION")
+          UPDATED_REVISION=$(echo $UPDATED_TASK_INFO | jq '.taskDefinition.revision')
+          echo "Restarting the ECS Tasks which will pick up the new images"
+          aws ecs update-service --cluster ${APPLICATION_NAME} --service ${APPLICATION_NAME}-ecs-service --task-definition ${TASK_DEFINITION_NAME}:${UPDATED_REVISION} --force-new-deployment
+          

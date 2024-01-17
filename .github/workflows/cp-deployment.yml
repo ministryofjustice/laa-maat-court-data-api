@@ -33,39 +33,39 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-      - name: Configure AWS credentials - MP
-        id: set-ecr-creds
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          audience: sts.amazonaws.com
-          aws-region: eu-west-2
-          role-to-assume: arn:aws:iam::580202064026:role/modernisation-platform-oidc-cicd
-      - name: Pre-build
-        id: tag-image
-        run: |
-          java -version
+      # - name: Configure AWS credentials - MP
+      #   id: set-ecr-creds
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     audience: sts.amazonaws.com
+      #     aws-region: eu-west-2
+      #     role-to-assume: arn:aws:iam::580202064026:role/modernisation-platform-oidc-cicd
+      # - name: Pre-build
+      #   id: tag-image
+      #   run: |
+      #     java -version
 
-          echo "Connecting to ECR"
-          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin "${{ env.ECR_SHARED_REGISTRY }}"
+      #     echo "Connecting to ECR"
+      #     aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin "${{ env.ECR_SHARED_REGISTRY }}"
 
-          echo "Pulling in SQS integration test Docker image dependencies"
-          docker pull localstack/localstack
-          echo "Finished pulling localstack/localstack test dependency"
-      - name: Build
-        id: build-image
-        run: |
-          echo "Building the ear file and Docker image with gradle..."
-          pushd maat-court-data-api
-          chmod +x ./gradlew
-          ./gradlew build
-          docker build -t maat-cda .
-          docker tag maat-cda "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
-          docker tag maat-cda "${GITHUB_SHA}"
-      - name: Post-Build
-        id: push-image
-        run: |
-          echo Pushing the Docker image to... "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
-          docker push "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
+      #     echo "Pulling in SQS integration test Docker image dependencies"
+      #     docker pull localstack/localstack
+      #     echo "Finished pulling localstack/localstack test dependency"
+      # - name: Build
+      #   id: build-image
+      #   run: |
+      #     echo "Building the ear file and Docker image with gradle..."
+      #     pushd maat-court-data-api
+      #     chmod +x ./gradlew
+      #     ./gradlew build
+      #     docker build -t maat-cda .
+      #     docker tag maat-cda "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
+      #     docker tag maat-cda "${GITHUB_SHA}"
+      # - name: Post-Build
+      #   id: push-image
+      #   run: |
+      #     echo Pushing the Docker image to... "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
+      #     docker push "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
 
   deploy-to-development:
     name: deploy-to-development
@@ -89,9 +89,9 @@ jobs:
         id: retag-and-push-image
         run: |
           echo "Retagging the image with '${APP_TAG}'"
-          MANIFEST=$(aws ecr batch-get-image --repository-name "${{ env.ECR_SHARED_REPOSITORY }}" --registry-id "${{ env.ACCOUNT_ID }}" --region eu-west-2 --image-ids imageTag="${{ env.SOURCE_APP_TAG }}" --query 'images[].imageManifest' --output text)
+          MANIFEST=$(aws ecr batch-get-image --repository-name "${{ env.ECR_SHARED_REPOSITORY }}" --registry-id "${{ env.ECR_ACCOUNT_ID }}" --region eu-west-2 --image-ids imageTag="${{ env.SOURCE_APP_TAG }}" --query 'images[].imageManifest' --output text)
           
-          aws ecr put-image --repository-name "${{ env.ECR_SHARED_REPOSITORY }}" --image-tag ${APP_TAG} --registry-id "${{ env.ACCOUNT_ID }}" --image-manifest "$MANIFEST" --region eu-west-2
+          aws ecr put-image --repository-name "${{ env.ECR_SHARED_REPOSITORY }}" --image-tag ${APP_TAG} --registry-id "${{ env.ECR_ACCOUNT_ID }}" --image-manifest "$MANIFEST" --region eu-west-2
 
       - name: Trigger Restart of ECS with new image
         id: run-restart

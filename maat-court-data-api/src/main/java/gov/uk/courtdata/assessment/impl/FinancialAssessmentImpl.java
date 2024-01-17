@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,8 +34,8 @@ public class FinancialAssessmentImpl {
     private final HardshipReviewRepository hardshipReviewRepository;
     private final FinancialAssessmentRepository financialAssessmentRepository;
 
-    public FinancialAssessmentEntity find(Integer financialAssessmentId) {
-        return financialAssessmentRepository.getReferenceById(financialAssessmentId);
+    public Optional<FinancialAssessmentEntity> find(int financialAssessmentId) {
+        return financialAssessmentRepository.findById(financialAssessmentId);
     }
 
     public FinancialAssessmentEntity update(FinancialAssessmentDTO financialAssessment) {

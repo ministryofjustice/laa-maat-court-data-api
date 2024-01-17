@@ -18,10 +18,12 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND;
 import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,9 +53,13 @@ class FinancialAssessmentImplTest {
 
     @Test
     void whenFindIsInvoked_thenAssessmentIsRetrieved() {
-        when(financialAssessmentRepository.getReferenceById(any())).thenReturn(FinancialAssessmentEntity.builder().id(MOCK_FINANCIAL_ASSESSMENT_ID).build());
-        FinancialAssessmentEntity returned = financialAssessmentImpl.find(MOCK_FINANCIAL_ASSESSMENT_ID);
-        assertThat(returned.getId()).isEqualTo(MOCK_FINANCIAL_ASSESSMENT_ID);
+        FinancialAssessmentEntity financialAssessment = FinancialAssessmentEntity.builder().id(MOCK_FINANCIAL_ASSESSMENT_ID).build();
+        when(financialAssessmentRepository.findById(any())).thenReturn(Optional.of(financialAssessment));
+
+        Optional<FinancialAssessmentEntity> returned = financialAssessmentImpl.find(MOCK_FINANCIAL_ASSESSMENT_ID);
+
+        assertTrue(returned.isPresent());
+        assertThat(returned.get().getId()).isEqualTo(MOCK_FINANCIAL_ASSESSMENT_ID);
     }
 
     @Test

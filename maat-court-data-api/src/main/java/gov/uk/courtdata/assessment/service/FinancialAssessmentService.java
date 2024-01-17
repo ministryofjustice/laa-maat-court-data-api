@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,12 +25,12 @@ public class FinancialAssessmentService {
     private final FinancialAssessmentMapper assessmentMapper;
 
     @Transactional(readOnly = true)
-    public FinancialAssessmentDTO find(Integer financialAssessmentId) {
-        FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
-        if (assessmentEntity == null) {
+    public FinancialAssessmentDTO find(int financialAssessmentId) {
+        Optional<FinancialAssessmentEntity> assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
+        if (assessmentEntity.isEmpty()) {
             throw new RequestedObjectNotFoundException(String.format("No Financial Assessment found for ID: %s", financialAssessmentId));
         }
-        return assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
+        return assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity.get());
     }
 
     @Transactional
@@ -64,7 +66,12 @@ public class FinancialAssessmentService {
     }
 
     public IOJAssessorDetails findIOJAssessorDetails(int financialAssessmentId) {
-        // TODO Alex
-        return null;
+        Optional<FinancialAssessmentEntity> financialAssessmentOptional = financialAssessmentImpl.find(financialAssessmentId);
+        if(financialAssessmentOptional.isEmpty())
+        {
+                String message = "Unable to find FinancialAssessment with financialAssessmentId: [%d]".formatted(financialAssessmentId);
+                throw new RequestedObjectNotFoundException(message);
+            }
+        return assessmentMapper.createIOJAssessorDetails(financialAssessmentOptional.get());
     }
 }

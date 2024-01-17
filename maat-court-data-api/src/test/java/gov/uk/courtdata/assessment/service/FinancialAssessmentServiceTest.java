@@ -14,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
@@ -36,7 +38,9 @@ public class FinancialAssessmentServiceTest {
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
         when(financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(any()))
                 .thenReturn(FinancialAssessmentDTO.builder().id(1000).build());
-        when(financialAssessmentImpl.find(any())).thenReturn(FinancialAssessmentEntity.builder().id(1000).build());
+        FinancialAssessmentEntity financialAssessment = FinancialAssessmentEntity.builder().id(1000).build();
+        when(financialAssessmentImpl.find(any())).thenReturn(Optional.of(financialAssessment));
+
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.find(1000);
 
         verify(financialAssessmentImpl).find(any());

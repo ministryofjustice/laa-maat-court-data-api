@@ -7,16 +7,30 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.ChildWeightingsEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
-import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.repository.ChildWeightHistoryRepository;
+import gov.uk.courtdata.repository.ChildWeightingsRepository;
+import gov.uk.courtdata.repository.FinancialAssessmentDetailsHistoryRepository;
+import gov.uk.courtdata.repository.FinancialAssessmentDetailsRepository;
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import gov.uk.courtdata.repository.FinancialAssessmentsHistoryRepository;
+import gov.uk.courtdata.repository.HardshipReviewRepository;
+import gov.uk.courtdata.repository.PassportAssessmentRepository;
+import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.repository.UserRepository;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,8 +46,14 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-@SpringBootTest(classes = {MAATCourtDataApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, properties = {("spring.h2.console.enabled=true")})
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
+@SpringBootTest(classes = {MAATCourtDataApplication.class},
+        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
+        properties = {("spring.h2.console.enabled=true")})
 public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private final String BASE_URL = "/api/internal/v1/assessment/financial-assessments";
@@ -42,7 +62,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private final Integer REP_ID_WITH_OUTSTANDING_ASSESSMENTS = 1111;
     private final Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = 2222;
     private final Integer REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS = 3333;
-    private final Integer REP_ID_DEFAULT = 4444;
 
     @Autowired
     private FinancialAssessmentRepository financialAssessmentRepository;
@@ -66,6 +85,8 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private FinancialAssessmentsHistoryRepository financialAssessmentsHistoryRepository;
     @Autowired
     private FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistoryRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     private List<FinancialAssessmentEntity> existingAssessmentEntities;
     private RepOrderEntity existingRepOrder;
@@ -78,7 +99,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     @AfterEach
     public void clearUp() {
-        RepositoryUtil.clearUp(hardshipReviewRepository,
+        new RepositoryUtil().clearUp(hardshipReviewRepository,
                 passportAssessmentRepository,
                 childWeightingsRepository,
                 financialAssessmentDetailsRepository,
@@ -87,11 +108,11 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
                 childWeightHistoryRepository,
                 financialAssessmentRepository,
                 newWorkReasonRepository,
-                repOrderRepository);
+                repOrderRepository,
+                userRepository);
     }
 
     private void setupTestData() {
-
         Integer REP_ID_DEFAULT = 4444;
         existingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_DEFAULT));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_ASSESSMENTS));
@@ -377,6 +398,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         assertThat(runSuccessScenario(post(CREATE_ASSESSMENT_HISTORY_URL, Objects.requireNonNull(assessmentEntity).getId(), fullAvailable)).getResponse().getStatus()).isEqualTo(200);
         assertAssessmentHistoryCreated(assessmentEntity, fullAvailable, existingRepOrder);
     }
+
     public void assertAssessmentHistoryCreated(
             FinancialAssessmentEntity assessmentEntity, Boolean fullAvailable, RepOrderEntity existingRepOrder) {
 

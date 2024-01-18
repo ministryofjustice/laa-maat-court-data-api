@@ -58,8 +58,9 @@ public class RepOrderEntity {
     private final List<RepOrderHistoryEntity> history = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME")
+    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME",
+            insertable = false, updatable = false)
     private UserEntity userCreatedEntity;
 
     @Id
@@ -78,7 +79,7 @@ public class RepOrderEntity {
     @Column(name = "ARREST_SUMMONS_NO")
     private String arrestSummonsNo;
 
-    @Column(name = "USER_CREATED", insertable = false, updatable = false)
+    @Column(name = "USER_CREATED")
     private String userCreated;
 
     @Column(name = "USER_MODIFIED")

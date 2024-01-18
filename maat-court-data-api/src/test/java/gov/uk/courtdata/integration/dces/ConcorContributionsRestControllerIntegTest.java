@@ -4,7 +4,7 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.repository.ConcorContributionsRepository;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;

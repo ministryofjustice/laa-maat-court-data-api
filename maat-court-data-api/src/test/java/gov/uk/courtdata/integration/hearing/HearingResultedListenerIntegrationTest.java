@@ -9,6 +9,7 @@ import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.hearing.service.HearingResultedListener;
+import gov.uk.courtdata.integration.util.Repositories;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.Result;
@@ -16,7 +17,7 @@ import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,27 +84,15 @@ public class HearingResultedListenerIntegrationTest {
     @Autowired
     private HearingResultedListener hearingResultedListener;
     @Autowired
+    private Repositories repositories;
+    @Autowired
     protected ObjectMapper objectMapper;
 
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
     @BeforeEach
     public void setUp() {
-        RepositoryUtil.clearUp(identifierRepository,
-                wqLinkRegisterRepository,
-                xlatResultRepository,
-                xlatOffenceRepository,
-                wqCoreRepository,
-                offenceRepository,
-                resultRepository,
-                wqResultRepository,
-                wqHearingRepository,
-                queueMessageLogRepository,
-                wqCaseRepository,
-                wqSessionRepository,
-                wqDefendantRepository,
-                wqOffenceRepository);
-
+        repositories.clearAll();
         setupTestData();
         queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
     }

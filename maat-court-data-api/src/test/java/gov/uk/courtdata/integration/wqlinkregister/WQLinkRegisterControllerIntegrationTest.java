@@ -4,8 +4,8 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ public class WQLinkRegisterControllerIntegrationTest extends MockMvcIntegrationT
 
     @BeforeEach
     void setUp(@Autowired WqLinkRegisterRepository wqLinkRegisterRepository) {
-        RepositoryUtil.clearUp(wqLinkRegisterRepository);
+        new RepositoryUtil().clearUp(wqLinkRegisterRepository);
         wqLinkRegisterRepository.save(TestEntityDataBuilder.getWQLinkRegisterEntity(8064716));
     }
 

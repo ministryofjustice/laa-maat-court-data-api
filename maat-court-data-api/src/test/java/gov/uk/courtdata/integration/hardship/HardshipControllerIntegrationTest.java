@@ -15,8 +15,8 @@ import gov.uk.courtdata.enums.HardshipReviewStatus;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.model.hardship.*;
 import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +73,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     public void setUp() throws Exception {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
-        RepositoryUtil.clearUp(hardshipReviewRepository,
+        new RepositoryUtil().clearUp(hardshipReviewRepository,
                 hardshipReviewDetailRepository,
                 hardshipReviewDetailReasonRepository,
                 financialAssessmentRepository,

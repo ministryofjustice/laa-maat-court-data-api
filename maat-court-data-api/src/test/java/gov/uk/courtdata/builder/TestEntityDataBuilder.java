@@ -25,6 +25,7 @@ public class TestEntityDataBuilder {
     public static final String TEST_REGISTRATION = "SD51ZDW";
 
     public static final String TEST_USER = "test-f";
+    public static final String USER_CREATED_TEST_S = "test-s";
     public static final String ASSESSMENT_TYPE = "INIT";
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
 
@@ -214,7 +215,7 @@ public class TestEntityDataBuilder {
                 .repOrder(getPopulatedRepOrder(IOJ_REP_ID))
                 .appealSetupDate(LocalDateTime.of(2022, 1, 1, 10, 0))
                 .nworCode("NEW")
-                .userCreated("test-s")
+                .userCreated(USER_CREATED_TEST_S)
                 .cmuId(86679086)
                 .iapsStatus(StringUtils.isBlank(iapStatus) ? "COMPLETE" : iapStatus)
                 .appealSetupResult("GRANT")
@@ -305,8 +306,8 @@ public class TestEntityDataBuilder {
                 .disposableIncome(BigDecimal.valueOf(4215.46))
                 .disposableIncomeAfterHardship(BigDecimal.valueOf(2921.38))
                 .status(HardshipReviewStatus.COMPLETE)
-                .userCreated("test-s")
-                .userModified("test-s")
+                .userCreated(USER_CREATED_TEST_S)
+                .userModified(USER_CREATED_TEST_S)
                 .courtType("MAGISTRATE")
                 .financialAssessmentId(349211)
                 .valid("Y")
@@ -317,7 +318,7 @@ public class TestEntityDataBuilder {
         return HardshipReviewDetailEntity.builder()
                 .id(4253)
                 .detailType(HardshipReviewDetailType.EXPENDITURE)
-                .userCreated("test-s")
+                .userCreated(USER_CREATED_TEST_S)
                 .frequency(Frequency.MONTHLY)
                 .description("Pension")
                 .amount(BigDecimal.valueOf(107.84))
@@ -336,8 +337,8 @@ public class TestEntityDataBuilder {
     public static HardshipReviewProgressEntity getHardshipReviewProgressEntity() {
         return HardshipReviewProgressEntity.builder()
                 .id(1254)
-                .userCreated("test-s")
-                .userModified("test-s")
+                .userCreated(USER_CREATED_TEST_S)
+                .userModified(USER_CREATED_TEST_S)
                 .progressAction(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE)
                 .progressResponse(HardshipReviewProgressResponse.FURTHER_RECEIVED)
                 .build();

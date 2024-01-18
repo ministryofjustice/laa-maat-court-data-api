@@ -1,4 +1,4 @@
-package gov.uk.courtdata.util;
+package gov.uk.courtdata.integration.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -11,6 +11,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.HttpStatus;
@@ -51,6 +53,9 @@ public abstract class MockMvcIntegrationTest {
     @Autowired
     protected ObjectMapper objectMapper;
 
+    @Autowired
+    protected Repositories repos;
+
     @DynamicPropertySource
     static void configureDynamicWireMockPort(DynamicPropertyRegistry registry) {
         registry.add("spring.security.oauth2.client.provider.cda.token-uri", () -> "http://localhost:" + WIREMOCK_PORT + "/oauth2/token");
@@ -78,17 +83,21 @@ public abstract class MockMvcIntegrationTest {
         stopWatch.start();
         while (!isComplete.get() &&
                 stopWatch.getTime(TimeUnit.SECONDS) < 2) {
+            // Loop until complete or timeout is reached
         }
         stopWatch.reset();
     }
 
     @BeforeEach
-    void resetWireMockBeforeEach() {
+    void resetWireMockAndClearAllRepositoriesBeforeEach() {
         wireMockServer.resetAll();
+        repos.clearAll();
+        repos.insertCommonTestData();
     }
 
     @AfterEach
-    void resetWireMockAfterEach() {
+    void resetWireMockAndClearAllRepositoriesAfterEach() {
+        repos.clearAll();
         wireMockServer.resetAll();
     }
 
@@ -102,7 +111,10 @@ public abstract class MockMvcIntegrationTest {
 
     public <T> boolean runSuccessScenario(T expectedResponseBody, MockHttpServletRequestBuilder request) throws Exception {
         MvcResult result = runSuccessScenario(request);
-        return result.getResponse().getContentAsString().equals(objectMapper.writeValueAsString(expectedResponseBody));
+        JSONAssert.assertEquals(objectMapper.writeValueAsString(expectedResponseBody),
+                result.getResponse().getContentAsString(),
+                JSONCompareMode.STRICT);
+        return true;
     }
 
     public boolean runBadRequestErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
@@ -120,8 +132,17 @@ public abstract class MockMvcIntegrationTest {
         return runErrorScenario(expectedError, request, status().is5xxServerError());
     }
 
-    private boolean runErrorScenario(ErrorDTO expectedError, MockHttpServletRequestBuilder request, ResultMatcher resultMatcher) throws Exception {
-        MvcResult result = mockMvc.perform(request).andExpect(resultMatcher).andReturn();
-        return result.getResponse().getContentAsString().equals(objectMapper.writeValueAsString(expectedError));
+    private boolean runErrorScenario(ErrorDTO expectedError,
+                                     MockHttpServletRequestBuilder request,
+                                     ResultMatcher resultMatcher) throws Exception {
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(resultMatcher)
+                .andReturn();
+
+        JSONAssert.assertEquals(objectMapper.writeValueAsString(expectedError),
+                result.getResponse().getContentAsString(),
+                JSONCompareMode.STRICT);
+
+        return true;
     }
 }

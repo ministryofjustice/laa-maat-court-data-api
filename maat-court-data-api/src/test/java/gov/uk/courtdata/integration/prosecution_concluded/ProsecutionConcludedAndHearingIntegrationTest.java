@@ -18,9 +18,9 @@ import gov.uk.courtdata.repository.ProsecutionConcludedRepository;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -79,7 +79,7 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
 
     @BeforeEach
     public void setUp() throws Exception {
-        RepositoryUtil.clearUp(wqHearingRepository,
+        new RepositoryUtil().clearUp(wqHearingRepository,
                 queueMessageLogRepository,
                 wqLinkRegisterRepository,
                 prosecutionConcludedRepository);

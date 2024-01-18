@@ -6,8 +6,8 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.repository.CorrespondenceStateRepository;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.AfterEach;
@@ -47,7 +47,7 @@ public class CorrespondenceStateControllerIntegrationTest extends MockMvcIntegra
 
     @AfterEach
     public void clearUp() {
-        RepositoryUtil.clearUp(repository);
+        new RepositoryUtil().clearUp(repository);
     }
 
     @Test

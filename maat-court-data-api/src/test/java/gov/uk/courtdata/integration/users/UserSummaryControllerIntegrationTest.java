@@ -3,8 +3,8 @@ package gov.uk.courtdata.integration.users;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +50,7 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
     }
 
     private void setupTestData() {
-        RepositoryUtil.clearUp(roleActionsRepository,
+        new RepositoryUtil().clearUp(roleActionsRepository,
                 reservationsRepository,
                 roleWorkReasonsRepository,
                 userRolesRepository,
@@ -110,7 +110,7 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
 
     @AfterEach
     void clearUp() {
-        RepositoryUtil.clearUp(roleActionsRepository,
+        new RepositoryUtil().clearUp(roleActionsRepository,
                 reservationsRepository,
                 roleWorkReasonsRepository,
                 userRolesRepository,

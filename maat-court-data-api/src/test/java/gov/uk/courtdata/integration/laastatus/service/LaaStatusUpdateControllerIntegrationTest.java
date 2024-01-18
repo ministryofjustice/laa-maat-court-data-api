@@ -49,9 +49,9 @@ import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import gov.uk.courtdata.repository.SolicitorRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -133,7 +133,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         objectMapper.setSerializationInclusion(Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         setupCdaWebServer();
-        RepositoryUtil.clearUp(financialAssessmentRepository,
+        new RepositoryUtil().clearUp(financialAssessmentRepository,
                 wqCoreRepository,
                 queueMessageLogRepository,
                 identifierRepository,

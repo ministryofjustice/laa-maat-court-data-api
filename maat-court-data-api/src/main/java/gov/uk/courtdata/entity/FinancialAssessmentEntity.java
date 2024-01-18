@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.DETACH;
+
 @Getter
 @Setter
 @ToString
@@ -53,7 +55,7 @@ public class FinancialAssessmentEntity implements Serializable {
     @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
 
-    @Column(name = "USER_CREATED", insertable=false, updatable=false)
+    @Column(name = "USER_CREATED")
     private String userCreated;
 
     @Column(name = "CMU_ID", nullable = false)
@@ -201,7 +203,9 @@ public class FinancialAssessmentEntity implements Serializable {
     }
 
     @ToString.Exclude
-    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME")
+    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY,
+    cascade = DETACH)
+    @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME",
+            insertable = false, updatable = false)
     private UserEntity userCreatedEntity;
 }

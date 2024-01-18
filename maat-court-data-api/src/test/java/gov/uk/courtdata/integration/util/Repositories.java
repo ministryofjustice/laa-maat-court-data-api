@@ -243,27 +243,69 @@ public class Repositories {
     @Autowired
     private RepositoryUtil repositoryUtil;
 
-    public void clearAll() {
-        repositoryUtil.clearUp(appealType, caseRepository, childWeightHistory, childWeightings,
-                concorContributions, contribAppealRules, contribCalcParameters, contributionFiles,
-                correspondence, correspondenceState, courtHouseCodes, crownCourtCode, crownCourtOutcome,
-                crownCourtProcessing, defendantMAATData, defendant,
-                financialAssessmentDetailsHistory, financialAssessmentDetails, financialAssessment,
-                financialAssessmentsHistory, hardshipReviewDetailReason, hardshipReviewDetail,
-                hardshipReviewProgress, hardshipReview, identifier, iojAppeal, offence, passportAssessment,
-                plea, proceeding, prosecutionConcluded, queueMessageLog, repOrderCapital, repOrderCPData,
-                repOrderMvoReg, repOrderMvo, repOrder, reservations, result, roleActions, roleWorkReasons,
-                session, solicitorMAATData, solicitor, unlinkReason, user, userRoles, verdict, wqCase, wqCore,
-                wqDefendant, wqHearing, wqLinkRegister, wqOffence, wqResult, wqSession, xlatOffence,
-                xlatResult);
+    public void insertCommonTestData() {
+        user.save(UserEntity.builder().username(TestEntityDataBuilder.TEST_USER).build());
+        user.save(UserEntity.builder().username(TestEntityDataBuilder.USER_CREATED_TEST_S).build());
     }
 
-    public void insertCommonTestData() {
-        user.save(UserEntity.builder()
-                .username(TestEntityDataBuilder.TEST_USER)
-                .build());
-        user.save(UserEntity.builder()
-                .username(TestEntityDataBuilder.USER_CREATED_TEST_S)
-                .build());
+    public void clearAll() {
+        repositoryUtil.clearUp(appealType,
+                caseRepository,
+                childWeightHistory,
+                childWeightings,
+                concorContributions,
+                contribAppealRules,
+                contribCalcParameters,
+                contributionFiles,
+                correspondence,
+                correspondenceState,
+                courtHouseCodes,
+                crownCourtCode,
+                crownCourtOutcome,
+                crownCourtProcessing,
+                defendantMAATData,
+                defendant,
+                financialAssessmentDetailsHistory,
+                financialAssessmentDetails,
+                financialAssessment,
+                financialAssessmentsHistory,
+                hardshipReviewDetailReason,
+                hardshipReviewDetail,
+                hardshipReviewProgress,
+                hardshipReview,
+                identifier,
+                iojAppeal,
+                offence,
+                passportAssessment,
+                plea,
+                proceeding,
+                prosecutionConcluded,
+                queueMessageLog,
+                repOrderCapital,
+                repOrderCPData,
+                repOrderMvoReg,
+                repOrderMvo,
+                repOrder,
+                reservations,
+                result,
+                roleActions,
+                roleWorkReasons,
+                session,
+                solicitorMAATData,
+                solicitor,
+                unlinkReason,
+                user,
+                userRoles,
+                verdict,
+                wqCase,
+                wqCore,
+                wqDefendant,
+                wqHearing,
+                wqLinkRegister,
+                wqOffence,
+                wqResult,
+                wqSession,
+                xlatOffence,
+                xlatResult);
     }
 }

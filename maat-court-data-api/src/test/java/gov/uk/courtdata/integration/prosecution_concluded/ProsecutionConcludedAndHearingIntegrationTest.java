@@ -2,14 +2,17 @@ package gov.uk.courtdata.integration.prosecution_concluded;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.model.Metadata;
-import gov.uk.courtdata.prosecutionconcluded.model.*;
+import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
+import gov.uk.courtdata.prosecutionconcluded.model.Plea;
+import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
+import gov.uk.courtdata.prosecutionconcluded.model.Verdict;
+import gov.uk.courtdata.prosecutionconcluded.model.VerdictType;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedListener;
 import gov.uk.courtdata.repository.ProsecutionConcludedRepository;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
@@ -18,14 +21,12 @@ import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
 import gov.uk.courtdata.util.RepositoryUtil;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.annotation.DirtiesContext;
@@ -36,7 +37,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DirtiesContext
@@ -46,7 +53,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
         classes = {
                 MAATCourtDataApplication.class
         })
-@AutoConfigureWireMock(port = 9999)
 public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegrationTest {
 
     private static final String LAA_TRANSACTION_ID = "61600a90-89e2-4717-aa9b-a01fc66130c1";
@@ -68,16 +74,8 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
     @Autowired
     private ProsecutionConcludedRepository prosecutionConcludedRepository;
 
-    @Autowired
-    private WireMockServer wiremock;
-
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
     private WQHearingEntity existingWqHearingEntity;
-
-    @AfterEach
-    void clean() {
-        wiremock.resetAll();
-    }
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -196,7 +194,7 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
                 "access_token", UUID.randomUUID()
         );
 
-        wiremock.stubFor(
+        wireMock().stubFor(
                 WireMock.post("/oauth2/token").willReturn(
                         WireMock.ok()
                                 .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))

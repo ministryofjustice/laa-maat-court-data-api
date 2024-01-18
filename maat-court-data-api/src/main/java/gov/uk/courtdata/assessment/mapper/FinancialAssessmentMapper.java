@@ -52,7 +52,7 @@ public interface FinancialAssessmentMapper {
     FinAssIncomeEvidenceDTO finAssIncomeEvidenceEntityToFinAssIncomeEvidenceDTO(final FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity);
 
     default IOJAssessorDetails createIOJAssessorDetails(FinancialAssessmentEntity financialAssessment) {
-        String fullName = UserEntityUtils.extractFullName(financialAssessment.getUserCreatedEntity());
+        String fullName = null;//UserEntityUtils.extractFullName(financialAssessment.getUserCreatedEntity());
 
         return IOJAssessorDetails.builder()
                 .fullName(fullName)

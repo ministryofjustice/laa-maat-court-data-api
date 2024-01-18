@@ -36,10 +36,13 @@ public class FinancialAssessmentServiceTest {
 
     @Test
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
+        FinancialAssessmentDTO financialAssessmentDTO = FinancialAssessmentDTO.builder().id(1000).build();
         when(financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(any()))
-                .thenReturn(FinancialAssessmentDTO.builder().id(1000).build());
+                .thenReturn(financialAssessmentDTO);
+
         FinancialAssessmentEntity financialAssessment = FinancialAssessmentEntity.builder().id(1000).build();
-        when(financialAssessmentImpl.find(1000)).thenReturn(Optional.of(financialAssessment));
+        when(financialAssessmentImpl.find(1000))
+                .thenReturn(Optional.of(financialAssessment));
 
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.find(1000);
 

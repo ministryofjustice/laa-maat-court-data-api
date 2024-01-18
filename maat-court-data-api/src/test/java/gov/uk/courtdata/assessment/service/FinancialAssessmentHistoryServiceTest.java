@@ -48,7 +48,9 @@ public class FinancialAssessmentHistoryServiceTest {
     public void setup() {
         assessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntity();
         financialAssessmentsHistoryDTO = TestModelDataBuilder.getFinancialAssessmentsHistoryDTO();
-        when(financialAssessmentImpl.find(MOCK_FINANCIAL_ASSESSMENT_ID)).thenReturn(Optional.of(assessmentEntity));
+
+        when(financialAssessmentImpl.find(MOCK_FINANCIAL_ASSESSMENT_ID))
+                .thenReturn(Optional.of(assessmentEntity));
         when(assessmentHistoryMapper.financialAssessmentEntityToFinancialAssessmentsHistoryDTO(assessmentEntity))
                 .thenReturn(financialAssessmentsHistoryDTO);
         when(financialAssessmentHistoryImpl.buildAndSave(financialAssessmentsHistoryDTO, MOCK_FINANCIAL_ASSESSMENT_ID))

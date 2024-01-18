@@ -59,7 +59,6 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
     @AfterEach
     void clearUp() {
         existingRepOrder = null;
-        new RepositoryUtil().clearUp(courtProcessingRepository, repOrderRepository);
     }
 
     @Test

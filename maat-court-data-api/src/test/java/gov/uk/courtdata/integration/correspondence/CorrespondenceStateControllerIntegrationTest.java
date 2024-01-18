@@ -45,11 +45,6 @@ public class CorrespondenceStateControllerIntegrationTest extends MockMvcIntegra
         repository.saveAndFlush(TestEntityDataBuilder.getCorrespondenceStateEntity(TestModelDataBuilder.REP_ID, "appealCC"));
     }
 
-    @AfterEach
-    public void clearUp() {
-        new RepositoryUtil().clearUp(repository);
-    }
-
     @Test
     void givenAEmptyContent_whenCreateIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}")

@@ -28,10 +28,8 @@ public class WQLinkRegisterControllerIntegrationTest extends MockMvcIntegrationT
     @Autowired
     private WqLinkRegisterRepository wqLinkRegisterRepository;
 
-
     @BeforeEach
     void setUp(@Autowired WqLinkRegisterRepository wqLinkRegisterRepository) {
-        new RepositoryUtil().clearUp(wqLinkRegisterRepository);
         wqLinkRegisterRepository.save(TestEntityDataBuilder.getWQLinkRegisterEntity(8064716));
     }
 

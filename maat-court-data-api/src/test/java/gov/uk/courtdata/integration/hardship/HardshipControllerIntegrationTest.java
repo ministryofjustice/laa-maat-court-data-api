@@ -73,14 +73,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     public void setUp() throws Exception {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
-        new RepositoryUtil().clearUp(hardshipReviewRepository,
-                hardshipReviewDetailRepository,
-                hardshipReviewDetailReasonRepository,
-                financialAssessmentRepository,
-                mockNewWorkReasonRepository,
-                passportAssessmentRepository,
-                repOrderRepository);
-
         setupTestData();
     }
 

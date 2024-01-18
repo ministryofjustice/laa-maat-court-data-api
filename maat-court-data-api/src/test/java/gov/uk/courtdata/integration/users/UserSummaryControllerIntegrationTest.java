@@ -50,12 +50,6 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
     }
 
     private void setupTestData() {
-        new RepositoryUtil().clearUp(roleActionsRepository,
-                reservationsRepository,
-                roleWorkReasonsRepository,
-                userRolesRepository,
-                userRepository);
-
         String AUTHORISED_ROLE = "VALID_ROLE";
         String DISABLED_ROLE = "DISABLED_ROLE";
         List<UserRoleEntity> userRoleEntities = List.of(
@@ -106,15 +100,6 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
                 .currentSession(VALID_SESSION_ID)
 
                 .build());
-    }
-
-    @AfterEach
-    void clearUp() {
-        new RepositoryUtil().clearUp(roleActionsRepository,
-                reservationsRepository,
-                roleWorkReasonsRepository,
-                userRolesRepository,
-                userRepository);
     }
 
     @Test

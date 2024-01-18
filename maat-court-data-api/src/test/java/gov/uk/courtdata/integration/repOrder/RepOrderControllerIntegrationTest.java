@@ -92,20 +92,6 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         );
     }
 
-    @AfterEach
-    void cleanUp(@Autowired RepOrderRepository repOrderRepository,
-                 @Autowired FinancialAssessmentRepository financialAssessmentRepository,
-                 @Autowired PassportAssessmentRepository passportAssessmentRepository,
-                 @Autowired RepOrderMvoRepository repOrderMvoRepository,
-                 @Autowired RepOrderMvoRegRepository repOrderMvoRegRepository) {
-
-        new RepositoryUtil().clearUp(financialAssessmentRepository,
-                passportAssessmentRepository,
-                repOrderMvoRegRepository,
-                repOrderMvoRepository,
-                repOrderRepository);
-    }
-
     private RepOrderDTO getUpdatedRepOrderDTO() {
         RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(TestModelDataBuilder.REP_ID);
         RepOrderDTO repOrderDTO = TestModelDataBuilder.getRepOrderDTO();

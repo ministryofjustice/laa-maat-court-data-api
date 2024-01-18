@@ -76,10 +76,6 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
     @AfterEach
     public void clearUp() {
         contributionsEntity = null;
-        new RepositoryUtil().clearUp(contributionsRepository,
-                contributionFilesRepository,
-                correspondenceRepository,
-                repOrderRepository);
     }
 
     @Test

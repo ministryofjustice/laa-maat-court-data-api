@@ -62,12 +62,6 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
     }
 
     private void setupTestData() {
-        new RepositoryUtil().clearUp(financialAssessmentRepository,
-                hardshipReviewRepository,
-                passportAssessmentRepository,
-                newWorkReasonRepository,
-                repOrderRepository);
-
         LocalDateTime testCreationDate = LocalDateTime.of(2022, 1, 1, 12, 0);
         String testUser = "test-f";
 

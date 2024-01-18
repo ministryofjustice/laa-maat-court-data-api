@@ -97,21 +97,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         setupTestData();
     }
 
-    @AfterEach
-    public void clearUp() {
-        new RepositoryUtil().clearUp(hardshipReviewRepository,
-                passportAssessmentRepository,
-                childWeightingsRepository,
-                financialAssessmentDetailsRepository,
-                financialAssessmentsHistoryRepository,
-                financialAssessmentDetailsHistoryRepository,
-                childWeightHistoryRepository,
-                financialAssessmentRepository,
-                newWorkReasonRepository,
-                repOrderRepository,
-                userRepository);
-    }
-
     private void setupTestData() {
         Integer REP_ID_DEFAULT = 4444;
         existingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_DEFAULT));

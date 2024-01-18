@@ -48,11 +48,6 @@ public class RepOrderCapitalIntegrationTest extends MockMvcIntegrationTest {
         capitalRepository.saveAllAndFlush(repOrderCapitalList);
 
     }
-
-    @AfterEach
-    void clearUp() {
-        new RepositoryUtil().clearUp(repOrderRepository, capitalRepository);
-    }
     
     @Test
     void givenAInvalidRepId_whenGetCapitalAssetCountIsInvoked_thenErrorReturn() throws Exception {

@@ -79,10 +79,6 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
 
     @BeforeEach
     public void setUp() throws Exception {
-        new RepositoryUtil().clearUp(wqHearingRepository,
-                queueMessageLogRepository,
-                wqLinkRegisterRepository,
-                prosecutionConcludedRepository);
         loadData();
         setupCdaWebServer();
         queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);

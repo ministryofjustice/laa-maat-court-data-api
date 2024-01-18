@@ -133,21 +133,6 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         objectMapper.setSerializationInclusion(Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         setupCdaWebServer();
-        new RepositoryUtil().clearUp(financialAssessmentRepository,
-                wqCoreRepository,
-                queueMessageLogRepository,
-                identifierRepository,
-                caseRepository,
-                wqLinkRegisterRepository,
-                solicitorRepository,
-                defendantRepository,
-                sessionRepository,
-                offenceRepository,
-                passportAssessmentRepository,
-                repOrderRepository,
-                solicitorMAATDataRepository,
-                defendantMAATDataRepository,
-                repOrderCPDataRepository);
         queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
     }
 

@@ -28,11 +28,6 @@ public class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrati
     @Autowired
     private ConcorContributionsRepository concorRepository;
 
-    @AfterEach
-    public void clear() {
-        concorRepository.deleteAll();
-    }
-
     @BeforeEach
     public void setUp() {
         concorRepository.saveAll(List.of(

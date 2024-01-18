@@ -14,7 +14,6 @@ on:
 env:
   ECR_SHARED_REGISTRY: 374269020027.dkr.ecr.eu-west-2.amazonaws.com
   ECR_ACCOUNT_ID: "374269020027"
-  APPLICATION_NAME: "maat-cd-api"
   ECR_SHARED_REPOSITORY: "maat-cd-api-ecr-repo"
   SOURCE_APP_TAG: "development"
   
@@ -60,7 +59,7 @@ jobs:
           ./gradlew build
           docker build -t maat-cda .
           docker tag maat-cda "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${{ env.SOURCE_APP_TAG }}"
-          docker tag maat-cda "${GITHUB_SHA}"
+          docker tag maat-cda "${{ env.ECR_SHARED_REGISTRY }}/${{ env.ECR_SHARED_REPOSITORY }}:${GITHUB_SHA}"
       - name: Post-Build
         id: push-image
         run: |
@@ -98,5 +97,5 @@ jobs:
         id: run-restart
         run: |
           echo "Restarting the ECS Tasks which will pick up the new images"
-          aws ecs update-service --cluster "${{ env.APPLICATION_NAME }}" --service "${{ env.APPLICATION_NAME }}-ecs-service" --force-new-deployment
+          aws ecs update-service --cluster "maat-api-ecs-cluster" --service "maat-api-ecs-service" --force-new-deployment
           

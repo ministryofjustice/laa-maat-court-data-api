@@ -200,4 +200,8 @@ public class FinancialAssessmentEntity implements Serializable {
         this.finAssIncomeEvidences.add(finAssIncomeEvidenceEntity);
     }
 
+/*    @ToString.Exclude
+    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME")
+    private UserEntity userCreatedEntity;*/
 }

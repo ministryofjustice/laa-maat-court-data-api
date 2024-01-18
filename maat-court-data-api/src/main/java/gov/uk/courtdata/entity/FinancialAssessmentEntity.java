@@ -53,7 +53,7 @@ public class FinancialAssessmentEntity implements Serializable {
     @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
 
-    @Column(name = "USER_CREATED", nullable = false, updatable = false)
+    @Column(name = "USER_CREATED", insertable=false, updatable=false)
     private String userCreated;
 
     @Column(name = "CMU_ID", nullable = false)
@@ -200,8 +200,8 @@ public class FinancialAssessmentEntity implements Serializable {
         this.finAssIncomeEvidences.add(finAssIncomeEvidenceEntity);
     }
 
-/*    @ToString.Exclude
+    @ToString.Exclude
     @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME")
-    private UserEntity userCreatedEntity;*/
+    private UserEntity userCreatedEntity;
 }

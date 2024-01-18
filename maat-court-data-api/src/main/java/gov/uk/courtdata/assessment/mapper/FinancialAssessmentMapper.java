@@ -3,17 +3,23 @@ package gov.uk.courtdata.assessment.mapper;
 import gov.uk.courtdata.dto.FinAssIncomeEvidenceDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.IOJAssessorDetails;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.ChildWeightingsEntity;
+import gov.uk.courtdata.entity.FinAssIncomeEvidenceEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
-import gov.uk.courtdata.util.NameUtils;
 import gov.uk.courtdata.util.UserEntityUtils;
-import org.mapstruct.*;
-
-import java.util.Objects;
+import org.mapstruct.Builder;
+import org.mapstruct.CollectionMappingStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         componentModel = "spring",
@@ -52,10 +58,11 @@ public interface FinancialAssessmentMapper {
     FinAssIncomeEvidenceDTO finAssIncomeEvidenceEntityToFinAssIncomeEvidenceDTO(final FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity);
 
     default IOJAssessorDetails createIOJAssessorDetails(FinancialAssessmentEntity financialAssessment) {
-        String fullName = null;//UserEntityUtils.extractFullName(financialAssessment.getUserCreatedEntity());
+        String fullName = UserEntityUtils.extractFullName(financialAssessment.getUserCreatedEntity());
 
         return IOJAssessorDetails.builder()
                 .fullName(fullName)
                 .userName(financialAssessment.getUserCreated())
                 .build();
-    }}
+    }
+}

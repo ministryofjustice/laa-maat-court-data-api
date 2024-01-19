@@ -2,7 +2,6 @@ package gov.uk.courtdata.integration.laastatus.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
@@ -19,6 +18,8 @@ import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.WQStatus;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.OAuthStub;
 import gov.uk.courtdata.laastatus.controller.LaaStatusUpdateController;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Defendant;
@@ -49,9 +50,7 @@ import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import gov.uk.courtdata.repository.SolicitorRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,11 +62,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -463,10 +460,10 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         return linkItems;
     }
 
-    private void setupCdaWebServer() throws IOException {
-        stubForOAuth();
+    private void setupCdaWebServer() {
+        new OAuthStub().applyStubTo(wireMock());
         wireMock().stubFor(WireMock
-                .post(urlEqualTo("http://localhost:" + wireMock().port() + "/api/internal/v1/representation_orders"))
+                .post(urlEqualTo("/api/internal/v1/representation_orders"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))));
@@ -530,22 +527,5 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("laa-transaction-id", LAA_TRANSACTION_ID)
                 .content(payload);
-    }
-
-    private void stubForOAuth() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> token = Map.of(
-                "expires_in", 3600,
-                "token_type", "Bearer",
-                "access_token", UUID.randomUUID()
-        );
-
-        wireMock().stubFor(
-                WireMock.post("/oauth2/token").willReturn(
-                        WireMock.ok()
-                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
-                                .withBody(mapper.writeValueAsString(token))
-                )
-        );
     }
 }

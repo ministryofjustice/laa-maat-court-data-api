@@ -7,6 +7,8 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.OAuthStub;
 import gov.uk.courtdata.model.Metadata;
 import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
 import gov.uk.courtdata.prosecutionconcluded.model.Plea;
@@ -18,9 +20,7 @@ import gov.uk.courtdata.repository.ProsecutionConcludedRepository;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -31,10 +31,8 @@ import org.springframework.http.MediaType;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -50,9 +48,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @TestInstance(Lifecycle.PER_CLASS)
 @SpringBootTest(
         properties = "spring.main.allow-bean-definition-overriding=true",
-        classes = {
-                MAATCourtDataApplication.class
-        })
+        classes = {MAATCourtDataApplication.class})
 public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegrationTest {
 
     private static final String LAA_TRANSACTION_ID = "61600a90-89e2-4717-aa9b-a01fc66130c1";
@@ -84,10 +80,10 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
         queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
     }
 
-    private void setupCdaWebServer() throws IOException {
-        stubForOAuth();
+    private void setupCdaWebServer() {
+        new OAuthStub().applyStubTo(wireMock());
         stubFor(WireMock
-                .get(urlEqualTo("http://localhost:9999/api/internal/v1/hearing_results/" + LAA_TRANSACTION_ID + "?publish_to_queue=true"))
+                .get(urlEqualTo("/api/internal/v1/hearing_results/" + LAA_TRANSACTION_ID + "?publish_to_queue=true"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))));
@@ -180,22 +176,5 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
     private String pullMessageFromSQS(ProsecutionConcluded prosecutionConcludedObject) throws JsonProcessingException {
         String messageString = objectMapper.writeValueAsString(prosecutionConcludedObject);
         return messageString.replace("concluded", "isConcluded");
-    }
-
-    private void stubForOAuth() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> token = Map.of(
-                "expires_in", 3600,
-                "token_type", "Bearer",
-                "access_token", UUID.randomUUID()
-        );
-
-        wireMock().stubFor(
-                WireMock.post("/oauth2/token").willReturn(
-                        WireMock.ok()
-                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
-                                .withBody(mapper.writeValueAsString(token))
-                )
-        );
     }
 }

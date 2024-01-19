@@ -82,7 +82,7 @@ public abstract class MockMvcIntegrationTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         while (!isComplete.get() &&
-                stopWatch.getTime(TimeUnit.SECONDS) < 2) {
+                stopWatch.getTime(TimeUnit.SECONDS) < 3) {
             // Loop until complete or timeout is reached
         }
         stopWatch.reset();

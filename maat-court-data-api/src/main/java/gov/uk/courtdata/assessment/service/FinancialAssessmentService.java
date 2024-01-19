@@ -68,7 +68,7 @@ public class FinancialAssessmentService {
     public IOJAssessorDetails findIOJAssessorDetails(int financialAssessmentId) {
         Optional<FinancialAssessmentEntity> financialAssessmentOptional = financialAssessmentImpl.find(financialAssessmentId);
         if (financialAssessmentOptional.isEmpty()) {
-            String message = "Unable to find FinancialAssessment with financialAssessmentId: [%d]".formatted(financialAssessmentId);
+            String message = "Unable to find IOJAssessorDetails with financialAssessmentId: [%d]".formatted(financialAssessmentId);
             throw new RequestedObjectNotFoundException(message);
         }
         return assessmentMapper.createIOJAssessorDetails(financialAssessmentOptional.get());

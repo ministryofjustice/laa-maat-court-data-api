@@ -2,23 +2,34 @@ package gov.uk.courtdata.assessment.service;
 
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.UserEntity;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
 
 import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class FinancialAssessmentServiceTest {
@@ -109,5 +120,36 @@ public class FinancialAssessmentServiceTest {
         OutstandingAssessmentResultDTO result = financialAssessmentService.checkForOutstandingAssessments(TEST_REP_ID);
         verify(financialAssessmentImpl).checkForOutstandingAssessments(TEST_REP_ID);
         assertThat(result.isOutstandingAssessments()).isEqualTo(false);
+    }
+
+    @Test
+    public void givenValidFinancialAssessmentId_whenFindIOJAssessorDetailsIsInvoked_thenPopulatedIOJAssessorDetailsAreReturned() throws Exception {
+        int financialAssessmentId = 1234;
+        final String username = TestEntityDataBuilder.USER_CREATED_TEST_S;
+        FinancialAssessmentEntity financialAssessment = FinancialAssessmentEntity.builder()
+                .userCreated(username)
+                .userCreatedEntity(TestEntityDataBuilder.getUserEntity(username))
+                .build();
+        when(financialAssessmentImpl.find(financialAssessmentId))
+                .thenReturn(Optional.of(financialAssessment));
+        when(financialAssessmentMapper.createIOJAssessorDetails(financialAssessment))
+                .thenReturn(TestModelDataBuilder.getIOJAssessorDetails());
+
+        IOJAssessorDetails iojAssessorDetails = financialAssessmentService.findIOJAssessorDetails(financialAssessmentId);
+
+        assertEquals("Karen Greaves", iojAssessorDetails.getFullName());
+        assertEquals(username, iojAssessorDetails.getUserName());
+   }
+
+    @Test
+    public void givenUnknownFinancialAssessmentId_whenFindIOJAssessorDetailsIsInvoked_thenNotFoundErrorIsReturned() {
+        int unknownFinancialAssessmentId = 99999;
+        when(financialAssessmentImpl.find(unknownFinancialAssessmentId))
+                .thenReturn(Optional.empty());
+
+        RequestedObjectNotFoundException actualException = Assertions.assertThrows(RequestedObjectNotFoundException.class,
+                () -> financialAssessmentService.findIOJAssessorDetails(unknownFinancialAssessmentId));
+
+        assertEquals("Unable to find IOJAssessorDetails with financialAssessmentId: [99999]", actualException.getMessage());
     }
 }

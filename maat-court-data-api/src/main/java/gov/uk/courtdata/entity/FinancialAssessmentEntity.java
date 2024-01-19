@@ -203,8 +203,7 @@ public class FinancialAssessmentEntity implements Serializable {
     }
 
     @ToString.Exclude
-    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY,
-    cascade = DETACH)
+    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME",
             insertable = false, updatable = false)
     private UserEntity userCreatedEntity;

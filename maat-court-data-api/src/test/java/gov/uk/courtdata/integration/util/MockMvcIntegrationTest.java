@@ -111,8 +111,10 @@ public abstract class MockMvcIntegrationTest {
 
     public <T> boolean runSuccessScenario(T expectedResponseBody, MockHttpServletRequestBuilder request) throws Exception {
         MvcResult result = runSuccessScenario(request);
-        JSONAssert.assertEquals(objectMapper.writeValueAsString(expectedResponseBody),
-                result.getResponse().getContentAsString(),
+        String expectedJson = objectMapper.writeValueAsString(expectedResponseBody);
+        String actualJson = result.getResponse().getContentAsString();
+        JSONAssert.assertEquals(expectedJson,
+                actualJson,
                 JSONCompareMode.STRICT);
         return true;
     }

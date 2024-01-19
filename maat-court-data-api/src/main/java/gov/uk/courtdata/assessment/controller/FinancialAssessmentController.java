@@ -4,6 +4,7 @@ import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentHistoryService;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
+import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
@@ -42,7 +43,7 @@ public class FinancialAssessmentController {
     @Operation(description = "Retrieve a financial assessment record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
-    public ResponseEntity<Object> getAssessment(@PathVariable int financialAssessmentId) {
+    public ResponseEntity<FinancialAssessmentDTO> getAssessment(@PathVariable int financialAssessmentId) {
         log.info("Get Financial Assessment Request Received");
         financialAssessmentValidationProcessor.validate(financialAssessmentId);
         return ResponseEntity.ok(financialAssessmentService.find(financialAssessmentId));
@@ -52,7 +53,7 @@ public class FinancialAssessmentController {
     @Operation(description = "Update a financial assessment record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
-    public ResponseEntity<Object> updateAssessment(
+    public ResponseEntity<FinancialAssessmentDTO> updateAssessment(
             @Parameter(description = "Financial assessment data", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = UpdateFinancialAssessment.class))) @RequestBody UpdateFinancialAssessment financialAssessment) {
         log.info("Update Financial Assessment Request Received");
@@ -74,7 +75,7 @@ public class FinancialAssessmentController {
     @Operation(description = "Create a new financial assessment record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
-    public ResponseEntity<Object> createAssessment(@Parameter(description = "Financial assessment data", content = @Content(mediaType = "application/json",
+    public ResponseEntity<FinancialAssessmentDTO> createAssessment(@Parameter(description = "Financial assessment data", content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = CreateFinancialAssessment.class))) @RequestBody CreateFinancialAssessment financialAssessment) {
         log.info("Create Financial Assessment Request Received");
         financialAssessmentValidationProcessor.validate(financialAssessment);
@@ -105,7 +106,7 @@ public class FinancialAssessmentController {
     @Operation(description = "Retrieve details of the interests of justice assessor for a given financial assessment")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
-    public ResponseEntity<Object> findIOJAssessorDetails(@PathVariable int financialAssessmentId) {
+    public ResponseEntity<IOJAssessorDetails> findIOJAssessorDetails(@PathVariable int financialAssessmentId) {
         IOJAssessorDetails iojAssessorDetails = financialAssessmentService.findIOJAssessorDetails(financialAssessmentId);
         return ResponseEntity.ok(iojAssessorDetails);
     }

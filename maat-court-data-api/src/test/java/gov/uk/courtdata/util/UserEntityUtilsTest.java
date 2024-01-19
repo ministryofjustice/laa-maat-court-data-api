@@ -1,5 +1,7 @@
 package gov.uk.courtdata.util;
 
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.entity.UserEntity;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,6 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserEntityUtilsTest {
 
     @Test
-    void extractFullName() {
+    void shouldSuccessfullyExtractFullNameFromUserEntity() {
+        UserEntity userEntity = TestEntityDataBuilder.getUserEntity(TestEntityDataBuilder.USER_CREATED_TEST_S);
+
+        String actualFullName = UserEntityUtils.extractFullName(userEntity);
+
+        assertEquals("Karen Greaves", actualFullName);
     }
 }

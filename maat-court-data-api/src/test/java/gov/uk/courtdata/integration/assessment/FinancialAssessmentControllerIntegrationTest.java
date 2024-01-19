@@ -14,25 +14,19 @@ import gov.uk.courtdata.entity.NewWorkReasonEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
-import gov.uk.courtdata.repository.ChildWeightHistoryRepository;
-import gov.uk.courtdata.repository.ChildWeightingsRepository;
-import gov.uk.courtdata.repository.FinancialAssessmentDetailsHistoryRepository;
-import gov.uk.courtdata.repository.FinancialAssessmentDetailsRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentsHistoryRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.repository.UserRepository;
-import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,17 +68,9 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     @Autowired
     private MockNewWorkReasonRepository newWorkReasonRepository;
     @Autowired
-    private ChildWeightingsRepository childWeightingsRepository;
-    @Autowired
-    private FinancialAssessmentDetailsRepository financialAssessmentDetailsRepository;
-    @Autowired
     private RepOrderRepository repOrderRepository;
     @Autowired
-    private ChildWeightHistoryRepository childWeightHistoryRepository;
-    @Autowired
     private FinancialAssessmentsHistoryRepository financialAssessmentsHistoryRepository;
-    @Autowired
-    private FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistoryRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -103,6 +89,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_ASSESSMENTS));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS));
+        userRepository.save(TestEntityDataBuilder.getUserEntity(TestEntityDataBuilder.TEST_USER));
 
         NewWorkReasonEntity newWorkReasonEntity = newWorkReasonRepository.save(
                 TestEntityDataBuilder.getFmaNewWorkReasonEntity());
@@ -384,8 +371,20 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         assertAssessmentHistoryCreated(assessmentEntity, fullAvailable, existingRepOrder);
     }
 
-    public void assertAssessmentHistoryCreated(
-            FinancialAssessmentEntity assessmentEntity, Boolean fullAvailable, RepOrderEntity existingRepOrder) {
+    @Test
+    public void givenValidFinancialAssessmentId_whenIojAssessorDetailsIsInvoked_thenPopulatedIOJAssessorDetailsAreReturned() throws Exception {
+        runSuccessScenario(TestEntityDataBuilder.getUserEntity(TestEntityDataBuilder.TEST_USER), get(BASE_URL + "/1/ioj-assessor-details"));
+    }
+
+    @Test
+    public void givenUnknownFinancialAssessmentId_whenIojAssessorDetailsIsInvoked_thenNotFoundResponseIsReturned() throws Exception {
+        runNotFoundErrorScenario("Unable to find IOJAssessorDetails with financialAssessmentId: [99999]",
+                get(BASE_URL + "/99999/ioj-assessor-details"));
+    }
+
+    public void assertAssessmentHistoryCreated(FinancialAssessmentEntity assessmentEntity,
+                                               Boolean fullAvailable,
+                                               RepOrderEntity existingRepOrder) {
 
         var createdHistoryEntities = financialAssessmentsHistoryRepository.findAll();
         assertThat(createdHistoryEntities.size()).isEqualTo(1);

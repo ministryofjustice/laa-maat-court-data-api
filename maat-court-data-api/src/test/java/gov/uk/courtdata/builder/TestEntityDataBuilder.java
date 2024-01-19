@@ -140,7 +140,7 @@ public class TestEntityDataBuilder {
                                 .build()
                 )
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated("test-f")
+                .userCreated(TEST_USER)
                 .cmuId(30)
                 .fassInitStatus("COMPLETE")
                 .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
@@ -148,14 +148,15 @@ public class TestEntityDataBuilder {
                 .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00).setScale(2))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
-                .userModified("test-f")
+                .userModified(TEST_USER)
                 .firstReminderDate(LocalDateTime.parse("2021-10-09T15:02:25"))
                 .secondReminderDate(LocalDateTime.parse("2022-10-09T15:02:25"))
                 .evidenceReceivedDate(LocalDateTime.parse("2021-10-09T15:02:25"))
                 .build();
     }
 
-    public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(Integer repId, String assessmentStatus,
+    public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(int repId,
+                                                                               String assessmentStatus,
                                                                                NewWorkReasonEntity newWorkReason) {
         return FinancialAssessmentEntity.builder()
                 .repOrder(getPopulatedRepOrder(repId))
@@ -168,6 +169,7 @@ public class TestEntityDataBuilder {
                 .cmuId(3)
                 .replaced("N")
                 .newWorkReason(newWorkReason)
+                .userCreatedEntity(getUserEntity(TEST_USER))
                 .build();
     }
 
@@ -204,8 +206,8 @@ public class TestEntityDataBuilder {
                 .applicantFrequency(Frequency.MONTHLY)
                 .partnerAmount(BigDecimal.valueOf(1650.00).setScale(2))
                 .partnerFrequency(Frequency.TWO_WEEKLY)
-                .userCreated("test-f")
-                .userModified("test-f")
+                .userCreated(TEST_USER)
+                .userModified(TEST_USER)
                 .build();
     }
 
@@ -246,7 +248,7 @@ public class TestEntityDataBuilder {
                 .repOrder(getPopulatedRepOrder(REP_ID))
                 .nworCode("FMA")
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated("test-f").cmuId(30)
+                .userCreated(TEST_USER).cmuId(30)
                 .assessmentDate(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .partnerBenefitClaimed("Y")
                 .partnerFirstName("Test")
@@ -261,7 +263,7 @@ public class TestEntityDataBuilder {
                 .pcobConfirmation("DWP")
                 .result("PASS")
                 .dateModified(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userModified("test-f")
+                .userModified(TEST_USER)
                 .dwpResult("Yes")
                 .between16And17("N")
                 .under18HeardInYouthCourt("N")
@@ -375,7 +377,7 @@ public class TestEntityDataBuilder {
                 .linkDate(LocalDate.parse("2021-10-09"))
                 .unlinkDate(LocalDate.parse("2021-10-21"))
                 .userCreated("test-u")
-                .userModified("test-f")
+                .userModified(TEST_USER)
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .dateModified(LocalDateTime.parse("2021-10-21T15:01:25"))
                 .build();
@@ -406,7 +408,7 @@ public class TestEntityDataBuilder {
                 .initialAscrId(1)
                 .newWorkReason(getNewWorkReasonEntity())
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated("test-f")
+                .userCreated(TEST_USER)
                 .cmuId(30)
                 .fassInitStatus("COMPLETE")
                 .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
@@ -414,7 +416,7 @@ public class TestEntityDataBuilder {
                 .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
-                .userModified("test-f")
+                .userModified(TEST_USER)
                 .assessmentDetails(List.of(TestEntityDataBuilder.getFinancialAssessmentDetailsHistoryEntity()))
                 .childWeightings(List.of(TestEntityDataBuilder.getChildWeightHistoryEntity()))
                 .build();
@@ -426,8 +428,8 @@ public class TestEntityDataBuilder {
                 .criteriaDetailId(40)
                 .applicantAmount(BigDecimal.valueOf(1650.00))
                 .partnerAmount(BigDecimal.valueOf(1650.00))
-                .userCreated("test-f")
-                .userModified("test-f")
+                .userCreated(TEST_USER)
+                .userModified(TEST_USER)
                 .build();
     }
 

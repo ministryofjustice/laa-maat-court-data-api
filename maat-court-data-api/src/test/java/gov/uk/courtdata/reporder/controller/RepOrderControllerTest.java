@@ -237,10 +237,7 @@ class RepOrderControllerTest {
     @Test
     void givenValidRepId_whenIOJAssessorDetailsGetRequestIsMade_thenIOJAssessorDetailsAreReturned() throws Exception {
         when(repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID))
-                .thenReturn(IOJAssessorDetails.builder()
-                        .fullName("Karen Greaves")
-                        .userName("grea-k")
-                        .build());
+                .thenReturn(TestModelDataBuilder.getIOJAssessorDetails());
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID+"/ioj-assessor-details"))
                 .andExpect(status().isOk())

@@ -33,7 +33,7 @@ public class RepOrderEquityEntity {
 
     @Nullable
     @Column(name = "ROPD_ID")
-    private Integer ropdId;
+    private Integer repOrderPropertyDetailsId;
 
     @Size(max = 20)
     @Nullable

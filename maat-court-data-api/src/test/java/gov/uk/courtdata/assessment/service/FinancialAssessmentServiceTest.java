@@ -8,6 +8,7 @@ import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +23,8 @@ import static org.mockito.Mockito.*;
 public class FinancialAssessmentServiceTest {
 
     private static final Integer TEST_REP_ID = 1000;
+    private static final Integer MOCK_FINANCIAL_ASSESSMENT_ID = 1000;
+
 
     @InjectMocks
     private FinancialAssessmentService financialAssessmentService;
@@ -31,6 +34,9 @@ public class FinancialAssessmentServiceTest {
 
     @Mock
     private FinancialAssessmentMapper financialAssessmentMapper;
+
+    @Mock
+    private FinancialAssessmentRepository financialAssessmentRepository;
 
     @Test
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
@@ -102,5 +108,16 @@ public class FinancialAssessmentServiceTest {
         OutstandingAssessmentResultDTO result = financialAssessmentService.checkForOutstandingAssessments(TEST_REP_ID);
         verify(financialAssessmentImpl).checkForOutstandingAssessments(any());
         assertThat(result.isOutstandingAssessments()).isEqualTo(false);
+    }
+
+    @Test
+    public void whenUpdateFinancialAssessmentsIsInvoked_thenResultIsReturned() {
+        FinancialAssessmentEntity financialAssessmentEntity = FinancialAssessmentEntity.builder().id(1000).build();
+        when(financialAssessmentMapper.financialAssessmentDtoToFinancialAssessmentEntity(any()))
+                .thenReturn(financialAssessmentEntity);
+
+        FinancialAssessmentDTO returnedFinancialAssessment = FinancialAssessmentDTO.builder().fassInitStatus("FAIL").build();
+        financialAssessmentService.updateFinancialAssessments(MOCK_FINANCIAL_ASSESSMENT_ID, returnedFinancialAssessment);
+        verify(financialAssessmentRepository).save(financialAssessmentEntity);
     }
 }

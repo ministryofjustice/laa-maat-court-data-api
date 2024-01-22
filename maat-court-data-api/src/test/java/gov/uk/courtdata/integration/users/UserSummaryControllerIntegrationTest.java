@@ -127,7 +127,7 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.roleActions").isEmpty())
                 .andExpect(jsonPath("$.newWorkReasons").isEmpty())
-                .andExpect(jsonPath("$.reservationsEntity").isEmpty())
+                .andExpect(jsonPath("$.reservationsEntity").doesNotExist())
                 .andExpect(jsonPath("$.username").value(INVALID_TEST_USER));
 
     }

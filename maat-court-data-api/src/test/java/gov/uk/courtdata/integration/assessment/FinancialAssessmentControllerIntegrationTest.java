@@ -6,6 +6,7 @@ import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
@@ -13,6 +14,7 @@ import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.NewWorkReasonEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.NewWorkReason;
@@ -22,7 +24,6 @@ import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentsHistoryRepository;
-import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.repository.UserRepository;
@@ -60,8 +61,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     @Autowired
     private FinancialAssessmentRepository financialAssessmentRepository;
     @Autowired
-    private HardshipReviewRepository hardshipReviewRepository;
-    @Autowired
     private PassportAssessmentRepository passportAssessmentRepository;
     @Autowired
     private FinancialAssessmentMapper assessmentMapper;
@@ -76,6 +75,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     private List<FinancialAssessmentEntity> existingAssessmentEntities;
     private RepOrderEntity existingRepOrder;
+    private UserEntity userEntity;
 
 
     @BeforeEach
@@ -89,7 +89,8 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_ASSESSMENTS));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS));
-        userRepository.save(TestEntityDataBuilder.getUserEntity(TestEntityDataBuilder.TEST_USER));
+        userEntity = TestEntityDataBuilder.getUserEntity(TestEntityDataBuilder.TEST_USER);
+        userRepository.save(userEntity);
 
         NewWorkReasonEntity newWorkReasonEntity = newWorkReasonRepository.save(
                 TestEntityDataBuilder.getFmaNewWorkReasonEntity());
@@ -373,12 +374,17 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     @Test
     public void givenValidFinancialAssessmentId_whenIojAssessorDetailsIsInvoked_thenPopulatedIOJAssessorDetailsAreReturned() throws Exception {
-        runSuccessScenario(TestEntityDataBuilder.getUserEntity(TestEntityDataBuilder.TEST_USER), get(BASE_URL + "/1/ioj-assessor-details"));
+        IOJAssessorDetails expectedIOJAssessorDetails = IOJAssessorDetails.builder()
+                .fullName("First Name Of [test-f] Surname Of [test-f]")
+                .userName(TestEntityDataBuilder.TEST_USER)
+                .build();
+
+        runSuccessScenario(expectedIOJAssessorDetails, get(BASE_URL + "/1/ioj-assessor-details"));
     }
 
     @Test
     public void givenUnknownFinancialAssessmentId_whenIojAssessorDetailsIsInvoked_thenNotFoundResponseIsReturned() throws Exception {
-        runNotFoundErrorScenario("Unable to find IOJAssessorDetails with financialAssessmentId: [99999]",
+        runNotFoundErrorScenario("No Financial Assessment found for financial assessment Id: [99999]",
                 get(BASE_URL + "/99999/ioj-assessor-details"));
     }
 

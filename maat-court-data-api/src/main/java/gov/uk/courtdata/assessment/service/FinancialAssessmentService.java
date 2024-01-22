@@ -11,6 +11,7 @@ import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +27,8 @@ public class FinancialAssessmentService {
 
     @Transactional(readOnly = true)
     public FinancialAssessmentDTO find(int financialAssessmentId) {
-        Optional<FinancialAssessmentEntity> assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
-        if (assessmentEntity.isEmpty()) {
-            throw new RequestedObjectNotFoundException(String.format("No Financial Assessment found for ID: %s", financialAssessmentId));
-        }
-        return assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity.get());
+        FinancialAssessmentEntity assessmentEntity = findFinancialAssessmentEntity(financialAssessmentId);
+        return assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
     }
 
     @Transactional
@@ -65,12 +63,18 @@ public class FinancialAssessmentService {
         return financialAssessmentImpl.checkForOutstandingAssessments(repId);
     }
 
+    @Transactional(readOnly = true)
     public IOJAssessorDetails findIOJAssessorDetails(int financialAssessmentId) {
-        Optional<FinancialAssessmentEntity> financialAssessmentOptional = financialAssessmentImpl.find(financialAssessmentId);
-        if (financialAssessmentOptional.isEmpty()) {
-            String message = "Unable to find IOJAssessorDetails with financialAssessmentId: [%d]".formatted(financialAssessmentId);
-            throw new RequestedObjectNotFoundException(message);
+        FinancialAssessmentEntity financialAssessmentEntity = findFinancialAssessmentEntity(financialAssessmentId);
+        return assessmentMapper.createIOJAssessorDetails(financialAssessmentEntity);
+    }
+
+    @NotNull
+    private FinancialAssessmentEntity findFinancialAssessmentEntity(int financialAssessmentId) {
+        Optional<FinancialAssessmentEntity> assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
+        if (assessmentEntity.isEmpty()) {
+            throw new RequestedObjectNotFoundException(String.format("No Financial Assessment found for financial assessment Id: [%s]", financialAssessmentId));
         }
-        return assessmentMapper.createIOJAssessorDetails(financialAssessmentOptional.get());
+        return assessmentEntity.get();
     }
 }

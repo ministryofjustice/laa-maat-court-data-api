@@ -98,7 +98,7 @@ class RepOrderServiceTest {
     void givenValidRepId_whenFindIOJAssessorDetailsIsInvoked_thenIOJAssessorDetailsAreReturnedWithFullName() {
         RepOrderEntity repOrder = TestEntityDataBuilder.getPopulatedRepOrder(TestModelDataBuilder.REP_ID);
         repOrder.setUserCreated("grea-k");
-        repOrder.setUserCreatedEntity(TestEntityDataBuilder.getUserEntity("grea-k"));
+        repOrder.setUserCreatedEntity(TestEntityDataBuilder.getUserEntity());
 
         when(repOrderRepository.findById(TestModelDataBuilder.REP_ID))
                 .thenReturn(Optional.of(repOrder));

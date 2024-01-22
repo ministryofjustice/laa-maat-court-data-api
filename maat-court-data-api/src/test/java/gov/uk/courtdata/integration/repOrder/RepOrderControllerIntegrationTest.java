@@ -12,11 +12,9 @@ import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -322,7 +320,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenValidRepId_whenFindIOJAssessorDetailsIsCalled_() throws Exception {
         String userName = "grea-k";
-        UserEntity userEntity = TestEntityDataBuilder.getUserEntity(userName);
+        UserEntity userEntity = TestEntityDataBuilder.getUserEntity();
         userRepository.save(userEntity);
 
         RepOrderEntity repOrder = TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID);

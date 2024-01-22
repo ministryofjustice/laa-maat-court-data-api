@@ -8,28 +8,24 @@ import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
-import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.function.Executable;
-import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
 
 import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class FinancialAssessmentServiceTest {
@@ -125,10 +121,10 @@ public class FinancialAssessmentServiceTest {
     @Test
     public void givenValidFinancialAssessmentId_whenFindIOJAssessorDetailsIsInvoked_thenPopulatedIOJAssessorDetailsAreReturned() throws Exception {
         int financialAssessmentId = 1234;
-        final String username = TestEntityDataBuilder.USER_CREATED_TEST_S;
+        final String username = TestEntityDataBuilder.IOJ_USER_NAME;
         FinancialAssessmentEntity financialAssessment = FinancialAssessmentEntity.builder()
                 .userCreated(username)
-                .userCreatedEntity(TestEntityDataBuilder.getUserEntity(username))
+                .userCreatedEntity(TestEntityDataBuilder.getUserEntity())
                 .build();
         when(financialAssessmentImpl.find(financialAssessmentId))
                 .thenReturn(Optional.of(financialAssessment));
@@ -139,7 +135,7 @@ public class FinancialAssessmentServiceTest {
 
         assertEquals("Karen Greaves", iojAssessorDetails.getFullName());
         assertEquals(username, iojAssessorDetails.getUserName());
-   }
+    }
 
     @Test
     public void givenUnknownFinancialAssessmentId_whenFindIOJAssessorDetailsIsInvoked_thenNotFoundErrorIsReturned() {
@@ -150,6 +146,6 @@ public class FinancialAssessmentServiceTest {
         RequestedObjectNotFoundException actualException = Assertions.assertThrows(RequestedObjectNotFoundException.class,
                 () -> financialAssessmentService.findIOJAssessorDetails(unknownFinancialAssessmentId));
 
-        assertEquals("Unable to find IOJAssessorDetails with financialAssessmentId: [99999]", actualException.getMessage());
+        assertEquals("No Financial Assessment found for financial assessment Id: [99999]", actualException.getMessage());
     }
 }

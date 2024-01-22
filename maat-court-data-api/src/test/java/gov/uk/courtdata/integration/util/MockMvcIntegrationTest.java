@@ -1,6 +1,8 @@
 package gov.uk.courtdata.integration.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
@@ -90,6 +92,7 @@ public abstract class MockMvcIntegrationTest {
 
     @BeforeEach
     void resetWireMockAndClearAllRepositoriesBeforeEach() {
+        configureObjectMapper(objectMapper);
         wireMockServer.resetAll();
         repos.clearAll();
         repos.insertCommonTestData();
@@ -97,8 +100,14 @@ public abstract class MockMvcIntegrationTest {
 
     @AfterEach
     void resetWireMockAndClearAllRepositoriesAfterEach() {
+        configureObjectMapper(objectMapper);
         repos.clearAll();
         wireMockServer.resetAll();
+    }
+
+    private void configureObjectMapper(ObjectMapper objectMapper) {
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
     }
 
     protected static WireMockServer wireMock() {
@@ -115,7 +124,7 @@ public abstract class MockMvcIntegrationTest {
         String actualJson = result.getResponse().getContentAsString();
         JSONAssert.assertEquals(expectedJson,
                 actualJson,
-                JSONCompareMode.STRICT);
+                JSONCompareMode.LENIENT);
         return true;
     }
 

@@ -17,7 +17,7 @@ class FinancialAssessmentMapperTest {
     void shouldSuccessfullyCreateIOJAssessorDetails_fromFinancialAssessmentEntity() {
         FinancialAssessmentEntity financialAssessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntity();
         final String userName = financialAssessmentEntity.getUserCreated();
-        UserEntity userEntity = TestEntityDataBuilder.getUserEntity(userName);
+        UserEntity userEntity = TestEntityDataBuilder.getUserEntity();
         financialAssessmentEntity.setUserCreatedEntity(userEntity);
 
         IOJAssessorDetails iojAssessorDetails = financialAssessmentMapper.createIOJAssessorDetails(financialAssessmentEntity);

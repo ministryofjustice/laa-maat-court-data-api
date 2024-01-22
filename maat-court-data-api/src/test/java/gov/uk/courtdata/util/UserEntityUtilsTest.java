@@ -10,7 +10,7 @@ class UserEntityUtilsTest {
 
     @Test
     void shouldSuccessfullyExtractFullNameFromUserEntity() {
-        UserEntity userEntity = TestEntityDataBuilder.getUserEntity(TestEntityDataBuilder.USER_CREATED_TEST_S);
+        UserEntity userEntity = TestEntityDataBuilder.getUserEntity();
 
         String actualFullName = UserEntityUtils.extractFullName(userEntity);
 

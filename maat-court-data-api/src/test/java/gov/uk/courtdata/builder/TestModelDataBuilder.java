@@ -122,7 +122,6 @@ public class TestModelDataBuilder {
     public static final List<String> ROLE_ACTIONS_LIST = List.of("TEST_ROLE");
     public static final ReservationsEntity RESERVATIONS_ENTITY = new ReservationsEntity();
 
-
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
 
@@ -1549,7 +1548,7 @@ public class TestModelDataBuilder {
     public static IOJAssessorDetails getIOJAssessorDetails() {
         return IOJAssessorDetails.builder()
                 .fullName("Karen Greaves")
-                .userName("grea-k")
+                .userName(TestEntityDataBuilder.IOJ_USER_NAME)
                 .build();
     }
 }

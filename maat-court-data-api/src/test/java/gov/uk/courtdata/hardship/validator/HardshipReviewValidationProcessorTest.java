@@ -19,7 +19,7 @@ public class HardshipReviewValidationProcessorTest {
     private HardshipReviewIdValidator hardshipReviewIdValidator;
 
     @Test
-    public void givenValidHardshipReviewId_whenValidateIsInvoked_thenIdValidatorIsCalled() {
+    public void givenHardshipReviewId_whenValidateIsInvoked_thenIdValidatorIsCalled() {
         hardshipReviewValidationProcessor.validate(1000);
         verify(hardshipReviewIdValidator).validate(any(Integer.class));
     }

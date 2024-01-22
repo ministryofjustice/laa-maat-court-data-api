@@ -1,5 +1,6 @@
 package gov.uk.courtdata.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.entity.ReservationsEntity;
@@ -35,7 +36,7 @@ public class ReservationsController {
     @GetMapping(value = "/{maatId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Check if a given maatId is Locked through Reservations table")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @NotFoundApiResponse
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Boolean> isMaatRecordLocked(

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.assessment.service.PassportAssessmentService;
 import gov.uk.courtdata.assessment.validator.PassportAssessmentValidationProcessor;
 import gov.uk.courtdata.dto.ErrorDTO;
@@ -36,7 +37,7 @@ public class PassportAssessmentController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PassportAssessmentDTO.class)))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @NotFoundApiResponse
     public ResponseEntity<PassportAssessmentDTO> getAssessment(@PathVariable int passportAssessmentId,
                                                                @Parameter(description = "Used for tracing calls")
                                                                @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
@@ -50,7 +51,7 @@ public class PassportAssessmentController {
     @GetMapping(value = "repId/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a passport assessment record by repId")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PassportAssessmentDTO.class)))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @NotFoundApiResponse
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<PassportAssessmentDTO> getAssessmentByRepId(@PathVariable int repId,

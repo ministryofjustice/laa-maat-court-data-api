@@ -1,5 +1,6 @@
 package gov.uk.courtdata.contribution.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.contribution.dto.ContributionAppealDTO;
 import gov.uk.courtdata.contribution.service.ContributionAppealService;
 import gov.uk.courtdata.dto.ErrorDTO;
@@ -31,7 +32,7 @@ public class ContributionAppealController {
     @Operation(description = "Get contribution amount")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @NotFoundApiResponse
     @GetMapping(value = "/caty-case-type/{caseType}/apty-code/{appealType}/cc-outcome/{outcome}/assessmentResult/{assessmentResult}")
     public ResponseEntity<BigDecimal> getContributionAmount(@Valid ContributionAppealDTO contribAppealDTO) {
         log.info("Get contribution amount for caty_case_type={}, apty_code={}, ccoo_outcome={}, assessment_result={}",

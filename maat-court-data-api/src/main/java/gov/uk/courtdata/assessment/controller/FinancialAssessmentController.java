@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentHistoryService;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
@@ -43,6 +44,7 @@ public class FinancialAssessmentController {
     @Operation(description = "Retrieve a financial assessment record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
+    @NotFoundApiResponse
     public ResponseEntity<FinancialAssessmentDTO> getAssessment(@PathVariable int financialAssessmentId) {
         log.info("Get Financial Assessment Request Received");
         financialAssessmentValidationProcessor.validate(financialAssessmentId);
@@ -106,6 +108,7 @@ public class FinancialAssessmentController {
     @Operation(description = "Retrieve details of the interests of justice assessor for a given financial assessment")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
+    @NotFoundApiResponse
     public ResponseEntity<IOJAssessorDetails> findIOJAssessorDetails(@PathVariable int financialAssessmentId) {
         IOJAssessorDetails iojAssessorDetails = financialAssessmentService.findIOJAssessorDetails(financialAssessmentId);
         return ResponseEntity.ok(iojAssessorDetails);

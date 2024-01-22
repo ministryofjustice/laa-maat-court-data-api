@@ -1,5 +1,6 @@
 package gov.uk.courtdata.correspondence.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.correspondence.service.CorrespondenceStateService;
 import gov.uk.courtdata.dto.ErrorDTO;
@@ -28,7 +29,7 @@ public class CorrespondenceStateController {
     @Operation(description = "Get correspondence status")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @NotFoundApiResponse
     @GetMapping(value = "repId/{repId}")
     public ResponseEntity<String> getStatus(@PathVariable int repId) {
         log.info("Get correspondence status request for repId={}", repId);

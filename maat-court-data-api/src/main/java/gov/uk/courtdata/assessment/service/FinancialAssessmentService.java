@@ -65,7 +65,9 @@ public class FinancialAssessmentService {
     }
 
     @Transactional
-    public void updateFinancialAssessments(int financialAssessmentId, FinancialAssessmentDTO financialAssessmentDTO) {
+    public void updateFinancialAssessments(int financialAssessmentId, UpdateFinancialAssessment updateFinancialAssessment) {
+        FinancialAssessmentDTO financialAssessmentDTO =
+                assessmentMapper.updateFinancialAssessmentToFinancialAssessmentDTO(updateFinancialAssessment);
         FinancialAssessmentEntity financialAssessmentEntity = assessmentMapper.financialAssessmentDtoToFinancialAssessmentEntity(financialAssessmentDTO);
         financialAssessmentRepository.save(financialAssessmentEntity);
     }

@@ -95,9 +95,9 @@ public class FinancialAssessmentController {
     @PatchMapping("/{financialAssessmentId}")
     @Operation(description = "Update financial assessments Status and Results")
     @StandardApiResponseCodes
-    public ResponseEntity<Void> updateFinancialAssessments(@PathVariable int financialAssessmentId, @RequestBody FinancialAssessmentDTO financialAssessmentDTO) {
+    public ResponseEntity<Void> updateFinancialAssessments(@PathVariable int financialAssessmentId, @RequestBody UpdateFinancialAssessment updateFinancialAssessment) {
         log.info("Update Financial Assessment Request Received");
-        financialAssessmentService.updateFinancialAssessments(financialAssessmentId, financialAssessmentDTO);
+        financialAssessmentService.updateFinancialAssessments(financialAssessmentId, updateFinancialAssessment);
         return ResponseEntity.ok().build();
     }
 

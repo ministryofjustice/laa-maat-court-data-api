@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 public class FinancialAssessmentServiceTest {
 
     private static final Integer TEST_REP_ID = 1000;
-    private static final Integer MOCK_FINANCIAL_ASSESSMENT_ID = 1000;
+    private static final Integer MOCK_FINANCIAL_ASSESSMENT_ID = 1234;
 
 
     @InjectMocks
@@ -112,12 +112,17 @@ public class FinancialAssessmentServiceTest {
 
     @Test
     public void whenUpdateFinancialAssessmentsIsInvoked_thenResultIsReturned() {
-        FinancialAssessmentEntity financialAssessmentEntity = FinancialAssessmentEntity.builder().id(1000).build();
+        UpdateFinancialAssessment financialAssessment = TestModelDataBuilder.getUpdateFinancialAssessment();
+        FinancialAssessmentDTO returnedFinancialAssessment = FinancialAssessmentDTO.builder().fassInitStatus("FAIL").build();
+        FinancialAssessmentEntity financialAssessmentEntity = FinancialAssessmentEntity.builder().id(MOCK_FINANCIAL_ASSESSMENT_ID).build();
+
+        when(financialAssessmentMapper.updateFinancialAssessmentToFinancialAssessmentDTO(any(UpdateFinancialAssessment.class)))
+                .thenReturn(returnedFinancialAssessment);
+
         when(financialAssessmentMapper.financialAssessmentDtoToFinancialAssessmentEntity(any()))
                 .thenReturn(financialAssessmentEntity);
 
-        FinancialAssessmentDTO returnedFinancialAssessment = FinancialAssessmentDTO.builder().fassInitStatus("FAIL").build();
-        financialAssessmentService.updateFinancialAssessments(MOCK_FINANCIAL_ASSESSMENT_ID, returnedFinancialAssessment);
+        financialAssessmentService.updateFinancialAssessments(MOCK_FINANCIAL_ASSESSMENT_ID, financialAssessment);
         verify(financialAssessmentRepository).save(financialAssessmentEntity);
     }
 }

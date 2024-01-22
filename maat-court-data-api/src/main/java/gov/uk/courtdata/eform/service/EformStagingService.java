@@ -52,11 +52,11 @@ public class EformStagingService {
     }
 
     @Transactional
-    public EformStagingDTO createOrRetrieve(int usn) {
+    public EformStagingDTO createOrRetrieve(int usn, String userCreated) {
         if (isUsnPresentInDB(usn)) {
             return retrieve(usn);
         }
-        EformStagingDTO eformStagingDTO = EformStagingDTO.builder().usn(usn).build();
+        EformStagingDTO eformStagingDTO = EformStagingDTO.builder().usn(usn).userCreated(userCreated).build();
         create(eformStagingDTO);
         return eformStagingDTO;
     }

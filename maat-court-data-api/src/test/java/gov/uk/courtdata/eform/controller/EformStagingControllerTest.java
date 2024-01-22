@@ -30,9 +30,10 @@ class EformStagingControllerTest {
 
     private static final String ENDPOINT_FORMAT = "/api/eform/";
     private static final int USN = 123;
+    private static final String CA_USER = "causer";
     private static final String TYPE = "CRM14";
     private static final EformStagingResponse EFORM_STAGING_RESPONSE = EformStagingResponse.builder().usn(USN).type(TYPE).build();
-    private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO.builder().usn(USN).type(TYPE).build();
+    private static final EformStagingDTO EFORM_STAGING_DTO = EformStagingDTO.builder().usn(USN).type(TYPE).userCreated(CA_USER).build();
     private static final UsnException USN_VALIDATION_EXCEPTION = USNExceptionUtil.nonexistent(987);
 
     @MockBean
@@ -101,12 +102,15 @@ class EformStagingControllerTest {
 
     @Test
     void shouldSuccessfullyVerifyAndInsertUsn() throws Exception {
-        when(mockEFormStagingService.createOrRetrieve(USN))
+        when(mockEFormStagingService.createOrRetrieve(USN, CA_USER))
                 .thenReturn(EFORM_STAGING_DTO);
-        mvc.perform(MockMvcRequestBuilders.post("/api/eform/initialise/123")
+        when(mockEformStagingDTOMapper.toEformStagingResponse(EFORM_STAGING_DTO))
+                .thenReturn(EformStagingResponse.builder().usn(USN).type(TYPE).userCreated(CA_USER).build());
+
+        mvc.perform(MockMvcRequestBuilders.post("/api/eform/initialise/123?userCreated=causer")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"usn\":123,\"type\":\"CRM14\"}"));
+                .andExpect(content().json("{\"usn\":123,\"type\":\"CRM14\",\"userCreated\":\"causer\"}"));
     }
 
     @NotNull

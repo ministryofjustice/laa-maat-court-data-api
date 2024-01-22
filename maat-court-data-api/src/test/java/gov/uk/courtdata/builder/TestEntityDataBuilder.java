@@ -648,4 +648,10 @@ public class TestEntityDataBuilder {
                 .status(status)
                 .build();
     }
+
+    public static UserEntity getUserEntity(String username) {
+        return UserEntity.builder().firstName("Karen")
+                .surname("Greaves")
+                .username(username).build();
+    }
 }

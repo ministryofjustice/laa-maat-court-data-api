@@ -5,6 +5,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
@@ -34,6 +35,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,6 +52,9 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     private static final String CURRENT_REGISTRATION = "current-registration";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
     public static final String SLASH = "/";
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private RepOrderRepository repOrderRepository;
@@ -326,5 +331,25 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         boolean exists = repOrderRepository.existsById(repOrderEntity.getId());
 
         assertThat(exists).isFalse();
+    }
+
+    @Test
+    void givenValidRepId_whenFindIOJAssessorDetailsIsCalled_() throws Exception {
+        String userName = "grea-k";
+        UserEntity userEntity = TestEntityDataBuilder.getUserEntity(userName);
+        userRepository.save(userEntity);
+
+        RepOrderEntity repOrder = TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID);
+        repOrder.setUserCreatedEntity(userEntity);
+        repOrder.setUserCreated(userName);
+
+        repOrderRepository.save(repOrder);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL+"/"+TestEntityDataBuilder.REP_ID+"/ioj-assessor-details"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.fullName").value("Karen Greaves"))
+                .andExpect(jsonPath("$.userName").value(userName));
+
     }
 }

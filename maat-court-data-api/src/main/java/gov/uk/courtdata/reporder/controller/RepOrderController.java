@@ -1,11 +1,11 @@
 package gov.uk.courtdata.reporder.controller;
 
 import gov.uk.courtdata.annotation.StandardApiResponse;
-import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.reporder.dto.IOJAssessorDetails;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
@@ -20,7 +20,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +51,7 @@ public class RepOrderController {
     @StandardApiResponse
     public ResponseEntity<Object> find(HttpServletRequest request, @PathVariable int repId,
                                        @RequestParam(value = "has_sentence_order_date", defaultValue = "false")
-                                               boolean hasSentenceOrderDate) {
+                                       boolean hasSentenceOrderDate) {
         log.info("Get Rep Order Request Received");
         if (request.getMethod().equals(RequestMethod.HEAD.name())) {
             HttpHeaders responseHeaders = new HttpHeaders();
@@ -61,7 +60,6 @@ public class RepOrderController {
         }
         return ResponseEntity.ok(repOrderService.find(repId, hasSentenceOrderDate));
     }
-
 
     @PostMapping(value = "/update-date-completed", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update application date completed")
@@ -145,5 +143,19 @@ public class RepOrderController {
         repOrderService.delete(repId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @RequestMapping(value = "/{repId}/ioj-assessor-details",
+            method = {RequestMethod.GET},
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(description = "Retrieve details of the interests of justice assessor for a given representation order")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+    @StandardApiResponse
+    public ResponseEntity<IOJAssessorDetails> findIOJAssessorDetails(@PathVariable int repId) {
+        IOJAssessorDetails iojAssessorDetails = repOrderService.findIOJAssessorDetails(repId);
+        return ResponseEntity.ok(iojAssessorDetails);
     }
 }

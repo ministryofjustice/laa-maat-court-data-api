@@ -14,7 +14,7 @@ class FinancialAssessmentMapperTest {
     private final FinancialAssessmentMapper financialAssessmentMapper = Mappers.getMapper(FinancialAssessmentMapper.class);
 
     @Test
-    void shouldSuccessfullyCreateIOJAssessorDetails_fromUserEntity() {
+    void shouldSuccessfullyCreateIOJAssessorDetails_fromFinancialAssessmentEntity() {
         FinancialAssessmentEntity financialAssessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntity();
         final String userName = financialAssessmentEntity.getUserCreated();
         UserEntity userEntity = TestEntityDataBuilder.getUserEntity(userName);

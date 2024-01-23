@@ -1,7 +1,7 @@
 package gov.uk.courtdata.assessment.mapper;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.dto.IOJAssessorDetails;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.UserEntity;
 import org.junit.jupiter.api.Test;
@@ -14,15 +14,15 @@ class FinancialAssessmentMapperTest {
     private final FinancialAssessmentMapper financialAssessmentMapper = Mappers.getMapper(FinancialAssessmentMapper.class);
 
     @Test
-    void shouldSuccessfullyCreateIOJAssessorDetails_fromFinancialAssessmentEntity() {
+    void shouldSuccessfullyCreateMeansAssessorDetails_fromFinancialAssessmentEntity() {
         FinancialAssessmentEntity financialAssessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntity();
         final String userName = financialAssessmentEntity.getUserCreated();
         UserEntity userEntity = TestEntityDataBuilder.getUserEntity();
         financialAssessmentEntity.setUserCreatedEntity(userEntity);
 
-        IOJAssessorDetails iojAssessorDetails = financialAssessmentMapper.createIOJAssessorDetails(financialAssessmentEntity);
+        AssessorDetails meansAssessorDetails = financialAssessmentMapper.createMeansAssessorDetails(financialAssessmentEntity);
 
-        assertEquals("Karen Greaves", iojAssessorDetails.getFullName());
-        assertEquals(userName, iojAssessorDetails.getUserName());
+        assertEquals("Karen Greaves", meansAssessorDetails.getFullName());
+        assertEquals(userName, meansAssessorDetails.getUserName());
     }
 }

@@ -2,7 +2,7 @@ package gov.uk.courtdata.reporder.service;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.dto.IOJAssessorDetails;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
@@ -103,9 +103,9 @@ class RepOrderServiceTest {
         when(repOrderRepository.findById(TestModelDataBuilder.REP_ID))
                 .thenReturn(Optional.of(repOrder));
 
-        IOJAssessorDetails actualIOJAssessorDetails = repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID);
+        AssessorDetails actualIOJAssessorDetails = repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID);
 
-        assertAll("verify actual IOJAssessorDetails",
+        assertAll("verify actual AssessorDetails",
                 () -> assertEquals("Karen Greaves", actualIOJAssessorDetails.getFullName()),
                 () -> assertEquals("grea-k", actualIOJAssessorDetails.getUserName()));
     }
@@ -119,9 +119,9 @@ class RepOrderServiceTest {
         when(repOrderRepository.findById(TestModelDataBuilder.REP_ID))
                 .thenReturn(Optional.of(repOrder));
 
-        IOJAssessorDetails actualIOJAssessorDetails = repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID);
+        AssessorDetails actualIOJAssessorDetails = repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID);
 
-        assertAll("verify actual IOJAssessorDetails",
+        assertAll("verify actual AssessorDetails",
                 () -> assertEquals(StringUtils.EMPTY, actualIOJAssessorDetails.getFullName()),
                 () -> assertEquals("grea-k", actualIOJAssessorDetails.getUserName()));
     }
@@ -129,11 +129,11 @@ class RepOrderServiceTest {
     @Test
     void givenUnknownRepId_whenFindIOJAssessorDetailsIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
         when(repOrderRepository.findById(1245))
-                .thenThrow(new RequestedObjectNotFoundException("Unable to find IOJAssessorDetails for repId: [1245]"));
+                .thenThrow(new RequestedObjectNotFoundException("Unable to find AssessorDetails for repId: [1245]"));
 
         RequestedObjectNotFoundException expectedException = assertThrows(RequestedObjectNotFoundException.class,
                 () -> repOrderService.findIOJAssessorDetails(1245));
 
-        assertEquals("Unable to find IOJAssessorDetails for repId: [1245]", expectedException.getMessage());
+        assertEquals("Unable to find AssessorDetails for repId: [1245]", expectedException.getMessage());
     }
 }

@@ -1,6 +1,6 @@
 package gov.uk.courtdata.reporder.mapper;
 
-import gov.uk.courtdata.dto.IOJAssessorDetails;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.CreateRepOrder;
@@ -26,10 +26,10 @@ public interface RepOrderMapper {
 
     void updateRepOrderToRepOrderEntity(UpdateRepOrder updateRepOrder, @MappingTarget RepOrderEntity repOrderEntity);
 
-    default IOJAssessorDetails createIOJAssessorDetails(RepOrderEntity repOrder) {
+    default AssessorDetails createIOJAssessorDetails(RepOrderEntity repOrder) {
         String fullName = UserEntityUtils.extractFullName(repOrder.getUserCreatedEntity());
 
-        return IOJAssessorDetails.builder()
+        return AssessorDetails.builder()
                 .fullName(fullName)
                 .userName(repOrder.getUserCreated())
                 .build();

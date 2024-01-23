@@ -1,11 +1,11 @@
 package gov.uk.courtdata.reporder.controller;
 
 import gov.uk.courtdata.annotation.StandardApiResponse;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
-import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
@@ -154,8 +154,8 @@ public class RepOrderController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
     @StandardApiResponse
-    public ResponseEntity<IOJAssessorDetails> findIOJAssessorDetails(@PathVariable int repId) {
-        IOJAssessorDetails iojAssessorDetails = repOrderService.findIOJAssessorDetails(repId);
+    public ResponseEntity<AssessorDetails> findIOJAssessorDetails(@PathVariable int repId) {
+        AssessorDetails iojAssessorDetails = repOrderService.findIOJAssessorDetails(repId);
         return ResponseEntity.ok(iojAssessorDetails);
     }
 }

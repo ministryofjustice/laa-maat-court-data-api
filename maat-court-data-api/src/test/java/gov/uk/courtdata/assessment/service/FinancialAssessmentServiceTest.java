@@ -4,8 +4,8 @@ import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -119,32 +119,32 @@ public class FinancialAssessmentServiceTest {
     }
 
     @Test
-    public void givenValidFinancialAssessmentId_whenFindIOJAssessorDetailsIsInvoked_thenPopulatedIOJAssessorDetailsAreReturned() throws Exception {
+    public void givenValidFinancialAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() throws Exception {
         int financialAssessmentId = 1234;
-        final String username = TestEntityDataBuilder.IOJ_USER_NAME;
+        final String username = TestEntityDataBuilder.ASSESSOR_USER_NAME;
         FinancialAssessmentEntity financialAssessment = FinancialAssessmentEntity.builder()
                 .userCreated(username)
                 .userCreatedEntity(TestEntityDataBuilder.getUserEntity())
                 .build();
         when(financialAssessmentImpl.find(financialAssessmentId))
                 .thenReturn(Optional.of(financialAssessment));
-        when(financialAssessmentMapper.createIOJAssessorDetails(financialAssessment))
-                .thenReturn(TestModelDataBuilder.getIOJAssessorDetails());
+        when(financialAssessmentMapper.createMeansAssessorDetails(financialAssessment))
+                .thenReturn(TestModelDataBuilder.getAssessorDetails());
 
-        IOJAssessorDetails iojAssessorDetails = financialAssessmentService.findIOJAssessorDetails(financialAssessmentId);
+        AssessorDetails meansAssessorDetails = financialAssessmentService.findMeansAssessorDetails(financialAssessmentId);
 
-        assertEquals("Karen Greaves", iojAssessorDetails.getFullName());
-        assertEquals(username, iojAssessorDetails.getUserName());
+        assertEquals("Karen Greaves", meansAssessorDetails.getFullName());
+        assertEquals(username, meansAssessorDetails.getUserName());
     }
 
     @Test
-    public void givenUnknownFinancialAssessmentId_whenFindIOJAssessorDetailsIsInvoked_thenNotFoundErrorIsReturned() {
+    public void givenUnknownFinancialAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenNotFoundErrorIsReturned() {
         int unknownFinancialAssessmentId = 99999;
         when(financialAssessmentImpl.find(unknownFinancialAssessmentId))
                 .thenReturn(Optional.empty());
 
         RequestedObjectNotFoundException actualException = Assertions.assertThrows(RequestedObjectNotFoundException.class,
-                () -> financialAssessmentService.findIOJAssessorDetails(unknownFinancialAssessmentId));
+                () -> financialAssessmentService.findMeansAssessorDetails(unknownFinancialAssessmentId));
 
         assertEquals("No Financial Assessment found for financial assessment Id: [99999]", actualException.getMessage());
     }

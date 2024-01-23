@@ -6,7 +6,7 @@ import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.dto.IOJAssessorDetails;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
@@ -75,11 +75,10 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     private List<FinancialAssessmentEntity> existingAssessmentEntities;
     private RepOrderEntity existingRepOrder;
-    private UserEntity userEntity;
 
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         setupTestData();
     }
 
@@ -89,7 +88,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_ASSESSMENTS));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS));
         repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS));
-        userEntity = TestEntityDataBuilder.getUserEntity(TestEntityDataBuilder.TEST_USER);
+        UserEntity userEntity = TestEntityDataBuilder.getUserEntity(TestEntityDataBuilder.TEST_USER);
         userRepository.save(userEntity);
 
         NewWorkReasonEntity newWorkReasonEntity = newWorkReasonRepository.save(
@@ -373,19 +372,19 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     }
 
     @Test
-    public void givenValidFinancialAssessmentId_whenIojAssessorDetailsIsInvoked_thenPopulatedIOJAssessorDetailsAreReturned() throws Exception {
-        IOJAssessorDetails expectedIOJAssessorDetails = IOJAssessorDetails.builder()
+    public void givenValidFinancialAssessmentId_whenMeansAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() throws Exception {
+        AssessorDetails expectedIOJAssessorDetails = AssessorDetails.builder()
                 .fullName("First Name Of [test-f] Surname Of [test-f]")
                 .userName(TestEntityDataBuilder.TEST_USER)
                 .build();
 
-        runSuccessScenario(expectedIOJAssessorDetails, get(BASE_URL + "/1/ioj-assessor-details"));
+        runSuccessScenario(expectedIOJAssessorDetails, get(BASE_URL + "/1/means-assessor-details"));
     }
 
     @Test
-    public void givenUnknownFinancialAssessmentId_whenIojAssessorDetailsIsInvoked_thenNotFoundResponseIsReturned() throws Exception {
+    public void givenUnknownFinancialAssessmentId_whenMeansAssessorDetailsIsInvoked_thenNotFoundResponseIsReturned() throws Exception {
         runNotFoundErrorScenario("No Financial Assessment found for financial assessment Id: [99999]",
-                get(BASE_URL + "/99999/ioj-assessor-details"));
+                get(BASE_URL + "/99999/means-assessor-details"));
     }
 
     public void assertAssessmentHistoryCreated(FinancialAssessmentEntity assessmentEntity,

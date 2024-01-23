@@ -194,26 +194,26 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenValidFinancialAssessmentId_whenFindIOJAssessorDetailsIsInvoked_thenPopulatedIOJAssessorDetailsAreReturned() throws Exception {
+    public void givenValidFinancialAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() throws Exception {
         int financialAssessmentId = 1234;
-        when(financialAssessmentService.findIOJAssessorDetails(financialAssessmentId))
-                .thenReturn(TestModelDataBuilder.getIOJAssessorDetails());
+        when(financialAssessmentService.findMeansAssessorDetails(financialAssessmentId))
+                .thenReturn(TestModelDataBuilder.getAssessorDetails());
 
-        mvc.perform(MockMvcRequestBuilders.get(endpointUrl +"/"+ financialAssessmentId +"/ioj-assessor-details"))
+        mvc.perform(MockMvcRequestBuilders.get(endpointUrl +"/"+ financialAssessmentId +"/means-assessor-details"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.fullName").value("Karen Greaves"))
                 .andExpect(jsonPath("$.userName").value("grea-k"));
     }
 
     @Test
-    public void givenUnknownFinancialAssessmentId_whenFindIOJAssessorDetailsIsInvoked_thenNotFoundErrorIsReturned() throws Exception {
+    public void givenUnknownFinancialAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenNotFoundErrorIsReturned() throws Exception {
         int unknownFinancialAssessmentId = 99999;
-        when(financialAssessmentService.findIOJAssessorDetails(unknownFinancialAssessmentId))
-                .thenThrow(new RequestedObjectNotFoundException("Unable to find IOJAssessorDetails with financialAssessmentId: [99999]"));
+        when(financialAssessmentService.findMeansAssessorDetails(unknownFinancialAssessmentId))
+                .thenThrow(new RequestedObjectNotFoundException("Unable to find AssessorDetails with financialAssessmentId: [99999]"));
 
-        mvc.perform(MockMvcRequestBuilders.get(endpointUrl +"/"+ unknownFinancialAssessmentId +"/ioj-assessor-details"))
+        mvc.perform(MockMvcRequestBuilders.get(endpointUrl +"/"+ unknownFinancialAssessmentId +"/means-assessor-details"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value("NOT_FOUND"))
-                .andExpect(jsonPath("$.message").value("Unable to find IOJAssessorDetails with financialAssessmentId: [99999]"));
+                .andExpect(jsonPath("$.message").value("Unable to find AssessorDetails with financialAssessmentId: [99999]"));
     }
 }

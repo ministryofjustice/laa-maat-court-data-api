@@ -26,7 +26,7 @@ public class TestEntityDataBuilder {
 
     public static final String TEST_USER = "test-f";
     public static final String USER_CREATED_TEST_S = "test-s";
-    public static final String IOJ_USER_NAME = "grea-k";
+    public static final String ASSESSOR_USER_NAME = "grea-k";
     public static final String ASSESSMENT_TYPE = "INIT";
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
 
@@ -656,7 +656,7 @@ public class TestEntityDataBuilder {
     public static UserEntity getUserEntity() {
         return UserEntity.builder().firstName("Karen")
                 .surname("Greaves")
-                .username(IOJ_USER_NAME).build();
+                .username(ASSESSOR_USER_NAME).build();
     }
 
     public static UserEntity getUserEntity(String username) {

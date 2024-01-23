@@ -16,7 +16,7 @@ import gov.uk.courtdata.dto.FinancialAssessmentDetailsHistoryDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.dto.IOJAppealDTO;
-import gov.uk.courtdata.dto.IOJAssessorDetails;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.OffenceDTO;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
@@ -1545,10 +1545,10 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static IOJAssessorDetails getIOJAssessorDetails() {
-        return IOJAssessorDetails.builder()
+    public static AssessorDetails getAssessorDetails() {
+        return AssessorDetails.builder()
                 .fullName("Karen Greaves")
-                .userName(TestEntityDataBuilder.IOJ_USER_NAME)
+                .userName(TestEntityDataBuilder.ASSESSOR_USER_NAME)
                 .build();
     }
 }

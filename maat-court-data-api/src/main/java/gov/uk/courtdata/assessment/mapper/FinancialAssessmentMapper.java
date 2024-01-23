@@ -1,8 +1,8 @@
 package gov.uk.courtdata.assessment.mapper;
 
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.FinAssIncomeEvidenceDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.entity.FinAssIncomeEvidenceEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
@@ -57,10 +57,10 @@ public interface FinancialAssessmentMapper {
 
     FinAssIncomeEvidenceDTO finAssIncomeEvidenceEntityToFinAssIncomeEvidenceDTO(final FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity);
 
-    default IOJAssessorDetails createIOJAssessorDetails(FinancialAssessmentEntity financialAssessment) {
+    default AssessorDetails createMeansAssessorDetails(FinancialAssessmentEntity financialAssessment) {
         String fullName = UserEntityUtils.extractFullName(financialAssessment.getUserCreatedEntity());
 
-        return IOJAssessorDetails.builder()
+        return AssessorDetails.builder()
                 .fullName(fullName)
                 .userName(financialAssessment.getUserCreated())
                 .build();

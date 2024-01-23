@@ -6,7 +6,7 @@ import gov.uk.courtdata.assessment.service.FinancialAssessmentHistoryService;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.dto.IOJAssessorDetails;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
@@ -104,13 +104,13 @@ public class FinancialAssessmentController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/{financialAssessmentId}/ioj-assessor-details", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{financialAssessmentId}/means-assessor-details", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve details of the interests of justice assessor for a given financial assessment")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @NotFoundApiResponse
-    public ResponseEntity<IOJAssessorDetails> findIOJAssessorDetails(@PathVariable int financialAssessmentId) {
-        IOJAssessorDetails iojAssessorDetails = financialAssessmentService.findIOJAssessorDetails(financialAssessmentId);
-        return ResponseEntity.ok(iojAssessorDetails);
+    public ResponseEntity<AssessorDetails> findMeansAssessorDetails(@PathVariable int financialAssessmentId) {
+        AssessorDetails meansAssessorDetails = financialAssessmentService.findMeansAssessorDetails(financialAssessmentId);
+        return ResponseEntity.ok(meansAssessorDetails);
     }
 }

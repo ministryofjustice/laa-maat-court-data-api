@@ -1,12 +1,12 @@
 package gov.uk.courtdata.reporder.service;
 
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
-import gov.uk.courtdata.dto.IOJAssessorDetails;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.RepOrderRepository;
@@ -90,11 +90,11 @@ public class RepOrderService {
     }
 
     @Transactional(readOnly = true)
-    public IOJAssessorDetails findIOJAssessorDetails(int repId) {
+    public AssessorDetails findIOJAssessorDetails(int repId) {
         Optional<RepOrderEntity> repOrderOptional = repOrderRepository.findById(repId);
 
         if (repOrderOptional.isEmpty()) {
-            String message = "Unable to find IOJAssessorDetails for repId: [%d]".formatted(repId);
+            String message = "Unable to find AssessorDetails for repId: [%d]".formatted(repId);
             throw new RequestedObjectNotFoundException(message);
         }
 

@@ -201,9 +201,6 @@ public class FinancialAssessmentControllerTest {
     @Test
     public void givenCorrectParameters_whenUpdateFinancialAssessmentsIsInvoked_thenAssessmentsIsUpdated() throws Exception {
         UpdateFinancialAssessment financialAssessment = UpdateFinancialAssessment.builder().fassInitStatus("FAIL").build();
-        FinancialAssessmentDTO returnedFinancialAssessment = FinancialAssessmentDTO.builder().fassInitStatus("FAIL").build();
-        when(finAssessmentMapper.updateFinancialAssessmentToFinancialAssessmentDTO(any()))
-                .thenReturn(returnedFinancialAssessment);
         doNothing().when(financialAssessmentService).updateFinancialAssessments(MOCK_FINANCIAL_ASSESSMENT_ID, financialAssessment);
         String requestJson = "{\"fassInitStatus\":\"FAIL\"}";
         mvc.perform(MockMvcRequestBuilders.patch(endpointUrl+ "/" + MOCK_FINANCIAL_ASSESSMENT_ID).content(requestJson)

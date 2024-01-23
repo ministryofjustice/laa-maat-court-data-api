@@ -60,7 +60,9 @@ import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.repository.XLATOffenceRepository;
 import gov.uk.courtdata.repository.XLATResultRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -243,13 +245,9 @@ public class Repositories {
     @Autowired
     private RepositoryUtil repositoryUtil;
 
-    public void insertCommonTestData() {
-        user.save(UserEntity.builder().username(TestEntityDataBuilder.TEST_USER).build());
-        user.save(UserEntity.builder().username(TestEntityDataBuilder.USER_CREATED_TEST_S).build());
-    }
-
-    public void clearAll() {
-        repositoryUtil.clearUp(appealType,
+    @NotNull
+    private JpaRepository[] allRepositories() {
+        return new JpaRepository[]{appealType,
                 caseRepository,
                 childWeightHistory,
                 childWeightings,
@@ -306,6 +304,15 @@ public class Repositories {
                 wqResult,
                 wqSession,
                 xlatOffence,
-                xlatResult);
+                xlatResult};
+    }
+
+    public void insertCommonTestData() {
+        user.save(UserEntity.builder().username(TestEntityDataBuilder.TEST_USER).build());
+        user.save(UserEntity.builder().username(TestEntityDataBuilder.USER_CREATED_TEST_S).build());
+    }
+
+    public void clearAll() {
+        repositoryUtil.clearUp(allRepositories());
     }
 }

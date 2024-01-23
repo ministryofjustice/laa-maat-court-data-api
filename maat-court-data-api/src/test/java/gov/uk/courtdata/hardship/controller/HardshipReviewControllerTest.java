@@ -7,7 +7,6 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.hardship.service.HardshipReviewService;
 import gov.uk.courtdata.hardship.validator.HardshipReviewValidationProcessor;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
-import gov.uk.courtdata.model.hardship.HardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -128,7 +126,6 @@ class HardshipReviewControllerTest {
         String requestJson = TestModelDataBuilder.getCreateHardshipReviewJson(true);
 
         when(hardshipReviewService.create(any(CreateHardshipReview.class))).thenReturn(hardshipReviewDTO);
-        when(hardshipReviewValidationProcessor.validate(any(HardshipReview.class))).thenReturn(Optional.empty());
 
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -150,7 +147,6 @@ class HardshipReviewControllerTest {
         String requestJson = TestModelDataBuilder.getUpdateHardshipReviewJson(true);
 
         when(hardshipReviewService.update(any(UpdateHardshipReview.class))).thenReturn(hardshipReviewDTO);
-        when(hardshipReviewValidationProcessor.validate(any(HardshipReview.class))).thenReturn(Optional.empty());
 
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

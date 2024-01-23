@@ -8,6 +8,7 @@ import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class FinancialAssessmentService {
 
     private final FinancialAssessmentImpl financialAssessmentImpl;
     private final FinancialAssessmentMapper assessmentMapper;
+    private final FinancialAssessmentRepository financialAssessmentRepository;
 
     @Transactional(readOnly = true)
     public FinancialAssessmentDTO find(Integer financialAssessmentId) {
@@ -62,4 +64,11 @@ public class FinancialAssessmentService {
         return financialAssessmentImpl.checkForOutstandingAssessments(repId);
     }
 
+    @Transactional
+    public void updateFinancialAssessments(int financialAssessmentId, UpdateFinancialAssessment updateFinancialAssessment) {
+        FinancialAssessmentDTO financialAssessmentDTO =
+                assessmentMapper.updateFinancialAssessmentToFinancialAssessmentDTO(updateFinancialAssessment);
+        FinancialAssessmentEntity financialAssessmentEntity = assessmentMapper.financialAssessmentDtoToFinancialAssessmentEntity(financialAssessmentDTO);
+        financialAssessmentRepository.save(financialAssessmentEntity);
+    }
 }

@@ -75,7 +75,8 @@ public class FinancialAssessmentService {
     private FinancialAssessmentEntity findFinancialAssessmentEntity(int financialAssessmentId) {
         Optional<FinancialAssessmentEntity> assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
         if (assessmentEntity.isEmpty()) {
-            throw new RequestedObjectNotFoundException(String.format("No Financial Assessment found for financial assessment Id: [%s]", financialAssessmentId));
+            String message = String.format("No Financial Assessment found for financial assessment Id: [%s]", financialAssessmentId);
+            throw new RequestedObjectNotFoundException(message);
         }
         return assessmentEntity.get();
     }

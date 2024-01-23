@@ -22,7 +22,7 @@ public class UserEntityUtils {
 
         String firstName = userEntity.getFirstName();
         String surname = userEntity.getSurname();
-        return NameUtils.toCapitalisedFullName(firstName, surname);
 
+        return NameUtils.toCapitalisedFullName(firstName, surname);
     }
 }

@@ -99,7 +99,6 @@ public class FinancialAssessmentController {
         return ResponseEntity.ok().build();
     }
 
-
     @PatchMapping("/{financialAssessmentId}")
     @Operation(description = "Update financial assessments Status and Results")
     @StandardApiResponseCodes
@@ -108,7 +107,6 @@ public class FinancialAssessmentController {
         financialAssessmentService.updateFinancialAssessments(financialAssessmentId, updateFinancialAssessment);
         return ResponseEntity.ok().build();
     }
-
 
     @GetMapping(value = "/{financialAssessmentId}/means-assessor-details", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve details of the interests of justice assessor for a given financial assessment")

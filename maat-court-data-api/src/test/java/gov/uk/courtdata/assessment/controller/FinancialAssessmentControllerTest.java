@@ -13,8 +13,10 @@ import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.FinancialAssessment;
+import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -40,6 +42,7 @@ public class FinancialAssessmentControllerTest {
     private static final Integer NO_OUTSTANDING_ASSESSMENTS_REP_ID = 9998;
     private static final String endpointUrl = "/api/internal/v1/assessment/financial-assessments";
     private final FinancialAssessmentMapper financialAssessmentMapper = new FinancialAssessmentMapperImpl();
+    private static final Integer MOCK_FINANCIAL_ASSESSMENT_ID = 1234;
 
     @Autowired
     private MockMvc mvc;
@@ -52,6 +55,9 @@ public class FinancialAssessmentControllerTest {
 
     @MockBean
     private FinancialAssessmentHistoryService financialAssessmentHistoryService;
+
+    @Mock
+    private FinancialAssessmentMapper finAssessmentMapper;
 
     private String financialAssessmentJson;
 
@@ -215,5 +221,22 @@ public class FinancialAssessmentControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value("NOT_FOUND"))
                 .andExpect(jsonPath("$.message").value("Unable to find AssessorDetails with financialAssessmentId: [99999]"));
+    }
+
+    @Test
+    public void givenCorrectParameters_whenUpdateFinancialAssessmentsIsInvoked_thenAssessmentsIsUpdated() throws Exception {
+        UpdateFinancialAssessment financialAssessment = UpdateFinancialAssessment.builder().fassInitStatus("FAIL").build();
+        doNothing().when(financialAssessmentService).updateFinancialAssessments(MOCK_FINANCIAL_ASSESSMENT_ID, financialAssessment);
+        String requestJson = "{\"fassInitStatus\":\"FAIL\"}";
+        mvc.perform(MockMvcRequestBuilders.patch(endpointUrl+ "/" + MOCK_FINANCIAL_ASSESSMENT_ID).content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(financialAssessmentService).updateFinancialAssessments(MOCK_FINANCIAL_ASSESSMENT_ID, financialAssessment);
+    }
+
+    @Test
+    public void givenIncorrectFullAvailableParameter_whenUpdateFinancialAssessmentsIsInvoked_then400ErrorIsThrown() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.patch(endpointUrl + "/" + "MOCK_FINANCIAL_ASSESSMENT_ID"))
+                .andExpect(status().isBadRequest());
     }
 }

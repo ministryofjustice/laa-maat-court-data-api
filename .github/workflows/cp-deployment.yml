@@ -97,5 +97,5 @@ jobs:
         id: run-restart
         run: |
           echo "Restarting the ECS Tasks which will pick up the new images"
-          aws ecs update-service --cluster "maat-api-ecs-cluster" --service "maat-api-ecs-service" --force-new-deployment
+          aws ecs update-service --cluster "maat-api-ecs-cluster" --service "maat-api-ecs-service" --force-new-deployment 1> /dev/null
           

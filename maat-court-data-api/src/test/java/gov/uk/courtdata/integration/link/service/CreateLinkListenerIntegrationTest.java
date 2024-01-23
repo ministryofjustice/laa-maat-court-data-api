@@ -12,7 +12,7 @@ import gov.uk.courtdata.link.service.CreateLinkListener;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class CreateLinkListenerIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        RepositoryUtil.clearUp(financialAssessmentRepository,
+        new RepositoryUtil().clearUp(financialAssessmentRepository,
                 passportAssessmentRepository,
                 repOrderRepository,
                 wqLinkRegisterRepository,

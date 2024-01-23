@@ -1,5 +1,6 @@
 package gov.uk.courtdata.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.application.ApplicationDTO;
 import gov.uk.courtdata.model.StoredProcedureRequest;
@@ -28,7 +29,7 @@ public class StoredProcedureController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Execute store procedure ")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @NotFoundApiResponse
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<ApplicationDTO> executeStoredProcedure(

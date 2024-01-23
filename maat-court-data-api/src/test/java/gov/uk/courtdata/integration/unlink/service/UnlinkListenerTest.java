@@ -13,7 +13,7 @@ import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.unlink.service.UnlinkListener;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,7 @@ public class UnlinkListenerTest {
 
     @BeforeEach
     public void setUp() {
-        RepositoryUtil.clearUp(passportAssessmentRepository,
+        new RepositoryUtil().clearUp(passportAssessmentRepository,
                 financialAssessmentRepository,
                 wqCoreRepository,
                 wqLinkRegisterRepository,

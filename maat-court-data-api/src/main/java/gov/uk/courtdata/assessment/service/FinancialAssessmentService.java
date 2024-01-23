@@ -2,6 +2,7 @@ package gov.uk.courtdata.assessment.service;
 
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
@@ -11,8 +12,11 @@ import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -24,11 +28,8 @@ public class FinancialAssessmentService {
     private final FinancialAssessmentRepository financialAssessmentRepository;
 
     @Transactional(readOnly = true)
-    public FinancialAssessmentDTO find(Integer financialAssessmentId) {
-        FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
-        if (assessmentEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No Financial Assessment found for ID: %s", financialAssessmentId));
-        }
+    public FinancialAssessmentDTO find(int financialAssessmentId) {
+        FinancialAssessmentEntity assessmentEntity = findFinancialAssessmentEntity(financialAssessmentId);
         return assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
     }
 
@@ -62,6 +63,22 @@ public class FinancialAssessmentService {
 
     public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId) {
         return financialAssessmentImpl.checkForOutstandingAssessments(repId);
+    }
+
+    @Transactional(readOnly = true)
+    public AssessorDetails findMeansAssessorDetails(int financialAssessmentId) {
+        FinancialAssessmentEntity financialAssessmentEntity = findFinancialAssessmentEntity(financialAssessmentId);
+        return assessmentMapper.createMeansAssessorDetails(financialAssessmentEntity);
+    }
+
+    @NotNull
+    private FinancialAssessmentEntity findFinancialAssessmentEntity(int financialAssessmentId) {
+        Optional<FinancialAssessmentEntity> assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
+        if (assessmentEntity.isEmpty()) {
+            String message = String.format("No Financial Assessment found for financial assessment Id: [%s]", financialAssessmentId);
+            throw new RequestedObjectNotFoundException(message);
+        }
+        return assessmentEntity.get();
     }
 
     @Transactional

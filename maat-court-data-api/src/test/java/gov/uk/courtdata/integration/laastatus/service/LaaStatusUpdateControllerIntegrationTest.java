@@ -2,45 +2,78 @@ package gov.uk.courtdata.integration.laastatus.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import gov.uk.MAATCourtDataApplication;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.CaseEntity;
+import gov.uk.courtdata.entity.DefendantEntity;
+import gov.uk.courtdata.entity.DefendantMAATDataEntity;
+import gov.uk.courtdata.entity.OffenceEntity;
+import gov.uk.courtdata.entity.RepOrderCPDataEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.SessionEntity;
+import gov.uk.courtdata.entity.SolicitorEntity;
+import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
+import gov.uk.courtdata.entity.WqCoreEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.WQStatus;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.OAuthStub;
 import gov.uk.courtdata.laastatus.controller.LaaStatusUpdateController;
+import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Defendant;
+import gov.uk.courtdata.model.MessageCollection;
 import gov.uk.courtdata.model.Offence;
-import gov.uk.courtdata.model.*;
-import gov.uk.courtdata.model.laastatus.*;
-import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.model.Session;
+import gov.uk.courtdata.model.laastatus.Address;
+import gov.uk.courtdata.model.laastatus.Attributes;
+import gov.uk.courtdata.model.laastatus.Contact;
+import gov.uk.courtdata.model.laastatus.DefenceOrganisation;
+import gov.uk.courtdata.model.laastatus.DefendantData;
+import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
+import gov.uk.courtdata.model.laastatus.Organisation;
+import gov.uk.courtdata.model.laastatus.Relationships;
+import gov.uk.courtdata.model.laastatus.RepOrderData;
+import gov.uk.courtdata.repository.CaseRepository;
+import gov.uk.courtdata.repository.DefendantMAATDataRepository;
+import gov.uk.courtdata.repository.DefendantRepository;
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import gov.uk.courtdata.repository.IdentifierRepository;
+import gov.uk.courtdata.repository.OffenceRepository;
+import gov.uk.courtdata.repository.PassportAssessmentRepository;
+import gov.uk.courtdata.repository.QueueMessageLogRepository;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
+import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.repository.SessionRepository;
+import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
+import gov.uk.courtdata.repository.SolicitorRepository;
+import gov.uk.courtdata.repository.WqCoreRepository;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.util.RepositoryUtil;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
+import static com.github.tomakehurst.wiremock.client.WireMock.getAllServeEvents;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UPDATE_CASE_EVENT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,7 +84,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(
         properties = "spring.main.allow-bean-definition-overriding=true",
         classes = {MAATCourtDataApplication.class})
-@AutoConfigureWireMock(port = 9999)
 public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private final String LAA_TRANSACTION_ID = "b27b97e4-0514-42c4-8e09-fcc2c693e11f";
@@ -93,34 +125,11 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     private PassportAssessmentRepository passportAssessmentRepository;
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
-    @Autowired
-    private WireMockServer wiremock;
-
-    @AfterEach
-    void clean() {
-        wiremock.resetAll();
-    }
-
     @BeforeEach
     public void setUp() throws Exception {
         objectMapper.setSerializationInclusion(Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         setupCdaWebServer();
-        RepositoryUtil.clearUp(financialAssessmentRepository,
-                wqCoreRepository,
-                queueMessageLogRepository,
-                identifierRepository,
-                caseRepository,
-                wqLinkRegisterRepository,
-                solicitorRepository,
-                defendantRepository,
-                sessionRepository,
-                offenceRepository,
-                passportAssessmentRepository,
-                repOrderRepository,
-                solicitorMAATDataRepository,
-                defendantMAATDataRepository,
-                repOrderCPDataRepository);
         queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
     }
 
@@ -140,7 +149,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     @Test
     public void givenAnInvalidMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         runValidationFailureScenario(String.format("MAAT API Call failed - MAAT/REP ID: %d is invalid.", TEST_MAAT_ID));
-        assertThat(wiremock.getAllServeEvents().isEmpty()).isTrue();
+        assertThat(wireMock().getAllServeEvents().isEmpty()).isTrue();
         verify(exactly(0), postRequestedFor(urlEqualTo("/oauth2/token")));
         verify(exactly(0), postRequestedFor(urlEqualTo("/api/internal/v1/representation_orders")));
 
@@ -150,7 +159,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     public void givenAMaatIdThatIsNotLinked_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         runValidationFailureScenario(String.format("MAAT API Call failed - MAAT Id : %s not linked.", TEST_MAAT_ID));
-        assertThat(wiremock.getAllServeEvents().isEmpty()).isTrue();
+        assertThat(wireMock().getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test
@@ -158,7 +167,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createTestRepoOrder();
         createTestLinkData(2);
         runValidationFailureScenario(String.format("MAAT API Call failed - Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
-        assertThat(wiremock.getAllServeEvents().isEmpty()).isTrue();
+        assertThat(wireMock().getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test
@@ -166,7 +175,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createTestRepoOrder();
         createTestLinkData(1);
         runValidationFailureScenario(String.format("MAAT API Call failed - Solicitor not found for maatId %s", TEST_MAAT_ID));
-        assertThat(wiremock.getAllServeEvents().isEmpty()).isTrue();
+        assertThat(wireMock().getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test
@@ -176,7 +185,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createSolicitorData("");
         createDefendantData();
         runValidationFailureScenario(String.format("MAAT API Call failed - Solicitor account code not available for maatId %s.", TEST_MAAT_ID));
-        assertThat(wiremock.getAllServeEvents().isEmpty()).isTrue();
+        assertThat(wireMock().getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test
@@ -185,7 +194,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         createTestLinkData(1);
         createSolicitorData("test-account-code");
         runValidationFailureScenario("MAAT API Call failed - MAAT Defendant details not found.");
-        assertThat(wiremock.getAllServeEvents().isEmpty()).isTrue();
+        assertThat(wireMock().getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test
@@ -451,13 +460,13 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         return linkItems;
     }
 
-    private void setupCdaWebServer() throws IOException {
-        stubForOAuth();
-        wiremock.stubFor(WireMock
-                .post(urlEqualTo("http://localhost:9999/api/internal/v1/representation_orders"))
+    private void setupCdaWebServer() {
+        new OAuthStub().applyStubTo(wireMock());
+        wireMock().stubFor(WireMock
+                .post(urlEqualTo("/api/internal/v1/representation_orders"))
                 .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))));
+                        .withStatus(200)
+                        .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))));
 
     }
 
@@ -518,22 +527,5 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("laa-transaction-id", LAA_TRANSACTION_ID)
                 .content(payload);
-    }
-
-    private void stubForOAuth() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> token = Map.of(
-                "expires_in", 3600,
-                "token_type", "Bearer",
-                "access_token", UUID.randomUUID()
-        );
-
-        wiremock.stubFor(
-                WireMock.post("/oauth2/token").willReturn(
-                        WireMock.ok()
-                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
-                                .withBody(mapper.writeValueAsString(token))
-                )
-        );
     }
 }

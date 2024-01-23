@@ -25,6 +25,8 @@ public class TestEntityDataBuilder {
     public static final String TEST_REGISTRATION = "SD51ZDW";
 
     public static final String TEST_USER = "test-f";
+    public static final String USER_CREATED_TEST_S = "test-s";
+    public static final String ASSESSOR_USER_NAME = "grea-k";
     public static final String ASSESSMENT_TYPE = "INIT";
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
 
@@ -139,7 +141,7 @@ public class TestEntityDataBuilder {
                                 .build()
                 )
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated("test-f")
+                .userCreated(TEST_USER)
                 .cmuId(30)
                 .fassInitStatus("COMPLETE")
                 .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
@@ -147,14 +149,15 @@ public class TestEntityDataBuilder {
                 .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00).setScale(2))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
-                .userModified("test-f")
+                .userModified(TEST_USER)
                 .firstReminderDate(LocalDateTime.parse("2021-10-09T15:02:25"))
                 .secondReminderDate(LocalDateTime.parse("2022-10-09T15:02:25"))
                 .evidenceReceivedDate(LocalDateTime.parse("2021-10-09T15:02:25"))
                 .build();
     }
 
-    public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(Integer repId, String assessmentStatus,
+    public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(int repId,
+                                                                               String assessmentStatus,
                                                                                NewWorkReasonEntity newWorkReason) {
         return FinancialAssessmentEntity.builder()
                 .repOrder(getPopulatedRepOrder(repId))
@@ -167,6 +170,7 @@ public class TestEntityDataBuilder {
                 .cmuId(3)
                 .replaced("N")
                 .newWorkReason(newWorkReason)
+                .userCreatedEntity(getUserEntity(TEST_USER))
                 .build();
     }
 
@@ -203,8 +207,8 @@ public class TestEntityDataBuilder {
                 .applicantFrequency(Frequency.MONTHLY)
                 .partnerAmount(BigDecimal.valueOf(1650.00).setScale(2))
                 .partnerFrequency(Frequency.TWO_WEEKLY)
-                .userCreated("test-f")
-                .userModified("test-f")
+                .userCreated(TEST_USER)
+                .userModified(TEST_USER)
                 .build();
     }
 
@@ -214,7 +218,7 @@ public class TestEntityDataBuilder {
                 .repOrder(getPopulatedRepOrder(IOJ_REP_ID))
                 .appealSetupDate(LocalDateTime.of(2022, 1, 1, 10, 0))
                 .nworCode("NEW")
-                .userCreated("test-s")
+                .userCreated(USER_CREATED_TEST_S)
                 .cmuId(86679086)
                 .iapsStatus(StringUtils.isBlank(iapStatus) ? "COMPLETE" : iapStatus)
                 .appealSetupResult("GRANT")
@@ -245,7 +249,7 @@ public class TestEntityDataBuilder {
                 .repOrder(getPopulatedRepOrder(REP_ID))
                 .nworCode("FMA")
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated("test-f").cmuId(30)
+                .userCreated(TEST_USER).cmuId(30)
                 .assessmentDate(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .partnerBenefitClaimed("Y")
                 .partnerFirstName("Test")
@@ -260,7 +264,7 @@ public class TestEntityDataBuilder {
                 .pcobConfirmation("DWP")
                 .result("PASS")
                 .dateModified(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userModified("test-f")
+                .userModified(TEST_USER)
                 .dwpResult("Yes")
                 .between16And17("N")
                 .under18HeardInYouthCourt("N")
@@ -305,8 +309,8 @@ public class TestEntityDataBuilder {
                 .disposableIncome(BigDecimal.valueOf(4215.46))
                 .disposableIncomeAfterHardship(BigDecimal.valueOf(2921.38))
                 .status(HardshipReviewStatus.COMPLETE)
-                .userCreated("test-s")
-                .userModified("test-s")
+                .userCreated(USER_CREATED_TEST_S)
+                .userModified(USER_CREATED_TEST_S)
                 .courtType("MAGISTRATE")
                 .financialAssessmentId(349211)
                 .valid("Y")
@@ -317,7 +321,7 @@ public class TestEntityDataBuilder {
         return HardshipReviewDetailEntity.builder()
                 .id(4253)
                 .detailType(HardshipReviewDetailType.EXPENDITURE)
-                .userCreated("test-s")
+                .userCreated(USER_CREATED_TEST_S)
                 .frequency(Frequency.MONTHLY)
                 .description("Pension")
                 .amount(BigDecimal.valueOf(107.84))
@@ -336,8 +340,8 @@ public class TestEntityDataBuilder {
     public static HardshipReviewProgressEntity getHardshipReviewProgressEntity() {
         return HardshipReviewProgressEntity.builder()
                 .id(1254)
-                .userCreated("test-s")
-                .userModified("test-s")
+                .userCreated(USER_CREATED_TEST_S)
+                .userModified(USER_CREATED_TEST_S)
                 .progressAction(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE)
                 .progressResponse(HardshipReviewProgressResponse.FURTHER_RECEIVED)
                 .build();
@@ -374,7 +378,7 @@ public class TestEntityDataBuilder {
                 .linkDate(LocalDate.parse("2021-10-09"))
                 .unlinkDate(LocalDate.parse("2021-10-21"))
                 .userCreated("test-u")
-                .userModified("test-f")
+                .userModified(TEST_USER)
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .dateModified(LocalDateTime.parse("2021-10-21T15:01:25"))
                 .build();
@@ -405,7 +409,7 @@ public class TestEntityDataBuilder {
                 .initialAscrId(1)
                 .newWorkReason(getNewWorkReasonEntity())
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated("test-f")
+                .userCreated(TEST_USER)
                 .cmuId(30)
                 .fassInitStatus("COMPLETE")
                 .initialAssessmentDate(LocalDateTime.parse("2021-10-09T15:02:25"))
@@ -413,7 +417,7 @@ public class TestEntityDataBuilder {
                 .initAdjustedIncomeValue(BigDecimal.valueOf(15600.00))
                 .initResult("FULL")
                 .initApplicationEmploymentStatus("NONPASS")
-                .userModified("test-f")
+                .userModified(TEST_USER)
                 .assessmentDetails(List.of(TestEntityDataBuilder.getFinancialAssessmentDetailsHistoryEntity()))
                 .childWeightings(List.of(TestEntityDataBuilder.getChildWeightHistoryEntity()))
                 .build();
@@ -425,8 +429,8 @@ public class TestEntityDataBuilder {
                 .criteriaDetailId(40)
                 .applicantAmount(BigDecimal.valueOf(1650.00))
                 .partnerAmount(BigDecimal.valueOf(1650.00))
-                .userCreated("test-f")
-                .userModified("test-f")
+                .userCreated(TEST_USER)
+                .userModified(TEST_USER)
                 .build();
     }
 
@@ -649,9 +653,15 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static UserEntity getUserEntity(String username) {
+    public static UserEntity getUserEntity() {
         return UserEntity.builder().firstName("Karen")
                 .surname("Greaves")
+                .username(ASSESSOR_USER_NAME).build();
+    }
+
+    public static UserEntity getUserEntity(String username) {
+        return UserEntity.builder().firstName("First name of ["+username+"]")
+                .surname("Surname of ["+ username+"]")
                 .username(username).build();
     }
 }

@@ -9,7 +9,7 @@ import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.link.controller.LinkController;
 import gov.uk.courtdata.model.CaseDetailsValidate;
 import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,7 +67,7 @@ public class LinkControllerIntegrationTest {
     @BeforeEach
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-        RepositoryUtil.clearUp(financialAssessmentRepository,
+        new RepositoryUtil().clearUp(financialAssessmentRepository,
                 passportAssessmentRepository,
                 repOrderRepository,
                 repOrderCPDataRepository,
@@ -174,7 +174,7 @@ public class LinkControllerIntegrationTest {
 
     @AfterEach
     public void clearUp() {
-        RepositoryUtil.clearUp(financialAssessmentRepository,
+        new RepositoryUtil().clearUp(financialAssessmentRepository,
                 passportAssessmentRepository,
                 repOrderRepository,
                 repOrderCPDataRepository,

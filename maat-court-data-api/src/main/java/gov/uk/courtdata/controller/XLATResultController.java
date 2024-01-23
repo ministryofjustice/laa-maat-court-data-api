@@ -1,5 +1,6 @@
 package gov.uk.courtdata.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.service.ResultsService;
@@ -32,7 +33,7 @@ public class XLATResultController {
     @GetMapping(value = "/cc-imprisonment", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve list of XLAT ResultCodes for CC Imprisonment")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @NotFoundApiResponse
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<Integer>> getResultCodesForCCImprisonment(
@@ -46,7 +47,7 @@ public class XLATResultController {
     @GetMapping(value = "/cc-bench-warrant", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve list of XLAT ResultCodes for CC Bench Warrant")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @NotFoundApiResponse
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<Integer>> getResultCodesForCCBenchWarrant(
@@ -60,7 +61,7 @@ public class XLATResultController {
     @GetMapping(value = "/wqType/{wqType}/subType/{subType}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve list of WQ ResultCodes for given caseId and asnSeq")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @NotFoundApiResponse
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<Integer>> getResultCodesByWqTypeAndSubType(

@@ -79,6 +79,7 @@ public class FinancialAssessmentService {
         }
         return assessmentEntity.get();
     }
+
     @Transactional
     public void updateFinancialAssessments(int financialAssessmentId, UpdateFinancialAssessment updateFinancialAssessment) {
         FinancialAssessmentDTO financialAssessmentDTO =

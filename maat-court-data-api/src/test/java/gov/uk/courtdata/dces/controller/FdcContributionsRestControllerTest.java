@@ -34,7 +34,7 @@ class FdcContributionsRestControllerTest {
 
     @Test
     void testContributionFileContent() throws Exception {
-        BigDecimal expectedCost1= new BigDecimal("100.10");
+        BigDecimal expectedCost1= new BigDecimal("100.1");
         BigDecimal expectedCost2= new BigDecimal("444.44");
         BigDecimal expectedCost3= new BigDecimal("999.99");
 
@@ -50,11 +50,11 @@ class FdcContributionsRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$.[?(@.id==1)].id").exists())
-                .andExpect(jsonPath("$.[?(@.id==1)].finalCost").value(expectedCost1))
+                .andExpect(jsonPath("$.[?(@.id==1)].finalCost").value(expectedCost1.doubleValue()))
                 .andExpect(jsonPath("$.[?(@.id==2)].id").exists())
-                .andExpect(jsonPath("$.[?(@.id==2)].finalCost").value(expectedCost2))
+                .andExpect(jsonPath("$.[?(@.id==2)].finalCost").value(expectedCost2.doubleValue()))
                 .andExpect(jsonPath("$.[?(@.id==3)].id").exists())
-                .andExpect(jsonPath("$.[?(@.id==3)].finalCost").value(expectedCost3));
+                .andExpect(jsonPath("$.[?(@.id==3)].finalCost").value(expectedCost3.doubleValue()));
     }
 
     @Test

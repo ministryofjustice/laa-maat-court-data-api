@@ -14,7 +14,7 @@ import gov.uk.courtdata.model.id.AsnSeqTxnCaseId;
 import gov.uk.courtdata.model.id.CaseTxnId;
 import gov.uk.courtdata.model.id.ProceedingMaatId;
 import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +63,7 @@ public class SaveAndLinkImplIntegrationTest {
 
     @BeforeEach
     public void setup() throws Exception {
-        RepositoryUtil.clearUp(financialAssessmentRepository,
+        new RepositoryUtil().clearUp(financialAssessmentRepository,
                 passportAssessmentRepository,
                 wqCoreRepository,
                 wqLinkRegisterRepository,

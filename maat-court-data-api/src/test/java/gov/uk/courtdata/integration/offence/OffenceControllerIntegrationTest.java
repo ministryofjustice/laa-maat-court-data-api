@@ -4,11 +4,12 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.repository.OffenceRepository;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,18 +31,9 @@ public class OffenceControllerIntegrationTest extends MockMvcIntegrationTest {
     private static final Integer INVALID_CASE_ID = 665314;
     private static final String INVALID_OFFENCE_ID = "634169aa-265b-4bb5-a7b0";
 
-    @Autowired
-    private OffenceRepository offenceRepository;
-
-
-    @BeforeAll
-    static void setUp(@Autowired OffenceRepository offenceRepository) {
-        offenceRepository.save(TestEntityDataBuilder.getOffenceEntity(8064716));
-    }
-
-    @AfterAll
-    static void cleanUp(@Autowired OffenceRepository offenceRepository) {
-        RepositoryUtil.clearUp(offenceRepository);
+    @BeforeEach
+    void setUp() {
+        repos.offence.save(TestEntityDataBuilder.getOffenceEntity(8064716));
     }
 
     @Test

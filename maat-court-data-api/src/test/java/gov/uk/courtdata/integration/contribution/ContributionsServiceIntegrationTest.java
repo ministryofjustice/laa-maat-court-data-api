@@ -17,7 +17,7 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.repository.CorrespondenceRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,7 +78,7 @@ public class ContributionsServiceIntegrationTest {
     @AfterEach
     public void clearUp() {
         contributionsEntity = null;
-        RepositoryUtil.clearUp(contributionsRepository,
+        new RepositoryUtil().clearUp(contributionsRepository,
                 correspondenceRepository,
                 repOrderRepository);
     }

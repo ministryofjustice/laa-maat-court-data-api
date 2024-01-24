@@ -65,13 +65,15 @@ public class LaaStatusUpdateController {
             messageCollection = laaStatusValidationProcessor.validate(caseDetails);
 
             if (messageCollection.getMessages().isEmpty()) {
-                log.info("Request Validation is successfully completed.");
+                log.info("Request Validation completed successfully");
                 laaStatusServiceUpdate.updateMlaAndCDA(caseDetails);
             } else {
                 log.info("LAA Status Update Validation Failed - Messages {}", messageCollection.getMessages());
             }
-        } catch (Exception exception) {
-            throw new MAATCourtDataException("MAAT API Call failed - " + exception.getMessage());
+        } catch (Exception e) {
+            String message = "MAAT API Call failed - %s".formatted(e.getMessage());
+            log.error("An exception was thrown with message [{}]", e.getMessage(), e);
+            throw new MAATCourtDataException(message);
         }
         return messageCollection;
     }

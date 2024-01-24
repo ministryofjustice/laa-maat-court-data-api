@@ -12,7 +12,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ public class ApplicantServiceIntegrationTest {
 
     @AfterEach
     public void clearUp() {
-        RepositoryUtil.clearUp(repOrderApplicantLinksRepository, repOrderRepository, applicantHistoryRepository);
+        new RepositoryUtil().clearUp(repOrderApplicantLinksRepository, repOrderRepository, applicantHistoryRepository);
     }
 
     @Test

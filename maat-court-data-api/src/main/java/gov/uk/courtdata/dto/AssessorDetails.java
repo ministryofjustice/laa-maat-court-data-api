@@ -1,4 +1,4 @@
-package gov.uk.courtdata.reporder.dto;
+package gov.uk.courtdata.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class IOJAssessorDetails {
+public class AssessorDetails {
 
         private String fullName;
         private String userName;

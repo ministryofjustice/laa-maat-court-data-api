@@ -9,7 +9,7 @@ import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.link.service.CreateLinkCpJobStatusListener;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class CreateLinkCpJobStatusServiceIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        RepositoryUtil.clearUp(wqCoreRepository, wqLinkRegisterRepository);
+        new RepositoryUtil().clearUp(wqCoreRepository, wqLinkRegisterRepository);
     }
 
     @Test

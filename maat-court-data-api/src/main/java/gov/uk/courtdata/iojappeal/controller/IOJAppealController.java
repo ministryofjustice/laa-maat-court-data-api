@@ -1,5 +1,6 @@
 package gov.uk.courtdata.iojappeal.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.iojappeal.service.IOJAppealService;
@@ -50,7 +51,7 @@ public class IOJAppealController {
     @GetMapping(value = "repId/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve an IOJ Appeal record by repId")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = IOJAppealDTO.class)))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @NotFoundApiResponse
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<IOJAppealDTO> getIOJAppealByRepId(@PathVariable int repId,
@@ -64,7 +65,7 @@ public class IOJAppealController {
     @GetMapping(value = "/repId/{repId}/current-passed", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve an IOJ Appeal record by repId")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = IOJAppealDTO.class)))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @NotFoundApiResponse
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<IOJAppealDTO> getCurrentPassedIOJAppealByRepId(@PathVariable int repId,

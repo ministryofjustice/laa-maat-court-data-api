@@ -8,8 +8,8 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -59,7 +59,6 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
     @AfterEach
     void clearUp() {
         existingRepOrder = null;
-        RepositoryUtil.clearUp(courtProcessingRepository, repOrderRepository);
     }
 
     @Test

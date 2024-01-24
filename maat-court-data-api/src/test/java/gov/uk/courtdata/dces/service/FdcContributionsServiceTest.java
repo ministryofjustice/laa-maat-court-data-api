@@ -75,8 +75,7 @@ class FdcContributionsServiceTest {
 
         assertNotNull(response);
         Assertions.assertFalse(response.isEmpty());
-        final FdcContributionsStatus capturedStatus = statusCaptor.getValue();
-        assertEquals(REQUESTED, capturedStatus);
+        assertEquals(REQUESTED, statusCaptor.getValue());
         FdcContributionsResponse responseValue = response.get(0);
         assertEquals(expectedId, responseValue.getId());
         assertEquals(expectedFinalCost,responseValue.getFinalCost());

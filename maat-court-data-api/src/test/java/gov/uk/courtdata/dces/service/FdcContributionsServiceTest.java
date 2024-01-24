@@ -67,9 +67,25 @@ class FdcContributionsServiceTest {
         assertEquals(expectedLgfsCost,responseValue.getLgfsCost());
         assertEquals(expectedDateCalculated,responseValue.getDateCalculated());
         assertEquals(expectedSentenceDate,responseValue.getSentenceOrderDate());
-
-
     }
+    @Test
+    void testGetContributionFilesWhenFdcFileStatusIsError() {
+        when(fdcContributionsRepository.findByStatus(statusCaptor.capture())).thenThrow();
+        List<FdcContributionsResponse> response = fdcContributionsService.getFdcContributionFiles(REQUESTED);
+
+        assertNotNull(response);
+        Assertions.assertFalse(response.isEmpty());
+        final FdcContributionsStatus capturedStatus = statusCaptor.getValue();
+        assertEquals(REQUESTED, capturedStatus);
+        FdcContributionsResponse responseValue = response.get(0);
+        assertEquals(expectedId, responseValue.getId());
+        assertEquals(expectedFinalCost,responseValue.getFinalCost());
+        assertEquals(expectedAgfsCost,responseValue.getAgfsCost());
+        assertEquals(expectedLgfsCost,responseValue.getLgfsCost());
+        assertEquals(expectedDateCalculated,responseValue.getDateCalculated());
+        assertEquals(expectedSentenceDate,responseValue.getSentenceOrderDate());
+    }
+
 
     private void getFdcContributionsFile() {
         fdcContributionsEntityList = new ArrayList<>();

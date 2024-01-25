@@ -8,13 +8,10 @@ import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;

@@ -17,7 +17,6 @@ import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.repository.CorrespondenceRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,6 @@ import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-@Slf4j
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
 

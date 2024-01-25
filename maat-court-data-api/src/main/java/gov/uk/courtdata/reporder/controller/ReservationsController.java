@@ -45,7 +45,7 @@ public class ReservationsController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @NotFoundApiResponse
-    public ResponseEntity<Void> createRepOrderEquity(@PathVariable Integer id, @RequestBody ReservationsEntity reservationsEntity) {
+    public ResponseEntity<Void> updateReservation(@PathVariable Integer id, @RequestBody ReservationsEntity reservationsEntity) {
         reservationsService.update(id, reservationsEntity);
         return ResponseEntity.ok().build();
     }
@@ -54,7 +54,7 @@ public class ReservationsController {
     @Operation(description = "Delete a Reservation")
     @StandardApiResponse
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    public ResponseEntity<Void> deleteRepOrderEquity(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Integer id) {
         reservationsService.delete(id);
         return ResponseEntity.ok().build();
     }

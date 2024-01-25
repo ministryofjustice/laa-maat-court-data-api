@@ -27,7 +27,7 @@ public class FdcContributionsService {
                         .dateCalculated(cc.getDateCalculated())
                         .lgfsCost(cc.getLgfsCost())
                         .agfsCost(cc.getAgfsCost())
-                        .sentenceOrderDate(Objects.nonNull(cc.getRepOrderEntity().getSentenceOrderDate())?cc.getRepOrderEntity().getSentenceOrderDate():null)
+                        .sentenceOrderDate(Objects.nonNull(cc.getRepOrderEntity())?cc.getRepOrderEntity().getSentenceOrderDate():null)
                         .build()).toList();
     }
 

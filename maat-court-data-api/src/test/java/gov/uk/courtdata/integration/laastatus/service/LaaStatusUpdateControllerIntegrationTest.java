@@ -19,7 +19,6 @@ import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.WQStatus;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.OAuthStub;
 import gov.uk.courtdata.laastatus.controller.LaaStatusUpdateController;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Defendant;
@@ -54,12 +53,9 @@ import gov.uk.courtdata.util.QueueMessageLogTestHelper;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.time.LocalDate;
@@ -79,11 +75,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@DirtiesContext
-@TestInstance(Lifecycle.PER_CLASS)
-@SpringBootTest(
-        properties = "spring.main.allow-bean-definition-overriding=true",
-        classes = {MAATCourtDataApplication.class})
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private final String LAA_TRANSACTION_ID = "b27b97e4-0514-42c4-8e09-fcc2c693e11f";
@@ -461,7 +453,6 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     }
 
     private void setupCdaWebServer() {
-        new OAuthStub().applyStubTo(wireMock());
         wireMock().stubFor(WireMock
                 .post(urlEqualTo("/api/internal/v1/representation_orders"))
                 .willReturn(aResponse()

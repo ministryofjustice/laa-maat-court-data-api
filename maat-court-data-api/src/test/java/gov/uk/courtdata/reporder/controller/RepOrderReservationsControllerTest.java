@@ -14,21 +14,24 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.RESERVATION_ID;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ReservationsController.class)
+@WebMvcTest(RepOrderReservationsController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class ReservationsControllerTest {
-    private static final String END_POINT_URL = "/api/internal/v1/rep-orders/reservations";
+public class RepOrderReservationsControllerTest {
+    private static final String BASE_END_POINT_URL = "/api/internal/v1/rep-orders/reservations";
+    private static final String END_POINT_URL = BASE_END_POINT_URL + "/{id}";
     private static final int NON_EXISTENT_ID = 1234;
     private static final ReservationsEntity RESERVATIONS_ENTITY = ReservationsEntity.builder()
             .recordId(RESERVATION_ID)
             .build();
 
     @MockBean
-    ReservationsService reservationsService;
+    private ReservationsService reservationsService;
     @Autowired
     private MockMvc mvc;
 
@@ -37,7 +40,7 @@ public class ReservationsControllerTest {
         when(reservationsService.retrieve(RESERVATION_ID))
                 .thenReturn(RESERVATIONS_ENTITY);
 
-        mvc.perform(MockMvcRequestBuilders.get(END_POINT_URL + "/" + RESERVATION_ID)
+        mvc.perform(MockMvcRequestBuilders.get(END_POINT_URL, RESERVATION_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"recordId\":" + RESERVATION_ID + "}"));
@@ -48,7 +51,7 @@ public class ReservationsControllerTest {
         when(reservationsService.retrieve(NON_EXISTENT_ID))
                 .thenThrow(new RequestedObjectNotFoundException("No Reservations found with Id: " + NON_EXISTENT_ID));
 
-        mvc.perform(MockMvcRequestBuilders.get(END_POINT_URL + "/" + NON_EXISTENT_ID)
+        mvc.perform(MockMvcRequestBuilders.get(END_POINT_URL, NON_EXISTENT_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().json("{\"code\":\"NOT_FOUND\",\"message\":\"No Reservations found with Id: " + NON_EXISTENT_ID + "\"}"));
@@ -59,7 +62,7 @@ public class ReservationsControllerTest {
 
         ReservationsEntity reservationsEntity = TestModelDataBuilder.getReservationsEntity();
 
-        mvc.perform(MockMvcRequestBuilders.post(END_POINT_URL)
+        mvc.perform(MockMvcRequestBuilders.post(BASE_END_POINT_URL)
                         .content(reservationEntityJson())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -72,7 +75,7 @@ public class ReservationsControllerTest {
 
         ReservationsEntity reservationsEntity = TestModelDataBuilder.getReservationsEntity();
 
-        mvc.perform(MockMvcRequestBuilders.patch(END_POINT_URL + "/" + RESERVATION_ID)
+        mvc.perform(MockMvcRequestBuilders.put(END_POINT_URL, RESERVATION_ID)
                         .content(reservationEntityJson())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -82,7 +85,7 @@ public class ReservationsControllerTest {
 
     @Test
     void givenValidId_whenDeleteReservationIsCalled_thenReservationIsSuccessfullyDeleted() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete(END_POINT_URL + "/" + RESERVATION_ID)
+        mvc.perform(MockMvcRequestBuilders.delete(END_POINT_URL, RESERVATION_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -90,13 +93,15 @@ public class ReservationsControllerTest {
     }
 
     private static String reservationEntityJson() {
-        return "{\n" +
-                "\"recordId\": " + RESERVATION_ID + ",\n" +
-                "\"reservationDate\": null,\n" +
-                "\"expiryDate\": null,\n" +
-                "\"recordName\": \"mock-record\",\n" +
-                "\"userName\": \"mock-user\",\n" +
-                "\"userSession\": \"mock-session\"\n" +
-                "}";
+        return """
+                {
+                  "recordId": %d,
+                  "reservationDate": null,
+                  "expiryDate": null,
+                  "recordName": "mock-record",
+                  "userName": "mock-user",
+                  "userSession": "mock-session"
+                }
+                """.formatted(RESERVATION_ID);
     }
 }

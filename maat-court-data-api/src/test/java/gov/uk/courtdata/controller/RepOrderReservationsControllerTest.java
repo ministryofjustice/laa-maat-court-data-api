@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ReservationsController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class ReservationsControllerTest {
+class RepOrderReservationsControllerTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/reservations/";
     @Autowired

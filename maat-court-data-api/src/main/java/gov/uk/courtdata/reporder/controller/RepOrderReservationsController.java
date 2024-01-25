@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Reservations", description = "Rest API for Reservations")
 @RequestMapping("/api/internal/v1/rep-orders/reservations")
-public class ReservationsController {
+public class RepOrderReservationsController {
     private final ReservationsService reservationsService;
 
     @GetMapping(value = "/{id}")

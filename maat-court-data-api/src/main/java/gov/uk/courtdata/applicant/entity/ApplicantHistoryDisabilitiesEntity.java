@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @Table(name = "APPLICANT_HISTORY_DISABILITIES", schema = "TOGDATA")
-public class ApplicantHistoryDisabilities {
+public class ApplicantHistoryDisabilitiesEntity {
 
     @Id
     @Column(name = "ID")
@@ -26,7 +26,7 @@ public class ApplicantHistoryDisabilities {
     @JsonBackReference
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "APHI_ID", nullable = false, updatable = false)
-    private ApplicantHistoryDisabilities applicantHistoryDisabilities;
+    private ApplicantDisabilitiesEntity applicantDisabilities;
 
     @Column(name = "DISA_DISABILITY")
     private String disaDisability;

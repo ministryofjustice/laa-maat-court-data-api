@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "APPLICANT_DISABILITIES", schema = "TOGDATA")
-public class ApplicantDisabilities {
+public class ApplicantDisabilitiesEntity {
 
     @Id
     @Column(name = "ID")
@@ -44,6 +44,6 @@ public class ApplicantDisabilities {
     private String userModified;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "applicantHistoryDisabilities", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<ApplicantHistoryDisabilities> applicantHistoryDisabilities = new ArrayList<>();
+    @OneToMany(mappedBy = "applicantDisabilities", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ApplicantHistoryDisabilitiesEntity> applicantHistoryDisabilityEntities = new ArrayList<>();
 }

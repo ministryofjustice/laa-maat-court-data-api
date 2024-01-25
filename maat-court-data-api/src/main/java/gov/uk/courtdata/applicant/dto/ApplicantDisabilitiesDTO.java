@@ -1,6 +1,6 @@
 package gov.uk.courtdata.applicant.dto;
 
-import gov.uk.courtdata.applicant.entity.ApplicantHistoryDisabilities;
+import gov.uk.courtdata.applicant.entity.ApplicantHistoryDisabilitiesEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,5 +19,5 @@ public class ApplicantDisabilitiesDTO {
     private String userCreated;
     private String userModified;
     @Builder.Default
-    private final List<ApplicantHistoryDisabilities> applicantHistoryDisabilities = new ArrayList<>();
+    private final List<ApplicantHistoryDisabilitiesEntity> applicantHistoryDisabilityEntities = new ArrayList<>();
 }

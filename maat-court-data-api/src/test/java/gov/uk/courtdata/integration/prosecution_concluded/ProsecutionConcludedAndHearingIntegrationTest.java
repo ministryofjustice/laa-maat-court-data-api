@@ -44,11 +44,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@DirtiesContext
-@TestInstance(Lifecycle.PER_CLASS)
-@SpringBootTest(
-        properties = "spring.main.allow-bean-definition-overriding=true",
-        classes = {MAATCourtDataApplication.class})
+@SpringBootTest
 public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegrationTest {
 
     private static final String LAA_TRANSACTION_ID = "61600a90-89e2-4717-aa9b-a01fc66130c1";

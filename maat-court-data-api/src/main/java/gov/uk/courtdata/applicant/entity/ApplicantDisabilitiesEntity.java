@@ -44,6 +44,7 @@ public class ApplicantDisabilitiesEntity {
     private String userModified;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "applicantDisabilities", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "APHI_ID")
     private final List<ApplicantHistoryDisabilitiesEntity> applicantHistoryDisabilityEntities = new ArrayList<>();
 }

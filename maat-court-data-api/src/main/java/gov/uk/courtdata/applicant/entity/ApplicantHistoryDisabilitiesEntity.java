@@ -22,12 +22,6 @@ public class ApplicantHistoryDisabilitiesEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicant_history_disabilities_gen_seq")
     private Integer id;
 
-    @ToString.Exclude
-    @JsonBackReference
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "APHI_ID", nullable = false, updatable = false)
-    private ApplicantDisabilitiesEntity applicantDisabilities;
-
     @Column(name = "DISA_DISABILITY")
     private String disaDisability;
 

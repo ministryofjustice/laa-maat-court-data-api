@@ -40,7 +40,7 @@ public class ReservationsController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping(value = "/{id}")
+    @PutMapping(value = "/{id}")
     @Operation(description = "Update a Reservation")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse

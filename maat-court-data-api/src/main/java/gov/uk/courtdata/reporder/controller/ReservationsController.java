@@ -1,12 +1,11 @@
 package gov.uk.courtdata.reporder.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
-import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.reporder.service.ReservationsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +24,9 @@ public class ReservationsController {
 
     @GetMapping(value = "/{id}")
     @Operation(description = "Retrieve a reservation")
-    @StandardApiResponse
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @StandardApiResponse
+    @NotFoundApiResponse
     public ReservationsEntity getReservation(@PathVariable Integer id) {
         return reservationsService.retrieve(id);
     }
@@ -43,9 +42,9 @@ public class ReservationsController {
 
     @PatchMapping(value = "/{id}")
     @Operation(description = "Update a Reservation")
-    @StandardApiResponse
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @StandardApiResponse
+    @NotFoundApiResponse
     public ResponseEntity<Void> createRepOrderEquity(@PathVariable Integer id, @RequestBody ReservationsEntity reservationsEntity) {
         reservationsService.update(id, reservationsEntity);
         return ResponseEntity.ok().build();

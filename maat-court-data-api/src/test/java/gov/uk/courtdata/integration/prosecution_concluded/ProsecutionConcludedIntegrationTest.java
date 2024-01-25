@@ -9,6 +9,7 @@ import gov.uk.courtdata.enums.CaseConclusionStatus;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesEntity;
 import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesRepository;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.Metadata;
 import gov.uk.courtdata.prosecutionconcluded.impl.ProcessSentencingImpl;
 import gov.uk.courtdata.prosecutionconcluded.model.*;
@@ -40,7 +41,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class ProsecutionConcludedIntegrationTest {
+public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest {
 
     @Autowired
     protected ObjectMapper objectMapper;

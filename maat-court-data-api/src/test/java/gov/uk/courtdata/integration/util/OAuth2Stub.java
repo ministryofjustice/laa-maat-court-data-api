@@ -4,12 +4,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.UUID;
 
-public class OAuthStub {
+public class OAuth2Stub {
+
+    private static final String OAUTH2_TOKEN_PATH = "/oauth2/token";
+    private static final String OAUTH2_TOKEN_URI = "http://localhost:" + MockMvcIntegrationTest.WIREMOCK_PORT + OAUTH2_TOKEN_PATH;
+
+    public String getTokenUri() {
+        return OAUTH2_TOKEN_URI;
+    }
 
     public void applyStubTo(WireMockServer wireMockServer){
         ObjectMapper mapper = new ObjectMapper();
@@ -20,19 +29,19 @@ public class OAuthStub {
         );
 
         wireMockServer.stubFor(
-                WireMock.post("/oauth2/token").willReturn(
+                WireMock.post(OAUTH2_TOKEN_PATH).willReturn(
                         WireMock.ok()
                                 .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
-                                .withBody(serialiseOAuthTokenToJson(mapper, token))
+                                .withBody(serialiseOAuth2TokenToJson(mapper, token))
                 )
         );
     }
 
-    private String serialiseOAuthTokenToJson(ObjectMapper mapper, Map<String, Object> oAuthToken) {
+    private String serialiseOAuth2TokenToJson(ObjectMapper mapper, Map<String, Object> oAuthToken) {
         try {
             return mapper.writeValueAsString(oAuthToken);
         } catch (JsonProcessingException e) {
-            String message = "Unable to serialise OAuth token [%s] due to: [%s]"
+            String message = "Unable to serialise OAuth2 token [%s] due to: [%s]"
                     .formatted(oAuthToken, e.getMessage());
             throw new RuntimeException(message, e);
         }

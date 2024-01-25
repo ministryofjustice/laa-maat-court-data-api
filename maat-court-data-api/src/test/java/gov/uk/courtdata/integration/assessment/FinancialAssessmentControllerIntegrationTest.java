@@ -41,9 +41,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-@SpringBootTest(classes = {MAATCourtDataApplication.class},
-        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = {("spring.h2.console.enabled=true")})
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private static final String BASE_URL = "/api/internal/v1/assessment/financial-assessments";

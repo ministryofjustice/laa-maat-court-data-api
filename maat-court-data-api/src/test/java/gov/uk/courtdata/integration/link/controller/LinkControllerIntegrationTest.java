@@ -6,6 +6,7 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.link.controller.LinkController;
 import gov.uk.courtdata.model.CaseDetailsValidate;
 import gov.uk.courtdata.repository.*;
@@ -32,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @WebAppConfiguration
-public class LinkControllerIntegrationTest {
+public class LinkControllerIntegrationTest  extends MockMvcIntegrationTest {
     private static final String LINK_VALIDATE_URI = "/link/validate";
 
     private static final Integer TEST_MAAT_ID = 1000;

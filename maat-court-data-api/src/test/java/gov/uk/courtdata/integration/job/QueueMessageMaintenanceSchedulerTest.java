@@ -2,6 +2,7 @@ package gov.uk.courtdata.integration.job;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.job.QueueMessageMaintenanceScheduler;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
 import gov.uk.courtdata.integration.util.RepositoryUtil;
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @TestPropertySource(locations = {"classpath:application.yaml"})
-public class QueueMessageMaintenanceSchedulerTest {
+public class QueueMessageMaintenanceSchedulerTest  extends MockMvcIntegrationTest {
 
     @Value("${queue.message.log.cron.expression}")
     private String cronExpression;

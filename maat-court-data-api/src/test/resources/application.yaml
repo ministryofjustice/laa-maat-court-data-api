@@ -16,7 +16,7 @@ spring:
       client:
         provider:
           cda:
-            token-uri: http://localhost:9999/oauth2/token
+            token-uri: http://dummy:0000/oauth2/token
         registration:
           cda:
             client-id: dummyURL
@@ -77,7 +77,7 @@ cloud-platform:
           messageDelayDuration: 120
 
 cda:
-  url: "http://localhost:9999/"
+  url: "http://dummy:0000/"
   oauth:
     url: cdaAuthUrl
     clientId: cdaClient

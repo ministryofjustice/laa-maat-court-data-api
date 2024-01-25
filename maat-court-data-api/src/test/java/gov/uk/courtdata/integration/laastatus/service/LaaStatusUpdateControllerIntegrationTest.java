@@ -19,7 +19,6 @@ import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.WQStatus;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.OAuthStub;
 import gov.uk.courtdata.laastatus.controller.LaaStatusUpdateController;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Defendant;
@@ -454,7 +453,6 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     }
 
     private void setupCdaWebServer() {
-        new OAuthStub().applyStubTo(wireMock());
         wireMock().stubFor(WireMock
                 .post(urlEqualTo("/api/internal/v1/representation_orders"))
                 .willReturn(aResponse()

@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 public abstract class MockMvcIntegrationTest {
 
-    private static final int WIREMOCK_PORT;
+    public static final int WIREMOCK_PORT;
 
     static {
         try (var serverSocket = new ServerSocket(0)) {
@@ -49,6 +49,8 @@ public abstract class MockMvcIntegrationTest {
 
     private static WireMockServer wireMockServer;
 
+    private final OAuth2Stub oAuth2Stub = new OAuth2Stub();
+
     @Autowired
     protected MockMvc mockMvc;
 
@@ -60,8 +62,7 @@ public abstract class MockMvcIntegrationTest {
 
     @DynamicPropertySource
     static void configureDynamicWireMockPort(DynamicPropertyRegistry registry) {
-        registry.add("spring.security.oauth2.client.provider.cda.token-uri", () -> "http://localhost:" + WIREMOCK_PORT + "/oauth2/token");
-        registry.add("cda.url", () -> "http://localhost:" + WIREMOCK_PORT + "/");
+        registry.add("cda.url", () -> "http://localhost:" + WIREMOCK_PORT);
     }
 
     @BeforeAll
@@ -95,6 +96,7 @@ public abstract class MockMvcIntegrationTest {
         configureObjectMapper(objectMapper);
         wireMockServer.resetAll();
         repos.clearAll();
+        oAuth2Stub.applyStubTo(wireMockServer);
         repos.insertCommonTestData();
     }
 
@@ -110,7 +112,7 @@ public abstract class MockMvcIntegrationTest {
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
     }
 
-    protected static WireMockServer wireMock() {
+    protected WireMockServer wireMock() {
         return wireMockServer;
     }
 

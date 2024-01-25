@@ -3,12 +3,10 @@ package gov.uk.courtdata.integration.prosecution_concluded;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.OAuthStub;
 import gov.uk.courtdata.model.Metadata;
 import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
 import gov.uk.courtdata.prosecutionconcluded.model.Plea;
@@ -23,13 +21,10 @@ import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.MessageHeaders;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +72,6 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
     }
 
     private void setupCdaWebServer() {
-        new OAuthStub().applyStubTo(wireMock());
         stubFor(WireMock
                 .get(urlEqualTo("/api/internal/v1/hearing_results/" + LAA_TRANSACTION_ID + "?publish_to_queue=true"))
                 .willReturn(aResponse()

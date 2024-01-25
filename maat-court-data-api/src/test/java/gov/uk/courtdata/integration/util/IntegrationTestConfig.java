@@ -12,7 +12,6 @@ public class IntegrationTestConfig {
 
     @Autowired
     public void configureEnvironment(ConfigurableEnvironment environment) {
-        IntegrationTestPropertySource propertySource = new IntegrationTestPropertySource();
         environment.getPropertySources().addFirst(integrationTestPropertySource);
     }
 }

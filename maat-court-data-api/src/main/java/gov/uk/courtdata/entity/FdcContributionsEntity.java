@@ -28,7 +28,7 @@ public class FdcContributionsEntity {
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-    @Column(name= "CONT_FILE_ID", nullable = false)
+    @Column(name= "CONT_FILE_ID")
     private Integer contFileId;
 
     @Column(name = "DATE_CALCULATED")

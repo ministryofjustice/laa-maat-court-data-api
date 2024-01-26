@@ -48,7 +48,7 @@ public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrat
     }
 
     @Test
-    void givenAValidInput_whenCreateApplicantDisabilitiesIsInvoked_thenUpdateIsSuccess() {
+    void givenAValidInput_whenCreateApplicantDisabilitiesIsInvoked_thenCreateIsSuccess() {
         ApplicantDisabilitiesDTO recordToCreate = TestModelDataBuilder.getApplicantDisabilitiesDTO(11);
         ApplicantDisabilitiesDTO applicantDisabilitiesDTO = applicantDisabilitiesService
                 .create(recordToCreate);

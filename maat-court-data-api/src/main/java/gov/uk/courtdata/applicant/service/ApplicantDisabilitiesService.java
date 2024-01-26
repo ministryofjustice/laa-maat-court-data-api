@@ -31,14 +31,10 @@ public class ApplicantDisabilitiesService {
         log.info("ApplicantDisabilitiesService::create - Start");
         ApplicantDisabilitiesEntity applicantDisabilitiesEntity = applicantDisabilitiesMapper.
                 mapDTOToApplicantDisabilitiesEntity(applicantDisabilitiesDTO);
-        ApplicantHistoryDisabilitiesEntity applicantHistoryDisabilities =
-                getApplicantHistoryDisabilitiesEntity(applicantDisabilitiesDTO);
-        applicantDisabilitiesEntity.getApplicantHistoryDisabilityEntities().add(applicantHistoryDisabilities);
-        ApplicantDisabilitiesEntity applicantDisabilities = applicantDisabilitiesRepository.save(applicantDisabilitiesEntity);
-        log.info("AHD details: "+applicantDisabilities.getApplicantHistoryDisabilityEntities().get(0).getId());
-        return applicantDisabilitiesMapper.mapEntityToDTO(applicantDisabilities);
+        addApplicantHistoryDisabilities(applicantDisabilitiesDTO, applicantDisabilitiesEntity);
+        return applicantDisabilitiesMapper.
+                mapEntityToDTO(applicantDisabilitiesRepository.save(applicantDisabilitiesEntity));
     }
-
 
     @Transactional
     public ApplicantDisabilitiesDTO update(ApplicantDisabilitiesDTO applicantDisabilitiesDTO) {
@@ -46,27 +42,25 @@ public class ApplicantDisabilitiesService {
         Integer id = applicantDisabilitiesDTO.getId();
         ApplicantDisabilitiesEntity applicantDisabilitiesEntity =
                 getApplicantDisabilitiesEntity(id);
-        applicantDisabilitiesMapper.updateApplicantDisabilitiesDTOToApplicantDisabilitiesEntity(applicantDisabilitiesDTO, applicantDisabilitiesEntity);
-        ApplicantHistoryDisabilitiesEntity applicantHistoryDisabilities =
-                getApplicantHistoryDisabilitiesEntity(applicantDisabilitiesDTO);
-        applicantDisabilitiesEntity.getApplicantHistoryDisabilityEntities().add(applicantHistoryDisabilities);
-        log.info("Date created: "+applicantDisabilitiesEntity.getDateCreated().toString());
-        log.info("AHD details: "+applicantDisabilitiesEntity.getApplicantHistoryDisabilityEntities().get(0).getId());
-        ApplicantDisabilitiesEntity applicantDisabilities = applicantDisabilitiesRepository.save(applicantDisabilitiesEntity);
-        return applicantDisabilitiesMapper.mapEntityToDTO(applicantDisabilities);
+        applicantDisabilitiesMapper.
+                updateApplicantDisabilitiesDTOToApplicantDisabilitiesEntity(
+                        applicantDisabilitiesDTO,applicantDisabilitiesEntity);
+        addApplicantHistoryDisabilities(applicantDisabilitiesDTO, applicantDisabilitiesEntity);
+        return applicantDisabilitiesMapper.
+                mapEntityToDTO(applicantDisabilitiesRepository.save(applicantDisabilitiesEntity));
     }
 
     @Transactional
-    public void delete(ApplicantDisabilitiesDTO applicantDisabilitiesDTO) {
+    public void delete(Integer id) {
         log.info("ApplicantDisabilitiesService::delete - Start");
-        Integer id = applicantDisabilitiesDTO.getId();
         ApplicantDisabilitiesEntity applicantDisabilitiesEntity =
                 getApplicantDisabilitiesEntity(id);
         applicantDisabilitiesRepository.delete(applicantDisabilitiesEntity);
     }
 
     private ApplicantDisabilitiesEntity getApplicantDisabilitiesEntity(Integer id) {
-        ApplicantDisabilitiesEntity applicantDisabilitiesEntity = applicantDisabilitiesRepository.findById(id).orElse(null);
+        ApplicantDisabilitiesEntity applicantDisabilitiesEntity =
+                applicantDisabilitiesRepository.findById(id).orElse(null);
         if (applicantDisabilitiesEntity == null) {
             throw new RequestedObjectNotFoundException(String.format("Applicant Disability details not found for id %d", id));
         }
@@ -77,5 +71,12 @@ public class ApplicantDisabilitiesService {
         ApplicantHistoryDisabilitiesEntity applicantHistoryDisabilitiesEntity = applicantDisabilitiesMapper
                 .mapDTOToApplicantHistoryDisabilitiesEntity(applicantDisabilitiesDTO);
         return applicantHistoryDisabilitiesEntity;
+    }
+
+
+    private void addApplicantHistoryDisabilities(ApplicantDisabilitiesDTO applicantDisabilitiesDTO, ApplicantDisabilitiesEntity applicantDisabilitiesEntity) {
+        ApplicantHistoryDisabilitiesEntity applicantHistoryDisabilities =
+                getApplicantHistoryDisabilitiesEntity(applicantDisabilitiesDTO);
+        applicantDisabilitiesEntity.getApplicantHistoryDisabilityEntities().add(applicantHistoryDisabilities);
     }
 }

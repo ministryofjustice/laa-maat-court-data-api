@@ -4,5 +4,6 @@ public enum FdcContributionsStatus {
     REQUESTED,
     SENT,
     REPLACED,
-    WAITING_ITEMS
+    WAITING_ITEMS,
+    INVALID
 }

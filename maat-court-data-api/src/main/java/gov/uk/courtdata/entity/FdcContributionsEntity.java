@@ -87,7 +87,7 @@ public class FdcContributionsEntity {
     @Column(name = "USER_CREATED")
     private String userCreated = "DCES";
 
-    @Column(name = "USER_MODIFIED", length = 225)
+    @Column(name = "USER_MODIFIED", length = 100)
     private String userModified;
 
     @JsonBackReference

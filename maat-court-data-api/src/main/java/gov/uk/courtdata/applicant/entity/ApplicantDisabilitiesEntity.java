@@ -19,8 +19,6 @@ public class ApplicantDisabilitiesEntity {
 
     @Id
     @Column(name = "ID")
-    @SequenceGenerator(name = "applicant_disabilities_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicant_disabilities_gen_seq")
     private Integer id;
 
     @Column(name = "APPL_ID")

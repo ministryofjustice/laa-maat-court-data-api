@@ -34,7 +34,9 @@ public class ApplicantDisabilitiesService {
         ApplicantHistoryDisabilitiesEntity applicantHistoryDisabilities =
                 getApplicantHistoryDisabilitiesEntity(applicantDisabilitiesDTO);
         applicantDisabilitiesEntity.getApplicantHistoryDisabilityEntities().add(applicantHistoryDisabilities);
-        return applicantDisabilitiesMapper.mapEntityToDTO(applicantDisabilitiesRepository.save(applicantDisabilitiesEntity));
+        ApplicantDisabilitiesEntity applicantDisabilities = applicantDisabilitiesRepository.save(applicantDisabilitiesEntity);
+        log.info("AHD details: "+applicantDisabilities.getApplicantHistoryDisabilityEntities().get(0).getId());
+        return applicantDisabilitiesMapper.mapEntityToDTO(applicantDisabilities);
     }
 
 
@@ -44,10 +46,14 @@ public class ApplicantDisabilitiesService {
         Integer id = applicantDisabilitiesDTO.getId();
         ApplicantDisabilitiesEntity applicantDisabilitiesEntity =
                 getApplicantDisabilitiesEntity(id);
+        applicantDisabilitiesMapper.updateApplicantDisabilitiesDTOToApplicantDisabilitiesEntity(applicantDisabilitiesDTO, applicantDisabilitiesEntity);
         ApplicantHistoryDisabilitiesEntity applicantHistoryDisabilities =
                 getApplicantHistoryDisabilitiesEntity(applicantDisabilitiesDTO);
         applicantDisabilitiesEntity.getApplicantHistoryDisabilityEntities().add(applicantHistoryDisabilities);
-        return applicantDisabilitiesMapper.mapEntityToDTO(applicantDisabilitiesRepository.save(applicantDisabilitiesEntity));
+        log.info("Date created: "+applicantDisabilitiesEntity.getDateCreated().toString());
+        log.info("AHD details: "+applicantDisabilitiesEntity.getApplicantHistoryDisabilityEntities().get(0).getId());
+        ApplicantDisabilitiesEntity applicantDisabilities = applicantDisabilitiesRepository.save(applicantDisabilitiesEntity);
+        return applicantDisabilitiesMapper.mapEntityToDTO(applicantDisabilities);
     }
 
     @Transactional

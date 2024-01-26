@@ -1,8 +1,10 @@
 package gov.uk.courtdata.applicant.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -26,7 +28,7 @@ public class ApplicantHistoryDisabilitiesEntity {
     private String disaDisability;
 
     @CreationTimestamp
-    @Column(name = "DATE_CREATED", nullable = false)
+    @Column(name = "DATE_CREATED")
     private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED", nullable = false)

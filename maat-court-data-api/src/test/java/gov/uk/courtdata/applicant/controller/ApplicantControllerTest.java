@@ -1,9 +1,11 @@
 package gov.uk.courtdata.applicant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.uk.courtdata.applicant.dto.ApplicantDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
+import gov.uk.courtdata.applicant.service.ApplicantService;
 import gov.uk.courtdata.applicant.service.RepOrderApplicantLinksService;
 import gov.uk.courtdata.applicant.validator.ApplicantValidationProcessor;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -17,15 +19,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ApplicantController.class)
@@ -37,6 +42,9 @@ public class ApplicantControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
+    @MockBean
+    private ApplicantService applicantService;
 
     @MockBean
     private ApplicantHistoryService applicantHistoryService;
@@ -171,4 +179,115 @@ public class ApplicantControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
     }
+
+    @Test
+    void givenCorrectId_whenGetApplicantIsInvoked_thenResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + ID))
+                .andExpect(status().isOk());
+        verify(applicantService).find(ID);
+    }
+
+    @Test
+    void givenInternalServerError_whenGetApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        when(applicantService.find(ID))
+                .thenThrow(EmptyResultDataAccessException.class);
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + ID)
+                        .content(objectMapper.writeValueAsString(ApplicantDTO.builder().id(ID).build()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
+    }
+
+
+    @Test
+    void givenValidRequest_whenUpdateApplicantIsInvoked_thenUpdateIsSuccess() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenAEmptyContent_whenUpdateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
+                        .content("{}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenInValidRequest_whenUpdateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        doThrow(new RequestedObjectNotFoundException("Applicant not found")).when(applicantService).update(any(), any());
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    void givenInternalServerError_whenUpdateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        doThrow(EmptyResultDataAccessException.class).when(applicantService).update(any(), any());
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
+    }
+
+    @Test
+    void givenCorrectId_whenDeleteApplicantIsInvoked_thenResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/" + ID))
+                .andExpect(status().isOk());
+        verify(applicantService).delete(ID);
+    }
+
+    @Test
+    void givenInternalServerError_whenDeleteApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        doThrow(EmptyResultDataAccessException.class).when(applicantService).delete(anyInt());
+        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/" + ID)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
+    }
+
+    @Test
+    void givenValidRequest_whenCreateApplicantIsInvoked_thenUpdateIsSuccess() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenAEmptyContent_whenCreateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+                        .content("{}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenInValidRequest_whenCreateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        doThrow(new RequestedObjectNotFoundException("Applicant not found")).when(applicantService).create(any());
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    void givenInternalServerError_whenCreateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        doThrow(EmptyResultDataAccessException.class).when(applicantService).create(any());
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
+    }
+
 }

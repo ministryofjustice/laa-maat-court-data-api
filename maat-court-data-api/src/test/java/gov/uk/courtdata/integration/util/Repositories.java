@@ -1,6 +1,9 @@
 package gov.uk.courtdata.integration.util;
 
+import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
+import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.repository.AppealTypeRepository;
 import gov.uk.courtdata.repository.CaseRepository;
@@ -72,6 +75,9 @@ public class Repositories {
     public AppealTypeRepository appealType;
 
     @Autowired
+    private ApplicantHistoryRepository applicantHistory;
+
+    @Autowired
     public CaseRepository caseRepository;
 
     @Autowired
@@ -115,6 +121,9 @@ public class Repositories {
 
     @Autowired
     public DefendantRepository defendant;
+
+    @Autowired
+    private EformStagingRepository eformStaging;
 
     @Autowired
     public FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistory;
@@ -163,6 +172,9 @@ public class Repositories {
 
     @Autowired
     public QueueMessageLogRepository queueMessageLog;
+
+    @Autowired
+    private RepOrderApplicantLinksRepository repOrderApplicantLinks;
 
     @Autowired
     public RepOrderCapitalRepository repOrderCapital;
@@ -248,6 +260,7 @@ public class Repositories {
     @NotNull
     private JpaRepository[] allRepositories() {
         return new JpaRepository[]{appealType,
+                applicantHistory,
                 caseRepository,
                 childWeightHistory,
                 childWeightings,
@@ -263,6 +276,7 @@ public class Repositories {
                 crownCourtProcessing,
                 defendantMAATData,
                 defendant,
+                eformStaging,
                 financialAssessmentDetailsHistory,
                 financialAssessmentDetails,
                 financialAssessment,
@@ -279,6 +293,7 @@ public class Repositories {
                 proceeding,
                 prosecutionConcluded,
                 queueMessageLog,
+                repOrderApplicantLinks,
                 repOrderCapital,
                 repOrderCPData,
                 repOrderMvoReg,

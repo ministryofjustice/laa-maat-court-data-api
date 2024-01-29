@@ -121,6 +121,7 @@ public class TestModelDataBuilder {
     public static final List<String> NEW_WORK_REASON_LIST = List.of("TEST_NWREASON");
     public static final List<String> ROLE_ACTIONS_LIST = List.of("TEST_ROLE");
     public static final ReservationsEntity RESERVATIONS_ENTITY = new ReservationsEntity();
+    public static final Integer RESERVATION_ID = 100000;
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -1551,4 +1552,15 @@ public class TestModelDataBuilder {
                 .userName(TestEntityDataBuilder.ASSESSOR_USER_NAME)
                 .build();
     }
+
+    public static ReservationsEntity getReservationsEntity() {
+        return ReservationsEntity.builder()
+                .recordId(RESERVATION_ID)
+                .recordName("mock-record")
+                .userName("mock-user")
+                .userSession("mock-session")
+                .build();
+    }
+
+
 }

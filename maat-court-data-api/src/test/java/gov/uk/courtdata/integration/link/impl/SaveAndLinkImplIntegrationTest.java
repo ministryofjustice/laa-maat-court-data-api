@@ -7,6 +7,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.WQStatus;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Result;
@@ -26,7 +27,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class SaveAndLinkImplIntegrationTest {
+public class SaveAndLinkImplIntegrationTest  extends MockMvcIntegrationTest  {
 
     @Autowired
     private SaveAndLinkImpl saveAndLinkImp;

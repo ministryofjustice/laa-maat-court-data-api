@@ -3,18 +3,14 @@ package gov.uk.courtdata.integration.eform;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.testutils.FileUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -22,26 +18,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-@WebAppConfiguration
-class EFormIntegrationTest {
+class EFormIntegrationTest extends MockMvcIntegrationTest {
 
     private static final int USN = 7000001;
     private static final String TYPE = "CRM14";
     private static final int MAAT_REF = 5676558;
     private static final String USER_CREATED = "MLA";
-    private static final String BASE_URL = "/api";
-    private static final String EFORM_URL = BASE_URL + "/eform/";
+    private static final String EFORM_URL = "/api/eform/";
     private static final String EFORM_USN_NOT_PROVIDED_URL = EFORM_URL;
     private static final String EFORM_USN_PROVIDED_URL = EFORM_URL + USN;
     private static final String NONEXISTENT_USN_MESSAGE = String.format("The USN [%d] does not exist in the data store.", USN);
     private static final String ALREADY_EXISTS_USN_MESSAGE = String.format("The USN [%d] already exists in the data store.", USN);
     private static final String NONEXISTENT_USN_RETURN = "{\"code\":\"NOT_FOUND\",\"message\":\"" + NONEXISTENT_USN_MESSAGE + "\"}";
     private static final String ALREADY_EXISTS_USN_RETURN = "{\"code\":\"BAD_REQUEST\",\"message\":\"" + ALREADY_EXISTS_USN_MESSAGE + "\"}";
-
-    private MockMvc mockMvc;
-
-    @Autowired
-    private WebApplicationContext wac;
 
     @Autowired
     private EformStagingRepository eformStagingRepository;
@@ -51,10 +40,6 @@ class EFormIntegrationTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        eformStagingRepository.deleteAllInBatch();
-        eformStagingRepository.flush();
-        mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-
         xmlDoc = FileUtils.readResourceToString("eform/request/xmlDoc_default.xml");
         eformsStagingEntity = EformsStagingEntity
                 .builder()
@@ -64,12 +49,6 @@ class EFormIntegrationTest {
                 .xmlDoc(xmlDoc)
                 .userCreated(USER_CREATED)
                 .build();
-    }
-
-    @AfterEach
-    public void clearUp() {
-        eformStagingRepository.deleteAllInBatch();
-        eformStagingRepository.flush();
     }
 
     @Test

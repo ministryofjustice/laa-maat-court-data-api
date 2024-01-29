@@ -5,6 +5,7 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @AutoConfigureMockMvc
-public class UnLinkControllerTest {
+public class UnLinkControllerTest  extends MockMvcIntegrationTest {
 
     private MockMvc mockMvc;
 

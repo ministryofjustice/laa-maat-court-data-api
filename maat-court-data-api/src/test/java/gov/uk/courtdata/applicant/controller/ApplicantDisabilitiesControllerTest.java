@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 public class ApplicantDisabilitiesControllerTest {
 
-    private static final Integer INVALID_ID = 234;
     private static final String ENDPOINT_URL = "/api/internal/v1/applicant/applicant-disabilities";
     private static final int ID = 1;
 
@@ -40,7 +39,7 @@ public class ApplicantDisabilitiesControllerTest {
 
     @Test
     void givenValidId_whenGetApplicantDisabilitiesIsInvoked_thenResponseIsReturned() throws Exception {
-        ApplicantDisabilitiesDTO response = TestModelDataBuilder.getApplicantDisabilitiesDTO(ID);
+        ApplicantDisabilitiesDTO response = TestModelDataBuilder.getApplicantDisabilitiesDTO();
         when(applicantDisabilitiesService.find(ID))
                 .thenReturn(response);
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + ID))
@@ -51,11 +50,11 @@ public class ApplicantDisabilitiesControllerTest {
 
     @Test
     void givenValidRequest_whenUpdateApplicantDisabilitiesIsInvoked_thenUpdateIsSuccess() throws Exception {
-        ApplicantDisabilitiesDTO applicantDisabilitiesDTO = TestModelDataBuilder.getApplicantDisabilitiesDTO(ID);
+        ApplicantDisabilitiesDTO applicantDisabilitiesDTO = TestModelDataBuilder.getApplicantDisabilitiesDTO();
         when(applicantDisabilitiesService.update(any()))
                 .thenReturn(applicantDisabilitiesDTO);
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO(ID)))
+                .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(applicantDisabilitiesService).update(applicantDisabilitiesDTO);
@@ -74,17 +73,17 @@ public class ApplicantDisabilitiesControllerTest {
         when(applicantDisabilitiesService.update(any()))
                 .thenThrow(new RequestedObjectNotFoundException("Applicant Disabilities details not found"));
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO(ID)))
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(404));
     }
 
     @Test
-    void givenInternalServerError_whenUpdateRepOrderApplicantLinkIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenInternalServerError_whenUpdateApplicantDisabilitiesIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         when(applicantDisabilitiesService.update(any()))
                 .thenThrow(EmptyResultDataAccessException.class);
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO(ID)))
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -93,11 +92,11 @@ public class ApplicantDisabilitiesControllerTest {
 
     @Test
     void givenValidRequest_whenCreateApplicantDisabilitiesIsInvoked_thenCreateIsSuccess() throws Exception {
-        ApplicantDisabilitiesDTO applicantDisabilitiesDTO = TestModelDataBuilder.getApplicantDisabilitiesDTO(ID);
+        ApplicantDisabilitiesDTO applicantDisabilitiesDTO = TestModelDataBuilder.getApplicantDisabilitiesDTO();
         when(applicantDisabilitiesService.create(any()))
                 .thenReturn(applicantDisabilitiesDTO);
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
-                .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO(ID)))
+                .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(applicantDisabilitiesService).create(applicantDisabilitiesDTO);

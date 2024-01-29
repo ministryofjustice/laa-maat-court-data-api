@@ -2,7 +2,6 @@ package gov.uk.courtdata.applicant.mapper;
 
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
-import gov.uk.courtdata.applicant.entity.ApplicantHistoryDisabilitiesEntity;
 import org.mapstruct.*;
 
 @Mapper(
@@ -14,9 +13,6 @@ import org.mapstruct.*;
 public interface ApplicantDisabilitiesMapper {
     ApplicantDisabilitiesDTO mapEntityToDTO(ApplicantDisabilitiesEntity applicantDisabilitiesEntity);
     ApplicantDisabilitiesEntity mapDTOToApplicantDisabilitiesEntity(ApplicantDisabilitiesDTO applicantDisabilitiesDTO);
-    @Mapping(target = "id", ignore = true)
-    ApplicantHistoryDisabilitiesEntity mapDTOToApplicantHistoryDisabilitiesEntity(ApplicantDisabilitiesDTO applicantDisabilitiesDTO);
     void updateApplicantDisabilitiesDTOToApplicantDisabilitiesEntity(ApplicantDisabilitiesDTO applicantHistoryDTO,
                                                                      @MappingTarget ApplicantDisabilitiesEntity applicantDisabilitiesEntity);
-
 }

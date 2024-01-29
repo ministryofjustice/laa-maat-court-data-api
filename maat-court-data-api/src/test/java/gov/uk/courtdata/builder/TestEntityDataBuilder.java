@@ -56,9 +56,8 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static ApplicantDisabilitiesEntity getApplicantDisabilitiesEntity(Integer id) {
+    public static ApplicantDisabilitiesEntity getApplicantDisabilitiesEntity() {
         return ApplicantDisabilitiesEntity.builder()
-                .id(id)
                 .applId(5136528)
                 .userCreated("TEST-S")
                 .userModified("TEST-M")

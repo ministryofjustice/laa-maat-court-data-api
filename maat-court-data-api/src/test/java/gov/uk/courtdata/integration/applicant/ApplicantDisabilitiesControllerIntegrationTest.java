@@ -2,7 +2,6 @@ package gov.uk.courtdata.integration.applicant;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
-import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.applicant.repository.ApplicantDisabilitiesRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -20,9 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ApplicantDisabilitiesControllerIntegrationTest extends MockMvcIntegrationTest {
 
-    private static final Integer INVALID_ID = 234;
+    private static final Integer INVALID_ID = 2345;
     private static final String ENDPOINT_URL = "/api/internal/v1/applicant/applicant-disabilities";
-    private static final int ID = 1;
 
     @Autowired
     private ApplicantDisabilitiesRepository applicantDisabilitiesRepository;
@@ -35,7 +33,8 @@ public class ApplicantDisabilitiesControllerIntegrationTest extends MockMvcInteg
     @Test
     void givenCorrectId_whenGetApplicantDisabilitiesIsInvoked_thenResponseIsReturned() throws Exception {
         createApplicantDisabilities();
-        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + ID))
+        Integer id = applicantDisabilitiesRepository.findAll().get(0).getId();
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
@@ -49,16 +48,17 @@ public class ApplicantDisabilitiesControllerIntegrationTest extends MockMvcInteg
     @Test
     void givenValidRequest_whenUpdateApplicantDisabilitiesIsInvoked_thenUpdateIsSuccess() throws Exception {
         createApplicantDisabilities();
-        ApplicantDisabilitiesDTO recordToUpdate = TestModelDataBuilder.getApplicantDisabilitiesDTO(ID);
+        Integer id = applicantDisabilitiesRepository.findAll().get(0).getId();
+        ApplicantDisabilitiesDTO recordToUpdate = TestModelDataBuilder.getApplicantDisabilitiesDTO(id);
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
                         .content(objectMapper.writeValueAsString(recordToUpdate))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(recordToUpdate.getId()))
+                .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.userModified").value(recordToUpdate.getUserModified()))
                 .andExpect(jsonPath("$.applId").value(recordToUpdate.getApplId().toString()))
-                .andExpect(jsonPath("$.disaDisability").value(recordToUpdate.getDisaDisability().toString()));
+                .andExpect(jsonPath("$.disaDisability").value(recordToUpdate.getDisaDisability()));
     }
 
     @Test
@@ -71,28 +71,29 @@ public class ApplicantDisabilitiesControllerIntegrationTest extends MockMvcInteg
 
     @Test
     void givenValidRequest_whenCreateApplicantDisabilitiesIsInvoked_thenUpdateIsSuccess() throws Exception {
-        ApplicantDisabilitiesDTO recordToCreate = TestModelDataBuilder.getApplicantDisabilitiesDTO(10);
+        ApplicantDisabilitiesDTO recordToCreate = TestModelDataBuilder.getApplicantDisabilitiesDTO();
         mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
                         .content(objectMapper.writeValueAsString(recordToCreate))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(recordToCreate.getId()))
+                .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.userModified").value(recordToCreate.getUserModified()))
                 .andExpect(jsonPath("$.applId").value(recordToCreate.getApplId().toString()))
-                .andExpect(jsonPath("$.disaDisability").value(recordToCreate.getDisaDisability().toString()));
+                .andExpect(jsonPath("$.disaDisability").value(recordToCreate.getDisaDisability()));
     }
 
     @Test
     void givenValidRequest_whenDeleteApplicantDisabilitiesIsInvoked_thenUpdateIsSuccess() throws Exception {
         createApplicantDisabilities();
-        mockMvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/" + ID)
+        Integer id = applicantDisabilitiesRepository.findAll().get(0).getId();
+        mockMvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/" + id)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
-    private ApplicantDisabilitiesEntity createApplicantDisabilities() {
-        return applicantDisabilitiesRepository.save(TestEntityDataBuilder.getApplicantDisabilitiesEntity(ID));
+    private void createApplicantDisabilities() {
+        applicantDisabilitiesRepository.save(TestEntityDataBuilder.getApplicantDisabilitiesEntity());
     }
 
 }

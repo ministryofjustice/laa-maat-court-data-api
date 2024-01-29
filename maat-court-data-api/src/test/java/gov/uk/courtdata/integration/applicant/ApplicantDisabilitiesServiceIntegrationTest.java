@@ -24,9 +24,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 @Slf4j
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrationTest {
-    private static final Integer INVALID_ID = 234;
-
-    private static final int ID = 1;
+    private static final Integer INVALID_ID = 2345;
 
     @Autowired
     private ApplicantDisabilitiesRepository applicantDisabilitiesRepository;
@@ -42,24 +40,24 @@ public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrat
     @Test
     void givenValidId_WhenGetApplicantDisabilitiesIsInvoked_thenCorrectResponseIsReturned() {
         createApplicantDisabilities();
-        ApplicantDisabilitiesDTO applicantDisabilitiesDTO = applicantDisabilitiesService.find(ID);
+        Integer id = applicantDisabilitiesRepository.findAll().get(0).getId();
+        ApplicantDisabilitiesDTO applicantDisabilitiesDTO = applicantDisabilitiesService.find(id);
         assertThat(applicantDisabilitiesDTO.getDisaDisability()).isNotBlank();
     }
 
     @Test
     void givenInValidId_WhenGetApplicantDisabilitiesIsInvoked_thenExceptionIsRaised() {
-        assertThatThrownBy(() -> {
-            applicantDisabilitiesService.find(INVALID_ID);
-        }).isInstanceOf(RequestedObjectNotFoundException.class)
+        assertThatThrownBy(() -> applicantDisabilitiesService.find(INVALID_ID))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant Disability details not found for id");
     }
 
     @Test
     void givenAValidInput_whenCreateApplicantDisabilitiesIsInvoked_thenCreateIsSuccess() {
-        ApplicantDisabilitiesDTO recordToCreate = TestModelDataBuilder.getApplicantDisabilitiesDTO(11);
+        ApplicantDisabilitiesDTO recordToCreate = TestModelDataBuilder.getApplicantDisabilitiesDTO();
         ApplicantDisabilitiesDTO applicantDisabilitiesDTO = applicantDisabilitiesService
                 .create(recordToCreate);
-        assertThat(applicantDisabilitiesDTO.getId()).isEqualTo(recordToCreate.getId());
+        assertThat(applicantDisabilitiesDTO.getId()).isGreaterThan(0);
         assertThat(applicantDisabilitiesDTO.getDisaDisability()).isEqualTo(recordToCreate.getDisaDisability());
         assertThat(applicantDisabilitiesDTO.getApplId()).isEqualTo(recordToCreate.getApplId());
     }
@@ -67,7 +65,8 @@ public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrat
     @Test
     void givenAValidInput_whenUpdateApplicantDisabilitiesIsInvoked_thenUpdateIsSuccess() {
         createApplicantDisabilities();
-        ApplicantDisabilitiesDTO recordToUpdate = TestModelDataBuilder.getApplicantDisabilitiesDTO(ID);
+        Integer id = applicantDisabilitiesRepository.findAll().get(0).getId();
+        ApplicantDisabilitiesDTO recordToUpdate = TestModelDataBuilder.getApplicantDisabilitiesDTO(id);
         ApplicantDisabilitiesDTO applicantDisabilitiesDTO = applicantDisabilitiesService
                 .update(recordToUpdate);
         assertThat(applicantDisabilitiesDTO.getId()).isEqualTo(recordToUpdate.getId());
@@ -76,27 +75,26 @@ public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrat
     }
 
     @Test
-    void givenAInValidInput_whenUpdateRepOrderApplicantLinksIsInvoked_thenExceptionIsRaised() {
-        assertThatThrownBy(() -> {
-            applicantDisabilitiesService.update(TestModelDataBuilder.getApplicantDisabilitiesDTO(INVALID_ID));
-        }).isInstanceOf(RequestedObjectNotFoundException.class)
+    void givenAInValidInput_whenUpdateApplicantDisabilitiesIsInvoked_thenExceptionIsRaised() {
+        assertThatThrownBy(() -> applicantDisabilitiesService
+                .update(TestModelDataBuilder.getApplicantDisabilitiesDTO(INVALID_ID)))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant Disability details not found for id");
     }
 
     @Test
     void givenAValidInput_whenDeleteApplicantDisabilitiesIsInvoked_thenDeleteIsSuccess() {
         createApplicantDisabilities();
-        applicantDisabilitiesService.delete(ID);
-        Optional<ApplicantDisabilitiesEntity> record = applicantDisabilitiesRepository.findById(ID);
-        assertThatThrownBy(() -> {
-            record.get();
-        }).isInstanceOf(NoSuchElementException.class)
+        Integer id = applicantDisabilitiesRepository.findAll().get(0).getId();
+        applicantDisabilitiesService.delete(id);
+        Optional<ApplicantDisabilitiesEntity> record = applicantDisabilitiesRepository.findById(id);
+        assertThatThrownBy(record::get).isInstanceOf(NoSuchElementException.class)
                 .hasMessageContaining("No value present");
 
     }
 
-    private ApplicantDisabilitiesEntity createApplicantDisabilities() {
-        return applicantDisabilitiesRepository.save(TestEntityDataBuilder.getApplicantDisabilitiesEntity(ID));
+    private void createApplicantDisabilities() {
+        applicantDisabilitiesRepository.save(TestEntityDataBuilder.getApplicantDisabilitiesEntity());
     }
 
 }

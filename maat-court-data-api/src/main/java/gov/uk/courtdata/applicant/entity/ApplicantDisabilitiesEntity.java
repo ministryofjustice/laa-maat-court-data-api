@@ -1,13 +1,14 @@
 package gov.uk.courtdata.applicant.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -19,6 +20,8 @@ public class ApplicantDisabilitiesEntity {
 
     @Id
     @Column(name = "ID")
+    @SequenceGenerator(name = "applicant_disabilities_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicant_disabilities_gen_seq")
     private Integer id;
 
     @Column(name = "APPL_ID")
@@ -40,9 +43,4 @@ public class ApplicantDisabilitiesEntity {
 
     @Column(name = "USER_MODIFIED")
     private String userModified;
-
-    @ToString.Exclude
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "APHI_ID")
-    private final List<ApplicantHistoryDisabilitiesEntity> applicantHistoryDisabilityEntities = new ArrayList<>();
 }

@@ -139,6 +139,15 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+    public static ApplicantDisabilitiesDTO getApplicantDisabilitiesDTO() {
+        return ApplicantDisabilitiesDTO.builder()
+                .applId(5136528)
+                .userCreated("TEST-S")
+                .userModified("TEST-M")
+                .disaDisability("NO COMMENT")
+                .build();
+    }
+
     public static ApplicantDisabilitiesDTO getApplicantDisabilitiesDTO(Integer id) {
         return ApplicantDisabilitiesDTO.builder()
                 .id(id)

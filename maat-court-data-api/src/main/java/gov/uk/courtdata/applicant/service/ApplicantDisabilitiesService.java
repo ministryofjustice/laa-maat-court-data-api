@@ -2,7 +2,6 @@ package gov.uk.courtdata.applicant.service;
 
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
-import gov.uk.courtdata.applicant.entity.ApplicantHistoryDisabilitiesEntity;
 import gov.uk.courtdata.applicant.mapper.ApplicantDisabilitiesMapper;
 import gov.uk.courtdata.applicant.repository.ApplicantDisabilitiesRepository;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -31,7 +30,6 @@ public class ApplicantDisabilitiesService {
         log.info("ApplicantDisabilitiesService::create - Start");
         ApplicantDisabilitiesEntity applicantDisabilitiesEntity = applicantDisabilitiesMapper.
                 mapDTOToApplicantDisabilitiesEntity(applicantDisabilitiesDTO);
-        addApplicantHistoryDisabilities(applicantDisabilitiesDTO, applicantDisabilitiesEntity);
         return applicantDisabilitiesMapper.
                 mapEntityToDTO(applicantDisabilitiesRepository.save(applicantDisabilitiesEntity));
     }
@@ -45,7 +43,6 @@ public class ApplicantDisabilitiesService {
         applicantDisabilitiesMapper.
                 updateApplicantDisabilitiesDTOToApplicantDisabilitiesEntity(
                         applicantDisabilitiesDTO,applicantDisabilitiesEntity);
-        addApplicantHistoryDisabilities(applicantDisabilitiesDTO, applicantDisabilitiesEntity);
         return applicantDisabilitiesMapper.
                 mapEntityToDTO(applicantDisabilitiesRepository.save(applicantDisabilitiesEntity));
     }
@@ -65,18 +62,5 @@ public class ApplicantDisabilitiesService {
             throw new RequestedObjectNotFoundException(String.format("Applicant Disability details not found for id %d", id));
         }
         return applicantDisabilitiesEntity;
-    }
-
-    private ApplicantHistoryDisabilitiesEntity getApplicantHistoryDisabilitiesEntity(ApplicantDisabilitiesDTO applicantDisabilitiesDTO) {
-        ApplicantHistoryDisabilitiesEntity applicantHistoryDisabilitiesEntity = applicantDisabilitiesMapper
-                .mapDTOToApplicantHistoryDisabilitiesEntity(applicantDisabilitiesDTO);
-        return applicantHistoryDisabilitiesEntity;
-    }
-
-
-    private void addApplicantHistoryDisabilities(ApplicantDisabilitiesDTO applicantDisabilitiesDTO, ApplicantDisabilitiesEntity applicantDisabilitiesEntity) {
-        ApplicantHistoryDisabilitiesEntity applicantHistoryDisabilities =
-                getApplicantHistoryDisabilitiesEntity(applicantDisabilitiesDTO);
-        applicantDisabilitiesEntity.getApplicantHistoryDisabilityEntities().add(applicantHistoryDisabilities);
     }
 }

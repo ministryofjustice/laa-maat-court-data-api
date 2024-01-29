@@ -20,9 +20,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(FdcContributionsRestController.class)
+@WebMvcTest(FdcContributionsController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class FdcContributionsRestControllerTest {
+class FdcContributionsControllerTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement";
 

@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Fdc", description = "Rest API for Fdc Contribution Files")
-public class FdcContributionsRestController {
+public class FdcContributionsController {
 
     private final FdcContributionsService fdcContributionsService;
 

@@ -7,7 +7,6 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import gov.uk.courtdata.dto.ErrorDTO;
-import groovy.util.logging.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -18,8 +17,6 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -33,10 +30,9 @@ import java.util.function.Supplier;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
-@Slf4j
 public abstract class MockMvcIntegrationTest {
 
-    private static final int WIREMOCK_PORT;
+    public static final int WIREMOCK_PORT;
 
     static {
         try (var serverSocket = new ServerSocket(0)) {
@@ -49,6 +45,8 @@ public abstract class MockMvcIntegrationTest {
 
     private static WireMockServer wireMockServer;
 
+    private final OAuth2Stub oAuth2Stub = new OAuth2Stub();
+
     @Autowired
     protected MockMvc mockMvc;
 
@@ -57,12 +55,6 @@ public abstract class MockMvcIntegrationTest {
 
     @Autowired
     protected Repositories repos;
-
-    @DynamicPropertySource
-    static void configureDynamicWireMockPort(DynamicPropertyRegistry registry) {
-        registry.add("spring.security.oauth2.client.provider.cda.token-uri", () -> "http://localhost:" + WIREMOCK_PORT + "/oauth2/token");
-        registry.add("cda.url", () -> "http://localhost:" + WIREMOCK_PORT + "/");
-    }
 
     @BeforeAll
     static void beforeAll() {
@@ -95,6 +87,7 @@ public abstract class MockMvcIntegrationTest {
         configureObjectMapper(objectMapper);
         wireMockServer.resetAll();
         repos.clearAll();
+        oAuth2Stub.applyStubTo(wireMockServer);
         repos.insertCommonTestData();
     }
 
@@ -110,7 +103,7 @@ public abstract class MockMvcIntegrationTest {
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
     }
 
-    protected static WireMockServer wireMock() {
+    protected WireMockServer wireMock() {
         return wireMockServer;
     }
 

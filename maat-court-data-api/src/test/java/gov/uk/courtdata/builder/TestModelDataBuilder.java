@@ -80,6 +80,7 @@ public class TestModelDataBuilder {
     public static final List<String> NEW_WORK_REASON_LIST = List.of("TEST_NWREASON");
     public static final List<String> ROLE_ACTIONS_LIST = List.of("TEST_ROLE");
     public static final ReservationsEntity RESERVATIONS_ENTITY = new ReservationsEntity();
+    public static final Integer RESERVATION_ID = 100000;
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -1514,4 +1515,44 @@ public class TestModelDataBuilder {
 
                 .build();
     }
+
+    public static CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
+        return CorrespondenceStateDTO.builder()
+                .repId(repId)
+                .status(status)
+                .build();
+    }
+
+    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, String status) {
+        return CorrespondenceStateEntity.builder()
+                .repId(repId)
+                .status(status)
+                .build();
+    }
+
+    public static UserSummaryDTO getUserSummaryDTO() {
+        return UserSummaryDTO.builder()
+                .username(TEST_USER)
+                .newWorkReasons(NEW_WORK_REASON_LIST)
+                .roleActions(ROLE_ACTIONS_LIST)
+                .reservationsEntity(RESERVATIONS_ENTITY)
+                .build();
+    }
+
+    public static AssessorDetails getAssessorDetails() {
+        return AssessorDetails.builder()
+                .fullName("Karen Greaves")
+                .userName(TestEntityDataBuilder.ASSESSOR_USER_NAME)
+                .build();
+    }
+
+    public static ReservationsEntity getReservationsEntity() {
+        return ReservationsEntity.builder()
+                .recordId(RESERVATION_ID)
+                .recordName("mock-record")
+                .userName("mock-user")
+                .userSession("mock-session")
+                .build();
+    }
+
 }

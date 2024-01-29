@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dces.controller;
 
+import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.dces.service.FdcContributionsService;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
@@ -15,7 +16,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,34 +39,37 @@ class FdcContributionsControllerTest {
         BigDecimal expectedCost3= new BigDecimal("999.99");
 
         when(fdcContributionsService.getFdcContributionFiles(FdcContributionsStatus.REQUESTED))
-                .thenReturn(List.of(
-                        FdcContributionsResponse.builder().id(1).finalCost(expectedCost1).build(),
-                        FdcContributionsResponse.builder().id(2).finalCost(expectedCost2).build(),
-                        FdcContributionsResponse.builder().id(3).finalCost(expectedCost3).build()));
+                .thenReturn(FdcContributionsResponse.builder()
+                        .fdcContributions(List.of(
+                                FdcContributionEntry.builder().id(1).finalCost(expectedCost1).build(),
+                                FdcContributionEntry.builder().id(2).finalCost(expectedCost2).build(),
+                                FdcContributionEntry.builder().id(3).finalCost(expectedCost3).build()))
+                        .build());
 
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/fdc-contribution-files"))
                         .queryParam("status", FdcContributionsStatus.REQUESTED.name())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$.[?(@.id==1)].id").exists())
-                .andExpect(jsonPath("$.[?(@.id==1)].finalCost").value(expectedCost1.doubleValue()))
-                .andExpect(jsonPath("$.[?(@.id==2)].id").exists())
-                .andExpect(jsonPath("$.[?(@.id==2)].finalCost").value(expectedCost2.doubleValue()))
-                .andExpect(jsonPath("$.[?(@.id==3)].id").exists())
-                .andExpect(jsonPath("$.[?(@.id==3)].finalCost").value(expectedCost3.doubleValue()));
+                .andExpect(jsonPath("$.fdcContributions.length()").value(3))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==1)].id").exists())
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==1)].finalCost").value(expectedCost1.doubleValue()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==2)].id").exists())
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==2)].finalCost").value(expectedCost2.doubleValue()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==3)].id").exists())
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==3)].finalCost").value(expectedCost3.doubleValue()));
     }
 
     @Test
     void testContributionFileContentWhenActiveFileNotAvailable() throws Exception {
 
-        when(fdcContributionsService.getFdcContributionFiles(FdcContributionsStatus.REQUESTED)).thenReturn(List.of());
+        when(fdcContributionsService.getFdcContributionFiles(FdcContributionsStatus.REQUESTED))
+                .thenReturn(FdcContributionsResponse.builder().fdcContributions(List.of()).build());
 
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/fdc-contribution-files"))
                         .queryParam("status", FdcContributionsStatus.REQUESTED.name())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpect(jsonPath("$.fdcContributions.length()").value(0));
     }
 
     @Test

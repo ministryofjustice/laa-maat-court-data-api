@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
@@ -64,11 +63,11 @@ public class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$.[?(@.id=="+expectedId1+")].id").exists())
-                .andExpect(jsonPath("$.[?(@.id=="+expectedId1+")].finalCost").value(Double.parseDouble(expectedFinalCost1)))
-                .andExpect(jsonPath("$.[?(@.id=="+expectedId2+")].id").exists())
-                .andExpect(jsonPath("$.[?(@.id=="+expectedId2+")].finalCost").value(Double.parseDouble(expectedFinalCost2)));
+                .andExpect(jsonPath("$.fdcContributions.length()").value(2))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id=="+expectedId1+")].id").exists())
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id=="+expectedId1+")].finalCost").value(Double.parseDouble(expectedFinalCost1)))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id=="+expectedId2+")].id").exists())
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id=="+expectedId2+")].finalCost").value(Double.parseDouble(expectedFinalCost2)));
     }
 
     @Test
@@ -78,9 +77,9 @@ public class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$.[?(@.id=="+expectedId3+")].id").exists())
-                .andExpect(jsonPath("$.[?(@.id=="+expectedId3+")].finalCost").value(Double.parseDouble(expectedFinalCost3)));
+                .andExpect(jsonPath("$.fdcContributions.length()").value(1))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id=="+expectedId3+")].id").exists())
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id=="+expectedId3+")].finalCost").value(Double.parseDouble(expectedFinalCost3)));
     }
 
     @Test

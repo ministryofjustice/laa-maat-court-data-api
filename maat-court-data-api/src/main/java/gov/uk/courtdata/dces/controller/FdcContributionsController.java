@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/internal/v1/debt-collection-enforcement")
@@ -32,10 +31,10 @@ public class FdcContributionsController {
     @StandardApiResponse
     @GetMapping(value = "/fdc-contribution-files", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Get a list of fdc files")
-    public ResponseEntity<List<FdcContributionsResponse>> getFdcContributions(@RequestParam(name = "status") final FdcContributionsStatus status) {
+    public ResponseEntity<FdcContributionsResponse> getFdcContributions(@RequestParam(name = "status") final FdcContributionsStatus status) {
         log.info("Get fdc contribution files with status {}" ,status);
-        List<FdcContributionsResponse> contributionResponses = fdcContributionsService.getFdcContributionFiles(status);
-        log.info("findContributionFiles count {}", contributionResponses.size());
+        FdcContributionsResponse contributionResponses = fdcContributionsService.getFdcContributionFiles(status);
+        log.info("findContributionFiles count {}", contributionResponses.getFdcContributions().size());
         return ResponseEntity.ok(contributionResponses);
     }
 }

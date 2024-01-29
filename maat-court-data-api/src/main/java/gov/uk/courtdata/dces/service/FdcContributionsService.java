@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dces.service;
 
+import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
@@ -17,11 +18,11 @@ import java.util.Objects;
 public class FdcContributionsService {
     private final FdcContributionsRepository fdcContributionsRepository;
 
-    public List<FdcContributionsResponse> getFdcContributionFiles(FdcContributionsStatus status) {
+    public FdcContributionsResponse getFdcContributionFiles(FdcContributionsStatus status) {
         log.info("Getting fdc contribution file with status with the -> {}", status);
         final List<FdcContributionsEntity> fdcFileList = fdcContributionsRepository.findByStatus(status);
 
-        return fdcFileList.stream().map( cc -> FdcContributionsResponse.builder()
+        List<FdcContributionEntry> fdcContributionEntries = fdcFileList.stream().map(cc -> FdcContributionEntry.builder()
                         .id(cc.getId())
                         .finalCost(cc.getFinalCost())
                         .dateCalculated(cc.getDateCalculated())
@@ -29,6 +30,7 @@ public class FdcContributionsService {
                         .agfsCost(cc.getAgfsCost())
                         .sentenceOrderDate(Objects.nonNull(cc.getRepOrderEntity())?cc.getRepOrderEntity().getSentenceOrderDate():null)
                         .build()).toList();
+        return FdcContributionsResponse.builder().fdcContributions(fdcContributionEntries).build();
     }
 
 }

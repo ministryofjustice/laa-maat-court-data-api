@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dces.service;
 
+import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
@@ -54,13 +55,15 @@ class FdcContributionsServiceTest {
     @Test
     void testGetContributionFilesWhenFdcFileStatusIsRequested() {
         when(fdcContributionsRepository.findByStatus(statusCaptor.capture())).thenReturn(fdcContributionsEntityList);
-        List<FdcContributionsResponse> response = fdcContributionsService.getFdcContributionFiles(REQUESTED);
+        FdcContributionsResponse response = fdcContributionsService.getFdcContributionFiles(REQUESTED);
 
         assertNotNull(response);
-        Assertions.assertFalse(response.isEmpty());
+
+        List<FdcContributionEntry> fdcContributionEntries = response.getFdcContributions();
+        Assertions.assertFalse(fdcContributionEntries.isEmpty());
         final FdcContributionsStatus capturedStatus = statusCaptor.getValue();
         assertEquals(REQUESTED, capturedStatus);
-        FdcContributionsResponse responseValue = response.get(0);
+        FdcContributionEntry responseValue = fdcContributionEntries.get(0);
         assertEquals(expectedId, responseValue.getId());
         assertEquals(expectedFinalCost,responseValue.getFinalCost());
         assertEquals(expectedAgfsCost,responseValue.getAgfsCost());

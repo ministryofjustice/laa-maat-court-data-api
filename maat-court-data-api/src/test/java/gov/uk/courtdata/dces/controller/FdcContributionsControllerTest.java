@@ -73,6 +73,7 @@ class FdcContributionsControllerTest {
     void testContributionFileContentWhenQueryParamIsNotProvided() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/fdc-contribution-files"))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.detail").value("Required parameter 'status' is not present."))
                 .andExpect(status().isBadRequest());
     }
 

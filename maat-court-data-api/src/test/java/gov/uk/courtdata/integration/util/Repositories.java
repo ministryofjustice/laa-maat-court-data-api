@@ -127,7 +127,7 @@ public class Repositories {
     private EformStagingRepository eformStaging;
 
     @Autowired
-    public FdcContributionsRepository fdcContributionsRepository;
+    public FdcContributionsRepository fdcContributions;
 
     @Autowired
     public FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistory;
@@ -281,7 +281,7 @@ public class Repositories {
                 defendantMAATData,
                 defendant,
                 eformStaging,
-                fdcContributionsRepository,
+                fdcContributions,
                 financialAssessmentDetailsHistory,
                 financialAssessmentDetails,
                 financialAssessment,

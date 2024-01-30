@@ -16,7 +16,6 @@ import gov.uk.courtdata.model.assessment.FinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -42,6 +42,7 @@ public class FinancialAssessmentControllerTest {
     private static final String BASE_URL = "/api/internal/v1/assessment/financial-assessments";
     private static final String CHECK_OUTSTANDING_URL = BASE_URL + "/check-outstanding/{repId}";
     private static final String MEANS_ASSESSOR_DETAILS_URL = BASE_URL + "/{financialAssessmentId}/means-assessor-details";
+    private static final String ROLLBACK_URL = BASE_URL + "/rollback/{financialAssessmentId}";
 
     private static final Integer MOCK_ASSESSMENT_ID = 1234;
     private static final Integer FAKE_ASSESSMENT_ID = 7123;
@@ -242,5 +243,16 @@ public class FinancialAssessmentControllerTest {
     public void givenIncorrectFullAvailableParameter_whenUpdateFinancialAssessmentsIsInvoked_then400ErrorIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.patch(BASE_URL + "/" + "MOCK_FINANCIAL_ASSESSMENT_ID"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void givenValidFinancialAssessmentId_whenRollbackAssessmentIsInvoked_thenAssessmentIsUpdated() throws Exception {
+        doNothing().when(financialAssessmentService).patchFinancialAssessment(MOCK_FINANCIAL_ASSESSMENT_ID, Map.of("fassInitStatus", "IN PROGRESS"));
+
+        String requestJson = "{\"fassInitStatus\":\"IN PROGRESS\"}";
+        mvc.perform(MockMvcRequestBuilders.patch(ROLLBACK_URL, MOCK_ASSESSMENT_ID).content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(financialAssessmentService).patchFinancialAssessment(MOCK_FINANCIAL_ASSESSMENT_ID, Map.of("fassInitStatus", "IN PROGRESS"));
     }
 }

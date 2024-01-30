@@ -1,5 +1,7 @@
 package gov.uk.courtdata.assessment.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -11,19 +13,22 @@ import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
-import org.junit.jupiter.api.Assertions;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -170,4 +175,33 @@ public class FinancialAssessmentServiceTest {
         financialAssessmentService.updateFinancialAssessments(MOCK_FINANCIAL_ASSESSMENT_ID, financialAssessment);
         verify(financialAssessmentRepository).save(financialAssessmentEntity);
     }
+
+    @Test
+    public void givenInitialAssessment_whenRollbackAssessmentIsInvoked_thenAssessmentIsUpdated() throws JsonProcessingException {
+        FinancialAssessmentEntity financialAssessmentEntity = FinancialAssessmentEntity.builder()
+                .id(1)
+                .fassInitStatus("COMPLETE")
+                .initResult("FULL")
+                .build();
+        String requestJson = "{\"fassInitStatus\":\"IN PROGRESS\", \"initResult\":null}";
+        Map<String, Object> updateFields = new ObjectMapper().readValue(requestJson, HashMap.class);
+        when(financialAssessmentImpl.find(anyInt())).thenReturn(Optional.of(financialAssessmentEntity));
+        financialAssessmentService.patchFinancialAssessment(anyInt(), updateFields);
+        verify(financialAssessmentRepository).save(financialAssessmentEntity);
+    }
+
+    @Test
+    public void givenFullAssessment_whenRollbackAssessmentIsInvoked_thenAssessmentIsUpdated() throws JsonProcessingException {
+        FinancialAssessmentEntity financialAssessmentEntity = FinancialAssessmentEntity.builder()
+                .id(1)
+                .fassFullStatus("COMPLETE")
+                .fullResult("PASS")
+                .build();
+        String requestJson = "{\"fassFullStatus\":\"IN PROGRESS\", \"fullResult\":null}";
+        Map<String, Object> updateFields = new ObjectMapper().readValue(requestJson, HashMap.class);
+        when(financialAssessmentImpl.find(anyInt())).thenReturn(Optional.of(financialAssessmentEntity));
+        financialAssessmentService.patchFinancialAssessment(anyInt(), updateFields);
+        verify(financialAssessmentRepository).save(financialAssessmentEntity);
+    }
+
 }

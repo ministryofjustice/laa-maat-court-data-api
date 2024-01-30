@@ -15,7 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -87,5 +90,19 @@ public class FinancialAssessmentService {
                 assessmentMapper.updateFinancialAssessmentToFinancialAssessmentDTO(updateFinancialAssessment);
         FinancialAssessmentEntity financialAssessmentEntity = assessmentMapper.financialAssessmentDtoToFinancialAssessmentEntity(financialAssessmentDTO);
         financialAssessmentRepository.save(financialAssessmentEntity);
+    }
+
+    @Transactional
+    public void patchFinancialAssessment(int financialAssessmentId, Map<String, Object> updateFields) {
+        Optional<FinancialAssessmentEntity> assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
+        if (assessmentEntity.isPresent()) {
+            FinancialAssessmentEntity financialAssessmentEntity = assessmentEntity.get();
+            updateFields.forEach((key, value) -> {
+                Field field = ReflectionUtils.findField(FinancialAssessmentEntity.class, key);
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, financialAssessmentEntity, value);
+            });
+            financialAssessmentRepository.save(financialAssessmentEntity);
+        }
     }
 }

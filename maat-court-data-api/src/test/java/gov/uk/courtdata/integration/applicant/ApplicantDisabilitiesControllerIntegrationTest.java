@@ -62,7 +62,7 @@ public class ApplicantDisabilitiesControllerIntegrationTest extends MockMvcInteg
     }
 
     @Test
-    void givenInValidRequest_whenUpdateRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenInValidRequest_whenUpdateApplicantDisabilitiesIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
                         .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO(INVALID_ID)))
                         .contentType(MediaType.APPLICATION_JSON))

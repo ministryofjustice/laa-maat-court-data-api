@@ -103,6 +103,9 @@ public class FinancialAssessmentService {
                 ReflectionUtils.setField(field, financialAssessmentEntity, value);
             });
             financialAssessmentRepository.save(financialAssessmentEntity);
+        } else {
+            String message = String.format("No Financial Assessment found for assessment Id: [%s]", financialAssessmentId);
+            throw new RequestedObjectNotFoundException(message);
         }
     }
 }

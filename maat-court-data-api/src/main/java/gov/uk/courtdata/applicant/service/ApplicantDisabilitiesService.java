@@ -20,7 +20,7 @@ public class ApplicantDisabilitiesService {
     @Transactional(readOnly = true)
     public ApplicantDisabilitiesDTO find(Integer id) {
         log.info("ApplicantDisabilitiesService::find - Start");
-        ApplicantDisabilitiesEntity applicantDisabilitiesEntity = getApplicantDisabilitiesEntity(id);
+        ApplicantDisabilitiesEntity applicantDisabilitiesEntity = findApplicantDisabilitiesEntity(id);
         return applicantDisabilitiesMapper.
                 mapEntityToDTO(applicantDisabilitiesEntity);
     }
@@ -39,7 +39,7 @@ public class ApplicantDisabilitiesService {
         log.info("ApplicantDisabilitiesService::update - Start");
         Integer id = applicantDisabilitiesDTO.getId();
         ApplicantDisabilitiesEntity applicantDisabilitiesEntity =
-                getApplicantDisabilitiesEntity(id);
+                findApplicantDisabilitiesEntity(id);
         applicantDisabilitiesMapper.
                 updateApplicantDisabilitiesDTOToApplicantDisabilitiesEntity(
                         applicantDisabilitiesDTO,applicantDisabilitiesEntity);
@@ -51,11 +51,11 @@ public class ApplicantDisabilitiesService {
     public void delete(Integer id) {
         log.info("ApplicantDisabilitiesService::delete - Start");
         ApplicantDisabilitiesEntity applicantDisabilitiesEntity =
-                getApplicantDisabilitiesEntity(id);
+                findApplicantDisabilitiesEntity(id);
         applicantDisabilitiesRepository.delete(applicantDisabilitiesEntity);
     }
 
-    private ApplicantDisabilitiesEntity getApplicantDisabilitiesEntity(Integer id) {
+    private ApplicantDisabilitiesEntity findApplicantDisabilitiesEntity(Integer id) {
         ApplicantDisabilitiesEntity applicantDisabilitiesEntity =
                 applicantDisabilitiesRepository.findById(id).orElse(null);
         if (applicantDisabilitiesEntity == null) {

@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api/internal/v1/debt-collection-enforcement")
+@RequestMapping("${api-endpoints.debt-collection-enforcement-domain}")
 @Slf4j
 @RequiredArgsConstructor
-@Tag(name = "Fdc", description = "Rest API for Fdc Contribution Files")
+@Tag(name = "Fdc", description = "Rest API for Final Defence Cost Contribution Files")
 public class FdcContributionsController {
 
     private final FdcContributionsService fdcContributionsService;

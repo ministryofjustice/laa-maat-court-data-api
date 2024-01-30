@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -40,20 +39,14 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        FdcContributionsEntity firstContribution = fdcContributionsRepository.save(FdcContributionsEntity.builder().id(expectedId1).status(expectedStatus1).finalCost(BigDecimal.valueOf(Double.parseDouble(expectedFinalCost1))).build());
-        if(firstContribution.getId()!=expectedId1){
-            int diff=firstContribution.getId()-expectedId1;
-            expectedId1+=diff;
-            expectedId2+=diff;
-            expectedId3+=diff;
-            expectedId4+=diff;
-        }
-        fdcContributionsRepository.saveAll(List.of(
-                FdcContributionsEntity.builder().id(expectedId2).status(expectedStatus2).finalCost(BigDecimal.valueOf(Double.parseDouble(expectedFinalCost2))).build(),
-                FdcContributionsEntity.builder().id(expectedId3).status(expectedStatus3).finalCost(BigDecimal.valueOf(Double.parseDouble(expectedFinalCost3))).build(),
-                FdcContributionsEntity.builder().id(expectedId4).status(expectedStatus4).finalCost(BigDecimal.valueOf(Double.parseDouble(expectedFinalCost4))).build()
-        ));
-        fdcContributionsRepository.findAll();
+        FdcContributionsEntity tempContribution = fdcContributionsRepository.save(FdcContributionsEntity.builder().id(expectedId1).status(expectedStatus1).finalCost(BigDecimal.valueOf(Double.parseDouble(expectedFinalCost1))).build());
+        expectedId1=tempContribution.getId();
+        tempContribution = fdcContributionsRepository.save(FdcContributionsEntity.builder().id(expectedId2).status(expectedStatus2).finalCost(BigDecimal.valueOf(Double.parseDouble(expectedFinalCost2))).build());
+        expectedId2=tempContribution.getId();
+        tempContribution = fdcContributionsRepository.save(FdcContributionsEntity.builder().id(expectedId3).status(expectedStatus3).finalCost(BigDecimal.valueOf(Double.parseDouble(expectedFinalCost3))).build());
+        expectedId3=tempContribution.getId();
+        tempContribution = fdcContributionsRepository.save(FdcContributionsEntity.builder().id(expectedId4).status(expectedStatus4).finalCost(BigDecimal.valueOf(Double.parseDouble(expectedFinalCost4))).build());
+        expectedId4=tempContribution.getId();
     }
 
     @Test

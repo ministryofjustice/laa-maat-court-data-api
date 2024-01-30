@@ -11,12 +11,10 @@ import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -90,20 +88,6 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         repOrderMvoRegRepository.save(
                 TestEntityDataBuilder.getRepOrderMvoRegEntity(TestEntityDataBuilder.REP_ID)
         );
-    }
-
-    @AfterEach
-    void cleanUp(@Autowired RepOrderRepository repOrderRepository,
-                 @Autowired FinancialAssessmentRepository financialAssessmentRepository,
-                 @Autowired PassportAssessmentRepository passportAssessmentRepository,
-                 @Autowired RepOrderMvoRepository repOrderMvoRepository,
-                 @Autowired RepOrderMvoRegRepository repOrderMvoRegRepository) {
-
-        RepositoryUtil.clearUp(financialAssessmentRepository,
-                passportAssessmentRepository,
-                repOrderMvoRegRepository,
-                repOrderMvoRepository,
-                repOrderRepository);
     }
 
     private RepOrderDTO getUpdatedRepOrderDTO() {
@@ -336,7 +320,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenValidRepId_whenFindIOJAssessorDetailsIsCalled_() throws Exception {
         String userName = "grea-k";
-        UserEntity userEntity = TestEntityDataBuilder.getUserEntity(userName);
+        UserEntity userEntity = TestEntityDataBuilder.getUserEntity();
         userRepository.save(userEntity);
 
         RepOrderEntity repOrder = TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID);

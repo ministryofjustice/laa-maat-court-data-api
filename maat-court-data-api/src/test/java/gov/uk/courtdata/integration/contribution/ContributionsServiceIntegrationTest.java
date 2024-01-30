@@ -1,6 +1,5 @@
 package gov.uk.courtdata.integration.contribution;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -14,12 +13,10 @@ import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.entity.CorrespondenceEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.repository.CorrespondenceRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.util.RepositoryUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -33,17 +30,13 @@ import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-@Slf4j
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class ContributionsServiceIntegrationTest {
+public class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
 
     private static final Integer INVALID_REP_ID = 9999;
 
     private static final Integer INVALID_CONTRIBUTION_ID = 8888;
     private static final String CONTRIBUTION_FILE_NAME = "CONTRIBUTIONS_202307111234.xml";
-
-    @Autowired
-    protected ObjectMapper objectMapper;
 
     @Autowired
     ContributionsRepository contributionsRepository;
@@ -75,13 +68,6 @@ public class ContributionsServiceIntegrationTest {
         contributionsEntity = contributionsRepository.saveAndFlush(contributions);
     }
 
-    @AfterEach
-    public void clearUp() {
-        contributionsEntity = null;
-        RepositoryUtil.clearUp(contributionsRepository,
-                correspondenceRepository,
-                repOrderRepository);
-    }
     @Test
     void givenValidRepId_WhenFindIsInvoked_thenCorrectResponseIsReturned() {
         List<ContributionsDTO> result = contributionsService.find(REP_ID, true);
@@ -135,7 +121,8 @@ public class ContributionsServiceIntegrationTest {
         }).isInstanceOf(DataAccessException.class);
     }
 
-    @Test @Disabled
+    @Test
+    @Disabled
     void givenValidRepId_whenGetContributionsSummaryIsInvoked_thenCorrectResponseIsReturned() {
         ContributionFilesEntity contributionFilesEntity = TestEntityDataBuilder.getContributionFilesEntity();
         contributionFilesEntity.setId(contributionsEntity.getContributionFileId());

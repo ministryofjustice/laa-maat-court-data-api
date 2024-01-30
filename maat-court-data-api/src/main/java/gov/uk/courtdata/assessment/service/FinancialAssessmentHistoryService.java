@@ -25,7 +25,7 @@ public class FinancialAssessmentHistoryService {
     @Transactional
     public void createAssessmentHistory(final int financialAssessmentId, final boolean fullAvailable) {
         log.info("Create Assessment History - Transaction Processing - Start");
-        FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
+        FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId).get();
 
         FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO =
                 buildFinancialAssessmentHistoryDTO(assessmentEntity, fullAvailable);

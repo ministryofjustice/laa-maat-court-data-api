@@ -9,6 +9,7 @@ import gov.uk.courtdata.enums.CaseConclusionStatus;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesEntity;
 import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesRepository;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.Metadata;
 import gov.uk.courtdata.prosecutionconcluded.impl.ProcessSentencingImpl;
 import gov.uk.courtdata.prosecutionconcluded.model.*;
@@ -16,7 +17,7 @@ import gov.uk.courtdata.prosecutionconcluded.service.HearingsService;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedListener;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class ProsecutionConcludedIntegrationTest {
+public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest {
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -93,7 +94,7 @@ public class ProsecutionConcludedIntegrationTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        RepositoryUtil.clearUp(financialAssessmentRepository,
+        new RepositoryUtil().clearUp(financialAssessmentRepository,
                 passportAssessmentRepository,
                 wqHearingRepository,
                 offenceRepository,

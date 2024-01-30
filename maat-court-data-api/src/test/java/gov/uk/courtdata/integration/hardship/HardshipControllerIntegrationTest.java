@@ -15,8 +15,8 @@ import gov.uk.courtdata.enums.HardshipReviewStatus;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.model.hardship.*;
 import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,14 +73,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     public void setUp() throws Exception {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
-        RepositoryUtil.clearUp(hardshipReviewRepository,
-                hardshipReviewDetailRepository,
-                hardshipReviewDetailReasonRepository,
-                financialAssessmentRepository,
-                mockNewWorkReasonRepository,
-                passportAssessmentRepository,
-                repOrderRepository);
-
         setupTestData();
     }
 
@@ -122,27 +114,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenAHardshipReviewWithNoSupportingAssessment_whenCreateHardshipIsInvoked_theCorrectErrorIsReturned() throws
-            Exception {
-        assertTrue(runCreateHardshipReviewErrorScenario(
-                "Review can only be entered after a completed assessment",
-                CreateHardshipReview.builder().repId(9999).build()
-        ));
-    }
-
-    @Test
-    void givenAHardshipReviewWhereReviewPredatesAssessment_whenCreateHardshipIsInvoked_theCorrectErrorIsReturned() throws
-            Exception {
-        assertTrue(runCreateHardshipReviewErrorScenario(
-                "Review date cannot pre-date the means assessment date",
-                CreateHardshipReview.builder()
-                        .repId(existingFinancialAssessment.getRepOrder().getId())
-                        .reviewDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0))
-                        .build()
-        ));
-    }
-
-    @Test
     void givenAValidHardshipReview_whenCreateHardshipIsInvoked_theCorrectDataIsPersisted() throws Exception {
         CreateHardshipReview request = CreateHardshipReview.builder()
                 .financialAssessmentId(existingUnlinkedFinancialAssessment.getId())
@@ -175,41 +146,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(jsonPath("$.newWorkReason").value(request.getNworCode()))
                 .andExpect(jsonPath("$.reviewResult").value(request.getReviewResult()))
                 .andExpect(jsonPath("$.status").value(request.getStatus().getValue()));
-    }
-
-    @Test
-    void givenAHardshipReviewWithAZeroId_whenUpdateHardshipIsInvoked_theCorrectErrorIsReturned() throws Exception {
-        Integer hardshipId = 0;
-        assertTrue(runUpdateHardshipReviewErrorScenario(
-                "Hardship review id is required",
-                UpdateHardshipReview.builder().id(hardshipId).build()
-        ));
-    }
-
-    @Test
-    void givenAHardshipReviewIdThatDoesNotExist_whenUpdateHardshipIsInvoked_theCorrectErrorIsReturned() throws
-            Exception {
-        Integer hardshipId = 9999;
-        assertTrue(runUpdateHardshipReviewErrorScenario(
-                String.format("%d is invalid", hardshipId),
-                UpdateHardshipReview.builder().id(hardshipId).build()
-        ));
-    }
-
-    @Test
-    void givenAnAlreadyCompletedHardshipReview_whenUpdateHardshipIsInvoked_theCorrectErrorIsReturned() throws
-            Exception {
-        HardshipReviewEntity completedHardshipReview = hardshipReviewRepository.save(
-                HardshipReviewEntity.builder()
-                        .status(HardshipReviewStatus.COMPLETE)
-                        .newWorkReason(existingNewWorkReason)
-                        .userCreated(TEST_USER)
-                        .dateCreated(LocalDateTime.of(2020, 1, 1, 0, 0, 0))
-                        .build());
-
-        assertTrue(runUpdateHardshipReviewErrorScenario(
-                "User cannot modify a complete hardship review",
-                UpdateHardshipReview.builder().id(completedHardshipReview.getId()).updated(existingHardshipReview.getUpdated()).build()));
     }
 
     @Test

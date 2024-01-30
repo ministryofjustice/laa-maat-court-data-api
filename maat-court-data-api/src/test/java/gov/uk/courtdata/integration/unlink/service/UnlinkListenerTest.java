@@ -8,12 +8,13 @@ import gov.uk.courtdata.courtdataadapter.client.CourtDataAdapterClient;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.unlink.service.UnlinkListener;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ import java.util.Map;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class UnlinkListenerTest {
+public class UnlinkListenerTest  extends MockMvcIntegrationTest {
 
 
     @Autowired
@@ -61,7 +62,7 @@ public class UnlinkListenerTest {
 
     @BeforeEach
     public void setUp() {
-        RepositoryUtil.clearUp(passportAssessmentRepository,
+        new RepositoryUtil().clearUp(passportAssessmentRepository,
                 financialAssessmentRepository,
                 wqCoreRepository,
                 wqLinkRegisterRepository,

@@ -647,15 +647,6 @@ Resources:
       AuthorizationScopes: [!Sub '${pAppName}/${pApiScope1}']
       AuthorizerId: !Ref ApiAuthorizer
       Target: !Join ['/', [integrations, !Ref ApiIntegration]]
-  ApiRouteCrownCourtProceeding:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref ApiGateway
-      RouteKey: 'ANY /api/internal/v1/crowncourtproceeding'
-      AuthorizationType: JWT
-      AuthorizationScopes: [!Sub '${pAppName}/${pApiScope1}']
-      AuthorizerId: !Ref ApiAuthorizer
-      Target: !Join ['/', [integrations, !Ref ApiIntegration]]
   ApiRouteEformStaging:
     Type: AWS::ApiGatewayV2::Route
     Properties:

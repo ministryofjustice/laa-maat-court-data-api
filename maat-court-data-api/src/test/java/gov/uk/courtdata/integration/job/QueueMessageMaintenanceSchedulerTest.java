@@ -1,9 +1,11 @@
-package gov.uk.courtdata.job;
+package gov.uk.courtdata.integration.job;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.job.QueueMessageMaintenanceScheduler;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @TestPropertySource(locations = {"classpath:application.yaml"})
-public class QueueMessageMaintenanceSchedulerTest {
+public class QueueMessageMaintenanceSchedulerTest  extends MockMvcIntegrationTest {
 
     @Value("${queue.message.log.cron.expression}")
     private String cronExpression;
@@ -35,7 +37,7 @@ public class QueueMessageMaintenanceSchedulerTest {
 
     @BeforeEach
     public void setUp() {
-        RepositoryUtil.clearUp(getQueueMessageLogRepository());
+        new RepositoryUtil().clearUp(getQueueMessageLogRepository());
     }
 
     @Test
@@ -102,7 +104,7 @@ public class QueueMessageMaintenanceSchedulerTest {
 
     @AfterEach
     public void tearDown() {
-        RepositoryUtil.clearUp(getQueueMessageLogRepository());
+        new RepositoryUtil().clearUp(getQueueMessageLogRepository());
     }
 
     private QueueMessageLogRepository getQueueMessageLogRepository() {

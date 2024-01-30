@@ -5,20 +5,24 @@ import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.ChildWeightingsEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
-import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,71 +36,47 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-@SpringBootTest(classes = {MAATCourtDataApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, properties = {("spring.h2.console.enabled=true")})
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
+@SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
-    private final String BASE_URL = "/api/internal/v1/assessment/financial-assessments";
-    private final String ASSESSMENT_URL = BASE_URL + "/{financialAssessmentId}";
-    private final String CHECK_OUTSTANDING_URL = BASE_URL + "/check-outstanding/{repId}";
+    private static final String BASE_URL = "/api/internal/v1/assessment/financial-assessments";
+    private static final String ASSESSMENT_URL = BASE_URL + "/{financialAssessmentId}";
+    private static final String CHECK_OUTSTANDING_URL = BASE_URL + "/check-outstanding/{repId}";
+    private static final String MEANS_ASSESSOR_DETAILS_URL = BASE_URL + "/{financialAssessmentId}/means-assessor-details";
+    private static final String CREATE_ASSESSMENT_HISTORY_URL = BASE_URL + "/history/{financialAssessmentId}/fullAvailable/{fullAvailable}";
+
     private final Integer REP_ID_WITH_OUTSTANDING_ASSESSMENTS = 1111;
     private final Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = 2222;
     private final Integer REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS = 3333;
-    private final Integer REP_ID_DEFAULT = 4444;
 
     @Autowired
-    private FinancialAssessmentRepository financialAssessmentRepository;
-    @Autowired
-    private HardshipReviewRepository hardshipReviewRepository;
-    @Autowired
-    private PassportAssessmentRepository passportAssessmentRepository;
-    @Autowired
     private FinancialAssessmentMapper assessmentMapper;
+
     @Autowired
     private MockNewWorkReasonRepository newWorkReasonRepository;
-    @Autowired
-    private ChildWeightingsRepository childWeightingsRepository;
-    @Autowired
-    private FinancialAssessmentDetailsRepository financialAssessmentDetailsRepository;
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-    @Autowired
-    private ChildWeightHistoryRepository childWeightHistoryRepository;
-    @Autowired
-    private FinancialAssessmentsHistoryRepository financialAssessmentsHistoryRepository;
-    @Autowired
-    private FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistoryRepository;
 
     private List<FinancialAssessmentEntity> existingAssessmentEntities;
     private RepOrderEntity existingRepOrder;
 
-
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         setupTestData();
     }
 
-    @AfterEach
-    public void clearUp() {
-        RepositoryUtil.clearUp(hardshipReviewRepository,
-                passportAssessmentRepository,
-                childWeightingsRepository,
-                financialAssessmentDetailsRepository,
-                financialAssessmentsHistoryRepository,
-                financialAssessmentDetailsHistoryRepository,
-                childWeightHistoryRepository,
-                financialAssessmentRepository,
-                newWorkReasonRepository,
-                repOrderRepository);
-    }
-
     private void setupTestData() {
-
         Integer REP_ID_DEFAULT = 4444;
-        existingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_DEFAULT));
-        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_ASSESSMENTS));
-        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS));
-        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS));
+        existingRepOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_DEFAULT));
+        repos.repOrder.saveAll(List.of(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_ASSESSMENTS),
+                TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS),
+                TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS)));
+
+        UserEntity userEntity = TestEntityDataBuilder.getUserEntity(TestEntityDataBuilder.TEST_USER);
+        repos.user.save(userEntity);
 
         NewWorkReasonEntity newWorkReasonEntity = newWorkReasonRepository.save(
                 TestEntityDataBuilder.getFmaNewWorkReasonEntity());
@@ -117,9 +97,9 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
                 TestEntityDataBuilder.getFinancialAssessmentEntityWithRelationships(existingRepOrder.getId(), newWorkReasonEntity)
         );
 
-        existingAssessmentEntities = financialAssessmentRepository.saveAll(assessmentsToCreate);
+        existingAssessmentEntities = repos.financialAssessment.saveAll(assessmentsToCreate);
 
-        passportAssessmentRepository.save(
+        repos.passportAssessment.save(
                 PassportAssessmentEntity.builder()
                         .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS))
                         .pastStatus("IN PROGRESS")
@@ -240,7 +220,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
                 runSuccessScenario(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
 
         List<FinancialAssessmentEntity> matchingAssessments =
-                financialAssessmentRepository.findAll()
+                repos.financialAssessment.findAll()
                         .stream()
                         .filter(assessment -> assessment.getRepOrder().getId().equals(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS))
                         .collect(Collectors.toList());
@@ -338,7 +318,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         MvcResult result =
                 runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
 
-        FinancialAssessmentEntity updatedAssessment = financialAssessmentRepository.findById(assessmentToUpdate.getId()).orElse(null);
+        FinancialAssessmentEntity updatedAssessment = repos.financialAssessment.findById(assessmentToUpdate.getId()).orElse(null);
         if (updatedAssessment != null) {
             expectedResponse.getAssessmentDetails().get(0).setId(updatedAssessment.getAssessmentDetails().get(0).getId());
             expectedResponse.getChildWeightings().get(0).setId(updatedAssessment.getChildWeightings().get(0).getId());
@@ -362,7 +342,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         FinancialAssessmentEntity assessmentEntity =
                 existingAssessmentEntities.stream().filter(item -> item.getRepOrder().getId().equals(existingRepOrder.getId())).findFirst().orElse(null);
 
-        String CREATE_ASSESSMENT_HISTORY_URL = BASE_URL + "/history/{financialAssessmentId}/fullAvailable/{fullAvailable}";
         assertThat(runSuccessScenario(post(CREATE_ASSESSMENT_HISTORY_URL, Objects.requireNonNull(assessmentEntity).getId(), fullAvailable)).getResponse().getStatus()).isEqualTo(200);
         assertAssessmentHistoryCreated(assessmentEntity, fullAvailable, existingRepOrder);
     }
@@ -373,14 +352,33 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         FinancialAssessmentEntity assessmentEntity =
                 existingAssessmentEntities.stream().filter(item -> item.getRepOrder().getId().equals(existingRepOrder.getId())).findFirst().orElse(null);
 
-        String CREATE_ASSESSMENT_HISTORY_URL = BASE_URL + "/history/{financialAssessmentId}/fullAvailable/{fullAvailable}";
         assertThat(runSuccessScenario(post(CREATE_ASSESSMENT_HISTORY_URL, Objects.requireNonNull(assessmentEntity).getId(), fullAvailable)).getResponse().getStatus()).isEqualTo(200);
         assertAssessmentHistoryCreated(assessmentEntity, fullAvailable, existingRepOrder);
     }
-    public void assertAssessmentHistoryCreated(
-            FinancialAssessmentEntity assessmentEntity, Boolean fullAvailable, RepOrderEntity existingRepOrder) {
 
-        var createdHistoryEntities = financialAssessmentsHistoryRepository.findAll();
+    @Test
+    public void givenValidFinancialAssessmentId_whenMeansAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() throws Exception {
+        Integer financialAssessmentId = existingAssessmentEntities.get(0).getId();
+
+        AssessorDetails expectedIOJAssessorDetails = AssessorDetails.builder()
+                .fullName("First Name Of [test-f] Surname Of [test-f]")
+                .userName(TestEntityDataBuilder.TEST_USER)
+                .build();
+
+        runSuccessScenario(expectedIOJAssessorDetails, get(MEANS_ASSESSOR_DETAILS_URL, financialAssessmentId));
+    }
+
+    @Test
+    public void givenUnknownFinancialAssessmentId_whenMeansAssessorDetailsIsInvoked_thenNotFoundResponseIsReturned() throws Exception {
+        runNotFoundErrorScenario("No Financial Assessment found for financial assessment Id: [99999]",
+                get(MEANS_ASSESSOR_DETAILS_URL, 99999));
+    }
+
+    public void assertAssessmentHistoryCreated(FinancialAssessmentEntity assessmentEntity,
+                                               Boolean fullAvailable,
+                                               RepOrderEntity existingRepOrder) {
+
+        var createdHistoryEntities = repos.financialAssessmentsHistory.findAll();
         assertThat(createdHistoryEntities.size()).isEqualTo(1);
         var createdHistory = createdHistoryEntities.get(0);
 

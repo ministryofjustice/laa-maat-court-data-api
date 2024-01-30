@@ -6,10 +6,11 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.link.controller.LinkController;
 import gov.uk.courtdata.model.CaseDetailsValidate;
 import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @WebAppConfiguration
-public class LinkControllerIntegrationTest {
+public class LinkControllerIntegrationTest  extends MockMvcIntegrationTest {
     private static final String LINK_VALIDATE_URI = "/link/validate";
 
     private static final Integer TEST_MAAT_ID = 1000;
@@ -67,7 +68,7 @@ public class LinkControllerIntegrationTest {
     @BeforeEach
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-        RepositoryUtil.clearUp(financialAssessmentRepository,
+        new RepositoryUtil().clearUp(financialAssessmentRepository,
                 passportAssessmentRepository,
                 repOrderRepository,
                 repOrderCPDataRepository,
@@ -174,7 +175,7 @@ public class LinkControllerIntegrationTest {
 
     @AfterEach
     public void clearUp() {
-        RepositoryUtil.clearUp(financialAssessmentRepository,
+        new RepositoryUtil().clearUp(financialAssessmentRepository,
                 passportAssessmentRepository,
                 repOrderRepository,
                 repOrderCPDataRepository,

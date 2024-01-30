@@ -6,10 +6,11 @@ import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.WQStatus;
 import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.link.service.CreateLinkCpJobStatusListener;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class CreateLinkCpJobStatusServiceIntegrationTest {
+public class CreateLinkCpJobStatusServiceIntegrationTest extends MockMvcIntegrationTest {
 
     @Autowired
     private WqLinkRegisterRepository wqLinkRegisterRepository;
@@ -29,11 +30,6 @@ public class CreateLinkCpJobStatusServiceIntegrationTest {
     private WqCoreRepository wqCoreRepository;
     @Autowired
     private CreateLinkCpJobStatusListener createLinkCpJobStatusListener;
-
-    @BeforeEach
-    public void setUp() {
-        RepositoryUtil.clearUp(wqCoreRepository, wqLinkRegisterRepository);
-    }
 
     @Test
     public void givenCpStatusJob_whenMessageIsReceived_thenCpStatusIsSuccess() {

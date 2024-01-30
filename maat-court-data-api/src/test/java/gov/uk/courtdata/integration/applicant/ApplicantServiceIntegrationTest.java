@@ -11,10 +11,8 @@ import gov.uk.courtdata.applicant.service.RepOrderApplicantLinksService;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.util.RepositoryUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,12 +24,11 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.SEND_TO_CCLF;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-
-@Slf4j
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class ApplicantServiceIntegrationTest {
+public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
 
-    public static final int ID = 1;
+    private static final int ID = 1;
+
     @Autowired
     private RepOrderApplicantLinksRepository repOrderApplicantLinksRepository;
 
@@ -46,11 +43,6 @@ public class ApplicantServiceIntegrationTest {
 
     @Autowired
     private ApplicantHistoryService applicantHistoryService;
-
-    @AfterEach
-    public void clearUp() {
-        RepositoryUtil.clearUp(repOrderApplicantLinksRepository, repOrderRepository, applicantHistoryRepository);
-    }
 
     @Test
     void givenValidRepId_WhenGetRepOrderApplicantLinksIsInvoked_thenCorrectResponseIsReturned() {
@@ -125,5 +117,4 @@ public class ApplicantServiceIntegrationTest {
         }).isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant History not found for id");
     }
-
 }

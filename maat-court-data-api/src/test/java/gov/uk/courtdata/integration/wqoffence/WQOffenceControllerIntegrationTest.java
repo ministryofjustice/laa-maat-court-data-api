@@ -3,11 +3,12 @@ package gov.uk.courtdata.integration.wqoffence;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.repository.WQOffenceRepository;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +26,9 @@ public class WQOffenceControllerIntegrationTest extends MockMvcIntegrationTest {
     private static final Integer INVALID_CASE_ID = 775314;
     private static final String INVALID_OFFENCE_ID = "754169aa-26895b-4bb095-a7kkb0";
 
-    @Autowired
-    private WQOffenceRepository wqOffenceRepository;
-
-
-    @BeforeAll
-    static void setUp(@Autowired WQOffenceRepository wqOffenceRepository) {
-        wqOffenceRepository.save(TestEntityDataBuilder.getWQOffenceEntity(8064716));
-    }
-
-    @AfterAll
-    static void cleanUp(@Autowired WQOffenceRepository wqOffenceRepository) {
-        RepositoryUtil.clearUp(wqOffenceRepository);
+    @BeforeEach
+     void setUp() {
+        repos.wqOffence.save(TestEntityDataBuilder.getWQOffenceEntity(8064716));
     }
 
     @Test

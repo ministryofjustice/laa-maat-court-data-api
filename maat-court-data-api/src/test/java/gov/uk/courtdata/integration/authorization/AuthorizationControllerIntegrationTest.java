@@ -4,8 +4,8 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
 import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,12 +51,6 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
     }
 
     private void setupTestData() {
-        RepositoryUtil.clearUp(roleActionsRepository,
-                reservationsRepository,
-                roleWorkReasonsRepository,
-                userRolesRepository,
-                userRepository);
-
         String AUTHORISED_ROLE = "VALID_ROLE";
         String DISABLED_ROLE = "DISABLED_ROLE";
         List<UserRoleEntity> userRoleEntities = List.of(

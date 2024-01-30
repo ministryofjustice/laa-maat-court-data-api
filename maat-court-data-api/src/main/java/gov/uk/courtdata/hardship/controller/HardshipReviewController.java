@@ -90,7 +90,6 @@ public class HardshipReviewController {
             )
             @RequestBody CreateHardshipReview hardshipReview) {
         log.info("Create Hardship Review Request Received");
-        validationProcessor.validate(hardshipReview);
         return ResponseEntity.ok(hardshipReviewService.create(hardshipReview));
     }
 
@@ -105,7 +104,6 @@ public class HardshipReviewController {
             )
             @RequestBody UpdateHardshipReview hardshipReview) {
         log.info("Update Hardship Review Request Received");
-        validationProcessor.validate(hardshipReview);
         return ResponseEntity.ok(hardshipReviewService.update(hardshipReview));
     }
 }

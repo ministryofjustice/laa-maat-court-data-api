@@ -1,18 +1,62 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
+import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
-import gov.uk.courtdata.dto.*;
+import gov.uk.courtdata.dto.ChildWeightHistoryDTO;
+import gov.uk.courtdata.dto.ContributionsDTO;
+import gov.uk.courtdata.dto.CourtDataDTO;
+import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.FinancialAssessmentDetailsHistoryDTO;
+import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
+import gov.uk.courtdata.dto.HardshipReviewDTO;
+import gov.uk.courtdata.dto.IOJAppealDTO;
+import gov.uk.courtdata.dto.AssessorDetails;
+import gov.uk.courtdata.dto.OffenceDTO;
+import gov.uk.courtdata.dto.PassportAssessmentDTO;
+import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
+import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.dto.RepOrderMvoDTO;
+import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
+import gov.uk.courtdata.dto.UserSummaryDTO;
+import gov.uk.courtdata.dto.WQHearingDTO;
+import gov.uk.courtdata.dto.WQLinkRegisterDTO;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.entity.ReservationsEntity;
-import gov.uk.courtdata.enums.*;
-import gov.uk.courtdata.hearing.dto.*;
-import gov.uk.courtdata.model.*;
-import gov.uk.courtdata.model.assessment.*;
+import gov.uk.courtdata.enums.CrownCourtCaseType;
+import gov.uk.courtdata.enums.Frequency;
+import gov.uk.courtdata.enums.HardshipReviewDetailReason;
+import gov.uk.courtdata.enums.HardshipReviewDetailType;
+import gov.uk.courtdata.enums.HardshipReviewProgressAction;
+import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
+import gov.uk.courtdata.enums.HardshipReviewStatus;
+import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.hearing.dto.DefendantDTO;
+import gov.uk.courtdata.hearing.dto.HearingDTO;
+import gov.uk.courtdata.hearing.dto.HearingOffenceDTO;
+import gov.uk.courtdata.hearing.dto.PleaDTO;
+import gov.uk.courtdata.hearing.dto.ResultDTO;
+import gov.uk.courtdata.hearing.dto.SessionDTO;
+import gov.uk.courtdata.hearing.dto.VerdictDTO;
+import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.CreateRepOrder;
+import gov.uk.courtdata.model.NewWorkReason;
+import gov.uk.courtdata.model.RepOrderCCOutcome;
+import gov.uk.courtdata.model.UpdateCCOutcome;
+import gov.uk.courtdata.model.UpdateRepOrder;
+import gov.uk.courtdata.model.UpdateSentenceOrder;
+import gov.uk.courtdata.model.assessment.ChildWeightings;
+import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
+import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
+import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
+import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
+import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
@@ -20,8 +64,6 @@ import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
-import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
-import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -79,7 +121,7 @@ public class TestModelDataBuilder {
     public static final List<String> NEW_WORK_REASON_LIST = List.of("TEST_NWREASON");
     public static final List<String> ROLE_ACTIONS_LIST = List.of("TEST_ROLE");
     public static final ReservationsEntity RESERVATIONS_ENTITY = new ReservationsEntity();
-
+    public static final Integer RESERVATION_ID = 100000;
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -1231,34 +1273,54 @@ public class TestModelDataBuilder {
     public static ContributionsSummaryView getContributionsSummaryView() {
         return new ContributionsSummaryView() {
             @Override
-            public Integer getId() { return 999; }
+            public Integer getId() {
+                return 999;
+            }
 
             @Override
-            public BigDecimal getMonthlyContributions() { return BigDecimal.valueOf(50); }
+            public BigDecimal getMonthlyContributions() {
+                return BigDecimal.valueOf(50);
+            }
 
             @Override
-            public BigDecimal getUpfrontContributions() { return BigDecimal.valueOf(250); }
+            public BigDecimal getUpfrontContributions() {
+                return BigDecimal.valueOf(250);
+            }
 
             @Override
-            public String getBasedOn() { return null; }
+            public String getBasedOn() {
+                return null;
+            }
 
             @Override
-            public String getUpliftApplied() { return "N"; }
+            public String getUpliftApplied() {
+                return "N";
+            }
 
             @Override
-            public LocalDate getEffectiveDate() { return LocalDate.now(); }
+            public LocalDate getEffectiveDate() {
+                return LocalDate.now();
+            }
 
             @Override
-            public LocalDate getCalcDate() { return LocalDate.now(); }
+            public LocalDate getCalcDate() {
+                return LocalDate.now();
+            }
 
             @Override
-            public String getFileName() { return "CONTRIBUTIONS_20230707999.xml"; }
+            public String getFileName() {
+                return "CONTRIBUTIONS_20230707999.xml";
+            }
 
             @Override
-            public LocalDate getDateSent() { return LocalDate.now(); }
+            public LocalDate getDateSent() {
+                return LocalDate.now();
+            }
 
             @Override
-            public LocalDate getDateReceived() { return null; }
+            public LocalDate getDateReceived() {
+                return null;
+            }
         };
     }
 
@@ -1483,4 +1545,22 @@ public class TestModelDataBuilder {
                 .reservationsEntity(RESERVATIONS_ENTITY)
                 .build();
     }
+
+    public static AssessorDetails getAssessorDetails() {
+        return AssessorDetails.builder()
+                .fullName("Karen Greaves")
+                .userName(TestEntityDataBuilder.ASSESSOR_USER_NAME)
+                .build();
+    }
+
+    public static ReservationsEntity getReservationsEntity() {
+        return ReservationsEntity.builder()
+                .recordId(RESERVATION_ID)
+                .recordName("mock-record")
+                .userName("mock-user")
+                .userSession("mock-session")
+                .build();
+    }
+
+
 }

@@ -8,13 +8,14 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.UnlinkReasonRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.unlink.impl.UnLinkImpl;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class UnLinkImplIntegrationTest {
+public class UnLinkImplIntegrationTest  extends MockMvcIntegrationTest {
 
     @Autowired
     private UnLinkImpl unLinkImpl;
@@ -45,7 +46,7 @@ public class UnLinkImplIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        RepositoryUtil.clearUp(wqCoreRepository,
+        new RepositoryUtil().clearUp(wqCoreRepository,
                 wqLinkRegisterRepository,
                 unlinkReasonRepository);
     }

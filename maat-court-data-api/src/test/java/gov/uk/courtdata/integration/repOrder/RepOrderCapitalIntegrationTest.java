@@ -5,8 +5,8 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.repository.RepOrderCapitalRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,11 +47,6 @@ public class RepOrderCapitalIntegrationTest extends MockMvcIntegrationTest {
         repOrderRepository.saveAllAndFlush(repOrderList);
         capitalRepository.saveAllAndFlush(repOrderCapitalList);
 
-    }
-
-    @AfterEach
-    void clearUp() {
-        RepositoryUtil.clearUp(repOrderRepository, capitalRepository);
     }
     
     @Test

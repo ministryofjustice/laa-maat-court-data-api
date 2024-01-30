@@ -7,6 +7,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.WQStatus;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Result;
@@ -14,7 +15,7 @@ import gov.uk.courtdata.model.id.AsnSeqTxnCaseId;
 import gov.uk.courtdata.model.id.CaseTxnId;
 import gov.uk.courtdata.model.id.ProceedingMaatId;
 import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class SaveAndLinkImplIntegrationTest {
+public class SaveAndLinkImplIntegrationTest  extends MockMvcIntegrationTest  {
 
     @Autowired
     private SaveAndLinkImpl saveAndLinkImp;
@@ -63,7 +64,7 @@ public class SaveAndLinkImplIntegrationTest {
 
     @BeforeEach
     public void setup() throws Exception {
-        RepositoryUtil.clearUp(financialAssessmentRepository,
+        new RepositoryUtil().clearUp(financialAssessmentRepository,
                 passportAssessmentRepository,
                 wqCoreRepository,
                 wqLinkRegisterRepository,

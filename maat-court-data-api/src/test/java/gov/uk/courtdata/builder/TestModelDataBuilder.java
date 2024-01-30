@@ -1516,35 +1516,6 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
-        return CorrespondenceStateDTO.builder()
-                .repId(repId)
-                .status(status)
-                .build();
-    }
-
-    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, String status) {
-        return CorrespondenceStateEntity.builder()
-                .repId(repId)
-                .status(status)
-                .build();
-    }
-
-    public static UserSummaryDTO getUserSummaryDTO() {
-        return UserSummaryDTO.builder()
-                .username(TEST_USER)
-                .newWorkReasons(NEW_WORK_REASON_LIST)
-                .roleActions(ROLE_ACTIONS_LIST)
-                .reservationsEntity(RESERVATIONS_ENTITY)
-                .build();
-    }
-
-    public static AssessorDetails getAssessorDetails() {
-        return AssessorDetails.builder()
-                .fullName("Karen Greaves")
-                .userName(TestEntityDataBuilder.ASSESSOR_USER_NAME)
-                .build();
-    }
 
     public static ReservationsEntity getReservationsEntity() {
         return ReservationsEntity.builder()

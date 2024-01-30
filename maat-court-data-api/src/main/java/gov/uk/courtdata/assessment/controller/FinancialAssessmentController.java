@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -116,5 +118,15 @@ public class FinancialAssessmentController {
     public ResponseEntity<AssessorDetails> findMeansAssessorDetails(@PathVariable int financialAssessmentId) {
         AssessorDetails meansAssessorDetails = financialAssessmentService.findMeansAssessorDetails(financialAssessmentId);
         return ResponseEntity.ok(meansAssessorDetails);
+    }
+
+    @PatchMapping("/rollback/{financialAssessmentId}")
+    @Operation(description = "Update financial assessments Status and Results")
+    @StandardApiResponseCodes
+    public ResponseEntity<Void> rollbackAssessment(@PathVariable int financialAssessmentId,
+                                                   @RequestBody Map<String, Object> updateFields) {
+        log.info("Rollback Financial Assessment with Id: {}", financialAssessmentId);
+        financialAssessmentService.patchFinancialAssessment(financialAssessmentId, updateFields);
+        return ResponseEntity.ok().build();
     }
 }

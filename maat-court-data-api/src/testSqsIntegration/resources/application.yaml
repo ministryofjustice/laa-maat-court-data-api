@@ -117,8 +117,8 @@ version: 0.0.1
 api-endpoints:
   assessments-domain: /api/internal/v1/assessment
   application-domain: /api/internal/v1/application
-  debt-collection-enforcement: /api/internal/v1/debt-collection-enforcement
   user-domain: /api/internal/v1/users
+  debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
 
 xray:
   enabled: false

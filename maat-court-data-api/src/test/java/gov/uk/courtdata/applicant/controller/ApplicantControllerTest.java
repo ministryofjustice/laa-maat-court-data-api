@@ -202,7 +202,7 @@ public class ApplicantControllerTest {
 
     @Test
     void givenValidRequest_whenUpdateApplicantIsInvoked_thenUpdateIsSuccess() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/" + ID)
                         .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -210,16 +210,16 @@ public class ApplicantControllerTest {
 
     @Test
     void givenAEmptyContent_whenUpdateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/" + ID)
                         .content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk());
     }
 
     @Test
     void givenInValidRequest_whenUpdateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         doThrow(new RequestedObjectNotFoundException("Applicant not found")).when(applicantService).update(any(), any());
-        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/" + ID)
                         .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(404));
@@ -228,7 +228,7 @@ public class ApplicantControllerTest {
     @Test
     void givenInternalServerError_whenUpdateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         doThrow(EmptyResultDataAccessException.class).when(applicantService).update(any(), any());
-        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/" + ID)
                         .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is5xxServerError())
@@ -267,7 +267,7 @@ public class ApplicantControllerTest {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
                         .content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk());
     }
 
     @Test

@@ -10,6 +10,7 @@ import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
+import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.enums.*;
@@ -1526,4 +1527,16 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+    public static Applicant getApplicant() {
+        return Applicant.builder()
+                .id(1)
+                .firstName("test-first-name")
+                .lastName("test-last-name")
+                .dob(LocalDate.now())
+                .bankAccountName("test-bank-account-name")
+                .bankAccountNo("test-bank-account-no")
+                .dateCreated(LocalDateTime.now())
+                .userCreated("test-user")
+                .build();
+    }
 }

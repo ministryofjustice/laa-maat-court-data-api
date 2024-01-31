@@ -8,6 +8,7 @@ import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
 import gov.uk.courtdata.applicant.service.ApplicantService;
 import gov.uk.courtdata.applicant.service.RepOrderApplicantLinksService;
 import gov.uk.courtdata.applicant.validator.ApplicantValidationProcessor;
+import gov.uk.courtdata.entity.Applicant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -76,13 +77,13 @@ public class ApplicantController {
         return ResponseEntity.ok(applicantService.find(id));
     }
 
-    @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update a Applicant record")
     @StandardApiResponseCodes
     @NotFoundApiResponse
-    public ResponseEntity<Void> updateApplicant(@PathVariable int id, @RequestBody @Valid ApplicantDTO applicantDTO) {
+    public ResponseEntity<Void> updateApplicant(@PathVariable int id, @RequestBody @Valid Applicant applicant) {
         log.info("Update Applicant Request Received");
-        applicantService.update(id, applicantDTO);
+        applicantService.update(id, applicant);
         return ResponseEntity.ok().build();
     }
 

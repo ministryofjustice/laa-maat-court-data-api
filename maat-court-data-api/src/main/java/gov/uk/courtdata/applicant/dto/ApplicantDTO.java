@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplicantDTO implements Serializable {
-    @NotNull
     Integer id;
     String firstName;
     String lastName;
@@ -35,9 +34,7 @@ public class ApplicantDTO implements Serializable {
     String bankAccountNo;
     String bankAccountName;
     String sendToCclf;
-    @NotNull
     LocalDateTime dateCreated;
-    @NotNull
     String userCreated;
     LocalDateTime dateModified;
     String userModified;

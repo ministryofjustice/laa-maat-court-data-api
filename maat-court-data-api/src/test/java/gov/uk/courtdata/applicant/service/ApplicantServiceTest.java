@@ -3,6 +3,8 @@ package gov.uk.courtdata.applicant.service;
 import gov.uk.courtdata.applicant.dto.ApplicantDTO;
 import gov.uk.courtdata.applicant.mapper.ApplicantMapper;
 import gov.uk.courtdata.applicant.repository.ApplicantRepository;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.eform.repository.entity.EformsDecisionHistory;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,11 +55,10 @@ public class ApplicantServiceTest {
 
     @Test
     void givenAValidInput_whenUpdateIsInvoked_thenUpdateIsSuccess() {
-        when(applicantRepository.getReferenceById(anyInt())).thenReturn(Applicant.builder().build());
-        applicantService.update(1, ApplicantDTO.builder().id(1).build());
-        verify(applicantRepository, atLeastOnce()).getReferenceById(any());
-        verify(applicantMapper, atLeastOnce()).updateApplicantEntity(any(), any());
-        verify(applicantRepository, atLeastOnce()).saveAndFlush(any());
+        when(applicantRepository.getById(anyInt())).thenReturn(TestModelDataBuilder.getApplicant());
+        applicantService.update(1, Applicant.builder().email("test@test.com").build());
+        verify(applicantRepository, atLeastOnce()).getById(any());
+        verify(applicantRepository, atLeastOnce()).save(any());
     }
 
 

@@ -25,7 +25,7 @@ public class ApplicantDisabilitiesController {
     @StandardApiResponseCodes
     public ResponseEntity<ApplicantDisabilitiesDTO> getApplicantDisabilities(
             @PathVariable int id) {
-        log.info("Get Applicant Disabilities Request Received");
+        log.info("Get Applicant Disabilities Request Received for id {}", id);
         return ResponseEntity.ok(applicantDisabilitiesService.find(id));
     }
 
@@ -41,7 +41,7 @@ public class ApplicantDisabilitiesController {
     @Operation(description = "Update applicant disabilities")
     @StandardApiResponseCodes
     public ResponseEntity<ApplicantDisabilitiesDTO> updateApplicantDisabilities(@RequestBody @Valid ApplicantDisabilitiesDTO applicantDisabilitiesDTO) {
-        log.info("Update Applicant Disabilities Request Received");
+        log.info("Update Applicant Disabilities Request Received for id {}"+applicantDisabilitiesDTO.getId());
         return ResponseEntity.ok(applicantDisabilitiesService.update(applicantDisabilitiesDTO));
     }
 
@@ -49,6 +49,7 @@ public class ApplicantDisabilitiesController {
     @Operation(description = "Delete applicant disability")
     @StandardApiResponseCodes
     public ResponseEntity<Void> deleteApplicantDisability(@PathVariable int id) {
+        log.info("Get Applicant Disabilities Request Received for id {}", id);
         applicantDisabilitiesService.delete(id);
         return ResponseEntity.ok().build();
     }

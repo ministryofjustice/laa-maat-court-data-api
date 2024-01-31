@@ -2,6 +2,7 @@ package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.applicant.dto.ApplicantDTO;
+import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
@@ -137,6 +138,25 @@ public class TestModelDataBuilder {
                 .unlinkDate(LocalDate.parse("2021-10-22"))
                 .userCreated("test-u")
                 .userModified("test-x")
+                .build();
+    }
+
+    public static ApplicantDisabilitiesDTO getApplicantDisabilitiesDTO() {
+        return ApplicantDisabilitiesDTO.builder()
+                .applId(5136528)
+                .userCreated("TEST-S")
+                .userModified("TEST-M")
+                .disaDisability("NO COMMENT")
+                .build();
+    }
+
+    public static ApplicantDisabilitiesDTO getApplicantDisabilitiesDTO(Integer id) {
+        return ApplicantDisabilitiesDTO.builder()
+                .id(id)
+                .applId(5136528)
+                .userCreated("TEST-S")
+                .userModified("TEST-M")
+                .disaDisability("NO COMMENT")
                 .build();
     }
 

@@ -119,5 +119,6 @@ version: 0.0.1
 api-endpoints:
   assessments-domain: /api/internal/v1/assessment
   application-domain: /api/internal/v1/application
+  applicant-domain: /api/internal/v1/applicant
   debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
   user-domain: /api/internal/v1/users

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.builder;
 
+import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
@@ -52,6 +53,17 @@ public class TestEntityDataBuilder {
                 .crownRepOrderDecision("cc-rep-doc")
                 .crownRepOrderType("cc-rep-type")
                 .sentenceOrderDate(TEST_DATE.toLocalDate())
+                .build();
+    }
+
+    public static ApplicantDisabilitiesEntity getApplicantDisabilitiesEntity() {
+        return ApplicantDisabilitiesEntity.builder()
+                .applId(5136528)
+                .userCreated("TEST-S")
+                .userModified("TEST-M")
+                .dateCreated(LocalDateTime.parse("2023-10-09T15:02:25"))
+                .dateModified(LocalDateTime.parse("2023-10-09T15:02:25"))
+                .disaDisability("NO COMMENT")
                 .build();
     }
 

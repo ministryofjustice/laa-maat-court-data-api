@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/internal/v1/debt-collection-enforcement")
+@RequestMapping("${api-endpoints.debt-collection-enforcement-domain}")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Contributions", description = "Rest API for Concor Contribution Files")

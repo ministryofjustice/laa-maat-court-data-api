@@ -21,6 +21,7 @@ import gov.uk.courtdata.repository.CrownCourtOutcomeRepository;
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
 import gov.uk.courtdata.repository.DefendantMAATDataRepository;
 import gov.uk.courtdata.repository.DefendantRepository;
+import gov.uk.courtdata.repository.FdcContributionsRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentDetailsHistoryRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentDetailsRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
@@ -124,6 +125,9 @@ public class Repositories {
 
     @Autowired
     private EformStagingRepository eformStaging;
+
+    @Autowired
+    public FdcContributionsRepository fdcContributions;
 
     @Autowired
     public FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistory;
@@ -277,6 +281,7 @@ public class Repositories {
                 defendantMAATData,
                 defendant,
                 eformStaging,
+                fdcContributions,
                 financialAssessmentDetailsHistory,
                 financialAssessmentDetails,
                 financialAssessment,

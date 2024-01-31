@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Debt Collection Enforcement", description = "Rest API for Debt Collection Enforcement Service")
-@RequestMapping("/api/internal/v1/debt-collection-enforcement")
+@RequestMapping("${api-endpoints.debt-collection-enforcement-domain}")
 public class DebtCollectionController {
 
     private final DebtCollectionService dceService;

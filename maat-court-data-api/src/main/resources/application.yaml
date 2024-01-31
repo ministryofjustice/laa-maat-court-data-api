@@ -122,6 +122,7 @@ api-endpoints:
   assessments-domain: /api/internal/v1/assessment
   user-domain: /api/internal/v1/users
   application-domain: /api/internal/v1/application
+  debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
 
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}

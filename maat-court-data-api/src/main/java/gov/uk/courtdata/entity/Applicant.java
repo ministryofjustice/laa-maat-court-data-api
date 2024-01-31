@@ -1,16 +1,11 @@
 package gov.uk.courtdata.entity;
 
-import lombok.*;
-
 import jakarta.persistence.Column;
-
 import jakarta.persistence.Entity;
-
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import org.hibernate.annotations.DynamicUpdate;
+import lombok.*;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -19,7 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity
 @Table(name = "APPLICANTS", schema = "TOGDATA")
 public class Applicant {

@@ -1330,6 +1330,28 @@ public class TestModelDataBuilder {
         return ApplicantDTO.builder().id(id).dateCreated(LocalDateTime.now()).userCreated("USER").build();
     }
 
+    public static ReservationsEntity getReservationsEntity() {
+        return ReservationsEntity.builder()
+                .recordId(RESERVATION_ID)
+                .recordName("mock-record")
+                .userName("mock-user")
+                .userSession("mock-session")
+                .build();
+    }
+
+    public static Applicant getApplicant(Integer id) {
+        return Applicant.builder()
+                .id(id)
+                .firstName("test-first-name")
+                .lastName("test-last-name")
+                .dob(LocalDate.now())
+                .bankAccountName("test-bank-account-name")
+                .bankAccountNo("test-bank-account-no")
+                .dateCreated(LocalDateTime.now())
+                .userCreated("test-user")
+                .build();
+    }
+
     public CourtDataDTO getSaveAndLinkModelRaw() {
         return CourtDataDTO.builder()
 
@@ -1514,29 +1536,6 @@ public class TestModelDataBuilder {
                         .build()
                 )
 
-                .build();
-    }
-
-
-    public static ReservationsEntity getReservationsEntity() {
-        return ReservationsEntity.builder()
-                .recordId(RESERVATION_ID)
-                .recordName("mock-record")
-                .userName("mock-user")
-                .userSession("mock-session")
-                .build();
-    }
-
-    public static Applicant getApplicant() {
-        return Applicant.builder()
-                .id(1)
-                .firstName("test-first-name")
-                .lastName("test-last-name")
-                .dob(LocalDate.now())
-                .bankAccountName("test-bank-account-name")
-                .bankAccountNo("test-bank-account-no")
-                .dateCreated(LocalDateTime.now())
-                .userCreated("test-user")
                 .build();
     }
 }

@@ -1,7 +1,6 @@
 package gov.uk.courtdata.applicant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.uk.courtdata.applicant.dto.ApplicantDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
@@ -10,6 +9,7 @@ import gov.uk.courtdata.applicant.service.RepOrderApplicantLinksService;
 import gov.uk.courtdata.applicant.validator.ApplicantValidationProcessor;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.constants.ErrorCodes;
+import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import org.junit.jupiter.api.Test;
@@ -19,12 +19,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
@@ -192,7 +189,7 @@ public class ApplicantControllerTest {
         when(applicantService.find(ID))
                 .thenThrow(EmptyResultDataAccessException.class);
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + ID)
-                        .content(objectMapper.writeValueAsString(ApplicantDTO.builder().id(ID).build()))
+                        .content(objectMapper.writeValueAsString(Applicant.builder().id(ID).build()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -202,15 +199,15 @@ public class ApplicantControllerTest {
 
     @Test
     void givenValidRequest_whenUpdateApplicantIsInvoked_thenUpdateIsSuccess() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/" + ID)
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicant(ID)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
     void givenAEmptyContent_whenUpdateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/" + ID)
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
                         .content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -219,8 +216,8 @@ public class ApplicantControllerTest {
     @Test
     void givenInValidRequest_whenUpdateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         doThrow(new RequestedObjectNotFoundException("Applicant not found")).when(applicantService).update(any(), any());
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/" + ID)
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicant(ID)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(404));
     }
@@ -228,8 +225,8 @@ public class ApplicantControllerTest {
     @Test
     void givenInternalServerError_whenUpdateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         doThrow(EmptyResultDataAccessException.class).when(applicantService).update(any(), any());
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/" + ID)
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicant(ID)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -247,7 +244,7 @@ public class ApplicantControllerTest {
     void givenInternalServerError_whenDeleteApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         doThrow(EmptyResultDataAccessException.class).when(applicantService).delete(anyInt());
         mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/" + ID)
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicant(ID)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -257,7 +254,7 @@ public class ApplicantControllerTest {
     @Test
     void givenValidRequest_whenCreateApplicantIsInvoked_thenUpdateIsSuccess() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicant(ID)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -274,7 +271,7 @@ public class ApplicantControllerTest {
     void givenInValidRequest_whenCreateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         doThrow(new RequestedObjectNotFoundException("Applicant not found")).when(applicantService).create(any());
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicant(ID)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(404));
     }
@@ -283,7 +280,7 @@ public class ApplicantControllerTest {
     void givenInternalServerError_whenCreateApplicantIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         doThrow(EmptyResultDataAccessException.class).when(applicantService).create(any());
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDTO(ID)))
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicant(ID)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

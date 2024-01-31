@@ -1,7 +1,6 @@
 package gov.uk.courtdata.applicant.controller;
 
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
-import gov.uk.courtdata.applicant.dto.ApplicantDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
@@ -19,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -72,18 +72,18 @@ public class ApplicantController {
     @Operation(description = "Retrieve a Applicant record")
     @StandardApiResponseCodes
     @NotFoundApiResponse
-    public ResponseEntity<ApplicantDTO> getApplicant(@PathVariable int id) {
+    public ResponseEntity<Applicant> getApplicant(@PathVariable int id) {
         log.info("Get Applicant Request Received");
         return ResponseEntity.ok(applicantService.find(id));
     }
 
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update a Applicant record")
     @StandardApiResponseCodes
     @NotFoundApiResponse
-    public ResponseEntity<Void> updateApplicant(@PathVariable int id, @RequestBody @Valid Applicant applicant) {
+    public ResponseEntity<Void> updateApplicant(@PathVariable int id, @RequestBody Map<String, Object> updatedFields) {
         log.info("Update Applicant Request Received");
-        applicantService.update(id, applicant);
+        applicantService.update(id, updatedFields);
         return ResponseEntity.ok().build();
     }
 
@@ -99,9 +99,9 @@ public class ApplicantController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create a Applicant record")
     @StandardApiResponseCodes
-    public ResponseEntity<ApplicantDTO> createApplicant(@RequestBody @Valid ApplicantDTO applicantDTO) {
+    public ResponseEntity<Applicant> createApplicant(@RequestBody @Valid Applicant applicant) {
         log.info("Create Applicant Request Received");
-        applicantService.create(applicantDTO);
+        applicantService.create(applicant);
         return ResponseEntity.ok().build();
     }
 }

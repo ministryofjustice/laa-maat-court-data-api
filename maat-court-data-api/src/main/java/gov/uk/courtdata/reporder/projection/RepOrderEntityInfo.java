@@ -1,6 +1,6 @@
 package gov.uk.courtdata.reporder.projection;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * A Projection for the {@link gov.uk.courtdata.entity.RepOrderEntity} entity
@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 public interface RepOrderEntityInfo {
     Integer getId();
 
-    LocalDateTime getDateCreated();
+    LocalDate getDateCreated();
 }

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.applicant.dto.ApplicantDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
@@ -10,6 +11,7 @@ import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
+import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.enums.*;
@@ -1314,6 +1316,62 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+    public static CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
+        return CorrespondenceStateDTO.builder()
+                .repId(repId)
+                .status(status)
+                .build();
+    }
+
+    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, String status) {
+        return CorrespondenceStateEntity.builder()
+                .repId(repId)
+                .status(status)
+                .build();
+    }
+
+    public static UserSummaryDTO getUserSummaryDTO() {
+        return UserSummaryDTO.builder()
+                .username(TEST_USER)
+                .newWorkReasons(NEW_WORK_REASON_LIST)
+                .roleActions(ROLE_ACTIONS_LIST)
+                .reservationsEntity(RESERVATIONS_ENTITY)
+                .build();
+    }
+
+    public static AssessorDetails getAssessorDetails() {
+        return AssessorDetails.builder()
+                .fullName("Karen Greaves")
+                .userName(TestEntityDataBuilder.ASSESSOR_USER_NAME)
+                .build();
+    }
+
+    public static ApplicantDTO getApplicantDTO(Integer id) {
+        return ApplicantDTO.builder().id(id).dateCreated(LocalDateTime.now()).userCreated("USER").build();
+    }
+
+    public static ReservationsEntity getReservationsEntity() {
+        return ReservationsEntity.builder()
+                .recordId(RESERVATION_ID)
+                .recordName("mock-record")
+                .userName("mock-user")
+                .userSession("mock-session")
+                .build();
+    }
+
+    public static Applicant getApplicant(Integer id) {
+        return Applicant.builder()
+                .id(id)
+                .firstName("test-first-name")
+                .lastName("test-last-name")
+                .dob(LocalDate.now())
+                .bankAccountName("test-bank-account-name")
+                .bankAccountNo("test-bank-account-no")
+                .dateCreated(LocalDateTime.now())
+                .userCreated("test-user")
+                .build();
+    }
+
     public CourtDataDTO getSaveAndLinkModelRaw() {
         return CourtDataDTO.builder()
 
@@ -1500,45 +1558,4 @@ public class TestModelDataBuilder {
 
                 .build();
     }
-
-    public static CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
-        return CorrespondenceStateDTO.builder()
-                .repId(repId)
-                .status(status)
-                .build();
-    }
-
-    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, String status) {
-        return CorrespondenceStateEntity.builder()
-                .repId(repId)
-                .status(status)
-                .build();
-    }
-
-    public static UserSummaryDTO getUserSummaryDTO() {
-        return UserSummaryDTO.builder()
-                .username(TEST_USER)
-                .newWorkReasons(NEW_WORK_REASON_LIST)
-                .roleActions(ROLE_ACTIONS_LIST)
-                .reservationsEntity(RESERVATIONS_ENTITY)
-                .build();
-    }
-
-    public static AssessorDetails getAssessorDetails() {
-        return AssessorDetails.builder()
-                .fullName("Karen Greaves")
-                .userName(TestEntityDataBuilder.ASSESSOR_USER_NAME)
-                .build();
-    }
-
-    public static ReservationsEntity getReservationsEntity() {
-        return ReservationsEntity.builder()
-                .recordId(RESERVATION_ID)
-                .recordName("mock-record")
-                .userName("mock-user")
-                .userSession("mock-session")
-                .build();
-    }
-
-
 }

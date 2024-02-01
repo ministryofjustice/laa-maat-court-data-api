@@ -116,8 +116,8 @@ public class TestEntityDataBuilder {
                 return REP_ID;
             }
 
-            public LocalDateTime getDateCreated() {
-                return LocalDateTime.now();
+            public LocalDate getDateCreated() {
+                return LocalDate.now();
             }
         };
     }

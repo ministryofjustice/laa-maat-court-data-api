@@ -112,4 +112,10 @@ public class PassportAssessmentEntity {
     private String whoDWPChecked;
     @Column(name = "RT_CODE")
     private String rtCode;
+
+    @ToString.Exclude
+    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME",
+            insertable = false, updatable = false)
+    private UserEntity userCreatedEntity;
 }

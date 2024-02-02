@@ -1,8 +1,10 @@
 package gov.uk.courtdata.assessment.controller;
 
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
+import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.assessment.service.PassportAssessmentService;
 import gov.uk.courtdata.assessment.validator.PassportAssessmentValidationProcessor;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.enums.LoggingData;
@@ -35,8 +37,7 @@ public class PassportAssessmentController {
     @GetMapping(value = "/{passportAssessmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a passport assessment record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PassportAssessmentDTO.class)))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @StandardApiResponse
     @NotFoundApiResponse
     public ResponseEntity<PassportAssessmentDTO> getAssessment(@PathVariable int passportAssessmentId,
                                                                @Parameter(description = "Used for tracing calls")
@@ -52,8 +53,7 @@ public class PassportAssessmentController {
     @Operation(description = "Retrieve a passport assessment record by repId")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PassportAssessmentDTO.class)))
     @NotFoundApiResponse
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @StandardApiResponse
     public ResponseEntity<PassportAssessmentDTO> getAssessmentByRepId(@PathVariable int repId,
                                                                       @Parameter(description = "Used for tracing calls")
                                                                       @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
@@ -66,8 +66,7 @@ public class PassportAssessmentController {
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update a passport assessment record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PassportAssessmentDTO.class)))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @StandardApiResponse
     public ResponseEntity<PassportAssessmentDTO> updateAssessment(
             @Parameter(description = "Passport assessment data", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = UpdatePassportAssessment.class))) @RequestBody UpdatePassportAssessment passportAssessment,
@@ -83,8 +82,7 @@ public class PassportAssessmentController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create a new passport assessment record")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PassportAssessmentDTO.class)))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @StandardApiResponse
     public ResponseEntity<PassportAssessmentDTO> createAssessment(@Parameter(description = "Passport assessment data", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
             schema = @Schema(implementation = CreatePassportAssessment.class))) @RequestBody CreatePassportAssessment passportAssessment,
                                                                   @Parameter(description = "Used for tracing calls")
@@ -94,5 +92,14 @@ public class PassportAssessmentController {
         passportAssessmentValidationProcessor.validate(passportAssessment);
         PassportAssessmentDTO newAssessment = passportAssessmentService.create(passportAssessment);
         return ResponseEntity.ok(newAssessment);
+    }
+
+    @GetMapping(value = "/{passportAssessmentId}/passport-assessor-details", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve details of the passport assessor for a given passport assessment id")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    public ResponseEntity<AssessorDetails> findPassportAssessorDetails(@PathVariable int passportAssessmentId) {
+        AssessorDetails assessorDetails = passportAssessmentService.findPassportAssessorDetails(passportAssessmentId);
+        return ResponseEntity.ok(assessorDetails);
     }
 }

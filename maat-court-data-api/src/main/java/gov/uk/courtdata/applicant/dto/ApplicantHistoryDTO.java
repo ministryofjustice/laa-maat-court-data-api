@@ -1,5 +1,6 @@
 package gov.uk.courtdata.applicant.dto;
 
+import gov.uk.courtdata.applicant.entity.ApplicantHistoryDisability;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder
@@ -42,5 +44,6 @@ public class ApplicantHistoryDTO {
     private String sendToCclf;
     private LocalDate specialInvestigation;
     private String phoneWork;
+    private Set<ApplicantHistoryDisability> applicantHistoryDisabilities;
 
 }

@@ -1,12 +1,17 @@
 package gov.uk.courtdata.applicant.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -110,5 +115,12 @@ public class ApplicantHistoryEntity {
 
     @Column(name = "PHONE_WORK")
     private String phoneWork;
+
+    @ToString.Exclude
+    @Fetch(FetchMode.JOIN)
+    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "APHI_ID", nullable = false)
+    private Set<ApplicantHistoryDisability> applicantHistoryDisabilities = new LinkedHashSet<>();
 
 }

@@ -4,6 +4,7 @@ import gov.uk.courtdata.assessment.impl.PassportAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -22,6 +23,7 @@ import org.mockito.quality.Strictness;
 import static gov.uk.courtdata.assessment.service.PassportAssessmentService.STATUS_COMPLETE;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -167,5 +169,22 @@ public class PassportAssessmentServiceTest {
         PassportAssessmentDTO expectedDTO = TestModelDataBuilder.getPassportAssessmentDTO();
         PassportAssessmentDTO actualDTO = passportAssessmentService.buildPassportAssessmentDTO(passportAssessment);
         assertThat(actualDTO).isEqualTo(expectedDTO);
+    }
+
+    @Test
+    public void givenValidPassportAssessmentId_whenFindPassportAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() throws Exception {
+        int passportAssessmentId = 1234;
+        final String username = TestEntityDataBuilder.ASSESSOR_USER_NAME;
+        PassportAssessmentEntity passportAssessment = PassportAssessmentEntity.builder()
+                .userCreated(username)
+                .userCreatedEntity(TestEntityDataBuilder.getUserEntity())
+                .build();
+        when(passportAssessmentImpl.find(passportAssessmentId))
+                .thenReturn(passportAssessment);
+
+        AssessorDetails passportAssessorDetails = passportAssessmentService.findPassportAssessorDetails(passportAssessmentId);
+
+        assertEquals("Karen Greaves", passportAssessorDetails.getFullName());
+        assertEquals(username, passportAssessorDetails.getUserName());
     }
 }

@@ -5,7 +5,6 @@ import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.assessment.service.PassportAssessmentService;
 import gov.uk.courtdata.assessment.validator.PassportAssessmentValidationProcessor;
 import gov.uk.courtdata.dto.AssessorDetails;
-import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;

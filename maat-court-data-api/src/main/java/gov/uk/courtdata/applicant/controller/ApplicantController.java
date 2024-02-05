@@ -3,6 +3,7 @@ package gov.uk.courtdata.applicant.controller;
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
+import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
 import gov.uk.courtdata.applicant.service.ApplicantService;
 import gov.uk.courtdata.applicant.service.RepOrderApplicantLinksService;
@@ -65,6 +66,24 @@ public class ApplicantController {
     public ResponseEntity<ApplicantHistoryDTO> updateApplicantHistory(@RequestBody @Valid ApplicantHistoryDTO applicantHistoryDTO) {
         log.info("Update Applicant History Request Received");
         return ResponseEntity.ok(applicantHistoryService.update(applicantHistoryDTO));
+    }
+
+    @DeleteMapping(value = "/applicant-history/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Delete a Applicant History record")
+    @StandardApiResponseCodes
+    public ResponseEntity<Void> deleteApplicantHistory(@PathVariable int id) {
+        log.info("Delete Applicant Request Received");
+        applicantHistoryService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/applicant-history", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Create a Applicant History record")
+    @StandardApiResponseCodes
+    public ResponseEntity<ApplicantHistoryEntity> createApplicantHistory(@RequestBody @Valid ApplicantHistoryEntity applicantHistoryEntity) {
+        log.info("Create Applicant Request Received");
+        applicantHistoryService.create(applicantHistoryEntity);
+        return ResponseEntity.ok().build();
     }
 
 

@@ -2,12 +2,14 @@ package gov.uk.courtdata.assessment.service;
 
 import gov.uk.courtdata.assessment.impl.PassportAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
+import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
+import gov.uk.courtdata.util.UserEntityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -75,5 +77,18 @@ public class PassportAssessmentService {
 
     PassportAssessmentDTO buildPassportAssessmentDTO(PassportAssessmentEntity assessmentEntity) {
         return passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(assessmentEntity);
+    }
+
+    public AssessorDetails findPassportAssessorDetails(int passportAssessmentId) {
+        PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.find(passportAssessmentId);
+        if (passportAssessmentEntity == null) {
+            String message = String.format("No Passport Assessment found for passport assessment Id: [%s]", passportAssessmentId);
+            throw new RequestedObjectNotFoundException(message);
+        }
+
+        return AssessorDetails.builder()
+                .fullName(UserEntityUtils.extractFullName(passportAssessmentEntity.getUserCreatedEntity()))
+                .userName(passportAssessmentEntity.getUserCreated())
+                .build();
     }
 }

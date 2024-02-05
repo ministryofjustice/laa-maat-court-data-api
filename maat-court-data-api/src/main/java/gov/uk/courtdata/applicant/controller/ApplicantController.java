@@ -1,10 +1,13 @@
 package gov.uk.courtdata.applicant.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
+import gov.uk.courtdata.applicant.service.ApplicantService;
 import gov.uk.courtdata.applicant.service.RepOrderApplicantLinksService;
 import gov.uk.courtdata.applicant.validator.ApplicantValidationProcessor;
+import gov.uk.courtdata.entity.Applicant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -15,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -23,6 +27,7 @@ import java.util.List;
 @RequestMapping("${api-endpoints.application-domain}/applicant")
 public class ApplicantController {
 
+    private final ApplicantService applicantService;
     private final ApplicantHistoryService applicantHistoryService;
     private final RepOrderApplicantLinksService repOrderApplicantLinksService;
     private final ApplicantValidationProcessor applicantValidationProcessor;
@@ -60,5 +65,43 @@ public class ApplicantController {
     public ResponseEntity<ApplicantHistoryDTO> updateApplicantHistory(@RequestBody @Valid ApplicantHistoryDTO applicantHistoryDTO) {
         log.info("Update Applicant History Request Received");
         return ResponseEntity.ok(applicantHistoryService.update(applicantHistoryDTO));
+    }
+
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve a Applicant record")
+    @StandardApiResponseCodes
+    @NotFoundApiResponse
+    public ResponseEntity<Applicant> getApplicant(@PathVariable int id) {
+        log.info("Get Applicant Request Received");
+        return ResponseEntity.ok(applicantService.find(id));
+    }
+
+    @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Update a Applicant record")
+    @StandardApiResponseCodes
+    @NotFoundApiResponse
+    public ResponseEntity<Void> updateApplicant(@PathVariable int id, @RequestBody Map<String, Object> updatedFields) {
+        log.info("Update Applicant Request Received");
+        applicantService.update(id, updatedFields);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Delete a Applicant record")
+    @StandardApiResponseCodes
+    public ResponseEntity<Void> deleteApplicant(@PathVariable int id) {
+        log.info("Delete Applicant Request Received");
+        applicantService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Create a Applicant record")
+    @StandardApiResponseCodes
+    public ResponseEntity<Applicant> createApplicant(@RequestBody @Valid Applicant applicant) {
+        log.info("Create Applicant Request Received");
+        applicantService.create(applicant);
+        return ResponseEntity.ok().build();
     }
 }

@@ -21,6 +21,7 @@ public class RepOrderDTO {
     private String appealTypeCode;
     private String arrestSummonsNo;
     private String userModified;
+    private LocalDate dateCreated;
     private LocalDateTime dateModified;
     private String magsOutcome;
     private String magsOutcomeDate;

@@ -1,6 +1,8 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.applicant.dto.ApplicantDTO;
+import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
@@ -8,55 +10,14 @@ import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
-import gov.uk.courtdata.dto.ChildWeightHistoryDTO;
-import gov.uk.courtdata.dto.ContributionsDTO;
-import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.dto.FinancialAssessmentDetailsHistoryDTO;
-import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
-import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.dto.IOJAppealDTO;
-import gov.uk.courtdata.dto.AssessorDetails;
-import gov.uk.courtdata.dto.OffenceDTO;
-import gov.uk.courtdata.dto.PassportAssessmentDTO;
-import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
-import gov.uk.courtdata.dto.RepOrderDTO;
-import gov.uk.courtdata.dto.RepOrderMvoDTO;
-import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
-import gov.uk.courtdata.dto.UserSummaryDTO;
-import gov.uk.courtdata.dto.WQHearingDTO;
-import gov.uk.courtdata.dto.WQLinkRegisterDTO;
+import gov.uk.courtdata.dto.*;
+import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.entity.ReservationsEntity;
-import gov.uk.courtdata.enums.CrownCourtCaseType;
-import gov.uk.courtdata.enums.Frequency;
-import gov.uk.courtdata.enums.HardshipReviewDetailReason;
-import gov.uk.courtdata.enums.HardshipReviewDetailType;
-import gov.uk.courtdata.enums.HardshipReviewProgressAction;
-import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
-import gov.uk.courtdata.enums.HardshipReviewStatus;
-import gov.uk.courtdata.enums.JurisdictionType;
-import gov.uk.courtdata.hearing.dto.DefendantDTO;
-import gov.uk.courtdata.hearing.dto.HearingDTO;
-import gov.uk.courtdata.hearing.dto.HearingOffenceDTO;
-import gov.uk.courtdata.hearing.dto.PleaDTO;
-import gov.uk.courtdata.hearing.dto.ResultDTO;
-import gov.uk.courtdata.hearing.dto.SessionDTO;
-import gov.uk.courtdata.hearing.dto.VerdictDTO;
-import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.CreateRepOrder;
-import gov.uk.courtdata.model.NewWorkReason;
-import gov.uk.courtdata.model.RepOrderCCOutcome;
-import gov.uk.courtdata.model.UpdateCCOutcome;
-import gov.uk.courtdata.model.UpdateRepOrder;
-import gov.uk.courtdata.model.UpdateSentenceOrder;
-import gov.uk.courtdata.model.assessment.ChildWeightings;
-import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
-import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
-import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
-import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
-import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
-import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
+import gov.uk.courtdata.enums.*;
+import gov.uk.courtdata.hearing.dto.*;
+import gov.uk.courtdata.model.*;
+import gov.uk.courtdata.model.assessment.*;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
@@ -177,6 +138,25 @@ public class TestModelDataBuilder {
                 .unlinkDate(LocalDate.parse("2021-10-22"))
                 .userCreated("test-u")
                 .userModified("test-x")
+                .build();
+    }
+
+    public static ApplicantDisabilitiesDTO getApplicantDisabilitiesDTO() {
+        return ApplicantDisabilitiesDTO.builder()
+                .applId(5136528)
+                .userCreated("TEST-S")
+                .userModified("TEST-M")
+                .disaDisability("NO COMMENT")
+                .build();
+    }
+
+    public static ApplicantDisabilitiesDTO getApplicantDisabilitiesDTO(Integer id) {
+        return ApplicantDisabilitiesDTO.builder()
+                .id(id)
+                .applId(5136528)
+                .userCreated("TEST-S")
+                .userModified("TEST-M")
+                .disaDisability("NO COMMENT")
                 .build();
     }
 
@@ -1336,6 +1316,62 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+    public static CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
+        return CorrespondenceStateDTO.builder()
+                .repId(repId)
+                .status(status)
+                .build();
+    }
+
+    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, String status) {
+        return CorrespondenceStateEntity.builder()
+                .repId(repId)
+                .status(status)
+                .build();
+    }
+
+    public static UserSummaryDTO getUserSummaryDTO() {
+        return UserSummaryDTO.builder()
+                .username(TEST_USER)
+                .newWorkReasons(NEW_WORK_REASON_LIST)
+                .roleActions(ROLE_ACTIONS_LIST)
+                .reservationsEntity(RESERVATIONS_ENTITY)
+                .build();
+    }
+
+    public static AssessorDetails getAssessorDetails() {
+        return AssessorDetails.builder()
+                .fullName("Karen Greaves")
+                .userName(TestEntityDataBuilder.ASSESSOR_USER_NAME)
+                .build();
+    }
+
+    public static ApplicantDTO getApplicantDTO(Integer id) {
+        return ApplicantDTO.builder().id(id).dateCreated(LocalDateTime.now()).userCreated("USER").build();
+    }
+
+    public static ReservationsEntity getReservationsEntity() {
+        return ReservationsEntity.builder()
+                .recordId(RESERVATION_ID)
+                .recordName("mock-record")
+                .userName("mock-user")
+                .userSession("mock-session")
+                .build();
+    }
+
+    public static Applicant getApplicant(Integer id) {
+        return Applicant.builder()
+                .id(id)
+                .firstName("test-first-name")
+                .lastName("test-last-name")
+                .dob(LocalDate.now())
+                .bankAccountName("test-bank-account-name")
+                .bankAccountNo("test-bank-account-no")
+                .dateCreated(LocalDateTime.now())
+                .userCreated("test-user")
+                .build();
+    }
+
     public CourtDataDTO getSaveAndLinkModelRaw() {
         return CourtDataDTO.builder()
 
@@ -1522,45 +1558,4 @@ public class TestModelDataBuilder {
 
                 .build();
     }
-
-    public static CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
-        return CorrespondenceStateDTO.builder()
-                .repId(repId)
-                .status(status)
-                .build();
-    }
-
-    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, String status) {
-        return CorrespondenceStateEntity.builder()
-                .repId(repId)
-                .status(status)
-                .build();
-    }
-
-    public static UserSummaryDTO getUserSummaryDTO() {
-        return UserSummaryDTO.builder()
-                .username(TEST_USER)
-                .newWorkReasons(NEW_WORK_REASON_LIST)
-                .roleActions(ROLE_ACTIONS_LIST)
-                .reservationsEntity(RESERVATIONS_ENTITY)
-                .build();
-    }
-
-    public static AssessorDetails getAssessorDetails() {
-        return AssessorDetails.builder()
-                .fullName("Karen Greaves")
-                .userName(TestEntityDataBuilder.ASSESSOR_USER_NAME)
-                .build();
-    }
-
-    public static ReservationsEntity getReservationsEntity() {
-        return ReservationsEntity.builder()
-                .recordId(RESERVATION_ID)
-                .recordName("mock-record")
-                .userName("mock-user")
-                .userSession("mock-session")
-                .build();
-    }
-
-
 }

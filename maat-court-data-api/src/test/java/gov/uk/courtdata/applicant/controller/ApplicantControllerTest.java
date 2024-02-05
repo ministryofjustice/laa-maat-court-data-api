@@ -287,4 +287,60 @@ public class ApplicantControllerTest {
                 .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
     }
 
+    @Test
+    void givenCorrectId_whenDeleteApplicantHistoryIsInvoked_thenResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/applicant-history" + "/" + ID))
+                .andExpect(status().isOk());
+        verify(applicantHistoryService).delete(ID);
+    }
+
+    @Test
+    void givenInternalServerError_whenDeleteApplicantHistoryIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        doThrow(EmptyResultDataAccessException.class).when(applicantHistoryService).delete(anyInt());
+        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/applicant-history" + "/" + ID)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicant(ID)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
+    }
+
+    @Test
+    void givenValidRequest_whenCreateApplicantHistoryIsInvoked_thenCreateIsSuccess() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/applicant-history")
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(ID, "N")))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenAEmptyContent_whenCreateApplicantHistoryIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/applicant-history")
+                        .content("{}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenInValidRequest_whenCreateApplicantHistoryIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        doThrow(new RequestedObjectNotFoundException("Applicant not found")).when(applicantHistoryService).create(any());
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/applicant-history")
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(ID, "N")))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    void givenInternalServerError_whenCreateApplicantHistoryIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        doThrow(EmptyResultDataAccessException.class).when(applicantHistoryService).create(any());
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/applicant-history")
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(ID, "N")))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
+    }
+
+
+
 }

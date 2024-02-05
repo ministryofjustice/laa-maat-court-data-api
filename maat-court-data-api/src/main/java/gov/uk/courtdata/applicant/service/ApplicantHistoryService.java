@@ -42,4 +42,14 @@ public class ApplicantHistoryService {
         }
         return applicantHistoryEntity;
     }
+
+    public void delete(Integer id) {
+        log.info("ApplicantHistoryService::delete - Start");
+        applicantHistoryRepository.deleteById(id);
+    }
+
+    public void create(ApplicantHistoryEntity applicantHistoryEntity) {
+        log.info("ApplicantHistoryService::create - Start");
+        applicantHistoryRepository.saveAndFlush(applicantHistoryEntity);
+    }
 }

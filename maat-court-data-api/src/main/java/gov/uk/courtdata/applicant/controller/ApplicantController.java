@@ -80,7 +80,7 @@ public class ApplicantController {
     @PostMapping(value = "/applicant-history", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create a Applicant History record")
     @StandardApiResponseCodes
-    public ResponseEntity<Applicant> createApplicantHistory(@RequestBody @Valid ApplicantHistoryEntity applicantHistoryEntity) {
+    public ResponseEntity<ApplicantHistoryEntity> createApplicantHistory(@RequestBody @Valid ApplicantHistoryEntity applicantHistoryEntity) {
         log.info("Create Applicant Request Received");
         applicantHistoryService.create(applicantHistoryEntity);
         return ResponseEntity.ok().build();

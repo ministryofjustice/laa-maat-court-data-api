@@ -1,6 +1,7 @@
 package gov.uk.courtdata.dces.service;
 
 import gov.uk.courtdata.dces.response.FdcContributionEntry;
+import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
@@ -33,6 +34,8 @@ class FdcContributionsServiceTest {
     @InjectMocks
     private FdcContributionsService fdcContributionsService;
 
+    @Mock
+    private DebtCollectionRepository debtCollectionRepository;
     @Mock
     private FdcContributionsRepository fdcContributionsRepository;
 
@@ -71,6 +74,19 @@ class FdcContributionsServiceTest {
         assertEquals(expectedDateCalculated,responseValue.getDateCalculated());
         assertEquals(expectedSentenceDate,responseValue.getSentenceOrderDate());
     }
+
+    @Test
+    void testGlobalUpdateIsSuccess() {
+        int expected1 = 2;
+        int expected2 = 5;
+
+        when(debtCollectionRepository.globalUpdatePart1()).thenReturn(new int[]{expected1});
+        when(debtCollectionRepository.globalUpdatePart2()).thenReturn(new int[]{expected2});
+        FdcContributionsGlobalUpdateResponse response = fdcContributionsService.fdcContributionGlobalUpdate();
+        assertNotNull(response);
+        assertEquals(expected1+expected2, response.getResponses());
+    }
+
 
     private void getFdcContributionsFile() {
         fdcContributionsEntityList = new ArrayList<>();

@@ -70,4 +70,218 @@ public class DebtCollectionRepository {
         return false;
     }
 
+    @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
+    public int[] globalUpdatePart1() {
+        log.info("globalUpdatePart1 entered");
+        String query = "MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC " +
+                "USING  " +
+                "                ( " +
+                "                SELECT F.ID, " +
+                "                 (SELECT DECODE(SUM(CON_COUNT),0,'INVALID','REQUESTED') STATUS " +
+                "                      FROM " +
+                "                      ( " +
+                "                         SELECT COUNT(C.ID) AS CON_COUNT " + // --INTO V_CONTRIB_COUNT
+                "                         FROM TOGDATA.CONTRIBUTIONS C " +
+                "                         WHERE " +
+                "                            C.REP_ID = F.REP_ID " +
+                "                            AND " +
+                "                            C.TRANSFER_STATUS = 'SENT' " +
+                "                         UNION " +
+                "                         SELECT COUNT(CC.ID) AS CON_COUNT " +
+                "                         FROM TOGDATA.CONCOR_CONTRIBUTIONS CC " +
+                "                         WHERE " +
+                "                         CC.REP_ID = F.REP_ID " +
+                "                         AND " +
+                "                         CC.STATUS = 'SENT' " +
+                "                      )) NEWSTATUS " +
+                "                                              FROM TOGDATA.FDC_CONTRIBUTIONS F " +
+                "                                              JOIN TOGDATA.REP_ORDERS R ON ( R.ID = F.REP_ID ) " +
+                "                                           WHERE " +
+                "                                              TRUNC( ADD_MONTHS( NVL(R.SENTENCE_ORDER_DATE, SYSDATE ), TOGDATA.REF_DATA_MANAGEMENT.GET_CONFIG_PARAMETER ('FDC_CALCULATION_DELAY')) ) <= TRUNC(SYSDATE) " +
+                "                                              AND " +
+                "                                              F.LGFS_COMPLETE     = 'Y' " +
+                "                                              AND " +
+                "                                              F.AGFS_COMPLETE     = 'Y' " +
+                "                                              AND " +
+                "                                              ( F.STATUS = 'WAITING_ITEMS' " +
+                "                                               OR  " + // --TASK_2601 GET LATEST INVALID SO CAN REPROCESS ONCE CONTRIB SENT
+                "                                                (F.STATUS = 'INVALID' AND F.ID = (SELECT MAX(ID) FROM TOGDATA.FDC_CONTRIBUTIONS FC WHERE FC.REP_ID = F.REP_ID)) " +
+                "                                              ) " +
+                "                                              AND EXISTS (SELECT 1 FROM TOGDATA.REP_ORDER_CROWN_COURT_OUTCOMES CCO WHERE CCO.REP_ID = R.ID)  " + //--2601 ADDITIONAL CHECK
+                "                                              AND EXISTS (SELECT 1 FROM TOGDATA.FDC_ITEMS FI WHERE FI.FDC_ID = F.ID) " +
+                "                                              AND F.STATUS != (SELECT DECODE(SUM(CON_COUNT),0,'INVALID','REQUESTED') " +
+                "                                                                  FROM " +
+                "                                                                  ( " +
+                "                                                                     SELECT COUNT(C.ID) AS CON_COUNT " + //--INTO V_CONTRIB_COUNT
+                "                                                                     FROM TOGDATA.CONTRIBUTIONS C " +
+                "                                                                     WHERE " +
+                "                                                                        C.REP_ID = F.REP_ID " +
+                "                                                                        AND " +
+                "                                                                        C.TRANSFER_STATUS = 'SENT' " +
+                "                                                                     UNION " +
+                "                                                                     SELECT COUNT(CC.ID) AS CON_COUNT " +
+                "                                                                     FROM TOGDATA.CONCOR_CONTRIBUTIONS CC " +
+                "                                                                     WHERE " +
+                "                                                                     CC.REP_ID = F.REP_ID " +
+                "                                                                     AND " +
+                "                                                                     CC.STATUS = 'SENT' " +
+                "                                                                  )) " +
+                "                ) MERGERESULT " +
+                "ON (FC.ID = MERGERESULT.ID) " +
+                "WHEN MATCHED THEN " +
+                "  UPDATE SET FC.STATUS = MERGERESULT.NEWSTATUS";
+        log.info("globalUpdatePart1 exiting");
+        return jdbcTemplate.batchUpdate(query);
+    }
+
+    @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
+    public int[] globalUpdatePart2(){
+        log.info("globalUpdatePart2 entered");
+        String query = "MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC " +
+                "USING  " +
+                "                ( " +
+                "                SELECT F.ID, " +
+                //                     --ACCELERATE FLAG
+                "                      DECODE(F.ACCELERATE,'Y','Y',(SELECT NVL(MAX('Y'),'N') " +
+                "                                                                                     FROM TOGDATA.FDC_CONTRIBUTIONS FC " +
+                "                                                                                     WHERE FC.ID = F.ID " +
+                "                                                                                     AND NOT EXISTS (SELECT 1 " +
+                "                                                                                                       FROM TOGDATA.FDC_ITEMS FI " +
+                "                                                                                                       WHERE FI.FDC_ID = FC.ID " +
+                "                                                                                                         AND NVL(FI.PAID_AS_CLAIMED,'N') = 'N' " +
+                "                                                                                                         AND FI.ADJUSTMENT_REASON IS NULL  " + // SO ONLY FROM CCLF/CCR, MANUAL ADJUSTMENTS ALLOWED
+                "                                                                                                         AND FI.LATEST_COST_IND = 'CURRENT' " + //--JUST LOOK AT LATEST
+                "                                                                                                       ) " +
+                "                                                                                     AND EXISTS (SELECT 1 FROM TOGDATA.FDC_ITEMS FITM   " + // --NEED TO MAKE SURE THERE ARE ACTUALLY ITEMS EG IF ONLY SET JA
+                "                                                                                                    WHERE FITM.FDC_ID = F.ID    " + // --AND THAT THERE HAS BEEN SOMETHING FROM CCLF/CCR
+                "                                                                                                      AND FITM.ADJUSTMENT_REASON IS NULL))) ACCELERATE_FLAG, " +
+                //                --PREV_FDC_SENT
+                "                 CASE WHEN EXISTS (SELECT 1 FROM TOGDATA.FDC_CONTRIBUTIONS FPREV " +
+                "                                          WHERE FPREV.REP_ID = F.REP_ID " +
+                "                                            AND FPREV.STATUS = 'SENT' " +
+                "                                            AND FPREV.ID < F.ID) " +
+                "                             THEN 'Y' " +
+                "                             ELSE 'N' " +
+                "                        END PREV_FDC_SENT, " +
+                //                --DETERMINE NEW FDC STATUS
+                "                 (SELECT DECODE(SUM(CON_COUNT),TOGDATA.REF_DATA_MANAGEMENT.GET_CONFIG_PARAMETER ('FDC_CALCULATION_DELAY'),'INVALID','REQUESTED') STATUS " +
+                "                      FROM " +
+                "                      ( " +
+                "                         SELECT COUNT(C.ID) AS CON_COUNT  " + //--INTO V_CONTRIB_COUNT
+                "                         FROM TOGDATA.CONTRIBUTIONS C " +
+                "                         WHERE " +
+                "                            C.REP_ID = F.REP_ID " +
+                "                            AND " +
+                "                            C.TRANSFER_STATUS = 'SENT' " +
+                "                         UNION " +
+                "                         SELECT COUNT(CC.ID) AS CON_COUNT " +
+                "                         FROM TOGDATA.CONCOR_CONTRIBUTIONS CC " +
+                "                         WHERE " +
+                "                         CC.REP_ID = F.REP_ID " +
+                "                         AND " +
+                "                         CC.STATUS = 'SENT' " +
+                "                      )) NEWSTATUS " +
+                //                      --CONTINUING THE REST OF THE ORIGINAL QUERY
+                "                                              FROM TOGDATA.FDC_CONTRIBUTIONS F " +
+                "                                              JOIN TOGDATA.REP_ORDERS R ON ( R.ID = F.REP_ID ) " +
+                "                                           WHERE " +
+                "                                              TRUNC( ADD_MONTHS( R.SENTENCE_ORDER_DATE, 5) ) > TRUNC(SYSDATE) " + //--SENTENCE ORDER DATE MUST BE POPULATED AND WITHIN DELAY PERIOD
+                "                                              AND " +
+                "                                              F.LGFS_COMPLETE     = 'Y' " +
+                "                                              AND " +
+                "                                              F.AGFS_COMPLETE     = 'Y' " +
+                "                                              AND " +
+                "                                              F.STATUS = 'WAITING_ITEMS' " +
+                "                                              AND EXISTS (SELECT 1 FROM TOGDATA.REP_ORDER_CROWN_COURT_OUTCOMES CCO WHERE CCO.REP_ID = R.ID)  " + //--2601 ADDITIONAL CHECK
+                //                                              --THIS IS THE FDC ITEM CHECK PLSQL
+                "                                              AND EXISTS (SELECT 1 FROM TOGDATA.FDC_ITEMS FI WHERE FI.FDC_ID = F.ID) " +
+                //                                              --THIS IS CHECKING FOR ROWS WHERE DETERMINED STATUS AND ORIGINAL STATUS DOESNT MATCH
+                "                                              AND F.STATUS != (SELECT DECODE(SUM(CON_COUNT),0,'INVALID','REQUESTED') " +
+                "                                                                  FROM " +
+                "                                                                  ( " +
+                "                                                                     SELECT COUNT(C.ID) AS CON_COUNT  " + //--INTO V_CONTRIB_COUNT
+                "                                                                     FROM TOGDATA.CONTRIBUTIONS C " +
+                "                                                                     WHERE " +
+                "                                                                        C.REP_ID = F.REP_ID " +
+                "                                                                        AND " +
+                "                                                                        C.TRANSFER_STATUS = 'SENT' " +
+                "                                                                     UNION " +
+                "                                                                     SELECT COUNT(CC.ID) AS CON_COUNT " +
+                "                                                                     FROM TOGDATA.CONCOR_CONTRIBUTIONS CC " +
+                "                                                                     WHERE " +
+                "                                                                     CC.REP_ID = F.REP_ID " +
+                "                                                                     AND " +
+                "                                                                     CC.STATUS = 'SENT' " +
+                "                                                                  )) " +
+                //    --THIS IS 1ST PART OF THE OR CHECK
+                //    --THIS IS CHECKING IF ACCELERATE FLAG =Y
+                "    AND ((DECODE(F.ACCELERATE,'Y','Y',(SELECT NVL(MAX('Y'),'N') " +
+                "                                                          FROM TOGDATA.FDC_CONTRIBUTIONS FC " +
+                "                                                         WHERE FC.ID = F.ID " +
+                "                                                           AND NOT EXISTS (SELECT 1 " +
+                "                                                                           FROM TOGDATA.FDC_ITEMS FI " +
+                "                                                                           WHERE FI.FDC_ID = FC.ID " +
+                "                                                                             AND NVL(FI.PAID_AS_CLAIMED,'N') = 'N' " +
+                "                                                                             AND FI.ADJUSTMENT_REASON IS NULL " + // --SO ONLY FROM CCLF/CCR, MANUAL ADJUSTMENTS ALLOWED
+                "                                                                             AND FI.LATEST_COST_IND = 'CURRENT' " + //--JUST LOOK AT LATEST
+                "                                                                           ) " +
+                "                                                           AND EXISTS (SELECT 1 FROM TOGDATA.FDC_ITEMS FITM " + //   --NEED TO MAKE SURE THERE ARE ACTUALLY ITEMS EG IF ONLY SET JA
+                "                                                                        WHERE FITM.FDC_ID = F.ID  " + // --AND THAT THERE HAS BEEN SOMETHING FROM CCLF/CCR
+                "                                                                          AND FITM.ADJUSTMENT_REASON IS NULL)))='Y'  " +
+                "                            AND  " +
+                //     --THIS IS CHECKING IF STATUS=REQUESTED
+                "    (SELECT DECODE(SUM(CON_COUNT),0,'INVALID','REQUESTED') STATUS " +
+                "                      FROM " +
+                "                      ( " +
+                "                         SELECT COUNT(C.ID) AS CON_COUNT  " + //--INTO V_CONTRIB_COUNT
+                "                         FROM TOGDATA.CONTRIBUTIONS C " +
+                "                         WHERE " +
+                "                            C.REP_ID = F.REP_ID " +
+                "                            AND " +
+                "                            C.TRANSFER_STATUS = 'SENT' " +
+                "                         UNION " +
+                "                         SELECT COUNT(CC.ID) AS CON_COUNT " +
+                "                         FROM TOGDATA.CONCOR_CONTRIBUTIONS CC " +
+                "                         WHERE " +
+                "                         CC.REP_ID = F.REP_ID " +
+                "                         AND " +
+                "                         CC.STATUS = 'SENT' " +
+                "                      ))='REQUESTED') " +
+                "OR " +
+                //--THIS IS 2ND PART OF THE OR CHECK
+                //    --THIS IS CHECKING IF V_FDC_SENT FLAG =Y
+                "(( CASE WHEN EXISTS (SELECT 1 FROM TOGDATA.FDC_CONTRIBUTIONS FPREV " +
+                "                                          WHERE FPREV.REP_ID = F.REP_ID " +
+                "                                            AND FPREV.STATUS = 'SENT' " +
+                "                                            AND FPREV.ID < F.ID) " +
+                "                             THEN 'Y' " +
+                "                             ELSE 'N' " +
+                "   END)='Y' " +
+                "                AND " +
+                //    --THIS IS CHECKING IF THE STATUS=REQUESTED
+                "(SELECT DECODE(SUM(CON_COUNT),0,'INVALID','REQUESTED') STATUS " +
+                "                      FROM " +
+                "                      ( " +
+                "                         SELECT COUNT(C.ID) AS CON_COUNT  " + //--INTO V_CONTRIB_COUNT
+                "                         FROM TOGDATA.CONTRIBUTIONS C " +
+                "                         WHERE " +
+                "                            C.REP_ID = F.REP_ID " +
+                "                            AND " +
+                "                            C.TRANSFER_STATUS = 'SENT' " +
+                "                         UNION " +
+                "                         SELECT COUNT(CC.ID) AS CON_COUNT " +
+                "                         FROM TOGDATA.CONCOR_CONTRIBUTIONS CC " +
+                "                         WHERE " +
+                "                         CC.REP_ID = F.REP_ID " +
+                "                         AND " +
+                "                         CC.STATUS = 'SENT' " +
+                "                      ))='REQUESTED')) " +
+                "                ) QUERY1 " +
+                "ON (FC.ID = QUERY1.ID) " +
+                "WHEN MATCHED THEN " +
+                "  UPDATE SET FC.STATUS = QUERY1.NEWSTATUS";
+        log.info("globalUpdatePart2 exiting");
+        return jdbcTemplate.batchUpdate(query);
+    }
+
 }

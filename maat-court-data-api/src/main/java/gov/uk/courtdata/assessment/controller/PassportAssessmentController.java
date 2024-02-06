@@ -6,6 +6,7 @@ import gov.uk.courtdata.assessment.service.PassportAssessmentService;
 import gov.uk.courtdata.assessment.validator.PassportAssessmentValidationProcessor;
 import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
+import gov.uk.courtdata.eform.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
@@ -21,6 +22,8 @@ import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -100,5 +103,15 @@ public class PassportAssessmentController {
     public ResponseEntity<AssessorDetails> findPassportAssessorDetails(@PathVariable int passportAssessmentId) {
         AssessorDetails assessorDetails = passportAssessmentService.findPassportAssessorDetails(passportAssessmentId);
         return ResponseEntity.ok(assessorDetails);
+    }
+
+    @PatchMapping(value = "/{passportAssessmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Update a subset of passport assessment")
+    @StandardApiResponseCodes
+    public ResponseEntity<Void> patchPassportAssessment(@PathVariable int passportAssessmentId,
+                                                   @RequestBody Map<String, Object> updateFields) {
+        log.info("Request received to update Passport Assessment with Id: {}", passportAssessmentId);
+        passportAssessmentService.patch(passportAssessmentId, updateFields);
+        return ResponseEntity.ok().build();
     }
 }

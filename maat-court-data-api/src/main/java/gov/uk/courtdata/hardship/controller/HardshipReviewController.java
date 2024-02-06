@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -105,5 +106,18 @@ public class HardshipReviewController {
             @RequestBody UpdateHardshipReview hardshipReview) {
         log.info("Update Hardship Review Request Received");
         return ResponseEntity.ok(hardshipReviewService.update(hardshipReview));
+    }
+
+    @PatchMapping(value=  "/{hardshipReviewId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Update a subset of hardship review record")
+    @StandardApiResponseCodes
+    public ResponseEntity<Void> updateHardship(@PathVariable int hardshipReviewId,
+            @Parameter(description = "Hardship review data",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+            )
+            @RequestBody Map<String, Object> updateFields) {
+        log.info("Received request to update Hardship Review with id: [{}]", hardshipReviewId);
+        hardshipReviewService.patch(hardshipReviewId, updateFields);
+        return ResponseEntity.ok().build();
     }
 }

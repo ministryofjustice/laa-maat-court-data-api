@@ -19,10 +19,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(HardshipReviewController.class)
@@ -34,6 +34,7 @@ class HardshipReviewControllerTest {
     private static final String MOCK_DETAIL_TYPE = "EXPENDITURE";
     private static final Integer MOCK_HARDSHIP_ID = 1000;
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/hardship";
+    private static final String PATCH_ENDPOINT_URL = ENDPOINT_URL.concat("/{hardshipReviewId}");
     @Autowired
     private MockMvc mvc;
     @MockBean
@@ -161,4 +162,20 @@ class HardshipReviewControllerTest {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
-}
+
+    @Test
+    void givenCorrectParameters_whenPatchIsInvoked_thenHardshipIsUpdated() throws Exception {
+        String requestJson = "{\"solicitorHours\" : 2.0}";
+
+        doNothing().when(hardshipReviewService).patch(MOCK_HARDSHIP_ID, Map.of("solicitorHours", "2.0"));
+
+        mvc.perform(MockMvcRequestBuilders.patch(PATCH_ENDPOINT_URL, MOCK_HARDSHIP_ID).content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenIncorrectParameters_whenPatchIsInvoked_then4xxIsThrown() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(PATCH_ENDPOINT_URL, MOCK_HARDSHIP_ID).content("").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }}

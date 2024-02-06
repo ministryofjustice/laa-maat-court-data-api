@@ -20,16 +20,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PassportAssessmentController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class PassportAssessmentControllerTest {
+class PassportAssessmentControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -50,15 +50,16 @@ public class PassportAssessmentControllerTest {
     private static final int INVALID_REP_ID = 3456;
 
     private static final String END_POINT_URL = "/api/internal/v1/assessment/passport-assessments";
-    private static final String MEANS_ASSESSOR_DETAILS_URL = END_POINT_URL + "/{financialAssessmentId}/passport-assessor-details";
+    private static final String PATCH_END_POINT_URL = END_POINT_URL.concat("/{passportAssessmentId}");
+    private static final String PASSPORT_ASSESSOR_DETAILS_URL = END_POINT_URL + "/{passportAssessmentId}/passport-assessor-details";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         passportAssessmentJson = TestModelDataBuilder.getCreatePassportAssessmentJson();
     }
 
     @Test
-    public void givenCorrectParameters_whenCreatePassportAssessmentIsInvoked_thenPassportAssessmentIsCreated() throws Exception {
+    void givenCorrectParameters_whenCreatePassportAssessmentIsInvoked_thenPassportAssessmentIsCreated() throws Exception {
         PassportAssessmentDTO returnedPassportAssessment =
                 passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(TestEntityDataBuilder.getPassportAssessmentEntity());
         returnedPassportAssessment.setId(MOCK_ASSESSMENT_ID);
@@ -73,14 +74,14 @@ public class PassportAssessmentControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenCreatePassportAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
+    void givenIncorrectParameters_whenCreatePassportAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(passportAssessmentValidationProcessor.validate(any(PassportAssessment.class))).thenThrow(new ValidationException());
         mvc.perform(MockMvcRequestBuilders.post(END_POINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void givenCorrectParameters_whenSearchPassportAssessmentIsInvoked_thenPassportAssessmentIsReturned() throws Exception {
+    void givenCorrectParameters_whenSearchPassportAssessmentIsInvoked_thenPassportAssessmentIsReturned() throws Exception {
         PassportAssessmentDTO returnedPassportAssessment =
                 passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(TestEntityDataBuilder.getPassportAssessmentEntity());
 
@@ -94,7 +95,7 @@ public class PassportAssessmentControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenSearchPassportAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
+    void givenIncorrectParameters_whenSearchPassportAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(passportAssessmentValidationProcessor.validate(any(Integer.class))).thenThrow(new ValidationException());
         when(passportAssessmentService.find(MOCK_ASSESSMENT_ID)).thenReturn(null);
         mvc.perform(MockMvcRequestBuilders.post(END_POINT_URL + "/" + FAKE_ASSESSMENT_ID))
@@ -102,7 +103,7 @@ public class PassportAssessmentControllerTest {
     }
 
     @Test
-    public void givenCorrectParameters_whenGetPassportAssessmentByRepIdIsInvoked_thenPassportAssessmentIsReturned() throws Exception {
+    void givenCorrectParameters_whenGetPassportAssessmentByRepIdIsInvoked_thenPassportAssessmentIsReturned() throws Exception {
         PassportAssessmentDTO returnedPassportAssessment =
                 passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(TestEntityDataBuilder.getPassportAssessmentEntity());
 
@@ -116,7 +117,7 @@ public class PassportAssessmentControllerTest {
     }
 
     @Test
-    public void givenInvalidRepId_whenGetPassportAssessmentByRepIdIsInvoked_then404NotFoundErrorIsThrown() throws Exception {
+    void givenInvalidRepId_whenGetPassportAssessmentByRepIdIsInvoked_then404NotFoundErrorIsThrown() throws Exception {
         when(passportAssessmentService.findByRepId(INVALID_REP_ID))
                 .thenThrow(new RequestedObjectNotFoundException(String.format("Passport Assessment with repId %s not found", INVALID_REP_ID)));
 
@@ -125,13 +126,13 @@ public class PassportAssessmentControllerTest {
     }
 
     @Test
-    public void givenNullRepId_whenGetPassportAssessmentByRepIdIsInvoked_thenBadRequestIsThrown() throws Exception {
+    void givenNullRepId_whenGetPassportAssessmentByRepIdIsInvoked_thenBadRequestIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(END_POINT_URL + "/repId/null"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void givenCorrectParameters_whenUpdatePassportAssessmentIsInvoked_thenPassportAssessmentIsUpdated() throws Exception {
+    void givenCorrectParameters_whenUpdatePassportAssessmentIsInvoked_thenPassportAssessmentIsUpdated() throws Exception {
         PassportAssessmentDTO returnedPassportAssessment =
                 passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(TestEntityDataBuilder.getPassportAssessmentEntity());
 
@@ -147,22 +148,32 @@ public class PassportAssessmentControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenUpdatePassportAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
+    void givenIncorrectParameters_whenUpdatePassportAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(passportAssessmentValidationProcessor.validate(any(PassportAssessment.class))).thenThrow(new ValidationException());
         mvc.perform(MockMvcRequestBuilders.put(END_POINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void givenValidPassportAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() throws Exception {
+    void givenValidPassportAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() throws Exception {
         int passportAssessmentId = 1234;
         when(passportAssessmentService.findPassportAssessorDetails(passportAssessmentId))
                 .thenReturn(TestModelDataBuilder.getAssessorDetails());
 
-        mvc.perform(MockMvcRequestBuilders.get(MEANS_ASSESSOR_DETAILS_URL, passportAssessmentId))
+        mvc.perform(MockMvcRequestBuilders.get(PASSPORT_ASSESSOR_DETAILS_URL, passportAssessmentId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.fullName").value("Karen Greaves"))
                 .andExpect(jsonPath("$.userName").value("grea-k"));
     }
 
+    @Test
+    void givenValidPassportAssessmentId_whenPatchAssessmentIsInvoked_thenAssessmentIsUpdated() throws Exception {
+        doNothing().when(passportAssessmentService).patch(MOCK_ASSESSMENT_ID, Map.of("replaced", "Y"));
+
+        String requestJson = "{\"replaced\":\"Y\"}";
+        mvc.perform(MockMvcRequestBuilders.patch(PATCH_END_POINT_URL, MOCK_ASSESSMENT_ID).content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(passportAssessmentService).patch(MOCK_ASSESSMENT_ID, Map.of("replaced", "Y"));
+    }
 }

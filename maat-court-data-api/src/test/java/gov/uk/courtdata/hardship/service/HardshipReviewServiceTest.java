@@ -1,5 +1,7 @@
 package gov.uk.courtdata.hardship.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
@@ -11,13 +13,17 @@ import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
+import gov.uk.courtdata.repository.HardshipReviewRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -36,6 +42,9 @@ class HardshipReviewServiceTest {
 
     @Mock
     private HardshipReviewMapper hardshipReviewMapper;
+
+    @Mock
+    private HardshipReviewRepository hardshipReviewRepository;
 
     private static final int MOCK_REP_ID = 621580;
     private static final String MOCK_DETAIL_TYPE = "EXPENDITURE";
@@ -158,5 +167,18 @@ class HardshipReviewServiceTest {
 
         hardshipReviewService.update(UpdateHardshipReview.builder().build());
         verify(hardshipReviewImpl).update(any());
+    }
+
+    @Test
+    void whenPatchIsInvoked_thenAssessmentIsPersisted() throws JsonProcessingException {
+        HardshipReviewEntity hardshipReviewEntity = HardshipReviewEntity.builder()
+                .id(MOCK_HARDSHIP_ID)
+                .repId(MOCK_REP_ID)
+                .build();
+        String requestJson = "{\"replaced\":\"Y\"}";
+        Map<String, Object> updateFields = new ObjectMapper().readValue(requestJson, HashMap.class);
+        when(hardshipReviewRepository.findById(MOCK_HARDSHIP_ID)).thenReturn(Optional.of(hardshipReviewEntity));
+        hardshipReviewService.patch(MOCK_HARDSHIP_ID, updateFields);
+        verify(hardshipReviewRepository).save(hardshipReviewEntity);
     }
 }

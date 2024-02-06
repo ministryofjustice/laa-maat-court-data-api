@@ -13,7 +13,6 @@ import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.FinancialAssessment;
-import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(FinancialAssessmentController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class FinancialAssessmentControllerTest {
+class FinancialAssessmentControllerTest {
 
     private static final String BASE_URL = "/api/internal/v1/assessment/financial-assessments";
     private static final String CHECK_OUTSTANDING_URL = BASE_URL + "/check-outstanding/{repId}";
@@ -67,12 +66,12 @@ public class FinancialAssessmentControllerTest {
     private String financialAssessmentJson;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         financialAssessmentJson = TestModelDataBuilder.getCreateFinancialAssessmentJson();
     }
 
     @Test
-    public void givenCorrectParameters_whenCreateFinancialAssessmentIsInvoked_thenAssessmentIsCreated() throws Exception {
+    void givenCorrectParameters_whenCreateFinancialAssessmentIsInvoked_thenAssessmentIsCreated() throws Exception {
         FinancialAssessmentDTO returnedFinancialAssessment =
                 financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
         returnedFinancialAssessment.setId(MOCK_ASSESSMENT_ID);
@@ -87,14 +86,14 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenCreateFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
+    void givenIncorrectParameters_whenCreateFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(FinancialAssessment.class))).thenThrow(new ValidationException());
         mvc.perform(MockMvcRequestBuilders.post(BASE_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void givenCorrectParameters_whenSearchFinancialAssessmentIsInvoked_thenAssessmentIsReturned() throws Exception {
+    void givenCorrectParameters_whenSearchFinancialAssessmentIsInvoked_thenAssessmentIsReturned() throws Exception {
         FinancialAssessmentDTO returnedFinancialAssessment =
                 financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
 
@@ -107,7 +106,7 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenSearchFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
+    void givenIncorrectParameters_whenSearchFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenThrow(new ValidationException());
         when(financialAssessmentService.find(MOCK_ASSESSMENT_ID)).thenReturn(null);
         mvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/" + FAKE_ASSESSMENT_ID))
@@ -115,7 +114,7 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenCorrectParameters_whenUpdateFinancialAssessmentIsInvoked_thenAssessmentIsUpdated() throws Exception {
+    void givenCorrectParameters_whenUpdateFinancialAssessmentIsInvoked_thenAssessmentIsUpdated() throws Exception {
         FinancialAssessmentDTO returnedFinancialAssessment =
                 financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(TestEntityDataBuilder.getFinancialAssessmentEntity());
         returnedFinancialAssessment.setAssessmentType("FULL");
@@ -132,14 +131,14 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenUpdateFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
+    void givenIncorrectParameters_whenUpdateFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(FinancialAssessment.class))).thenThrow(new ValidationException());
         mvc.perform(MockMvcRequestBuilders.put(BASE_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void givenCorrectParameters_whenDeleteFinancialAssessmentIsInvoked_thenAssessmentIsDeleted() throws Exception {
+    void givenCorrectParameters_whenDeleteFinancialAssessmentIsInvoked_thenAssessmentIsDeleted() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenReturn(Optional.empty());
         doNothing().when(financialAssessmentService).delete(MOCK_ASSESSMENT_ID);
         mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + MOCK_ASSESSMENT_ID))
@@ -147,7 +146,7 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenDeleteFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
+    void givenIncorrectParameters_whenDeleteFinancialAssessmentIsInvoked_thenErrorIsThrown() throws Exception {
         when(financialAssessmentValidationProcessor.validate(any(Integer.class))).thenThrow(new ValidationException());
         doNothing().when(financialAssessmentService).delete(MOCK_ASSESSMENT_ID);
         mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + FAKE_ASSESSMENT_ID))
@@ -155,7 +154,7 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenRepIdForOutstandingFinancialAssessment_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingFinancialAssessmentsFoundResultIsReturned() throws Exception {
+    void givenRepIdForOutstandingFinancialAssessment_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingFinancialAssessmentsFoundResultIsReturned() throws Exception {
         OutstandingAssessmentResultDTO result = new OutstandingAssessmentResultDTO(true, FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
 
         when(financialAssessmentService.checkForOutstandingAssessments(OUTSTANDING_ASSESSMENT_REP_ID)).thenReturn(result);
@@ -167,7 +166,7 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenRepIdForOutstandingPassportAssessment_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingFinancialAssessmentsFoundResultIsReturned() throws Exception {
+    void givenRepIdForOutstandingPassportAssessment_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingFinancialAssessmentsFoundResultIsReturned() throws Exception {
         OutstandingAssessmentResultDTO result = new OutstandingAssessmentResultDTO(true, FinancialAssessmentImpl.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
 
         when(financialAssessmentService.checkForOutstandingAssessments(OUTSTANDING_ASSESSMENT_REP_ID)).thenReturn(result);
@@ -179,7 +178,7 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenRepIdForNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenNotFoundResultIsReturned() throws Exception {
+    void givenRepIdForNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenNotFoundResultIsReturned() throws Exception {
         OutstandingAssessmentResultDTO result = new OutstandingAssessmentResultDTO();
 
         when(financialAssessmentService.checkForOutstandingAssessments(NO_OUTSTANDING_ASSESSMENTS_REP_ID)).thenReturn(result);
@@ -190,7 +189,7 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenCorrectParameters_whenCreateAssessmentHistoryIsInvoked_thenAssessmentsHistoryIsCreated() throws Exception {
+    void givenCorrectParameters_whenCreateAssessmentHistoryIsInvoked_thenAssessmentsHistoryIsCreated() throws Exception {
         doNothing().when(financialAssessmentHistoryService).createAssessmentHistory(MOCK_ASSESSMENT_ID, true);
 
         mvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/history/1234/fullAvailable/true"))
@@ -199,13 +198,13 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenIncorrectFullAvailableParameter_whenCreateAssessmentHistoryIsInvoked_then400ErrorIsThrown() throws Exception {
+    void givenIncorrectFullAvailableParameter_whenCreateAssessmentHistoryIsInvoked_then400ErrorIsThrown() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/history/1234/fullAvailable/test"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void givenValidFinancialAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() throws Exception {
+    void givenValidFinancialAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() throws Exception {
         int financialAssessmentId = 1234;
         when(financialAssessmentService.findMeansAssessorDetails(financialAssessmentId))
                 .thenReturn(TestModelDataBuilder.getAssessorDetails());
@@ -217,7 +216,7 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenUnknownFinancialAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenNotFoundErrorIsReturned() throws Exception {
+    void givenUnknownFinancialAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenNotFoundErrorIsReturned() throws Exception {
         int unknownFinancialAssessmentId = 99999;
         when(financialAssessmentService.findMeansAssessorDetails(unknownFinancialAssessmentId))
                 .thenThrow(new RequestedObjectNotFoundException("Unable to find AssessorDetails with financialAssessmentId: [99999]"));
@@ -229,24 +228,7 @@ public class FinancialAssessmentControllerTest {
     }
 
     @Test
-    public void givenCorrectParameters_whenUpdateFinancialAssessmentsIsInvoked_thenAssessmentsIsUpdated() throws Exception {
-        UpdateFinancialAssessment financialAssessment = UpdateFinancialAssessment.builder().fassInitStatus("FAIL").build();
-        doNothing().when(financialAssessmentService).updateFinancialAssessments(MOCK_FINANCIAL_ASSESSMENT_ID, financialAssessment);
-        String requestJson = "{\"fassInitStatus\":\"FAIL\"}";
-        mvc.perform(MockMvcRequestBuilders.patch(BASE_URL + "/" + MOCK_FINANCIAL_ASSESSMENT_ID).content(requestJson)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        verify(financialAssessmentService).updateFinancialAssessments(MOCK_FINANCIAL_ASSESSMENT_ID, financialAssessment);
-    }
-
-    @Test
-    public void givenIncorrectFullAvailableParameter_whenUpdateFinancialAssessmentsIsInvoked_then400ErrorIsThrown() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.patch(BASE_URL + "/" + "MOCK_FINANCIAL_ASSESSMENT_ID"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void givenValidFinancialAssessmentId_whenRollbackAssessmentIsInvoked_thenAssessmentIsUpdated() throws Exception {
+    void givenValidFinancialAssessmentId_whenRollbackAssessmentIsInvoked_thenAssessmentIsUpdated() throws Exception {
         doNothing().when(financialAssessmentService).patchFinancialAssessment(MOCK_FINANCIAL_ASSESSMENT_ID, Map.of("fassInitStatus", "IN PROGRESS"));
 
         String requestJson = "{\"fassInitStatus\":\"IN PROGRESS\"}";

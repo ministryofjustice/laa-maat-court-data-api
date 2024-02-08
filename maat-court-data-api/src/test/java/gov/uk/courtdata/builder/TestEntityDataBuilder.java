@@ -10,6 +10,7 @@ import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -320,7 +321,7 @@ public class TestEntityDataBuilder {
                 .solicitorEstTotalCost(BigDecimal.valueOf(2580.25))
                 .disposableIncome(BigDecimal.valueOf(4215.46))
                 .disposableIncomeAfterHardship(BigDecimal.valueOf(2921.38))
-                .status(HardshipReviewStatus.COMPLETE)
+                .status(HardshipReviewStatus.COMPLETE.getStatus())
                 .userCreated(USER_CREATED_TEST_S)
                 .userModified(USER_CREATED_TEST_S)
                 .courtType("MAGISTRATE")
@@ -383,7 +384,7 @@ public class TestEntityDataBuilder {
     }
 
     public static RepOrderApplicantLinksEntity getRepOrderApplicantLinksEntity() {
-        return new RepOrderApplicantLinksEntity().builder()
+        return RepOrderApplicantLinksEntity.builder()
                 .repId(REP_ID)
                 .partnerAphiId(11553872)
                 .partnerApplId(11553844)
@@ -397,7 +398,7 @@ public class TestEntityDataBuilder {
     }
 
     public static ApplicantHistoryEntity getApplicantHistoryEntity(String sendToCclf) {
-        return new ApplicantHistoryEntity().builder()
+        return ApplicantHistoryEntity.builder()
                 .applId(716)
                 .dob(LocalDate.parse("1981-10-14"))
                 .bankAccountName("test-acc-name")

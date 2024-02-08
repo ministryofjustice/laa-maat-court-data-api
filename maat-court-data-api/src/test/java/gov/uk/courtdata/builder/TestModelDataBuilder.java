@@ -26,6 +26,7 @@ import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

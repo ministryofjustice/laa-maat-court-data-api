@@ -8,6 +8,7 @@ import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.repository.FdcContributionsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class FdcContributionsService {
             response = globalUpdate();
             updateSuccessful=true;
         } catch(Exception e){
-            log.error("FDC Global update failed." + e.getMessage());
+            log.error("FDC Global update failed with: {}", e.getMessage(), e);
             throw e;
         }
         return FdcContributionsGlobalUpdateResponse.builder().responses(response).successful(updateSuccessful).build();
@@ -53,9 +54,9 @@ public class FdcContributionsService {
     int globalUpdate(){
         log.info("globalUpdate entered");
         int[] update1Result = debtCollectionRepository.globalUpdatePart1();
-        log.info("Fdc Global Update Part 1 affected: "+getResult(update1Result));
+        log.info("FDC Global update Part 1 affected: {}", getResult(update1Result));
         int[] update2Result = debtCollectionRepository.globalUpdatePart2();
-        log.info("Fdc Global Update Part 2 affected: "+getResult(update1Result));
+        log.info("FDC Global update Part 2 affected: {}", getResult(update2Result));
         int response = combineGlobalUpdateResults(update1Result, update2Result);
         log.info("globalUpdate exiting");
         return response;
@@ -65,7 +66,7 @@ public class FdcContributionsService {
         return getResult(part1Results)+getResult(part2Results);
     }
     private int getResult(int[] results){
-        return (Objects.nonNull(results) && results.length>0 ) ? results[0] : 0;
+        return ArrayUtils.isNotEmpty(results) ? results[0] : 0;
     }
 
 }

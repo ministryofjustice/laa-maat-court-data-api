@@ -47,7 +47,7 @@ public class FdcContributionsController {
     public ResponseEntity<FdcContributionsGlobalUpdateResponse> prepareFdcContributions(){
         log.info("Global Update for final defence cost files.");
         FdcContributionsGlobalUpdateResponse updateResult = fdcContributionsService.fdcContributionGlobalUpdate();
-        log.info("Final Defence Cost Global Update success: "+updateResult.isSuccessful());
+        log.info("Final Defence Cost Global Update success: {} Modifying: {}", updateResult.isSuccessful(), updateResult.getNumberOfUpdates());
         return ResponseEntity.ok(updateResult);
     }
 

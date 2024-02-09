@@ -1,6 +1,7 @@
 package gov.uk.courtdata.reporder.controller;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.constants.ErrorCodes;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.dto.RepOrderMvoDTO;
 import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
@@ -17,12 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
@@ -68,9 +72,9 @@ class RepOrderControllerTest {
     @Test
     void givenGetRequestWithValidRepIdAndNoOptionalParameters_whenFindIsInvoked_thenContributionsAndIojAppealAndRepOrderCCOutcomeIsRetrieved() throws Exception {
         RepOrderDTO expected = TestModelDataBuilder.getRepOrderDTO();
-        expected.setContributions(asList(TestModelDataBuilder.getContributionsDTO()));
-        expected.setIojAppeal(asList(TestModelDataBuilder.getIOJAppealDTO()));
-        expected.setRepOrderCCOutcome(asList(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1)));
+        expected.setContributions(Collections.singletonList(TestModelDataBuilder.getContributionsDTO()));
+        expected.setIojAppeal(Collections.singletonList(TestModelDataBuilder.getIOJAppealDTO()));
+        expected.setRepOrderCCOutcome(Collections.singletonList(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1)));
         when(repOrderService.find(anyInt(), anyBoolean()))
                 .thenReturn(expected);
 
@@ -226,7 +230,7 @@ class RepOrderControllerTest {
 
     @Test
     void givenValidRepId_whenDeleteIsInvoked_thenReturnOkResponse() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL+"/12345678")
+        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/12345678")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
@@ -238,7 +242,7 @@ class RepOrderControllerTest {
         when(repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID))
                 .thenReturn(TestModelDataBuilder.getAssessorDetails());
 
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID+"/ioj-assessor-details"))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "/ioj-assessor-details"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.fullName").value("Karen Greaves"))
@@ -251,10 +255,53 @@ class RepOrderControllerTest {
         when(repOrderService.findIOJAssessorDetails(unknownRepId))
                 .thenThrow(new RequestedObjectNotFoundException("Unable to find AssessorDetails for repId: [1245]"));
 
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + unknownRepId +"/ioj-assessor-details"))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + unknownRepId + "/ioj-assessor-details"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value("NOT_FOUND"))
                 .andExpect(jsonPath("$.message").value("Unable to find AssessorDetails for repId: [1245]"));
+    }
+
+
+    @Test
+    public void givenValidRequest_whenUpdateRepOrderIsInvoked_thenUpdateIsSuccess() throws Exception {
+        doNothing().when(repOrderService).update(TestModelDataBuilder.REP_ID, Map.of("iojResult", "PASS"));
+
+        String requestJson = "{\"iojResult\":\"PASS\"}";
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID).content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(repOrderService).update(TestModelDataBuilder.REP_ID, Map.of("iojResult", "PASS"));
+    }
+
+
+    @Test
+    void givenAEmptyContent_whenUpdateRepOrderIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID)
+                        .content("{}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenInValidRequest_whenUpdateRepOrderIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        doThrow(new RequestedObjectNotFoundException("Applicant not found")).when(repOrderService).update(any(), any());
+        String requestJson = "{\"iojResult\":\"PASS\"}";
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID)
+                        .content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    void givenInternalServerError_whenUpdateRepOrderIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        doThrow(EmptyResultDataAccessException.class).when(repOrderService).update(any(), any());
+        String requestJson = "{\"iojResult\":\"PASS\"}";
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID)
+                        .content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
     }
 }

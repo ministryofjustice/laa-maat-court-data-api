@@ -168,7 +168,7 @@ class HardshipReviewImplTest {
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getDisposableIncomeAfterHardship())
                 .isEqualTo(hardshipReviewDTO.getDisposableIncomeAfterHardship());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getStatus())
-                .isEqualTo(hardshipReviewDTO.getStatus());
+                .isEqualTo(hardshipReviewDTO.getStatus().getStatus());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getUserModified())
                 .isEqualTo(hardshipReviewDTO.getUserModified());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getNewWorkReason().getCode())

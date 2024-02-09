@@ -41,7 +41,7 @@ def versions = [
         cloudLocalstackUtilsVersion         : '0.2.23',
         springContractStubRunnerVersion     : '4.0.1',
         sentryBomVersion                    : '7.1.0',
-        crimeCommonsVersion                 : "2.18.0",
+        crimeCommonsVersion                 : "2.19.0",
         springCloudStubRunnerVersion        : "4.0.4"
 ]
 
@@ -79,6 +79,7 @@ dependencies {
     implementation platform("io.sentry:sentry-bom:$versions.sentryBomVersion")
 
     implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion:all"
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$versions.crimeCommonsVersion"
 
     //Required for Logback configuration due to a dependency having their own implementation of SAXParserFactory
     implementation "xerces:xercesImpl:$versions.xercesImplVersion"

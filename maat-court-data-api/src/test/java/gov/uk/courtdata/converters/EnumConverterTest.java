@@ -2,7 +2,6 @@ package gov.uk.courtdata.converters;
 
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.Frequency;
-import gov.uk.courtdata.enums.HardshipReviewStatus;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
 import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
 import java.time.LocalDateTime;
 
@@ -58,11 +58,11 @@ public class EnumConverterTest {
         HardshipReviewEntity mockEntity = HardshipReviewEntity.builder()
                 .dateCreated(LocalDateTime.now())
                 .userCreated("test-s")
-                .status(HardshipReviewStatus.IN_PROGRESS)
+                .status(HardshipReviewStatus.IN_PROGRESS.getStatus())
                 .build();
 
         HardshipReviewEntity returned = hardshipReviewRepository.save(mockEntity);
-        assertThat(returned.getStatus()).isEqualTo(HardshipReviewStatus.IN_PROGRESS);
+        assertThat(returned.getStatus()).isEqualTo(HardshipReviewStatus.IN_PROGRESS.getStatus());
     }
 
     @Test

@@ -38,31 +38,31 @@ public class FdcContributionsService {
 
     public FdcContributionsGlobalUpdateResponse fdcContributionGlobalUpdate(){
         log.info("Running global update process for Final Defence Cost contributions.");
-        int response;
+        int numberOfUpdates;
         boolean updateSuccessful;
         try{
-            response = globalUpdate();
+            numberOfUpdates = executeGlobalUpdate();
             updateSuccessful=true;
         } catch(Exception e){
             log.error("FDC Global update failed with: {}", e.getMessage(), e);
             throw e;
         }
-        return FdcContributionsGlobalUpdateResponse.builder().responses(response).successful(updateSuccessful).build();
+        return FdcContributionsGlobalUpdateResponse.builder().numberOfUpdates(numberOfUpdates).successful(updateSuccessful).build();
     }
 
 
-    int globalUpdate(){
-        log.info("globalUpdate entered");
+    private int executeGlobalUpdate(){
+        log.info("executeGlobalUpdate entered");
         int[] update1Result = debtCollectionRepository.globalUpdatePart1();
         log.info("FDC Global update Part 1 affected: {}", getResult(update1Result));
         int[] update2Result = debtCollectionRepository.globalUpdatePart2();
         log.info("FDC Global update Part 2 affected: {}", getResult(update2Result));
         int response = combineGlobalUpdateResults(update1Result, update2Result);
-        log.info("globalUpdate exiting");
+        log.info("executeGlobalUpdate exiting");
         return response;
     }
 
-    protected int combineGlobalUpdateResults(int[] part1Results, int[] part2Results){
+    private int combineGlobalUpdateResults(int[] part1Results, int[] part2Results){
         return getResult(part1Results)+getResult(part2Results);
     }
     private int getResult(int[] results){

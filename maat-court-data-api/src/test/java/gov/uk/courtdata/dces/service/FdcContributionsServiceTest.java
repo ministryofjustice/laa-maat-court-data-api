@@ -84,7 +84,7 @@ class FdcContributionsServiceTest {
         when(debtCollectionRepository.globalUpdatePart2()).thenReturn(new int[]{expected2});
         FdcContributionsGlobalUpdateResponse response = fdcContributionsService.fdcContributionGlobalUpdate();
         assertNotNull(response);
-        assertEquals(expected1+expected2, response.getResponses());
+        assertEquals(expected1+expected2, response.getNumberOfUpdates());
     }
 
 

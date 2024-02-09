@@ -25,8 +25,8 @@ class DebtCollectionRepositoryTest {
 
     @Mock
     JdbcTemplate jdbcTemplate;
-    private static final byte[] fdcMerge1StatementHash = new byte[]{10, -61, -47, -37, -104, -81, 75, -96, -79, 106, -14, -99, 92, -27, 49, 125, -23, 64, -50, -6, 69, -35, -7, -70, -22, 44, -44, 29, 94, 43, 20, 86};
-    private static final byte[] fdcMerge2StatementHash = new byte[]{-72, -126, -68, -81, -35, -126, -54, 86, 54, 112, -74, 43, 21, 81, -107, -46, -17, -24, 37, -35, -95, 34, -61, -90, -52, 109, 25, 46, 126, 30, -55, -88};
+    private static final byte[] fdcMerge1StatementHash = new byte[]{63, 93, 48, -38, -1, 2, -116, 125, -6, 100, 103, 97, 30, 43, -54, 7, -86, -126, 50, -126, -93, 40, -127, -112, 107, 44, -40, 82, -81, -93, -94, -35};
+    private static final byte[] fdcMerge2StatementHash = new byte[]{-110, -117, -90, -20, 15, 82, 0, -66, 98, 121, 11, 1, -105, -98, -1, 23, 126, 83, 21, 120, 70, 24, 74, -44, -69, 107, 69, 125, 50, 39, 107, -71};
 
     @Captor
     ArgumentCaptor<String> mergeSQLCaptor;
@@ -38,7 +38,7 @@ class DebtCollectionRepositoryTest {
         debtCollectionRepository.globalUpdatePart1();
 
         assertNotNull(mergeSQLCaptor);
-        Assertions.assertArrayEquals(fdcMerge1StatementHash, getCaptorHash());
+        Assertions.assertArrayEquals(fdcMerge1StatementHash, getCaptorHash(), "A change has been detected in the debtCollectionRepository.globalUpdatePart1() please verify changes are correct. And update this test.");
     }
 
     @Test
@@ -49,7 +49,7 @@ class DebtCollectionRepositoryTest {
 
 
         assertNotNull(mergeSQLCaptor);
-        Assertions.assertArrayEquals(fdcMerge2StatementHash,getCaptorHash());
+        Assertions.assertArrayEquals(fdcMerge2StatementHash,getCaptorHash(),"A change has been detected in the debtCollectionRepository.globalUpdatePart1() please verify changes are correct. And update this test.");
     }
 
     byte[] getCaptorHash(){

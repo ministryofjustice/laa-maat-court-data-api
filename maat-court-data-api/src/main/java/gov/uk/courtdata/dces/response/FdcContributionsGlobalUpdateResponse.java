@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FdcContributionsGlobalUpdateResponse {
     private boolean successful;
-    int responses;
+    int numberOfUpdates;
 }

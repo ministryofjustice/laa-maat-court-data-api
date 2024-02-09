@@ -132,7 +132,6 @@ public class DebtCollectionRepository {
                  ON (FC.ID = MERGERESULT.ID) 
                  WHEN MATCHED THEN 
                    UPDATE SET FC.STATUS = MERGERESULT.NEWSTATUS""";
-        log.info("globalUpdatePart1 exiting");
         return jdbcTemplate.batchUpdate(query);
     }
 
@@ -283,7 +282,6 @@ public class DebtCollectionRepository {
                 ON (FC.ID = QUERY1.ID) 
                 WHEN MATCHED THEN 
                   UPDATE SET FC.STATUS = QUERY1.NEWSTATUS""";
-        log.info("globalUpdatePart2 exiting");
         return jdbcTemplate.batchUpdate(query);
     }
 

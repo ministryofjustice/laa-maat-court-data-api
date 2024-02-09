@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
 
-    private static final String FDC_CONTRIBUTION_FILES_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/fdc-contribution-files?status=";
+    private static final String FDC_CONTRIBUTION_FILES_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/fdc-contribution-files";
     private static final String GLOBAL_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/prepare-fdc-contributions-files";
 
     private static int expectedId1 = 1;
@@ -54,7 +54,8 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenREQUESTEDStatus_whenGetIsInvoked_theDataLoadedResponseIsReturned() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(FDC_CONTRIBUTION_FILES_ENDPOINT_URL + FdcContributionsStatus.REQUESTED)
+        mockMvc.perform(MockMvcRequestBuilders.get(FDC_CONTRIBUTION_FILES_ENDPOINT_URL)
+                        .queryParam("status", FdcContributionsStatus.REQUESTED.name())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -67,7 +68,8 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenINVALIDStatus_whenGetIsInvoked_theEmptyResponseIsReturned() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(FDC_CONTRIBUTION_FILES_ENDPOINT_URL + FdcContributionsStatus.INVALID)
+        mockMvc.perform(MockMvcRequestBuilders.get(FDC_CONTRIBUTION_FILES_ENDPOINT_URL)
+                        .queryParam("status", FdcContributionsStatus.INVALID.name())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -86,7 +88,8 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAnInvalidStatus_whenGetIsInvoked_theEmptyResponseIsReturned() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(FDC_CONTRIBUTION_FILES_ENDPOINT_URL + "RUBBISH_VALUE")
+        mockMvc.perform(MockMvcRequestBuilders.get(FDC_CONTRIBUTION_FILES_ENDPOINT_URL)
+                        .queryParam("status", "RUBBISH_VALUE")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

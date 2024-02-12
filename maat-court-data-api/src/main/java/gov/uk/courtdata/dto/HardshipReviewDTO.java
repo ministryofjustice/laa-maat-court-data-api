@@ -1,11 +1,11 @@
 package gov.uk.courtdata.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import gov.uk.courtdata.enums.HardshipReviewStatus;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

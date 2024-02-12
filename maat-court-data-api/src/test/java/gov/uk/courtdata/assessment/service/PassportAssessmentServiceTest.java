@@ -1,5 +1,7 @@
 package gov.uk.courtdata.assessment.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.assessment.impl.PassportAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -11,6 +13,7 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
+import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +22,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import static gov.uk.courtdata.assessment.service.PassportAssessmentService.STATUS_COMPLETE;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -41,6 +48,9 @@ public class PassportAssessmentServiceTest {
 
     @InjectMocks
     private PassportAssessmentService passportAssessmentService;
+
+    @Mock
+    private PassportAssessmentRepository passportAssessmentRepository;
 
     @Test
     public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
@@ -172,7 +182,7 @@ public class PassportAssessmentServiceTest {
     }
 
     @Test
-    public void givenValidPassportAssessmentId_whenFindPassportAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() throws Exception {
+    public void givenValidPassportAssessmentId_whenFindPassportAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() {
         int passportAssessmentId = 1234;
         final String username = TestEntityDataBuilder.ASSESSOR_USER_NAME;
         PassportAssessmentEntity passportAssessment = PassportAssessmentEntity.builder()
@@ -186,5 +196,15 @@ public class PassportAssessmentServiceTest {
 
         assertEquals("Karen Greaves", passportAssessorDetails.getFullName());
         assertEquals(username, passportAssessorDetails.getUserName());
+    }
+
+    @Test
+    public void givenValidPassportAssessment_whenPatchIsInvoked_thenAssessmentIsUpdated() throws JsonProcessingException {
+        PassportAssessmentEntity passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
+        String requestJson = "{\"replaced\":\"Y\"}";
+        Map<String, Object> updateFields = new ObjectMapper().readValue(requestJson, HashMap.class);
+        when(passportAssessmentRepository.findById(anyInt())).thenReturn(Optional.of(passportAssessmentEntity));
+        passportAssessmentService.patch(anyInt(), updateFields);
+        verify(passportAssessmentRepository).save(passportAssessmentEntity);
     }
 }

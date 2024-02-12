@@ -34,7 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class FinancialAssessmentServiceTest {
+class FinancialAssessmentServiceTest {
 
     private static final Integer TEST_REP_ID = 1000;
     private static final Integer MOCK_FINANCIAL_ASSESSMENT_ID = 1234;
@@ -53,7 +53,7 @@ public class FinancialAssessmentServiceTest {
     private FinancialAssessmentRepository financialAssessmentRepository;
 
     @Test
-    public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
+    void whenFindIsInvoked_thenAssessmentIsRetrieved() {
         FinancialAssessmentDTO financialAssessmentDTO = FinancialAssessmentDTO.builder().id(1000).build();
         when(financialAssessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(any()))
                 .thenReturn(financialAssessmentDTO);
@@ -69,13 +69,13 @@ public class FinancialAssessmentServiceTest {
     }
 
     @Test
-    public void whenDeleteIsInvoked_thenAssessmentIsDeleted() {
+    void whenDeleteIsInvoked_thenAssessmentIsDeleted() {
         financialAssessmentService.delete(1000);
         verify(financialAssessmentImpl).delete(any(Integer.class));
     }
 
     @Test
-    public void whenCreateIsInvoked_thenAssessmentIsCreated() {
+    void whenCreateIsInvoked_thenAssessmentIsCreated() {
         FinancialAssessmentDTO financialAssessmentDTO = TestModelDataBuilder.getFinancialAssessmentDTO();
         CreateFinancialAssessment financialAssessment = TestModelDataBuilder.getCreateFinancialAssessment();
 
@@ -92,7 +92,7 @@ public class FinancialAssessmentServiceTest {
     }
 
     @Test
-    public void whenUpdateIsInvoked_thenAssessmentIsUpdated() {
+    void whenUpdateIsInvoked_thenAssessmentIsUpdated() {
         FinancialAssessmentDTO financialAssessmentDTO = TestModelDataBuilder.getFinancialAssessmentDTO();
         UpdateFinancialAssessment financialAssessment = TestModelDataBuilder.getUpdateFinancialAssessment();
 
@@ -109,7 +109,7 @@ public class FinancialAssessmentServiceTest {
     }
 
     @Test
-    public void givenOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenResultIsReturned() {
+    void givenOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenResultIsReturned() {
         when(financialAssessmentImpl.checkForOutstandingAssessments(any(Integer.class))).thenReturn(
                 OutstandingAssessmentResultDTO.builder().outstandingAssessments(true).message(MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND).build()
         );
@@ -120,7 +120,7 @@ public class FinancialAssessmentServiceTest {
     }
 
     @Test
-    public void givenNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenNotFoundResultIsReturned() {
+    void givenNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenNotFoundResultIsReturned() {
         when(financialAssessmentImpl.checkForOutstandingAssessments(TEST_REP_ID)).thenReturn(
                 OutstandingAssessmentResultDTO.builder().build()
         );
@@ -130,26 +130,25 @@ public class FinancialAssessmentServiceTest {
     }
 
     @Test
-    public void givenValidFinancialAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() throws Exception {
-        int financialAssessmentId = 1234;
+    void givenValidFinancialAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() {
         final String username = TestEntityDataBuilder.ASSESSOR_USER_NAME;
         FinancialAssessmentEntity financialAssessment = FinancialAssessmentEntity.builder()
                 .userCreated(username)
                 .userCreatedEntity(TestEntityDataBuilder.getUserEntity())
                 .build();
-        when(financialAssessmentImpl.find(financialAssessmentId))
+        when(financialAssessmentImpl.find(MOCK_FINANCIAL_ASSESSMENT_ID))
                 .thenReturn(Optional.of(financialAssessment));
         when(financialAssessmentMapper.createMeansAssessorDetails(financialAssessment))
                 .thenReturn(TestModelDataBuilder.getAssessorDetails());
 
-        AssessorDetails meansAssessorDetails = financialAssessmentService.findMeansAssessorDetails(financialAssessmentId);
+        AssessorDetails meansAssessorDetails = financialAssessmentService.findMeansAssessorDetails(MOCK_FINANCIAL_ASSESSMENT_ID);
 
         assertEquals("Karen Greaves", meansAssessorDetails.getFullName());
         assertEquals(username, meansAssessorDetails.getUserName());
     }
 
     @Test
-    public void givenUnknownFinancialAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenNotFoundErrorIsReturned() {
+    void givenUnknownFinancialAssessmentId_whenFindMeansAssessorDetailsIsInvoked_thenNotFoundErrorIsReturned() {
         int unknownFinancialAssessmentId = 99999;
         when(financialAssessmentImpl.find(unknownFinancialAssessmentId))
                 .thenReturn(Optional.empty());
@@ -161,23 +160,7 @@ public class FinancialAssessmentServiceTest {
     }
 
     @Test
-    public void whenUpdateFinancialAssessmentsIsInvoked_thenResultIsReturned() {
-        UpdateFinancialAssessment financialAssessment = TestModelDataBuilder.getUpdateFinancialAssessment();
-        FinancialAssessmentDTO returnedFinancialAssessment = FinancialAssessmentDTO.builder().fassInitStatus("FAIL").build();
-        FinancialAssessmentEntity financialAssessmentEntity = FinancialAssessmentEntity.builder().id(MOCK_FINANCIAL_ASSESSMENT_ID).build();
-
-        when(financialAssessmentMapper.updateFinancialAssessmentToFinancialAssessmentDTO(any(UpdateFinancialAssessment.class)))
-                .thenReturn(returnedFinancialAssessment);
-
-        when(financialAssessmentMapper.financialAssessmentDtoToFinancialAssessmentEntity(any()))
-                .thenReturn(financialAssessmentEntity);
-
-        financialAssessmentService.updateFinancialAssessments(MOCK_FINANCIAL_ASSESSMENT_ID, financialAssessment);
-        verify(financialAssessmentRepository).save(financialAssessmentEntity);
-    }
-
-    @Test
-    public void givenInitialAssessment_whenRollbackAssessmentIsInvoked_thenAssessmentIsUpdated() throws JsonProcessingException {
+    void givenInitialAssessment_whenRollbackAssessmentIsInvoked_thenAssessmentIsUpdated() throws JsonProcessingException {
         FinancialAssessmentEntity financialAssessmentEntity = FinancialAssessmentEntity.builder()
                 .id(1)
                 .fassInitStatus("COMPLETE")
@@ -191,7 +174,7 @@ public class FinancialAssessmentServiceTest {
     }
 
     @Test
-    public void givenFullAssessment_whenRollbackAssessmentIsInvoked_thenAssessmentIsUpdated() throws JsonProcessingException {
+    void givenFullAssessment_whenRollbackAssessmentIsInvoked_thenAssessmentIsUpdated() throws JsonProcessingException {
         FinancialAssessmentEntity financialAssessmentEntity = FinancialAssessmentEntity.builder()
                 .id(1)
                 .fassFullStatus("COMPLETE")

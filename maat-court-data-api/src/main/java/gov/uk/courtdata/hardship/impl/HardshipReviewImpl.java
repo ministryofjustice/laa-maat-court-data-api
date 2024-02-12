@@ -65,7 +65,7 @@ public class HardshipReviewImpl {
         existing.setSolicitorEstTotalCost(hardshipReviewDTO.getSolicitorCosts().getEstimatedTotal());
         existing.setDisposableIncome(hardshipReviewDTO.getDisposableIncome());
         existing.setDisposableIncomeAfterHardship(hardshipReviewDTO.getDisposableIncomeAfterHardship());
-        existing.setStatus(hardshipReviewDTO.getStatus());
+        existing.setStatus(hardshipReviewDTO.getStatus().getStatus());
         existing.setUserModified(hardshipReviewDTO.getUserModified());
         existing.setNewWorkReason(
                 hardshipReviewMapper.newWorkReasonToNewWorkReasonEntity(hardshipReviewDTO.getNewWorkReason()));

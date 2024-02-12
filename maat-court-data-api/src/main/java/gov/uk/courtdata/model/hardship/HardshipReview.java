@@ -1,6 +1,6 @@
 package gov.uk.courtdata.model.hardship;
 
-import gov.uk.courtdata.enums.HardshipReviewStatus;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -9,6 +9,7 @@ import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import org.mapstruct.*;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
 @Mapper(
         componentModel = "spring",
@@ -24,6 +25,7 @@ public interface HardshipReviewMapper {
     @Mapping(target = "solicitorCosts.vat", source = "solicitorVat")
     @Mapping(target = "solicitorCosts.disbursements", source = "solicitorDisb")
     @Mapping(target = "solicitorCosts.estimatedTotal", source = "solicitorEstTotalCost")
+    @Mapping(source = "status", target = "status", qualifiedByName = "mapStatusToHardshipReviewStatusEnum")
     HardshipReviewDTO hardshipReviewEntityToHardshipReviewDTO(final HardshipReviewEntity hardshipReview);
 
     @Mapping(source = "detailReason", target = "detailReason", qualifiedByName = "mapReasonToReviewDetailReasonEnum")
@@ -66,5 +68,13 @@ public interface HardshipReviewMapper {
         } else {
             return null;
         }
+    }
+
+    @Named("mapStatusToHardshipReviewStatusEnum")
+    default HardshipReviewStatus mapStatusToHardshipReviewStatusEnum(String status) {
+        if (status != null) {
+            return HardshipReviewStatus.getFrom(status);
+        }
+        return null;
     }
 }

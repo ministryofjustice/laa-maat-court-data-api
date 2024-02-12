@@ -11,18 +11,17 @@ import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
-import gov.uk.courtdata.enums.HardshipReviewStatus;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.model.hardship.*;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -145,7 +144,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.newWorkReason").value(request.getNworCode()))
                 .andExpect(jsonPath("$.reviewResult").value(request.getReviewResult()))
-                .andExpect(jsonPath("$.status").value(request.getStatus().getValue()));
+                .andExpect(jsonPath("$.status").value(request.getStatus().getStatus()));
     }
 
     @Test
@@ -211,7 +210,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         assertThat(hardshipReviewEntity.getCmuId()).isEqualTo(inputReviewData.getCmuId());
         assertThat(hardshipReviewEntity.getReviewDate()).isEqualTo(inputReviewData.getReviewDate());
         assertThat(hardshipReviewEntity.getResultDate()).isEqualTo(inputReviewData.getResultDate());
-        assertThat(hardshipReviewEntity.getStatus()).isEqualTo(inputReviewData.getStatus());
+        assertThat(hardshipReviewEntity.getStatus()).isEqualTo(inputReviewData.getStatus().getStatus());
         assertThat(hardshipReviewEntity.getSolicitorDisb()).isEqualTo(inputReviewData.getSolicitorCosts().getDisbursements());
         assertThat(hardshipReviewEntity.getSolicitorEstTotalCost()).isEqualTo(inputReviewData.getSolicitorCosts().getEstimatedTotal());
         assertThat(hardshipReviewEntity.getSolicitorHours()).isEqualTo(inputReviewData.getSolicitorCosts().getHours());
@@ -280,7 +279,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         hardshipReview.addReviewDetail(getTestHardshipReviewDetailEntity());
         hardshipReview.setFinancialAssessmentId(supportingAssessmentId);
         hardshipReview.setRepId(repId);
-        hardshipReview.setStatus(HardshipReviewStatus.IN_PROGRESS);
+        hardshipReview.setStatus(HardshipReviewStatus.IN_PROGRESS.getStatus());
         return hardshipReview;
     }
 

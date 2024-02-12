@@ -1,7 +1,6 @@
 package gov.uk.courtdata.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import gov.uk.courtdata.enums.HardshipReviewStatus;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
@@ -90,7 +89,7 @@ public class HardshipReviewEntity {
     private String courtType;
 
     @Column(name = "HRES_STATUS")
-    private HardshipReviewStatus status;
+    private String status;
 
     @Column(name = "FIAS_ID")
     private Integer financialAssessmentId;

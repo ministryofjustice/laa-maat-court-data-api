@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -18,19 +19,24 @@ import java.util.Objects;
 public class FdcContributionsService {
     private final FdcContributionsRepository fdcContributionsRepository;
 
+    private static final Function<FdcContributionsEntity, FdcContributionEntry> BUILD_FDC_ENTRY =
+            entity -> FdcContributionEntry.builder()
+                    .id(entity.getId())
+                    .maatId(entity.getRepOrderEntity().getId())
+                    .finalCost(entity.getFinalCost())
+                    .dateCalculated(entity.getDateCalculated())
+                    .lgfsCost(entity.getLgfsCost())
+                    .agfsCost(entity.getAgfsCost())
+                    .sentenceOrderDate(Objects.nonNull(entity.getRepOrderEntity())?entity.getRepOrderEntity().getSentenceOrderDate():null)
+                    .build();
+
     public FdcContributionsResponse getFdcContributionFiles(FdcContributionsStatus status) {
         log.info("Getting fdc contribution file with status with the -> {}", status);
         final List<FdcContributionsEntity> fdcFileList = fdcContributionsRepository.findByStatus(status);
 
-        List<FdcContributionEntry> fdcContributionEntries = fdcFileList.stream().map(cc -> FdcContributionEntry.builder()
-                        .id(cc.getId())
-                        .maatId(cc.getRepOrderEntity().getId())
-                        .finalCost(cc.getFinalCost())
-                        .dateCalculated(cc.getDateCalculated())
-                        .lgfsCost(cc.getLgfsCost())
-                        .agfsCost(cc.getAgfsCost())
-                        .sentenceOrderDate(Objects.nonNull(cc.getRepOrderEntity())?cc.getRepOrderEntity().getSentenceOrderDate():null)
-                        .build()).toList();
+        List<FdcContributionEntry> fdcContributionEntries = fdcFileList.stream().map(
+                BUILD_FDC_ENTRY
+        ).toList();
         return FdcContributionsResponse.builder().fdcContributions(fdcContributionEntries).build();
     }
 

@@ -24,6 +24,7 @@ public class FdcContributionsService {
 
         List<FdcContributionEntry> fdcContributionEntries = fdcFileList.stream().map(cc -> FdcContributionEntry.builder()
                         .id(cc.getId())
+                        .maatId(cc.getRepOrderEntity().getId())
                         .finalCost(cc.getFinalCost())
                         .dateCalculated(cc.getDateCalculated())
                         .lgfsCost(cc.getLgfsCost())

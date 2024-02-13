@@ -34,9 +34,9 @@ public class FdcContributionsService {
         log.info("Getting fdc contribution file with status with the -> {}", status);
         final List<FdcContributionsEntity> fdcFileList = fdcContributionsRepository.findByStatus(status);
 
-        List<FdcContributionEntry> fdcContributionEntries = fdcFileList.stream().map(
-                BUILD_FDC_ENTRY
-        ).toList();
+        List<FdcContributionEntry> fdcContributionEntries = fdcFileList.stream()
+                .map(BUILD_FDC_ENTRY)
+                .toList();
         return FdcContributionsResponse.builder().fdcContributions(fdcContributionEntries).build();
     }
 

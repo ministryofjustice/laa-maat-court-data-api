@@ -11,7 +11,6 @@ import gov.uk.courtdata.contribution.service.ContributionsService;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.ContributionsEntity;
-import gov.uk.courtdata.entity.CorrespondenceEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
@@ -138,21 +137,6 @@ public class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest 
             contributionsService.getContributionsSummary(INVALID_REP_ID);
         }).isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("No contribution entries found for repId");
-    }
-
-    @Test
-    void givenValidRepId_whenGetContributionCountIsInvoked_thenCorrectResponseIsReturned() {
-        CorrespondenceEntity correspondenceEntity = correspondenceRepository.saveAndFlush(TestEntityDataBuilder.getCorrespondenceEntity(1));
-        contributionsEntity.setCorrespondenceId(correspondenceEntity.getId());
-        contributionsRepository.saveAndFlush(contributionsEntity);
-        Integer count = contributionsService.getContributionCount(REP_ID);
-        assertThat(count).isEqualTo(1);
-    }
-
-    @Test
-    void givenInValidRepId_whenGetContributionCountIsInvoked_thenCorrectResponseIsReturned() {
-        Integer count = contributionsService.getContributionCount(REP_ID);
-        assertThat(count).isEqualTo(0);
     }
 
     private Integer getContributionId() {

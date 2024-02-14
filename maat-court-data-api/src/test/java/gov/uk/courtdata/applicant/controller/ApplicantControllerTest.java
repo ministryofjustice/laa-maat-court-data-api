@@ -3,6 +3,7 @@ package gov.uk.courtdata.applicant.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
+import gov.uk.courtdata.applicant.dto.SendToCCLFDTO;
 import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
 import gov.uk.courtdata.applicant.service.ApplicantService;
 import gov.uk.courtdata.applicant.service.RepOrderApplicantLinksService;
@@ -19,9 +20,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
@@ -342,5 +345,32 @@ public class ApplicantControllerTest {
     }
 
 
+    @Test
+    void givenValidRequest_whenUpdateSendToCCLFIsInvoked_thenUpdateIsSuccess() throws Exception {
+        SendToCCLFDTO sendToCCLFDTO = SendToCCLFDTO.builder().applId(1).repId(1).applHistoryId(1).build();
+        doNothing().when(applicantService).updateSendToCCLF(any());
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/update-cclf")
+                        .content(objectMapper.writeValueAsString(sendToCCLFDTO))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 
+    @Test
+    void givenAEmptyContent_whenUpdateSendToCCLFIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/update-cclf")
+                        .content("{}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenInValidRequest_whenUpdateSendToCCLFIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+        doThrow(new RequestedObjectNotFoundException("Applicant not found"))
+                .when(applicantService).updateSendToCCLF(any());
+        SendToCCLFDTO sendToCCLFDTO = SendToCCLFDTO.builder().applId(1).repId(1).applHistoryId(1).build();
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/update-cclf")
+                        .content(objectMapper.writeValueAsString(sendToCCLFDTO))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(404));
+    }
 }

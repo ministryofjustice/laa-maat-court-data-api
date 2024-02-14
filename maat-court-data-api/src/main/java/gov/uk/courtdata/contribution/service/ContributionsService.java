@@ -71,11 +71,6 @@ public class ContributionsService {
         return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(newContributionsEntity));
     }
 
-    @Transactional
-    public int getContributionCount(Integer repId) {
-        return contributionsRepository.getContributionCount(repId);
-    }
-
     public List<ContributionsSummaryDTO> getContributionsSummary(int repId) {
         List<ContributionsSummaryView> contributionsSummaryViewEntities = contributionsRepository.getContributionsSummary(repId);
 

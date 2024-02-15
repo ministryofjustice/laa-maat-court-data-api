@@ -68,14 +68,14 @@ public class HardshipReviewConvertor extends Convertor {
 		try
 		{
 			ConvertorHelper convertorHelper = new ConvertorHelper();
-			getDTO().setId( 							convertorHelper.toLong(		getOracleType().getId()));
-			getDTO().setCmuId(							convertorHelper.toLong(		getOracleType().getCmuId()));
-			getDTO().setReviewResult( 					convertorHelper.toString(	getOracleType().getReviewResult()));
-			getDTO().setReviewDate( 					convertorHelper.toDate(		getOracleType().getReviewDate()));
-			getDTO().setNotes( 							convertorHelper.toString(	getOracleType().getNotes()));
-			getDTO().setDecisionNotes( 					convertorHelper.toString(	getOracleType().getDecisionNotes()));
-			getDTO().setDisposableIncome( 				convertorHelper.toSysGenCurrency(	getOracleType().getDisposIncome()));
-			getDTO().setDisposableIncomeAfterHardship( 	convertorHelper.toSysGenCurrency(	getOracleType().getDisposIncomeAfterHardship()));
+			getDTO().setId(convertorHelper.toLong(getOracleType().getId()));
+			getDTO().setCmuId(convertorHelper.toLong(getOracleType().getCmuId()));
+			getDTO().setReviewResult(convertorHelper.toString(getOracleType().getReviewResult()));
+			getDTO().setReviewDate(convertorHelper.toDate(getOracleType().getReviewDate()));
+			getDTO().setNotes(convertorHelper.toString(getOracleType().getNotes()));
+			getDTO().setDecisionNotes(convertorHelper.toString(	getOracleType().getDecisionNotes()));
+			getDTO().setDisposableIncome(getOracleType().getDisposIncome());
+			getDTO().setDisposableIncomeAfterHardship(getOracleType().getDisposIncomeAfterHardship());
 			
 			//New Work Reason
 			NewWorkReasonConvertor mwrConvertor	= new NewWorkReasonConvertor();
@@ -152,14 +152,14 @@ public class HardshipReviewConvertor extends Convertor {
 			setType( null );	// force new type to be instantiated 
 			setDTO( dto );	// if the dto class type is not right for this conversion an exception is thrown
 			ConvertorHelper convertorHelper = new ConvertorHelper();            
-			getOracleType().setId(							convertorHelper.toLong(		getDTO().getId())); 
-			getOracleType().setCmuId(						convertorHelper.toLong(		getDTO().getCmuId())); 
-			getOracleType().setReviewResult(				convertorHelper.toString(	getDTO().getReviewResult()));
-			getOracleType().setReviewDate(					convertorHelper.toDate(		getDTO().getReviewDate())); 
-			getOracleType().setNotes(						convertorHelper.toString(	getDTO().getNotes())); 
-			getOracleType().setDecisionNotes(				convertorHelper.toString(	getDTO().getDecisionNotes())); 
-			getOracleType().setDisposIncome(				convertorHelper.toSysGenCurrency(	getDTO().getDisposableIncome()));
-			getOracleType().setDisposIncomeAfterHardship(	convertorHelper.toSysGenCurrency(	getDTO().getDisposableIncomeAfterHardship()));
+			getOracleType().setId(convertorHelper.toLong(getDTO().getId()));
+			getOracleType().setCmuId(convertorHelper.toLong(getDTO().getCmuId()));
+			getOracleType().setReviewResult(convertorHelper.toString(getDTO().getReviewResult()));
+			getOracleType().setReviewDate(convertorHelper.toDate(getDTO().getReviewDate()));
+			getOracleType().setNotes(convertorHelper.toString(getDTO().getNotes()));
+			getOracleType().setDecisionNotes(convertorHelper.toString(getDTO().getDecisionNotes()));
+			getOracleType().setDisposIncome(getDTO().getDisposableIncome());
+			getOracleType().setDisposIncomeAfterHardship(getDTO().getDisposableIncomeAfterHardship());
 			
 			//New Work Reason
 			NewWorkReasonConvertor mwrConvertor	= new NewWorkReasonConvertor();

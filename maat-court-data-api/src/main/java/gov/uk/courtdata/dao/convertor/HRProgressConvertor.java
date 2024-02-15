@@ -67,7 +67,7 @@ public class HRProgressConvertor extends Convertor {
 			getDTO().setDateCompleted(	convertorHelper.toDate(getOracleType().getDateCompleted()));
 			getDTO().setDateRequired(	convertorHelper.toDate(getOracleType().getDateRequired()));			
 			getDTO().setDateRequested(	convertorHelper.toDate(getOracleType().getDateRequested()));			
-			getDTO().setTimestamp(		getOracleType().getTimeStamp());
+			getDTO().setTimestamp(		convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
 			
 			HRProgressActionConvertor progressActionConverter = new HRProgressActionConvertor();
 			if(getOracleType().getProgressActionObject() != null)
@@ -109,7 +109,7 @@ public class HRProgressConvertor extends Convertor {
             getOracleType().setDateCompleted(	convertorHelper.toDate(getDTO().getDateCompleted()));	
             getOracleType().setDateRequired(	convertorHelper.toDate(getDTO().getDateRequired()));	
             getOracleType().setDateRequested(	convertorHelper.toDate(getDTO().getDateRequested()));	
-            getOracleType().setTimeStamp(	 	getDTO().getTimestamp());
+            getOracleType().setTimeStamp(	 	convertorHelper.toTimestamp(getDTO().getTimestamp()));
             
             HRProgressActionConvertor  progressActionConverter = new HRProgressActionConvertor();
 			if(getDTO().getProgressAction() != null){				

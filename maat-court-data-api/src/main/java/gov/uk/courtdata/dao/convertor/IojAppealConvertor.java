@@ -63,7 +63,7 @@ public class IojAppealConvertor extends Convertor {
 	    try
 	    {
 			ConvertorHelper convertorHelper = new ConvertorHelper();
-			getDTO().setTimestamp(						getOracleType().getTimeStamp() );
+			getDTO().setTimestamp(						convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
 
 			getDTO().setIojId(					convertorHelper.toLong( 	getOracleType().getId() ));
 			getDTO().setCmuId(					convertorHelper.toLong( 	getOracleType().getCmuId() ));
@@ -117,7 +117,7 @@ public class IojAppealConvertor extends Convertor {
 			setDTO(dto);	
 			ConvertorHelper convertorHelper = new ConvertorHelper();
 			
-			getOracleType().setTimeStamp(				getDTO().getTimestamp() );
+			getOracleType().setTimeStamp(				convertorHelper.toTimestamp(getDTO().getTimestamp()));
 
 			getOracleType().setId(						convertorHelper.toLong( 	getDTO().getIojId() ));
 			getOracleType().setCmuId(					convertorHelper.toLong( 	getDTO().getCmuId() ));

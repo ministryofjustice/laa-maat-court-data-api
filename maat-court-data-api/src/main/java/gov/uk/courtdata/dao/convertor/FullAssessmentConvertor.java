@@ -84,7 +84,7 @@ public class FullAssessmentConvertor extends Convertor {
 			getDTO().setThreshold(					convertorHelper.toDouble(getOracleType().getThreshold()));
 			getDTO().setResult(						convertorHelper.toString(getOracleType().getResult()));
 			getDTO().setResultReason(				convertorHelper.toString(getOracleType().getResultReason()));
-			getDTO().setTimestamp(					getOracleType().getTimeStamp());
+			getDTO().setTimestamp(					convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
 
 			//section summaries
 			getDTO().setSectionSummaries(			new ArrayList<AssessmentSectionSummaryDTO>());

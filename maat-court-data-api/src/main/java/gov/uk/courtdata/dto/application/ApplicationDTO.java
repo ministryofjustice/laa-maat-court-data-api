@@ -12,8 +12,8 @@ import java.util.Date;
 
 @Data
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class ApplicationDTO extends GenericDTO {
     private Long repId;
     private Long areaId;

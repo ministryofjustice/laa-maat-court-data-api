@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
@@ -24,8 +25,8 @@ public class ApplicationHardshipReviewDTO extends GenericDTO {
     private String decisionNotes;
     private String test;
     private HRSolicitorsCostsDTO solictorsCosts;
-    private SysGenCurrency disposableIncome;
-    private SysGenCurrency disposableIncomeAfterHardship;
+    private BigDecimal disposableIncome;
+    private BigDecimal disposableIncomeAfterHardship;
     private Collection<HRSectionDTO> section;
     private Collection<HRProgressDTO> progress;
     private AssessmentStatusDTO asessmentStatus;

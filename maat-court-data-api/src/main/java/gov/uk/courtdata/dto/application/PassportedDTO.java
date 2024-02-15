@@ -32,6 +32,7 @@ public class PassportedDTO extends GenericDTO {
     private Boolean benefitGaurenteedStatePension;
     private Boolean benefitClaimedByPartner;
     private Boolean benefitEmploymentSupport;
+    private Boolean benefitUniversalCredit;
     private PartnerDTO partnerDetails;
     private String notes;
     private String result;

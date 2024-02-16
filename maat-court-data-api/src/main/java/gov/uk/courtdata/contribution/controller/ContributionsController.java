@@ -46,17 +46,6 @@ public class ContributionsController {
         return ResponseEntity.ok(contributionsService.find(repId, findLatestContribution));
     }
 
-    @GetMapping(value = "/{repId}/latest-sent", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Retrieve Latest Sent contributions entry")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @StandardApiResponse
-    @NotFoundApiResponse
-    public ResponseEntity<ContributionsDTO> findByRepIdAndLatestSentContribution(@PathVariable @NotNull int repId) {
-        log.info("Request to retrieve Latest Sent contributions entry for repId {}", repId);
-        return ResponseEntity.ok(contributionsService.findByRepIdAndLatestSentContribution(repId));
-    }
-
-
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update contributions entry")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))

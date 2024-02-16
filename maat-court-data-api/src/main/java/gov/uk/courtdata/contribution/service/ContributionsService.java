@@ -80,10 +80,4 @@ public class ContributionsService {
         return contributionsMapper.contributionsSummaryToContributionsSummaryDTO(contributionsSummaryViewEntities);
     }
 
-
-    public ContributionsDTO findByRepIdAndLatestSentContribution(int repId) {
-        ContributionsEntity contributions = contributionsRepository.findByRepIdAndLatestSentContribution(repId);
-        return contributionsMapper.mapEntityToDTO(contributions);
-    }
-
 }

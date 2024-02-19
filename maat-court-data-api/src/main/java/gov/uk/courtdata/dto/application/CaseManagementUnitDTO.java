@@ -9,12 +9,9 @@ import java.util.Date;
 
 @Data
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class CaseManagementUnitDTO extends GenericDTO {
-
-    private static final long serialVersionUID = 2947962979790795526L;
-
     private Long cmuId;
     private Long areaId;
     private Boolean enabled;
@@ -23,5 +20,4 @@ public class CaseManagementUnitDTO extends GenericDTO {
     private String name;
     private String description;
     private Date timeStamp;
-
 }

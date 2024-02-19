@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dto.application;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -9,8 +10,8 @@ import java.util.Date;
 
 @Data
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class IOJAppealDTO extends GenericDTO {
     private Long iojId;
     private Long cmuId;
@@ -20,8 +21,11 @@ public class IOJAppealDTO extends GenericDTO {
     private String appealDecisionResult;
     private String notes;
 
-    private IOJDecisionReasonDTO appealReason;
-    private AssessmentStatusDTO assessmentStatusDTO;
-    private NewWorkReasonDTO newWorkReasonDTO;
+    @Builder.Default
+    private IOJDecisionReasonDTO appealReason = new IOJDecisionReasonDTO();
+    @Builder.Default
+    private AssessmentStatusDTO assessmentStatusDTO = new AssessmentStatusDTO();
+    @Builder.Default
+    private NewWorkReasonDTO newWorkReasonDTO = new NewWorkReasonDTO();
 
 }

@@ -3,6 +3,7 @@ package gov.uk.courtdata.reporder.service;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.AssessorDetails;
+import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
@@ -17,6 +18,7 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,8 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
 
 @ExtendWith(MockitoExtension.class)
 class RepOrderServiceTest {
@@ -135,5 +137,16 @@ class RepOrderServiceTest {
                 () -> repOrderService.findIOJAssessorDetails(1245));
 
         assertEquals("Unable to find AssessorDetails for repId: [1245]", expectedException.getMessage());
+    }
+
+    @Test
+    void givenAValidInput_whenUpdateIsInvoked_thenUpdateIsSuccess() {
+        RepOrderEntity repOrder = TestEntityDataBuilder.getPopulatedRepOrder(TestModelDataBuilder.REP_ID);
+        when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrder));
+        HashMap<String, Object> inputMap = new HashMap<>();
+        inputMap.put("iojResult", "PASS");
+        repOrderService.update(TestModelDataBuilder.REP_ID, inputMap);
+        verify(repOrderRepository, atLeastOnce()).findById(any());
+        verify(repOrderRepository, atLeastOnce()).save(any());
     }
 }

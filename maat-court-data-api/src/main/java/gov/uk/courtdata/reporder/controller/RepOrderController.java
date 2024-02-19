@@ -1,6 +1,8 @@
 package gov.uk.courtdata.reporder.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
+import gov.uk.courtdata.applicant.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.model.CreateRepOrder;
@@ -16,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -96,7 +99,7 @@ public class RepOrderController {
     @StandardApiResponse
     public ResponseEntity<Object> findByRepIdAndVehicleOwner(@PathVariable int repId,
                                                              @RequestParam(value = "owner", required = false)
-                                                                     String vehicleOwner) {
+                                                             String vehicleOwner) {
         log.info("Get Rep Order MVO Request Received");
         return ResponseEntity.ok(repOrderMvoService.findRepOrderMvoByRepIdAndVehicleOwner(
                 repId, Objects.requireNonNullElse(vehicleOwner, "N")
@@ -130,7 +133,7 @@ public class RepOrderController {
         return ResponseEntity.ok(repOrderService.update(updateRepOrder));
     }
 
-    @DeleteMapping(value ="/{repId}")
+    @DeleteMapping(value = "/{repId}")
     @Operation(description = "Delete a rep order record")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE
@@ -156,5 +159,16 @@ public class RepOrderController {
     public ResponseEntity<AssessorDetails> findIOJAssessorDetails(@PathVariable int repId) {
         AssessorDetails iojAssessorDetails = repOrderService.findIOJAssessorDetails(repId);
         return ResponseEntity.ok(iojAssessorDetails);
+    }
+
+
+    @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Partial Update of a Rep record")
+    @StandardApiResponseCodes
+    @NotFoundApiResponse
+    public ResponseEntity<Void> updateRepOrder(@PathVariable int id, @RequestBody Map<String, Object> updatedFields) {
+        log.info("Partial Update of Rep Order Request Received");
+        repOrderService.update(id, updatedFields);
+        return ResponseEntity.ok().build();
     }
 }

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class FdcContributionEntry {
     private Integer id;
+    private Integer maatId;
     private LocalDate sentenceOrderDate;
     private LocalDate dateCalculated;
     private BigDecimal finalCost;

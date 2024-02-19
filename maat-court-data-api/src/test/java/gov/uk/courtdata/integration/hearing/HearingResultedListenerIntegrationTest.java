@@ -2,8 +2,8 @@ package gov.uk.courtdata.integration.hearing;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -18,7 +18,6 @@ import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,12 +43,11 @@ import static org.mockito.Mockito.verify;
 public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTest {
 
     private final String LAA_TRANSACTION_ID = "b27b97e4-0514-42c4-8e09-fcc2c693e11f";
-    private final Integer TEST_MAAT_ID = 1234;
     private final Integer TEST_CASE_ID = 1;
     private final String TEST_USER = "test-user";
     private final LocalDate TEST_CREATED_DATE = LocalDate.of(2022, 1, 1);
     private final Integer TEST_APPLICATION_FLAG = 1;
-
+    private Integer TEST_MAAT_ID = 1234;
     @Autowired
     private IdentifierRepository identifierRepository;
     @Autowired
@@ -455,8 +453,8 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
 
         WQCaseEntity wqCaseEntity =
                 wqCaseRepository.findAll().stream()
-                    .filter(item -> item.getCaseId() == linkRegisterEntity.getCaseId() && item.getTxId() == expectedTxId)
-                    .collect(Collectors.toList()).get(0);
+                        .filter(item -> item.getCaseId() == linkRegisterEntity.getCaseId() && item.getTxId() == expectedTxId)
+                        .collect(Collectors.toList()).get(0);
 
         assertThat(wqCaseEntity).isNotNull();
         assertThat(wqCaseEntity.getAsn()).isEqualTo(hearingResultedData.getAsn());
@@ -558,19 +556,19 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
             XLATResultEntity resultEntity =
                     xlatResultRepository.findById(resultCode).orElse(null);
             assertThat(resultEntity).isNotNull();
-             if (resultsCreated) {
-                 assertThat(resultEntity.getCjsResultCode()).isEqualTo(resultCode);
-                 assertThat(resultEntity.getResultDescription()).isEqualTo(RESULT_CODE_DESCRIPTION);
-                 assertThat(resultEntity.getEnglandAndWales()).isEqualTo(YES);
-                 assertThat(resultEntity.getNotes()).isEqualTo(
-                         String.format(
-                                 "New Result code %s  has been received and automatically added to the Intervention queue. Please contact support.'"
-                                 , resultCode));
-                 assertThat(resultEntity.getWqType()).isEqualTo(WQType.USER_INTERVENTIONS_QUEUE.value());
-                 assertThat(resultEntity.getCreatedUser()).isEqualTo(AUTO_USER);
-             } else {
-                 assertThat(resultEntity.getCreatedUser()).isEqualTo(TEST_USER);
-             }
+            if (resultsCreated) {
+                assertThat(resultEntity.getCjsResultCode()).isEqualTo(resultCode);
+                assertThat(resultEntity.getResultDescription()).isEqualTo(RESULT_CODE_DESCRIPTION);
+                assertThat(resultEntity.getEnglandAndWales()).isEqualTo(YES);
+                assertThat(resultEntity.getNotes()).isEqualTo(
+                        String.format(
+                                "New Result code %s  has been received and automatically added to the Intervention queue. Please contact support.'"
+                                , resultCode));
+                assertThat(resultEntity.getWqType()).isEqualTo(WQType.USER_INTERVENTIONS_QUEUE.value());
+                assertThat(resultEntity.getCreatedUser()).isEqualTo(AUTO_USER);
+            } else {
+                assertThat(resultEntity.getCreatedUser()).isEqualTo(TEST_USER);
+            }
 
         }));
     }
@@ -593,7 +591,8 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     private void setupTestData() {
-        repOrderRepository.save(RepOrderEntity.builder().id(TEST_MAAT_ID).build());
+        RepOrderEntity repOrderEntity = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        TEST_MAAT_ID = repOrderEntity.getId();
     }
 
     private void createXlatResultData(List<Result> results) {

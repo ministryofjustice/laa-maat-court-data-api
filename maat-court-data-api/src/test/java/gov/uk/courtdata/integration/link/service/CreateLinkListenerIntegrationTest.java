@@ -7,12 +7,13 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.CourtHouseCodesEntity;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import gov.uk.courtdata.link.service.CreateLinkListener;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,13 +76,16 @@ public class CreateLinkListenerIntegrationTest {
     public void givenSaveAndLinkModel_whenSaveAndImplIsInvoked_thenLinkEstablished() {
 
         //given
-        repOrderDataRepository.save(testEntityDataBuilder.getRepOrderEntity());
-        repOrderRepository.save(TestEntityDataBuilder.getRepOrder());
-        courtHouseCodesRepository.save(CourtHouseCodesEntity.builder().code("B16BG").effectiveDateFrom(LocalDateTime.now()).build());
-        solicitorMAATDataRepository.save(testEntityDataBuilder.getSolicitorMAATDataEntity());
-        defendantMAATDataRepository.save(testEntityDataBuilder.getDefendantMAATDataEntity());
+        RepOrderEntity repOrderEntity = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderEntity();
+        repOrderCPDataEntity.setRepOrderId(repOrderEntity.getId());
+        repOrderDataRepository.save(repOrderCPDataEntity);
 
-        String saveAndLinkMessage = testModelDataBuilder.getSaveAndLinkString();
+        courtHouseCodesRepository.save(CourtHouseCodesEntity.builder().code("B16BG").effectiveDateFrom(LocalDateTime.now()).build());
+        solicitorMAATDataRepository.save(testEntityDataBuilder.getSolicitorMAATDataEntity(repOrderEntity.getId()));
+        defendantMAATDataRepository.save(testEntityDataBuilder.getDefendantMAATDataEntity(repOrderEntity.getId()));
+
+        String saveAndLinkMessage = testModelDataBuilder.getSaveAndLinkString(repOrderEntity.getId());
 
         //when
         Map<String, Object> header = new HashMap<>();
@@ -91,19 +95,19 @@ public class CreateLinkListenerIntegrationTest {
         createLinkListener.receive(saveAndLinkMessage, headers);
 
         //then
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getSaveAndLinkModelRaw();
+        CourtDataDTO courtDataDTO = testModelDataBuilder.getSaveAndLinkModelRaw(repOrderEntity.getId());
 
         verifyWqLinkRegister(courtDataDTO);
         verifyRepOrder(courtDataDTO);
 
-        queueMessageLogTestHelper.assertQueueMessageLogged(saveAndLinkMessage, 1, "e439dfc8-664e-4c8e-a999-d756dcf112c2", 1234);
+        queueMessageLogTestHelper.assertQueueMessageLogged(saveAndLinkMessage, 1, "e439dfc8-664e-4c8e-a999-d756dcf112c2", repOrderEntity.getId());
 
     }
 
     @Test
     public void givenNewMessageInSqs_whenMaatIsNull_thenThrowException() {
 
-       String saveAndLinkMessage = getSaveAndLinkString();
+        String saveAndLinkMessage = getSaveAndLinkString();
 
         //when
         Map<String, Object> header = new HashMap<>();
@@ -134,6 +138,7 @@ public class CreateLinkListenerIntegrationTest {
         assert wqLinkRegisterEntity != null;
         assertThat(wqLinkRegisterEntity.getMaatId()).isEqualTo(courtDataDTO.getCaseDetails().getMaatId());
     }
+
     public String getSaveAndLinkString() {
         return "{\n" +
 

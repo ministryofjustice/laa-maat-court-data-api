@@ -64,6 +64,8 @@ public class RepOrderEntity {
     private UserEntity userCreatedEntity;
 
     @Id
+    @SequenceGenerator(name = "rep_order_id", sequenceName = "S_REP_ORDER_ID", allocationSize = 1, schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "rep_order_id")
     @Column(name = "ID")
     private Integer id;
 

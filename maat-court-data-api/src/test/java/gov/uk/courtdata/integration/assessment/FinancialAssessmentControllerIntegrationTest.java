@@ -50,9 +50,9 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private static final String MEANS_ASSESSOR_DETAILS_URL = BASE_URL + "/{financialAssessmentId}/means-assessor-details";
     private static final String CREATE_ASSESSMENT_HISTORY_URL = BASE_URL + "/history/{financialAssessmentId}/fullAvailable/{fullAvailable}";
 
-    private final Integer REP_ID_WITH_OUTSTANDING_ASSESSMENTS = 1111;
-    private final Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = 2222;
-    private final Integer REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS = 3333;
+    private Integer REP_ID_WITH_OUTSTANDING_ASSESSMENTS = 1111;
+    private Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = 2222;
+    private Integer REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS = 3333;
 
     @Autowired
     private FinancialAssessmentMapper assessmentMapper;
@@ -71,9 +71,13 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
     private void setupTestData() {
         Integer REP_ID_DEFAULT = 4444;
         existingRepOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_DEFAULT));
-        repos.repOrder.saveAll(List.of(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_ASSESSMENTS),
-                TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS),
-                TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS)));
+
+        RepOrderEntity outstandingRepOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity noOutstandingRepOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity  outstandingPassportRepOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        REP_ID_WITH_OUTSTANDING_ASSESSMENTS = outstandingRepOrder.getId();
+        REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = noOutstandingRepOrder.getId();
+        REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS = outstandingPassportRepOrder.getId();
 
         UserEntity userEntity = TestEntityDataBuilder.getUserEntity(TestEntityDataBuilder.TEST_USER);
         repos.user.save(userEntity);
@@ -101,7 +105,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
         repos.passportAssessment.save(
                 PassportAssessmentEntity.builder()
-                        .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_OUTSTANDING_PASSPORT_ASSESSMENTS))
+                        .repOrder(outstandingPassportRepOrder)
                         .pastStatus("IN PROGRESS")
                         .build());
     }

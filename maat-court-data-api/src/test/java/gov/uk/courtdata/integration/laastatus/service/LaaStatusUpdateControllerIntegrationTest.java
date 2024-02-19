@@ -6,49 +6,16 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import gov.uk.MAATCourtDataApplication;
-import gov.uk.courtdata.entity.CaseEntity;
-import gov.uk.courtdata.entity.DefendantEntity;
-import gov.uk.courtdata.entity.DefendantMAATDataEntity;
-import gov.uk.courtdata.entity.OffenceEntity;
-import gov.uk.courtdata.entity.RepOrderCPDataEntity;
-import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.entity.SessionEntity;
-import gov.uk.courtdata.entity.SolicitorEntity;
-import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
-import gov.uk.courtdata.entity.WqCoreEntity;
-import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.WQStatus;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.laastatus.controller.LaaStatusUpdateController;
-import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Defendant;
-import gov.uk.courtdata.model.MessageCollection;
 import gov.uk.courtdata.model.Offence;
-import gov.uk.courtdata.model.Session;
-import gov.uk.courtdata.model.laastatus.Address;
-import gov.uk.courtdata.model.laastatus.Attributes;
-import gov.uk.courtdata.model.laastatus.Contact;
-import gov.uk.courtdata.model.laastatus.DefenceOrganisation;
-import gov.uk.courtdata.model.laastatus.DefendantData;
-import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
-import gov.uk.courtdata.model.laastatus.Organisation;
-import gov.uk.courtdata.model.laastatus.Relationships;
-import gov.uk.courtdata.model.laastatus.RepOrderData;
-import gov.uk.courtdata.repository.CaseRepository;
-import gov.uk.courtdata.repository.DefendantMAATDataRepository;
-import gov.uk.courtdata.repository.DefendantRepository;
-import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.IdentifierRepository;
-import gov.uk.courtdata.repository.OffenceRepository;
-import gov.uk.courtdata.repository.PassportAssessmentRepository;
-import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import gov.uk.courtdata.repository.RepOrderCPDataRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.repository.SessionRepository;
-import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
-import gov.uk.courtdata.repository.SolicitorRepository;
-import gov.uk.courtdata.repository.WqCoreRepository;
-import gov.uk.courtdata.repository.WqLinkRegisterRepository;
+import gov.uk.courtdata.model.*;
+import gov.uk.courtdata.model.laastatus.*;
+import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,12 +31,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
-import static com.github.tomakehurst.wiremock.client.WireMock.getAllServeEvents;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UPDATE_CASE_EVENT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -79,10 +41,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private final String LAA_TRANSACTION_ID = "b27b97e4-0514-42c4-8e09-fcc2c693e11f";
-    private final Integer TEST_MAAT_ID = 1234;
     private final Integer TEST_CASE_ID = 42;
     private final String TEST_ASN_SEQ = "001";
-
+    private Integer TEST_MAAT_ID = 1234;
     @Autowired
     private WqCoreRepository wqCoreRepository;
     @Autowired
@@ -424,8 +385,10 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     }
 
     private void createTestRepoOrder() {
-        RepOrderEntity repOrderEntity = RepOrderEntity.builder().id(TEST_MAAT_ID).caseId(TEST_CASE_ID.toString()).build();
-        repOrderRepository.save(repOrderEntity);
+        RepOrderEntity repOrderEntity = TestEntityDataBuilder.getPopulatedRepOrder();
+        repOrderEntity.setCaseId(TEST_CASE_ID.toString());
+        RepOrderEntity repOrder = repOrderRepository.save(repOrderEntity);
+        TEST_MAAT_ID = repOrder.getId();
     }
 
     private SolicitorMAATDataEntity createSolicitorData(String accountCode) {

@@ -1,10 +1,13 @@
 package gov.uk.courtdata.builder;
 
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
-import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
+import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.enums.Frequency;
+import gov.uk.courtdata.enums.HardshipReviewDetailType;
+import gov.uk.courtdata.enums.HardshipReviewProgressAction;
+import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
@@ -57,6 +60,20 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static RepOrderEntity getPopulatedRepOrder() {
+        return RepOrderEntity.builder()
+                .catyCaseType("case-type")
+                .magsOutcome("outcome")
+                .magsOutcomeDate(TEST_DATE.toString())
+                .magsOutcomeDateSet(TEST_DATE)
+                .committalDate(TEST_DATE.toLocalDate())
+                .decisionReasonCode("rder-code")
+                .crownRepOrderDecision("cc-rep-doc")
+                .crownRepOrderType("cc-rep-type")
+                .sentenceOrderDate(TEST_DATE.toLocalDate())
+                .build();
+    }
+
     public static ApplicantDisabilitiesEntity getApplicantDisabilitiesEntity() {
         return ApplicantDisabilitiesEntity.builder()
                 .applId(5136528)
@@ -68,10 +85,10 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static RepOrderMvoEntity getRepOrderMvoEntity(Integer id) {
+    public static RepOrderMvoEntity getRepOrderMvoEntity(Integer id, RepOrderEntity repOrderEntity) {
         return RepOrderMvoEntity.builder()
                 .id(id)
-                .rep(getPopulatedRepOrder(REP_ID))
+                .rep(repOrderEntity)
                 .vehicleOwner("Y")
                 .dateCreated(TEST_DATE)
                 .userCreated(TEST_USER)
@@ -81,10 +98,10 @@ public class TestEntityDataBuilder {
     }
 
 
-    public static RepOrderMvoRegEntity getRepOrderMvoRegEntity(Integer id) {
+    public static RepOrderMvoRegEntity getRepOrderMvoRegEntity(Integer id, RepOrderEntity repOrder) {
         return RepOrderMvoRegEntity.builder()
                 .id(id)
-                .mvo(getRepOrderMvoEntity(MVO_ID))
+                .mvo(getRepOrderMvoEntity(MVO_ID, repOrder))
                 .registration(TEST_REGISTRATION)
                 .dateCreated(TEST_DATE)
                 .userCreated(TEST_USER)
@@ -555,7 +572,6 @@ public class TestEntityDataBuilder {
     public static ContributionsEntity getContributionsEntity() {
 
         return ContributionsEntity.builder()
-                .repOrder(getPopulatedRepOrder(REP_ID))
                 .applId(REP_ID)
                 .userCreated(USER_NAME)
                 .contributionFileId(1)
@@ -586,57 +602,9 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public RepOrderCPDataEntity getRepOrderEntity() {
-        return RepOrderCPDataEntity.builder()
-                .repOrderId(REP_ID)
-                .caseUrn("caseurn1")
-                .dateCreated(LocalDateTime.now())
-                .userCreated("user")
-                .dateModified(LocalDateTime.now())
-                .build();
-    }
-
-    public WqLinkRegisterEntity getWqLinkRegisterEntity() {
-        return WqLinkRegisterEntity.builder()
-                .caseId(345)
-                .createdTxId(123)
-                .proceedingId(345)
-                .cjsAreaCode("16")
-                .maatCat(1)
-                .mlrCat(1)
-                .maatId(REP_ID)
-                .build();
-    }
-
-    public DefendantMAATDataEntity getDefendantMAATDataEntity() {
-        return DefendantMAATDataEntity.builder()
-                .maatId(REP_ID)
-                .firstName("T First Name")
-                .lastName("T Last Name")
-                .libraId("libra id")
-                .dob("07041960")
-                .build();
-    }
-
-    public SolicitorMAATDataEntity getSolicitorMAATDataEntity() {
-        return SolicitorMAATDataEntity.builder()
-                .maatId(REP_ID)
-                .accountCode("Acc")
-                .accountName("Acc Name")
-                .cmuId(123)
-                .build();
-    }
-
-    public RepOrderCPDataEntity getRepOrderCPDataEntity() {
-        return RepOrderCPDataEntity.builder()
-                .repOrderId(REP_ID)
-                .defendantId("556677")
-                .caseUrn("testCaseURN")
-                .build();
-    }
-    public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity(Integer repOderOutComeId, Integer repId) {
+    public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity(Integer repOderOutComeId, RepOrderEntity repOrder) {
         return RepOrderCCOutComeEntity.builder()
-                .repOrder(getPopulatedRepOrder(repId))
+                .repOrder(repOrder)
                 .outcome("CONVICTED")
                 .userCreated(TEST_USER)
                 .caseNumber(TEST_CASE_ID.toString())
@@ -649,7 +617,6 @@ public class TestEntityDataBuilder {
     public static CorrespondenceEntity getCorrespondenceEntity(Integer id) {
 
         return CorrespondenceEntity.builder()
-                .repId(REP_ID)
                 .id(id)
                 .generateDate(LocalDateTime.now())
                 .printDate(LocalDateTime.now())
@@ -673,8 +640,97 @@ public class TestEntityDataBuilder {
     }
 
     public static UserEntity getUserEntity(String username) {
-        return UserEntity.builder().firstName("First name of ["+username+"]")
-                .surname("Surname of ["+ username+"]")
+        return UserEntity.builder().firstName("First name of [" + username + "]")
+                .surname("Surname of [" + username + "]")
                 .username(username).build();
     }
+
+    public RepOrderCPDataEntity getRepOrderEntity() {
+        return RepOrderCPDataEntity.builder()
+                .repOrderId(REP_ID)
+                .caseUrn("caseurn1")
+                .dateCreated(LocalDateTime.now())
+                .userCreated("user")
+                .dateModified(LocalDateTime.now())
+                .build();
+    }
+
+    public WqLinkRegisterEntity getWqLinkRegisterEntity() {
+        return WqLinkRegisterEntity.builder()
+                .caseId(345)
+                .createdTxId(123)
+                .proceedingId(345)
+                .cjsAreaCode("16")
+                .maatCat(1)
+                .mlrCat(1)
+                .maatId(REP_ID)
+                .build();
+    }
+
+    public WqLinkRegisterEntity getWqLinkRegisterEntity(Integer repId) {
+        return WqLinkRegisterEntity.builder()
+                .caseId(345)
+                .createdTxId(123)
+                .proceedingId(345)
+                .cjsAreaCode("16")
+                .maatCat(1)
+                .mlrCat(1)
+                .maatId(repId)
+                .build();
+    }
+
+    public DefendantMAATDataEntity getDefendantMAATDataEntity() {
+        return DefendantMAATDataEntity.builder()
+                .maatId(REP_ID)
+                .firstName("T First Name")
+                .lastName("T Last Name")
+                .libraId("libra id")
+                .dob("07041960")
+                .build();
+    }
+
+    public DefendantMAATDataEntity getDefendantMAATDataEntity(Integer repId) {
+        return DefendantMAATDataEntity.builder()
+                .maatId(repId)
+                .firstName("T First Name")
+                .lastName("T Last Name")
+                .libraId("libra id")
+                .dob("07041960")
+                .build();
+    }
+
+    public SolicitorMAATDataEntity getSolicitorMAATDataEntity() {
+        return SolicitorMAATDataEntity.builder()
+                .maatId(REP_ID)
+                .accountCode("Acc")
+                .accountName("Acc Name")
+                .cmuId(123)
+                .build();
+    }
+
+    public SolicitorMAATDataEntity getSolicitorMAATDataEntity(Integer repId) {
+        return SolicitorMAATDataEntity.builder()
+                .maatId(repId)
+                .accountCode("Acc")
+                .accountName("Acc Name")
+                .cmuId(123)
+                .build();
+    }
+
+    public RepOrderCPDataEntity getRepOrderCPDataEntity() {
+        return RepOrderCPDataEntity.builder()
+                .repOrderId(REP_ID)
+                .defendantId("556677")
+                .caseUrn("testCaseURN")
+                .build();
+    }
+
+    public RepOrderCPDataEntity getRepOrderCPDataEntity(Integer repId) {
+        return RepOrderCPDataEntity.builder()
+                .repOrderId(repId)
+                .defendantId("556677")
+                .caseUrn("testCaseURN")
+                .build();
+    }
+
 }

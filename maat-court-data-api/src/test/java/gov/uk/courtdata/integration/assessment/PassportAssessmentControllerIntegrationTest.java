@@ -65,15 +65,11 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         LocalDateTime testCreationDate = LocalDateTime.of(2022, 1, 1, 12, 0);
         String testUser = "test-f";
 
-        Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = 1111;
-        RepOrderEntity noOutstandingRepOrder =
-                TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS);
-        repOrderRepository.save(noOutstandingRepOrder);
+        RepOrderEntity noOutstandingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = noOutstandingRepOrder.getId();
 
-        Integer REP_ID_WITH_COMPLETED_ASSESSMENT = 2222;
-        RepOrderEntity completedRepOrder =
-                TestEntityDataBuilder.getPopulatedRepOrder(REP_ID_WITH_COMPLETED_ASSESSMENT);
-        repOrderRepository.save(completedRepOrder);
+        RepOrderEntity completedRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        Integer REP_ID_WITH_COMPLETED_ASSESSMENT = completedRepOrder.getId();
 
         NewWorkReasonEntity existingNewWorkReason =
                 newWorkReasonRepository.save(TestEntityDataBuilder.getFmaNewWorkReasonEntity());

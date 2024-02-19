@@ -3,6 +3,7 @@ package gov.uk.courtdata.reporder.service;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.RepOrderCCOutComeEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.reporder.impl.CCOutcomeImpl;
 import gov.uk.courtdata.reporder.mapper.CCOutcomeMapper;
@@ -31,7 +32,7 @@ class CCOutcomeServiceTest {
     @Test
     void givenAValidInput_whenCreateIsInvoked_thenCreateOutcomeIsSuccess() {
         when(repOrderCCOutcomeImpl.create(any()))
-                .thenReturn(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(1, TestEntityDataBuilder.REP_ID));
+                .thenReturn(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(1, RepOrderEntity.builder().id(TestEntityDataBuilder.REP_ID).build()));
         service.create(TestModelDataBuilder.getRepOrderCCOutcome());
         verify(repOrderCCOutcomeImpl, atLeastOnce()).create(any());
     }

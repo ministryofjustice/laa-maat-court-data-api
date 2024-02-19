@@ -64,10 +64,8 @@ public class RepOrderService {
     @Transactional
     public RepOrderDTO create(final CreateRepOrder createRepOrder) {
         log.info("create rep order - Transaction Processing - Start");
-        LocalDate dateNow = LocalDate.now();
         RepOrderEntity repOrderEntity = new RepOrderEntity();
-        repOrderEntity.setId(createRepOrder.getRepId());
-        repOrderEntity.setDateCreated(dateNow);
+        repOrderEntity.setDateCreated(LocalDate.now());
         repOrderMapper.createRepOrderToRepOrderEntity(createRepOrder, repOrderEntity);
         RepOrderEntity createdRepOrderEntity = repOrderImpl.createRepOrder(repOrderEntity);
         return repOrderMapper.repOrderEntityToRepOrderDTO(createdRepOrderEntity);

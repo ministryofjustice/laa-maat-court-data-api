@@ -6,12 +6,15 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.UserEntity;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
-import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.repository.RepOrderMvoRegRepository;
+import gov.uk.courtdata.repository.RepOrderMvoRepository;
+import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.repository.UserRepository;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -33,9 +36,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SoftAssertionsExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
@@ -43,14 +44,14 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
     public static final Integer INVALID_REP_ID = 9999;
     public static final Integer INVALID_MVO_ID = 8888;
-    public static final Integer REP_ORDER_ID_NO_SENTENCE_ORDER_DATE = 4321;
     public static final String BASE_URL = "/api/internal/v1/assessment/rep-orders";
+    public static final String SLASH = "/";
     private static final String MVO_REG_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo-reg";
     private static final String MVO_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo";
     private static final String CURRENT_REGISTRATION = "current-registration";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
-    public static final String SLASH = "/";
-
+    public Integer REP_ORDER_ID_NO_SENTENCE_ORDER_DATE;
+    public Integer REP_ID;
     @Autowired
     private UserRepository userRepository;
 
@@ -75,24 +76,25 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                @Autowired RepOrderMvoRepository repOrderMvoRepository,
                @Autowired RepOrderMvoRegRepository repOrderMvoRegRepository) {
 
+        RepOrderEntity repOrdTestData = TestEntityDataBuilder.getPopulatedRepOrder();
+        repOrdTestData.setSentenceOrderDate(null);
+        RepOrderEntity repOrder = repOrderRepository.save(repOrdTestData);
+        REP_ORDER_ID_NO_SENTENCE_ORDER_DATE = repOrder.getId();
 
-        repOrderRepository.save(
-                RepOrderEntity.builder().id(REP_ORDER_ID_NO_SENTENCE_ORDER_DATE).build()
-        );
-        repOrderRepository.save(
-                TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID)
-        );
+        RepOrderEntity repOrderEntity = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        REP_ID = repOrderEntity.getId();
+
         repOrderMvoRepository.save(
-                TestEntityDataBuilder.getRepOrderMvoEntity(TestEntityDataBuilder.MVO_ID)
+                TestEntityDataBuilder.getRepOrderMvoEntity(TestEntityDataBuilder.MVO_ID, repOrder)
         );
         repOrderMvoRegRepository.save(
-                TestEntityDataBuilder.getRepOrderMvoRegEntity(TestEntityDataBuilder.REP_ID)
+                TestEntityDataBuilder.getRepOrderMvoRegEntity(TestEntityDataBuilder.REP_ID, repOrder)
         );
     }
 
     private RepOrderDTO getUpdatedRepOrderDTO() {
-        RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(TestModelDataBuilder.REP_ID);
-        RepOrderDTO repOrderDTO = TestModelDataBuilder.getRepOrderDTO();
+        RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(REP_ID);
+        RepOrderDTO repOrderDTO = TestModelDataBuilder.getRepOrderDTO(REP_ID);
         repOrderDTO.setDateModified(repOrderEntity.getDateModified());
         repOrderDTO.setSentenceOrderDate(repOrderEntity.getSentenceOrderDate());
         return repOrderDTO;
@@ -107,21 +109,21 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenIncorrectRepIdAndSentenceOrderDateFlagIsTrue_whenFindIsInvoked_thenRepOrderIsReturned() throws Exception {
         assertTrue(runNotFoundErrorScenario("No Rep Order found for ID: " + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE,
-                get(BASE_URL + SLASH +  REP_ORDER_ID_NO_SENTENCE_ORDER_DATE + "?has_sentence_order_date=true")
+                get(BASE_URL + SLASH + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE + "?has_sentence_order_date=true")
         ));
     }
 
     @Test
     void givenValidRepId_whenFindIsInvoked_thenRepOrderIsReturned() throws Exception {
         RepOrderDTO repOrderDTO = getUpdatedRepOrderDTO();
-        assertTrue(runSuccessScenario(repOrderDTO, get(BASE_URL + SLASH + TestEntityDataBuilder.REP_ID)));
+        assertTrue(runSuccessScenario(repOrderDTO, get(BASE_URL + SLASH + REP_ID)));
     }
 
     @Test
     void givenValidRepIdAndSentenceOrderDateFlagIsTrue_whenFindIsInvoked_thenRepOrderIsReturned() throws Exception {
         RepOrderDTO repOrderDTO = getUpdatedRepOrderDTO();
         assertTrue(runSuccessScenario(repOrderDTO,
-                get(BASE_URL + SLASH + TestEntityDataBuilder.REP_ID + "?has_sentence_order_date=true")
+                get(BASE_URL + SLASH + REP_ID + "?has_sentence_order_date=true")
         ));
     }
 
@@ -145,7 +147,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
                                         UpdateAppDateCompleted.builder()
-                                                .repId(TestModelDataBuilder.REP_ID)
+                                                .repId(REP_ID)
                                                 .build()
                                 )
                         )
@@ -175,11 +177,11 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
         runSuccessScenario(MockMvcRequestBuilders.post(BASE_URL + SLASH + "update-date-completed")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestModelDataBuilder.getUpdateAppDateCompletedJson())
+                .content(TestModelDataBuilder.getUpdateAppDateCompletedJson(REP_ID))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(TestModelDataBuilder.REP_ID);
-        assertThat(repOrderEntity.getId()).isEqualTo(TestModelDataBuilder.REP_ID);
+        RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(REP_ID);
+        assertThat(repOrderEntity.getId()).isEqualTo(REP_ID);
         assertThat(repOrderEntity.getAssessmentDateCompleted()).isEqualTo(expectedDate);
     }
 
@@ -206,40 +208,21 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenValidRepId_whenFindByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoIsReturned() throws Exception {
-        assertTrue(runSuccessScenario(TestModelDataBuilder.getRepOrderMvoDTO(),
-                get(MVO_ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES)
-        ));
-    }
-
-    @Test
-    void givenARepIdThatAlreadyExists_whenCreateIsInvoked_thenReturnBadRequest() throws Exception {
-        // Set up an existing rep order
-        repOrderRepository.save(
-                TestEntityDataBuilder.getPopulatedRepOrder(123456789)
-        );
-
-        // Set the new one with the same ID as existing
-        CreateRepOrder request = TestModelDataBuilder.getCreateRepOrder(123456789);
-
-        assertTrue(runBadRequestErrorScenario(
-                "There is already a record with MAAT ID [123456789].",
-                post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)
-                        )
+        assertTrue(runSuccessScenario(TestModelDataBuilder.getRepOrderMvoDTO(TestModelDataBuilder.MVO_ID, REP_ORDER_ID_NO_SENTENCE_ORDER_DATE),
+                get(MVO_ENDPOINT_URL + "/" + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE + "?owner=" + VEHICLE_OWNER_INDICATOR_YES)
         ));
     }
 
     @Test
     void givenValidParameters_whenCreateIsInvoked_theRepOrderIsCreated() throws Exception {
 
-        CreateRepOrder request = TestModelDataBuilder.getCreateRepOrder(87928192);
+        CreateRepOrder request = TestModelDataBuilder.getCreateRepOrder();
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(request.getRepId()))
+                .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.caseId").value(request.getCaseId()))
                 .andExpect(jsonPath("$.catyCaseType").value(request.getCatyCaseType()));
     }
@@ -274,11 +257,10 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenValidParameters_whenUpdateIsInvoked_theRepOrderIsUpdated() throws Exception {
 
-        UpdateRepOrder request = TestModelDataBuilder.getUpdateRepOrder();
-
+        UpdateRepOrder request = TestModelDataBuilder.getUpdateRepOrder(REP_ID);
         mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(request.getRepId()))
                 .andExpect(jsonPath("$.userModified").value(request.getUserModified()))
@@ -288,7 +270,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenHeadRequestWithRepId_whenFindIsInvoked_thenReturnMetadata() throws Exception {
         var response = runSuccessScenario(
-                head(BASE_URL + SLASH + TestModelDataBuilder.REP_ID)
+                head(BASE_URL + SLASH + REP_ID)
         );
         var content = response.getResponse().getContentAsString();
 
@@ -309,7 +291,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
         RepOrderEntity repOrderEntity = TestEntityDataBuilder.getPopulatedRepOrder(anyInt());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL+"/"+repOrderEntity.getId()))
+        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + repOrderEntity.getId()))
                 .andExpect(status().isNoContent());
 
         boolean exists = repOrderRepository.existsById(repOrderEntity.getId());
@@ -323,13 +305,13 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         UserEntity userEntity = TestEntityDataBuilder.getUserEntity();
         userRepository.save(userEntity);
 
-        RepOrderEntity repOrder = TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID);
+        RepOrderEntity repOrder = TestEntityDataBuilder.getPopulatedRepOrder(REP_ID);
         repOrder.setUserCreatedEntity(userEntity);
         repOrder.setUserCreated(userName);
 
         repOrderRepository.save(repOrder);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL+"/"+TestEntityDataBuilder.REP_ID+"/ioj-assessor-details"))
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + REP_ID + "/ioj-assessor-details"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.fullName").value("Karen Greaves"))

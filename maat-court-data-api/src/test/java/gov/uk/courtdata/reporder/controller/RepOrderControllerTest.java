@@ -137,7 +137,7 @@ class RepOrderControllerTest {
                 .thenReturn(Optional.empty());
 
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/update-date-completed")
-                .content(TestModelDataBuilder.getUpdateAppDateCompletedJson())
+                .content(TestModelDataBuilder.getUpdateAppDateCompletedJson(TestModelDataBuilder.REP_ID))
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 

@@ -9,12 +9,12 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.unlink.service.UnlinkListener;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import java.util.Map;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class UnlinkListenerTest  extends MockMvcIntegrationTest {
+public class UnlinkListenerTest extends MockMvcIntegrationTest {
 
 
     @Autowired
@@ -76,41 +76,43 @@ public class UnlinkListenerTest  extends MockMvcIntegrationTest {
     public void givenUnlinkLinkJSONMessage_whenUnlinkListenerIsInvoked_thenCaseIsUnlinked() {
 
         //given
-        Unlink unlink = gson.fromJson(testModelDataBuilder.getUnLinkString(), Unlink.class);
+
+        RepOrderEntity repOrderEntity = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+
+        Unlink unlink = gson.fromJson(testModelDataBuilder.getUnLinkString(repOrderEntity.getId()), Unlink.class);
         UnlinkModel unlinkModel = UnlinkModel.builder().unlink(unlink).build();
-        WqLinkRegisterEntity wqLinkRegisterEntity = testEntityDataBuilder.getWqLinkRegisterEntity();
+        WqLinkRegisterEntity wqLinkRegisterEntity = testEntityDataBuilder.getWqLinkRegisterEntity(repOrderEntity.getId());
         unlinkModel.setWqLinkRegisterEntity(wqLinkRegisterEntity);
-        RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderCPDataEntity();
+        RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderCPDataEntity(repOrderEntity.getId());
         unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity);
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
-        repOrderRepository.save(RepOrderEntity.builder().id(repOrderCPDataEntity.getRepOrderId()).caseId("12121").build());
         repOrderCPDataRepository.save(RepOrderCPDataEntity.builder()
                 .defendantId("556677")
-                .repOrderId(1234)
+                .repOrderId(repOrderEntity.getId())
                 .build());
 
         //when
         Map<String, Object> header = new HashMap<>();
-        header.put("MessageId","AIDAIU3GACVJITZULQ2RQ");
+        header.put("MessageId", "AIDAIU3GACVJITZULQ2RQ");
         MessageHeaders headers = new MessageHeaders(header);
-        unlinkListener.receive(testModelDataBuilder.getUnLinkString(), headers);
+        unlinkListener.receive(testModelDataBuilder.getUnLinkString(repOrderEntity.getId()), headers);
 
 
         //then
-        assertWQLinkRegister(unlinkModel);
+        assertWQLinkRegister(unlinkModel, repOrderEntity.getId());
 
-        queueMessageLogTestHelper.assertQueueMessageLogged(testModelDataBuilder.getUnLinkString(), 1, "e439dfc8-664e-4c8e-a999-d756dcf112c2", 1234);
+        queueMessageLogTestHelper.assertQueueMessageLogged(testModelDataBuilder.getUnLinkString(repOrderEntity.getId()), 1, "e439dfc8-664e-4c8e-a999-d756dcf112c2", repOrderEntity.getId());
 
     }
 
 
-    private void assertWQLinkRegister(UnlinkModel unlinkModel) {
+    private void assertWQLinkRegister(UnlinkModel unlinkModel, Integer repId) {
 
         List<WqLinkRegisterEntity> wqUnLinkRegisterEntity = wqLinkRegisterRepository.findAll();
         WqLinkRegisterEntity unLinkRegister = wqUnLinkRegisterEntity.get(0);
         assert unLinkRegister != null;
         Unlink unlink = unlinkModel.getUnlink();
-        assertThat(unLinkRegister.getMaatId()).isEqualTo(1234);
+        assertThat(unLinkRegister.getMaatId()).isEqualTo(repId);
         assertThat(unLinkRegister.getRemovedUserId()).isEqualTo(unlink.getUserId());
     }
 

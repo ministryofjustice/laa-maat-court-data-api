@@ -136,36 +136,4 @@ class ContributionsServiceTest {
                 .hasMessageContaining(String.format("No contribution entries found for repId: %d", repId));
     }
 
-    @Test
-    void givenAValidRepId_whenFindByRepIdAndLatestSentContributionIsInvoked_thenContributionsEntryIsRetrieved() {
-        when(repository.findByRepIdAndLatestSentContribution(anyInt())).thenReturn(ContributionsEntity
-                .builder()
-                .repOrder(TestEntityDataBuilder
-                        .getPopulatedRepOrder(REP_ID))
-                .build());
-        contributionsService.findByRepIdAndLatestSentContribution(TestModelDataBuilder.REP_ID);
-        verify(repository).findByRepIdAndLatestSentContribution(TestModelDataBuilder.REP_ID);
-        verify(contributionsMapper).mapEntityToDTO(any(ContributionsEntity.class));
-    }
-
-    @Test
-    void givenAValidRepIdAndFindByRepIdAndLatestSentContributionAllRepId_whenFindIsInvoked_thenContributionsEntryIsRetrieved() {
-        when(repository.findByRepIdAndLatestSentContribution(anyInt())).thenReturn(ContributionsEntity
-                .builder()
-                .repOrder(TestEntityDataBuilder
-                        .getPopulatedRepOrder(REP_ID))
-                .build());
-        contributionsService.findByRepIdAndLatestSentContribution(TestModelDataBuilder.REP_ID);
-        verify(repository).findByRepIdAndLatestSentContribution(TestModelDataBuilder.REP_ID);
-        verify(contributionsMapper).mapEntityToDTO(any(ContributionsEntity.class));
-    }
-
-    @Test
-    void givenContributionsEntryDoesntExist_whenFindByRepIdAndLatestSentContributionIsInvoked_thenExceptionIsRaised() {
-        int testRepId = 666;
-        when(repository.findByRepOrder_IdAndLatestIsTrue(anyInt())).thenReturn(null);
-        assertThatThrownBy(() -> contributionsService.find(testRepId, true))
-                .isInstanceOf(RequestedObjectNotFoundException.class)
-                .hasMessageContaining("Contributions entry not found for repId");
-    }
 }

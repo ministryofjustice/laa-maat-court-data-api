@@ -86,7 +86,7 @@ public class ApplicantConvertor extends Convertor
 			ConvertorHelper convertorHelper = new ConvertorHelper();
 
 			getDTO().setTimestamp(					convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
-			getDTO().setId(							convertorHelper.toSysGenLong( 	getOracleType().getApplId() ));
+			getDTO().setId(							convertorHelper.toLong( 	getOracleType().getApplId() ));
 			getDTO().setApplicantHistoryId(			convertorHelper.toLong( 	getOracleType().getAphiId() ));
 			getDTO().setDob(						convertorHelper.toDate(		getOracleType().getDob() ));
 			getDTO().setEmail(						convertorHelper.toString(	getOracleType().getEmail() ));
@@ -189,7 +189,7 @@ public class ApplicantConvertor extends Convertor
 			ConvertorHelper convertorHelper = new ConvertorHelper();
 			
 	        getOracleType().setTimeStamp(          	convertorHelper.toTimestamp(getDTO().getTimestamp()));
-			getOracleType().setApplId( 				convertorHelper.toSysGenLong( 	getDTO().getId() ) );
+			getOracleType().setApplId( 				convertorHelper.toLong( 	getDTO().getId() ) );
 			getOracleType().setAphiId( 				convertorHelper.toLong( 	getDTO().getApplicantHistoryId() ) );
 			getOracleType().setDob(					convertorHelper.toDate(		getDTO().getDob() ));
 			getOracleType().setEmail(				convertorHelper.toString(	getDTO().getEmail() ));

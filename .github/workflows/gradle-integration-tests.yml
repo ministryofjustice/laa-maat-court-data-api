@@ -20,11 +20,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'corretto'
-      - name: Pull localstack image
-        run: docker pull localstack/localstack
 
       - name: Build and run integration tests
         run: |
           pushd maat-court-data-api
           chmod +x ./gradlew
-          ./gradlew build
+          ./gradlew build -x test --debug

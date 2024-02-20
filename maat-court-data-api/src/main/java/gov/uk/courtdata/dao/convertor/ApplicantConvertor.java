@@ -85,8 +85,8 @@ public class ApplicantConvertor extends Convertor
 		{
 			ConvertorHelper convertorHelper = new ConvertorHelper();
 
-			getDTO().setTimestamp(					getOracleType().getTimeStamp());
-			getDTO().setId(							convertorHelper.toSysGenLong( 	getOracleType().getApplId() ));
+			getDTO().setTimestamp(					convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
+			getDTO().setId(							convertorHelper.toLong( 	getOracleType().getApplId() ));
 			getDTO().setApplicantHistoryId(			convertorHelper.toLong( 	getOracleType().getAphiId() ));
 			getDTO().setDob(						convertorHelper.toDate(		getOracleType().getDob() ));
 			getDTO().setEmail(						convertorHelper.toString(	getOracleType().getEmail() ));
@@ -188,8 +188,8 @@ public class ApplicantConvertor extends Convertor
 			setDTO( dto );	// if the dto class type is not right for this conversion an exception is thrown
 			ConvertorHelper convertorHelper = new ConvertorHelper();
 			
-	        getOracleType().setTimeStamp(          	getDTO().getTimestamp());	
-			getOracleType().setApplId( 				convertorHelper.toSysGenLong( 	getDTO().getId() ) );
+	        getOracleType().setTimeStamp(          	convertorHelper.toTimestamp(getDTO().getTimestamp()));
+			getOracleType().setApplId( 				convertorHelper.toLong( 	getDTO().getId() ) );
 			getOracleType().setAphiId( 				convertorHelper.toLong( 	getDTO().getApplicantHistoryId() ) );
 			getOracleType().setDob(					convertorHelper.toDate(		getDTO().getDob() ));
 			getOracleType().setEmail(				convertorHelper.toString(	getDTO().getEmail() ));

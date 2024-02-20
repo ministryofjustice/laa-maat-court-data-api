@@ -19,11 +19,10 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 
-@Repository
 @Slf4j
+@Repository
 public class StoredProcedureRepository {
 
-    private static final String PACKAGE_NAME_NOT_SET_EXCEPTION = "The package name has not been set";
     @Value("${spring.datasource.url}")
     private String dbUrl;
     @Value("${spring.togdata.username}")
@@ -31,10 +30,15 @@ public class StoredProcedureRepository {
     @Value("${spring.togdata.password}")
     private String dbPassword;
 
-    public ApplicationDTO executeStoredProcedure(StoredProcedureRequest storedProcedure) throws MAATApplicationException, SQLException {
+    private static final String PACKAGE_NAME_NOT_SET_EXCEPTION = "The package name has not been set";
+    private static final String PROCEDURE_NAME_NOT_SET_EXCEPTION = "The procedure name has not been set";
 
-        ApplicationDTO result = null;
+    public ApplicationDTO executeStoredProcedure(StoredProcedureRequest storedProcedure) throws
+            MAATApplicationException, SQLException {
+
         Connection conn = null;
+        ApplicationDTO result = null;
+
 
         try {
             conn = getConnectionFromDriverManager();
@@ -110,14 +114,17 @@ public class StoredProcedureRepository {
 
     }
 
-    protected CallableStatement getDbProcedureStatement(Connection connection, StoredProcedureRequest callStoredProcedure) throws SQLException,
-            MAATApplicationException {
-        if (StringUtils.isBlank(callStoredProcedure.getDbPackageName())) {
+    protected CallableStatement getDbProcedureStatement(Connection connection, StoredProcedureRequest request)
+            throws SQLException, MAATApplicationException {
+
+        if (StringUtils.isBlank(request.getDbPackageName())) {
             throw new MAATApplicationException(PACKAGE_NAME_NOT_SET_EXCEPTION);
-        } else if ((StringUtils.isBlank(callStoredProcedure.getProcedureName()))) {
-            throw new MAATApplicationException(PACKAGE_NAME_NOT_SET_EXCEPTION);
+        } else if ((StringUtils.isBlank(request.getProcedureName()))) {
+            throw new MAATApplicationException(PROCEDURE_NAME_NOT_SET_EXCEPTION);
         }
-        return connection.prepareCall("{ call " + callStoredProcedure.getDbPackageName() + "." + callStoredProcedure.getProcedureName() + "(?)" + "}");
+        return connection.prepareCall(
+                "{ call %s.%s( ? )}".formatted(request.getDbPackageName(), request.getProcedureName())
+        );
     }
 
 
@@ -125,7 +132,7 @@ public class StoredProcedureRepository {
         Connection wantedConnection;
 
         try {
-           wantedConnection = DriverManager.getConnection(dbUrl,  dbUsername,  dbPassword);
+            wantedConnection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
         } catch (SQLException exception) {
             throw new MAATApplicationException("Could not retrieve a connection to the database");
         }

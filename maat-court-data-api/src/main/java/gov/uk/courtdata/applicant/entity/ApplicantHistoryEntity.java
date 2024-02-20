@@ -116,11 +116,12 @@ public class ApplicantHistoryEntity {
     @Column(name = "PHONE_WORK")
     private String phoneWork;
 
+    @Builder.Default
     @ToString.Exclude
     @Fetch(FetchMode.JOIN)
     @JsonManagedReference
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "APHI_ID", nullable = false)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ApplicantHistoryDisability> applicantHistoryDisabilities = new LinkedHashSet<>();
 
 }

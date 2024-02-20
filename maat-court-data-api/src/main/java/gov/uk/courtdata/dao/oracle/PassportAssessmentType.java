@@ -17,8 +17,8 @@ public class PassportAssessmentType implements ORAData, ORADataFactory
 
   protected MutableStruct _struct;
 
-  protected static int[] _sqlType =  { 2,2,2002,91,12,12,12,12,91,12,12,12,2002,2002,12,93,12,12,12,12,91,12,12,12,12,2002,2,12,2002 };
-  protected static ORADataFactory[] _factory = new ORADataFactory[29];
+  protected static int[] _sqlType =  { 2,2,2002,91,12,12,12,12,91,12,12,12,2002,2002,12,93,12,12,12,12,91,12,12,12,12,2002,2,12,2002,12 };
+  protected static ORADataFactory[] _factory = new ORADataFactory[30];
   static
   {
     _factory[2] = AssStatusType.getORADataFactory();
@@ -33,10 +33,10 @@ public class PassportAssessmentType implements ORAData, ORADataFactory
   { return _PassportAssessmentTypeFactory; }
   /* constructors */
   protected void _init_struct(boolean init)
-  { if (init) _struct = new MutableStruct(new Object[29], _sqlType, _factory); }
+  { if (init) _struct = new MutableStruct(new Object[30], _sqlType, _factory); }
   public PassportAssessmentType()
   { _init_struct(true); }
-  public PassportAssessmentType(java.math.BigDecimal id, java.math.BigDecimal cmuId, AssStatusType statusObject, java.sql.Timestamp assDate, String partnerBenefitClaimed, String partnerFirstName, String partnerSurname, String partnerNiNo, java.sql.Timestamp partnerDob, String incomeSupport, String jobSeekers, String statePensionCredit, NewWorkReasonType newWorkReasonObject, PassportConfirmationType confirmationObject, String result, java.sql.Timestamp timeStamp, String dwpResult, String passportNote, String under18HeardYouthCourt, String under18HeardMagsCourt, java.sql.Timestamp lastSignOnDate, String esa, String under18FullEducation, String under16, String between1617, IncomeEvidenceSummaryType incomeEvidenceSummaryObject, java.math.BigDecimal usn, String whoDwpChecked, ReviewTypeType reviewTypeObject) throws SQLException
+  public PassportAssessmentType(java.math.BigDecimal id, java.math.BigDecimal cmuId, AssStatusType statusObject, java.sql.Timestamp assDate, String partnerBenefitClaimed, String partnerFirstName, String partnerSurname, String partnerNiNo, java.sql.Timestamp partnerDob, String incomeSupport, String jobSeekers, String statePensionCredit, NewWorkReasonType newWorkReasonObject, PassportConfirmationType confirmationObject, String result, java.sql.Timestamp timeStamp, String dwpResult, String passportNote, String under18HeardYouthCourt, String under18HeardMagsCourt, java.sql.Timestamp lastSignOnDate, String esa, String under18FullEducation, String under16, String between1617, IncomeEvidenceSummaryType incomeEvidenceSummaryObject, java.math.BigDecimal usn, String whoDwpChecked, ReviewTypeType reviewTypeObject, String universalCredit) throws SQLException
   { _init_struct(true);
     setId(id);
     setCmuId(cmuId);
@@ -67,6 +67,7 @@ public class PassportAssessmentType implements ORAData, ORADataFactory
     setUsn(usn);
     setWhoDwpChecked(whoDwpChecked);
     setReviewTypeObject(reviewTypeObject);
+    setUniversalCredit(universalCredit);
   }
 
   /* ORAData interface */
@@ -81,7 +82,7 @@ public class PassportAssessmentType implements ORAData, ORADataFactory
   { return create(null, d, sqlType); }
   protected ORAData create(PassportAssessmentType o, Datum d, int sqlType) throws SQLException
   {
-    if (d == null) return null; 
+    if (d == null) return null;
     if (o == null) o = new PassportAssessmentType();
     o._struct = new MutableStruct((STRUCT) d, _sqlType, _factory);
     return o;
@@ -289,4 +290,9 @@ public class PassportAssessmentType implements ORAData, ORADataFactory
   public void setReviewTypeObject(ReviewTypeType reviewTypeObject) throws SQLException
   { _struct.setAttribute(28, reviewTypeObject); }
 
+  public String getUniversalCredit() throws SQLException
+  { return (String) _struct.getAttribute(29); }
+
+  public void setUniversalCredit(String universalCredit) throws SQLException
+  { _struct.setAttribute(29, universalCredit); }
 }

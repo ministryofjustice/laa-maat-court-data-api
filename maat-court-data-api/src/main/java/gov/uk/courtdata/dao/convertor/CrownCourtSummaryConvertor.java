@@ -101,22 +101,19 @@ public class CrownCourtSummaryConvertor extends Convertor
 			/*
 			 * convert the multiple outcome collection
 			 */
-			getDTO().setOutcomeDTOs( new ArrayList<OutcomeDTO>() );
+			getDTO().setOutcomeDTOs(new ArrayList<>());
 			
-			if ( getOracleType().getCcOutcomeTab() != null ){
+			if (getOracleType().getCcOutcomeTab() != null) {
 			
 				OutcomeTabtype outcomeTabtype = getOracleType().getCcOutcomeTab();
-				OutcomeType[]	outcomeTypeArray	= outcomeTabtype.getArray();
+				OutcomeType[] outcomeTypeArray = outcomeTabtype.getArray();
 				OutcomeConvertor outcomeConvertor = new  OutcomeConvertor();
-				
-				for ( int i = 0; i < outcomeTypeArray.length; i++ ){
-					
-					outcomeConvertor.setDTOFromType( outcomeTypeArray[i] );
-					getDTO().getOutcomeDTOs().add(outcomeConvertor.getDTO());
-				}				
+
+                for (OutcomeType outcomeType : outcomeTypeArray) {
+                    outcomeConvertor.setDTOFromType(outcomeType);
+                    getDTO().getOutcomeDTOs().add(outcomeConvertor.getDTO());
+                }
 			}
-			
-			
 		}
 		catch (NullPointerException nex)
 		{

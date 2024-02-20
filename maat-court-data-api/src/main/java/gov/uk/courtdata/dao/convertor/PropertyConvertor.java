@@ -105,7 +105,7 @@ public class PropertyConvertor extends Convertor
 		{
 			ConvertorHelper convertorHelper = new ConvertorHelper();
 
-			getDTO().setTimestamp(					getOracleType().getTimeStamp() );
+			getDTO().setTimestamp(					convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
 			getDTO().setId(							convertorHelper.toLong( 	getOracleType().getId() ));
 			getDTO().setBedrooms(					convertorHelper.toString(	getOracleType().getBedrooms() ));
 
@@ -201,7 +201,7 @@ public class PropertyConvertor extends Convertor
             setDTO( dto );	// if the dto class type is not right for this conversion an exception is thrown
 			ConvertorHelper convertorHelper = new ConvertorHelper();
 
-			getOracleType().setTimeStamp(					getDTO().getTimestamp() );
+			getOracleType().setTimeStamp(					convertorHelper.toTimestamp(getDTO().getTimestamp()));
 			getOracleType().setId(							convertorHelper.toLong(		getDTO().getId() ));
 
 			getOracleType().setBedrooms(					convertorHelper.toString(getDTO().getBedrooms()	 ));

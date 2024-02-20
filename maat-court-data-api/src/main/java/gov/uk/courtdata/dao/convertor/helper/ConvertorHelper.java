@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -216,6 +217,14 @@ public class ConvertorHelper {
     public SysGenCurrency toSysGenCurrency(BigDecimal number) {
         return number != null ? new SysGenCurrency(number.toString()) : null;
 
+    }
+
+    public Timestamp toTimestamp(LocalDateTime localDateTime) {
+        return (localDateTime != null) ? Timestamp.valueOf(localDateTime) : null;
+    }
+
+    public LocalDateTime toLocalDateTime(Timestamp timeStamp) {
+        return (timeStamp != null) ? timeStamp.toLocalDateTime() : null;
     }
 
     public Date toDate(Timestamp timeStamp) {

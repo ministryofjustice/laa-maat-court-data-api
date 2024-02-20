@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dto.application;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -8,7 +9,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public class AssessmentDTO {
-    private IOJAppealDTO iojAppeal;
-    private FinancialAssessmentDTO financialAssessmentDTO;
-
+    @Builder.Default
+    private IOJAppealDTO iojAppeal = new IOJAppealDTO();
+    @Builder.Default
+    private FinancialAssessmentDTO financialAssessmentDTO = new FinancialAssessmentDTO();
 }

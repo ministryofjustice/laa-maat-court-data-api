@@ -86,7 +86,7 @@ public class ApplicationConvertor extends Convertor
 		try
 		{
 			ConvertorHelper convertorHelper = new ConvertorHelper();
-			getDTO().setTimestamp(				getOracleType().getTimeStamp() );
+			getDTO().setTimestamp(				convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
 			
 			getDTO().setRepId(					convertorHelper.toLong( 	getOracleType().getRepId() ));
 			getDTO().setAreaId(					convertorHelper.toLong( 	getOracleType().getAreaId() ));
@@ -320,7 +320,7 @@ public class ApplicationConvertor extends Convertor
 			setType( null );	// force new type to be instantiated 
 			setDTO( dto );	
 			ConvertorHelper convertorHelper 			= new ConvertorHelper();
-			getOracleType().setTimeStamp(				getDTO().getTimestamp() );
+			getOracleType().setTimeStamp(				convertorHelper.toTimestamp(getDTO().getTimestamp()));
 			
 			getOracleType().setRepId( 					convertorHelper.toLong( 	getDTO().getRepId() ) );
 			getOracleType().setAreaId(					convertorHelper.toLong( 	getDTO().getAreaId() ));

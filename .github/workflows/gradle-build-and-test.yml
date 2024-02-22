@@ -30,4 +30,4 @@ jobs:
         run: |
           pushd maat-court-data-api
           chmod +x ./gradlew
-          ./gradlew build -x testSQSIntegration
+          ./gradlew build

@@ -929,7 +929,7 @@ Resources:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
-      ClientName: "MAAT Orchestration Service"
+      ClientName: "Claim for Crown Court Defence"
       UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlowsUserPoolClient: true
       GenerateSecret: true

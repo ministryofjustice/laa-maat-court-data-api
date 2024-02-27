@@ -51,6 +51,7 @@ public class FinancialAssessmentDTO {
     private String fullOtherHousingNote;
     private BigDecimal fullTotalAggregatedExpenses;
     private Integer fullAscrId;
+    private String valid;
     private LocalDateTime dateCompleted;
     private LocalDateTime updated;
     private String userModified;

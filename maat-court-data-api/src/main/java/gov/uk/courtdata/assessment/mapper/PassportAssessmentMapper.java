@@ -12,8 +12,10 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface PassportAssessmentMapper {
 
+    @Mapping(target = "valid", source = "valid", defaultValue = "Y")
     PassportAssessmentDTO updatePassportAssessmentToPassportAssessmentDTO(final UpdatePassportAssessment assessment);
 
+    @Mapping(target = "valid", source = "valid", defaultValue = "Y")
     PassportAssessmentDTO createPassportAssessmentToPassportAssessmentDTO(final CreatePassportAssessment assessment);
 
     @Mapping(target = "repId", source = "repOrder.id")

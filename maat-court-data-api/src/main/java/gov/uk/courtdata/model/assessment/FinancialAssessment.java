@@ -32,4 +32,5 @@ public class FinancialAssessment {
     private List<FinancialAssessmentDetails> assessmentDetails;
     private List<ChildWeightings> childWeightings;
     private LocalDateTime dateCompleted;
+    private String valid;
 }

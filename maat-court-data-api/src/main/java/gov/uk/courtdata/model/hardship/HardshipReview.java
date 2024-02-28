@@ -1,5 +1,6 @@
 package gov.uk.courtdata.model.hardship;
 
+import lombok.Builder;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,6 +30,6 @@ public class HardshipReview {
     private HardshipReviewStatus status;
     private List<HardshipReviewDetail> reviewDetails;
     private List<HardshipReviewProgress> reviewProgressItems;
-
+    private String valid;
 
 }

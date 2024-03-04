@@ -1,7 +1,12 @@
 package gov.uk.courtdata.integration.dces;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
@@ -14,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -22,6 +28,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
 
     private static final String FDC_CONTRIBUTION_FILES_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/fdc-contribution-files";
     private static final String GLOBAL_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/prepare-fdc-contributions-files";
+    private static final String ATOMIC_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/create-fdc-file";
     private static final String expectedFinalCost1 = "1111.11";
     private static final FdcContributionsStatus expectedStatus1 = FdcContributionsStatus.REQUESTED;
     private static final String expectedFinalCost2 = "2222.22";
@@ -61,7 +68,6 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    @Order(1)
     void givenREQUESTEDStatus_whenGetIsInvoked_theDataLoadedResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(FDC_CONTRIBUTION_FILES_ENDPOINT_URL)
                         .queryParam("status", FdcContributionsStatus.REQUESTED.name())
@@ -76,7 +82,6 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    @Order(2)
     void givenINVALIDStatus_whenGetIsInvoked_theEmptyResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(FDC_CONTRIBUTION_FILES_ENDPOINT_URL)
                         .queryParam("status", FdcContributionsStatus.INVALID.name())
@@ -97,7 +102,6 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    @Order(3)
     void givenAnInvalidStatus_whenGetIsInvoked_theEmptyResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(FDC_CONTRIBUTION_FILES_ENDPOINT_URL)
                         .queryParam("status", "RUBBISH_VALUE")
@@ -107,4 +111,26 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(jsonPath("code").value("BAD_REQUEST"))
                 .andExpect(jsonPath("message").value("The provided value 'RUBBISH_VALUE' is the incorrect type for the 'status' parameter."));
     }
+
+
+    @Test
+    void givenAListOfIds_whenAtomicUpdate_theStatusIsUpdated() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post(ATOMIC_UPDATE_ENDPOINT_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "recordsSent": 2,
+                                    "fdcIds": ["1234","9876"],
+                                    "xmlContent" : "ValidXML",
+                                    "ackXmlContent" : "ValidAckXML",
+                                    "xmlFileName" : "TestFilename.xml"
+                                }"""))
+
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("code").value("BAD_REQUEST"))
+                .andExpect(jsonPath("message").value("The provided value 'RUBBISH_VALUE' is the incorrect type for the 'status' parameter."));
+    }
+
+
 }

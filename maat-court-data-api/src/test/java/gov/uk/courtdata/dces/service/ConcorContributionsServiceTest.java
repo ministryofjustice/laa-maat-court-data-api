@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
-import gov.uk.courtdata.dces.request.ConcorContributionRequest;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.exception.ValidationException;
@@ -89,14 +89,14 @@ class ConcorContributionsServiceTest {
     @Test
     void testCreateContributionFileAndUpdateConcorContributionStatus() {
 
-        final ConcorContributionRequest concorContributionRequest
-                = ConcorContributionRequest.builder().concorContributionIds(Set.of(1)).xmlContent(getXmlDocContent()).build();
+        final CreateContributionFileRequest createContributionFileRequest
+                = CreateContributionFileRequest.builder().concorContributionIds(Set.of(1)).xmlContent(getXmlDocContent()).build();
         final ContributionFilesEntity dummyEntity = getContributionFilesEntity();
 
         when(concorRepository.findByIdIn(any())).thenReturn(concorContributionFiles);
-        when(contributionFileMapper.toContributionFileEntity(concorContributionRequest)).thenReturn(dummyEntity);
+        when(contributionFileMapper.toContributionFileEntity(createContributionFileRequest)).thenReturn(dummyEntity);
 
-        final boolean actualResponse = concorService.createContributionAndUpdateConcorStatus(concorContributionRequest);
+        final boolean actualResponse = concorService.createContributionAndUpdateConcorStatus(createContributionFileRequest);
 
         verify(debtCollectionRepository).save(contributionEntityArgumentCaptor.capture());
         verify(concorRepository).saveAll(concorContributionEntityArgumentCaptor.capture());
@@ -114,15 +114,15 @@ class ConcorContributionsServiceTest {
 
     @Test
     void testWhenContributionFileWithActiveStatusNotFound() {
-        final ConcorContributionRequest concorContributionRequest = ConcorContributionRequest.builder()
+        final CreateContributionFileRequest createContributionFileRequest = CreateContributionFileRequest.builder()
                 .concorContributionIds(Set.of(1))
                 .xmlContent(getXmlDocContent()).build();
         ContributionFilesEntity dummyEntity = getContributionFilesEntity();
 
         when(concorRepository.findByIdIn(any())).thenReturn(new ArrayList<>());
-        when(contributionFileMapper.toContributionFileEntity(concorContributionRequest)).thenReturn(dummyEntity);
+        when(contributionFileMapper.toContributionFileEntity(createContributionFileRequest)).thenReturn(dummyEntity);
 
-        boolean actualResponse = concorService.createContributionAndUpdateConcorStatus(concorContributionRequest);
+        boolean actualResponse = concorService.createContributionAndUpdateConcorStatus(createContributionFileRequest);
 
         verify(debtCollectionRepository).save(contributionEntityArgumentCaptor.capture());
         assertFalse(actualResponse);
@@ -133,7 +133,7 @@ class ConcorContributionsServiceTest {
     @Test
     void createContributionAndUpdateConcorStatusWhenCallFailed() {
 
-        final ConcorContributionRequest mockDto = mock(ConcorContributionRequest.class);
+        final CreateContributionFileRequest mockDto = mock(CreateContributionFileRequest.class);
 
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
                 () -> concorService.createContributionAndUpdateConcorStatus(mockDto));

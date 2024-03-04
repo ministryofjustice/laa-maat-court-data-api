@@ -5,17 +5,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
 import java.util.Set;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConcorContributionRequest {
+public class CreateFdcFileRequest {
     private Integer recordsSent;
     @ToString.Exclude
     private String xmlContent;
-    private Set<Integer> concorContributionIds;
+    private Set<Integer> fdcIds;
     private String xmlFileName;
     @ToString.Exclude
     private String ackXmlContent;

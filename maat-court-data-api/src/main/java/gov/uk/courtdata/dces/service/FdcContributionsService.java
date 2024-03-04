@@ -1,19 +1,29 @@
 package gov.uk.courtdata.dces.service;
 
+import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
+import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
 import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
+import gov.uk.courtdata.dces.util.ContributionFileUtil;
+import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.FdcContributionsRepository;
+import gov.uk.courtdata.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
+
+import static gov.uk.courtdata.enums.FdcContributionsStatus.SENT;
 
 @Slf4j
 @Service
@@ -21,6 +31,7 @@ import java.util.function.Function;
 public class FdcContributionsService {
     private final FdcContributionsRepository fdcContributionsRepository;
     private final DebtCollectionRepository debtCollectionRepository;
+    private final ContributionFileMapper contributionFileMapper;
 
     private static final Function<FdcContributionsEntity, FdcContributionEntry> BUILD_FDC_ENTRY =
             entity -> FdcContributionEntry.builder()
@@ -67,6 +78,28 @@ public class FdcContributionsService {
         int response = combineGlobalUpdateResults(update1Result, update2Result);
         log.info("executeGlobalUpdate exiting");
         return response;
+    }
+
+    @Transactional(rollbackFor = MAATCourtDataException.class)
+    public boolean createContributionFileAndUpdateFdcStatus(CreateFdcFileRequest fdcRequest){
+
+        ValidationUtils.isNull(fdcRequest,"fdcRequest object is null");
+        ValidationUtils.isEmptyOrHasNullElement(fdcRequest.getFdcIds(),"FdcIds is empty/null.");
+
+        final ContributionFilesEntity contributionFilesEntity = createFdcFile(fdcRequest);
+        return updateStatusForFdc(fdcRequest.getFdcIds(), SENT, contributionFilesEntity.getId());
+    }
+
+    private boolean updateStatusForFdc(Set<Integer> fdcIds, FdcContributionsStatus status, Integer contributionFileId){
+        return false;
+    }
+
+    private ContributionFilesEntity createFdcFile(CreateFdcFileRequest fdcFileRequest){
+        log.info("Updating the fdc file ref  -> {}", fdcFileRequest);
+        ContributionFileUtil.assessFilename(fdcFileRequest);
+        ContributionFilesEntity contributionFileEntity = contributionFileMapper.toContributionFileEntity(fdcFileRequest);
+        debtCollectionRepository.save(contributionFileEntity);
+        return contributionFileEntity;
     }
 
     private int combineGlobalUpdateResults(int[] part1Results, int[] part2Results){

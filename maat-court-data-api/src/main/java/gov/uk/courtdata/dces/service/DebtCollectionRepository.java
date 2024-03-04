@@ -19,6 +19,7 @@ import java.util.List;
 public class DebtCollectionRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private static final String DB_USER_NAME = "DCES";
 
     List<String> getContributionFiles(final String fromDate, final String toDate) {
         String query = "SELECT cf.xml_content FROM TOGDATA.CONTRIBUTION_FILES CF " +
@@ -37,7 +38,7 @@ public class DebtCollectionRepository {
     }
 
     public boolean save(ContributionFilesEntity contributionFileEntity) {
-
+        contributionFileEntity.setUserCreated(DB_USER_NAME);
         log.info("Inserting into TOGDATA.CONTRIBUTION_FILES using jdbcTemplate");
         return insertingTableRow(contributionFileEntity);
     }

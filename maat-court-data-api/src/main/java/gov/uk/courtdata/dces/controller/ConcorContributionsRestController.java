@@ -1,7 +1,7 @@
 package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.annotation.StandardApiResponse;
-import gov.uk.courtdata.dces.request.ConcorContributionRequest;
+import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
@@ -46,7 +46,7 @@ public class ConcorContributionsRestController {
     @StandardApiResponse
     @PostMapping(value = "/create-contribution-file", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Creating a contribution file and updating the status to Sent in the concor contribution")
-    public ResponseEntity<Boolean> updateContributionFileStatus(@RequestBody @NotEmpty final ConcorContributionRequest request) {
+    public ResponseEntity<Boolean> updateContributionFileStatus(@RequestBody @NotEmpty final CreateContributionFileRequest request) {
         log.info("Update concor contribution file references with request {}", request);
         boolean response = concorContributionsService.createContributionAndUpdateConcorStatus(request);
         return ResponseEntity.ok(response);

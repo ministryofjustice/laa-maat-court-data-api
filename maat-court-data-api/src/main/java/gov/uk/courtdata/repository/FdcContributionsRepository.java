@@ -5,6 +5,7 @@ import gov.uk.courtdata.enums.FdcContributionsStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,14 +16,7 @@ public interface FdcContributionsRepository extends JpaRepository<FdcContributio
     List<FdcContributionsEntity> findByStatus(FdcContributionsStatus status);
     List<FdcContributionsEntity> findByIdIn(Set<Integer> ids);
 
-    @Modifying
-    @Query(nativeQuery = true, value = "MERGE into TOGDATA.fdc_contributions fc " +
-            "using    ( " +
-            "select f.id from TOGDATA.FDC_CONTRIBUTIONS f where rep_id = 1889713 " +
-            "         ) query1         " +
-            "ON (fc.id = query1.id) " +
-            "WHEN MATCHED THEN " +
-            "  UPDATE SET fc.status = fc.status  ")
-    List<FdcContributionsEntity> globalUpdate();
+    @Query(value = "update TOGDATA.FDC_CONTRIBUTIONS fdc SET fdc.status= :status where fdc.id in [:idList]", nativeQuery = true)
+    Integer setStatusAndContributionByIdIn(@Param("status") String status, @Param("idList") Set<Integer> ids);
 
 }

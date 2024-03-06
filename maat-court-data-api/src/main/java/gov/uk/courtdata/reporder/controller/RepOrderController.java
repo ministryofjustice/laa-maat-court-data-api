@@ -116,7 +116,6 @@ public class RepOrderController {
     @StandardApiResponse
     public ResponseEntity<RepOrderDTO> create(@Valid @RequestBody CreateRepOrder createRepOrder) {
         log.debug("Create Rep order request");
-        maatIdValidator.validateNotExists(createRepOrder.getRepId());
         return ResponseEntity.ok(repOrderService.create(createRepOrder));
     }
 

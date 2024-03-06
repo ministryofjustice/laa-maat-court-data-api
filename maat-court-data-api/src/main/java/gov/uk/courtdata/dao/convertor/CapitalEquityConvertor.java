@@ -83,15 +83,15 @@ public class CapitalEquityConvertor extends Convertor
 		{
 			ConvertorHelper convertorHelper = new ConvertorHelper();
 			
-			getDTO().setAvailable(					convertorHelper.toBoolean(	getOracleType().getAvailable()));
-			getDTO().setNoCapitalDeclared(			convertorHelper.toBoolean( 	getOracleType().getNoCapitalDeclared()    	));
-			getDTO().setSuffientVeriToCoverCase( 	convertorHelper.toBoolean( 	getOracleType().getSufficientVeriToCoverCase() 	));
-			getDTO().setVerifiedEquityToCoverCase( 	convertorHelper.toBoolean( 	getOracleType().getVerifiedEquityToCoverCase()   	));
-			getDTO().setSuffientDeclToCoverCase( 	convertorHelper.toBoolean( 	getOracleType().getSufficientDeclToCoverCase() 	));
-			getDTO().setDeclaredEquityToCoverCase( 	convertorHelper.toBoolean( 	getOracleType().getDeclaredEquityToCoverCase()   	));
-			getDTO().setTotalCapital(				convertorHelper.toSysGenCurrency(	getOracleType().getTotalCapital() 			));
-			getDTO().setTotalEquity(				convertorHelper.toCurrency(	getOracleType().getTotalEquity() 			));
-			getDTO().setTotalCapitalAndEquity(		convertorHelper.toCurrency(	getOracleType().getTotalCapitalAndEquity()	));
+			getDTO().setAvailable(					convertorHelper.toBoolean(getOracleType().getAvailable()));
+			getDTO().setNoCapitalDeclared(			convertorHelper.toBoolean( getOracleType().getNoCapitalDeclared()));
+			getDTO().setSuffientVeriToCoverCase( 	convertorHelper.toBoolean( getOracleType().getSufficientVeriToCoverCase()));
+			getDTO().setVerifiedEquityToCoverCase( 	convertorHelper.toBoolean( getOracleType().getVerifiedEquityToCoverCase()));
+			getDTO().setSuffientDeclToCoverCase( 	convertorHelper.toBoolean( getOracleType().getSufficientDeclToCoverCase()));
+			getDTO().setDeclaredEquityToCoverCase( 	convertorHelper.toBoolean( getOracleType().getDeclaredEquityToCoverCase()));
+			getDTO().setTotalCapital(				getOracleType().getTotalCapital());
+			getDTO().setTotalEquity(				getOracleType().getTotalEquity());
+			getDTO().setTotalCapitalAndEquity(		getOracleType().getTotalCapitalAndEquity());
 			
 			
 			/*

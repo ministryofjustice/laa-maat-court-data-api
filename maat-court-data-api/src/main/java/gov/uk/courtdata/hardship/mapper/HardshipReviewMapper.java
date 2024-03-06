@@ -52,9 +52,11 @@ public interface HardshipReviewMapper {
     NewWorkReasonEntity newWorkReasonToNewWorkReasonEntity(final NewWorkReason newWorkReason);
 
     @Mapping(target = "newWorkReason.code", source = "nworCode")
+    @Mapping(target = "valid", source = "valid", defaultValue = "Y")
     HardshipReviewDTO createHardshipReviewToHardshipReviewDTO(final CreateHardshipReview hardshipReview);
 
     @Mapping(target = "newWorkReason.code", source = "nworCode")
+    @Mapping(target = "valid", source = "valid", defaultValue = "Y")
     HardshipReviewDTO updateHardshipReviewToHardshipReviewDTO(final UpdateHardshipReview hardshipReview);
 
     @InheritInverseConfiguration

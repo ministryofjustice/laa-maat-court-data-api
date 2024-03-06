@@ -23,7 +23,7 @@ public class LaaStatusValidatorTest {
     public void build() {
         TestModelDataBuilder testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(),new Gson());
         laaStatusValidator = new LaaStatusValidator();
-        caseDetails =  testModelDataBuilder.getCaseDetails();
+        caseDetails =  testModelDataBuilder.getCaseDetails(TestModelDataBuilder.REP_ID);
     }
 
     @Test

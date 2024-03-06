@@ -76,14 +76,14 @@ public class ContributionsConvertor extends Convertor
 		{
 			ConvertorHelper convertorHelper = new ConvertorHelper();
 	
-			getDTO().setId(					convertorHelper.toLong( 	getOracleType().getId()    				));
-			getDTO().setMonthlyContribs(	convertorHelper.toSysGenCurrency( 	getOracleType().getMonthlyContribs()    ));
-			getDTO().setUpfrontContribs(	convertorHelper.toSysGenCurrency( 	getOracleType().getUpfrontContribs()	));
-			getDTO().setEffectiveDate( 		convertorHelper.toSysGenDate( 	getOracleType().getEffectiveDate()  	));
-			getDTO().setCalcDate(			convertorHelper.toSysGenDate(		getOracleType().getCalcDate()			));
-			getDTO().setCapped(				convertorHelper.toSysGenCurrency(	getOracleType().getContributionCap()	));
-			getDTO().setUpliftApplied(		convertorHelper.toBoolean(	getOracleType().getUpliftApplied()		));
-			getDTO().setBasedOn(			convertorHelper.toSysGenString(	getOracleType().getBasedOn()			));
+			getDTO().setId(convertorHelper.toLong(getOracleType().getId()));
+			getDTO().setMonthlyContribs(getOracleType().getMonthlyContribs());
+			getDTO().setUpfrontContribs(getOracleType().getUpfrontContribs());
+			getDTO().setEffectiveDate(convertorHelper.toSysGenDate(getOracleType().getEffectiveDate()));
+			getDTO().setCalcDate(convertorHelper.toSysGenDate(getOracleType().getCalcDate()));
+			getDTO().setCapped(getOracleType().getContributionCap());
+			getDTO().setUpliftApplied(convertorHelper.toBoolean(getOracleType().getUpliftApplied()));
+			getDTO().setBasedOn(convertorHelper.toSysGenString(getOracleType().getBasedOn()));
 		}
 		catch (NullPointerException nex)
 		{
@@ -114,14 +114,14 @@ public class ContributionsConvertor extends Convertor
 			setDTO( dto );
 			ConvertorHelper convertorHelper = new ConvertorHelper();
 
-			getOracleType().setId(					convertorHelper.toLong( 	getDTO().getId()    			));
-			getOracleType().setMonthlyContribs(	    convertorHelper.toSysGenCurrency( 	getDTO().getMonthlyContribs()   ));
-			getOracleType().setUpfrontContribs(	    convertorHelper.toSysGenCurrency( 	getDTO().getUpfrontContribs()	));
-			getOracleType().setEffectiveDate( 		convertorHelper.toSysGenDate( 	getDTO().getEffectiveDate()  	));
-			getOracleType().setCalcDate(			convertorHelper.toSysGenDate(		getDTO().getCalcDate()			));
-			getOracleType().setContributionCap(		convertorHelper.toSysGenCurrency(	getDTO().getCapped()			));
-			getOracleType().setUpliftApplied(		convertorHelper.toBoolean(	getDTO().isUpliftApplied()		));
-			getOracleType().setBasedOn(				convertorHelper.toSysGenString(	getDTO().getBasedOn()			));
+			getOracleType().setId(convertorHelper.toLong(getDTO().getId()));
+			getOracleType().setMonthlyContribs(getDTO().getMonthlyContribs());
+			getOracleType().setUpfrontContribs(getDTO().getUpfrontContribs());
+			getOracleType().setEffectiveDate(convertorHelper.toSysGenDate(getDTO().getEffectiveDate()));
+			getOracleType().setCalcDate(convertorHelper.toSysGenDate(getDTO().getCalcDate()));
+			getOracleType().setContributionCap(getDTO().getCapped());
+			getOracleType().setUpliftApplied(convertorHelper.toBoolean(getDTO().isUpliftApplied()));
+			getOracleType().setBasedOn(convertorHelper.toSysGenString(getDTO().getBasedOn()));
 		}		
 		catch (NullPointerException nex)
 		{

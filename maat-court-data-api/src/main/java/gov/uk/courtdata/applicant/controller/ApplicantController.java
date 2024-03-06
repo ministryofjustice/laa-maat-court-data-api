@@ -3,6 +3,7 @@ package gov.uk.courtdata.applicant.controller;
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
+import gov.uk.courtdata.applicant.dto.SendToCCLFDTO;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
 import gov.uk.courtdata.applicant.service.ApplicantService;
@@ -32,6 +33,7 @@ public class ApplicantController {
     private final ApplicantHistoryService applicantHistoryService;
     private final RepOrderApplicantLinksService repOrderApplicantLinksService;
     private final ApplicantValidationProcessor applicantValidationProcessor;
+
 
     @GetMapping(value = "/rep-order-applicant-links/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve rep order applicant links")
@@ -121,6 +123,15 @@ public class ApplicantController {
     public ResponseEntity<Applicant> createApplicant(@RequestBody @Valid Applicant applicant) {
         log.info("Create Applicant Request Received");
         applicantService.create(applicant);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/update-cclf", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Update Send To CCLF Flag")
+    @StandardApiResponseCodes
+    public ResponseEntity<Void> updateSendToCCLF(@RequestBody @Valid SendToCCLFDTO sendToCCLFDTO) {
+        log.info("Update Applicant History Request Received");
+        applicantService.updateSendToCCLF(sendToCCLFDTO);
         return ResponseEntity.ok().build();
     }
 }

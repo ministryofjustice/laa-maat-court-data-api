@@ -10,6 +10,7 @@ import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesEntity;
 import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesRepository;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import gov.uk.courtdata.model.Metadata;
 import gov.uk.courtdata.prosecutionconcluded.impl.ProcessSentencingImpl;
 import gov.uk.courtdata.prosecutionconcluded.model.*;
@@ -17,7 +18,6 @@ import gov.uk.courtdata.prosecutionconcluded.service.HearingsService;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedListener;
 import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -41,8 +41,11 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest {
+public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest {
 
+    private final String TEST_DB_USER = "SA";
+    private final UUID TEST_HEARING_ID = UUID.fromString("61600a90-89e2-4717-aa9b-a01fc66130c1");
+    private final String LAA_TRANSACTION_ID = "61600a90-89e2-4717-aa9b-a01fc66130c1";
     @Autowired
     protected ObjectMapper objectMapper;
     @Autowired
@@ -82,12 +85,7 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
     @Mock
     private HearingsService hearingsService;
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
-
-    private final Integer TEST_MAAT_ID = 6039349;
-    private final String TEST_DB_USER = "SA";
-    private final UUID TEST_HEARING_ID = UUID.fromString("61600a90-89e2-4717-aa9b-a01fc66130c1");
-    private final String LAA_TRANSACTION_ID = "61600a90-89e2-4717-aa9b-a01fc66130c1";
-
+    private Integer TEST_MAAT_ID = 6039349;
     private WQHearingEntity existingWqHearingEntity;
     private RepOrderEntity existingRepOrder;
     private CrownCourtCode existingCrownCourtCode;
@@ -114,6 +112,18 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
     }
 
     private void loadData() {
+
+        existingRepOrder = repOrderRepository.save(
+                RepOrderEntity
+                        .builder()
+                        .caseId("12129")
+                        .appealTypeCode("EITHER WAY")
+                        .catyCaseType("EITHER WAY")
+                        .build()
+        );
+
+        TEST_MAAT_ID = existingRepOrder.getId();
+
         existingWqHearingEntity = wqHearingRepository
                 .save(WQHearingEntity
                         .builder()
@@ -148,20 +158,20 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
 
         xlatResultRepository.saveAll(
                 List.of(
-                    XLATResultEntity.builder()
-                            .cjsResultCode(4455)
-                            .wqType(1)
-                            .subTypeCode(1)
-                            .ccBenchWarrant("Y")
-                            .ccImprisonment("Y")
-                            .build(),
-                    XLATResultEntity
-                            .builder()
-                            .cjsResultCode(4458)
-                            .wqType(1)
-                            .subTypeCode(2)
-                            .ccBenchWarrant("Y")
-                            .build()
+                        XLATResultEntity.builder()
+                                .cjsResultCode(4455)
+                                .wqType(1)
+                                .subTypeCode(1)
+                                .ccBenchWarrant("Y")
+                                .ccImprisonment("Y")
+                                .build(),
+                        XLATResultEntity
+                                .builder()
+                                .cjsResultCode(4458)
+                                .wqType(1)
+                                .subTypeCode(2)
+                                .ccBenchWarrant("Y")
+                                .build()
                 ));
 
         resultRepository.save(
@@ -175,15 +185,6 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
                         .build()
         );
 
-        existingRepOrder = repOrderRepository.save(
-                RepOrderEntity
-                        .builder()
-                        .id(TEST_MAAT_ID)
-                        .caseId("12129")
-                        .appealTypeCode("EITHER WAY")
-                        .catyCaseType("EITHER WAY")
-                        .build()
-        );
 
         existingCrownCourtCode = crownCourtCodeRepository.save(
                 CrownCourtCode
@@ -197,6 +198,7 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
     @Test
     public void givenSqsPayload_whenDataIsValid_thenProcessAsExpected() throws JsonProcessingException {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
+        message.setMaatId(TEST_MAAT_ID);
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
         String sqsPayload = pullMessageFromSQS(message);
 
@@ -213,12 +215,12 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
         message.getOffenceSummary().get(0).getPlea().setValue("NOT_GUILTY");
         message.getOffenceSummary().get(0).getVerdict().setVerdictType(
                 VerdictType.builder()
-                .description("SUCCESSFUL")
-                .category("SUCCESSFUL")
-                .categoryType("SUCCESSFUL")
-                .sequence(4126)
-                .verdictTypeId(null)
-                .build());
+                        .description("SUCCESSFUL")
+                        .category("SUCCESSFUL")
+                        .categoryType("SUCCESSFUL")
+                        .sequence(4126)
+                        .verdictTypeId(null)
+                        .build());
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
         String sqsPayload = pullMessageFromSQS(message);
 
@@ -251,6 +253,7 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
     @Test
     public void givenSqsPayload_whenDataIsValidAndProsecutionConcludedEntityExists_thenProcessAndUpdateAsExpected() throws JsonProcessingException {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
+        message.setMaatId(TEST_MAAT_ID);
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
         String sqsPayload = pullMessageFromSQS(message);
 
@@ -281,6 +284,7 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
     @Test
     public void givenSqsPayload_whenDataIsValidAndJurisdictionIsNotCrown_thenDoNothing() throws JsonProcessingException {
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
+        message.setMaatId(TEST_MAAT_ID);
         existingWqHearingEntity.setWqJurisdictionType("MAGISTRATES");
         wqHearingRepository.save(existingWqHearingEntity);
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
@@ -327,7 +331,7 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
         Mockito.verify(hearingsService, Mockito.times(0)).retrieveHearingForCaseConclusion(
                 any(ProsecutionConcluded.class));
 
-        queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1,LAA_TRANSACTION_ID, TEST_MAAT_ID);
+        queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1, LAA_TRANSACTION_ID, TEST_MAAT_ID);
     }
 
     @Test
@@ -345,7 +349,7 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
         Mockito.verify(hearingsService, Mockito.times(0)).retrieveHearingForCaseConclusion(
                 any(ProsecutionConcluded.class));
 
-        queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1,LAA_TRANSACTION_ID, TEST_MAAT_ID);
+        queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1, LAA_TRANSACTION_ID, TEST_MAAT_ID);
     }
 
     @Test
@@ -362,12 +366,12 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
         Mockito.verify(hearingsService, Mockito.times(0)).retrieveHearingForCaseConclusion(
                 any(ProsecutionConcluded.class));
 
-        queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1,LAA_TRANSACTION_ID, -1);
+        queueMessageLogTestHelper.assertQueueMessageLogged(sqsPayload, 1, LAA_TRANSACTION_ID, -1);
     }
 
     private void assertDataStoredForLaterProcessing(ProsecutionConcluded message, String sqsPayload) {
         queueMessageLogTestHelper.assertQueueMessageLogged(
-                sqsPayload, 1,message.getMetadata().getLaaTransactionId(), message.getMaatId());
+                sqsPayload, 1, message.getMetadata().getLaaTransactionId(), message.getMaatId());
 
         assertThat(updateOutcomesRepository.findAll().size()).isEqualTo(0);
 
@@ -385,7 +389,7 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
 
     private void assertProsecutionNoChangesMade(ProsecutionConcluded message, String sqsPayload) {
         queueMessageLogTestHelper.assertQueueMessageLogged(
-                sqsPayload, 1,message.getMetadata().getLaaTransactionId(), message.getMaatId());
+                sqsPayload, 1, message.getMetadata().getLaaTransactionId(), message.getMaatId());
 
         assertThat(updateOutcomesRepository.findAll().size()).isEqualTo(0);
         assertThat(prosecutionConcludedRepository.findAll().size()).isEqualTo(0);
@@ -418,12 +422,12 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
                                         .originatingHearingId(UUID.fromString("61600a90-89e2-4717-aa9b-a01fc66130c1"))
                                         .verdictType(
                                                 VerdictType.builder()
-                                                .description("GUILTY")
-                                                .category("GUILTY")
-                                                .categoryType("GUILTY")
-                                                .sequence(4126)
-                                                .verdictTypeId(null)
-                                                .build())
+                                                        .description("GUILTY")
+                                                        .category("GUILTY")
+                                                        .categoryType("GUILTY")
+                                                        .sequence(4126)
+                                                        .verdictTypeId(null)
+                                                        .build())
                                         .build())
                                 .build()
                 ))
@@ -453,7 +457,7 @@ public class ProsecutionConcludedIntegrationTest  extends MockMvcIntegrationTest
     private void runValidDataScenario(ProsecutionConcluded message, String sqsPayload) {
         prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
         queueMessageLogTestHelper.assertQueueMessageLogged(
-                sqsPayload, 1,message.getMetadata().getLaaTransactionId(), message.getMaatId());
+                sqsPayload, 1, message.getMetadata().getLaaTransactionId(), message.getMaatId());
 
         assertUpdateOutcomesProcedureCalledCorrectly(
                 UpdateOutcomesEntity.builder()

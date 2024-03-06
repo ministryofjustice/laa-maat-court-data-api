@@ -828,6 +828,16 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+    public static RepOrderMvoDTO getRepOrderMvoDTO(Integer id, Integer repId) {
+        return RepOrderMvoDTO.builder()
+                .id(id)
+                .rep(RepOrderDTO.builder()
+                        .id(repId)
+                        .build())
+                .vehicleOwner("Y")
+                .build();
+    }
+
 
     public static HardshipReviewDTO getHardshipReviewDTOWithRelationships() {
         HardshipReviewDTO hardship = getHardshipReviewDTO();
@@ -911,9 +921,9 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static String getUpdateAppDateCompletedJson() {
+    public static String getUpdateAppDateCompletedJson(Integer repId) {
         return "{\n" +
-                " \"repId\": " + REP_ID + " ,\n" +
+                " \"repId\": " + repId + " ,\n" +
                 "  \"assessmentDateCompleted\":\"" + APP_DATE_COMPLETED + "\"\n" +
                 "}";
     }
@@ -930,9 +940,8 @@ public class TestModelDataBuilder {
 
     }
 
-    public static CreateRepOrder getCreateRepOrder(Integer newRepId) {
+    public static CreateRepOrder getCreateRepOrder() {
         return CreateRepOrder.builder()
-                .repId(newRepId)
                 .sentenceOrderDate(LocalDateTime.parse(APP_DATE_COMPLETED).toLocalDate())
                 .userCreated(TEST_USER)
                 .caseId(String.valueOf(TEST_CASE_ID))
@@ -1002,9 +1011,9 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static UpdateRepOrder getUpdateRepOrder() {
+    public static UpdateRepOrder getUpdateRepOrder(Integer repId) {
         return UpdateRepOrder.builder()
-                .repId(REP_ID)
+                .repId(repId)
                 .sentenceOrderDate(LocalDateTime.parse(APP_DATE_COMPLETED).toLocalDate())
                 .userModified(TEST_USER)
                 .caseId(String.valueOf(TEST_CASE_ID))
@@ -1159,9 +1168,9 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static RepOrderCCOutcome getUpdateRepOrderCCOutcome(Integer ccOutComeId) {
+    public static RepOrderCCOutcome getUpdateRepOrderCCOutcome(Integer ccOutComeId, Integer repId) {
         return RepOrderCCOutcome.builder()
-                .repId(REP_ID)
+                .repId(repId)
                 .caseNumber(TEST_CASE_ID.toString())
                 .outcome("CONVICTED")
                 .crownCourtCode("430")
@@ -1182,10 +1191,10 @@ public class TestModelDataBuilder {
 
     }
 
-    public static CreateContributions getCreateContributions() {
+    public static CreateContributions getCreateContributions(Integer repId) {
         return CreateContributions.builder()
-                .repId(REP_ID)
-                .applId(REP_ID)
+                .repId(repId)
+                .applId(repId)
                 .userCreated(USER_NAME)
                 .contributionFileId(1)
                 .effectiveDate(TEST_DATE.toLocalDate())
@@ -1376,9 +1385,18 @@ public class TestModelDataBuilder {
     public CourtDataDTO getSaveAndLinkModelRaw() {
         return CourtDataDTO.builder()
 
-                .caseDetails(getCaseDetails())
+                .caseDetails(getCaseDetails(REP_ID))
                 .defendantMAATDataEntity(testEntityDataBuilder.getDefendantMAATDataEntity())
                 .solicitorMAATDataEntity(testEntityDataBuilder.getSolicitorMAATDataEntity())
+                .build();
+    }
+
+    public CourtDataDTO getSaveAndLinkModelRaw(Integer repId) {
+        return CourtDataDTO.builder()
+
+                .caseDetails(getCaseDetails(repId))
+                .defendantMAATDataEntity(testEntityDataBuilder.getDefendantMAATDataEntity(repId))
+                .solicitorMAATDataEntity(testEntityDataBuilder.getSolicitorMAATDataEntity(repId))
                 .build();
     }
 
@@ -1388,20 +1406,20 @@ public class TestModelDataBuilder {
                 .libraId("CP25467")
                 .proceedingId(12123231)
                 .txId(123456)
-                .caseDetails(getCaseDetails())
+                .caseDetails(getCaseDetails(REP_ID))
                 .defendantMAATDataEntity(testEntityDataBuilder.getDefendantMAATDataEntity())
                 .solicitorMAATDataEntity(testEntityDataBuilder.getSolicitorMAATDataEntity())
                 .build();
     }
 
-    public CaseDetails getCaseDetails() {
-        String jsonString = getSaveAndLinkString();
+    public CaseDetails getCaseDetails(Integer repId) {
+        String jsonString = getSaveAndLinkString(repId);
         return gson.fromJson(jsonString, CaseDetails.class);
     }
 
-    public String getSaveAndLinkString() {
+    public String getSaveAndLinkString(Integer repId) {
         return "{\n" +
-                "  \"maatId\": 1234,\n" +
+                "  \"maatId\": " + repId + ",\n" +
                 "  \"category\": 12,\n" +
                 "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
                 "  \"caseUrn\":\"caseurn1\",\n" +
@@ -1477,6 +1495,16 @@ public class TestModelDataBuilder {
     public String getUnLinkString() {
         return "{\n" +
                 " \"maatId\": 1234,\n" +
+                "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
+                "  \"userId\": \"testUser\",\n" +
+                "  \"reasonId\": 1,\n" +
+                "  \"otherReasonText\" : \"\"\n" +
+                "}";
+    }
+
+    public String getUnLinkString(Integer repId) {
+        return "{\n" +
+                " \"maatId\":"+repId+",\n" +
                 "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
                 "  \"userId\": \"testUser\",\n" +
                 "  \"reasonId\": 1,\n" +

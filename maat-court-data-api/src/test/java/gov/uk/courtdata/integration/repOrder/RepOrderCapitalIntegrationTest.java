@@ -2,13 +2,11 @@ package gov.uk.courtdata.integration.repOrder;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.repository.RepOrderCapitalRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,20 +33,24 @@ public class RepOrderCapitalIntegrationTest extends MockMvcIntegrationTest {
     @Autowired
     private RepOrderRepository repOrderRepository;
 
+    private Integer REP_ID;
+    private Integer MOCK1_REP_ID;
+
     @BeforeEach
     void setUp() {
 
-        List repOrderList = List.of(TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID),
-                TestEntityDataBuilder.getPopulatedRepOrder(TestEntityDataBuilder.REP_ID + 1));
+        RepOrderEntity repOrderEntity = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
+        REP_ID = repOrderEntity.getId();
+        RepOrderEntity repOrder = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
+        MOCK1_REP_ID = repOrder.getId();
 
-        List repOrderCapitalList = List.of(TestEntityDataBuilder.getRepOrderCapitalEntity(1, TestModelDataBuilder.REP_ID, "SAVINGS"),
-                TestEntityDataBuilder.getRepOrderCapitalEntity(2, TestModelDataBuilder.REP_ID + 1, "PROPERTY"));
 
-        repOrderRepository.saveAllAndFlush(repOrderList);
+        List repOrderCapitalList = List.of(TestEntityDataBuilder.getRepOrderCapitalEntity(1, REP_ID, "SAVINGS"),
+                TestEntityDataBuilder.getRepOrderCapitalEntity(2, MOCK1_REP_ID, "PROPERTY"));
         capitalRepository.saveAllAndFlush(repOrderCapitalList);
 
     }
-    
+
     @Test
     void givenAInvalidRepId_whenGetCapitalAssetCountIsInvoked_thenErrorReturn() throws Exception {
         runBadRequestErrorScenario("MAAT ID is required.", head(ENDPOINT_URL + "/reporder/" + INVALID_REP_ID));
@@ -56,13 +58,13 @@ public class RepOrderCapitalIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAValidRepId_whenGetCapitalAssetCountInvoked_thenCountIsReturned() throws Exception {
-        var response = runSuccessScenario(head(ENDPOINT_URL + "/reporder/" + TestEntityDataBuilder.REP_ID));
+        var response = runSuccessScenario(head(ENDPOINT_URL + "/reporder/" + REP_ID));
         assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
     }
 
     @Test
     void givenAValidRepIdAndPropertyCapitalAsset_whenGetCapitalAssetCountInvoked_thenZeroIsReturned() throws Exception {
-        var response = runSuccessScenario(head(ENDPOINT_URL + "/reporder/" + (TestEntityDataBuilder.REP_ID + 1)));
+        var response = runSuccessScenario(head(ENDPOINT_URL + "/reporder/" + MOCK1_REP_ID));
         assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
     }
 }

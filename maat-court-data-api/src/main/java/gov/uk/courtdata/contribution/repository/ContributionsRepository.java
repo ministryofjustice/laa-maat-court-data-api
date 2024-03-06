@@ -20,13 +20,6 @@ public interface ContributionsRepository extends JpaRepository<ContributionsEnti
 
     ContributionsEntity findByRepOrder_IdAndLatestIsTrue(Integer repId);
 
-    @Query(value = "select * from TOGDATA.CONTRIBUTIONS where C.REP_ID = :repId and C.TRANSFER_STATUS = 'SENT'\n" +
-            "             and not exists (select 1 from contributions where C2.REP_ID = p_application_object.rep_id\n" +
-            "                                and C2.TRANSFER_STATUS = 'SENT' and C2.DATE_created > C.date_created)",
-                    nativeQuery = true)
-    ContributionsEntity findByRepIdAndLatestSentContribution(@Param("repId") Integer repId);
-
-
     @Modifying
     @Query(value = "UPDATE TOGDATA.CONTRIBUTIONS SET REPLACED_DATE = TRUNC(SYSDATE), ACTIVE = 'N' WHERE REP_ID = :repId AND EFFECTIVE_DATE >= :effDate", nativeQuery = true)
     void updateExistingContributionToInactive(@Param("repId") Integer repId, @Param("effDate") LocalDate effDate);
@@ -34,11 +27,6 @@ public interface ContributionsRepository extends JpaRepository<ContributionsEnti
     @Modifying
     @Query(value = "UPDATE TOGDATA.CONTRIBUTIONS SET LATEST = 'N' WHERE REP_ID = :repId", nativeQuery = true)
     void updateExistingContributionToPrior(@Param("repId") Integer repId);
-
-    @Query(value = "SELECT count(*) from TOGDATA.CONTRIBUTIONS c join TOGDATA.CORRESPONDENCE co on ( CO.ID = C.CORR_ID ) " +
-            "where C.REP_ID = :repId and (  CO.COTY_CORRESPONDENCE_TYPE = 'CONTRIBUTION_ORDER' or" +
-            " CO.COTY_CORRESPONDENCE_TYPE = 'CONTRIBUTION_NOTICE')", nativeQuery = true)
-    int getContributionCount(@Param("repId") Integer repId);
 
     @Query(value = "SELECT C.ID, C.MONTHLY_CONTRIBS monthlyContributions, C.UPFRONT_CONTRIBS upfrontContributions, " +
             "C.BASED_ON basedOn, C.UPLIFT_APPLIED upliftApplied, C.EFFECTIVE_DATE effectiveDate, " +

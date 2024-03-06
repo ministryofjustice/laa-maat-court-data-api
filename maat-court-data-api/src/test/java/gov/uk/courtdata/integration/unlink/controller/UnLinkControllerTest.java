@@ -2,6 +2,7 @@ package gov.uk.courtdata.integration.unlink.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @AutoConfigureMockMvc
-public class UnLinkControllerTest  extends MockMvcIntegrationTest {
+public class UnLinkControllerTest extends MockMvcIntegrationTest {
 
     private MockMvc mockMvc;
 
@@ -53,21 +54,21 @@ public class UnLinkControllerTest  extends MockMvcIntegrationTest {
     @Test
     public void givenUnlinkModel_whenValidationPassed() throws Exception {
 
-        repOrderRepository.save(RepOrderEntity.builder().id(123456).build());
-        wqLinkRegisterRepository.save(WqLinkRegisterEntity.builder().maatId(123456).createdTxId(1234).build());
-        repOrderCPDataRepository.save(RepOrderCPDataEntity.builder().repOrderId(123456).build());
+        RepOrderEntity repOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        wqLinkRegisterRepository.save(WqLinkRegisterEntity.builder().maatId(repOrder.getId()).createdTxId(1234).build());
+        repOrderCPDataRepository.save(RepOrderCPDataEntity.builder().repOrderId(repOrder.getId()).build());
 
         Unlink unlink = Unlink.builder()
-                .maatId(123456)
+                .maatId(repOrder.getId())
                 .reasonId(1)
                 .userId("User")
                 .laaTransactionId(UUID.randomUUID())
                 .build();
 
         mockMvc.perform(post("/unlink/validate")
-                .contentType("application/json")
-                .header("Laa-Transaction-Id", "12112")
-                .content(objectMapper.writeValueAsString(unlink)))
+                        .contentType("application/json")
+                        .header("Laa-Transaction-Id", "12112")
+                        .content(objectMapper.writeValueAsString(unlink)))
                 .andExpect(status().isOk());
     }
 
@@ -75,9 +76,9 @@ public class UnLinkControllerTest  extends MockMvcIntegrationTest {
     public void givenUnlinkModel_whenValidationFailedTX() throws Exception {
 
         mockMvc.perform(post("/unlink/validate")
-                .contentType("application/json")
-                .header("Laa-Transaction-Id", "12112")
-                .content(objectMapper.writeValueAsString(null)))
+                        .contentType("application/json")
+                        .header("Laa-Transaction-Id", "12112")
+                        .content(objectMapper.writeValueAsString(null)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -85,9 +86,9 @@ public class UnLinkControllerTest  extends MockMvcIntegrationTest {
     public void givenUnlinkModel_whenValidationFailed() throws Exception {
 
         mockMvc.perform(post("/unlink/validate")
-                .contentType("application/json")
-                .header("Laa-Transaction-Id", "12112")
-                .content(objectMapper.writeValueAsString(null)))
+                        .contentType("application/json")
+                        .header("Laa-Transaction-Id", "12112")
+                        .content(objectMapper.writeValueAsString(null)))
                 .andExpect(status().isBadRequest());
     }
 }

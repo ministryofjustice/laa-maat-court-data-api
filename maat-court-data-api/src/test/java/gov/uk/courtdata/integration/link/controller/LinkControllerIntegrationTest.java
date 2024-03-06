@@ -3,14 +3,15 @@ package gov.uk.courtdata.integration.link.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import gov.uk.courtdata.integration.util.RepositoryUtil;
 import gov.uk.courtdata.link.controller.LinkController;
 import gov.uk.courtdata.model.CaseDetailsValidate;
 import gov.uk.courtdata.repository.*;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,8 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.time.LocalDateTime;
-
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -33,13 +32,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @WebAppConfiguration
-public class LinkControllerIntegrationTest  extends MockMvcIntegrationTest {
+public class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
     private static final String LINK_VALIDATE_URI = "/link/validate";
-
-    private static final Integer TEST_MAAT_ID = 1000;
-
     private static final String TEST_CASE_URN = "testUrn";
-
+    private Integer TEST_MAAT_ID = 1000;
     private MockMvc mockMvc;
 
     @Autowired
@@ -108,7 +104,7 @@ public class LinkControllerIntegrationTest  extends MockMvcIntegrationTest {
     @Test
     public void testWhenCaseUrnHasNoCPDataExists_Returns400ClientError() throws Exception {
 
-        repOrderRepository.save(createRepOrderEntity(TEST_MAAT_ID));
+        createRepOrderEntity();
 
         final CaseDetailsValidate caseDetailsValidate = getTestCaseDetailsValidate();
 
@@ -124,7 +120,7 @@ public class LinkControllerIntegrationTest  extends MockMvcIntegrationTest {
     @Test
     public void testWhenCaseUrnNotExists_Returns400ClientError() throws Exception {
 
-        repOrderRepository.save(createRepOrderEntity(TEST_MAAT_ID));
+        createRepOrderEntity();
 
         final CaseDetailsValidate caseDetailsValidate = getTestCaseDetailsValidate();
         caseDetailsValidate.setCaseUrn(null);
@@ -141,7 +137,7 @@ public class LinkControllerIntegrationTest  extends MockMvcIntegrationTest {
     @Test
     public void testWhenMaatIdIsAlreadyLinked_Returns400ClientError() throws Exception {
 
-        repOrderRepository.save(createRepOrderEntity(TEST_MAAT_ID));
+        createRepOrderEntity();
         wqLinkRegisterRepository.save(WqLinkRegisterEntity.builder().createdTxId(0).maatId(TEST_MAAT_ID).build());
         repOrderCPDataRepository.save(createRepOrderCPDataEntity(TEST_MAAT_ID, TEST_CASE_URN));
 
@@ -159,7 +155,7 @@ public class LinkControllerIntegrationTest  extends MockMvcIntegrationTest {
     @Test
     public void testWhenPreConditionValidationPasses_Returns200Success() throws Exception {
 
-        repOrderRepository.save(createRepOrderEntity(TEST_MAAT_ID));
+        createRepOrderEntity();
 
         repOrderCPDataRepository.save(createRepOrderCPDataEntity(TEST_MAAT_ID, TEST_CASE_URN));
 
@@ -190,12 +186,9 @@ public class LinkControllerIntegrationTest  extends MockMvcIntegrationTest {
     }
 
 
-    public RepOrderEntity createRepOrderEntity(final Integer maatId) {
-
-        return RepOrderEntity.builder()
-                .id(maatId)
-                .dateModified(LocalDateTime.now())
-                .build();
+    public void createRepOrderEntity() {
+        RepOrderEntity repOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        TEST_MAAT_ID = repOrder.getId();
     }
 
     private CaseDetailsValidate getTestCaseDetailsValidate() {

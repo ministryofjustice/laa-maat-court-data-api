@@ -1,8 +1,10 @@
 package gov.uk.courtdata.applicant.service;
 
+import gov.uk.courtdata.applicant.dto.SendToCCLFDTO;
 import gov.uk.courtdata.applicant.repository.ApplicantRepository;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.reporder.service.RepOrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,11 +28,14 @@ public class ApplicantServiceTest {
     @MockBean
     private ApplicantRepository applicantRepository;
     private ApplicantService applicantService;
-
+    @MockBean
+    private RepOrderService repOrderService;
+    @MockBean
+    private ApplicantHistoryService applicantHistoryService;
 
     @BeforeEach
     void setUp() {
-        applicantService = new ApplicantService(applicantRepository);
+        applicantService = new ApplicantService(applicantRepository, repOrderService, applicantHistoryService);
     }
 
     @Test
@@ -69,5 +74,18 @@ public class ApplicantServiceTest {
     void givenAValidInput_whenDeleteIsInvoked_thenDeleteIsSuccess() {
         applicantService.delete(1);
         verify(applicantRepository, atLeastOnce()).deleteById(any());
+    }
+
+    @Test
+    void givenAValidInput_whenUpdateSendToCCLFIsInvoked_thenUpdateIsSuccess() {
+        doNothing().when(repOrderService).update(any(), any());
+        doNothing().when(applicantHistoryService).update(any(), any());
+        when(applicantRepository.findById(anyInt())).thenReturn(Optional.of(Applicant.builder().id(1).build()));
+        SendToCCLFDTO sendToCCLFDTO = SendToCCLFDTO.builder().applId(1).repId(1).applHistoryId(1).build();
+        applicantService.updateSendToCCLF(sendToCCLFDTO);
+        verify(repOrderService, atLeastOnce()).update(any(), any());
+        verify(applicantHistoryService, atLeastOnce()).update(any(), any());
+        verify(applicantRepository, atLeastOnce()).findById(any());
+        verify(applicantRepository, atLeastOnce()).save(any());
     }
 }

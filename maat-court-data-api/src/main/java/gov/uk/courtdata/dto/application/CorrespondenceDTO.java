@@ -1,17 +1,19 @@
 package gov.uk.courtdata.dto.application;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
 @Data
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class CorrespondenceDTO extends GenericDTO {
     private Long id;
     private Long repId;
@@ -19,10 +21,11 @@ public class CorrespondenceDTO extends GenericDTO {
     private Long passportAssessmentId;
     private Date generatedDate;
     private Date lastPrintDate;
-    private CorrespondenceTypeDTO correspondenceType;
     private String templateName;
-    private Date originalEmailDate; // MW - 30/03/2017 - FIP Changes
+    private Date originalEmailDate;
 
-    private Collection<PrintDateDTO> printDateDTOs;
-
+    @Builder.Default
+    private Collection<PrintDateDTO> printDateDTOs = new ArrayList<>();
+    @Builder.Default
+    private CorrespondenceTypeDTO correspondenceType = new CorrespondenceTypeDTO();
 }

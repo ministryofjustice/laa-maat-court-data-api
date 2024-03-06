@@ -37,9 +37,11 @@ public interface FinancialAssessmentMapper {
     @Mapping(target = "repId", source = "repOrder.id")
     FinancialAssessmentDTO financialAssessmentEntityToFinancialAssessmentDTO(final FinancialAssessmentEntity financialAssessment);
 
+    @Mapping(target = "valid", source = "valid", defaultValue = "Y")
     FinancialAssessmentDTO updateFinancialAssessmentToFinancialAssessmentDTO(final UpdateFinancialAssessment assessment);
 
     @Mapping(target = "newWorkReason.code", source = "nworCode")
+    @Mapping(target = "valid", source = "valid", defaultValue = "Y")
     FinancialAssessmentDTO createFinancialAssessmentToFinancialAssessmentDTO(final CreateFinancialAssessment assessment);
 
     FinancialAssessmentDetails financialAssessmentDetailsEntityToFinancialAssessmentDetails(final FinancialAssessmentDetailEntity detailsEntity);

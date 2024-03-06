@@ -5,13 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @SuperBuilder
 @NoArgsConstructor
 public class GenericDTO {
-    private Timestamp timestamp;
+    private LocalDateTime timestamp;
     private Boolean selected;
     @Builder.Default
     private Boolean mDirty = false;

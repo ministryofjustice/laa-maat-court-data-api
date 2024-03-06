@@ -50,7 +50,7 @@ class CreateLinkListenerEndToEndTest {
     public static String queueUrl;
 
 
-    private static DockerImageName LOCALSTACK_IMAGE = DockerImageName.parse("localstack/localstack");
+    private static DockerImageName LOCALSTACK_IMAGE = DockerImageName.parse("localstack/localstack:2.3.2");
 
     @Container
     public static LocalStackContainer LOCALSTACK_CONTAINER = new LocalStackContainer(LOCALSTACK_IMAGE)

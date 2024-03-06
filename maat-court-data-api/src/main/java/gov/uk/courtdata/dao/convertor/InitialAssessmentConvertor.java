@@ -83,7 +83,7 @@ public class InitialAssessmentConvertor extends Convertor
 			ConvertorHelper convertorHelper = new ConvertorHelper();
 			
 			getDTO().setCriteriaId(						convertorHelper.toLong(		getOracleType().getCriteriaId() ));
-			getDTO().setTimestamp(						getOracleType().getTimeStamp() );
+			getDTO().setTimestamp(						convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
 			getDTO().setAssessmentDate                (	convertorHelper.toDate( 	getOracleType().getAssessmentDate() ));
 			getDTO().setOtherBenefitNote              (	convertorHelper.toString( 	getOracleType().getOtherBenefitNote() ));
 			getDTO().setOtherIncomeNote               (	convertorHelper.toString( 	getOracleType().getOtherIncomeNote() ));

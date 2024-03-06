@@ -11,7 +11,7 @@ import gov.uk.courtdata.contribution.service.ContributionsService;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.ContributionsEntity;
-import gov.uk.courtdata.entity.CorrespondenceEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
@@ -26,7 +26,6 @@ import org.springframework.dao.DataAccessException;
 
 import java.util.List;
 
-import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -37,6 +36,8 @@ public class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest 
 
     private static final Integer INVALID_CONTRIBUTION_ID = 8888;
     private static final String CONTRIBUTION_FILE_NAME = "CONTRIBUTIONS_202307111234.xml";
+
+    public Integer REP_ID = 1234;
 
     @Autowired
     ContributionsRepository contributionsRepository;
@@ -58,8 +59,11 @@ public class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest 
     @BeforeEach
     public void setUp() {
 
-        repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
+        RepOrderEntity repOrderEntity = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
+        REP_ID = repOrderEntity.getId();
+
         ContributionsEntity contributions = TestEntityDataBuilder.getContributionsEntity();
+        contributions.setRepOrder(repOrderEntity);
 
         ContributionFilesEntity contributionFilesEntity = TestEntityDataBuilder.getContributionFilesEntity();
         contributionFilesEntity.setId(contributions.getContributionFileId());
@@ -73,7 +77,7 @@ public class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest 
         List<ContributionsDTO> result = contributionsService.find(REP_ID, true);
         assertThat(result.isEmpty()).isFalse();
         assertThat(result.get(0).getId()).isGreaterThan(0);
-        assertThat(result.get(0).getRepId()).isEqualTo(TestModelDataBuilder.REP_ID);
+        assertThat(result.get(0).getRepId()).isEqualTo(REP_ID);
     }
 
     @Test
@@ -105,7 +109,7 @@ public class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest 
 
     @Test
     void givenValidData_WhenCreateIsInvoked_thenCorrectResponseIsReturned() {
-        CreateContributions createContributions = TestModelDataBuilder.getCreateContributions();
+        CreateContributions createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
         ContributionsDTO result = contributionsService.create(createContributions);
         assertThat(result).isNotNull();
         assertThat(result.getId()).isGreaterThan(0);
@@ -115,7 +119,7 @@ public class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest 
     @Test
     void givenInValidData_WhenCreateIsInvoked_thenCorrectResponseIsReturned() {
         assertThatThrownBy(() -> {
-            CreateContributions createContributions = TestModelDataBuilder.getCreateContributions();
+            CreateContributions createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
             createContributions.setRepId(INVALID_REP_ID);
             contributionsService.create(createContributions);
         }).isInstanceOf(DataAccessException.class);
@@ -138,21 +142,6 @@ public class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest 
             contributionsService.getContributionsSummary(INVALID_REP_ID);
         }).isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("No contribution entries found for repId");
-    }
-
-    @Test
-    void givenValidRepId_whenGetContributionCountIsInvoked_thenCorrectResponseIsReturned() {
-        CorrespondenceEntity correspondenceEntity = correspondenceRepository.saveAndFlush(TestEntityDataBuilder.getCorrespondenceEntity(1));
-        contributionsEntity.setCorrespondenceId(correspondenceEntity.getId());
-        contributionsRepository.saveAndFlush(contributionsEntity);
-        Integer count = contributionsService.getContributionCount(REP_ID);
-        assertThat(count).isEqualTo(1);
-    }
-
-    @Test
-    void givenInValidRepId_whenGetContributionCountIsInvoked_thenCorrectResponseIsReturned() {
-        Integer count = contributionsService.getContributionCount(REP_ID);
-        assertThat(count).isEqualTo(0);
     }
 
     private Integer getContributionId() {

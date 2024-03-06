@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CreateRepOrder {
 
-    private Integer repId;
     @NotNull
     private String caseId;
     private String iojResult;

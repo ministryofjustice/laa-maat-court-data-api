@@ -96,4 +96,13 @@ public class ApplicantHistoryServiceTest {
         verify(applicantHistoryRepository, atLeastOnce()).saveAndFlush(any());
     }
 
+    @Test
+    void givenAValidInputMap_whenUpdateIsInvoked_thenUpdateIsSuccess() {
+        when(applicantHistoryRepository.findById(anyInt())).thenReturn(Optional.of(ApplicantHistoryEntity.builder().id(1).build()));
+        HashMap<String, Object> inputMap = new HashMap<>();
+        inputMap.put("email", "test@test.co");
+        applicantHistoryService.update(1, inputMap);
+        verify(applicantHistoryRepository, atLeastOnce()).findById(any());
+        verify(applicantHistoryRepository, atLeastOnce()).save(any());
+    }
 }

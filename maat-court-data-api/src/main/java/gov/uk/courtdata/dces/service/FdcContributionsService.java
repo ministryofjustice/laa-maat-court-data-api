@@ -85,12 +85,25 @@ public class FdcContributionsService {
 
         ValidationUtils.isNull(fdcRequest,"fdcRequest object is null");
         ValidationUtils.isEmptyOrHasNullElement(fdcRequest.getFdcIds(),"FdcIds is empty/null.");
+        log.info("Request Validated");
+        ContributionFilesEntity contributionFilesEntity = createFdcFile(fdcRequest);
+        log.info("File created with id: {}", contributionFilesEntity.getId());
 
-        final ContributionFilesEntity contributionFilesEntity = createFdcFile(fdcRequest);
-        return updateStatusForFdc(fdcRequest.getFdcIds(), SENT, contributionFilesEntity.getId());
+        return updateStatusForFdc(fdcRequest.getFdcIds(), contributionFilesEntity);
     }
 
-    private boolean updateStatusForFdc(Set<Integer> fdcIds, FdcContributionsStatus status, Integer contributionFileId){
+    private boolean updateStatusForFdc(Set<Integer> fdcIds, ContributionFilesEntity contributionFilesEntity){
+        List<FdcContributionsEntity> fdcEntities = fdcContributionsRepository.findByIdIn(fdcIds);
+        if(!fdcEntities.isEmpty()) {
+            fdcEntities.forEach(fdc -> {
+                fdc.setStatus(SENT);
+                fdc.setContFileId(contributionFilesEntity.getId());
+                fdc.setUserModified("DCES");
+            });
+            log.info("Saving {} Fdc Contributions", fdcEntities.size());
+            fdcContributionsRepository.saveAll(fdcEntities);
+            return true;
+        }
         return false;
     }
 

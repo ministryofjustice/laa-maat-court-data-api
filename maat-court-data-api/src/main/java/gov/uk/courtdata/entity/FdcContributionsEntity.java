@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -76,6 +77,7 @@ public class FdcContributionsEntity {
     @Column(name = "ACCELERATE", length = 1)
     private String accelerate;
 
+    @UpdateTimestamp
     @Column(name = "DATE_MODIFIED")
     private LocalDate dateModified;
 

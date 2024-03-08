@@ -1,22 +1,18 @@
 package gov.uk.courtdata.dces.request;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateContributionFileRequest {
-    private Integer recordsSent;
-    @ToString.Exclude
-    private String xmlContent;
+@SuperBuilder
+public class CreateContributionFileRequest extends CreateFileRequest{
     private Set<Integer> concorContributionIds;
-    private String xmlFileName;
-    @ToString.Exclude
-    private String ackXmlContent;
 }

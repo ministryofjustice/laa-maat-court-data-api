@@ -90,7 +90,10 @@ class ConcorContributionsServiceTest {
     void testCreateContributionFileAndUpdateConcorContributionStatus() {
 
         final CreateContributionFileRequest createContributionFileRequest
-                = CreateContributionFileRequest.builder().concorContributionIds(Set.of(1)).xmlContent(getXmlDocContent()).build();
+                = CreateContributionFileRequest.builder()
+                .concorContributionIds(Set.of(1))
+                .xmlContent(getXmlDocContent())
+                .build();
         final ContributionFilesEntity dummyEntity = getContributionFilesEntity();
 
         when(concorRepository.findByIdIn(any())).thenReturn(concorContributionFiles);

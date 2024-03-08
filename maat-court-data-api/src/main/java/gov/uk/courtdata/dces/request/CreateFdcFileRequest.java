@@ -1,23 +1,18 @@
 package gov.uk.courtdata.dces.request;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateFdcFileRequest {
-    private Integer recordsSent;
-    @ToString.Exclude
-    private String xmlContent;
+public class CreateFdcFileRequest extends CreateFileRequest{
     private Set<Integer> fdcIds;
-    private String xmlFileName;
-    @ToString.Exclude
-    private String ackXmlContent;
 }

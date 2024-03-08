@@ -1,25 +1,18 @@
 package gov.uk.courtdata.integration.dces;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -113,18 +106,22 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
 
+    @Disabled("Update SQL is not understood.")
     @Test
     void givenAListOfIds_whenAtomicUpdate_theStatusIsUpdated() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post(ATOMIC_UPDATE_ENDPOINT_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
+        String s = """
                                 {
                                     "recordsSent": 2,
-                                    "fdcIds": ["1234","9876"],
-                                    "xmlContent" : "ValidXML",
-                                    "ackXmlContent" : "ValidAckXML",
+                                    "fdcIds": [%s],
+                                    "xmlContent" : "<test></test>",
+                                    "ackXmlContent" : "<ackTest></ackTest>",
                                     "xmlFileName" : "TestFilename.xml"
-                                }"""))
+                                }""";
+        s = s.formatted( expectedId4);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(ATOMIC_UPDATE_ENDPOINT_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(s))
 
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

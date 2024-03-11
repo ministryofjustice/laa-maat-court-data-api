@@ -60,7 +60,7 @@ public class DebtCollectionRepository {
         return contributionFilesEntity;
     }
 
-    private boolean saveXmlTypes(ContributionFilesEntity contributionFilesEntity){
+    public boolean saveXmlTypes(ContributionFilesEntity contributionFilesEntity){
         jdbcTemplate.execute(
                 (ConnectionCallback<Object>) con -> {
 

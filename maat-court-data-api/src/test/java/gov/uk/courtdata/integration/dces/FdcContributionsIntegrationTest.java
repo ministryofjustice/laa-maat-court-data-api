@@ -153,7 +153,9 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         // assert the file id has been set on the fdc
         Optional<FdcContributionsEntity> updatedFdc = repos.fdcContributions.findById(expectedId4);
         assertTrue(updatedFdc.isPresent());
-        updatedFdc.ifPresent(fdcContributionsEntity -> assertEquals(savedEntity.getId(), fdcContributionsEntity.getContFileId()));
+        FdcContributionsEntity fdcContributionsEntity = updatedFdc.get();
+        assertEquals(savedEntity.getId(), fdcContributionsEntity.getContFileId());
+        assertEquals(FdcContributionsStatus.SENT, fdcContributionsEntity.getStatus());
 
     }
 

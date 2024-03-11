@@ -18,7 +18,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -44,14 +43,21 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
     @Captor
     private ArgumentCaptor<ContributionFilesEntity> contributionFileEntityCaptor;
 
+    private static int savedEntityId1;
+    private static int savedEntityId2;
+    private static int savedEntityId3;
+    private static int savedEntityId4;
+
     @BeforeEach
     public void setUp() {
-        concorRepository.saveAll(List.of(
-                ConcorContributionsEntity.builder().id(1).status(ConcorContributionStatus.ACTIVE).currentXml("<xml 1 content dummy").build(),
-                ConcorContributionsEntity.builder().id(2).status(ConcorContributionStatus.SENT).currentXml("<xml 2 content dummy").build(),
-                ConcorContributionsEntity.builder().id(3).status(ConcorContributionStatus.ACTIVE).currentXml("<xml 3 content dummy").build(),
-                ConcorContributionsEntity.builder().id(4).status(ConcorContributionStatus.SENT).currentXml("<xml 4 content dummy").build()
-        ));
+        savedEntityId1 = concorRepository.save(buildEntity(ConcorContributionStatus.ACTIVE, "<xml 1 content dummy")).getId();
+        savedEntityId2 = concorRepository.save(buildEntity(ConcorContributionStatus.SENT, "<xml 2 content dummy")).getId();
+        savedEntityId3 = concorRepository.save(buildEntity(ConcorContributionStatus.ACTIVE, "<xml 3 content dummy")).getId();
+        savedEntityId4 = concorRepository.save(buildEntity(ConcorContributionStatus.SENT, "<xml 4 content dummy")).getId();
+    }
+
+    private ConcorContributionsEntity buildEntity(ConcorContributionStatus status, String xml){
+        return ConcorContributionsEntity.builder().status(status).currentXml(xml).build();
     }
 
     @Test
@@ -102,7 +108,7 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
                                     "ackXmlContent" : "%s",
                                     "xmlFileName" : "%s"
                                 }""";
-        s = s.formatted( expectedRecordsSent, 4, expectedXml, expectedAckXml, expectedFilename);
+        s = s.formatted( expectedRecordsSent, savedEntityId3, expectedXml, expectedAckXml, expectedFilename);
         mockMvc.perform(MockMvcRequestBuilders.post(ATOMIC_UPDATE_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(s))
@@ -118,10 +124,11 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
         assertEquals(expectedAckXml, savedEntity.getAckXmlContent());
         assertEquals(expectedFilename, savedEntity.getFileName());
         // assert the file id has been set on the contribution
-        Optional<ConcorContributionsEntity> updatedFdc = concorRepository.findById(4);
-        assertTrue(updatedFdc.isPresent());
-        updatedFdc.ifPresent(fdcContributionsEntity -> assertEquals(savedEntity.getId(), fdcContributionsEntity.getContribFileId()));
-
+        Optional<ConcorContributionsEntity> updatedConcor = concorRepository.findById(savedEntityId3);
+        assertTrue(updatedConcor.isPresent());
+        ConcorContributionsEntity fdcContributionsEntity = updatedConcor.get();
+        assertEquals(savedEntity.getId(), fdcContributionsEntity.getContribFileId());
+        assertEquals(ConcorContributionStatus.SENT, fdcContributionsEntity.getStatus());
     }
 
 

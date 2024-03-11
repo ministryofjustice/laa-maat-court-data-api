@@ -1,6 +1,7 @@
 package gov.uk.courtdata.dces.service;
 
 import gov.uk.courtdata.entity.ContributionFilesEntity;
+import gov.uk.courtdata.repository.ContributionFilesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.ConnectionCallback;
@@ -8,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.Clob;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +19,8 @@ import java.util.List;
 public class DebtCollectionRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ContributionFilesRepository contributionFilesRepository;
+    private static final String DB_USER_NAME = "DCES";
 
     List<String> getContributionFiles(final String fromDate, final String toDate) {
         String query = "SELECT cf.xml_content FROM TOGDATA.CONTRIBUTION_FILES CF " +
@@ -37,34 +39,46 @@ public class DebtCollectionRepository {
     }
 
     public boolean save(ContributionFilesEntity contributionFileEntity) {
+        contributionFileEntity.setUserCreated(DB_USER_NAME);
+        contributionFileEntity.setDateCreated(LocalDate.now());
+
+        contributionFileEntity = saveNonXmls(contributionFileEntity);
 
         log.info("Inserting into TOGDATA.CONTRIBUTION_FILES using jdbcTemplate");
-        return insertingTableRow(contributionFileEntity);
+        return saveXmlTypes(contributionFileEntity);
     }
 
-    public boolean insertingTableRow(ContributionFilesEntity contributionFileEntity) {
+    private ContributionFilesEntity saveNonXmls(ContributionFilesEntity contributionFilesEntity){
+        String xmlContent = contributionFilesEntity.getXmlContent();
+        String ackXMLContent = contributionFilesEntity.getAckXmlContent();
+
+        contributionFilesEntity.setAckXmlContent(null);
+        contributionFilesEntity.setXmlContent(null);
+        contributionFilesEntity = contributionFilesRepository.save(contributionFilesEntity);
+        contributionFilesEntity.setXmlContent(xmlContent);
+        contributionFilesEntity.setAckXmlContent(ackXMLContent);
+        return contributionFilesEntity;
+    }
+
+    public boolean saveXmlTypes(ContributionFilesEntity contributionFilesEntity){
         jdbcTemplate.execute(
                 (ConnectionCallback<Object>) con -> {
 
-                    String insertingSQL = "INSERT INTO TOGDATA.CONTRIBUTION_FILES (ID, FILE_NAME, RECORDS_SENT, DATE_CREATED, USER_CREATED, XML_CONTENT, ACK_XML_CONTENT) " +
-                            "VALUES (TOGDATA.S_GENERAL_SEQUENCE.NEXTVAL, ?, ?, ?, ?, XMLType(?), XMLType(?))";
+                    String updateSQL = "UPDATE TOGDATA.CONTRIBUTION_FILES SET XML_CONTENT = XMLType(?), ACK_XML_CONTENT = XMLType(?) WHERE ID = ?";
 
-                    try (PreparedStatement ps = con.prepareStatement(insertingSQL)) {
-
-                        ps.setString(1, contributionFileEntity.getFileName());
-                        ps.setInt(2, contributionFileEntity.getRecordsSent());
-                        ps.setDate(3, Date.valueOf(LocalDate.now()));
-                        ps.setString(4, contributionFileEntity.getUserCreated());
+                    try (PreparedStatement ps = (con.prepareStatement(updateSQL))) {
 
                         Clob clob = con.createClob();
-                        clob.setString(1, contributionFileEntity.getXmlContent());
-                        ps.setClob(5, clob);
+                        clob.setString(1, contributionFilesEntity.getXmlContent());
+                        ps.setClob(1, clob);
 
                         Clob ackXmlContentClob = con.createClob();
-                        ackXmlContentClob.setString(1, contributionFileEntity.getAckXmlContent());
-                        ps.setClob(6, ackXmlContentClob);
+                        ackXmlContentClob.setString(1, contributionFilesEntity.getAckXmlContent());
+                        ps.setClob(2, ackXmlContentClob);
 
-                        return ps.execute();
+                        ps.setInt(3, contributionFilesEntity.getId());
+
+                        return ps.executeQuery();
                     }
                 }
         );

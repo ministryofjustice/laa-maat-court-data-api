@@ -62,7 +62,7 @@ class FdcContributionsControllerTest {
     }
 
     @Test
-    void testContributionFileContentWhenActiveFileNotAvailable() throws Exception {
+    void testContributionFileResponseWhenActiveFileNotAvailable() throws Exception {
 
         when(fdcContributionsService.getFdcContributionFiles(FdcContributionsStatus.REQUESTED))
                 .thenReturn(FdcContributionsResponse.builder().fdcContributions(List.of()).build());
@@ -75,7 +75,7 @@ class FdcContributionsControllerTest {
     }
 
     @Test
-    void testContributionFileContentWhenQueryParamIsNotProvided() throws Exception {
+    void testContributionFileResponseWhenQueryParamIsNotProvided() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/fdc-contribution-files"))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.detail").value("Required parameter 'status' is not present."))

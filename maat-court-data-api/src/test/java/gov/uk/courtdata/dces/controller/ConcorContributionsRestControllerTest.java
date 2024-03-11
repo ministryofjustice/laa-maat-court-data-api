@@ -1,7 +1,7 @@
 package gov.uk.courtdata.dces.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.uk.courtdata.dces.request.ConcorContributionRequest;
+import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
@@ -79,15 +79,15 @@ class ConcorContributionsRestControllerTest {
 
     @Test
     void testUpdateContributionFileStatus() throws Exception {
-        final ConcorContributionRequest concorContributionRequest = ConcorContributionRequest.builder()
+        final CreateContributionFileRequest createContributionFileRequest = CreateContributionFileRequest.builder()
                 .recordsSent(123)
                 .xmlContent("XMLFileContent")
                 .concorContributionIds(Set.of())
                 .build();
-        when(concorContributionsService.createContributionAndUpdateConcorStatus(concorContributionRequest)).thenReturn(true);
+        when(concorContributionsService.createContributionAndUpdateConcorStatus(createContributionFileRequest)).thenReturn(true);
 
         final ObjectMapper objectMapper = new ObjectMapper();
-        final String requestBody = objectMapper.writeValueAsString(concorContributionRequest);
+        final String requestBody = objectMapper.writeValueAsString(createContributionFileRequest);
 
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  +"/create-contribution-file"))
                         .content(requestBody)
@@ -98,16 +98,16 @@ class ConcorContributionsRestControllerTest {
 
     @Test
     void testUpdateContributionFileStatusWhenTransactionRollback() throws Exception {
-        final ConcorContributionRequest concorContributionRequest = ConcorContributionRequest.builder()
+        final CreateContributionFileRequest createContributionFileRequest = CreateContributionFileRequest.builder()
                 .recordsSent(123)
                 .xmlContent("XMLFileContent")
                 .concorContributionIds(Set.of())
                 .build();
-        when(concorContributionsService.createContributionAndUpdateConcorStatus(concorContributionRequest))
+        when(concorContributionsService.createContributionAndUpdateConcorStatus(createContributionFileRequest))
                 .thenThrow(new MAATCourtDataException("Error"));
 
         final ObjectMapper objectMapper = new ObjectMapper();
-        final String requestBody = objectMapper.writeValueAsString(concorContributionRequest);
+        final String requestBody = objectMapper.writeValueAsString(createContributionFileRequest);
 
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  +"/create-contribution-file"))
                         .content(requestBody)
@@ -117,16 +117,16 @@ class ConcorContributionsRestControllerTest {
 
     @Test
     void testUpdateContributionFileStatusWhenXmlFileIsNotProvided() throws Exception {
-        final ConcorContributionRequest concorContributionRequest = ConcorContributionRequest.builder()
+        final CreateContributionFileRequest createContributionFileRequest = CreateContributionFileRequest.builder()
                 .recordsSent(123)
                 .xmlContent("XMLFileContent")
                 .concorContributionIds(Set.of())
                 .build();
-        when(concorContributionsService.createContributionAndUpdateConcorStatus(concorContributionRequest))
+        when(concorContributionsService.createContributionAndUpdateConcorStatus(createContributionFileRequest))
                 .thenThrow(new ValidationException("ContributionIds are empty/null."));
 
         final ObjectMapper objectMapper = new ObjectMapper();
-        final String requestBody = objectMapper.writeValueAsString(concorContributionRequest);
+        final String requestBody = objectMapper.writeValueAsString(createContributionFileRequest);
 
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  +"/create-contribution-file"))
                         .content(requestBody)

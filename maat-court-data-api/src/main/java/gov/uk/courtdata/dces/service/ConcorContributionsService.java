@@ -2,10 +2,11 @@ package gov.uk.courtdata.dces.service;
 
 import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 
+import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
+import gov.uk.courtdata.dces.util.ContributionFileUtil;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
-import gov.uk.courtdata.dces.request.ConcorContributionRequest;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -19,14 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ConcorContributionsService {
-    private static final String DB_USER_NAME = "DCES";
+
     private final ConcorContributionsRepository concorRepository;
     private final ContributionFileMapper contributionFileMapper;
     private final DebtCollectionRepository debtCollectionRepository;
@@ -42,7 +42,7 @@ public class ConcorContributionsService {
     }
 
     @Transactional(rollbackFor = MAATCourtDataException.class)
-    public boolean createContributionAndUpdateConcorStatus(ConcorContributionRequest contributionRequest){
+    public boolean createContributionAndUpdateConcorStatus(CreateContributionFileRequest contributionRequest){
 
         ValidationUtils.isNull(contributionRequest,"contributionRequest object is null");
         ValidationUtils.isEmptyOrHasNullElement(contributionRequest.getConcorContributionIds(),"ContributionIds are empty/null.");
@@ -51,15 +51,13 @@ public class ConcorContributionsService {
         return updateConcorStatusForContribution(contributionRequest.getConcorContributionIds(), SENT, contributionFilesEntity.getId());
     }
 
-    private ContributionFilesEntity createContributionFile(ConcorContributionRequest contributionRequest) {
+    private ContributionFilesEntity createContributionFile(CreateContributionFileRequest contributionRequest) {
 
         final ContributionFilesEntity contributionFileEntity;
         try {
             log.info("Updating the concor contribution file ref  -> {}", contributionRequest);
+            ContributionFileUtil.assessFilename(contributionRequest);
             contributionFileEntity = contributionFileMapper.toContributionFileEntity(contributionRequest);
-            // when file is not provided then xml generate.
-            contributionFileEntity.setFileName(Optional.ofNullable(contributionRequest.getXmlFileName()).orElse(getFilename()));
-            contributionFileEntity.setUserCreated(DB_USER_NAME);
             debtCollectionRepository.save(contributionFileEntity);
 
         } catch (Exception e) {

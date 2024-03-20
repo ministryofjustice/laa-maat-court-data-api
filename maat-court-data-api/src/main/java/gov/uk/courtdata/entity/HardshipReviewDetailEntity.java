@@ -3,14 +3,13 @@ package gov.uk.courtdata.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
+import gov.uk.courtdata.enums.HardshipReviewDetailReason;
 import gov.uk.courtdata.enums.HardshipReviewDetailType;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -85,15 +84,12 @@ public class HardshipReviewDetailEntity {
     @Column(name = "REMOVED_DATE")
     private LocalDateTime removedDate;
 
+    @Column(name = "HRDR_ID")
+    private HardshipReviewDetailReason detailReason;
+
     @JsonBackReference
     @ManyToOne(optional = false)
     @JoinColumn(name = "HARD_ID", nullable = false)
     private HardshipReviewEntity hardshipReview;
-
-    @ManyToOne()
-    @ToString.Exclude
-    @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "HRDR_ID")
-    private HardshipReviewDetailReasonEntity detailReason;
 
 }

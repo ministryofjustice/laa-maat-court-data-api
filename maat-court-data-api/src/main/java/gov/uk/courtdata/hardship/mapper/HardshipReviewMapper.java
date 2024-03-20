@@ -1,8 +1,10 @@
 package gov.uk.courtdata.hardship.mapper;
 
 import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.enums.HardshipReviewDetailReason;
+import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
+import gov.uk.courtdata.entity.HardshipReviewEntity;
+import gov.uk.courtdata.entity.HardshipReviewProgressEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
@@ -28,14 +30,10 @@ public interface HardshipReviewMapper {
     @Mapping(source = "status", target = "status", qualifiedByName = "mapStatusToHardshipReviewStatusEnum")
     HardshipReviewDTO hardshipReviewEntityToHardshipReviewDTO(final HardshipReviewEntity hardshipReview);
 
-    @Mapping(source = "detailReason", target = "detailReason", qualifiedByName = "mapReasonToReviewDetailReasonEnum")
     HardshipReviewDetail hardshipReviewDetailEntityToHardshipReviewDetail(
             final HardshipReviewDetailEntity reviewDetailEntity
     );
 
-    @Mapping(target = "detailReason.reason",
-            expression = "java(hardshipReviewDetailReason.getReason())"
-    )
     HardshipReviewDetailEntity hardshipReviewDetailToHardshipReviewDetailEntity(
             final HardshipReviewDetail reviewDetail);
 
@@ -61,16 +59,6 @@ public interface HardshipReviewMapper {
 
     @InheritInverseConfiguration
     HardshipReviewEntity hardshipReviewDTOToHardshipReviewEntity(final HardshipReviewDTO hardshipReviewDTO);
-
-    @Named("mapReasonToReviewDetailReasonEnum")
-    default HardshipReviewDetailReason mapReasonToReviewDetailReasonEnum(
-            HardshipReviewDetailReasonEntity detailReason) {
-        if (detailReason != null) {
-            return HardshipReviewDetailReason.getFrom(detailReason.getReason());
-        } else {
-            return null;
-        }
-    }
 
     @Named("mapStatusToHardshipReviewStatusEnum")
     default HardshipReviewStatus mapStatusToHardshipReviewStatusEnum(String status) {

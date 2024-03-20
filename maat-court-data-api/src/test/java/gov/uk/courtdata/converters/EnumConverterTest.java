@@ -32,9 +32,6 @@ public class EnumConverterTest {
     private HardshipReviewDetailRepository hardshipReviewDetailRepository;
 
     @Autowired
-    private HardshipReviewDetailReasonRepository hardshipReviewDetailReasonRepository;
-
-    @Autowired
     private HardshipReviewProgressRepository hardshipReviewProgressRepository;
 
     @Test
@@ -80,21 +77,6 @@ public class EnumConverterTest {
         assertThat(returned.getFrequency()).isEqualTo(Frequency.ANNUALLY);
         assertThat(returned.getDetailCode()).isEqualTo(HardshipReviewDetailCode.DEBTS);
         assertThat(returned.getDetailType()).isEqualTo(HardshipReviewDetailType.INCOME);
-
-    }
-
-    @Test
-    public void givenHardshipReviewDetailReasonEntity_whenEntityIsSaved_thenEnumsArePersisted() {
-
-        HardshipReviewDetailReasonEntity mockEntity = HardshipReviewDetailReasonEntity.builder()
-                .id(1000)
-                .dateCreated(LocalDateTime.now())
-                .userCreated("test-s")
-                .detailType(HardshipReviewDetailType.EXPENDITURE)
-                .build();
-
-        HardshipReviewDetailReasonEntity returned = hardshipReviewDetailReasonRepository.save(mockEntity);
-        assertThat(returned.getDetailType()).isEqualTo(HardshipReviewDetailType.EXPENDITURE);
 
     }
 

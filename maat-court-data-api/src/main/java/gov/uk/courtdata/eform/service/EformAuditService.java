@@ -19,8 +19,7 @@ public class EformAuditService {
         try {
             return eformAuditRepository.findByUsn(usn).get();
         }catch (Exception e){
-            EformsAudit eformsAudit = new EformsAudit();
-            return eformsAudit;
+            return new EformsAudit();
         }
     }
 

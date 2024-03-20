@@ -26,7 +26,6 @@ import gov.uk.courtdata.repository.FinancialAssessmentDetailsHistoryRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentDetailsRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentsHistoryRepository;
-import gov.uk.courtdata.repository.HardshipReviewDetailReasonRepository;
 import gov.uk.courtdata.repository.HardshipReviewDetailRepository;
 import gov.uk.courtdata.repository.HardshipReviewProgressRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
@@ -140,9 +139,6 @@ public class Repositories {
 
     @Autowired
     public FinancialAssessmentsHistoryRepository financialAssessmentsHistory;
-
-    @Autowired
-    public HardshipReviewDetailReasonRepository hardshipReviewDetailReason;
 
     @Autowired
     public HardshipReviewDetailRepository hardshipReviewDetail;
@@ -286,7 +282,6 @@ public class Repositories {
                 financialAssessmentDetails,
                 financialAssessment,
                 financialAssessmentsHistory,
-                hardshipReviewDetailReason,
                 hardshipReviewDetail,
                 hardshipReviewProgress,
                 hardshipReview,

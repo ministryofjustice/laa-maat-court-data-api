@@ -4,11 +4,9 @@ import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.entity.HardshipReviewProgressEntity;
-import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
-import gov.uk.courtdata.repository.HardshipReviewDetailReasonRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +24,6 @@ public class HardshipReviewImpl {
 
     private final HardshipReviewMapper hardshipReviewMapper;
     private final HardshipReviewRepository hardshipReviewRepository;
-    private final HardshipReviewDetailReasonRepository hardshipReviewDetailReasonRepository;
 
     public HardshipReviewEntity find(Integer hardshipReviewId) {
         return hardshipReviewRepository.getReferenceById(hardshipReviewId);
@@ -39,12 +36,6 @@ public class HardshipReviewImpl {
     public HardshipReviewEntity create(final HardshipReviewDTO hardshipReviewDTO) {
         HardshipReviewEntity hardshipReview =
                 hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
-        hardshipReview.getReviewDetails().stream()
-                .filter(detailEntity -> detailEntity.getDetailType().equals(HardshipReviewDetailType.EXPENDITURE))
-                .forEach(detail -> detail.setDetailReason(
-                                 hardshipReviewDetailReasonRepository.getByReasonIs(detail.getDetailReason().getReason())
-                         )
-                );
         return hardshipReviewRepository.saveAndFlush(hardshipReview);
     }
 
@@ -77,13 +68,6 @@ public class HardshipReviewImpl {
                     detail -> {
                         HardshipReviewDetailEntity reviewDetailEntity =
                                 hardshipReviewMapper.hardshipReviewDetailToHardshipReviewDetailEntity(detail);
-                        if (detail.getDetailReason() != null) {
-                            reviewDetailEntity.setDetailReason(
-                                    hardshipReviewDetailReasonRepository.getByReasonIs(
-                                            detail.getDetailReason().getReason()
-                                    )
-                            );
-                        }
                         existing.addReviewDetail(reviewDetailEntity);
                     }
             );

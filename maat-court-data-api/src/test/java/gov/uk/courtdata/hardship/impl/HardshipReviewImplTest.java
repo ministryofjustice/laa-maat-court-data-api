@@ -3,14 +3,11 @@ package gov.uk.courtdata.hardship.impl;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.entity.HardshipReviewDetailReasonEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
-import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
-import gov.uk.courtdata.repository.HardshipReviewDetailReasonRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
@@ -21,7 +18,6 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -48,12 +44,8 @@ class HardshipReviewImplTest {
     @Mock
     private HardshipReviewRepository hardshipReviewRepository;
 
-    @Mock
-    private HardshipReviewDetailReasonRepository hardshipReviewDetailReasonRepository;
-
     @Captor
     private ArgumentCaptor<HardshipReviewEntity> hardshipReviewEntityArgumentCaptor;
-
 
     @Test
     void givenExistingHardshipId_whenFindIsInvoked_thenHardshipIsRetrieved() {
@@ -94,16 +86,6 @@ class HardshipReviewImplTest {
         when(hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(any(HardshipReviewDTO.class)))
                 .thenReturn(TestEntityDataBuilder.getHardshipReviewEntityWithRelationships());
 
-        when(hardshipReviewDetailReasonRepository.getByReasonIs(any(String.class)))
-                .thenReturn(HardshipReviewDetailReasonEntity.builder()
-                                    .id(MOCK_HARDSHIP_ID)
-                                    .accepted("Y")
-                                    .dateCreated(LocalDateTime.now())
-                                    .userCreated("test-s")
-                                    .detailType(HardshipReviewDetailType.INCOME)
-                                    .build()
-                );
-
         hardshipReviewImpl.create(hardshipReviewDTO);
         verify(hardshipReviewRepository).saveAndFlush(hardshipReviewEntityArgumentCaptor.capture());
         assertThat(hardshipReviewEntityArgumentCaptor.getValue().getId())
@@ -126,16 +108,6 @@ class HardshipReviewImplTest {
 
         when(hardshipReviewMapper.newWorkReasonToNewWorkReasonEntity(any(NewWorkReason.class)))
                 .thenReturn(TestEntityDataBuilder.getNewWorkReasonEntity());
-
-        when(hardshipReviewDetailReasonRepository.getByReasonIs(any(String.class)))
-                .thenReturn(HardshipReviewDetailReasonEntity.builder()
-                                    .id(MOCK_HARDSHIP_ID)
-                                    .accepted("Y")
-                                    .dateCreated(LocalDateTime.now())
-                                    .userCreated("test-s")
-                                    .detailType(HardshipReviewDetailType.INCOME)
-                                    .build()
-                );
 
         hardshipReviewImpl.update(hardshipReviewDTO);
 

@@ -55,10 +55,6 @@ public class EformAuditControllerTest {
 
         mvc.perform(MockMvcRequestBuilders.get(BASE_ENDPOINT_FORMAT+"/"+NON_EXISTENT_USN)
                         .contentType(MediaType.APPLICATION_JSON));
-
-
-                //.andExpect(status().isNotFound())
-                //.andExpect(content().json("{\"code\":\"NOT_FOUND\",\"message\":\"The USN ["+NON_EXISTENT_USN+"] does not exist in the data store.\"}"));
     }
 
     @Test

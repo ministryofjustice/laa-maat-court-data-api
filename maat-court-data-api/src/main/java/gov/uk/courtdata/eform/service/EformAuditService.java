@@ -16,7 +16,7 @@ public class EformAuditService {
 
     @Transactional(readOnly = true)
     public EformsAudit retrieve(Integer usn) {
-        return eformAuditRepository.findByUsn(usn).orElse(new EformsAudit());
+        return eformAuditRepository.findByUsn(usn).orElse(EformsAudit.builder().build());
     }
 
     @Transactional()

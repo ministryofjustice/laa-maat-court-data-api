@@ -16,11 +16,7 @@ public class EformAuditService {
 
     @Transactional(readOnly = true)
     public EformsAudit retrieve(Integer usn) {
-        try {
-            return eformAuditRepository.findByUsn(usn).get();
-        }catch (Exception e){
-            return new EformsAudit();
-        }
+        return eformAuditRepository.findByUsn(usn).orElse(new EformsAudit());
     }
 
     @Transactional()

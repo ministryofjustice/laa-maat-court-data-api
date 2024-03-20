@@ -10,7 +10,6 @@ import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
-import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.hardship.*;
@@ -44,7 +43,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private final String BASE_URL = "/api/internal/v1/assessment/hardship";
     private final String HARDSHIP_URL = BASE_URL + "/{hardshipId}";
     private final String HARDSHIP_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
-    private Integer MOCK_REP_ID = 4444;
     private Integer MOCK_REP_ID_2 = 5555;
 
     @Autowired
@@ -52,18 +50,13 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     @Autowired
     private HardshipReviewDetailRepository hardshipReviewDetailRepository;
     @Autowired
-    private HardshipReviewDetailReasonRepository hardshipReviewDetailReasonRepository;
-    @Autowired
     private FinancialAssessmentRepository financialAssessmentRepository;
     @Autowired
     private RepOrderRepository repOrderRepository;
     @Autowired
     private MockNewWorkReasonRepository mockNewWorkReasonRepository;
-    @Autowired
-    private PassportAssessmentRepository passportAssessmentRepository;
 
     private HardshipReviewEntity existingHardshipReview;
-    private HardshipReviewDetailReasonEntity existingHardshipReviewDetailReason;
     private FinancialAssessmentEntity existingFinancialAssessment;
     private FinancialAssessmentEntity existingUnlinkedFinancialAssessment;
     private NewWorkReasonEntity existingNewWorkReason;
@@ -257,15 +250,8 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private void setupTestData() {
         existingNewWorkReason = mockNewWorkReasonRepository.save(
                 TestEntityDataBuilder.getNewWorkReasonEntity());
-        existingHardshipReviewDetailReason = hardshipReviewDetailReasonRepository.save(
-                HardshipReviewDetailReasonEntity.builder()
-                        .id(1)
-                        .reason(HardshipReviewDetailReason.ESSENTIAL_ITEM.getReason())
-                        .detailType(HardshipReviewDetailType.EXPENDITURE)
-                        .userCreated(TEST_USER).build());
 
         RepOrderEntity repOrderEntity = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
-        MOCK_REP_ID = repOrderEntity.getId();
         RepOrderEntity repOrderForUnlink = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(MOCK_REP_ID_2));
         MOCK_REP_ID_2 = repOrderForUnlink.getId();
 
@@ -288,7 +274,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private HardshipReviewDetailEntity getTestHardshipReviewDetailEntity() {
         HardshipReviewDetailEntity hardshipReviewDetail = TestEntityDataBuilder.getHardshipReviewDetailsEntity();
         hardshipReviewDetail.setId(null);
-        hardshipReviewDetail.setDetailReason(existingHardshipReviewDetailReason);
         return hardshipReviewDetail;
     }
 
@@ -323,7 +308,8 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     private HardshipReviewDetailReason getTestHardshipReviewDetailReason() {
-        return HardshipReviewDetailReason.getFrom(existingHardshipReviewDetailReason.getReason());
+//        return HardshipReviewDetailReason.getFrom(existingHardshipReviewDetailReason.getReason());
+        return HardshipReviewDetailReason.ALLOWABLE_EXPENSE;
     }
 
     private FinancialAssessmentEntity getTestFinancialAssessment(RepOrderEntity repOrderEntity) {

@@ -4,10 +4,7 @@ import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.enums.Frequency;
-import gov.uk.courtdata.enums.HardshipReviewDetailType;
-import gov.uk.courtdata.enums.HardshipReviewProgressAction;
-import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
+import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
@@ -28,19 +25,14 @@ public class TestEntityDataBuilder {
     public static final Integer REP_ID = 1234;
     public static final Integer MVO_ID = 5678;
     public static final String TEST_REGISTRATION = "SD51ZDW";
-
     public static final String TEST_USER = "test-f";
     public static final String USER_CREATED_TEST_S = "test-s";
     public static final String ASSESSOR_USER_NAME = "grea-k";
     public static final String ASSESSMENT_TYPE = "INIT";
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
-
     public static final Integer TEST_CASE_ID = 665313;
     public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
     public static final String TEST_ASN_SEQ = "123";
-
-    public static final String TEST_DETAIL_REASON = "Evidence Supplied";
-
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder().id(REP_ID).build();
     }
@@ -358,12 +350,7 @@ public class TestEntityDataBuilder {
                 .accepted("Y")
                 .reasonResponse("evidence provided")
                 .active("false")
-                .detailReason(
-                        HardshipReviewDetailReasonEntity.builder()
-                                .id(1000)
-                                .reason(TEST_DETAIL_REASON)
-                                .build()
-                )
+                .detailReason(HardshipReviewDetailReason.ALLOWABLE_EXPENSE)
                 .build();
     }
 

@@ -43,7 +43,7 @@ public class HardshipReviewController {
     )
     public ResponseEntity<HardshipReviewDTO> getHardship(
             @PathVariable int hardshipId) {
-        log.info("Get Hardship Review Request Received");
+        log.info("Get Hardship Review Request Received for hardship id: {}", hardshipId);
         validationProcessor.validate(hardshipId);
         return ResponseEntity.ok(hardshipReviewService.find(hardshipId));
     }
@@ -81,7 +81,7 @@ public class HardshipReviewController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Retrieve a hardship review record")
+    @Operation(description = "Create a hardship review record")
     @StandardApiResponseCodes
     public ResponseEntity<HardshipReviewDTO> createHardship(
             @Parameter(description = "Hardship review data",

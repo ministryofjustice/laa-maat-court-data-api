@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,7 +47,7 @@ public class EformsDecisionHistoryServiceTest {
     @Test
     void shouldRetrievePreviousEformsDecisionHistoryRecordWroteToResultForGivenUSN() {
         EformsDecisionHistory eformsDecisionHistory = EformsDecisionHistory.builder().id(1).usn(123).wroteToResults("Y").build();
-        when(eformsDecisionHistoryRepository.findFirstByUsnAndWroteToResultsOrderByIdDesc(123, "Y")).thenReturn(eformsDecisionHistory);
+        when(eformsDecisionHistoryRepository.findFirstByUsnAndWroteToResultsOrderByIdDesc(123, "Y")).thenReturn(Optional.ofNullable(eformsDecisionHistory));
         eformsDecisionHistoryService.getPreviousEformsDecisionHistoryRecordWroteToResult(123);
         verify(eformsDecisionHistoryRepository, times(1)).findFirstByUsnAndWroteToResultsOrderByIdDesc(123, "Y");
     }

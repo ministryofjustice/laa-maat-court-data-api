@@ -28,6 +28,11 @@ public class EformAuditServiceTest {
             .usn(USN)
             .maatRef(MAAT_REF)
             .build();
+    private static final EformsAudit BLANK_EFORMS_AUDIT = EformsAudit
+            .builder()
+            .usn(null)
+            .maatRef(null)
+            .build();
 
     @MockBean
     private EformAuditRepository mockEformAuditRepository;
@@ -51,10 +56,7 @@ public class EformAuditServiceTest {
 
     @Test
     void givenNonExistentUSN_whenRetrieveCalled_thenThrowException() {
-        assertThatThrownBy(
-                () -> eformAuditService.retrieve(NON_EXISTENT_USN)
-        ).isInstanceOf(UsnException.class)
-                .hasMessage("The USN ["+NON_EXISTENT_USN+"] does not exist in the data store.");
+        assertEquals(BLANK_EFORMS_AUDIT, eformAuditService.retrieve(NON_EXISTENT_USN));
     }
 
     @Test

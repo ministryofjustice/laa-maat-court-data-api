@@ -19,13 +19,10 @@ import gov.uk.courtdata.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -140,16 +137,5 @@ public class ConcorContributionsService {
             log.info("Concor Contributions files empty {}", ids);
             return false;
         }
-    }
-
-    @NotNull
-    private static String getFilename() {
-        final LocalDateTime date = LocalDateTime.now();
-        final String filename = date.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-        final StringBuilder stringBuilder = new StringBuilder("CONTRIBUTIONS_");
-        stringBuilder.append(filename);
-        stringBuilder.append(".xml");
-        log.info("Contribution file name {}", stringBuilder);
-        return stringBuilder.toString();
     }
 }

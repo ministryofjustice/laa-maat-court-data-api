@@ -222,9 +222,41 @@ class ConcorContributionsServiceTest {
         assertNull(errorEntity.getFdcContributionId());
         assertNull(errorEntity.getDateCreated()); // this is auto-populated by jpa.
         assertEquals(repId,errorEntity.getRepId());
-
     }
 
+
+    @Test
+    void testDrcUpdateNoConcorFound(){
+        int id = 123;
+        String errorText = "Error Text";
+
+        when(concorRepository.findById(id)).thenReturn(Optional.empty());
+        // do
+        concorService.logContributionProcessed(createLogContributionProcessedRequest(id, errorText));
+        // verify
+        verify(concorRepository).findById(id);
+        verify(contributionFileRepository,times(0)).findById(any());
+        verify(contributionFileRepository,times(0)).save(any());
+        verify(contributionFileErrorsRepository, times(0)).save(any());
+    }
+
+    @Test
+    void testDrcUpdateNoFileFound(){
+        int id = 123;
+        int repId = 456;
+        int fileId = 10000;
+        String errorText = "Error Text";
+        ConcorContributionsEntity concorEntity = createConcorContributionEntity(id, repId, fileId);
+        when(concorRepository.findById(id)).thenReturn(Optional.of(concorEntity));
+        when(contributionFileRepository.findById(fileId)).thenReturn(Optional.empty());
+        // do
+        concorService.logContributionProcessed(createLogContributionProcessedRequest(id, errorText));
+        // verify
+        verify(concorRepository).findById(id);
+        verify(contributionFileRepository,times(1)).findById(any());
+        verify(contributionFileRepository,times(0)).save(any());
+        verify(contributionFileErrorsRepository, times(0)).save(any());
+    }
 
     private LogContributionProcessedRequest createLogContributionProcessedRequest(int id, String errorText){
         return LogContributionProcessedRequest.builder()

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -75,7 +76,11 @@ public class ConcorContributionsService {
         return successful;
     }
 
-    private boolean updateContributionFile(int fileId){
+    private boolean updateContributionFile(Integer fileId){
+        if(Objects.isNull(fileId)){
+            log.info("No associated file was found for contribution");
+            return false;
+        }
         Optional<ContributionFilesEntity> optionalEntity = contributionFilesRepository.findById(fileId);
         boolean success = false;
         if ( optionalEntity.isPresent()){

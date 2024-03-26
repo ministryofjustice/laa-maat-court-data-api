@@ -51,9 +51,9 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
     private static int savedEntityId3;
     private static int savedEntityId4;
 
-    private static String fileOne = "FileOne";
+    private static final String fileOne = "FileOne";
     private static int file1Id;
-    private static String fileTwo = "FileTwo";
+    private static final String fileTwo = "FileTwo";
     private static int file2Id;
 
     @BeforeEach

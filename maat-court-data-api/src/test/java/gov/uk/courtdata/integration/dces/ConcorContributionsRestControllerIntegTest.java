@@ -159,11 +159,7 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
 
     @Test
     void testLogDrcProcessedNoErrors() throws Exception {
-        String s = """
-                    {
-                        "concorId" : %s,
-                        "errorText" : "%s"
-                    }""".formatted(savedEntityId1,"");
+        String s = createLogDrcProcessedRequest(savedEntityId1,"");
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -183,11 +179,7 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
     @Test
     void testLogDrcProcessedWithErrors() throws Exception {
         String errorText = "ErrorText";
-        String s = """
-                    {
-                        "concorId" : %s,
-                        "errorText" : "%s"
-                    }""".formatted(savedEntityId1,errorText);
+        String s = createLogDrcProcessedRequest(savedEntityId1,errorText);
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -213,11 +205,7 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
 
     @Test
     void testLogDrcProcessedNoFile() throws Exception {
-        String s = """
-                    {
-                        "concorId" : %s,
-                        "errorText" : "%s"
-                    }""".formatted(savedEntityId3,"");
+        String s = createLogDrcProcessedRequest(savedEntityId3,"");
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -229,5 +217,12 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
         assertEquals(0, repos.contributionFileErrors.count());
     }
 
+    private String createLogDrcProcessedRequest(Integer id, String errorText){
+        return  """
+                    {
+                        "concorId" : %s,
+                        "errorText" : "%s"
+                    }""".formatted(id,errorText);
+    }
 
 }

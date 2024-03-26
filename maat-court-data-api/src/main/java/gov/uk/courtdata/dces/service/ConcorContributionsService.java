@@ -6,7 +6,6 @@ import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.dces.util.ContributionFileUtil;
-import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
@@ -98,13 +97,7 @@ public class ConcorContributionsService {
     }
 
     private boolean saveErrorMessage(LogContributionProcessedRequest request, ConcorContributionsEntity concorEntity){
-        contributionFileErrorsRepository.save(ContributionFileErrorsEntity.builder()
-                .contributionId(request.getConcorId())
-                .concorContributionId(request.getConcorId())
-                .errorText(request.getErrorText())
-                .repId(concorEntity.getRepId())
-                .contributionFileId(concorEntity.getContribFileId())
-                .build());
+        contributionFileErrorsRepository.save(ContributionFileUtil.buildContributionFileError(request,concorEntity));
         return true;
     }
 

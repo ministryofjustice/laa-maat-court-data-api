@@ -1,15 +1,21 @@
 package gov.uk.courtdata.dces.service;
 
+import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
+import gov.uk.courtdata.dces.util.ContributionFileUtil;
+import gov.uk.courtdata.entity.ConcorContributionsEntity;
+import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
+import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.testutils.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,17 +23,23 @@ import java.time.format.DateTimeFormatter;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
-@WebMvcTest(DebtCollectionService.class)
 class DebtCollectionServiceTest {
 
-    @MockBean
+    @Mock
     private DebtCollectionRepository debtCollectionRepository;
 
-    @Autowired
+    @Mock
+    private ContributionFileErrorsRepository contributionFileErrorsRepository;
+
+    @InjectMocks
     private DebtCollectionService debtCollectionService;
     private static final String USER_CREATED = "MLA";
 
     private ContributionFilesEntity contributionFilesEntity;
+
+    @Captor
+    private ArgumentCaptor<ContributionFileErrorsEntity> errorEntityCaptor;
+
    @BeforeEach
     void setUp() {
        String xmlDoc = FileUtils.readResourceToString("eform/request/xmlDoc_default.xml");
@@ -77,4 +89,31 @@ class DebtCollectionServiceTest {
         String formattedDate = debtCollectionService.convertToCorrectDateFormat( LocalDate.of(2020,9,1));
         Assertions.assertNotEquals("01-09-2020",formattedDate);
     }
+
+    @Test
+    void givenFileData_ShouldSaveError(){
+       int concorId = 444;
+       int fileId = 999;
+       int repId = 111;
+       String errorText = "ErrorText";
+       LocalDate currDate = LocalDate.now();
+
+       when(contributionFileErrorsRepository.save(errorEntityCaptor.capture())).thenReturn(null);
+
+       ConcorContributionsEntity concorEntity = ConcorContributionsEntity.builder().id(concorId).contribFileId(fileId).repId(repId).build();
+       LogContributionProcessedRequest request = LogContributionProcessedRequest.builder().concorId(concorId).errorText(errorText).build();
+       debtCollectionService.saveError(ContributionFileUtil.buildContributionFileError(request,concorEntity));
+
+        ContributionFileErrorsEntity entityToSave = errorEntityCaptor.getValue();
+        assertEquals(concorId, entityToSave.getConcorContributionId());
+        assertEquals(concorId, entityToSave.getContributionId());
+        assertNull(entityToSave.getFdcContributionId());
+        assertEquals(repId, entityToSave.getRepId());
+        assertEquals(fileId, entityToSave.getContributionFileId());
+        assertEquals(errorText, entityToSave.getErrorText());
+        assertEquals(currDate, entityToSave.getDateCreated());
+
+
+    }
+
 }

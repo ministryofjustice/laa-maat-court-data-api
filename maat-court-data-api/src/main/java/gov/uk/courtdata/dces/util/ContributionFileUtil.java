@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -63,6 +64,7 @@ public class ContributionFileUtil {
                 .errorText(request.getErrorText())
                 .repId(repId)
                 .contributionFileId(fileId)
+                .dateCreated(LocalDate.now())
                 .build();
     }
 

@@ -12,7 +12,6 @@ import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.ConcorContributionsRepository;
-import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,7 @@ public class ConcorContributionsService {
     private final ContributionFileMapper contributionFileMapper;
     private final DebtCollectionRepository debtCollectionRepository;
     private final ContributionFilesRepository contributionFilesRepository;
-    private final ContributionFileErrorsRepository contributionFileErrorsRepository;
+    private final DebtCollectionService debtCollectionService;
 
     public List<ConcorContributionResponse> getConcorContributionFiles(ConcorContributionStatus status) {
         log.info("Getting concor contribution file with status with the -> {}", status);
@@ -97,8 +96,7 @@ public class ConcorContributionsService {
     }
 
     private boolean saveErrorMessage(LogContributionProcessedRequest request, ConcorContributionsEntity concorEntity){
-        contributionFileErrorsRepository.save(ContributionFileUtil.buildContributionFileError(request,concorEntity));
-        return true;
+        return debtCollectionService.saveError(ContributionFileUtil.buildContributionFileError(request, concorEntity));
     }
 
     private ContributionFilesEntity createContributionFile(CreateContributionFileRequest contributionRequest) {

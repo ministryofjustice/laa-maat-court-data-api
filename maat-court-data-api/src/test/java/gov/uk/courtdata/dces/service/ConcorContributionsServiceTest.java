@@ -56,6 +56,9 @@ class ConcorContributionsServiceTest {
     private DebtCollectionRepository debtCollectionRepository;
 
     @Mock
+    private DebtCollectionService debtCollectionService;
+
+    @Mock
     private ContributionFileErrorsRepository contributionFileErrorsRepository;
 
 
@@ -199,6 +202,7 @@ class ConcorContributionsServiceTest {
 
         when(concorRepository.findById(id)).thenReturn(Optional.of(concorEntity));
         when(contributionFileRepository.findById(fileId)).thenReturn(Optional.of(fileEntity));
+        when(debtCollectionService.saveError(fileErrorCaptor.capture())).thenReturn(true);
         // do
         concorService.logContributionProcessed(createLogContributionProcessedRequest(id, errorText));
         // verify
@@ -212,7 +216,7 @@ class ConcorContributionsServiceTest {
         // only changes should be the received count. So increment and ensure equal.
         imitateUpdateContributionFileUpdate(originalFileEntity);
         assertEquals(originalFileEntity, savedEntity);
-        verify(contributionFileErrorsRepository, times(1)).save(fileErrorCaptor.capture());
+//        verify(contributionFileErrorsRepository, times(1)).save(fileErrorCaptor.capture());
         ContributionFileErrorsEntity errorEntity = fileErrorCaptor.getValue();
 
         assertEquals(errorText,errorEntity.getErrorText());

@@ -12,7 +12,6 @@ import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.ConcorContributionsRepository;
-import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,7 +31,6 @@ public class ConcorContributionsService {
     private final ConcorContributionsRepository concorRepository;
     private final ContributionFileMapper contributionFileMapper;
     private final DebtCollectionRepository debtCollectionRepository;
-    private final ContributionFilesRepository contributionFilesRepository;
     private final DebtCollectionService debtCollectionService;
 
     public List<ConcorContributionResponse> getConcorContributionFiles(ConcorContributionStatus status) {
@@ -64,35 +60,14 @@ public class ConcorContributionsService {
         if(optionalConcorEntry.isPresent()) {
             ConcorContributionsEntity concorEntity = optionalConcorEntry.get();
             log.info("Contribution found: {}", concorEntity.getId());
-            successful = updateContributionFile(concorEntity.getContribFileId());
+            successful = debtCollectionService.updateContributionFileReceivedCount(concorEntity.getContribFileId());
             // check if error
-            if(!StringUtils.isEmpty(request.getErrorText()) ){
-                successful = successful && saveErrorMessage(request, concorEntity);
+            if(successful && !StringUtils.isEmpty(request.getErrorText()) ){
+                successful = saveErrorMessage(request, concorEntity);
             }
 
         }
         return successful;
-    }
-
-    private boolean updateContributionFile(Integer fileId){
-        if(Objects.isNull(fileId)){
-            log.info("No associated file was found for contribution");
-            return false;
-        }
-        Optional<ContributionFilesEntity> optionalEntity = contributionFilesRepository.findById(fileId);
-        boolean success = false;
-        if ( optionalEntity.isPresent()){
-            ContributionFilesEntity filesEntity = optionalEntity.get();
-            filesEntity.incrementReceivedCount();
-            LocalDate currentDate = LocalDate.now();
-            filesEntity.setDateReceived(currentDate);
-            filesEntity.setDateModified(currentDate);
-            filesEntity.setUserModified("DCES");
-            contributionFilesRepository.save(filesEntity);
-            success = true;
-            log.info("Update of file id : {} successful", fileId);
-        }
-        return success;
     }
 
     private boolean saveErrorMessage(LogContributionProcessedRequest request, ConcorContributionsEntity concorEntity){

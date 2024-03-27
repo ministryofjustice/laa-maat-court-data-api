@@ -31,7 +31,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -167,25 +166,15 @@ class ConcorContributionsServiceTest {
         int repId = 456;
         int fileId = 10000;
 
-        ContributionFilesEntity fileEntity = getContributionFilesEntity(fileId);
-        ContributionFilesEntity originalFileEntity = getContributionFilesEntity(fileId);
         ConcorContributionsEntity concorEntity = createConcorContributionEntity(id, repId, fileId);
 
         when(concorRepository.findById(id)).thenReturn(Optional.of(concorEntity));
-        when(contributionFileRepository.findById(fileId)).thenReturn(Optional.of(fileEntity));
+        when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(true);
         // do
         concorService.logContributionProcessed(createLogContributionProcessedRequest(id, ""));
         // verify
         verify(concorRepository).findById(id);
-        verify(contributionFileRepository).findById(fileId);
-        verify(contributionFileRepository,times(1)).save(contributionFilesEntityArgumentCaptor.capture());
-        ContributionFilesEntity savedEntity = contributionFilesEntityArgumentCaptor.getValue();
-        assertTrue(Objects.nonNull(savedEntity));
-        // we should have incremented the received.
-        assertEquals(originalFileEntity.getRecordsReceived()+1, savedEntity.getRecordsReceived());
-        // only changes should be the received count. So increment and ensure equal.
-        imitateUpdateContributionFileUpdate(originalFileEntity);
-        assertEquals(originalFileEntity, savedEntity);
+        verify(debtCollectionService).updateContributionFileReceivedCount(fileId);
         verify(contributionFileErrorsRepository, times(0)).save(any());
     }
 
@@ -196,27 +185,17 @@ class ConcorContributionsServiceTest {
         int fileId = 10000;
         String errorText = "Error Text";
 
-        ContributionFilesEntity fileEntity = getContributionFilesEntity(fileId);
-        ContributionFilesEntity originalFileEntity = getContributionFilesEntity(fileId);
         ConcorContributionsEntity concorEntity = createConcorContributionEntity(id, repId, fileId);
 
         when(concorRepository.findById(id)).thenReturn(Optional.of(concorEntity));
-        when(contributionFileRepository.findById(fileId)).thenReturn(Optional.of(fileEntity));
+
         when(debtCollectionService.saveError(fileErrorCaptor.capture())).thenReturn(true);
+        when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(true);
         // do
         concorService.logContributionProcessed(createLogContributionProcessedRequest(id, errorText));
         // verify
         verify(concorRepository).findById(id);
-        verify(contributionFileRepository).findById(fileId);
-        verify(contributionFileRepository,times(1)).save(contributionFilesEntityArgumentCaptor.capture());
-        ContributionFilesEntity savedEntity = contributionFilesEntityArgumentCaptor.getValue();
-        assertTrue(Objects.nonNull(savedEntity));
-        // we should have incremented the received.
-        assertEquals(originalFileEntity.getRecordsReceived()+1, savedEntity.getRecordsReceived());
-        // only changes should be the received count. So increment and ensure equal.
-        imitateUpdateContributionFileUpdate(originalFileEntity);
-        assertEquals(originalFileEntity, savedEntity);
-//        verify(contributionFileErrorsRepository, times(1)).save(fileErrorCaptor.capture());
+        verify(debtCollectionService).updateContributionFileReceivedCount(fileId);
         ContributionFileErrorsEntity errorEntity = fileErrorCaptor.getValue();
 
         assertEquals(errorText,errorEntity.getErrorText());
@@ -224,7 +203,7 @@ class ConcorContributionsServiceTest {
         assertEquals(id,errorEntity.getContributionId());
         assertEquals(fileId,errorEntity.getContributionFileId());
         assertNull(errorEntity.getFdcContributionId());
-        assertNull(errorEntity.getDateCreated()); // this is auto-populated by jpa.
+        assertEquals(LocalDate.now(),errorEntity.getDateCreated());
         assertEquals(repId,errorEntity.getRepId());
     }
 
@@ -252,14 +231,15 @@ class ConcorContributionsServiceTest {
         String errorText = "Error Text";
         ConcorContributionsEntity concorEntity = createConcorContributionEntity(id, repId, fileId);
         when(concorRepository.findById(id)).thenReturn(Optional.of(concorEntity));
-        when(contributionFileRepository.findById(fileId)).thenReturn(Optional.empty());
+        when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(false);
         // do
-        concorService.logContributionProcessed(createLogContributionProcessedRequest(id, errorText));
+        boolean result = concorService.logContributionProcessed(createLogContributionProcessedRequest(id, errorText));
+        assertFalse(result);
         // verify
         verify(concorRepository).findById(id);
-        verify(contributionFileRepository,times(1)).findById(any());
-        verify(contributionFileRepository,times(0)).save(any());
-        verify(contributionFileErrorsRepository, times(0)).save(any());
+        verify(debtCollectionService,times(1)).updateContributionFileReceivedCount(any());
+        // verify no error is saved, as file is not found.
+        verify(debtCollectionService,times(0)).saveError(any());
     }
 
     private LogContributionProcessedRequest createLogContributionProcessedRequest(int id, String errorText){
@@ -267,14 +247,6 @@ class ConcorContributionsServiceTest {
                 .concorId(id)
                 .errorText(errorText)
                 .build();
-    }
-
-    private void imitateUpdateContributionFileUpdate(ContributionFilesEntity fileEntity){
-        LocalDate currentDate = LocalDate.now();
-        fileEntity.setDateModified(currentDate);
-        fileEntity.setDateReceived(currentDate);
-        fileEntity.incrementReceivedCount();
-        fileEntity.setUserModified("DCES");
     }
 
     private static ContributionFilesEntity getContributionFilesEntity(int id) {

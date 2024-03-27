@@ -6,6 +6,7 @@ import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
+import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.testutils.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,14 +21,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.List;
 import java.time.format.DateTimeFormatter;
-import static org.mockito.Mockito.when;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 class DebtCollectionServiceTest {
 
     @Mock
     private DebtCollectionRepository debtCollectionRepository;
 
+    @Mock
+    private ContributionFilesRepository contributionFilesRepository;
     @Mock
     private ContributionFileErrorsRepository contributionFileErrorsRepository;
 
@@ -39,6 +46,8 @@ class DebtCollectionServiceTest {
 
     @Captor
     private ArgumentCaptor<ContributionFileErrorsEntity> errorEntityCaptor;
+    @Captor
+    private ArgumentCaptor<ContributionFilesEntity> contributionFilesEntityArgumentCaptor;
 
    @BeforeEach
     void setUp() {
@@ -115,5 +124,75 @@ class DebtCollectionServiceTest {
 
 
     }
+
+    @Test
+    void TestUpdateContributionFileReceivedCountSuccess(){
+        //setup
+        int fileId = 444;
+        ContributionFilesEntity fileEntity = getContributionFilesEntity(fileId);
+        ContributionFilesEntity originalFileEntity = getContributionFilesEntity(fileId);
+        when(contributionFilesRepository.findById(fileId)).thenReturn(Optional.of(fileEntity));
+        when(contributionFilesRepository.save(contributionFilesEntityArgumentCaptor.capture())).thenReturn(fileEntity);
+        //do
+        debtCollectionService.updateContributionFileReceivedCount(fileId);
+        //test
+        verify(contributionFilesRepository).findById(fileId);
+        verify(contributionFilesRepository).save(any());
+
+        ContributionFilesEntity savedEntity = contributionFilesEntityArgumentCaptor.getValue();
+        assertEquals(originalFileEntity.getRecordsReceived()+1, savedEntity.getRecordsReceived(), "RecordsReceived has not been incremented");
+
+        imitateUpdateContributionFileUpdate(originalFileEntity);
+        // check what changes have been made to the entity. Should match the as expected.
+        assertEquals(originalFileEntity, savedEntity, "Unexpected changes have been made to the file entity.");
+    }
+    @Test
+    void TestUpdateContributionFileReceivedCountNoFile(){
+        //setup
+        int fileId = 444;
+        when(contributionFilesRepository.findById(fileId)).thenReturn(Optional.empty());
+        //do
+        debtCollectionService.updateContributionFileReceivedCount(fileId);
+        //test
+        verify(contributionFilesRepository).findById(fileId);
+        verify(contributionFilesRepository,times(0)).save(any());
+    }
+
+    private ContributionFilesEntity getContributionFilesEntity(int id) {
+        return new ContributionFilesEntity(
+                id,
+                "dummyFile.txt",
+                10,
+                0,
+                LocalDate.of(2023, 10, 10),
+                "dummyUser",
+                LocalDate.of(2023, 10, 11),
+                "anotherDummyUser",
+                "<xml>dummyContent</xml>",
+                LocalDate.of(2023, 10, 12),
+                LocalDate.of(2023, 10, 13),
+                "<xml>ackDummyContent</xml>"
+        );
+    }
+
+    private void imitateUpdateContributionFileUpdate(ContributionFilesEntity fileEntity){
+        LocalDate currentDate = LocalDate.now();
+        fileEntity.setDateModified(currentDate);
+        fileEntity.setDateReceived(currentDate);
+        fileEntity.incrementReceivedCount();
+        fileEntity.setUserModified("DCES");
+    }
+
+    //        when(contributionFileRepository.findById(fileId)).thenReturn(Optional.of(fileEntity));
+//        verify(contributionFileRepository,times(1)).save(contributionFilesEntityArgumentCaptor.capture());
+//        ContributionFilesEntity savedEntity = contributionFilesEntityArgumentCaptor.getValue();
+//        assertTrue(Objects.nonNull(savedEntity));
+//        // we should have incremented the received.
+//        assertEquals(originalFileEntity.getRecordsReceived()+1, savedEntity.getRecordsReceived());
+//        // only changes should be the received count. So increment and ensure equal.
+//        imitateUpdateContributionFileUpdate(originalFileEntity);
+//        assertEquals(originalFileEntity, savedEntity);
+//        verify(contributionFileErrorsRepository, times(1)).save(fileErrorCaptor.capture());
+
 
 }

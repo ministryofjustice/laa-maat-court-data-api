@@ -32,7 +32,7 @@ class ConcorContributionsRestControllerTest {
     private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement";
     private static final String CREATE_CONTRIBUTION_FILE_URL = "/create-contribution-file";
     private static final String CONCOR_CONTRIBUTION_FILES_URL = "/concor-contribution-files";
-    private static final String DRC_UPDATE_URL = "/log-contribution-processed";
+    private static final String DRC_UPDATE_URL = "/log-contribution-response";
 
     @Autowired
     private MockMvc mvc;

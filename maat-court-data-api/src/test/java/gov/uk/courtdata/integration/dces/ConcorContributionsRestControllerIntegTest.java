@@ -36,7 +36,7 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
     private static final String ATOMIC_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/create-contribution-file";
 
     private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/concor-contribution-files?status=";
-    private static final String DRC_UPDATE_URL = "/api/internal/v1/debt-collection-enforcement/log-contribution-processed";
+    private static final String DRC_UPDATE_URL = "/api/internal/v1/debt-collection-enforcement/log-contribution-response";
 
     @Autowired
     private ConcorContributionsRepository concorRepository;

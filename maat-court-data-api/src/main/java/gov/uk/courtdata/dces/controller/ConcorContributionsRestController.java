@@ -55,7 +55,7 @@ public class ConcorContributionsRestController {
 
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
-    @PostMapping(value = "/log-contribution-processed", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/log-contribution-response", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Logs that a contribution was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
     public ResponseEntity<Boolean> createContributionFileError(@RequestBody final LogContributionProcessedRequest request) {
         log.info("Update contribution file sent value, and log any errors with request {}", request);

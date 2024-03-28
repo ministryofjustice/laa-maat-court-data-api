@@ -183,16 +183,4 @@ class DebtCollectionServiceTest {
         fileEntity.setUserModified("DCES");
     }
 
-    //        when(contributionFileRepository.findById(fileId)).thenReturn(Optional.of(fileEntity));
-//        verify(contributionFileRepository,times(1)).save(contributionFilesEntityArgumentCaptor.capture());
-//        ContributionFilesEntity savedEntity = contributionFilesEntityArgumentCaptor.getValue();
-//        assertTrue(Objects.nonNull(savedEntity));
-//        // we should have incremented the received.
-//        assertEquals(originalFileEntity.getRecordsReceived()+1, savedEntity.getRecordsReceived());
-//        // only changes should be the received count. So increment and ensure equal.
-//        imitateUpdateContributionFileUpdate(originalFileEntity);
-//        assertEquals(originalFileEntity, savedEntity);
-//        verify(contributionFileErrorsRepository, times(1)).save(fileErrorCaptor.capture());
-
-
 }

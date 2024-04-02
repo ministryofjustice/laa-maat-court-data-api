@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -180,6 +181,7 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
     void testLogDrcProcessedWithErrors() throws Exception {
         String errorText = "ErrorText";
         String s = createLogDrcProcessedRequest(savedEntityId1,errorText);
+        LocalDateTime dateTimeCheck = LocalDateTime.now();
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -199,7 +201,10 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
         assertEquals(savedEntityId1, errorEntity.getContributionId());
         assertEquals(errorText, errorEntity.getErrorText());
         assertEquals(file1Id, errorEntity.getContributionFileId());
-        assertEquals(LocalDate.now(), errorEntity.getDateCreated());
+
+        assertEquals(dateTimeCheck.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
+        assertEquals(dateTimeCheck.getMonth(), errorEntity.getDateCreated().getMonth());
+        assertEquals(dateTimeCheck.getYear(), errorEntity.getDateCreated().getYear());
 
     }
 

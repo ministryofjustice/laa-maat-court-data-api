@@ -12,8 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -50,5 +49,5 @@ public class ContributionFileErrorsEntity {
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE")
-    private LocalDate dateCreated;
+    private LocalDateTime dateCreated;
 }

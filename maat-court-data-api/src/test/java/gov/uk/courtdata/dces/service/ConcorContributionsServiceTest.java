@@ -29,6 +29,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -184,6 +185,7 @@ class ConcorContributionsServiceTest {
         int repId = 456;
         int fileId = 10000;
         String errorText = "Error Text";
+        LocalDateTime currDate = LocalDateTime.now();
 
         ConcorContributionsEntity concorEntity = createConcorContributionEntity(id, repId, fileId);
 
@@ -203,8 +205,10 @@ class ConcorContributionsServiceTest {
         assertEquals(id,errorEntity.getContributionId());
         assertEquals(fileId,errorEntity.getContributionFileId());
         assertNull(errorEntity.getFdcContributionId());
-        assertEquals(LocalDate.now(),errorEntity.getDateCreated());
         assertEquals(repId,errorEntity.getRepId());
+        assertEquals(currDate.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
+        assertEquals(currDate.getMonth(), errorEntity.getDateCreated().getMonth());
+        assertEquals(currDate.getYear(), errorEntity.getDateCreated().getYear());
     }
 
 

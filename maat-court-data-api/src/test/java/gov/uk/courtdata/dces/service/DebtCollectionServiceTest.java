@@ -120,7 +120,9 @@ class DebtCollectionServiceTest {
         assertEquals(repId, entityToSave.getRepId());
         assertEquals(fileId, entityToSave.getContributionFileId());
         assertEquals(errorText, entityToSave.getErrorText());
-        assertEquals(currDate, entityToSave.getDateCreated());
+        assertEquals(currDate.getDayOfMonth(), entityToSave.getDateCreated().getDayOfMonth());
+        assertEquals(currDate.getMonth(), entityToSave.getDateCreated().getMonth());
+        assertEquals(currDate.getYear(), entityToSave.getDateCreated().getYear());
 
 
     }

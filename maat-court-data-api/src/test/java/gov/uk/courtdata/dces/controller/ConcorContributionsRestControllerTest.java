@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
+import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
@@ -29,6 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ConcorContributionsRestControllerTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement";
+    private static final String CREATE_CONTRIBUTION_FILE_URL = "/create-contribution-file";
+    private static final String CONCOR_CONTRIBUTION_FILES_URL = "/concor-contribution-files";
+    private static final String DRC_UPDATE_URL = "/log-contribution-response";
 
     @Autowired
     private MockMvc mvc;
@@ -45,7 +49,7 @@ class ConcorContributionsRestControllerTest {
                         ConcorContributionResponse.builder().concorContributionId(2).xmlContent("SecondXMLFile").build(),
                         ConcorContributionResponse.builder().concorContributionId(3).xmlContent("ThirdXMLFile").build()));
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/concor-contribution-files"))
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
                         .queryParam("status", ConcorContributionStatus.ACTIVE.name())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -63,7 +67,7 @@ class ConcorContributionsRestControllerTest {
 
         when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE)).thenReturn(List.of());
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/concor-contribution-files"))
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
                         .queryParam("status", ConcorContributionStatus.ACTIVE.name())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -72,7 +76,7 @@ class ConcorContributionsRestControllerTest {
 
     @Test
     void testContributionFileContentWhenQueryParamIsNotProvided() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/concor-contribution-files"))
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
     }
@@ -89,7 +93,7 @@ class ConcorContributionsRestControllerTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(createContributionFileRequest);
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  +"/create-contribution-file"))
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CREATE_CONTRIBUTION_FILE_URL))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -109,7 +113,7 @@ class ConcorContributionsRestControllerTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(createContributionFileRequest);
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  +"/create-contribution-file"))
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CREATE_CONTRIBUTION_FILE_URL))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is5xxServerError());
@@ -128,11 +132,55 @@ class ConcorContributionsRestControllerTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(createContributionFileRequest);
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  +"/create-contribution-file"))
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CREATE_CONTRIBUTION_FILE_URL))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("message").value("ContributionIds are empty/null."))
                 .andExpect(jsonPath("code").value("BAD_REQUEST"));
+    }
+
+    @Test
+    void testLogDrcProcessedNoErrorSuccess() throws Exception {
+        int id = 1234;
+        String errorText = "";
+        LogContributionProcessedRequest request = LogContributionProcessedRequest.builder()
+                .concorId(id)
+                .errorText(errorText)
+                .build();
+        when(concorContributionsService.logContributionProcessed(request))
+                .thenReturn(true);
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
+                .content(createDrcUpdateJson(id, errorText))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("true"));
+    }
+
+    @Test
+    void testLogDrcProcessedError() throws Exception {
+        int id = 1234;
+        String errorText = "";
+        LogContributionProcessedRequest request = LogContributionProcessedRequest.builder()
+                .concorId(id)
+                .errorText(errorText)
+                .build();
+        when(concorContributionsService.logContributionProcessed(request))
+                .thenThrow(new MAATCourtDataException("Test Error"));
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
+                        .content(createDrcUpdateJson(id, errorText))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("message").value("Test Error"));
+    }
+
+    private String createDrcUpdateJson(int concorId, String errorText){
+        return """
+                {
+                    "concorId" : %s,
+                    "errorText" : "%s"
+                }
+                """.formatted(concorId, errorText);
+
     }
 }

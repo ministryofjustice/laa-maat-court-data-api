@@ -3,9 +3,11 @@ package gov.uk.courtdata.dces.util;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
+import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
 import gov.uk.courtdata.dces.request.LogProcessedRequest;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
+import gov.uk.courtdata.entity.FdcContributionsEntity;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +59,16 @@ public class ContributionFileUtil {
         errorEntity.setConcorContributionId(concorId);
         return errorEntity;
     }
+
+    public ContributionFileErrorsEntity buildContributionFileError(LogFdcProcessedRequest request, FdcContributionsEntity fdcEntity){
+        ContributionFileErrorsEntity errorEntity = buildBaseErrorEntity(request, fdcEntity.getRepOrderEntity().getId(), fdcEntity.getContFileId());
+        Integer fdcId = request.getFdcId();
+        errorEntity.setContributionId(fdcId);
+        errorEntity.setFdcContributionId(fdcId);
+        return errorEntity;
+    }
+
+
 
     private ContributionFileErrorsEntity buildBaseErrorEntity(LogProcessedRequest request, Integer repId, Integer fileId){
         return ContributionFileErrorsEntity.builder()

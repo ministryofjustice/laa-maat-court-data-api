@@ -36,7 +36,7 @@ public class EformsDecisionHistoryService {
 
     @Transactional(readOnly = true)
     public EformsDecisionHistory getPreviousEformsDecisionHistoryRecordWroteToResult(Integer usn) {
-        return eformsDecisionHistoryRepository.findFirstByUsnAndWroteToResultsOrderByIdDesc(usn, WROTE_TO_RESULT);
+        return eformsDecisionHistoryRepository.findFirstByUsnAndWroteToResultsOrderByIdDesc(usn, WROTE_TO_RESULT).orElse(EformsDecisionHistory.builder().build());
     }
 
     @Transactional

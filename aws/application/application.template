@@ -685,6 +685,7 @@ Resources:
           - !Ref CognitoUserPoolMAATOrchestrationService
           - !Ref CognitoUserPoolClientClaimForCrownCourtDefence
           - !Ref CognitoUserPoolClientCrimeValidationService
+          - !Ref CognitoUserPoolClientATSService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiAuthorizerForDces:
     Type: 'AWS::ApiGatewayV2::Authorizer'

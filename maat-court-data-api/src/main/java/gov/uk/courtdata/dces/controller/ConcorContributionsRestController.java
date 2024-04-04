@@ -1,6 +1,7 @@
 package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.annotation.StandardApiResponse;
+import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
@@ -49,6 +50,16 @@ public class ConcorContributionsRestController {
     public ResponseEntity<Boolean> updateContributionFileStatus(@RequestBody @NotEmpty final CreateContributionFileRequest request) {
         log.info("Update concor contribution file references with request {}", request);
         boolean response = concorContributionsService.createContributionAndUpdateConcorStatus(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @PostMapping(value = "/log-contribution-response", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Logs that a contribution was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
+    public ResponseEntity<Boolean> createContributionFileError(@RequestBody final LogContributionProcessedRequest request) {
+        log.info("Update contribution file sent value, and log any errors with request {}", request);
+        boolean response = concorContributionsService.logContributionProcessed(request);
         return ResponseEntity.ok(response);
     }
 }

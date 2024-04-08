@@ -1,5 +1,7 @@
 package gov.uk.courtdata.dto.application;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import gov.uk.courtdata.dao.jackson.LocalDateTimeDeserializer;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 public class GenericDTO {
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime timestamp;
     private Boolean selected;
     @Builder.Default

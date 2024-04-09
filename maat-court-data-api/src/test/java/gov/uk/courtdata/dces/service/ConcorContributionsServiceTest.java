@@ -6,13 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
+import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
+import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.ConcorContributionsRepository;
+import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.testutils.FileUtils;
 import org.jetbrains.annotations.NotNull;
@@ -26,8 +29,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,13 +55,22 @@ class ConcorContributionsServiceTest {
     @Mock
     private DebtCollectionRepository debtCollectionRepository;
 
+    @Mock
+    private DebtCollectionService debtCollectionService;
+
+    @Mock
+    private ContributionFileErrorsRepository contributionFileErrorsRepository;
+
 
     @Captor
-    private ArgumentCaptor<ContributionFilesEntity> contributionEntityArgumentCaptor;
+    private ArgumentCaptor<ContributionFilesEntity> contributionFilesEntityArgumentCaptor;
     @Captor
-    private ArgumentCaptor<List<ConcorContributionsEntity>> concorContributionEntityArgumentCaptor;
+    private ArgumentCaptor<List<ConcorContributionsEntity>> concorContributionEntityListArgumentCaptor;
     @Captor
     private ArgumentCaptor<ConcorContributionStatus> statusCaptor;
+    @Captor
+    private ArgumentCaptor<ContributionFileErrorsEntity> fileErrorCaptor;
+
 
     @BeforeEach
     void setUp() {
@@ -94,18 +108,18 @@ class ConcorContributionsServiceTest {
                 .concorContributionIds(Set.of(1))
                 .xmlContent(getXmlDocContent())
                 .build();
-        final ContributionFilesEntity dummyEntity = getContributionFilesEntity();
+        final ContributionFilesEntity dummyEntity = getContributionFilesEntity(1);
 
         when(concorRepository.findByIdIn(any())).thenReturn(concorContributionFiles);
         when(contributionFileMapper.toContributionFileEntity(createContributionFileRequest)).thenReturn(dummyEntity);
 
         final boolean actualResponse = concorService.createContributionAndUpdateConcorStatus(createContributionFileRequest);
 
-        verify(debtCollectionRepository).save(contributionEntityArgumentCaptor.capture());
-        verify(concorRepository).saveAll(concorContributionEntityArgumentCaptor.capture());
+        verify(debtCollectionRepository).save(contributionFilesEntityArgumentCaptor.capture());
+        verify(concorRepository).saveAll(concorContributionEntityListArgumentCaptor.capture());
 
-        final ContributionFilesEntity actualContributionFileEntity = contributionEntityArgumentCaptor.getValue();
-        final List<ConcorContributionsEntity> contributionEntityList =  concorContributionEntityArgumentCaptor.getValue();
+        final ContributionFilesEntity actualContributionFileEntity = contributionFilesEntityArgumentCaptor.getValue();
+        final List<ConcorContributionsEntity> contributionEntityList =  concorContributionEntityListArgumentCaptor.getValue();
 
         assertTrue(actualResponse);
         assertNotNull(actualContributionFileEntity);
@@ -120,16 +134,16 @@ class ConcorContributionsServiceTest {
         final CreateContributionFileRequest createContributionFileRequest = CreateContributionFileRequest.builder()
                 .concorContributionIds(Set.of(1))
                 .xmlContent(getXmlDocContent()).build();
-        ContributionFilesEntity dummyEntity = getContributionFilesEntity();
+        ContributionFilesEntity dummyEntity = getContributionFilesEntity(1);
 
         when(concorRepository.findByIdIn(any())).thenReturn(new ArrayList<>());
         when(contributionFileMapper.toContributionFileEntity(createContributionFileRequest)).thenReturn(dummyEntity);
 
         boolean actualResponse = concorService.createContributionAndUpdateConcorStatus(createContributionFileRequest);
 
-        verify(debtCollectionRepository).save(contributionEntityArgumentCaptor.capture());
+        verify(debtCollectionRepository).save(contributionFilesEntityArgumentCaptor.capture());
         assertFalse(actualResponse);
-        assertEquals(1, contributionEntityArgumentCaptor.getValue().getId());
+        assertEquals(1, contributionFilesEntityArgumentCaptor.getValue().getId());
         verify(concorRepository, never()).saveAll(anyList());
     }
 
@@ -147,10 +161,101 @@ class ConcorContributionsServiceTest {
         verify(concorRepository, never()).saveAll(anyList());
     }
 
-    @NotNull
-    private static ContributionFilesEntity getContributionFilesEntity() {
+    @Test
+    void testDrcUpdateSuccessNoErrorText(){
+        int id = 123;
+        int repId = 456;
+        int fileId = 10000;
+
+        ConcorContributionsEntity concorEntity = createConcorContributionEntity(id, repId, fileId);
+
+        when(concorRepository.findById(id)).thenReturn(Optional.of(concorEntity));
+        when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(true);
+        // do
+        concorService.logContributionProcessed(createLogContributionProcessedRequest(id, ""));
+        // verify
+        verify(concorRepository).findById(id);
+        verify(debtCollectionService).updateContributionFileReceivedCount(fileId);
+        verify(contributionFileErrorsRepository, times(0)).save(any());
+    }
+
+    @Test
+    void testDrcUpdateSuccessHasErrorText(){
+        int id = 123;
+        int repId = 456;
+        int fileId = 10000;
+        String errorText = "Error Text";
+        LocalDateTime currDate = LocalDateTime.now();
+
+        ConcorContributionsEntity concorEntity = createConcorContributionEntity(id, repId, fileId);
+
+        when(concorRepository.findById(id)).thenReturn(Optional.of(concorEntity));
+
+        when(debtCollectionService.saveError(fileErrorCaptor.capture())).thenReturn(true);
+        when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(true);
+        // do
+        concorService.logContributionProcessed(createLogContributionProcessedRequest(id, errorText));
+        // verify
+        verify(concorRepository).findById(id);
+        verify(debtCollectionService).updateContributionFileReceivedCount(fileId);
+        ContributionFileErrorsEntity errorEntity = fileErrorCaptor.getValue();
+
+        assertEquals(errorText,errorEntity.getErrorText());
+        assertEquals(id, errorEntity.getConcorContributionId());
+        assertEquals(id,errorEntity.getContributionId());
+        assertEquals(fileId,errorEntity.getContributionFileId());
+        assertNull(errorEntity.getFdcContributionId());
+        assertEquals(repId,errorEntity.getRepId());
+        assertEquals(currDate.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
+        assertEquals(currDate.getMonth(), errorEntity.getDateCreated().getMonth());
+        assertEquals(currDate.getYear(), errorEntity.getDateCreated().getYear());
+    }
+
+
+    @Test
+    void testDrcUpdateNoConcorFound(){
+        int id = 123;
+        String errorText = "Error Text";
+
+        when(concorRepository.findById(id)).thenReturn(Optional.empty());
+        // do
+        concorService.logContributionProcessed(createLogContributionProcessedRequest(id, errorText));
+        // verify
+        verify(concorRepository).findById(id);
+        verify(contributionFileRepository,times(0)).findById(any());
+        verify(contributionFileRepository,times(0)).save(any());
+        verify(contributionFileErrorsRepository, times(0)).save(any());
+    }
+
+    @Test
+    void testDrcUpdateNoFileFound(){
+        int id = 123;
+        int repId = 456;
+        int fileId = 10000;
+        String errorText = "Error Text";
+        ConcorContributionsEntity concorEntity = createConcorContributionEntity(id, repId, fileId);
+        when(concorRepository.findById(id)).thenReturn(Optional.of(concorEntity));
+        when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(false);
+        // do
+        boolean result = concorService.logContributionProcessed(createLogContributionProcessedRequest(id, errorText));
+        assertFalse(result);
+        // verify
+        verify(concorRepository).findById(id);
+        verify(debtCollectionService,times(1)).updateContributionFileReceivedCount(any());
+        // verify no error is saved, as file is not found.
+        verify(debtCollectionService,times(0)).saveError(any());
+    }
+
+    private LogContributionProcessedRequest createLogContributionProcessedRequest(int id, String errorText){
+        return LogContributionProcessedRequest.builder()
+                .concorId(id)
+                .errorText(errorText)
+                .build();
+    }
+
+    private static ContributionFilesEntity getContributionFilesEntity(int id) {
         return new ContributionFilesEntity(
-                1,
+                id,
                 "dummyFile.txt",
                 10,
                 8,
@@ -163,6 +268,14 @@ class ConcorContributionsServiceTest {
                 LocalDate.of(2023, 10, 13),
                 "<xml>ackDummyContent</xml>"
         );
+    }
+
+    private static ConcorContributionsEntity createConcorContributionEntity(int id, int repId, int fileId){
+        return ConcorContributionsEntity.builder()
+                .id(id)
+                .repId(repId)
+                .contribFileId(fileId)
+                .build();
     }
 
     @NotNull

@@ -13,6 +13,7 @@ import gov.uk.courtdata.repository.ConcorContributionsRepository;
 import gov.uk.courtdata.repository.ContribAppealRulesRepository;
 import gov.uk.courtdata.repository.ContribCalcParametersRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
+import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.CorrespondenceRepository;
 import gov.uk.courtdata.repository.CorrespondenceStateRepository;
 import gov.uk.courtdata.repository.CourtHouseCodesRepository;
@@ -97,6 +98,9 @@ public class Repositories {
 
     @Autowired
     public ContributionFilesRepository contributionFiles;
+
+    @Autowired
+    public ContributionFileErrorsRepository contributionFileErrors;
 
     @Autowired
     public CorrespondenceRepository correspondence;
@@ -268,6 +272,7 @@ public class Repositories {
                 contribAppealRules,
                 contribCalcParameters,
                 contributionFiles,
+                contributionFileErrors,
                 correspondence,
                 correspondenceState,
                 courtHouseCodes,

@@ -1,12 +1,12 @@
 package gov.uk.courtdata.eform.service;
 
-import gov.uk.courtdata.eform.exception.USNExceptionUtil;
 import gov.uk.courtdata.eform.repository.EformAuditRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsAudit;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,8 +16,7 @@ public class EformAuditService {
 
     @Transactional(readOnly = true)
     public EformsAudit retrieve(Integer usn) {
-        return eformAuditRepository.findByUsn(usn)
-                .orElseThrow(() -> USNExceptionUtil.nonexistent(usn));
+        return eformAuditRepository.findByUsn(usn).orElse(EformsAudit.builder().build());
     }
 
     @Transactional()

@@ -61,4 +61,8 @@ import java.time.LocalDate;
 
         @Column(name = "ACK_XML_CONTENT")
         private String ackXmlContent;
+
+        public void incrementReceivedCount(){
+            this.recordsReceived++;
+        }
     }

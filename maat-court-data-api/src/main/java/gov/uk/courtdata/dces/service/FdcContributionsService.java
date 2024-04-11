@@ -91,7 +91,7 @@ public class FdcContributionsService {
         ValidationUtils.isEmptyOrHasNullElement(fdcRequest.getFdcIds(),"FdcIds is empty/null.");
         log.info("Request Validated");
         ContributionFilesEntity contributionFilesEntity = createFdcFile(fdcRequest);
-        log.info("File created with id: {}", contributionFilesEntity.getId());
+        log.info("File created with id: {}", contributionFilesEntity.getFileId());
 
         return updateStatusForFdc(fdcRequest.getFdcIds(), contributionFilesEntity);
     }
@@ -101,7 +101,7 @@ public class FdcContributionsService {
         if(!fdcEntities.isEmpty()) {
             fdcEntities.forEach(fdc -> {
                 fdc.setStatus(SENT);
-                fdc.setContFileId(contributionFilesEntity.getId());
+                fdc.setContFileId(contributionFilesEntity.getFileId());
                 fdc.setUserModified("DCES");
             });
             log.info("Saving {} Fdc Contributions", fdcEntities.size());
@@ -115,7 +115,7 @@ public class FdcContributionsService {
         log.info("Updating the fdc file ref  -> {}", fdcFileRequest);
         ContributionFileUtil.assessFilename(fdcFileRequest);
         ContributionFilesEntity contributionFileEntity = contributionFileMapper.toContributionFileEntity(fdcFileRequest);
-        debtCollectionRepository.save(contributionFileEntity);
+        debtCollectionRepository.saveContributionFilesEntity(contributionFileEntity);
         return contributionFileEntity;
     }
 
@@ -126,6 +126,7 @@ public class FdcContributionsService {
         return ArrayUtils.isNotEmpty(results) ? results[0] : 0;
     }
 
+//    @Transactional(rollbackFor =  MAATCourtDataException.class)
     public boolean logFdcProcessed(LogFdcProcessedRequest request) {
         boolean successful = false;
         Optional<FdcContributionsEntity> optionalFdcEntry = fdcContributionsRepository.findById(request.getFdcId());
@@ -137,7 +138,6 @@ public class FdcContributionsService {
             if(successful && !StringUtils.isEmpty(request.getErrorText()) ){
                 successful = saveErrorMessage(request, fdcEntity);
             }
-
         }
         return successful;
     }

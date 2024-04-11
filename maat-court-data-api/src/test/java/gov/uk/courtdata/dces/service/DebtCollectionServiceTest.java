@@ -134,12 +134,12 @@ class DebtCollectionServiceTest {
         ContributionFilesEntity fileEntity = getContributionFilesEntity(fileId);
         ContributionFilesEntity originalFileEntity = getContributionFilesEntity(fileId);
         when(contributionFilesRepository.findById(fileId)).thenReturn(Optional.of(fileEntity));
-        when(contributionFilesRepository.save(contributionFilesEntityArgumentCaptor.capture())).thenReturn(fileEntity);
+        when(debtCollectionRepository.updateContributionFilesEntity(contributionFilesEntityArgumentCaptor.capture())).thenReturn(true);
         //do
         debtCollectionService.updateContributionFileReceivedCount(fileId);
         //test
         verify(contributionFilesRepository).findById(fileId);
-        verify(contributionFilesRepository).save(any());
+        verify(debtCollectionRepository).updateContributionFilesEntity(any());
 
         ContributionFilesEntity savedEntity = contributionFilesEntityArgumentCaptor.getValue();
         assertEquals(originalFileEntity.getRecordsReceived()+1, savedEntity.getRecordsReceived(), "RecordsReceived has not been incremented");
@@ -179,10 +179,8 @@ class DebtCollectionServiceTest {
 
     private void imitateUpdateContributionFileUpdate(ContributionFilesEntity fileEntity){
         LocalDate currentDate = LocalDate.now();
-        fileEntity.setDateModified(currentDate);
         fileEntity.setDateReceived(currentDate);
         fileEntity.incrementReceivedCount();
-        fileEntity.setUserModified("DCES");
     }
 
 }

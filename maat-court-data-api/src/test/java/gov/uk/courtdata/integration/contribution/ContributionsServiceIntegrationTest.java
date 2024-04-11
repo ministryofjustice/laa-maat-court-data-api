@@ -30,7 +30,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
+class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
 
     private static final Integer INVALID_REP_ID = 9999;
 
@@ -66,7 +66,7 @@ public class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest 
         contributions.setRepOrder(repOrderEntity);
 
         ContributionFilesEntity contributionFilesEntity = TestEntityDataBuilder.getContributionFilesEntity();
-        contributionFilesEntity.setId(contributions.getContributionFileId());
+        contributionFilesEntity.setFileId(contributions.getContributionFileId());
         contributionFilesRepository.saveAndFlush(contributionFilesEntity);
 
         contributionsEntity = contributionsRepository.saveAndFlush(contributions);
@@ -129,7 +129,7 @@ public class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest 
     @Disabled
     void givenValidRepId_whenGetContributionsSummaryIsInvoked_thenCorrectResponseIsReturned() {
         ContributionFilesEntity contributionFilesEntity = TestEntityDataBuilder.getContributionFilesEntity();
-        contributionFilesEntity.setId(contributionsEntity.getContributionFileId());
+        contributionFilesEntity.setFileId(contributionsEntity.getContributionFileId());
         contributionFilesRepository.saveAndFlush(contributionFilesEntity);
         List<ContributionsSummaryDTO> contributionsSummary = contributionsService.getContributionsSummary(REP_ID);
         assertThat(contributionsSummary.isEmpty()).isFalse();

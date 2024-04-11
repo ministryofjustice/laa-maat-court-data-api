@@ -46,6 +46,7 @@ public class DebtCollectionService {
         return true;
     }
 
+
     public boolean updateContributionFileReceivedCount(Integer fileId){
         if(Objects.isNull(fileId)){
             log.info("No associated file was found for contribution");
@@ -56,11 +57,8 @@ public class DebtCollectionService {
         if ( optionalEntity.isPresent()){
             ContributionFilesEntity filesEntity = optionalEntity.get();
             filesEntity.incrementReceivedCount();
-            LocalDate currentDate = LocalDate.now();
-            filesEntity.setDateReceived(currentDate);
-            filesEntity.setDateModified(currentDate);
-            filesEntity.setUserModified("DCES");
-            contributionFilesRepository.save(filesEntity);
+            filesEntity.setDateReceived(LocalDate.now());
+            debtCollectionRepository.updateContributionFilesEntity(filesEntity);
             success = true;
             log.info("Update of file id : {} successful", fileId);
         }

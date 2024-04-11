@@ -99,7 +99,7 @@ class FdcContributionsServiceTest {
         CreateFdcFileRequest request = createFdcFileRequest();
         ContributionFilesEntity mappedEntity = createContributionsFileEntity();
 
-        when(debtCollectionRepository.save(mappedEntity)).thenReturn(true);
+        when(debtCollectionRepository.saveContributionFilesEntity(mappedEntity)).thenReturn(true);
         when(fdcContributionsRepository.findByIdIn(request.getFdcIds())).thenReturn(fdcContributionsEntityList);
         when(fdcContributionsRepository.saveAll(fdcContributionsEntityList)).thenReturn(fdcContributionsEntityList);
 
@@ -147,7 +147,7 @@ class FdcContributionsServiceTest {
     private ContributionFilesEntity createContributionsFileEntity() {
         LocalDate date = LocalDate.now();
         return ContributionFilesEntity.builder()
-                .id(1)
+                .fileId(1)
                 .fileName("filename.xml")
                 .recordsSent(1)
                 .recordsReceived(1)

@@ -3,6 +3,7 @@ package gov.uk.courtdata.integration.dces;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.dces.service.DebtCollectionRepository;
+import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
@@ -18,10 +19,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
@@ -30,6 +32,8 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     private static final String FDC_CONTRIBUTION_FILES_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/fdc-contribution-files";
     private static final String GLOBAL_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/prepare-fdc-contributions-files";
     private static final String ATOMIC_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/create-fdc-file";
+    private static final String DRC_UPDATE_URL = "/api/internal/v1/debt-collection-enforcement/log-fdc-response";
+
     private static final String expectedFinalCost1 = "1111.11";
     private static final FdcContributionsStatus expectedStatus1 = FdcContributionsStatus.REQUESTED;
     private static final String expectedFinalCost2 = "2222.22";
@@ -46,6 +50,12 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     private int repId2 = 2;
     private int repId3 = 3;
     private int repId4 = 4;
+
+    private static final String fileOne = "FileOne";
+    private static int file1Id;
+    private static final String fileTwo = "FileTwo";
+    private static int file2Id;
+
     @SpyBean
     DebtCollectionRepository debtCollectionRepositorySpy;
     @Captor
@@ -54,22 +64,39 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        expectedId1 = repos.fdcContributions.save(buildEntity(expectedStatus1, expectedFinalCost1)).getId();
+        file1Id = repos.contributionFiles.save(buildFileEntity(fileOne, false)).getFileId();
+        file2Id = repos.contributionFiles.save(buildFileEntity(fileTwo, true)).getFileId();
+
+        expectedId1 = repos.fdcContributions.save(buildFdcEntity(expectedStatus1, expectedFinalCost1, file1Id)).getId();
         repId1 = expectedId1;
-        expectedId2 = repos.fdcContributions.save(buildEntity(expectedStatus2, expectedFinalCost2)).getId();
+        expectedId2 = repos.fdcContributions.save(buildFdcEntity(expectedStatus2, expectedFinalCost2, file1Id)).getId();
         repId2 = expectedId2;
-        expectedId3 = repos.fdcContributions.save(buildEntity(expectedStatus3, expectedFinalCost3)).getId();
+        expectedId3 = repos.fdcContributions.save(buildFdcEntity(expectedStatus3, expectedFinalCost3, null)).getId();
         repId3 = expectedId3;
-        expectedId4 = repos.fdcContributions.save(buildEntity(expectedStatus4, expectedFinalCost4)).getId();
+        expectedId4 = repos.fdcContributions.save(buildFdcEntity(expectedStatus4, expectedFinalCost4, file2Id)).getId();
         repId4 = expectedId4;
     }
 
-    private FdcContributionsEntity buildEntity(FdcContributionsStatus status, String finalCost) {
+    private ContributionFilesEntity buildFileEntity(String fileIdentifier, boolean isBlankXml){
+        ContributionFilesEntity entity = ContributionFilesEntity.builder()
+                .fileName(fileIdentifier)
+                .recordsReceived(0)
+                .recordsSent(10)
+                .build();
+        if(!isBlankXml){
+            entity.setXmlContent("<xml>"+fileIdentifier+"</xml>");
+            entity.setAckXmlContent("<ackXml>"+fileIdentifier+"</ackXml>");
+        }
+        return entity;
+    }
+
+    private FdcContributionsEntity buildFdcEntity(FdcContributionsStatus status, String finalCost, Integer fileId) {
         BigDecimal finalCostBigDecimal = new BigDecimal(finalCost);
         return FdcContributionsEntity.builder()
                 .status(status)
                 .repOrderEntity(repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder()))
                 .finalCost(finalCostBigDecimal)
+                .contFileId(fileId)
                 .build();
     }
 
@@ -120,22 +147,17 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAListOfIds_whenAtomicUpdate_theStatusIsUpdated() throws Exception {
-        // mocking out saveNonXMLs as it cannot be tested due to xmlType.
-        doReturn(true).when(debtCollectionRepositorySpy).saveXmlTypes(contributionFileEntityCaptor.capture());
-
-        String expectedXml = "<test></test>";
-        String expectedAckXml = "<ackTest></ackTest>";
+        // removed the xml values as it cannot be tested due to xmlType. The double refuses to handle XMLTYPE(?) as that is oracle specific.
         String expectedFilename = "TestFilename.xml";
+        int expectedFileListSize = repos.contributionFiles.findAll().size()+1;
         int expectedRecordsSent = 2;
         String s = """
                                 {
                                     "recordsSent": %s,
                                     "fdcIds": [%s],
-                                    "xmlContent" : "%s",
-                                    "ackXmlContent" : "%s",
                                     "xmlFileName" : "%s"
                                 }""";
-        s = s.formatted( expectedRecordsSent, expectedId4, expectedXml, expectedAckXml, expectedFilename);
+        s = s.formatted( expectedRecordsSent, expectedId4, expectedFilename);
         mockMvc.perform(MockMvcRequestBuilders.post(ATOMIC_UPDATE_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(s))
@@ -143,21 +165,99 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // verify the content of the saved entity.
-        ContributionFilesEntity savedEntity = contributionFileEntityCaptor.getValue();
-        assertNotNull(savedEntity);
-        assertNotNull(savedEntity.getId());
-        assertEquals(expectedRecordsSent, savedEntity.getRecordsSent());
-        assertEquals(expectedXml, savedEntity.getXmlContent());
-        assertEquals(expectedAckXml, savedEntity.getAckXmlContent());
-        assertEquals(expectedFilename, savedEntity.getFileName());
+        List<ContributionFilesEntity> savedFileEntities = repos.contributionFiles.findAll();
+        assertEquals(expectedFileListSize, savedFileEntities.size());
+        ContributionFilesEntity savedFileEntity = savedFileEntities.get(expectedFileListSize-1);
+        assertNotNull(savedFileEntity);
+        assertNotNull(savedFileEntity.getFileId());
+        assertEquals(expectedRecordsSent, savedFileEntity.getRecordsSent());
+        assertNull(savedFileEntity.getXmlContent()); // unfortunately, cannot test due to aforementioned XMLTYPE() issue.
+        assertNull(savedFileEntity.getAckXmlContent());
+        assertEquals(expectedFilename, savedFileEntity.getFileName());
         // assert the file id has been set on the fdc
         Optional<FdcContributionsEntity> updatedFdc = repos.fdcContributions.findById(expectedId4);
         assertTrue(updatedFdc.isPresent());
         FdcContributionsEntity fdcContributionsEntity = updatedFdc.get();
-        assertEquals(savedEntity.getId(), fdcContributionsEntity.getContFileId());
+        assertEquals(savedFileEntity.getFileId(), fdcContributionsEntity.getContFileId());
         assertEquals(FdcContributionsStatus.SENT, fdcContributionsEntity.getStatus());
 
     }
+
+
+
+    @Test
+    void testLogDrcProcessedNoErrors() throws Exception {
+        String s = createLogDrcProcessedRequest(expectedId4,"");
+
+        mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(s))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        // check we've updated the received count.
+        Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file2Id);
+        assertTrue(fileEntity.isPresent());
+        assertEquals(1,fileEntity.get().getRecordsReceived());
+
+        // check no values in errors
+        assertEquals(0, repos.contributionFileErrors.count());
+    }
+
+    @Test
+    void testLogDrcProcessedWithErrors() throws Exception {
+        String errorText = "ErrorText";
+        String s = createLogDrcProcessedRequest(expectedId4,errorText);
+        LocalDateTime dateTimeCheck = LocalDateTime.now();
+
+        mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(s))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        // check we've updated the received count.
+        Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file2Id);
+        assertTrue(fileEntity.isPresent());
+        assertEquals(1,fileEntity.get().getRecordsReceived());
+
+        // check no values in errors
+        assertEquals(1, repos.contributionFileErrors.count());
+        ContributionFileErrorsEntity errorEntity = repos.contributionFileErrors.findAll().get(0);
+        assertEquals(expectedId4, errorEntity.getFdcContributionId());
+        assertEquals(expectedId4, errorEntity.getContributionId());
+        assertEquals(errorText, errorEntity.getErrorText());
+        assertEquals(file2Id, errorEntity.getContributionFileId());
+
+        assertEquals(dateTimeCheck.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
+        assertEquals(dateTimeCheck.getMonth(), errorEntity.getDateCreated().getMonth());
+        assertEquals(dateTimeCheck.getYear(), errorEntity.getDateCreated().getYear());
+
+    }
+
+    @Test
+    void testLogDrcProcessedNoFile() throws Exception {
+        String s = createLogDrcProcessedRequest(expectedId4,"");
+
+        mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(s))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        // check no values in errors
+        assertEquals(0, repos.contributionFileErrors.count());
+    }
+
+    private String createLogDrcProcessedRequest(Integer id, String errorText){
+        return  """
+                    {
+                        "fdcId" : %s,
+                        "errorText" : "%s"
+                    }""".formatted(id,errorText);
+    }
+
+
 
 
 }

@@ -40,8 +40,8 @@ class ContributionFileMapperTest {
         assertEquals(request.getRecordsSent(), mapped.getRecordsSent());
         assertEquals(request.getXmlFileName(), mapped.getFileName());
         // validate non-map-related fields are unset. No stray mappings.
-        assertTrue(assertNonMappedAreNull(mapped.getId()));
-        assertTrue(assertNonMappedAreNull(mapped.getId()));
+        assertTrue(assertNonMappedAreNull(mapped.getFileId()));
+        assertTrue(assertNonMappedAreNull(mapped.getFileId()));
         assertTrue(assertNonMappedAreNull(mapped.getDateReceived()));
         assertTrue(assertNonMappedAreNull(mapped.getDateCreated()));
         assertTrue(assertNonMappedAreNull(mapped.getDateModified()));

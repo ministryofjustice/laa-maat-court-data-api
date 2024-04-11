@@ -1,20 +1,20 @@
 package gov.uk.courtdata.dto.application;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import gov.uk.courtdata.dao.jackson.LocalDateTimeDeserializer;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import uk.gov.justice.laa.crime.commons.jackson.ZonedDateTimeDeserializer;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @SuperBuilder
 @NoArgsConstructor
 public class GenericDTO {
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime timestamp;
+    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
+    private ZonedDateTime timestamp;
     private Boolean selected;
     @Builder.Default
     private Boolean mDirty = false;

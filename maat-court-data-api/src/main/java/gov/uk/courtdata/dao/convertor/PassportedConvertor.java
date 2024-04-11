@@ -68,7 +68,7 @@ public class PassportedConvertor extends Convertor {
 
         try {
             ConvertorHelper convertorHelper = new ConvertorHelper();
-            getDTO().setTimestamp(convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
+            getDTO().setTimestamp(convertorHelper.toZonedDateTime(getOracleType().getTimeStamp()));
 
             getDTO().setPassportedId(convertorHelper.toLong(getOracleType().getId()));
             getDTO().setUsn(convertorHelper.toLong(getOracleType().getUsn()));

@@ -86,7 +86,7 @@ public class ApplicationConvertor extends Convertor
 		try
 		{
 			ConvertorHelper convertorHelper = new ConvertorHelper();
-			getDTO().setTimestamp(				convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
+			getDTO().setTimestamp(				convertorHelper.toZonedDateTime(getOracleType().getTimeStamp()));
 			
 			getDTO().setRepId(					convertorHelper.toLong( 	getOracleType().getRepId() ));
 			getDTO().setAreaId(					convertorHelper.toLong( 	getOracleType().getAreaId() ));

@@ -75,7 +75,7 @@ public class FinancialAssessmentConvertor extends Convertor
 		try
 		{
 			ConvertorHelper convertorHelper = new ConvertorHelper();
-			getDTO().setTimestamp(convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
+			getDTO().setTimestamp(convertorHelper.toZonedDateTime(getOracleType().getTimeStamp()));
 			
 			getDTO().setId(				convertorHelper.toLong(		getOracleType().getFinAssessmentId()));
 			getDTO().setFullAvailable(	convertorHelper.toBoolean(	getOracleType().getFullAvailable() 	));

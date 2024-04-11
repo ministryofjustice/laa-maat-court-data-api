@@ -1,6 +1,7 @@
 package gov.uk.courtdata.dao.convertor.helper;
 
 import gov.uk.courtdata.dto.application.*;
+import uk.gov.justice.laa.crime.util.DateUtil;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -9,6 +10,9 @@ import java.sql.Clob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 
@@ -210,21 +214,12 @@ public class ConvertorHelper {
 
     }
 
-    public BigDecimal toSysGenCurrency(SysGenCurrency number) {
-        return number;
+    public Timestamp toTimestamp(ZonedDateTime localDateTime) {
+        return (localDateTime != null) ? Timestamp.valueOf(localDateTime.toLocalDateTime()) : null;
     }
 
-    public SysGenCurrency toSysGenCurrency(BigDecimal number) {
-        return number != null ? new SysGenCurrency(number.toString()) : null;
-
-    }
-
-    public Timestamp toTimestamp(LocalDateTime localDateTime) {
-        return (localDateTime != null) ? Timestamp.valueOf(localDateTime) : null;
-    }
-
-    public LocalDateTime toLocalDateTime(Timestamp timeStamp) {
-        return (timeStamp != null) ? timeStamp.toLocalDateTime() : null;
+    public ZonedDateTime toZonedDateTime(Timestamp timeStamp) {
+        return (timeStamp != null) ? DateUtil.toZonedDateTime(timeStamp.toLocalDateTime()) : null;
     }
 
     public Date toDate(Timestamp timeStamp) {

@@ -10,10 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Data
@@ -93,55 +89,4 @@ import java.util.Objects;
                 this.recordsReceived++;
             }
         }
-
-        public Map<String, String> generateInsertStatementMap(){
-            Map<String,String> fieldMap = new HashMap<>();
-            fieldMap.put("ID", "TOGDATA.S_GENERAL_SEQUENCE.NEXTVAL");
-            addtoFieldMap(fieldMap, FILE_NAME, fileName, SQL_STRING_VALUE);
-            addtoFieldMap(fieldMap, RECORDS_SENT, recordsSent, SQL_INTEGER_VALUE);
-            addtoFieldMap(fieldMap, RECORDS_RECEIVED, recordsReceived, SQL_INTEGER_VALUE);
-            addtoFieldMap(fieldMap, USER_CREATED, userCreated, SQL_STRING_VALUE);
-            addtoFieldMap(fieldMap, DATE_MODIFIED, dateModified, SQL_DATE_VALUE);
-            addtoFieldMap(fieldMap, USER_MODIFIED, recordsSent, SQL_STRING_VALUE);
-            addtoFieldMap(fieldMap, DATE_SENT, recordsSent, SQL_DATE_VALUE);
-            addtoFieldMap(fieldMap, DATE_RECEIVED, recordsSent, SQL_DATE_VALUE);
-
-            if(Objects.nonNull(xmlContent) ) { fieldMap.put(XML_CONTENT, SQL_XMLTYPE); }
-            if(Objects.nonNull(ackXmlContent) ) { fieldMap.put(ACK_XML_CONTENT, SQL_XMLTYPE); }
-
-            return fieldMap;
-        }
-
-        private String generateUpdateSQLSetStatement(){
-        List<String> fieldList = new ArrayList<>();
-        addToSqlToFieldList(fieldList, fileName, createUpdateSqlLine(FILE_NAME,SQL_STRING_VALUE));
-        addToSqlToFieldList(fieldList, recordsSent, createUpdateSqlLine(RECORDS_SENT,SQL_INTEGER_VALUE));
-        addToSqlToFieldList(fieldList, recordsReceived, createUpdateSqlLine(RECORDS_RECEIVED,SQL_INTEGER_VALUE));
-        addToSqlToFieldList(fieldList, dateCreated, createUpdateSqlLine(DATE_CREATED,SQL_DATE_VALUE));
-        addToSqlToFieldList(fieldList, userCreated, createUpdateSqlLine(USER_CREATED,SQL_STRING_VALUE));
-        addToSqlToFieldList(fieldList, dateModified, createUpdateSqlLine(DATE_MODIFIED,SQL_DATE_VALUE));
-        addToSqlToFieldList(fieldList, userModified, createUpdateSqlLine(USER_MODIFIED,SQL_STRING_VALUE));
-        addToSqlToFieldList(fieldList, dateSent, createUpdateSqlLine(DATE_SENT,SQL_DATE_VALUE));
-        addToSqlToFieldList(fieldList, dateReceived, createUpdateSqlLine(DATE_RECEIVED,SQL_DATE_VALUE));
-        if(Objects.nonNull(xmlContent)) { fieldList.add(createUpdateSqlLine(XML_CONTENT,SQL_XMLTYPE)); }
-        if(Objects.nonNull(ackXmlContent)) { fieldList.add(createUpdateSqlLine(ACK_XML_CONTENT,SQL_XMLTYPE)); }
-        return String.join(", ", fieldList);
-        }
-
-        private String createUpdateSqlLine(String field, String value){
-            return field+"="+value;
-        }
-
-        private void addToSqlToFieldList(List<String> fieldList, Object field, String sql){
-            if(Objects.nonNull(field)){
-                fieldList.add(sql.formatted(field));
-            }
-        }
-
-        private void addtoFieldMap(Map<String, String> fieldMap, String columnName, Object field, String sql){
-            if(Objects.nonNull(field)){
-                fieldMap.put(columnName,sql.formatted(field));
-            }
-        }
-
     }

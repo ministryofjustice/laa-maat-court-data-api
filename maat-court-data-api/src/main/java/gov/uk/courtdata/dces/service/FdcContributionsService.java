@@ -126,7 +126,7 @@ public class FdcContributionsService {
         return ArrayUtils.isNotEmpty(results) ? results[0] : 0;
     }
 
-//    @Transactional(rollbackFor =  MAATCourtDataException.class)
+    @Transactional(rollbackFor =  MAATCourtDataException.class)
     public boolean logFdcProcessed(LogFdcProcessedRequest request) {
         boolean successful = false;
         Optional<FdcContributionsEntity> optionalFdcEntry = fdcContributionsRepository.findById(request.getFdcId());

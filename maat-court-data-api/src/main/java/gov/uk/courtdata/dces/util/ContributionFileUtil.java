@@ -107,26 +107,29 @@ public class ContributionFileUtil {
 
     public void setPreparedStatementParameters(PreparedStatement ps, Map<String,String> fieldValueMap, ContributionFilesEntity contributionFilesEntity, Clob xmlContent, Clob ackXmlContent, boolean isUpdate) throws SQLException {
         int parameterIndex = 1;
+        for(Map.Entry<String,String> currEntry: fieldValueMap.entrySet()){
+            switch (currEntry.getKey()) {
+                case FILE_NAME -> ps.setString(parameterIndex++, contributionFilesEntity.getFileName());
+                case RECORDS_SENT -> ps.setInt(parameterIndex++, contributionFilesEntity.getRecordsSent());
+                case RECORDS_RECEIVED -> ps.setInt(parameterIndex++, contributionFilesEntity.getRecordsReceived());
+                case USER_CREATED -> ps.setString(parameterIndex++, contributionFilesEntity.getUserCreated());
+                case DATE_CREATED -> ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateCreated()));
+                case USER_MODIFIED -> ps.setString(parameterIndex++, contributionFilesEntity.getUserModified());
+                case DATE_MODIFIED -> ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateModified()));
+                case DATE_SENT -> ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateSent()));
+                case DATE_RECEIVED -> ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateReceived()));
 
-        if(fieldValueMap.containsKey(FILE_NAME)) {ps.setString(parameterIndex++, contributionFilesEntity.getFileName());}
-        if(fieldValueMap.containsKey(RECORDS_SENT)) {ps.setInt(parameterIndex++, contributionFilesEntity.getRecordsSent());}
-        if(fieldValueMap.containsKey(RECORDS_RECEIVED)) {ps.setInt(parameterIndex++, contributionFilesEntity.getRecordsReceived());}
-        if(fieldValueMap.containsKey(USER_CREATED)) {ps.setString(parameterIndex++, contributionFilesEntity.getUserCreated());}
-        if(fieldValueMap.containsKey(DATE_CREATED)) {ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateCreated()));}
-        if(fieldValueMap.containsKey(USER_MODIFIED)) {ps.setString(parameterIndex++, contributionFilesEntity.getUserModified());}
-        if(fieldValueMap.containsKey(DATE_MODIFIED)) {ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateModified()));}
-        if(fieldValueMap.containsKey(DATE_SENT)) {ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateSent()));}
-        if(fieldValueMap.containsKey(DATE_RECEIVED)) {ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateReceived()));}
-
-        if(fieldValueMap.containsKey(XML_CONTENT)) {
-            xmlContent.setString(1, contributionFilesEntity.getXmlContent());
-            ps.setClob(parameterIndex++, xmlContent);
+                case XML_CONTENT -> {
+                    xmlContent.setString(1, contributionFilesEntity.getXmlContent());
+                    ps.setClob(parameterIndex++, xmlContent);
+                }
+                case ACK_XML_CONTENT -> {
+                    ackXmlContent.setString(1, contributionFilesEntity.getAckXmlContent());
+                    ps.setClob(parameterIndex++, ackXmlContent);
+                }
+                default -> log.debug("Unknown entry found in the CONTRIBUTION_FILES map");
+            }
         }
-        if(fieldValueMap.containsKey(ACK_XML_CONTENT)) {
-            ackXmlContent.setString(1, contributionFilesEntity.getAckXmlContent());
-            ps.setClob(parameterIndex++, ackXmlContent);
-        }
-
         if(isUpdate) {
             ps.setInt(parameterIndex, contributionFilesEntity.getFileId());
         }
@@ -138,25 +141,25 @@ public class ContributionFileUtil {
         if(!isUpdate){
             fieldMap.put(ID, "TOGDATA.S_GENERAL_SEQUENCE.NEXTVAL");
         }
-        addtoFieldMap(fieldMap, FILE_NAME, contributionFilesEntity.getFileName(), SQL_PARAMETER);
-        addtoFieldMap(fieldMap, RECORDS_SENT, contributionFilesEntity.getRecordsSent(), SQL_PARAMETER);
-        addtoFieldMap(fieldMap, RECORDS_RECEIVED, contributionFilesEntity.getRecordsReceived(), SQL_PARAMETER);
-        addtoFieldMap(fieldMap, USER_CREATED, contributionFilesEntity.getUserCreated(), SQL_PARAMETER);
-        addtoFieldMap(fieldMap, DATE_CREATED, contributionFilesEntity.getDateCreated(), SQL_PARAMETER);
-        addtoFieldMap(fieldMap, USER_MODIFIED, contributionFilesEntity.getUserModified(), SQL_PARAMETER);
-        addtoFieldMap(fieldMap, DATE_MODIFIED, contributionFilesEntity.getDateModified(), SQL_PARAMETER);
-        addtoFieldMap(fieldMap, DATE_SENT, contributionFilesEntity.getDateSent(), SQL_PARAMETER);
-        addtoFieldMap(fieldMap, DATE_RECEIVED, contributionFilesEntity.getDateReceived(), SQL_PARAMETER);
+        addToFieldMap(fieldMap, FILE_NAME, contributionFilesEntity.getFileName(), SQL_PARAMETER);
+        addToFieldMap(fieldMap, RECORDS_SENT, contributionFilesEntity.getRecordsSent(), SQL_PARAMETER);
+        addToFieldMap(fieldMap, RECORDS_RECEIVED, contributionFilesEntity.getRecordsReceived(), SQL_PARAMETER);
+        addToFieldMap(fieldMap, USER_CREATED, contributionFilesEntity.getUserCreated(), SQL_PARAMETER);
+        addToFieldMap(fieldMap, DATE_CREATED, contributionFilesEntity.getDateCreated(), SQL_PARAMETER);
+        addToFieldMap(fieldMap, USER_MODIFIED, contributionFilesEntity.getUserModified(), SQL_PARAMETER);
+        addToFieldMap(fieldMap, DATE_MODIFIED, contributionFilesEntity.getDateModified(), SQL_PARAMETER);
+        addToFieldMap(fieldMap, DATE_SENT, contributionFilesEntity.getDateSent(), SQL_PARAMETER);
+        addToFieldMap(fieldMap, DATE_RECEIVED, contributionFilesEntity.getDateReceived(), SQL_PARAMETER);
 
-        if(Objects.nonNull(contributionFilesEntity.getXmlContent()) ) { fieldMap.put(XML_CONTENT, SQL_XMLTYPE); }
-        if(Objects.nonNull(contributionFilesEntity.getAckXmlContent()) ) { fieldMap.put(ACK_XML_CONTENT, SQL_XMLTYPE); }
+        addToFieldMap(fieldMap, XML_CONTENT, contributionFilesEntity.getXmlContent(), SQL_XMLTYPE);
+        addToFieldMap(fieldMap, ACK_XML_CONTENT, contributionFilesEntity.getAckXmlContent(), SQL_XMLTYPE);
 
         return fieldMap;
     }
 
-    private void addtoFieldMap(Map<String, String> fieldMap, String columnName, Object field, String sql){
+    private void addToFieldMap(Map<String, String> fieldMap, String columnName, Object field, String sql){
         if(Objects.nonNull(field)){
-            fieldMap.put(columnName,sql.formatted(field));
+            fieldMap.put(columnName,sql);
         }
     }
 

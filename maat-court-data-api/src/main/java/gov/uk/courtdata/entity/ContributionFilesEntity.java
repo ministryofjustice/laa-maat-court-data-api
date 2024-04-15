@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Data
-@Builder
+@Builder(toBuilder=true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -63,7 +63,7 @@ import java.util.Objects;
         @Column(name = "ACK_XML_CONTENT")
         private String ackXmlContent;
 
-        public void incrementReceivedCount(){
+    public void incrementReceivedCount(){
             if (Objects.isNull(this.recordsReceived)){
                 this.recordsReceived=1;
             }

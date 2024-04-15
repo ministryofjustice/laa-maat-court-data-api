@@ -53,9 +53,8 @@ public class DebtCollectionService {
             log.info("No associated file was found for contribution");
             return false;
         }
-        Optional<ContributionFilesEntity> optionalEntity = contributionFilesRepository.findById(fileId);
-        if ( optionalEntity.isPresent()){
-            ContributionFilesEntity filesEntity = optionalEntity.get();
+        ContributionFilesEntity filesEntity = getContributionFile(fileId);
+        if ( Objects.nonNull(filesEntity)){
             filesEntity.incrementReceivedCount();
             filesEntity.setDateReceived(LocalDate.now());
             debtCollectionRepository.updateContributionFilesEntity(filesEntity);
@@ -66,5 +65,17 @@ public class DebtCollectionService {
             throw new MAATCourtDataException("No file was found for the fdc.");
         }
     }
+
+    private ContributionFilesEntity getContributionFile(int fileId){
+        Optional<ContributionFilesEntity> optionalEntity = contributionFilesRepository.findById(fileId);
+        if(optionalEntity.isPresent()){
+            return optionalEntity.get().toBuilder().build();
+            // Saving should be done via the JDBCTemplate, not JPA.
+            // So in order to avoid JPA @Transaction saving, in addition to the JDBCTemplate,
+            // we need to clone the object.
+        }
+        return null;
+    }
+
 
 }

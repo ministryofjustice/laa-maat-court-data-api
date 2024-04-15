@@ -8,6 +8,7 @@ import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -69,7 +70,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
 
         expectedId1 = repos.fdcContributions.save(buildFdcEntity(expectedStatus1, expectedFinalCost1, file1Id)).getId();
         repId1 = expectedId1;
-        expectedId2 = repos.fdcContributions.save(buildFdcEntity(expectedStatus2, expectedFinalCost2, file1Id)).getId();
+        expectedId2 = repos.fdcContributions.save(buildFdcEntity(expectedStatus2, expectedFinalCost2, 99999999)).getId();
         repId2 = expectedId2;
         expectedId3 = repos.fdcContributions.save(buildFdcEntity(expectedStatus3, expectedFinalCost3, null)).getId();
         repId3 = expectedId3;
@@ -237,7 +238,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void testLogDrcProcessedNoFile() throws Exception {
-        String s = createLogDrcProcessedRequest(expectedId4,"");
+        String s = createLogDrcProcessedRequest(expectedId3,"");
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -249,6 +250,41 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         assertEquals(0, repos.contributionFileErrors.count());
     }
 
+
+    @Test
+    void testLogDrcProcessedMissingFile() throws Exception {
+        String s = createLogDrcProcessedRequest(expectedId2,"");
+
+        mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(s))
+
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        // check no values in errors
+        assertEquals(0, repos.contributionFileErrors.count());
+    }
+
+    @Test
+    void testLogDrcProcessedTestRollback() throws Exception {
+        int fdcId = expectedId4;
+        String errorString = StringUtils.repeat("*", 5000);
+        String s = createLogDrcProcessedRequest(fdcId,errorString);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(s))
+
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        // check no values in errors
+        assertEquals(0, repos.contributionFileErrors.count());
+
+        FdcContributionsEntity originalFile = repos.fdcContributions.findById(fdcId).get();
+        ContributionFilesEntity filesEntity = repos.contributionFiles.findById(originalFile.getContFileId()).get();
+        assertEquals(0, filesEntity.getRecordsReceived()); // ensure the increment is rolled back.
+    }
+
     private String createLogDrcProcessedRequest(Integer id, String errorText){
         return  """
                     {
@@ -256,8 +292,5 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                         "errorText" : "%s"
                     }""".formatted(id,errorText);
     }
-
-
-
 
 }

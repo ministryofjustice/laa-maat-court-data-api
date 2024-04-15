@@ -69,7 +69,7 @@ public class FdcContributionsController {
     @StandardApiResponse
     @PostMapping(value = "/log-fdc-response", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Logs that a final defence cost was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
-    public ResponseEntity<Boolean> createContributionFileError(@RequestBody final LogFdcProcessedRequest request) {
+    public ResponseEntity<Boolean> logFdcProcessed(@RequestBody final LogFdcProcessedRequest request) {
         log.info("Update contribution file sent value, and log any errors with request {}", request);
         boolean response = fdcContributionsService.logFdcProcessed(request);
         return ResponseEntity.ok(response);

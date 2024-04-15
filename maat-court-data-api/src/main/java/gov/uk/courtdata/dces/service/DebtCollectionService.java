@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.service;
 
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import lombok.RequiredArgsConstructor;
@@ -53,16 +54,17 @@ public class DebtCollectionService {
             return false;
         }
         Optional<ContributionFilesEntity> optionalEntity = contributionFilesRepository.findById(fileId);
-        boolean success = false;
         if ( optionalEntity.isPresent()){
             ContributionFilesEntity filesEntity = optionalEntity.get();
             filesEntity.incrementReceivedCount();
             filesEntity.setDateReceived(LocalDate.now());
             debtCollectionRepository.updateContributionFilesEntity(filesEntity);
-            success = true;
             log.info("Update of file id : {} successful", fileId);
+            return true;
         }
-        return success;
+        else {
+            throw new MAATCourtDataException("No file was found for the fdc.");
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.service;
 
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
+import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
 import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
@@ -15,11 +16,13 @@ import gov.uk.courtdata.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -30,8 +33,9 @@ import static gov.uk.courtdata.enums.FdcContributionsStatus.SENT;
 @RequiredArgsConstructor
 public class FdcContributionsService {
     private final FdcContributionsRepository fdcContributionsRepository;
-    private final DebtCollectionRepository debtCollectionRepository;
     private final ContributionFileMapper contributionFileMapper;
+    private final DebtCollectionRepository debtCollectionRepository;
+    private final DebtCollectionService debtCollectionService;
 
     private static final Function<FdcContributionsEntity, FdcContributionEntry> BUILD_FDC_ENTRY =
             entity -> FdcContributionEntry.builder()
@@ -87,7 +91,7 @@ public class FdcContributionsService {
         ValidationUtils.isEmptyOrHasNullElement(fdcRequest.getFdcIds(),"FdcIds is empty/null.");
         log.info("Request Validated");
         ContributionFilesEntity contributionFilesEntity = createFdcFile(fdcRequest);
-        log.info("File created with id: {}", contributionFilesEntity.getId());
+        log.info("File created with id: {}", contributionFilesEntity.getFileId());
 
         return updateStatusForFdc(fdcRequest.getFdcIds(), contributionFilesEntity);
     }
@@ -97,7 +101,7 @@ public class FdcContributionsService {
         if(!fdcEntities.isEmpty()) {
             fdcEntities.forEach(fdc -> {
                 fdc.setStatus(SENT);
-                fdc.setContFileId(contributionFilesEntity.getId());
+                fdc.setContFileId(contributionFilesEntity.getFileId());
                 fdc.setUserModified("DCES");
             });
             log.info("Saving {} Fdc Contributions", fdcEntities.size());
@@ -111,7 +115,7 @@ public class FdcContributionsService {
         log.info("Updating the fdc file ref  -> {}", fdcFileRequest);
         ContributionFileUtil.assessFilename(fdcFileRequest);
         ContributionFilesEntity contributionFileEntity = contributionFileMapper.toContributionFileEntity(fdcFileRequest);
-        debtCollectionRepository.save(contributionFileEntity);
+        debtCollectionRepository.saveContributionFilesEntity(contributionFileEntity);
         return contributionFileEntity;
     }
 
@@ -120,6 +124,26 @@ public class FdcContributionsService {
     }
     private int getResult(int[] results){
         return ArrayUtils.isNotEmpty(results) ? results[0] : 0;
+    }
+
+    @Transactional(rollbackFor =  MAATCourtDataException.class)
+    public boolean logFdcProcessed(LogFdcProcessedRequest request) {
+        boolean successful = false;
+        Optional<FdcContributionsEntity> optionalFdcEntry = fdcContributionsRepository.findById(request.getFdcId());
+        if(optionalFdcEntry.isPresent()) {
+            FdcContributionsEntity fdcEntity = optionalFdcEntry.get();
+            log.info("Contribution found: {}", fdcEntity.getId());
+            successful = debtCollectionService.updateContributionFileReceivedCount(fdcEntity.getContFileId());
+            // check if error
+            if(successful && !StringUtils.isEmpty(request.getErrorText()) ){
+                successful = saveErrorMessage(request, fdcEntity);
+            }
+        }
+        return successful;
+    }
+
+    private boolean saveErrorMessage(LogFdcProcessedRequest request, FdcContributionsEntity fdcEntity){
+        return debtCollectionService.saveError(ContributionFileUtil.buildContributionFileError(request, fdcEntity));
     }
 
 }

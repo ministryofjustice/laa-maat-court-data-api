@@ -10,9 +10,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Data
-@Builder
+@Builder(toBuilder=true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -24,7 +25,7 @@ import java.time.LocalDate;
         @SequenceGenerator(name = "contributions_files_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contributions_files_gen_seq")
         @Column(name = "ID", nullable = false)
-        private Integer id;
+        private Integer fileId;
 
         @Column(name = "FILE_NAME", length = 100, nullable = false)
         private String fileName;
@@ -62,7 +63,12 @@ import java.time.LocalDate;
         @Column(name = "ACK_XML_CONTENT")
         private String ackXmlContent;
 
-        public void incrementReceivedCount(){
-            this.recordsReceived++;
+    public void incrementReceivedCount(){
+            if (Objects.isNull(this.recordsReceived)){
+                this.recordsReceived=1;
+            }
+            else{
+                this.recordsReceived++;
+            }
         }
     }

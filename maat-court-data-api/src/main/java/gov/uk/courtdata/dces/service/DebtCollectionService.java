@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.service;
 
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,25 +47,35 @@ public class DebtCollectionService {
         return true;
     }
 
+
     public boolean updateContributionFileReceivedCount(Integer fileId){
         if(Objects.isNull(fileId)){
             log.info("No associated file was found for contribution");
             return false;
         }
-        Optional<ContributionFilesEntity> optionalEntity = contributionFilesRepository.findById(fileId);
-        boolean success = false;
-        if ( optionalEntity.isPresent()){
-            ContributionFilesEntity filesEntity = optionalEntity.get();
+        ContributionFilesEntity filesEntity = getContributionFile(fileId);
+        if ( Objects.nonNull(filesEntity)){
             filesEntity.incrementReceivedCount();
-            LocalDate currentDate = LocalDate.now();
-            filesEntity.setDateReceived(currentDate);
-            filesEntity.setDateModified(currentDate);
-            filesEntity.setUserModified("DCES");
-            contributionFilesRepository.save(filesEntity);
-            success = true;
+            filesEntity.setDateReceived(LocalDate.now());
+            debtCollectionRepository.updateContributionFilesEntity(filesEntity);
             log.info("Update of file id : {} successful", fileId);
+            return true;
         }
-        return success;
+        else {
+            throw new MAATCourtDataException("No file was found for the fdc.");
+        }
     }
+
+    private ContributionFilesEntity getContributionFile(int fileId){
+        Optional<ContributionFilesEntity> optionalEntity = contributionFilesRepository.findById(fileId);
+        if(optionalEntity.isPresent()){
+            return optionalEntity.get().toBuilder().build();
+            // Saving should be done via the JDBCTemplate, not JPA.
+            // So in order to avoid JPA @Transaction saving, in addition to the JDBCTemplate,
+            // we need to clone the object.
+        }
+        return null;
+    }
+
 
 }

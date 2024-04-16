@@ -1,17 +1,23 @@
 package gov.uk.courtdata.dces.service;
 
+import gov.uk.courtdata.dces.util.ContributionFileUtil;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Clob;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +25,8 @@ import java.util.List;
 public class DebtCollectionRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final ContributionFilesRepository contributionFilesRepository;
     private static final String DB_USER_NAME = "DCES";
+
 
     List<String> getContributionFiles(final String fromDate, final String toDate) {
         String query = "SELECT cf.xml_content FROM TOGDATA.CONTRIBUTION_FILES CF " +
@@ -38,52 +44,77 @@ public class DebtCollectionRepository {
         return jdbcTemplate.queryForList(query, String.class, fromDate, toDate);
     }
 
-    public boolean save(ContributionFilesEntity contributionFileEntity) {
-        contributionFileEntity.setUserCreated(DB_USER_NAME);
-        contributionFileEntity.setDateCreated(LocalDate.now());
-
-        contributionFileEntity = saveNonXmls(contributionFileEntity);
+    public boolean saveContributionFilesEntity(ContributionFilesEntity contributionFilesEntity) {
+        contributionFilesEntity.setUserCreated(DB_USER_NAME);
+        contributionFilesEntity.setDateCreated(LocalDate.now());
+        contributionFilesEntity.setDateSent(LocalDate.now());
 
         log.info("Inserting into TOGDATA.CONTRIBUTION_FILES using jdbcTemplate");
-        return saveXmlTypes(contributionFileEntity);
+        runContributionFilesSqlStatement(contributionFilesEntity, false);
+        return true;
     }
 
-    private ContributionFilesEntity saveNonXmls(ContributionFilesEntity contributionFilesEntity){
-        String xmlContent = contributionFilesEntity.getXmlContent();
-        String ackXMLContent = contributionFilesEntity.getAckXmlContent();
+    public boolean updateContributionFilesEntity(ContributionFilesEntity contributionFilesEntity) {
+        contributionFilesEntity.setUserModified(DB_USER_NAME);
+        contributionFilesEntity.setDateModified(LocalDate.now());
+        log.info("Updating TOGDATA.CONTRIBUTION_FILES using jdbcTemplate");
 
-        contributionFilesEntity.setAckXmlContent(null);
-        contributionFilesEntity.setXmlContent(null);
-        contributionFilesEntity = contributionFilesRepository.save(contributionFilesEntity);
-        contributionFilesEntity.setXmlContent(xmlContent);
-        contributionFilesEntity.setAckXmlContent(ackXMLContent);
-        return contributionFilesEntity;
+
+        runContributionFilesSqlStatement(contributionFilesEntity, true);
+        return true;
     }
 
-    public boolean saveXmlTypes(ContributionFilesEntity contributionFilesEntity){
-        jdbcTemplate.execute(
-                (ConnectionCallback<Object>) con -> {
+    private void runContributionFilesSqlStatement(ContributionFilesEntity contributionFilesEntity, boolean isUpdate) {
+        String sqlStatement;
+        Map<String, String> fieldValueMap = ContributionFileUtil.generateSqlFieldValueMap(contributionFilesEntity, isUpdate);
+        if(isUpdate){
+            sqlStatement = generateUpdateSQLStatement(fieldValueMap);
+        }
+        else {
+            sqlStatement = generateInsertSQLStatement(fieldValueMap);
+        }
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(
+                con -> {
+                    PreparedStatement ps = con.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS);
+                    Clob xmlClob = con.createClob();
+                    Clob ackClob = con.createClob();
 
-                    String updateSQL = "UPDATE TOGDATA.CONTRIBUTION_FILES SET XML_CONTENT = XMLType(?), ACK_XML_CONTENT = XMLType(?) WHERE ID = ?";
+                    ContributionFileUtil.setPreparedStatementParameters(ps, fieldValueMap, contributionFilesEntity, xmlClob, ackClob, isUpdate);
 
-                    try (PreparedStatement ps = (con.prepareStatement(updateSQL))) {
-
-                        Clob clob = con.createClob();
-                        clob.setString(1, contributionFilesEntity.getXmlContent());
-                        ps.setClob(1, clob);
-
-                        Clob ackXmlContentClob = con.createClob();
-                        ackXmlContentClob.setString(1, contributionFilesEntity.getAckXmlContent());
-                        ps.setClob(2, ackXmlContentClob);
-
-                        ps.setInt(3, contributionFilesEntity.getId());
-
-                        return ps.executeQuery();
-                    }
-                }
-        );
-        return false;
+                    return ps;
+                }, keyHolder);
+        // if we're creating a new instance. We want to set the id here.
+        if(!isUpdate) {
+            Number newId = keyHolder.getKey();
+            if(Objects.nonNull(newId)) {
+                contributionFilesEntity.setFileId(newId.intValue());
+            }
+        }
     }
+
+    private String generateInsertSQLStatement(Map<String, String> fieldMap){
+        String sql = "INSERT INTO TOGDATA.CONTRIBUTION_FILES (%s) VALUES (%s)";
+
+        String fields = String.join(", ", fieldMap.keySet());
+        String values = String.join(", ", fieldMap.values());
+
+        return sql.formatted(fields,values);
+    }
+
+    private String generateUpdateSQLStatement(Map<String, String> fieldMap){
+        String sql = "UPDATE TOGDATA.CONTRIBUTION_FILES SET %s WHERE ID=?";
+        List<String> updateSqlLine = new ArrayList<>();
+        for(Map.Entry<String,String> entry: fieldMap.entrySet()){
+            updateSqlLine.add(createUpdateSqlLine(entry.getKey(),entry.getValue()));
+        }
+        return sql.formatted(String.join(", ", updateSqlLine));
+    }
+
+    private String createUpdateSqlLine(String field, String value){
+        return field+"="+value;
+    }
+
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
     public int[] globalUpdatePart1() {

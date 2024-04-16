@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SoftAssertionsExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
+class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
 
 
     private static final Integer INVALID_REP_ID = 9999;
@@ -65,7 +65,7 @@ public class ContributionsControllerIntegrationTest extends MockMvcIntegrationTe
 
         ContributionsEntity contributions = TestEntityDataBuilder.getContributionsEntity();
         contributions.setCorrespondenceId(correspondenceEntity.getId());
-        contributions.setContributionFileId(contributionFilesEntity.getId());
+        contributions.setContributionFileId(contributionFilesEntity.getFileId());
         contributions.setRepOrder(repOrderEntity);
         contributionsEntity = contributionsRepository.saveAndFlush(contributions);
 

@@ -50,7 +50,7 @@ public class ConcorContributionsService {
         ValidationUtils.isEmptyOrHasNullElement(contributionRequest.getConcorContributionIds(),"ContributionIds are empty/null.");
 
         final ContributionFilesEntity contributionFilesEntity = createContributionFile(contributionRequest);
-        return updateConcorStatusForContribution(contributionRequest.getConcorContributionIds(), SENT, contributionFilesEntity.getId());
+        return updateConcorStatusForContribution(contributionRequest.getConcorContributionIds(), SENT, contributionFilesEntity.getFileId());
     }
 
     @Transactional(rollbackFor =  MAATCourtDataException.class)
@@ -81,7 +81,7 @@ public class ConcorContributionsService {
             log.info("Updating the concor contribution file ref  -> {}", contributionRequest);
             ContributionFileUtil.assessFilename(contributionRequest);
             contributionFileEntity = contributionFileMapper.toContributionFileEntity(contributionRequest);
-            debtCollectionRepository.save(contributionFileEntity);
+            debtCollectionRepository.saveContributionFilesEntity(contributionFileEntity);
 
         } catch (Exception e) {
             throw new MAATCourtDataException("Failed to map ConcorContributionRequest to ContributionFilesEntity and persist: [%s]".formatted(e.getMessage()));

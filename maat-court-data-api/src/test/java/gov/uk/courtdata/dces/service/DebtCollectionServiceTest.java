@@ -5,6 +5,7 @@ import gov.uk.courtdata.dces.util.ContributionFileUtil;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.testutils.FileUtils;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -134,12 +136,12 @@ class DebtCollectionServiceTest {
         ContributionFilesEntity fileEntity = getContributionFilesEntity(fileId);
         ContributionFilesEntity originalFileEntity = getContributionFilesEntity(fileId);
         when(contributionFilesRepository.findById(fileId)).thenReturn(Optional.of(fileEntity));
-        when(contributionFilesRepository.save(contributionFilesEntityArgumentCaptor.capture())).thenReturn(fileEntity);
+        when(debtCollectionRepository.updateContributionFilesEntity(contributionFilesEntityArgumentCaptor.capture())).thenReturn(true);
         //do
         debtCollectionService.updateContributionFileReceivedCount(fileId);
         //test
         verify(contributionFilesRepository).findById(fileId);
-        verify(contributionFilesRepository).save(any());
+        verify(debtCollectionRepository).updateContributionFilesEntity(any());
 
         ContributionFilesEntity savedEntity = contributionFilesEntityArgumentCaptor.getValue();
         assertEquals(originalFileEntity.getRecordsReceived()+1, savedEntity.getRecordsReceived(), "RecordsReceived has not been incremented");
@@ -154,10 +156,10 @@ class DebtCollectionServiceTest {
         int fileId = 444;
         when(contributionFilesRepository.findById(fileId)).thenReturn(Optional.empty());
         //do
-        debtCollectionService.updateContributionFileReceivedCount(fileId);
-        //test
-        verify(contributionFilesRepository).findById(fileId);
-        verify(contributionFilesRepository,times(0)).save(any());
+        assertThatThrownBy(() -> debtCollectionService
+                .updateContributionFileReceivedCount(fileId))
+                .isInstanceOf(MAATCourtDataException.class)
+                .hasMessageContaining("No file was found for the fdc.");
     }
 
     private ContributionFilesEntity getContributionFilesEntity(int id) {
@@ -179,10 +181,8 @@ class DebtCollectionServiceTest {
 
     private void imitateUpdateContributionFileUpdate(ContributionFilesEntity fileEntity){
         LocalDate currentDate = LocalDate.now();
-        fileEntity.setDateModified(currentDate);
         fileEntity.setDateReceived(currentDate);
         fileEntity.incrementReceivedCount();
-        fileEntity.setUserModified("DCES");
     }
 
 }

@@ -613,7 +613,7 @@ Resources:
       Description: !Sub '${pAppName} API Gateway - HTTP API'
       ProtocolType: HTTP
   ApiIntegration:
-    Type: 'AWS::ApiGatewayV2::Integration'
+    Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref ApiGateway
       Description: !Sub '${pAppName} Integration Proxy'
@@ -623,8 +623,8 @@ Resources:
       ConnectionType: VPC_LINK
       ConnectionId: !Ref ApiGatewayVpcLink
       PayloadFormatVersion: '1.0'
-  ApiRoute1:
-    Type: 'AWS::ApiGatewayV2::Route'
+  ApiRouteLinkValidate:
+    Type: AWS::ApiGatewayV2::Route
     DependsOn:
       - ApiIntegration
     Properties:
@@ -664,6 +664,14 @@ Resources:
       AuthorizationType: JWT
       AuthorizationScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
       AuthorizerId: !Ref ApiAuthorizerForDces
+      Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
+  ApiRouteSwaggerUI:
+    Type: AWS::ApiGatewayV2::Route
+    Condition: cNonProd
+    Properties:
+      ApiId: !Ref ApiGateway
+      RouteKey: 'ANY /open-api/{proxy+}'
+      AuthorizationType: NONE
       Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
   ApiAuthorizer:
     Type: 'AWS::ApiGatewayV2::Authorizer'

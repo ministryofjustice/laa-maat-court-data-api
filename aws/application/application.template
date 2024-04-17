@@ -665,7 +665,7 @@ Resources:
       AuthorizationScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
       AuthorizerId: !Ref ApiAuthorizerForDces
       Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
-  ApiRouteSwaggerUI:
+  ApiRouteOpenAPI:
     Type: AWS::ApiGatewayV2::Route
     Condition: cNonProd
     Properties:

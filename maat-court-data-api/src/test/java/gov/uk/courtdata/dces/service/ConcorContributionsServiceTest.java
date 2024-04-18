@@ -115,7 +115,7 @@ class ConcorContributionsServiceTest {
 
         final boolean actualResponse = concorService.createContributionAndUpdateConcorStatus(createContributionFileRequest);
 
-        verify(debtCollectionRepository).save(contributionFilesEntityArgumentCaptor.capture());
+        verify(debtCollectionRepository).saveContributionFilesEntity(contributionFilesEntityArgumentCaptor.capture());
         verify(concorRepository).saveAll(concorContributionEntityListArgumentCaptor.capture());
 
         final ContributionFilesEntity actualContributionFileEntity = contributionFilesEntityArgumentCaptor.getValue();
@@ -125,7 +125,7 @@ class ConcorContributionsServiceTest {
         assertNotNull(actualContributionFileEntity);
         assertEquals("<xml>ackDummyContent</xml>", actualContributionFileEntity.getAckXmlContent());
         assertEquals(10, actualContributionFileEntity.getRecordsSent());
-        assertEquals(1, actualContributionFileEntity.getId());
+        assertEquals(1, actualContributionFileEntity.getFileId());
         assertNotNull(contributionEntityList);
     }
 
@@ -141,9 +141,9 @@ class ConcorContributionsServiceTest {
 
         boolean actualResponse = concorService.createContributionAndUpdateConcorStatus(createContributionFileRequest);
 
-        verify(debtCollectionRepository).save(contributionFilesEntityArgumentCaptor.capture());
+        verify(debtCollectionRepository).saveContributionFilesEntity(contributionFilesEntityArgumentCaptor.capture());
         assertFalse(actualResponse);
-        assertEquals(1, contributionFilesEntityArgumentCaptor.getValue().getId());
+        assertEquals(1, contributionFilesEntityArgumentCaptor.getValue().getFileId());
         verify(concorRepository, never()).saveAll(anyList());
     }
 

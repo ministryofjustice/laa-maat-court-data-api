@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
+import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.dces.service.FdcContributionsService;
@@ -61,6 +62,16 @@ public class FdcContributionsController {
     public ResponseEntity<Boolean> updateContributionFileStatus(@RequestBody @NotEmpty final CreateFdcFileRequest request) {
         log.info("Update concor contribution file references with request {}", request);
         boolean response = fdcContributionsService.createContributionFileAndUpdateFdcStatus(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @PostMapping(value = "/log-fdc-response", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Logs that a final defence cost was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
+    public ResponseEntity<Boolean> logFdcProcessed(@RequestBody final LogFdcProcessedRequest request) {
+        log.info("Update contribution file sent value, and log any errors with request {}", request);
+        boolean response = fdcContributionsService.logFdcProcessed(request);
         return ResponseEntity.ok(response);
     }
 

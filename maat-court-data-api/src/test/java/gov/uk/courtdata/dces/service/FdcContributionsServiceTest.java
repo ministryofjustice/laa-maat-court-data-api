@@ -2,14 +2,18 @@ package gov.uk.courtdata.dces.service;
 
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
+import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
 import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
+import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
+import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.repository.FdcContributionsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,8 +26,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
@@ -43,7 +49,13 @@ class FdcContributionsServiceTest {
     @Mock
     private DebtCollectionRepository debtCollectionRepository;
     @Mock
+    private DebtCollectionService debtCollectionService;
+    @Mock
     private FdcContributionsRepository fdcContributionsRepository;
+    @Mock
+    private ContributionFilesRepository contributionFilesRepository;
+    @Mock
+    private ContributionFileErrorsRepository contributionFileErrorsRepository;
 
     private LocalDate expectedDateCalculated;
     private LocalDate expectedSentenceDate;
@@ -53,6 +65,8 @@ class FdcContributionsServiceTest {
     private final Integer expectedId = 111;
     @Captor
     private ArgumentCaptor<FdcContributionsStatus> statusCaptor;
+    @Captor
+    private ArgumentCaptor<ContributionFileErrorsEntity> fileErrorCaptor;
 
     @BeforeEach
     void setUp() {
@@ -99,7 +113,7 @@ class FdcContributionsServiceTest {
         CreateFdcFileRequest request = createFdcFileRequest();
         ContributionFilesEntity mappedEntity = createContributionsFileEntity();
 
-        when(debtCollectionRepository.save(mappedEntity)).thenReturn(true);
+        when(debtCollectionRepository.saveContributionFilesEntity(mappedEntity)).thenReturn(true);
         when(fdcContributionsRepository.findByIdIn(request.getFdcIds())).thenReturn(fdcContributionsEntityList);
         when(fdcContributionsRepository.saveAll(fdcContributionsEntityList)).thenReturn(fdcContributionsEntityList);
 
@@ -134,6 +148,110 @@ class FdcContributionsServiceTest {
         assertEquals("FdcIds is empty/null.", e.getMessage());
     }
 
+    @Test
+    void testDrcUpdateSuccessNoErrorText(){
+        int id = 123;
+        int repId = 456;
+        int fileId = 10000;
+
+        FdcContributionsEntity concorEntity = createFdcContributionsEntity(id, repId, fileId);
+
+        when(fdcContributionsRepository.findById(id)).thenReturn(Optional.of(concorEntity));
+        when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(true);
+        // do
+        fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, ""));
+        // verify
+        verify(fdcContributionsRepository).findById(id);
+        verify(debtCollectionService).updateContributionFileReceivedCount(fileId);
+        verify(contributionFileErrorsRepository, times(0)).save(any());
+    }
+
+    @Test
+    void testDrcUpdateSuccessHasErrorText(){
+        int id = 123;
+        int repId = 456;
+        int fileId = 10000;
+        String errorText = "Error Text";
+        LocalDateTime currDate = LocalDateTime.now();
+
+        FdcContributionsEntity fdcEntity = createFdcContributionsEntity(id, repId, fileId);
+
+        when(fdcContributionsRepository.findById(id)).thenReturn(Optional.of(fdcEntity));
+
+        when(debtCollectionService.saveError(fileErrorCaptor.capture())).thenReturn(true);
+        when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(true);
+        // do
+        fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, errorText));
+        // verify
+        verify(fdcContributionsRepository).findById(id);
+        verify(debtCollectionService).updateContributionFileReceivedCount(fileId);
+        ContributionFileErrorsEntity errorEntity = fileErrorCaptor.getValue();
+
+        assertEquals(errorText,errorEntity.getErrorText());
+        assertEquals(id, errorEntity.getFdcContributionId());
+        assertEquals(id,errorEntity.getContributionId());
+        assertEquals(fileId,errorEntity.getContributionFileId());
+        assertNull(errorEntity.getConcorContributionId());
+        assertEquals(repId,errorEntity.getRepId());
+        assertEquals(currDate.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
+        assertEquals(currDate.getMonth(), errorEntity.getDateCreated().getMonth());
+        assertEquals(currDate.getYear(), errorEntity.getDateCreated().getYear());
+    }
+
+
+    @Test
+    void testDrcUpdateNoFdcFound(){
+        int id = 123;
+        String errorText = "Error Text";
+
+        when(fdcContributionsRepository.findById(id)).thenReturn(Optional.empty());
+        // do
+        fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, errorText));
+        // verify
+        verify(fdcContributionsRepository).findById(id);
+        verify(contributionFilesRepository,times(0)).findById(any());
+        verify(contributionFilesRepository,times(0)).save(any());
+        verify(contributionFileErrorsRepository, times(0)).save(any());
+    }
+
+    @Test
+    void testDrcUpdateNoFileFound(){
+        int id = 123;
+        int repId = 456;
+        int fileId = 10000;
+        String errorText = "Error Text";
+        FdcContributionsEntity fdcEntity = createFdcContributionsEntity(id, repId, fileId);
+        when(fdcContributionsRepository.findById(id)).thenReturn(Optional.of(fdcEntity));
+        when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(false);
+        // do
+        boolean result = fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, errorText));
+        assertFalse(result);
+        // verify
+        verify(fdcContributionsRepository).findById(id);
+        verify(debtCollectionService,times(1)).updateContributionFileReceivedCount(any());
+        // verify no error is saved, as file is not found.
+        verify(debtCollectionService,times(0)).saveError(any());
+    }
+
+    private LogFdcProcessedRequest createLogFdcProcessedRequest(int id, String errorText){
+        return LogFdcProcessedRequest.builder()
+                .fdcId(id)
+                .errorText(errorText)
+                .build();
+    }
+
+    private static FdcContributionsEntity createFdcContributionsEntity(int id, int repId, int fileId){
+        RepOrderEntity repOrderEntity = RepOrderEntity.builder()
+                .id(repId)
+                .build();
+
+        return FdcContributionsEntity.builder()
+                .id(id)
+                .repOrderEntity(repOrderEntity)
+                .contFileId(fileId)
+                .build();
+    }
+
 
     private CreateFdcFileRequest createFdcFileRequest(){
         return CreateFdcFileRequest.builder()
@@ -147,7 +265,7 @@ class FdcContributionsServiceTest {
     private ContributionFilesEntity createContributionsFileEntity() {
         LocalDate date = LocalDate.now();
         return ContributionFilesEntity.builder()
-                .id(1)
+                .fileId(1)
                 .fileName("filename.xml")
                 .recordsSent(1)
                 .recordsReceived(1)

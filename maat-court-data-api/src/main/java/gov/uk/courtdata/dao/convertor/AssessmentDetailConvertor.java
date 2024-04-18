@@ -60,7 +60,7 @@ public class AssessmentDetailConvertor extends Convertor {
 			getDTO().setDescription(		convertorHelper.toString(getOracleType().getDescription()));
 			getDTO().setDetailCode(			convertorHelper.toString(getOracleType().getDetailCode()));
 			
-			getDTO().setTimestamp(			convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
+			getDTO().setTimestamp(			convertorHelper.toZonedDateTime(getOracleType().getTimeStamp()));
 			
 			FrequencyType applicantfreqType = getOracleType().getApplicantFreqObject();
 			FrequencyConvertor frequencyConverter = new FrequencyConvertor();

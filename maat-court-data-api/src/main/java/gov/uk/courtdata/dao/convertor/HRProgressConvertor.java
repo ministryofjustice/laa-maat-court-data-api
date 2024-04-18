@@ -67,7 +67,7 @@ public class HRProgressConvertor extends Convertor {
 			getDTO().setDateCompleted(	convertorHelper.toDate(getOracleType().getDateCompleted()));
 			getDTO().setDateRequired(	convertorHelper.toDate(getOracleType().getDateRequired()));			
 			getDTO().setDateRequested(	convertorHelper.toDate(getOracleType().getDateRequested()));			
-			getDTO().setTimestamp(		convertorHelper.toLocalDateTime(getOracleType().getTimeStamp()));
+			getDTO().setTimestamp(		convertorHelper.toZonedDateTime(getOracleType().getTimeStamp()));
 			
 			HRProgressActionConvertor progressActionConverter = new HRProgressActionConvertor();
 			if(getOracleType().getProgressActionObject() != null)

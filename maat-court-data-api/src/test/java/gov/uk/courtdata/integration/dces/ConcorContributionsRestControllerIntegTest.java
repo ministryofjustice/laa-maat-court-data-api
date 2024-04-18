@@ -19,14 +19,13 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SoftAssertionsExtension.class)
@@ -44,8 +43,6 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
 
     @SpyBean
     DebtCollectionRepository debtCollectionRepositorySpy;
-    @Captor
-    private ArgumentCaptor<ContributionFilesEntity> contributionFileEntityCaptor;
 
     private static int savedEntityId1;
     private static int savedEntityId2;
@@ -59,8 +56,8 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
 
     @BeforeEach
     public void setUp() {
-        file1Id = repos.contributionFiles.save(buildFileEntity(fileOne)).getId();
-        file2Id = repos.contributionFiles.save(buildFileEntity(fileOne)).getId();
+        file1Id = repos.contributionFiles.save(buildFileEntity(fileOne, false)).getFileId();
+        file2Id = repos.contributionFiles.save(buildFileEntity(fileTwo, true)).getFileId();
 
 
         savedEntityId1 = repos.concorContributions.save(buildConcorEntity(ConcorContributionStatus.ACTIVE, "<xml 1 content dummy",file1Id)).getId();
@@ -77,14 +74,17 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
                 .build();
     }
 
-    private ContributionFilesEntity buildFileEntity(String fileIdentifier){
-        return ContributionFilesEntity.builder()
+    private ContributionFilesEntity buildFileEntity(String fileIdentifier, boolean isBlankXml){
+        ContributionFilesEntity entity = ContributionFilesEntity.builder()
                 .fileName(fileIdentifier)
                 .recordsReceived(0)
                 .recordsSent(10)
-                .xmlContent("<xml>"+fileIdentifier+"</xml>")
-                .ackXmlContent("<ackXml>"+fileIdentifier+"</ackXml>")
                 .build();
+        if(!isBlankXml){
+            entity.setXmlContent("<xml>"+fileIdentifier+"</xml>");
+            entity.setAckXmlContent("<ackXml>"+fileIdentifier+"</ackXml>");
+        }
+        return entity;
     }
 
     @Test
@@ -120,22 +120,17 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
 
     @Test
     void givenAListOfIds_whenAtomicUpdate_theStatusIsUpdated() throws Exception {
-        // mocking out saveNonXMLs as it cannot be tested due to xmlType.
-        doReturn(true).when(debtCollectionRepositorySpy).saveXmlTypes(contributionFileEntityCaptor.capture());
-
-        String expectedXml = "<test></test>";
-        String expectedAckXml = "<ackTest></ackTest>";
+        // removed the xml values as it cannot be tested due to xmlType. The double refuses to handle XMLTYPE(?) as that is oracle specific.
+        int expectedFileListSize = repos.contributionFiles.findAll().size()+1;
         String expectedFilename = "TestFilename.xml";
         int expectedRecordsSent = 2;
         String s = """
                                 {
                                     "recordsSent": %s,
                                     "concorContributionIds": [%s],
-                                    "xmlContent" : "%s",
-                                    "ackXmlContent" : "%s",
                                     "xmlFileName" : "%s"
                                 }""";
-        s = s.formatted( expectedRecordsSent, savedEntityId3, expectedXml, expectedAckXml, expectedFilename);
+        s = s.formatted( expectedRecordsSent, savedEntityId3, expectedFilename);
         mockMvc.perform(MockMvcRequestBuilders.post(ATOMIC_UPDATE_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(s))
@@ -143,24 +138,26 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // verify the content of the saved entity.
-        ContributionFilesEntity savedEntity = contributionFileEntityCaptor.getValue();
-        assertNotNull(savedEntity);
-        assertNotNull(savedEntity.getId());
-        assertEquals(expectedRecordsSent, savedEntity.getRecordsSent());
-        assertEquals(expectedXml, savedEntity.getXmlContent());
-        assertEquals(expectedAckXml, savedEntity.getAckXmlContent());
-        assertEquals(expectedFilename, savedEntity.getFileName());
+        List<ContributionFilesEntity> savedFileEntities = repos.contributionFiles.findAll();
+        assertEquals(expectedFileListSize, savedFileEntities.size());
+        ContributionFilesEntity savedFileEntity = savedFileEntities.get(expectedFileListSize-1); // get last element
+        assertNotNull(savedFileEntity);
+        assertNotNull(savedFileEntity.getFileId());
+        assertEquals(expectedRecordsSent, savedFileEntity.getRecordsSent());
+        assertNull(savedFileEntity.getXmlContent());
+        assertNull(savedFileEntity.getAckXmlContent());
+        assertEquals(expectedFilename, savedFileEntity.getFileName());
         // assert the file id has been set on the contribution
         Optional<ConcorContributionsEntity> updatedConcor = concorRepository.findById(savedEntityId3);
         assertTrue(updatedConcor.isPresent());
         ConcorContributionsEntity fdcContributionsEntity = updatedConcor.get();
-        assertEquals(savedEntity.getId(), fdcContributionsEntity.getContribFileId());
+        assertEquals(savedFileEntity.getFileId(), fdcContributionsEntity.getContribFileId());
         assertEquals(ConcorContributionStatus.SENT, fdcContributionsEntity.getStatus());
     }
 
     @Test
     void testLogDrcProcessedNoErrors() throws Exception {
-        String s = createLogDrcProcessedRequest(savedEntityId1,"");
+        String s = createLogDrcProcessedRequest(savedEntityId4,"");
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -169,7 +166,7 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check we've updated the received count.
-        Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file1Id);
+        Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file2Id);
         assertTrue(fileEntity.isPresent());
         assertEquals(1,fileEntity.get().getRecordsReceived());
 
@@ -180,7 +177,7 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
     @Test
     void testLogDrcProcessedWithErrors() throws Exception {
         String errorText = "ErrorText";
-        String s = createLogDrcProcessedRequest(savedEntityId1,errorText);
+        String s = createLogDrcProcessedRequest(savedEntityId4,errorText);
         LocalDateTime dateTimeCheck = LocalDateTime.now();
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
@@ -190,17 +187,17 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check we've updated the received count.
-        Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file1Id);
+        Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file2Id);
         assertTrue(fileEntity.isPresent());
         assertEquals(1,fileEntity.get().getRecordsReceived());
 
         // check no values in errors
         assertEquals(1, repos.contributionFileErrors.count());
         ContributionFileErrorsEntity errorEntity = repos.contributionFileErrors.findAll().get(0);
-        assertEquals(savedEntityId1, errorEntity.getConcorContributionId());
-        assertEquals(savedEntityId1, errorEntity.getContributionId());
+        assertEquals(savedEntityId4, errorEntity.getConcorContributionId());
+        assertEquals(savedEntityId4, errorEntity.getContributionId());
         assertEquals(errorText, errorEntity.getErrorText());
-        assertEquals(file1Id, errorEntity.getContributionFileId());
+        assertEquals(file2Id, errorEntity.getContributionFileId());
 
         assertEquals(dateTimeCheck.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
         assertEquals(dateTimeCheck.getMonth(), errorEntity.getDateCreated().getMonth());

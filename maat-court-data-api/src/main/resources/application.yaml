@@ -67,7 +67,7 @@ springdoc:
   packagesToScan: gov.uk.courtdata
   show-actuator: true
   api-docs:
-    path: /maat-api
+    path: /open-api
     enabled: true
 
   swagger-ui:

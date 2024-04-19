@@ -673,14 +673,6 @@ Resources:
       RouteKey: 'ANY /open-api/{proxy+}'
       AuthorizationType: NONE
       Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
-  ApiRouteMaatAPIDocs:
-    Type: AWS::ApiGatewayV2::Route
-    Condition: cNonProd
-    Properties:
-      ApiId: !Ref ApiGateway
-      RouteKey: 'ANY /maat-api/{proxy+}'
-      AuthorizationType: NONE
-      Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
   ApiAuthorizer:
     Type: 'AWS::ApiGatewayV2::Authorizer'
     Properties:

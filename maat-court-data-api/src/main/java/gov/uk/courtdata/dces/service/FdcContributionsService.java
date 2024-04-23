@@ -75,9 +75,10 @@ public class FdcContributionsService {
 
     private int executeGlobalUpdate(){
         log.info("executeGlobalUpdate entered");
-        int[] update1Result = debtCollectionRepository.globalUpdatePart1();
+        String delay = fdcContributionsRepository.callGetFdcCalculationDelay();
+        int[] update1Result = debtCollectionRepository.globalUpdatePart1(delay);
         log.info("FDC Global update Part 1 affected: {}", getResult(update1Result));
-        int[] update2Result = debtCollectionRepository.globalUpdatePart2();
+        int[] update2Result = debtCollectionRepository.globalUpdatePart2(delay);
         log.info("FDC Global update Part 2 affected: {}", getResult(update2Result));
         int response = combineGlobalUpdateResults(update1Result, update2Result);
         log.info("executeGlobalUpdate exiting");

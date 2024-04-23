@@ -2,7 +2,6 @@ package gov.uk.courtdata.dces.service;
 
 import gov.uk.courtdata.dces.util.ContributionFileUtil;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
-import gov.uk.courtdata.repository.ContributionFilesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -117,7 +116,7 @@ public class DebtCollectionRepository {
 
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
-    public int[] globalUpdatePart1() {
+    public int[] globalUpdatePart1(String delay) {
         log.info("globalUpdatePart1 entered");
         String query = """
                 MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC 
@@ -144,7 +143,7 @@ public class DebtCollectionRepository {
                                                                FROM TOGDATA.FDC_CONTRIBUTIONS F 
                                                                JOIN TOGDATA.REP_ORDERS R ON ( R.ID = F.REP_ID ) 
                                                             WHERE 
-                                                               TRUNC( ADD_MONTHS( NVL(R.SENTENCE_ORDER_DATE, SYSDATE ), TOGDATA.REF_DATA_MANAGEMENT.GET_CONFIG_PARAMETER ('FDC_CALCULATION_DELAY')) ) <= TRUNC(SYSDATE) 
+                                                               TRUNC( ADD_MONTHS( NVL(R.SENTENCE_ORDER_DATE, SYSDATE ), %s) ) <= TRUNC(SYSDATE) 
                                                                AND 
                                                                F.LGFS_COMPLETE     = 'Y' 
                                                                AND 
@@ -177,11 +176,11 @@ public class DebtCollectionRepository {
                  ON (FC.ID = MERGERESULT.ID) 
                  WHEN MATCHED THEN 
                    UPDATE SET FC.STATUS = MERGERESULT.NEWSTATUS""";
-        return jdbcTemplate.batchUpdate(query);
+        return jdbcTemplate.batchUpdate(query.formatted(delay));
     }
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
-    public int[] globalUpdatePart2(){
+    public int[] globalUpdatePart2(String delay){
         log.info("globalUpdatePart2 entered");
         String query = """
                 MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC 
@@ -211,7 +210,7 @@ public class DebtCollectionRepository {
                                              ELSE 'N' 
                                         END PREV_FDC_SENT, 
                 
-                                 (SELECT DECODE(SUM(CON_COUNT),TOGDATA.REF_DATA_MANAGEMENT.GET_CONFIG_PARAMETER ('FDC_CALCULATION_DELAY'),'INVALID','REQUESTED') STATUS 
+                                 (SELECT DECODE(SUM(CON_COUNT),0,'INVALID','REQUESTED') STATUS 
                                       FROM 
                                       ( 
                                          SELECT COUNT(C.ID) AS CON_COUNT   
@@ -232,7 +231,7 @@ public class DebtCollectionRepository {
                                                               FROM TOGDATA.FDC_CONTRIBUTIONS F 
                                                               JOIN TOGDATA.REP_ORDERS R ON ( R.ID = F.REP_ID ) 
                                                            WHERE 
-                                                              TRUNC( ADD_MONTHS( R.SENTENCE_ORDER_DATE, 5) ) > TRUNC(SYSDATE)  
+                                                              TRUNC( ADD_MONTHS( R.SENTENCE_ORDER_DATE, %s) ) > TRUNC(SYSDATE)  
                                                               AND 
                                                               F.LGFS_COMPLETE     = 'Y' 
                                                               AND 
@@ -327,7 +326,7 @@ public class DebtCollectionRepository {
                 ON (FC.ID = QUERY1.ID) 
                 WHEN MATCHED THEN 
                   UPDATE SET FC.STATUS = QUERY1.NEWSTATUS""";
-        return jdbcTemplate.batchUpdate(query);
+        return jdbcTemplate.batchUpdate(query.formatted(delay));
     }
 
 }

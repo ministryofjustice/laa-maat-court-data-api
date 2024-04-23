@@ -25,8 +25,8 @@ class DebtCollectionRepositoryTest {
 
     @Mock
     JdbcTemplate jdbcTemplate;
-    private static final byte[] fdcMerge1StatementHash = new byte[]{63, 93, 48, -38, -1, 2, -116, 125, -6, 100, 103, 97, 30, 43, -54, 7, -86, -126, 50, -126, -93, 40, -127, -112, 107, 44, -40, 82, -81, -93, -94, -35};
-    private static final byte[] fdcMerge2StatementHash = new byte[]{-110, -117, -90, -20, 15, 82, 0, -66, 98, 121, 11, 1, -105, -98, -1, 23, 126, 83, 21, 120, 70, 24, 74, -44, -69, 107, 69, 125, 50, 39, 107, -71};
+    private static final byte[] fdcMerge1StatementHash = new byte[]{21, 27, 94, 127, -78, -69, 79, -63, -108, 121, -65, -125, 105, 9, 107, -37, 34, 120, -101, 10, 71, -92, -120, -77, -93, 82, -121, 66, -32, -127, -50, -81};
+    private static final byte[] fdcMerge2StatementHash = new byte[]{109, 66, -116, -54, 29, -72, -61, -56, -1, 99, 70, -17, 15, -67, -3, -73, 64, -1, -81, 70, 14, 21, 24, -60, 110, 53, -50, -67, -91, -94, -53, 71};
 
     @Captor
     ArgumentCaptor<String> mergeSQLCaptor;
@@ -35,7 +35,7 @@ class DebtCollectionRepositoryTest {
     void verifyMergeStatement1_IsExpected() {
         when(jdbcTemplate.batchUpdate(mergeSQLCaptor.capture()))
                 .thenReturn(new int[]{1});
-        debtCollectionRepository.globalUpdatePart1();
+        debtCollectionRepository.globalUpdatePart1("%s");
 
         assertNotNull(mergeSQLCaptor);
         Assertions.assertArrayEquals(fdcMerge1StatementHash, getCaptorHash(), "A change has been detected in the debtCollectionRepository.globalUpdatePart1() please verify changes are correct. And update this test.");
@@ -45,7 +45,7 @@ class DebtCollectionRepositoryTest {
     void verifyMergeStatement2_IsExpected() {
         when(jdbcTemplate.batchUpdate(mergeSQLCaptor.capture()))
                 .thenReturn(new int[]{1});
-        debtCollectionRepository.globalUpdatePart2();
+        debtCollectionRepository.globalUpdatePart2("%s");
 
 
         assertNotNull(mergeSQLCaptor);

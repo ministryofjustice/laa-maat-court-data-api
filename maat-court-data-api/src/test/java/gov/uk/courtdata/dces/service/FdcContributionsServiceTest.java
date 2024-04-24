@@ -100,8 +100,8 @@ class FdcContributionsServiceTest {
         int expected1 = 2;
         int expected2 = 5;
 
-        when(debtCollectionRepository.globalUpdatePart1("5")).thenReturn(new int[]{expected1});
-        when(debtCollectionRepository.globalUpdatePart2("5")).thenReturn(new int[]{expected2});
+        when(debtCollectionRepository.globalUpdatePart1("5")).thenReturn(expected1);
+        when(debtCollectionRepository.globalUpdatePart2("5")).thenReturn(expected2);
         when(fdcContributionsRepository.callGetFdcCalculationDelay()).thenReturn("5");
         FdcContributionsGlobalUpdateResponse response = fdcContributionsService.fdcContributionGlobalUpdate();
         assertNotNull(response);

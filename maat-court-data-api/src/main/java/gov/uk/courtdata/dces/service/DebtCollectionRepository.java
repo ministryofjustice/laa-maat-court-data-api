@@ -116,7 +116,7 @@ public class DebtCollectionRepository {
 
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
-    public int[] globalUpdatePart1(String delay) {
+    public int globalUpdatePart1(String delay) {
         log.info("globalUpdatePart1 entered");
         String query = """
                 MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC 
@@ -143,7 +143,7 @@ public class DebtCollectionRepository {
                                                                FROM TOGDATA.FDC_CONTRIBUTIONS F 
                                                                JOIN TOGDATA.REP_ORDERS R ON ( R.ID = F.REP_ID ) 
                                                             WHERE 
-                                                               TRUNC( ADD_MONTHS( NVL(R.SENTENCE_ORDER_DATE, SYSDATE ), %s) ) <= TRUNC(SYSDATE) 
+                                                               TRUNC( ADD_MONTHS( NVL(R.SENTENCE_ORDER_DATE, SYSDATE ), ?) ) <= TRUNC(SYSDATE) 
                                                                AND 
                                                                F.LGFS_COMPLETE     = 'Y' 
                                                                AND 
@@ -176,11 +176,11 @@ public class DebtCollectionRepository {
                  ON (FC.ID = MERGERESULT.ID) 
                  WHEN MATCHED THEN 
                    UPDATE SET FC.STATUS = MERGERESULT.NEWSTATUS""";
-        return jdbcTemplate.batchUpdate(query.formatted(delay));
+        return jdbcTemplate.update(query, delay);
     }
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
-    public int[] globalUpdatePart2(String delay){
+    public int globalUpdatePart2(String delay){
         log.info("globalUpdatePart2 entered");
         String query = """
                 MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC 
@@ -231,7 +231,7 @@ public class DebtCollectionRepository {
                                                               FROM TOGDATA.FDC_CONTRIBUTIONS F 
                                                               JOIN TOGDATA.REP_ORDERS R ON ( R.ID = F.REP_ID ) 
                                                            WHERE 
-                                                              TRUNC( ADD_MONTHS( R.SENTENCE_ORDER_DATE, %s) ) > TRUNC(SYSDATE)  
+                                                              TRUNC( ADD_MONTHS( R.SENTENCE_ORDER_DATE, ?) ) > TRUNC(SYSDATE)  
                                                               AND 
                                                               F.LGFS_COMPLETE     = 'Y' 
                                                               AND 
@@ -326,7 +326,7 @@ public class DebtCollectionRepository {
                 ON (FC.ID = QUERY1.ID) 
                 WHEN MATCHED THEN 
                   UPDATE SET FC.STATUS = QUERY1.NEWSTATUS""";
-        return jdbcTemplate.batchUpdate(query.formatted(delay));
+        return jdbcTemplate.update(query,delay);
     }
 
 }

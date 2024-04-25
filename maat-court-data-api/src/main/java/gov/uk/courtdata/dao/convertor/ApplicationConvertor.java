@@ -116,176 +116,28 @@ public class ApplicationConvertor extends Convertor
 			getDTO().setWelshCorrepondence(		convertorHelper.toBoolean(	getOracleType().getWelshCorrespondence() ));
 			getDTO().setDecisionDate(			convertorHelper.toDate(	getOracleType().getDecisionDate()));
 			getDTO().setApplicantHasPartner(	convertorHelper.toBoolean( 	getOracleType().getPartner() ));
-			
-			
-			ContraryInterestConvertor ciConvertor	= new ContraryInterestConvertor();
-			if ( getOracleType().getContraryInterestObject() != null )
-			{
-				ciConvertor.setDTOFromType( getOracleType().getContraryInterestObject() );
-			}
-			getDTO().setPartnerContraryInterestDTO( ciConvertor.getDTO() ); // if type is null this will initialise a valid empty object
 
-			if ( getOracleType().getStatusObject() != null )
-			{
-				RepStatusConvertor convertor	= new RepStatusConvertor();
-				convertor.setDTOFromType( getOracleType().getStatusObject() );
-				getDTO().setStatusDTO( convertor.getDTO() );
-			}
+			convertContraryInterestFromType();
+			convertRepStatusFromType();
+			convertCaseDetailsFromType();
+			convertOffenceFromType();
+			convertMagsCourtFromType();
+			convertMagsOutcomeFromType();
+			convertApplicantDetailsFromType();
+			convertSupplierFromType();
+			convertLscTransferFromType();
+			convertAreaTransferFromType();
+			convertAssessmentFromType();
+			convertCrownCourtOverviewFromType();
+			convertCapitalEquityFromType();
+			convertDecisionReasonFromType();
+			convertCaseManagementUnitFromType();
+			convertAssessmentSummaryFromType();
+			convertApplicantLinksFromType();
+			convertPassportedFromType();
+			convertAllowedWorkReasonsFromType();
+			convertDigitalMeansAssessmentFromType();
 
-			if ( getOracleType().getCaseTypeObject() != null )
-			{
-				CaseDetailConvertor caseDetailConvertor	= new CaseDetailConvertor();
-				caseDetailConvertor.setDTOFromType( getOracleType().getCaseTypeObject() );
-				getDTO().setCaseDetailsDTO( caseDetailConvertor.getDTO() );
-			}
-
-			if ( getOracleType().getOffenceTypeObject() != null )
-			{
-				OffenceConvertor offenceConvertor	= new OffenceConvertor();
-				offenceConvertor.setDTOFromType( getOracleType().getOffenceTypeObject() );
-				getDTO().setOffenceDTO( offenceConvertor.getDTO() );
-			}
-
-			if ( getOracleType().getMagsCourtObject() != null )
-			{
-				MagsCourtConvertor magsCourtConvertor	= new MagsCourtConvertor();
-				magsCourtConvertor.setDTOFromType( getOracleType().getMagsCourtObject() );
-				getDTO().setMagsCourtDTO( magsCourtConvertor.getDTO() );
-			}
-
-			if ( getOracleType().getMagsOutcomeObject() != null )
-			{
-				OutcomeConvertor outcomeConvertor	= new OutcomeConvertor();
-				outcomeConvertor.setDTOFromType( getOracleType().getMagsOutcomeObject() );
-				getDTO().setMagsOutcomeDTO( outcomeConvertor.getDTO() );
-			}
-
-			if ( getOracleType().getApplicantDetailsObject() != null )
-			{
-				ApplicantConvertor applicantConvertor	= new ApplicantConvertor();
-				applicantConvertor.setDTOFromType( getOracleType().getApplicantDetailsObject() );
-				getDTO().setApplicantDTO( applicantConvertor.getDTO() );
-			}
-
-			if ( getOracleType().getSupplierObject() != null )
-			{
-				SupplierConvertor supplierConvertor	= new SupplierConvertor();
-				supplierConvertor.setDTOFromType( getOracleType().getSupplierObject() );
-				getDTO().setSupplierDTO( supplierConvertor.getDTO() );
-			}
-
-			if ( getOracleType().getLscTransfersObject() != null )
-			{
-				LSCTransferConvertor lscTransferConvertor	= new LSCTransferConvertor();
-				lscTransferConvertor.setDTOFromType( getOracleType().getLscTransfersObject() );
-				getDTO().setLscTransferDTO( lscTransferConvertor.getDTO() );
-			}
-
-			if ( getOracleType().getAreaTransfersObject() != null )
-			{
-				AreaTransferConvertor convertor	= new AreaTransferConvertor();
-				convertor.setDTOFromType( getOracleType().getAreaTransfersObject() );
-				getDTO().setAreaTransferDTO( convertor.getDTO() );
-			}
-
-			if ( getOracleType().getCurrentAssessmentObject() != null )
-			{
-				AssessmentConvertor assessmentConvertor	= new AssessmentConvertor();
-				assessmentConvertor.setDTOFromType( getOracleType().getCurrentAssessmentObject() );
-				getDTO().setAssessmentDTO( assessmentConvertor.getDTO() );
-			}
-
-			if ( getOracleType().getCrownCourtOverviewObject() != null )
-			{
-				CrownCourtOverviewConvertor crownCourtOverviewConvertor	= new CrownCourtOverviewConvertor();
-				crownCourtOverviewConvertor.setDTOFromType( getOracleType().getCrownCourtOverviewObject() );
-				getDTO().setCrownCourtOverviewDTO( crownCourtOverviewConvertor.getDTO() );
-			}
-
-			if ( getOracleType().getCapitalEquityObject() != null )
-			{
-				CapitalEquityConvertor capitalEquityConvertor	= new CapitalEquityConvertor();
-				capitalEquityConvertor.setDTOFromType( getOracleType().getCapitalEquityObject() );
-				getDTO().setCapitalEquityDTO( capitalEquityConvertor.getDTO() );
-			}
-			
-			if(getOracleType().getDecisionReasonObject() != null){
-				RepOrderDecisionConverter decisionConverter = new RepOrderDecisionConverter();
-				decisionConverter.setDTOFromType(getOracleType().getDecisionReasonObject());
-				getDTO().setRepOrderDecision(decisionConverter.getDTO());
-			}
-
-            CaseManagementUnitConvertor caseManagementUnitConverter = new CaseManagementUnitConvertor();
-            if(getOracleType().getCmuObject() != null){
-                caseManagementUnitConverter.setDTOFromType(getOracleType().getCmuObject());
-            }
-            getDTO().setCaseManagementUnitDTO(caseManagementUnitConverter.getDTO());
-
-			AssessmentSummaryConvertor 	convertor					= new AssessmentSummaryConvertor();
-			AssessmentSummaryTabType	assessmentSummaryTabType 	= getOracleType().getAssessmentsSummaryTab();
-	    	/*
-	    	 * set an empty collection
-	    	 */
-			getDTO().setAssessmentSummary( new ArrayList<AssessmentSummaryDTO>() );
-
-			if ( assessmentSummaryTabType != null )
-			{
-				AssessmentSummaryType[] assessmentSummaryTypes = assessmentSummaryTabType.getArray();
-				for ( int i = 0; i < assessmentSummaryTypes.length; i++ )
-				{
-					convertor.setDTOFromType( assessmentSummaryTypes[i] );
-					getDTO().getAssessmentSummary().add( convertor.getDTO() );
-				}
-			}
-			
-			ApplicantLinkConvertor 	alconvertor				= new ApplicantLinkConvertor();
-			ApplicantLinksTabtype	applicantLinksTabtype 	= getOracleType().getApplicantLinksTab();
-	    	/*
-	    	 * set an empty collection
-	    	 */
-			getDTO().setApplicantLinks( new ArrayList<ApplicantLinkDTO>() );
-
-			if ( applicantLinksTabtype != null )
-			{
-				ApplicantLinkType[] applicantLinkTypes = applicantLinksTabtype.getArray();
-				for ( int i = 0; i < applicantLinkTypes.length; i++ )
-				{
-					alconvertor.setDTOFromType( applicantLinkTypes[i] );
-					getDTO().getApplicantLinks().add( alconvertor.getDTO() );
-				}
-			}
-			
-			PassportAssessmentType passportType = getOracleType().getPassportAssessmentObject();
-			
-			if(passportType != null){
-				PassportedConvertor passportConvertor = new PassportedConvertor();
-				passportConvertor.setDTOFromType(passportType);
-				getDTO().setPassportedDTO(passportConvertor.getDTO());
-			}
-			
-						
-			if ( getOracleType().getAllowedWorkReasons() != null ){
-				
-				AllowedWorkReasonConvertor allowedWorkReasonConvertor = new AllowedWorkReasonConvertor();
-				allowedWorkReasonConvertor.setDTOFromType( getOracleType().getAllowedWorkReasons() );
-				getDTO().setAllowedWorkReasonDTO(allowedWorkReasonConvertor.getDTO() ) ;
-			}
-			
-			// MW - 30/03/2017 - FIP Changes
-			DigitalMeansAssessmentConvertor dmaConvertor	= new DigitalMeansAssessmentConvertor();
-			DigiMeansAssessTabtype	dmaTabtype 	= getOracleType().getDigiMeansAssessments();
-
-			getDTO().setMeansAssessments( new ArrayList<DigitisedMeansAssessmentDTO>() );
-
-			if ( dmaTabtype != null )
-			{
-				DigiMeansAssessType[] digiMeansAssessmentTypes = dmaTabtype.getArray();
-				for ( int i = 0; i < digiMeansAssessmentTypes.length; i++ )
-				{
-					dmaConvertor.setDTOFromType(digiMeansAssessmentTypes[i] );
-					getDTO().getMeansAssessments().add(dmaConvertor.getDTO() );
-				}
-			}
 			getDTO().setTransactionId(convertorHelper.toString(getOracleType().getTransactionId()));
 
 		}
@@ -301,6 +153,213 @@ public class ApplicationConvertor extends Convertor
 		{
 			throw new MAATSystemException( ex );
 		}		
+	}
+
+	private void convertContraryInterestFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		ContraryInterestConvertor ciConvertor	= new ContraryInterestConvertor();
+		if ( getOracleType().getContraryInterestObject() != null )
+		{
+			ciConvertor.setDTOFromType( getOracleType().getContraryInterestObject() );
+		}
+		getDTO().setPartnerContraryInterestDTO( ciConvertor.getDTO() ); // if type is null this will initialise a valid empty object
+	}
+
+	private void convertRepStatusFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getStatusObject() != null )
+		{
+			RepStatusConvertor convertor	= new RepStatusConvertor();
+			convertor.setDTOFromType( getOracleType().getStatusObject() );
+			getDTO().setStatusDTO( convertor.getDTO() );
+		}
+	}
+
+	private void convertCaseDetailsFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getCaseTypeObject() != null )
+		{
+			CaseDetailConvertor caseDetailConvertor	= new CaseDetailConvertor();
+			caseDetailConvertor.setDTOFromType( getOracleType().getCaseTypeObject() );
+			getDTO().setCaseDetailsDTO( caseDetailConvertor.getDTO() );
+		}
+	}
+
+	private void convertOffenceFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getOffenceTypeObject() != null )
+		{
+			OffenceConvertor offenceConvertor	= new OffenceConvertor();
+			offenceConvertor.setDTOFromType( getOracleType().getOffenceTypeObject() );
+			getDTO().setOffenceDTO( offenceConvertor.getDTO() );
+		}
+	}
+
+	private void convertMagsCourtFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getMagsCourtObject() != null )
+		{
+			MagsCourtConvertor magsCourtConvertor	= new MagsCourtConvertor();
+			magsCourtConvertor.setDTOFromType( getOracleType().getMagsCourtObject() );
+			getDTO().setMagsCourtDTO( magsCourtConvertor.getDTO() );
+		}
+	}
+
+	private void convertMagsOutcomeFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getMagsOutcomeObject() != null )
+		{
+			OutcomeConvertor outcomeConvertor	= new OutcomeConvertor();
+			outcomeConvertor.setDTOFromType( getOracleType().getMagsOutcomeObject() );
+			getDTO().setMagsOutcomeDTO( outcomeConvertor.getDTO() );
+		}
+	}
+
+	private void convertApplicantDetailsFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getApplicantDetailsObject() != null )
+		{
+			ApplicantConvertor applicantConvertor	= new ApplicantConvertor();
+			applicantConvertor.setDTOFromType( getOracleType().getApplicantDetailsObject() );
+			getDTO().setApplicantDTO( applicantConvertor.getDTO() );
+		}
+	}
+
+	private void convertSupplierFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getSupplierObject() != null )
+		{
+			SupplierConvertor supplierConvertor	= new SupplierConvertor();
+			supplierConvertor.setDTOFromType( getOracleType().getSupplierObject() );
+			getDTO().setSupplierDTO( supplierConvertor.getDTO() );
+		}
+	}
+
+	private void convertLscTransferFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getLscTransfersObject() != null )
+		{
+			LSCTransferConvertor lscTransferConvertor	= new LSCTransferConvertor();
+			lscTransferConvertor.setDTOFromType( getOracleType().getLscTransfersObject() );
+			getDTO().setLscTransferDTO( lscTransferConvertor.getDTO() );
+		}
+	}
+
+	private void convertAreaTransferFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getAreaTransfersObject() != null )
+		{
+			AreaTransferConvertor convertor	= new AreaTransferConvertor();
+			convertor.setDTOFromType( getOracleType().getAreaTransfersObject() );
+			getDTO().setAreaTransferDTO( convertor.getDTO() );
+		}
+	}
+
+	private void convertAssessmentFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getCurrentAssessmentObject() != null )
+		{
+			AssessmentConvertor assessmentConvertor	= new AssessmentConvertor();
+			assessmentConvertor.setDTOFromType( getOracleType().getCurrentAssessmentObject() );
+			getDTO().setAssessmentDTO( assessmentConvertor.getDTO() );
+		}
+	}
+
+	private void convertCrownCourtOverviewFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getCrownCourtOverviewObject() != null )
+		{
+			CrownCourtOverviewConvertor crownCourtOverviewConvertor	= new CrownCourtOverviewConvertor();
+			crownCourtOverviewConvertor.setDTOFromType( getOracleType().getCrownCourtOverviewObject() );
+			getDTO().setCrownCourtOverviewDTO( crownCourtOverviewConvertor.getDTO() );
+		}
+	}
+
+	private void convertCapitalEquityFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getCapitalEquityObject() != null )
+		{
+			CapitalEquityConvertor capitalEquityConvertor	= new CapitalEquityConvertor();
+			capitalEquityConvertor.setDTOFromType( getOracleType().getCapitalEquityObject() );
+			getDTO().setCapitalEquityDTO( capitalEquityConvertor.getDTO() );
+		}
+	}
+
+	private void convertDecisionReasonFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if(getOracleType().getDecisionReasonObject() != null){
+			RepOrderDecisionConverter decisionConverter = new RepOrderDecisionConverter();
+			decisionConverter.setDTOFromType(getOracleType().getDecisionReasonObject());
+			getDTO().setRepOrderDecision(decisionConverter.getDTO());
+		}
+	}
+
+	private void convertCaseManagementUnitFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		CaseManagementUnitConvertor caseManagementUnitConverter = new CaseManagementUnitConvertor();
+		if(getOracleType().getCmuObject() != null){
+			caseManagementUnitConverter.setDTOFromType(getOracleType().getCmuObject());
+		}
+		getDTO().setCaseManagementUnitDTO(caseManagementUnitConverter.getDTO());
+	}
+
+	private void convertAssessmentSummaryFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		AssessmentSummaryConvertor 	convertor					= new AssessmentSummaryConvertor();
+		AssessmentSummaryTabType	assessmentSummaryTabType 	= getOracleType().getAssessmentsSummaryTab();
+		/*
+		 * set an empty collection
+		 */
+		getDTO().setAssessmentSummary( new ArrayList<AssessmentSummaryDTO>() );
+
+		if ( assessmentSummaryTabType != null )
+		{
+			AssessmentSummaryType[] assessmentSummaryTypes = assessmentSummaryTabType.getArray();
+			for ( int i = 0; i < assessmentSummaryTypes.length; i++ )
+			{
+				convertor.setDTOFromType( assessmentSummaryTypes[i] );
+				getDTO().getAssessmentSummary().add( convertor.getDTO() );
+			}
+		}
+	}
+
+	private void convertApplicantLinksFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		ApplicantLinkConvertor 	alconvertor				= new ApplicantLinkConvertor();
+		ApplicantLinksTabtype	applicantLinksTabtype 	= getOracleType().getApplicantLinksTab();
+		/*
+		 * set an empty collection
+		 */
+		getDTO().setApplicantLinks( new ArrayList<ApplicantLinkDTO>() );
+
+		if ( applicantLinksTabtype != null )
+		{
+			ApplicantLinkType[] applicantLinkTypes = applicantLinksTabtype.getArray();
+			for ( int i = 0; i < applicantLinkTypes.length; i++ )
+			{
+				alconvertor.setDTOFromType( applicantLinkTypes[i] );
+				getDTO().getApplicantLinks().add( alconvertor.getDTO() );
+			}
+		}
+	}
+
+	private void convertPassportedFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		PassportAssessmentType passportType = getOracleType().getPassportAssessmentObject();
+
+		if(passportType != null){
+			PassportedConvertor passportConvertor = new PassportedConvertor();
+			passportConvertor.setDTOFromType(passportType);
+			getDTO().setPassportedDTO(passportConvertor.getDTO());
+		}
+	}
+
+	private void convertAllowedWorkReasonsFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		if ( getOracleType().getAllowedWorkReasons() != null ) {
+			AllowedWorkReasonConvertor allowedWorkReasonConvertor = new AllowedWorkReasonConvertor();
+			allowedWorkReasonConvertor.setDTOFromType( getOracleType().getAllowedWorkReasons() );
+			getDTO().setAllowedWorkReasonDTO(allowedWorkReasonConvertor.getDTO() ) ;
+		}
+	}
+
+	private void convertDigitalMeansAssessmentFromType() throws MAATSystemException, MAATApplicationException, SQLException {
+		// MW - 30/03/2017 - FIP Changes
+		DigitalMeansAssessmentConvertor dmaConvertor	= new DigitalMeansAssessmentConvertor();
+		DigiMeansAssessTabtype	dmaTabtype 	= getOracleType().getDigiMeansAssessments();
+
+		getDTO().setMeansAssessments( new ArrayList<DigitisedMeansAssessmentDTO>() );
+
+		if ( dmaTabtype != null )
+		{
+			DigiMeansAssessType[] digiMeansAssessmentTypes = dmaTabtype.getArray();
+			for ( int i = 0; i < digiMeansAssessmentTypes.length; i++ )
+			{
+				dmaConvertor.setDTOFromType(digiMeansAssessmentTypes[i] );
+				getDTO().getMeansAssessments().add(dmaConvertor.getDTO() );
+			}
+		}
 	}
 
 	/**
@@ -353,180 +412,34 @@ public class ApplicationConvertor extends Convertor
 			getOracleType().setStatusDueDate(			convertorHelper.toDate(		getDTO().getDateStatusDue()));
 			getOracleType().setPartner( 				convertorHelper.toBoolean( 	getDTO().getApplicantHasPartner    () ) );
 
-			
+
 			/*
 			 * if the dto is not null then convert the content to the corresponding type and set this on the
 			 * application type. It the dto is null, then a new, initialised but empty type will be stored on the 
 			 * application. This is necessary to meet the DB interface requirements
 			 */
 
-			ContraryInterestConvertor ciConvertor	= new ContraryInterestConvertor();
-			if ( getDTO().getPartnerContraryInterestDTO() != null )
-			{
-				ciConvertor.setTypeFromDTO( getDTO().getPartnerContraryInterestDTO() );
-			}
-			getOracleType().setContraryInterestObject( ciConvertor.getOracleType() ); // if type is null this will initialise a valid empty object
- 
-			RepStatusConvertor rsConvertor	= new RepStatusConvertor();
-			if ( getDTO().getStatusDTO() != null )
-			{
-				rsConvertor.setTypeFromDTO( getDTO().getStatusDTO() );
-			}
-			getOracleType().setStatusObject( rsConvertor.getOracleType() );
-				
-			RepOrderDecisionConverter rdConvertor	= new RepOrderDecisionConverter();
-			if ( getDTO().getRepOrderDecision() != null )
-			{
-				rdConvertor.setTypeFromDTO( getDTO().getRepOrderDecision() );
-			}
-			getOracleType().setDecisionReasonObject(rdConvertor.getOracleType() );
+			convertContraryInterestFromDTO();
+			convertRepStatusFromDTO();
+			convertCaseDetailsFromDTO();
+			convertOffenceFromDTO();
+			convertMagsCourtFromDTO();
+			convertMagsOutcomeFromDTO();
+			convertApplicantDetailsFromDTO();
+			convertSupplierFromDTO();
+			convertLscTransferFromDTO();
+			convertAreaTransferFromDTO();
+			convertAssessmentFromDTO();
+			convertCrownCourtOverviewFromDTO();
+			convertCapitalEquityFromDTO();
+			convertDecisionReasonFromDTO();
+			convertCaseManagementUnitFromDTO();
+			convertAssessmentSummaryFromDTO();
+			convertApplicantLinksFromDTO();
+			convertPassportedFromDTO();
+			convertAllowedWorkReasonsFromDTO();
+			convertDigitalMeansAssessmentFromDTO();
 
-			CaseDetailConvertor caseDetailConvertor	= new CaseDetailConvertor();
-			if ( getDTO().getCaseDetailsDTO() != null )
-			{
-				caseDetailConvertor.setTypeFromDTO( getDTO().getCaseDetailsDTO() );
-			}
-			getOracleType().setCaseTypeObject( caseDetailConvertor.getOracleType() );
-
-			
-			OffenceConvertor offenceConvertor	= new OffenceConvertor();
-			if ( getDTO().getOffenceDTO() != null )
-			{
-				offenceConvertor.setTypeFromDTO( getDTO().getOffenceDTO() );
-			}
-			getOracleType().setOffenceTypeObject( offenceConvertor.getOracleType() );
-
-			MagsCourtConvertor magsCourtConvertor	= new MagsCourtConvertor();
-			if ( getDTO().getMagsCourtDTO() != null )
-			{
-				magsCourtConvertor.setTypeFromDTO( getDTO().getMagsCourtDTO() );
-			}
-			getOracleType().setMagsCourtObject( magsCourtConvertor.getOracleType() );
-
-			OutcomeConvertor moConvertor	= new OutcomeConvertor();
-			if ( getDTO().getMagsOutcomeDTO() != null )
-			{
-				moConvertor.setTypeFromDTO( getDTO().getMagsOutcomeDTO() );
-			}
-			getOracleType().setMagsOutcomeObject( moConvertor.getOracleType() );
-
-			ApplicantConvertor apConvertor	= new ApplicantConvertor();
-			if ( getDTO().getApplicantDTO() != null )
-			{
-				apConvertor.setTypeFromDTO( getDTO().getApplicantDTO() );
-			}
-			getOracleType().setApplicantDetailsObject( apConvertor.getOracleType() );
-
-			SupplierConvertor supConvertor	= new SupplierConvertor();
-			if ( getDTO().getSupplierDTO() != null )
-			{
-				supConvertor.setTypeFromDTO( getDTO().getSupplierDTO() );
-			}
-			getOracleType().setSupplierObject( supConvertor.getOracleType() );
-
-			LSCTransferConvertor ltConvertor	= new LSCTransferConvertor();
-			if ( getDTO().getLscTransferDTO() != null )
-			{
-				ltConvertor.setTypeFromDTO( getDTO().getLscTransferDTO() );
-			}
-			getOracleType().setLscTransfersObject( ltConvertor.getOracleType() );
-
-			AreaTransferConvertor atConvertor	= new AreaTransferConvertor();
-			if ( getDTO().getAreaTransferDTO() != null )
-			{
-				atConvertor.setTypeFromDTO( getDTO().getAreaTransferDTO() );
-			}
-			getOracleType().setAreaTransfersObject( atConvertor.getOracleType() );
-
-			AssessmentConvertor assConvertor	= new AssessmentConvertor();
-			if ( getDTO().getAssessmentDTO() != null )
-			{
-				assConvertor.setTypeFromDTO( getDTO().getAssessmentDTO() );
-			}
-			getOracleType().setCurrentAssessmentObject( assConvertor.getOracleType() );
-
-			CrownCourtOverviewConvertor ccoConvertor	= new CrownCourtOverviewConvertor();
-			if ( getDTO().getCrownCourtOverviewDTO() != null )
-			{
-				ccoConvertor.setTypeFromDTO( getDTO().getCrownCourtOverviewDTO() );
-			}
-			getOracleType().setCrownCourtOverviewObject( ccoConvertor.getOracleType() );
-
-			CapitalEquityConvertor ceConvertor	= new CapitalEquityConvertor();
-			if ( getDTO().getCapitalEquityDTO() != null )
-			{
-				ceConvertor.setTypeFromDTO( getDTO().getCapitalEquityDTO() );
-			}
-			getOracleType().setCapitalEquityObject( ceConvertor.getOracleType() );
-
-            CaseManagementUnitConvertor caseManagementUnitConvertor = new CaseManagementUnitConvertor();
-            if(getDTO().getCaseManagementUnitDTO() != null) {
-                caseManagementUnitConvertor.setTypeFromDTO(getDTO().getCaseManagementUnitDTO());
-            }
-            getOracleType().setCmuObject(caseManagementUnitConvertor.getOracleType());
-
-			AssessmentSummaryConvertor 	convertor	= new AssessmentSummaryConvertor();
-			AssessmentSummaryType[] assessmentSummaryTypes = new AssessmentSummaryType[ getDTO().getAssessmentSummary().size() ];
-			if ( ( getDTO().getAssessmentSummary() != null ) && ( getDTO().getAssessmentSummary().size() > 0 ) )
-			{
-				Iterator<AssessmentSummaryDTO> asit				= getDTO().getAssessmentSummary().iterator();
-				int idx = 0;
-				while ( asit.hasNext() )
-				{
-					AssessmentSummaryDTO assessmentSummaryDTO	= asit.next();
-					convertor.setTypeFromDTO( assessmentSummaryDTO );
-					assessmentSummaryTypes[idx++]		= convertor.getOracleType();
-				}
-			
-			}
-			getOracleType().setAssessmentsSummaryTab(new AssessmentSummaryTabType( assessmentSummaryTypes ));
-			
-			ApplicantLinkConvertor 	alconvertor			= new ApplicantLinkConvertor();
-			ApplicantLinkType[] applicantLinkTypes		= new ApplicantLinkType[ getDTO().getApplicantLinks().size() ];
-			if ( ( getDTO().getApplicantLinks() != null ) && ( getDTO().getApplicantLinks().size() > 0 ) )
-			{
-				Iterator<ApplicantLinkDTO> aplit				= getDTO().getApplicantLinks().iterator();
-				int idx = 0;
-				while ( aplit.hasNext() )
-				{
-					ApplicantLinkDTO applicantLinkDTO	= aplit.next();
-					alconvertor.setTypeFromDTO( applicantLinkDTO );
-					applicantLinkTypes[idx++]		= alconvertor.getOracleType();
-				}
-			
-			}
-			getOracleType().setApplicantLinksTab(new ApplicantLinksTabtype( applicantLinkTypes ));
-			
-			if(getDTO().getPassportedDTO() != null){
-				PassportedConvertor passportConvertor = new PassportedConvertor();
-				passportConvertor.setTypeFromDTO(getDTO().getPassportedDTO());
-				getOracleType().setPassportAssessmentObject(passportConvertor.getOracleType());
-			}
-						
-			if(getDTO().getAllowedWorkReasonDTO() != null){
-				
-				AllowedWorkReasonConvertor allowedWorkReasonConvertor = new AllowedWorkReasonConvertor();
-				allowedWorkReasonConvertor.setTypeFromDTO(getDTO().getAllowedWorkReasonDTO());
-				getOracleType().setAllowedWorkReasons(allowedWorkReasonConvertor.getOracleType());
-			}
-			
-			// MW - 30/03/2017 - FIP Changes
-			DigitalMeansAssessmentConvertor 	dmaConvertor			= new DigitalMeansAssessmentConvertor();
-			DigiMeansAssessType[] digiMeansAssessmentTypes		= new DigiMeansAssessType[ getDTO().getMeansAssessments().size() ];
-			
-			if ( ( getDTO().getMeansAssessments() != null ) && ( getDTO().getMeansAssessments().size() > 0 ) )
-			{
-				Iterator<DigitisedMeansAssessmentDTO> dmaIt				= getDTO().getMeansAssessments().iterator();
-				int idx = 0;
-				while ( dmaIt.hasNext() )
-				{
-					DigitisedMeansAssessmentDTO dmaDTO	= dmaIt.next();
-					dmaConvertor.setTypeFromDTO( dmaDTO );
-					digiMeansAssessmentTypes[idx++]		= dmaConvertor.getOracleType();
-				}
-			
-			}
-			getOracleType().setDigiMeansAssessments(new DigiMeansAssessTabtype( digiMeansAssessmentTypes ));
 			getOracleType().setTransactionId(convertorHelper.toString(getDTO().getTransactionId()));
 		}
 		catch (NullPointerException nex)
@@ -539,5 +452,210 @@ public class ApplicationConvertor extends Convertor
 		}
 	}
 
+	private void convertContraryInterestFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		ContraryInterestConvertor ciConvertor	= new ContraryInterestConvertor();
+		if ( getDTO().getPartnerContraryInterestDTO() != null )
+		{
+			ciConvertor.setTypeFromDTO( getDTO().getPartnerContraryInterestDTO() );
+		}
+		getOracleType().setContraryInterestObject( ciConvertor.getOracleType() ); // if type is null this will initialise a valid empty object
+	}
 
+	private void convertRepStatusFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		RepStatusConvertor rsConvertor	= new RepStatusConvertor();
+		if ( getDTO().getStatusDTO() != null )
+		{
+			rsConvertor.setTypeFromDTO( getDTO().getStatusDTO() );
+		}
+		getOracleType().setStatusObject( rsConvertor.getOracleType() );
+	}
+
+	private void convertCaseDetailsFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		CaseDetailConvertor caseDetailConvertor	= new CaseDetailConvertor();
+		if ( getDTO().getCaseDetailsDTO() != null )
+		{
+			caseDetailConvertor.setTypeFromDTO( getDTO().getCaseDetailsDTO() );
+		}
+		getOracleType().setCaseTypeObject( caseDetailConvertor.getOracleType() );
+	}
+
+	private void convertOffenceFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		OffenceConvertor offenceConvertor	= new OffenceConvertor();
+		if ( getDTO().getOffenceDTO() != null )
+		{
+			offenceConvertor.setTypeFromDTO( getDTO().getOffenceDTO() );
+		}
+		getOracleType().setOffenceTypeObject( offenceConvertor.getOracleType() );
+	}
+
+	private void convertMagsCourtFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		MagsCourtConvertor magsCourtConvertor	= new MagsCourtConvertor();
+		if ( getDTO().getMagsCourtDTO() != null )
+		{
+			magsCourtConvertor.setTypeFromDTO( getDTO().getMagsCourtDTO() );
+		}
+		getOracleType().setMagsCourtObject( magsCourtConvertor.getOracleType() );
+	}
+
+	private void convertMagsOutcomeFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		OutcomeConvertor moConvertor	= new OutcomeConvertor();
+		if ( getDTO().getMagsOutcomeDTO() != null )
+		{
+			moConvertor.setTypeFromDTO( getDTO().getMagsOutcomeDTO() );
+		}
+		getOracleType().setMagsOutcomeObject( moConvertor.getOracleType() );
+	}
+
+	private void convertApplicantDetailsFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		ApplicantConvertor apConvertor	= new ApplicantConvertor();
+		if ( getDTO().getApplicantDTO() != null )
+		{
+			apConvertor.setTypeFromDTO( getDTO().getApplicantDTO() );
+		}
+		getOracleType().setApplicantDetailsObject( apConvertor.getOracleType() );
+	}
+
+	private void convertSupplierFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		SupplierConvertor supConvertor	= new SupplierConvertor();
+		if ( getDTO().getSupplierDTO() != null )
+		{
+			supConvertor.setTypeFromDTO( getDTO().getSupplierDTO() );
+		}
+		getOracleType().setSupplierObject( supConvertor.getOracleType() );
+	}
+
+	private void convertLscTransferFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		LSCTransferConvertor ltConvertor	= new LSCTransferConvertor();
+		if ( getDTO().getLscTransferDTO() != null )
+		{
+			ltConvertor.setTypeFromDTO( getDTO().getLscTransferDTO() );
+		}
+		getOracleType().setLscTransfersObject( ltConvertor.getOracleType() );
+	}
+
+	private void convertAreaTransferFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		AreaTransferConvertor atConvertor	= new AreaTransferConvertor();
+		if ( getDTO().getAreaTransferDTO() != null )
+		{
+			atConvertor.setTypeFromDTO( getDTO().getAreaTransferDTO() );
+		}
+		getOracleType().setAreaTransfersObject( atConvertor.getOracleType() );
+	}
+
+	private void convertAssessmentFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		AssessmentConvertor assConvertor	= new AssessmentConvertor();
+		if ( getDTO().getAssessmentDTO() != null )
+		{
+			assConvertor.setTypeFromDTO( getDTO().getAssessmentDTO() );
+		}
+		getOracleType().setCurrentAssessmentObject( assConvertor.getOracleType() );
+	}
+
+	private void convertCrownCourtOverviewFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		CrownCourtOverviewConvertor ccoConvertor	= new CrownCourtOverviewConvertor();
+		if ( getDTO().getCrownCourtOverviewDTO() != null )
+		{
+			ccoConvertor.setTypeFromDTO( getDTO().getCrownCourtOverviewDTO() );
+		}
+		getOracleType().setCrownCourtOverviewObject( ccoConvertor.getOracleType() );
+	}
+
+	private void convertCapitalEquityFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		CapitalEquityConvertor ceConvertor	= new CapitalEquityConvertor();
+		if ( getDTO().getCapitalEquityDTO() != null )
+		{
+			ceConvertor.setTypeFromDTO( getDTO().getCapitalEquityDTO() );
+		}
+		getOracleType().setCapitalEquityObject( ceConvertor.getOracleType() );
+	}
+
+	private void convertDecisionReasonFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		RepOrderDecisionConverter rdConvertor	= new RepOrderDecisionConverter();
+		if ( getDTO().getRepOrderDecision() != null )
+		{
+			rdConvertor.setTypeFromDTO( getDTO().getRepOrderDecision() );
+		}
+		getOracleType().setDecisionReasonObject(rdConvertor.getOracleType() );
+	}
+
+	private void convertCaseManagementUnitFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		CaseManagementUnitConvertor caseManagementUnitConvertor = new CaseManagementUnitConvertor();
+		if(getDTO().getCaseManagementUnitDTO() != null) {
+			caseManagementUnitConvertor.setTypeFromDTO(getDTO().getCaseManagementUnitDTO());
+		}
+		getOracleType().setCmuObject(caseManagementUnitConvertor.getOracleType());
+	}
+
+	private void convertAssessmentSummaryFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		AssessmentSummaryConvertor 	convertor	= new AssessmentSummaryConvertor();
+		AssessmentSummaryType[] assessmentSummaryTypes = new AssessmentSummaryType[ getDTO().getAssessmentSummary().size() ];
+		if ( ( getDTO().getAssessmentSummary() != null ) && ( getDTO().getAssessmentSummary().size() > 0 ) )
+		{
+			Iterator<AssessmentSummaryDTO> asit				= getDTO().getAssessmentSummary().iterator();
+			int idx = 0;
+			while ( asit.hasNext() )
+			{
+				AssessmentSummaryDTO assessmentSummaryDTO	= asit.next();
+				convertor.setTypeFromDTO( assessmentSummaryDTO );
+				assessmentSummaryTypes[idx++]		= convertor.getOracleType();
+			}
+
+		}
+		getOracleType().setAssessmentsSummaryTab(new AssessmentSummaryTabType( assessmentSummaryTypes ));
+	}
+
+	private void convertApplicantLinksFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		ApplicantLinkConvertor 	alconvertor			= new ApplicantLinkConvertor();
+		ApplicantLinkType[] applicantLinkTypes		= new ApplicantLinkType[ getDTO().getApplicantLinks().size() ];
+		if ( ( getDTO().getApplicantLinks() != null ) && ( getDTO().getApplicantLinks().size() > 0 ) )
+		{
+			Iterator<ApplicantLinkDTO> aplit				= getDTO().getApplicantLinks().iterator();
+			int idx = 0;
+			while ( aplit.hasNext() )
+			{
+				ApplicantLinkDTO applicantLinkDTO	= aplit.next();
+				alconvertor.setTypeFromDTO( applicantLinkDTO );
+				applicantLinkTypes[idx++]		= alconvertor.getOracleType();
+			}
+
+		}
+		getOracleType().setApplicantLinksTab(new ApplicantLinksTabtype( applicantLinkTypes ));
+	}
+
+	private void convertPassportedFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		if(getDTO().getPassportedDTO() != null){
+			PassportedConvertor passportConvertor = new PassportedConvertor();
+			passportConvertor.setTypeFromDTO(getDTO().getPassportedDTO());
+			getOracleType().setPassportAssessmentObject(passportConvertor.getOracleType());
+		}
+	}
+
+	private void convertAllowedWorkReasonsFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		if(getDTO().getAllowedWorkReasonDTO() != null){
+
+			AllowedWorkReasonConvertor allowedWorkReasonConvertor = new AllowedWorkReasonConvertor();
+			allowedWorkReasonConvertor.setTypeFromDTO(getDTO().getAllowedWorkReasonDTO());
+			getOracleType().setAllowedWorkReasons(allowedWorkReasonConvertor.getOracleType());
+		}
+	}
+
+	private void convertDigitalMeansAssessmentFromDTO() throws MAATSystemException, MAATApplicationException, SQLException {
+		// MW - 30/03/2017 - FIP Changes
+		DigitalMeansAssessmentConvertor 	dmaConvertor			= new DigitalMeansAssessmentConvertor();
+		DigiMeansAssessType[] digiMeansAssessmentTypes		= new DigiMeansAssessType[ getDTO().getMeansAssessments().size() ];
+
+		if ( ( getDTO().getMeansAssessments() != null ) && ( getDTO().getMeansAssessments().size() > 0 ) )
+		{
+			Iterator<DigitisedMeansAssessmentDTO> dmaIt				= getDTO().getMeansAssessments().iterator();
+			int idx = 0;
+			while ( dmaIt.hasNext() )
+			{
+				DigitisedMeansAssessmentDTO dmaDTO	= dmaIt.next();
+				dmaConvertor.setTypeFromDTO( dmaDTO );
+				digiMeansAssessmentTypes[idx++]		= dmaConvertor.getOracleType();
+			}
+
+		}
+		getOracleType().setDigiMeansAssessments(new DigiMeansAssessTabtype( digiMeansAssessmentTypes ));
+	}
 }

@@ -1,5 +1,7 @@
 package gov.uk.courtdata.dto;
 
+import gov.uk.courtdata.dto.application.UserDTO;
+import gov.uk.courtdata.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,6 +37,7 @@ public class RepOrderDTO {
     private LocalDate sentenceOrderDate;
     private String evidenceFeeLevel;
     private String rorsStatus;
+    private UserDTO userCreatedEntity;
     @Builder.Default
     private List<PassportAssessmentDTO> passportAssessments = new ArrayList<>();
     @Builder.Default

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dto;
 
+import gov.uk.courtdata.dto.application.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -58,4 +59,6 @@ public class PassportAssessmentDTO {
     private Integer usn;
     private String whoDWPChecked;
     private String rtCode;
+    private UserDTO userCreatedEntity;
+
 }

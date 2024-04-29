@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dto;
 
+import gov.uk.courtdata.dto.application.UserDTO;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
@@ -57,6 +58,8 @@ public class FinancialAssessmentDTO {
     private String userModified;
     private Integer usn;
     private String rtCode;
+    private UserDTO userCreatedEntity;
+
     @Builder.Default
     private String replaced = "N";
     private LocalDateTime firstReminderDate;

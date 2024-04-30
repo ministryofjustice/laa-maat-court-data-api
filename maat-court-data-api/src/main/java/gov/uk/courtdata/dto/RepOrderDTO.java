@@ -38,14 +38,14 @@ public class RepOrderDTO {
     private String rorsStatus;
     private UserDTO userCreatedEntity;
     @Builder.Default
-    private final List<PassportAssessmentDTO> passportAssessments = new ArrayList<>();
+    private List<PassportAssessmentDTO> passportAssessments = new ArrayList<>();
     @Builder.Default
-    private final List<FinancialAssessmentDTO> financialAssessments = new ArrayList<>();
+    private List<FinancialAssessmentDTO> financialAssessments = new ArrayList<>();
     @Builder.Default
-    private final List<ContributionsDTO> contributions = new ArrayList<>();
+    private List<ContributionsDTO> contributions = new ArrayList<>();
     @Builder.Default
-    private final List<RepOrderCCOutcomeDTO> repOrderCCOutcome = new ArrayList<>();
+    private List<RepOrderCCOutcomeDTO> repOrderCCOutcome = new ArrayList<>();
     @Builder.Default
-    private final List<IOJAppealDTO> iojAppeal = new ArrayList<>();
+    private List<IOJAppealDTO> iojAppeal = new ArrayList<>();
 
 }

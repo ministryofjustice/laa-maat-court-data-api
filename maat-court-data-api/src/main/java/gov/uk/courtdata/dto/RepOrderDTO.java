@@ -1,7 +1,6 @@
 package gov.uk.courtdata.dto;
 
 import gov.uk.courtdata.dto.application.UserDTO;
-import gov.uk.courtdata.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,14 +38,14 @@ public class RepOrderDTO {
     private String rorsStatus;
     private UserDTO userCreatedEntity;
     @Builder.Default
-    private List<PassportAssessmentDTO> passportAssessments = new ArrayList<>();
+    private final List<PassportAssessmentDTO> passportAssessments = new ArrayList<>();
     @Builder.Default
-    private List<FinancialAssessmentDTO> financialAssessments = new ArrayList<>();
+    private final List<FinancialAssessmentDTO> financialAssessments = new ArrayList<>();
     @Builder.Default
-    private List<ContributionsDTO> contributions = new ArrayList<>();
+    private final List<ContributionsDTO> contributions = new ArrayList<>();
     @Builder.Default
-    private List<RepOrderCCOutcomeDTO> repOrderCCOutcome = new ArrayList<>();
+    private final List<RepOrderCCOutcomeDTO> repOrderCCOutcome = new ArrayList<>();
     @Builder.Default
-    private List<IOJAppealDTO> iojAppeal = new ArrayList<>();
+    private final List<IOJAppealDTO> iojAppeal = new ArrayList<>();
 
 }

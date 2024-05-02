@@ -2,7 +2,6 @@ package gov.uk.courtdata.users.mapper;
 
 import gov.uk.courtdata.dto.UserSummaryDTO;
 import gov.uk.courtdata.entity.ReservationsEntity;
-import gov.uk.courtdata.entity.UserEntity;
 import org.mapstruct.*;
 
 import java.util.List;

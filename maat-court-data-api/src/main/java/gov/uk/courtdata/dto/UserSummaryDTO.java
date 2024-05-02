@@ -1,6 +1,7 @@
 package gov.uk.courtdata.dto;
 
 import gov.uk.courtdata.entity.ReservationsEntity;
+import gov.uk.courtdata.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +18,5 @@ public class UserSummaryDTO {
     private List<String> newWorkReasons;
     private List<String> roleActions;
     private ReservationsEntity reservationsEntity;
+    private String currentUserSession;
 }

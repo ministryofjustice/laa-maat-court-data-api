@@ -2,6 +2,7 @@ package gov.uk.courtdata.users.mapper;
 
 import gov.uk.courtdata.dto.UserSummaryDTO;
 import gov.uk.courtdata.entity.ReservationsEntity;
+import gov.uk.courtdata.entity.UserEntity;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public interface UserSummaryMapper {
     UserSummaryDTO userToUserSummaryDTO(final String username,
                                         final List<String> newWorkReasons,
                                         final List<String> roleActions,
-                                        final ReservationsEntity reservationsEntity
-    );
+                                        final ReservationsEntity reservationsEntity,
+                                        final String currentUserSession
+                                        );
 }

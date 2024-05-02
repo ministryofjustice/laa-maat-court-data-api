@@ -4,6 +4,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.prosecutionconcluded.helper.ReservationsRepositoryHelper;
 import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
+import gov.uk.courtdata.repository.UserRepository;
 import gov.uk.courtdata.users.mapper.UserSummaryMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,8 @@ class UserSummaryServiceTest {
     private UserSummaryMapper userSummaryMapper;
     @Mock
     private ReservationsRepositoryHelper reservationsRepositoryHelper;
+    @Mock
+    private UserRepository userRepository;
 
     @Test
     void whenGetUserSummaryIsInvoked_thenUserSummaryDTOIsReturned() {
@@ -35,7 +38,8 @@ class UserSummaryServiceTest {
         verify(roleActionsRepository).getRoleActionsForUser(any());
         verify(roleWorkReasonsRepository).getNewWorkReasonForUser(any());
         verify(reservationsRepositoryHelper).getReservationByUserName(any());
-        verify(userSummaryMapper).userToUserSummaryDTO(any(), any(), any(), any());
+        verify(userRepository).findById(any());
+        verify(userSummaryMapper).userToUserSummaryDTO(any(), any(), any(), any(), any());
     }
 
 }

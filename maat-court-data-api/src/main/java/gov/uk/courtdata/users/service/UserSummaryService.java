@@ -2,9 +2,11 @@ package gov.uk.courtdata.users.service;
 
 import gov.uk.courtdata.dto.UserSummaryDTO;
 import gov.uk.courtdata.entity.ReservationsEntity;
+import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.prosecutionconcluded.helper.ReservationsRepositoryHelper;
 import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
+import gov.uk.courtdata.repository.UserRepository;
 import gov.uk.courtdata.users.mapper.UserSummaryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ public class UserSummaryService {
     private final RoleWorkReasonsRepository roleWorkReasonsRepository;
     private final UserSummaryMapper userSummaryMapper;
     private final ReservationsRepositoryHelper reservationsRepositoryHelper;
+    private final UserRepository userRepository;
 
     public UserSummaryDTO getUserSummary(String username) {
 
@@ -33,8 +36,8 @@ public class UserSummaryService {
 
         Optional<ReservationsEntity> reservations = reservationsRepositoryHelper.getReservationByUserName(username);
         ReservationsEntity reservationsEntity = reservations.isEmpty() ? null : reservations.get();
-
-        return userSummaryMapper.userToUserSummaryDTO(username, newWorkReasonForUser, userRoleActions, reservationsEntity);
-
+        Optional<UserEntity> userEntity = userRepository.findById(username);
+        String currentUserSession = userEntity.isEmpty() ? null : userEntity.get().getCurrentSession();
+        return userSummaryMapper.userToUserSummaryDTO(username, newWorkReasonForUser, userRoleActions, reservationsEntity, currentUserSession);
     }
 }

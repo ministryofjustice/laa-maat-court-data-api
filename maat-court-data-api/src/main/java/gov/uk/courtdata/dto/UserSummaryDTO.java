@@ -17,4 +17,5 @@ public class UserSummaryDTO {
     private List<String> newWorkReasons;
     private List<String> roleActions;
     private ReservationsEntity reservationsEntity;
+    private String currentUserSession;
 }

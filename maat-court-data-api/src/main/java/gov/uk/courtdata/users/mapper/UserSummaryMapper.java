@@ -20,6 +20,7 @@ public interface UserSummaryMapper {
     UserSummaryDTO userToUserSummaryDTO(final String username,
                                         final List<String> newWorkReasons,
                                         final List<String> roleActions,
-                                        final ReservationsEntity reservationsEntity
-    );
+                                        final ReservationsEntity reservationsEntity,
+                                        final String currentUserSession
+                                        );
 }

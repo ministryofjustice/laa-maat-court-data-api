@@ -15,7 +15,6 @@ import gov.uk.courtdata.repository.FdcContributionsRepository;
 import gov.uk.courtdata.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,11 +74,12 @@ public class FdcContributionsService {
 
     private int executeGlobalUpdate(){
         log.info("executeGlobalUpdate entered");
-        int[] update1Result = debtCollectionRepository.globalUpdatePart1();
-        log.info("FDC Global update Part 1 affected: {}", getResult(update1Result));
-        int[] update2Result = debtCollectionRepository.globalUpdatePart2();
-        log.info("FDC Global update Part 2 affected: {}", getResult(update2Result));
-        int response = combineGlobalUpdateResults(update1Result, update2Result);
+        String delay = fdcContributionsRepository.callGetFdcCalculationDelay();
+        int update1Result = debtCollectionRepository.globalUpdatePart1(delay);
+        log.info("FDC Global update Part 1 affected: {}", update1Result);
+        int update2Result = debtCollectionRepository.globalUpdatePart2(delay);
+        log.info("FDC Global update Part 2 affected: {}", update2Result);
+        int response = update1Result+update2Result;
         log.info("executeGlobalUpdate exiting");
         return response;
     }
@@ -117,13 +117,6 @@ public class FdcContributionsService {
         ContributionFilesEntity contributionFileEntity = contributionFileMapper.toContributionFileEntity(fdcFileRequest);
         debtCollectionRepository.saveContributionFilesEntity(contributionFileEntity);
         return contributionFileEntity;
-    }
-
-    private int combineGlobalUpdateResults(int[] part1Results, int[] part2Results){
-        return getResult(part1Results)+getResult(part2Results);
-    }
-    private int getResult(int[] results){
-        return ArrayUtils.isNotEmpty(results) ? results[0] : 0;
     }
 
     @Transactional(rollbackFor =  MAATCourtDataException.class)

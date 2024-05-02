@@ -15,6 +15,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,17 +26,17 @@ class DebtCollectionRepositoryTest {
 
     @Mock
     JdbcTemplate jdbcTemplate;
-    private static final byte[] fdcMerge1StatementHash = new byte[]{63, 93, 48, -38, -1, 2, -116, 125, -6, 100, 103, 97, 30, 43, -54, 7, -86, -126, 50, -126, -93, 40, -127, -112, 107, 44, -40, 82, -81, -93, -94, -35};
-    private static final byte[] fdcMerge2StatementHash = new byte[]{-110, -117, -90, -20, 15, 82, 0, -66, 98, 121, 11, 1, -105, -98, -1, 23, 126, 83, 21, 120, 70, 24, 74, -44, -69, 107, 69, 125, 50, 39, 107, -71};
+    private static final byte[] fdcMerge1StatementHash = new byte[]{-47, -40, -68, -99, 85, -77, -119, -64, 1, 3, 83, -92, -76, 27, -114, 107, -83, -31, -66, 60, -122, -24, 127, 55, 120, -112, 96, -51, -105, 62, 1, -18};
+    private static final byte[] fdcMerge2StatementHash = new byte[]{-17, -92, -125, -62, -12, 18, 39, -68, -70, 54, 77, -42, 16, 113, 24, -106, -124, 116, 44, -63, -103, 78, 66, -78, 15, -41, -42, -65, -66, -45, -74, -48};
 
     @Captor
     ArgumentCaptor<String> mergeSQLCaptor;
 
     @Test
     void verifyMergeStatement1_IsExpected() {
-        when(jdbcTemplate.batchUpdate(mergeSQLCaptor.capture()))
-                .thenReturn(new int[]{1});
-        debtCollectionRepository.globalUpdatePart1();
+        when(jdbcTemplate.update(mergeSQLCaptor.capture(),anyString()))
+                .thenReturn(1);
+        debtCollectionRepository.globalUpdatePart1("?");
 
         assertNotNull(mergeSQLCaptor);
         Assertions.assertArrayEquals(fdcMerge1StatementHash, getCaptorHash(), "A change has been detected in the debtCollectionRepository.globalUpdatePart1() please verify changes are correct. And update this test.");
@@ -43,9 +44,9 @@ class DebtCollectionRepositoryTest {
 
     @Test
     void verifyMergeStatement2_IsExpected() {
-        when(jdbcTemplate.batchUpdate(mergeSQLCaptor.capture()))
-                .thenReturn(new int[]{1});
-        debtCollectionRepository.globalUpdatePart2();
+        when(jdbcTemplate.update(mergeSQLCaptor.capture(),anyString()))
+                .thenReturn(1);
+        debtCollectionRepository.globalUpdatePart2("?");
 
 
         assertNotNull(mergeSQLCaptor);

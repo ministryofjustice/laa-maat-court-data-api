@@ -8,12 +8,14 @@ import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,6 +33,8 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
     private final String VALID_SESSION_ID = "valid-session";
     private final String BASE_URL = "/api/internal/v1/users/";
     private final String GET_USER_SUMMARY_URL = BASE_URL + "summary/{username}";
+    private final String AUTHORISED_ROLE = "VALID_ROLE";
+
     @Autowired
     MockMvc mvc;
     @Autowired
@@ -43,6 +47,8 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
     private UserRolesRepository userRolesRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleDataItemsRepository roleDataItemsRepository;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -50,7 +56,6 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
     }
 
     private void setupTestData() {
-        String AUTHORISED_ROLE = "VALID_ROLE";
         String DISABLED_ROLE = "DISABLED_ROLE";
         List<UserRoleEntity> userRoleEntities = List.of(
                 UserRoleEntity.builder()
@@ -81,6 +86,16 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
                         .userCreated(VALID_TEST_USER)
                         .build());
 
+        roleDataItemsRepository.save(RoleDataItemEntity.builder()
+                .id(1)
+                .roleName(AUTHORISED_ROLE)
+                .dataItem("DATA_ITEM")
+                .enabled("Y")
+                .insertAllowed("Y")
+                .updateAllowed("Y")
+                .dateCreated(Instant.now())
+                .userCreated(VALID_TEST_USER)
+                .build());
 
         LocalDateTime reservationDate = LocalDateTime.now();
         LocalDateTime expiryDate = reservationDate.plusHours(3);
@@ -116,7 +131,8 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.roleActions[0]").value(DISABLED_ACTION))
                 .andExpect(jsonPath("$.newWorkReasons[0]").value(VALID_NWORCODE))
-                .andExpect(jsonPath("$.reservationsEntity.recordId").value(VALID_RESERVATION_ID))
+                .andExpect(jsonPath("$.reservationsDTO.recordId").value(VALID_RESERVATION_ID))
+                .andExpect(jsonPath("$.roleDataItem[0].roleName").value(AUTHORISED_ROLE))
                 .andExpect(jsonPath("$.username").value(VALID_TEST_USER));
     }
 
@@ -127,7 +143,7 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.roleActions").isEmpty())
                 .andExpect(jsonPath("$.newWorkReasons").isEmpty())
-                .andExpect(jsonPath("$.reservationsEntity").doesNotExist())
+                .andExpect(jsonPath("$.reservationsDTO").doesNotExist())
                 .andExpect(jsonPath("$.username").value(INVALID_TEST_USER));
 
     }

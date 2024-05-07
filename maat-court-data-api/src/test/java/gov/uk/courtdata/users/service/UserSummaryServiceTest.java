@@ -35,6 +35,7 @@ class UserSummaryServiceTest {
     @Mock
     private RoleDataItemsRepository roleDataItemsRepository;
 
+
     @Test
     void whenGetUserSummaryIsInvoked_thenUserSummaryDTOIsReturned() {
         userSummaryService.getUserSummary(TestModelDataBuilder.TEST_USER);

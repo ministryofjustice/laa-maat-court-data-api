@@ -4,15 +4,22 @@ import gov.uk.courtdata.dto.ReservationsDTO;
 import gov.uk.courtdata.dto.RoleDataItemDTO;
 import gov.uk.courtdata.dto.UserSummaryDTO;
 import gov.uk.courtdata.entity.ReservationsEntity;
+<<<<<<< HEAD
 import gov.uk.courtdata.entity.RoleDataItemEntity;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.mapper.ReservationsMapper;
+=======
+import gov.uk.courtdata.entity.UserEntity;
+>>>>>>> main
 import gov.uk.courtdata.prosecutionconcluded.helper.ReservationsRepositoryHelper;
 import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleDataItemsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
 import gov.uk.courtdata.repository.UserRepository;
+<<<<<<< HEAD
 import gov.uk.courtdata.mapper.RoleDataItemsMapper;
+=======
+>>>>>>> main
 import gov.uk.courtdata.users.mapper.UserSummaryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +41,7 @@ public class UserSummaryService {
     private final RoleDataItemsRepository roleDataItemsRepository;
     private final RoleDataItemsMapper roleDataItemsMapper;
     private final ReservationsMapper reservationsMapper;
+
 
     public UserSummaryDTO getUserSummary(String username) {
 

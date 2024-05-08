@@ -93,7 +93,7 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
                 .enabled("Y")
                 .insertAllowed("Y")
                 .updateAllowed("Y")
-                .dateCreated(Instant.now())
+                .dateCreated(LocalDateTime.now())
                 .userCreated(VALID_TEST_USER)
                 .build());
 

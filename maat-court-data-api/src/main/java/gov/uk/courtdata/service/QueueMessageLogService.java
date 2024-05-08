@@ -4,10 +4,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,6 +42,10 @@ public class QueueMessageLogService {
                 : msgObject.get("maatId");
 
         String laaTransactionId = extractLaaTransactionId(msgObject);
+        String maatIdString = extractMaatId(msgObject);
+
+        MDC.put(LoggingData.MAATID.getValue(), maatIdString);
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
 
         QueueMessageLogEntity queueMessageLogEntity =
                 QueueMessageLogEntity.builder()
@@ -48,13 +54,24 @@ public class QueueMessageLogService {
                         .maatId(Optional
                                 .ofNullable(maatId)
                                 .map(JsonElement::getAsInt)
-                                .orElse(-1) )
+                                .orElse(-1))
                         .type(prepareMessageType(messageType, msgObject))
                         .message(convertAsByte(message))
                         .createdTime(LocalDateTime.now())
                         .build();
 
         queueMessageLogRepository.save(queueMessageLogEntity);
+    }
+
+    private String extractMaatId(JsonObject msgObject) {
+        JsonElement maatId = msgObject.has("metadat") ?
+                msgObject.get("metadata").getAsJsonObject().get("maatId") :
+                msgObject.get("maatId");
+        if (maatId == null || maatId.isJsonNull()) {
+            return null;
+        }
+
+        return maatId.getAsString();
     }
 
     private String extractLaaTransactionId(JsonObject msgObject) {

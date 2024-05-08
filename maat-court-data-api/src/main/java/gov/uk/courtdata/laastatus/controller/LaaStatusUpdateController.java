@@ -52,8 +52,10 @@ public class LaaStatusUpdateController {
                                              @Parameter(description = "Case details", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetails.class)))
                                              @RequestBody String jsonPayload) {
 
-        UUID laaTransactionIdUUID = Optional.ofNullable(laaTransactionId).isPresent() ? UUID.fromString(laaTransactionId) : UUID.randomUUID();
-        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        UUID laaTransactionIdUUID = Optional.ofNullable(laaTransactionId).isPresent() ?
+                UUID.fromString(laaTransactionId) :
+                UUID.randomUUID();
+
         log.info("LAA Status Update Request received.");
 
         queueMessageLogService.createLog(MessageType.LAA_STATUS_REST_CALL, jsonPayload);

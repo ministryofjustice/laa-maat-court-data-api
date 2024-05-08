@@ -39,13 +39,11 @@ public class RoleDataItemEntity {
     @Column(name = "UPDATE_ALLOWED")
     private String updateAllowed;
 
-    @NotNull
     @CreationTimestamp
-    @Column(name = "DATE_CREATED", nullable = false)
+    @Column(name = "DATE_CREATED")
     private LocalDateTime dateCreated;
 
-    @NotNull
-    @Column(name = "USER_CREATED", nullable = false)
+    @Column(name = "USER_CREATED")
     private String userCreated;
 
     @UpdateTimestamp

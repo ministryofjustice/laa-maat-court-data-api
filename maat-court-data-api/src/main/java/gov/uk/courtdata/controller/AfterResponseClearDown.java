@@ -7,9 +7,12 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import java.io.IOException;
+
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @WebFilter("/api/*")
 @Component
 public class AfterResponseClearDown implements Filter {
@@ -20,6 +23,7 @@ public class AfterResponseClearDown implements Filter {
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
             MDC.clear();
+            log.debug("Clearing down the MDC");
         }
     }
 }

@@ -7,8 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -37,13 +40,15 @@ public class RoleDataItemEntity {
     private String updateAllowed;
 
     @NotNull
+    @CreationTimestamp
     @Column(name = "DATE_CREATED", nullable = false)
-    private Instant dateCreated;
+    private LocalDateTime dateCreated;
 
     @NotNull
     @Column(name = "USER_CREATED", nullable = false)
     private String userCreated;
 
+    @UpdateTimestamp
     @Column(name = "DATE_MODIFIED")
     private Instant dateModified;
 

@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleDataItemDTO implements Serializable {
+public class RoleDataItemDTO {
     private String roleName;
     private String dataItem;
     private String enabled;

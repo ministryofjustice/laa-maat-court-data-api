@@ -48,7 +48,7 @@ public class RoleDataItemEntity {
 
     @UpdateTimestamp
     @Column(name = "DATE_MODIFIED")
-    private Instant dateModified;
+    private LocalDateTime dateModified;
 
     @Column(name = "USER_MODIFIED")
     private String userModified;

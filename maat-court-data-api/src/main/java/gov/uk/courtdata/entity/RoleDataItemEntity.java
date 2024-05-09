@@ -38,19 +38,5 @@ public class RoleDataItemEntity {
 
     @Column(name = "UPDATE_ALLOWED")
     private String updateAllowed;
-
-    @CreationTimestamp
-    @Column(name = "DATE_CREATED")
-    private LocalDateTime dateCreated;
-
-    @Column(name = "USER_CREATED")
-    private String userCreated;
-
-    @UpdateTimestamp
-    @Column(name = "DATE_MODIFIED")
-    private LocalDateTime dateModified;
-
-    @Column(name = "USER_MODIFIED")
-    private String userModified;
-
+    
 }

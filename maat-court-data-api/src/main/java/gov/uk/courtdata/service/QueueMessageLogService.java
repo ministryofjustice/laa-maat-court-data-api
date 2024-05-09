@@ -56,17 +56,6 @@ public class QueueMessageLogService {
         queueMessageLogRepository.save(queueMessageLogEntity);
     }
 
-    private String extractMaatId(JsonObject msgObject) {
-        JsonElement maatId = msgObject.has("metadat") ?
-                msgObject.get("metadata").getAsJsonObject().get("maatId") :
-                msgObject.get("maatId");
-        if (maatId == null || maatId.isJsonNull()) {
-            return null;
-        }
-
-        return maatId.getAsString();
-    }
-
     private String extractLaaTransactionId(JsonObject msgObject) {
         JsonElement laaTransactionUUID = msgObject.has("metadata") ?
                 msgObject.get("metadata").getAsJsonObject().get("laaTransactionId") :

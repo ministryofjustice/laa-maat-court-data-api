@@ -1,7 +1,7 @@
 package gov.uk.courtdata.laastatus.controller;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.eform.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -39,18 +39,14 @@ public class LaaStatusUpdateController {
     private final LaaStatusValidationProcessor laaStatusValidationProcessor;
     private final Gson gson;
     private final QueueMessageLogService queueMessageLogService;
-
-
     private final LaaStatusServiceUpdate laaStatusServiceUpdate;
 
     @PostMapping("/laaStatus")
     @Operation(summary = "Process LAA Status updates.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageCollection.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class))),
-            @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+        @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageCollection.class)))
     })
-
+    @StandardApiResponseCodes
     public MessageCollection updateLAAStatus(@RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId,
                                              @Parameter(description = "Case details", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetails.class)))
                                              @RequestBody String jsonPayload) {

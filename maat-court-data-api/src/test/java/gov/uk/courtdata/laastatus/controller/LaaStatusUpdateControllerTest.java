@@ -1,6 +1,8 @@
 package gov.uk.courtdata.laastatus.controller;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -25,12 +27,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class LaaStatusUpdateControllerTest {
 
-    private LaaStatusUpdateController laaStatusUpdateController;
-
     @Mock
     private LaaStatusValidationProcessor laaStatusValidationProcessor;
-
-    private final Gson gson = new Gson();
 
     @Mock
     private LaaStatusServiceUpdate laaStatusServiceUpdate;
@@ -38,8 +36,13 @@ public class LaaStatusUpdateControllerTest {
     @Mock
     private QueueMessageLogService queueMessageLogService;
 
+    private LaaStatusUpdateController laaStatusUpdateController;
+
+    private Gson gson;
+
     @BeforeEach
     void setUp() {
+        gson = new Gson();
         laaStatusUpdateController = new LaaStatusUpdateController(laaStatusValidationProcessor,
             gson,
             queueMessageLogService,
@@ -50,103 +53,113 @@ public class LaaStatusUpdateControllerTest {
     public void givenValidationIsPassed_whenControllerIsInvoked_thenPublisherIsCalled() {
 
         //given
-        final CaseDetails caseDetails = CaseDetails.builder().build();
         final MessageCollection messageCollection = MessageCollection.builder().messages(new ArrayList<>()).build();
-        String myString = """
+        String caseDetailsJson = """
             {
               "maatId": 5635539,
               "caseUrn": "EITHERWAY",
               "laaTransactionId": "48e60e52-70f9-415d-8c57-c25a16419a7c"
             }
                                       """;
+        final CaseDetails caseDetails = gson.fromJson(caseDetailsJson, CaseDetails.class);
 
         //when
-        // when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
         when(laaStatusValidationProcessor.validate(caseDetails)).thenReturn(messageCollection);
 
-
         MessageCollection messageResponse =
-                laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c", myString);
+            laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c",
+                caseDetailsJson);
 
         //then
-        verify(laaStatusValidationProcessor).validate(any());
-        verify(laaStatusServiceUpdate, times(1)).updateMlaAndCDA(caseDetails);
-        assertThat(messageResponse.getMessages().size()).isZero();
+        assertAll(
+            () -> verify(laaStatusValidationProcessor).validate(any()),
+            () -> verify(laaStatusServiceUpdate, times(1)).updateMlaAndCDA(caseDetails),
+            () -> assertThat(messageResponse.getMessages().size()).isZero()
+        );
     }
 
     @Test
     public void givenValidationIsPassed_whenControllerIsInvoked_thenPublisherIsCalled1() {
 
         //given
-        final CaseDetails caseDetails = CaseDetails.builder().build();
         final MessageCollection messageCollection = MessageCollection.builder().messages(new ArrayList<>()).build();
-        String myString = """
+        String caseDetailsJson = """
             {
               "maatId": 5635539,
               "caseUrn": "EITHERWAY"
             }
                         """;
+        final CaseDetails caseDetails = gson.fromJson(caseDetailsJson, CaseDetails.class);
 
         //when
-        // when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
-        when(laaStatusValidationProcessor.validate(caseDetails)).thenReturn(messageCollection);
+        when(laaStatusValidationProcessor.validate(
+            any(CaseDetails.class))) // need to use any as the CaseDetails are updated with a UUID
+            .thenReturn(messageCollection);
 
-        laaStatusUpdateController.updateLAAStatus(null, myString);
+        laaStatusUpdateController.updateLAAStatus(null, caseDetailsJson);
 
         //then
-        verify(laaStatusValidationProcessor).validate(any());
-        verify(laaStatusServiceUpdate, times(1)).updateMlaAndCDA(caseDetails);
+        assertAll(
+            () -> verify(laaStatusValidationProcessor).validate(any()),
+            () -> verify(laaStatusServiceUpdate, times(1)).updateMlaAndCDA(any(CaseDetails.class))
+        );
     }
 
     @Test
     public void givenValidationIsFailed_whenControllerIsInvoked_thenPublisherIsNOTCalled() {
 
         //given
-        final CaseDetails caseDetails = CaseDetails.builder().build();
-        String message = "Test Validation Message";
-        List<String> validationMessages = new ArrayList<>();
-        validationMessages.add(message);
+        List<String> validationMessages = List.of("Test Validation Message");
         final MessageCollection messageCollection = MessageCollection.builder().messages(validationMessages).build();
-        String myString = """
+        String caseDetailsJson = """
             {
               "maatId": 5635539,
               "caseUrn": "EITHERWAY",
               "laaTransactionId": "48e60e52-70f9-415d-8c57-c25a16419a7c"
             }
                         """;
+        final CaseDetails caseDetails = gson.fromJson(caseDetailsJson, CaseDetails.class);
 
         //when
-        //  when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
         when(laaStatusValidationProcessor.validate(caseDetails)).thenReturn(messageCollection);
 
-        laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c", myString);
+        laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c",
+            caseDetailsJson);
 
         //then
-        verify(laaStatusValidationProcessor).validate(any());
-        assertThat(messageCollection.getMessages().get(0)).isEqualTo("Test Validation Message");
-        verify(laaStatusServiceUpdate, times(0)).updateMlaAndCDA(caseDetails);
+        assertAll(
+            () -> verify(laaStatusValidationProcessor).validate(any()),
+            () -> assertThat(messageCollection.getMessages().get(0)).isEqualTo(
+                "Test Validation Message"),
+            () -> verify(laaStatusServiceUpdate, times(0)).updateMlaAndCDA(caseDetails)
+        );
     }
 
     @Test
     public void givenExceptionIsRaised_whenControllerIsInvoked_thenPublisherIsNOTCalled() {
 
         //given
-        final CaseDetails caseDetails = CaseDetails.builder().build();
-        String myString = """
+        String caseDetailsJson = """
             {
               "maatId": 5635539,
               "caseUrn": "EITHERWAY",
               "laaTransactionId": "48e60e52-70f9-415d-8c57-c25a16419a7c"
             }
                         """;
+        final CaseDetails caseDetails = gson.fromJson(caseDetailsJson, CaseDetails.class);
 
         //when
-        // when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
-        when(laaStatusValidationProcessor.validate(caseDetails)).thenThrow(new MAATCourtDataException("Validation Failed"));
+        when(laaStatusValidationProcessor.validate(caseDetails))
+            .thenThrow(new MAATCourtDataException("Validation Failed"));
 
-        Assertions.assertThrows(MAATCourtDataException.class, ()->{
-            laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c", myString);
-        });
+        MAATCourtDataException maatCourtDataException = Assertions.assertThrows(
+            MAATCourtDataException.class, () ->
+                laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c",
+                    caseDetailsJson));
+
+        //then
+        assertEquals("MAAT API Call failed - Validation Failed",
+            maatCourtDataException.getMessage());
     }
 }
 

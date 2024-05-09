@@ -189,7 +189,7 @@ tasks['sonar'].dependsOn test
 
 sonar {
     properties {
-        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java, **/exception/**.java, **/enums/**.java, **/aspect/**.java, **/dao/oracle/**.java, **/**StoredProcedureRepository.java, **/helper/BooleanConverter.java, **/applicant/entity/**.java, **/entity/RoleDataItemEntity.java"
+        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java, **/exception/**.java, **/enums/**.java, **/aspect/**.java, **/dao/oracle/**.java, **/**StoredProcedureRepository.java, **/helper/BooleanConverter.java, **/applicant/entity/RepOrderApplicantLinksEntity.java, **/entity/RoleDataItemEntity.java"
         property "sonar.coverage.exclusions", "**/MAATCourtDataApplication.java"
         property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.projectKey", "ministryofjustice_laa-maat-court-data-api"

@@ -1,22 +1,19 @@
 package gov.uk.courtdata.service;
 
+import static gov.uk.courtdata.enums.MessageType.LAA_STATUS_UPDATE;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
-import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
-
-import static gov.uk.courtdata.enums.MessageType.LAA_STATUS_UPDATE;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -42,10 +39,6 @@ public class QueueMessageLogService {
                 : msgObject.get("maatId");
 
         String laaTransactionId = extractLaaTransactionId(msgObject);
-        String maatIdString = extractMaatId(msgObject);
-
-        MDC.put(LoggingData.MAATID.getValue(), maatIdString);
-        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
 
         QueueMessageLogEntity queueMessageLogEntity =
                 QueueMessageLogEntity.builder()

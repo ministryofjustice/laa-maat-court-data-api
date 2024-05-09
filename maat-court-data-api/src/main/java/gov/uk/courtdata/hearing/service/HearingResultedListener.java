@@ -7,6 +7,7 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import io.awspring.cloud.sqs.annotation.SqsListener;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -14,8 +15,6 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -31,7 +30,7 @@ public class HearingResultedListener {
                         final @Headers MessageHeaders headers) {
         try {
             log.debug("message-id {}", headers.get("MessageId"));
-            MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.HEARING.name());
+            MDC.put(LoggingData.REQUEST_TYPE.getMdcKey(), MessageType.HEARING.name());
             queueMessageLogService.createLog(MessageType.HEARING, message);
 
             HearingResulted hearingResulted = gson.fromJson(message, HearingResulted.class);

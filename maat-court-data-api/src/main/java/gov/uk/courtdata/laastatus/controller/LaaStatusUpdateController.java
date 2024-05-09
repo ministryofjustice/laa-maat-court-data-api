@@ -8,6 +8,7 @@ import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.laastatus.service.LaaStatusServiceUpdate;
 import gov.uk.courtdata.laastatus.validator.LaaStatusValidationProcessor;
 import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.LaaTransactionLogging;
 import gov.uk.courtdata.model.MessageCollection;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,13 +18,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @Slf4j
@@ -52,11 +55,16 @@ public class LaaStatusUpdateController {
                                              @Parameter(description = "Case details", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetails.class)))
                                              @RequestBody String jsonPayload) {
 
-        UUID laaTransactionIdUUID = Optional.ofNullable(laaTransactionId).isPresent() ?
-                UUID.fromString(laaTransactionId) :
-                UUID.randomUUID();
-
         log.info("LAA Status Update Request received.");
+
+        UUID laaTransactionIdUUID = Optional.ofNullable(laaTransactionId).isPresent() ?
+            UUID.fromString(laaTransactionId) :
+            UUID.randomUUID();
+
+        LaaTransactionLogging laaTransactionLogging = gson.fromJson(jsonPayload,
+            LaaTransactionLogging.class);
+        LoggingData.MAATID.putInMDC(laaTransactionLogging.getMaatId());
+        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionIdUUID);
 
         queueMessageLogService.createLog(MessageType.LAA_STATUS_REST_CALL, jsonPayload);
         MessageCollection messageCollection;

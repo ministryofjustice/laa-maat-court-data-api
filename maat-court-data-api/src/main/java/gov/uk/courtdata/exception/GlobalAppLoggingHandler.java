@@ -4,14 +4,17 @@ import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.LaaTransactionLogging;
 import io.sentry.Sentry;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 @Aspect
 @Component
@@ -68,15 +71,21 @@ public class GlobalAppLoggingHandler {
         }
 
         Sentry.configureScope(scope -> {
-            scope.setTag(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn() : "");
-            scope.setTag(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionIdStr);
-            scope.setTag(LoggingData.MAATID.getValue(), laaTransactionLogging.getMaatId().toString());
+            scope.setTag(LoggingData.CASE_URN.getMdcKey(),
+                laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn()
+                    : "");
+            scope.setTag(LoggingData.LAA_TRANSACTION_ID.getMdcKey(), laaTransactionIdStr);
+            scope.setTag(LoggingData.MAATID.getMdcKey(),
+                laaTransactionLogging.getMaatId().toString());
         });
 
-        MDC.put(LoggingData.MESSAGE.getValue(), laaTransactionLogging.toString());
-        MDC.put(LoggingData.CASE_URN.getValue(), laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn() : "");
-        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionIdStr);
-        MDC.put(LoggingData.MAATID.getValue(), laaTransactionLogging.getMaatId() != null ? laaTransactionLogging.getMaatId().toString() : "-" );
+        MDC.put(LoggingData.MESSAGE.getMdcKey(), laaTransactionLogging.toString());
+        MDC.put(LoggingData.CASE_URN.getMdcKey(),
+            laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn() : "");
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getMdcKey(), laaTransactionIdStr);
+        MDC.put(LoggingData.MAATID.getMdcKey(),
+            laaTransactionLogging.getMaatId() != null ? laaTransactionLogging.getMaatId().toString()
+                : "-");
         log.info("Received a json payload from a queue and converted.");
     }
 }

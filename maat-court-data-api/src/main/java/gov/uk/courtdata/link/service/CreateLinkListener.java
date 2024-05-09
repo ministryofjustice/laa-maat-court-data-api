@@ -35,7 +35,7 @@ public class CreateLinkListener {
 
         try {
             log.debug("message-id {}", headers.get("MessageId"));
-            MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.LINK.name());
+            MDC.put(LoggingData.REQUEST_TYPE.getMdcKey(), MessageType.LINK.name());
 
             queueMessageLogService.createLog(MessageType.LINK, message);
             CaseDetails linkMessage = gson.fromJson(message, CaseDetails.class);

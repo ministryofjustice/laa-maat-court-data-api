@@ -1,5 +1,7 @@
 package gov.uk.courtdata.reporder.controller;
 
+import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
+
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.constants.CourtDataConstants;
@@ -14,17 +16,22 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.justice.laa.crime.commons.common.Constants;
-
-import java.util.Optional;
-
-import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
 
 @Slf4j
 @RestController
@@ -45,7 +52,7 @@ public class ReservationsController {
             @PathVariable int maatId,
             @Parameter(description = "Used for tracing calls")
             @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
-        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        MDC.put(LAA_TRANSACTION_ID.getMdcKey(), laaTransactionId);
         log.info(String.format("Check if maatId is locked - %d {}", maatId));
         return ResponseEntity.ok(reservationsRepositoryHelper.isMaatRecordLocked(maatId));
     }
@@ -58,7 +65,7 @@ public class ReservationsController {
             @PathVariable String recordName, @PathVariable Integer recordId,
             @Parameter(description = "Used for tracing calls")
             @RequestHeader(value = Constants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
-        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getMdcKey(), laaTransactionId);
         log.info("Check reservation status - request received");
         Optional<ReservationsEntity> reservationsEntity = reservationsRepositoryHelper.getReservationByRecordNameAndRecordId(recordName,recordId);
         return reservationsEntity.map(c -> ResponseEntity.ok().body(c))
@@ -72,7 +79,7 @@ public class ReservationsController {
     public ResponseEntity<ReservationsEntity> getReservationByUsername(
             @PathVariable String username,
             @RequestHeader(value = Constants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
-        MDC.put(LoggingData.LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+        MDC.put(LoggingData.LAA_TRANSACTION_ID.getMdcKey(), laaTransactionId);
         log.info("Check reservation status - request received");
         Optional<ReservationsEntity> reservationsEntity = reservationsRepositoryHelper.getReservationByUserName(username);
         return reservationsEntity.map(c -> ResponseEntity.ok().body(c))

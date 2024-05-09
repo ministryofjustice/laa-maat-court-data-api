@@ -83,6 +83,7 @@ public class TestModelDataBuilder {
     public static final List<String> NEW_WORK_REASON_LIST = List.of("TEST_NWREASON");
     public static final List<String> ROLE_ACTIONS_LIST = List.of("TEST_ROLE");
     public static final ReservationsEntity RESERVATIONS_ENTITY = new ReservationsEntity();
+    public static final ReservationsDTO RESERVATIONS_DTO = new ReservationsDTO();
     public static final Integer RESERVATION_ID = 100000;
 
     TestEntityDataBuilder testEntityDataBuilder;
@@ -1345,7 +1346,7 @@ public class TestModelDataBuilder {
                 .username(TEST_USER)
                 .newWorkReasons(NEW_WORK_REASON_LIST)
                 .roleActions(ROLE_ACTIONS_LIST)
-                .reservationsEntity(RESERVATIONS_ENTITY)
+                .reservationsDTO(RESERVATIONS_DTO)
                 .build();
     }
 

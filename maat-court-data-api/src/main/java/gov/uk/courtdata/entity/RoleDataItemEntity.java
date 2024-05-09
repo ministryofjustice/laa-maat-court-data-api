@@ -38,5 +38,5 @@ public class RoleDataItemEntity {
 
     @Column(name = "UPDATE_ALLOWED")
     private String updateAllowed;
-    
+
 }

@@ -12,7 +12,7 @@ import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@WebFilter("/api/*")
+@WebFilter("/*")
 @Component
 public class AfterResponseClearDown implements Filter {
     

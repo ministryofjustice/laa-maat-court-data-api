@@ -7,7 +7,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import java.io.IOException;
-
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
@@ -16,14 +15,16 @@ import org.springframework.stereotype.Component;
 @WebFilter("/api/*")
 @Component
 public class AfterResponseClearDown implements Filter {
+    
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
+    public void doFilter(ServletRequest servletRequest,
+        ServletResponse servletResponse,
                          FilterChain filterChain) throws IOException, ServletException {
         try {
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
             MDC.clear();
-            log.debug("Clearing down the MDC");
+            log.debug("Cleared down the MDC");
         }
     }
 }

@@ -9,7 +9,6 @@ import gov.uk.courtdata.service.QueueMessageLogService;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -35,7 +34,7 @@ public class CreateLinkListener {
 
         try {
             log.debug("message-id {}", headers.get("MessageId"));
-            MDC.put(LoggingData.REQUEST_TYPE.getMdcKey(), MessageType.LINK.name());
+            LoggingData.REQUEST_TYPE.putInMDC(MessageType.LINK.name());
 
             queueMessageLogService.createLog(MessageType.LINK, message);
             CaseDetails linkMessage = gson.fromJson(message, CaseDetails.class);

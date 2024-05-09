@@ -15,14 +15,17 @@ public enum LoggingData{
     MESSAGE("message"),
     REQUEST_TYPE("requestType");
 
-    private final String mdcKey;
+    private final String key;
 
     public void putInMDC(Integer value) {
-        MDC.put(mdcKey, String.valueOf(value));
+        putInMDC(String.valueOf(value));
     }
 
     public void putInMDC(UUID value) {
-        MDC.put(mdcKey, value.toString());
+        putInMDC(value.toString());
+    }
 
+    public void putInMDC(String value) {
+        MDC.put(key, value);
     }
 }

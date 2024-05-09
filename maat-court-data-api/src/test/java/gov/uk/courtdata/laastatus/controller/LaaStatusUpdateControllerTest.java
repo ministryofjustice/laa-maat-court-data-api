@@ -1,5 +1,10 @@
-
 package gov.uk.courtdata.laastatus.controller;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -8,35 +13,38 @@ import gov.uk.courtdata.laastatus.validator.LaaStatusValidationProcessor;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
 import gov.uk.courtdata.service.QueueMessageLogService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class LaaStatusUpdateControllerTest {
 
-    @InjectMocks
     private LaaStatusUpdateController laaStatusUpdateController;
 
     @Mock
     private LaaStatusValidationProcessor laaStatusValidationProcessor;
-    @Mock
-    private Gson gson;
+
+    private final Gson gson = new Gson();
+
     @Mock
     private LaaStatusServiceUpdate laaStatusServiceUpdate;
 
     @Mock
     private QueueMessageLogService queueMessageLogService;
 
+    @BeforeEach
+    void setUp() {
+        laaStatusUpdateController = new LaaStatusUpdateController(laaStatusValidationProcessor,
+            gson,
+            queueMessageLogService,
+            laaStatusServiceUpdate);
+    }
 
     @Test
     public void givenValidationIsPassed_whenControllerIsInvoked_thenPublisherIsCalled() {
@@ -44,12 +52,16 @@ public class LaaStatusUpdateControllerTest {
         //given
         final CaseDetails caseDetails = CaseDetails.builder().build();
         final MessageCollection messageCollection = MessageCollection.builder().messages(new ArrayList<>()).build();
-        String myString = "{\"maatId\": 5635539,\n" +
-                "  \"caseUrn\": \"EITHERWAY\",\n" +
-                "  \"laaTransactionId\": \"48e60e52-70f9-415d-8c57-c25a16419a7c\"}";
+        String myString = """
+            {
+              "maatId": 5635539,
+              "caseUrn": "EITHERWAY",
+              "laaTransactionId": "48e60e52-70f9-415d-8c57-c25a16419a7c"
+            }
+                                      """;
 
         //when
-        when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
+        // when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
         when(laaStatusValidationProcessor.validate(caseDetails)).thenReturn(messageCollection);
 
 
@@ -68,12 +80,15 @@ public class LaaStatusUpdateControllerTest {
         //given
         final CaseDetails caseDetails = CaseDetails.builder().build();
         final MessageCollection messageCollection = MessageCollection.builder().messages(new ArrayList<>()).build();
-        String myString = "{\"maatId\": 5635539,\n" +
-                "  \"caseUrn\": \"EITHERWAY\",\n" +
-                "  }";
+        String myString = """
+            {
+              "maatId": 5635539,
+              "caseUrn": "EITHERWAY"
+            }
+                        """;
 
         //when
-        when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
+        // when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
         when(laaStatusValidationProcessor.validate(caseDetails)).thenReturn(messageCollection);
 
         laaStatusUpdateController.updateLAAStatus(null, myString);
@@ -92,12 +107,16 @@ public class LaaStatusUpdateControllerTest {
         List<String> validationMessages = new ArrayList<>();
         validationMessages.add(message);
         final MessageCollection messageCollection = MessageCollection.builder().messages(validationMessages).build();
-        String myString = "{\"maatId\": 5635539,\n" +
-                "  \"caseUrn\": \"EITHERWAY\",\n" +
-                "  \"laaTransactionId\": \"48e60e52-70f9-415d-8c57-c25a16419a7c\"}";
+        String myString = """
+            {
+              "maatId": 5635539,
+              "caseUrn": "EITHERWAY",
+              "laaTransactionId": "48e60e52-70f9-415d-8c57-c25a16419a7c"
+            }
+                        """;
 
         //when
-        when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
+        //  when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
         when(laaStatusValidationProcessor.validate(caseDetails)).thenReturn(messageCollection);
 
         laaStatusUpdateController.updateLAAStatus("48e60e52-70f9-415d-8c57-c25a16419a7c", myString);
@@ -113,12 +132,16 @@ public class LaaStatusUpdateControllerTest {
 
         //given
         final CaseDetails caseDetails = CaseDetails.builder().build();
-        String myString = "{\"maatId\": 5635539,\n" +
-                "  \"caseUrn\": \"EITHERWAY\",\n" +
-                "  \"laaTransactionId\": \"48e60e52-70f9-415d-8c57-c25a16419a7c\"}";
+        String myString = """
+            {
+              "maatId": 5635539,
+              "caseUrn": "EITHERWAY",
+              "laaTransactionId": "48e60e52-70f9-415d-8c57-c25a16419a7c"
+            }
+                        """;
 
         //when
-        when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
+        // when(gson.fromJson(myString, CaseDetails.class)).thenReturn(caseDetails);
         when(laaStatusValidationProcessor.validate(caseDetails)).thenThrow(new MAATCourtDataException("Validation Failed"));
 
         Assertions.assertThrows(MAATCourtDataException.class, ()->{

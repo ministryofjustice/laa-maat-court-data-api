@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +41,7 @@ public class UnLinkController {
             @Parameter(description = "Case details data", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Unlink.class))) @RequestBody Unlink unlink) {
 
-        MDC.put(LoggingData.LAA_TRANSACTION_ID.getMdcKey(), laaTransactionId);
+        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("LAA Status Update Request received");
         unLinkValidationProcessor.validate(unlink);
 

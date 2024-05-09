@@ -1,10 +1,9 @@
 package gov.uk.courtdata.controller;
 
-import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
-
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.service.ResultsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +40,7 @@ public class XLATResultController {
     public ResponseEntity<List<Integer>> getResultCodesForCCImprisonment(
             @Parameter(description = "Used for tracing calls")
             @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
-        MDC.put(LAA_TRANSACTION_ID.getMdcKey(), laaTransactionId);
+        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("Get XLAT Result Codes for CC Imprisonment");
         return ResponseEntity.ok(resultService.findXLATResultCodesForCCImprisonment());
     }
@@ -56,7 +54,7 @@ public class XLATResultController {
     public ResponseEntity<List<Integer>> getResultCodesForCCBenchWarrant(
             @Parameter(description = "Used for tracing calls")
             @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
-        MDC.put(LAA_TRANSACTION_ID.getMdcKey(), laaTransactionId);
+        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("Get XLAT Result Codes for CC Bench Warrant");
         return ResponseEntity.ok(resultService.findXLATResultCodesForCCBenchWarrant());
     }
@@ -72,7 +70,7 @@ public class XLATResultController {
             @PathVariable int subType,
             @Parameter(description = "Used for tracing calls")
             @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
-        MDC.put(LAA_TRANSACTION_ID.getMdcKey(), laaTransactionId);
+        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info(String.format("Get XLAT Result Codes by WqType - %d and SubType: %s {}", wqType, subType));
         return ResponseEntity.ok(resultService.findXLATResultCodesByWQTypeAndSubTypeCode(wqType, subType));
     }

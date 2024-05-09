@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,8 +43,8 @@ public class LinkController {
             @RequestBody CaseDetailsValidate caseDetailsValidate,
             @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        MDC.put(LoggingData.LAA_TRANSACTION_ID.getMdcKey(), laaTransactionId);
-        MDC.put(LoggingData.MAATID.getMdcKey(),
+        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
+        LoggingData.MAATID.putInMDC(
             caseDetailsValidate.getMaatId() != null ? caseDetailsValidate.getMaatId().toString()
                 : "");
 

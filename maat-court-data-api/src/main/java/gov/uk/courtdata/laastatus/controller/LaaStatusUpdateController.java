@@ -54,17 +54,12 @@ public class LaaStatusUpdateController {
     public MessageCollection updateLAAStatus(@RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId,
                                              @Parameter(description = "Case details", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetails.class)))
                                              @RequestBody String jsonPayload) {
-
-        log.info("LAA Status Update Request received.");
-
         UUID laaTransactionIdUUID = Optional.ofNullable(laaTransactionId).isPresent() ?
             UUID.fromString(laaTransactionId) :
             UUID.randomUUID();
 
-        LaaTransactionLogging laaTransactionLogging = gson.fromJson(jsonPayload,
-            LaaTransactionLogging.class);
-        LoggingData.MAATID.putInMDC(laaTransactionLogging.getMaatId());
-        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionIdUUID);
+        setupMDC(jsonPayload, laaTransactionIdUUID);
+        log.info("LAA Status Update Request received.");
 
         queueMessageLogService.createLog(MessageType.LAA_STATUS_REST_CALL, jsonPayload);
         MessageCollection messageCollection;
@@ -86,5 +81,14 @@ public class LaaStatusUpdateController {
             throw new MAATCourtDataException(message);
         }
         return messageCollection;
+    }
+
+    private void setupMDC(String jsonPayload, UUID laaTransactionIdUUID) {
+        LaaTransactionLogging laaTransactionLogging = gson.fromJson(jsonPayload,
+            LaaTransactionLogging.class);
+
+        LoggingData.MAATID.putInMDC(laaTransactionLogging.getMaatId());
+        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionIdUUID);
+        LoggingData.CASE_URN.putInMDC(laaTransactionLogging.getCaseUrn());
     }
 }

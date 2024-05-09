@@ -10,7 +10,6 @@ import io.awspring.cloud.sqs.annotation.SqsListener;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -30,7 +29,7 @@ public class HearingResultedListener {
                         final @Headers MessageHeaders headers) {
         try {
             log.debug("message-id {}", headers.get("MessageId"));
-            MDC.put(LoggingData.REQUEST_TYPE.getMdcKey(), MessageType.HEARING.name());
+            LoggingData.REQUEST_TYPE.putInMDC(MessageType.HEARING.name());
             queueMessageLogService.createLog(MessageType.HEARING, message);
 
             HearingResulted hearingResulted = gson.fromJson(message, HearingResulted.class);

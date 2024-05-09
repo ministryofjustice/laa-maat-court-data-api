@@ -1,10 +1,9 @@
 package gov.uk.courtdata.controller;
 
-import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
-
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.service.ResultsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +42,7 @@ public class ResultController {
             @PathVariable String asnSeq,
             @Parameter(description = "Used for tracing calls")
             @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
-        MDC.put(LAA_TRANSACTION_ID.getMdcKey(), laaTransactionId);
+        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info(String.format("Get Result Codes by CaseId - %d and AsnSeq: %s {}", caseId, asnSeq));
         return ResponseEntity.ok(resultService.findResultCodesByCaseIdAndAsnSeq(caseId, asnSeq));
     }

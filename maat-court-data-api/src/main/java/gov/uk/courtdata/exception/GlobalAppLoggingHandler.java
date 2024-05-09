@@ -13,7 +13,6 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -71,19 +70,19 @@ public class GlobalAppLoggingHandler {
         }
 
         Sentry.configureScope(scope -> {
-            scope.setTag(LoggingData.CASE_URN.getMdcKey(),
+            scope.setTag(LoggingData.CASE_URN.getKey(),
                 laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn()
                     : "");
-            scope.setTag(LoggingData.LAA_TRANSACTION_ID.getMdcKey(), laaTransactionIdStr);
-            scope.setTag(LoggingData.MAATID.getMdcKey(),
+            scope.setTag(LoggingData.LAA_TRANSACTION_ID.getKey(), laaTransactionIdStr);
+            scope.setTag(LoggingData.MAATID.getKey(),
                 laaTransactionLogging.getMaatId().toString());
         });
 
-        MDC.put(LoggingData.MESSAGE.getMdcKey(), laaTransactionLogging.toString());
-        MDC.put(LoggingData.CASE_URN.getMdcKey(),
+        LoggingData.MESSAGE.putInMDC(laaTransactionLogging.toString());
+        LoggingData.CASE_URN.putInMDC(
             laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn() : "");
-        MDC.put(LoggingData.LAA_TRANSACTION_ID.getMdcKey(), laaTransactionIdStr);
-        MDC.put(LoggingData.MAATID.getMdcKey(),
+        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionIdStr);
+        LoggingData.MAATID.putInMDC(
             laaTransactionLogging.getMaatId() != null ? laaTransactionLogging.getMaatId().toString()
                 : "-");
         log.info("Received a json payload from a queue and converted.");

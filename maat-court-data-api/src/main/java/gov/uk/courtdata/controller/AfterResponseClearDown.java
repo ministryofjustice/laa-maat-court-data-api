@@ -23,8 +23,8 @@ public class AfterResponseClearDown implements Filter {
         try {
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
+            log.debug("About to clear down the MDC");
             MDC.clear();
-            log.debug("Cleared down the MDC");
         }
     }
 }

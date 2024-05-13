@@ -14,6 +14,7 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -29,19 +30,13 @@ public class SqsGlobalLoggingHandler {
     private final Gson gson;
 
     /**
-     * This method will execute whenever an exception is thrown by any class in a service package
-     * from a method named 'receive'.
-     * If we are adding new queue listener then we should follow the same existing pattern.
+     * This method will execute whenever an exception is thrown by any method within 'gov.uk.courtdata'
+     * (or any sub-package) and has been annotated with '@SqsListener'.
      */
     @AfterThrowing(pointcut = SQS_LISTENER_IN_COURT_DATA, throwing = "ex")
     public void afterThrowingHearingDetail(JoinPoint joinPoint, RuntimeException ex) {
-
         log().info("Exception thrown - {} ", ex.getMessage());
         log().error("Exception StackTrace", ex);
-    }
-
-    Logger log() {
-        return log;
     }
 
     /**
@@ -58,13 +53,13 @@ public class SqsGlobalLoggingHandler {
     @After(SQS_LISTENER_IN_COURT_DATA)
     public void afterProcessEnds(JoinPoint joinPoint) {
         log().info("Message processing finished.");
-
+        log().debug("About to clear down the MDC");
+        MDC.clear();
     }
 
     /**
-     * This method will log the message and also put the message to MDC fo logging in the case of any failure (e.g. exception occur).
-     * This method will be called automatically for all the queue (jms) listeners. More specifically classes within
-     * service package where method name is receive. For any new queue listener we should follow the same naming convention.
+     * This method will log the message and also put the message into the MDC for logging in the case of any failure (e.g. an Exception is thrown).
+     * This method will be called for all the queue (SQS) listeners.
      *
      */
     @Before(MESSAGE_FOR_SQS_LISTENER_IN_COURT_DATA)
@@ -97,5 +92,10 @@ public class SqsGlobalLoggingHandler {
             laaTransactionLogging.getMaatId() != null ? laaTransactionLogging.getMaatId().toString()
                 : "-");
         log().info("Received a json payload from a queue and converted.");
+    }
+
+    // Included for unit testing only, to provide verification of logging.
+    Logger log() {
+        return log;
     }
 }

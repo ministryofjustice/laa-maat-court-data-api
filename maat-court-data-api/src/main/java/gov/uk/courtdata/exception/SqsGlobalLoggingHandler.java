@@ -19,12 +19,13 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class GlobalAppLoggingHandler {
+public class SqsGlobalLoggingHandler {
 
     private final Gson gson;
 
     /**
-     * This method will execute whenever a exception occour in any of the following (service) package and a class has method name receive.
+     * This method will execute whenever an exception is thrown by any class in a service package
+     * from a method named 'receive'.
      * If we are adding new queue listener then we should follow the same existing pattern.
      */
     @AfterThrowing(pointcut = "execution(* gov.uk.courtdata.*.service.*.receive(..))", throwing = "ex")
@@ -35,7 +36,7 @@ public class GlobalAppLoggingHandler {
     }
 
     /**
-     * This method will be called at the end when there is a successful message processing.
+     * This method will be called at the end, following the successful processing of a message.
      */
     @AfterReturning(" execution(* gov.uk.courtdata.*.service.*.receive(..))  ")
     public void afterProcess(JoinPoint joinPoint) {
@@ -43,11 +44,12 @@ public class GlobalAppLoggingHandler {
     }
 
     /**
-     * This method will called every time at the of queue consumer, regardless of the outcome.
+     * This method will be called every time at the of queue consumer, regardless of the outcome.
      */
     @After(" execution(* gov.uk.courtdata.*.service.*.receive(..))  ")
     public void afterProcessEnds(JoinPoint joinPoint) {
         log.info("Message processing finished.");
+
     }
 
     /**

@@ -1,6 +1,10 @@
 package gov.uk.courtdata.hearing.service;
 
-import gov.uk.courtdata.exception.GlobalAppLoggingHandler;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
+
+import gov.uk.courtdata.exception.SqsGlobalLoggingHandler;
+import java.util.HashMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,11 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.messaging.MessageHeaders;
 
-import java.util.HashMap;
-
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.lenient;
-
 @ExtendWith(MockitoExtension.class)
 public class HearingResultedListenerAspectTest {
 
@@ -25,14 +24,14 @@ public class HearingResultedListenerAspectTest {
     private HearingResultedListener hearingResultedListenerProxy;
 
     @InjectMocks
-    GlobalAppLoggingHandler globalAppLoggingHandler;
+    SqsGlobalLoggingHandler sqsGlobalLoggingHandler;
 
     @BeforeEach
     public void setUp() {
 
         AspectJProxyFactory factory = new AspectJProxyFactory();
         factory.setTarget(hearingResultedListener);
-        factory.addAspect(globalAppLoggingHandler);
+        factory.addAspect(sqsGlobalLoggingHandler);
         hearingResultedListenerProxy = factory.getProxy();
     }
 

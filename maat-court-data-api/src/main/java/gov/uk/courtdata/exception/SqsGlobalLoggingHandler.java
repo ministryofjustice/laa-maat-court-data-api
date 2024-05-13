@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -31,8 +32,12 @@ public class SqsGlobalLoggingHandler {
     @AfterThrowing(pointcut = "execution(* gov.uk.courtdata.*.service.*.receive(..))", throwing = "ex")
     public void afterThrowingHearingDetail(JoinPoint joinPoint, RuntimeException ex) {
 
-        log.info("Exception thrown - {} ", ex.getMessage());
-        log.error("Exception StackTrace", ex);
+        log().info("Exception thrown - {} ", ex.getMessage());
+        log().error("Exception StackTrace", ex);
+    }
+
+    Logger log() {
+        return log;
     }
 
     /**
@@ -40,7 +45,7 @@ public class SqsGlobalLoggingHandler {
      */
     @AfterReturning(" execution(* gov.uk.courtdata.*.service.*.receive(..))  ")
     public void afterProcess(JoinPoint joinPoint) {
-        log.info("Message from a queue has been processed successfully");
+        log().info("Message from a queue has been processed successfully");
     }
 
     /**
@@ -48,7 +53,7 @@ public class SqsGlobalLoggingHandler {
      */
     @After(" execution(* gov.uk.courtdata.*.service.*.receive(..))  ")
     public void afterProcessEnds(JoinPoint joinPoint) {
-        log.info("Message processing finished.");
+        log().info("Message processing finished.");
 
     }
 
@@ -87,6 +92,6 @@ public class SqsGlobalLoggingHandler {
         LoggingData.MAATID.putInMDC(
             laaTransactionLogging.getMaatId() != null ? laaTransactionLogging.getMaatId().toString()
                 : "-");
-        log.info("Received a json payload from a queue and converted.");
+        log().info("Received a json payload from a queue and converted.");
     }
 }

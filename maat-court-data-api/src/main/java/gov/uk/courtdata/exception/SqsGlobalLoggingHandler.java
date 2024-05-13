@@ -22,6 +22,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SqsGlobalLoggingHandler {
 
+    private static final String SQS_LISTENER_IN_COURT_DATA = "within(gov.uk.courtdata..*) && @annotation(io.awspring.cloud.sqs.annotation.SqsListener)";
+    private static final String MESSAGE_FOR_SQS_LISTENER_IN_COURT_DATA =
+        SQS_LISTENER_IN_COURT_DATA + " && args(message,..) ";
+
     private final Gson gson;
 
     /**
@@ -29,7 +33,7 @@ public class SqsGlobalLoggingHandler {
      * from a method named 'receive'.
      * If we are adding new queue listener then we should follow the same existing pattern.
      */
-    @AfterThrowing(pointcut = "execution(* gov.uk.courtdata.*.service.*.receive(..))", throwing = "ex")
+    @AfterThrowing(pointcut = SQS_LISTENER_IN_COURT_DATA, throwing = "ex")
     public void afterThrowingHearingDetail(JoinPoint joinPoint, RuntimeException ex) {
 
         log().info("Exception thrown - {} ", ex.getMessage());
@@ -43,7 +47,7 @@ public class SqsGlobalLoggingHandler {
     /**
      * This method will be called at the end, following the successful processing of a message.
      */
-    @AfterReturning(" execution(* gov.uk.courtdata.*.service.*.receive(..))  ")
+    @AfterReturning(SQS_LISTENER_IN_COURT_DATA)
     public void afterProcess(JoinPoint joinPoint) {
         log().info("Message from a queue has been processed successfully");
     }
@@ -51,7 +55,7 @@ public class SqsGlobalLoggingHandler {
     /**
      * This method will be called every time at the of queue consumer, regardless of the outcome.
      */
-    @After(" execution(* gov.uk.courtdata.*.service.*.receive(..))  ")
+    @After(SQS_LISTENER_IN_COURT_DATA)
     public void afterProcessEnds(JoinPoint joinPoint) {
         log().info("Message processing finished.");
 
@@ -63,7 +67,7 @@ public class SqsGlobalLoggingHandler {
      * service package where method name is receive. For any new queue listener we should follow the same naming convention.
      *
      */
-    @Before(" execution(* gov.uk.courtdata.*.service.*.receive(..))  && args(message,..) ")
+    @Before(MESSAGE_FOR_SQS_LISTENER_IN_COURT_DATA)
     public void beforeQueueMessageRec(JoinPoint joinPoint, String message) {
 
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(message, LaaTransactionLogging.class);

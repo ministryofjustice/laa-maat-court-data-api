@@ -3,6 +3,7 @@ package gov.uk.courtdata.iojappeal.controller;
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.IOJAppealDTO;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.iojappeal.service.IOJAppealService;
 import gov.uk.courtdata.iojappeal.validator.IOJAppealValidationProcessor;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
@@ -13,16 +14,19 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
-
-import static gov.uk.courtdata.enums.LoggingData.LAA_TRANSACTION_ID;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -43,7 +47,7 @@ public class IOJAppealController {
     public ResponseEntity<IOJAppealDTO> getIOJAppeal(@PathVariable Integer iojAppealId,
                                                      @Parameter(description = "Used for tracing calls")
                                                      @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+      LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("Get IOJ Appeal Received: id: {}", iojAppealId);
         return ResponseEntity.ok(iojAppealService.find(iojAppealId));
     }
@@ -57,7 +61,7 @@ public class IOJAppealController {
     public ResponseEntity<IOJAppealDTO> getIOJAppealByRepId(@PathVariable int repId,
                                                             @Parameter(description = "Used for tracing calls")
                                                             @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+      LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("Get IOJ Appeal by repId: {}", repId);
         return ResponseEntity.ok(iojAppealService.findByRepId(repId));
     }
@@ -71,7 +75,7 @@ public class IOJAppealController {
     public ResponseEntity<IOJAppealDTO> getCurrentPassedIOJAppealByRepId(@PathVariable int repId,
                                                                          @Parameter(description = "Used for tracing calls")
                                                                          @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+      LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("Get IOJ Appeal by repId: {}", repId);
         return ResponseEntity.ok(iojAppealService.findCurrentPassedAppealByRepId(repId));
     }
@@ -85,7 +89,7 @@ public class IOJAppealController {
             schema = @Schema(implementation = CreateIOJAppeal.class))) @Valid @RequestBody CreateIOJAppeal iojAppeal,
                                                         @Parameter(description = "Used for tracing calls")
                                                         @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+      LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("Create IOJ Appeal Request Received");
 
         var iojAppealDTO = iojAppealService.create(iojAppeal);
@@ -102,7 +106,7 @@ public class IOJAppealController {
             schema = @Schema(implementation = UpdateIOJAppeal.class))) @Valid @RequestBody UpdateIOJAppeal iojAppeal,
                                                         @Parameter(description = "Used for tracing calls")
                                                         @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-        MDC.put(LAA_TRANSACTION_ID.getValue(), laaTransactionId);
+      LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("Update IOJ Appeal Request Received with ID: {}", iojAppeal.getId());
 
         iojAppealValidationProcessor.validate(iojAppeal);

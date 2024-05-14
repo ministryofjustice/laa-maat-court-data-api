@@ -10,8 +10,6 @@ import gov.uk.courtdata.unlink.processor.UnLinkProcessor;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -35,7 +33,7 @@ public class UnlinkListener {
 
         try {
             log.debug("message-id {}", headers.get("MessageId"));
-            MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.UNLINK.name());
+            LoggingData.REQUEST_TYPE.putInMDC(MessageType.UNLINK.name());
             queueMessageLogService.createLog(MessageType.UNLINK, message);
             Unlink unlink = gson.fromJson(message, Unlink.class);
             unLinkProcessor.process(unlink);

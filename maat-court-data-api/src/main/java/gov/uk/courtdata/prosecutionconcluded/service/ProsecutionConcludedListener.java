@@ -9,7 +9,6 @@ import gov.uk.courtdata.service.QueueMessageLogService;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
@@ -30,7 +29,7 @@ public class ProsecutionConcludedListener {
     public void receive(@Payload final String message, final @Headers MessageHeaders headers) {
         try {
             log.debug("message-id {}", headers.get("MessageId"));
-            MDC.put(LoggingData.REQUEST_TYPE.getValue(), MessageType.PROSECUTION_CONCLUDED.name());
+            LoggingData.REQUEST_TYPE.putInMDC(MessageType.PROSECUTION_CONCLUDED.name());
             queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
 
             ProsecutionConcluded prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);

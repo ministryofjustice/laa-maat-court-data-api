@@ -1,7 +1,9 @@
 package gov.uk.courtdata.enums;
 
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.slf4j.MDC;
 
 @Getter
 @AllArgsConstructor
@@ -13,5 +15,17 @@ public enum LoggingData{
     MESSAGE("message"),
     REQUEST_TYPE("requestType");
 
-    private String value;
+    private final String key;
+
+    public void putInMDC(Integer value) {
+        putInMDC(String.valueOf(value));
+    }
+
+    public void putInMDC(UUID value) {
+        putInMDC(value.toString());
+    }
+
+    public void putInMDC(String value) {
+        MDC.put(key, value);
+    }
 }

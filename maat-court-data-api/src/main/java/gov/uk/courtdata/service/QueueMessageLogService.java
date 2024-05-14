@@ -1,20 +1,19 @@
 package gov.uk.courtdata.service;
 
+import static gov.uk.courtdata.enums.MessageType.LAA_STATUS_UPDATE;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
-
-import static gov.uk.courtdata.enums.MessageType.LAA_STATUS_UPDATE;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -48,7 +47,7 @@ public class QueueMessageLogService {
                         .maatId(Optional
                                 .ofNullable(maatId)
                                 .map(JsonElement::getAsInt)
-                                .orElse(-1) )
+                                .orElse(-1))
                         .type(prepareMessageType(messageType, msgObject))
                         .message(convertAsByte(message))
                         .createdTime(LocalDateTime.now())

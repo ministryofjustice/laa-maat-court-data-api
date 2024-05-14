@@ -1,4 +1,4 @@
-package gov.uk.courtdata.controller;
+package gov.uk.courtdata.filter;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNull;

@@ -43,7 +43,6 @@ public class LinkController {
             @RequestBody CaseDetailsValidate caseDetailsValidate,
             @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         LoggingData.MAATID.putInMDC(
             caseDetailsValidate.getMaatId() != null ? caseDetailsValidate.getMaatId().toString()
                 : "");

@@ -84,7 +84,6 @@ public class LaaStatusUpdateController {
             LaaTransactionLogging.class);
 
         LoggingData.MAATID.putInMDC(laaTransactionLogging.getMaatId());
-        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionIdUUID);
         LoggingData.CASE_URN.putInMDC(laaTransactionLogging.getCaseUrn());
     }
 }

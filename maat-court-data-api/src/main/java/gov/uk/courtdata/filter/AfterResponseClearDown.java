@@ -1,4 +1,4 @@
-package gov.uk.courtdata.controller;
+package gov.uk.courtdata.filter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

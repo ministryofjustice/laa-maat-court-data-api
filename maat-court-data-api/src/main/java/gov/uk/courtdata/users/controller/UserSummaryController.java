@@ -1,7 +1,11 @@
 package gov.uk.courtdata.users.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
+import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.UserSummaryDTO;
+import gov.uk.courtdata.eform.controller.StandardApiResponseCodes;
+import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
 import gov.uk.courtdata.users.service.UserSummaryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,10 +17,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -38,4 +41,39 @@ public class UserSummaryController {
         return ResponseEntity.ok(userSummaryService.getUserSummary(username));
     }
 
+    @GetMapping(value = "/{username}")
+    @Operation(description = "Retrieve a reservation")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @NotFoundApiResponse
+    public UserEntity getUser(@PathVariable String username) {
+        return userSummaryService.getUser(username);
+    }
+
+    @PostMapping("/")
+    @Operation(description = "Create a user")
+    @StandardApiResponse
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    public ResponseEntity<Void> createUser(@RequestBody UserEntity userEntity) {
+        userSummaryService.createUser(userEntity);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{username}")
+    @Operation(description = "Update user details")
+    @StandardApiResponseCodes
+    public ResponseEntity<Void> updateUser(@PathVariable String username,
+                                           @RequestBody Map<String, Object> updateFields) {
+        userSummaryService.patchUser(username, updateFields);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping(value = "/{username}")
+    @Operation(description = "Delete a User")
+    @StandardApiResponse
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    public ResponseEntity<Void> deleteUser(@PathVariable String username) {
+        userSummaryService.deleteUser(username);
+        return ResponseEntity.ok().build();
+    }
 }

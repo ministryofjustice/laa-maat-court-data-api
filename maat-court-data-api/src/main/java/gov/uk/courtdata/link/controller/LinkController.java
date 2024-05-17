@@ -28,28 +28,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/link")
 public class LinkController {
 
-    private final PreConditionsValidator preConditionsValidator;
+  private final PreConditionsValidator preConditionsValidator;
 
-    @PostMapping("/validate")
-    @Operation(description = "Validate linking case details.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class))),
-            @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    })
+  @PostMapping("/validate")
+  @Operation(description = "Validate linking case details.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", content = @Content),
+      @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class))),
+      @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
+  })
 
-    public ResponseEntity<Object> validate(
-            @Parameter(description = "Case details data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetailsValidate.class)))
-            @RequestBody CaseDetailsValidate caseDetailsValidate,
-            @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+  public ResponseEntity<Object> validate(
+      @Parameter(description = "Case details data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetailsValidate.class)))
+      @RequestBody CaseDetailsValidate caseDetailsValidate,
+      @Parameter(description = "Used for tracing calls") @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
-        if (caseDetailsValidate.getMaatId() != null) {
-            LoggingData.MAATID.putInMDC(caseDetailsValidate.getMaatId());
-        }
+    LoggingData.MAATID.putInMDC(caseDetailsValidate.getMaatId());
 
-        log.info("Validate link request.");
-        preConditionsValidator.validate(caseDetailsValidate);
+    log.info("Validate link request.");
+    preConditionsValidator.validate(caseDetailsValidate);
 
-        return ResponseEntity.ok().build();
-    }
+    return ResponseEntity.ok().build();
+  }
 }

@@ -2,6 +2,7 @@ package gov.uk.courtdata.prosecutionconcluded.service;
 
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
 import gov.uk.courtdata.prosecutionconcluded.dto.ConcludedDTO;
 import gov.uk.courtdata.prosecutionconcluded.helper.CalculateOutcomeHelper;
@@ -11,11 +12,10 @@ import gov.uk.courtdata.prosecutionconcluded.impl.ProsecutionConcludedImpl;
 import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
 import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.validator.ProsecutionConcludedValidator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -42,6 +42,7 @@ public class ProsecutionConcludedService {
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
 
         log.info("CC Outcome process is kicked off for  maat-id {}", prosecutionConcluded.getMaatId());
+        LoggingData.MAATID.putInMDC(prosecutionConcluded.getMaatId());
         prosecutionConcludedValidator.validateRequestObject(prosecutionConcluded);
 
         WQHearingEntity wqHearingEntity = hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded);

@@ -62,6 +62,7 @@ public class UserSummaryController {
     @PatchMapping("/{username}")
     @Operation(description = "Update user details")
     @StandardApiResponseCodes
+    @NotFoundApiResponse
     public ResponseEntity<Void> updateUser(@PathVariable String username,
                                            @RequestBody Map<String, Object> updateFields) {
         userSummaryService.patchUser(username, updateFields);

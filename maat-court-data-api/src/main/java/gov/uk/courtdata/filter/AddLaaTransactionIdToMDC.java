@@ -21,8 +21,8 @@ import org.springframework.stereotype.Component;
 public class AddLaaTransactionIdToMDC implements Filter {
 
   @Override
-  public void doFilter(ServletRequest request, ServletResponse response,
-      FilterChain chain) throws IOException, ServletException {
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
 
     if (request instanceof HttpServletRequest) {
       String laaTransactionIdHeaderValue = ((HttpServletRequest) request).getHeader(
@@ -31,6 +31,7 @@ public class AddLaaTransactionIdToMDC implements Filter {
       log.debug("Adding Laa-Transaction-Id {} to the MDC", laaTransactionIdHeaderValue);
       LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionIdHeaderValue);
     }
+
     chain.doFilter(request, response);
   }
 }

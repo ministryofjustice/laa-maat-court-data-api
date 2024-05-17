@@ -1,7 +1,6 @@
 package gov.uk.courtdata.enums;
 
 import java.util.Objects;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.slf4j.MDC;
@@ -21,12 +20,6 @@ public enum LoggingData {
   public void putInMDC(Integer value) {
     if (Objects.nonNull(value)) {
       putInMDC(String.valueOf(value));
-    }
-  }
-
-  public void putInMDC(UUID value) {
-    if (Objects.nonNull(value)) {
-      putInMDC(value.toString());
     }
   }
 

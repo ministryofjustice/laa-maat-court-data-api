@@ -54,7 +54,7 @@ public class LaaStatusUpdateController {
             UUID.fromString(laaTransactionId) :
             UUID.randomUUID();
 
-        setupMDC(jsonPayload, laaTransactionIdUUID);
+      setupMDC(jsonPayload);
         log.info("LAA Status Update Request received.");
 
         queueMessageLogService.createLog(MessageType.LAA_STATUS_REST_CALL, jsonPayload);
@@ -79,7 +79,7 @@ public class LaaStatusUpdateController {
         return messageCollection;
     }
 
-    private void setupMDC(String jsonPayload, UUID laaTransactionIdUUID) {
+  private void setupMDC(String jsonPayload) {
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(jsonPayload,
             LaaTransactionLogging.class);
 

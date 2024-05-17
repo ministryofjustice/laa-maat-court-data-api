@@ -77,7 +77,7 @@ public class UserSummaryControllerTest {
 
     @Test
     void givenIncorrectParameters_whenPatchUserIsInvoked_thenErrorIsThrown() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post(USER_ENDPOINT_URL)
+        mvc.perform(MockMvcRequestBuilders.patch(USER_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }

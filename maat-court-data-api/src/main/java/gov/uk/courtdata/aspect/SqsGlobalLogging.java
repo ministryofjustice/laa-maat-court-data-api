@@ -1,4 +1,4 @@
-package gov.uk.courtdata.exception;
+package gov.uk.courtdata.aspect;
 
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class SqsGlobalLoggingHandler {
+public class SqsGlobalLogging {
 
     private static final String SQS_LISTENER_IN_COURT_DATA = "within(gov.uk.courtdata..*) && @annotation(io.awspring.cloud.sqs.annotation.SqsListener)";
     private static final String MESSAGE_FOR_SQS_LISTENER_IN_COURT_DATA =
@@ -35,8 +35,7 @@ public class SqsGlobalLoggingHandler {
      */
     @AfterThrowing(pointcut = SQS_LISTENER_IN_COURT_DATA, throwing = "ex")
     public void afterThrowingHearingDetail(JoinPoint joinPoint, RuntimeException ex) {
-        log().info("Exception thrown - {} ", ex.getMessage());
-        log().error("Exception StackTrace", ex);
+        log().error("Exception thrown when processing message: {}", ex.getMessage(), ex);
     }
 
     /**
@@ -44,7 +43,7 @@ public class SqsGlobalLoggingHandler {
      */
     @AfterReturning(SQS_LISTENER_IN_COURT_DATA)
     public void afterProcess(JoinPoint joinPoint) {
-        log().info("Message from a queue has been processed successfully");
+        log().info("Message from queue has been successfully processed");
     }
 
     /**
@@ -52,7 +51,7 @@ public class SqsGlobalLoggingHandler {
      */
     @After(SQS_LISTENER_IN_COURT_DATA)
     public void afterProcessEnds(JoinPoint joinPoint) {
-        log().info("Message processing finished.");
+        log().info("Message processing completed");
         log().debug("About to clear down the MDC");
         MDC.clear();
     }
@@ -70,7 +69,7 @@ public class SqsGlobalLoggingHandler {
 
         if (laaTransactionLogging.getMetadata() != null
                 && laaTransactionLogging.getMetadata().getLaaTransactionId() != null) {
-            laaTransactionIdStr = laaTransactionLogging.getMetadata().getLaaTransactionId().toString();
+            laaTransactionIdStr = laaTransactionLogging.getMetadata().getLaaTransactionId();
         } else {
             laaTransactionIdStr = UUID.randomUUID().toString();
         }
@@ -84,14 +83,11 @@ public class SqsGlobalLoggingHandler {
                 laaTransactionLogging.getMaatId().toString());
         });
 
-        LoggingData.MESSAGE.putInMDC(laaTransactionLogging.toString());
-        LoggingData.CASE_URN.putInMDC(
-            laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn() : "");
+        LoggingData.CASE_URN.putInMDC(laaTransactionLogging.getCaseUrn());
         LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionIdStr);
-        LoggingData.MAATID.putInMDC(
-            laaTransactionLogging.getMaatId() != null ? laaTransactionLogging.getMaatId().toString()
-                : "-");
-        log().info("Received a json payload from a queue and converted.");
+        LoggingData.MAATID.putInMDC(laaTransactionLogging.getMaatId());
+
+        log().info("Received JSON payload from the queue");
     }
 
     // Included for unit testing only, to provide verification of logging.

@@ -1,4 +1,4 @@
-package gov.uk.courtdata.exception;
+package gov.uk.courtdata.aspect;
 
 import static graphql.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,7 +28,7 @@ import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.messaging.MessageHeaders;
 
 @ExtendWith(MockitoExtension.class)
-public class SqsGlobalLoggingHandlerTest {
+public class SqsGlobalLoggingTest {
 
   @Mock
   private HearingResultedService mockHearingResultedService;
@@ -48,12 +48,12 @@ public class SqsGlobalLoggingHandlerTest {
 
     AspectJProxyFactory factory = new AspectJProxyFactory(hearingResultedListener);
 
-    SqsGlobalLoggingHandler sqsGlobalLoggingHandler = new SqsGlobalLoggingHandler(new Gson()) {
+    SqsGlobalLogging sqsGlobalLogging = new SqsGlobalLogging(new Gson()) {
       Logger log() {
         return mockLogger;
       }
     };
-    factory.addAspect(sqsGlobalLoggingHandler);
+    factory.addAspect(sqsGlobalLogging);
 
     hearingResultedListenerProxy = factory.getProxy();
   }
@@ -81,10 +81,13 @@ public class SqsGlobalLoggingHandlerTest {
 
     //then
     assertAll(() -> assertEquals("Error processing message", actualRuntimeException.getMessage()),
-        () -> verify(mockLogger).info("Received a json payload from a queue and converted."),
-        () -> verify(mockLogger).info("Exception thrown - {} ", "Error processing message"),
-        () -> verify(mockLogger).error("Exception StackTrace", expectedRuntimeException),
-        () -> verify(mockLogger).info("Message processing finished."));
+        () -> verify(mockLogger).info("Received JSON payload from the queue"),
+        () -> verify(mockLogger).error("Exception thrown when processing message: {}",
+            expectedRuntimeException.getMessage(),
+            expectedRuntimeException),
+        () -> verify(mockLogger).info("Message processing completed"),
+        () -> verify(mockLogger).debug("About to clear down the MDC")
+    );
   }
 
   @Test
@@ -127,8 +130,7 @@ public class SqsGlobalLoggingHandlerTest {
             Matchers.hasEntry("laaTransactionId", "c77c96ff-7cad-44cc-9e12-5bc80f5f2d9e")),
         () -> assertThat(actualMdcContextMap, Matchers.hasEntry("caseUrn", "CASNUM-ABC123")),
         () -> assertThat(actualMdcContextMap, Matchers.hasEntry("requestType", "HEARING")),
-        () -> assertThat(actualMdcContextMap, Matchers.hasEntry("message",
-            "LaaTransactionLogging(maatId=6184652, caseUrn=CASNUM-ABC123, metadata=Metadata(laaTransactionId=c77c96ff-7cad-44cc-9e12-5bc80f5f2d9e))")),
-        () -> assertThat(actualMdcContextMap, Matchers.hasEntry("maatId", "6184652")));
+        () -> assertThat(actualMdcContextMap, Matchers.hasEntry("maatId", "6184652"))
+    );
   }
 }

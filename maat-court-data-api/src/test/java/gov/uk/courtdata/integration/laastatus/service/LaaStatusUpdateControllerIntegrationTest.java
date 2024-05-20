@@ -1,5 +1,16 @@
 package gov.uk.courtdata.integration.laastatus.service;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
+import static com.github.tomakehurst.wiremock.client.WireMock.getAllServeEvents;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UPDATE_CASE_EVENT;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -7,16 +18,55 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.CaseEntity;
+import gov.uk.courtdata.entity.DefendantEntity;
+import gov.uk.courtdata.entity.DefendantMAATDataEntity;
+import gov.uk.courtdata.entity.OffenceEntity;
+import gov.uk.courtdata.entity.RepOrderCPDataEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.SessionEntity;
+import gov.uk.courtdata.entity.SolicitorEntity;
+import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
+import gov.uk.courtdata.entity.WqCoreEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.WQStatus;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.laastatus.controller.LaaStatusUpdateController;
+import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Defendant;
+import gov.uk.courtdata.model.MessageCollection;
 import gov.uk.courtdata.model.Offence;
-import gov.uk.courtdata.model.*;
-import gov.uk.courtdata.model.laastatus.*;
-import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.model.Session;
+import gov.uk.courtdata.model.laastatus.Address;
+import gov.uk.courtdata.model.laastatus.Attributes;
+import gov.uk.courtdata.model.laastatus.Contact;
+import gov.uk.courtdata.model.laastatus.DefenceOrganisation;
+import gov.uk.courtdata.model.laastatus.DefendantData;
+import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
+import gov.uk.courtdata.model.laastatus.Organisation;
+import gov.uk.courtdata.model.laastatus.Relationships;
+import gov.uk.courtdata.model.laastatus.RepOrderData;
+import gov.uk.courtdata.repository.CaseRepository;
+import gov.uk.courtdata.repository.DefendantMAATDataRepository;
+import gov.uk.courtdata.repository.DefendantRepository;
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import gov.uk.courtdata.repository.IdentifierRepository;
+import gov.uk.courtdata.repository.OffenceRepository;
+import gov.uk.courtdata.repository.PassportAssessmentRepository;
+import gov.uk.courtdata.repository.QueueMessageLogRepository;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
+import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.repository.SessionRepository;
+import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
+import gov.uk.courtdata.repository.SolicitorRepository;
+import gov.uk.courtdata.repository.WqCoreRepository;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,18 +74,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UPDATE_CASE_EVENT;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
@@ -90,18 +128,23 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     public void givenNullMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         String testPayload = objectMapper
                 .writeValueAsString(CaseDetails.builder().laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID)).build());
-        assertTrue(runServerErrorScenario("MAAT API Call failed - MAAT ID is required.", getPostRequest(testPayload)));
+        assertTrue(
+            runServerErrorScenario("MAAT API Call failed - MAAT/REP ID is required, found [null]",
+                getPostRequest(testPayload)));
     }
 
     @Test
     public void givenAMissingMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         String payloadMissingMaatId = String.format("{\"laaTransactionId\":\"%s\"}", LAA_TRANSACTION_ID);
-        assertTrue(runServerErrorScenario("MAAT API Call failed - MAAT ID is required.", getPostRequest(payloadMissingMaatId)));
+        assertTrue(
+            runServerErrorScenario("MAAT API Call failed - MAAT/REP ID is required, found [null]",
+                getPostRequest(payloadMissingMaatId)));
     }
 
     @Test
     public void givenAnInvalidMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
-        runValidationFailureScenario(String.format("MAAT API Call failed - MAAT/REP ID: %d is invalid.", TEST_MAAT_ID));
+        runValidationFailureScenario(
+            String.format("MAAT API Call failed - MAAT/REP ID [%d] is invalid", TEST_MAAT_ID));
         assertThat(wireMock().getAllServeEvents().isEmpty()).isTrue();
         verify(exactly(0), postRequestedFor(urlEqualTo("/oauth2/token")));
         verify(exactly(0), postRequestedFor(urlEqualTo("/api/internal/v1/representation_orders")));

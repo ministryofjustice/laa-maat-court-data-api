@@ -45,14 +45,14 @@ class AfterResponseClearDownTest {
 
   @Test
   void should_ClearTheMappingDiagnosticsContext() throws ServletException, IOException {
-    MDC.put(String.valueOf(LoggingData.MAATID), "123456");
+    MDC.put(String.valueOf(LoggingData.MAAT_ID), "123456");
     MDC.put(String.valueOf(LoggingData.LAA_TRANSACTION_ID), "230di29ied-=3di32-d0");
 
     filter.doFilter(mockHttpRequest, mockHttpResponse, mockFilterChain);
 
     assertAll(
         () -> verify(mockFilterChain).doFilter(mockHttpRequest, mockHttpResponse),
-        () -> assertNull(MDC.get(String.valueOf(LoggingData.MAATID))),
+        () -> assertNull(MDC.get(String.valueOf(LoggingData.MAAT_ID))),
         () -> assertNull(MDC.get(String.valueOf(LoggingData.LAA_TRANSACTION_ID)))
     );
   }

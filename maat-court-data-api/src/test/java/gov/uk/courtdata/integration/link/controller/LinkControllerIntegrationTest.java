@@ -1,6 +1,13 @@
 package gov.uk.courtdata.integration.link.controller;
 
 
+import static java.lang.String.format;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -11,7 +18,11 @@ import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.integration.util.RepositoryUtil;
 import gov.uk.courtdata.link.controller.LinkController;
 import gov.uk.courtdata.model.CaseDetailsValidate;
-import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import gov.uk.courtdata.repository.PassportAssessmentRepository;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
+import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,13 +33,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import static java.lang.String.format;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @WebAppConfiguration
@@ -84,7 +88,7 @@ public class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
         this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message", is("MAAT ID is required.")));
+            .andExpect(jsonPath("$.message", is("MAAT/REP ID is required, found [null]")));
     }
 
 
@@ -98,7 +102,8 @@ public class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
         this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message", is(format("MAAT/REP ID: %d is invalid.", TEST_MAAT_ID))));
+            .andExpect(
+                jsonPath("$.message", is(format("MAAT/REP ID [%d] is invalid", TEST_MAAT_ID))));
     }
 
     @Test

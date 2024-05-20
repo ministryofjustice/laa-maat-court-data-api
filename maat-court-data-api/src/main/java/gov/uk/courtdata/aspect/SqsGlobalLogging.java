@@ -79,13 +79,13 @@ public class SqsGlobalLogging {
                 laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn()
                     : "");
             scope.setTag(LoggingData.LAA_TRANSACTION_ID.getKey(), laaTransactionIdStr);
-            scope.setTag(LoggingData.MAATID.getKey(),
+            scope.setTag(LoggingData.MAAT_ID.getKey(),
                 laaTransactionLogging.getMaatId().toString());
         });
 
         LoggingData.CASE_URN.putInMDC(laaTransactionLogging.getCaseUrn());
         LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionIdStr);
-        LoggingData.MAATID.putInMDC(laaTransactionLogging.getMaatId());
+        LoggingData.MAAT_ID.putInMDC(laaTransactionLogging.getMaatId());
 
         log().info("Received JSON payload from the queue");
     }

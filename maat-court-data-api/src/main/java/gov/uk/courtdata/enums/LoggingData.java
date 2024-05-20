@@ -9,10 +9,11 @@ import org.slf4j.MDC;
 @AllArgsConstructor
 public enum LoggingData {
 
-  LAA_TRANSACTION_ID("laaTransactionId"),
-  MAATID("maatId"),
   CASE_URN("caseUrn"),
-  REQUEST_TYPE("requestType");
+  LAA_TRANSACTION_ID("laaTransactionId"),
+  MAAT_ID("maatId"),
+  REQUEST_TYPE("requestType"),
+  USN("usn");
 
   private final String key;
 

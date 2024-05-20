@@ -83,7 +83,7 @@ public class LaaStatusUpdateController {
         LaaTransactionLogging laaTransactionLogging = gson.fromJson(jsonPayload,
             LaaTransactionLogging.class);
 
-        LoggingData.MAATID.putInMDC(laaTransactionLogging.getMaatId());
+    LoggingData.MAAT_ID.putInMDC(laaTransactionLogging.getMaatId());
         LoggingData.CASE_URN.putInMDC(laaTransactionLogging.getCaseUrn());
     }
 }

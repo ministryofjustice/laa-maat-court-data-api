@@ -48,7 +48,7 @@ public class ApplicantController {
     @StandardApiResponseCodes
     public ResponseEntity<List<RepOrderApplicantLinksDTO>> getReOrderApplicantLinks(
             @PathVariable int repId) {
-        LoggingData.MAATID.putInMDC(repId);
+        LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Get Rep Order Applicant Links Request Received");
         applicantValidationProcessor.validate(repId);
         return ResponseEntity.ok(repOrderApplicantLinksService.find(repId));
@@ -58,7 +58,7 @@ public class ApplicantController {
     @Operation(description = "Update rep order applicant links")
     @StandardApiResponseCodes
     public ResponseEntity<RepOrderApplicantLinksDTO> updateReOrderApplicantLinks(@RequestBody @Valid RepOrderApplicantLinksDTO repOrderApplicantLinksDTO) {
-        LoggingData.MAATID.putInMDC(repOrderApplicantLinksDTO.getRepId());
+        LoggingData.MAAT_ID.putInMDC(repOrderApplicantLinksDTO.getRepId());
         log.info("Update Rep Order Applicant Links Request Received");
         return ResponseEntity.ok(repOrderApplicantLinksService.update(repOrderApplicantLinksDTO));
     }
@@ -140,7 +140,7 @@ public class ApplicantController {
     @Operation(description = "Update Send To CCLF Flag")
     @StandardApiResponseCodes
     public ResponseEntity<Void> updateSendToCCLF(@RequestBody @Valid SendToCCLFDTO sendToCCLFDTO) {
-        LoggingData.MAATID.putInMDC(sendToCCLFDTO.getRepId());
+        LoggingData.MAAT_ID.putInMDC(sendToCCLFDTO.getRepId());
         log.info("Update Applicant History Request Received");
         applicantService.updateSendToCCLF(sendToCCLFDTO);
         return ResponseEntity.ok().build();

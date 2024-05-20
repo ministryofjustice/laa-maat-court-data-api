@@ -4,6 +4,7 @@ import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.ReservationsEntity;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
 import gov.uk.courtdata.prosecutionconcluded.helper.ReservationsRepositoryHelper;
 import gov.uk.courtdata.reporder.service.ReservationsService;
@@ -48,6 +49,7 @@ public class ReservationsController {
             @PathVariable int maatId,
             @Parameter(description = "Used for tracing calls")
             @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
+        LoggingData.MAAT_ID.putInMDC(maatId);
         log.info(String.format("Check if maatId is locked - %d {}", maatId));
         return ResponseEntity.ok(reservationsRepositoryHelper.isMaatRecordLocked(maatId));
     }

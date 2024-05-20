@@ -7,6 +7,7 @@ import gov.uk.courtdata.assessment.validator.PassportAssessmentValidationProcess
 import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.eform.controller.StandardApiResponseCodes;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,6 +64,7 @@ public class PassportAssessmentController {
     public ResponseEntity<PassportAssessmentDTO> getAssessmentByRepId(@PathVariable int repId,
                                                                       @Parameter(description = "Used for tracing calls")
                                                                       @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Get Passport Assessment by repId = {}", repId);
         PassportAssessmentDTO passportAssessment = passportAssessmentService.findByRepId(repId);
         return ResponseEntity.ok(passportAssessment);
@@ -77,6 +79,7 @@ public class PassportAssessmentController {
                     schema = @Schema(implementation = UpdatePassportAssessment.class))) @RequestBody UpdatePassportAssessment passportAssessment,
             @Parameter(description = "Used for tracing calls")
             @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        LoggingData.MAAT_ID.putInMDC(passportAssessment.getRepId());
         log.debug("Update Passport Assessment Request Received");
         passportAssessmentValidationProcessor.validate(passportAssessment);
         PassportAssessmentDTO updatedAssessment = passportAssessmentService.update(passportAssessment);
@@ -91,6 +94,8 @@ public class PassportAssessmentController {
             schema = @Schema(implementation = CreatePassportAssessment.class))) @RequestBody CreatePassportAssessment passportAssessment,
                                                                   @Parameter(description = "Used for tracing calls")
                                                                   @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        LoggingData.USN.putInMDC(passportAssessment.getUsn());
+        LoggingData.MAAT_ID.putInMDC(passportAssessment.getRepId());
         log.debug("Create Passport Assessment Request Received");
         passportAssessmentValidationProcessor.validate(passportAssessment);
         PassportAssessmentDTO newAssessment = passportAssessmentService.create(passportAssessment);

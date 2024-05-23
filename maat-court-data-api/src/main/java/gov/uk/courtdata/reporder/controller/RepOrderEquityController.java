@@ -57,7 +57,7 @@ public class RepOrderEquityController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Void> createRepOrderEquity(@PathVariable Integer id, @RequestBody RepOrderEquityEntity repOrderEquityEntity) {
-        LoggingData.MAAT_ID.putInMDC(id);
+        LoggingData.MAAT_ID.putInMDC(repOrderEquityEntity.getRepId());
         repOrderEquityService.update(id, repOrderEquityEntity);
 
         return ResponseEntity.ok().build();

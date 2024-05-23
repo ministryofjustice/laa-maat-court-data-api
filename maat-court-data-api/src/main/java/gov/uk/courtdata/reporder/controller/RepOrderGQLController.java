@@ -34,10 +34,12 @@ public class RepOrderGQLController implements GraphQLQueryResolver {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @QueryMapping
     public RepOrderDTO findByRepOrderFilter(@Argument("filter") RepOrderFilter filter) {
-        LoggingData.MAAT_ID.putInMDC(filter.getId());
+        Integer repId = filter.getId();
+        LoggingData.MAAT_ID.putInMDC(repId);
         RepOrderDTO repOrderDTO = null;
-        if (filter.getId() > 0) {
-            repOrderDTO = repOrderService.find(filter.getId(), Boolean.valueOf(filter.getSentenceOrderDate()));
+        if (repId > 0) {
+            repOrderDTO = repOrderService.find(repId,
+                Boolean.valueOf(filter.getSentenceOrderDate()));
         }
         return repOrderDTO;
     }

@@ -92,6 +92,8 @@ public class SqsGlobalLogging {
 
     // Included for unit testing only, to provide verification of logging.
     Logger log() {
+        // TODO Alex - can replace with
+        //  https://github.com/ministryofjustice/laa-crime-commons/blob/f788ee5ecaa71905ec7747972019cd3af8ac60a6/crime-commons-spring-boot-starter-rest-client/src/test/java/uk/gov/justice/laa/crime/commons/util/MemoryAppender.java
         return log;
     }
 }

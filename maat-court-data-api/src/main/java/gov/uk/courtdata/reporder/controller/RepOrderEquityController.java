@@ -30,14 +30,13 @@ public class RepOrderEquityController {
 
     private final RepOrderEquityService repOrderEquityService;
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{repOrderEquityId}")
     @Operation(description = "Retrieve a RepOrderEquity")
     @StandardApiResponse
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public RepOrderEquityEntity getRepOrderEquity(@PathVariable Integer id) {
-        LoggingData.MAAT_ID.putInMDC(id);
-        return repOrderEquityService.retrieve(id);
+    public RepOrderEquityEntity getRepOrderEquity(@PathVariable Integer repOrderEquityId) {
+        return repOrderEquityService.retrieve(repOrderEquityId);
     }
 
     @PostMapping
@@ -51,24 +50,25 @@ public class RepOrderEquityController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping(value = "/{id}")
+    @PatchMapping(value = "/{repOrderEquityId}")
     @Operation(description = "Update a RepOrderEquity")
     @StandardApiResponse
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Void> createRepOrderEquity(@PathVariable Integer id, @RequestBody RepOrderEquityEntity repOrderEquityEntity) {
+    public ResponseEntity<Void> createRepOrderEquity(@PathVariable Integer repOrderEquityId,
+        @RequestBody RepOrderEquityEntity repOrderEquityEntity) {
         LoggingData.MAAT_ID.putInMDC(repOrderEquityEntity.getRepId());
-        repOrderEquityService.update(id, repOrderEquityEntity);
+        repOrderEquityService.update(repOrderEquityId, repOrderEquityEntity);
 
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/{repOrderEquityId}")
     @Operation(description = "Delete a RepOrderEquity")
     @StandardApiResponse
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    public ResponseEntity<Void> deleteRepOrderEquity(@PathVariable Integer id) {
-        repOrderEquityService.delete(id);
+    public ResponseEntity<Void> deleteRepOrderEquity(@PathVariable Integer repOrderEquityId) {
+        repOrderEquityService.delete(repOrderEquityId);
 
         return ResponseEntity.ok().build();
     }

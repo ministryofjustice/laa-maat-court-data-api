@@ -6,7 +6,7 @@ logging:
     root: INFO
     org.springframework:
       web: DEBUG
-      security: DEBUG
+      security: INFO
 
 spring:
   graphql:

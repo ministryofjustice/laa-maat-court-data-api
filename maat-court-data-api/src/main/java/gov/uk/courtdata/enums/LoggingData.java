@@ -11,7 +11,7 @@ public enum LoggingData {
 
   CASE_URN("caseUrn"),
   LAA_TRANSACTION_ID("laaTransactionId"),
-  MAAT_ID("maatId"),
+  MAAT_ID("maatId"), // The domain concept of a MAAT Id is identical to a Rep Id.
   REQUEST_TYPE("requestType"),
   USN("usn");
 

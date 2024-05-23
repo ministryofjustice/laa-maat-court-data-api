@@ -180,14 +180,15 @@ public class RepOrderController {
     }
 
 
-    @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PatchMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Partial Update of a Rep record")
     @StandardApiResponseCodes
     @NotFoundApiResponse
-    public ResponseEntity<Void> updateRepOrder(@PathVariable int id, @RequestBody Map<String, Object> updatedFields) {
-        LoggingData.MAAT_ID.putInMDC(id);
+  public ResponseEntity<Void> updateRepOrder(@PathVariable int repId,
+      @RequestBody Map<String, Object> updatedFields) {
+    LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Partial Update of Rep Order Request Received");
-        repOrderService.update(id, updatedFields);
+    repOrderService.update(repId, updatedFields);
         return ResponseEntity.ok().build();
     }
 }

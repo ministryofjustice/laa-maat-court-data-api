@@ -3,13 +3,12 @@ package gov.uk.courtdata.reporder.service;
 import gov.uk.courtdata.entity.RepOrderEquityEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.reporder.repository.RepOrderEquityRepository;
+import java.lang.reflect.Field;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
-
-import java.lang.reflect.Field;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,9 +17,10 @@ public class RepOrderEquityService {
     private final RepOrderEquityRepository repOrderEquityRepository;
 
     @Transactional(readOnly = true)
-    public RepOrderEquityEntity retrieve(Integer id) {
-        return repOrderEquityRepository.findById(id)
-                .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("No Rep Order Equity found with ID: %s", id)));
+    public RepOrderEquityEntity retrieve(Integer repOrderEquityId) {
+        return repOrderEquityRepository.findById(repOrderEquityId)
+            .orElseThrow(() -> new RequestedObjectNotFoundException(
+                String.format("No Rep Order Equity found with ID: %s", repOrderEquityId)));
     }
 
     @Transactional()
@@ -48,7 +48,7 @@ public class RepOrderEquityService {
     }
 
     @Transactional
-    public void delete(Integer id) {
-        repOrderEquityRepository.deleteById(id);
+    public void delete(Integer repOrderEquityId) {
+        repOrderEquityRepository.deleteById(repOrderEquityId);
     }
 }

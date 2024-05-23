@@ -79,10 +79,11 @@ public class RepOrderService {
     }
 
     @Transactional
-    public void update(Integer id, Map<String, Object> repOrder) {
+    public void update(Integer repId, Map<String, Object> repOrder) {
         log.info("RepOrderService::update - Start");
-        RepOrderEntity currentRepOrder = repOrderRepository.findById(id)
-                .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("Rep Order not found for id %d", id)));
+      RepOrderEntity currentRepOrder = repOrderRepository.findById(repId)
+          .orElseThrow(() -> new RequestedObjectNotFoundException(
+              String.format("Rep Order not found for id %d", repId)));
 
         if (currentRepOrder != null) {
             repOrder.forEach((key, value) -> {
@@ -92,7 +93,7 @@ public class RepOrderService {
             });
             repOrderRepository.save(currentRepOrder);
         } else {
-            throw new RequestedObjectNotFoundException("Rep Order not found for id " + id);
+          throw new RequestedObjectNotFoundException("Rep Order not found for id " + repId);
         }
     }
 

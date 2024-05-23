@@ -68,7 +68,6 @@ public class RepOrderEquityController {
     @StandardApiResponse
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     public ResponseEntity<Void> deleteRepOrderEquity(@PathVariable Integer id) {
-        LoggingData.MAAT_ID.putInMDC(id);
         repOrderEquityService.delete(id);
 
         return ResponseEntity.ok().build();

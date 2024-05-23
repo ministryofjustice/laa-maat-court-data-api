@@ -4,6 +4,7 @@ import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
+import gov.uk.courtdata.dces.request.UpdateConcoreContributionStatusRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.dces.util.ContributionFileUtil;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
@@ -16,6 +17,7 @@ import gov.uk.courtdata.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,17 @@ public class ConcorContributionsService {
     private final ContributionFileMapper contributionFileMapper;
     private final DebtCollectionRepository debtCollectionRepository;
     private final DebtCollectionService debtCollectionService;
+
+    @Transactional
+    public List<Long> updateConcorContributionStatus(UpdateConcoreContributionStatusRequest request){
+
+        List<Long> idsToUpdate = concorRepository.findIdsForUpdate(Pageable.ofSize(request.getRecordCount()));
+
+        if (!idsToUpdate.isEmpty()) {
+            concorRepository.updateStatusForIds(request.getStatus().name(), idsToUpdate);
+        }
+        return idsToUpdate;
+    }
 
     public List<ConcorContributionResponse> getConcorContributionFiles(ConcorContributionStatus status) {
         log.info("Getting concor contribution file with status with the -> {}", status);

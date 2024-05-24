@@ -4,7 +4,7 @@ import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
-import gov.uk.courtdata.dces.request.UpdateConcoreContributionStatusRequest;
+import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.dces.util.ContributionFileUtil;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
@@ -36,7 +36,7 @@ public class ConcorContributionsService {
     private final DebtCollectionService debtCollectionService;
 
     @Transactional
-    public List<Long> updateConcorContributionStatus(UpdateConcoreContributionStatusRequest request){
+    public List<Long> updateConcorContributionStatus(UpdateConcorContributionStatusRequest request){
 
         List<Long> idsToUpdate = concorRepository.findIdsForUpdate(Pageable.ofSize(request.getRecordCount()));
 

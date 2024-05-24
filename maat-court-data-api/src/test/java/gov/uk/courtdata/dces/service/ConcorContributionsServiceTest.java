@@ -7,7 +7,7 @@ import static org.mockito.Mockito.*;
 
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
-import gov.uk.courtdata.dces.request.UpdateConcoreContributionStatusRequest;
+import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
@@ -253,7 +253,7 @@ class ConcorContributionsServiceTest {
         when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of(1111L,2222L));
         when(concorRepository.updateStatusForIds(any(), any())).thenReturn(2);
 
-        List<Long> response = concorService.updateConcorContributionStatus(UpdateConcoreContributionStatusRequest.builder().recordCount(2)
+        List<Long> response = concorService.updateConcorContributionStatus(UpdateConcorContributionStatusRequest.builder().recordCount(2)
                 .status(ConcorContributionStatus.SENT).build());
 
         verify(concorRepository).findIdsForUpdate(any());
@@ -266,7 +266,7 @@ class ConcorContributionsServiceTest {
 
         when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of());
 
-        List<Long> response = concorService.updateConcorContributionStatus(UpdateConcoreContributionStatusRequest.builder().recordCount(1)
+        List<Long> response = concorService.updateConcorContributionStatus(UpdateConcorContributionStatusRequest.builder().recordCount(1)
                 .status(ConcorContributionStatus.SENT).build());
 
         verify(concorRepository).findIdsForUpdate(any());

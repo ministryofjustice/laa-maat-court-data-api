@@ -1,7 +1,7 @@
 package gov.uk.courtdata.dces.controller.testdata;
 
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
-import gov.uk.courtdata.dces.request.UpdateConcoreContributionStatusRequest;
+import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class ConcorContributionsTestDataController {
 
     @NotFoundApiResponse
     @PutMapping(value = "/concor-contribution-status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Long>> updateStatus (@Valid UpdateConcoreContributionStatusRequest request){
+    public ResponseEntity<List<Long>> updateStatus (@Valid UpdateConcorContributionStatusRequest request){
 
         log.info("request {}", request);
         List<Long> updatedConcorContributionsIds = concorContributionsService.updateConcorContributionStatus(request);

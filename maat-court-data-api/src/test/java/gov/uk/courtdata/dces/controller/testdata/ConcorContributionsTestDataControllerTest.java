@@ -1,7 +1,7 @@
 package gov.uk.courtdata.dces.controller.testdata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.uk.courtdata.dces.request.UpdateConcoreContributionStatusRequest;
+import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ class ConcorContributionsTestDataControllerTest {
     @Test
     void testUpdateContributionStatus() throws Exception {
 
-        UpdateConcoreContributionStatusRequest request = UpdateConcoreContributionStatusRequest.builder().build();
+        UpdateConcorContributionStatusRequest request = UpdateConcorContributionStatusRequest.builder().build();
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(request);
 
@@ -54,7 +54,7 @@ class ConcorContributionsTestDataControllerTest {
     @Test
     void testUpdateContributionStatusWhenNotFound() throws Exception {
 
-        UpdateConcoreContributionStatusRequest request = UpdateConcoreContributionStatusRequest.builder().build();
+        UpdateConcorContributionStatusRequest request = UpdateConcorContributionStatusRequest.builder().build();
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(request);
 

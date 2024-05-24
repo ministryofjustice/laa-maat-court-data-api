@@ -1,31 +1,31 @@
 package gov.uk.courtdata.enums;
 
-import java.util.UUID;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.slf4j.MDC;
 
 @Getter
 @AllArgsConstructor
-public enum LoggingData{
+public enum LoggingData {
 
-    LAA_TRANSACTION_ID("laaTransactionId"),
-    MAATID("maatId"),
-    CASE_URN("caseUrn"),
-    MESSAGE("message"),
-    REQUEST_TYPE("requestType");
+  CASE_URN("caseUrn"),
+  LAA_TRANSACTION_ID("laaTransactionId"),
+  MAAT_ID("maatId"), // The domain concept of a MAAT Id is identical to a Rep Id.
+  REQUEST_TYPE("requestType"),
+  USN("usn");
 
-    private final String key;
+  private final String key;
 
-    public void putInMDC(Integer value) {
-        putInMDC(String.valueOf(value));
+  public void putInMDC(Integer value) {
+    if (Objects.nonNull(value)) {
+      putInMDC(String.valueOf(value));
     }
+  }
 
-    public void putInMDC(UUID value) {
-        putInMDC(value.toString());
+  public void putInMDC(String value) {
+    if (Objects.nonNull(value)) {
+      MDC.put(key, value);
     }
-
-    public void putInMDC(String value) {
-        MDC.put(key, value);
-    }
+  }
 }

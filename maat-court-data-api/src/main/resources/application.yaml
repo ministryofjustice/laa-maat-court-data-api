@@ -4,8 +4,9 @@ server:
 logging:
   level:
     root: INFO
-    org.springframework.web: DEBUG
-    org.springframework.security: INFO
+    org.springframework:
+      web: DEBUG
+      security: INFO
 
 spring:
   graphql:
@@ -42,9 +43,9 @@ spring:
     open-in-view: false
     show-sql: true
     properties:
-      hibernate.jdbc.lob.non_contextual_creation: true
-      hibernate.enable_lazy_load_no_trans: true
       hibernate:
+        jdbc.lob.non_contextual_creation: true
+        enable_lazy_load_no_trans: true
         dialect: org.hibernate.dialect.OracleDialect
 
   togdata:
@@ -55,13 +56,11 @@ spring:
     aws:
       sqs:
         enabled: ${ENABLE_SPRING_CLOUD_SQS:true}
-      stack:
-        auto: false
+      stack.auto: false
       region:
         static: ${CLOUD_PLATFORM_QUEUE_REGION}
         auto: false
-      credentials:
-        use-default-aws-credentials-chain: true
+      credentials.use-default-aws-credentials-chain: true
 
 springdoc:
   packagesToScan: gov.uk.courtdata

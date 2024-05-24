@@ -5,6 +5,7 @@ import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.applicant.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
@@ -20,15 +21,24 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.util.Map;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-import java.util.Objects;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -55,6 +65,7 @@ public class RepOrderController {
     public ResponseEntity<Object> find(HttpServletRequest request, @PathVariable int repId,
                                        @RequestParam(value = "has_sentence_order_date", defaultValue = "false")
                                        boolean hasSentenceOrderDate) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Get Rep Order Request Received");
         if (request.getMethod().equals(RequestMethod.HEAD.name())) {
             HttpHeaders responseHeaders = new HttpHeaders();
@@ -73,6 +84,7 @@ public class RepOrderController {
     )
     @StandardApiResponse
     public ResponseEntity<RepOrderDTO> updateApplicationDateCompleted(@RequestBody UpdateAppDateCompleted updateAppDateCompleted) {
+        LoggingData.MAAT_ID.putInMDC(updateAppDateCompleted.getRepId());
         log.debug("Assessments Request Received for repId : {}", updateAppDateCompleted.getRepId());
         updateAppDateCompletedValidator.validate(updateAppDateCompleted);
         return ResponseEntity.ok(repOrderService.updateDateCompleted(updateAppDateCompleted));
@@ -100,6 +112,7 @@ public class RepOrderController {
     public ResponseEntity<Object> findByRepIdAndVehicleOwner(@PathVariable int repId,
                                                              @RequestParam(value = "owner", required = false)
                                                              String vehicleOwner) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Get Rep Order MVO Request Received");
         return ResponseEntity.ok(repOrderMvoService.findRepOrderMvoByRepIdAndVehicleOwner(
                 repId, Objects.requireNonNullElse(vehicleOwner, "N")
@@ -115,6 +128,7 @@ public class RepOrderController {
     )
     @StandardApiResponse
     public ResponseEntity<RepOrderDTO> create(@Valid @RequestBody CreateRepOrder createRepOrder) {
+        LoggingData.USN.putInMDC(createRepOrder.getUsn());
         log.debug("Create Rep order request");
         return ResponseEntity.ok(repOrderService.create(createRepOrder));
     }
@@ -128,6 +142,8 @@ public class RepOrderController {
     )
     @StandardApiResponse
     public ResponseEntity<RepOrderDTO> update(@RequestBody UpdateRepOrder updateRepOrder) {
+        LoggingData.MAAT_ID.putInMDC(updateRepOrder.getRepId());
+        LoggingData.USN.putInMDC(updateRepOrder.getUsn());
         log.debug("Update Rep order request received for repId : {}", updateRepOrder.getRepId());
         maatIdValidator.validate(updateRepOrder.getRepId());
         return ResponseEntity.ok(repOrderService.update(updateRepOrder));
@@ -141,6 +157,7 @@ public class RepOrderController {
     )
     @StandardApiResponse
     public ResponseEntity<RepOrderDTO> delete(@PathVariable Integer repId) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         log.debug("Delete Rep order request");
         repOrderService.delete(repId);
 
@@ -157,18 +174,21 @@ public class RepOrderController {
     )
     @StandardApiResponse
     public ResponseEntity<AssessorDetails> findIOJAssessorDetails(@PathVariable int repId) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         AssessorDetails iojAssessorDetails = repOrderService.findIOJAssessorDetails(repId);
         return ResponseEntity.ok(iojAssessorDetails);
     }
 
 
-    @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PatchMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Partial Update of a Rep record")
     @StandardApiResponseCodes
     @NotFoundApiResponse
-    public ResponseEntity<Void> updateRepOrder(@PathVariable int id, @RequestBody Map<String, Object> updatedFields) {
+  public ResponseEntity<Void> updateRepOrder(@PathVariable int repId,
+      @RequestBody Map<String, Object> updatedFields) {
+    LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Partial Update of Rep Order Request Received");
-        repOrderService.update(id, updatedFields);
+    repOrderService.update(repId, updatedFields);
         return ResponseEntity.ok().build();
     }
 }

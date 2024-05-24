@@ -2,12 +2,14 @@ package gov.uk.courtdata.wqhearing.controller;
 
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.WQHearingDTO;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.wqhearing.service.WQHearingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -16,8 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -46,6 +46,7 @@ public class WQHearingController {
             )
     )
     public ResponseEntity<List<WQHearingDTO>> findByMaatIdAndHearingUUID(@PathVariable int maatId, @PathVariable String hearingUUID) {
+        LoggingData.MAAT_ID.putInMDC(maatId);
         log.info("Find WQ hearing  Request Received");
         return ResponseEntity.ok(wqHearingService.findByMaatIdAndHearingUUID(maatId, hearingUUID));
     }

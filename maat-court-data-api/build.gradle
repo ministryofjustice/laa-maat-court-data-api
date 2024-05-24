@@ -11,14 +11,14 @@ plugins {
 def versions = [
         mapstructVersion                 : '1.3.1.Final',
         springdocVersion                 : '2.1.0',
-        springAwsCloudVersion       : '3.0.1',
-        amazonSQSVersion            : '2.1.1',
+        springAwsCloudVersion            : '3.0.1',
+        amazonSQSVersion                 : '2.1.1',
         ojdbc8Version                    : '19.7.0.0',
         gsonVersion                      : '2.8.6',
         lombokMapStrutBinding            : '0.2.0',
         sonarVersion                     : '2.7',
         h2DBVersion                      : '1.4.200',
-        mockitoInlineVersion        : '5.2.0',
+        mockitoInlineVersion             : '5.2.0',
         harmcrestVersion                 : '1.3',
         festVersion                      : '1.4',
         gradlePitest                     : '1.4.6',
@@ -39,9 +39,9 @@ def versions = [
         cloudLocalstackUtilsVersion      : '0.2.23',
         springContractStubRunnerVersion  : '4.0.1',
         sentryBomVersion                 : '7.1.0',
-        crimeCommonsClasses         : '3.21.0',
-        commonsRestClient           : '3.4.0',
-        springCloudStubRunnerVersion: '4.0.4'
+        crimeCommonsClasses              : '3.21.0',
+        commonsRestClient                : '3.4.0',
+        springCloudStubRunnerVersion     : '4.0.4'
 ]
 
 group = 'gov.uk'

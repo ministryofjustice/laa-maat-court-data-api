@@ -2,6 +2,7 @@ package gov.uk.courtdata.controller;
 
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.UpdateCCOutcome;
 import gov.uk.courtdata.model.UpdateSentenceOrder;
 import gov.uk.courtdata.service.CrownCourtOutcomeService;
@@ -37,6 +38,7 @@ public class CrownCourtController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Object> updateCCOutcome(@RequestBody UpdateCCOutcome updateCCOutcome) {
+        LoggingData.MAAT_ID.putInMDC(updateCCOutcome.getRepId());
         log.debug("Update CC Outcome for repId : {}", updateCCOutcome.getRepId());
         maatIdValidator.validate(updateCCOutcome.getRepId());
         crownCourtOutcomeService.updateCCOutcome(updateCCOutcome);
@@ -50,6 +52,7 @@ public class CrownCourtController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Object> updateCCSentenceOrderDate(@RequestBody UpdateSentenceOrder updateSentenceOrder) {
+        LoggingData.MAAT_ID.putInMDC(updateSentenceOrder.getRepId());
         log.debug("Update Crown Court Sentence Order Date for repId : {}", updateSentenceOrder.getRepId());
         maatIdValidator.validate(updateSentenceOrder.getRepId());
         crownCourtOutcomeService.updateCCSentenceOrderDate(updateSentenceOrder);
@@ -63,6 +66,7 @@ public class CrownCourtController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Object> updateAppealCCSentenceOrderDate(@RequestBody UpdateSentenceOrder updateSentenceOrder) {
+        LoggingData.MAAT_ID.putInMDC(updateSentenceOrder.getRepId());
         log.debug("Update Appeal Crown Court Sentence Order Date for repId : {}", updateSentenceOrder.getRepId());
         maatIdValidator.validate(updateSentenceOrder.getRepId());
         crownCourtOutcomeService.updateAppealCCSentenceOrderDate(updateSentenceOrder);

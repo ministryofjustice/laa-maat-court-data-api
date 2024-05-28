@@ -2,6 +2,7 @@ package gov.uk.courtdata.reporder.controller;
 
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
 import gov.uk.courtdata.reporder.service.CCOutcomeService;
 import gov.uk.courtdata.reporder.validator.CCOutComeValidationProcessor;
@@ -11,14 +12,20 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @Slf4j
@@ -52,6 +59,7 @@ public class CCOutcomeController {
     public ResponseEntity<RepOrderCCOutcomeDTO> create(@Parameter(description = "RepOrder CC outcome data",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = RepOrderCCOutcome.class))) @RequestBody RepOrderCCOutcome repOrderCCOutCome) {
+        LoggingData.MAAT_ID.putInMDC(repOrderCCOutCome.getRepId());
         log.info("Create Financial RepOrder CC outcome");
         validator.validate(repOrderCCOutCome);
         return ResponseEntity.ok(service.create(repOrderCCOutCome));
@@ -78,6 +86,7 @@ public class CCOutcomeController {
                     schema = @Schema(implementation = RepOrderCCOutcome.class)
             )
     ) @RequestBody RepOrderCCOutcome repOrderCCOutCome) {
+        LoggingData.MAAT_ID.putInMDC(repOrderCCOutCome.getRepId());
         log.info("Update RepOrder CC outcome  Request Received");
         validator.validate(repOrderCCOutCome);
         return ResponseEntity.ok(service.update(repOrderCCOutCome));
@@ -103,6 +112,7 @@ public class CCOutcomeController {
             )
     )
     public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepId(@PathVariable int repId) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Find RepOrder CC Outcome Request Received");
         validator.validate(repId);
         return ResponseEntity.ok(service.findByRepId(repId));
@@ -128,6 +138,7 @@ public class CCOutcomeController {
             )
     )
     public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepIdLengthInHeader(@PathVariable int repId) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Find RepOrder CC Outcome Request Received");
         validator.validate(repId);
         HttpHeaders responseHeaders = new HttpHeaders();

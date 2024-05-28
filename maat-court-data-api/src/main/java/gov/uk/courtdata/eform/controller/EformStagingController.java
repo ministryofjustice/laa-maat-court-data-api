@@ -6,13 +6,23 @@ import gov.uk.courtdata.eform.model.EformStagingResponse;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import gov.uk.courtdata.eform.service.EformStagingService;
 import gov.uk.courtdata.eform.validator.UsnValidator;
+import gov.uk.courtdata.enums.LoggingData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -32,7 +42,7 @@ public class EformStagingController {
     public ResponseEntity<EformStagingResponse> getEformApplication(@PathVariable Integer usn,
                                                                     @Parameter(description = "Used for tracing calls")
                                                                     @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-
+        LoggingData.USN.putInMDC(usn);
         EformStagingDTO eformStagingDTO = eformStagingService.retrieve(usn);
 
         EformStagingResponse eformStagingResponse = eformStagingDTOMapper.toEformStagingResponse(eformStagingDTO);
@@ -46,7 +56,7 @@ public class EformStagingController {
     public ResponseEntity<Void> deleteEformApplication(@PathVariable Integer usn,
                                                        @Parameter(description = "Used for tracing calls")
                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-
+        LoggingData.USN.putInMDC(usn);
         usnValidator.verifyUsnExists(usn);
 
         eformStagingService.delete(usn);
@@ -64,7 +74,8 @@ public class EformStagingController {
                                                        @RequestBody String xmlDoc,
                                                        @Parameter(description = "Used for tracing calls")
                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-
+        LoggingData.USN.putInMDC(usn);
+        LoggingData.MAAT_ID.putInMDC(maatRef);
         usnValidator.verifyUsnDoesNotExist(usn);
 
         EformStagingDTO eformStagingDTO = EformStagingDTO.builder()
@@ -85,7 +96,7 @@ public class EformStagingController {
     @StandardApiResponseCodes
     public ResponseEntity<EformStagingResponse> retrieveOrInsertDummyUsnRecord(@PathVariable Integer usn,
                                                                                @RequestParam(name = "userCreated", required = false) String userCreated) {
-
+        LoggingData.USN.putInMDC(usn);
         EformStagingDTO eformStagingDto = eformStagingService.createOrRetrieve(usn, userCreated);
 
         EformStagingResponse eformStagingResponse = eformStagingDTOMapper.toEformStagingResponse(eformStagingDto);
@@ -98,6 +109,8 @@ public class EformStagingController {
     @StandardApiResponseCodes
     public ResponseEntity<Void> updateEformStagingRecord(@PathVariable Integer usn,
                                                        @RequestBody EformsStagingEntity eformsStaging) {
+        LoggingData.USN.putInMDC(usn);
+        LoggingData.MAAT_ID.putInMDC(eformsStaging.getMaatRef());
         eformStagingService.updateEformStagingFields(usn, eformsStaging);
         return ResponseEntity.ok().build();
     }

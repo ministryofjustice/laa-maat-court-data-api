@@ -49,7 +49,7 @@ public class ReservationsController {
             @PathVariable int maatId,
             @Parameter(description = "Used for tracing calls")
             @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
-        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
+        LoggingData.MAAT_ID.putInMDC(maatId);
         log.info(String.format("Check if maatId is locked - %d {}", maatId));
         return ResponseEntity.ok(reservationsRepositoryHelper.isMaatRecordLocked(maatId));
     }
@@ -62,7 +62,6 @@ public class ReservationsController {
             @PathVariable String recordName, @PathVariable Integer recordId,
             @Parameter(description = "Used for tracing calls")
             @RequestHeader(value = Constants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
-        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("Check reservation status - request received");
         Optional<ReservationsEntity> reservationsEntity = reservationsRepositoryHelper.getReservationByRecordNameAndRecordId(recordName,recordId);
         return reservationsEntity.map(c -> ResponseEntity.ok().body(c))
@@ -76,7 +75,6 @@ public class ReservationsController {
     public ResponseEntity<ReservationsEntity> getReservationByUsername(
             @PathVariable String username,
             @RequestHeader(value = Constants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
-        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("Check reservation status - request received");
         Optional<ReservationsEntity> reservationsEntity = reservationsRepositoryHelper.getReservationByUserName(username);
         return reservationsEntity.map(c -> ResponseEntity.ok().body(c))

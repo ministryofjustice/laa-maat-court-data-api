@@ -3,22 +3,22 @@ plugins {
     id 'jacoco'
     id 'org.springframework.boot' version '3.1.5'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id "org.sonarqube" version "4.0.0.2929"
-    id "info.solidsoft.pitest" version "1.9.11"
+    id 'org.sonarqube' version '4.0.0.2929'
+    id 'info.solidsoft.pitest' version '1.9.11'
 }
 
 
 def versions = [
         mapstructVersion                 : '1.3.1.Final',
         springdocVersion                 : '2.1.0',
-        springAwsCloudVersion            : "3.0.1",
-        amazonSQSVersion                 : "2.1.1",
+        springAwsCloudVersion            : '3.0.1',
+        amazonSQSVersion                 : '2.1.1',
         ojdbc8Version                    : '19.7.0.0',
         gsonVersion                      : '2.8.6',
         lombokMapStrutBinding            : '0.2.0',
         sonarVersion                     : '2.7',
         h2DBVersion                      : '1.4.200',
-        mockitoInlineVersion             : "5.2.0",
+        mockitoInlineVersion             : '5.2.0',
         harmcrestVersion                 : '1.3',
         festVersion                      : '1.4',
         gradlePitest                     : '1.4.6',
@@ -39,9 +39,9 @@ def versions = [
         cloudLocalstackUtilsVersion      : '0.2.23',
         springContractStubRunnerVersion  : '4.0.1',
         sentryBomVersion                 : '7.1.0',
-        crimeCommonsClasses              : "3.4.0",
-        commonsRestClient                : "3.4.0",
-        springCloudStubRunnerVersion     : "4.0.4"
+        crimeCommonsClasses              : '3.21.0',
+        commonsRestClient                : '3.4.0',
+        springCloudStubRunnerVersion     : '4.0.4'
 ]
 
 group = 'gov.uk'
@@ -84,7 +84,7 @@ dependencies {
     implementation "xerces:xercesImpl:$versions.xercesImplVersion"
 
     // Spring
-    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
     implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-activemq'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
@@ -93,7 +93,7 @@ dependencies {
 
 
     implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springAwsCloudVersion"
-    implementation "org.springframework:spring-jms"
+    implementation 'org.springframework:spring-jms'
     implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$versions.amazonSQSVersion"
 
     implementation "software.amazon.awssdk:sts:$versions.awsStsVersion"
@@ -101,7 +101,7 @@ dependencies {
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: versions.springdocVersion
     implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
 
-    annotationProcessor "org.projectlombok:lombok"
+    annotationProcessor 'org.projectlombok:lombok'
     implementation "org.mapstruct:mapstruct:$versions.mapstructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$versions.mapstructVersion"
     //Required for lombok version > 1.18.16
@@ -137,7 +137,7 @@ dependencies {
     testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainersJunitJupiterVersion"
     testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainersLocalstackVersion"
     testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$versions.cloudLocalstackUtilsVersion"
-    testSqsIntegrationImplementation "com.h2database:h2"
+    testSqsIntegrationImplementation 'com.h2database:h2'
     testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.springContractStubRunnerVersion"
 }
 

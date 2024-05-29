@@ -14,6 +14,9 @@ public interface FdcContributionsRepository extends JpaRepository<FdcContributio
     List<FdcContributionsEntity> findByStatus(FdcContributionsStatus status);
     List<FdcContributionsEntity> findByIdIn(Set<Integer> ids);
 
+    @Query
+    List<FdcContributionsEntity> findByRepOrderEntity_IdIn(List<Integer> ids);
+
     @Query(value = "SELECT TOGDATA.REF_DATA_MANAGEMENT.GET_CONFIG_PARAMETER('FDC_CALCULATION_DELAY', sysdate) FROM DUAL", nativeQuery = true)
     String callGetFdcCalculationDelay();
 

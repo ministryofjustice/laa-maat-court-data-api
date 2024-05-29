@@ -329,4 +329,22 @@ public class DebtCollectionRepository {
         return jdbcTemplate.update(query,delay);
     }
 
+    public List<Integer> getMerge1TestCandidates(int numTestCandidates){
+        String sqlStatement = """
+                SELECT RO.ID
+                FROM TOGDATA.CONCOR_CONTRIBUTIONS CC,
+                    TOGDATA.REP_ORDERS RO,
+                    TOGDATA.REP_ORDER_CROWN_COURT_OUTCOMES ROCCO
+                WHERE CC.REP_ID = RO.ID
+                AND RO.ID = ROCCO.REP_ID
+                AND CC.STATUS = 'SENT'
+                AND ROCCO.CCOO_OUTCOME IS NOT NULL
+                AND RO.SENTENCE_ORDER_DATE IS NOT NULL
+                AND TRUNC( ADD_MONTHS( NVL(RO.SENTENCE_ORDER_DATE, SYSDATE ), 5) ) <= TRUNC(SYSDATE)
+                AND RO.DATE_RECEIVED<'01-JAN-2015'
+                AND ROWNUM < ?
+                """;
+         return jdbcTemplate.queryForList(sqlStatement, Integer.class, numTestCandidates);
+    }
+
 }

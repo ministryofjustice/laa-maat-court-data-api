@@ -6,6 +6,7 @@ import gov.uk.courtdata.dces.service.DebtCollectionRepository;
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
+import gov.uk.courtdata.entity.FdcItemsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import org.apache.commons.lang3.StringUtils;
@@ -283,6 +284,14 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         FdcContributionsEntity originalFile = repos.fdcContributions.findById(fdcId).get();
         ContributionFilesEntity filesEntity = repos.contributionFiles.findById(originalFile.getContFileId()).get();
         assertEquals(0, filesEntity.getRecordsReceived()); // ensure the increment is rolled back.
+    }
+
+    @Test
+    void testCreateFdcItem(){
+        FdcItemsEntity fdcItemsEntity = FdcItemsEntity.builder().build();
+        repos.fdcItemsRepository.save(fdcItemsEntity);
+
+        repos.fdcItemsRepository.count();
     }
 
     private String createLogDrcProcessedRequest(Integer id, String errorText){

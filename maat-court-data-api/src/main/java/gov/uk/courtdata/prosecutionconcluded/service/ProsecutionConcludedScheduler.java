@@ -52,12 +52,12 @@ public class ProsecutionConcludedScheduler {
                 .forEach(this::processCaseConclusion);
 
         log.info("Case conclusions are processed");
-        LoggingData.LAA_TRANSACTION_ID.putInMDC("");
+        LoggingData.LAA_TRANSACTION_ID.removeFromMdc(LoggingData.LAA_TRANSACTION_ID.getKey());
     }
 
     private void processCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
         try {
-            LoggingData.MAATID.putInMDC(prosecutionConcluded.getMaatId());
+            LoggingData.MAAT_ID.putInMDC(prosecutionConcluded.getMaatId());
             WQHearingEntity hearingEntity = hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded);
             if (hearingEntity != null) {
                 if (isCCConclusion(hearingEntity)) {
@@ -71,7 +71,7 @@ public class ProsecutionConcludedScheduler {
             updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(),CaseConclusionStatus.ERROR);
 
         }
-        LoggingData.MAATID.putInMDC("-");
+        LoggingData.MAAT_ID.removeFromMdc(LoggingData.MAAT_ID.getKey());
     }
 
     private boolean isCCConclusion(WQHearingEntity wqHearingEntity) {
@@ -93,6 +93,5 @@ public class ProsecutionConcludedScheduler {
         });
         prosecutionConcludedRepository.saveAll(processedCases);
     }
-
 
 }

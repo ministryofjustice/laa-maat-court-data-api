@@ -6,6 +6,7 @@ import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.entity.FdcItemsEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
+import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
 import gov.uk.courtdata.repository.FdcContributionsRepository;
 import gov.uk.courtdata.repository.FdcItemsRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
@@ -27,6 +28,7 @@ import java.util.Objects;
 public class FdcContributionsTestService {
     private final FdcItemsRepository fdcItemsRepository;
     private final RepOrderRepository repOrderRepository;
+    private final CrownCourtProcessingRepository repOrderCrownCourtOutcomeRepository;
     private final FdcContributionsRepository fdcContributionsRepository;
     private final DebtCollectionRepository debtCollectionRepository;
 
@@ -43,7 +45,7 @@ public class FdcContributionsTestService {
         }
         if(FdcNegativeTestType.CCO.equals(negativeTestType)){
             // delete from REP_ORDER_CROWN_COURT_OUTCOMES where rep_id=<P_REP_ID>
-            repOrderRepository.deleteAllByIdInBatch(repOrderIds);
+            repOrderCrownCourtOutcomeRepository.deleteAllByRepOrder_IdIn(repOrderIds);
         }
         // create Fdc Contributions for each one.
         List<Integer> fdcIds = new ArrayList<>();
@@ -60,9 +62,8 @@ public class FdcContributionsTestService {
         }
 
         if(FdcNegativeTestType.FDC_ITEM.equals(negativeTestType)){
-            List<FdcItemsEntity> fdcItems = fdcItemsRepository.findByFdcIdIn(fdcIds);
             // delete from FDC_ITEMS where fdc_id=<P_FDC_ID>
-            fdcItemsRepository.deleteAllInBatch(fdcItems);
+            fdcItemsRepository.deleteAllByFdcIdIn(fdcIds);
         }
         else{
             createFdcItem(fdcIds);

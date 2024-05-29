@@ -342,7 +342,7 @@ public class DebtCollectionRepository {
                 AND RO.SENTENCE_ORDER_DATE IS NOT NULL
                 AND TRUNC( ADD_MONTHS( NVL(RO.SENTENCE_ORDER_DATE, SYSDATE ), 5) ) <= TRUNC(SYSDATE)
                 AND RO.DATE_RECEIVED<'01-JAN-2015'
-                AND ROWNUM < ?
+                AND ROWNUM <= ?
                 """;
          return jdbcTemplate.queryForList(sqlStatement, Integer.class, numTestCandidates);
     }

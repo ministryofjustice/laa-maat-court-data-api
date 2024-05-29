@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface FdcItemsRepository extends JpaRepository<FdcItemsEntity, Integer> {
 
-    List<FdcItemsEntity> findByFdcIdIn(List<Integer> ids);
+    void deleteAllByFdcIdIn(List<Integer> fdcIdList);
 
 }

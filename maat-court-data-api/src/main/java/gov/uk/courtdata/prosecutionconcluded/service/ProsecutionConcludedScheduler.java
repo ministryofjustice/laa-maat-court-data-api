@@ -5,6 +5,7 @@ import gov.uk.courtdata.entity.ProsecutionConcludedEntity;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.enums.CaseConclusionStatus;
 import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.repository.ProsecutionConcludedRepository;
 import lombok.Getter;
@@ -19,6 +20,7 @@ import jakarta.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,7 +38,8 @@ public class ProsecutionConcludedScheduler {
 
     @Scheduled(cron = "${queue.message.log.cron.expression}")
     public void process() {
-
+        String laaTransactionId = UUID.randomUUID().toString();
+        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("Prosecution Conclusion Scheduling is started");
 
         prosecutionConcludedRepository.getConcludedCases()
@@ -49,11 +52,12 @@ public class ProsecutionConcludedScheduler {
                 .forEach(this::processCaseConclusion);
 
         log.info("Case conclusions are processed");
-
+        LoggingData.LAA_TRANSACTION_ID.removeFromMdc(LoggingData.LAA_TRANSACTION_ID.getKey());
     }
 
     private void processCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
         try {
+            LoggingData.MAAT_ID.putInMDC(prosecutionConcluded.getMaatId());
             WQHearingEntity hearingEntity = hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded);
             if (hearingEntity != null) {
                 if (isCCConclusion(hearingEntity)) {
@@ -67,6 +71,7 @@ public class ProsecutionConcludedScheduler {
             updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(),CaseConclusionStatus.ERROR);
 
         }
+        LoggingData.MAAT_ID.removeFromMdc(LoggingData.MAAT_ID.getKey());
     }
 
     private boolean isCCConclusion(WQHearingEntity wqHearingEntity) {
@@ -75,7 +80,6 @@ public class ProsecutionConcludedScheduler {
     }
 
     private ProsecutionConcluded convertToObject(byte[] caseDate) {
-
         return gson.fromJson(new String(caseDate, StandardCharsets.UTF_8), ProsecutionConcluded.class);
     }
 
@@ -89,6 +93,5 @@ public class ProsecutionConcludedScheduler {
         });
         prosecutionConcludedRepository.saveAll(processedCases);
     }
-
 
 }

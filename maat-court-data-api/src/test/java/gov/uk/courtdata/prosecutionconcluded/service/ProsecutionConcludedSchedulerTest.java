@@ -3,6 +3,7 @@ package gov.uk.courtdata.prosecutionconcluded.service;
 import com.google.gson.Gson;
 import gov.uk.courtdata.entity.ProsecutionConcludedEntity;
 import gov.uk.courtdata.entity.WQHearingEntity;
+import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.repository.ProsecutionConcludedRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -40,10 +40,14 @@ public class ProsecutionConcludedSchedulerTest {
                 .maatId(1234)
                 .caseData("test".getBytes(StandardCharsets.UTF_8))
                 .build()));
-        //when
+
+        when(gson.fromJson(new String("test".getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8),
+            ProsecutionConcluded.class)).thenReturn(new ProsecutionConcluded());
+
         when(hearingsService.retrieveHearingForCaseConclusion(any())).
                 thenReturn(WQHearingEntity.builder().wqJurisdictionType("CROWN").build());
 
+        //when
         prosecutionConcludedScheduler.process();
 
         //then
@@ -59,6 +63,9 @@ public class ProsecutionConcludedSchedulerTest {
                 .maatId(1234)
                 .caseData("hearingIdWhereChangeOccurred".getBytes(StandardCharsets.UTF_8))
                 .build()));
+
+        when(gson.fromJson(new String("hearingIdWhereChangeOccurred".getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8),
+            ProsecutionConcluded.class)).thenReturn(new ProsecutionConcluded());
 
         when(hearingsService.retrieveHearingForCaseConclusion(any())).
                 thenReturn(null);

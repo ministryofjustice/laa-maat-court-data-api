@@ -28,4 +28,10 @@ public enum LoggingData {
       MDC.put(key, value);
     }
   }
+
+  public void removeFromMdc(String key) {
+    if (Objects.nonNull(key)) {
+      MDC.remove(key);
+    }
+  }
 }

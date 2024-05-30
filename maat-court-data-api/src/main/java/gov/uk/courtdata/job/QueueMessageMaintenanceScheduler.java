@@ -40,6 +40,6 @@ public class QueueMessageMaintenanceScheduler {
         queueMessageLogRepository.deleteCreatedOnOrBefore(currentDate.minusDays(getExpiryInDays()));
 
         log.info("Finish Queue Message Purge Job...");
-        LoggingData.LAA_TRANSACTION_ID.putInMDC("");
+        LoggingData.LAA_TRANSACTION_ID.removeFromMdc(LoggingData.LAA_TRANSACTION_ID.getKey());
     }
 }

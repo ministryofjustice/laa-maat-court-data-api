@@ -4,8 +4,6 @@ server:
 logging:
   level:
     root: INFO
-    org.springframework:
-      web: WARN
 
 spring:
   graphql:

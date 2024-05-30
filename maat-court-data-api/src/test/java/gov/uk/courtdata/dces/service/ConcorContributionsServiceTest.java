@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
+import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
@@ -244,6 +245,33 @@ class ConcorContributionsServiceTest {
         verify(debtCollectionService,times(1)).updateContributionFileReceivedCount(any());
         // verify no error is saved, as file is not found.
         verify(debtCollectionService,times(0)).saveError(any());
+    }
+
+    @Test
+    void testUpdateConcorContributionsStatus(){
+
+        when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of(1111L,2222L));
+        when(concorRepository.updateStatusForIds(any(), any())).thenReturn(2);
+
+        List<Long> response = concorService.updateConcorContributionStatus(UpdateConcorContributionStatusRequest.builder().recordCount(2)
+                .status(ConcorContributionStatus.SENT).build());
+
+        verify(concorRepository).findIdsForUpdate(any());
+        verify(concorRepository).updateStatusForIds(any(), any());
+        assertEquals(2, response.size());
+    }
+
+    @Test
+    void testUpdateConcorContributionsStatusWhenNotFound(){
+
+        when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of());
+
+        List<Long> response = concorService.updateConcorContributionStatus(UpdateConcorContributionStatusRequest.builder().recordCount(1)
+                .status(ConcorContributionStatus.SENT).build());
+
+        verify(concorRepository).findIdsForUpdate(any());
+        verify(concorRepository,never()).updateStatusForIds(any(), any());
+        assertEquals(0, response.size());
     }
 
     private LogContributionProcessedRequest createLogContributionProcessedRequest(int id, String errorText){

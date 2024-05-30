@@ -66,7 +66,7 @@ class CreateLinkListenerEndToEndTest {
     }
 
     @BeforeAll
-    static void beforeAll() throws IOException {
+    static void beforeAll() {
         amazonSQS = TestUtils.getClientSQS(LOCALSTACK_CONTAINER.getEndpointOverride(LocalStackContainer.Service.SQS).toString());
         queueUrl = amazonSQS.createQueue("link").getQueueUrl();
     }

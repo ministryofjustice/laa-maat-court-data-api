@@ -3,6 +3,7 @@ package gov.uk.courtdata.dces.controller;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.dces.request.CreateFdcTestDataRequest;
 import gov.uk.courtdata.dces.service.FdcContributionsTestService;
+import gov.uk.courtdata.exception.ValidationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping("${api-endpoints.debt-collection-enforcement-domain}")
@@ -32,6 +35,9 @@ public class FdcTestDataController {
     @PostMapping(value = "/generate_prepare_fdc_data_1", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Prepare final defence cost files for processing")
     public ResponseEntity<Boolean> prepareFdcContributions(@RequestBody CreateFdcTestDataRequest request){
+        if(request.isNegativeTest() && Objects.isNull(request.getNegativeTestType())){
+            throw new ValidationException("Please specify negative test type");
+        }
         log.info("Creating test data for FDC Merge 1.");
         boolean updateResult = fdcContributionsTestService.createFdcMergeTestData(request);
         log.info("Test data creation successful");

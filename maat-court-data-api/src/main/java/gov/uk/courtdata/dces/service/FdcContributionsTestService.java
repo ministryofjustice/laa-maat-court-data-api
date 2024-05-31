@@ -34,7 +34,8 @@ public class FdcContributionsTestService {
 
 
     public boolean createFdcMergeTestData(CreateFdcTestDataRequest request){
-        FdcNegativeTestType negativeTestType = request.isNegativeTest() ? request.getNegativeTestType() : null; // only populate if negative is wanted.
+        boolean isNegativeTest = request.isNegativeTest();
+        FdcNegativeTestType negativeTestType = isNegativeTest ? request.getNegativeTestType() : null; // only populate if negative is wanted.
         int numberOfTestEntries = request.getNumOfTestEntries();
 
         // find candidates
@@ -48,17 +49,13 @@ public class FdcContributionsTestService {
             repOrderCrownCourtOutcomeRepository.deleteAllByRepOrder_IdIn(repOrderIds);
         }
         // create Fdc Contributions for each one.
-        List<Integer> fdcIds = new ArrayList<>();
-
+        List<Integer> fdcIds = createFdcContribution(repOrderIds);
         if(FdcNegativeTestType.FDC_STATUS.equals(negativeTestType)){
             //update fdc_contributions set status='SENT'
             //where rep_id = <P_REP_ID>
             List<FdcContributionsEntity> fdcContributionList = fdcContributionsRepository.findByRepOrderEntity_IdIn(repOrderIds);
             fdcContributionList.forEach(fdc->fdc.setStatus(FdcContributionsStatus.SENT));
             fdcContributionsRepository.saveAll(fdcContributionList);
-        }
-        else{
-             fdcIds = createFdcContribution(repOrderIds);
         }
 
         if(FdcNegativeTestType.FDC_ITEM.equals(negativeTestType)){
@@ -71,17 +68,16 @@ public class FdcContributionsTestService {
         return true;
     }
 
-    private boolean setSentenceOrderDate(List<Integer> repIds, LocalDate date){
+    private void setSentenceOrderDate(List<Integer> repIds, LocalDate date){
         if(Objects.nonNull(repIds) && !repIds.isEmpty()){
             List<RepOrderEntity> repOrders = repOrderRepository.findByIdIn(repIds);
             repOrders.forEach(repOrder->repOrder.setSentenceOrderDate(date));
             repOrderRepository.saveAll(repOrders);
             // update rep_orders set sentence_order_date= add_months(trunc(sysdate),3) where id=<P_REP_ID>
         }
-        return true;
     }
 
-    private boolean createFdcItem(List<Integer> fdcIdList){
+    private void createFdcItem(List<Integer> fdcIdList){
         for(Integer fdcId : fdcIdList ) {
             FdcItemsEntity fdcItem = FdcItemsEntity.builder()
                     .fdcId(fdcId)
@@ -90,7 +86,6 @@ public class FdcContributionsTestService {
                     .build();
             fdcItemsRepository.save(fdcItem);
         }
-        return true;
     }
 
     private List<Integer> createFdcContribution(List<Integer> repIdList){

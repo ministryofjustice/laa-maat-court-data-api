@@ -4,8 +4,6 @@ server:
 logging:
   level:
     root: INFO
-    org.springframework.web: DEBUG
-    org.springframework.security: INFO
 
 spring:
   graphql:
@@ -40,11 +38,11 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
     open-in-view: false
-    show-sql: true
+    show-sql: false
     properties:
-      hibernate.jdbc.lob.non_contextual_creation: true
-      hibernate.enable_lazy_load_no_trans: true
       hibernate:
+        jdbc.lob.non_contextual_creation: true
+        enable_lazy_load_no_trans: true
         dialect: org.hibernate.dialect.OracleDialect
 
   togdata:
@@ -55,13 +53,11 @@ spring:
     aws:
       sqs:
         enabled: ${ENABLE_SPRING_CLOUD_SQS:true}
-      stack:
-        auto: false
+      stack.auto: false
       region:
         static: ${CLOUD_PLATFORM_QUEUE_REGION}
         auto: false
-      credentials:
-        use-default-aws-credentials-chain: true
+      credentials.use-default-aws-credentials-chain: true
 
 springdoc:
   packagesToScan: gov.uk.courtdata
@@ -124,6 +120,7 @@ api-endpoints:
   application-domain: /api/internal/v1/application
   applicant-domain: /api/internal/v1/applicant
   debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
+  debt-collection-enforcement-domain-test-data: /api/internal/v1/test-data/debt-collection-enforcement
 
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.reporder.controller;
 
 import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.reporder.gqlfilter.RepOrderFilter;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
@@ -25,6 +26,7 @@ public class RepOrderGQLController implements GraphQLQueryResolver {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @QueryMapping
     public RepOrderDTO findByRepId(@Argument Integer repId) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         return repOrderService.find(repId, false);
     }
 
@@ -32,9 +34,12 @@ public class RepOrderGQLController implements GraphQLQueryResolver {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @QueryMapping
     public RepOrderDTO findByRepOrderFilter(@Argument("filter") RepOrderFilter filter) {
+        Integer repId = filter.getId();
+        LoggingData.MAAT_ID.putInMDC(repId);
         RepOrderDTO repOrderDTO = null;
-        if (filter.getId() > 0) {
-            repOrderDTO = repOrderService.find(filter.getId(), Boolean.valueOf(filter.getSentenceOrderDate()));
+        if (repId > 0) {
+            repOrderDTO = repOrderService.find(repId,
+                Boolean.valueOf(filter.getSentenceOrderDate()));
         }
         return repOrderDTO;
     }

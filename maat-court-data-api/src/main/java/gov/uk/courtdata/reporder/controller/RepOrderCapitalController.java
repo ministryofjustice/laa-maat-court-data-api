@@ -1,6 +1,7 @@
 package gov.uk.courtdata.reporder.controller;
 
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.reporder.service.RepOrderCapitalService;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,6 +52,7 @@ public class RepOrderCapitalController {
             )
     )
     public ResponseEntity<HttpHeaders> getCapitalAssetCount(@PathVariable int repId) {
+      LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Rep Order Capital Asset Count Request Received");
         maatIdValidator.validate(repId);
         HttpHeaders responseHeaders = new HttpHeaders();

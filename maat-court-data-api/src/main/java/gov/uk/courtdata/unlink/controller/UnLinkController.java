@@ -40,8 +40,8 @@ public class UnLinkController {
             @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId,
             @Parameter(description = "Case details data", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Unlink.class))) @RequestBody Unlink unlink) {
+        LoggingData.MAAT_ID.putInMDC(unlink.getMaatId());
 
-        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("LAA Status Update Request received");
         unLinkValidationProcessor.validate(unlink);
 

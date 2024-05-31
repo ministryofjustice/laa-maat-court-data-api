@@ -1,7 +1,6 @@
 package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.dces.service.DebtCollectionService;
-import gov.uk.courtdata.enums.LoggingData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
@@ -30,7 +29,6 @@ public class DebtCollectionController {
     public List<String> findContributionFiles(@RequestParam(name = "fromDate") @DateTimeFormat(pattern = "dd.MM.yyyy") final LocalDate fromDate,
                                               @RequestParam(name = "toDate") @DateTimeFormat(pattern = "dd.MM.yyyy") final LocalDate toDate,
                                               @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
-        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("Get correspondence files for Laa-Transaction-Id {} with date range from {} to {}, ", laaTransactionId, fromDate, toDate);
         return dceService.getContributionFiles(fromDate, toDate);
     }
@@ -42,7 +40,6 @@ public class DebtCollectionController {
                                     @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
 
         log.info("Get final-defence-cost status request for FDC with date range from {} to {}", fromDate, toDate);
-        LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionId);
         log.info("Get final-defence-cost (FDC) files for Laa-Transaction-Id {} with date range from {} to {}, ", laaTransactionId, fromDate, toDate);
         return dceService.getFdcFiles(fromDate, toDate);
 

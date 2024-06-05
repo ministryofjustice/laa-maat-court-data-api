@@ -1,7 +1,8 @@
-package gov.uk.courtdata.dces.controller;
+package gov.uk.courtdata.dces.controller.testdata;
 
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.dces.request.CreateFdcTestDataRequest;
+import gov.uk.courtdata.dces.response.CreateFdcTestDataResponse;
 import gov.uk.courtdata.dces.service.FdcContributionsTestService;
 import gov.uk.courtdata.exception.ValidationException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,10 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("${api-endpoints.debt-collection-enforcement-domain}")
+@RequestMapping("${api-endpoints.debt-collection-enforcement-domain-test-data}")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Fdc", description = "Rest API for Final Defence Cost Test Data Generation")
@@ -34,13 +36,14 @@ public class FdcTestDataController {
     @StandardApiResponse
     @PostMapping(value = "/generate_prepare_fdc_data_1", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Prepare final defence cost files for processing")
-    public ResponseEntity<Boolean> prepareFdcContributions(@RequestBody CreateFdcTestDataRequest request){
+    public ResponseEntity<CreateFdcTestDataResponse> prepareFdcContributions(@RequestBody CreateFdcTestDataRequest request){
         if(request.isNegativeTest() && Objects.isNull(request.getNegativeTestType())){
             throw new ValidationException("Please specify negative test type");
         }
         log.info("Creating test data for FDC Merge 1.");
-        boolean updateResult = fdcContributionsTestService.createFdcMergeTestData(request);
+        List<Integer> repOrderIds = fdcContributionsTestService.createFdcMergeTestData(request);
         log.info("Test data creation successful");
+        CreateFdcTestDataResponse updateResult = CreateFdcTestDataResponse.builder().repOrderIds(repOrderIds).build();
         return ResponseEntity.ok(updateResult);
     }
 

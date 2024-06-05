@@ -343,7 +343,7 @@ public class DebtCollectionRepository {
                                 AND ROCCO.CCOO_OUTCOME IS NOT NULL
                                 AND RO.SENTENCE_ORDER_DATE IS NOT NULL
                                 AND TRUNC( ADD_MONTHS( NVL(RO.SENTENCE_ORDER_DATE, SYSDATE ), 5) ) <= TRUNC(SYSDATE)
-                                AND RO.DATE_RECEIVED<'01-JAN-2015'
+                                AND RO.DATE_RECEIVED<TO_DATE('01-JAN-2015')
                                )
                                WHERE ROWNUM <= ?
                 """;

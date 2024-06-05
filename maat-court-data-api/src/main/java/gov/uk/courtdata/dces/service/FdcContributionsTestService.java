@@ -33,7 +33,7 @@ public class FdcContributionsTestService {
     private final DebtCollectionRepository debtCollectionRepository;
 
 
-    public boolean createFdcMergeTestData(CreateFdcTestDataRequest request){
+    public List<Integer> createFdcMergeTestData(CreateFdcTestDataRequest request){
         boolean isNegativeTest = request.isNegativeTest();
         FdcNegativeTestType negativeTestType = isNegativeTest ? request.getNegativeTestType() : null; // only populate if negative is wanted.
         int numberOfTestEntries = request.getNumOfTestEntries();
@@ -65,15 +65,15 @@ public class FdcContributionsTestService {
         else{
             createFdcItem(fdcIds);
         }
-        return true;
+        return repOrderIds;
     }
 
     private void setSentenceOrderDate(List<Integer> repIds, LocalDate date){
         if(Objects.nonNull(repIds) && !repIds.isEmpty()){
+            // update rep_orders set sentence_order_date= add_months(trunc(sysdate),3) where id=<P_REP_ID>
             List<RepOrderEntity> repOrders = repOrderRepository.findByIdIn(repIds);
             repOrders.forEach(repOrder->repOrder.setSentenceOrderDate(date));
             repOrderRepository.saveAll(repOrders);
-            // update rep_orders set sentence_order_date= add_months(trunc(sysdate),3) where id=<P_REP_ID>
         }
     }
 

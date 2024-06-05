@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class ConcorContributionsTestDataControllerTest {
 
-    private static final String ENDPOINT_URL = "/api/internal/v1/test-data/debt-collection-enforcement";
+    private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/test-data";
     private static final String CONCOR_CONTRIBUTION_STATUS_URL = "/concor-contribution-status";
 
     @Autowired

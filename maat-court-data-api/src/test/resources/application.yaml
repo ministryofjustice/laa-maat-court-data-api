@@ -121,5 +121,5 @@ api-endpoints:
   application-domain: /api/internal/v1/application
   applicant-domain: /api/internal/v1/applicant
   debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
-  debt-collection-enforcement-domain-test-data: /api/internal/v1/test-data/debt-collection-enforcement
+  debt-collection-enforcement-domain-test-data: /api/internal/v1/debt-collection-enforcement/test-data
   user-domain: /api/internal/v1/users

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -33,6 +34,7 @@ public class FdcContributionsTestService {
     private final DebtCollectionRepository debtCollectionRepository;
 
 
+    @Transactional
     public List<Integer> createFdcMergeTestData(CreateFdcTestDataRequest request){
         boolean isNegativeTest = request.isNegativeTest();
         FdcNegativeTestType negativeTestType = isNegativeTest ? request.getNegativeTestType() : null; // only populate if negative is wanted.

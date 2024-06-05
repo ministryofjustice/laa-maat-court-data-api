@@ -23,6 +23,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -125,6 +127,14 @@ class FdcTestDataIntegrationTest extends MockMvcIntegrationTest {
                 .build();
     }
 
+    private FdcContributionsEntity buildFdcContributionEntity(){
+        return FdcContributionsEntity.builder().userCreated("TEST-INVALID").build();
+    }
+
+    private FdcItemsEntity buildFdcItemsEntity(Integer fdcId){
+        return FdcItemsEntity.builder().fdcId(fdcId).build();
+    }
+
     private CreateFdcTestDataRequest buildRequest(Integer numTestEntries, boolean isNegative, FdcNegativeTestType negativeType){
         return CreateFdcTestDataRequest.builder()
                 .numOfTestEntries(numTestEntries)
@@ -165,7 +175,7 @@ class FdcTestDataIntegrationTest extends MockMvcIntegrationTest {
 
         // verify creation of fdcContribution
         List<FdcContributionsEntity> fdcContributionsEntityList = repos.fdcContributions.findAll();
-        assertEquals(1,fdcContributionsEntityList.size(), "Should have only 1 saved entry");
+        assertEquals(1,fdcContributionsEntityList.size(), "Should have only 1 saved fdcContribution");
         // check it's in the right status
         FdcContributionsEntity fdcContribution = fdcContributionsEntityList.get(0);
         assertEquals(FdcContributionsStatus.WAITING_ITEMS, fdcContribution.getStatus());
@@ -173,10 +183,159 @@ class FdcTestDataIntegrationTest extends MockMvcIntegrationTest {
 
         // verify the creation of a new fdc item.
         List<FdcItemsEntity> fdcItemsEntityList = repos.fdcItemsRepository.findAll();
-        assertEquals(1,fdcItemsEntityList.size(), "Should have only 1 saved entry");
+        assertEquals(1,fdcItemsEntityList.size(), "Should have only 1 saved fdcItem");
         FdcItemsEntity fdcItem = fdcItemsEntityList.get(0);
         assertEquals(fdcContribution.getId(), fdcItem.getFdcId());
     }
+
+
+    @Test
+    void testNegativeTypeFdcItem() throws Exception {
+        // setup previously existing data for deletion verification
+        FdcContributionsEntity priorFdcContributions = buildFdcContributionEntity();
+        priorFdcContributions.setRepOrderEntity(repOrderValid2);
+        repos.fdcContributions.save(priorFdcContributions);
+        FdcItemsEntity priorFdcItem = buildFdcItemsEntity(priorFdcContributions.getId());
+        repos.fdcItemsRepository.save(priorFdcItem);
+
+        CreateFdcTestDataRequest request = buildRequest(1, true, FdcNegativeTestType.FDC_ITEM);
+        String requestString = getRequestString(request);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestString))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("repOrderIds").value(repOrderValid.getId()));
+
+        // verify there is no new fdc item.
+        List<FdcItemsEntity> fdcItemsEntityList = repos.fdcItemsRepository.findAll();
+        assertEquals(1,fdcItemsEntityList.size(), "Should have only 1 saved fdcItem");
+        FdcItemsEntity fdcItem = fdcItemsEntityList.get(0);
+
+        // verify creation of fdcContribution
+        List<FdcContributionsEntity> fdcContributionsEntityList = repos.fdcContributions.findAll();
+        assertEquals(2,fdcContributionsEntityList.size(), "Should have only 2 saved fdcContribution");
+        for(FdcContributionsEntity fdcContribution : fdcContributionsEntityList){
+            // check if we've got the pre-created one.
+            if(priorFdcContributions.getId().equals(fdcContribution.getId())){
+                assertNull(fdcContribution.getStatus()); // unchanged
+                assertEquals(repOrderValid2.getId(), fdcContribution.getRepOrderEntity().getId());
+                assertEquals(fdcContribution.getId(), fdcItem.getFdcId()); // fdcItem should have been deleted
+            }
+            else{
+                // else we've found the new one that the process created.
+                // check it's in the right status
+                assertEquals(FdcContributionsStatus.WAITING_ITEMS, fdcContribution.getStatus());
+                assertEquals(repOrderValid.getId(), fdcContribution.getRepOrderEntity().getId());
+            }
+        }
+    }
+
+    @Test
+    void testNegativeTypeFdcStatus() throws Exception {
+        CreateFdcTestDataRequest request = buildRequest(1, true, FdcNegativeTestType.FDC_STATUS);
+        String requestString = getRequestString(request);
+        // create unrelated fdcContribution for verifying behaviour
+        FdcContributionsEntity unrelatedFdcContribution = repos.fdcContributions.save(buildFdcContributionEntity());
+
+        mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestString))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("repOrderIds").value(repOrderValid.getId()));
+
+        // verify the creation of a new fdc item.
+        List<FdcItemsEntity> fdcItemsEntityList = repos.fdcItemsRepository.findAll();
+        assertEquals(1,fdcItemsEntityList.size(), "Should have only 1 saved entry");
+        FdcItemsEntity fdcItem = fdcItemsEntityList.get(0);
+
+        // verify creation of fdcContribution
+        List<FdcContributionsEntity> fdcContributionsEntityList = repos.fdcContributions.findAll();
+        assertEquals(2,fdcContributionsEntityList.size(), "Should have only 2 saved entries. One generated mid-test");
+        // check it's in the right status
+        for(FdcContributionsEntity fdcContribution: fdcContributionsEntityList){
+            if(Objects.equals(fdcContribution.getId(), unrelatedFdcContribution.getId())){
+                // check we've not modified an unrelated entry.
+                assertNull(fdcContribution.getStatus());
+            }
+            else {
+                assertEquals(FdcContributionsStatus.SENT, fdcContribution.getStatus());
+                assertEquals(repOrderValid.getId(), fdcContribution.getRepOrderEntity().getId());
+                assertEquals(fdcContribution.getId(), fdcItem.getFdcId());
+            }
+        }
+    }
+
+
+    @Test
+    void testNegativeTypeSOD() throws Exception {
+        CreateFdcTestDataRequest request = buildRequest(1, true, FdcNegativeTestType.SOD);
+        String requestString = getRequestString(request);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestString))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("repOrderIds").value(repOrderValid.getId()));
+
+        // verify creation of fdcContribution
+        List<FdcContributionsEntity> fdcContributionsEntityList = repos.fdcContributions.findAll();
+        assertEquals(1,fdcContributionsEntityList.size(), "Should have only 1 saved fdcContribution");
+        // check it's in the right status
+        FdcContributionsEntity fdcContribution = fdcContributionsEntityList.get(0);
+        assertEquals(FdcContributionsStatus.WAITING_ITEMS, fdcContribution.getStatus());
+        assertEquals(repOrderValid.getId(), fdcContribution.getRepOrderEntity().getId());
+
+        // verify the creation of a new fdc item.
+        List<FdcItemsEntity> fdcItemsEntityList = repos.fdcItemsRepository.findAll();
+        assertEquals(1,fdcItemsEntityList.size(), "Should have only 1 saved fdcItem");
+        FdcItemsEntity fdcItem = fdcItemsEntityList.get(0);
+        assertEquals(fdcContribution.getId(), fdcItem.getFdcId());
+
+        // verify SOD behaviour
+        Optional<RepOrderEntity> sodRepOrderOpt = repos.repOrder.findById(repOrderValid.getId());
+        assertEquals(LocalDate.now().plus(3, ChronoUnit.MONTHS), sodRepOrderOpt.get().getSentenceOrderDate());
+
+        List<RepOrderCCOutComeEntity> ccoList = repos.crownCourtProcessing.findByRepOrder_Id(repOrderValid.getId());
+        assertFalse(ccoList.isEmpty());
+    }
+
+    @Test
+    void testNegativeTypeCCO() throws Exception {
+        CreateFdcTestDataRequest request = buildRequest(1, true, FdcNegativeTestType.CCO);
+        String requestString = getRequestString(request);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestString))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("repOrderIds").value(repOrderValid.getId()));
+
+        // verify creation of fdcContribution
+        List<FdcContributionsEntity> fdcContributionsEntityList = repos.fdcContributions.findAll();
+        assertEquals(1,fdcContributionsEntityList.size(), "Should have only 1 saved fdcContribution");
+        // check it's in the right status
+        FdcContributionsEntity fdcContribution = fdcContributionsEntityList.get(0);
+        assertEquals(FdcContributionsStatus.WAITING_ITEMS, fdcContribution.getStatus());
+        assertEquals(repOrderValid.getId(), fdcContribution.getRepOrderEntity().getId());
+
+        // verify the creation of a new fdc item.
+        List<FdcItemsEntity> fdcItemsEntityList = repos.fdcItemsRepository.findAll();
+        assertEquals(1,fdcItemsEntityList.size(), "Should have only 1 saved fdcItem");
+        FdcItemsEntity fdcItem = fdcItemsEntityList.get(0);
+        assertEquals(fdcContribution.getId(), fdcItem.getFdcId());
+
+        // verify CCO has been deleted.
+        List<RepOrderCCOutComeEntity> ccoList = repos.crownCourtProcessing.findByRepOrder_Id(repOrderValid.getId());
+        assertTrue(ccoList.isEmpty());
+
+    }
+
+
 
 
 }

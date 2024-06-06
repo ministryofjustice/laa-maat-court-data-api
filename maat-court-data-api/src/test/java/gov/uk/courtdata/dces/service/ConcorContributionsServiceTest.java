@@ -5,10 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+import gov.uk.courtdata.dces.mapper.ConcorContributionMapper;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
+import gov.uk.courtdata.dces.response.ConcorContributionResponseDTO;
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
@@ -61,6 +63,9 @@ class ConcorContributionsServiceTest {
 
     @Mock
     private ContributionFileErrorsRepository contributionFileErrorsRepository;
+
+    @Mock
+    private ConcorContributionMapper concorContributionMapper;
 
 
     @Captor
@@ -272,6 +277,34 @@ class ConcorContributionsServiceTest {
         verify(concorRepository).findIdsForUpdate(any());
         verify(concorRepository,never()).updateStatusForIds(any(), any());
         assertEquals(0, response.size());
+    }
+
+    @Test
+    void testGetConcorContributionWhenFound() {
+        Integer concorContributionId = 1;
+        ConcorContributionsEntity concorContributionsEntity = new ConcorContributionsEntity();
+        ConcorContributionResponseDTO expectedResponse = ConcorContributionResponseDTO
+                .builder()
+                .id(concorContributionId)
+                .status(ACTIVE)
+                .build();
+
+        when(concorRepository.findById(concorContributionId)).thenReturn(Optional.of(concorContributionsEntity));
+        when(concorContributionMapper.toConcorContributionResponseDTO(concorContributionsEntity)).thenReturn(expectedResponse);
+
+        ConcorContributionResponseDTO actualResponse = concorService.getConcorContribution(concorContributionId);
+
+        assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    void testGetConcorContributionWhenNotFound() {
+        Integer concorContributionId = 1;
+
+        when(concorRepository.findById(concorContributionId)).thenReturn(Optional.empty());
+        ConcorContributionResponseDTO actualResponse = concorService.getConcorContribution(concorContributionId);
+
+        assertNull(actualResponse);
     }
 
     private LogContributionProcessedRequest createLogContributionProcessedRequest(int id, String errorText){

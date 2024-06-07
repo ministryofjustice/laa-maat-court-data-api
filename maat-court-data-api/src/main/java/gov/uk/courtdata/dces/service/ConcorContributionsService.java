@@ -2,10 +2,12 @@ package gov.uk.courtdata.dces.service;
 
 import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 
+import gov.uk.courtdata.dces.mapper.ConcorContributionMapper;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
+import gov.uk.courtdata.dces.response.ConcorContributionResponseDTO;
 import gov.uk.courtdata.dces.util.ContributionFileUtil;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
@@ -34,6 +36,7 @@ public class ConcorContributionsService {
     private final ContributionFileMapper contributionFileMapper;
     private final DebtCollectionRepository debtCollectionRepository;
     private final DebtCollectionService debtCollectionService;
+    private final ConcorContributionMapper concorContributionMapper;
 
     @Transactional
     public List<Long> updateConcorContributionStatus(UpdateConcorContributionStatusRequest request){
@@ -81,6 +84,19 @@ public class ConcorContributionsService {
 
         }
         return successful;
+    }
+
+    public ConcorContributionResponseDTO getConcorContribution(Integer concorContributionId){
+
+        Optional<ConcorContributionsEntity> concorContributionEntity = concorRepository.findById(concorContributionId);
+
+        if (concorContributionEntity.isPresent()) {
+            log.info("Concor Contribution found: {}", concorContributionEntity.get().getId());
+            return concorContributionMapper.toConcorContributionResponseDTO(concorContributionEntity.get());
+        } else {
+            log.info("Concor Contribution not found: {}", concorContributionId);
+        }
+        return null;
     }
 
     private boolean saveErrorMessage(LogContributionProcessedRequest request, ConcorContributionsEntity concorEntity){

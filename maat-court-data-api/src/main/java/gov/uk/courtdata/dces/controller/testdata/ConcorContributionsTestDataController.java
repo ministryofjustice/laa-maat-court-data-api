@@ -26,10 +26,11 @@ public class ConcorContributionsTestDataController {
 
     @NotFoundApiResponse
     @PutMapping(value = "/concor-contribution-status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Long>> updateStatus(@Valid UpdateConcorContributionStatusRequest request){
 
-        log.info("request {}", request);
-        List<Long> updatedConcorContributionsIds = concorContributionsService.updateConcorContributionStatus(request);
+    public ResponseEntity<List<Integer>> updateStatus (@Valid @RequestBody UpdateConcorContributionStatusRequest request){
+
+        log.info("request: {}", request);
+        List<Integer> updatedConcorContributionsIds = concorContributionsService.updateConcorContributionStatus(request);
         log.info("response for concor-contribution-status {}", updatedConcorContributionsIds);
         return ResponseEntity.ok(updatedConcorContributionsIds);
     }

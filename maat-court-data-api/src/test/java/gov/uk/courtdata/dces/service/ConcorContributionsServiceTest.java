@@ -255,10 +255,10 @@ class ConcorContributionsServiceTest {
     @Test
     void testUpdateConcorContributionsStatus(){
 
-        when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of(1111L,2222L));
+        when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of(1111,2222));
         when(concorRepository.updateStatusForIds(any(), any())).thenReturn(2);
 
-        List<Long> response = concorService.updateConcorContributionStatus(UpdateConcorContributionStatusRequest.builder().recordCount(2)
+        List<Integer> response = concorService.updateConcorContributionStatus(UpdateConcorContributionStatusRequest.builder().recordCount(2)
                 .status(ConcorContributionStatus.SENT).build());
 
         verify(concorRepository).findIdsForUpdate(any());
@@ -271,7 +271,7 @@ class ConcorContributionsServiceTest {
 
         when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of());
 
-        List<Long> response = concorService.updateConcorContributionStatus(UpdateConcorContributionStatusRequest.builder().recordCount(1)
+        List<Integer> response = concorService.updateConcorContributionStatus(UpdateConcorContributionStatusRequest.builder().recordCount(1)
                 .status(ConcorContributionStatus.SENT).build());
 
         verify(concorRepository).findIdsForUpdate(any());

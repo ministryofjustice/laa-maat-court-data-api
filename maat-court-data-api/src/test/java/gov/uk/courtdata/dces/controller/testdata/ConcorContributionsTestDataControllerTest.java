@@ -2,7 +2,9 @@ package gov.uk.courtdata.dces.controller.testdata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
+import gov.uk.courtdata.dces.response.ConcorContributionResponseDTO;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
+import gov.uk.courtdata.enums.ConcorContributionStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 
+import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -22,8 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class ConcorContributionsTestDataControllerTest {
 
-    private static final String ENDPOINT_URL = "/api/internal/v1/test-data/debt-collection-enforcement";
+    private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/test-data";
     private static final String CONCOR_CONTRIBUTION_STATUS_URL = "/concor-contribution-status";
+    private static final String CONCOR_CONTRIBUTION_URL = "/concor-contribution";
 
     @Autowired
     private MockMvc mvc;
@@ -65,5 +69,23 @@ class ConcorContributionsTestDataControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+
+    @Test
+    void testGetContributionWhenFound() throws Exception {
+
+        Integer id = 100;
+        ConcorContributionResponseDTO responseDTO = ConcorContributionResponseDTO.builder()
+                .id(id)
+                .status(SENT)
+                .build();
+
+        when(concorContributionsService.getConcorContribution(id)).thenReturn(responseDTO);
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_URL+"/100"))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.status").value("SENT"));
     }
 }

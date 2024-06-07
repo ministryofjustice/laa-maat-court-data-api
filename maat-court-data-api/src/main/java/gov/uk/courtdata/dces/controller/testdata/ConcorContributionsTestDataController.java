@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Concor Contributions Test-Data", description = "Rest API for Concor Contribution Files. This is created only to create test data for E2E")
-
+@ConditionalOnProperty(prefix = "sentry", name = "environment", havingValue = "development")
 public class ConcorContributionsTestDataController {
 
     private final ConcorContributionsService concorContributionsService;

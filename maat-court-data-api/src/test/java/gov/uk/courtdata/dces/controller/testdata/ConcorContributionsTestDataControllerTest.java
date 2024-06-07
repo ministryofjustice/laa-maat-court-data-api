@@ -39,7 +39,7 @@ class ConcorContributionsTestDataControllerTest {
         final String requestBody = objectMapper.writeValueAsString(request);
 
         when(concorContributionsService.updateConcorContributionStatus(request))
-                .thenReturn(List.of(111L,222L, 333L));
+                .thenReturn(List.of(111,222, 333));
 
         mvc.perform(MockMvcRequestBuilders.put(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_STATUS_URL))
                         .content(requestBody)

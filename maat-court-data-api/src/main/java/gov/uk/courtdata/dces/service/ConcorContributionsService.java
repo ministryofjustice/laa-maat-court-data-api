@@ -36,12 +36,12 @@ public class ConcorContributionsService {
     private final DebtCollectionService debtCollectionService;
 
     @Transactional
-    public List<Long> updateConcorContributionStatus(UpdateConcorContributionStatusRequest request){
+    public List<Integer> updateConcorContributionStatus(UpdateConcorContributionStatusRequest request){
 
-        List<Long> idsToUpdate = concorRepository.findIdsForUpdate(Pageable.ofSize(request.getRecordCount()));
+        List<Integer> idsToUpdate = concorRepository.findIdsForUpdate(Pageable.ofSize(request.getRecordCount()));
 
         if (!idsToUpdate.isEmpty()) {
-            concorRepository.updateStatusForIds(request.getStatus().name(), idsToUpdate);
+            concorRepository.updateStatusForIds(request.getStatus(), idsToUpdate);
         }
         return idsToUpdate;
     }

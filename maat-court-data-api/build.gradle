@@ -202,3 +202,10 @@ sonar {
         property "sonar.verbose", "true"
     }
 }
+
+
+sonarqube {
+    properties {
+        property 'sonar.cpd.exclusions', "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java, **/exception/**.java, **/enums/**.java, **/aspect/**.java, **/dao/oracle/**.java, **/**StoredProcedureRepository.java, **/helper/BooleanConverter.java, **/applicant/entity/RepOrderApplicantLinksEntity.java, **/entity/RoleDataItemEntity.java"
+    }
+}

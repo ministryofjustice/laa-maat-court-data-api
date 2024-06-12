@@ -75,7 +75,9 @@ public class DebtCollectionRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
                 con -> {
-                    PreparedStatement ps = con.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS);
+                    // Oracle 19c returns string `ROWID` with `Statement.RETURN_GENERATED_KEYS` flag (not numeric `ID`).
+                    // https://docs.oracle.com/en/database/oracle/oracle-database/19/jjdbc/JDBC-standards-support.html#GUID-11E3AAF8-009C-418E-8263-E41EE49F2EA8
+                    PreparedStatement ps = con.prepareStatement(sqlStatement, new String[] {"ID"});
                     Clob xmlClob = con.createClob();
                     Clob ackClob = con.createClob();
 

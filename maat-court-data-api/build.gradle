@@ -207,4 +207,5 @@ sonar {
 sonarqube {
     properties {
         property 'sonar.cpd.exclusions', "**/entity/**.java , **/model/**.java , **/model/DeleteRepOrder.java"
+    }
 }

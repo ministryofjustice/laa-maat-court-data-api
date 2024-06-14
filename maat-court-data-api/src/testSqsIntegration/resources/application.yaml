@@ -120,7 +120,6 @@ api-endpoints:
   applicant-domain: /api/internal/v1/applicant
   user-domain: /api/internal/v1/users
   debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
-  debt-collection-enforcement-domain-test-data: /api/internal/v1/debt-collection-enforcement/test-data
 
 xray:
   enabled: false

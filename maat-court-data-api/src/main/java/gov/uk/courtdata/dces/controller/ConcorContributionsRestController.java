@@ -1,15 +1,19 @@
 package gov.uk.courtdata.dces.controller;
 
+import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
+import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
+import gov.uk.courtdata.dces.response.ConcorContributionResponseDTO;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
@@ -62,4 +68,26 @@ public class ConcorContributionsRestController {
         boolean response = concorContributionsService.logContributionProcessed(request);
         return ResponseEntity.ok(response);
     }
+
+    @NotFoundApiResponse
+    @PutMapping(value = "/concor-contribution-status", produces = MediaType.APPLICATION_JSON_VALUE)
+
+    public ResponseEntity<List<Integer>> updateStatus (@Valid @RequestBody UpdateConcorContributionStatusRequest request){
+
+        log.info("request: {}", request);
+        List<Integer> updatedConcorContributionsIds = concorContributionsService.updateConcorContributionStatus(request);
+        log.info("response for concor-contribution-status {}", updatedConcorContributionsIds);
+        return ResponseEntity.ok(updatedConcorContributionsIds);
+    }
+
+    @NotFoundApiResponse
+    @GetMapping(value = "/concor-contribution/{id}")
+    public ResponseEntity<ConcorContributionResponseDTO>  getContribution(@PathVariable Integer id) {
+
+        log.info("request {}", id);
+        return ResponseEntity.ok(concorContributionsService.getConcorContribution(id));
+    }
+
+
+
 }

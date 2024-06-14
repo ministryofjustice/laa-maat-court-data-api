@@ -976,7 +976,7 @@ Resources:
       GenerateSecret: true
       SupportedIdentityProviders: [ COGNITO ]
       AllowedOAuthFlows: [ client_credentials ]
-      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScopeRead}' ]
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'

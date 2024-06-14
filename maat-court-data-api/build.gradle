@@ -184,21 +184,3 @@ pitest {
     timestampedReports = false
     mutationThreshold = 60
 }
-
-tasks['sonar'].dependsOn test
-
-sonar {
-    properties {
-        property "sonar.exclusions", "**/entity/**.java, **/model/**.java, **/dto/**.java, **/config/**.java, **/jms/**.java, **/exception/**.java, **/enums/**.java, **/aspect/**.java, **/dao/oracle/**.java, **/**StoredProcedureRepository.java, **/helper/BooleanConverter.java, **/applicant/entity/RepOrderApplicantLinksEntity.java, **/entity/RoleDataItemEntity.java"
-        property "sonar.coverage.exclusions", "**/MAATCourtDataApplication.java"
-        property "sonar.cpd.exclusions", "**/entity/**.java, **/model/**.java, **/dao/oracle/**.java"
-        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-        property "sonar.projectKey", "ministryofjustice_laa-maat-court-data-api"
-        property "sonar.organization", "ministryofjustice"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.projectName", "laa-maat-court-data-api"
-        property "sonar.pitest.mode", "reuseReport"
-        property "sonar.pitest.reportsDirectory", "build/reports/pitest"
-        property "sonar.verbose", "true"
-    }
-}

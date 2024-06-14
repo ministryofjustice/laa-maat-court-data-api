@@ -99,10 +99,6 @@ Parameters:
     Type: String
     Default: standard
     Description: Name of Cognito first scope
-  pApiScopeRead:
-    Type: String
-    Default: read
-    Description: Name of read-only Cognito scope
   pApiStageName:
     Type: String
     Default: "v1"
@@ -657,7 +653,7 @@ Resources:
       ApiId: !Ref ApiGateway
       RouteKey: 'GET /api/internal/v1/assessment/rep-orders/{proxy+}'
       AuthorizationType: JWT
-      AuthorizationScopes: [ !Sub '${pAppName}/${pApiScopeRead}' ]
+      AuthorizationScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
       AuthorizerId: !Ref ApiAuthorizerForGetRequests
       Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
   ApiRouteEformStaging:
@@ -976,7 +972,7 @@ Resources:
       GenerateSecret: true
       SupportedIdentityProviders: [ COGNITO ]
       AllowedOAuthFlows: [ client_credentials ]
-      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScopeRead}' ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'

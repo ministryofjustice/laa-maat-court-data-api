@@ -99,6 +99,10 @@ Parameters:
     Type: String
     Default: standard
     Description: Name of Cognito first scope
+  pApiScopeRead:
+    Type: String
+    Default: read
+    Description: Name of read-only Cognito scope
   pApiStageName:
     Type: String
     Default: "v1"
@@ -647,6 +651,15 @@ Resources:
       AuthorizationScopes: [!Sub '${pAppName}/${pApiScope1}']
       AuthorizerId: !Ref ApiAuthorizer
       Target: !Join ['/', [integrations, !Ref ApiIntegration]]
+  ApiRouteRepOrderGetRequests:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ApiGateway
+      RouteKey: 'GET /api/internal/v1/assessment/rep-orders/{proxy+}'
+      AuthorizationType: JWT
+      AuthorizationScopes: [ !Sub '${pAppName}/${pApiScope1}', !Sub '${pAppName}/${pApiScopeRead}' ]
+      AuthorizerId: !Ref ApiAuthorizer
+      Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
   ApiRouteEformStaging:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -984,6 +997,8 @@ Resources:
       Scopes:
        - ScopeName: !Ref pApiScope1
          ScopeDescription: !Sub '${pAppName}/${pApiScope1}'
+       - ScopeName: !Ref pApiScopeRead
+         ScopeDescription: !Sub '${pAppName}/${pApiScopeRead}'
 
 
   ##############################################################################

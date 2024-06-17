@@ -647,15 +647,6 @@ Resources:
       AuthorizationScopes: [!Sub '${pAppName}/${pApiScope1}']
       AuthorizerId: !Ref ApiAuthorizer
       Target: !Join ['/', [integrations, !Ref ApiIntegration]]
-  ApiRouteRepOrderGetRequests:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref ApiGateway
-      RouteKey: 'GET /api/internal/v1/assessment/rep-orders/{proxy+}'
-      AuthorizationType: JWT
-      AuthorizationScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
-      AuthorizerId: !Ref ApiAuthorizerForGetRequests
-      Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
   ApiRouteEformStaging:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -708,6 +699,7 @@ Resources:
           - !Ref CognitoUserPoolClientCrimeEvidence
           - !Ref CognitoUserPoolCrimeHardshipService
           - !Ref CognitoUserPoolMAATOrchestrationService
+          - !Ref CognitoUserPoolClientClaimForCrownCourtDefence
           - !Ref CognitoUserPoolClientCrimeValidationService
           - !Ref CognitoUserPoolClientATSService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
@@ -723,18 +715,6 @@ Resources:
         Audience:
           - !Ref CognitoUserPoolClientDcesReportService
           - !Ref CognitoUserPoolClientDcesDrcReportService
-        Issuer: !GetAtt CognitoUserPool.ProviderURL
-  ApiAuthorizerForGetRequests:
-    Type: 'AWS::ApiGatewayV2::Authorizer'
-    Properties:
-      Name: !Sub '${pAppName}_GET_Request_Authorizer'
-      ApiId: !Ref ApiGateway
-      AuthorizerType: JWT  # Json Cognito Web Tokens
-      IdentitySource:
-        - '$request.header.Authorization'
-      JwtConfiguration:
-        Audience:
-          - !Ref CognitoUserPoolClientClaimForCrownCourtDefence
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiAuthorizerForATSAndCAA:
     Type: 'AWS::ApiGatewayV2::Authorizer'

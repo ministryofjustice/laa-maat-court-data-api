@@ -712,7 +712,7 @@ Resources:
           - !Ref CognitoUserPoolClientCrimeEvidence
           - !Ref CognitoUserPoolCrimeHardshipService
           - !Ref CognitoUserPoolMAATOrchestrationService
-          - !Ref CognitoUserPoolClientClaimForCrownCourtDefence
+          - !Ref CognitoUserPoolClaimForCrownCourtDefenceClient
           - !Ref CognitoUserPoolClientCrimeValidationService
           - !Ref CognitoUserPoolClientATSService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
@@ -955,17 +955,17 @@ Resources:
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'
-  CognitoUserPoolClientClaimForCrownCourtDefence:
+  CognitoUserPoolClaimForCrownCourtDefenceClient:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
-      ClientName: "Claim for Crown Court Defence"
+      ClientName: "Claim for CCD"
       UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlowsUserPoolClient: true
       GenerateSecret: true
       SupportedIdentityProviders: [ COGNITO ]
       AllowedOAuthFlows: [ client_credentials ]
-      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScopeRead}' ]
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'

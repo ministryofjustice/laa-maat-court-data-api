@@ -256,13 +256,13 @@ class ConcorContributionsServiceTest {
     void testUpdateConcorContributionsStatus(){
 
         when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of(1111,2222));
-        when(concorRepository.updateStatusForIds(any(), any())).thenReturn(2);
+        when(concorRepository.updateStatusAndResetContribFileForIds(any(), any())).thenReturn(2);
 
-        List<Integer> response = concorService.updateConcorContributionStatus(UpdateConcorContributionStatusRequest.builder().recordCount(2)
+        List<Integer> response = concorService.updateConcorContributionStatusAndResetContribFile(UpdateConcorContributionStatusRequest.builder().recordCount(2)
                 .status(ConcorContributionStatus.SENT).build());
 
         verify(concorRepository).findIdsForUpdate(any());
-        verify(concorRepository).updateStatusForIds(any(), any());
+        verify(concorRepository).updateStatusAndResetContribFileForIds(any(), any());
         assertEquals(2, response.size());
     }
 
@@ -271,11 +271,11 @@ class ConcorContributionsServiceTest {
 
         when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of());
 
-        List<Integer> response = concorService.updateConcorContributionStatus(UpdateConcorContributionStatusRequest.builder().recordCount(1)
+        List<Integer> response = concorService.updateConcorContributionStatusAndResetContribFile(UpdateConcorContributionStatusRequest.builder().recordCount(1)
                 .status(ConcorContributionStatus.SENT).build());
 
         verify(concorRepository).findIdsForUpdate(any());
-        verify(concorRepository,never()).updateStatusForIds(any(), any());
+        verify(concorRepository,never()).updateStatusAndResetContribFileForIds(any(), any());
         assertEquals(0, response.size());
     }
 

@@ -22,7 +22,7 @@ public interface ConcorContributionsRepository extends JpaRepository<ConcorContr
 
     @Modifying
     @Transactional
-    @Query("UPDATE ConcorContributionsEntity cc SET cc.status = :newStatus WHERE cc.id IN :ids")
-    int updateStatusForIds(@Param("newStatus") ConcorContributionStatus newStatus, @Param("ids") List<Integer> ids);
+    @Query("UPDATE ConcorContributionsEntity cc SET cc.status = :newStatus, cc.contribFileId = NULL WHERE cc.id IN :ids")
+    int updateStatusAndResetContribFileForIds(@Param("newStatus") ConcorContributionStatus newStatus, @Param("ids") List<Integer> ids);
 
 }

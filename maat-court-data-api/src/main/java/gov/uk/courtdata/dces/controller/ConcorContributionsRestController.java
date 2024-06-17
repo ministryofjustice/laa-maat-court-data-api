@@ -75,7 +75,7 @@ public class ConcorContributionsRestController {
     public ResponseEntity<List<Integer>> updateStatus (@Valid @RequestBody UpdateConcorContributionStatusRequest request){
 
         log.info("request: {}", request);
-        List<Integer> updatedConcorContributionsIds = concorContributionsService.updateConcorContributionStatus(request);
+        List<Integer> updatedConcorContributionsIds = concorContributionsService.updateConcorContributionStatusAndResetContribFile(request);
         log.info("response for concor-contribution-status {}", updatedConcorContributionsIds);
         return ResponseEntity.ok(updatedConcorContributionsIds);
     }

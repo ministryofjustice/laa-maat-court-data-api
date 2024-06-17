@@ -38,13 +38,14 @@ public class ConcorContributionsService {
     private final DebtCollectionService debtCollectionService;
     private final ConcorContributionMapper concorContributionMapper;
 
+    /** Resets a number of concor_contribution rows to status = ACTIVE | REPLACED, contrib_file_id = (null). */
     @Transactional
-    public List<Integer> updateConcorContributionStatus(UpdateConcorContributionStatusRequest request){
+    public List<Integer> updateConcorContributionStatusAndResetContribFile(UpdateConcorContributionStatusRequest request){
 
         List<Integer> idsToUpdate = concorRepository.findIdsForUpdate(Pageable.ofSize(request.getRecordCount()));
 
         if (!idsToUpdate.isEmpty()) {
-            concorRepository.updateStatusForIds(request.getStatus(), idsToUpdate);
+            concorRepository.updateStatusAndResetContribFileForIds(request.getStatus(), idsToUpdate);
         }
         return idsToUpdate;
     }
@@ -66,7 +67,7 @@ public class ConcorContributionsService {
         ValidationUtils.isEmptyOrHasNullElement(contributionRequest.getConcorContributionIds(),"ContributionIds are empty/null.");
 
         final ContributionFilesEntity contributionFilesEntity = createContributionFile(contributionRequest);
-        return updateConcorStatusForContribution(contributionRequest.getConcorContributionIds(), SENT, contributionFilesEntity.getFileId());
+        return updateConcorContributionStatusAndSetContribFile(contributionRequest.getConcorContributionIds(), SENT, contributionFilesEntity.getFileId());
     }
 
     @Transactional(rollbackFor =  MAATCourtDataException.class)
@@ -118,12 +119,14 @@ public class ConcorContributionsService {
         return contributionFileEntity;
     }
 
-    private boolean updateConcorStatusForContribution(Set<Integer> ids, ConcorContributionStatus status, final Integer contributionFileId ){
+    /** Sets specific concor_contribution rows to status = SENT, contrib_file_id = (non-null). */
+    private boolean updateConcorContributionStatusAndSetContribFile(Set<Integer> ids, ConcorContributionStatus status, final Integer contributionFileId ){
 
         final List<ConcorContributionsEntity> concorFileList = concorRepository.findByIdIn(ids);
 
         log.info("Concor Contributions for status update - count {}", concorFileList.size());
         concorFileList.forEach(cc -> {
+            cc.setUserModified("DCES");
             cc.setStatus(status);
             cc.setContribFileId(contributionFileId);
         });

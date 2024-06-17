@@ -186,7 +186,7 @@ class ConcorContributionsRestControllerTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(request);
 
-        when(concorContributionsService.updateConcorContributionStatus(request))
+        when(concorContributionsService.updateConcorContributionStatusAndResetContribFile(request))
                 .thenReturn(List.of(111,222, 333));
 
         mvc.perform(MockMvcRequestBuilders.put(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_STATUS_URL))
@@ -206,7 +206,7 @@ class ConcorContributionsRestControllerTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(request);
 
-        when(concorContributionsService.updateConcorContributionStatus(request)).thenReturn(List.of());
+        when(concorContributionsService.updateConcorContributionStatusAndResetContribFile(request)).thenReturn(List.of());
 
         mvc.perform(MockMvcRequestBuilders.put(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_STATUS_URL))
                         .content(requestBody)

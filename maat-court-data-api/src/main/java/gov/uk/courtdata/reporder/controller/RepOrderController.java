@@ -5,6 +5,7 @@ import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.applicant.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
@@ -13,6 +14,7 @@ import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
+import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,8 +23,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -52,6 +59,7 @@ public class RepOrderController {
     private final MaatIdValidator maatIdValidator;
     private final RepOrderMvoRegService repOrderMvoRegService;
     private final UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
+    private final RepOrderRepository repOrderRepository;
 
     @RequestMapping(value = "/{repId}",
             method = {RequestMethod.GET, RequestMethod.HEAD},
@@ -90,6 +98,17 @@ public class RepOrderController {
         return ResponseEntity.ok(repOrderService.updateDateCompleted(updateAppDateCompleted));
     }
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve rep order records by USN")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+    @StandardApiResponse
+    public ResponseEntity<Set<Integer>> findByUsn(@RequestParam(value = "usn") Integer usn) {
+        log.debug("Get Rep Order By USN Received");
+        List<RepOrderEntity> repOrderEntityList = repOrderRepository.findByUsn(usn);
+        return ResponseEntity.ok(repOrderEntityList.stream().map(RepOrderEntity::getId).collect(Collectors.toSet()));
+    }
 
     @GetMapping(value = "/rep-order-mvo-reg/{mvoId}/current-registration", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a rep order record")

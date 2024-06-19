@@ -5,6 +5,7 @@ import gov.uk.courtdata.constants.ErrorCodes;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.dto.RepOrderMvoDTO;
 import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
+import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
@@ -12,6 +13,7 @@ import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
+import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +26,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -43,6 +43,8 @@ class RepOrderControllerTest {
     private static final String MVO_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
     private static final String CURRENT_REGISTRATION = "current-registration";
+    private static final Integer USN = 12345;
+    private static final Integer REP_ID = 54321;
 
     @Autowired
     private MockMvc mvc;
@@ -56,6 +58,8 @@ class RepOrderControllerTest {
     private RepOrderMvoRegService repOrderMvoRegService;
     @MockBean
     private RepOrderMvoService repOrderMvoService;
+    @MockBean
+    private RepOrderRepository repOrderRepository;
 
     @Test
     void givenGetRequestWithValidRepIdAndNoOptionalParameters_whenFindIsInvoked_thenAssessmentIsRetrieved() throws Exception {
@@ -303,5 +307,31 @@ class RepOrderControllerTest {
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
+    }
+
+    @Test
+    void givenValidUsn_whenFindByUsnIsInvokedAndFindsARepOrder_thenCorrectResponseIsReturned() throws Exception {
+        List<RepOrderEntity> expectedRepOrder = new ArrayList<>();
+        expectedRepOrder.add(RepOrderEntity.builder().id(REP_ID).usn(USN).build());
+        when(repOrderRepository.findByUsn(USN))
+                .thenReturn(expectedRepOrder);
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-usn/" + USN))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0]", is(REP_ID)));
+    }
+
+    @Test
+    void givenValidUsn_whenFindByUsnIsInvokedAndFindsNoRepOrder_thenCorrectResponseIsReturned() throws Exception {
+        List<RepOrderEntity> expectedRepOrder = new ArrayList<>();
+        when(repOrderRepository.findByUsn(USN))
+                .thenReturn(expectedRepOrder);
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-usn/" + USN))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(0)));
     }
 }

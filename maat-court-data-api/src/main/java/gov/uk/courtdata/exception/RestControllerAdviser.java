@@ -140,7 +140,7 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
         log.error(errorMessage);
 
         return ResponseEntity.internalServerError().body(ErrorDTO.builder()
-                .code(ErrorCodes.DB_ERROR)
+                .code(ErrorCodes.APPLICATION_ERROR)
                 .message(errorMessage)
                 .build());
     }

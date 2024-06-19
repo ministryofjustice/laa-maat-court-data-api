@@ -99,6 +99,10 @@ Parameters:
     Type: String
     Default: standard
     Description: Name of Cognito first scope
+  pApiScopeRead:
+    Type: String
+    Default: read
+    Description: Name of read-only Cognito scope
   pApiStageName:
     Type: String
     Default: "v1"
@@ -647,6 +651,15 @@ Resources:
       AuthorizationScopes: [!Sub '${pAppName}/${pApiScope1}']
       AuthorizerId: !Ref ApiAuthorizer
       Target: !Join ['/', [integrations, !Ref ApiIntegration]]
+  ApiRouteRepOrderGetRequests:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ApiGateway
+      RouteKey: 'GET /api/internal/v1/assessment/rep-orders/{proxy+}'
+      AuthorizationType: JWT
+      AuthorizationScopes: [ !Sub '${pAppName}/${pApiScope1}', !Sub '${pAppName}/${pApiScopeRead}' ]
+      AuthorizerId: !Ref ApiAuthorizer
+      Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
   ApiRouteEformStaging:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -699,7 +712,7 @@ Resources:
           - !Ref CognitoUserPoolClientCrimeEvidence
           - !Ref CognitoUserPoolCrimeHardshipService
           - !Ref CognitoUserPoolMAATOrchestrationService
-          - !Ref CognitoUserPoolClientClaimForCrownCourtDefence
+          - !Ref CognitoUserPoolClaimForCrownCourtDefenceClient
           - !Ref CognitoUserPoolClientCrimeValidationService
           - !Ref CognitoUserPoolClientATSService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
@@ -942,17 +955,17 @@ Resources:
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'
-  CognitoUserPoolClientClaimForCrownCourtDefence:
+  CognitoUserPoolClaimForCrownCourtDefenceClient:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
-      ClientName: "Claim for Crown Court Defence"
+      ClientName: "Claim for CCD"
       UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlowsUserPoolClient: true
       GenerateSecret: true
       SupportedIdentityProviders: [ COGNITO ]
       AllowedOAuthFlows: [ client_credentials ]
-      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScopeRead}' ]
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'
@@ -984,6 +997,8 @@ Resources:
       Scopes:
        - ScopeName: !Ref pApiScope1
          ScopeDescription: !Sub '${pAppName}/${pApiScope1}'
+       - ScopeName: !Ref pApiScopeRead
+         ScopeDescription: !Sub '${pAppName}/${pApiScopeRead}'
 
 
   ##############################################################################

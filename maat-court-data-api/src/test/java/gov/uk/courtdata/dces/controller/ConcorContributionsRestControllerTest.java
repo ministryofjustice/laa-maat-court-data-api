@@ -3,7 +3,9 @@ package gov.uk.courtdata.dces.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
+import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
+import gov.uk.courtdata.dces.response.ConcorContributionResponseDTO;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -16,10 +18,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 import java.util.List;
 import java.util.Set;
 
+import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,6 +35,9 @@ class ConcorContributionsRestControllerTest {
     private static final String CREATE_CONTRIBUTION_FILE_URL = "/create-contribution-file";
     private static final String CONCOR_CONTRIBUTION_FILES_URL = "/concor-contribution-files";
     private static final String DRC_UPDATE_URL = "/log-contribution-response";
+
+    private static final String CONCOR_CONTRIBUTION_STATUS_URL = "/concor-contribution-status";
+    private static final String CONCOR_CONTRIBUTION_URL = "/concor-contribution";
 
     @Autowired
     private MockMvc mvc;
@@ -173,6 +178,61 @@ class ConcorContributionsRestControllerTest {
                 .andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("message").value("Test Error"));
     }
+
+    @Test
+    void testUpdateContributionStatus() throws Exception {
+
+        UpdateConcorContributionStatusRequest request = UpdateConcorContributionStatusRequest.builder().build();
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final String requestBody = objectMapper.writeValueAsString(request);
+
+        when(concorContributionsService.updateConcorContributionStatus(request))
+                .thenReturn(List.of(111,222, 333));
+
+        mvc.perform(MockMvcRequestBuilders.put(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_STATUS_URL))
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$.[0]").value(111L))
+                .andExpect(jsonPath("$.[1]").value(222L))
+                .andExpect(jsonPath("$.[2]").value(333L));
+    }
+
+    @Test
+    void testUpdateContributionStatusWhenNotFound() throws Exception {
+
+        UpdateConcorContributionStatusRequest request = UpdateConcorContributionStatusRequest.builder().build();
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final String requestBody = objectMapper.writeValueAsString(request);
+
+        when(concorContributionsService.updateConcorContributionStatus(request)).thenReturn(List.of());
+
+        mvc.perform(MockMvcRequestBuilders.put(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_STATUS_URL))
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+
+    @Test
+    void testGetContributionWhenFound() throws Exception {
+
+        Integer id = 100;
+        ConcorContributionResponseDTO responseDTO = ConcorContributionResponseDTO.builder()
+                .id(id)
+                .status(SENT)
+                .build();
+
+        when(concorContributionsService.getConcorContribution(id)).thenReturn(responseDTO);
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_URL+"/100"))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.status").value("SENT"));
+    }
+
 
     private String createDrcUpdateJson(int concorId, String errorText){
         return """

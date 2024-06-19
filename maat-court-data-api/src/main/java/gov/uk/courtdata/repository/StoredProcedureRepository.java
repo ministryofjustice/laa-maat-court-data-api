@@ -18,7 +18,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-
 @Slf4j
 @Repository
 public class StoredProcedureRepository {
@@ -32,6 +31,8 @@ public class StoredProcedureRepository {
 
     private static final String PACKAGE_NAME_NOT_SET_EXCEPTION = "The package name has not been set";
     private static final String PROCEDURE_NAME_NOT_SET_EXCEPTION = "The procedure name has not been set";
+    private static final int MIN_SQL_ERROR_CODE = 20000;
+    private static final int MAX_SQL_ERROR_CODE = 21999;
 
     public ApplicationDTO executeStoredProcedure(StoredProcedureRequest storedProcedure) throws
             MAATApplicationException, SQLException {
@@ -81,7 +82,7 @@ public class StoredProcedureRepository {
                 }
             }
         } catch (Exception exception) {
-            rollbackTransactionalConnection(conn);
+            handleException(exception, conn);
             throw new RuntimeException(exception);
         } finally {
             closeAndCommitConnection(conn);
@@ -154,12 +155,11 @@ public class StoredProcedureRepository {
         return connection != null && !connection.isClosed();
     }
 
-    private boolean commitTransactionalConnection(Connection connection) throws SQLException {
+    private void commitTransactionalConnection(Connection connection) throws SQLException {
         try {
             if (connectionRequiresManualCommit(connection)) {
                 connection.commit();
             }
-            return true;
         } catch (SQLException se) {
             log.error(getClass().getName() + " ### Cannot commit transaction ");
             throw se;
@@ -170,15 +170,34 @@ public class StoredProcedureRepository {
         return !connection.getAutoCommit();
     }
 
-    private boolean rollbackTransactionalConnection(Connection connection) throws SQLException {
+    private void rollbackTransactionalConnection(Connection connection) throws SQLException {
         try {
             if (connectionRequiresManualCommit(connection)) {
                 connection.rollback();
             }
-            return true;
         } catch (SQLException se) {
             log.error(getClass().getName() + " ### Cannot rollback transaction ");
             throw se;
         }
     }
+
+    public void handleException(Throwable t, Connection conn) throws SQLException, MAATApplicationException {
+        log.error("### " + t);
+
+        rollbackTransactionalConnection(conn);
+        if (t instanceof SQLException sqlException) {
+            int errorCode = sqlException.getErrorCode();
+            if ((errorCode >= MIN_SQL_ERROR_CODE) && (errorCode <= MAX_SQL_ERROR_CODE)) {
+                String errorMessage = sqlException.getMessage();
+                //remove stack trace codes from exception
+                int start = errorMessage.indexOf(':');
+                int end = errorMessage.indexOf('\n');
+                if (start > 0 && end > 0) {
+                    errorMessage = "Application Error " + errorMessage.substring(start, end);
+                }
+                throw new MAATApplicationException(errorMessage, sqlException);
+            }
+        }
+    }
+
 }

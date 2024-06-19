@@ -4,4 +4,6 @@ public final class ErrorCodes {
     private ErrorCodes(){}
     public static final String DB_ERROR = "DB Error";
     public static final String OBJECT_NOT_FOUND = "Object Not Found";
+
+    public static final String APPLICATION_ERROR = "Application Error";
 }

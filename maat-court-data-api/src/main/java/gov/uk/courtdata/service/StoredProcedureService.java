@@ -6,7 +6,6 @@ import gov.uk.courtdata.repository.StoredProcedureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -14,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class StoredProcedureService {
 
     private final StoredProcedureRepository repository;
-    
+
     public ApplicationDTO executeStoredProcedure(StoredProcedureRequest callStoredProcedure) {
         log.info("Calling execute Store Procedure- Start");
-        ApplicationDTO result = null;
+        ApplicationDTO result;
         try {
             result = repository.executeStoredProcedure(callStoredProcedure);
         } catch (Exception exception) {

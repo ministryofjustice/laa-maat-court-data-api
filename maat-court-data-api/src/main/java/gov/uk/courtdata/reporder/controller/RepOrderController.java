@@ -27,6 +27,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -97,13 +98,13 @@ public class RepOrderController {
         return ResponseEntity.ok(repOrderService.updateDateCompleted(updateAppDateCompleted));
     }
 
-    @GetMapping(value = "/rep-order-usn/{usn}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve rep order records by USN")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
     @StandardApiResponse
-    public ResponseEntity<Object> findByUsn(@PathVariable int usn) {
+    public ResponseEntity<Set<Integer>> findByUsn(@RequestParam(value = "usn") Integer usn) {
         log.debug("Get Rep Order By USN Received");
         List<RepOrderEntity> repOrderEntityList = repOrderRepository.findByUsn(usn);
         return ResponseEntity.ok(repOrderEntityList.stream().map(RepOrderEntity::getId).collect(Collectors.toSet()));

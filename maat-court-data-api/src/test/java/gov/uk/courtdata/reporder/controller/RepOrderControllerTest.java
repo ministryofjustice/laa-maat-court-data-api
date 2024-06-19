@@ -316,7 +316,8 @@ class RepOrderControllerTest {
         when(repOrderRepository.findByUsn(USN))
                 .thenReturn(expectedRepOrder);
 
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-usn/" + USN))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("usn", String.valueOf(USN)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -329,7 +330,8 @@ class RepOrderControllerTest {
         when(repOrderRepository.findByUsn(USN))
                 .thenReturn(expectedRepOrder);
 
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-usn/" + USN))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("usn", String.valueOf(USN)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(0)));

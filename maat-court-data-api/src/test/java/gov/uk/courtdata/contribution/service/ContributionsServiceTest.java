@@ -1,5 +1,14 @@
 package gov.uk.courtdata.contribution.service;
 
+import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
@@ -10,19 +19,14 @@ import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ContributionsServiceTest {
@@ -75,7 +79,7 @@ class ContributionsServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(contributionsEntity));
         when(repository.saveAndFlush(any(ContributionsEntity.class))).thenReturn(contributionsEntity);
         contributionsService.update(UpdateContributions.builder().id(testId).build());
-        assert contributionsEntity != null;
+        assertNotNull(contributionsEntity);
         verify(repository).saveAndFlush(contributionsEntity);
         verify(contributionsMapper).mapEntityToDTO(any(ContributionsEntity.class));
     }

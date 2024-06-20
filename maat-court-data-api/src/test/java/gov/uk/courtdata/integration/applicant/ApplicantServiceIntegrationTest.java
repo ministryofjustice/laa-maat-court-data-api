@@ -1,42 +1,29 @@
 package gov.uk.courtdata.integration.applicant;
 
+import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.SEND_TO_CCLF;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
-import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
-import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.applicant.service.ApplicantHistoryService;
 import gov.uk.courtdata.applicant.service.RepOrderApplicantLinksService;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.repository.RepOrderRepository;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
-
-import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
-import static gov.uk.courtdata.builder.TestModelDataBuilder.SEND_TO_CCLF;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
 
     private static final int ID = 1;
-
-    @Autowired
-    private RepOrderApplicantLinksRepository repOrderApplicantLinksRepository;
-
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-
-    @Autowired
-    private ApplicantHistoryRepository applicantHistoryRepository;
 
     @Autowired
     private RepOrderApplicantLinksService repOrderApplicantLinksService;
@@ -46,8 +33,9 @@ public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenValidRepId_WhenGetRepOrderApplicantLinksIsInvoked_thenCorrectResponseIsReturned() {
-        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
-        repOrderApplicantLinksRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
+        repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
+        repos.repOrderApplicantLinks.saveAndFlush(
+            TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
         List<RepOrderApplicantLinksDTO> result = repOrderApplicantLinksService.find(REP_ID);
         assertThat(result.isEmpty()).isFalse();
         assertThat(result.get(0).getId()).isGreaterThan(0);
@@ -64,9 +52,10 @@ public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAValidInput_whenUpdateRepOrderApplicantLinksIsInvoked_thenUpdateIsSuccess() {
-        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
-        repOrderApplicantLinksRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
-        Integer id = repOrderApplicantLinksRepository.findAll().get(0).getId();
+        repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
+        repos.repOrderApplicantLinks.saveAndFlush(
+            TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
+        Integer id = repos.repOrderApplicantLinks.findAll().get(0).getId();
         RepOrderApplicantLinksDTO recordToUpdate = TestModelDataBuilder.getRepOrderApplicantLinksDTO(id);
         RepOrderApplicantLinksDTO repOrderApplicantLinksDTO = repOrderApplicantLinksService.update(recordToUpdate);
         assertThat(repOrderApplicantLinksDTO.getId()).isEqualTo(id);
@@ -85,8 +74,8 @@ public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenValidId_whenGetApplicantHistoryIsInvoked_thenCorrectResponseIsReturned() {
         ApplicantHistoryEntity testRecord = TestEntityDataBuilder.getApplicantHistoryEntity("N");
-        applicantHistoryRepository.saveAndFlush(testRecord);
-        Integer id = applicantHistoryRepository.findAll().get(0).getId();
+        repos.applicantHistory.saveAndFlush(testRecord);
+        Integer id = repos.applicantHistory.findAll().get(0).getId();
         ApplicantHistoryDTO result = applicantHistoryService.find(id);
         assertThat(result).isNotNull();
         assertThat(result.getId()).isGreaterThan(0);
@@ -103,8 +92,8 @@ public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAValidInput_whenUpdateApplicantHistoryIsInvoked_thenUpdateIsSuccess() {
-        applicantHistoryRepository.saveAndFlush(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
-        Integer id = applicantHistoryRepository.findAll().get(0).getId();
+        repos.applicantHistory.saveAndFlush(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
+        Integer id = repos.applicantHistory.findAll().get(0).getId();
         ApplicantHistoryDTO applicantHistoryDTO = applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(id, SEND_TO_CCLF));
         assertThat(applicantHistoryDTO.getId()).isEqualTo(id);
         assertThat(applicantHistoryDTO.getSendToCclf()).isEqualTo(SEND_TO_CCLF);

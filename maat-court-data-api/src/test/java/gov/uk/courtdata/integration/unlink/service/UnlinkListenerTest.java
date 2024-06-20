@@ -12,23 +12,13 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
-import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.PassportAssessmentRepository;
-import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import gov.uk.courtdata.repository.RepOrderCPDataRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.repository.UnlinkReasonRepository;
-import gov.uk.courtdata.repository.WqCoreRepository;
-import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.unlink.service.UnlinkListener;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,13 +27,6 @@ import org.springframework.messaging.MessageHeaders;
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class UnlinkListenerTest extends MockMvcIntegrationTest {
 
-
-    @Autowired
-    private WqLinkRegisterRepository wqLinkRegisterRepository;
-    @Autowired
-    private WqCoreRepository wqCoreRepository;
-    @Autowired
-    private UnlinkReasonRepository unlinkReasonRepository;
     @Autowired
     private Gson gson;
     @Autowired
@@ -55,36 +38,15 @@ public class UnlinkListenerTest extends MockMvcIntegrationTest {
     @Autowired
     private UnlinkListener unlinkListener;
     @Autowired
-    private RepOrderRepository repOrderRepository;
-    @Autowired
-    private RepOrderCPDataRepository repOrderCPDataRepository;
-    @Autowired
-    private QueueMessageLogRepository queueMessageLogRepository;
-    @Autowired
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
-    @Autowired
-    private FinancialAssessmentRepository financialAssessmentRepository;
-    @Autowired
-    private PassportAssessmentRepository passportAssessmentRepository;
-
-    @BeforeEach
-    public void setUp() {
-        new RepositoryUtil().clearUp(passportAssessmentRepository,
-                financialAssessmentRepository,
-                wqCoreRepository,
-                wqLinkRegisterRepository,
-                unlinkReasonRepository,
-                repOrderRepository,
-                repOrderCPDataRepository,
-                queueMessageLogRepository);
-    }
 
     @Test
     public void givenUnlinkLinkJSONMessage_whenUnlinkListenerIsInvoked_thenCaseIsUnlinked() {
 
         //given
 
-        RepOrderEntity repOrderEntity = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrderEntity = repos.repOrder.save(
+            TestEntityDataBuilder.getPopulatedRepOrder());
 
         Unlink unlink = gson.fromJson(testModelDataBuilder.getUnLinkString(repOrderEntity.getId()), Unlink.class);
         UnlinkModel unlinkModel = UnlinkModel.builder().unlink(unlink).build();
@@ -92,8 +54,8 @@ public class UnlinkListenerTest extends MockMvcIntegrationTest {
         unlinkModel.setWqLinkRegisterEntity(wqLinkRegisterEntity);
         RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderCPDataEntity(repOrderEntity.getId());
         unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity);
-        wqLinkRegisterRepository.save(wqLinkRegisterEntity);
-        repOrderCPDataRepository.save(RepOrderCPDataEntity.builder()
+        repos.wqLinkRegister.save(wqLinkRegisterEntity);
+        repos.repOrderCPData.save(RepOrderCPDataEntity.builder()
                 .defendantId("556677")
                 .repOrderId(repOrderEntity.getId())
                 .build());
@@ -115,7 +77,7 @@ public class UnlinkListenerTest extends MockMvcIntegrationTest {
 
     private void assertWQLinkRegister(UnlinkModel unlinkModel, Integer repId) {
 
-        List<WqLinkRegisterEntity> wqUnLinkRegisterEntity = wqLinkRegisterRepository.findAll();
+        List<WqLinkRegisterEntity> wqUnLinkRegisterEntity = repos.wqLinkRegister.findAll();
         WqLinkRegisterEntity unLinkRegister = wqUnLinkRegisterEntity.get(0);
         assertNotNull(unLinkRegister);
         Unlink unlink = unlinkModel.getUnlink();

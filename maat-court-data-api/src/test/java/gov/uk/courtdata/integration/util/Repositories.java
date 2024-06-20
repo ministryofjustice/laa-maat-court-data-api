@@ -1,10 +1,12 @@
 package gov.uk.courtdata.integration.util;
 
+import gov.uk.courtdata.applicant.repository.ApplicantDisabilitiesRepository;
 import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.entity.UserEntity;
+import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesRepository;
 import gov.uk.courtdata.repository.AppealTypeRepository;
 import gov.uk.courtdata.repository.CaseRepository;
 import gov.uk.courtdata.repository.ChildWeightHistoryRepository;
@@ -75,6 +77,9 @@ public class Repositories {
 
   @Autowired
   public AppealTypeRepository appealType;
+
+  @Autowired
+  public ApplicantDisabilitiesRepository applicantDisabilities;
 
   @Autowired
   public ApplicantHistoryRepository applicantHistory;
@@ -224,6 +229,9 @@ public class Repositories {
   public UnlinkReasonRepository unlinkReason;
 
   @Autowired
+  public UpdateOutcomesRepository updateOutcomes;
+
+  @Autowired
   public UserRepository user;
 
   @Autowired
@@ -268,6 +276,7 @@ public class Repositories {
   @NotNull
   private JpaRepository[] allRepositories() {
     return new JpaRepository[]{appealType,
+        applicantDisabilities,
         applicantHistory,
         caseRepository,
         childWeightHistory,
@@ -317,6 +326,7 @@ public class Repositories {
         solicitorMAATData,
         solicitor,
         unlinkReason,
+        updateOutcomes,
         user,
         userRoles,
         verdict,

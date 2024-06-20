@@ -1,5 +1,7 @@
 package gov.uk.courtdata.integration.link.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -9,81 +11,52 @@ import gov.uk.courtdata.entity.CourtHouseCodesEntity;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.link.service.CreateLinkListener;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.repository.*;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.messaging.MessageHeaders;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.messaging.MessageHeaders;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class CreateLinkListenerIntegrationTest {
-
+public class CreateLinkListenerIntegrationTest extends MockMvcIntegrationTest {
 
     @Autowired
     private TestModelDataBuilder testModelDataBuilder;
-    @Autowired
-    private WqLinkRegisterRepository wqLinkRegisterRepository;
-    @Autowired
-    private RepOrderCPDataRepository repOrderDataRepository;
-    @Autowired
-    private RepOrderRepository repOrderRepository;
+
     @Autowired
     private TestEntityDataBuilder testEntityDataBuilder;
-    @Autowired
-    private CourtHouseCodesRepository courtHouseCodesRepository;
+
     @Autowired
     private CreateLinkListener createLinkListener;
-    @Autowired
-    private SolicitorMAATDataRepository solicitorMAATDataRepository;
-    @Autowired
-    private DefendantMAATDataRepository defendantMAATDataRepository;
-    @Autowired
-    private QueueMessageLogRepository queueMessageLogRepository;
+
     @Autowired
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
-    @Autowired
-    private FinancialAssessmentRepository financialAssessmentRepository;
-    @Autowired
-    private PassportAssessmentRepository passportAssessmentRepository;
-
-    @BeforeEach
-    public void setUp() {
-        new RepositoryUtil().clearUp(financialAssessmentRepository,
-                passportAssessmentRepository,
-                repOrderRepository,
-                wqLinkRegisterRepository,
-                repOrderDataRepository,
-                solicitorMAATDataRepository,
-                defendantMAATDataRepository,
-                courtHouseCodesRepository,
-                queueMessageLogRepository);
-    }
 
     @Test
     public void givenSaveAndLinkModel_whenSaveAndImplIsInvoked_thenLinkEstablished() {
 
         //given
-        RepOrderEntity repOrderEntity = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrderEntity = repos.repOrder.save(
+            TestEntityDataBuilder.getPopulatedRepOrder());
         RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderEntity();
         repOrderCPDataEntity.setRepOrderId(repOrderEntity.getId());
-        repOrderDataRepository.save(repOrderCPDataEntity);
+        repos.repOrderCPData.save(repOrderCPDataEntity);
 
-        courtHouseCodesRepository.save(CourtHouseCodesEntity.builder().code("B16BG").effectiveDateFrom(LocalDateTime.now()).build());
-        solicitorMAATDataRepository.save(testEntityDataBuilder.getSolicitorMAATDataEntity(repOrderEntity.getId()));
-        defendantMAATDataRepository.save(testEntityDataBuilder.getDefendantMAATDataEntity(repOrderEntity.getId()));
+        repos.courtHouseCodes.save(
+            CourtHouseCodesEntity.builder().code("B16BG").effectiveDateFrom(LocalDateTime.now())
+                .build());
+        repos.solicitorMAATData.save(
+            testEntityDataBuilder.getSolicitorMAATDataEntity(repOrderEntity.getId()));
+        repos.defendantMAATData.save(
+            testEntityDataBuilder.getDefendantMAATDataEntity(repOrderEntity.getId()));
 
         String saveAndLinkMessage = testModelDataBuilder.getSaveAndLinkString(repOrderEntity.getId());
 
@@ -116,15 +89,17 @@ public class CreateLinkListenerIntegrationTest {
         //when
         createLinkListener.receive(saveAndLinkMessage, headers);
         //then
-        assertThat(wqLinkRegisterRepository.findAll().size()).isEqualTo(0);
+        assertThat(repos.wqLinkRegister.findAll().size()).isEqualTo(0);
     }
 
     private void verifyRepOrder(CourtDataDTO courtDataDTO) {
         // Verify CP Rep Order Record is created
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
-        Optional<RepOrderCPDataEntity> retrievedRepOrderEntity = repOrderDataRepository.findByrepOrderId(caseDetails.getMaatId());
+        Optional<RepOrderCPDataEntity> retrievedRepOrderEntity = repos.repOrderCPData.findByrepOrderId(
+            caseDetails.getMaatId());
         RepOrderCPDataEntity found = retrievedRepOrderEntity.orElse(null);
-        assert found != null;
+
+        assertNotNull(found);
         assertThat(found.getCaseUrn()).isEqualTo(caseDetails.getCaseUrn());
         assertThat(found.getRepOrderId()).isEqualTo(caseDetails.getMaatId());
         assertThat(found.getDefendantId()).isEqualTo(caseDetails.getDefendant().getDefendantId());
@@ -133,26 +108,28 @@ public class CreateLinkListenerIntegrationTest {
 
     private void verifyWqLinkRegister(CourtDataDTO courtDataDTO) {
         // Verify WQCore Link register Record is created
-        List<WqLinkRegisterEntity> retrievedWqLinkRegisterEntity = wqLinkRegisterRepository.findBymaatId(courtDataDTO.getCaseDetails().getMaatId());
+        List<WqLinkRegisterEntity> retrievedWqLinkRegisterEntity = repos.wqLinkRegister.findBymaatId(
+            courtDataDTO.getCaseDetails().getMaatId());
         WqLinkRegisterEntity wqLinkRegisterEntity = retrievedWqLinkRegisterEntity.get(0);
-        assert wqLinkRegisterEntity != null;
+
+        assertNotNull(wqLinkRegisterEntity);
         assertThat(wqLinkRegisterEntity.getMaatId()).isEqualTo(courtDataDTO.getCaseDetails().getMaatId());
     }
 
     public String getSaveAndLinkString() {
-        return "{\n" +
-
-                "  \"category\": 12,\n" +
-                "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
-                "  \"caseUrn\":\"caseurn1\",\n" +
-                "  \"asn\": \"123456754\",\n" +
-                "  \"docLanguage\": \"EN\",\n" +
-                "  \"caseCreationDate\": \"2019-08-16\",\n" +
-                "  \"cjsAreaCode\": \"16\",\n" +
-                "  \"createdUser\": \"testUser\",\n" +
-                "  \"cjsLocation\": \"B16BG\",\n" +
-                "  \"isActive\" : true\n" +
-                "}";
+        return """
+            {
+              "category": 12,
+              "laaTransactionId":"e439dfc8-664e-4c8e-a999-d756dcf112c2",
+              "caseUrn":"caseurn1",
+              "asn": "123456754",
+              "docLanguage": "EN",
+              "caseCreationDate": "2019-08-16",
+              "cjsAreaCode": "16",
+              "createdUser": "testUser",
+              "cjsLocation": "B16BG",
+              "isActive" : true
+            }""";
     }
 }
 

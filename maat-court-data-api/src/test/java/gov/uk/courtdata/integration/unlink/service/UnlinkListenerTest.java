@@ -1,5 +1,8 @@
 package gov.uk.courtdata.integration.unlink.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.google.gson.Gson;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -12,20 +15,24 @@ import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.integration.util.RepositoryUtil;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
-import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import gov.uk.courtdata.repository.PassportAssessmentRepository;
+import gov.uk.courtdata.repository.QueueMessageLogRepository;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
+import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.repository.UnlinkReasonRepository;
+import gov.uk.courtdata.repository.WqCoreRepository;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.unlink.service.UnlinkListener;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.MessageHeaders;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class UnlinkListenerTest extends MockMvcIntegrationTest {
@@ -110,7 +117,7 @@ public class UnlinkListenerTest extends MockMvcIntegrationTest {
 
         List<WqLinkRegisterEntity> wqUnLinkRegisterEntity = wqLinkRegisterRepository.findAll();
         WqLinkRegisterEntity unLinkRegister = wqUnLinkRegisterEntity.get(0);
-        assert unLinkRegister != null;
+        assertNotNull(unLinkRegister);
         Unlink unlink = unlinkModel.getUnlink();
         assertThat(unLinkRegister.getMaatId()).isEqualTo(repId);
         assertThat(unLinkRegister.getRemovedUserId()).isEqualTo(unlink.getUserId());

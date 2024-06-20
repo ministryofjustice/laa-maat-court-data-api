@@ -1,24 +1,23 @@
 package gov.uk.courtdata.integration.job;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.job.QueueMessageMaintenanceScheduler;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @TestPropertySource(locations = {"classpath:application.yaml"})
@@ -33,11 +32,6 @@ public class QueueMessageMaintenanceSchedulerTest  extends MockMvcIntegrationTes
 
     private static byte[] buildMessage(Integer maatId) {
         return ("{laaTransactionId:\"8720c683-39ef-4168-a8cc-058668a2dcca\",\"maatId\":" + maatId + "}").getBytes();
-    }
-
-    @BeforeEach
-    public void setUp() {
-        new RepositoryUtil().clearUp(getQueueMessageLogRepository());
     }
 
     @Test
@@ -100,11 +94,6 @@ public class QueueMessageMaintenanceSchedulerTest  extends MockMvcIntegrationTes
         assertAll("messageLogEntities",
                 () -> assertNotNull(messageLogEntities),
                 () -> assertTrue(messageLogEntities.isEmpty()));
-    }
-
-    @AfterEach
-    public void tearDown() {
-        new RepositoryUtil().clearUp(getQueueMessageLogRepository());
     }
 
     private QueueMessageLogRepository getQueueMessageLogRepository() {

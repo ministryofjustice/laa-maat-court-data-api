@@ -4,8 +4,10 @@ import gov.uk.courtdata.applicant.repository.ApplicantDisabilitiesRepository;
 import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.entity.UserEntity;
+import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesRepository;
 import gov.uk.courtdata.repository.AppealTypeRepository;
 import gov.uk.courtdata.repository.CaseRepository;
@@ -109,6 +111,9 @@ public class Repositories {
   public ContributionFileErrorsRepository contributionFileErrors;
 
   @Autowired
+  public ContributionsRepository contributions;
+
+  @Autowired
   public CorrespondenceRepository correspondence;
 
   @Autowired
@@ -164,6 +169,9 @@ public class Repositories {
 
   @Autowired
   public IOJAppealRepository iojAppeal;
+
+  @Autowired
+  public MockNewWorkReasonRepository mockNewWorkReason;
 
   @Autowired
   public OffenceRepository offence;
@@ -286,6 +294,7 @@ public class Repositories {
         contribCalcParameters,
         contributionFiles,
         contributionFileErrors,
+        contributions,
         correspondence,
         correspondenceState,
         courtHouseCodes,
@@ -305,6 +314,7 @@ public class Repositories {
         hardshipReview,
         identifier,
         iojAppeal,
+        mockNewWorkReason,
         offence,
         passportAssessment,
         plea,

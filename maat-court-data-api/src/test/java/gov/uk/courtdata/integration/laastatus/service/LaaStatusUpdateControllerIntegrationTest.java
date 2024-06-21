@@ -46,21 +46,6 @@ import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import gov.uk.courtdata.model.laastatus.Organisation;
 import gov.uk.courtdata.model.laastatus.Relationships;
 import gov.uk.courtdata.model.laastatus.RepOrderData;
-import gov.uk.courtdata.repository.CaseRepository;
-import gov.uk.courtdata.repository.DefendantMAATDataRepository;
-import gov.uk.courtdata.repository.DefendantRepository;
-import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.IdentifierRepository;
-import gov.uk.courtdata.repository.OffenceRepository;
-import gov.uk.courtdata.repository.PassportAssessmentRepository;
-import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import gov.uk.courtdata.repository.RepOrderCPDataRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.repository.SessionRepository;
-import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
-import gov.uk.courtdata.repository.SolicitorRepository;
-import gov.uk.courtdata.repository.WqCoreRepository;
-import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -82,38 +67,10 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     private final Integer TEST_CASE_ID = 42;
     private final String TEST_ASN_SEQ = "001";
     private Integer TEST_MAAT_ID = 1234;
-    @Autowired
-    private WqCoreRepository wqCoreRepository;
-    @Autowired
-    private QueueMessageLogRepository queueMessageLogRepository;
-    @Autowired
-    private IdentifierRepository identifierRepository;
-    @Autowired
-    private CaseRepository caseRepository;
-    @Autowired
-    private WqLinkRegisterRepository wqLinkRegisterRepository;
-    @Autowired
-    private SolicitorRepository solicitorRepository;
-    @Autowired
-    private DefendantRepository defendantRepository;
-    @Autowired
-    private SessionRepository sessionRepository;
-    @Autowired
-    private OffenceRepository offenceRepository;
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-    @Autowired
-    private SolicitorMAATDataRepository solicitorMAATDataRepository;
-    @Autowired
-    private DefendantMAATDataRepository defendantMAATDataRepository;
-    @Autowired
-    private RepOrderCPDataRepository repOrderCPDataRepository;
+
     @Autowired
     private LaaStatusUpdateController laaStatusUpdateController;
-    @Autowired
-    private FinancialAssessmentRepository financialAssessmentRepository;
-    @Autowired
-    private PassportAssessmentRepository passportAssessmentRepository;
+
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
     @BeforeEach
@@ -121,7 +78,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         objectMapper.setSerializationInclusion(Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         setupCdaWebServer();
-        queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
+        queueMessageLogTestHelper = new QueueMessageLogTestHelper(repos.queueMessageLog);
     }
 
     @Test
@@ -296,16 +253,17 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
             WqLinkRegisterEntity wqLinkRegisterEntity,
             SolicitorMAATDataEntity solicitorMAATDataEntity,
             DefendantMAATDataEntity defendantMAATDataEntity) {
-        int expectedTxId = identifierRepository.getTxnID() - 1;
+        int expectedTxId = repos.identifier.getTxnID() - 1;
 
-        List<CaseEntity> createdCaseEntities = caseRepository.findAll();
-        List<WqCoreEntity> createdWqCoreEntities = wqCoreRepository.findAll();
-        List<WqLinkRegisterEntity> wqLinkRegisterEntities = wqLinkRegisterRepository.findBymaatId(inputCaseDetails.getMaatId());
-        List<SolicitorEntity> createdSolicitorEntities = solicitorRepository.findAll();
-        List<DefendantEntity> createdDefendantEntities = defendantRepository.findAll();
-        List<SessionEntity> createdSessionEntities = sessionRepository.findAll();
+        List<CaseEntity> createdCaseEntities = repos.caseRepository.findAll();
+        List<WqCoreEntity> createdWqCoreEntities = repos.wqCore.findAll();
+        List<WqLinkRegisterEntity> wqLinkRegisterEntities = repos.wqLinkRegister.findBymaatId(
+            inputCaseDetails.getMaatId());
+        List<SolicitorEntity> createdSolicitorEntities = repos.solicitor.findAll();
+        List<DefendantEntity> createdDefendantEntities = repos.defendant.findAll();
+        List<SessionEntity> createdSessionEntities = repos.session.findAll();
         Offence inputOffence = inputCaseDetails.getDefendant().getOffences().get(0);
-        OffenceEntity offenceEntity = offenceRepository.findAll().stream()
+        OffenceEntity offenceEntity = repos.offence.findAll().stream()
                 .filter(item -> item.getTxId() == expectedTxId).collect(Collectors.toList()).get(0);
 
         SoftAssertions.assertSoftly(softly -> {
@@ -367,19 +325,19 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
     private void assertMlaUpdatesNotPerformed(WqLinkRegisterEntity initialWqLinkRegisterEntity) {
         SoftAssertions.assertSoftly(softly -> {
-            assertThat(caseRepository.findAll().size())
+            assertThat(repos.caseRepository.findAll().size())
                     .isEqualTo(0);
-            assertThat(wqCoreRepository.findAll().size())
+            assertThat(repos.wqCore.findAll().size())
                     .isEqualTo(0);
-            assertThat(solicitorRepository.findAll().size())
+            assertThat(repos.solicitor.findAll().size())
                     .isEqualTo(0);
-            assertThat(defendantRepository.findAll().size())
+            assertThat(repos.defendant.findAll().size())
                     .isEqualTo(0);
-            assertThat(sessionRepository.findAll().size())
+            assertThat(repos.session.findAll().size())
                     .isEqualTo(0);
-            assertThat(offenceRepository.findAll().size())
+            assertThat(repos.offence.findAll().size())
                     .isEqualTo(1);
-            assertThat(wqLinkRegisterRepository.findBymaatId(
+            assertThat(repos.wqLinkRegister.findBymaatId(
                     initialWqLinkRegisterEntity.getMaatId()).get(0).getMlrCat()
             ).isEqualTo(initialWqLinkRegisterEntity.getMlrCat());
         });
@@ -408,13 +366,13 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     private DefendantMAATDataEntity createDefendantData() {
         DefendantMAATDataEntity defendantMAATDataEntity = DefendantMAATDataEntity.builder()
                 .maatId(TEST_MAAT_ID).useSol("use-sol").build();
-        defendantMAATDataRepository.save(defendantMAATDataEntity);
+        repos.defendantMAATData.save(defendantMAATDataEntity);
         return defendantMAATDataEntity;
     }
 
     private RepOrderCPDataEntity createRepOrderCPData() {
         RepOrderCPDataEntity repOrderCPDataEntity = RepOrderCPDataEntity.builder().repOrderId(TEST_MAAT_ID).defendantId("defendant-id").build();
-        repOrderCPDataRepository.save(repOrderCPDataEntity);
+        repos.repOrderCPData.save(repOrderCPDataEntity);
         return repOrderCPDataEntity;
     }
 
@@ -423,14 +381,14 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
                 OffenceEntity.builder()
                         .txId(1).caseId(caseId).offenceId("offence-id").offenceCode(offenceCode).asnSeq(TEST_ASN_SEQ).legalAidStatus(laaStatus)
                         .build();
-        offenceRepository.save(offenceEntity);
+        repos.offence.save(offenceEntity);
         return offenceEntity;
     }
 
     private void createTestRepoOrder() {
         RepOrderEntity repOrderEntity = TestEntityDataBuilder.getPopulatedRepOrder();
         repOrderEntity.setCaseId(TEST_CASE_ID.toString());
-        RepOrderEntity repOrder = repOrderRepository.save(repOrderEntity);
+        RepOrderEntity repOrder = repos.repOrder.save(repOrderEntity);
         TEST_MAAT_ID = repOrder.getId();
     }
 
@@ -438,7 +396,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         SolicitorMAATDataEntity solicitor = SolicitorMAATDataEntity.builder()
                 .maatId(TEST_MAAT_ID).solicitorName("test-solicitor").accountCode(accountCode).accountName("test-account")
                 .build();
-        solicitorMAATDataRepository.save(solicitor);
+        repos.solicitorMAATData.save(solicitor);
         return solicitor;
     }
 
@@ -454,7 +412,7 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
                             .caseId(TEST_CASE_ID)
                             .mlrCat(3)
                             .build());
-        wqLinkRegisterRepository.saveAll(linkItems);
+        repos.wqLinkRegister.saveAll(linkItems);
         return linkItems;
     }
 

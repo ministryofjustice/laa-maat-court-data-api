@@ -16,14 +16,9 @@ import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.entity.NewWorkReasonEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
-import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.HardshipReviewRepository;
-import gov.uk.courtdata.repository.PassportAssessmentRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,16 +39,6 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
     private final Integer INVALID_ASSESSMENT_ID = 999;
 
     @Autowired
-    private FinancialAssessmentRepository financialAssessmentRepository;
-    @Autowired
-    private HardshipReviewRepository hardshipReviewRepository;
-    @Autowired
-    private PassportAssessmentRepository passportAssessmentRepository;
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-    @Autowired
-    private MockNewWorkReasonRepository newWorkReasonRepository;
-    @Autowired
     private PassportAssessmentMapper passportAssessmentMapper;
 
     private PassportAssessmentEntity existingPassportAssessmentEntity;
@@ -69,16 +54,18 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         LocalDateTime testCreationDate = LocalDateTime.of(2022, 1, 1, 12, 0);
         String testUser = "test-f";
 
-        RepOrderEntity noOutstandingRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity noOutstandingRepOrder = repos.repOrder.save(
+            TestEntityDataBuilder.getPopulatedRepOrder());
         Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = noOutstandingRepOrder.getId();
 
-        RepOrderEntity completedRepOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity completedRepOrder = repos.repOrder.save(
+            TestEntityDataBuilder.getPopulatedRepOrder());
         Integer REP_ID_WITH_COMPLETED_ASSESSMENT = completedRepOrder.getId();
 
         NewWorkReasonEntity existingNewWorkReason =
-                newWorkReasonRepository.save(TestEntityDataBuilder.getFmaNewWorkReasonEntity());
+            repos.mockNewWorkReason.save(TestEntityDataBuilder.getFmaNewWorkReasonEntity());
 
-        existingPassportAssessmentEntity = passportAssessmentRepository.save(
+        existingPassportAssessmentEntity = repos.passportAssessment.save(
                 PassportAssessmentEntity.builder()
                         .repOrder(noOutstandingRepOrder)
                         .assessmentDate(testCreationDate)
@@ -87,7 +74,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
                         .replaced("N")
                         .build());
 
-        completePassportAssessmentEntity = passportAssessmentRepository.save(
+        completePassportAssessmentEntity = repos.passportAssessment.save(
                 PassportAssessmentEntity.builder()
                         .repOrder(completedRepOrder)
                         .assessmentDate(testCreationDate)
@@ -99,7 +86,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         FinancialAssessmentEntity testFinancialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
         testFinancialAssessment.getRepOrder().setId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS);
 
-        existingFinancialAssessmentEntity = financialAssessmentRepository.save(testFinancialAssessment);
+        existingFinancialAssessmentEntity = repos.financialAssessment.save(testFinancialAssessment);
 
         HardshipReviewEntity hardshipReview = TestEntityDataBuilder.getHardshipReviewEntity();
         hardshipReview.setId(null);
@@ -107,7 +94,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         hardshipReview.setReplaced("N");
         hardshipReview.setNewWorkReason(existingNewWorkReason);
 
-        hardshipReviewRepository.save(hardshipReview);
+        repos.hardshipReview.save(hardshipReview);
     }
 
     @Test
@@ -198,7 +185,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
 
         // Check existing financial assessment are marked as replaced.
         long updatedFinancialAssessmentsCount =
-                financialAssessmentRepository.findAll()
+            repos.financialAssessment.findAll()
                         .stream()
                         .filter(assessment -> assessment.getRepOrder().getId().equals(repId) && assessment.getReplaced().equals("Y"))
                         .count();
@@ -207,7 +194,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
 
         // Check that existing hardship reviews are marked as replaced.
         long updatedHardshipReviewCount =
-                hardshipReviewRepository.findAll()
+            repos.hardshipReview.findAll()
                         .stream()
                         .filter(review -> review.getRepId().equals(repId) && review.getReplaced().equals("Y"))
                         .count();
@@ -217,7 +204,7 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
         // Check that there are now 2 passport assessments for the given repId.
         // One current and the other marked as replaced.
         List<PassportAssessmentEntity> matchingPassportAssessments =
-                passportAssessmentRepository.findAll()
+            repos.passportAssessment.findAll()
                         .stream()
                         .filter(assessment -> assessment.getRepOrder().getId().equals(repId))
                         .collect(Collectors.toList());
@@ -327,9 +314,9 @@ public class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrat
 
         MvcResult result =
                 runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
-        passportAssessmentRepository.flush();
+        repos.passportAssessment.flush();
         List<PassportAssessmentEntity> matchingPassportAssessments =
-                passportAssessmentRepository.findAll()
+            repos.passportAssessment.findAll()
                         .stream()
                         .filter(assessment -> assessment.getRepOrder().getId().equals(repId))
                         .collect(Collectors.toList());

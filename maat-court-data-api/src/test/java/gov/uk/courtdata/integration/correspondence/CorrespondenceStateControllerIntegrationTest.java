@@ -10,7 +10,6 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.repository.CorrespondenceStateRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,13 +33,13 @@ public class CorrespondenceStateControllerIntegrationTest extends MockMvcIntegra
     @Autowired
     protected ObjectMapper objectMapper;
     @Autowired
-    CorrespondenceStateRepository repository;
-    @Autowired
     MockMvc mvc;
 
     @BeforeEach
     public void setUp() {
-        repository.saveAndFlush(TestEntityDataBuilder.getCorrespondenceStateEntity(TestModelDataBuilder.REP_ID, "appealCC"));
+        repos.correspondenceState.saveAndFlush(
+            TestEntityDataBuilder.getCorrespondenceStateEntity(TestModelDataBuilder.REP_ID,
+                "appealCC"));
     }
 
     @Test
@@ -56,7 +55,8 @@ public class CorrespondenceStateControllerIntegrationTest extends MockMvcIntegra
         MvcResult result = runSuccessScenario(MockMvcRequestBuilders.post(ENDPOINT_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(TestEntityDataBuilder.getCorrespondenceStateEntity(REP_ID, "appealCC"))));
-        Assertions.assertThat(objectMapper.writeValueAsString(repository.findByRepId(REP_ID)))
+        Assertions.assertThat(
+                objectMapper.writeValueAsString(repos.correspondenceState.findByRepId(REP_ID)))
                 .isEqualTo(result.getResponse().getContentAsString());
     }
 

@@ -11,16 +11,10 @@ import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.entity.UserRoleEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
-import gov.uk.courtdata.repository.ReservationsRepository;
-import gov.uk.courtdata.repository.RoleActionsRepository;
-import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
-import gov.uk.courtdata.repository.UserRepository;
-import gov.uk.courtdata.repository.UserRolesRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
@@ -40,17 +34,6 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
     private final String NEW_WORK_REASON_AUTHORIZED_URL = BASE_URL + "{username}/work-reasons/{nworCode}";
     private final String IS_RESERVED_URL = BASE_URL + "{username}/reservations/{reservationId}/sessions/{sessionId}";
 
-    @Autowired
-    private RoleActionsRepository roleActionsRepository;
-    @Autowired
-    private ReservationsRepository reservationsRepository;
-    @Autowired
-    private RoleWorkReasonsRepository roleWorkReasonsRepository;
-    @Autowired
-    private UserRolesRepository userRolesRepository;
-    @Autowired
-    private UserRepository userRepository;
-
     @BeforeEach
     public void setUp() throws Exception {
         setupTestData();
@@ -66,7 +49,7 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
                         .username(VALID_TEST_USER).roleName(DISABLED_ROLE).build()
         );
 
-        userRolesRepository.saveAll(userRoleEntities);
+        repos.userRoles.saveAll(userRoleEntities);
 
         String ROLE_ACTION_ENABLED = "Y";
         String ROLE_ACTION_DISABLED = "N";
@@ -77,9 +60,9 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
                         .Id(2).roleName(DISABLED_ROLE).action(DISABLED_ACTION).enabled(ROLE_ACTION_DISABLED).build()
         );
 
-        roleActionsRepository.saveAll(roleActionEntities);
+        repos.roleActions.saveAll(roleActionEntities);
 
-        roleWorkReasonsRepository
+        repos.roleWorkReasons
                 .save(RoleWorkReasonEntity.builder()
                         .id(1)
                         .roleName(AUTHORISED_ROLE)
@@ -92,7 +75,7 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
         LocalDateTime reservationDate = LocalDateTime.now();
         LocalDateTime expiryDate = reservationDate.plusHours(3);
 
-        reservationsRepository.save(ReservationsEntity.builder()
+        repos.reservations.save(ReservationsEntity.builder()
                 .recordId(1)
                 .userName(VALID_TEST_USER)
                 .userSession(VALID_SESSION_ID)
@@ -102,7 +85,7 @@ public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTe
                 .expiryDate(expiryDate)
                 .build());
 
-        userRepository.save(UserEntity.builder()
+        repos.user.save(UserEntity.builder()
                 .username(VALID_TEST_USER)
                 .currentSession(VALID_SESSION_ID)
 

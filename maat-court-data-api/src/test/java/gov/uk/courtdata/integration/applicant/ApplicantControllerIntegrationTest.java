@@ -9,13 +9,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
-import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,9 +24,6 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
     private static final Integer INVALID_REP_ID = 234;
     private static final String ENDPOINT_URL = "/api/internal/v1/application/applicant";
     private static final int ID = 1;
-
-    @Autowired
-    private ApplicantHistoryRepository applicantHistoryRepository;
 
     @Test
     void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenResponseIsReturned() throws Exception {
@@ -75,8 +70,8 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenCorrectId_whenGetApplicantHistoryIsInvoked_thenResponseIsReturned() throws Exception {
-        applicantHistoryRepository.saveAndFlush(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
-        Integer id = applicantHistoryRepository.findAll().get(0).getId();
+        repos.applicantHistory.saveAndFlush(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
+        Integer id = repos.applicantHistory.findAll().get(0).getId();
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/applicant-history/" + id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -90,8 +85,8 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenValidRequest_whenUpdateApplicantHistoryIsInvoked_thenUpdateIsSuccess() throws Exception {
-        applicantHistoryRepository.saveAndFlush(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
-        Integer id = applicantHistoryRepository.findAll().get(0).getId();
+        repos.applicantHistory.saveAndFlush(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
+        Integer id = repos.applicantHistory.findAll().get(0).getId();
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/applicant-history")
                         .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(id, SEND_TO_CCLF)))
                         .contentType(MediaType.APPLICATION_JSON))

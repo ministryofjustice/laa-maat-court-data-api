@@ -1,23 +1,62 @@
 package gov.uk.courtdata.integration.hearing;
 
 
+import static gov.uk.courtdata.constants.CourtDataConstants.APPLICATION_ASN_SEQ_INITIAL_VALUE;
+import static gov.uk.courtdata.constants.CourtDataConstants.AUTO_USER;
+import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
+import static gov.uk.courtdata.constants.CourtDataConstants.MAGS_PROCESSING_SYSTEM_USER;
+import static gov.uk.courtdata.constants.CourtDataConstants.NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.ORACLE_VARCHAR_MAX;
+import static gov.uk.courtdata.constants.CourtDataConstants.RESULT_CODE_DESCRIPTION;
+import static gov.uk.courtdata.constants.CourtDataConstants.UNKNOWN_OFFENCE;
+import static gov.uk.courtdata.constants.CourtDataConstants.YES;
+import static gov.uk.courtdata.enums.WQStatus.WAITING;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.enums.*;
+import gov.uk.courtdata.entity.OffenceEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.WQCaseEntity;
+import gov.uk.courtdata.entity.WQDefendant;
+import gov.uk.courtdata.entity.WQHearingEntity;
+import gov.uk.courtdata.entity.WQOffenceEntity;
+import gov.uk.courtdata.entity.WQResultEntity;
+import gov.uk.courtdata.entity.WQSessionEntity;
+import gov.uk.courtdata.entity.WqCoreEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.entity.XLATOffenceEntity;
+import gov.uk.courtdata.entity.XLATResultEntity;
+import gov.uk.courtdata.enums.ApplicationClassification;
+import gov.uk.courtdata.enums.FunctionType;
+import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.enums.ModeOfTrial;
+import gov.uk.courtdata.enums.WQType;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.hearing.service.HearingResultedListener;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.Repositories;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.model.hearing.HearingResulted;
-import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,18 +65,6 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.MessageHeaders;
-
-import java.time.LocalDate;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
-
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
-import static gov.uk.courtdata.enums.WQStatus.WAITING;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTest {
@@ -48,49 +75,17 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     private final LocalDate TEST_CREATED_DATE = LocalDate.of(2022, 1, 1);
     private final Integer TEST_APPLICATION_FLAG = 1;
     private Integer TEST_MAAT_ID = 1234;
-    @Autowired
-    private IdentifierRepository identifierRepository;
-    @Autowired
-    private WqLinkRegisterRepository wqLinkRegisterRepository;
     @Mock
     private WqLinkRegisterRepository wqLinkRegisterRepository1;
     @Autowired
-    private XLATResultRepository xlatResultRepository;
-    @Autowired
-    private XLATOffenceRepository xlatOffenceRepository;
-    @Autowired
-    private WqCoreRepository wqCoreRepository;
-    @Autowired
-    private OffenceRepository offenceRepository;
-    @Autowired
-    private ResultRepository resultRepository;
-    @Autowired
-    private WQResultRepository wqResultRepository;
-    @Autowired
-    private WQHearingRepository wqHearingRepository;
-    @Autowired
-    private QueueMessageLogRepository queueMessageLogRepository;
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-    @Autowired
-    private WQCaseRepository wqCaseRepository;
-    @Autowired
-    private WQSessionRepository wqSessionRepository;
-    @Autowired
-    private WQDefendantRepository wqDefendantRepository;
-    @Autowired
-    private WQOffenceRepository wqOffenceRepository;
-    @Autowired
     private HearingResultedListener hearingResultedListener;
-    @Autowired
-    private Repositories repositories;
 
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
     @BeforeEach
     public void setUp() {
         setupTestData();
-        queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
+        queueMessageLogTestHelper = new QueueMessageLogTestHelper(repos.queueMessageLog);
     }
 
     @Test
@@ -146,7 +141,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
 
     @Test
     public void givenAHearingMessageWhereTheMaatIdHasMultipleLinks_whenMessageIsReceived_thenErrorIsReturned() throws JsonProcessingException {
-        wqLinkRegisterRepository.saveAll(List.of(
+        repos.wqLinkRegister.saveAll(List.of(
                 WqLinkRegisterEntity.builder().createdTxId(1).maatId(TEST_MAAT_ID).caseId(1).build(),
                 WqLinkRegisterEntity.builder().createdTxId(2).maatId(TEST_MAAT_ID).caseId(2).build()
         ));
@@ -161,7 +156,8 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
 
     @Test
     public void givenAHearingMessageWhereTheOffenceCodeIsNull_whenMessageIsReceived_thenErrorIsReturned() throws JsonProcessingException {
-        wqLinkRegisterRepository.save(WqLinkRegisterEntity.builder().createdTxId(1).maatId(TEST_MAAT_ID).caseId(1).build());
+        repos.wqLinkRegister.save(
+            WqLinkRegisterEntity.builder().createdTxId(1).maatId(TEST_MAAT_ID).caseId(1).build());
 
         List<Offence> testOffences = getTestOffences();
         testOffences.get(0).setOffenceCode(null);
@@ -204,8 +200,8 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
 
         testData.getDefendant().getOffences().forEach(offence -> {
             String asnSeq = String.format(LEADING_ZERO_3, Integer.parseInt(offence.getAsnSeq()));
-            offenceRepository.save(OffenceEntity.builder()
-                    .txId(identifierRepository.getTxnID())
+            repos.offence.save(OffenceEntity.builder()
+                .txId(repos.identifier.getTxnID())
                     .caseId(TEST_CASE_ID)
                     .asnSeq(asnSeq).build());
             createXlatResultData(offence.getResults());
@@ -222,8 +218,8 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
 
         testData.getDefendant().getOffences().forEach(offence -> {
             createXlatOffenceData(offence);
-            offenceRepository.save(OffenceEntity.builder()
-                    .txId(identifierRepository.getTxnID())
+            repos.offence.save(OffenceEntity.builder()
+                .txId(repos.identifier.getTxnID())
                     .caseId(TEST_CASE_ID)
                     .applicationFlag(TEST_APPLICATION_FLAG)
                     .asnSeq(generateTestAsnSeq(offence))
@@ -283,7 +279,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
 
     private void runSuccessScenario(HearingResulted testData, Boolean offencesCreated, Boolean resultsCreated, Boolean wqProcessingExpected) throws JsonProcessingException {
         WqLinkRegisterEntity linkRegisterEntity =
-                wqLinkRegisterRepository.save(
+            repos.wqLinkRegister.save(
                         WqLinkRegisterEntity.builder().createdTxId(1).maatId(TEST_MAAT_ID).caseId(TEST_CASE_ID).proceedingId(1).build());
 
         String messageBlob = objectMapper.writeValueAsString(testData);
@@ -309,16 +305,16 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     private void assertNoWqProcessingChanges() {
-        assertThat(wqCaseRepository.findAll()).isEmpty();
-        assertThat(wqSessionRepository.findAll()).isEmpty();
-        assertThat(wqDefendantRepository.findAll()).isEmpty();
-        assertThat(wqResultRepository.findAll()).isEmpty();
-        assertThat(wqOffenceRepository.findAll()).isEmpty();
-        assertThat(wqCoreRepository.findAll()).isEmpty();
+        assertThat(repos.wqCase.findAll()).isEmpty();
+        assertThat(repos.wqSession.findAll()).isEmpty();
+        assertThat(repos.wqDefendant.findAll()).isEmpty();
+        assertThat(repos.wqResult.findAll()).isEmpty();
+        assertThat(repos.wqOffence.findAll()).isEmpty();
+        assertThat(repos.wqCore.findAll()).isEmpty();
     }
 
     private void assertWqProcessingCorrect(HearingResulted hearingResultedData, WqLinkRegisterEntity linkRegisterEntity) {
-        Integer currentTxId = identifierRepository.getTxnID();
+        Integer currentTxId = repos.identifier.getTxnID();
         Integer resultsCount = (int) hearingResultedData.getDefendant().getOffences().stream()
                 .mapToLong(offence -> offence.getResults().size()).sum();
         AtomicReference<Integer> expectedTxId = new AtomicReference<>(currentTxId - resultsCount);
@@ -328,7 +324,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
             assertWqSessionProcessingCorrect(hearingResultedData.getSession(), linkRegisterEntity, expectedTxId.get());
             assertWqDefendantProcessingCorrect(hearingResultedData.getDefendant(), linkRegisterEntity, expectedTxId.get());
 
-            boolean extendedProcessing = offenceRepository.getOffenceCountForAsnSeq(
+            boolean extendedProcessing = repos.offence.getOffenceCountForAsnSeq(
                     linkRegisterEntity.getCaseId(),
                     String.format(LEADING_ZERO_3, Integer.parseInt(offence.getAsnSeq()))) == 0;
 
@@ -358,7 +354,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
 
     private void assertWqResultProcessingCorrect(HearingResulted hearingResultedData, Offence offence, Result result, WqLinkRegisterEntity linkRegisterEntity, Integer expectedTxId) {
 
-        WQResultEntity resultEntity = wqResultRepository.getReferenceById(expectedTxId);
+        WQResultEntity resultEntity = repos.wqResult.getReferenceById(expectedTxId);
         assertThat(resultEntity).isNotNull();
         assertThat(resultEntity.getCaseId()).isEqualTo(linkRegisterEntity.getCaseId());
         assertThat(resultEntity.getAsn()).isEqualTo(hearingResultedData.getAsn());
@@ -383,8 +379,8 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     private void assertWqCoreProcessingCorrect(
             HearingResulted hearingResultedData, WqLinkRegisterEntity linkRegisterEntity, Integer resultCode, Integer expectedTxId, Boolean extendedProcessing) {
 
-        WqCoreEntity coreEntity = wqCoreRepository.getReferenceById(expectedTxId);
-        Optional<XLATResultEntity> resultEntity = xlatResultRepository.findById(resultCode);
+        WqCoreEntity coreEntity = repos.wqCore.getReferenceById(expectedTxId);
+        Optional<XLATResultEntity> resultEntity = repos.xlatResult.findById(resultCode);
         Integer wqType = resultEntity.map(XLATResultEntity::getWqType).orElse(null);
         assertThat(coreEntity).isNotNull();
         assertThat(coreEntity.getCaseId()).isEqualTo(linkRegisterEntity.getCaseId());
@@ -398,7 +394,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
 
     private void assertWqOffenceProcessingCorrect(Offence offence, WqLinkRegisterEntity linkRegisterEntity, Integer expectedTxId, Boolean newOffence) {
 
-        WQOffenceEntity offenceEntity = wqOffenceRepository.getReferenceById(expectedTxId);
+        WQOffenceEntity offenceEntity = repos.wqOffence.getReferenceById(expectedTxId);
 
         assertThat(offenceEntity).isNotNull();
         assertThat(offenceEntity.getCaseId()).isEqualTo(linkRegisterEntity.getCaseId());
@@ -419,7 +415,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     private void assertWqDefendantProcessingCorrect(Defendant defendant, WqLinkRegisterEntity linkRegisterEntity, Integer expectedTxId) {
-        WQDefendant defendantEntity = wqDefendantRepository.getReferenceById(expectedTxId);
+        WQDefendant defendantEntity = repos.wqDefendant.getReferenceById(expectedTxId);
         assertThat(defendantEntity).isNotNull();
         assertThat(defendantEntity.getCaseId()).isEqualTo(linkRegisterEntity.getCaseId());
         assertThat(defendantEntity.getForename()).isEqualTo(defendant.getForename());
@@ -440,7 +436,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     private void assertWqSessionProcessingCorrect(Session session, WqLinkRegisterEntity linkRegisterEntity, Integer expectedTxId) {
-        WQSessionEntity sessionEntity = wqSessionRepository.getReferenceById(expectedTxId);
+        WQSessionEntity sessionEntity = repos.wqSession.getReferenceById(expectedTxId);
         assertThat(sessionEntity).isNotNull();
         assertThat(sessionEntity.getCaseId()).isEqualTo(linkRegisterEntity.getCaseId());
         assertThat(sessionEntity.getDateOfHearing()).hasToString(session.getDateOfHearing());
@@ -452,7 +448,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     private void assertWqCaseProcessingCorrect(HearingResulted hearingResultedData, WqLinkRegisterEntity linkRegisterEntity, Integer expectedTxId) {
 
         WQCaseEntity wqCaseEntity =
-                wqCaseRepository.findAll().stream()
+            repos.wqCase.findAll().stream()
                         .filter(item -> item.getCaseId() == linkRegisterEntity.getCaseId() && item.getTxId() == expectedTxId)
                         .collect(Collectors.toList()).get(0);
 
@@ -511,8 +507,10 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
 
     private void assertWqHearingRepositoryUpdated(HearingResulted testPayload) {
         List<WQHearingEntity> matchingWqHearingEntities =
-                wqHearingRepository.findByMaatIdAndHearingUUID(testPayload.getMaatId(), testPayload.getHearingId().toString());
-        WqLinkRegisterEntity linkEntity = wqLinkRegisterRepository.findBymaatId(testPayload.getMaatId()).get(0);
+            repos.wqHearing.findByMaatIdAndHearingUUID(testPayload.getMaatId(),
+                testPayload.getHearingId().toString());
+        WqLinkRegisterEntity linkEntity = repos.wqLinkRegister.findBymaatId(testPayload.getMaatId())
+            .get(0);
 
         assertThat(matchingWqHearingEntities).hasSize(1);
         WQHearingEntity createWqHearingEntity = matchingWqHearingEntities.get(0);
@@ -535,7 +533,8 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
 
     private void assertXlatOffencesCreated(List<Offence> expectedOffences, Boolean systemGenerated) {
         expectedOffences.forEach(offence -> {
-            XLATOffenceEntity offenceEntity = xlatOffenceRepository.findById(offence.getOffenceCode()).orElse(null);
+            XLATOffenceEntity offenceEntity = repos.xlatOffence.findById(offence.getOffenceCode())
+                .orElse(null);
             assertThat(offenceEntity).isNotNull();
             assertThat(offenceEntity.getOffenceCode()).isEqualTo(offence.getOffenceCode());
             if (systemGenerated) {
@@ -554,7 +553,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
         expectedOffences.forEach(offence -> offence.getResults().forEach(result -> {
             Integer resultCode = Integer.parseInt(result.getResultCode());
             XLATResultEntity resultEntity =
-                    xlatResultRepository.findById(resultCode).orElse(null);
+                repos.xlatResult.findById(resultCode).orElse(null);
             assertThat(resultEntity).isNotNull();
             if (resultsCreated) {
                 assertThat(resultEntity.getCjsResultCode()).isEqualTo(resultCode);
@@ -591,12 +590,13 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     private void setupTestData() {
-        RepOrderEntity repOrderEntity = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrderEntity = repos.repOrder.save(
+            TestEntityDataBuilder.getPopulatedRepOrder());
         TEST_MAAT_ID = repOrderEntity.getId();
     }
 
     private void createXlatResultData(List<Result> results) {
-        results.forEach(result -> xlatResultRepository.save(XLATResultEntity.builder()
+        results.forEach(result -> repos.xlatResult.save(XLATResultEntity.builder()
                 .cjsResultCode(Integer.parseInt(result.getResultCode()))
                 .createdDate(TEST_CREATED_DATE)
                 .createdUser(TEST_USER)
@@ -605,7 +605,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     private void createXlatOffenceData(Offence offence) {
-        xlatOffenceRepository.save(XLATOffenceEntity.builder()
+        repos.xlatOffence.save(XLATOffenceEntity.builder()
                 .offenceCode(offence.getOffenceCode())
                 .createdUser(TEST_USER)
                 .createdDate(TEST_CREATED_DATE)

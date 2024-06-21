@@ -15,15 +15,8 @@ import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import gov.uk.courtdata.link.controller.LinkController;
 import gov.uk.courtdata.model.CaseDetailsValidate;
-import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.PassportAssessmentRepository;
-import gov.uk.courtdata.repository.RepOrderCPDataRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,30 +42,9 @@ public class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-
-    @Autowired
-    private RepOrderCPDataRepository repOrderCPDataRepository;
-
-    @Autowired
-    private WqLinkRegisterRepository wqLinkRegisterRepository;
-
-    @Autowired
-    private FinancialAssessmentRepository financialAssessmentRepository;
-
-    @Autowired
-    private PassportAssessmentRepository passportAssessmentRepository;
-
-
     @BeforeEach
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-        new RepositoryUtil().clearUp(financialAssessmentRepository,
-                passportAssessmentRepository,
-                repOrderRepository,
-                repOrderCPDataRepository,
-                wqLinkRegisterRepository);
     }
 
     @Test
@@ -143,8 +115,9 @@ public class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
     public void testWhenMaatIdIsAlreadyLinked_Returns400ClientError() throws Exception {
 
         createRepOrderEntity();
-        wqLinkRegisterRepository.save(WqLinkRegisterEntity.builder().createdTxId(0).maatId(TEST_MAAT_ID).build());
-        repOrderCPDataRepository.save(createRepOrderCPDataEntity(TEST_MAAT_ID, TEST_CASE_URN));
+        repos.wqLinkRegister.save(
+            WqLinkRegisterEntity.builder().createdTxId(0).maatId(TEST_MAAT_ID).build());
+        repos.repOrderCPData.save(createRepOrderCPDataEntity(TEST_MAAT_ID, TEST_CASE_URN));
 
         final CaseDetailsValidate caseDetailsValidate = getTestCaseDetailsValidate();
 
@@ -162,7 +135,7 @@ public class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
 
         createRepOrderEntity();
 
-        repOrderCPDataRepository.save(createRepOrderCPDataEntity(TEST_MAAT_ID, TEST_CASE_URN));
+        repos.repOrderCPData.save(createRepOrderCPDataEntity(TEST_MAAT_ID, TEST_CASE_URN));
 
         final CaseDetailsValidate caseDetailsValidate = getTestCaseDetailsValidate();
 
@@ -174,15 +147,6 @@ public class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().is2xxSuccessful());
     }
 
-    @AfterEach
-    public void clearUp() {
-        new RepositoryUtil().clearUp(financialAssessmentRepository,
-                passportAssessmentRepository,
-                repOrderRepository,
-                repOrderCPDataRepository,
-                wqLinkRegisterRepository);
-    }
-
     public RepOrderCPDataEntity createRepOrderCPDataEntity(final Integer maatId, final String caseUrn) {
         return RepOrderCPDataEntity.builder()
                 .repOrderId(maatId)
@@ -192,7 +156,7 @@ public class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
 
 
     public void createRepOrderEntity() {
-        RepOrderEntity repOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
         TEST_MAAT_ID = repOrder.getId();
     }
 

@@ -1,24 +1,24 @@
 package gov.uk.courtdata.integration.applicant;
 
+import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.SEND_TO_CCLF;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
+import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
-import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.repository.RepOrderRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
-import static gov.uk.courtdata.builder.TestModelDataBuilder.SEND_TO_CCLF;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
@@ -28,20 +28,15 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
     private static final int ID = 1;
 
     @Autowired
-    private RepOrderApplicantLinksRepository repOrderApplicantLinksRepository;
-
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-
-    @Autowired
     private ApplicantHistoryRepository applicantHistoryRepository;
 
     @Test
     void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenResponseIsReturned() throws Exception {
-        RepOrderEntity repOrderEntity = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrderEntity = repos.repOrder.save(
+            TestEntityDataBuilder.getPopulatedRepOrder());
         RepOrderApplicantLinksEntity repOrderApplicantLinks = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
         repOrderApplicantLinks.setRepId(repOrderEntity.getId());
-        repOrderApplicantLinksRepository.saveAndFlush(repOrderApplicantLinks);
+        repos.repOrderApplicantLinks.saveAndFlush(repOrderApplicantLinks);
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + repOrderEntity.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -55,9 +50,10 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenValidRequest_whenUpdateRepOrderApplicantLinksIsInvoked_thenUpdateIsSuccess() throws Exception {
-        repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
-        repOrderApplicantLinksRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
-        Integer id = repOrderApplicantLinksRepository.findAll().get(0).getId();
+        repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
+        repos.repOrderApplicantLinks.saveAndFlush(
+            TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
+        Integer id = repos.repOrderApplicantLinks.findAll().get(0).getId();
         RepOrderApplicantLinksDTO recordToUpdate = TestModelDataBuilder.getRepOrderApplicantLinksDTO(id);
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/rep-order-applicant-links")
                         .content(objectMapper.writeValueAsString(recordToUpdate))

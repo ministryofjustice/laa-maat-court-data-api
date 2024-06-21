@@ -1,5 +1,14 @@
 package gov.uk.courtdata.integration.dces;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.dces.service.DebtCollectionRepository;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
@@ -7,36 +16,30 @@ import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.repository.ConcorContributionsRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @ExtendWith(SoftAssertionsExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest {
+class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private static final String ATOMIC_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/create-contribution-file";
 
     private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/concor-contribution-files?status=";
     private static final String DRC_UPDATE_URL = "/api/internal/v1/debt-collection-enforcement/log-contribution-response";
-
-    @Autowired
-    private ConcorContributionsRepository concorRepository;
 
     @SpyBean
     DebtCollectionRepository debtCollectionRepositorySpy;
@@ -145,7 +148,8 @@ class ConcorContributionsRestControllerIntegTest extends MockMvcIntegrationTest 
         assertNull(savedFileEntity.getAckXmlContent());
         assertEquals(expectedFilename, savedFileEntity.getFileName());
         // assert the file id has been set on the contribution
-        Optional<ConcorContributionsEntity> updatedConcor = concorRepository.findById(savedEntityId3);
+        Optional<ConcorContributionsEntity> updatedConcor = repos.concorContributions.findById(
+            savedEntityId3);
         assertTrue(updatedConcor.isPresent());
         ConcorContributionsEntity fdcContributionsEntity = updatedConcor.get();
         assertEquals(savedFileEntity.getFileId(), fdcContributionsEntity.getContribFileId());

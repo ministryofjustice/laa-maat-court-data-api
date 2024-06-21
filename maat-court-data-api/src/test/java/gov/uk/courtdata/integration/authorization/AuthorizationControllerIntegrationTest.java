@@ -1,21 +1,27 @@
 package gov.uk.courtdata.integration.authorization;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import gov.uk.MAATCourtDataApplication;
-import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.model.authorization.AuthorizationResponse;
-import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.entity.ReservationsEntity;
+import gov.uk.courtdata.entity.RoleActionEntity;
+import gov.uk.courtdata.entity.RoleWorkReasonEntity;
+import gov.uk.courtdata.entity.UserEntity;
+import gov.uk.courtdata.entity.UserRoleEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
+import gov.uk.courtdata.model.authorization.AuthorizationResponse;
+import gov.uk.courtdata.repository.ReservationsRepository;
+import gov.uk.courtdata.repository.RoleActionsRepository;
+import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
+import gov.uk.courtdata.repository.UserRepository;
+import gov.uk.courtdata.repository.UserRolesRepository;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class AuthorizationControllerIntegrationTest extends MockMvcIntegrationTest {

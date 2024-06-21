@@ -25,7 +25,6 @@ import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.RepOrderMvoRegRepository;
 import gov.uk.courtdata.repository.RepOrderMvoRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -56,17 +55,6 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
     public Integer REP_ORDER_ID_NO_SENTENCE_ORDER_DATE;
     public Integer REP_ID;
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-
-    @Autowired
-    private RepOrderMvoRepository repOrderMvoRepository;
-
-    @Autowired
-    private RepOrderMvoRegRepository repOrderMvoRegRepository;
 
     @Autowired
     private RepOrderMapper mapper;
@@ -97,7 +85,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     private RepOrderDTO getUpdatedRepOrderDTO() {
-        RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(REP_ID);
+        RepOrderEntity repOrderEntity = repos.repOrder.getReferenceById(REP_ID);
         RepOrderDTO repOrderDTO = TestModelDataBuilder.getRepOrderDTO(REP_ID);
         repOrderDTO.setDateModified(repOrderEntity.getDateModified());
         repOrderDTO.setSentenceOrderDate(repOrderEntity.getSentenceOrderDate());
@@ -184,7 +172,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                 .content(TestModelDataBuilder.getUpdateAppDateCompletedJson(REP_ID))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        RepOrderEntity repOrderEntity = repOrderRepository.getReferenceById(REP_ID);
+        RepOrderEntity repOrderEntity = repos.repOrder.getReferenceById(REP_ID);
         assertThat(repOrderEntity.getId()).isEqualTo(REP_ID);
         assertThat(repOrderEntity.getAssessmentDateCompleted()).isEqualTo(expectedDate);
     }
@@ -298,7 +286,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + repOrderEntity.getId()))
                 .andExpect(status().isNoContent());
 
-        boolean exists = repOrderRepository.existsById(repOrderEntity.getId());
+        boolean exists = repos.repOrder.existsById(repOrderEntity.getId());
 
         assertThat(exists).isFalse();
     }
@@ -307,13 +295,13 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     void givenValidRepId_whenFindIOJAssessorDetailsIsCalled_() throws Exception {
         String userName = "grea-k";
         UserEntity userEntity = TestEntityDataBuilder.getUserEntity();
-        userRepository.save(userEntity);
+        repos.user.save(userEntity);
 
         RepOrderEntity repOrder = TestEntityDataBuilder.getPopulatedRepOrder(REP_ID);
         repOrder.setUserCreatedEntity(userEntity);
         repOrder.setUserCreated(userName);
 
-        repOrderRepository.save(repOrder);
+        repos.repOrder.save(repOrder);
 
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + REP_ID + "/ioj-assessor-details"))
                 .andExpect(status().isOk())

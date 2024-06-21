@@ -1,20 +1,18 @@
 package gov.uk.courtdata.integration.applicant;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
-import gov.uk.courtdata.applicant.repository.ApplicantDisabilitiesRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ApplicantDisabilitiesControllerIntegrationTest extends MockMvcIntegrationTest {
@@ -22,18 +20,10 @@ public class ApplicantDisabilitiesControllerIntegrationTest extends MockMvcInteg
     private static final Integer INVALID_ID = 2345;
     private static final String ENDPOINT_URL = "/api/internal/v1/applicant/applicant-disabilities";
 
-    @Autowired
-    private ApplicantDisabilitiesRepository applicantDisabilitiesRepository;
-
-    @AfterEach
-    public void tearDown() {
-        new RepositoryUtil().clearUp(applicantDisabilitiesRepository);
-    }
-
     @Test
     void givenCorrectId_whenGetApplicantDisabilitiesIsInvoked_thenResponseIsReturned() throws Exception {
         createApplicantDisabilities();
-        Integer id = applicantDisabilitiesRepository.findAll().get(0).getId();
+        Integer id = repos.applicantDisabilities.findAll().get(0).getId();
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -48,7 +38,7 @@ public class ApplicantDisabilitiesControllerIntegrationTest extends MockMvcInteg
     @Test
     void givenValidRequest_whenUpdateApplicantDisabilitiesIsInvoked_thenUpdateIsSuccess() throws Exception {
         createApplicantDisabilities();
-        Integer id = applicantDisabilitiesRepository.findAll().get(0).getId();
+        Integer id = repos.applicantDisabilities.findAll().get(0).getId();
         ApplicantDisabilitiesDTO recordToUpdate = TestModelDataBuilder.getApplicantDisabilitiesDTO(id);
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
                         .content(objectMapper.writeValueAsString(recordToUpdate))
@@ -86,14 +76,14 @@ public class ApplicantDisabilitiesControllerIntegrationTest extends MockMvcInteg
     @Test
     void givenValidRequest_whenDeleteApplicantDisabilitiesIsInvoked_thenUpdateIsSuccess() throws Exception {
         createApplicantDisabilities();
-        Integer id = applicantDisabilitiesRepository.findAll().get(0).getId();
+        Integer id = repos.applicantDisabilities.findAll().get(0).getId();
         mockMvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/" + id)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     private void createApplicantDisabilities() {
-        applicantDisabilitiesRepository.save(TestEntityDataBuilder.getApplicantDisabilitiesEntity());
+        repos.applicantDisabilities.save(TestEntityDataBuilder.getApplicantDisabilitiesEntity());
     }
 
 }

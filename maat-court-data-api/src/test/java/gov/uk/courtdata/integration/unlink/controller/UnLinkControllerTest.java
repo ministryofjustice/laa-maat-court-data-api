@@ -1,5 +1,8 @@
 package gov.uk.courtdata.integration.unlink.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -8,10 +11,8 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.Unlink;
-import gov.uk.courtdata.repository.RepOrderCPDataRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.unlink.controller.UnLinkController;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.UUID;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @AutoConfigureMockMvc
@@ -37,15 +33,6 @@ public class UnLinkControllerTest extends MockMvcIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-
-    @Autowired
-    private RepOrderCPDataRepository repOrderCPDataRepository;
-
-    @Autowired
-    private WqLinkRegisterRepository wqLinkRegisterRepository;
-
     @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(unLinkController).build();
@@ -54,9 +41,11 @@ public class UnLinkControllerTest extends MockMvcIntegrationTest {
     @Test
     public void givenUnlinkModel_whenValidationPassed() throws Exception {
 
-        RepOrderEntity repOrder = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
-        wqLinkRegisterRepository.save(WqLinkRegisterEntity.builder().maatId(repOrder.getId()).createdTxId(1234).build());
-        repOrderCPDataRepository.save(RepOrderCPDataEntity.builder().repOrderId(repOrder.getId()).build());
+        RepOrderEntity repOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        repos.wqLinkRegister.save(
+            WqLinkRegisterEntity.builder().maatId(repOrder.getId()).createdTxId(1234).build());
+        repos.repOrderCPData.save(
+            RepOrderCPDataEntity.builder().repOrderId(repOrder.getId()).build());
 
         Unlink unlink = Unlink.builder()
                 .maatId(repOrder.getId())

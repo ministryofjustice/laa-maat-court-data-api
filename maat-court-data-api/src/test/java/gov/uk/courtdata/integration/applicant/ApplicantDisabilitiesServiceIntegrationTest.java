@@ -1,46 +1,34 @@
 package gov.uk.courtdata.integration.applicant;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
-import gov.uk.courtdata.applicant.repository.ApplicantDisabilitiesRepository;
 import gov.uk.courtdata.applicant.service.ApplicantDisabilitiesService;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 @Slf4j
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrationTest {
     private static final Integer INVALID_ID = 2345;
 
     @Autowired
-    private ApplicantDisabilitiesRepository applicantDisabilitiesRepository;
-
-    @Autowired
     private ApplicantDisabilitiesService applicantDisabilitiesService;
-
-    @AfterEach
-    public void tearDown() {
-        new RepositoryUtil().clearUp(applicantDisabilitiesRepository);
-    }
 
     @Test
     void givenValidId_WhenGetApplicantDisabilitiesIsInvoked_thenCorrectResponseIsReturned() {
         createApplicantDisabilities();
-        Integer id = applicantDisabilitiesRepository.findAll().get(0).getId();
+        Integer id = repos.applicantDisabilities.findAll().get(0).getId();
         ApplicantDisabilitiesDTO applicantDisabilitiesDTO = applicantDisabilitiesService.find(id);
         assertThat(applicantDisabilitiesDTO.getDisaDisability()).isNotBlank();
     }
@@ -65,7 +53,7 @@ public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrat
     @Test
     void givenAValidInput_whenUpdateApplicantDisabilitiesIsInvoked_thenUpdateIsSuccess() {
         createApplicantDisabilities();
-        Integer id = applicantDisabilitiesRepository.findAll().get(0).getId();
+        Integer id = repos.applicantDisabilities.findAll().get(0).getId();
         ApplicantDisabilitiesDTO recordToUpdate = TestModelDataBuilder.getApplicantDisabilitiesDTO(id);
         ApplicantDisabilitiesDTO applicantDisabilitiesDTO = applicantDisabilitiesService
                 .update(recordToUpdate);
@@ -85,16 +73,16 @@ public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrat
     @Test
     void givenAValidInput_whenDeleteApplicantDisabilitiesIsInvoked_thenDeleteIsSuccess() {
         createApplicantDisabilities();
-        Integer id = applicantDisabilitiesRepository.findAll().get(0).getId();
+        Integer id = repos.applicantDisabilities.findAll().get(0).getId();
         applicantDisabilitiesService.delete(id);
-        Optional<ApplicantDisabilitiesEntity> record = applicantDisabilitiesRepository.findById(id);
+        Optional<ApplicantDisabilitiesEntity> record = repos.applicantDisabilities.findById(id);
         assertThatThrownBy(record::get).isInstanceOf(NoSuchElementException.class)
                 .hasMessageContaining("No value present");
 
     }
 
     private void createApplicantDisabilities() {
-        applicantDisabilitiesRepository.save(TestEntityDataBuilder.getApplicantDisabilitiesEntity());
+        repos.applicantDisabilities.save(TestEntityDataBuilder.getApplicantDisabilitiesEntity());
     }
 
 }

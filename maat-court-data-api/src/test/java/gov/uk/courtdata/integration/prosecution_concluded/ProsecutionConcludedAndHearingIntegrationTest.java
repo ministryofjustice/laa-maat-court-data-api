@@ -1,5 +1,14 @@
 package gov.uk.courtdata.integration.prosecution_concluded;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -14,30 +23,16 @@ import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
 import gov.uk.courtdata.prosecutionconcluded.model.Verdict;
 import gov.uk.courtdata.prosecutionconcluded.model.VerdictType;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedListener;
-import gov.uk.courtdata.repository.ProsecutionConcludedRepository;
-import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import gov.uk.courtdata.repository.WQHearingRepository;
-import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.MessageHeaders;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegrationTest {
@@ -50,16 +45,6 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
     protected ObjectMapper objectMapper;
     @Autowired
     private ProsecutionConcludedListener prosecutionConcludedListener;
-    @Autowired
-    private WQHearingRepository wqHearingRepository;
-
-    @Autowired
-    private QueueMessageLogRepository queueMessageLogRepository;
-    @Autowired
-    private WqLinkRegisterRepository wqLinkRegisterRepository;
-
-    @Autowired
-    private ProsecutionConcludedRepository prosecutionConcludedRepository;
 
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
     private WQHearingEntity existingWqHearingEntity;
@@ -68,7 +53,7 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
     public void setUp() throws Exception {
         loadData();
         setupCdaWebServer();
-        queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
+        queueMessageLogTestHelper = new QueueMessageLogTestHelper(repos.queueMessageLog);
     }
 
     private void setupCdaWebServer() {
@@ -80,7 +65,7 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
     }
 
     private void loadData() {
-        existingWqHearingEntity = wqHearingRepository
+        existingWqHearingEntity = repos.wqHearing
                 .save(WQHearingEntity
                         .builder()
                         .txId(23232)
@@ -92,7 +77,7 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
                         .build()
                 );
 
-        wqLinkRegisterRepository
+        repos.wqLinkRegister
                 .save(WqLinkRegisterEntity
                         .builder()
                         .createdTxId(343431)
@@ -123,8 +108,8 @@ public class ProsecutionConcludedAndHearingIntegrationTest extends MockMvcIntegr
         verify(exactly(1), postRequestedFor(urlEqualTo("/oauth2/token")));
         verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/hearing_results/" + LAA_TRANSACTION_ID + "?publish_to_queue=true")));
 
-        assertThat(prosecutionConcludedRepository.findAll().size()).isEqualTo(1);
-        assertThat(prosecutionConcludedRepository.findAll().get(0).getMaatId()).isEqualTo(56456);
+        assertThat(repos.prosecutionConcluded.findAll().size()).isEqualTo(1);
+        assertThat(repos.prosecutionConcluded.findAll().get(0).getMaatId()).isEqualTo(56456);
     }
 
     private ProsecutionConcluded getTestProsecutionConcludedObject() {

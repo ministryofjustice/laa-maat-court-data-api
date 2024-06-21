@@ -1,22 +1,17 @@
 package gov.uk.courtdata.integration.wqoffence;
 
+import static org.fest.assertions.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
+
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.repository.WQOffenceRepository;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
-
-import static org.fest.assertions.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
 
 @ExtendWith(SoftAssertionsExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class})

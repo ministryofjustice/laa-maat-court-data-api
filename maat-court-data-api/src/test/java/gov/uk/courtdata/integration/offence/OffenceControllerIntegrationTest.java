@@ -1,27 +1,21 @@
 package gov.uk.courtdata.integration.offence;
 
-import gov.uk.MAATCourtDataApplication;
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.repository.OffenceRepository;
-import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
-import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
-
-import java.util.List;
-
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
+
+import gov.uk.MAATCourtDataApplication;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import java.util.List;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 
 @ExtendWith(SoftAssertionsExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class})

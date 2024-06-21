@@ -1,23 +1,44 @@
 package gov.uk.courtdata.integration.prosecution_concluded;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import gov.uk.MAATCourtDataApplication;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.CrownCourtCode;
+import gov.uk.courtdata.entity.OffenceEntity;
+import gov.uk.courtdata.entity.ProsecutionConcludedEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.ReservationsEntity;
+import gov.uk.courtdata.entity.ResultEntity;
+import gov.uk.courtdata.entity.WQHearingEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.entity.XLATResultEntity;
 import gov.uk.courtdata.enums.CaseConclusionStatus;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesEntity;
-import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesRepository;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.integration.util.RepositoryUtil;
 import gov.uk.courtdata.model.Metadata;
 import gov.uk.courtdata.prosecutionconcluded.impl.ProcessSentencingImpl;
-import gov.uk.courtdata.prosecutionconcluded.model.*;
+import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
+import gov.uk.courtdata.prosecutionconcluded.model.Plea;
+import gov.uk.courtdata.prosecutionconcluded.model.ProsecutionConcluded;
+import gov.uk.courtdata.prosecutionconcluded.model.Verdict;
+import gov.uk.courtdata.prosecutionconcluded.model.VerdictType;
 import gov.uk.courtdata.prosecutionconcluded.service.HearingsService;
 import gov.uk.courtdata.prosecutionconcluded.service.ProsecutionConcludedListener;
-import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -27,18 +48,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.messaging.MessageHeaders;
-
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest {
@@ -52,34 +61,8 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
     protected Gson gson;
     @Autowired
     private ProsecutionConcludedListener prosecutionConcludedListener;
-    @Autowired
-    private WQHearingRepository wqHearingRepository;
-    @Autowired
-    private OffenceRepository offenceRepository;
-    @Autowired
-    private QueueMessageLogRepository queueMessageLogRepository;
-    @Autowired
-    private WqLinkRegisterRepository wqLinkRegisterRepository;
-    @Autowired
-    private XLATResultRepository xlatResultRepository;
-    @Autowired
-    private ResultRepository resultRepository;
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-    @Autowired
-    private CrownCourtCodeRepository crownCourtCodeRepository;
-    @Autowired
-    private ReservationsRepository reservationsRepository;
-    @Autowired
-    private ProsecutionConcludedRepository prosecutionConcludedRepository;
-    @Autowired
-    private UpdateOutcomesRepository updateOutcomesRepository;
-    @Autowired
-    private FinancialAssessmentRepository financialAssessmentRepository;
     @MockBean
-    private CrownCourtProcessingRepository crownCourtProcessingRepository;
-    @Autowired
-    private PassportAssessmentRepository passportAssessmentRepository;
+    private CrownCourtProcessingRepository crownCourtProcessingRepositoryMock;
     @Mock
     private ProcessSentencingImpl processSentencingHelper;
     @Mock
@@ -92,28 +75,18 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
 
     @BeforeEach
     public void setUp() throws Exception {
-        new RepositoryUtil().clearUp(financialAssessmentRepository,
-                passportAssessmentRepository,
-                wqHearingRepository,
-                offenceRepository,
-                queueMessageLogRepository,
-                wqLinkRegisterRepository,
-                xlatResultRepository,
-                resultRepository,
-                repOrderRepository,
-                crownCourtCodeRepository,
-                updateOutcomesRepository,
-                reservationsRepository,
-                prosecutionConcludedRepository);
         loadData();
-        queueMessageLogTestHelper = new QueueMessageLogTestHelper(queueMessageLogRepository);
-        doNothing().when(crownCourtProcessingRepository).invokeUpdateAppealSentenceOrderDate(any(Integer.class), anyString(), any(LocalDate.class), any(LocalDate.class));
-        doNothing().when(crownCourtProcessingRepository).invokeUpdateSentenceOrderDate(any(Integer.class), anyString(), any(LocalDate.class));
+        queueMessageLogTestHelper = new QueueMessageLogTestHelper(repos.queueMessageLog);
+        doNothing().when(crownCourtProcessingRepositoryMock)
+            .invokeUpdateAppealSentenceOrderDate(any(Integer.class), anyString(),
+                any(LocalDate.class), any(LocalDate.class));
+        doNothing().when(crownCourtProcessingRepositoryMock)
+            .invokeUpdateSentenceOrderDate(any(Integer.class), anyString(), any(LocalDate.class));
     }
 
     private void loadData() {
 
-        existingRepOrder = repOrderRepository.save(
+        existingRepOrder = repos.repOrder.save(
                 RepOrderEntity
                         .builder()
                         .caseId("12129")
@@ -124,7 +97,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
 
         TEST_MAAT_ID = existingRepOrder.getId();
 
-        existingWqHearingEntity = wqHearingRepository
+        existingWqHearingEntity = repos.wqHearing
                 .save(WQHearingEntity
                         .builder()
                         .txId(23232)
@@ -136,7 +109,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
                         .build()
                 );
 
-        wqLinkRegisterRepository
+        repos.wqLinkRegister
                 .save(WqLinkRegisterEntity
                         .builder()
                         .createdTxId(343431)
@@ -146,7 +119,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
                         .build()
                 );
 
-        offenceRepository
+        repos.offence
                 .save(OffenceEntity
                         .builder()
                         .txId(3454238)
@@ -156,7 +129,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
                         .build()
                 );
 
-        xlatResultRepository.saveAll(
+        repos.xlatResult.saveAll(
                 List.of(
                         XLATResultEntity.builder()
                                 .cjsResultCode(4455)
@@ -174,7 +147,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
                                 .build()
                 ));
 
-        resultRepository.save(
+        repos.result.save(
                 ResultEntity
                         .builder()
                         .asnSeq("1")
@@ -185,8 +158,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
                         .build()
         );
 
-
-        existingCrownCourtCode = crownCourtCodeRepository.save(
+        existingCrownCourtCode = repos.crownCourtCode.save(
                 CrownCourtCode
                         .builder()
                         .code("2232")
@@ -203,7 +175,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
         String sqsPayload = pullMessageFromSQS(message);
 
         runValidDataScenario(message, sqsPayload);
-        verify(crownCourtProcessingRepository)
+        verify(crownCourtProcessingRepositoryMock)
                 .invokeUpdateSentenceOrderDate(
                         message.getMaatId(), TEST_DB_USER, LocalDate.parse(message.getOffenceSummary().get(0).getProceedingsConcludedChangedDate()));
     }
@@ -226,10 +198,10 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
 
         existingRepOrder.setAppealTypeCode("APPEAL CC");
         existingRepOrder.setCatyCaseType("APPEAL CC");
-        repOrderRepository.save(existingRepOrder);
+        repos.repOrder.save(existingRepOrder);
 
         runValidDataScenario(message, sqsPayload);
-        verify(crownCourtProcessingRepository)
+        verify(crownCourtProcessingRepositoryMock)
                 .invokeUpdateSentenceOrderDate(
                         message.getMaatId(), TEST_DB_USER, LocalDate.parse(message.getOffenceSummary().get(0).getProceedingsConcludedChangedDate()));
     }
@@ -242,7 +214,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
 
         existingRepOrder.setAppealTypeCode("APPEAL CC");
         existingRepOrder.setCatyCaseType("APPEAL CC");
-        repOrderRepository.save(existingRepOrder);
+        repos.repOrder.save(existingRepOrder);
         prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
 //        verify it
         Mockito.verify(processSentencingHelper, Mockito.times(0)).processSentencingDate(
@@ -257,7 +229,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
         String sqsPayload = pullMessageFromSQS(message);
 
-        prosecutionConcludedRepository.save(
+        repos.prosecutionConcluded.save(
                 ProsecutionConcludedEntity.builder()
                         .maatId(message.getMaatId())
                         .hearingId(message.getHearingIdWhereChangeOccurred().toString())
@@ -265,7 +237,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
                         .build());
 
         runValidDataScenario(message, sqsPayload);
-        verify(crownCourtProcessingRepository)
+        verify(crownCourtProcessingRepositoryMock)
                 .invokeUpdateSentenceOrderDate(
                         message.getMaatId(), TEST_DB_USER, LocalDate.parse(message.getOffenceSummary().get(0).getProceedingsConcludedChangedDate()));
     }
@@ -286,7 +258,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
         ProsecutionConcluded message = getTestProsecutionConcludedObject();
         message.setMaatId(TEST_MAAT_ID);
         existingWqHearingEntity.setWqJurisdictionType("MAGISTRATES");
-        wqHearingRepository.save(existingWqHearingEntity);
+        repos.wqHearing.save(existingWqHearingEntity);
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
         String sqsPayload = pullMessageFromSQS(message);
         prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
@@ -300,7 +272,7 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
         message.setHearingIdWhereChangeOccurred(UUID.fromString(existingWqHearingEntity.getHearingUUID()));
         String sqsPayload = pullMessageFromSQS(message);
 
-        reservationsRepository.save(ReservationsEntity.builder().recordId(message.getMaatId()).build());
+        repos.reservations.save(ReservationsEntity.builder().recordId(message.getMaatId()).build());
 
         prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
 
@@ -320,13 +292,14 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
 
     @Test
     public void givenSqsPayload_whenHearingOffenceSummaryIsNull_thenReturnMessage() {
-        String sqsPayload = "{" +
-                "    \"maatId\": " + TEST_MAAT_ID + ",\n" +
-                "    \"hearingIdWhereChangeOccurred\": \"61600a90-89e2-4717-aa9b-a01fc66130c1\",\n" +
-                "    \"metadata\": {\n" +
-                "        \"laaTransactionId\": " + LAA_TRANSACTION_ID + "\n" +
-                "    }\n" +
-                "}";
+        String sqsPayload = """
+            {    "maatId": %d,
+                "hearingIdWhereChangeOccurred": "61600a90-89e2-4717-aa9b-a01fc66130c1",
+                "metadata": {
+                    "laaTransactionId": %s
+                }
+            }
+            """.formatted(TEST_MAAT_ID, LAA_TRANSACTION_ID);
         prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
         Mockito.verify(hearingsService, Mockito.times(0)).retrieveHearingForCaseConclusion(
                 any(ProsecutionConcluded.class));
@@ -337,14 +310,15 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
     @Test
 
     public void givenSqsPayload_whenHearingOffenceSummaryIsEmpty_thenReturnMessage() {
-        String sqsPayload = "{" +
-                "    \"maatId\": " + TEST_MAAT_ID + ",\n" +
-                "    \"hearingIdWhereChangeOccurred\": \"61600a90-89e2-4717-aa9b-a01fc66130c1\",\n" +
-                "    \"offenceSummary\": [],\n" +
-                "    \"metadata\": {\n" +
-                "        \"laaTransactionId\": " + LAA_TRANSACTION_ID + "\n" +
-                "    }\n" +
-                "}";
+        String sqsPayload = """
+            {    "maatId": %d,
+                "hearingIdWhereChangeOccurred": "61600a90-89e2-4717-aa9b-a01fc66130c1",
+                "offenceSummary": [],
+                "metadata": {
+                    "laaTransactionId": %s
+                }
+            }
+            """.formatted(TEST_MAAT_ID, LAA_TRANSACTION_ID);
         prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
         Mockito.verify(hearingsService, Mockito.times(0)).retrieveHearingForCaseConclusion(
                 any(ProsecutionConcluded.class));
@@ -355,12 +329,14 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
     @Test
 
     public void givenSqsPayload_whenMaatIdIsNull_thenReturnMessage() {
-        String sqsPayload = "{" +
-                "    \"hearingIdWhereChangeOccurred\": \"61600a90-89e2-4717-aa9b-a01fc66130c1\",\n" +
-                "    \"metadata\": {\n" +
-                "        \"laaTransactionId\": " + LAA_TRANSACTION_ID + "\n" +
-                "    }\n" +
-                "}";
+        String sqsPayload = """
+            {    "hearingIdWhereChangeOccurred": "61600a90-89e2-4717-aa9b-a01fc66130c1",
+                "metadata": {
+                    "laaTransactionId": %s
+                }
+            }
+            """.formatted(
+            LAA_TRANSACTION_ID);
 
         prosecutionConcludedListener.receive(sqsPayload, new MessageHeaders(new HashMap<>()));
         Mockito.verify(hearingsService, Mockito.times(0)).retrieveHearingForCaseConclusion(
@@ -373,12 +349,13 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
         queueMessageLogTestHelper.assertQueueMessageLogged(
                 sqsPayload, 1, message.getMetadata().getLaaTransactionId(), message.getMaatId());
 
-        assertThat(updateOutcomesRepository.findAll().size()).isEqualTo(0);
+        assertThat(repos.updateOutcomes.findAll().size()).isEqualTo(0);
 
-        List<ProsecutionConcludedEntity> createdProsecutionConcludedEntities = prosecutionConcludedRepository.findAll();
+        List<ProsecutionConcludedEntity> createdProsecutionConcludedEntities = repos.prosecutionConcluded.findAll();
         assertThat(createdProsecutionConcludedEntities.size()).isEqualTo(1);
 
-        ProsecutionConcludedEntity createdProsecutionConcludedEntity = prosecutionConcludedRepository.findAll().get(0);
+        ProsecutionConcludedEntity createdProsecutionConcludedEntity = repos.prosecutionConcluded.findAll()
+            .get(0);
         assertThat(createdProsecutionConcludedEntity.getStatus()).isEqualTo(CaseConclusionStatus.PENDING.name());
         assertThat(createdProsecutionConcludedEntity.getMaatId()).isEqualTo(message.getMaatId());
         ProsecutionConcluded savedCaseData =
@@ -391,12 +368,13 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
         queueMessageLogTestHelper.assertQueueMessageLogged(
                 sqsPayload, 1, message.getMetadata().getLaaTransactionId(), message.getMaatId());
 
-        assertThat(updateOutcomesRepository.findAll().size()).isEqualTo(0);
-        assertThat(prosecutionConcludedRepository.findAll().size()).isEqualTo(0);
+        assertThat(repos.updateOutcomes.findAll().size()).isEqualTo(0);
+        assertThat(repos.prosecutionConcluded.findAll().size()).isEqualTo(0);
     }
 
     private void assertProsecutionConcludedEntitiesUpdated(ProsecutionConcluded message) {
-        List<ProsecutionConcludedEntity> concludedEntities = prosecutionConcludedRepository.getByMaatId(message.getMaatId());
+        List<ProsecutionConcludedEntity> concludedEntities = repos.prosecutionConcluded.getByMaatId(
+            message.getMaatId());
         concludedEntities.forEach(
                 concludedEntity -> assertThat(concludedEntity.getStatus()).isEqualTo(CaseConclusionStatus.PROCESSED.name()));
     }
@@ -443,8 +421,8 @@ public class ProsecutionConcludedIntegrationTest extends MockMvcIntegrationTest 
     }
 
     private void assertUpdateOutcomesProcedureCalledCorrectly(UpdateOutcomesEntity expectedProcedureInputs) {
-        assertThat(updateOutcomesRepository.findAll().size()).isEqualTo(1);
-        UpdateOutcomesEntity procedureInputs = updateOutcomesRepository.findAll().get(0);
+        assertThat(repos.updateOutcomes.findAll().size()).isEqualTo(1);
+        UpdateOutcomesEntity procedureInputs = repos.updateOutcomes.findAll().get(0);
         assertThat(procedureInputs.getRepId()).isEqualTo(expectedProcedureInputs.getRepId());
         assertThat(procedureInputs.getAppealType()).isEqualTo(expectedProcedureInputs.getAppealType());
         assertThat(procedureInputs.getCcOutcome()).isEqualTo(expectedProcedureInputs.getCcOutcome());

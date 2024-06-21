@@ -1,21 +1,21 @@
 package gov.uk.courtdata.integration.eform;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.MAATCourtDataApplication;
-import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.testutils.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 class EFormIntegrationTest extends MockMvcIntegrationTest {
@@ -31,9 +31,6 @@ class EFormIntegrationTest extends MockMvcIntegrationTest {
     private static final String ALREADY_EXISTS_USN_MESSAGE = String.format("The USN [%d] already exists in the data store.", USN);
     private static final String NONEXISTENT_USN_RETURN = "{\"code\":\"NOT_FOUND\",\"message\":\"" + NONEXISTENT_USN_MESSAGE + "\"}";
     private static final String ALREADY_EXISTS_USN_RETURN = "{\"code\":\"BAD_REQUEST\",\"message\":\"" + ALREADY_EXISTS_USN_MESSAGE + "\"}";
-
-    @Autowired
-    private EformStagingRepository eformStagingRepository;
 
     private String xmlDoc;
     private EformsStagingEntity eformsStagingEntity;
@@ -83,7 +80,7 @@ class EFormIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenExistingUSN_whenPOSTeformCalled_thenErrorReturned() throws Exception {
-        eformStagingRepository.saveAndFlush(eformsStagingEntity);
+        repos.eformStaging.saveAndFlush(eformsStagingEntity);
 
         MockHttpServletRequestBuilder requestBuilder = post(EFORM_USN_PROVIDED_URL)
                 .content(xmlDoc)
@@ -96,7 +93,7 @@ class EFormIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAUSN_whenGETeformCalled_thenReturnEntryFromDB() throws Exception {
-        eformStagingRepository.saveAndFlush(eformsStagingEntity);
+        repos.eformStaging.saveAndFlush(eformsStagingEntity);
 
         String type = String.format("\"%s\"", TYPE);
         MockHttpServletRequestBuilder requestBuilder = get(EFORM_USN_PROVIDED_URL)
@@ -129,7 +126,7 @@ class EFormIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAUSN_whenDELETEeformCalled_thenEntryRemovedFromDB() throws Exception {
-        eformStagingRepository.saveAndFlush(eformsStagingEntity);
+        repos.eformStaging.saveAndFlush(eformsStagingEntity);
 
         MockHttpServletRequestBuilder requestBuilder = delete(EFORM_USN_PROVIDED_URL)
                 .contentType(MediaType.APPLICATION_XML);

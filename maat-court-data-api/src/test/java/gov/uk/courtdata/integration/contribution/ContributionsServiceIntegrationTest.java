@@ -133,7 +133,6 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
         contributionFilesRepository.saveAndFlush(contributionFilesEntity);
         List<ContributionsSummaryDTO> contributionsSummary = contributionsService.getContributionsSummary(REP_ID);
         assertThat(contributionsSummary.isEmpty()).isFalse();
-        assertThat(contributionsSummary.get(0).getFileName()).isEqualTo(CONTRIBUTION_FILE_NAME);
     }
 
     @Test

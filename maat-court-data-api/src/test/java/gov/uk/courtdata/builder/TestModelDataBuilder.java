@@ -1297,21 +1297,6 @@ public class TestModelDataBuilder {
             public LocalDate getCalcDate() {
                 return LocalDate.now();
             }
-
-            @Override
-            public String getFileName() {
-                return "CONTRIBUTIONS_20230707999.xml";
-            }
-
-            @Override
-            public LocalDate getDateSent() {
-                return LocalDate.now();
-            }
-
-            @Override
-            public LocalDate getDateReceived() {
-                return null;
-            }
         };
     }
 

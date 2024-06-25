@@ -14,8 +14,10 @@ import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.ConcorContributionsRepository;
 import gov.uk.courtdata.util.ValidationUtils;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -61,30 +64,36 @@ public class ConcorContributionsService {
     }
 
     @Transactional(rollbackFor = MAATCourtDataException.class)
-    public boolean createContributionAndUpdateConcorStatus(CreateContributionFileRequest contributionRequest){
+    @NotNull
+    public Integer createContributionAndUpdateConcorStatus(CreateContributionFileRequest contributionRequest){
 
         ValidationUtils.isNull(contributionRequest,"contributionRequest object is null");
         ValidationUtils.isEmptyOrHasNullElement(contributionRequest.getConcorContributionIds(),"ContributionIds are empty/null.");
 
         final ContributionFilesEntity contributionFilesEntity = createContributionFile(contributionRequest);
-        return updateConcorContributionStatusAndSetContribFile(contributionRequest.getConcorContributionIds(), SENT, contributionFilesEntity.getFileId());
+        if (!updateConcorContributionStatusAndSetContribFile(contributionRequest.getConcorContributionIds(), SENT, contributionFilesEntity.getFileId())) {
+            throw new NoSuchElementException("No concor_contribution status values were updated"); // did not rollback previously
+        }
+        if (contributionFilesEntity.getFileId() == null) {
+            throw new RequestedObjectNotFoundException("Created contribution_file's id could not be found"); // did not rollback previously
+        }
+        return contributionFilesEntity.getFileId();
     }
 
     @Transactional(rollbackFor =  MAATCourtDataException.class)
-    public boolean logContributionProcessed(LogContributionProcessedRequest request){
-        boolean successful = false;
-        Optional<ConcorContributionsEntity> optionalConcorEntry = concorRepository.findById(request.getConcorId());
-        if(optionalConcorEntry.isPresent()) {
-            ConcorContributionsEntity concorEntity = optionalConcorEntry.get();
-            log.info("Contribution found: {}", concorEntity.getId());
-            successful = debtCollectionService.updateContributionFileReceivedCount(concorEntity.getContribFileId());
-            // check if error
-            if(successful && !StringUtils.isEmpty(request.getErrorText()) ){
-                successful = saveErrorMessage(request, concorEntity);
-            }
-
+    @NotNull
+    public Integer logContributionProcessed(LogContributionProcessedRequest request){
+        ConcorContributionsEntity concorEntity = concorRepository.findById(request.getConcorId())
+                .orElseThrow(() -> new RequestedObjectNotFoundException("concor_contribution could not be found by id"));
+        log.info("Contribution found: {}", concorEntity.getId());
+        if (!debtCollectionService.updateContributionFileReceivedCount(concorEntity.getContribFileId())) {
+            throw new NoSuchElementException("No associated contribution_file found for concur_contribution");
         }
-        return successful;
+        if(!StringUtils.isEmpty(request.getErrorText()) ){
+            saveErrorMessage(request, concorEntity);
+        }
+
+        return concorEntity.getContribFileId();
     }
 
     public ConcorContributionResponseDTO getConcorContribution(Integer concorContributionId){

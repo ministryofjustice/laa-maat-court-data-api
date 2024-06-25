@@ -12,7 +12,4 @@ public interface ContributionsSummaryView {
     String getUpliftApplied();
     LocalDate getEffectiveDate();
     LocalDate getCalcDate();
-    String getFileName();
-    LocalDate getDateSent();
-    LocalDate getDateReceived();
 }

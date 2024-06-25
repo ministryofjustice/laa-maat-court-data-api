@@ -30,8 +30,7 @@ public interface ContributionsRepository extends JpaRepository<ContributionsEnti
 
     @Query(value = "SELECT C.ID, C.MONTHLY_CONTRIBS monthlyContributions, C.UPFRONT_CONTRIBS upfrontContributions, " +
             "C.BASED_ON basedOn, C.UPLIFT_APPLIED upliftApplied, C.EFFECTIVE_DATE effectiveDate, " +
-            "C.CALC_DATE calcDate, F.FILE_NAME fileName, F.DATE_SENT dateSent, F.DATE_RECEIVED dateReceived " +
-            "FROM TOGDATA.CONTRIBUTIONS C LEFT JOIN TOGDATA.CONTRIBUTION_FILES F ON (F.ID = C.CONT_FILE_ID) " +
+            "C.CALC_DATE calcDate FROM TOGDATA.CONTRIBUTIONS C " +
             "WHERE C.REP_ID = :repId ORDER BY C.EFFECTIVE_DATE DESC, C.ID DESC", nativeQuery = true)
     List<ContributionsSummaryView> getContributionsSummary(@Param("repId") Integer repId);
 }

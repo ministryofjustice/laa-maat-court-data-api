@@ -18,14 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
@@ -39,6 +32,14 @@ public class CCOutcomeController {
 
     private final CCOutComeValidationProcessor validator;
 
+    @DeleteMapping(value = "/reporder/{repId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public void deleteByRepId(@PathVariable int repId) {
+        LoggingData.MAAT_ID.putInMDC(repId);
+        log.info("Delete RepOrder CC Outcome Request Received");
+        validator.validate(repId);
+        service.deleteByRepId(repId);
+    }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create a new RepOrder CC outcome")

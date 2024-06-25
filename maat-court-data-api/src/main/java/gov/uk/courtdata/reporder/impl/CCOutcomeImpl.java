@@ -29,4 +29,10 @@ public class CCOutcomeImpl {
     public List<RepOrderCCOutComeEntity> findByRepId(Integer repId) {
         return courtProcessingRepository.findByRepOrder_Id(repId);
     }
+
+public void deleteByRepId(Integer repId) {
+        courtProcessingRepository.deleteByRepOrder_Id(repId);
+    }
+
+
 }

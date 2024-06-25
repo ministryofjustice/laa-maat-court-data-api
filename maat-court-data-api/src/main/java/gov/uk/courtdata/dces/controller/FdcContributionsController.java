@@ -1,8 +1,7 @@
 package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.annotation.StandardApiResponse;
-import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
-import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
+import gov.uk.courtdata.dces.request.*;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.dces.service.FdcContributionsService;
@@ -16,12 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -72,6 +66,26 @@ public class FdcContributionsController {
     public ResponseEntity<Boolean> logFdcProcessed(@RequestBody final LogFdcProcessedRequest request) {
         log.info("Update contribution file sent value, and log any errors with request {}", request);
         boolean response = fdcContributionsService.logFdcProcessed(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @PostMapping(value = "/fdc-contribution", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Logs that a final defence cost was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
+    public ResponseEntity<Integer> createFdcContribution(@RequestBody final CreateFdcContributionRequest request) {
+        log.info("Create FdcContributionRequest {}", request);
+        boolean response = false;
+        return ResponseEntity.ok(2323);
+    }
+
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @PatchMapping(value = "/fdc-contribution", produces = MediaType.APPLICATION_JSON_VALUE) //received a map
+    @Operation(description = "Logs that a final defence cost was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
+    public ResponseEntity<Boolean> updateFdcContribution(@RequestBody final UpdateFdcContributionRequest request) {
+        log.info("Create FdcContributionRequest {}", request);
+        boolean response = false; //fdcContributionsService.createFdcContribution(request);
         return ResponseEntity.ok(response);
     }
 

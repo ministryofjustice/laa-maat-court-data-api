@@ -124,10 +124,6 @@ api-endpoints:
 
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}
-  prosecution-concluded-listener:
-    enabled: ${PROSECUTION_CONCLUDED_LISTENER_ENABLED}
-  prosecution-concluded-schedule:
-    enabled: ${PROSECUTION_CONCLUDED_SCHEDULE_ENABLED}
 
 version: 0.0.1
 

@@ -65,9 +65,6 @@ Parameters:
   pCreateLinkCpStatusJobQueue:
     Type: String
     Default: ''
-  pLaaProsecutionConcludedQueue:
-    Type: String
-    Default: ''
   pAwsDefaultRegion:
     Type: String
     Default: ''
@@ -530,8 +527,6 @@ Resources:
               Value: !Ref pPostMvpEnabled
             - Name: CREATE_LINK_CP_STATUS_JOB_QUEUE
               Value: !Ref pCreateLinkCpStatusJobQueue
-            - Name: LAA_PROSECUTION_CONCLUDED_QUEUE
-              Value: !Ref pLaaProsecutionConcludedQueue
             - Name: AWS_DEFAULT_REGION
               Value: !Ref pAwsDefaultRegion
             - Name: CLOUDWATCH_STEP

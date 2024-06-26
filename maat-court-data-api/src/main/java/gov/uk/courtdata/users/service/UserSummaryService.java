@@ -9,7 +9,7 @@ import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.mapper.ReservationsMapper;
 import gov.uk.courtdata.mapper.RoleDataItemsMapper;
-import gov.uk.courtdata.prosecutionconcluded.helper.ReservationsRepositoryHelper;
+import gov.uk.courtdata.helper.ReservationsRepositoryHelper;
 import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleDataItemsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;

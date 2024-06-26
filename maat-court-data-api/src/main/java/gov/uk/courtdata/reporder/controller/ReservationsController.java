@@ -6,7 +6,7 @@ import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
-import gov.uk.courtdata.prosecutionconcluded.helper.ReservationsRepositoryHelper;
+import gov.uk.courtdata.helper.ReservationsRepositoryHelper;
 import gov.uk.courtdata.reporder.service.ReservationsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

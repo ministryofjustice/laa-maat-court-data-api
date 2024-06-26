@@ -1,8 +1,8 @@
-package gov.uk.courtdata.prosecutionconcluded.helper;
+package gov.uk.courtdata.offence.helper;
 
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.enums.WQType;
-import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
+import gov.uk.courtdata.offence.model.OffenceSummary;
 import gov.uk.courtdata.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

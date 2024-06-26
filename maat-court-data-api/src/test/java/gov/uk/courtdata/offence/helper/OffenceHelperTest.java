@@ -1,9 +1,9 @@
-package gov.uk.courtdata.prosecutionconcluded.helper;
+package gov.uk.courtdata.offence.helper;
 
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
-import gov.uk.courtdata.prosecutionconcluded.model.OffenceSummary;
-import gov.uk.courtdata.prosecutionconcluded.model.Plea;
+import gov.uk.courtdata.offence.model.OffenceSummary;
+import gov.uk.courtdata.offence.model.Plea;
 import gov.uk.courtdata.repository.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

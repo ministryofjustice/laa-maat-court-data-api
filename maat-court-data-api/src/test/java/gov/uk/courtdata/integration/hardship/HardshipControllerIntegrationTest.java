@@ -1,5 +1,15 @@
 package gov.uk.courtdata.integration.hardship;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.YES;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import gov.uk.MAATCourtDataApplication;
@@ -7,31 +17,27 @@ import gov.uk.courtdata.builder.DataBuilderUtil;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
+import gov.uk.courtdata.entity.HardshipReviewEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
-import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.model.hardship.*;
-import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.model.hardship.CreateHardshipReview;
+import gov.uk.courtdata.model.hardship.HardshipReview;
+import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
+import gov.uk.courtdata.model.hardship.SolicitorCosts;
+import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static gov.uk.courtdata.constants.CourtDataConstants.NO;
-import static gov.uk.courtdata.constants.CourtDataConstants.YES;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(
         properties = "spring.main.allow-bean-definition-overriding=true",
@@ -44,17 +50,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private final String HARDSHIP_URL = BASE_URL + "/{hardshipId}";
     private final String HARDSHIP_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
     private Integer MOCK_REP_ID_2 = 5555;
-
-    @Autowired
-    private HardshipReviewRepository hardshipReviewRepository;
-    @Autowired
-    private HardshipReviewDetailRepository hardshipReviewDetailRepository;
-    @Autowired
-    private FinancialAssessmentRepository financialAssessmentRepository;
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-    @Autowired
-    private MockNewWorkReasonRepository mockNewWorkReasonRepository;
 
     private HardshipReviewEntity existingHardshipReview;
     private FinancialAssessmentEntity existingFinancialAssessment;
@@ -213,8 +208,8 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         assertThat(hardshipReviewEntity.getDisposableIncomeAfterHardship()).isEqualTo(inputReviewData.getDisposableIncomeAfterHardship());
         assertThat(hardshipReviewEntity.getDisposableIncome()).isEqualTo(inputReviewData.getDisposableIncome());
 
-
-        List<HardshipReviewDetailEntity> reviewDetails = hardshipReviewDetailRepository.findAllByHardshipReviewId(hardshipReviewEntity.getId());
+        List<HardshipReviewDetailEntity> reviewDetails = repos.hardshipReviewDetail.findAllByHardshipReviewId(
+            hardshipReviewEntity.getId());
         assertThat(reviewDetails).hasSameSizeAs(inputReviewData.getReviewDetails());
 
         for (int i = 0; i < reviewDetails.size(); i++) {
@@ -248,16 +243,20 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
 
 
     private void setupTestData() {
-        existingNewWorkReason = mockNewWorkReasonRepository.save(
+        existingNewWorkReason = repos.mockNewWorkReason.save(
                 TestEntityDataBuilder.getNewWorkReasonEntity());
 
-        RepOrderEntity repOrderEntity = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
-        RepOrderEntity repOrderForUnlink = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder(MOCK_REP_ID_2));
+        RepOrderEntity repOrderEntity = repos.repOrder.save(
+            TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrderForUnlink = repos.repOrder.save(
+            TestEntityDataBuilder.getPopulatedRepOrder(MOCK_REP_ID_2));
         MOCK_REP_ID_2 = repOrderForUnlink.getId();
 
-        existingFinancialAssessment = financialAssessmentRepository.save(getTestFinancialAssessment(repOrderEntity));
-        existingUnlinkedFinancialAssessment = financialAssessmentRepository.save(getTestFinancialAssessment(repOrderForUnlink));
-        existingHardshipReview = hardshipReviewRepository.save(
+        existingFinancialAssessment = repos.financialAssessment.save(
+            getTestFinancialAssessment(repOrderEntity));
+        existingUnlinkedFinancialAssessment = repos.financialAssessment.save(
+            getTestFinancialAssessment(repOrderForUnlink));
+        existingHardshipReview = repos.hardshipReview.save(
                 getTestHardshipReview(existingFinancialAssessment.getRepOrder().getId(), existingFinancialAssessment.getId()));
 
     }

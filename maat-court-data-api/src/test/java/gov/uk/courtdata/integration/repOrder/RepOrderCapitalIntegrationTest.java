@@ -7,14 +7,11 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.repository.RepOrderCapitalRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
 import java.util.List;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 
@@ -27,26 +24,23 @@ public class RepOrderCapitalIntegrationTest extends MockMvcIntegrationTest {
 
     private static final Integer INVALID_REP_ID = -1;
 
-    @Autowired
-    private RepOrderCapitalRepository capitalRepository;
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-
     private Integer REP_ID;
     private Integer MOCK1_REP_ID;
 
     @BeforeEach
     void setUp() {
 
-        RepOrderEntity repOrderEntity = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrderEntity = repos.repOrder.saveAndFlush(
+            TestEntityDataBuilder.getPopulatedRepOrder());
         REP_ID = repOrderEntity.getId();
-        RepOrderEntity repOrder = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrder = repos.repOrder.saveAndFlush(
+            TestEntityDataBuilder.getPopulatedRepOrder());
         MOCK1_REP_ID = repOrder.getId();
 
 
         List repOrderCapitalList = List.of(TestEntityDataBuilder.getRepOrderCapitalEntity(1, REP_ID, "SAVINGS"),
                 TestEntityDataBuilder.getRepOrderCapitalEntity(2, MOCK1_REP_ID, "PROPERTY"));
-        capitalRepository.saveAllAndFlush(repOrderCapitalList);
+        repos.repOrderCapital.saveAllAndFlush(repOrderCapitalList);
 
     }
 

@@ -14,8 +14,6 @@ import gov.uk.courtdata.entity.RepOrderCCOutComeEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
-import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
 import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
@@ -24,7 +22,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -39,10 +36,6 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private static final Integer INVALID_REP_ID = 999999;
     private static final Integer INVALID_OUTCOME_ID = -1;
-    @Autowired
-    private CrownCourtProcessingRepository courtProcessingRepository;
-    @Autowired
-    private RepOrderRepository repOrderRepository;
     private RepOrderEntity existingRepOrder;
 
     private RepOrderEntity repOrderEntity;
@@ -57,11 +50,12 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        existingRepOrder = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
+        existingRepOrder = repos.repOrder.saveAndFlush(
+            TestEntityDataBuilder.getPopulatedRepOrder());
         REP_ID = existingRepOrder.getId();
-        repOrderEntity = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
+        repOrderEntity = repos.repOrder.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
         MOCK1_REP_ID = repOrderEntity.getId();
-        repOrder = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
+        repOrder = repos.repOrder.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
         MOCK2_REP_ID = repOrder.getId();
     }
 
@@ -105,10 +99,12 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAValidData_whenUpdateIsInvoked_thenShouldUpdatedCCOutCome() throws Exception {
-        RepOrderCCOutComeEntity savedOutcome = courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(1, existingRepOrder));
+        RepOrderCCOutComeEntity savedOutcome = repos.crownCourtProcessing.saveAndFlush(
+            TestEntityDataBuilder.getRepOrderCCOutcomeEntity(1, existingRepOrder));
         runSuccessScenario(MockMvcRequestBuilders.put(endpointUrl).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateRepOrderCCOutcome(savedOutcome.getId(), REP_ID))));
-        RepOrderCCOutComeEntity ccOutCome = courtProcessingRepository.findById(savedOutcome.getId()).get();
+        RepOrderCCOutComeEntity ccOutCome = repos.crownCourtProcessing.findById(
+            savedOutcome.getId()).get();
         softly.assertThat(REP_ID).isEqualTo(ccOutCome.getRepOrder().getId());
         softly.assertThat(TestModelDataBuilder.TEST_CASE_ID.toString()).isEqualTo(ccOutCome.getCaseNumber());
         softly.assertThat("430").isEqualTo(ccOutCome.getCrownCourtCode());
@@ -129,7 +125,8 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAValidRepId_whenFindIsInvoked_thenReturnOutcome() throws Exception {
-        courtProcessingRepository.saveAndFlush(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(2, existingRepOrder));
+        repos.crownCourtProcessing.saveAndFlush(
+            TestEntityDataBuilder.getRepOrderCCOutcomeEntity(2, existingRepOrder));
         mockMvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/reporder/" + REP_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -141,7 +138,7 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenAValidRepId_whenFindIsInvoked_thenReturnOutcomeCount() throws Exception {
         RepOrderCCOutComeEntity repOrderCCOutComeEntity = TestEntityDataBuilder.getRepOrderCCOutcomeEntity(3, repOrderEntity);
-        courtProcessingRepository.saveAndFlush(repOrderCCOutComeEntity);
+        repos.crownCourtProcessing.saveAndFlush(repOrderCCOutComeEntity);
         MvcResult result = runSuccessScenario(MockMvcRequestBuilders.head(endpointUrl + "/reporder/" + MOCK1_REP_ID));
         assertThat(result.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
     }
@@ -149,7 +146,7 @@ public class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenAEmptyRepIdInRepOrderOutcome_whenFindIsInvoked_thenReturnOutcomeCountAsZero() throws Exception {
         RepOrderCCOutComeEntity repOrderCCOutComeEntity = TestEntityDataBuilder.getRepOrderCCOutcomeEntity(4, repOrderEntity);
-        courtProcessingRepository.saveAndFlush(repOrderCCOutComeEntity);
+        repos.crownCourtProcessing.saveAndFlush(repOrderCCOutComeEntity);
         MvcResult result = runSuccessScenario(MockMvcRequestBuilders.head(endpointUrl + "/reporder/" + MOCK2_REP_ID));
         assertThat(result.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
     }

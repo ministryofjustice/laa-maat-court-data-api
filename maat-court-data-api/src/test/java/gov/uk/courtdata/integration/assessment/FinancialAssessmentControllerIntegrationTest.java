@@ -1,5 +1,12 @@
 package gov.uk.courtdata.integration.assessment;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
@@ -15,13 +22,15 @@ import gov.uk.courtdata.entity.NewWorkReasonEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.UserEntity;
-import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,17 +38,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
@@ -56,9 +54,6 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
     @Autowired
     private FinancialAssessmentMapper assessmentMapper;
-
-    @Autowired
-    private MockNewWorkReasonRepository newWorkReasonRepository;
 
     private List<FinancialAssessmentEntity> existingAssessmentEntities;
     private RepOrderEntity existingRepOrder;
@@ -82,7 +77,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         UserEntity userEntity = TestEntityDataBuilder.getUserEntity(TestEntityDataBuilder.TEST_USER);
         repos.user.save(userEntity);
 
-        NewWorkReasonEntity newWorkReasonEntity = newWorkReasonRepository.save(
+        NewWorkReasonEntity newWorkReasonEntity = repos.mockNewWorkReason.save(
                 TestEntityDataBuilder.getFmaNewWorkReasonEntity());
 
         List<FinancialAssessmentEntity> assessmentsToCreate = List.of(

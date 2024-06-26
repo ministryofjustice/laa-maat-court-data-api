@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -53,9 +52,9 @@ public class ConcorContributionsRestController {
     @StandardApiResponse
     @PostMapping(value = "/create-contribution-file", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Creating a contribution file and updating the status to Sent in the concor contribution")
-    public ResponseEntity<Boolean> updateContributionFileStatus(@RequestBody @NotEmpty final CreateContributionFileRequest request) {
+    public ResponseEntity<Integer> updateContributionFileStatus(@RequestBody final CreateContributionFileRequest request) {
         log.info("Update concor contribution file references with request {}", request);
-        boolean response = concorContributionsService.createContributionAndUpdateConcorStatus(request);
+        var response = concorContributionsService.createContributionAndUpdateConcorStatus(request);
         return ResponseEntity.ok(response);
     }
 
@@ -63,9 +62,9 @@ public class ConcorContributionsRestController {
     @StandardApiResponse
     @PostMapping(value = "/log-contribution-response", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Logs that a contribution was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
-    public ResponseEntity<Boolean> logContributionProcessed(@RequestBody final LogContributionProcessedRequest request) {
+    public ResponseEntity<Integer> logContributionProcessed(@RequestBody final LogContributionProcessedRequest request) {
         log.info("Update contribution file sent value, and log any errors with request {}", request);
-        boolean response = concorContributionsService.logContributionProcessed(request);
+        var response = concorContributionsService.logContributionProcessed(request);
         return ResponseEntity.ok(response);
     }
 

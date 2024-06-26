@@ -1,20 +1,24 @@
 package gov.uk.courtdata.integration.contribution;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
-import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.entity.CorrespondenceEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.repository.ContributionFilesRepository;
-import gov.uk.courtdata.repository.CorrespondenceRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,10 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SoftAssertionsExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
@@ -40,38 +40,33 @@ class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
     public Integer REP_ID = 1234;
     @Autowired
     protected ObjectMapper objectMapper;
-    @Autowired
-    ContributionsRepository contributionsRepository;
-    @Autowired
-    ContributionFilesRepository contributionFilesRepository;
-    @Autowired
-    CorrespondenceRepository correspondenceRepository;
-    @Autowired
-    private RepOrderRepository repOrderRepository;
 
     private ContributionsEntity contributionsEntity;
 
     @BeforeEach
     public void setUp() {
-        RepOrderEntity repOrderEntity = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrderEntity = repos.repOrder.saveAndFlush(
+            TestEntityDataBuilder.getPopulatedRepOrder());
         REP_ID = repOrderEntity.getId();
 
-        ContributionFilesEntity contributionFilesEntity = contributionFilesRepository.saveAndFlush(TestEntityDataBuilder.getContributionFilesEntity());
+        ContributionFilesEntity contributionFilesEntity = repos.contributionFiles.saveAndFlush(
+            TestEntityDataBuilder.getContributionFilesEntity());
         CorrespondenceEntity correspondence = TestEntityDataBuilder.getCorrespondenceEntity(1);
         correspondence.setRepId(REP_ID);
-        CorrespondenceEntity correspondenceEntity = correspondenceRepository.saveAndFlush(correspondence);
+        CorrespondenceEntity correspondenceEntity = repos.correspondence.saveAndFlush(
+            correspondence);
 
         ContributionsEntity contributions = TestEntityDataBuilder.getContributionsEntity();
         contributions.setCorrespondenceId(correspondenceEntity.getId());
         contributions.setContributionFileId(contributionFilesEntity.getFileId());
         contributions.setRepOrder(repOrderEntity);
-        contributionsEntity = contributionsRepository.saveAndFlush(contributions);
+        contributionsEntity = repos.contributions.saveAndFlush(contributions);
 
-
-        RepOrderEntity repOrder = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrder = repos.repOrder.saveAndFlush(
+            TestEntityDataBuilder.getPopulatedRepOrder());
         ContributionsEntity contributionsEntity = TestEntityDataBuilder.getContributionsEntity();
         contributionsEntity.setRepOrder(repOrder);
-        contributionsRepository.saveAndFlush(contributionsEntity);
+        repos.contributions.saveAndFlush(contributionsEntity);
     }
 
     @AfterEach
@@ -151,11 +146,11 @@ class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
     void givenValidRepId_whenGetContributionsSummaryIsInvoked_thenCorrectResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + REP_ID
                 + "/summary").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id").value(contributionsEntity.getId()))
-                .andExpect(jsonPath("$[0].basedOn").value("Means"))
-                .andExpect(jsonPath("$[0].upliftApplied").value("Y"));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$[0].id").value(contributionsEntity.getId()))
+            .andExpect(jsonPath("$[0].basedOn").value("Means"))
+            .andExpect(jsonPath("$[0].upliftApplied").value("Y"));
     }
 
     @Test

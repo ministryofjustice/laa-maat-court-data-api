@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -53,9 +52,9 @@ public class FdcContributionsController {
     @StandardApiResponse
     @PostMapping(value = "/create-fdc-file", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Creating a fdc file and updating the status to Sent in the fdc table")
-    public ResponseEntity<Boolean> updateContributionFileStatus(@RequestBody @NotEmpty final CreateFdcFileRequest request) {
+    public ResponseEntity<Integer> updateContributionFileStatus(@RequestBody final CreateFdcFileRequest request) {
         log.info("Update concor contribution file references with request {}", request);
-        boolean response = fdcContributionsService.createContributionFileAndUpdateFdcStatus(request);
+        var response = fdcContributionsService.createContributionFileAndUpdateFdcStatus(request);
         return ResponseEntity.ok(response);
     }
 
@@ -63,9 +62,9 @@ public class FdcContributionsController {
     @StandardApiResponse
     @PostMapping(value = "/log-fdc-response", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Logs that a final defence cost was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
-    public ResponseEntity<Boolean> logFdcProcessed(@RequestBody final LogFdcProcessedRequest request) {
+    public ResponseEntity<Integer> logFdcProcessed(@RequestBody final LogFdcProcessedRequest request) {
         log.info("Update contribution file sent value, and log any errors with request {}", request);
-        boolean response = fdcContributionsService.logFdcProcessed(request);
+        var response = fdcContributionsService.logFdcProcessed(request);
         return ResponseEntity.ok(response);
     }
 

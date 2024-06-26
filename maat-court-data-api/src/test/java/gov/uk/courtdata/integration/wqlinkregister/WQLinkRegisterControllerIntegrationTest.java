@@ -7,13 +7,11 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import java.util.List;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @ExtendWith(SoftAssertionsExtension.class)
@@ -23,12 +21,9 @@ public class WQLinkRegisterControllerIntegrationTest extends MockMvcIntegrationT
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/wq-link-register";
     private static final Integer INVALID_REP_ID = 12312334;
 
-    @Autowired
-    private WqLinkRegisterRepository wqLinkRegisterRepository;
-
     @BeforeEach
-    void setUp(@Autowired WqLinkRegisterRepository wqLinkRegisterRepository) {
-        wqLinkRegisterRepository.save(TestEntityDataBuilder.getWQLinkRegisterEntity(8064716));
+    void setUp() {
+        repos.wqLinkRegister.save(TestEntityDataBuilder.getWQLinkRegisterEntity(8064716));
     }
 
     @Test

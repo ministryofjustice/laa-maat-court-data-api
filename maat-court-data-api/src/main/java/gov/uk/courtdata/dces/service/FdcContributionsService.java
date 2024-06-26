@@ -7,22 +7,23 @@ import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.dces.util.ContributionFileUtil;
+import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
+import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.FdcContributionsRepository;
 import gov.uk.courtdata.util.ValidationUtils;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 import static gov.uk.courtdata.enums.FdcContributionsStatus.SENT;
@@ -85,15 +86,21 @@ public class FdcContributionsService {
     }
 
     @Transactional(rollbackFor = MAATCourtDataException.class)
-    public boolean createContributionFileAndUpdateFdcStatus(CreateFdcFileRequest fdcRequest){
+    @NotNull
+    public Integer createContributionFileAndUpdateFdcStatus(CreateFdcFileRequest fdcRequest){
 
         ValidationUtils.isNull(fdcRequest,"fdcRequest object is null");
         ValidationUtils.isEmptyOrHasNullElement(fdcRequest.getFdcIds(),"FdcIds is empty/null.");
         log.info("Request Validated");
         ContributionFilesEntity contributionFilesEntity = createFdcFile(fdcRequest);
         log.info("File created with id: {}", contributionFilesEntity.getFileId());
-
-        return updateStatusForFdc(fdcRequest.getFdcIds(), contributionFilesEntity);
+        if (!updateStatusForFdc(fdcRequest.getFdcIds(), contributionFilesEntity)) {
+            throw new NoSuchElementException("No fdc_contribution status values were updated"); // did not rollback previously
+        }
+        if (contributionFilesEntity.getFileId() == null) {
+            throw new RequestedObjectNotFoundException("Created contribution_file's id could not be found"); // did not rollback previously
+        }
+        return contributionFilesEntity.getFileId();
     }
 
     private boolean updateStatusForFdc(Set<Integer> fdcIds, ContributionFilesEntity contributionFilesEntity){
@@ -120,19 +127,18 @@ public class FdcContributionsService {
     }
 
     @Transactional(rollbackFor =  MAATCourtDataException.class)
-    public boolean logFdcProcessed(LogFdcProcessedRequest request) {
-        boolean successful = false;
-        Optional<FdcContributionsEntity> optionalFdcEntry = fdcContributionsRepository.findById(request.getFdcId());
-        if(optionalFdcEntry.isPresent()) {
-            FdcContributionsEntity fdcEntity = optionalFdcEntry.get();
-            log.info("Contribution found: {}", fdcEntity.getId());
-            successful = debtCollectionService.updateContributionFileReceivedCount(fdcEntity.getContFileId());
-            // check if error
-            if(successful && !StringUtils.isEmpty(request.getErrorText()) ){
-                successful = saveErrorMessage(request, fdcEntity);
-            }
+    @NotNull
+    public Integer logFdcProcessed(LogFdcProcessedRequest request) {
+        FdcContributionsEntity fdcEntity = fdcContributionsRepository.findById(request.getFdcId())
+                .orElseThrow(() -> new RequestedObjectNotFoundException("fdc_contribution could not be found by id"));
+        log.info("Contribution found: {}", fdcEntity.getId());
+        if (!debtCollectionService.updateContributionFileReceivedCount(fdcEntity.getContFileId())) {
+            throw new RequestedObjectNotFoundException("Contribution file could not be updated");
         }
-        return successful;
+        if(!StringUtils.isEmpty(request.getErrorText()) ){
+            saveErrorMessage(request, fdcEntity);
+        }
+        return fdcEntity.getContFileId();
     }
 
     private boolean saveErrorMessage(LogFdcProcessedRequest request, FdcContributionsEntity fdcEntity){

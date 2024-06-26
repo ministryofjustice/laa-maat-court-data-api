@@ -93,7 +93,7 @@ class ConcorContributionsRestControllerTest {
                 .xmlContent("XMLFileContent")
                 .concorContributionIds(Set.of())
                 .build();
-        when(concorContributionsService.createContributionAndUpdateConcorStatus(createContributionFileRequest)).thenReturn(true);
+        when(concorContributionsService.createContributionAndUpdateConcorStatus(createContributionFileRequest)).thenReturn(1111);
 
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(createContributionFileRequest);
@@ -102,7 +102,7 @@ class ConcorContributionsRestControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("true"));
+                .andExpect(jsonPath("$").value("1111"));
     }
 
     @Test
@@ -154,12 +154,12 @@ class ConcorContributionsRestControllerTest {
                 .errorText(errorText)
                 .build();
         when(concorContributionsService.logContributionProcessed(request))
-                .thenReturn(true);
+                .thenReturn(1111);
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
                 .content(createDrcUpdateJson(id, errorText))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("true"));
+                .andExpect(jsonPath("$").value("1111"));
     }
 
     @Test

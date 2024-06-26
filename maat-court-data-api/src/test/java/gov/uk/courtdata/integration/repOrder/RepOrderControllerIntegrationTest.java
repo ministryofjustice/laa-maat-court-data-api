@@ -22,9 +22,6 @@ import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
-import gov.uk.courtdata.repository.RepOrderMvoRegRepository;
-import gov.uk.courtdata.repository.RepOrderMvoRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -64,22 +61,20 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
 
     @BeforeEach
-    void setUp(@Autowired RepOrderRepository repOrderRepository,
-               @Autowired RepOrderMvoRepository repOrderMvoRepository,
-               @Autowired RepOrderMvoRegRepository repOrderMvoRegRepository) {
-
+    void setUp() {
         RepOrderEntity repOrdTestData = TestEntityDataBuilder.getPopulatedRepOrder();
         repOrdTestData.setSentenceOrderDate(null);
-        RepOrderEntity repOrder = repOrderRepository.save(repOrdTestData);
+      RepOrderEntity repOrder = repos.repOrder.save(repOrdTestData);
         REP_ORDER_ID_NO_SENTENCE_ORDER_DATE = repOrder.getId();
 
-        RepOrderEntity repOrderEntity = repOrderRepository.save(TestEntityDataBuilder.getPopulatedRepOrder());
+      RepOrderEntity repOrderEntity = repos.repOrder.save(
+          TestEntityDataBuilder.getPopulatedRepOrder());
         REP_ID = repOrderEntity.getId();
 
-        repOrderMvoRepository.save(
+      repos.repOrderMvo.save(
                 TestEntityDataBuilder.getRepOrderMvoEntity(TestEntityDataBuilder.MVO_ID, repOrder)
         );
-        repOrderMvoRegRepository.save(
+      repos.repOrderMvoReg.save(
                 TestEntityDataBuilder.getRepOrderMvoRegEntity(TestEntityDataBuilder.REP_ID, repOrder)
         );
     }

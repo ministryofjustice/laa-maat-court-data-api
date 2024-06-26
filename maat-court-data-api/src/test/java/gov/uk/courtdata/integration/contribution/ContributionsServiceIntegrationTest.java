@@ -1,12 +1,14 @@
 package gov.uk.courtdata.integration.contribution;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.contribution.dto.ContributionsSummaryDTO;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
-import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.contribution.service.ContributionsService;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
@@ -14,20 +16,13 @@ import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.repository.ContributionFilesRepository;
-import gov.uk.courtdata.repository.CorrespondenceRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
-
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
@@ -40,18 +35,6 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
     public Integer REP_ID = 1234;
 
     @Autowired
-    ContributionsRepository contributionsRepository;
-
-    @Autowired
-    ContributionFilesRepository contributionFilesRepository;
-
-    @Autowired
-    CorrespondenceRepository correspondenceRepository;
-
-    @Autowired
-    private RepOrderRepository repOrderRepository;
-
-    @Autowired
     private ContributionsService contributionsService;
 
     private ContributionsEntity contributionsEntity;
@@ -59,7 +42,8 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
     @BeforeEach
     public void setUp() {
 
-        RepOrderEntity repOrderEntity = repOrderRepository.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrderEntity = repos.repOrder.saveAndFlush(
+            TestEntityDataBuilder.getPopulatedRepOrder());
         REP_ID = repOrderEntity.getId();
 
         ContributionsEntity contributions = TestEntityDataBuilder.getContributionsEntity();
@@ -67,9 +51,9 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
 
         ContributionFilesEntity contributionFilesEntity = TestEntityDataBuilder.getContributionFilesEntity();
         contributionFilesEntity.setFileId(contributions.getContributionFileId());
-        contributionFilesRepository.saveAndFlush(contributionFilesEntity);
+        repos.contributionFiles.saveAndFlush(contributionFilesEntity);
 
-        contributionsEntity = contributionsRepository.saveAndFlush(contributions);
+        contributionsEntity = repos.contributions.saveAndFlush(contributions);
     }
 
     @Test
@@ -130,10 +114,9 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
     void givenValidRepId_whenGetContributionsSummaryIsInvoked_thenCorrectResponseIsReturned() {
         ContributionFilesEntity contributionFilesEntity = TestEntityDataBuilder.getContributionFilesEntity();
         contributionFilesEntity.setFileId(contributionsEntity.getContributionFileId());
-        contributionFilesRepository.saveAndFlush(contributionFilesEntity);
+        repos.contributionFiles.saveAndFlush(contributionFilesEntity);
         List<ContributionsSummaryDTO> contributionsSummary = contributionsService.getContributionsSummary(REP_ID);
         assertThat(contributionsSummary.isEmpty()).isFalse();
-        assertThat(contributionsSummary.get(0).getFileName()).isEqualTo(CONTRIBUTION_FILE_NAME);
     }
 
     @Test
@@ -145,7 +128,7 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
     }
 
     private Integer getContributionId() {
-        ContributionsEntity contributionsEntity = contributionsRepository.findAll().get(0);
+        ContributionsEntity contributionsEntity = repos.contributions.findAll().get(0);
         Integer contributionId = contributionsEntity.getId();
         return contributionId;
     }

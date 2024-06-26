@@ -214,7 +214,7 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(s))
 
-                .andExpect(status().isOk())
+                .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check no values in errors
         assertEquals(0, repos.contributionFileErrors.count());

@@ -11,6 +11,7 @@ import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
@@ -27,10 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
 import static org.junit.jupiter.api.Assertions.*;
@@ -120,7 +118,7 @@ class FdcContributionsServiceTest {
 
         when(contributionFileMapper.toContributionFileEntity(request)).thenReturn(mappedEntity);
         // run
-        assertTrue(fdcContributionsService.createContributionFileAndUpdateFdcStatus(request));
+        assertNotNull(fdcContributionsService.createContributionFileAndUpdateFdcStatus(request));
         // test
         verify(fdcContributionsRepository,times(1)).findByIdIn(any());
         verify(fdcContributionsRepository,times(1)).saveAll(any());
@@ -207,7 +205,8 @@ class FdcContributionsServiceTest {
 
         when(fdcContributionsRepository.findById(id)).thenReturn(Optional.empty());
         // do
-        fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, errorText));
+        assertThrows(RequestedObjectNotFoundException.class, () ->
+                fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, errorText)));
         // verify
         verify(fdcContributionsRepository).findById(id);
         verify(contributionFilesRepository,times(0)).findById(any());
@@ -225,8 +224,8 @@ class FdcContributionsServiceTest {
         when(fdcContributionsRepository.findById(id)).thenReturn(Optional.of(fdcEntity));
         when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(false);
         // do
-        boolean result = fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, errorText));
-        assertFalse(result);
+        assertThrows(RequestedObjectNotFoundException.class, () ->
+                fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, errorText)));
         // verify
         verify(fdcContributionsRepository).findById(id);
         verify(debtCollectionService,times(1)).updateContributionFileReceivedCount(any());

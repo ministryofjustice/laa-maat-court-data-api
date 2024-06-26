@@ -70,7 +70,6 @@ cloud-platform:
         unlink: unlink
         hearingResulted: hearing
         createLinkCpStatusJob: createLinkCpStatusJob
-        prosecutionConcluded: prosecutionConcluded
         meansAssessmentPostProcessing: meansAssessmentPostProcessing
         config:
           messageDelay: 900

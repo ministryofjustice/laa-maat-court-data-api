@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class DeleteFdcItemRequest {
-    private Integer fdcItemId;
     private Integer fdcId;
 }

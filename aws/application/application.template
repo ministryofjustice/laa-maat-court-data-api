@@ -62,16 +62,7 @@ Parameters:
   pPostMvpEnabled:
     Type: String
     Default: ''
-  pProsecutionConcludedListenerEnabled:
-    Type: String
-    Default: ''
-  pProsecutionConcludedScheduleEnabled:
-    Type: String
-    Default: ''
   pCreateLinkCpStatusJobQueue:
-    Type: String
-    Default: ''
-  pLaaProsecutionConcludedQueue:
     Type: String
     Default: ''
   pAwsDefaultRegion:
@@ -534,14 +525,8 @@ Resources:
               Value: !Ref pEnvironment
             - Name: POST_MVP_ENABLED
               Value: !Ref pPostMvpEnabled
-            - Name: PROSECUTION_CONCLUDED_LISTENER_ENABLED
-              Value: !Ref pProsecutionConcludedListenerEnabled
-            - Name: PROSECUTION_CONCLUDED_SCHEDULE_ENABLED
-              Value: !Ref pProsecutionConcludedScheduleEnabled
             - Name: CREATE_LINK_CP_STATUS_JOB_QUEUE
               Value: !Ref pCreateLinkCpStatusJobQueue
-            - Name: LAA_PROSECUTION_CONCLUDED_QUEUE
-              Value: !Ref pLaaProsecutionConcludedQueue
             - Name: AWS_DEFAULT_REGION
               Value: !Ref pAwsDefaultRegion
             - Name: CLOUDWATCH_STEP

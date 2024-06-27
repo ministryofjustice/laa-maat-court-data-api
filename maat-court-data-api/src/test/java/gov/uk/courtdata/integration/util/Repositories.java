@@ -8,7 +8,6 @@ import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
-import gov.uk.courtdata.integration.prosecution_concluded.procedures.UpdateOutcomesRepository;
 import gov.uk.courtdata.repository.AppealTypeRepository;
 import gov.uk.courtdata.repository.CaseRepository;
 import gov.uk.courtdata.repository.ChildWeightHistoryRepository;
@@ -40,7 +39,6 @@ import gov.uk.courtdata.repository.OffenceRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.repository.PleaRepository;
 import gov.uk.courtdata.repository.ProceedingRepository;
-import gov.uk.courtdata.repository.ProsecutionConcludedRepository;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.RepOrderCapitalRepository;
@@ -186,9 +184,6 @@ public class Repositories {
   public ProceedingRepository proceeding;
 
   @Autowired
-  public ProsecutionConcludedRepository prosecutionConcluded;
-
-  @Autowired
   public QueueMessageLogRepository queueMessageLog;
 
   @Autowired
@@ -235,9 +230,6 @@ public class Repositories {
 
   @Autowired
   public UnlinkReasonRepository unlinkReason;
-
-  @Autowired
-  public UpdateOutcomesRepository updateOutcomes;
 
   @Autowired
   public UserRepository user;
@@ -319,7 +311,6 @@ public class Repositories {
         passportAssessment,
         plea,
         proceeding,
-        prosecutionConcluded,
         queueMessageLog,
         repOrderApplicantLinks,
         repOrderCapital,
@@ -336,7 +327,6 @@ public class Repositories {
         solicitorMAATData,
         solicitor,
         unlinkReason,
-        updateOutcomes,
         user,
         userRoles,
         verdict,

@@ -23,4 +23,3 @@ VALUES ('RESERVATION_TIME', 'description', '24', null, 'test', null, 'test', '20
 
 CREATE SCHEMA IF NOT EXISTS APPLICATION;
 DROP ALIAS IF EXISTS APPLICATION.UPDATE_CC_OUTCOME;
-CREATE ALIAS APPLICATION.UPDATE_CC_OUTCOME FOR "gov.uk.courtdata.integration.prosecution_concluded.procedures.H2StoredProcedures.updateCcOutcome";

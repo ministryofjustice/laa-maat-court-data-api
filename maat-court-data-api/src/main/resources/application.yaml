@@ -80,7 +80,6 @@ cloud-platform:
         unlink: ${UNLINK_QUEUE}
         hearingResulted: ${HEARING_RESULTED_QUEUE}
         createLinkCpStatusJob: ${CREATE_LINK_CP_STATUS_JOB_QUEUE}
-        prosecutionConcluded: ${LAA_PROSECUTION_CONCLUDED_QUEUE}
         config:
           messageDelay: 900
           messageDelayDuration: 120
@@ -124,10 +123,6 @@ api-endpoints:
 
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}
-  prosecution-concluded-listener:
-    enabled: ${PROSECUTION_CONCLUDED_LISTENER_ENABLED}
-  prosecution-concluded-schedule:
-    enabled: ${PROSECUTION_CONCLUDED_SCHEDULE_ENABLED}
 
 version: 0.0.1
 

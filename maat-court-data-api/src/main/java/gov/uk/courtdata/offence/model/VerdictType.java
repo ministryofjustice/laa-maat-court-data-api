@@ -1,4 +1,4 @@
-package gov.uk.courtdata.prosecutionconcluded.model;
+package gov.uk.courtdata.offence.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

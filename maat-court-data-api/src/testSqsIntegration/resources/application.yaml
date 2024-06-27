@@ -64,7 +64,6 @@ cloud-platform:
         unlink: unlink
         hearingResulted: hearing
         createLinkCpStatusJob: createLinkCpStatusJob
-        prosecutionConcluded: prosecutionConcluded
         meansAssessmentPostProcessing: meansAssessmentPostProcessing
         config:
           messageDelay: 900
@@ -107,10 +106,6 @@ swagger-ui:
 
 feature:
   postMvpEnabled: true
-  prosecution-concluded-listener:
-    enabled: true
-  prosecution-concluded-schedule:
-    enabled: true
 
 version: 0.0.1
 

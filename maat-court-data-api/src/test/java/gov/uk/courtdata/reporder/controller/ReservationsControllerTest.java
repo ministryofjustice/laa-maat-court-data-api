@@ -4,7 +4,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.prosecutionconcluded.helper.ReservationsRepositoryHelper;
+import gov.uk.courtdata.helper.ReservationsRepositoryHelper;
 import gov.uk.courtdata.reporder.service.ReservationsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,6 +3,7 @@ package gov.uk.courtdata.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,11 +43,13 @@ public class FdcContributionsEntity {
     @Column(name = "STATUS", length = 20)
     private FdcContributionsStatus status;
 
+    @Size(max = 1)
     @Column(name = "LGFS_COMPLETE")
-    private Boolean lgfsComplete;
+    private String lgfsComplete;
 
+    @Size(max = 1)
     @Column(name = "AGFS_COMPLETE")
-    private Boolean agfsComplete;
+    private String agfsComplete;
 
     @Builder.Default
     @Column(name = "FINAL_COST")

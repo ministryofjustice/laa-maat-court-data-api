@@ -46,9 +46,12 @@ public class CCOutcomeService {
         return mapper.repOrderCCOutComeEntityToRepOrderCCOutcomeDTO(ccOutComeImpl.findByRepId(repId));
     }
 
-    public void deleteByRepId(Integer repId) {
-        log.info("Delete repOrder CC OutCome  - Transaction Processing");
-        ccOutComeImpl.deleteByRepId(repId);
+    public Integer deleteByRepId(Integer repId) {
+        log.info("Delete repOrder CC OutCome for repId {}", repId);
+        Integer deletedCount = ccOutComeImpl.deleteByRepId(repId);
+        log.info("{} rows were deleted for CCOutcome against repId {}", deletedCount, repId);
+
+        return deletedCount;
     }
 
 }

@@ -1,8 +1,10 @@
 package gov.uk.courtdata.reporder.controller;
 
+import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
 import gov.uk.courtdata.enums.LoggingData;
+import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
 import gov.uk.courtdata.reporder.service.CCOutcomeService;
 import gov.uk.courtdata.reporder.validator.CCOutComeValidationProcessor;
@@ -20,6 +22,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static java.util.Objects.nonNull;
+
 
 @Slf4j
 @RestController
@@ -32,14 +36,6 @@ public class CCOutcomeController {
 
     private final CCOutComeValidationProcessor validator;
 
-    @DeleteMapping(value = "/reporder/{repId}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteByRepId(@PathVariable int repId) {
-        LoggingData.MAAT_ID.putInMDC(repId);
-        log.info("Delete RepOrder CC Outcome Request Received");
-        validator.validate(repId);
-        service.deleteByRepId(repId);
-    }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create a new RepOrder CC outcome")
@@ -119,25 +115,6 @@ public class CCOutcomeController {
         return ResponseEntity.ok(service.findByRepId(repId));
     }
 
-    @RequestMapping(value = "/reporder/{repId}",
-            method = {RequestMethod.HEAD},
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @Operation(description = "Retrieve a RepOrder CCOutCome size in the header")
-    @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "400",
-            description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
-            description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
     public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepIdLengthInHeader(@PathVariable int repId) {
         LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Find RepOrder CC Outcome Request Received");
@@ -145,5 +122,21 @@ public class CCOutcomeController {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentLength(service.findByRepId(repId).size());
         return ResponseEntity.ok().headers(responseHeaders).build();
+    }
+
+    @Operation(description = "Deleting Crown Court Outcome by a RepOrder")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @DeleteMapping(value = "/rep-order/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Integer> deleteCrownCourtOutcome(@PathVariable final Integer repId) {
+        if(nonNull(repId)){
+            log.info("Delete CrownCourtOutcome {}", repId);
+            LoggingData.MAAT_ID.putInMDC(repId);
+            Integer deleteCount = service.deleteByRepId(repId);
+            return ResponseEntity.ok(deleteCount);
+        }else{
+            log.info("repId is null");
+            throw new ValidationException("repId is null");
+        }
     }
 }

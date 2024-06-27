@@ -31,6 +31,6 @@ public interface CrownCourtProcessingRepository extends JpaRepository<RepOrderCC
 
     List<RepOrderCCOutComeEntity> findByRepOrder_Id(Integer id);
 
-    void deleteByRepOrder_Id(Integer repId);
+    Integer deleteByRepOrder_Id(Integer repId);
 
 }

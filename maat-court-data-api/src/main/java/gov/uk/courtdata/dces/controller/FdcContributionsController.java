@@ -10,11 +10,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
+
+import static java.util.Objects.nonNull;
 
 
 @RestController
@@ -72,10 +78,20 @@ public class FdcContributionsController {
     @StandardApiResponse
     @PostMapping(value = "/fdc-contribution", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Logs that a final defence cost was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
-    public ResponseEntity<Integer> createFdcContribution(@RequestBody final CreateFdcContributionRequest request) {
-        log.info("Create FdcContributionRequest {}", request);
-        boolean response = false;
-        return ResponseEntity.ok(2323);
+    public ResponseEntity<Integer> createFdcContribution(@Valid @RequestBody final CreateFdcContributionRequest request) {
+        if(nonNull(request)){
+            log.debug("Create FdcContributionRequest {}", request);
+            Optional<Integer> fdcItemId = fdcContributionsService.createFdcContribution(request);
+
+            if (!fdcItemId.isPresent()) {
+                log.error("Failed to create FdcContributionEntity");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+            return ResponseEntity.ok(fdcItemId.get());
+        }else{
+            log.error("FdcContributionRequest is null");
+            throw new ValidationException("FdcContributionRequest is null");
+        }
     }
 
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
@@ -83,9 +99,14 @@ public class FdcContributionsController {
     @PatchMapping(value = "/fdc-contribution", produces = MediaType.APPLICATION_JSON_VALUE) //received a map
     @Operation(description = "Logs that a final defence cost was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
     public ResponseEntity<Boolean> updateFdcContribution(@RequestBody final UpdateFdcContributionRequest request) {
-        log.info("Create FdcContributionRequest {}", request);
-        boolean response = false; //fdcContributionsService.createFdcContribution(request);
-        return ResponseEntity.ok(response);
-    }
 
+        if(nonNull(request)){
+            log.debug("Update FdcContributionRequest {}", request);
+            boolean response = fdcContributionsService.updateFdcContribution(request);
+            return ResponseEntity.ok(response);
+        }else{
+            log.error("UpdateFdcContributionRequest is null");
+            throw new ValidationException("UpdateFdcContributionRequest is null");
+        }
+    }
 }

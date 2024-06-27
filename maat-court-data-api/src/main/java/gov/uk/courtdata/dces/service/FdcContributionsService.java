@@ -1,18 +1,12 @@
 package gov.uk.courtdata.dces.service;
 
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
-import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
-import gov.uk.courtdata.dces.request.CreateFdcItemRequest;
-import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
+import gov.uk.courtdata.dces.request.*;
 import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.dces.util.ContributionFileUtil;
-import gov.uk.courtdata.entity.ConcorContributionsEntity;
-import gov.uk.courtdata.entity.ContributionFilesEntity;
-import gov.uk.courtdata.entity.FdcContributionsEntity;
-import gov.uk.courtdata.entity.FdcItemsEntity;
-import gov.uk.courtdata.enums.ConcorContributionStatus;
+import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -184,6 +178,40 @@ public class FdcContributionsService {
             throw e;
         } catch (DataAccessException e) {
             log.error("Failed to delete FdcItemsEntity with id {}", fdcId, e);
+            throw e;
+        }
+    }
+
+    public Optional<Integer> createFdcContribution(CreateFdcContributionRequest request) {
+        try {
+            log.info("Create FdcContributionRequest {}", request);
+            FdcContributionsEntity fdcContributionsEntity = FdcContributionsEntity.builder()
+                    .repOrderEntity(RepOrderEntity.builder().id(request.getRepId()).build())
+                    .lgfsComplete(request.getLgfsComplete())
+                    .agfsComplete(request.getAgfsComplete())
+//                    .manualAcceleration(request.getManualAcceleration())
+                    .status(request.getStatus())
+                    .build();
+
+            FdcContributionsEntity savedEntity = fdcContributionsRepository.save(fdcContributionsEntity);
+            return Optional.of(savedEntity.getId());
+        } catch (Exception e) {
+            log.info("Failed to persist data for FdcContributionsEntity {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    public Boolean updateFdcContribution(UpdateFdcContributionRequest request) {
+        try {
+            log.info("Update FdcContributionRequest {}", request);
+            int updatedRows = fdcContributionsRepository.updateStatus(request.getRepId(), request.getNewStatus().name(), request.getPreviousStatus());
+            if (updatedRows == 0) {
+                log.info("No rows were updated for FdcContributionsEntity");
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            log.info("Failed to update data for FdcContributionsEntity {}", e.getMessage());
             throw e;
         }
     }

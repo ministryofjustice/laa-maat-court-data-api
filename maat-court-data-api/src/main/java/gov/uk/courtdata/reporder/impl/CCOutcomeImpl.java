@@ -30,8 +30,8 @@ public class CCOutcomeImpl {
         return courtProcessingRepository.findByRepOrder_Id(repId);
     }
 
-public void deleteByRepId(Integer repId) {
-        courtProcessingRepository.deleteByRepOrder_Id(repId);
+    public Integer deleteByRepId(Integer repId) {
+        return courtProcessingRepository.deleteByRepOrder_Id(repId);
     }
 
 

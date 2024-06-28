@@ -54,13 +54,14 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     public static final String SLASH = "/";
     private static final String MVO_REG_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo-reg";
     private static final String MVO_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo";
-    private static final String APPLIES_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/sentenceOrderDelayed";
-    private static final String NOT_APPLIES_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/sentenceOrderNotDelayed";
+    private static final String FDC_DELAYED_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligibleForFdcDelayedPickup";
+    private static final String FDC_FAST_TRACK_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligibleForFdcFastTracking";
     private static final String CURRENT_REGISTRATION = "current-registration";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
     private RepOrderEntity repOrderValid;
     private RepOrderEntity repOrderValid2;
     private RepOrderEntity repOrderFuture;
+    private RepOrderEntity repOrderFuture2;
     public Integer REP_ORDER_ID_NO_SENTENCE_ORDER_DATE;
     public Integer REP_ID;
 
@@ -321,11 +322,11 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenTooLargeAsk_whenTwoEntries_thenAllAvailableValidRepOrdersReturned() throws Exception {
+    void givenTooLargeAsk_whenFdcDelayedCalled_thenAllAvailableValidRepOrdersReturned() throws Exception {
         setUpFdcMinDelayAppliesEntities();
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get(buildAppliesEndpointURL(5,LocalDate.now(), 5))
+        mockMvc.perform(MockMvcRequestBuilders.get(buildFdcDelayedEndpointURL(5,LocalDate.now(), 5))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -334,9 +335,9 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenSingleAsk_whenTwoEntries_thenOnlyOneValidRepOrdersReturned() throws Exception {
+    void givenSingleAsk_whenFdcDelayedCalled_thenOnlyOneValidRepOrdersReturned() throws Exception {
         setUpFdcMinDelayAppliesEntities();
-        mockMvc.perform(MockMvcRequestBuilders.get(buildAppliesEndpointURL(5,LocalDate.now(), 1))
+        mockMvc.perform(MockMvcRequestBuilders.get(buildFdcDelayedEndpointURL(5,LocalDate.now(), 1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -345,27 +346,38 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenSingleAsk_thenOnlyOneValidRepOrdersReturned() throws Exception {
+    void givenTooLargeAsk_whenFdcFastTrackCalled_thenAllAvailableValidRepOrdersReturned() throws Exception {
         setUpFdcMinDelayAppliesEntities();
-        mockMvc.perform(MockMvcRequestBuilders.get(buildNotAppliesEndpointURL(5, 0,LocalDate.now(), 1))
+        mockMvc.perform(MockMvcRequestBuilders.get(buildFdcFastTrackEndpointURL(5, 0, LocalDate.now(), 5))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$", Matchers.containsInAnyOrder(repOrderFuture.getId(), repOrderFuture2.getId())));
+    }
+
+    @Test
+    void givenSingleAsk_whenFdcFastTrackCalled_thenOnlyOneValidRepOrdersReturned() throws Exception {
+        setUpFdcMinDelayAppliesEntities();
+        mockMvc.perform(MockMvcRequestBuilders.get(buildFdcFastTrackEndpointURL(5, 0,LocalDate.now(), 1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$", Matchers.containsInAnyOrder(repOrderFuture.getId())));
     }
-
-    private String buildAppliesEndpointURL(int delayPeriod, LocalDate dateReceived, int numRecords){
+    private String buildFdcDelayedEndpointURL(int delayPeriod, LocalDate dateReceived, int numRecords){
         //delay=5&dateReceived=01.10.2010&numRecords=5
         String date = dateReceived.format(DateTimeFormatter.ISO_DATE);
         String parameterString = "?delay=%s&dateReceived=%s&numRecords=%s".formatted(delayPeriod, date, numRecords);
-        return APPLIES_ENDPOINT_URL+parameterString;
+        return FDC_DELAYED_ENDPOINT_URL +parameterString;
     }
-    private String buildNotAppliesEndpointURL(int delayPeriod, int startingMonth, LocalDate dateReceived, int numRecords){
+
+    private String buildFdcFastTrackEndpointURL(int delayPeriod, int startingMonth, LocalDate dateReceived, int numRecords){
         //delay=5&dateReceived=01.10.2010&numRecords=5&startingMonth=0
         String date = dateReceived.format(DateTimeFormatter.ISO_DATE);
         String parameterString = "?delay=%s&dateReceived=%s&numRecords=%s&startingMonth=%s".formatted(delayPeriod, date, numRecords, startingMonth);
-        return NOT_APPLIES_ENDPOINT_URL+parameterString;
+        return FDC_FAST_TRACK_ENDPOINT_URL +parameterString;
     }
     private void setUpFdcMinDelayAppliesEntities() {
         LocalDate dateJan2010 = LocalDate.of(2010,1,1);
@@ -405,10 +417,13 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         repos.crownCourtProcessing.save(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrder, "ACQUITTAL"));
 
         // DATE_RECEIVED<'01-JAN-2015'
-        repOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateFuture));
-        repos.concorContributions.save(TestEntityDataBuilder.getConcorContributionsEntity(repOrder.getId(), ConcorContributionStatus.SENT));
-        repos.crownCourtProcessing.save(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrder, "ACQUITTAL"));
-        repOrderFuture = repOrder;
+        repOrderFuture = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateFuture));
+        repos.concorContributions.save(TestEntityDataBuilder.getConcorContributionsEntity(repOrderFuture.getId(), ConcorContributionStatus.SENT));
+        repos.crownCourtProcessing.save(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrderFuture, "ACQUITTAL"));
+
+        repOrderFuture2 = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateFuture));
+        repos.concorContributions.save(TestEntityDataBuilder.getConcorContributionsEntity(repOrderFuture2.getId(), ConcorContributionStatus.SENT));
+        repos.crownCourtProcessing.save(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrderFuture2, "ACQUITTAL"));
     }
 
 

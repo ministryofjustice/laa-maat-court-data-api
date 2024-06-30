@@ -5,7 +5,7 @@ import gov.uk.courtdata.entity.WQOffenceEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.hearing.dto.HearingOffenceDTO;
-import gov.uk.courtdata.prosecutionconcluded.helper.OffenceHelper;
+import gov.uk.courtdata.offence.helper.OffenceHelper;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;

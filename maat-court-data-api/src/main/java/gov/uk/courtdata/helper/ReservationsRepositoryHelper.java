@@ -1,4 +1,4 @@
-package gov.uk.courtdata.prosecutionconcluded.helper;
+package gov.uk.courtdata.helper;
 
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.repository.ReservationsRepository;

@@ -22,12 +22,6 @@ public class QueueMessageLogService {
 
     private final QueueMessageLogRepository queueMessageLogRepository;
 
-    public int getMessageCounterByMaatId(Integer maatId) {
-
-        return queueMessageLogRepository.getMessageCounterByMaatId(maatId);
-    }
-
-
     public void createLog(final MessageType messageType, final String message) {
 
         JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();

@@ -83,7 +83,7 @@ class CCOutcomeControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenFindByRepIdIsInvoked_thenErrorIsThrown() throws Exception {
+    void givenIncorrectParameters_whenFindByRepIdIsInvoked_thenErrorIsThrown() throws Exception {
         when(validator.validate(anyInt())).thenThrow(new ValidationException());
         mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/reporder/" + INVALID_REP_ID)).andExpect(status().is4xxClientError());
     }
@@ -109,5 +109,24 @@ class CCOutcomeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(""))
                 .andExpect(header().string(HttpHeaders.CONTENT_LENGTH, "1"));
+    }
+
+    @Test
+    void testDeleteCrownCourtOutcome() throws Exception {
+        Integer repId = 1;
+        when(service.deleteByRepId(repId)).thenReturn(1);
+
+        mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/rep-order/" + repId)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(1));
+    }
+
+
+    @Test
+    void testDeleteCrownCourtOutcomeWhenRepIdIsNull() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/rep-order/")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is4xxClientError());
     }
 }

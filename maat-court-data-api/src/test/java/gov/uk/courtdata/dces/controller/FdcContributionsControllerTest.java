@@ -1,5 +1,8 @@
 package gov.uk.courtdata.dces.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
+import gov.uk.courtdata.dces.request.UpdateFdcContributionRequest;
 import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.dces.service.FdcContributionsService;
@@ -17,6 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -82,4 +86,43 @@ class FdcContributionsControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void testCreateFdcContribution() throws Exception {
+        CreateFdcContributionRequest request = CreateFdcContributionRequest.builder().build();
+
+        when(fdcContributionsService.createFdcContribution(any(CreateFdcContributionRequest.class))).thenReturn(34545);
+
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/fdc-contribution")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(34545));
+    }
+
+    @Test
+    void testCreateFdcContributionWhenRequestIsNull() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/fdc-contribution")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    void testUpdateFdcContribution() throws Exception {
+        UpdateFdcContributionRequest request = UpdateFdcContributionRequest.builder().build();
+        when(fdcContributionsService.updateFdcContribution(any(UpdateFdcContributionRequest.class))).thenReturn(2);
+
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/fdc-contribution")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(2));
+    }
+
+    @Test
+    void testUpdateFdcContributionWhenRequestIsNull() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/fdc-contribution")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
+    }
 }

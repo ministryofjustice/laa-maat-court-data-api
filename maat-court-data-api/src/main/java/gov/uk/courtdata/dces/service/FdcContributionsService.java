@@ -145,10 +145,11 @@ public class FdcContributionsService {
         return debtCollectionService.saveError(ContributionFileUtil.buildContributionFileError(request, fdcEntity));
     }
 
-    public Optional<Integer> createFdcItems(CreateFdcItemRequest fdcRequest) {
+    public Integer createFdcItems(CreateFdcItemRequest fdcRequest) {
 
-        try{
-            log.info("Create FdcContributionRequest {}", fdcRequest);
+        try {
+            log.info("Create createFdcItems {}", fdcRequest);
+
             FdcItemsEntity fdcItemsEntity = FdcItemsEntity.builder()
                 .fdcId(fdcRequest.getFdcId())
                 .latestCostInd(fdcRequest.getLatestCostInd())
@@ -160,19 +161,19 @@ public class FdcContributionsService {
                 .build();
 
             FdcItemsEntity savedEntity = fdcItemsRepository.save(fdcItemsEntity);
-            return Optional.of(savedEntity.getId());
-        }catch(Exception e){
+            return savedEntity.getId();
+
+        } catch(Exception e){
             log.info("Failed to persist data for FdcItemsEntity {}", e.getMessage());
             throw e;
         }
     }
 
-    public boolean deleteFdcItems(Integer fdcId) {
+    public long deleteFdcItems(Integer fdcId) {
 
         log.info("Delete FdcItemsEntity with fdcId {}", fdcId);
         try {
-            fdcItemsRepository.deleteByFdcId(fdcId);
-            return true;
+            return fdcItemsRepository.deleteByFdcId(fdcId);
         } catch (EmptyResultDataAccessException e) {
             log.error("No FdcItemsEntity found with id {}", fdcId, e);
             throw e;
@@ -182,34 +183,32 @@ public class FdcContributionsService {
         }
     }
 
-    public Optional<Integer> createFdcContribution(CreateFdcContributionRequest request) {
+    public Integer createFdcContribution(CreateFdcContributionRequest request) {
         try {
             log.info("Create FdcContributionRequest {}", request);
             FdcContributionsEntity fdcContributionsEntity = FdcContributionsEntity.builder()
                     .repOrderEntity(RepOrderEntity.builder().id(request.getRepId()).build())
                     .lgfsComplete(request.getLgfsComplete())
                     .agfsComplete(request.getAgfsComplete())
-//                    .manualAcceleration(request.getManualAcceleration())
+                    .accelerate(request.getManualAcceleration())
                     .status(request.getStatus())
                     .build();
 
             FdcContributionsEntity savedEntity = fdcContributionsRepository.save(fdcContributionsEntity);
-            return Optional.of(savedEntity.getId());
+            return savedEntity.getId();
         } catch (Exception e) {
             log.info("Failed to persist data for FdcContributionsEntity {}", e.getMessage());
             throw e;
         }
     }
 
-    public Boolean updateFdcContribution(UpdateFdcContributionRequest request) {
+    public Integer updateFdcContribution(UpdateFdcContributionRequest request) {
         try {
+
             log.info("Update FdcContributionRequest {}", request);
-            int updatedRows = fdcContributionsRepository.updateStatus(request.getRepId(), request.getNewStatus().name(), request.getPreviousStatus());
-            if (updatedRows == 0) {
-                log.info("No rows were updated for FdcContributionsEntity");
-                return false;
-            }
-            return true;
+            return fdcContributionsRepository.updateStatus(request.getRepId(), request.getNewStatus().name(), request.getPreviousStatus());
+
+
         } catch (Exception e) {
             log.info("Failed to update data for FdcContributionsEntity {}", e.getMessage());
             throw e;

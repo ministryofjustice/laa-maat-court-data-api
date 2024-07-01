@@ -1,8 +1,10 @@
 package gov.uk.courtdata.dces.service;
 
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
+import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
 import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
+import gov.uk.courtdata.dces.request.UpdateFdcContributionRequest;
 import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
@@ -195,6 +197,90 @@ class FdcContributionsServiceTest {
         assertEquals(currDate.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
         assertEquals(currDate.getMonth(), errorEntity.getDateCreated().getMonth());
         assertEquals(currDate.getYear(), errorEntity.getDateCreated().getYear());
+    }
+
+    @Test
+    void testCreateFdcContribution() {
+        ArgumentCaptor<FdcContributionsEntity> captor = ArgumentCaptor.forClass(FdcContributionsEntity.class);
+
+        CreateFdcContributionRequest request = CreateFdcContributionRequest.builder()
+                .repId(11212)
+                .lgfsComplete("N")
+                .agfsComplete("Y")
+                .status(REQUESTED)
+                .build();
+
+        FdcContributionsEntity entity = FdcContributionsEntity.builder()
+                .id(1)
+                .repOrderEntity(RepOrderEntity.builder().id(1).build())
+                .lgfsComplete(request.getLgfsComplete())
+                .agfsComplete(request.getAgfsComplete())
+                .status(request.getStatus())
+                .build();
+
+        when(fdcContributionsRepository.save(any(FdcContributionsEntity.class))).thenReturn(entity);
+
+        Integer result = fdcContributionsService.createFdcContribution(request);
+
+        verify(fdcContributionsRepository).save(captor.capture());
+        FdcContributionsEntity capturedEntity = captor.getValue();
+
+        assertNotNull(result);
+        assertEquals(request.getRepId(), capturedEntity.getRepOrderEntity().getId());
+        assertEquals(request.getLgfsComplete(), capturedEntity.getLgfsComplete());
+        assertEquals(request.getAgfsComplete(), capturedEntity.getAgfsComplete());
+        assertEquals(request.getStatus(), capturedEntity.getStatus());
+    }
+
+    @Test
+    void testCreateFdcContributionWhenExceptionOccurs() {
+        CreateFdcContributionRequest request = CreateFdcContributionRequest.builder().build();
+
+        when(fdcContributionsRepository.save(any(FdcContributionsEntity.class))).thenThrow(new RuntimeException("Database error"));
+
+        Exception exception = assertThrows(RuntimeException.class, () -> fdcContributionsService.createFdcContribution(request));
+
+        assertEquals("Database error", exception.getMessage());
+    }
+
+    @Test
+    void testUpdateFdcContributionWhenRowsUpdated() {
+        UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
+
+        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), anyString())).thenReturn(1);
+
+        Integer result = fdcContributionsService.updateFdcContribution(request);
+        assertEquals(1, result);
+    }
+
+    @Test
+    void testUpdateFdcContributionWhenNoRowsUpdated() {
+        UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
+
+        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), anyString())).thenReturn(0);
+        Integer  result = fdcContributionsService.updateFdcContribution(request);
+        assertEquals(0, result);
+    }
+
+    @Test
+    void testUpdateFdcContributionWhenExceptionOccurs() {
+
+        UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
+
+        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), anyString())).thenThrow(new RuntimeException("Database error"));
+
+        Exception exception = assertThrows(RuntimeException.class,
+                () -> fdcContributionsService.updateFdcContribution(request));
+
+        assertEquals("Database error", exception.getMessage());
+    }
+
+    private UpdateFdcContributionRequest getUpdateFdcContributionRequest() {
+        return UpdateFdcContributionRequest.builder()
+                .repId(1)
+                .newStatus(FdcContributionsStatus.SENT)
+                .previousStatus("REQUESTED")
+                .build();
     }
 
 

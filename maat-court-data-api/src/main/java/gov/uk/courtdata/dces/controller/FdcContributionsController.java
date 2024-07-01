@@ -77,17 +77,12 @@ public class FdcContributionsController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @PostMapping(value = "/fdc-contribution", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Logs that a final defence cost was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
+    @Operation(description = "Creating a (FDC) final defence cost contribution")
     public ResponseEntity<Integer> createFdcContribution(@Valid @RequestBody final CreateFdcContributionRequest request) {
         if(nonNull(request)){
             log.debug("Create FdcContributionRequest {}", request);
-            Optional<Integer> fdcItemId = fdcContributionsService.createFdcContribution(request);
-
-            if (!fdcItemId.isPresent()) {
-                log.error("Failed to create FdcContributionEntity");
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-            return ResponseEntity.ok(fdcItemId.get());
+            Integer fdcItemId = fdcContributionsService.createFdcContribution(request);
+            return ResponseEntity.ok(fdcItemId);
         }else{
             log.error("FdcContributionRequest is null");
             throw new ValidationException("FdcContributionRequest is null");
@@ -96,13 +91,13 @@ public class FdcContributionsController {
 
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
-    @PatchMapping(value = "/fdc-contribution", produces = MediaType.APPLICATION_JSON_VALUE) //received a map
-    @Operation(description = "Logs that a final defence cost was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
-    public ResponseEntity<Boolean> updateFdcContribution(@RequestBody final UpdateFdcContributionRequest request) {
+    @PatchMapping(value = "/fdc-contribution", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Updating FDC (final defence cost) with Contribution Status..")
+    public ResponseEntity<Integer> updateFdcContribution(@RequestBody final UpdateFdcContributionRequest request) {
 
         if(nonNull(request)){
             log.debug("Update FdcContributionRequest {}", request);
-            boolean response = fdcContributionsService.updateFdcContribution(request);
+            Integer response = fdcContributionsService.updateFdcContribution(request);
             return ResponseEntity.ok(response);
         }else{
             log.error("UpdateFdcContributionRequest is null");

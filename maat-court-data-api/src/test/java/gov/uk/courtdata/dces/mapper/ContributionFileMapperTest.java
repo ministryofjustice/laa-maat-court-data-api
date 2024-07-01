@@ -39,14 +39,14 @@ class ContributionFileMapperTest {
 
     @Test
     void testEntityToContributionFileResponse() {
-        var entity = TestEntityDataBuilder.getPopulatedContributionFilesEntity();
+        var entity = TestEntityDataBuilder.getPopulatedContributionFilesEntity(99);
         var mapped = mapper.toContributionFileResponse(entity);
         assertValidMappedObject(mapped, entity);
     }
 
     @Test
     void testEntityToContributionFileErrorResponse() {
-        var entity = TestEntityDataBuilder.getContributionFileErrorsEntity();
+        var entity = TestEntityDataBuilder.getContributionFileErrorsEntity(99, 888);
         var mapped = mapper.toContributionFileErrorResponse(entity);
         assertValidMappedObject(mapped, entity);
     }

@@ -589,9 +589,9 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static ContributionFilesEntity getPopulatedContributionFilesEntity() {
+    public static ContributionFilesEntity getPopulatedContributionFilesEntity(Integer fileId) {
         return ContributionFilesEntity.builder()
-                .fileId(99)
+                .fileId(fileId)
                 .fileName("CONTRIBUTIONS_202405210958")
                 .recordsSent(53)
                 .recordsReceived(42)
@@ -606,10 +606,10 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static ContributionFileErrorsEntity getContributionFileErrorsEntity() {
+    public static ContributionFileErrorsEntity getContributionFileErrorsEntity(int fileId, int contributionId) {
         return ContributionFileErrorsEntity.builder()
-                .contributionFileId(99)
-                .contributionId(888)
+                .contributionFileId(fileId)
+                .contributionId(contributionId)
                 .repId(REP_ID)
                 .errorText("error")
                 .fixAction("action")

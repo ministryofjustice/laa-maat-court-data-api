@@ -2,6 +2,7 @@ package gov.uk.courtdata.integration.dces;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,8 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ContributionFileControllerIntegrationTest extends MockMvcIntegrationTest {
@@ -29,17 +30,9 @@ public class ContributionFileControllerIntegrationTest extends MockMvcIntegratio
                 TestEntityDataBuilder.getPopulatedContributionFilesEntity(null));
         this.fileId = contributionFile.getFileId();
 
-        var correspondence = TestEntityDataBuilder.getCorrespondenceEntity(1);
-        correspondence.setRepId(repId);
-        correspondence = repos.correspondence.saveAndFlush(correspondence);
-        final int correspondenceId = correspondence.getId();
-
-        var contribution = TestEntityDataBuilder.getContributionsEntity();
-        contribution.setCorrespondenceId(correspondenceId);
-        contribution.setContributionFileId(fileId);
-        contribution.setRepOrder(repOrder);
-        contribution = repos.contributions.saveAndFlush(contribution);
-        this.contributionId = contribution.getId();
+        final var concorContribution = ConcorContributionsEntity.builder().repId(repId).contribFileId(fileId).status(SENT).build();
+        repos.concorContributions.saveAndFlush(concorContribution);
+        this.contributionId = concorContribution.getId();
 
         repos.contributionFileErrors.saveAndFlush(
                 TestEntityDataBuilder.getContributionFileErrorsEntity(fileId, contributionId));

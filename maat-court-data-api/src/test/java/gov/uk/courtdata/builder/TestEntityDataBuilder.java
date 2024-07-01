@@ -613,8 +613,8 @@ public class TestEntityDataBuilder {
                 .repId(REP_ID)
                 .errorText("error")
                 .fixAction("action")
-                .fdcContributionId(66666)
-                .concorContributionId(555555)
+                .fdcContributionId(null)
+                .concorContributionId(contributionId)
                 .dateCreated(TEST_DATE)
                 .build();
     }

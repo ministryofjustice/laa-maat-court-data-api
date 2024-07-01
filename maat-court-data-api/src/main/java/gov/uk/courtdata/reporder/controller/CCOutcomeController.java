@@ -20,7 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import static java.util.Objects.nonNull;
 
@@ -115,6 +123,25 @@ public class CCOutcomeController {
         return ResponseEntity.ok(service.findByRepId(repId));
     }
 
+    @RequestMapping(value = "/reporder/{repId}",
+            method = {RequestMethod.HEAD},
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(description = "Retrieve a RepOrder CCOutCome size in the header")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "400",
+            description = "Bad Request.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
     public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepIdLengthInHeader(@PathVariable int repId) {
         LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Find RepOrder CC Outcome Request Received");

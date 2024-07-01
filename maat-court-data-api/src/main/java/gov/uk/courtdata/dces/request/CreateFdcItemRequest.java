@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 @Builder
 public class CreateFdcItemRequest {
     private int fdcId;
-    private String itemType; //maybe enum / existing class
+    private String itemType;
     private String adjustmentReason;
     private LocalDateTime dateCreated;
     private String userCreated;
-    private String paidAsClaimed; //maybe enum
+    private String paidAsClaimed;
     private String latestCostInd;
 }

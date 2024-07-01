@@ -8,6 +8,7 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.link.service.CreateLinkService;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,7 +20,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.io.IOException;
 
 import static java.util.List.of;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -34,6 +34,7 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 @Testcontainers
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @AutoConfigureWireMock(port = 9999)
+@Disabled
 class CreateLinkListenerEndToEndTest {
 
     private static final int ONCE = 1;

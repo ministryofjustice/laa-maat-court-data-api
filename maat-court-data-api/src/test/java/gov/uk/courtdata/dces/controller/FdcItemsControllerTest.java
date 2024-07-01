@@ -42,7 +42,7 @@ class FdcItemsControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(1)); ;
+                .andExpect(jsonPath("$").value(1));
     }
 
     @Test

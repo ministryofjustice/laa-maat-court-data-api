@@ -37,7 +37,7 @@ class CCOutcomeControllerTest {
     @MockBean
     private CCOutcomeService service;
 
-    private static final String endpointUrl = "/api/internal/v1/assessment/rep-orders/cc-outcome";
+    private static final String ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/cc-outcome";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -49,7 +49,7 @@ class CCOutcomeControllerTest {
     @Test
     void givenIncorrectParameters_whenCreateIsInvoked_thenErrorIsThrown() throws Exception {
         when(validator.validate(any(RepOrderCCOutcome.class))).thenThrow(new ValidationException());
-        mvc.perform(MockMvcRequestBuilders.post(endpointUrl).content("{}").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -57,7 +57,7 @@ class CCOutcomeControllerTest {
     void givenAValidParameters_whenCreateIsInvoked_thenCreateIsSuccess() throws Exception {
         when(validator.validate(any(RepOrderCCOutcome.class))).thenReturn(Optional.empty());
         when(service.create(any())).thenReturn(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
-        mvc.perform(MockMvcRequestBuilders.post(endpointUrl).content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutcome()))
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutcome()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -67,7 +67,7 @@ class CCOutcomeControllerTest {
     @Test
     void givenIncorrectParameters_whenUpdateIsInvoked_thenErrorIsThrown() throws Exception {
         when(validator.validate(any(RepOrderCCOutcome.class))).thenThrow(new ValidationException());
-        mvc.perform(MockMvcRequestBuilders.put(endpointUrl).content("{}").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -75,7 +75,7 @@ class CCOutcomeControllerTest {
     void givenACorrectParameters_whenUpdateIsInvoked_thenShouldSuccess() throws Exception {
         when(validator.validate(any(RepOrderCCOutcome.class))).thenReturn(Optional.empty());
         when(service.update(any())).thenReturn(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
-        mvc.perform(MockMvcRequestBuilders.put(endpointUrl).content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutcome()))
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutcome()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -85,7 +85,7 @@ class CCOutcomeControllerTest {
     @Test
     void givenIncorrectParameters_whenFindByRepIdIsInvoked_thenErrorIsThrown() throws Exception {
         when(validator.validate(anyInt())).thenThrow(new ValidationException());
-        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/reporder/" + INVALID_REP_ID)).andExpect(status().is4xxClientError());
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/reporder/" + INVALID_REP_ID)).andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -93,7 +93,7 @@ class CCOutcomeControllerTest {
         when(validator.validate(TestModelDataBuilder.REP_ID)).thenReturn(Optional.empty());
         List repOrderCCOutComeDTOS = List.of(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
         when(service.findByRepId(TestModelDataBuilder.REP_ID)).thenReturn(repOrderCCOutComeDTOS);
-        mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/reporder/" + TestModelDataBuilder.REP_ID))
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/reporder/" + TestModelDataBuilder.REP_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].id").value(String.valueOf("1")))
@@ -105,7 +105,7 @@ class CCOutcomeControllerTest {
         when(validator.validate(TestModelDataBuilder.REP_ID)).thenReturn(Optional.empty());
         List repOrderCCOutComeDTOS = List.of(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
         when(service.findByRepId(TestModelDataBuilder.REP_ID)).thenReturn(repOrderCCOutComeDTOS);
-        mvc.perform(MockMvcRequestBuilders.head(endpointUrl + "/reporder/" + TestModelDataBuilder.REP_ID))
+        mvc.perform(MockMvcRequestBuilders.head(ENDPOINT_URL + "/reporder/" + TestModelDataBuilder.REP_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""))
                 .andExpect(header().string(HttpHeaders.CONTENT_LENGTH, "1"));
@@ -116,7 +116,7 @@ class CCOutcomeControllerTest {
         Integer repId = 1;
         when(service.deleteByRepId(repId)).thenReturn(1);
 
-        mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/rep-order/" + repId)
+        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/rep-order/" + repId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(1));
@@ -125,7 +125,7 @@ class CCOutcomeControllerTest {
 
     @Test
     void testDeleteCrownCourtOutcomeWhenRepIdIsNull() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete(endpointUrl + "/rep-order/")
+        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/rep-order/")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is4xxClientError());
     }

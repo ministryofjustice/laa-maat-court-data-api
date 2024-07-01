@@ -1,9 +1,0 @@
-{
-  "fdcId": 0,
-  "itemType": "string", // Enum or existing class representation
-  "adjustmentReason": "string",
-  "dateCreated": "yyyy-MM-dd'T'HH:mm:ss",
-  "userCreated": "string",
-  "paidAsClaimed": "string", // Enum representation
-  "latestCostInd": "string"
-}

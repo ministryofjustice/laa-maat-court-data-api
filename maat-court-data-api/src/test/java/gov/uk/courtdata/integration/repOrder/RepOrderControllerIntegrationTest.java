@@ -348,7 +348,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenTooLargeAsk_whenFdcFastTrackCalled_thenAllAvailableValidRepOrdersReturned() throws Exception {
         setUpFdcMinDelayAppliesEntities();
-        mockMvc.perform(MockMvcRequestBuilders.get(buildFdcFastTrackEndpointURL(5, 0, LocalDate.now(), 5))
+        mockMvc.perform(MockMvcRequestBuilders.get(buildFdcFastTrackEndpointURL(5, LocalDate.now(), 5))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -359,7 +359,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenSingleAsk_whenFdcFastTrackCalled_thenOnlyOneValidRepOrdersReturned() throws Exception {
         setUpFdcMinDelayAppliesEntities();
-        mockMvc.perform(MockMvcRequestBuilders.get(buildFdcFastTrackEndpointURL(5, 0,LocalDate.now(), 1))
+        mockMvc.perform(MockMvcRequestBuilders.get(buildFdcFastTrackEndpointURL(5, LocalDate.now(), 1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -373,10 +373,10 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         return FDC_DELAYED_ENDPOINT_URL +parameterString;
     }
 
-    private String buildFdcFastTrackEndpointURL(int delayPeriod, int startingMonth, LocalDate dateReceived, int numRecords){
+    private String buildFdcFastTrackEndpointURL(int delayPeriod, LocalDate dateReceived, int numRecords){
         //delay=5&dateReceived=01.10.2010&numRecords=5&startingMonth=0
         String date = dateReceived.format(DateTimeFormatter.ISO_DATE);
-        String parameterString = "?delay=%s&dateReceived=%s&numRecords=%s&startingMonth=%s".formatted(delayPeriod, date, numRecords, startingMonth);
+        String parameterString = "?delay=%s&dateReceived=%s&numRecords=%s".formatted(delayPeriod, date, numRecords);
         return FDC_FAST_TRACK_ENDPOINT_URL +parameterString;
     }
     private void setUpFdcMinDelayAppliesEntities() {

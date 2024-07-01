@@ -236,11 +236,10 @@ public class RepOrderController {
     @StandardApiResponse
     public ResponseEntity<Object> findEligibleForFdcFastTracking(@RequestParam(value = "delay") int delayPeriod,
                                                                  @RequestParam(value = "numRecords") int numRecords,
-                                                                 @RequestParam(value = "startingMonth") int startingMonth,
                                                                  @RequestParam(value = "dateReceived")  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateReceived)
     {
         log.info("Get Rep Orders For Fdc Fast-Track Received");
-        List<Integer> repIdList = repOrderService.findEligibleForFdcFastTracking(delayPeriod, dateReceived, startingMonth, numRecords);
+        List<Integer> repIdList = repOrderService.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
         return ResponseEntity.ok(repIdList);
     }
 }

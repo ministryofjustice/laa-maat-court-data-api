@@ -54,7 +54,7 @@ public class RepOrderImpl {
         return repOrderRepository.findEligibleForFdcDelayedPickup(delayPeriod, dateReceived, numRecords);
     }
 
-    public List<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int startingMonth, int numRecords){
-        return repOrderRepository.findEligibleForFdcFastTracking(delayPeriod, dateReceived, startingMonth, numRecords);
+    public List<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
+        return repOrderRepository.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
     }
 }

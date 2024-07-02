@@ -64,8 +64,8 @@ public class UserSummaryController {
     @StandardApiResponseCodes
     @NotFoundApiResponse
     public ResponseEntity<Void> updateUser(@PathVariable String username,
-                                           @RequestBody Map<String, Object> updateFields) {
-        userSummaryService.patchUser(username, updateFields);
+                                           @RequestBody UserEntity userEntity) {
+        userSummaryService.patchUser(username, userEntity);
         return ResponseEntity.ok().build();
     }
 

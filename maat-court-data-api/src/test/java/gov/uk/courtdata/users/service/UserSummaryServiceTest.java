@@ -96,7 +96,7 @@ class UserSummaryServiceTest {
                   "currentSession" : "mock-session"
                 }
                 """;
-        Map<String, Object> updateFields = new ObjectMapper().readValue(requestJson, HashMap.class);
+        UserEntity updateFields = new ObjectMapper().readValue(requestJson, UserEntity.class);
         when(userRepository.findById(userName)).thenReturn(Optional.of(userEntity));
         userSummaryService.patchUser(userName, updateFields);
         verify(userRepository).save(userEntity);

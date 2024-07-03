@@ -151,19 +151,14 @@ public class CCOutcomeController {
         return ResponseEntity.ok().headers(responseHeaders).build();
     }
 
-    @Operation(description = "Deleting Crown Court Outcome by a RepOrder")
+    @Operation(description = "Deleting Crown Court Outcome by a Rep Order Id")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @DeleteMapping(value = "/rep-order/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Integer> deleteCrownCourtOutcome(@PathVariable final Integer repId) {
-        if(nonNull(repId)){
-            log.info("Delete CrownCourtOutcome {}", repId);
-            LoggingData.MAAT_ID.putInMDC(repId);
-            Integer deleteCount = service.deleteByRepId(repId);
-            return ResponseEntity.ok(deleteCount);
-        }else{
-            log.info("repId is null");
-            throw new ValidationException("repId is null");
-        }
+        log.info("Delete CrownCourtOutcome {}", repId);
+        LoggingData.MAAT_ID.putInMDC(repId);
+        Integer deleteCount = service.deleteByRepId(repId);
+        return ResponseEntity.ok(deleteCount);
     }
 }

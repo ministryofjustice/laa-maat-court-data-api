@@ -85,7 +85,8 @@ class CCOutcomeControllerTest {
     @Test
     void givenIncorrectParameters_whenFindByRepIdIsInvoked_thenErrorIsThrown() throws Exception {
         when(validator.validate(anyInt())).thenThrow(new ValidationException());
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/reporder/" + INVALID_REP_ID)).andExpect(status().is4xxClientError());
+
+        mvc.perform(MockMvcRequestBuilders.get(String.format("%s/reporder/%d", ENDPOINT_URL, INVALID_REP_ID))).andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -105,7 +106,8 @@ class CCOutcomeControllerTest {
         when(validator.validate(TestModelDataBuilder.REP_ID)).thenReturn(Optional.empty());
         List repOrderCCOutComeDTOS = List.of(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
         when(service.findByRepId(TestModelDataBuilder.REP_ID)).thenReturn(repOrderCCOutComeDTOS);
-        mvc.perform(MockMvcRequestBuilders.head(ENDPOINT_URL + "/reporder/" + TestModelDataBuilder.REP_ID))
+
+        mvc.perform(MockMvcRequestBuilders.head(String.format("%s/reporder/%d", ENDPOINT_URL, TestModelDataBuilder.REP_ID)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""))
                 .andExpect(header().string(HttpHeaders.CONTENT_LENGTH, "1"));
@@ -116,7 +118,7 @@ class CCOutcomeControllerTest {
         Integer repId = 1;
         when(service.deleteByRepId(repId)).thenReturn(1);
 
-        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/rep-order/" + repId)
+        mvc.perform(MockMvcRequestBuilders.delete(String.format("%s/rep-order/%d", ENDPOINT_URL, repId))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(1));
@@ -125,7 +127,7 @@ class CCOutcomeControllerTest {
 
     @Test
     void testDeleteCrownCourtOutcomeWhenRepIdIsNull() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/rep-order/")
+        mvc.perform(MockMvcRequestBuilders.delete(String.format("%s/rep-order/", ENDPOINT_URL))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is4xxClientError());
     }

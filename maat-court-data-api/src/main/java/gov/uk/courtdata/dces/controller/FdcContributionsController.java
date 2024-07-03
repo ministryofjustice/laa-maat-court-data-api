@@ -5,6 +5,7 @@ import gov.uk.courtdata.dces.request.*;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.dces.service.FdcContributionsService;
+import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
@@ -84,15 +83,10 @@ public class FdcContributionsController {
     @StandardApiResponse
     @PostMapping(value = "/fdc-contribution", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Creating a (FDC) final defence cost contribution")
-    public ResponseEntity<Integer> createFdcContribution(@Valid @RequestBody final CreateFdcContributionRequest request) {
-        if(nonNull(request)){
-            log.debug("Create FdcContributionRequest {}", request);
-            Integer fdcItemId = fdcContributionsService.createFdcContribution(request);
-            return ResponseEntity.ok(fdcItemId);
-        }else{
-            log.error("FdcContributionRequest is null");
-            throw new ValidationException("FdcContributionRequest is null");
-        }
+    public ResponseEntity<FdcContributionsEntity> createFdcContribution(@Valid @RequestBody final CreateFdcContributionRequest request) {
+        log.debug("Create FdcContributionRequest {}", request);
+        FdcContributionsEntity fdcItem = fdcContributionsService.createFdcContribution(request);
+        return ResponseEntity.ok(fdcItem);
     }
 
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))

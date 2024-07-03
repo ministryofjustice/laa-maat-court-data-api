@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.dces.request.CreateFdcItemRequest;
 import gov.uk.courtdata.dces.service.FdcContributionsService;
+import gov.uk.courtdata.entity.FdcItemsEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,13 +37,13 @@ class FdcItemsControllerTest {
     @Test
     void testCreateFdcItems() throws Exception {
         CreateFdcItemRequest request = new CreateFdcItemRequest();
-        when(fdcContributionsService.createFdcItems(any(CreateFdcItemRequest.class))).thenReturn(1);
+        when(fdcContributionsService.createFdcItems(any(CreateFdcItemRequest.class))).thenReturn(FdcItemsEntity.builder().id(1).build());
 
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(1));
+                .andExpect(jsonPath("$.id").value(1));
     }
 
     @Test
@@ -59,14 +60,14 @@ class FdcItemsControllerTest {
     void testDeleteFdcItems() throws Exception {
         when(fdcContributionsService.deleteFdcItems( 1)).thenReturn(1L);
 
-        mvc.perform(MockMvcRequestBuilders.delete(String.format(ENDPOINT_URL + "/fdc-id" + "/%d", 1))
+        mvc.perform(MockMvcRequestBuilders.delete(String.format("%s/fdc-id/%d", ENDPOINT_URL, 1))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
     }
 
     @Test
     void testDeleteFdcItemsWhenFdcIdIsNull() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/fdc-id/")
+        mvc.perform(MockMvcRequestBuilders.delete(String.format("%s/fdc-id/", ENDPOINT_URL))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound());
     }
@@ -74,7 +75,7 @@ class FdcItemsControllerTest {
     void testDeleteFdcItemsWhenIdDoesNotExist() throws Exception {
         doThrow(new EmptyResultDataAccessException(1)).when(fdcContributionsService).deleteFdcItems(999);
 
-        mvc.perform(MockMvcRequestBuilders.delete(String.format(ENDPOINT_URL + "/fdc-id" + "/%d", 999))
+        mvc.perform(MockMvcRequestBuilders.delete(String.format("%s/fdc-id/%d", ENDPOINT_URL, 999))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isInternalServerError());
     }
@@ -83,7 +84,7 @@ class FdcItemsControllerTest {
     void testDeleteFdcItemsWhenDataAccessExceptionOccurs() throws Exception {
         doThrow(new DataAccessException("Database error") {}).when(fdcContributionsService).deleteFdcItems(1);
 
-        mvc.perform(MockMvcRequestBuilders.delete(String.format(ENDPOINT_URL + "/fdc-id" + "/%d", 1))
+        mvc.perform(MockMvcRequestBuilders.delete(String.format("%s/fdc-id/%d", ENDPOINT_URL, 1))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isInternalServerError());
     }

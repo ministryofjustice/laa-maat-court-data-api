@@ -3,6 +3,7 @@ package gov.uk.courtdata.dces.controller;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.dces.request.CreateFdcItemRequest;
 import gov.uk.courtdata.dces.service.FdcContributionsService;
+import gov.uk.courtdata.entity.FdcItemsEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,15 +33,10 @@ public class FdcItemsController {
     @StandardApiResponse
     @PostMapping(value = "/fdc-items", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Logs that a final defence cost was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
-    public ResponseEntity<Integer> createFdcItems(@Valid @RequestBody final CreateFdcItemRequest fdcItemDTO) {
-        if(nonNull(fdcItemDTO)){
-            log.info("Create FdcItems {}", fdcItemDTO);
-            Integer fdcItemId = fdcContributionsService.createFdcItems(fdcItemDTO);
-            return ResponseEntity.ok(fdcItemId);
-        }else{
-            log.error("fdcItemDTO is null");
-            throw new ValidationException("fdcItemDTO is null");
-        }
+    public ResponseEntity<FdcItemsEntity> createFdcItems(@Valid @RequestBody final CreateFdcItemRequest fdcItemDTO) {
+        log.info("Create FdcItems {}", fdcItemDTO);
+        FdcItemsEntity fdcItem = fdcContributionsService.createFdcItems(fdcItemDTO);
+        return ResponseEntity.ok(fdcItem);
     }
 
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))

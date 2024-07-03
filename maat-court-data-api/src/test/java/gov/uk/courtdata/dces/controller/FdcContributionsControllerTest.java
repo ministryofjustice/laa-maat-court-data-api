@@ -6,6 +6,7 @@ import gov.uk.courtdata.dces.request.UpdateFdcContributionRequest;
 import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.dces.service.FdcContributionsService;
+import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,14 +90,15 @@ class FdcContributionsControllerTest {
     @Test
     void testCreateFdcContribution() throws Exception {
         CreateFdcContributionRequest request = CreateFdcContributionRequest.builder().build();
+        FdcContributionsEntity fdcEntity = FdcContributionsEntity.builder().id(34545).build();
 
-        when(fdcContributionsService.createFdcContribution(any(CreateFdcContributionRequest.class))).thenReturn(34545);
+        when(fdcContributionsService.createFdcContribution(any(CreateFdcContributionRequest.class))).thenReturn(fdcEntity);
 
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/fdc-contribution")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(34545));
+                .andExpect(jsonPath("$.id").value(34545));
     }
 
     @Test

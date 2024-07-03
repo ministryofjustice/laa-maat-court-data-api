@@ -220,7 +220,7 @@ class FdcContributionsServiceTest {
 
         when(fdcContributionsRepository.save(any(FdcContributionsEntity.class))).thenReturn(entity);
 
-        Integer result = fdcContributionsService.createFdcContribution(request);
+        FdcContributionsEntity result = fdcContributionsService.createFdcContribution(request);
 
         verify(fdcContributionsRepository).save(captor.capture());
         FdcContributionsEntity capturedEntity = captor.getValue();

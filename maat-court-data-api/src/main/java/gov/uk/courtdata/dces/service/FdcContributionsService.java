@@ -155,7 +155,7 @@ public class FdcContributionsService {
         return debtCollectionService.saveError(ContributionFileUtil.buildContributionFileError(request, fdcEntity));
     }
 
-    public Integer createFdcItems(CreateFdcItemRequest fdcRequest) {
+    public FdcItemsEntity createFdcItems(CreateFdcItemRequest fdcRequest) {
 
         try {
             log.info("Create createFdcItems {}", fdcRequest);
@@ -170,11 +170,10 @@ public class FdcContributionsService {
                 .dateCreated(fdcRequest.getDateCreated().toLocalDate())
                 .build();
 
-            FdcItemsEntity savedEntity = fdcItemsRepository.save(fdcItemsEntity);
-            return savedEntity.getId();
+            return fdcItemsRepository.save(fdcItemsEntity);
 
         } catch(Exception e){
-            log.info("Failed to persist data for FdcItemsEntity {}", e.getMessage());
+            log.error("Failed to persist data for FdcItemsEntity {}", e.getMessage());
             throw e;
         }
     }
@@ -193,7 +192,7 @@ public class FdcContributionsService {
         }
     }
 
-    public Integer createFdcContribution(CreateFdcContributionRequest request) {
+    public FdcContributionsEntity createFdcContribution(CreateFdcContributionRequest request) {
         try {
             log.info("Create FdcContributionRequest {}", request);
             FdcContributionsEntity fdcContributionsEntity = FdcContributionsEntity.builder()
@@ -204,10 +203,9 @@ public class FdcContributionsService {
                     .status(request.getStatus())
                     .build();
 
-            FdcContributionsEntity savedEntity = fdcContributionsRepository.save(fdcContributionsEntity);
-            return savedEntity.getId();
+            return fdcContributionsRepository.save(fdcContributionsEntity);
         } catch (Exception e) {
-            log.info("Failed to persist data for FdcContributionsEntity {}", e.getMessage());
+            log.error("Failed to persist data for FdcContributionsEntity {}", e.getMessage());
             throw e;
         }
     }
@@ -218,9 +216,8 @@ public class FdcContributionsService {
             log.info("Update FdcContributionRequest {}", request);
             return fdcContributionsRepository.updateStatus(request.getRepId(), request.getNewStatus().name(), request.getPreviousStatus());
 
-
         } catch (Exception e) {
-            log.info("Failed to update data for FdcContributionsEntity {}", e.getMessage());
+            log.error("Failed to update data for FdcContributionsEntity {}", e.getMessage());
             throw e;
         }
     }

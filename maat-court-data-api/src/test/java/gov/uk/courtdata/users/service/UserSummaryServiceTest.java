@@ -93,12 +93,31 @@ class UserSummaryServiceTest {
         String requestJson = """
                 {
                   "loggedIn" : "Y",
-                  "currentSession" : "mock-session"
+                  "currentSession" : null
                 }
                 """;
-        UserEntity updateFields = new ObjectMapper().readValue(requestJson, UserEntity.class);
+        Map<String, Object> updateFields = new ObjectMapper().readValue(requestJson, HashMap.class);
         when(userRepository.findById(userName)).thenReturn(Optional.of(userEntity));
         userSummaryService.patchUser(userName, updateFields);
         verify(userRepository).save(userEntity);
     }
+
+    @Test
+    void givenValidUser_whenUpdateUserIsInvoked_thenUserIsUpdated() {
+        String userName = "TEST_USER";
+        UserEntity userEntity = UserEntity.builder()
+                .username(userName)
+                .loggedIn("N")
+                .build();
+
+        UserEntity updateFields = UserEntity.builder()
+                .username(userName)
+                .loggedIn("Y")
+                .currentSession("mock-session")
+                .build();
+        when(userRepository.findById(userName)).thenReturn(Optional.of(userEntity));
+        userSummaryService.updateUser(updateFields);
+        verify(userRepository).save(userEntity);
+    }
+
 }

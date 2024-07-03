@@ -76,8 +76,8 @@ public class UserSummaryService {
         userRepository.deleteById(username);
     }
 
-    public void patchUser(String username, UserEntity updateFields) {
-        UserEntity userEntity = getUser(username);
+    public void updateUser(UserEntity updateFields) {
+        UserEntity userEntity = getUser(updateFields.getUsername());
         for (Field declaredField : UserEntity.class.getDeclaredFields()) {
             ReflectionUtils.makeAccessible(declaredField);
             Object fieldValue = ReflectionUtils.getField(declaredField, updateFields);
@@ -85,6 +85,18 @@ public class UserSummaryService {
                 ReflectionUtils.setField(declaredField, userEntity, fieldValue);
             }
         }
+        userRepository.save(userEntity);
+    }
+
+    public void patchUser(String username, Map<String, Object> updateFields) {
+        UserEntity userEntity = getUser(username);
+        updateFields.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(UserEntity.class, key);
+            if (field != null) {
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, userEntity, value);
+            }
+        });
         userRepository.save(userEntity);
     }
 }

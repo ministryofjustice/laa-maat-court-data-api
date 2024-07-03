@@ -1,26 +1,31 @@
 package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.annotation.StandardApiResponse;
-import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
-import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
+import gov.uk.courtdata.dces.request.*;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.dces.service.FdcContributionsService;
+import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import static java.util.Objects.nonNull;
 
 
 @RestController
@@ -74,4 +79,29 @@ public class FdcContributionsController {
         return ResponseEntity.ok(response);
     }
 
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @PostMapping(value = "/fdc-contribution", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Creating a (FDC) final defence cost contribution")
+    public ResponseEntity<FdcContributionsEntity> createFdcContribution(@Valid @RequestBody final CreateFdcContributionRequest request) {
+        log.debug("Create FdcContributionRequest {}", request);
+        FdcContributionsEntity fdcItem = fdcContributionsService.createFdcContribution(request);
+        return ResponseEntity.ok(fdcItem);
+    }
+
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @PatchMapping(value = "/fdc-contribution", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Updating FDC (final defence cost) with Contribution Status..")
+    public ResponseEntity<Integer> updateFdcContribution(@RequestBody final UpdateFdcContributionRequest request) {
+
+        if(nonNull(request)){
+            log.debug("Update FdcContributionRequest {}", request);
+            Integer response = fdcContributionsService.updateFdcContribution(request);
+            return ResponseEntity.ok(response);
+        }else{
+            log.error("UpdateFdcContributionRequest is null");
+            throw new ValidationException("UpdateFdcContributionRequest is null");
+        }
+    }
 }

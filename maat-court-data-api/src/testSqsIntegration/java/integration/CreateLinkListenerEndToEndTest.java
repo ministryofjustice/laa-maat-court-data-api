@@ -1,6 +1,5 @@
 package integration;
 
-
 import cloud.localstack.awssdkv1.TestUtils;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.GetQueueAttributesResult;
@@ -19,7 +18,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.io.IOException;
 
 import static java.util.List.of;
 import static java.util.concurrent.TimeUnit.SECONDS;

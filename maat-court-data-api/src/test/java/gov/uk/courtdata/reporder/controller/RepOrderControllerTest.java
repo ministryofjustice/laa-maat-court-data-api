@@ -44,8 +44,8 @@ class RepOrderControllerTest {
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders";
     private static final String MVO_REG_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo-reg";
     private static final String MVO_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo";
-    private static final String FDC_DELAYED_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligibleForFdcDelayedPickup";
-    private static final String FDC_FAST_TRACK_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligibleForFdcFastTracking";
+    private static final String FDC_DELAYED_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligible-for-fdc-delayed-pickup";
+    private static final String FDC_FAST_TRACK_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligible-for-fdc-fast-tracking";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
     private static final String CURRENT_REGISTRATION = "current-registration";
     private static final Integer USN = 12345;

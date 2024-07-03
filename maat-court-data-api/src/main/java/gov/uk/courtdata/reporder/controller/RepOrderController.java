@@ -213,8 +213,8 @@ public class RepOrderController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/eligibleForFdcDelayedPickup", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Retrieve a set of rep order records that have passed the Final Defence Cost delay period")
+    @GetMapping(value = "/eligible-for-fdc-delayed-pickup", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve a set of rep order ids that have passed the Final Defence Cost delay period")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
@@ -228,8 +228,8 @@ public class RepOrderController {
         return ResponseEntity.ok(repIdList);
     }
 
-    @GetMapping(value = "/eligibleForFdcFastTracking", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Retrieve a set of rep order records eligible for Final Defence Cost Fast-Tracking")
+    @GetMapping(value = "/eligible-for-fdc-fast-tracking", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve a set of rep order ids eligible for Final Defence Cost Fast-Tracking")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )

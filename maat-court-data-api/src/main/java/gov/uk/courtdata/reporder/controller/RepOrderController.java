@@ -238,7 +238,7 @@ public class RepOrderController {
                                                                  @RequestParam(value = "numRecords") int numRecords,
                                                                  @RequestParam(value = "dateReceived")  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateReceived)
     {
-        log.info("Get Rep Orders Ids For Fdc Fast-Track Received");
+        log.info("Get Rep Order Ids For Fdc Fast-Track Received");
         Set<Integer> repIdList = repOrderService.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
         return ResponseEntity.ok(repIdList);
     }

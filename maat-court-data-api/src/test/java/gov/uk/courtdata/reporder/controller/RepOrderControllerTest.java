@@ -15,6 +15,7 @@ import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.validator.MaatIdValidator;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,6 +27,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -268,7 +271,7 @@ class RepOrderControllerTest {
 
 
     @Test
-    public void givenValidRequest_whenUpdateRepOrderIsInvoked_thenUpdateIsSuccess() throws Exception {
+    void givenValidRequest_whenUpdateRepOrderIsInvoked_thenUpdateIsSuccess() throws Exception {
         doNothing().when(repOrderService).update(TestModelDataBuilder.REP_ID, Map.of("iojResult", "PASS"));
 
         String requestJson = "{\"iojResult\":\"PASS\"}";
@@ -335,5 +338,107 @@ class RepOrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    void givenValidParameters_whenFindFdcFastTrackingInvoked_thenIdsAreReturned() throws Exception {
+        Set<Integer> expectedIds = Set.of(5,6);
+        LocalDate date = LocalDate.now();
+        when(repOrderService.findEligibleForFdcFastTracking(5, date, 2)).thenReturn(expectedIds);
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcFastTrack", "true")
+                        .param("delay", "5")
+                        .param("dateReceived", date.format(DateTimeFormatter.ISO_DATE))
+                        .param("numRecords", "2")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$", Matchers.containsInAnyOrder(5, 6)));
+    }
+
+    @Test
+    void givenInvalidParameters_whenFindFdcFastTrackingInvoked_thenErrorIsReturned() throws Exception {
+        LocalDate date = LocalDate.now();
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcFastTrack", "true")
+                        .param("dateReceived", date.format(DateTimeFormatter.ISO_DATE))
+                        .param("numRecords", "2")
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("detail").value("Required parameter 'delay' is not present."))
+                .andExpect(jsonPath("title").value("Bad Request"));
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcFastTrack", "true")
+                        .param("delay", "5")
+                        .param("numRecords", "2")
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("detail").value("Required parameter 'dateReceived' is not present."))
+                .andExpect(jsonPath("title").value("Bad Request"));
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcFastTrack", "true")
+                        .param("delay", "5")
+                        .param("dateReceived", date.format(DateTimeFormatter.ISO_DATE))
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("detail").value("Required parameter 'numRecords' is not present."))
+                .andExpect(jsonPath("title").value("Bad Request"));
+    }
+
+    @Test
+    void givenValidParameters_whenFindFdcDelayedPickupInvoked_thenIdsAreReturned() throws Exception {
+        Set<Integer> expectedIds = Set.of(5,6);
+        LocalDate date = LocalDate.now();
+        when(repOrderService.findEligibleForFdcDelayedPickup(5, date, 2)).thenReturn(expectedIds);
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcDelayedPickup", "true")
+                        .param("delay", "5")
+                        .param("dateReceived", date.format(DateTimeFormatter.ISO_DATE))
+                        .param("numRecords", "2")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$", Matchers.containsInAnyOrder(5, 6)));
+    }
+
+    @Test
+    void givenInvalidParameters_whenFindFdcDelayedPickupInvoked_thenErrorIsReturned() throws Exception {
+        LocalDate date = LocalDate.now();
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcDelayedPickup", "true")
+                        .param("dateReceived", date.format(DateTimeFormatter.ISO_DATE))
+                        .param("numRecords", "2")
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("detail").value("Required parameter 'delay' is not present."))
+                .andExpect(jsonPath("title").value("Bad Request"));
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcDelayedPickup", "true")
+                        .param("delay", "5")
+                        .param("numRecords", "2")
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("detail").value("Required parameter 'dateReceived' is not present."))
+                .andExpect(jsonPath("title").value("Bad Request"));
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcDelayedPickup", "true")
+                        .param("delay", "5")
+                        .param("dateReceived", date.format(DateTimeFormatter.ISO_DATE))
+                )
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("detail").value("Required parameter 'numRecords' is not present."))
+                .andExpect(jsonPath("title").value("Bad Request"));
     }
 }

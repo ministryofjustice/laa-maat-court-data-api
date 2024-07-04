@@ -14,6 +14,8 @@ import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -118,5 +120,13 @@ public class RepOrderService {
         }
 
         return repOrderMapper.createIOJAssessorDetails(repOrderOptional.get());
+    }
+
+    public Set<Integer> findEligibleForFdcDelayedPickup(int delayPeriod, LocalDate dateReceived, int numRecords){
+        return repOrderImpl.findEligibleForFdcDelayedPickup(delayPeriod, dateReceived, numRecords);
+    }
+
+    public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
+        return repOrderImpl.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
     }
 }

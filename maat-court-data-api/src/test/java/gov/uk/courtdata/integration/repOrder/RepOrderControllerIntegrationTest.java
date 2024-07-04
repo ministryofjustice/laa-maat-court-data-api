@@ -51,8 +51,8 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     public static final String SLASH = "/";
     private static final String MVO_REG_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo-reg";
     private static final String MVO_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo";
-    private static final String FDC_DELAYED_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligible-for-fdc-delayed-pickup";
-    private static final String FDC_FAST_TRACK_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligible-for-fdc-fast-tracking";
+    private static final String FDC_DELAYED_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligible-for-fdc-delayed-pickup?delay={delay}&dateReceived={dateReceived}&numRecords={numRecords}";
+    private static final String FDC_FAST_TRACK_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligible-for-fdc-fast-tracking?delay={delay}&dateReceived={dateReceived}&numRecords={numRecords}";
     private static final String CURRENT_REGISTRATION = "current-registration";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
     private RepOrderEntity repOrderValid;
@@ -319,9 +319,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenTooLargeAsk_whenFdcDelayedCalled_thenAllAvailableValidRepOrdersReturned() throws Exception {
         setUpFdcMinDelayAppliesEntities();
-
-
-        mockMvc.perform(MockMvcRequestBuilders.get(buildFdcDelayedEndpointURL(5,LocalDate.now(), 5))
+        mockMvc.perform(MockMvcRequestBuilders.get(FDC_DELAYED_ENDPOINT_URL,5, LocalDate.now(), 5)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -332,7 +330,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenSingleAsk_whenFdcDelayedCalled_thenOnlyOneValidRepOrdersReturned() throws Exception {
         setUpFdcMinDelayAppliesEntities();
-        mockMvc.perform(MockMvcRequestBuilders.get(buildFdcDelayedEndpointURL(5,LocalDate.now(), 1))
+        mockMvc.perform(MockMvcRequestBuilders.get(FDC_DELAYED_ENDPOINT_URL,5, LocalDate.now(), 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -343,7 +341,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenTooLargeAsk_whenFdcFastTrackCalled_thenAllAvailableValidRepOrdersReturned() throws Exception {
         setUpFdcMinDelayAppliesEntities();
-        mockMvc.perform(MockMvcRequestBuilders.get(buildFdcFastTrackEndpointURL(5, LocalDate.now(), 5))
+        mockMvc.perform(MockMvcRequestBuilders.get(FDC_FAST_TRACK_ENDPOINT_URL,5, LocalDate.now(), 5)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -354,26 +352,14 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenSingleAsk_whenFdcFastTrackCalled_thenOnlyOneValidRepOrdersReturned() throws Exception {
         setUpFdcMinDelayAppliesEntities();
-        mockMvc.perform(MockMvcRequestBuilders.get(buildFdcFastTrackEndpointURL(5, LocalDate.now(), 1))
+        mockMvc.perform(MockMvcRequestBuilders.get(FDC_FAST_TRACK_ENDPOINT_URL,5, LocalDate.now(), 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$", Matchers.containsInAnyOrder(repOrderFuture.getId())));
     }
-    private String buildFdcDelayedEndpointURL(int delayPeriod, LocalDate dateReceived, int numRecords){
-        //delay=5&dateReceived=01.10.2010&numRecords=5
-        String date = dateReceived.format(DateTimeFormatter.ISO_DATE);
-        String parameterString = "?delay=%s&dateReceived=%s&numRecords=%s".formatted(delayPeriod, date, numRecords);
-        return FDC_DELAYED_ENDPOINT_URL +parameterString;
-    }
 
-    private String buildFdcFastTrackEndpointURL(int delayPeriod, LocalDate dateReceived, int numRecords){
-        //delay=5&dateReceived=01.10.2010&numRecords=5&startingMonth=0
-        String date = dateReceived.format(DateTimeFormatter.ISO_DATE);
-        String parameterString = "?delay=%s&dateReceived=%s&numRecords=%s".formatted(delayPeriod, date, numRecords);
-        return FDC_FAST_TRACK_ENDPOINT_URL +parameterString;
-    }
     private void setUpFdcMinDelayAppliesEntities() {
         LocalDate dateJan2010 = LocalDate.of(2010,1,1);
         LocalDate dateFuture = LocalDate.now().plus(1, ChronoUnit.MONTHS);

@@ -22,12 +22,12 @@ public class ContributionFileService {
     private final ContributionFileMapper contributionFileMapper;
 
     public Optional<ContributionFileResponse> getContributionFile(int contributionFileId) {
-        // TODO is it necessary to back-fill the xmlContent (problem with JPA and large text fields, but is it only on INSERT)?
         return contributionFileRepository.findById(contributionFileId).map(contributionFileMapper::toContributionFileResponse);
     }
 
     public List<ContributionFileErrorResponse> getAllContributionFileError(int contributionFileId) {
-        return contributionFileErrorRepository.findByContributionFileId(contributionFileId).stream().map(contributionFileMapper::toContributionFileErrorResponse).toList();
+        return contributionFileErrorRepository.findByContributionFileId(contributionFileId).stream()
+                .map(contributionFileMapper::toContributionFileErrorResponse).toList();
     }
 
     public Optional<ContributionFileErrorResponse> getContributionFileError(int contributionId, int contributionFileId) {

@@ -1,8 +1,10 @@
 package gov.uk.courtdata.reporder.controller;
 
+import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
 import gov.uk.courtdata.enums.LoggingData;
+import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
 import gov.uk.courtdata.reporder.service.CCOutcomeService;
 import gov.uk.courtdata.reporder.validator.CCOutComeValidationProcessor;
@@ -19,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import static java.util.Objects.nonNull;
 
 
 @Slf4j
@@ -144,5 +149,16 @@ public class CCOutcomeController {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentLength(service.findByRepId(repId).size());
         return ResponseEntity.ok().headers(responseHeaders).build();
+    }
+
+    @Operation(description = "Deleting Crown Court Outcome by a Rep Order Id")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @DeleteMapping(value = "/rep-order/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Integer> deleteCrownCourtOutcome(@PathVariable final Integer repId) {
+        log.info("Delete CrownCourtOutcome {}", repId);
+        LoggingData.MAAT_ID.putInMDC(repId);
+        Integer deleteCount = service.deleteByRepId(repId);
+        return ResponseEntity.ok(deleteCount);
     }
 }

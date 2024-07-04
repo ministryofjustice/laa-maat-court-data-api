@@ -60,12 +60,21 @@ public class UserSummaryController {
     }
 
     @PatchMapping("/{username}")
+    @Operation(description = "Patch user details that allow nullifying individual fields")
+    @StandardApiResponseCodes
+    @NotFoundApiResponse
+    public ResponseEntity<Void> patchUser(@PathVariable String username,
+                                          @RequestBody Map<String, Object> updateFields) {
+        userSummaryService.patchUser(username, updateFields);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/")
     @Operation(description = "Update user details")
     @StandardApiResponseCodes
     @NotFoundApiResponse
-    public ResponseEntity<Void> updateUser(@PathVariable String username,
-                                           @RequestBody Map<String, Object> updateFields) {
-        userSummaryService.patchUser(username, updateFields);
+    public ResponseEntity<Void> updateUser(@RequestBody UserEntity userEntity) {
+        userSummaryService.updateUser(userEntity);
         return ResponseEntity.ok().build();
     }
 

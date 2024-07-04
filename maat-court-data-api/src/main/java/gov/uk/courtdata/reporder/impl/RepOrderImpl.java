@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasId;
 import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasSentenceOrderDate;
@@ -46,5 +48,13 @@ public class RepOrderImpl {
 
     public void delete(Integer repId) {
         repOrderRepository.deleteById(repId);
+    }
+
+    public Set<Integer> findEligibleForFdcDelayedPickup(int delayPeriod, LocalDate dateReceived, int numRecords){
+        return repOrderRepository.findEligibleForFdcDelayedPickup(delayPeriod, dateReceived, numRecords);
+    }
+
+    public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
+        return repOrderRepository.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
     }
 }

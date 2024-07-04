@@ -66,6 +66,21 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static RepOrderEntity getPopulatedRepOrder(LocalDate sentenceOrderDate, LocalDate dateReceived) {
+        return RepOrderEntity.builder()
+                .catyCaseType("case-type")
+                .magsOutcome("outcome")
+                .magsOutcomeDate(TEST_DATE.toString())
+                .magsOutcomeDateSet(TEST_DATE)
+                .committalDate(TEST_DATE.toLocalDate())
+                .decisionReasonCode("rder-code")
+                .crownRepOrderDecision("cc-rep-doc")
+                .crownRepOrderType("cc-rep-type")
+                .sentenceOrderDate(sentenceOrderDate)
+                .dateReceived(dateReceived)
+                .build();
+    }
+
     public static ApplicantDisabilitiesEntity getApplicantDisabilitiesEntity() {
         return ApplicantDisabilitiesEntity.builder()
                 .applId(5136528)
@@ -619,6 +634,15 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static ConcorContributionsEntity getConcorContributionsEntity(Integer repId, ConcorContributionStatus status){
+        return ConcorContributionsEntity.builder()
+                .status(status)
+                .repId(repId)
+                .dateCreated(TEST_DATE.toLocalDate())
+                .userCreated(TEST_USER)
+                .build();
+    }
+
     public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity(Integer repOderOutComeId, RepOrderEntity repOrder) {
         return RepOrderCCOutComeEntity.builder()
                 .repOrder(repOrder)
@@ -628,6 +652,17 @@ public class TestEntityDataBuilder {
                 .crownCourtCode("430")
                 .outcomeDate(TEST_DATE)
                 .id(repOderOutComeId)
+                .build();
+    }
+
+    public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity(RepOrderEntity repOrder, String outcome){
+        return RepOrderCCOutComeEntity.builder()
+                .repOrder(repOrder)
+                .outcome(outcome)
+                .userCreated(TEST_USER)
+                .caseNumber(TEST_CASE_ID.toString())
+                .crownCourtCode("430")
+                .outcomeDate(TEST_DATE)
                 .build();
     }
 

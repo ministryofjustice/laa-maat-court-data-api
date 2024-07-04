@@ -3,7 +3,6 @@ package gov.uk.courtdata.reporder.service;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.AssessorDetails;
-import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
@@ -18,8 +17,10 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -87,6 +88,21 @@ class RepOrderServiceTest {
         when(repOrderImpl.countWithSentenceOrderDate(any()))
                 .thenReturn(1L);
         assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID)).isTrue();
+    }
+
+    @Test
+    void givenAllInputs_whenFdcFastTrackingIsInvoked_thenReturnList() {
+        Set<Integer> idList = Set.of(5,6);
+        when(repOrderImpl.findEligibleForFdcFastTracking(anyInt(), any(), anyInt()))
+                .thenReturn(idList);
+        assertThat(repOrderService.findEligibleForFdcFastTracking(5, LocalDate.now(), 5)).isEqualTo(idList);
+    }
+    @Test
+    void givenAllInputs_whenFdcDelayedPickupIsInvoked_thenReturnList() {
+        Set<Integer> idList = Set.of(5,6);
+        when(repOrderImpl.findEligibleForFdcDelayedPickup(anyInt(), any(), anyInt()))
+                .thenReturn(idList);
+        assertThat(repOrderService.findEligibleForFdcDelayedPickup(5, LocalDate.now(), 5)).isEqualTo(idList);
     }
 
     @Test

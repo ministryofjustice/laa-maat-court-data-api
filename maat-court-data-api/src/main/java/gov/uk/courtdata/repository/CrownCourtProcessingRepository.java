@@ -30,4 +30,7 @@ public interface CrownCourtProcessingRepository extends JpaRepository<RepOrderCC
             @Param("p_sentence_order_date") LocalDate sentenceOrderDate);
 
     List<RepOrderCCOutComeEntity> findByRepOrder_Id(Integer id);
+
+    Integer deleteByRepOrder_Id(Integer repId);
+
 }

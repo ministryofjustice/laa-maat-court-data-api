@@ -26,6 +26,7 @@ import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
 import gov.uk.courtdata.repository.DefendantMAATDataRepository;
 import gov.uk.courtdata.repository.DefendantRepository;
 import gov.uk.courtdata.repository.FdcContributionsRepository;
+import gov.uk.courtdata.repository.FdcItemsRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentDetailsHistoryRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentDetailsRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
@@ -273,6 +274,9 @@ public class Repositories {
   @Autowired
   private RepositoryUtil repositoryUtil;
 
+  @Autowired
+  private FdcItemsRepository fdcItemsRepository;
+
   @NotNull
   private JpaRepository[] allRepositories() {
     return new JpaRepository[]{appealType,
@@ -339,6 +343,7 @@ public class Repositories {
         wqResult,
         wqSession,
         xlatOffence,
+        fdcItemsRepository,
         xlatResult};
   }
 

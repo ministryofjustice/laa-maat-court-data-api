@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -52,5 +53,19 @@ class RepOrderImplTest {
     void givenAValidRepId_whenCountByIdAndSentenceOrderDateIsNotNullInvoked_thenRepOrderCountIsRetrieved() {
         repOrderImpl.countWithSentenceOrderDate(TestModelDataBuilder.REP_ID);
         verify(repOrderRepository).count(ArgumentMatchers.<Specification<RepOrderEntity>>any());
+    }
+
+    @Test
+    void givenValidValues_whenFindingForFdcFastTracking_thenInvokesRepository() {
+        LocalDate date = LocalDate.now();
+        repOrderImpl.findEligibleForFdcFastTracking(5, LocalDate.now(), 5);
+        verify(repOrderRepository).findEligibleForFdcFastTracking(5, date, 5);
+    }
+
+    @Test
+    void givenValidValues_whenFindingForFdcDelayedPickup_thenInvokesRepository() {
+        LocalDate date = LocalDate.now();
+        repOrderImpl.findEligibleForFdcDelayedPickup(5, LocalDate.now(), 5);
+        verify(repOrderRepository).findEligibleForFdcDelayedPickup(5, date, 5);
     }
 }

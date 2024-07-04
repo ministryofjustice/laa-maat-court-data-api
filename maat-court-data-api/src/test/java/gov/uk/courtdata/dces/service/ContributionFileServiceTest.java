@@ -19,7 +19,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.CollectionAssert.assertThatCollection;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ContributionFileServiceTest {
@@ -40,6 +42,7 @@ class ContributionFileServiceTest {
         final int fileId = 99;
         final var entity = TestEntityDataBuilder.getPopulatedContributionFilesEntity(fileId);
         when(contributionFileRepository.findById(fileId)).thenReturn(Optional.of(entity));
+
         final var optional = contributionFileService.getContributionFile(fileId);
         verify(contributionFileRepository).findById(fileId);
         assertThat(optional).isPresent();
@@ -48,18 +51,21 @@ class ContributionFileServiceTest {
 
     @Test
     void givenIncorrectArguments_whenGetContributionFileIsInvoked_thenReturnIsEmpty() {
-        final int INCORRECT_FILE_ID = 666;
-        when(contributionFileRepository.findById(INCORRECT_FILE_ID)).thenReturn(Optional.empty());
-        final var optional = contributionFileService.getContributionFile(INCORRECT_FILE_ID);
-        verify(contributionFileRepository).findById(INCORRECT_FILE_ID);
+        final int incorrectFileId = 666;
+        when(contributionFileRepository.findById(incorrectFileId)).thenReturn(Optional.empty());
+
+        final var optional = contributionFileService.getContributionFile(incorrectFileId);
+        verify(contributionFileRepository).findById(incorrectFileId);
         assertThat(optional).isEmpty();
     }
 
     @Test
     void givenCorrectArguments_whenGetAllContributionFileErrorIsInvoked_thenReturnIsFound() {
-        final int fileId = 99, contributionId = 888;
+        final int fileId = 99;
+        final int contributionId = 888;
         final var entity = TestEntityDataBuilder.getContributionFileErrorsEntity(fileId, contributionId);
         when(contributionFileErrorRepository.findByContributionFileId(fileId)).thenReturn(List.of(entity));
+
         final var list = contributionFileService.getAllContributionFileError(fileId);
         verify(contributionFileErrorRepository).findByContributionFileId(fileId);
         assertThatCollection(list).isNotEmpty();
@@ -68,19 +74,22 @@ class ContributionFileServiceTest {
 
     @Test
     void givenIncorrectArguments_whenGetAllContributionFileErrorIsInvoked_thenReturnIsEmpty() {
-        final int INCORRECT_FILE_ID = 666;
-        when(contributionFileErrorRepository.findByContributionFileId(INCORRECT_FILE_ID)).thenReturn(Collections.emptyList());
-        final var list = contributionFileService.getAllContributionFileError(INCORRECT_FILE_ID);
-        verify(contributionFileErrorRepository).findByContributionFileId(INCORRECT_FILE_ID);
+        final int incorrectFileId = 666;
+        when(contributionFileErrorRepository.findByContributionFileId(incorrectFileId)).thenReturn(Collections.emptyList());
+
+        final var list = contributionFileService.getAllContributionFileError(incorrectFileId);
+        verify(contributionFileErrorRepository).findByContributionFileId(incorrectFileId);
         assertThatCollection(list).isEmpty();
     }
 
     @Test
     void givenCorrectArguments_whenGetContributionFileErrorIsInvoked_thenReturnIsFound() {
-        final int fileId = 99, contributionId = 888;
+        final int fileId = 99;
+        final int contributionId = 888;
         final var entity = TestEntityDataBuilder.getContributionFileErrorsEntity(fileId, contributionId);
         final var compositeId = new ContributionFileErrorsId(contributionId, fileId);
         when(contributionFileErrorRepository.findById(eq(compositeId))).thenReturn(Optional.of(entity));
+
         final var optional = contributionFileService.getContributionFileError(contributionId, fileId);
         verify(contributionFileErrorRepository).findById(eq(compositeId));
         assertThat(optional).isPresent();
@@ -90,10 +99,12 @@ class ContributionFileServiceTest {
 
     @Test
     void givenIncorrectArguments_whenGetContributionFileErrorIsInvoked_thenReturnIsEmpty() {
-        final int INCORRECT_FILE_ID = 666, INCORRECT_CONTRIBUTION_ID = 666;
-        final var compositeId = new ContributionFileErrorsId(INCORRECT_FILE_ID, INCORRECT_CONTRIBUTION_ID);
+        final int incorrectFileId = 666;
+        final int incorrectContribtutionId = 666;
+        final var compositeId = new ContributionFileErrorsId(incorrectFileId, incorrectContribtutionId);
         when(contributionFileErrorRepository.findById(eq(compositeId))).thenReturn(Optional.empty());
-        final var optional = contributionFileService.getContributionFileError(INCORRECT_FILE_ID, INCORRECT_CONTRIBUTION_ID);
+
+        final var optional = contributionFileService.getContributionFileError(incorrectFileId, incorrectContribtutionId);
         verify(contributionFileErrorRepository).findById(eq(compositeId));
         assertThat(optional).isEmpty();
     }

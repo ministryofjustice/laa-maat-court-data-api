@@ -12,7 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ContributionFileControllerIntegrationTest extends MockMvcIntegrationTest {
@@ -54,17 +56,17 @@ public class ContributionFileControllerIntegrationTest extends MockMvcIntegratio
 
     @Test
     void givenIncorrectParameters_whenGetContributionFileInvoked_thenNotFound() throws Exception {
-        final int INCORRECT_FILE_ID = fileId + 666;
+        final int incorrectFileId = fileId + 666;
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}", INCORRECT_FILE_ID))
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}", incorrectFileId))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void givenInvalidParameters_whenGetContributionFileInvoked_thenBadRequest() throws Exception {
-        final String INVALID_FILE_ID = "crouton";
+        final String invalidFileId = "crouton";
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}", INVALID_FILE_ID))
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}", invalidFileId))
                 .andExpect(status().isBadRequest());
     }
 
@@ -78,9 +80,9 @@ public class ContributionFileControllerIntegrationTest extends MockMvcIntegratio
 
     @Test
     void givenIncorrectParameters_whenGetAllContributionFileErrorInvoked_thenResponseIsEmpty() throws Exception {
-        final int INCORRECT_FILE_ID = fileId + 666;
+        final int incorrectFileId = fileId + 666;
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error", INCORRECT_FILE_ID))
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error", incorrectFileId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(0));
@@ -88,9 +90,9 @@ public class ContributionFileControllerIntegrationTest extends MockMvcIntegratio
 
     @Test
     void givenInvalidParameters_whenGetAllContributionFileInvoked_thenBadRequest() throws Exception {
-        final String INVALID_FILE_ID = "muffin";
+        final String invalidFileId = "muffin";
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error", INVALID_FILE_ID))
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error", invalidFileId))
                 .andExpect(status().isBadRequest());
     }
 
@@ -105,17 +107,19 @@ public class ContributionFileControllerIntegrationTest extends MockMvcIntegratio
 
     @Test
     void givenIncorrectParameters_whenGetContributionFileErrorInvoked_thenNotFound() throws Exception {
-        final int INCORRECT_FILE_ID = fileId + 666, INCORRECT_CONTRIBUTION_ID = contributionId + 666;
+        final int incorrectFileId = fileId + 666;
+        final int incorrectContributionId = contributionId + 666;
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error/{contributionId}", INCORRECT_FILE_ID, INCORRECT_CONTRIBUTION_ID))
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error/{contributionId}", incorrectFileId, incorrectContributionId))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void givenInvalidParameters_whenGetContributionFileErrorInvoked_thenBadRequest() throws Exception {
-        final String INVALID_FILE_ID = "muffin", INVALID_CONTRIBUTION_ID = "crumpet";
+        final String invalidFileId = "muffin";
+        final String invalidContributionId = "crumpet";
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error/{contributionId}", INVALID_FILE_ID, INVALID_CONTRIBUTION_ID))
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error/{contributionId}", invalidFileId, invalidContributionId))
                 .andExpect(status().isBadRequest());
     }
 }

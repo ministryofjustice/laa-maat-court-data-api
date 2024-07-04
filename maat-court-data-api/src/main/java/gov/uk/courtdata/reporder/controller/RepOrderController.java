@@ -213,30 +213,30 @@ public class RepOrderController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/eligible-for-fdc-delayed-pickup", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"fdcDelayedPickup=true"})
     @Operation(description = "Retrieve a set of rep order ids that have passed the Final Defence Cost delay period")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
     @StandardApiResponse
-    public ResponseEntity<Set<Integer>> findEligibleForFdcDelayedPickup(@RequestParam(value = "delay") int delayPeriod,
-                                                             @RequestParam(value = "numRecords") int numRecords,
-                                                             @RequestParam(value = "dateReceived")  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateReceived)
+    public ResponseEntity<Set<Integer>> findEligibleForFdcDelayedPickup(@Valid @RequestParam(value = "delay") int delayPeriod,
+                                                                        @Valid @RequestParam(value = "numRecords") int numRecords,
+                                                                        @Valid @RequestParam(value = "dateReceived")  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateReceived)
     {
         log.info("Get Rep Order Ids For Fdc Delay Received");
         Set<Integer> repIdList = repOrderService.findEligibleForFdcDelayedPickup(delayPeriod, dateReceived, numRecords);
         return ResponseEntity.ok(repIdList);
     }
 
-    @GetMapping(value = "/eligible-for-fdc-fast-tracking", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"fdcFastTrack=true"})
     @Operation(description = "Retrieve a set of rep order ids eligible for Final Defence Cost Fast-Tracking")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
     @StandardApiResponse
-    public ResponseEntity<Set<Integer>> findEligibleForFdcFastTracking(@RequestParam(value = "delay") int delayPeriod,
-                                                                 @RequestParam(value = "numRecords") int numRecords,
-                                                                 @RequestParam(value = "dateReceived")  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateReceived)
+    public ResponseEntity<Set<Integer>> findEligibleForFdcFastTracking(@Valid @RequestParam(value = "delay") int delayPeriod,
+                                                                       @Valid @RequestParam(value = "numRecords") int numRecords,
+                                                                       @Valid @RequestParam(value = "dateReceived")  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateReceived)
     {
         log.info("Get Rep Order Ids For Fdc Fast-Track Received");
         Set<Integer> repIdList = repOrderService.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);

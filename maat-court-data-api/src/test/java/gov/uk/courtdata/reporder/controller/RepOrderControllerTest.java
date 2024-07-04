@@ -44,8 +44,6 @@ class RepOrderControllerTest {
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders";
     private static final String MVO_REG_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo-reg";
     private static final String MVO_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo";
-    private static final String FDC_DELAYED_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligible-for-fdc-delayed-pickup";
-    private static final String FDC_FAST_TRACK_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligible-for-fdc-fast-tracking";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
     private static final String CURRENT_REGISTRATION = "current-registration";
     private static final Integer USN = 12345;
@@ -347,7 +345,8 @@ class RepOrderControllerTest {
         Set<Integer> expectedIds = Set.of(5,6);
         LocalDate date = LocalDate.now();
         when(repOrderService.findEligibleForFdcFastTracking(5, date, 2)).thenReturn(expectedIds);
-        mvc.perform(MockMvcRequestBuilders.get(FDC_FAST_TRACK_ENDPOINT_URL)
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcFastTrack", "true")
                         .param("delay", "5")
                         .param("dateReceived", date.format(DateTimeFormatter.ISO_DATE))
                         .param("numRecords", "2")
@@ -361,7 +360,8 @@ class RepOrderControllerTest {
     @Test
     void givenInvalidParameters_whenFindFdcFastTrackingInvoked_thenErrorIsReturned() throws Exception {
         LocalDate date = LocalDate.now();
-        mvc.perform(MockMvcRequestBuilders.get(FDC_FAST_TRACK_ENDPOINT_URL)
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcFastTrack", "true")
                         .param("dateReceived", date.format(DateTimeFormatter.ISO_DATE))
                         .param("numRecords", "2")
                 )
@@ -370,7 +370,8 @@ class RepOrderControllerTest {
                 .andExpect(jsonPath("detail").value("Required parameter 'delay' is not present."))
                 .andExpect(jsonPath("title").value("Bad Request"));
 
-        mvc.perform(MockMvcRequestBuilders.get(FDC_FAST_TRACK_ENDPOINT_URL)
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcFastTrack", "true")
                         .param("delay", "5")
                         .param("numRecords", "2")
                 )
@@ -379,7 +380,8 @@ class RepOrderControllerTest {
                 .andExpect(jsonPath("detail").value("Required parameter 'dateReceived' is not present."))
                 .andExpect(jsonPath("title").value("Bad Request"));
 
-        mvc.perform(MockMvcRequestBuilders.get(FDC_FAST_TRACK_ENDPOINT_URL)
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcFastTrack", "true")
                         .param("delay", "5")
                         .param("dateReceived", date.format(DateTimeFormatter.ISO_DATE))
                 )
@@ -394,7 +396,8 @@ class RepOrderControllerTest {
         Set<Integer> expectedIds = Set.of(5,6);
         LocalDate date = LocalDate.now();
         when(repOrderService.findEligibleForFdcDelayedPickup(5, date, 2)).thenReturn(expectedIds);
-        mvc.perform(MockMvcRequestBuilders.get(FDC_DELAYED_ENDPOINT_URL)
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcDelayedPickup", "true")
                         .param("delay", "5")
                         .param("dateReceived", date.format(DateTimeFormatter.ISO_DATE))
                         .param("numRecords", "2")
@@ -408,7 +411,8 @@ class RepOrderControllerTest {
     @Test
     void givenInvalidParameters_whenFindFdcDelayedPickupInvoked_thenErrorIsReturned() throws Exception {
         LocalDate date = LocalDate.now();
-        mvc.perform(MockMvcRequestBuilders.get(FDC_DELAYED_ENDPOINT_URL)
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcDelayedPickup", "true")
                         .param("dateReceived", date.format(DateTimeFormatter.ISO_DATE))
                         .param("numRecords", "2")
                 )
@@ -417,7 +421,8 @@ class RepOrderControllerTest {
                 .andExpect(jsonPath("detail").value("Required parameter 'delay' is not present."))
                 .andExpect(jsonPath("title").value("Bad Request"));
 
-        mvc.perform(MockMvcRequestBuilders.get(FDC_DELAYED_ENDPOINT_URL)
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcDelayedPickup", "true")
                         .param("delay", "5")
                         .param("numRecords", "2")
                 )
@@ -426,7 +431,8 @@ class RepOrderControllerTest {
                 .andExpect(jsonPath("detail").value("Required parameter 'dateReceived' is not present."))
                 .andExpect(jsonPath("title").value("Bad Request"));
 
-        mvc.perform(MockMvcRequestBuilders.get(FDC_DELAYED_ENDPOINT_URL)
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
+                        .param("fdcDelayedPickup", "true")
                         .param("delay", "5")
                         .param("dateReceived", date.format(DateTimeFormatter.ISO_DATE))
                 )

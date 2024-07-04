@@ -16,10 +16,45 @@ import java.util.Set;
 public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Integer>, JpaSpecificationExecutor<RepOrderEntity> {
     List<RepOrderEntity> findByUsn(Integer usn);
 
-    @Query(value = "SELECT * FROM ( SELECT DISTINCT RO.ID FROM TOGDATA.CONCOR_CONTRIBUTIONS CC, TOGDATA.REP_ORDERS RO, TOGDATA.REP_ORDER_CROWN_COURT_OUTCOMES ROCCO WHERE CC.REP_ID = RO.ID AND RO.ID = ROCCO.REP_ID AND CC.STATUS = 'SENT' AND ROCCO.CCOO_OUTCOME IS NOT NULL AND RO.SENTENCE_ORDER_DATE IS NOT NULL AND TRUNC( ADD_MONTHS( NVL(RO.SENTENCE_ORDER_DATE, SYSDATE ), :delayPeriod) ) <= TRUNC(SYSDATE) AND RO.DATE_RECEIVED< :dateReceived ) WHERE ROWNUM <= :numRecords", nativeQuery = true)
+    @Query(value = """
+                        SELECT *
+                        FROM (
+                            SELECT DISTINCT RO.ID
+                            FROM
+                                TOGDATA.CONCOR_CONTRIBUTIONS CC,
+                                TOGDATA.REP_ORDERS RO,
+                                TOGDATA.REP_ORDER_CROWN_COURT_OUTCOMES ROCCO
+                            WHERE
+                                CC.REP_ID = RO.ID
+                                AND RO.ID = ROCCO.REP_ID
+                                AND CC.STATUS = 'SENT'
+                                AND ROCCO.CCOO_OUTCOME IS NOT NULL
+                                AND RO.SENTENCE_ORDER_DATE IS NOT NULL
+                                AND TRUNC( ADD_MONTHS( NVL(RO.SENTENCE_ORDER_DATE, SYSDATE ), :delayPeriod) ) <= TRUNC(SYSDATE)
+                                AND RO.DATE_RECEIVED< :dateReceived
+                            )
+                        WHERE ROWNUM <= :numRecords
+                        """, nativeQuery = true)
     Set<Integer> findEligibleForFdcDelayedPickup(@Param("delayPeriod") int delayPeriod, @Param("dateReceived") LocalDate dateReceived, @Param("numRecords") int numRecords);
 
-    @Query(value = "SELECT * FROM ( SELECT DISTINCT RO.ID FROM TOGDATA.CONCOR_CONTRIBUTIONS CC, TOGDATA.REP_ORDERS RO, TOGDATA.REP_ORDER_CROWN_COURT_OUTCOMES ROCCO WHERE CC.REP_ID = RO.ID AND RO.ID = ROCCO.REP_ID AND CC.STATUS = 'SENT' AND ROCCO.CCOO_OUTCOME IS NOT NULL AND RO.SENTENCE_ORDER_DATE IS NOT NULL AND RO.DATE_RECEIVED > :dateReceived AND RO.SENTENCE_ORDER_DATE < ADD_MONTHS(TRUNC(SYSDATE),:delayPeriod) ) WHERE ROWNUM <= :numRecords", nativeQuery = true)
+    @Query(value = """
+                        SELECT *
+                        FROM (
+                            SELECT DISTINCT RO.ID
+                            FROM
+                                TOGDATA.CONCOR_CONTRIBUTIONS CC,
+                                TOGDATA.REP_ORDERS RO,
+                                TOGDATA.REP_ORDER_CROWN_COURT_OUTCOMES ROCCO
+                            WHERE
+                                CC.REP_ID = RO.ID
+                                AND RO.ID = ROCCO.REP_ID
+                                AND CC.STATUS = 'SENT'
+                                AND ROCCO.CCOO_OUTCOME IS NOT NULL
+                                AND RO.SENTENCE_ORDER_DATE IS NOT NULL AND RO.DATE_RECEIVED > :dateReceived
+                                AND RO.SENTENCE_ORDER_DATE < ADD_MONTHS(TRUNC(SYSDATE),:delayPeriod)
+                            )
+                        WHERE ROWNUM <= :numRecords
+                        """, nativeQuery = true)
     Set<Integer> findEligibleForFdcFastTracking(@Param("delayPeriod") int delayPeriod, @Param("dateReceived") LocalDate dateReceived, @Param("numRecords") int numRecords);
 
 }

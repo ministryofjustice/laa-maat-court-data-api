@@ -54,8 +54,8 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     public static final String SLASH = "/";
     private static final String MVO_REG_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo-reg";
     private static final String MVO_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo";
-    private static final String FDC_DELAYED_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligible-for-fdc-delayed-pickup?delay={delay}&dateReceived={dateReceived}&numRecords={numRecords}";
-    private static final String FDC_FAST_TRACK_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/eligible-for-fdc-fast-tracking?delay={delay}&dateReceived={dateReceived}&numRecords={numRecords}";
+    private static final String FDC_DELAYED_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders?fdcDelayedPickup=true&delay={delay}&dateReceived={dateReceived}&numRecords={numRecords}";
+    private static final String FDC_FAST_TRACK_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders?fdcFastTrack=true&delay={delay}&dateReceived={dateReceived}&numRecords={numRecords}";
     private static final String CURRENT_REGISTRATION = "current-registration";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
     private RepOrderEntity repOrderValid;

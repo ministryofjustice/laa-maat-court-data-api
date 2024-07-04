@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasId;
 import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasSentenceOrderDate;
@@ -50,11 +50,11 @@ public class RepOrderImpl {
         repOrderRepository.deleteById(repId);
     }
 
-    public List<Integer> findEligibleForFdcDelayedPickup(int delayPeriod, LocalDate dateReceived, int numRecords){
+    public Set<Integer> findEligibleForFdcDelayedPickup(int delayPeriod, LocalDate dateReceived, int numRecords){
         return repOrderRepository.findEligibleForFdcDelayedPickup(delayPeriod, dateReceived, numRecords);
     }
 
-    public List<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
+    public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
         return repOrderRepository.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
     }
 }

@@ -19,8 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -92,14 +92,14 @@ class RepOrderServiceTest {
 
     @Test
     void givenAllInputs_whenFdcFastTrackingIsInvoked_thenReturnList() {
-        List<Integer> idList = List.of(5,6);
+        Set<Integer> idList = Set.of(5,6);
         when(repOrderImpl.findEligibleForFdcFastTracking(anyInt(), any(), anyInt()))
                 .thenReturn(idList);
         assertThat(repOrderService.findEligibleForFdcFastTracking(5, LocalDate.now(), 5)).isEqualTo(idList);
     }
     @Test
     void givenAllInputs_whenFdcDelayedPickupIsInvoked_thenReturnList() {
-        List<Integer> idList = List.of(5,6);
+        Set<Integer> idList = Set.of(5,6);
         when(repOrderImpl.findEligibleForFdcDelayedPickup(anyInt(), any(), anyInt()))
                 .thenReturn(idList);
         assertThat(repOrderService.findEligibleForFdcDelayedPickup(5, LocalDate.now(), 5)).isEqualTo(idList);

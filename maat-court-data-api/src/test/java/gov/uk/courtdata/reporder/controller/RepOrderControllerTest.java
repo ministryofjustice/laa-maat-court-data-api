@@ -344,7 +344,7 @@ class RepOrderControllerTest {
 
     @Test
     void givenValidParameters_whenFindFdcFastTrackingInvoked_thenIdsAreReturned() throws Exception {
-        List<Integer> expectedIds = List.of(5,6);
+        Set<Integer> expectedIds = Set.of(5,6);
         LocalDate date = LocalDate.now();
         when(repOrderService.findEligibleForFdcFastTracking(5, date, 2)).thenReturn(expectedIds);
         mvc.perform(MockMvcRequestBuilders.get(FDC_FAST_TRACK_ENDPOINT_URL)
@@ -391,7 +391,7 @@ class RepOrderControllerTest {
 
     @Test
     void givenValidParameters_whenFindFdcDelayedPickupInvoked_thenIdsAreReturned() throws Exception {
-        List<Integer> expectedIds = List.of(5,6);
+        Set<Integer> expectedIds = Set.of(5,6);
         LocalDate date = LocalDate.now();
         when(repOrderService.findEligibleForFdcDelayedPickup(5, date, 2)).thenReturn(expectedIds);
         mvc.perform(MockMvcRequestBuilders.get(FDC_DELAYED_ENDPOINT_URL)

@@ -12,9 +12,10 @@ import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -121,11 +122,11 @@ public class RepOrderService {
         return repOrderMapper.createIOJAssessorDetails(repOrderOptional.get());
     }
 
-    public List<Integer> findEligibleForFdcDelayedPickup(int delayPeriod, LocalDate dateReceived, int numRecords){
+    public Set<Integer> findEligibleForFdcDelayedPickup(int delayPeriod, LocalDate dateReceived, int numRecords){
         return repOrderImpl.findEligibleForFdcDelayedPickup(delayPeriod, dateReceived, numRecords);
     }
 
-    public List<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
+    public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
         return repOrderImpl.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
     }
 }

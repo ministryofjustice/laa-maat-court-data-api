@@ -124,11 +124,11 @@ class ContributionFileControllerTest {
     void givenIncorrectParameters_whenGetContributionFileErrorInvoked_thenNotFound() throws Exception {
         final int incorrectFileId = 666;
         final int incorrectContributionId = 777;
-        when(contributionFileService.getContributionFileError(incorrectFileId, incorrectContributionId)).thenReturn(Optional.empty());
+        when(contributionFileService.getContributionFileError(incorrectContributionId, incorrectFileId)).thenReturn(Optional.empty());
 
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error/{contributionId}", incorrectFileId, incorrectContributionId))
                 .andExpect(status().isNotFound());
-        verify(contributionFileService).getContributionFileError(incorrectFileId, incorrectContributionId);
+        verify(contributionFileService).getContributionFileError(incorrectContributionId, incorrectFileId);
     }
 
     @Test

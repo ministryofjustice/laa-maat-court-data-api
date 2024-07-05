@@ -1,6 +1,6 @@
 package gov.uk.courtdata.dces.service;
 
-import gov.uk.courtdata.contribution.mapper.FdcContributionMapper;
+import gov.uk.courtdata.dces.mapper.FdcContributionMapper;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
@@ -394,7 +394,7 @@ class FdcContributionsServiceTest {
         FdcContributionEntry expectedEntry = FdcContributionEntry.builder().id(fdcContributionId).build();
 
         when(fdcContributionsRepository.findById(fdcContributionId)).thenReturn(Optional.of(expectedEntity));
-        when(fdcContributionMapper.toDto(expectedEntity)).thenReturn(expectedEntry);
+        when(fdcContributionMapper.mapFdcContribution(expectedEntity)).thenReturn(expectedEntry);
 
         FdcContributionEntry result = fdcContributionsService.getFdcContribution(fdcContributionId);
 

@@ -1,6 +1,6 @@
 package gov.uk.courtdata.dces.service;
 
-import gov.uk.courtdata.contribution.mapper.FdcContributionMapper;
+import gov.uk.courtdata.dces.mapper.FdcContributionMapper;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
@@ -228,6 +228,6 @@ public class FdcContributionsService {
         FdcContributionsEntity fdcEntity = fdcContributionsRepository.findById(fdcContributionId)
                 .orElseThrow(() -> new RequestedObjectNotFoundException("fdc_contribution could not be found by id"));
         log.info("FDC Contribution found: {}", fdcEntity.getId());
-        return fdcContributionMapper.toDto(fdcEntity);
+        return fdcContributionMapper.mapFdcContribution(fdcEntity);
     }
 }

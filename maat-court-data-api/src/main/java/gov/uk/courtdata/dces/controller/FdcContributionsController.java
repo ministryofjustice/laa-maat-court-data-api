@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.dces.request.*;
+import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.dces.service.FdcContributionsService;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -103,5 +105,14 @@ public class FdcContributionsController {
             log.error("UpdateFdcContributionRequest is null");
             throw new ValidationException("UpdateFdcContributionRequest is null");
         }
+    }
+
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @GetMapping(value = "/fdc-contribution/{fdc-contribution-id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Get a Contribution by fdc-contribution-id")
+    public ResponseEntity<FdcContributionEntry> getFdcContribution(@PathVariable(name = "fdc-contribution-id") final Integer fdcContributionId) {
+        log.info("Get FDC Contribution by Id {}", fdcContributionId);
+        return ResponseEntity.ok(fdcContributionsService.getFdcContribution(fdcContributionId));
     }
 }

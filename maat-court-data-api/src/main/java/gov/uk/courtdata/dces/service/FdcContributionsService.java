@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dces.service;
 
+import gov.uk.courtdata.dces.mapper.FdcContributionMapper;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
@@ -46,6 +47,7 @@ public class FdcContributionsService {
     private final ContributionFileMapper contributionFileMapper;
     private final DebtCollectionRepository debtCollectionRepository;
     private final DebtCollectionService debtCollectionService;
+    private final FdcContributionMapper fdcContributionMapper;
 
     private static final Function<FdcContributionsEntity, FdcContributionEntry> BUILD_FDC_ENTRY =
             entity -> FdcContributionEntry.builder()
@@ -183,12 +185,12 @@ public class FdcContributionsService {
         log.info("Delete FdcItemsEntity with fdcId {}", fdcId);
         try {
             return fdcItemsRepository.deleteByFdcId(fdcId);
-        } catch (EmptyResultDataAccessException e) {
-            log.error("No FdcItemsEntity found with id {}", fdcId, e);
-            throw e;
-        } catch (DataAccessException e) {
-            log.error("Failed to delete FdcItemsEntity with id {}", fdcId, e);
-            throw e;
+        } catch (EmptyResultDataAccessException resultDataAccessException) {
+            log.error("No FdcItemsEntity found with id {}", fdcId, resultDataAccessException);
+            throw resultDataAccessException;
+        } catch (DataAccessException dataAccessException) {
+            log.error("Failed to delete FdcItemsEntity with id {}", fdcId, dataAccessException);
+            throw dataAccessException;
         }
     }
 
@@ -204,9 +206,9 @@ public class FdcContributionsService {
                     .build();
 
             return fdcContributionsRepository.save(fdcContributionsEntity);
-        } catch (Exception e) {
-            log.error("Failed to persist data for FdcContributionsEntity {}", e.getMessage());
-            throw e;
+        } catch (Exception exception) {
+            log.error("Failed to persist data for FdcContributionsEntity {}", exception.getMessage());
+            throw exception;
         }
     }
 
@@ -216,10 +218,16 @@ public class FdcContributionsService {
             log.info("Update FdcContributionRequest {}", request);
             return fdcContributionsRepository.updateStatus(request.getRepId(), request.getNewStatus().name(), request.getPreviousStatus());
 
-        } catch (Exception e) {
-            log.error("Failed to update data for FdcContributionsEntity {}", e.getMessage());
-            throw e;
+        } catch (Exception exception) {
+            log.error("Failed to update data for FdcContributionsEntity {}", exception.getMessage());
+            throw exception;
         }
     }
 
+    public FdcContributionEntry getFdcContribution(Integer fdcContributionId){
+        FdcContributionsEntity fdcEntity = fdcContributionsRepository.findById(fdcContributionId)
+                .orElseThrow(() -> new RequestedObjectNotFoundException("fdc_contribution could not be found by id"));
+        log.info("FDC Contribution found: {}", fdcEntity.getId());
+        return fdcContributionMapper.mapFdcContribution(fdcEntity);
+    }
 }

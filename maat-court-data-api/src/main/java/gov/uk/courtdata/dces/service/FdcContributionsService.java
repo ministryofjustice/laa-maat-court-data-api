@@ -185,12 +185,12 @@ public class FdcContributionsService {
         log.info("Delete FdcItemsEntity with fdcId {}", fdcId);
         try {
             return fdcItemsRepository.deleteByFdcId(fdcId);
-        } catch (EmptyResultDataAccessException e) {
-            log.error("No FdcItemsEntity found with id {}", fdcId, e);
-            throw e;
-        } catch (DataAccessException e) {
-            log.error("Failed to delete FdcItemsEntity with id {}", fdcId, e);
-            throw e;
+        } catch (EmptyResultDataAccessException resultDataAccessException) {
+            log.error("No FdcItemsEntity found with id {}", fdcId, resultDataAccessException);
+            throw resultDataAccessException;
+        } catch (DataAccessException dataAccessException) {
+            log.error("Failed to delete FdcItemsEntity with id {}", fdcId, dataAccessException);
+            throw dataAccessException;
         }
     }
 
@@ -206,9 +206,9 @@ public class FdcContributionsService {
                     .build();
 
             return fdcContributionsRepository.save(fdcContributionsEntity);
-        } catch (Exception e) {
-            log.error("Failed to persist data for FdcContributionsEntity {}", e.getMessage());
-            throw e;
+        } catch (Exception exception) {
+            log.error("Failed to persist data for FdcContributionsEntity {}", exception.getMessage());
+            throw exception;
         }
     }
 
@@ -218,9 +218,9 @@ public class FdcContributionsService {
             log.info("Update FdcContributionRequest {}", request);
             return fdcContributionsRepository.updateStatus(request.getRepId(), request.getNewStatus().name(), request.getPreviousStatus());
 
-        } catch (Exception e) {
-            log.error("Failed to update data for FdcContributionsEntity {}", e.getMessage());
-            throw e;
+        } catch (Exception exception) {
+            log.error("Failed to update data for FdcContributionsEntity {}", exception.getMessage());
+            throw exception;
         }
     }
 

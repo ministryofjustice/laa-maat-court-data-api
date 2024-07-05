@@ -127,4 +127,23 @@ class FdcContributionsControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void testGetFdcContribution() throws Exception {
+        int fdcContributionId = 1;
+        FdcContributionEntry expectedEntry = FdcContributionEntry.builder().id(fdcContributionId)
+                .status(FdcContributionsStatus.REQUESTED)
+                .finalCost(new BigDecimal("100.1"))
+                .build();
+
+        when(fdcContributionsService.getFdcContribution(fdcContributionId)).thenReturn(expectedEntry);
+
+        mvc.perform(MockMvcRequestBuilders.get(String.format("%s/fdc-contribution/%d", ENDPOINT_URL, fdcContributionId))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(fdcContributionId))
+                .andExpect(jsonPath("$.status").value(FdcContributionsStatus.REQUESTED.name()))
+                .andExpect(jsonPath("$.finalCost").value(expectedEntry.getFinalCost().doubleValue()));
+    }
+
 }

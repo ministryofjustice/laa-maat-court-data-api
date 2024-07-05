@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dces.service;
 
+import gov.uk.courtdata.contribution.mapper.FdcContributionMapper;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
@@ -46,6 +47,8 @@ class FdcContributionsServiceTest {
 
     @Mock
     private ContributionFileMapper contributionFileMapper;
+    @Mock
+    private FdcContributionMapper fdcContributionMapper;
     @Mock
     private DebtCollectionRepository debtCollectionRepository;
     @Mock
@@ -379,5 +382,35 @@ class FdcContributionsServiceTest {
         fdcFile.setDateCalculated(expectedDateCalculated);
         fdcFile.setRepOrderEntity(repOrderEntity);
         fdcContributionsEntityList.add(fdcFile);
+    }
+
+    @Test
+    void testGetFdcContribution() {
+        Integer fdcContributionId = 1;
+        FdcContributionsEntity expectedEntity = FdcContributionsEntity.builder().
+                id(fdcContributionId)
+                .status(REQUESTED)
+                .build();
+        FdcContributionEntry expectedEntry = FdcContributionEntry.builder().id(fdcContributionId).build();
+
+        when(fdcContributionsRepository.findById(fdcContributionId)).thenReturn(Optional.of(expectedEntity));
+        when(fdcContributionMapper.toDto(expectedEntity)).thenReturn(expectedEntry);
+
+        FdcContributionEntry result = fdcContributionsService.getFdcContribution(fdcContributionId);
+
+        assertNotNull(result);
+        assertEquals(expectedEntry, result);
+    }
+
+    @Test
+    void testGetFdcContributionWhenIdDoesNotExist() {
+        Integer fdcContributionId = 1;
+
+        when(fdcContributionsRepository.findById(fdcContributionId)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(RequestedObjectNotFoundException.class,
+                () -> fdcContributionsService.getFdcContribution(fdcContributionId));
+
+        assertEquals("fdc_contribution could not be found by id", exception.getMessage());
     }
 }

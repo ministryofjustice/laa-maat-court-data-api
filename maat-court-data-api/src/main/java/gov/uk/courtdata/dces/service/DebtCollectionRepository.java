@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Clob;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +21,8 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 public class DebtCollectionRepository {
-
     private final JdbcTemplate jdbcTemplate;
     private static final String DB_USER_NAME = "DCES";
-
 
     List<String> getContributionFiles(final String fromDate, final String toDate) {
         String query = "SELECT cf.xml_content FROM TOGDATA.CONTRIBUTION_FILES CF " +
@@ -46,6 +43,8 @@ public class DebtCollectionRepository {
     public boolean saveContributionFilesEntity(ContributionFilesEntity contributionFilesEntity) {
         contributionFilesEntity.setUserCreated(DB_USER_NAME);
         contributionFilesEntity.setDateCreated(LocalDate.now());
+        contributionFilesEntity.setUserModified(DB_USER_NAME);
+        contributionFilesEntity.setDateModified(LocalDate.now());
         contributionFilesEntity.setDateSent(LocalDate.now());
 
         log.info("Inserting into TOGDATA.CONTRIBUTION_FILES using jdbcTemplate");
@@ -58,7 +57,6 @@ public class DebtCollectionRepository {
         contributionFilesEntity.setDateModified(LocalDate.now());
         log.info("Updating TOGDATA.CONTRIBUTION_FILES using jdbcTemplate");
 
-
         runContributionFilesSqlStatement(contributionFilesEntity, true);
         return true;
     }
@@ -66,10 +64,9 @@ public class DebtCollectionRepository {
     private void runContributionFilesSqlStatement(ContributionFilesEntity contributionFilesEntity, boolean isUpdate) {
         String sqlStatement;
         Map<String, String> fieldValueMap = ContributionFileUtil.generateSqlFieldValueMap(contributionFilesEntity, isUpdate);
-        if(isUpdate){
+        if (isUpdate){
             sqlStatement = generateUpdateSQLStatement(fieldValueMap);
-        }
-        else {
+        } else {
             sqlStatement = generateInsertSQLStatement(fieldValueMap);
         }
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -86,15 +83,15 @@ public class DebtCollectionRepository {
                     return ps;
                 }, keyHolder);
         // if we're creating a new instance. We want to set the id here.
-        if(!isUpdate) {
+        if (!isUpdate) {
             Number newId = keyHolder.getKey();
-            if(Objects.nonNull(newId)) {
+            if (Objects.nonNull(newId)) {
                 contributionFilesEntity.setFileId(newId.intValue());
             }
         }
     }
 
-    private String generateInsertSQLStatement(Map<String, String> fieldMap){
+    private String generateInsertSQLStatement(Map<String, String> fieldMap) {
         String sql = "INSERT INTO TOGDATA.CONTRIBUTION_FILES (%s) VALUES (%s)";
 
         String fields = String.join(", ", fieldMap.keySet());
@@ -103,19 +100,18 @@ public class DebtCollectionRepository {
         return sql.formatted(fields,values);
     }
 
-    private String generateUpdateSQLStatement(Map<String, String> fieldMap){
+    private String generateUpdateSQLStatement(Map<String, String> fieldMap) {
         String sql = "UPDATE TOGDATA.CONTRIBUTION_FILES SET %s WHERE ID=?";
         List<String> updateSqlLine = new ArrayList<>();
-        for(Map.Entry<String,String> entry: fieldMap.entrySet()){
+        for (Map.Entry<String,String> entry: fieldMap.entrySet()){
             updateSqlLine.add(createUpdateSqlLine(entry.getKey(),entry.getValue()));
         }
         return sql.formatted(String.join(", ", updateSqlLine));
     }
 
-    private String createUpdateSqlLine(String field, String value){
+    private String createUpdateSqlLine(String field, String value) {
         return field+"="+value;
     }
-
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
     public int globalUpdatePart1(String delay) {
@@ -182,7 +178,7 @@ public class DebtCollectionRepository {
     }
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
-    public int globalUpdatePart2(String delay){
+    public int globalUpdatePart2(String delay) {
         log.info("globalUpdatePart2 entered");
         String query = """
                 MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC 
@@ -330,5 +326,4 @@ public class DebtCollectionRepository {
                   UPDATE SET FC.STATUS = QUERY1.NEWSTATUS""";
         return jdbcTemplate.update(query,delay);
     }
-
 }

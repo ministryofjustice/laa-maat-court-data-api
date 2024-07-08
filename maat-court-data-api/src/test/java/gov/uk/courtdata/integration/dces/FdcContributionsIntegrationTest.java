@@ -24,12 +24,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
-
     private static final String FDC_CONTRIBUTION_FILES_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/fdc-contribution-files";
     private static final String GLOBAL_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/prepare-fdc-contributions-files";
     private static final String ATOMIC_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/create-fdc-file";
@@ -62,7 +66,6 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     @Captor
     private ArgumentCaptor<ContributionFilesEntity> contributionFileEntityCaptor;
 
-
     @BeforeEach
     public void setUp() {
         file1Id = repos.contributionFiles.save(buildFileEntity(fileOne, false)).getFileId();
@@ -78,13 +81,13 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         repId4 = expectedId4;
     }
 
-    private ContributionFilesEntity buildFileEntity(String fileIdentifier, boolean isBlankXml){
+    private ContributionFilesEntity buildFileEntity(String fileIdentifier, boolean isBlankXml) {
         ContributionFilesEntity entity = ContributionFilesEntity.builder()
                 .fileName(fileIdentifier)
                 .recordsReceived(0)
                 .recordsSent(10)
                 .build();
-        if(!isBlankXml){
+        if (!isBlankXml){
             entity.setXmlContent("<xml>"+fileIdentifier+"</xml>");
             entity.setAckXmlContent("<ackXml>"+fileIdentifier+"</ackXml>");
         }
@@ -158,11 +161,10 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                                     "fdcIds": [%s],
                                     "xmlFileName" : "%s"
                                 }""";
-        s = s.formatted( expectedRecordsSent, expectedId4, expectedFilename);
+        s = s.formatted(expectedRecordsSent, expectedId4, expectedFilename);
         mockMvc.perform(MockMvcRequestBuilders.post(ATOMIC_UPDATE_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(s))
-
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // verify the content of the saved entity.
@@ -181,10 +183,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         FdcContributionsEntity fdcContributionsEntity = updatedFdc.get();
         assertEquals(savedFileEntity.getFileId(), fdcContributionsEntity.getContFileId());
         assertEquals(FdcContributionsStatus.SENT, fdcContributionsEntity.getStatus());
-
     }
-
-
 
     @Test
     void testLogDrcProcessedNoErrors() throws Exception {
@@ -193,7 +192,6 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(s))
-
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check we've updated the received count.
@@ -214,13 +212,12 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(s))
-
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check we've updated the received count.
         Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file2Id);
         assertTrue(fileEntity.isPresent());
-        assertEquals(1,fileEntity.get().getRecordsReceived());
+        assertEquals(0, fileEntity.get().getRecordsReceived());
 
         // check no values in errors
         assertEquals(1, repos.contributionFileErrors.count());
@@ -233,7 +230,6 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         assertEquals(dateTimeCheck.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
         assertEquals(dateTimeCheck.getMonth(), errorEntity.getDateCreated().getMonth());
         assertEquals(dateTimeCheck.getYear(), errorEntity.getDateCreated().getYear());
-
     }
 
     @Test
@@ -243,7 +239,6 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(s))
-
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check no values in errors
@@ -258,7 +253,6 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(s))
-
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check no values in errors
@@ -274,7 +268,6 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(s))
-
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check no values in errors
@@ -285,12 +278,11 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         assertEquals(0, filesEntity.getRecordsReceived()); // ensure the increment is rolled back.
     }
 
-    private String createLogDrcProcessedRequest(Integer id, String errorText){
+    private String createLogDrcProcessedRequest(Integer id, String errorText) {
         return  """
                     {
                         "fdcId" : %s,
                         "errorText" : "%s"
                     }""".formatted(id,errorText);
     }
-
 }

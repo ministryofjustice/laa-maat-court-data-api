@@ -250,7 +250,7 @@ class FdcContributionsServiceTest {
     void testUpdateFdcContributionWhenRowsUpdated() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
-        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), anyString())).thenReturn(1);
+        when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenReturn(1);
 
         Integer result = fdcContributionsService.updateFdcContribution(request);
         assertEquals(1, result);
@@ -260,7 +260,7 @@ class FdcContributionsServiceTest {
     void testUpdateFdcContributionWhenNoRowsUpdated() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
-        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), anyString())).thenReturn(0);
+        when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenReturn(0);
         Integer  result = fdcContributionsService.updateFdcContribution(request);
         assertEquals(0, result);
     }
@@ -270,7 +270,7 @@ class FdcContributionsServiceTest {
 
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
-        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), anyString())).thenThrow(new RuntimeException("Database error"));
+        when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenThrow(new RuntimeException("Database error"));
 
         Exception exception = assertThrows(RuntimeException.class,
                 () -> fdcContributionsService.updateFdcContribution(request));
@@ -282,7 +282,7 @@ class FdcContributionsServiceTest {
         return UpdateFdcContributionRequest.builder()
                 .repId(1)
                 .newStatus(FdcContributionsStatus.SENT)
-                .previousStatus("REQUESTED")
+                .previousStatus(REQUESTED)
                 .build();
     }
 

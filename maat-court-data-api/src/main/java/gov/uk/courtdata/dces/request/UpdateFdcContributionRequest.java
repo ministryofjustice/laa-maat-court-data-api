@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class UpdateFdcContributionRequest {
     private Integer fdcContributionId;
     private Integer repId;
-    private String previousStatus;
+    private FdcContributionsStatus previousStatus;
     private FdcContributionsStatus newStatus;
 }

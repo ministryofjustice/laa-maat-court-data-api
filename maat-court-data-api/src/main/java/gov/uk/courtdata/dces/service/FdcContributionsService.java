@@ -212,15 +212,21 @@ public class FdcContributionsService {
         }
     }
 
+    @Transactional
     public Integer updateFdcContribution(UpdateFdcContributionRequest request) {
         try {
 
-            log.info("Update FdcContributionRequest {}", request);
-            return fdcContributionsRepository.updateStatus(request.getRepId(), request.getNewStatus().name(), request.getPreviousStatus());
+            if (request.getPreviousStatus() == null) {
+                log.info("Updating status to {} for all based on rep order id {}", request.getNewStatus(), request.getRepId());
+                return fdcContributionsRepository.updateStatusByRepId(request.getRepId(), request.getNewStatus());
+            } else {
+                log.info("Updating status to {} from {} for rep order id {}", request.getNewStatus(), request.getPreviousStatus(), request.getRepId());
+                return fdcContributionsRepository.updateStatus(request.getRepId(), request.getNewStatus(), request.getPreviousStatus());
+            }
 
         } catch (Exception exception) {
             log.error("Failed to update data for FdcContributionsEntity {}", exception.getMessage());
-            throw exception;
+            throw new MAATCourtDataException (exception.getMessage());
         }
     }
 

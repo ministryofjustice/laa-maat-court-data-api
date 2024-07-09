@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dces.service;
 
+import gov.uk.courtdata.dces.mapper.FdcContributionMapper;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
@@ -46,6 +47,8 @@ class FdcContributionsServiceTest {
 
     @Mock
     private ContributionFileMapper contributionFileMapper;
+    @Mock
+    private FdcContributionMapper fdcContributionMapper;
     @Mock
     private DebtCollectionRepository debtCollectionRepository;
     @Mock
@@ -247,7 +250,7 @@ class FdcContributionsServiceTest {
     void testUpdateFdcContributionWhenRowsUpdated() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
-        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), anyString())).thenReturn(1);
+        when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenReturn(1);
 
         Integer result = fdcContributionsService.updateFdcContribution(request);
         assertEquals(1, result);
@@ -257,7 +260,7 @@ class FdcContributionsServiceTest {
     void testUpdateFdcContributionWhenNoRowsUpdated() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
-        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), anyString())).thenReturn(0);
+        when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenReturn(0);
         Integer  result = fdcContributionsService.updateFdcContribution(request);
         assertEquals(0, result);
     }
@@ -267,7 +270,7 @@ class FdcContributionsServiceTest {
 
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
-        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), anyString())).thenThrow(new RuntimeException("Database error"));
+        when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenThrow(new RuntimeException("Database error"));
 
         Exception exception = assertThrows(RuntimeException.class,
                 () -> fdcContributionsService.updateFdcContribution(request));
@@ -279,7 +282,7 @@ class FdcContributionsServiceTest {
         return UpdateFdcContributionRequest.builder()
                 .repId(1)
                 .newStatus(FdcContributionsStatus.SENT)
-                .previousStatus("REQUESTED")
+                .previousStatus(REQUESTED)
                 .build();
     }
 
@@ -379,5 +382,35 @@ class FdcContributionsServiceTest {
         fdcFile.setDateCalculated(expectedDateCalculated);
         fdcFile.setRepOrderEntity(repOrderEntity);
         fdcContributionsEntityList.add(fdcFile);
+    }
+
+    @Test
+    void testGetFdcContribution() {
+        Integer fdcContributionId = 1;
+        FdcContributionsEntity expectedEntity = FdcContributionsEntity.builder().
+                id(fdcContributionId)
+                .status(REQUESTED)
+                .build();
+        FdcContributionEntry expectedEntry = FdcContributionEntry.builder().id(fdcContributionId).build();
+
+        when(fdcContributionsRepository.findById(fdcContributionId)).thenReturn(Optional.of(expectedEntity));
+        when(fdcContributionMapper.mapFdcContribution(expectedEntity)).thenReturn(expectedEntry);
+
+        FdcContributionEntry result = fdcContributionsService.getFdcContribution(fdcContributionId);
+
+        assertNotNull(result);
+        assertEquals(expectedEntry, result);
+    }
+
+    @Test
+    void testGetFdcContributionWhenIdDoesNotExist() {
+        Integer fdcContributionId = 1;
+
+        when(fdcContributionsRepository.findById(fdcContributionId)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(RequestedObjectNotFoundException.class,
+                () -> fdcContributionsService.getFdcContribution(fdcContributionId));
+
+        assertEquals("fdc_contribution could not be found by id", exception.getMessage());
     }
 }

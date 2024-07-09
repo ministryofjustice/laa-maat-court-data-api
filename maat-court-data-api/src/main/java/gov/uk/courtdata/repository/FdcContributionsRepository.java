@@ -20,8 +20,10 @@ public interface FdcContributionsRepository extends JpaRepository<FdcContributio
     String callGetFdcCalculationDelay();
 
     @Modifying
-    @Query("UPDATE FdcContributionsEntity f SET f.status = :newStatus WHERE f.repOrderEntity.id = :repId AND (f.status = :previousStatus OR :previousStatus IS NULL)")
-    Integer updateStatus(@Param("repId") Integer repId, @Param("newStatus") String newStatus, @Param("previousStatus") String previousStatus);
+    @Query("UPDATE FdcContributionsEntity f SET f.status = :newStatus WHERE f.repOrderEntity.id = :repId AND f.status = :previousStatus")
+    Integer updateStatus(@Param("repId") Integer repId, @Param("newStatus") FdcContributionsStatus newStatus, @Param("previousStatus") FdcContributionsStatus previousStatus);
 
-    List<FdcContributionsEntity> findByRepOrderEntityId(Integer repId);
+    @Modifying
+    @Query("UPDATE FdcContributionsEntity f SET f.status = :newStatus WHERE f.repOrderEntity.id = :repId")
+    Integer updateStatusByRepId(@Param("repId") Integer repId, @Param("newStatus") FdcContributionsStatus newStatus);
 }

@@ -28,18 +28,31 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 
 import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FdcContributionsServiceTest {
-
     private List<FdcContributionsEntity> fdcContributionsEntityList;
 
     @InjectMocks
@@ -112,7 +125,7 @@ class FdcContributionsServiceTest {
     }
 
     @Test
-    void testAtomicUpdateSuccess(){
+    void testAtomicUpdateSuccess() {
         // setup
         CreateFdcFileRequest request = createFdcFileRequest();
         ContributionFilesEntity mappedEntity = createContributionsFileEntity();
@@ -125,19 +138,19 @@ class FdcContributionsServiceTest {
         // run
         assertNotNull(fdcContributionsService.createContributionFileAndUpdateFdcStatus(request));
         // test
-        verify(fdcContributionsRepository,times(1)).findByIdIn(any());
-        verify(fdcContributionsRepository,times(1)).saveAll(any());
-        verify(fdcContributionsRepository,times(1)).findByIdIn(any());
+        verify(fdcContributionsRepository).findByIdIn(any());
+        verify(fdcContributionsRepository).saveAll(any());
+        verify(fdcContributionsRepository).findByIdIn(any());
     }
 
     @Test
-    void testNoAtomicUpdateRequest(){
-            ValidationException e = assertThrows(ValidationException.class,() -> fdcContributionsService.createContributionFileAndUpdateFdcStatus(null));
-            assertEquals("fdcRequest object is null", e.getMessage());
+    void testNoAtomicUpdateRequest() {
+        ValidationException e = assertThrows(ValidationException.class,() -> fdcContributionsService.createContributionFileAndUpdateFdcStatus(null));
+        assertEquals("fdcRequest object is null", e.getMessage());
     }
 
     @Test
-    void testNullAtomicUpdateNoIds(){
+    void testNullAtomicUpdateNoIds() {
         CreateFdcFileRequest request = createFdcFileRequest();
         request.setFdcIds(null);
         ValidationException e = assertThrows(ValidationException.class,() -> fdcContributionsService.createContributionFileAndUpdateFdcStatus(request));
@@ -145,7 +158,7 @@ class FdcContributionsServiceTest {
     }
 
     @Test
-    void testEmptyAtomicUpdateNoIds(){
+    void testEmptyAtomicUpdateNoIds() {
         CreateFdcFileRequest request = createFdcFileRequest();
         request.setFdcIds(Set.of());
         ValidationException e = assertThrows(ValidationException.class,() -> fdcContributionsService.createContributionFileAndUpdateFdcStatus(request));
@@ -153,7 +166,7 @@ class FdcContributionsServiceTest {
     }
 
     @Test
-    void testDrcUpdateSuccessNoErrorText(){
+    void testDrcUpdateSuccessNoErrorText() {
         int id = 123;
         int repId = 456;
         int fileId = 10000;
@@ -167,11 +180,11 @@ class FdcContributionsServiceTest {
         // verify
         verify(fdcContributionsRepository).findById(id);
         verify(debtCollectionService).updateContributionFileReceivedCount(fileId);
-        verify(contributionFileErrorsRepository, times(0)).save(any());
+        verify(contributionFileErrorsRepository, never()).save(any());
     }
 
     @Test
-    void testDrcUpdateSuccessHasErrorText(){
+    void testDrcUpdateSuccessHasErrorText() {
         int id = 123;
         int repId = 456;
         int fileId = 10000;
@@ -182,13 +195,12 @@ class FdcContributionsServiceTest {
 
         when(fdcContributionsRepository.findById(id)).thenReturn(Optional.of(fdcEntity));
 
-        when(debtCollectionService.saveError(fileErrorCaptor.capture())).thenReturn(true);
-        when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(true);
+        doNothing().when(debtCollectionService).saveError(fileErrorCaptor.capture());
         // do
         fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, errorText));
         // verify
         verify(fdcContributionsRepository).findById(id);
-        verify(debtCollectionService).updateContributionFileReceivedCount(fileId);
+        verify(debtCollectionService, never()).updateContributionFileReceivedCount(fileId);
         ContributionFileErrorsEntity errorEntity = fileErrorCaptor.getValue();
 
         assertEquals(errorText,errorEntity.getErrorText());
@@ -261,13 +273,13 @@ class FdcContributionsServiceTest {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
         when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenReturn(0);
-        Integer  result = fdcContributionsService.updateFdcContribution(request);
+
+        Integer result = fdcContributionsService.updateFdcContribution(request);
         assertEquals(0, result);
     }
 
     @Test
     void testUpdateFdcContributionWhenExceptionOccurs() {
-
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
         when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenThrow(new RuntimeException("Database error"));
@@ -288,7 +300,7 @@ class FdcContributionsServiceTest {
 
 
     @Test
-    void testDrcUpdateNoFdcFound(){
+    void testDrcUpdateNoFdcFound() {
         int id = 123;
         String errorText = "Error Text";
 
@@ -298,38 +310,37 @@ class FdcContributionsServiceTest {
                 fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, errorText)));
         // verify
         verify(fdcContributionsRepository).findById(id);
-        verify(contributionFilesRepository,times(0)).findById(any());
-        verify(contributionFilesRepository,times(0)).save(any());
-        verify(contributionFileErrorsRepository, times(0)).save(any());
+        verify(contributionFilesRepository, never()).findById(any());
+        verify(contributionFilesRepository, never()).save(any());
+        verify(contributionFileErrorsRepository, never()).save(any());
     }
 
     @Test
-    void testDrcUpdateNoFileFound(){
+    void testDrcUpdateNoFileFound() {
         int id = 123;
         int repId = 456;
         int fileId = 10000;
-        String errorText = "Error Text";
+
         FdcContributionsEntity fdcEntity = createFdcContributionsEntity(id, repId, fileId);
         when(fdcContributionsRepository.findById(id)).thenReturn(Optional.of(fdcEntity));
-        when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(false);
         // do
-        assertThrows(RequestedObjectNotFoundException.class, () ->
-                fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, errorText)));
+        assertThrows(NoSuchElementException.class, () ->
+                fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, "")));
         // verify
         verify(fdcContributionsRepository).findById(id);
-        verify(debtCollectionService,times(1)).updateContributionFileReceivedCount(any());
+        verify(debtCollectionService).updateContributionFileReceivedCount(any());
         // verify no error is saved, as file is not found.
-        verify(debtCollectionService,times(0)).saveError(any());
+        verify(debtCollectionService, never()).saveError(any());
     }
 
-    private LogFdcProcessedRequest createLogFdcProcessedRequest(int id, String errorText){
+    private LogFdcProcessedRequest createLogFdcProcessedRequest(int id, String errorText) {
         return LogFdcProcessedRequest.builder()
                 .fdcId(id)
                 .errorText(errorText)
                 .build();
     }
 
-    private static FdcContributionsEntity createFdcContributionsEntity(int id, int repId, int fileId){
+    private static FdcContributionsEntity createFdcContributionsEntity(int id, int repId, int fileId) {
         RepOrderEntity repOrderEntity = RepOrderEntity.builder()
                 .id(repId)
                 .build();
@@ -341,8 +352,7 @@ class FdcContributionsServiceTest {
                 .build();
     }
 
-
-    private CreateFdcFileRequest createFdcFileRequest(){
+    private CreateFdcFileRequest createFdcFileRequest() {
         return CreateFdcFileRequest.builder()
                 .xmlFileName("filename.xml")
                 .xmlContent("<xml></xml>")

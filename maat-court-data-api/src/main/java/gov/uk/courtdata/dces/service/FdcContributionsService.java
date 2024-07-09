@@ -29,6 +29,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -57,35 +59,33 @@ public class FdcContributionsService {
                     .dateCalculated(entity.getDateCalculated())
                     .lgfsCost(entity.getLgfsCost())
                     .agfsCost(entity.getAgfsCost())
-                    .sentenceOrderDate(Objects.nonNull(entity.getRepOrderEntity())?entity.getRepOrderEntity().getSentenceOrderDate():null)
+                    .sentenceOrderDate(Objects.nonNull(entity.getRepOrderEntity()) ? entity.getRepOrderEntity().getSentenceOrderDate() : null)
                     .build();
 
     public FdcContributionsResponse getFdcContributionFiles(FdcContributionsStatus status) {
         log.info("Getting fdc contribution file with status with the -> {}", status);
         final List<FdcContributionsEntity> fdcFileList = fdcContributionsRepository.findByStatus(status);
-
         List<FdcContributionEntry> fdcContributionEntries = fdcFileList.stream()
                 .map(BUILD_FDC_ENTRY)
                 .toList();
         return FdcContributionsResponse.builder().fdcContributions(fdcContributionEntries).build();
     }
 
-    public FdcContributionsGlobalUpdateResponse fdcContributionGlobalUpdate(){
+    public FdcContributionsGlobalUpdateResponse fdcContributionGlobalUpdate() {
         log.info("Running global update process for Final Defence Cost contributions.");
         int numberOfUpdates;
         boolean updateSuccessful;
-        try{
+        try {
             numberOfUpdates = executeGlobalUpdate();
-            updateSuccessful=true;
-        } catch(Exception e){
+            updateSuccessful = true;
+        } catch (Exception e) {
             log.error("FDC Global update failed with: {}", e.getMessage(), e);
             throw e;
         }
         return FdcContributionsGlobalUpdateResponse.builder().numberOfUpdates(numberOfUpdates).successful(updateSuccessful).build();
     }
 
-
-    private int executeGlobalUpdate(){
+    private int executeGlobalUpdate() {
         log.info("executeGlobalUpdate entered");
         String delay = fdcContributionsRepository.callGetFdcCalculationDelay();
         int update1Result = debtCollectionRepository.globalUpdatePart1(delay);
@@ -99,8 +99,7 @@ public class FdcContributionsService {
 
     @Transactional(rollbackFor = MAATCourtDataException.class)
     @NotNull
-    public Integer createContributionFileAndUpdateFdcStatus(CreateFdcFileRequest fdcRequest){
-
+    public Integer createContributionFileAndUpdateFdcStatus(CreateFdcFileRequest fdcRequest) {
         ValidationUtils.isNull(fdcRequest,"fdcRequest object is null");
         ValidationUtils.isEmptyOrHasNullElement(fdcRequest.getFdcIds(),"FdcIds is empty/null.");
         log.info("Request Validated");
@@ -115,13 +114,14 @@ public class FdcContributionsService {
         return contributionFilesEntity.getFileId();
     }
 
-    private boolean updateStatusForFdc(Set<Integer> fdcIds, ContributionFilesEntity contributionFilesEntity){
+    private boolean updateStatusForFdc(Set<Integer> fdcIds, ContributionFilesEntity contributionFilesEntity) {
         List<FdcContributionsEntity> fdcEntities = fdcContributionsRepository.findByIdIn(fdcIds);
-        if(!fdcEntities.isEmpty()) {
+        if (!fdcEntities.isEmpty()) {
             fdcEntities.forEach(fdc -> {
                 fdc.setStatus(SENT);
                 fdc.setContFileId(contributionFilesEntity.getFileId());
                 fdc.setUserModified("DCES");
+                fdc.setDateModified(LocalDate.now());
             });
             log.info("Saving {} Fdc Contributions", Optional.of(fdcEntities.size()));
             fdcContributionsRepository.saveAll(fdcEntities);
@@ -130,7 +130,7 @@ public class FdcContributionsService {
         return false;
     }
 
-    private ContributionFilesEntity createFdcFile(CreateFdcFileRequest fdcFileRequest){
+    private ContributionFilesEntity createFdcFile(CreateFdcFileRequest fdcFileRequest) {
         log.info("Updating the fdc file ref  -> {}", fdcFileRequest);
         ContributionFileUtil.assessFilename(fdcFileRequest);
         ContributionFilesEntity contributionFileEntity = contributionFileMapper.toContributionFileEntity(fdcFileRequest);
@@ -141,27 +141,25 @@ public class FdcContributionsService {
     @Transactional(rollbackFor =  MAATCourtDataException.class)
     @NotNull
     public Integer logFdcProcessed(LogFdcProcessedRequest request) {
-        FdcContributionsEntity fdcEntity = fdcContributionsRepository.findById(Integer.valueOf(request.getFdcId()))
-                .orElseThrow(() -> new RequestedObjectNotFoundException("fdc_contribution could not be found by id"));
-        log.info("Contribution found: {}", fdcEntity.getId());
-        if (!debtCollectionService.updateContributionFileReceivedCount(fdcEntity.getContFileId())) {
-            throw new RequestedObjectNotFoundException("Contribution file could not be updated");
-        }
-        if(!StringUtils.isEmpty(request.getErrorText()) ){
+        FdcContributionsEntity fdcEntity = fdcContributionsRepository.findById(request.getFdcId())
+                .orElseThrow(() -> new RequestedObjectNotFoundException("log fdc_contribution ID " + request.getFdcId() + ": not found"));
+        log.info("log fdc_contribution ID {}: found OK", fdcEntity.getId());
+        if (!StringUtils.isEmpty(request.getErrorText())) {
             saveErrorMessage(request, fdcEntity);
+        } else if (!debtCollectionService.updateContributionFileReceivedCount(fdcEntity.getContFileId())) {
+            throw new NoSuchElementException("log contribution_file ID " + fdcEntity.getContFileId()
+                    + " (associated with fdc_contribution ID " + request.getFdcId() + "): not found");
         }
         return fdcEntity.getContFileId();
     }
 
-    private boolean saveErrorMessage(LogFdcProcessedRequest request, FdcContributionsEntity fdcEntity){
-        return debtCollectionService.saveError(ContributionFileUtil.buildContributionFileError(request, fdcEntity));
+    private void saveErrorMessage(LogFdcProcessedRequest request, FdcContributionsEntity fdcEntity) {
+        debtCollectionService.saveError(ContributionFileUtil.buildContributionFileError(request, fdcEntity));
     }
 
     public FdcItemsEntity createFdcItems(CreateFdcItemRequest fdcRequest) {
-
         try {
             log.info("Create createFdcItems {}", fdcRequest);
-
             FdcItemsEntity fdcItemsEntity = FdcItemsEntity.builder()
                 .fdcId(fdcRequest.getFdcId())
                 .latestCostInd(fdcRequest.getLatestCostInd())
@@ -171,17 +169,14 @@ public class FdcContributionsService {
                 .paidAsClaimed(fdcRequest.getPaidAsClaimed())
                 .dateCreated(fdcRequest.getDateCreated().toLocalDate())
                 .build();
-
             return fdcItemsRepository.save(fdcItemsEntity);
-
-        } catch(Exception e){
+        } catch (Exception e) {
             log.error("Failed to persist data for FdcItemsEntity {}", e.getMessage());
             throw e;
         }
     }
 
     public long deleteFdcItems(Integer fdcId) {
-
         log.info("Delete FdcItemsEntity with fdcId {}", fdcId);
         try {
             return fdcItemsRepository.deleteByFdcId(fdcId);
@@ -204,7 +199,6 @@ public class FdcContributionsService {
                     .accelerate(request.getManualAcceleration())
                     .status(request.getStatus())
                     .build();
-
             return fdcContributionsRepository.save(fdcContributionsEntity);
         } catch (Exception exception) {
             log.error("Failed to persist data for FdcContributionsEntity {}", exception.getMessage());
@@ -215,7 +209,6 @@ public class FdcContributionsService {
     @Transactional
     public Integer updateFdcContribution(UpdateFdcContributionRequest request) {
         try {
-
             if (request.getPreviousStatus() == null) {
                 log.info("Updating status to {} for all based on rep order id {}", request.getNewStatus(), request.getRepId());
                 return fdcContributionsRepository.updateStatusByRepId(request.getRepId(), request.getNewStatus());
@@ -223,14 +216,13 @@ public class FdcContributionsService {
                 log.info("Updating status to {} from {} for rep order id {}", request.getNewStatus(), request.getPreviousStatus(), request.getRepId());
                 return fdcContributionsRepository.updateStatus(request.getRepId(), request.getNewStatus(), request.getPreviousStatus());
             }
-
         } catch (Exception exception) {
             log.error("Failed to update data for FdcContributionsEntity {}", exception.getMessage());
             throw new MAATCourtDataException (exception.getMessage());
         }
     }
 
-    public FdcContributionEntry getFdcContribution(Integer fdcContributionId){
+    public FdcContributionEntry getFdcContribution(Integer fdcContributionId) {
         FdcContributionsEntity fdcEntity = fdcContributionsRepository.findById(fdcContributionId)
                 .orElseThrow(() -> new RequestedObjectNotFoundException("fdc_contribution could not be found by id"));
         log.info("FDC Contribution found: {}", fdcEntity.getId());

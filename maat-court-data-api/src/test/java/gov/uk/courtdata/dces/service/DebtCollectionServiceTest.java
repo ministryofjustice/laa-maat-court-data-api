@@ -159,7 +159,7 @@ class DebtCollectionServiceTest {
         assertThatThrownBy(() -> debtCollectionService
                 .updateContributionFileReceivedCount(fileId))
                 .isInstanceOf(MAATCourtDataException.class)
-                .hasMessageContaining("No file was found for the fdc.");
+                .hasMessageContaining("not found");
     }
 
     private ContributionFilesEntity getContributionFilesEntity(int id) {

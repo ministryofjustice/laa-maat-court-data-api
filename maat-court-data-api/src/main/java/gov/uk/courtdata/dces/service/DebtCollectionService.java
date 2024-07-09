@@ -19,7 +19,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class DebtCollectionService {
-
     private final DebtCollectionRepository debtCollectionRepository;
     private final ContributionFileErrorsRepository contributionFileErrorsRepository;
     private final ContributionFilesRepository contributionFilesRepository;
@@ -35,40 +34,36 @@ public class DebtCollectionService {
     }
 
     String convertToCorrectDateFormat(LocalDate localDate) {
-
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         log.info("Printing before date " + localDate.toString());
         log.info("Printing after date " + localDate.format(dateTimeFormatter));
         return localDate.format(dateTimeFormatter);
     }
 
-    public boolean saveError(ContributionFileErrorsEntity entity){
+    public void saveError(ContributionFileErrorsEntity entity) {
         contributionFileErrorsRepository.save(entity);
-        return true;
     }
 
-
-    public boolean updateContributionFileReceivedCount(Integer fileId){
-        if(Objects.isNull(fileId)){
+    public boolean updateContributionFileReceivedCount(Integer fileId) {
+        if (Objects.isNull(fileId)) {
             log.info("No associated file was found for contribution");
             return false;
         }
         ContributionFilesEntity filesEntity = getContributionFile(fileId);
-        if ( Objects.nonNull(filesEntity)){
+        if (Objects.nonNull(filesEntity)) {
             filesEntity.incrementReceivedCount();
             filesEntity.setDateReceived(LocalDate.now());
             debtCollectionRepository.updateContributionFilesEntity(filesEntity);
-            log.info("Update of file id : {} successful", fileId);
+            log.info("update contribution_file ID {}: completed successfully", fileId);
             return true;
-        }
-        else {
-            throw new MAATCourtDataException("No file was found for the fdc.");
+        } else {
+            throw new MAATCourtDataException("update contribution_file ID " + fileId + ": not found");
         }
     }
 
-    private ContributionFilesEntity getContributionFile(int fileId){
+    private ContributionFilesEntity getContributionFile(int fileId) {
         Optional<ContributionFilesEntity> optionalEntity = contributionFilesRepository.findById(fileId);
-        if(optionalEntity.isPresent()){
+        if (optionalEntity.isPresent()) {
             return optionalEntity.get().toBuilder().build();
             // Saving should be done via the JDBCTemplate, not JPA.
             // So in order to avoid JPA @Transaction saving, in addition to the JDBCTemplate,
@@ -76,6 +71,4 @@ public class DebtCollectionService {
         }
         return null;
     }
-
-
 }

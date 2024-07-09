@@ -54,10 +54,10 @@ public class DebtCollectionService {
             filesEntity.incrementReceivedCount();
             filesEntity.setDateReceived(LocalDate.now());
             debtCollectionRepository.updateContributionFilesEntity(filesEntity);
-            log.info("Update of file id : {} successful", fileId);
+            log.info("update contribution_file ID {}: completed successfully", fileId);
             return true;
         } else {
-            throw new MAATCourtDataException("No file was found for the fdc.");
+            throw new MAATCourtDataException("update contribution_file ID " + fileId + ": not found");
         }
     }
 

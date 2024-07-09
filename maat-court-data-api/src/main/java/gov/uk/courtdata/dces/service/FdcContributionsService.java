@@ -142,12 +142,13 @@ public class FdcContributionsService {
     @NotNull
     public Integer logFdcProcessed(LogFdcProcessedRequest request) {
         FdcContributionsEntity fdcEntity = fdcContributionsRepository.findById(request.getFdcId())
-                .orElseThrow(() -> new RequestedObjectNotFoundException("fdc_contribution could not be found by id"));
-        log.info("Contribution found: {}", fdcEntity.getId());
+                .orElseThrow(() -> new RequestedObjectNotFoundException("log fdc_contribution ID " + request.getFdcId() + ": not found"));
+        log.info("log fdc_contribution ID {}: found OK", fdcEntity.getId());
         if (!StringUtils.isEmpty(request.getErrorText())) {
             saveErrorMessage(request, fdcEntity);
         } else if (!debtCollectionService.updateContributionFileReceivedCount(fdcEntity.getContFileId())) {
-            throw new NoSuchElementException("No associated contribution_file found for fdc_contribution");
+            throw new NoSuchElementException("log contribution_file ID " + fdcEntity.getContFileId()
+                    + " (associated with fdc_contribution ID " + request.getFdcId() + "): not found");
         }
         return fdcEntity.getContFileId();
     }

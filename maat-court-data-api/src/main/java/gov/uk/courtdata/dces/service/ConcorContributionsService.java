@@ -79,12 +79,13 @@ public class ConcorContributionsService {
     @NotNull
     public Integer logContributionProcessed(LogContributionProcessedRequest request) {
         ConcorContributionsEntity concorEntity = concorRepository.findById(request.getConcorId())
-                .orElseThrow(() -> new RequestedObjectNotFoundException("concor_contribution could not be found by id"));
-        log.info("Contribution found: {}", concorEntity.getId());
+                .orElseThrow(() -> new RequestedObjectNotFoundException("log concor_contribution ID " + request.getConcorId() + ": not found"));
+        log.info("log concor_contribution ID {}: found OK", concorEntity.getId());
         if (!StringUtils.isEmpty(request.getErrorText())) {
             saveErrorMessage(request, concorEntity);
         } else if (!debtCollectionService.updateContributionFileReceivedCount(concorEntity.getContribFileId())) {
-            throw new NoSuchElementException("No associated contribution_file found for concur_contribution");
+            throw new NoSuchElementException("log contribution_file ID " + concorEntity.getContribFileId()
+                    + " (associated with concur_contribution ID " + request.getConcorId() + "): not found");
         }
         return concorEntity.getContribFileId();
     }

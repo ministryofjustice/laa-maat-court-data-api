@@ -15,7 +15,7 @@ public class StoredProcedureService {
     private final StoredProcedureRepository repository;
 
     public ApplicationDTO executeStoredProcedure(StoredProcedureRequest callStoredProcedure) {
-        log.info("Calling execute Store Procedure- Start");
+        log.info("Calling execute Store Procedure- Start : " + callStoredProcedure.getDbPackageName() + "." + callStoredProcedure.getProcedureName());
         ApplicationDTO result;
         try {
             result = repository.executeStoredProcedure(callStoredProcedure);

@@ -45,7 +45,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -116,8 +115,8 @@ class FdcContributionsServiceTest {
         int expected1 = 2;
         int expected2 = 5;
 
-        when(debtCollectionRepository.globalUpdatePart1("5")).thenReturn(expected1);
-        when(debtCollectionRepository.globalUpdatePart2("5")).thenReturn(expected2);
+        when(debtCollectionRepository.eligibleForFdcDelayedPickup("5")).thenReturn(expected1);
+        when(debtCollectionRepository.eligibleForFdcFastTracking("5")).thenReturn(expected2);
         when(fdcContributionsRepository.callGetFdcCalculationDelay()).thenReturn("5");
         FdcContributionsGlobalUpdateResponse response = fdcContributionsService.fdcContributionGlobalUpdate();
         assertNotNull(response);

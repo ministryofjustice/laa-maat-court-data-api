@@ -114,8 +114,8 @@ public class DebtCollectionRepository {
     }
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
-    public int globalUpdatePart1(String delay) {
-        log.info("globalUpdatePart1 entered");
+    public int eligibleForFdcDelayedPickup(String delay) {
+        log.info("eligibleForFdcDelayedPickup entered");
         String query = """
                 MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC 
                  USING  
@@ -178,8 +178,8 @@ public class DebtCollectionRepository {
     }
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
-    public int globalUpdatePart2(String delay) {
-        log.info("globalUpdatePart2 entered");
+    public int eligibleForFdcFastTracking(String delay) {
+        log.info("eligibleForFdcFastTracking entered");
         String query = """
                 MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC 
                 USING  

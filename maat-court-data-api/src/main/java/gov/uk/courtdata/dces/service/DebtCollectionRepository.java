@@ -114,7 +114,7 @@ public class DebtCollectionRepository {
     }
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
-    public int eligibleForFdcDelayedPickup(String delay) {
+    public int setEligibleForFdcDelayedPickup(String delay) {
         log.info("eligibleForFdcDelayedPickup entered");
         String query = """
                 MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC 
@@ -178,7 +178,7 @@ public class DebtCollectionRepository {
     }
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
-    public int eligibleForFdcFastTracking(String delay) {
+    public int setEligibleForFdcFastTracking(String delay) {
         log.info("eligibleForFdcFastTracking entered");
         String query = """
                 MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC 

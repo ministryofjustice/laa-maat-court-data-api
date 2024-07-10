@@ -36,7 +36,7 @@ class DebtCollectionRepositoryTest {
     void verifyEligibleForFdcDelayedPickupStatement_IsExpected() {
         when(jdbcTemplate.update(mergeSQLCaptor.capture(),anyString()))
                 .thenReturn(1);
-        debtCollectionRepository.eligibleForFdcDelayedPickup("?");
+        debtCollectionRepository.setEligibleForFdcDelayedPickup("?");
 
         assertNotNull(mergeSQLCaptor);
         Assertions.assertArrayEquals(fdcDelayedPickupStatementHash, getCaptorHash(), "A change has been detected in the debtCollectionRepository.globalUpdatePart1() please verify changes are correct. And update this test.");
@@ -46,7 +46,7 @@ class DebtCollectionRepositoryTest {
     void verifyMergeStatement2_IsExpected() {
         when(jdbcTemplate.update(mergeSQLCaptor.capture(),anyString()))
                 .thenReturn(1);
-        debtCollectionRepository.eligibleForFdcFastTracking("?");
+        debtCollectionRepository.setEligibleForFdcFastTracking("?");
 
 
         assertNotNull(mergeSQLCaptor);

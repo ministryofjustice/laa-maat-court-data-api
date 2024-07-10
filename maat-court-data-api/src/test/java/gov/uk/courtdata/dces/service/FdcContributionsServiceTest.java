@@ -115,8 +115,8 @@ class FdcContributionsServiceTest {
         int expected1 = 2;
         int expected2 = 5;
 
-        when(debtCollectionRepository.eligibleForFdcDelayedPickup("5")).thenReturn(expected1);
-        when(debtCollectionRepository.eligibleForFdcFastTracking("5")).thenReturn(expected2);
+        when(debtCollectionRepository.setEligibleForFdcDelayedPickup("5")).thenReturn(expected1);
+        when(debtCollectionRepository.setEligibleForFdcFastTracking("5")).thenReturn(expected2);
         when(fdcContributionsRepository.callGetFdcCalculationDelay()).thenReturn("5");
         FdcContributionsGlobalUpdateResponse response = fdcContributionsService.fdcContributionGlobalUpdate();
         assertNotNull(response);

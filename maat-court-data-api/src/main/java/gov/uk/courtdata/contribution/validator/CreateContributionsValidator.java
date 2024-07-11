@@ -17,7 +17,7 @@ public class CreateContributionsValidator extends ContributionsValidator impleme
     @Override
     public Optional<Void> validate(CreateContributions createContributions) {
         maatIdValidator.validate(createContributions.getRepId());
-        validateTransferStatus(createContributions.getTransferStatus());
+        //validateTransferStatus(createContributions.getTransferStatus());
         return Optional.empty();
     }
 }

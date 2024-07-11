@@ -1,18 +1,16 @@
 package gov.uk.courtdata.dces.service;
 
-import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
-
 import gov.uk.courtdata.dces.mapper.ConcorContributionMapper;
+import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.dces.response.ConcorContributionResponseDTO;
 import gov.uk.courtdata.dces.util.ContributionFileUtil;
-import gov.uk.courtdata.enums.ConcorContributionStatus;
-import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
+import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.ConcorContributionsRepository;
@@ -25,16 +23,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
+import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ConcorContributionsService {
-
     private final ConcorContributionsRepository concorRepository;
     private final ContributionFileMapper contributionFileMapper;
     private final DebtCollectionRepository debtCollectionRepository;
@@ -43,10 +43,8 @@ public class ConcorContributionsService {
 
     /** Resets a number of concor_contribution rows to status = ACTIVE | REPLACED, contrib_file_id = (null). */
     @Transactional
-    public List<Integer> updateConcorContributionStatusAndResetContribFile(UpdateConcorContributionStatusRequest request){
-
+    public List<Integer> updateConcorContributionStatusAndResetContribFile(UpdateConcorContributionStatusRequest request) {
         List<Integer> idsToUpdate = concorRepository.findIdsForUpdate(Pageable.ofSize(request.getRecordCount()));
-
         if (!idsToUpdate.isEmpty()) {
             concorRepository.updateStatusAndResetContribFileForIds(request.getStatus(), idsToUpdate);
         }
@@ -56,8 +54,7 @@ public class ConcorContributionsService {
     public List<ConcorContributionResponse> getConcorContributionFiles(ConcorContributionStatus status) {
         log.info("Getting concor contribution file with status with the -> {}", status);
         final List<ConcorContributionsEntity> concorFileList = concorRepository.findByStatus(status);
-
-        return concorFileList.stream().map( cc -> ConcorContributionResponse.builder()
+        return concorFileList.stream().map(cc -> ConcorContributionResponse.builder()
                         .concorContributionId(cc.getId())
                         .xmlContent(cc.getCurrentXml())
                         .build()).toList();
@@ -66,10 +63,8 @@ public class ConcorContributionsService {
     @Transactional(rollbackFor = MAATCourtDataException.class)
     @NotNull
     public Integer createContributionAndUpdateConcorStatus(CreateContributionFileRequest contributionRequest){
-
         ValidationUtils.isNull(contributionRequest,"contributionRequest object is null");
         ValidationUtils.isEmptyOrHasNullElement(contributionRequest.getConcorContributionIds(),"ContributionIds are empty/null.");
-
         final ContributionFilesEntity contributionFilesEntity = createContributionFile(contributionRequest);
         if (!updateConcorContributionStatusAndSetContribFile(contributionRequest.getConcorContributionIds(), SENT, contributionFilesEntity.getFileId())) {
             throw new NoSuchElementException("No concor_contribution status values were updated"); // did not rollback previously
@@ -82,24 +77,21 @@ public class ConcorContributionsService {
 
     @Transactional(rollbackFor =  MAATCourtDataException.class)
     @NotNull
-    public Integer logContributionProcessed(LogContributionProcessedRequest request){
+    public Integer logContributionProcessed(LogContributionProcessedRequest request) {
         ConcorContributionsEntity concorEntity = concorRepository.findById(request.getConcorId())
-                .orElseThrow(() -> new RequestedObjectNotFoundException("concor_contribution could not be found by id"));
-        log.info("Contribution found: {}", concorEntity.getId());
-        if (!debtCollectionService.updateContributionFileReceivedCount(concorEntity.getContribFileId())) {
-            throw new NoSuchElementException("No associated contribution_file found for concur_contribution");
-        }
-        if(!StringUtils.isEmpty(request.getErrorText()) ){
+                .orElseThrow(() -> new RequestedObjectNotFoundException("log concor_contribution ID " + request.getConcorId() + ": not found"));
+        log.info("log concor_contribution ID {}: found OK", concorEntity.getId());
+        if (!StringUtils.isEmpty(request.getErrorText())) {
             saveErrorMessage(request, concorEntity);
+        } else if (!debtCollectionService.updateContributionFileReceivedCount(concorEntity.getContribFileId())) {
+            throw new NoSuchElementException("log contribution_file ID " + concorEntity.getContribFileId()
+                    + " (associated with concur_contribution ID " + request.getConcorId() + "): not found");
         }
-
         return concorEntity.getContribFileId();
     }
 
-    public ConcorContributionResponseDTO getConcorContribution(Integer concorContributionId){
-
+    public ConcorContributionResponseDTO getConcorContribution(Integer concorContributionId) {
         Optional<ConcorContributionsEntity> concorContributionEntity = concorRepository.findById(concorContributionId);
-
         if (concorContributionEntity.isPresent()) {
             log.info("Concor Contribution found: {}", concorContributionEntity.get().getId());
             return concorContributionMapper.toConcorContributionResponseDTO(concorContributionEntity.get());
@@ -109,19 +101,17 @@ public class ConcorContributionsService {
         return null;
     }
 
-    private boolean saveErrorMessage(LogContributionProcessedRequest request, ConcorContributionsEntity concorEntity){
-        return debtCollectionService.saveError(ContributionFileUtil.buildContributionFileError(request, concorEntity));
+    private void saveErrorMessage(LogContributionProcessedRequest request, ConcorContributionsEntity concorEntity) {
+        debtCollectionService.saveError(ContributionFileUtil.buildContributionFileError(request, concorEntity));
     }
 
     private ContributionFilesEntity createContributionFile(CreateContributionFileRequest contributionRequest) {
-
         final ContributionFilesEntity contributionFileEntity;
         try {
             log.info("Updating the concor contribution file ref  -> {}", contributionRequest);
             ContributionFileUtil.assessFilename(contributionRequest);
             contributionFileEntity = contributionFileMapper.toContributionFileEntity(contributionRequest);
             debtCollectionRepository.saveContributionFilesEntity(contributionFileEntity);
-
         } catch (Exception e) {
             throw new MAATCourtDataException("Failed to map ConcorContributionRequest to ContributionFilesEntity and persist: [%s]".formatted(e.getMessage()));
         }
@@ -129,17 +119,15 @@ public class ConcorContributionsService {
     }
 
     /** Sets specific concor_contribution rows to status = SENT, contrib_file_id = (non-null). */
-    private boolean updateConcorContributionStatusAndSetContribFile(Set<Integer> ids, ConcorContributionStatus status, final Integer contributionFileId ){
-
+    private boolean updateConcorContributionStatusAndSetContribFile(Set<Integer> ids, ConcorContributionStatus status, final Integer contributionFileId) {
         final List<ConcorContributionsEntity> concorFileList = concorRepository.findByIdIn(ids);
-
         log.info("Concor Contributions for status update - count {}", concorFileList.size());
         concorFileList.forEach(cc -> {
             cc.setUserModified("DCES");
+            cc.setDateModified(LocalDate.now());
             cc.setStatus(status);
             cc.setContribFileId(contributionFileId);
         });
-
         if (!concorFileList.isEmpty()) {
             concorRepository.saveAll(concorFileList);
             log.info("Updated all concor contribution file for contributionFileId {} and count {}",

@@ -1,21 +1,16 @@
 package gov.uk.courtdata.dces.service;
 
-import static gov.uk.courtdata.enums.ConcorContributionStatus.ACTIVE;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
 import gov.uk.courtdata.dces.mapper.ConcorContributionMapper;
+import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
 import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.dces.response.ConcorContributionResponseDTO;
-import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
-import gov.uk.courtdata.enums.ConcorContributionStatus;
-import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
+import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
+import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.ConcorContributionsRepository;
@@ -32,13 +27,30 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+
+import static gov.uk.courtdata.enums.ConcorContributionStatus.ACTIVE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ConcorContributionsServiceTest {
-
     private List<ConcorContributionsEntity> concorContributionFiles;
 
     @InjectMocks
@@ -65,7 +77,6 @@ class ConcorContributionsServiceTest {
     @Mock
     private ConcorContributionMapper concorContributionMapper;
 
-
     @Captor
     private ArgumentCaptor<ContributionFilesEntity> contributionFilesEntityArgumentCaptor;
     @Captor
@@ -75,7 +86,6 @@ class ConcorContributionsServiceTest {
     @Captor
     private ArgumentCaptor<ContributionFileErrorsEntity> fileErrorCaptor;
 
-
     @BeforeEach
     void setUp() {
         String xmlDoc = getXmlDocContent();
@@ -84,7 +94,6 @@ class ConcorContributionsServiceTest {
 
     @Test
     void testGetContributionFilesWhenConcorFileStatusIsActive() {
-
         when(concorRepository.findByStatus(statusCaptor.capture())).thenReturn(concorContributionFiles);
 
         List<ConcorContributionResponse> xmlContents = concorService.getConcorContributionFiles(ACTIVE);
@@ -106,7 +115,6 @@ class ConcorContributionsServiceTest {
 
     @Test
     void testCreateContributionFileAndUpdateConcorContributionStatus() {
-
         final CreateContributionFileRequest createContributionFileRequest
                 = CreateContributionFileRequest.builder()
                 .concorContributionIds(Set.of(1))
@@ -153,7 +161,6 @@ class ConcorContributionsServiceTest {
 
     @Test
     void createContributionAndUpdateConcorStatusWhenCallFailed() {
-
         final CreateContributionFileRequest mockDto = mock(CreateContributionFileRequest.class);
 
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
@@ -166,7 +173,7 @@ class ConcorContributionsServiceTest {
     }
 
     @Test
-    void testDrcUpdateSuccessNoErrorText(){
+    void testDrcUpdateSuccessNoErrorText() {
         int id = 123;
         int repId = 456;
         int fileId = 10000;
@@ -180,11 +187,11 @@ class ConcorContributionsServiceTest {
         // verify
         verify(concorRepository).findById(id);
         verify(debtCollectionService).updateContributionFileReceivedCount(fileId);
-        verify(contributionFileErrorsRepository, times(0)).save(any());
+        verify(contributionFileErrorsRepository, never()).save(any());
     }
 
     @Test
-    void testDrcUpdateSuccessHasErrorText(){
+    void testDrcUpdateSuccessHasErrorText() {
         int id = 123;
         int repId = 456;
         int fileId = 10000;
@@ -195,13 +202,12 @@ class ConcorContributionsServiceTest {
 
         when(concorRepository.findById(id)).thenReturn(Optional.of(concorEntity));
 
-        when(debtCollectionService.saveError(fileErrorCaptor.capture())).thenReturn(true);
-        when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(true);
+        doNothing().when(debtCollectionService).saveError(fileErrorCaptor.capture());
         // do
         concorService.logContributionProcessed(createLogContributionProcessedRequest(id, errorText));
         // verify
         verify(concorRepository).findById(id);
-        verify(debtCollectionService).updateContributionFileReceivedCount(fileId);
+        verify(debtCollectionService, never()).updateContributionFileReceivedCount(fileId);
         ContributionFileErrorsEntity errorEntity = fileErrorCaptor.getValue();
 
         assertEquals(errorText,errorEntity.getErrorText());
@@ -215,9 +221,8 @@ class ConcorContributionsServiceTest {
         assertEquals(currDate.getYear(), errorEntity.getDateCreated().getYear());
     }
 
-
     @Test
-    void testDrcUpdateNoConcorFound(){
+    void testDrcUpdateNoConcorFound() {
         int id = 123;
         String errorText = "Error Text";
 
@@ -227,34 +232,33 @@ class ConcorContributionsServiceTest {
             concorService.logContributionProcessed(createLogContributionProcessedRequest(id, errorText)));
         // verify
         verify(concorRepository).findById(id);
-        verify(contributionFileRepository,times(0)).findById(any());
-        verify(contributionFileRepository,times(0)).save(any());
-        verify(contributionFileErrorsRepository, times(0)).save(any());
+        verify(contributionFileRepository, never()).findById(any());
+        verify(contributionFileRepository, never()).save(any());
+        verify(contributionFileErrorsRepository, never()).save(any());
     }
 
     @Test
-    void testDrcUpdateNoFileFound(){
+    void testDrcUpdateNoFileFound() {
         int id = 123;
         int repId = 456;
         int fileId = 10000;
-        String errorText = "Error Text";
+
         ConcorContributionsEntity concorEntity = createConcorContributionEntity(id, repId, fileId);
         when(concorRepository.findById(id)).thenReturn(Optional.of(concorEntity));
         when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(false);
         // do
         assertThrows(NoSuchElementException.class, () ->
-                concorService.logContributionProcessed(createLogContributionProcessedRequest(id, errorText)));
+                concorService.logContributionProcessed(createLogContributionProcessedRequest(id, "")));
         // verify
         verify(concorRepository).findById(id);
-        verify(debtCollectionService,times(1)).updateContributionFileReceivedCount(any());
+        verify(debtCollectionService).updateContributionFileReceivedCount(any());
         // verify no error is saved, as file is not found.
-        verify(debtCollectionService,times(0)).saveError(any());
+        verify(debtCollectionService, never()).saveError(any());
     }
 
     @Test
-    void testUpdateConcorContributionsStatus(){
-
-        when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of(1111,2222));
+    void testUpdateConcorContributionsStatus() {
+        when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of(1111, 2222));
         when(concorRepository.updateStatusAndResetContribFileForIds(any(), any())).thenReturn(2);
 
         List<Integer> response = concorService.updateConcorContributionStatusAndResetContribFile(UpdateConcorContributionStatusRequest.builder().recordCount(2)
@@ -266,8 +270,7 @@ class ConcorContributionsServiceTest {
     }
 
     @Test
-    void testUpdateConcorContributionsStatusWhenNotFound(){
-
+    void testUpdateConcorContributionsStatusWhenNotFound() {
         when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of());
 
         List<Integer> response = concorService.updateConcorContributionStatusAndResetContribFile(UpdateConcorContributionStatusRequest.builder().recordCount(1)
@@ -306,7 +309,7 @@ class ConcorContributionsServiceTest {
         assertNull(actualResponse);
     }
 
-    private LogContributionProcessedRequest createLogContributionProcessedRequest(int id, String errorText){
+    private LogContributionProcessedRequest createLogContributionProcessedRequest(int id, String errorText) {
         return LogContributionProcessedRequest.builder()
                 .concorId(id)
                 .errorText(errorText)
@@ -330,7 +333,7 @@ class ConcorContributionsServiceTest {
         );
     }
 
-    private static ConcorContributionsEntity createConcorContributionEntity(int id, int repId, int fileId){
+    private static ConcorContributionsEntity createConcorContributionEntity(int id, int repId, int fileId) {
         return ConcorContributionsEntity.builder()
                 .id(id)
                 .repId(repId)
@@ -344,7 +347,7 @@ class ConcorContributionsServiceTest {
     }
 
     private void getContributionFile(String xmlDoc) {
-        concorContributionFiles= new ArrayList<>();
+        concorContributionFiles = new ArrayList<>();
         ConcorContributionsEntity concorFile = new ConcorContributionsEntity();
         concorFile.setCurrentXml(xmlDoc);
         concorFile.setStatus(ACTIVE);

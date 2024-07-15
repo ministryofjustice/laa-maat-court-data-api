@@ -26,31 +26,31 @@ class DebtCollectionRepositoryTest {
 
     @Mock
     JdbcTemplate jdbcTemplate;
-    private static final byte[] fdcMerge1StatementHash = new byte[]{-47, -40, -68, -99, 85, -77, -119, -64, 1, 3, 83, -92, -76, 27, -114, 107, -83, -31, -66, 60, -122, -24, 127, 55, 120, -112, 96, -51, -105, 62, 1, -18};
-    private static final byte[] fdcMerge2StatementHash = new byte[]{-17, -92, -125, -62, -12, 18, 39, -68, -70, 54, 77, -42, 16, 113, 24, -106, -124, 116, 44, -63, -103, 78, 66, -78, 15, -41, -42, -65, -66, -45, -74, -48};
+    private static final byte[] fdcDelayedPickupStatementHash = new byte[]{-47, -40, -68, -99, 85, -77, -119, -64, 1, 3, 83, -92, -76, 27, -114, 107, -83, -31, -66, 60, -122, -24, 127, 55, 120, -112, 96, -51, -105, 62, 1, -18};
+    private static final byte[] fdcFastTrackingStatementHash = new byte[]{-17, -92, -125, -62, -12, 18, 39, -68, -70, 54, 77, -42, 16, 113, 24, -106, -124, 116, 44, -63, -103, 78, 66, -78, 15, -41, -42, -65, -66, -45, -74, -48};
 
     @Captor
     ArgumentCaptor<String> mergeSQLCaptor;
 
     @Test
-    void verifyMergeStatement1_IsExpected() {
+    void verifyEligibleForFdcDelayedPickupStatement_IsExpected() {
         when(jdbcTemplate.update(mergeSQLCaptor.capture(),anyString()))
                 .thenReturn(1);
-        debtCollectionRepository.globalUpdatePart1("?");
+        debtCollectionRepository.setEligibleForFdcDelayedPickup("?");
 
         assertNotNull(mergeSQLCaptor);
-        Assertions.assertArrayEquals(fdcMerge1StatementHash, getCaptorHash(), "A change has been detected in the debtCollectionRepository.globalUpdatePart1() please verify changes are correct. And update this test.");
+        Assertions.assertArrayEquals(fdcDelayedPickupStatementHash, getCaptorHash(), "A change has been detected in the debtCollectionRepository.globalUpdatePart1() please verify changes are correct. And update this test.");
     }
 
     @Test
     void verifyMergeStatement2_IsExpected() {
         when(jdbcTemplate.update(mergeSQLCaptor.capture(),anyString()))
                 .thenReturn(1);
-        debtCollectionRepository.globalUpdatePart2("?");
+        debtCollectionRepository.setEligibleForFdcFastTracking("?");
 
 
         assertNotNull(mergeSQLCaptor);
-        Assertions.assertArrayEquals(fdcMerge2StatementHash,getCaptorHash(),"A change has been detected in the debtCollectionRepository.globalUpdatePart1() please verify changes are correct. And update this test.");
+        Assertions.assertArrayEquals(fdcFastTrackingStatementHash,getCaptorHash(),"A change has been detected in the debtCollectionRepository.globalUpdatePart1() please verify changes are correct. And update this test.");
     }
 
     byte[] getCaptorHash(){

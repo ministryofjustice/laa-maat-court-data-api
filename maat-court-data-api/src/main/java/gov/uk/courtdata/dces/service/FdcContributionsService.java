@@ -88,11 +88,11 @@ public class FdcContributionsService {
     private int executeGlobalUpdate() {
         log.info("executeGlobalUpdate entered");
         String delay = fdcContributionsRepository.callGetFdcCalculationDelay();
-        int update1Result = debtCollectionRepository.globalUpdatePart1(delay);
-        log.info("FDC Global update Part 1 affected: {}", Optional.of(update1Result));
-        int update2Result = debtCollectionRepository.globalUpdatePart2(delay);
-        log.info("FDC Global update Part 2 affected: {}", Optional.of(update2Result));
-        int response = update1Result+update2Result;
+        int fdcDelayedPickupResult = debtCollectionRepository.setEligibleForFdcDelayedPickup(delay);
+        log.info("FDC Global update: eligibleForFdcDelayedPickup: affected: {}", Optional.of(fdcDelayedPickupResult));
+        int fdcFastTrackingResult = debtCollectionRepository.setEligibleForFdcFastTracking(delay);
+        log.info("FDC Global update: eligibleForFdcFastTracking: affected: {}", Optional.of(fdcFastTrackingResult));
+        int response = fdcDelayedPickupResult+fdcFastTrackingResult;
         log.info("executeGlobalUpdate exiting");
         return response;
     }

@@ -916,7 +916,9 @@ Resources:
       GenerateSecret: true
       SupportedIdentityProviders: [ COGNITO ]
       AllowedOAuthFlows: [ client_credentials ]
-      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
+      AllowedOAuthScopes:
+        - !Sub '${pAppName}/${pApiScopeDcesStandard}'
+        - !If [ cNonProd, !Sub '${pAppName}/${pApiScope1}', !Ref AWS::NoValue ]
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'
@@ -992,6 +994,8 @@ Resources:
          ScopeDescription: !Sub '${pAppName}/${pApiScope1}'
        - ScopeName: !Ref pApiScopeRead
          ScopeDescription: !Sub '${pAppName}/${pApiScopeRead}'
+       - ScopeName: !Ref pApiScopeDcesStandard
+         ScopeDescription: !Sub '${pAppName}/${pApiScopeDcesStandard}'
 
 
   ##############################################################################

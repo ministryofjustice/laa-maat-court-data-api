@@ -94,6 +94,10 @@ Parameters:
     Type: String
     Default: read
     Description: Name of read-only Cognito scope
+  pApiScopeDcesStandard:
+    Type: String
+    Default: dces-standard
+    Description: Name of read-only Cognito scope
   pApiStageName:
     Type: String
     Default: "v1"
@@ -908,9 +912,7 @@ Resources:
       GenerateSecret: true
       SupportedIdentityProviders: [ COGNITO ]
       AllowedOAuthFlows: [ client_credentials ]
-      AllowedOAuthScopes:
-        - !Sub '${pAppName}/${pApiScopeDcesStandard}'
-        - !If [ cNonProd, !Sub '${pAppName}/${pApiScope1}', !Ref AWS::NoValue ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'

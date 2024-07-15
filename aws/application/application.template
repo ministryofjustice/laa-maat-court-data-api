@@ -94,6 +94,10 @@ Parameters:
     Type: String
     Default: read
     Description: Name of read-only Cognito scope
+  pApiScopeDcesStandard:
+    Type: String
+    Default: dces-standard
+    Description: Name of read-only Cognito scope
   pApiStageName:
     Type: String
     Default: "v1"
@@ -984,6 +988,8 @@ Resources:
          ScopeDescription: !Sub '${pAppName}/${pApiScope1}'
        - ScopeName: !Ref pApiScopeRead
          ScopeDescription: !Sub '${pAppName}/${pApiScopeRead}'
+       - ScopeName: !Ref pApiScopeDcesStandard
+         ScopeDescription: !Sub '${pAppName}/${pApiScopeDcesStandard}'
 
 
   ##############################################################################

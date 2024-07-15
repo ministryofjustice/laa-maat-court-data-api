@@ -664,7 +664,7 @@ Resources:
       ApiId: !Ref ApiGateway
       RouteKey: 'ANY /api/internal/v1/debt-collection-enforcement/{proxy+}'
       AuthorizationType: JWT
-      AuthorizationScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
+      AuthorizationScopes: [ !Sub '${pAppName}/${pApiScopeDcesStandard}' ]
       AuthorizerId: !Ref ApiAuthorizerForDces
       Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
   ApiRouteOpenAPI:

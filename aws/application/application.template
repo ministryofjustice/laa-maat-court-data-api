@@ -94,10 +94,6 @@ Parameters:
     Type: String
     Default: read
     Description: Name of read-only Cognito scope
-  pApiScopeDcesStandard:
-    Type: String
-    Default: dces-standard
-    Description: Name of read-only Cognito scope
   pApiStageName:
     Type: String
     Default: "v1"
@@ -664,7 +660,7 @@ Resources:
       ApiId: !Ref ApiGateway
       RouteKey: 'ANY /api/internal/v1/debt-collection-enforcement/{proxy+}'
       AuthorizationType: JWT
-      AuthorizationScopes: [ !Sub '${pAppName}/${pApiScopeDcesStandard}' ]
+      AuthorizationScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
       AuthorizerId: !Ref ApiAuthorizerForDces
       Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
   ApiRouteOpenAPI:
@@ -704,8 +700,6 @@ Resources:
           - !Ref CognitoUserPoolClaimForCrownCourtDefenceClient
           - !Ref CognitoUserPoolClientCrimeValidationService
           - !Ref CognitoUserPoolClientATSService
-          - !Ref CognitoUserPoolClientDcesReportService
-          - !Ref CognitoUserPoolClientDcesDrcReportService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiAuthorizerForDces:
     Type: 'AWS::ApiGatewayV2::Authorizer'
@@ -900,9 +894,7 @@ Resources:
       GenerateSecret: true
       SupportedIdentityProviders: [ COGNITO ]
       AllowedOAuthFlows: [ client_credentials ]
-      AllowedOAuthScopes:
-        - !Sub '${pAppName}/${pApiScopeDcesStandard}'
-        - !If [ cNonProd, !Sub '${pAppName}/${pApiScope1}', !Ref AWS::NoValue ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'

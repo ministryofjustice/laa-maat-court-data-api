@@ -39,7 +39,7 @@ def versions = [
         cloudLocalstackUtilsVersion      : '0.2.23',
         springContractStubRunnerVersion  : '4.0.1',
         sentryBomVersion                 : '7.1.0',
-        crimeCommonsClasses              : '3.22.1',
+        crimeCommonsClasses              : '3.27.0',
         commonsRestClient                : '3.4.0',
         springCloudStubRunnerVersion     : '4.0.4'
 ]
@@ -70,6 +70,9 @@ configurations {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+    }
 }
 
 

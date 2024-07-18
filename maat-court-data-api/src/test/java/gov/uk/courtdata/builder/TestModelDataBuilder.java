@@ -9,7 +9,6 @@ import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
-import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
@@ -27,6 +26,7 @@ import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
+import uk.gov.justice.laa.crime.enums.contribution.CorrespondenceStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -478,9 +478,9 @@ public class TestModelDataBuilder {
         return UserReservation.builder()
                 .reservationId(1000000)
                 .session(UserSession.builder()
-                        .id("test-f6E3E618A32AC870D07A65CD7AB9131AD")
-                        .username("test-f")
-                        .build()
+                                 .id("test-f6E3E618A32AC870D07A65CD7AB9131AD")
+                                 .username("test-f")
+                                 .build()
                 ).build();
     }
 
@@ -823,8 +823,8 @@ public class TestModelDataBuilder {
         return RepOrderMvoDTO.builder()
                 .id(id)
                 .rep(RepOrderDTO.builder()
-                        .id(REP_ID)
-                        .build())
+                             .id(REP_ID)
+                             .build())
                 .vehicleOwner("Y")
                 .build();
     }
@@ -833,8 +833,8 @@ public class TestModelDataBuilder {
         return RepOrderMvoDTO.builder()
                 .id(id)
                 .rep(RepOrderDTO.builder()
-                        .id(repId)
-                        .build())
+                             .id(repId)
+                             .build())
                 .vehicleOwner("Y")
                 .build();
     }
@@ -1312,17 +1312,10 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
-        return CorrespondenceStateDTO.builder()
-                .repId(repId)
-                .status(status)
-                .build();
-    }
-
-    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, String status) {
+    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, CorrespondenceStatus status) {
         return CorrespondenceStateEntity.builder()
                 .repId(repId)
-                .status(status)
+                .status(status.getStatus())
                 .build();
     }
 
@@ -1490,7 +1483,7 @@ public class TestModelDataBuilder {
 
     public String getUnLinkString(Integer repId) {
         return "{\n" +
-                " \"maatId\":"+repId+",\n" +
+                " \"maatId\":" + repId + ",\n" +
                 "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
                 "  \"userId\": \"testUser\",\n" +
                 "  \"reasonId\": 1,\n" +
@@ -1520,7 +1513,8 @@ public class TestModelDataBuilder {
                 .caseUrn("caseurn")
                 .docLanguage("en")
                 .defendant(DefendantDTO.builder().surname("Smith").postcode("LU3 111").build())
-                .offence(HearingOffenceDTO.builder().legalAidStatus("AP").asnSeq("0").asnSeq("1").legalAidReason("some aid reason").build())
+                .offence(HearingOffenceDTO.builder().legalAidStatus("AP").asnSeq("0").asnSeq("1")
+                                 .legalAidReason("some aid reason").build())
                 .result(getResultDTO())
                 .session(getSessionDTO())
                 .build();
@@ -1551,24 +1545,24 @@ public class TestModelDataBuilder {
                 .maatId(789034)
                 .prosecutionConcluded(true)
                 .offence(HearingOffenceDTO
-                        .builder()
-                        .plea(PleaDTO
-                                .builder()
-                                .offenceId("123456")
-                                .pleaValue("NOT_GUILTY")
-                                .pleaDate("2020-10-12")
-                                .build()
-                        )
-                        .verdict(VerdictDTO
-                                .builder()
-                                .verdictCode("CD234")
-                                .verdictDate("2020-10-21")
-                                .category("Verdict_Category")
-                                .categoryType("GUILTY_CONVICTED")
-                                .cjsVerdictCode("88999")
-                                .build()
-                        )
-                        .build()
+                                 .builder()
+                                 .plea(PleaDTO
+                                               .builder()
+                                               .offenceId("123456")
+                                               .pleaValue("NOT_GUILTY")
+                                               .pleaDate("2020-10-12")
+                                               .build()
+                                 )
+                                 .verdict(VerdictDTO
+                                                  .builder()
+                                                  .verdictCode("CD234")
+                                                  .verdictDate("2020-10-21")
+                                                  .category("Verdict_Category")
+                                                  .categoryType("GUILTY_CONVICTED")
+                                                  .cjsVerdictCode("88999")
+                                                  .build()
+                                 )
+                                 .build()
                 )
 
                 .build();

@@ -1,7 +1,6 @@
 package gov.uk.courtdata.correspondence.controller;
 
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
-import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.correspondence.service.CorrespondenceStateService;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.enums.LoggingData;
@@ -22,22 +21,30 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.justice.laa.crime.enums.contribution.CorrespondenceStatus;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Correspondence State", description = "Rest API for correspondence state")
-@RequestMapping("${api-endpoints.assessments-domain}/correspondence-state")
+@RequestMapping("${api-endpoints.assessments-domain}/rep-orders/{repId}/correspondence-state")
 public class CorrespondenceStateController {
 
     private final CorrespondenceStateService correspondenceStateService;
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Get correspondence status")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
     @NotFoundApiResponse
-    @GetMapping(value = "repId/{repId}")
-    public ResponseEntity<String> getStatus(@PathVariable int repId) {
+    public ResponseEntity<CorrespondenceStatus> find(@PathVariable int repId) {
         LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Get correspondence status request for repId={}", repId);
         return ResponseEntity.ok(correspondenceStateService.getCorrespondenceStatus(repId));
@@ -45,25 +52,55 @@ public class CorrespondenceStateController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Creates a correspondence state record")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = CorrespondenceStateDTO.class)))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<CorrespondenceStateDTO> create(@RequestBody @Valid CorrespondenceStateDTO correspondenceState) {
-        LoggingData.MAAT_ID.putInMDC(correspondenceState.getRepId());
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = CorrespondenceStatus.class)
+            )
+    )
+    @ApiResponse(responseCode = "400",
+            description = "Bad Request.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<CorrespondenceStatus> create(@PathVariable int repId,
+                                                         @RequestBody @Valid CorrespondenceStatus status) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Create correspondence state request received");
-        return ResponseEntity.ok(correspondenceStateService.createCorrespondenceState(correspondenceState));
+        return ResponseEntity.ok(correspondenceStateService.createCorrespondenceState(repId, status));
     }
 
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Updates a correspondence state record")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = CorrespondenceStateDTO.class)))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<CorrespondenceStateDTO> update(@RequestBody @Valid CorrespondenceStateDTO correspondenceState) {
-        LoggingData.MAAT_ID.putInMDC(correspondenceState.getRepId());
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = CorrespondenceStatus.class)
+            )
+    )
+    @ApiResponse(responseCode = "400",
+            description = "Bad Request.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<CorrespondenceStatus> update(@PathVariable int repId,
+                                                         @RequestBody @Valid CorrespondenceStatus status) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Update correspondence state request received");
-        return ResponseEntity.ok(correspondenceStateService.updateCorrespondenceState(correspondenceState));
+        return ResponseEntity.ok(correspondenceStateService.updateCorrespondenceState(repId, status));
     }
 
 }

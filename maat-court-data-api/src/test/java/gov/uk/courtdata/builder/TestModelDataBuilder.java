@@ -1,7 +1,6 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.applicant.dto.ApplicantDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
@@ -9,7 +8,6 @@ import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
-import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
@@ -27,6 +25,7 @@ import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
+import uk.gov.justice.laa.crime.enums.contribution.CorrespondenceStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -246,155 +245,161 @@ public class TestModelDataBuilder {
     }
 
     public static String getCreateFinancialAssessmentJson() {
-        return "{\n" +
-                "\"repId\": 4351623,\n" +
-                "\"initialAscrId\": 1,\n" +
-                "\"nworCode\": \"FMA\",\n" +
-                "\"userCreated\": \"test-f\",\n" +
-                "\"cmuId\": 30,\n" +
-                "\"fassInitStatus\": \"COMPLETE\",\n" +
-                "\"initialAssessmentDate\": \"2021-10-09T15:02:25\",\n" +
-                "\"initOtherBenefitNote\": null,\n" +
-                "\"initOtherIncomeNote\": null,\n" +
-                "\"initTotAggregatedIncome\": 15600.0,\n" +
-                "\"initAdjustedIncomeValue\": 15600.0,\n" +
-                "\"initNotes\": null,\n" +
-                "\"initResult\": \"FULL\",\n" +
-                "\"initResultReason\": null,\n" +
-                "\"incomeEvidenceDueDate\": null,\n" +
-                "\"incomeUpliftRemoveDate\": null,\n" +
-                "\"incomeUpliftApplyDate\": null,\n" +
-                "\"incomeEvidenceNotes\": null,\n" +
-                "\"initApplicationEmploymentStatus\": \"NONPASS\",\n" +
-                "\"usn\": null,\n" +
-                "\"rtCode\": null\n" +
-                "}";
+        return """
+                {
+                "repId": 4351623,
+                "initialAscrId": 1,
+                "nworCode": "FMA",
+                "userCreated": "test-f",
+                "cmuId": 30,
+                "fassInitStatus": "COMPLETE",
+                "initialAssessmentDate": "2021-10-09T15:02:25",
+                "initOtherBenefitNote": null,
+                "initOtherIncomeNote": null,
+                "initTotAggregatedIncome": 15600.0,
+                "initAdjustedIncomeValue": 15600.0,
+                "initNotes": null,
+                "initResult": "FULL",
+                "initResultReason": null,
+                "incomeEvidenceDueDate": null,
+                "incomeUpliftRemoveDate": null,
+                "incomeUpliftApplyDate": null,
+                "incomeEvidenceNotes": null,
+                "initApplicationEmploymentStatus": "NONPASS",
+                "usn": null,
+                "rtCode": null
+                }""";
     }
 
     public static String getUpdateFinancialAssessmentJson() {
-        return "{\n" +
-                "\"id\": 1234,\n" +
-                "\"repId\": 5678,\n" +
-                "\"initialAscrId\": 1,\n" +
-                "\"assessmentType\": \"FULL\",\n" +
-                "\"nworCode\": \"FMA\",\n" +
-                "\"cmuId\": 30,\n" +
-                "\"fassInitStatus\": \"COMPLETE\",\n" +
-                "\"initialAssessmentDate\": \"2006-10-09T00:00:00\",\n" +
-                "\"initOtherBenefitNote\": null,\n" +
-                "\"initOtherIncomeNote\": null,\n" +
-                "\"initTotAggregatedIncome\": 15600.0,\n" +
-                "\"initAdjustedIncomeValue\": 15600.0,\n" +
-                "\"initNotes\": null,\n" +
-                "\"initResult\": \"FULL\",\n" +
-                "\"initResultReason\": null,\n" +
-                "\"incomeEvidenceDueDate\": null,\n" +
-                "\"incomeUpliftRemoveDate\": null,\n" +
-                "\"incomeUpliftApplyDate\": null,\n" +
-                "\"incomeEvidenceNotes\": null,\n" +
-                "\"initApplicationEmploymentStatus\": \"NONPASS\",\n" +
-                "\"fassFullStatus\": \"COMPLETE\",\n" +
-                "\"fullAssessmentDate\": \"2006-10-09T00:00:00\",\n" +
-                "\"fullResultReason\": null,\n" +
-                "\"fullAssessmentNotes\": null,\n" +
-                "\"fullResult\": \"FAIL\",\n" +
-                "\"fullAdjustedLivingAllowance\": 5304.0,\n" +
-                "\"fullTotalAnnualDisposableIncome\": 15314.0,\n" +
-                "\"fullOtherHousingNote\": null,\n" +
-                "\"fullTotalAggregatedExpenses\": null,\n" +
-                "\"fullAscrId\": 1,\n" +
-                "\"dateCompleted\": \"2006-10-09T00:00:00\",\n" +
-                "\"userModified\": \"dohe-f\"\n" +
-                "}";
+        return """
+                {
+                "id": 1234,
+                "repId": 5678,
+                "initialAscrId": 1,
+                "assessmentType": "FULL",
+                "nworCode": "FMA",
+                "cmuId": 30,
+                "fassInitStatus": "COMPLETE",
+                "initialAssessmentDate": "2006-10-09T00:00:00",
+                "initOtherBenefitNote": null,
+                "initOtherIncomeNote": null,
+                "initTotAggregatedIncome": 15600.0,
+                "initAdjustedIncomeValue": 15600.0,
+                "initNotes": null,
+                "initResult": "FULL",
+                "initResultReason": null,
+                "incomeEvidenceDueDate": null,
+                "incomeUpliftRemoveDate": null,
+                "incomeUpliftApplyDate": null,
+                "incomeEvidenceNotes": null,
+                "initApplicationEmploymentStatus": "NONPASS",
+                "fassFullStatus": "COMPLETE",
+                "fullAssessmentDate": "2006-10-09T00:00:00",
+                "fullResultReason": null,
+                "fullAssessmentNotes": null,
+                "fullResult": "FAIL",
+                "fullAdjustedLivingAllowance": 5304.0,
+                "fullTotalAnnualDisposableIncome": 15314.0,
+                "fullOtherHousingNote": null,
+                "fullTotalAggregatedExpenses": null,
+                "fullAscrId": 1,
+                "dateCompleted": "2006-10-09T00:00:00",
+                "userModified": "dohe-f"
+                }""";
     }
 
     public static String getUpdateContributionsJson() {
-        return "{\n" +
-                "\"id\": 999,\n" +
-                "\"userModified\": \"test\",\n" +
-                "\"contributionFileId\": 9,\n" +
-                "\"effectiveDate\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"calcDate\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"contributionCap\": 9999,\n" +
-                "\"monthlyContributions\": 99,\n" +
-                "\"upfrontContributions\": 9,\n" +
-                "\"upliftApplied\": \"Y\",\n" +
-                "\"basedOn\": \"Means\",\n" +
-                "\"transferStatus\": \"RECEIVED\",\n" +
-                "\"dateUpliftApplied\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"dateUpliftRemoved\": \"2023-04-02T00:00:00.00\",\n" +
-                "\"createContributionOrder\": \"Y\",\n" +
-                "\"correspondenceId\": 9,\n" +
-                "\"ccOutcomeCount\": 9,\n" +
-                "\"seHistoryId\": 9\n" +
-                "}";
+        return """
+                {
+                "id": 999,
+                "userModified": "test",
+                "contributionFileId": 9,
+                "effectiveDate": "2023-04-01T00:00:00.00",
+                "calcDate": "2023-04-01T00:00:00.00",
+                "contributionCap": 9999,
+                "monthlyContributions": 99,
+                "upfrontContributions": 9,
+                "upliftApplied": "Y",
+                "basedOn": "Means",
+                "transferStatus": "RECEIVED",
+                "dateUpliftApplied": "2023-04-01T00:00:00.00",
+                "dateUpliftRemoved": "2023-04-02T00:00:00.00",
+                "createContributionOrder": "Y",
+                "correspondenceId": 9,
+                "ccOutcomeCount": 9,
+                "seHistoryId": 9
+                }""";
     }
 
     public static String getInvalidUpdateContributionsJson() {
-        return "{\n" +
-                "\"id\": 999,\n" +
-                "\"userModified\": \"test\",\n" +
-                "\"contributionFileId\": 9,\n" +
-                "\"calcDate\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"contributionCap\": 9999,\n" +
-                "\"monthlyContributions\": 99,\n" +
-                "\"upfrontContributions\": 9,\n" +
-                "\"upliftApplied\": \"Y\",\n" +
-                "\"basedOn\": \"Means\",\n" +
-                "\"transferStatus\": \"RECEIVED\",\n" +
-                "\"dateUpliftApplied\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"dateUpliftRemoved\": \"2023-04-02T00:00:00.00\",\n" +
-                "\"createContributionOrder\": \"Y\",\n" +
-                "\"correspondenceId\": 9,\n" +
-                "\"ccOutcomeCount\": 9,\n" +
-                "\"seHistoryId\": 9\n" +
-                "}";
+        return """
+                {
+                "id": 999,
+                "userModified": "test",
+                "contributionFileId": 9,
+                "calcDate": "2023-04-01T00:00:00.00",
+                "contributionCap": 9999,
+                "monthlyContributions": 99,
+                "upfrontContributions": 9,
+                "upliftApplied": "Y",
+                "basedOn": "Means",
+                "transferStatus": "RECEIVED",
+                "dateUpliftApplied": "2023-04-01T00:00:00.00",
+                "dateUpliftRemoved": "2023-04-02T00:00:00.00",
+                "createContributionOrder": "Y",
+                "correspondenceId": 9,
+                "ccOutcomeCount": 9,
+                "seHistoryId": 9
+                }""";
     }
 
     public static String getCreateContributionsJson() {
-        return "{\n" +
-                "\"repId\": 999,\n" +
-                "\"applId\": 999,\n" +
-                "\"userCreated\": \"test\",\n" +
-                "\"contributionFileId\": 9,\n" +
-                "\"effectiveDate\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"calcDate\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"contributionCap\": 9999,\n" +
-                "\"monthlyContributions\": 99,\n" +
-                "\"upfrontContributions\": 9,\n" +
-                "\"upliftApplied\": \"Y\",\n" +
-                "\"basedOn\": \"Means\",\n" +
-                "\"transferStatus\": \"RECEIVED\",\n" +
-                "\"dateUpliftApplied\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"dateUpliftRemoved\": \"2023-04-02T00:00:00.00\",\n" +
-                "\"createContributionOrder\": \"Y\",\n" +
-                "\"correspondenceId\": 9,\n" +
-                "\"ccOutcomeCount\": 9,\n" +
-                "\"seHistoryId\": 9\n" +
-                "}";
+        return """
+                {
+                "repId": 999,
+                "applId": 999,
+                "userCreated": "test",
+                "contributionFileId": 9,
+                "effectiveDate": "2023-04-01T00:00:00.00",
+                "calcDate": "2023-04-01T00:00:00.00",
+                "contributionCap": 9999,
+                "monthlyContributions": 99,
+                "upfrontContributions": 9,
+                "upliftApplied": "Y",
+                "basedOn": "Means",
+                "transferStatus": "RECEIVED",
+                "dateUpliftApplied": "2023-04-01T00:00:00.00",
+                "dateUpliftRemoved": "2023-04-02T00:00:00.00",
+                "createContributionOrder": "Y",
+                "correspondenceId": 9,
+                "ccOutcomeCount": 9,
+                "seHistoryId": 9
+                }""";
     }
 
     public static String getInvalidCreateContributionsJson() {
-        return "{\n" +
-                "\"repId\": 999,\n" +
-                "\"applId\": 999,\n" +
-                "\"userCreated\": \"\",\n" +
-                "\"contributionFileId\": 9,\n" +
-                "\"effectiveDate\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"calcDate\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"contributionCap\": 9999,\n" +
-                "\"monthlyContributions\": 99,\n" +
-                "\"upfrontContributions\": 9,\n" +
-                "\"upliftApplied\": \"Y\",\n" +
-                "\"basedOn\": \"Means\",\n" +
-                "\"transferStatus\": \"RECEIVED\",\n" +
-                "\"dateUpliftApplied\": \"2023-04-01T00:00:00.00\",\n" +
-                "\"dateUpliftRemoved\": \"2023-04-02T00:00:00.00\",\n" +
-                "\"createContributionOrder\": \"Y\",\n" +
-                "\"correspondenceId\": 9,\n" +
-                "\"ccOutcomeCount\": 9,\n" +
-                "\"seHistoryId\": 9\n" +
-                "}";
+        return """
+                {
+                "repId": 999,
+                "applId": 999,
+                "userCreated": "",
+                "contributionFileId": 9,
+                "effectiveDate": "2023-04-01T00:00:00.00",
+                "calcDate": "2023-04-01T00:00:00.00",
+                "contributionCap": 9999,
+                "monthlyContributions": 99,
+                "upfrontContributions": 9,
+                "upliftApplied": "Y",
+                "basedOn": "Means",
+                "transferStatus": "RECEIVED",
+                "dateUpliftApplied": "2023-04-01T00:00:00.00",
+                "dateUpliftRemoved": "2023-04-02T00:00:00.00",
+                "createContributionOrder": "Y",
+                "correspondenceId": 9,
+                "ccOutcomeCount": 9,
+                "seHistoryId": 9
+                }""";
     }
 
     public static IOJAppealDTO getIOJAppealDTO(LocalDateTime dateModified) {
@@ -478,83 +483,85 @@ public class TestModelDataBuilder {
         return UserReservation.builder()
                 .reservationId(1000000)
                 .session(UserSession.builder()
-                        .id("test-f6E3E618A32AC870D07A65CD7AB9131AD")
-                        .username("test-f")
-                        .build()
+                                 .id("test-f6E3E618A32AC870D07A65CD7AB9131AD")
+                                 .username("test-f")
+                                 .build()
                 ).build();
     }
 
     public static String getCreatePassportAssessmentJson() {
-        return "{\n" +
-                "\"financialAssessmentId\": \"2000\",\n" +
-                "\"repId\": \"1234567\",\n" +
-                "\"nworCode\": \"FMA\",\n" +
-                "\"dateCreated\": \"2021-10-09T15:02:25\",\n" +
-                "\"userCreated\": \"test-f\",\n" +
-                "\"cmuId\": 30,\n" +
-                "\"assessmentDate\": \"2021-10-09T15:02:25\",\n" +
-                "\"partnerBenefitClaimed\": \"Y\",\n" +
-                "\"partnerFirstName\": \"Test\",\n" +
-                "\"partnerSurname\": \"Partner\",\n" +
-                "\"partnerNiNumber\": \"AB123456C\",\n" +
-                "\"partnerDob\": \"1978-10-09T06:00:00\",\n" +
-                "\"incomeSupport\": \"Y\",\n" +
-                "\"jobSeekers\": \"Y\",\n" +
-                "\"statePensionCredit\": \"N\",\n" +
-                "\"under18FullEducation\": \"N\",\n" +
-                "\"under16\": \"N\",\n" +
-                "\"pcobConfirmation\": \"AGEREL\",\n" +
-                "\"result\": \"PASS\",\n" +
-                "\"dateModified\": \"2021-10-09T15:01:25\",\n" +
-                "\"userModified\": \"test-f\",\n" +
-                "\"dwpResult\": \"Yes\",\n" +
-                "\"between16And17\": \"N\",\n" +
-                "\"under18HeardInYouthCourt\": \"N\",\n" +
-                "\"under18HeardInMagsCourt\": \"N\",\n" +
-                "\"lastSignOnDate\": \"2021-08-09T12:12:48\",\n" +
-                "\"esa\": \"N\",\n" +
-                "\"pastStatus\": \"COMPLETE\",\n" +
-                "\"replaced\": \"N\",\n" +
-                "\"valid\": \"Y\",\n" +
-                "\"dateCompleted\": \"2021-10-09T15:02:25\",\n" +
-                "\"usn\": \"1234\",\n" +
-                "\"whoDWPChecked\": \"ABC\",\n" +
-                "\"rtCode\": \"DEF\"\n" +
-                "}";
+        return """
+                {
+                "financialAssessmentId": "2000",
+                "repId": "1234567",
+                "nworCode": "FMA",
+                "dateCreated": "2021-10-09T15:02:25",
+                "userCreated": "test-f",
+                "cmuId": 30,
+                "assessmentDate": "2021-10-09T15:02:25",
+                "partnerBenefitClaimed": "Y",
+                "partnerFirstName": "Test",
+                "partnerSurname": "Partner",
+                "partnerNiNumber": "AB123456C",
+                "partnerDob": "1978-10-09T06:00:00",
+                "incomeSupport": "Y",
+                "jobSeekers": "Y",
+                "statePensionCredit": "N",
+                "under18FullEducation": "N",
+                "under16": "N",
+                "pcobConfirmation": "AGEREL",
+                "result": "PASS",
+                "dateModified": "2021-10-09T15:01:25",
+                "userModified": "test-f",
+                "dwpResult": "Yes",
+                "between16And17": "N",
+                "under18HeardInYouthCourt": "N",
+                "under18HeardInMagsCourt": "N",
+                "lastSignOnDate": "2021-08-09T12:12:48",
+                "esa": "N",
+                "pastStatus": "COMPLETE",
+                "replaced": "N",
+                "valid": "Y",
+                "dateCompleted": "2021-10-09T15:02:25",
+                "usn": "1234",
+                "whoDWPChecked": "ABC",
+                "rtCode": "DEF"
+                }""";
     }
 
     public static String getUpdatePassportAssessmentJson() {
-        return "{\n" +
-                "\"id\": \"1000\",\n" +
-                "\"repId\": \"1234567\",\n" +
-                "\"nworCode\": \"FMA\",\n" +
-                "\"cmuId\": 30,\n" +
-                "\"assessmentDate\": \"2021-10-09T15:02:25\",\n" +
-                "\"partnerBenefitClaimed\": \"Y\",\n" +
-                "\"partnerFirstName\": \"Test\",\n" +
-                "\"partnerSurname\": \"Partner\",\n" +
-                "\"partnerNiNumber\": \"AB123456C\",\n" +
-                "\"partnerDob\": \"1978-10-09T06:00:00\",\n" +
-                "\"incomeSupport\": \"Y\",\n" +
-                "\"jobSeekers\": \"Y\",\n" +
-                "\"statePensionCredit\": \"N\",\n" +
-                "\"under18FullEducation\": \"N\",\n" +
-                "\"under16\": \"N\",\n" +
-                "\"pcobConfirmation\": \"DWP\",\n" +
-                "\"result\": \"PASS\",\n" +
-                "\"dwpResult\": \"Yes\",\n" +
-                "\"between16And17\": \"N\",\n" +
-                "\"under18HeardInYouthCourt\": \"N\",\n" +
-                "\"under18HeardInMagsCourt\": \"N\",\n" +
-                "\"lastSignOnDate\": \"2021-08-09T12:12:48\",\n" +
-                "\"esa\": \"N\",\n" +
-                "\"pastStatus\": \"COMPLETE\",\n" +
-                "\"replaced\": \"N\",\n" +
-                "\"valid\": \"Y\",\n" +
-                "\"dateCompleted\": \"2021-10-09T15:02:25\",\n" +
-                "\"whoDWPChecked\": \"ABC\",\n" +
-                "\"userModified\": \"test-f\"\n" +
-                "}";
+        return """
+                {
+                "id": "1000",
+                "repId": "1234567",
+                "nworCode": "FMA",
+                "cmuId": 30,
+                "assessmentDate": "2021-10-09T15:02:25",
+                "partnerBenefitClaimed": "Y",
+                "partnerFirstName": "Test",
+                "partnerSurname": "Partner",
+                "partnerNiNumber": "AB123456C",
+                "partnerDob": "1978-10-09T06:00:00",
+                "incomeSupport": "Y",
+                "jobSeekers": "Y",
+                "statePensionCredit": "N",
+                "under18FullEducation": "N",
+                "under16": "N",
+                "pcobConfirmation": "DWP",
+                "result": "PASS",
+                "dwpResult": "Yes",
+                "between16And17": "N",
+                "under18HeardInYouthCourt": "N",
+                "under18HeardInMagsCourt": "N",
+                "lastSignOnDate": "2021-08-09T12:12:48",
+                "esa": "N",
+                "pastStatus": "COMPLETE",
+                "replaced": "N",
+                "valid": "Y",
+                "dateCompleted": "2021-10-09T15:02:25",
+                "whoDWPChecked": "ABC",
+                "userModified": "test-f"
+                }""";
     }
 
     public static PassportAssessmentDTO getPassportAssessmentDTO() {
@@ -698,28 +705,30 @@ public class TestModelDataBuilder {
 
     public static String getCreateHardshipReviewJson(boolean withRelationships) {
         String json =
-                "{\n" +
-                        "\"nworCode\":\"NEW\",\n" +
-                        "\"cmuId\": 253,\n" +
-                        "\"reviewResult\": \"FAIL\",\n" +
-                        "\"resultDate\": \"2022-01-01T10:00:00\",\n" +
-                        "\"reviewDate\": \"2022-01-01T10:00:00\",\n" +
-                        "\"notes\": \"\",\n" +
-                        "\"decisionNotes\": \"\",\n" +
-                        "\"solicitorCosts\": {\n" +
-                        "   \"solicitorRate\": 183.0,\n" +
-                        "   \"solicitorHours\": 12.0,\n" +
-                        "   \"solicitorVat\": 384.25,\n" +
-                        "   \"solicitorDisb\": 0.0,\n" +
-                        "   \"solicitorEstTotalCost\": 2580.25\n" +
-                        "},\n" +
-                        "\"disposableIncome\": 4215.46,\n" +
-                        "\"disposableIncomeAfterHardship\": 2921.38,\n" +
-                        "\"status\": \"COMPLETE\",\n" +
-                        "\"repId\": 621580,\n" +
-                        "\"userCreated\": \"test-s\",\n" +
-                        "\"courtType\": \"MAGISTRATE\",\n" +
-                        "\"financialAssessmentId\": 349211\n";
+                """
+                        {
+                        "nworCode":"NEW",
+                        "cmuId": 253,
+                        "reviewResult": "FAIL",
+                        "resultDate": "2022-01-01T10:00:00",
+                        "reviewDate": "2022-01-01T10:00:00",
+                        "notes": "",
+                        "decisionNotes": "",
+                        "solicitorCosts": {
+                           "solicitorRate": 183.0,
+                           "solicitorHours": 12.0,
+                           "solicitorVat": 384.25,
+                           "solicitorDisb": 0.0,
+                           "solicitorEstTotalCost": 2580.25
+                        },
+                        "disposableIncome": 4215.46,
+                        "disposableIncomeAfterHardship": 2921.38,
+                        "status": "COMPLETE",
+                        "repId": 621580,
+                        "userCreated": "test-s",
+                        "courtType": "MAGISTRATE",
+                        "financialAssessmentId": 349211
+                        """;
 
         if (withRelationships) {
             json = json +
@@ -741,28 +750,30 @@ public class TestModelDataBuilder {
 
     public static String getUpdateHardshipReviewJson(boolean withRelationships) {
         String json =
-                "{\n" +
-                        "\"id\": 1000,\n" +
-                        "\"userModified\": \"test-s\",\n" +
-                        "\"updated\": \"2022-01-01T10:00:00\",\n" +
-                        "\"nworCode\":\"NEW\",\n" +
-                        "\"cmuId\": 253,\n" +
-                        "\"reviewResult\": \"FAIL\",\n" +
-                        "\"resultDate\": \"2022-01-01T10:00:00\",\n" +
-                        "\"reviewDate\": \"2022-01-01T10:00:00\",\n" +
-                        "\"notes\": \"\",\n" +
-                        "\"decisionNotes\": \"\",\n" +
-                        "\"solicitorCosts\": {\n" +
-                        "   \"solicitorRate\": 183.0,\n" +
-                        "   \"solicitorHours\": 12.0,\n" +
-                        "   \"solicitorVat\": 384.25,\n" +
-                        "   \"solicitorDisb\": 0.0,\n" +
-                        "   \"solicitorEstTotalCost\": 2580.25\n" +
-                        "},\n" +
-                        "\"disposableIncome\": 4215.46,\n" +
-                        "\"disposableIncomeAfterHardship\": 2921.38,\n" +
-                        "\"status\": \"COMPLETE\",\n" +
-                        "\"repId\": 621580\n";
+                """
+                        {
+                        "id": 1000,
+                        "userModified": "test-s",
+                        "updated": "2022-01-01T10:00:00",
+                        "nworCode":"NEW",
+                        "cmuId": 253,
+                        "reviewResult": "FAIL",
+                        "resultDate": "2022-01-01T10:00:00",
+                        "reviewDate": "2022-01-01T10:00:00",
+                        "notes": "",
+                        "decisionNotes": "",
+                        "solicitorCosts": {
+                           "solicitorRate": 183.0,
+                           "solicitorHours": 12.0,
+                           "solicitorVat": 384.25,
+                           "solicitorDisb": 0.0,
+                           "solicitorEstTotalCost": 2580.25
+                        },
+                        "disposableIncome": 4215.46,
+                        "disposableIncomeAfterHardship": 2921.38,
+                        "status": "COMPLETE",
+                        "repId": 621580
+                        """;
 
         if (withRelationships) {
             json = json +
@@ -823,8 +834,8 @@ public class TestModelDataBuilder {
         return RepOrderMvoDTO.builder()
                 .id(id)
                 .rep(RepOrderDTO.builder()
-                        .id(REP_ID)
-                        .build())
+                             .id(REP_ID)
+                             .build())
                 .vehicleOwner("Y")
                 .build();
     }
@@ -833,8 +844,8 @@ public class TestModelDataBuilder {
         return RepOrderMvoDTO.builder()
                 .id(id)
                 .rep(RepOrderDTO.builder()
-                        .id(repId)
-                        .build())
+                             .id(repId)
+                             .build())
                 .vehicleOwner("Y")
                 .build();
     }
@@ -1312,17 +1323,10 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static CorrespondenceStateDTO buildCorrespondenceStateDTO(Integer repId, String status) {
-        return CorrespondenceStateDTO.builder()
-                .repId(repId)
-                .status(status)
-                .build();
-    }
-
-    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, String status) {
+    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, CorrespondenceStatus status) {
         return CorrespondenceStateEntity.builder()
                 .repId(repId)
-                .status(status)
+                .status(status.getStatus())
                 .build();
     }
 
@@ -1340,10 +1344,6 @@ public class TestModelDataBuilder {
                 .fullName("Karen Greaves")
                 .userName(TestEntityDataBuilder.ASSESSOR_USER_NAME)
                 .build();
-    }
-
-    public static ApplicantDTO getApplicantDTO(Integer id) {
-        return ApplicantDTO.builder().id(id).dateCreated(LocalDateTime.now()).userCreated("USER").build();
     }
 
     public static ReservationsEntity getReservationsEntity() {
@@ -1479,18 +1479,19 @@ public class TestModelDataBuilder {
     }
 
     public String getUnLinkString() {
-        return "{\n" +
-                " \"maatId\": 1234,\n" +
-                "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
-                "  \"userId\": \"testUser\",\n" +
-                "  \"reasonId\": 1,\n" +
-                "  \"otherReasonText\" : \"\"\n" +
-                "}";
+        return """
+                {
+                 "maatId": 1234,
+                  "laaTransactionId":"e439dfc8-664e-4c8e-a999-d756dcf112c2",
+                  "userId": "testUser",
+                  "reasonId": 1,
+                  "otherReasonText" : ""
+                }""";
     }
 
     public String getUnLinkString(Integer repId) {
         return "{\n" +
-                " \"maatId\":"+repId+",\n" +
+                " \"maatId\":" + repId + ",\n" +
                 "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
                 "  \"userId\": \"testUser\",\n" +
                 "  \"reasonId\": 1,\n" +
@@ -1499,13 +1500,14 @@ public class TestModelDataBuilder {
     }
 
     public String getUnLinkWithOtherReasonString() {
-        return "{\n" +
-                " \"maatId\": 1234,\n" +
-                "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
-                "  \"userId\": \"testUser\",\n" +
-                "  \"reasonId\": 1,\n" +
-                "  \"otherReasonText\" : \"Other reason description\"\n" +
-                "}";
+        return """
+                {
+                 "maatId": 1234,
+                  "laaTransactionId":"e439dfc8-664e-4c8e-a999-d756dcf112c2",
+                  "userId": "testUser",
+                  "reasonId": 1,
+                  "otherReasonText" : "Other reason description"
+                }""";
     }
 
     public HearingDTO getHearingDTO() {
@@ -1520,7 +1522,8 @@ public class TestModelDataBuilder {
                 .caseUrn("caseurn")
                 .docLanguage("en")
                 .defendant(DefendantDTO.builder().surname("Smith").postcode("LU3 111").build())
-                .offence(HearingOffenceDTO.builder().legalAidStatus("AP").asnSeq("0").asnSeq("1").legalAidReason("some aid reason").build())
+                .offence(HearingOffenceDTO.builder().legalAidStatus("AP").asnSeq("0").asnSeq("1")
+                                 .legalAidReason("some aid reason").build())
                 .result(getResultDTO())
                 .session(getSessionDTO())
                 .build();
@@ -1551,24 +1554,24 @@ public class TestModelDataBuilder {
                 .maatId(789034)
                 .prosecutionConcluded(true)
                 .offence(HearingOffenceDTO
-                        .builder()
-                        .plea(PleaDTO
-                                .builder()
-                                .offenceId("123456")
-                                .pleaValue("NOT_GUILTY")
-                                .pleaDate("2020-10-12")
-                                .build()
-                        )
-                        .verdict(VerdictDTO
-                                .builder()
-                                .verdictCode("CD234")
-                                .verdictDate("2020-10-21")
-                                .category("Verdict_Category")
-                                .categoryType("GUILTY_CONVICTED")
-                                .cjsVerdictCode("88999")
-                                .build()
-                        )
-                        .build()
+                                 .builder()
+                                 .plea(PleaDTO
+                                               .builder()
+                                               .offenceId("123456")
+                                               .pleaValue("NOT_GUILTY")
+                                               .pleaDate("2020-10-12")
+                                               .build()
+                                 )
+                                 .verdict(VerdictDTO
+                                                  .builder()
+                                                  .verdictCode("CD234")
+                                                  .verdictDate("2020-10-21")
+                                                  .category("Verdict_Category")
+                                                  .categoryType("GUILTY_CONVICTED")
+                                                  .cjsVerdictCode("88999")
+                                                  .build()
+                                 )
+                                 .build()
                 )
 
                 .build();

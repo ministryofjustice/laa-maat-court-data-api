@@ -127,13 +127,15 @@ feature:
 version: 0.0.1
 
 management:
+  info.git.mode.full: full
   tracing:
     propagation:
       type: w3c,b3
   endpoints:
     web:
       exposure:
-        include: health, metrics
+        include: health, metrics, info
+  endpoint.health.show-details: always
   metrics:
     enable:
       process: false

@@ -22,6 +22,8 @@ public class MAATCourtDataApplication {
             options.setRelease(version);
             options.setTrans
             //options.set
+            // use VersionMetaData to get version number etc
+            .
         });*/
         Hooks.enableAutomaticContextPropagation();
         SpringApplication.run(MAATCourtDataApplication.class);

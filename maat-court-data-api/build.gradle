@@ -11,22 +11,6 @@ plugins {
     id 'info.solidsoft.pitest' version "$pitestVersion"
 }
 
-semver {
-    tagPrefix.set("maat-court-data-api-")
-}
-
-springBoot {
-    buildInfo {
-        properties {
-            additional = [
-                    'description' : project.getDescription(),
-                    'java.version': "$javaVersion",
-                    'version'     : "$project.version"
-            ]
-        }
-    }
-}
-
 group = 'gov.uk'
 description = 'This is a Facade application to the existing LAA legacy Applications MAAT/MLRA.'
 

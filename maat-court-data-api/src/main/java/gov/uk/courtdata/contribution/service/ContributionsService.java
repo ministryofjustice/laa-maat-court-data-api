@@ -68,6 +68,7 @@ public class ContributionsService {
         }
         ContributionsEntity newContributionsEntity = contributionsMapper.createContributionsToContributionsEntity(createContributions);
         newContributionsEntity.setLatest(true);
+        newContributionsEntity.setActive("Y");
         return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(newContributionsEntity));
     }
 

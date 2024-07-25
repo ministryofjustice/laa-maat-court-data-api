@@ -6,6 +6,7 @@ import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 @Slf4j
@@ -15,16 +16,17 @@ class GitProperties {
 
   private final Properties properties;
 
-  GitProperties(){
-    ClassPathResource resource = new ClassPathResource(GIT_PROPERTIES_FILE_NAME);
+  GitProperties() {
+    this(new ClassPathResource(GIT_PROPERTIES_FILE_NAME));
+  }
+
+  GitProperties(Resource gitPropertiesResource) {
     Properties loadedGitProperties = null;
     try {
-      loadedGitProperties = PropertiesLoaderUtils.loadProperties(resource);
+      loadedGitProperties = PropertiesLoaderUtils.loadProperties(gitPropertiesResource);
     } catch (IOException e) {
-      log.info("Unable to load git properties file [{}] due to: {}",
-          GIT_PROPERTIES_FILE_NAME,
-          e.getMessage(),
-          e);
+      log.info("Unable to load git properties file [{}] due to: {}", gitPropertiesResource,
+          e.getMessage(), e);
     }
     if (Objects.isNull(loadedGitProperties)) {
       properties = new Properties();

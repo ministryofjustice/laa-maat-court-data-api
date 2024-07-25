@@ -1,5 +1,6 @@
 package gov.uk.courtdata.util;
 
+import graphql.com.google.common.collect.ImmutableSortedSet;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -19,18 +20,21 @@ class SemanticVersion {
   private final Set<String> uniqueSemanticVersions;
 
   SemanticVersion() {
-    Set<String> loadedSemanticVersions = null;
-    File file = Paths.get(SEMVER_VERSION_FILE_NAME).toFile();
+    this(SEMVER_VERSION_FILE_NAME);
+  }
 
-    if (file.exists() && file.canRead()) {
-      try {
-        List<String> semanticVersions = FileUtils.readLines(file, Charset.defaultCharset());
-        loadedSemanticVersions = Set.copyOf(semanticVersions);
-      } catch (IOException e) {
-        log.info("Unable to read the Semantic Version file [{}] due to: {}",
-            SEMVER_VERSION_FILE_NAME, e.getMessage(), e);
-      }
+  SemanticVersion(String pathToSemverVersionFile) {
+    Set<String> loadedSemanticVersions = null;
+    File file = Paths.get(pathToSemverVersionFile).toFile();
+
+    try {
+      List<String> semanticVersions = FileUtils.readLines(file, Charset.defaultCharset());
+      loadedSemanticVersions = ImmutableSortedSet.copyOf(semanticVersions);
+    } catch (IOException e) {
+      log.info("Unable to read the Semantic Version file [{}] due to: {}", pathToSemverVersionFile,
+          e.getMessage(), e);
     }
+
     if (Objects.isNull(loadedSemanticVersions)) {
       uniqueSemanticVersions = Collections.emptySet();
     } else {
@@ -39,6 +43,6 @@ class SemanticVersion {
   }
 
   public String asText() {
-    return String.join(",", uniqueSemanticVersions);
+    return String.join("|", uniqueSemanticVersions);
   }
 }

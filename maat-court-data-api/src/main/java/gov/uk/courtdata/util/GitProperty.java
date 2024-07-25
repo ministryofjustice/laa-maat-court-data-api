@@ -2,6 +2,11 @@ package gov.uk.courtdata.util;
 
 import lombok.Getter;
 
+/**
+ * Git properties based on those available from the com.gorylenko.gradle-git-properties plugin. All
+ * available fields have been determined based on:
+ * https://github.com/n0mer/gradle-git-properties/blob/ff4af675c787ef5eabdf778b47a4d3fbd8c30020/src/main/groovy/com/gorylenko/GitProperties.groovy
+ */
 public enum GitProperty {
   GIT_BRANCH("git.branch"),
   GIT_COMMIT_ID("git.commit.id"),

@@ -135,7 +135,6 @@ management:
     web:
       exposure:
         include: health, metrics, info
-  endpoint.health.show-details: always
   metrics:
     enable:
       process: false

@@ -1,7 +1,7 @@
 package gov.uk.courtdata;
 
 import gov.uk.courtdata.util.GitProperty;
-import gov.uk.courtdata.util.VersionMetaData;
+import gov.uk.courtdata.util.VersionMetadata;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class VersioningActuatorInfoContributor implements InfoContributor {
 
-  private final VersionMetaData versionMetaData;
+  private final VersionMetadata versionMetaData;
 
   @Override
   public void contribute(Info.Builder infoBuilder) {

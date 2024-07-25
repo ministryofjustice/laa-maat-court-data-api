@@ -5,7 +5,6 @@ import io.sentry.EventProcessor;
 import io.sentry.Hint;
 import io.sentry.SentryEvent;
 import java.util.Arrays;
-import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -13,13 +12,13 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class SentryAlertEnricher implements EventProcessor {
-  
-  private final VersionMetaData versionMetaData;
+
+  private final VersionMetadata versionMetadata;
 
   @Override
   public SentryEvent process(@NotNull SentryEvent sentryEvent, @NotNull Hint hint) {
 
-    sentryEvent.setRelease(versionMetaData.getSemanticVersion());
+    sentryEvent.setRelease(versionMetadata.getSemanticVersion());
     sentryEvent.setTransaction(LoggingData.LAA_TRANSACTION_ID.getValueFromMDC());
 
     addMdcContextTo(sentryEvent);
@@ -29,14 +28,11 @@ public class SentryAlertEnricher implements EventProcessor {
   }
 
   private void addGitMetaDataTo(@NotNull SentryEvent sentryEvent) {
-    Arrays.stream(GitProperty.values()).forEach(new Consumer<GitProperty>() {
-      @Override
-      public void accept(GitProperty gitProperty) {
-        String tagName = gitProperty.getGitPropertyKey();
-        String tagValue = versionMetaData.getGitPropertyValue(gitProperty);
+    Arrays.stream(GitProperty.values()).forEach(gitProperty -> {
+      String tagName = gitProperty.getGitPropertyKey();
+      String tagValue = versionMetadata.getGitPropertyValue(gitProperty);
 
-        sentryEvent.setTag(tagName, tagValue);
-      }
+      sentryEvent.setTag(tagName, tagValue);
     });
   }
 

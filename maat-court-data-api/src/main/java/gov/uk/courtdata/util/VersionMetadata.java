@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class VersionMetaData {
+public class VersionMetadata {
 
   private final SemanticVersion semanticVersion;
   private final GitProperties gitProperties;
 
-  public VersionMetaData() {
+  public VersionMetadata() {
     semanticVersion = new SemanticVersion();
     gitProperties = new GitProperties();
   }

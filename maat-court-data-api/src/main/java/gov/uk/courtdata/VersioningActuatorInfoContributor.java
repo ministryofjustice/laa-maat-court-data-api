@@ -17,18 +17,18 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class VersioningActuatorInfoContributor implements InfoContributor {
 
-  private final VersionMetadata versionMetaData;
+  private final VersionMetadata versionMetadata;
 
   @Override
   public void contribute(Info.Builder infoBuilder) {
     Map<String, String> additionalVersionMetaData = new HashMap<>();
 
-    String semanticVersion = versionMetaData.getSemanticVersion();
+    String semanticVersion = versionMetadata.getSemanticVersion();
     additionalVersionMetaData.put("semanticVersion", semanticVersion);
 
     Map<String, String> gitVersionProperties = Arrays.stream(GitProperty.values())
         .collect(Collectors.toMap(GitProperty::getGitPropertyKey,
-            versionMetaData::getGitPropertyValue));
+            versionMetadata::getGitPropertyValue));
 
     additionalVersionMetaData.putAll(gitVersionProperties);
 

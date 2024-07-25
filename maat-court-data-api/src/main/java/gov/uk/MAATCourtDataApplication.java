@@ -14,17 +14,6 @@ import reactor.core.publisher.Hooks;
 public class MAATCourtDataApplication {
 
     public static void main(String[] args) {
-    /*    Sentry.init(options -> {
-    TODO finish this
-            options.setDsn("your-dsn");
-            // You can fetch the version number from your application properties or any other source
-            String version = Application.class.getPackage().getImplementationVersion();
-            options.setRelease(version);
-            options.setTrans
-            //options.set
-            // use VersionMetaData to get version number etc
-            .
-        });*/
         Hooks.enableAutomaticContextPropagation();
         SpringApplication.run(MAATCourtDataApplication.class);
     }

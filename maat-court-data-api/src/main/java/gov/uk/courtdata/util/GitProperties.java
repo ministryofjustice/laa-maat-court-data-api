@@ -1,5 +1,6 @@
 package gov.uk.courtdata.util;
 
+import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
@@ -8,8 +9,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 class GitProperties {
 
   private static final String GIT_PROPERTIES_FILE_NAME = "git.properties";
@@ -35,6 +38,7 @@ class GitProperties {
     }
   }
 
+  @NotNull
   String getValueOf(GitProperty gitProperty) {
     String gitPropertyKey = gitProperty.getGitPropertyKey();
     return properties.getProperty(gitPropertyKey, StringUtils.EMPTY);

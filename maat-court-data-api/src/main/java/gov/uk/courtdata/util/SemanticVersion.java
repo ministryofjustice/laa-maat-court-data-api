@@ -1,6 +1,7 @@
 package gov.uk.courtdata.util;
 
 import graphql.com.google.common.collect.ImmutableSortedSet;
+import jakarta.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -11,8 +12,10 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 class SemanticVersion {
 
   private static final String SEMVER_VERSION_FILE_NAME = "build/semver/version.txt";
@@ -42,6 +45,7 @@ class SemanticVersion {
     }
   }
 
+  @NotNull
   public String asText() {
     return String.join("|", uniqueSemanticVersions);
   }

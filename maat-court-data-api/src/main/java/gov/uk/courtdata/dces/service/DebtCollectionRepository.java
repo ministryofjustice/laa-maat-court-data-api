@@ -173,7 +173,9 @@ public class DebtCollectionRepository {
                                  ) MERGERESULT 
                  ON (FC.ID = MERGERESULT.ID) 
                  WHEN MATCHED THEN 
-                   UPDATE SET FC.STATUS = MERGERESULT.NEWSTATUS""";
+                   UPDATE SET FC.STATUS = MERGERESULT.NEWSTATUS,
+                              FC.DATE_MODIFIED = SYSTIMESTAMP,
+                              FC.USER_MODIFIED = 'DCES'""";
         return jdbcTemplate.update(query, delay);
     }
 
@@ -323,7 +325,9 @@ public class DebtCollectionRepository {
                                 ) QUERY1 
                 ON (FC.ID = QUERY1.ID) 
                 WHEN MATCHED THEN 
-                  UPDATE SET FC.STATUS = QUERY1.NEWSTATUS""";
+                  UPDATE SET FC.STATUS = QUERY1.NEWSTATUS,
+                             FC.DATE_MODIFIED = SYSTIMESTAMP,
+                             FC.USER_MODIFIED = 'DCES'""";
         return jdbcTemplate.update(query,delay);
     }
 }

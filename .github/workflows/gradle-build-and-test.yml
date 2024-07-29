@@ -27,7 +27,7 @@ jobs:
         uses: gradle/actions/setup-gradle@c9872874b099717fffc25bee4cac9c04ac16c873 # v4.0.0-rc.1
 
       - name: Build with Gradle Wrapper
-        run:
+        run: |
           pushd maat-court-data-api
           chmod +x ./gradlew
           ./gradlew build

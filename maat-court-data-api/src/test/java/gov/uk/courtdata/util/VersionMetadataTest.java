@@ -16,13 +16,13 @@ class VersionMetadataTest {
   private SemanticVersion mockSemanticVersion;
 
   @Mock
-  private GitProperties mockGitProperties;
+  private GitPropertiesFile mockGitPropertiesFile;
 
   private VersionMetadata versionMetadata;
 
   @BeforeEach
   void setUp() {
-    versionMetadata = new VersionMetadata(mockSemanticVersion, mockGitProperties);
+    versionMetadata = new VersionMetadata(mockSemanticVersion, mockGitPropertiesFile);
   }
 
   @Test
@@ -39,7 +39,7 @@ class VersionMetadataTest {
   @Test
   void getGitPropertyValue_shouldReturnGitPropertyValue() {
     final String gitCommitIdValue = "4ddf8ddc55a6348fefea65554bf8316dd4ffdb20";
-    when(mockGitProperties.getValueOf(GitProperty.GIT_COMMIT_ID))
+    when(mockGitPropertiesFile.getValueOf(GitProperty.GIT_COMMIT_ID))
         .thenReturn(gitCommitIdValue);
 
     String actualGitPropertyValue = versionMetadata.getGitPropertyValue(GitProperty.GIT_COMMIT_ID);

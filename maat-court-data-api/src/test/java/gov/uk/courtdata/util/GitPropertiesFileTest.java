@@ -16,7 +16,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-class GitPropertiesTest {
+class GitPropertiesFileTest {
 
   private static final String GIT_PROPERTIES_FILE_NAME = "git.properties";
 
@@ -33,26 +33,26 @@ class GitPropertiesTest {
   @Test
   void shouldLoadGitPropertiesSuccessfully() throws IOException {
     String gitPropertiesFileContents = "git.commit.id=4ddf8ddc55a6348fefea65554bf8316dd4ffdb20";
-    FileUtils.writeStringToFile(gitPropertiesFile, gitPropertiesFileContents,
+    FileUtils.writeStringToFile(this.gitPropertiesFile, gitPropertiesFileContents,
         StandardCharsets.UTF_8);
-    Resource resource = new FileSystemResource(gitPropertiesFile);
+    Resource resource = new FileSystemResource(this.gitPropertiesFile);
 
-    GitProperties gitProperties = new GitProperties(resource);
+    GitPropertiesFile gitPropertiesFile = createGitPropertiesFileWith(resource);
 
-    String actualGitCommitIdValue = gitProperties.getValueOf(GitProperty.GIT_COMMIT_ID);
+    String actualGitCommitIdValue = gitPropertiesFile.getValueOf(GitProperty.GIT_COMMIT_ID);
 
     assertEquals("4ddf8ddc55a6348fefea65554bf8316dd4ffdb20", actualGitCommitIdValue);
   }
 
   @Test
   void shouldHandleIOExceptionGracefully() throws IOException {
-    Files.createFile(gitPropertiesFile.toPath());
-    assertTrue(gitPropertiesFile.setReadable(false), "Failed precondition");
-    Resource resource = new FileSystemResource(gitPropertiesFile);
+    Files.createFile(this.gitPropertiesFile.toPath());
+    assertTrue(this.gitPropertiesFile.setReadable(false), "Failed precondition");
+    Resource resource = new FileSystemResource(this.gitPropertiesFile);
 
-    GitProperties gitProperties = new GitProperties(resource);
+    GitPropertiesFile gitPropertiesFile = createGitPropertiesFileWith(resource);
 
-    String actualGitCommitIdValue = gitProperties.getValueOf(GitProperty.GIT_COMMIT_ID);
+    String actualGitCommitIdValue = gitPropertiesFile.getValueOf(GitProperty.GIT_COMMIT_ID);
 
     assertEquals(StringUtils.EMPTY, actualGitCommitIdValue);
   }
@@ -60,23 +60,32 @@ class GitPropertiesTest {
   @Test
   void shouldReturnEmptyStringForMissingProperty() throws IOException {
     String content = "git.commit.date=2022-01-01";
-    FileUtils.writeStringToFile(gitPropertiesFile, content, StandardCharsets.UTF_8);
-    Resource resource = new FileSystemResource(gitPropertiesFile);
+    FileUtils.writeStringToFile(this.gitPropertiesFile, content, StandardCharsets.UTF_8);
+    Resource resource = new FileSystemResource(this.gitPropertiesFile);
 
-    GitProperties gitProperties = new GitProperties(resource);
+    GitPropertiesFile gitPropertiesFile = createGitPropertiesFileWith(resource);
 
-    String actualGitCommitIdValue = gitProperties.getValueOf(GitProperty.GIT_COMMIT_ID);
+    String actualGitCommitIdValue = gitPropertiesFile.getValueOf(GitProperty.GIT_COMMIT_ID);
 
     assertEquals(StringUtils.EMPTY, actualGitCommitIdValue);
   }
 
   @Test
   void shouldHandleMissingFileGracefully() {
-    Resource resource = new FileSystemResource(gitPropertiesFile);
-    GitProperties gitProperties = new GitProperties(resource);
+    Resource resource = new FileSystemResource(this.gitPropertiesFile);
+    GitPropertiesFile gitPropertiesFile = createGitPropertiesFileWith(resource);
 
-    String actualGitCommitIdValue = gitProperties.getValueOf(GitProperty.GIT_COMMIT_ID);
+    String actualGitCommitIdValue = gitPropertiesFile.getValueOf(GitProperty.GIT_COMMIT_ID);
 
     assertEquals(StringUtils.EMPTY, actualGitCommitIdValue);
+  }
+
+  private GitPropertiesFile createGitPropertiesFileWith(Resource resource) {
+    return new GitPropertiesFile() {
+      @Override
+      Resource getGitPropertiesResource() {
+        return resource;
+      }
+    };
   }
 }

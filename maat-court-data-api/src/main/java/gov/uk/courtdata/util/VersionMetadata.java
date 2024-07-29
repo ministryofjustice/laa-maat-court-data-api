@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class VersionMetadata {
 
   private final SemanticVersion semanticVersion;
-  private final GitProperties gitProperties;
+  private final GitPropertiesFile gitPropertiesFile;
 
   @NotNull
   public String getSemanticVersion() {
@@ -20,6 +20,6 @@ public class VersionMetadata {
 
   @NotNull
   public String getGitPropertyValue(GitProperty gitProperty) {
-    return gitProperties.getValueOf(gitProperty);
+    return gitPropertiesFile.getValueOf(gitProperty);
   }
 }

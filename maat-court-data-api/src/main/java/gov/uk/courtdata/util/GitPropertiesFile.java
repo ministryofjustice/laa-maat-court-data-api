@@ -13,22 +13,20 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class GitProperties {
+public class GitPropertiesFile {
 
   private static final String GIT_PROPERTIES_FILE_NAME = "git.properties";
 
   private final Properties properties;
 
-  public GitProperties() {
-    this(new ClassPathResource(GIT_PROPERTIES_FILE_NAME));
-  }
+  public GitPropertiesFile() {
+    Resource gitPropertiesResource = getGitPropertiesResource();
 
-  public GitProperties(Resource gitPropertiesResource) {
     Properties loadedGitProperties = null;
     try {
       loadedGitProperties = PropertiesLoaderUtils.loadProperties(gitPropertiesResource);
     } catch (IOException e) {
-      log.info("Unable to load git properties file [{}] due to: {}", gitPropertiesResource,
+      log.info("Unable to load git properties [{}] due to: [{}]", gitPropertiesResource,
           e.getMessage(), e);
     }
     if (Objects.isNull(loadedGitProperties)) {
@@ -36,6 +34,11 @@ public class GitProperties {
     } else {
       properties = loadedGitProperties;
     }
+  }
+
+  // Exists to allow overriding for unit testing
+  Resource getGitPropertiesResource() {
+    return new ClassPathResource(GIT_PROPERTIES_FILE_NAME);
   }
 
   @NotNull

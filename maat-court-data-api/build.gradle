@@ -66,6 +66,7 @@ dependencies {
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: "$springdocVersion"
     implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
+    implementation group: 'commons-io', name: 'commons-io', version: "$commonsIOVersion"
 
     annotationProcessor 'org.projectlombok:lombok'
     implementation "org.mapstruct:mapstruct:$mapstructVersion"

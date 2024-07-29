@@ -16,17 +16,17 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-class SemanticVersion {
+public class SemanticVersion {
 
   private static final String SEMVER_VERSION_FILE_NAME = "build/semver/version.txt";
 
   private final Set<String> uniqueSemanticVersions;
 
-  SemanticVersion() {
+  public SemanticVersion() {
     this(SEMVER_VERSION_FILE_NAME);
   }
 
-  SemanticVersion(String pathToSemverVersionFile) {
+  public SemanticVersion(String pathToSemverVersionFile) {
     Set<String> loadedSemanticVersions = null;
     File file = Paths.get(pathToSemverVersionFile).toFile();
 

@@ -13,17 +13,17 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-class GitProperties {
+public class GitProperties {
 
   private static final String GIT_PROPERTIES_FILE_NAME = "git.properties";
 
   private final Properties properties;
 
-  GitProperties() {
+  public GitProperties() {
     this(new ClassPathResource(GIT_PROPERTIES_FILE_NAME));
   }
 
-  GitProperties(Resource gitPropertiesResource) {
+  public GitProperties(Resource gitPropertiesResource) {
     Properties loadedGitProperties = null;
     try {
       loadedGitProperties = PropertiesLoaderUtils.loadProperties(gitPropertiesResource);
@@ -39,7 +39,7 @@ class GitProperties {
   }
 
   @NotNull
-  String getValueOf(GitProperty gitProperty) {
+  public String getValueOf(GitProperty gitProperty) {
     String gitPropertyKey = gitProperty.getGitPropertyKey();
     return properties.getProperty(gitPropertyKey, StringUtils.EMPTY);
   }

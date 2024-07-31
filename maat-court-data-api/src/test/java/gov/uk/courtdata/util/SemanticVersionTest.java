@@ -62,6 +62,7 @@ class SemanticVersionTest {
 
   private @NotNull SemanticVersion createSemanticVersion() {
     return new SemanticVersion() {
+      @Override
       String getPathToSemverVersionFile() {
         return versionFile.getAbsolutePath();
       }

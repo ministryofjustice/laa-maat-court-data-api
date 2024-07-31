@@ -37,7 +37,8 @@ class VersioningActuatorInfoContributorTest {
     final String semanticVersion = "1.0.0";
     final String gitCommitId = "4ddf8ddc55a6348fefea65554bf8316dd4ffdb20";
 
-    when(mockVersionMetadata.getSemanticVersion()).thenReturn(semanticVersion);
+    when(mockVersionMetadata.getSemanticVersion())
+        .thenReturn(semanticVersion);
 
     when(mockVersionMetadata.getGitPropertyValue(any(GitProperty.class)))
         .thenAnswer(invocation -> {

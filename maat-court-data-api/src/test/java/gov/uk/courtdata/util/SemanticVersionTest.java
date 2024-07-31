@@ -61,6 +61,10 @@ class SemanticVersionTest {
   }
 
   private @NotNull SemanticVersion createSemanticVersion() {
-    return new SemanticVersion(versionFile.getAbsolutePath());
+    return new SemanticVersion() {
+      String getPathToSemverVersionFile() {
+        return versionFile.getAbsolutePath();
+      }
+    };
   }
 }

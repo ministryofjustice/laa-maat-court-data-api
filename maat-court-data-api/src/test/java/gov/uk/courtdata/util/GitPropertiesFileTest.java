@@ -23,19 +23,19 @@ class GitPropertiesFileTest {
   @TempDir
   private Path tempDir;
 
-  private File gitPropertiesFile;
+  private File tempFile;
 
   @BeforeEach
   void setUp() {
-    gitPropertiesFile = tempDir.resolve(GIT_PROPERTIES_FILE_NAME).toFile();
+    tempFile = tempDir.resolve(GIT_PROPERTIES_FILE_NAME).toFile();
   }
 
   @Test
   void shouldLoadGitPropertiesSuccessfully() throws IOException {
     String gitPropertiesFileContents = "git.commit.id=4ddf8ddc55a6348fefea65554bf8316dd4ffdb20";
-    FileUtils.writeStringToFile(this.gitPropertiesFile, gitPropertiesFileContents,
+    FileUtils.writeStringToFile(this.tempFile, gitPropertiesFileContents,
         StandardCharsets.UTF_8);
-    Resource resource = new FileSystemResource(this.gitPropertiesFile);
+    Resource resource = new FileSystemResource(this.tempFile);
 
     GitPropertiesFile gitPropertiesFile = createGitPropertiesFileWith(resource);
 
@@ -46,9 +46,9 @@ class GitPropertiesFileTest {
 
   @Test
   void shouldHandleIOExceptionGracefully() throws IOException {
-    Files.createFile(this.gitPropertiesFile.toPath());
-    assertTrue(this.gitPropertiesFile.setReadable(false), "Failed precondition");
-    Resource resource = new FileSystemResource(this.gitPropertiesFile);
+    Files.createFile(this.tempFile.toPath());
+    assertTrue(this.tempFile.setReadable(false), "Failed precondition");
+    Resource resource = new FileSystemResource(this.tempFile);
 
     GitPropertiesFile gitPropertiesFile = createGitPropertiesFileWith(resource);
 
@@ -60,8 +60,8 @@ class GitPropertiesFileTest {
   @Test
   void shouldReturnEmptyStringForMissingProperty() throws IOException {
     String content = "git.commit.date=2022-01-01";
-    FileUtils.writeStringToFile(this.gitPropertiesFile, content, StandardCharsets.UTF_8);
-    Resource resource = new FileSystemResource(this.gitPropertiesFile);
+    FileUtils.writeStringToFile(this.tempFile, content, StandardCharsets.UTF_8);
+    Resource resource = new FileSystemResource(this.tempFile);
 
     GitPropertiesFile gitPropertiesFile = createGitPropertiesFileWith(resource);
 
@@ -72,7 +72,7 @@ class GitPropertiesFileTest {
 
   @Test
   void shouldHandleMissingFileGracefully() {
-    Resource resource = new FileSystemResource(this.gitPropertiesFile);
+    Resource resource = new FileSystemResource(this.tempFile);
     GitPropertiesFile gitPropertiesFile = createGitPropertiesFileWith(resource);
 
     String actualGitCommitIdValue = gitPropertiesFile.getValueOf(GitProperty.GIT_COMMIT_ID);

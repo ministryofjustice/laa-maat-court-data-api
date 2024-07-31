@@ -23,11 +23,8 @@ public class SemanticVersion {
   private final Set<String> uniqueSemanticVersions;
 
   public SemanticVersion() {
-    this(SEMVER_VERSION_FILE_NAME);
-  }
-
-  public SemanticVersion(String pathToSemverVersionFile) {
     Set<String> loadedSemanticVersions = null;
+    final String pathToSemverVersionFile = getPathToSemverVersionFile();
     File file = Paths.get(pathToSemverVersionFile).toFile();
 
     try {
@@ -43,6 +40,11 @@ public class SemanticVersion {
     } else {
       uniqueSemanticVersions = loadedSemanticVersions;
     }
+  }
+
+  // Exists to allow overriding for unit testing
+  String getPathToSemverVersionFile() {
+    return SEMVER_VERSION_FILE_NAME;
   }
 
   @NotNull

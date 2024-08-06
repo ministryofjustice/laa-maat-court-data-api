@@ -11,23 +11,25 @@ import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.testutils.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtCollectionServiceTest {
@@ -130,36 +132,21 @@ class DebtCollectionServiceTest {
     }
 
     @Test
-    void TestUpdateContributionFileReceivedCountSuccess(){
-        //setup
-        int fileId = 444;
-        ContributionFilesEntity fileEntity = getContributionFilesEntity(fileId);
-        ContributionFilesEntity originalFileEntity = getContributionFilesEntity(fileId);
-        when(contributionFilesRepository.findById(fileId)).thenReturn(Optional.of(fileEntity));
-        when(debtCollectionRepository.updateContributionFilesEntity(contributionFilesEntityArgumentCaptor.capture())).thenReturn(true);
-        //do
-        debtCollectionService.updateContributionFileReceivedCount(fileId);
-        //test
-        verify(contributionFilesRepository).findById(fileId);
-        verify(debtCollectionRepository).updateContributionFilesEntity(any());
-
-        ContributionFilesEntity savedEntity = contributionFilesEntityArgumentCaptor.getValue();
-        assertEquals(originalFileEntity.getRecordsReceived()+1, savedEntity.getRecordsReceived(), "RecordsReceived has not been incremented");
-
-        imitateUpdateContributionFileUpdate(originalFileEntity);
-        // check what changes have been made to the entity. Should match the as expected.
-        assertEquals(originalFileEntity, savedEntity, "Unexpected changes have been made to the file entity.");
+    void testUpdateContributionFileReceivedCountSuccess() {
+        final int fileId = 444;
+        when(contributionFilesRepository.incrementRecordsReceived(fileId, "DCES")).thenReturn(1);
+        assertThat(debtCollectionService.updateContributionFileReceivedCount(fileId)).isTrue();
+        verify(contributionFilesRepository).incrementRecordsReceived(fileId, "DCES");
     }
+
     @Test
-    void TestUpdateContributionFileReceivedCountNoFile(){
-        //setup
-        int fileId = 444;
-        when(contributionFilesRepository.findById(fileId)).thenReturn(Optional.empty());
-        //do
+    void testUpdateContributionFileReceivedCountNoFile() {
+        final int fileId = 444;
+        when(contributionFilesRepository.incrementRecordsReceived(fileId, "DCES")).thenReturn(0);
         assertThatThrownBy(() -> debtCollectionService
                 .updateContributionFileReceivedCount(fileId))
                 .isInstanceOf(MAATCourtDataException.class)
-                .hasMessageContaining("not found");
+                .hasMessageContaining("0 row(s) updated");
     }
 
     private ContributionFilesEntity getContributionFilesEntity(int id) {
@@ -178,11 +165,4 @@ class DebtCollectionServiceTest {
                 "<xml>ackDummyContent</xml>"
         );
     }
-
-    private void imitateUpdateContributionFileUpdate(ContributionFilesEntity fileEntity){
-        LocalDate currentDate = LocalDate.now();
-        fileEntity.setDateReceived(currentDate);
-        fileEntity.incrementReceivedCount();
-    }
-
 }

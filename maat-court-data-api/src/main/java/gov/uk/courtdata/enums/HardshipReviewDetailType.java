@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import jakarta.persistence.Converter;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.stream.Stream;
 
 
 @Getter
@@ -27,6 +30,19 @@ public enum HardshipReviewDetailType implements PersistableEnum<String> {
     @Override
     public String getValue() {
         return this.type;
+    }
+
+    public static HardshipReviewDetailType getFrom(String type) {
+        if (StringUtils.isBlank(type)) {
+            return null;
+        }
+
+        return Stream.of(HardshipReviewDetailType.values())
+                .filter(hardshipReviewDetailType -> hardshipReviewDetailType.type.equals(type))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("Hardship review detail type: %s does not exist.", type)
+                ));
     }
 
     @Converter(autoApply = true)

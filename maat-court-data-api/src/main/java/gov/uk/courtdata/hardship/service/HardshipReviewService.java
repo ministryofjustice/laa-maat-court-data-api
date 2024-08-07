@@ -58,7 +58,7 @@ public class HardshipReviewService {
         }
 
         return hardshipReviewEntity.getReviewDetails().stream()
-                .filter(item -> item.getDetailType() == HardshipReviewDetailType.valueOf(detailType))
+                .filter(item -> item.getDetailType() == HardshipReviewDetailType.getFrom(detailType))
                 .map(hardshipReviewMapper::hardshipReviewDetailEntityToHardshipReviewDetail)
                 .collect(Collectors.toList());
     }

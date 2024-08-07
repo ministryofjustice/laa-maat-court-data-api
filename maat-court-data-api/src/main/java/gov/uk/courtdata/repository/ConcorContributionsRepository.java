@@ -17,12 +17,25 @@ public interface ConcorContributionsRepository extends JpaRepository<ConcorContr
     List<ConcorContributionsEntity> findByStatus(ConcorContributionStatus status);
     List<ConcorContributionsEntity> findByIdIn(Set<Integer> ids);
 
-    @Query("SELECT cc.id FROM ConcorContributionsEntity cc WHERE cc.status = 'SENT' AND cc.fullXml IS NOT NULL AND cc.dateModified IS NOT NULL ORDER BY cc.id DESC")
+    @Query("""
+           SELECT cc.id
+               FROM ConcorContributionsEntity cc
+               WHERE cc.status = 'SENT'
+               AND cc.fullXml IS NOT NULL
+               AND cc.dateModified IS NOT NULL
+               ORDER BY cc.id DESC""")
     List<Integer> findIdsForUpdate(Pageable pageable);
 
     @Modifying
     @Transactional
-    @Query("UPDATE ConcorContributionsEntity cc SET cc.status = :newStatus, cc.contribFileId = NULL WHERE cc.id IN :ids")
-    int updateStatusAndResetContribFileForIds(@Param("newStatus") ConcorContributionStatus newStatus, @Param("ids") List<Integer> ids);
-
+    @Query("""
+           UPDATE ConcorContributionsEntity cc
+               SET cc.status = :newStatus,
+               cc.contribFileId = NULL,
+               cc.dateModified = CURRENT_DATE,
+               cc.userModified = :userModified
+               WHERE cc.id IN :ids""")
+    int updateStatusAndResetContribFileForIds(@Param("newStatus") ConcorContributionStatus newStatus,
+                                              @Param("userModified") String userModified,
+                                              @Param("ids") List<Integer> ids);
 }

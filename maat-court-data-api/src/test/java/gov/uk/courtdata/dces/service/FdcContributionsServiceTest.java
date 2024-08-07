@@ -43,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doNothing;
@@ -261,7 +262,7 @@ class FdcContributionsServiceTest {
     void testUpdateFdcContributionWhenRowsUpdated() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
-        when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenReturn(1);
+        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenReturn(1);
 
         Integer result = fdcContributionsService.updateFdcContribution(request);
         assertEquals(1, result);
@@ -271,7 +272,7 @@ class FdcContributionsServiceTest {
     void testUpdateFdcContributionWhenNoRowsUpdated() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
-        when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenReturn(0);
+        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenReturn(0);
 
         Integer result = fdcContributionsService.updateFdcContribution(request);
         assertEquals(0, result);
@@ -281,7 +282,7 @@ class FdcContributionsServiceTest {
     void testUpdateFdcContributionWhenExceptionOccurs() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
-        when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenThrow(new RuntimeException("Database error"));
+        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenThrow(new RuntimeException("Database error"));
 
         Exception exception = assertThrows(RuntimeException.class,
                 () -> fdcContributionsService.updateFdcContribution(request));

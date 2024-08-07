@@ -19,6 +19,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class DebtCollectionService {
+    private static final String USER_AUDIT = "DCES";
     private final DebtCollectionRepository debtCollectionRepository;
     private final ContributionFileErrorsRepository contributionFileErrorsRepository;
     private final ContributionFilesRepository contributionFilesRepository;
@@ -49,16 +50,12 @@ public class DebtCollectionService {
             log.info("No associated file was found for contribution");
             return false;
         }
-        ContributionFilesEntity filesEntity = getContributionFile(fileId);
-        if (Objects.nonNull(filesEntity)) {
-            filesEntity.incrementReceivedCount();
-            filesEntity.setDateReceived(LocalDate.now());
-            debtCollectionRepository.updateContributionFilesEntity(filesEntity);
-            log.info("update contribution_file ID {}: completed successfully", fileId);
-            return true;
-        } else {
-            throw new MAATCourtDataException("update contribution_file ID " + fileId + ": not found");
+        int rowsUpdated = contributionFilesRepository.incrementRecordsReceived(fileId, USER_AUDIT);
+        log.info("update contribution_file ID {} records received: {} row(s) updated", fileId, rowsUpdated);
+        if (rowsUpdated != 1) {
+            throw new MAATCourtDataException("update contribution_file ID " + fileId + " records received: " + rowsUpdated + " row(s) updated");
         }
+        return true;
     }
 
     private ContributionFilesEntity getContributionFile(int fileId) {

@@ -38,7 +38,7 @@ public enum HardshipReviewDetailType implements PersistableEnum<String> {
         }
 
         return Stream.of(HardshipReviewDetailType.values())
-                .filter(hardshipReviewDetailType -> hardshipReviewDetailType.type.equals(type))
+                .filter(hardshipReviewDetailType -> hardshipReviewDetailType.type.equals(type.toUpperCase()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
                         String.format("Hardship review detail type: %s does not exist.", type)

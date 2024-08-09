@@ -133,7 +133,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, metrics
+        include: health, metrics, info
   metrics:
     enable:
       process: false

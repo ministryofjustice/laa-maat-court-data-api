@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
 
 
 @Data
@@ -15,7 +16,7 @@ public class CreateFdcItemRequest {
     private int fdcId;
     private String itemType;
     private String adjustmentReason;
-    private LocalDateTime dateCreated;
+    private LocalDate dateCreated;
     private String userCreated;
     private String paidAsClaimed;
     private String latestCostInd;

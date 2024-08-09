@@ -168,8 +168,8 @@ public class FdcContributionsService {
                 .adjustmentReason(fdcRequest.getAdjustmentReason())
                 .userCreated(fdcRequest.getUserCreated())
                 .paidAsClaimed(fdcRequest.getPaidAsClaimed())
-                .dateCreated(fdcRequest.getDateCreated().toLocalDate())
-                .dateModified(fdcRequest.getDateCreated().toLocalDate())
+                .dateCreated(fdcRequest.getDateCreated())
+                .dateModified(fdcRequest.getDateCreated())
                 .userModified(fdcRequest.getUserCreated())
                 .build();
             return fdcItemsRepository.save(fdcItemsEntity);

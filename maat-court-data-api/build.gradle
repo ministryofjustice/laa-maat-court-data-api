@@ -24,12 +24,16 @@ sourceSets {
     }
 }
 
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
     testSqsIntegrationImplementation.extendsFrom implementation
+}
+
+gitProperties {
+    failOnNoGitDirectory = false
+    dotGitDirectory = file("${project.rootDir}/../.git")
 }
 
 repositories {
@@ -39,7 +43,6 @@ repositories {
         url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
     }
 }
-
 
 dependencies {
 

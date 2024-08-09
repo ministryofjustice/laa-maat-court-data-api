@@ -31,6 +31,6 @@ jobs:
 
       - name: Build with Gradle Wrapper
         run: |
-          cd maat-court-data-api
+          pushd maat-court-data-api
           chmod +x ./gradlew
           ./gradlew build

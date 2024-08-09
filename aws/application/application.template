@@ -683,6 +683,22 @@ Resources:
       RouteKey: 'ANY /open-api'
       AuthorizationType: NONE
       Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
+  ApiRouteOpenAPI:
+    Type: AWS::ApiGatewayV2::Route
+    Condition: cNonProd
+    Properties:
+      ApiId: !Ref ApiGateway
+      RouteKey: 'ANY /actuator/{proxy+}'
+      AuthorizationType: NONE
+      Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
+  ApiRouteOpenAPIBaseURL:
+    Type: AWS::ApiGatewayV2::Route
+    Condition: cNonProd
+    Properties:
+      ApiId: !Ref ApiGateway
+      RouteKey: 'ANY /actuator'
+      AuthorizationType: NONE
+      Target: !Join [ '/', [ integrations, !Ref ApiIntegration ] ]
   ApiAuthorizer:
     Type: 'AWS::ApiGatewayV2::Authorizer'
     Properties:

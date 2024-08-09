@@ -11,6 +11,7 @@ import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
+import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import uk.gov.justice.laa.crime.enums.contribution.CorrespondenceStatus;
 
 import java.math.BigDecimal;

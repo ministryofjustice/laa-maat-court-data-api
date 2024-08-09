@@ -2,7 +2,7 @@ package gov.uk.courtdata.hardship.service;
 
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
-import gov.uk.courtdata.enums.HardshipReviewDetailType;
+import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;

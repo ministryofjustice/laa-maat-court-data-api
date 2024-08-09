@@ -2,7 +2,7 @@ package gov.uk.courtdata.converters;
 
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.Frequency;
-import gov.uk.courtdata.enums.HardshipReviewDetailType;
+import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
 import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
 import gov.uk.courtdata.enums.HardshipReviewProgressAction;

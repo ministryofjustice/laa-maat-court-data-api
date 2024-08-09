@@ -33,7 +33,7 @@ configurations {
 
 gitProperties {
     failOnNoGitDirectory = false
-    dotGitDirectory = "${project.rootDir}/../.git"
+    dotGitDirectory = file("${project.rootDir}/../.git")
 }
 
 repositories {

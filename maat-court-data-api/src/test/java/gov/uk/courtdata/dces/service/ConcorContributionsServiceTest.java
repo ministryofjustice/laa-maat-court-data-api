@@ -41,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.doNothing;
@@ -259,13 +260,13 @@ class ConcorContributionsServiceTest {
     @Test
     void testUpdateConcorContributionsStatus() {
         when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of(1111, 2222));
-        when(concorRepository.updateStatusAndResetContribFileForIds(any(), any())).thenReturn(2);
+        when(concorRepository.updateStatusAndResetContribFileForIds(any(), anyString(), any())).thenReturn(2);
 
         List<Integer> response = concorService.updateConcorContributionStatusAndResetContribFile(UpdateConcorContributionStatusRequest.builder().recordCount(2)
                 .status(ConcorContributionStatus.SENT).build());
 
         verify(concorRepository).findIdsForUpdate(any());
-        verify(concorRepository).updateStatusAndResetContribFileForIds(any(), any());
+        verify(concorRepository).updateStatusAndResetContribFileForIds(any(), anyString(), any());
         assertEquals(2, response.size());
     }
 
@@ -277,7 +278,7 @@ class ConcorContributionsServiceTest {
                 .status(ConcorContributionStatus.SENT).build());
 
         verify(concorRepository).findIdsForUpdate(any());
-        verify(concorRepository,never()).updateStatusAndResetContribFileForIds(any(), any());
+        verify(concorRepository,never()).updateStatusAndResetContribFileForIds(any(), anyString(), any());
         assertEquals(0, response.size());
     }
 

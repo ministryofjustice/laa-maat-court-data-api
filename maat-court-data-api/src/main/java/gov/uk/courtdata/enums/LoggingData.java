@@ -1,8 +1,10 @@
 package gov.uk.courtdata.enums;
 
 import java.util.Objects;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 
 @Getter
@@ -33,5 +35,12 @@ public enum LoggingData {
     if (Objects.nonNull(key)) {
       MDC.remove(key);
     }
+  }
+
+  public String getValueFromMDC() {
+    String valueFromMDC = MDC.get(key);
+
+    return Optional.ofNullable(valueFromMDC)
+        .orElse(StringUtils.EMPTY);
   }
 }

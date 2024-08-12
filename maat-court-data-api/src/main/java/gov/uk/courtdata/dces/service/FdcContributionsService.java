@@ -44,6 +44,7 @@ import static gov.uk.courtdata.enums.FdcContributionsStatus.SENT;
 @Service
 @RequiredArgsConstructor
 public class FdcContributionsService {
+    private static final String USER_AUDIT = "DCES";
     private final FdcContributionsRepository fdcContributionsRepository;
     private final FdcItemsRepository fdcItemsRepository;
     private final ContributionFileMapper contributionFileMapper;
@@ -88,11 +89,11 @@ public class FdcContributionsService {
     private int executeGlobalUpdate() {
         log.info("executeGlobalUpdate entered");
         String delay = fdcContributionsRepository.callGetFdcCalculationDelay();
-        int update1Result = debtCollectionRepository.globalUpdatePart1(delay);
-        log.info("FDC Global update Part 1 affected: {}", Optional.of(update1Result));
-        int update2Result = debtCollectionRepository.globalUpdatePart2(delay);
-        log.info("FDC Global update Part 2 affected: {}", Optional.of(update2Result));
-        int response = update1Result+update2Result;
+        int fdcDelayedPickupResult = debtCollectionRepository.setEligibleForFdcDelayedPickup(delay);
+        log.info("FDC Global update: eligibleForFdcDelayedPickup: affected: {}", Optional.of(fdcDelayedPickupResult));
+        int fdcFastTrackingResult = debtCollectionRepository.setEligibleForFdcFastTracking(delay);
+        log.info("FDC Global update: eligibleForFdcFastTracking: affected: {}", Optional.of(fdcFastTrackingResult));
+        int response = fdcDelayedPickupResult+fdcFastTrackingResult;
         log.info("executeGlobalUpdate exiting");
         return response;
     }
@@ -120,7 +121,7 @@ public class FdcContributionsService {
             fdcEntities.forEach(fdc -> {
                 fdc.setStatus(SENT);
                 fdc.setContFileId(contributionFilesEntity.getFileId());
-                fdc.setUserModified("DCES");
+                fdc.setUserModified(USER_AUDIT);
                 fdc.setDateModified(LocalDate.now());
             });
             log.info("Saving {} Fdc Contributions", Optional.of(fdcEntities.size()));
@@ -167,7 +168,9 @@ public class FdcContributionsService {
                 .adjustmentReason(fdcRequest.getAdjustmentReason())
                 .userCreated(fdcRequest.getUserCreated())
                 .paidAsClaimed(fdcRequest.getPaidAsClaimed())
-                .dateCreated(fdcRequest.getDateCreated().toLocalDate())
+                .dateCreated(fdcRequest.getDateCreated())
+                .dateModified(fdcRequest.getDateCreated())
+                .userModified(fdcRequest.getUserCreated())
                 .build();
             return fdcItemsRepository.save(fdcItemsEntity);
         } catch (Exception e) {
@@ -198,6 +201,10 @@ public class FdcContributionsService {
                     .agfsComplete(request.getAgfsComplete())
                     .accelerate(request.getManualAcceleration())
                     .status(request.getStatus())
+                    .dateCreated(LocalDate.now())
+                    .dateModified(LocalDate.now())
+                    .userCreated(USER_AUDIT)
+                    .userModified(USER_AUDIT)
                     .build();
             return fdcContributionsRepository.save(fdcContributionsEntity);
         } catch (Exception exception) {
@@ -211,10 +218,10 @@ public class FdcContributionsService {
         try {
             if (request.getPreviousStatus() == null) {
                 log.info("Updating status to {} for all based on rep order id {}", request.getNewStatus(), request.getRepId());
-                return fdcContributionsRepository.updateStatusByRepId(request.getRepId(), request.getNewStatus());
+                return fdcContributionsRepository.updateStatusByRepId(request.getRepId(), USER_AUDIT, request.getNewStatus());
             } else {
                 log.info("Updating status to {} from {} for rep order id {}", request.getNewStatus(), request.getPreviousStatus(), request.getRepId());
-                return fdcContributionsRepository.updateStatus(request.getRepId(), request.getNewStatus(), request.getPreviousStatus());
+                return fdcContributionsRepository.updateStatus(request.getRepId(), USER_AUDIT, request.getNewStatus(), request.getPreviousStatus());
             }
         } catch (Exception exception) {
             log.error("Failed to update data for FdcContributionsEntity {}", exception.getMessage());

@@ -6,6 +6,7 @@ import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -80,6 +81,28 @@ class LoggingDataTest {
 
     assertThat("Expected loggingData %s to have non-blank or null key".formatted(loggingData),
         key, notBlankOrNull);
+  }
+
+  @ParameterizedTest
+  @MethodSource("allLoggingDataValues")
+  void getValueFromMDC_NullValue(LoggingData loggingData) {
+    final String expectedValue = StringUtils.EMPTY;
+    assertNull(MDC.get(loggingData.getKey()), "Failed precondition");
+
+    String valueFromMDC = loggingData.getValueFromMDC();
+
+    assertEquals(expectedValue, valueFromMDC);
+  }
+
+  @ParameterizedTest
+  @MethodSource("allLoggingDataValues")
+  void getValueFromMDC_NonNullValue(LoggingData loggingData) {
+    final String expectedValue = "48e60e52-70f9-415d-8c57-c25a16419a7c";
+    MDC.put(loggingData.getKey(), expectedValue);
+
+    String valueFromMDC = loggingData.getValueFromMDC();
+
+    assertEquals(expectedValue, valueFromMDC);
   }
 
   private static Stream<Arguments> allLoggingDataValues() {

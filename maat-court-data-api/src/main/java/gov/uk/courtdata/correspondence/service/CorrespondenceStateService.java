@@ -1,6 +1,5 @@
 package gov.uk.courtdata.correspondence.service;
 
-import gov.uk.courtdata.correspondence.dto.CorrespondenceStateDTO;
 import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.CorrespondenceStateRepository;
@@ -8,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.justice.laa.crime.enums.contribution.CorrespondenceStatus;
 
 @Slf4j
 @Service
@@ -17,45 +17,39 @@ public class CorrespondenceStateService {
     private final CorrespondenceStateRepository correspondenceStateRepository;
 
     @Transactional(readOnly = true)
-    public String getCorrespondenceStatus(final int repId) {
+    public CorrespondenceStatus getCorrespondenceStatus(final int repId) {
         log.info("Get correspondence status for repId: {}", repId);
-        CorrespondenceStateEntity correspondenceState = correspondenceStateRepository.findByRepId(repId);
-        if (correspondenceState == null) {
-            throw new RequestedObjectNotFoundException(String.format("No corresponsdence state found for repId= %s", repId));
+        CorrespondenceStateEntity state = correspondenceStateRepository.findByRepId(repId);
+        if (state == null) {
+            throw new RequestedObjectNotFoundException(
+                    String.format("No correspondence state found for repId= %s", repId));
         }
-        return correspondenceState.getStatus();
+        return CorrespondenceStatus.getFrom(state.getStatus());
     }
 
     @Transactional
-    public CorrespondenceStateDTO createCorrespondenceState(final CorrespondenceStateDTO corrStateDTO) {
+    public CorrespondenceStatus createCorrespondenceState(final int repId, final CorrespondenceStatus corrStateDTO) {
         log.info("Create correspondence state for {}", corrStateDTO);
-        CorrespondenceStateEntity correspondenceStateEntity = CorrespondenceStateEntity.builder()
-                .repId(corrStateDTO.getRepId())
-                .status(corrStateDTO.getStatus()).build();
-        CorrespondenceStateEntity savedEntity = correspondenceStateRepository.saveAndFlush(correspondenceStateEntity);
-        return getCorrespondenceStateDTO(savedEntity);
+        CorrespondenceStateEntity correspondenceStateEntity =
+                CorrespondenceStateEntity.builder()
+                        .repId(repId)
+                        .status(corrStateDTO.getStatus())
+                        .build();
+        CorrespondenceStateEntity saved = correspondenceStateRepository.saveAndFlush(correspondenceStateEntity);
+        return CorrespondenceStatus.getFrom(saved.getStatus());
     }
 
     @Transactional
-    public CorrespondenceStateDTO updateCorrespondenceState(final CorrespondenceStateDTO corrStateDTO) {
-        log.info("Create or Update correspondence state for repId {}", corrStateDTO.getRepId());
-        CorrespondenceStateEntity entity = correspondenceStateRepository.findByRepId(corrStateDTO.getRepId());
+    public CorrespondenceStatus updateCorrespondenceState(final int repId, final CorrespondenceStatus corrStateDTO) {
+        log.info("Create or Update correspondence state for repId {}", repId);
+        CorrespondenceStateEntity entity = correspondenceStateRepository.findByRepId(repId);
         if (entity == null) {
-            entity = CorrespondenceStateEntity.builder()
-                    .repId(corrStateDTO.getRepId())
-                    .status(corrStateDTO.getStatus()).build();
+            throw new RequestedObjectNotFoundException(
+                    String.format("No correspondence state found for repId= %s", repId));
         } else {
             entity.setStatus(corrStateDTO.getStatus());
+            CorrespondenceStateEntity saved = correspondenceStateRepository.saveAndFlush(entity);
+            return CorrespondenceStatus.getFrom(saved.getStatus());
         }
-        CorrespondenceStateEntity savedEntity = correspondenceStateRepository.saveAndFlush(entity);
-        return getCorrespondenceStateDTO(savedEntity);
     }
-
-    private static CorrespondenceStateDTO getCorrespondenceStateDTO(CorrespondenceStateEntity newEntity) {
-        return CorrespondenceStateDTO.builder()
-                .status(newEntity.getStatus())
-                .repId(newEntity.getRepId())
-                .build();
-    }
-
 }

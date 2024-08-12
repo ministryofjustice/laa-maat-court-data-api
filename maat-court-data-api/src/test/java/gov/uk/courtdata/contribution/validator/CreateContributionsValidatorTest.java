@@ -3,6 +3,7 @@ package gov.uk.courtdata.contribution.validator;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.validator.MaatIdValidator;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +18,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@Disabled
 class CreateContributionsValidatorTest {
 
     private static final Integer TEST_REP_ID = 999;

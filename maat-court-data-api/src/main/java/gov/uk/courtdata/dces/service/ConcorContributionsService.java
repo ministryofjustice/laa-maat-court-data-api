@@ -35,6 +35,7 @@ import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 @Service
 @RequiredArgsConstructor
 public class ConcorContributionsService {
+    private static final String USER_AUDIT = "DCES";
     private final ConcorContributionsRepository concorRepository;
     private final ContributionFileMapper contributionFileMapper;
     private final DebtCollectionRepository debtCollectionRepository;
@@ -46,7 +47,7 @@ public class ConcorContributionsService {
     public List<Integer> updateConcorContributionStatusAndResetContribFile(UpdateConcorContributionStatusRequest request) {
         List<Integer> idsToUpdate = concorRepository.findIdsForUpdate(Pageable.ofSize(request.getRecordCount()));
         if (!idsToUpdate.isEmpty()) {
-            concorRepository.updateStatusAndResetContribFileForIds(request.getStatus(), idsToUpdate);
+            concorRepository.updateStatusAndResetContribFileForIds(request.getStatus(), USER_AUDIT, idsToUpdate);
         }
         return idsToUpdate;
     }
@@ -123,7 +124,7 @@ public class ConcorContributionsService {
         final List<ConcorContributionsEntity> concorFileList = concorRepository.findByIdIn(ids);
         log.info("Concor Contributions for status update - count {}", concorFileList.size());
         concorFileList.forEach(cc -> {
-            cc.setUserModified("DCES");
+            cc.setUserModified(USER_AUDIT);
             cc.setDateModified(LocalDate.now());
             cc.setStatus(status);
             cc.setContribFileId(contributionFileId);

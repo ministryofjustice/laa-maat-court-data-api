@@ -22,7 +22,7 @@ import java.util.Objects;
 @Slf4j
 public class DebtCollectionRepository {
     private final JdbcTemplate jdbcTemplate;
-    private static final String DB_USER_NAME = "DCES";
+    private static final String USER_AUDIT = "DCES";
 
     List<String> getContributionFiles(final String fromDate, final String toDate) {
         String query = "SELECT cf.xml_content FROM TOGDATA.CONTRIBUTION_FILES CF " +
@@ -41,9 +41,9 @@ public class DebtCollectionRepository {
     }
 
     public boolean saveContributionFilesEntity(ContributionFilesEntity contributionFilesEntity) {
-        contributionFilesEntity.setUserCreated(DB_USER_NAME);
+        contributionFilesEntity.setUserCreated(USER_AUDIT);
         contributionFilesEntity.setDateCreated(LocalDate.now());
-        contributionFilesEntity.setUserModified(DB_USER_NAME);
+        contributionFilesEntity.setUserModified(USER_AUDIT);
         contributionFilesEntity.setDateModified(LocalDate.now());
         contributionFilesEntity.setDateSent(LocalDate.now());
 
@@ -53,7 +53,7 @@ public class DebtCollectionRepository {
     }
 
     public boolean updateContributionFilesEntity(ContributionFilesEntity contributionFilesEntity) {
-        contributionFilesEntity.setUserModified(DB_USER_NAME);
+        contributionFilesEntity.setUserModified(USER_AUDIT);
         contributionFilesEntity.setDateModified(LocalDate.now());
         log.info("Updating TOGDATA.CONTRIBUTION_FILES using jdbcTemplate");
 
@@ -114,8 +114,8 @@ public class DebtCollectionRepository {
     }
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
-    public int globalUpdatePart1(String delay) {
-        log.info("globalUpdatePart1 entered");
+    public int setEligibleForFdcDelayedPickup(String delay) {
+        log.info("eligibleForFdcDelayedPickup entered");
         String query = """
                 MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC 
                  USING  
@@ -173,13 +173,15 @@ public class DebtCollectionRepository {
                                  ) MERGERESULT 
                  ON (FC.ID = MERGERESULT.ID) 
                  WHEN MATCHED THEN 
-                   UPDATE SET FC.STATUS = MERGERESULT.NEWSTATUS""";
+                   UPDATE SET FC.STATUS = MERGERESULT.NEWSTATUS,
+                              FC.DATE_MODIFIED = SYSTIMESTAMP,
+                              FC.USER_MODIFIED = 'DCES'""";
         return jdbcTemplate.update(query, delay);
     }
 
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
-    public int globalUpdatePart2(String delay) {
-        log.info("globalUpdatePart2 entered");
+    public int setEligibleForFdcFastTracking(String delay) {
+        log.info("eligibleForFdcFastTracking entered");
         String query = """
                 MERGE INTO TOGDATA.FDC_CONTRIBUTIONS FC 
                 USING  
@@ -323,7 +325,9 @@ public class DebtCollectionRepository {
                                 ) QUERY1 
                 ON (FC.ID = QUERY1.ID) 
                 WHEN MATCHED THEN 
-                  UPDATE SET FC.STATUS = QUERY1.NEWSTATUS""";
+                  UPDATE SET FC.STATUS = QUERY1.NEWSTATUS,
+                             FC.DATE_MODIFIED = SYSTIMESTAMP,
+                             FC.USER_MODIFIED = 'DCES'""";
         return jdbcTemplate.update(query,delay);
     }
 }

@@ -3,7 +3,6 @@ package gov.uk.courtdata.aspect;
 import com.google.gson.Gson;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.LaaTransactionLogging;
-import io.sentry.Sentry;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,13 +72,6 @@ public class SqsGlobalLogging {
     } else {
       laaTransactionIdStr = UUID.randomUUID().toString();
     }
-
-    Sentry.configureScope(scope -> {
-      scope.setTag(LoggingData.CASE_URN.getKey(),
-          laaTransactionLogging.getCaseUrn() != null ? laaTransactionLogging.getCaseUrn() : "");
-      scope.setTag(LoggingData.LAA_TRANSACTION_ID.getKey(), laaTransactionIdStr);
-      scope.setTag(LoggingData.MAAT_ID.getKey(), laaTransactionLogging.getMaatId().toString());
-    });
 
     LoggingData.CASE_URN.putInMDC(laaTransactionLogging.getCaseUrn());
     LoggingData.LAA_TRANSACTION_ID.putInMDC(laaTransactionIdStr);

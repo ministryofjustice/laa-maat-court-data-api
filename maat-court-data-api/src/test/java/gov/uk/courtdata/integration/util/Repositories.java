@@ -13,7 +13,6 @@ import gov.uk.courtdata.repository.CaseRepository;
 import gov.uk.courtdata.repository.ChildWeightHistoryRepository;
 import gov.uk.courtdata.repository.ChildWeightingsRepository;
 import gov.uk.courtdata.repository.ConcorContributionsRepository;
-import gov.uk.courtdata.repository.ContribAppealRulesRepository;
 import gov.uk.courtdata.repository.ContribCalcParametersRepository;
 import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
@@ -96,9 +95,6 @@ public class Repositories {
 
   @Autowired
   public ConcorContributionsRepository concorContributions;
-
-  @Autowired
-  public ContribAppealRulesRepository contribAppealRules;
 
   @Autowired
   public ContribCalcParametersRepository contribCalcParameters;
@@ -286,7 +282,6 @@ public class Repositories {
         childWeightHistory,
         childWeightings,
         concorContributions,
-        contribAppealRules,
         contribCalcParameters,
         contributionFiles,
         contributionFileErrors,

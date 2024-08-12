@@ -43,9 +43,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -116,8 +116,8 @@ class FdcContributionsServiceTest {
         int expected1 = 2;
         int expected2 = 5;
 
-        when(debtCollectionRepository.globalUpdatePart1("5")).thenReturn(expected1);
-        when(debtCollectionRepository.globalUpdatePart2("5")).thenReturn(expected2);
+        when(debtCollectionRepository.setEligibleForFdcDelayedPickup("5")).thenReturn(expected1);
+        when(debtCollectionRepository.setEligibleForFdcFastTracking("5")).thenReturn(expected2);
         when(fdcContributionsRepository.callGetFdcCalculationDelay()).thenReturn("5");
         FdcContributionsGlobalUpdateResponse response = fdcContributionsService.fdcContributionGlobalUpdate();
         assertNotNull(response);
@@ -262,7 +262,7 @@ class FdcContributionsServiceTest {
     void testUpdateFdcContributionWhenRowsUpdated() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
-        when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenReturn(1);
+        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenReturn(1);
 
         Integer result = fdcContributionsService.updateFdcContribution(request);
         assertEquals(1, result);
@@ -272,7 +272,7 @@ class FdcContributionsServiceTest {
     void testUpdateFdcContributionWhenNoRowsUpdated() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
-        when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenReturn(0);
+        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenReturn(0);
 
         Integer result = fdcContributionsService.updateFdcContribution(request);
         assertEquals(0, result);
@@ -282,7 +282,7 @@ class FdcContributionsServiceTest {
     void testUpdateFdcContributionWhenExceptionOccurs() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
-        when(fdcContributionsRepository.updateStatus(anyInt(), any(), any())).thenThrow(new RuntimeException("Database error"));
+        when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenThrow(new RuntimeException("Database error"));
 
         Exception exception = assertThrows(RuntimeException.class,
                 () -> fdcContributionsService.updateFdcContribution(request));

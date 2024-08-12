@@ -20,10 +20,26 @@ public interface FdcContributionsRepository extends JpaRepository<FdcContributio
     String callGetFdcCalculationDelay();
 
     @Modifying
-    @Query("UPDATE FdcContributionsEntity f SET f.status = :newStatus WHERE f.repOrderEntity.id = :repId AND f.status = :previousStatus")
-    Integer updateStatus(@Param("repId") Integer repId, @Param("newStatus") FdcContributionsStatus newStatus, @Param("previousStatus") FdcContributionsStatus previousStatus);
+    @Query("""
+           UPDATE FdcContributionsEntity f
+               SET f.status = :newStatus,
+               f.userModified = :userModified,
+               f.dateModified = CURRENT_DATE
+               WHERE f.repOrderEntity.id = :repId
+               AND f.status = :previousStatus""")
+    Integer updateStatus(@Param("repId") Integer repId,
+                         @Param("userModified") String userModified,
+                         @Param("newStatus") FdcContributionsStatus newStatus,
+                         @Param("previousStatus") FdcContributionsStatus previousStatus);
 
     @Modifying
-    @Query("UPDATE FdcContributionsEntity f SET f.status = :newStatus WHERE f.repOrderEntity.id = :repId")
-    Integer updateStatusByRepId(@Param("repId") Integer repId, @Param("newStatus") FdcContributionsStatus newStatus);
+    @Query("""
+           UPDATE FdcContributionsEntity f
+               SET f.status = :newStatus,
+               f.userModified = :userModified,
+               f.dateModified = CURRENT_DATE
+               WHERE f.repOrderEntity.id = :repId""")
+    Integer updateStatusByRepId(@Param("repId") Integer repId,
+                                @Param("userModified") String userModified,
+                                @Param("newStatus") FdcContributionsStatus newStatus);
 }

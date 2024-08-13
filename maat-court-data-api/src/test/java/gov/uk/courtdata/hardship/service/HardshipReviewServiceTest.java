@@ -128,7 +128,7 @@ class HardshipReviewServiceTest {
 
         HardshipReviewDetailEntity reviewDetail = HardshipReviewDetailEntity.builder()
                 .id(MOCK_HARDSHIP_ID)
-                .detailType(HardshipReviewDetailType.EXPENDITURE)
+                .detailType(HardshipReviewDetailType.EXPENDITURE.getType())
                 .build();
 
         hardshipReviewEntity.addReviewDetail(reviewDetail);

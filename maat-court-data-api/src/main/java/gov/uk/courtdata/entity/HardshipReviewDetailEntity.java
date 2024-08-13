@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
-import gov.uk.courtdata.enums.HardshipReviewDetailType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -30,7 +29,7 @@ public class HardshipReviewDetailEntity {
     private Integer id;
 
     @Column(name = "HRDT_TYPE", nullable = false)
-    private HardshipReviewDetailType detailType;
+    private String detailType;
 
     @CreationTimestamp
     @Column(name = "DATE_CREATED", nullable = false, updatable = false)

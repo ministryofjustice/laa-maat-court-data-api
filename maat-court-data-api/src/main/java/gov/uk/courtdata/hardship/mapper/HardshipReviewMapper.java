@@ -11,6 +11,7 @@ import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import org.mapstruct.*;
+import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
 @Mapper(
@@ -30,6 +31,7 @@ public interface HardshipReviewMapper {
     @Mapping(source = "status", target = "status", qualifiedByName = "mapStatusToHardshipReviewStatusEnum")
     HardshipReviewDTO hardshipReviewEntityToHardshipReviewDTO(final HardshipReviewEntity hardshipReview);
 
+    @Mapping(source = "detailType", target = "detailType", qualifiedByName = "mapDetailTypeToHardshipReviewDetailTypeEnum")
     HardshipReviewDetail hardshipReviewDetailEntityToHardshipReviewDetail(
             final HardshipReviewDetailEntity reviewDetailEntity
     );
@@ -64,6 +66,14 @@ public interface HardshipReviewMapper {
     default HardshipReviewStatus mapStatusToHardshipReviewStatusEnum(String status) {
         if (status != null) {
             return HardshipReviewStatus.getFrom(status);
+        }
+        return null;
+    }
+
+    @Named("mapDetailTypeToHardshipReviewDetailTypeEnum")
+    default HardshipReviewDetailType mapDetailTypeToHardshipReviewDetailTypeEnum(String detailType) {
+        if (detailType != null) {
+            return HardshipReviewDetailType.getFrom(detailType);
         }
         return null;
     }

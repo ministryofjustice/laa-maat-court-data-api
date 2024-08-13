@@ -6,7 +6,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
-import gov.uk.courtdata.enums.HardshipReviewDetailType;
+import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
@@ -128,7 +128,7 @@ class HardshipReviewServiceTest {
 
         HardshipReviewDetailEntity reviewDetail = HardshipReviewDetailEntity.builder()
                 .id(MOCK_HARDSHIP_ID)
-                .detailType(HardshipReviewDetailType.EXPENDITURE)
+                .detailType(HardshipReviewDetailType.EXPENDITURE.getType())
                 .build();
 
         hardshipReviewEntity.addReviewDetail(reviewDetail);

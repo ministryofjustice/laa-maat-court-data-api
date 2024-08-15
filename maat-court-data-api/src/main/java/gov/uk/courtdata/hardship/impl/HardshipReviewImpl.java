@@ -36,7 +36,6 @@ public class HardshipReviewImpl {
     public HardshipReviewEntity create(final HardshipReviewDTO hardshipReviewDTO) {
         HardshipReviewEntity hardshipReview =
                 hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
-                hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
         return hardshipReviewRepository.saveAndFlush(hardshipReview);
     }
 

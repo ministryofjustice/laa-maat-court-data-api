@@ -139,6 +139,9 @@ public class Repositories {
   public FdcContributionsRepository fdcContributions;
 
   @Autowired
+  public FdcItemsRepository fdcItemsRepository;
+
+  @Autowired
   public FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistory;
 
   @Autowired
@@ -270,8 +273,6 @@ public class Repositories {
   @Autowired
   private RepositoryUtil repositoryUtil;
 
-  @Autowired
-  private FdcItemsRepository fdcItemsRepository;
 
   @NotNull
   private JpaRepository[] allRepositories() {

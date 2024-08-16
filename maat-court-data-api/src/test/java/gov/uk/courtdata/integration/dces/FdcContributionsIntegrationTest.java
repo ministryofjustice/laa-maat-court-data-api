@@ -1,11 +1,14 @@
 package gov.uk.courtdata.integration.dces;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.dces.request.CreateFdcItemRequest;
 import gov.uk.courtdata.dces.service.DebtCollectionRepository;
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
+import gov.uk.courtdata.entity.FdcItemsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +42,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     private static final String GLOBAL_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/prepare-fdc-contributions-files";
     private static final String ATOMIC_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/create-fdc-file";
     private static final String DRC_UPDATE_URL = "/api/internal/v1/debt-collection-enforcement/log-fdc-response";
+    private static final String FDC_ITEMS_URL = "/api/internal/v1/debt-collection-enforcement/fdc-items";
 
     private static final String expectedFinalCost1 = "1111.11";
     private static final FdcContributionsStatus expectedStatus1 = FdcContributionsStatus.REQUESTED;
@@ -73,12 +78,15 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
 
         expectedId1 = repos.fdcContributions.save(buildFdcEntity(expectedStatus1, expectedFinalCost1, file1Id)).getId();
         repId1 = expectedId1;
+        repos.fdcItemsRepository.save(FdcItemsEntity.builder().fdcId(expectedId1).build()).getId();
         expectedId2 = repos.fdcContributions.save(buildFdcEntity(expectedStatus2, expectedFinalCost2, 99999999)).getId();
         repId2 = expectedId2;
         expectedId3 = repos.fdcContributions.save(buildFdcEntity(expectedStatus3, expectedFinalCost3, null)).getId();
         repId3 = expectedId3;
         expectedId4 = repos.fdcContributions.save(buildFdcEntity(expectedStatus4, expectedFinalCost4, file2Id)).getId();
         repId4 = expectedId4;
+
+
     }
 
     private ContributionFilesEntity buildFileEntity(String fileIdentifier, boolean isBlankXml) {
@@ -276,6 +284,90 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         FdcContributionsEntity originalFile = repos.fdcContributions.findById(fdcId).get();
         ContributionFilesEntity filesEntity = repos.contributionFiles.findById(originalFile.getContFileId()).get();
         assertEquals(0, filesEntity.getRecordsReceived()); // ensure the increment is rolled back.
+    }
+
+    @Test
+    void testDeleteFdcItem() throws Exception {
+        long originalFdcItemCount = repos.fdcItemsRepository.count();
+        String parameter = "/fdc-id/{fdc-id}";
+        mockMvc.perform(MockMvcRequestBuilders.delete(FDC_ITEMS_URL+parameter, expectedId1))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        assertEquals(originalFdcItemCount-1, repos.fdcItemsRepository.count());
+    }
+
+    @Test
+    void testCreateFdcItemWithDefaultedValues() throws Exception {
+        long originalFdcItemCount = repos.fdcItemsRepository.count();
+        String itemType = "Test";
+        CreateFdcItemRequest request = CreateFdcItemRequest.builder()
+                .fdcId(expectedId2)
+                .itemType(itemType)
+                .build();
+
+        ObjectMapper om = new ObjectMapper();
+        String s = om.writeValueAsString(request);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(FDC_ITEMS_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(s))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        assertEquals(originalFdcItemCount+1, repos.fdcItemsRepository.count());
+        Optional<FdcItemsEntity> optionalItem = repos.fdcItemsRepository.findAll().stream().filter(item-> item.getFdcId().equals(expectedId2)).findFirst();
+        assertTrue(optionalItem.isPresent());
+        FdcItemsEntity savedEntity = optionalItem.get();
+        assertEquals(itemType, savedEntity.getItemType());
+        // check basic values.
+        assertEquals(LocalDate.now(), savedEntity.getDateCreated());
+        assertEquals(LocalDate.now(), savedEntity.getDateModified());
+        assertEquals("DCES", savedEntity.getUserCreated());
+        assertEquals("DCES", savedEntity.getUserModified());
+    }
+    @Test
+    void testCreateFdcItemWithExplicitValues() throws Exception {
+        long originalFdcItemCount = repos.fdcItemsRepository.count();
+        String itemType = "Test";
+        LocalDate expectedDate = LocalDate.of(2000,1,1);
+        String expectedUser = "Test User";
+        String expectedCostInd = "A";
+        String expectedPaidAsClaimed = "B";
+        String expectedAdjustReason = "C";
+        CreateFdcItemRequest request = CreateFdcItemRequest.builder()
+                .fdcId(expectedId4)
+                .itemType(itemType)
+                .latestCostInd(expectedCostInd)
+                .paidAsClaimed(expectedPaidAsClaimed)
+                .adjustmentReason(expectedAdjustReason)
+                .userCreated(expectedUser)
+                .dateCreated(expectedDate)
+                .build();
+
+        ObjectMapper om = new ObjectMapper();
+        om.findAndRegisterModules();
+        String s = om.writeValueAsString(request);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(FDC_ITEMS_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(s))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        assertEquals(originalFdcItemCount+1, repos.fdcItemsRepository.count());
+        Optional<FdcItemsEntity> optionalItem = repos.fdcItemsRepository.findAll().stream().filter(item-> item.getFdcId().equals(expectedId4)).findFirst();
+        assertTrue(optionalItem.isPresent());
+        FdcItemsEntity savedEntity = optionalItem.get();
+        assertEquals(itemType, savedEntity.getItemType());
+        // check basic values. Dates are auto-populated, so should ignore set values.
+        assertEquals(LocalDate.now(), savedEntity.getDateCreated());
+        assertEquals(LocalDate.now(), savedEntity.getDateModified());
+        assertEquals(expectedUser, savedEntity.getUserCreated());
+        assertEquals(expectedUser, savedEntity.getUserModified());
+        assertEquals(expectedCostInd, savedEntity.getLatestCostInd());
+        assertEquals(expectedPaidAsClaimed, savedEntity.getPaidAsClaimed());
+        assertEquals(expectedAdjustReason, savedEntity.getAdjustmentReason());
     }
 
     private String createLogDrcProcessedRequest(Integer id, String errorText) {

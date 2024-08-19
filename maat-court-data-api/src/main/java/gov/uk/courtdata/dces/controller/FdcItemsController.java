@@ -33,7 +33,7 @@ public class FdcItemsController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @PostMapping(value = "/fdc-items", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Logs that a final defence cost was processed by the Debt Recovery Company. Creates an error entry if one has been returned.")
+    @Operation(description = "Creates an fdc item as per the request body.")
     public ResponseEntity<FdcItemsEntity> createFdcItems(@Valid @RequestBody final CreateFdcItemRequest fdcItemDTO) {
         log.info("Create FdcItems {}", fdcItemDTO);
         FdcItemsEntity fdcItem = fdcContributionsService.createFdcItems(fdcItemDTO);
@@ -43,9 +43,8 @@ public class FdcItemsController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @DeleteMapping(value = "/fdc-items/fdc-id/{fdcId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "")
+    @Operation(description = "Deletes the fdc items associated with the fdc id.")
     public ResponseEntity<Long> deleteFdcItems(@NotNull @PathVariable final Integer fdcId) {
-
             log.info("Delete FdcItems {}", fdcId);
             long count = fdcContributionsService.deleteFdcItems(fdcId);
             return ResponseEntity.ok(count);

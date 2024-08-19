@@ -159,6 +159,14 @@ public class FdcContributionsService {
     }
 
     public FdcItemsEntity createFdcItems(CreateFdcItemRequest fdcRequest) {
+        // set some default values for dces.
+        if(Objects.isNull(fdcRequest.getDateCreated())){
+            fdcRequest.setDateCreated(LocalDate.now());
+        }
+        if(Objects.isNull(fdcRequest.getUserCreated())){
+            fdcRequest.setUserCreated(USER_AUDIT);
+        }
+
         try {
             log.info("Create createFdcItems {}", fdcRequest);
             FdcItemsEntity fdcItemsEntity = FdcItemsEntity.builder()
@@ -179,6 +187,7 @@ public class FdcContributionsService {
         }
     }
 
+    @Transactional
     public long deleteFdcItems(Integer fdcId) {
         log.info("Delete FdcItemsEntity with fdcId {}", fdcId);
         try {

@@ -88,6 +88,9 @@ class HardshipReviewImplTest {
 
         hardshipReviewImpl.create(hardshipReviewDTO);
         verify(hardshipReviewRepository).saveAndFlush(hardshipReviewEntityArgumentCaptor.capture());
+        verify(hardshipReviewRepository).replaceOldHardshipReviews(
+                TestEntityDataBuilder.REP_ID, hardshipReviewDTO.getCourtType()
+        );
         assertThat(hardshipReviewEntityArgumentCaptor.getValue().getId())
                 .isEqualTo(hardshipReviewDTO.getId());
     }

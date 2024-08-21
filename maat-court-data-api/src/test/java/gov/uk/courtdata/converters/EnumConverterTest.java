@@ -2,7 +2,7 @@ package gov.uk.courtdata.converters;
 
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.Frequency;
-import gov.uk.courtdata.enums.HardshipReviewDetailType;
+import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
 import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
 import gov.uk.courtdata.enums.HardshipReviewProgressAction;
@@ -68,7 +68,7 @@ public class EnumConverterTest {
         HardshipReviewDetailEntity mockEntity = HardshipReviewDetailEntity.builder()
                 .dateCreated(LocalDateTime.now())
                 .userCreated("test-s")
-                .detailType(HardshipReviewDetailType.INCOME)
+                .detailType(HardshipReviewDetailType.INCOME.getType())
                 .detailCode(HardshipReviewDetailCode.DEBTS)
                 .frequency(Frequency.ANNUALLY)
                 .build();
@@ -76,7 +76,6 @@ public class EnumConverterTest {
         HardshipReviewDetailEntity returned = hardshipReviewDetailRepository.save(mockEntity);
         assertThat(returned.getFrequency()).isEqualTo(Frequency.ANNUALLY);
         assertThat(returned.getDetailCode()).isEqualTo(HardshipReviewDetailCode.DEBTS);
-        assertThat(returned.getDetailType()).isEqualTo(HardshipReviewDetailType.INCOME);
 
     }
 

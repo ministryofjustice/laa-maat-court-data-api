@@ -11,6 +11,7 @@ import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import org.mapstruct.*;
+import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
 @Mapper(
@@ -30,6 +31,11 @@ public interface HardshipReviewMapper {
     @Mapping(source = "status", target = "status", qualifiedByName = "mapStatusToHardshipReviewStatusEnum")
     HardshipReviewDTO hardshipReviewEntityToHardshipReviewDTO(final HardshipReviewEntity hardshipReview);
 
+    @InheritInverseConfiguration
+    @Mapping(source = "status", target = "status", qualifiedByName = "mapHardshipReviewStatusEnumToStatus")
+    HardshipReviewEntity hardshipReviewDTOToHardshipReviewEntity(final HardshipReviewDTO hardshipReviewDTO);
+
+    @Mapping(source = "detailType", target = "detailType", qualifiedByName = "mapDetailTypeToHardshipReviewDetailTypeEnum")
     HardshipReviewDetail hardshipReviewDetailEntityToHardshipReviewDetail(
             final HardshipReviewDetailEntity reviewDetailEntity
     );
@@ -57,13 +63,26 @@ public interface HardshipReviewMapper {
     @Mapping(target = "valid", source = "valid", defaultValue = "Y")
     HardshipReviewDTO updateHardshipReviewToHardshipReviewDTO(final UpdateHardshipReview hardshipReview);
 
-    @InheritInverseConfiguration
-    HardshipReviewEntity hardshipReviewDTOToHardshipReviewEntity(final HardshipReviewDTO hardshipReviewDTO);
-
     @Named("mapStatusToHardshipReviewStatusEnum")
     default HardshipReviewStatus mapStatusToHardshipReviewStatusEnum(String status) {
         if (status != null) {
             return HardshipReviewStatus.getFrom(status);
+        }
+        return null;
+    }
+
+    @Named("mapHardshipReviewStatusEnumToStatus")
+    default String mapHardshipReviewStatusEnumToStatus(HardshipReviewStatus status) {
+        if (status != null) {
+            return status.getValue();
+        }
+        return null;
+    }
+
+    @Named("mapDetailTypeToHardshipReviewDetailTypeEnum")
+    default HardshipReviewDetailType mapDetailTypeToHardshipReviewDetailTypeEnum(String detailType) {
+        if (detailType != null) {
+            return HardshipReviewDetailType.getFrom(detailType);
         }
         return null;
     }

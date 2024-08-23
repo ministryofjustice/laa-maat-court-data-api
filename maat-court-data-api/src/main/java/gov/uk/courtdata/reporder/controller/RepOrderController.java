@@ -4,8 +4,8 @@ import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.applicant.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.dto.AssessorDetails;
+import gov.uk.courtdata.dto.AtisRepOrderDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
-import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
@@ -25,11 +25,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -101,16 +99,28 @@ public class RepOrderController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve rep order ID record by USN")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+    @StandardApiResponse
+    public ResponseEntity<Integer> findRepOrderIdByUsn(@RequestParam(value = "usn") Integer usn) {
+        log.debug("Get Rep Order ID By USN Received");
+        return ResponseEntity.ok(repOrderService.findRepOrderIdByUsn(usn));
+    }
+
+    @GetMapping(value = "/usn/{usn}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve rep order records by USN")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
     @StandardApiResponse
-    public ResponseEntity<Set<Integer>> findByUsn(@RequestParam(value = "usn") Integer usn) {
+    public ResponseEntity<AtisRepOrderDTO> findRepOrderByUsn(@PathVariable int usn) {
         log.debug("Get Rep Order By USN Received");
-        List<RepOrderEntity> repOrderEntityList = repOrderRepository.findByUsn(usn);
-        return ResponseEntity.ok(repOrderEntityList.stream().map(RepOrderEntity::getId).collect(Collectors.toSet()));
+        return ResponseEntity.ok(repOrderService.findRepOrderByUsn(usn));
     }
+
+
 
     @GetMapping(value = "/rep-order-mvo-reg/{mvoId}/current-registration", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a rep order record")

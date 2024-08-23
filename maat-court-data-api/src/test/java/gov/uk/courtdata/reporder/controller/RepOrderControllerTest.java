@@ -314,30 +314,26 @@ class RepOrderControllerTest {
 
     @Test
     void givenValidUsn_whenFindByUsnIsInvokedAndFindsARepOrder_thenCorrectResponseIsReturned() throws Exception {
-        List<RepOrderEntity> expectedRepOrder = new ArrayList<>();
-        expectedRepOrder.add(RepOrderEntity.builder().id(REP_ID).usn(USN).build());
-        when(repOrderRepository.findByUsn(USN))
-                .thenReturn(expectedRepOrder);
+        when(repOrderService.findRepOrderIdByUsn(USN))
+                .thenReturn(REP_ID);
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
                         .param("usn", String.valueOf(USN)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0]", is(REP_ID)));
+                .andExpect(jsonPath("$", is(REP_ID)));
     }
 
     @Test
     void givenValidUsn_whenFindByUsnIsInvokedAndFindsNoRepOrder_thenCorrectResponseIsReturned() throws Exception {
-        List<RepOrderEntity> expectedRepOrder = new ArrayList<>();
+        RepOrderEntity expectedRepOrder = null;
         when(repOrderRepository.findByUsn(USN))
                 .thenReturn(expectedRepOrder);
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
                         .param("usn", String.valueOf(USN)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test

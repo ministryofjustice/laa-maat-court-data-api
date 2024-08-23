@@ -1,6 +1,7 @@
 package gov.uk.courtdata.reporder.mapper;
 
 import gov.uk.courtdata.dto.AssessorDetails;
+import gov.uk.courtdata.dto.AtisRepOrderDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.CreateRepOrder;
@@ -32,6 +33,35 @@ public interface RepOrderMapper {
         return AssessorDetails.builder()
                 .fullName(fullName)
                 .userName(repOrder.getUserCreated())
+                .build();
+    }
+
+    default AtisRepOrderDTO mapAtisRepOrder(RepOrderEntity repOrderEntity) {
+        if (repOrderEntity == null) {
+            return null;
+        }
+
+        return AtisRepOrderDTO.builder()
+                .usn(repOrderEntity.getUsn())
+                .maatRef(repOrderEntity.getId())
+                .caseId(repOrderEntity.getCaseId())
+                // TODO
+                .caseType(null)
+                .iojResult(null)
+                .iojAssesorName(null)
+                .dateAppCreated(null)
+                .iojReason(null)
+                .meansInitResult(null)
+                .meansInitStatus(null)
+                .meansFullResult(null)
+                .meansFullStatus(null)
+                .meansAssessorName(null)
+                .dateMeansCreated(null)
+                .passportResult(null)
+                .passportStatus(null)
+                .passportAssessorName(null)
+                .datePassportCreated(null)
+                .fundingDecision(null)
                 .build();
     }
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.justice.laa.crime.dto.maat.UserDTO;
 
 import java.time.LocalDateTime;
 
@@ -58,4 +59,5 @@ public class PassportAssessmentDTO {
     private Integer usn;
     private String whoDWPChecked;
     private String rtCode;
+    private UserDTO userCreatedEntity;
 }

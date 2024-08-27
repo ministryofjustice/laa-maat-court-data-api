@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -19,8 +20,8 @@ public class AtisRepOrderDTO {
     private String caseType;
 
     private String iojResult;
-    private String iojAssesorName;
-    private LocalDateTime dateAppCreated;
+    private AssessorDetails iojAssesorName;
+    private LocalDate dateAppCreated;
     private String iojReason;
 
     private String meansInitResult;

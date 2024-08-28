@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 })
 public class FinAssIncomeEvidenceEntity {
     @Id
+    @SequenceGenerator(name = "fin_ass_income_evidence_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_income_evidence_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
 

@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class FinancialAssessmentIncomeEvidence {
     private Integer id;
-    private Integer fiasId;
     private LocalDateTime dateReceived;
     private String userCreated;
     private String userModified;

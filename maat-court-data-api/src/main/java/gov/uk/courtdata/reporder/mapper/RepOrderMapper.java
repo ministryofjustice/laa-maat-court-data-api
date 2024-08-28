@@ -17,6 +17,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -60,34 +61,37 @@ public interface RepOrderMapper {
                 .iojAssesorName(createIOJAssessorDetails(repOrderEntity))
                 .dateAppCreated(repOrderEntity.getDateCreated())
                 .iojReason(repOrderEntity.getIojResultNote())
-                .meansInitResult(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getInitResult))
-                .meansInitStatus(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getFassInitStatus))
-                .meansFullResult(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getFullResult))
-                .meansFullStatus(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getFassFullStatus))
-                .meansAssessorName(createFinancialAssessmentDataByExpression(repOrderEntity, financialAssessment -> {
+                .meansInitResult(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getInitResult))
+                .meansInitStatus(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getFassInitStatus))
+                .meansFullResult(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getFullResult))
+                .meansFullStatus(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getFassFullStatus))
+                .meansAssessorName(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, financialAssessment -> {
                     UserEntity userCreatedEntity = financialAssessment.getUserCreatedEntity();
                     if (userCreatedEntity != null) {
                         return UserEntityUtils.extractFullName(userCreatedEntity);
                     }
                     return null;
                 }))
-                .dateMeansCreated(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getDateCreated))
-                .passportResult(createPassportAssessmentDataByExpression(repOrderEntity, PassportAssessmentEntity::getResult))
-                .passportStatus(createPassportAssessmentDataByExpression(repOrderEntity, PassportAssessmentEntity::getPastStatus))
-                .passportAssessorName(createPassportAssessmentDataByExpression(repOrderEntity, passportAssessmentEntity -> {
+                .dateMeansCreated(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getDateCreated))
+                .passportResult(createPassportAssessmentDataByExpression(repOrderEntity, PassportAssessmentEntity::getId, PassportAssessmentEntity::getResult))
+                .passportStatus(createPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, PassportAssessmentEntity::getPastStatus))
+                .passportAssessorName(createPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, passportAssessmentEntity -> {
                     UserEntity userCreatedEntity = passportAssessmentEntity.getUserCreatedEntity();
                     if (userCreatedEntity != null) {
                         return UserEntityUtils.extractFullName(userCreatedEntity);
                     }
                     return null;
                 }))
-                .datePassportCreated(createPassportAssessmentDataByExpression(repOrderEntity, PassportAssessmentEntity::getDateCreated))
+                .datePassportCreated(createPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, PassportAssessmentEntity::getDateCreated))
                 .fundingDecision(repOrderEntity.getDecisionReasonCode())
                 .build();
     }
 
-    private <E, T> T createAssessmentDataByExpression(List<E> assessments, Function<E, T> expressionToGetDataFromAssessment) {
+    private <E, T> T createAssessmentDataByExpression(List<E> assessments, Function<E, Integer> idExtractor, Function<E, T> expressionToGetDataFromAssessment) {
         if (assessments != null && !assessments.isEmpty()) {
+            // Sort the assessments by ID in descending order, so we get the latest assessment
+            assessments.sort(Comparator.comparing(idExtractor).reversed());
+
             for (E assessment : assessments) {
                 if (assessment != null) {
                     T assessmentData = expressionToGetDataFromAssessment.apply(assessment);
@@ -100,12 +104,12 @@ public interface RepOrderMapper {
         return null;
     }
 
-    private <T> T createFinancialAssessmentDataByExpression(RepOrderEntity repOrderEntity, Function<FinancialAssessmentEntity, T> expression) {
-        return createAssessmentDataByExpression(repOrderEntity.getFinancialAssessments(), expression);
+    private <T> T createFinancialAssessmentDataByExpression(RepOrderEntity repOrderEntity, Function<FinancialAssessmentEntity, Integer> idExtractor, Function<FinancialAssessmentEntity, T> expression) {
+        return createAssessmentDataByExpression(repOrderEntity.getFinancialAssessments(), idExtractor, expression);
     }
 
-    private <T> T createPassportAssessmentDataByExpression(RepOrderEntity repOrderEntity, Function<PassportAssessmentEntity, T> expression) {
-        return createAssessmentDataByExpression(repOrderEntity.getPassportAssessments(), expression);
+    private <T> T createPassportAssessmentDataByExpression(RepOrderEntity repOrderEntity, Function<PassportAssessmentEntity, Integer> idExtractor, Function<PassportAssessmentEntity, T> expression) {
+        return createAssessmentDataByExpression(repOrderEntity.getPassportAssessments(), idExtractor, expression);
     }
 
 }

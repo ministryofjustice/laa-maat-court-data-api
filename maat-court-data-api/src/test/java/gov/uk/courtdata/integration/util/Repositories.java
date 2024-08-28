@@ -8,65 +8,7 @@ import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
-import gov.uk.courtdata.repository.AppealTypeRepository;
-import gov.uk.courtdata.repository.CaseRepository;
-import gov.uk.courtdata.repository.ChildWeightHistoryRepository;
-import gov.uk.courtdata.repository.ChildWeightingsRepository;
-import gov.uk.courtdata.repository.ConcorContributionsRepository;
-import gov.uk.courtdata.repository.ContribCalcParametersRepository;
-import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
-import gov.uk.courtdata.repository.ContributionFilesRepository;
-import gov.uk.courtdata.repository.CorrespondenceRepository;
-import gov.uk.courtdata.repository.CorrespondenceStateRepository;
-import gov.uk.courtdata.repository.CourtHouseCodesRepository;
-import gov.uk.courtdata.repository.CrownCourtCodeRepository;
-import gov.uk.courtdata.repository.CrownCourtOutcomeRepository;
-import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
-import gov.uk.courtdata.repository.DefendantMAATDataRepository;
-import gov.uk.courtdata.repository.DefendantRepository;
-import gov.uk.courtdata.repository.FdcContributionsRepository;
-import gov.uk.courtdata.repository.FdcItemsRepository;
-import gov.uk.courtdata.repository.FinancialAssessmentDetailsHistoryRepository;
-import gov.uk.courtdata.repository.FinancialAssessmentDetailsRepository;
-import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.FinancialAssessmentsHistoryRepository;
-import gov.uk.courtdata.repository.HardshipReviewDetailRepository;
-import gov.uk.courtdata.repository.HardshipReviewProgressRepository;
-import gov.uk.courtdata.repository.HardshipReviewRepository;
-import gov.uk.courtdata.repository.IOJAppealRepository;
-import gov.uk.courtdata.repository.IdentifierRepository;
-import gov.uk.courtdata.repository.OffenceRepository;
-import gov.uk.courtdata.repository.PassportAssessmentRepository;
-import gov.uk.courtdata.repository.PleaRepository;
-import gov.uk.courtdata.repository.ProceedingRepository;
-import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import gov.uk.courtdata.repository.RepOrderCPDataRepository;
-import gov.uk.courtdata.repository.RepOrderCapitalRepository;
-import gov.uk.courtdata.repository.RepOrderMvoRegRepository;
-import gov.uk.courtdata.repository.RepOrderMvoRepository;
-import gov.uk.courtdata.repository.RepOrderRepository;
-import gov.uk.courtdata.repository.ReservationsRepository;
-import gov.uk.courtdata.repository.ResultRepository;
-import gov.uk.courtdata.repository.RoleActionsRepository;
-import gov.uk.courtdata.repository.RoleDataItemsRepository;
-import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
-import gov.uk.courtdata.repository.SessionRepository;
-import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
-import gov.uk.courtdata.repository.SolicitorRepository;
-import gov.uk.courtdata.repository.UnlinkReasonRepository;
-import gov.uk.courtdata.repository.UserRepository;
-import gov.uk.courtdata.repository.UserRolesRepository;
-import gov.uk.courtdata.repository.VerdictRepository;
-import gov.uk.courtdata.repository.WQCaseRepository;
-import gov.uk.courtdata.repository.WQDefendantRepository;
-import gov.uk.courtdata.repository.WQHearingRepository;
-import gov.uk.courtdata.repository.WQOffenceRepository;
-import gov.uk.courtdata.repository.WQResultRepository;
-import gov.uk.courtdata.repository.WQSessionRepository;
-import gov.uk.courtdata.repository.WqCoreRepository;
-import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import gov.uk.courtdata.repository.XLATOffenceRepository;
-import gov.uk.courtdata.repository.XLATResultRepository;
+import gov.uk.courtdata.repository.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -149,6 +91,9 @@ public class Repositories {
 
   @Autowired
   public FinancialAssessmentRepository financialAssessment;
+
+  @Autowired
+  public FinAssIncomeEvidenceRepository finAssIncomeEvidenceRepository;
 
   @Autowired
   public FinancialAssessmentsHistoryRepository financialAssessmentsHistory;

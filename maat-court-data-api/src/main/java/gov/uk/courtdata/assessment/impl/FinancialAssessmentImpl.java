@@ -86,14 +86,6 @@ public class FinancialAssessmentImpl {
             updateChildWeightings(financialAssessment, existingAssessment);
         }
 
-        financialAssessment.getFinAssIncomeEvidences()
-                    .stream()
-                    .forEach(evidenceDTO -> existingAssessment.addFinAssIncomeEvidences(
-                            assessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(evidenceDTO)));
-
-        FinancialAssessmentEntity financialAssessmentEntity = financialAssessmentRepository
-                                                                    .saveAndFlush(existingAssessment);
-        log.info("Financial Assessment updated successfully");
 
         List<FinAssIncomeEvidenceEntity> existingIncomeEvidences = existingAssessment.getFinAssIncomeEvidences();
         for (FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity : existingIncomeEvidences) {
@@ -103,9 +95,19 @@ public class FinancialAssessmentImpl {
                     .noneMatch(evidenceDTO -> evidenceDTO.getIncomeEvidence()
                             .equals(finAssIncomeEvidenceEntity.getIncomeEvidence()))) {
                 log.info("Deleting Financial Assessment Income Evidence Id : " + finAssIncomeEvidenceEntity.getId());
-                finAssIncomeEvidenceRepository.deleteByFinAssIncomeEvidenceId(finAssIncomeEvidenceEntity.getId());
+                finAssIncomeEvidenceRepository.deleteById(finAssIncomeEvidenceEntity.getId());
             }
         }
+
+        existingAssessment.getFinAssIncomeEvidences().clear();
+        financialAssessment.getFinAssIncomeEvidences()
+                .stream()
+                .forEach(evidenceDTO -> existingAssessment.addFinAssIncomeEvidences(
+                        assessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(evidenceDTO)));
+
+        FinancialAssessmentEntity financialAssessmentEntity = financialAssessmentRepository
+                .saveAndFlush(existingAssessment);
+        log.info("Financial Assessment updated successfully");
 
         return existingAssessment;
     }

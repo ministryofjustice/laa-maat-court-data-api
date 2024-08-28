@@ -38,13 +38,12 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
     open-in-view: false
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         jdbc.lob.non_contextual_creation: true
         enable_lazy_load_no_trans: true
         dialect: org.hibernate.dialect.OracleDialect
-        format_sql: true
 
   togdata:
     username: ${TOGDATA_DATASOURCE_USERNAME}

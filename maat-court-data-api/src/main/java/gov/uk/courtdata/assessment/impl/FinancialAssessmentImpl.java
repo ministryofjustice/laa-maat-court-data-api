@@ -80,6 +80,12 @@ public class FinancialAssessmentImpl {
             updateChildWeightings(financialAssessment, existingAssessment);
         }
 
+        if (!financialAssessment.getFinAssIncomeEvidences().isEmpty()){
+            financialAssessment.getFinAssIncomeEvidences()
+                    .stream()
+                    .forEach(evidenceDTO -> existingAssessment.addFinAssIncomeEvidences(
+                            assessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(evidenceDTO)));
+        }
         return financialAssessmentRepository.saveAndFlush(existingAssessment);
     }
 

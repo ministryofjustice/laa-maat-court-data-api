@@ -86,27 +86,29 @@ public class FinancialAssessmentImpl {
             updateChildWeightings(financialAssessment, existingAssessment);
         }
 
-
+        // Retrieve the list of existing income evidence records from the existing assessment
         List<FinAssIncomeEvidenceEntity> existingIncomeEvidences = existingAssessment.getFinAssIncomeEvidences();
-        for (FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity : existingIncomeEvidences) {
-            log.info("Existing evidence: " + finAssIncomeEvidenceEntity.getIncomeEvidence());
-            if (financialAssessment.getFinAssIncomeEvidences()
-                    .stream()
-                    .noneMatch(evidenceDTO -> evidenceDTO.getIncomeEvidence()
-                            .equals(finAssIncomeEvidenceEntity.getIncomeEvidence()))) {
-                log.info("Deleting Financial Assessment Income Evidence Id : " + finAssIncomeEvidenceEntity.getId());
-                finAssIncomeEvidenceRepository.deleteById(finAssIncomeEvidenceEntity.getId());
+        existingIncomeEvidences.forEach(evidence -> {
+            log.info("Existing evidence: {}", evidence.getIncomeEvidence());
+            // Check if the current evidence is not present in the updated financial assessment
+            if (financialAssessment.getFinAssIncomeEvidences().stream()
+                    .noneMatch(dto -> dto.getIncomeEvidence().equals(evidence.getIncomeEvidence()))) {
+                log.info("Deleting Financial Assessment Income Evidence Id: {}", evidence.getId());
+                finAssIncomeEvidenceRepository.deleteById(evidence.getId());
             }
-        }
+        });
 
         existingAssessment.getFinAssIncomeEvidences().clear();
-        financialAssessment.getFinAssIncomeEvidences()
-                .stream()
-                .forEach(evidenceDTO -> existingAssessment.addFinAssIncomeEvidences(
-                        assessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(evidenceDTO)));
+        // Iterate over each income evidence DTO in the updated financial assessment
+        financialAssessment.getFinAssIncomeEvidences().forEach(dto ->
+                // Convert the DTO to an entity and add it to the existing assessment
+                existingAssessment.addFinAssIncomeEvidences(
+                        assessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(dto)
+                )
+        );
 
-        FinancialAssessmentEntity financialAssessmentEntity = financialAssessmentRepository
-                .saveAndFlush(existingAssessment);
+        // Save and flush the updated financial assessment entity
+        financialAssessmentRepository.saveAndFlush(existingAssessment);
         log.info("Financial Assessment updated successfully");
 
         return existingAssessment;

@@ -86,13 +86,13 @@ public interface RepOrderMapper {
                 .build();
     }
 
-    private <E, T> T createAssessmentDataByExpression(List<E> entities, Function<E, T> expression) {
-        if (entities != null && !entities.isEmpty()) {
-            for (E entity : entities) {
-                if (entity != null) {
-                    T result = expression.apply(entity);
-                    if (result != null) {
-                        return result;
+    private <E, T> T createAssessmentDataByExpression(List<E> assessments, Function<E, T> expressionToGetDataFromAssessment) {
+        if (assessments != null && !assessments.isEmpty()) {
+            for (E assessment : assessments) {
+                if (assessment != null) {
+                    T assessmentData = expressionToGetDataFromAssessment.apply(assessment);
+                    if (assessmentData != null) {
+                        return assessmentData;
                     }
                 }
             }

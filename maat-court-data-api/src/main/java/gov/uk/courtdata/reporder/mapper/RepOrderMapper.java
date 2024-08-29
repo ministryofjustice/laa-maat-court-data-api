@@ -65,23 +65,15 @@ public interface RepOrderMapper {
                 .meansInitStatus(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getFassInitStatus))
                 .meansFullResult(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getFullResult))
                 .meansFullStatus(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getFassFullStatus))
-                .meansAssessorName(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, financialAssessment -> {
-                    UserEntity userCreatedEntity = financialAssessment.getUserCreatedEntity();
-                    if (userCreatedEntity != null) {
-                        return UserEntityUtils.extractFullName(userCreatedEntity);
-                    }
-                    return null;
-                }))
+                .meansAssessorName(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, financialAssessment ->
+                        UserEntityUtils.extractFullName(financialAssessment.getUserCreatedEntity())
+                ))
                 .dateMeansCreated(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getDateCreated))
                 .passportResult(createPassportAssessmentDataByExpression(repOrderEntity, PassportAssessmentEntity::getId, PassportAssessmentEntity::getResult))
                 .passportStatus(createPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, PassportAssessmentEntity::getPastStatus))
-                .passportAssessorName(createPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, passportAssessmentEntity -> {
-                    UserEntity userCreatedEntity = passportAssessmentEntity.getUserCreatedEntity();
-                    if (userCreatedEntity != null) {
-                        return UserEntityUtils.extractFullName(userCreatedEntity);
-                    }
-                    return null;
-                }))
+                .passportAssessorName(createPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, passportAssessmentEntity ->
+                        UserEntityUtils.extractFullName(passportAssessmentEntity.getUserCreatedEntity())
+                ))
                 .datePassportCreated(createPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, PassportAssessmentEntity::getDateCreated))
                 .fundingDecision(repOrderEntity.getDecisionReasonCode())
                 .build();

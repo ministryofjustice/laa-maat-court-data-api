@@ -61,26 +61,23 @@ public interface RepOrderMapper {
                 .iojAssesorName(createIOJAssessorDetails(repOrderEntity))
                 .dateAppCreated(repOrderEntity.getDateCreated())
                 .iojReason(repOrderEntity.getIojResultNote())
-                .meansInitResult(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getInitResult))
-                .meansInitStatus(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getFassInitStatus))
-                .meansFullResult(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getFullResult))
-                .meansFullStatus(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getFassFullStatus))
-                .meansAssessorName(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, financialAssessment ->
-                        UserEntityUtils.extractFullName(financialAssessment.getUserCreatedEntity())
-                ))
-                .dateMeansCreated(createFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getDateCreated))
-                .passportResult(createPassportAssessmentDataByExpression(repOrderEntity, PassportAssessmentEntity::getId, PassportAssessmentEntity::getResult))
-                .passportStatus(createPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, PassportAssessmentEntity::getPastStatus))
-                .passportAssessorName(createPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, passportAssessmentEntity ->
-                        UserEntityUtils.extractFullName(passportAssessmentEntity.getUserCreatedEntity())
-                ))
-                .datePassportCreated(createPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, PassportAssessmentEntity::getDateCreated))
+                .meansInitResult(getFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getInitResult))
+                .meansInitStatus(getFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getFassInitStatus))
+                .meansFullResult(getFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getFullResult))
+                .meansFullStatus(getFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getFassFullStatus))
+                .meansAssessorName(getFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, financialAssessment -> UserEntityUtils.extractFullName(financialAssessment.getUserCreatedEntity())))
+                .dateMeansCreated(getFinancialAssessmentDataByExpression(repOrderEntity, FinancialAssessmentEntity::getId, FinancialAssessmentEntity::getDateCreated))
+                .passportResult(getPassportAssessmentDataByExpression(repOrderEntity, PassportAssessmentEntity::getId, PassportAssessmentEntity::getResult))
+                .passportStatus(getPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, PassportAssessmentEntity::getPastStatus))
+                .passportAssessorName(getPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, passportAssessmentEntity -> UserEntityUtils.extractFullName(passportAssessmentEntity.getUserCreatedEntity())))
+                .datePassportCreated(getPassportAssessmentDataByExpression(repOrderEntity,PassportAssessmentEntity::getId, PassportAssessmentEntity::getDateCreated))
                 .fundingDecision(repOrderEntity.getDecisionReasonCode())
                 .build();
     }
 
-    private <E, T> T createAssessmentDataByExpression(List<E> assessments, Function<E, Integer> idExtractor, Function<E, T> expressionToGetDataFromAssessment) {
+    private <E, T> T getAssessmentDataByExpression(List<E> assessments, Function<E, Integer> idExtractor, Function<E, T> expressionToGetDataFromAssessment) {
         if (assessments != null && !assessments.isEmpty()) {
+
             // Sort the assessments by ID in descending order, so we get the latest assessment
             assessments.sort(Comparator.comparing(idExtractor).reversed());
 
@@ -96,12 +93,12 @@ public interface RepOrderMapper {
         return null;
     }
 
-    private <T> T createFinancialAssessmentDataByExpression(RepOrderEntity repOrderEntity, Function<FinancialAssessmentEntity, Integer> idExtractor, Function<FinancialAssessmentEntity, T> expression) {
-        return createAssessmentDataByExpression(repOrderEntity.getFinancialAssessments(), idExtractor, expression);
+    private <T> T getFinancialAssessmentDataByExpression(RepOrderEntity repOrderEntity, Function<FinancialAssessmentEntity, Integer> idExtractor, Function<FinancialAssessmentEntity, T> expression) {
+        return getAssessmentDataByExpression(repOrderEntity.getFinancialAssessments(), idExtractor, expression);
     }
 
-    private <T> T createPassportAssessmentDataByExpression(RepOrderEntity repOrderEntity, Function<PassportAssessmentEntity, Integer> idExtractor, Function<PassportAssessmentEntity, T> expression) {
-        return createAssessmentDataByExpression(repOrderEntity.getPassportAssessments(), idExtractor, expression);
+    private <T> T getPassportAssessmentDataByExpression(RepOrderEntity repOrderEntity, Function<PassportAssessmentEntity, Integer> idExtractor, Function<PassportAssessmentEntity, T> expression) {
+        return getAssessmentDataByExpression(repOrderEntity.getPassportAssessments(), idExtractor, expression);
     }
 
 }

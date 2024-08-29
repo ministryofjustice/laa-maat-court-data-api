@@ -4,7 +4,7 @@ import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.applicant.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.dto.AssessorDetails;
-import gov.uk.courtdata.dto.AtisRepOrderDTO;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.CreateRepOrder;
@@ -59,7 +59,6 @@ public class RepOrderController {
     private final MaatIdValidator maatIdValidator;
     private final RepOrderMvoRegService repOrderMvoRegService;
     private final UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
-    private final RepOrderRepository repOrderRepository;
 
     @RequestMapping(value = "/{repId}",
             method = {RequestMethod.GET, RequestMethod.HEAD},
@@ -110,14 +109,14 @@ public class RepOrderController {
     }
 
     @GetMapping(value = "/usn/{usn}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Retrieve rep order records by USN")
+    @Operation(description = "Retrieve rep order state details by USN")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
     @StandardApiResponse
-    public ResponseEntity<AtisRepOrderDTO> findRepOrderByUsn(@PathVariable int usn) {
-        log.debug("Get Rep Order By USN Received");
-        return ResponseEntity.ok(repOrderService.findRepOrderByUsn(usn));
+    public ResponseEntity<RepOrderStateDTO> findRepOrderStateByUsn(@PathVariable int usn) {
+        log.debug("Get Rep Order State By USN received");
+        return ResponseEntity.ok(repOrderService.findRepOrderStateByUsn(usn));
     }
 
 

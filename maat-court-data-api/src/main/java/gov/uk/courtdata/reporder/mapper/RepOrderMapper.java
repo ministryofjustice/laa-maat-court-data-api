@@ -1,7 +1,7 @@
 package gov.uk.courtdata.reporder.mapper;
 
 import gov.uk.courtdata.dto.AssessorDetails;
-import gov.uk.courtdata.dto.AtisRepOrderDTO;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
@@ -47,12 +47,12 @@ public interface RepOrderMapper {
                 .build();
     }
 
-    default AtisRepOrderDTO mapAtisRepOrder(RepOrderEntity repOrderEntity) {
+    default RepOrderStateDTO mapRepOrderState(RepOrderEntity repOrderEntity) {
         if (repOrderEntity == null) {
             return null;
         }
 
-        return AtisRepOrderDTO.builder()
+        return RepOrderStateDTO.builder()
                 .usn(repOrderEntity.getUsn())
                 .maatRef(repOrderEntity.getId())
                 .caseId(repOrderEntity.getCaseId())

@@ -1,7 +1,7 @@
 package gov.uk.courtdata.reporder.service;
 
 import gov.uk.courtdata.dto.AssessorDetails;
-import gov.uk.courtdata.dto.AtisRepOrderDTO;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -136,8 +136,8 @@ public class RepOrderService {
         return repOrderEntity != null ? repOrderEntity.getId() : null;
     }
 
-    public AtisRepOrderDTO findRepOrderByUsn(Integer usn) {
+    public RepOrderStateDTO findRepOrderStateByUsn(Integer usn) {
         RepOrderEntity repOrderEntity = repOrderRepository.findByUsn(usn);
-        return repOrderEntity != null ? repOrderMapper.mapAtisRepOrder(repOrderEntity) : null;
+        return repOrderEntity != null ? repOrderMapper.mapRepOrderState(repOrderEntity) : null;
     }
 }

@@ -2,9 +2,7 @@ package gov.uk.courtdata.reporder.controller;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.constants.ErrorCodes;
-import gov.uk.courtdata.dto.RepOrderDTO;
-import gov.uk.courtdata.dto.RepOrderMvoDTO;
-import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
+import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
@@ -28,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -48,6 +47,23 @@ class RepOrderControllerTest {
     private static final String CURRENT_REGISTRATION = "current-registration";
     private static final Integer USN = 12345;
     private static final Integer REP_ID = 54321;
+    private static final int USN_VALUE = 810529;
+    private static final int MAAT_REF_VALUE = 4799873;
+    private static final String CASE_ID_VALUE = "1400466826-10";
+    private static final String CASE_TYPE_VALUE = "SUMMARY ONLY";
+    private static final String IOJ_RESULT_VALUE = "PASS";
+    private static final String IOJ_ASSESSOR_FULL_NAME = "Maeve OConnor";
+    private static final String IOJ_ASSESSOR_USERNAME = "ocon-m";
+    private static final String DATE_APP_CREATED_VALUE = "2015-01-09";
+    private static final String MEANS_INIT_RESULT_VALUE = "PASS";
+    private static final String MEANS_INIT_STATUS_VALUE = "COMPLETE";
+    private static final String MEANS_ASSESSOR_NAME_VALUE = "Maeve OConnor";
+    private static final String DATE_MEANS_CREATED_VALUE = "2015-01-09T11:16:54";
+    private static final String PASSPORT_RESULT_VALUE = "FAIL";
+    private static final String PASSPORT_STATUS_VALUE = "COMPLETE";
+    private static final String PASSPORT_ASSESSOR_NAME_VALUE = "Maeve OConnor";
+    private static final String DATE_PASSPORT_CREATED_VALUE = "2015-01-09T11:16:29";
+    private static final String FUNDING_DECISION_VALUE = "GRANTED";
 
     @Autowired
     private MockMvc mvc;
@@ -313,7 +329,7 @@ class RepOrderControllerTest {
     }
 
     @Test
-    void givenValidUsn_whenFindByUsnIsInvokedAndFindsARepOrder_thenCorrectResponseIsReturned() throws Exception {
+    void givenValidUsn_whenFindRepOrderIdByUsnIsInvokedAndFindsARepOrder_thenCorrectResponseIsReturned() throws Exception {
         when(repOrderService.findRepOrderIdByUsn(USN))
                 .thenReturn(REP_ID);
 
@@ -325,7 +341,7 @@ class RepOrderControllerTest {
     }
 
     @Test
-    void givenValidUsn_whenFindByUsnIsInvokedAndFindsNoRepOrder_thenCorrectResponseIsReturned() throws Exception {
+    void givenValidUsn_whenFindRepOrderIdByUsnIsInvokedAndFindsNoRepOrder_thenCorrectResponseIsReturned() throws Exception {
         RepOrderEntity expectedRepOrder = null;
         when(repOrderRepository.findByUsn(USN))
                 .thenReturn(expectedRepOrder);
@@ -334,6 +350,64 @@ class RepOrderControllerTest {
                         .param("usn", String.valueOf(USN)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void givenValidUsn_whenFindRepOrderByUsnIsInvokedAndFindsARepOrder_thenCorrectResponseIsReturned() throws Exception {
+        RepOrderStateDTO repOrderStateDTO = RepOrderStateDTO.builder()
+                .usn(USN_VALUE)
+                .maatRef(MAAT_REF_VALUE)
+                .caseId(CASE_ID_VALUE)
+                .caseType(CASE_TYPE_VALUE)
+                .iojResult(IOJ_RESULT_VALUE)
+                .iojAssesorName(new AssessorDetails(IOJ_ASSESSOR_FULL_NAME, IOJ_ASSESSOR_USERNAME))
+                .dateAppCreated(LocalDate.parse(DATE_APP_CREATED_VALUE))
+                .iojReason(null)
+                .meansInitResult(MEANS_INIT_RESULT_VALUE)
+                .meansInitStatus(MEANS_INIT_STATUS_VALUE)
+                .meansFullResult(null)
+                .meansFullStatus(null)
+                .meansAssessorName(MEANS_ASSESSOR_NAME_VALUE)
+                .dateMeansCreated(LocalDateTime.parse(DATE_MEANS_CREATED_VALUE))
+                .passportResult(PASSPORT_RESULT_VALUE)
+                .passportStatus(PASSPORT_STATUS_VALUE)
+                .passportAssessorName(PASSPORT_ASSESSOR_NAME_VALUE)
+                .datePassportCreated(LocalDateTime.parse(DATE_PASSPORT_CREATED_VALUE))
+                .fundingDecision(FUNDING_DECISION_VALUE)
+                .build();
+        when(repOrderService.findRepOrderStateByUsn(USN)).thenReturn(repOrderStateDTO);
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/usn/" + USN))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.usn").value(USN_VALUE))
+                .andExpect(jsonPath("$.maatRef").value(MAAT_REF_VALUE))
+                .andExpect(jsonPath("$.caseId").value(CASE_ID_VALUE))
+                .andExpect(jsonPath("$.caseType").value(CASE_TYPE_VALUE))
+                .andExpect(jsonPath("$.iojResult").value(IOJ_RESULT_VALUE))
+                .andExpect(jsonPath("$.iojAssesorName.fullName").value(IOJ_ASSESSOR_FULL_NAME))
+                .andExpect(jsonPath("$.iojAssesorName.userName").value(IOJ_ASSESSOR_USERNAME))
+                .andExpect(jsonPath("$.dateAppCreated").value(DATE_APP_CREATED_VALUE))
+                .andExpect(jsonPath("$.iojReason").doesNotExist())
+                .andExpect(jsonPath("$.meansInitResult").value(MEANS_INIT_RESULT_VALUE))
+                .andExpect(jsonPath("$.meansInitStatus").value(MEANS_INIT_STATUS_VALUE))
+                .andExpect(jsonPath("$.meansFullResult").doesNotExist())
+                .andExpect(jsonPath("$.meansFullStatus").doesNotExist())
+                .andExpect(jsonPath("$.meansAssessorName").value(MEANS_ASSESSOR_NAME_VALUE))
+                .andExpect(jsonPath("$.dateMeansCreated").value(DATE_MEANS_CREATED_VALUE))
+                .andExpect(jsonPath("$.passportResult").value(PASSPORT_RESULT_VALUE))
+                .andExpect(jsonPath("$.passportStatus").value(PASSPORT_STATUS_VALUE))
+                .andExpect(jsonPath("$.passportAssessorName").value(PASSPORT_ASSESSOR_NAME_VALUE))
+                .andExpect(jsonPath("$.datePassportCreated").value(DATE_PASSPORT_CREATED_VALUE))
+                .andExpect(jsonPath("$.fundingDecision").value(FUNDING_DECISION_VALUE));
+    }
+
+    @Test
+    void givenValidUsn_whenFindRepOrderByUsnIsInvokedAndFindsNoRepOrder_thenCorrectResponseIsReturned() throws Exception {
+        when(repOrderService.findRepOrderStateByUsn(USN)).thenReturn(null);
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/usn/" + USN))
+                .andExpect(status().isOk());
     }
 
     @Test

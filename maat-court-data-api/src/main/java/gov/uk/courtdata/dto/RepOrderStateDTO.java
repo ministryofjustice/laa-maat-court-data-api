@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AtisRepOrderDTO {
+public class RepOrderStateDTO {
 
     private Integer usn;
     private Integer maatRef;

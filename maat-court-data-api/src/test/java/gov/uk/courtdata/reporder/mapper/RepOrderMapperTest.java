@@ -67,6 +67,8 @@ class RepOrderMapperTest {
                 .iojResult(IOJ_RESULT)
                 .iojResultNote(IOJ_REASON)
                 .dateCreated(DATE_APP_CREATED)
+                .userCreatedEntity(userEntity)
+                .userCreated(IOJ_ASSESSOR_USERNAME)
                 .decisionReasonCode(FUNDING_DECISION)
                 .build();
 
@@ -78,8 +80,8 @@ class RepOrderMapperTest {
 
         // Asserting the values
         assertAll("Assert actual RepOrderState",
-                () -> assertEquals(String.valueOf(USN), repOrderState.getUsn()),
-                () -> assertEquals(String.valueOf(MAAT_REF), repOrderState.getMaatRef()),
+                () -> assertEquals(USN, repOrderState.getUsn()),
+                () -> assertEquals(MAAT_REF, repOrderState.getMaatRef()),
                 () -> assertEquals(CASE_ID, repOrderState.getCaseId()),
                 () -> assertEquals(CASE_TYPE, repOrderState.getCaseType()),
                 () -> assertEquals(IOJ_RESULT, repOrderState.getIojResult()),

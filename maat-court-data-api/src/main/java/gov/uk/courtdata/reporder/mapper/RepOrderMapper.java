@@ -83,10 +83,7 @@ public interface RepOrderMapper {
 
             for (E assessment : assessments) {
                 if (assessment != null) {
-                    T assessmentData = expressionToGetDataFromAssessment.apply(assessment);
-                    if (assessmentData != null) {
-                        return assessmentData;
-                    }
+                    return expressionToGetDataFromAssessment.apply(assessment);
                 }
             }
         }

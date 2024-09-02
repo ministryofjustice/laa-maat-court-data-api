@@ -360,7 +360,7 @@ class RepOrderControllerTest {
                 .caseId(CASE_ID_VALUE)
                 .caseType(CASE_TYPE_VALUE)
                 .iojResult(IOJ_RESULT_VALUE)
-                .iojAssesorName(new AssessorDetails(IOJ_ASSESSOR_FULL_NAME, IOJ_ASSESSOR_USERNAME))
+                .iojAssessorName(new AssessorDetails(IOJ_ASSESSOR_FULL_NAME, IOJ_ASSESSOR_USERNAME))
                 .dateAppCreated(LocalDate.parse(DATE_APP_CREATED_VALUE))
                 .iojReason(null)
                 .meansInitResult(MEANS_INIT_RESULT_VALUE)

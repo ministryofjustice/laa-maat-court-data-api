@@ -57,7 +57,7 @@ public interface RepOrderMapper {
                 .caseId(repOrderEntity.getCaseId())
                 .caseType(repOrderEntity.getCatyCaseType())
                 .iojResult(repOrderEntity.getIojResult())
-                .iojAssesorName(createIOJAssessorDetails(repOrderEntity))
+                .iojAssessorName(createIOJAssessorDetails(repOrderEntity))
                 .dateAppCreated(repOrderEntity.getDateCreated())
                 .iojReason(repOrderEntity.getIojResultNote())
                 .meansInitResult(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getInitResult).orElse(null))

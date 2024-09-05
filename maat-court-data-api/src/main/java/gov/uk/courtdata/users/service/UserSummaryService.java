@@ -4,20 +4,18 @@ import gov.uk.courtdata.dto.FeatureToggleDTO;
 import gov.uk.courtdata.dto.ReservationsDTO;
 import gov.uk.courtdata.dto.RoleDataItemDTO;
 import gov.uk.courtdata.dto.UserSummaryDTO;
-import gov.uk.courtdata.entity.FeatureToggleEntity;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.entity.RoleDataItemEntity;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.mapper.FeatureToggleMapper;
 import gov.uk.courtdata.mapper.ReservationsMapper;
 import gov.uk.courtdata.mapper.RoleDataItemsMapper;
 import gov.uk.courtdata.helper.ReservationsRepositoryHelper;
-import gov.uk.courtdata.repository.FeatureToggleRepository;
 import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleDataItemsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
 import gov.uk.courtdata.repository.UserRepository;
+import gov.uk.courtdata.service.FeatureToggleService;
 import gov.uk.courtdata.users.mapper.UserSummaryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +39,7 @@ public class UserSummaryService {
     private final RoleDataItemsRepository roleDataItemsRepository;
     private final RoleDataItemsMapper roleDataItemsMapper;
     private final ReservationsMapper reservationsMapper;
-    private final FeatureToggleRepository featureToggleRepository;
-    private final FeatureToggleMapper featureToggleMapper;
+    private final FeatureToggleService featureToggleService;
 
     public UserSummaryDTO getUserSummary(String username) {
 
@@ -59,8 +56,7 @@ public class UserSummaryService {
         Optional<ReservationsEntity> reservations = reservationsRepositoryHelper.getReservationByUserName(username);
         ReservationsDTO reservationsDTO = reservations.isEmpty() ? null : reservationsMapper.reservationsEntitytoDTO(reservations.get());
 
-        List<FeatureToggleEntity> featureToggleEntities = featureToggleRepository.getFeatureTogglesForUser(username);
-        List<FeatureToggleDTO> featureToggleDtos = featureToggleEntities.isEmpty() ? null: featureToggleMapper.featureToggleToFeatureToggleDto(featureToggleEntities);
+        List<FeatureToggleDTO> featureToggleDtos = featureToggleService.getFeatureTogglesForUser(username);
 
         Optional<UserEntity> userEntity = userRepository.findById(username);
         String currentUserSession = userEntity.isEmpty() ? null : userEntity.get().getCurrentSession();

@@ -11,6 +11,7 @@ import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleDataItemsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
 import gov.uk.courtdata.repository.UserRepository;
+import gov.uk.courtdata.service.FeatureToggleService;
 import gov.uk.courtdata.users.mapper.UserSummaryMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +47,7 @@ class UserSummaryServiceTest {
     @Mock
     private RoleDataItemsRepository roleDataItemsRepository;
     @Mock
-    private FeatureToggleRepository featureToggleRepository;
+    private FeatureToggleService featureToggleService;
 
     @Test
     void whenGetUserSummaryIsInvoked_thenUserSummaryDTOIsReturned() {
@@ -54,7 +55,7 @@ class UserSummaryServiceTest {
         verify(roleActionsRepository).getRoleActionsForUser(any());
         verify(roleWorkReasonsRepository).getNewWorkReasonForUser(any());
         verify(roleDataItemsRepository).getRoleDataItemsForUser(any());
-        verify(featureToggleRepository).getFeatureTogglesForUser(any());
+        verify(featureToggleService).getFeatureTogglesForUser(any());
         verify(reservationsRepositoryHelper).getReservationByUserName(any());
         verify(userRepository).findById(any());
         verify(userSummaryMapper).userToUserSummaryDTO(any(), any(), any(), any(), any(), any(), any());

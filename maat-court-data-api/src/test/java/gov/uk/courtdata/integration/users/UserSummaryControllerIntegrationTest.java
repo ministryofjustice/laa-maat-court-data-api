@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import gov.uk.MAATCourtDataApplication;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.entity.FeatureToggleEntity;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.entity.RoleActionEntity;
 import gov.uk.courtdata.entity.RoleDataItemEntity;
@@ -99,6 +101,13 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
         .expiryDate(expiryDate)
         .build());
 
+    repos.featureToggleRepository.save(FeatureToggleEntity.builder()
+        .id(1)
+        .username(VALID_TEST_USER)
+        .featureName("Test feature")
+        .action("Create")
+        .build());
+
     repos.user.save(UserEntity.builder()
         .username(VALID_TEST_USER)
         .currentSession(VALID_SESSION_ID)
@@ -124,6 +133,7 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
         .andExpect(jsonPath("$.newWorkReasons[0]").value(VALID_NWORCODE))
         .andExpect(jsonPath("$.reservationsDTO.recordId").value(VALID_RESERVATION_ID))
         .andExpect(jsonPath("$.roleDataItem[0].roleName").value(AUTHORISED_ROLE))
+        .andExpect(jsonPath("$.featureToggle[0].username").value(VALID_TEST_USER))
         .andExpect(jsonPath("$.username").value(VALID_TEST_USER));
   }
 
@@ -136,6 +146,7 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
         .andExpect(jsonPath("$.roleActions").isEmpty())
         .andExpect(jsonPath("$.newWorkReasons").isEmpty())
         .andExpect(jsonPath("$.reservationsDTO").doesNotExist())
+        .andExpect(jsonPath("$.featureToggle").doesNotExist())
         .andExpect(jsonPath("$.username").value(INVALID_TEST_USER));
 
   }

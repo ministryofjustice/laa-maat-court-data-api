@@ -6,6 +6,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.helper.ReservationsRepositoryHelper;
+import gov.uk.courtdata.repository.FeatureToggleRepository;
 import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleDataItemsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
@@ -44,7 +45,8 @@ class UserSummaryServiceTest {
     private UserRepository userRepository;
     @Mock
     private RoleDataItemsRepository roleDataItemsRepository;
-
+    @Mock
+    private FeatureToggleRepository featureToggleRepository;
 
     @Test
     void whenGetUserSummaryIsInvoked_thenUserSummaryDTOIsReturned() {
@@ -52,9 +54,10 @@ class UserSummaryServiceTest {
         verify(roleActionsRepository).getRoleActionsForUser(any());
         verify(roleWorkReasonsRepository).getNewWorkReasonForUser(any());
         verify(roleDataItemsRepository).getRoleDataItemsForUser(any());
+        verify(featureToggleRepository).getFeatureTogglesForUser(any());
         verify(reservationsRepositoryHelper).getReservationByUserName(any());
         verify(userRepository).findById(any());
-        verify(userSummaryMapper).userToUserSummaryDTO(any(), any(), any(), any(), any(), any());
+        verify(userSummaryMapper).userToUserSummaryDTO(any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test

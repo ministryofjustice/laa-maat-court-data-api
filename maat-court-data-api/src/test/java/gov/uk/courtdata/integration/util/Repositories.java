@@ -26,6 +26,7 @@ import gov.uk.courtdata.repository.DefendantMAATDataRepository;
 import gov.uk.courtdata.repository.DefendantRepository;
 import gov.uk.courtdata.repository.FdcContributionsRepository;
 import gov.uk.courtdata.repository.FdcItemsRepository;
+import gov.uk.courtdata.repository.FeatureToggleRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentDetailsHistoryRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentDetailsRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
@@ -140,6 +141,9 @@ public class Repositories {
 
   @Autowired
   public FdcItemsRepository fdcItemsRepository;
+
+  @Autowired
+  public FeatureToggleRepository featureToggleRepository;
 
   @Autowired
   public FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistory;
@@ -297,6 +301,7 @@ public class Repositories {
         defendant,
         eformStaging,
         fdcContributions,
+        featureToggleRepository,
         financialAssessmentDetailsHistory,
         financialAssessmentDetails,
         financialAssessment,

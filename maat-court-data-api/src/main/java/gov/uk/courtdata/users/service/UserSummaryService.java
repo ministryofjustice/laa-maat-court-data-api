@@ -1,15 +1,19 @@
 package gov.uk.courtdata.users.service;
 
+import gov.uk.courtdata.dto.FeatureToggleDTO;
 import gov.uk.courtdata.dto.ReservationsDTO;
 import gov.uk.courtdata.dto.RoleDataItemDTO;
 import gov.uk.courtdata.dto.UserSummaryDTO;
+import gov.uk.courtdata.entity.FeatureToggleEntity;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.entity.RoleDataItemEntity;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.mapper.FeatureToggleMapper;
 import gov.uk.courtdata.mapper.ReservationsMapper;
 import gov.uk.courtdata.mapper.RoleDataItemsMapper;
 import gov.uk.courtdata.helper.ReservationsRepositoryHelper;
+import gov.uk.courtdata.repository.FeatureToggleRepository;
 import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleDataItemsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
@@ -37,7 +41,8 @@ public class UserSummaryService {
     private final RoleDataItemsRepository roleDataItemsRepository;
     private final RoleDataItemsMapper roleDataItemsMapper;
     private final ReservationsMapper reservationsMapper;
-
+    private final FeatureToggleRepository featureToggleRepository;
+    private final FeatureToggleMapper featureToggleMapper;
 
     public UserSummaryDTO getUserSummary(String username) {
 
@@ -54,9 +59,12 @@ public class UserSummaryService {
         Optional<ReservationsEntity> reservations = reservationsRepositoryHelper.getReservationByUserName(username);
         ReservationsDTO reservationsDTO = reservations.isEmpty() ? null : reservationsMapper.reservationsEntitytoDTO(reservations.get());
 
+        List<FeatureToggleEntity> featureToggleEntities = featureToggleRepository.getFeatureTogglesForUser(username);
+        List<FeatureToggleDTO> featureToggleDtos = featureToggleEntities.isEmpty() ? null: featureToggleMapper.featureToggleToFeatureToggleDto(featureToggleEntities);
+
         Optional<UserEntity> userEntity = userRepository.findById(username);
         String currentUserSession = userEntity.isEmpty() ? null : userEntity.get().getCurrentSession();
-        return userSummaryMapper.userToUserSummaryDTO(username, newWorkReasonForUser, userRoleActions, reservationsDTO, currentUserSession, roleDataItemDTOList);
+        return userSummaryMapper.userToUserSummaryDTO(username, newWorkReasonForUser, userRoleActions, reservationsDTO, currentUserSession, roleDataItemDTOList, featureToggleDtos);
     }
 
     public UserEntity getUser(String username) {

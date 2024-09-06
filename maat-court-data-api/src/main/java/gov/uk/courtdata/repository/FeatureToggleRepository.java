@@ -10,9 +10,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FeatureToggleRepository extends JpaRepository<FeatureToggleEntity, Integer> {
 
-  @Query(value = "select ID, USER_NAME, FEATURE, ACTION from TOGDATA.FEATURE_TOGGLE where USER_NAME = :username", nativeQuery = true)
-  List<FeatureToggleEntity> getFeatureTogglesForUser(@Param("username") String username);
-
-  @Query(value = "select ID, USER_NAME, FEATURE, ACTION from TOGDATA.FEATURE_TOGGLE where USER_NAME is null", nativeQuery = true)
-  List<FeatureToggleEntity> getFeatureTogglesForAllUsers();
+  /**
+   * Gets the feature toggles for a user, which is a combination of user-specific feature toggles,
+   * in addition to those which are applicable to all users through a null username.
+   * @param username The username to get feature toggles for.
+   * @return A list of feature toggles applicable to the user.
+   */
+  @Query(value = "select ID, USER_NAME, FEATURE, ACTION from TOGDATA.FEATURE_TOGGLE where USER_NAME = :username or USER_NAME is null", nativeQuery = true)
+  List<FeatureToggleEntity> getAllFeatureTogglesForUser(@Param("username") String username);
 }

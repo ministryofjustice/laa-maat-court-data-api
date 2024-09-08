@@ -1,8 +1,7 @@
 package gov.uk.courtdata.reporder.controller;
 
-import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
-import gov.uk.courtdata.applicant.controller.StandardApiResponseCodes;
+import gov.uk.courtdata.annotation.StandardApiResponseCodes;
 import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
@@ -14,7 +13,6 @@ import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
-import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -213,7 +211,6 @@ public class RepOrderController {
   @PatchMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Partial Update of a Rep record")
     @StandardApiResponseCodes
-    @NotFoundApiResponse
   public ResponseEntity<Void> updateRepOrder(@PathVariable int repId,
       @RequestBody Map<String, Object> updatedFields) {
     LoggingData.MAAT_ID.putInMDC(repId);

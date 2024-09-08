@@ -2,6 +2,7 @@ package gov.uk.courtdata.address.controller;
 
 import gov.uk.courtdata.address.entity.Address;
 import gov.uk.courtdata.address.service.AddressService;
+import gov.uk.courtdata.annotation.StandardApiResponseCodes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

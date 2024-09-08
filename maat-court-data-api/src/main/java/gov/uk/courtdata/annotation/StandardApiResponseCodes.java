@@ -1,4 +1,4 @@
-package gov.uk.courtdata.address.controller;
+package gov.uk.courtdata.annotation;
 
 import gov.uk.courtdata.dto.ErrorDTO;
 import io.swagger.v3.oas.annotations.media.Content;

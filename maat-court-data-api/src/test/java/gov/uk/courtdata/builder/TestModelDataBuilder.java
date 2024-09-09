@@ -1411,6 +1411,8 @@ public class TestModelDataBuilder {
             .fundingDecision(FUNDING_DECISION_VALUE)
             .build();
         return repOrderStateDTO;
+    }
+
     public static Address getAddress(int id) {
         return Address.builder()
                 .id(id)

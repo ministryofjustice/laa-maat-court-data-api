@@ -354,27 +354,7 @@ class RepOrderControllerTest {
 
     @Test
     void givenValidUsn_whenFindRepOrderByUsnIsInvokedAndFindsARepOrder_thenCorrectResponseIsReturned() throws Exception {
-        RepOrderStateDTO repOrderStateDTO = RepOrderStateDTO.builder()
-                .usn(USN_VALUE)
-                .maatRef(MAAT_REF_VALUE)
-                .caseId(CASE_ID_VALUE)
-                .caseType(CASE_TYPE_VALUE)
-                .iojResult(IOJ_RESULT_VALUE)
-                .iojAssessorName(new AssessorDetails(IOJ_ASSESSOR_FULL_NAME, IOJ_ASSESSOR_USERNAME))
-                .dateAppCreated(LocalDate.parse(DATE_APP_CREATED_VALUE))
-                .iojReason(null)
-                .meansInitResult(MEANS_INIT_RESULT_VALUE)
-                .meansInitStatus(MEANS_INIT_STATUS_VALUE)
-                .meansFullResult(null)
-                .meansFullStatus(null)
-                .meansAssessorName(MEANS_ASSESSOR_NAME_VALUE)
-                .dateMeansCreated(LocalDateTime.parse(DATE_MEANS_CREATED_VALUE))
-                .passportResult(PASSPORT_RESULT_VALUE)
-                .passportStatus(PASSPORT_STATUS_VALUE)
-                .passportAssessorName(PASSPORT_ASSESSOR_NAME_VALUE)
-                .datePassportCreated(LocalDateTime.parse(DATE_PASSPORT_CREATED_VALUE))
-                .fundingDecision(FUNDING_DECISION_VALUE)
-                .build();
+        RepOrderStateDTO repOrderStateDTO = TestModelDataBuilder.getPopulatedRepOrderStateDTO();
         when(repOrderService.findRepOrderStateByUsn(USN)).thenReturn(repOrderStateDTO);
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/usn/" + USN))
@@ -412,27 +392,7 @@ class RepOrderControllerTest {
 
     @Test
     void givenValidRepId_whenFindRepOrderStateByRepIdIsInvokedAndFindsARepOrder_thenCorrectResponseIsReturned() throws Exception {
-        RepOrderStateDTO repOrderStateDTO = RepOrderStateDTO.builder()
-            .usn(USN_VALUE)
-            .maatRef(MAAT_REF_VALUE)
-            .caseId(CASE_ID_VALUE)
-            .caseType(CASE_TYPE_VALUE)
-            .iojResult(IOJ_RESULT_VALUE)
-            .iojAssessorName(new AssessorDetails(IOJ_ASSESSOR_FULL_NAME, IOJ_ASSESSOR_USERNAME))
-            .dateAppCreated(LocalDate.parse(DATE_APP_CREATED_VALUE))
-            .iojReason(null)
-            .meansInitResult(MEANS_INIT_RESULT_VALUE)
-            .meansInitStatus(MEANS_INIT_STATUS_VALUE)
-            .meansFullResult(null)
-            .meansFullStatus(null)
-            .meansAssessorName(MEANS_ASSESSOR_NAME_VALUE)
-            .dateMeansCreated(LocalDateTime.parse(DATE_MEANS_CREATED_VALUE))
-            .passportResult(PASSPORT_RESULT_VALUE)
-            .passportStatus(PASSPORT_STATUS_VALUE)
-            .passportAssessorName(PASSPORT_ASSESSOR_NAME_VALUE)
-            .datePassportCreated(LocalDateTime.parse(DATE_PASSPORT_CREATED_VALUE))
-            .fundingDecision(FUNDING_DECISION_VALUE)
-            .build();
+        RepOrderStateDTO repOrderStateDTO = TestModelDataBuilder.getPopulatedRepOrderStateDTO();
         when(repOrderService.findRepOrderStateByRepId(MAAT_REF_VALUE)).thenReturn(repOrderStateDTO);
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-state/" + MAAT_REF_VALUE))

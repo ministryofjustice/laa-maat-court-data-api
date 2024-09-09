@@ -102,7 +102,6 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
         .build());
 
     repos.featureToggleRepository.save(FeatureToggleEntity.builder()
-        .id(1)
         .username(VALID_TEST_USER)
         .featureName("Test feature 1")
         .action("Create")
@@ -154,25 +153,21 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
   public void givenMultipleMatchingFeatureToggles_whenGetUserSummaryIsInvoked_thenPrioritisesUserSpecificToggles()
       throws Exception {
     repos.featureToggleRepository.save(FeatureToggleEntity.builder()
-        .id(0)
         .username(VALID_TEST_USER)
-        .featureName("Test feature 0")
+        .featureName("Test feature 2")
         .action("Create")
         .build());
     // Public version of the same feature flag already specified for the user, should be ignored.
     repos.featureToggleRepository.save(FeatureToggleEntity.builder()
-        .id(2)
         .featureName("Test feature 1")
         .action("Create")
         .build());
     repos.featureToggleRepository.save(FeatureToggleEntity.builder()
-        .id(3)
         .featureName("Test feature 1")
         .action("Update")
         .build());
     repos.featureToggleRepository.save(FeatureToggleEntity.builder()
-        .id(4)
-        .featureName("Test feature 2")
+        .featureName("Test feature 3")
         .action("Create")
         .build());
 
@@ -185,16 +180,16 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
         .andExpect(jsonPath("$.roleDataItem[0].roleName").value(AUTHORISED_ROLE))
         .andExpect(jsonPath("$.featureToggle.length()").value(4))
         .andExpect(jsonPath("$.featureToggle[0].username").value(VALID_TEST_USER))
-        .andExpect(jsonPath("$.featureToggle[0].featureName").value("Test feature 0"))
+        .andExpect(jsonPath("$.featureToggle[0].featureName").value("Test feature 1"))
         .andExpect(jsonPath("$.featureToggle[0].action").value("Create"))
         .andExpect(jsonPath("$.featureToggle[1].username").value(VALID_TEST_USER))
-        .andExpect(jsonPath("$.featureToggle[1].featureName").value("Test feature 1"))
+        .andExpect(jsonPath("$.featureToggle[1].featureName").value("Test feature 2"))
         .andExpect(jsonPath("$.featureToggle[1].action").value("Create"))
         .andExpect(jsonPath("$.featureToggle[2].username").doesNotExist())
         .andExpect(jsonPath("$.featureToggle[2].featureName").value("Test feature 1"))
         .andExpect(jsonPath("$.featureToggle[2].action").value("Update"))
         .andExpect(jsonPath("$.featureToggle[3].username").doesNotExist())
-        .andExpect(jsonPath("$.featureToggle[3].featureName").value("Test feature 2"))
+        .andExpect(jsonPath("$.featureToggle[3].featureName").value("Test feature 3"))
         .andExpect(jsonPath("$.featureToggle[3].action").value("Create"))
         .andExpect(jsonPath("$.username").value(VALID_TEST_USER));
   }

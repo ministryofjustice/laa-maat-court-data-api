@@ -140,4 +140,9 @@ public class RepOrderService {
         RepOrderEntity repOrderEntity = repOrderRepository.findByUsn(usn);
         return repOrderEntity != null ? repOrderMapper.mapRepOrderState(repOrderEntity) : null;
     }
+
+    public RepOrderStateDTO findRepOrderStateByRepId(Integer repId) {
+        RepOrderEntity repOrderEntity = findByRepId(repId);
+        return repOrderMapper.mapRepOrderState(repOrderEntity);
+    }
 }

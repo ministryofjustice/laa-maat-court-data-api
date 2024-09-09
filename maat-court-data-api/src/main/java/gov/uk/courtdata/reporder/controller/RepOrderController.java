@@ -14,7 +14,6 @@ import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
-import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -119,6 +118,16 @@ public class RepOrderController {
         return ResponseEntity.ok(repOrderService.findRepOrderStateByUsn(usn));
     }
 
+    @GetMapping(value = "/rep-order-state/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve rep order state details by Rep ID")
+    @ApiResponse(responseCode = "200",
+        content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+    @StandardApiResponse
+    public ResponseEntity<RepOrderStateDTO> findRepOrderStateByRepId(@PathVariable int repId) {
+        log.info("Get Rep Order State Request received for repId : {}", repId);
+        return ResponseEntity.ok(repOrderService.findRepOrderStateByRepId(repId));
+    }
 
 
     @GetMapping(value = "/rep-order-mvo-reg/{mvoId}/current-registration", produces = MediaType.APPLICATION_JSON_VALUE)

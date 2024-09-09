@@ -411,6 +411,66 @@ class RepOrderControllerTest {
     }
 
     @Test
+    void givenValidRepId_whenFindRepOrderStateByRepIdIsInvokedAndFindsARepOrder_thenCorrectResponseIsReturned() throws Exception {
+        RepOrderStateDTO repOrderStateDTO = RepOrderStateDTO.builder()
+            .usn(USN_VALUE)
+            .maatRef(MAAT_REF_VALUE)
+            .caseId(CASE_ID_VALUE)
+            .caseType(CASE_TYPE_VALUE)
+            .iojResult(IOJ_RESULT_VALUE)
+            .iojAssessorName(new AssessorDetails(IOJ_ASSESSOR_FULL_NAME, IOJ_ASSESSOR_USERNAME))
+            .dateAppCreated(LocalDate.parse(DATE_APP_CREATED_VALUE))
+            .iojReason(null)
+            .meansInitResult(MEANS_INIT_RESULT_VALUE)
+            .meansInitStatus(MEANS_INIT_STATUS_VALUE)
+            .meansFullResult(null)
+            .meansFullStatus(null)
+            .meansAssessorName(MEANS_ASSESSOR_NAME_VALUE)
+            .dateMeansCreated(LocalDateTime.parse(DATE_MEANS_CREATED_VALUE))
+            .passportResult(PASSPORT_RESULT_VALUE)
+            .passportStatus(PASSPORT_STATUS_VALUE)
+            .passportAssessorName(PASSPORT_ASSESSOR_NAME_VALUE)
+            .datePassportCreated(LocalDateTime.parse(DATE_PASSPORT_CREATED_VALUE))
+            .fundingDecision(FUNDING_DECISION_VALUE)
+            .build();
+        when(repOrderService.findRepOrderStateByRepId(MAAT_REF_VALUE)).thenReturn(repOrderStateDTO);
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-state/" + MAAT_REF_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.usn").value(USN_VALUE))
+            .andExpect(jsonPath("$.maatRef").value(MAAT_REF_VALUE))
+            .andExpect(jsonPath("$.caseId").value(CASE_ID_VALUE))
+            .andExpect(jsonPath("$.caseType").value(CASE_TYPE_VALUE))
+            .andExpect(jsonPath("$.iojResult").value(IOJ_RESULT_VALUE))
+            .andExpect(jsonPath("$.iojAssessorName.fullName").value(IOJ_ASSESSOR_FULL_NAME))
+            .andExpect(jsonPath("$.iojAssessorName.userName").value(IOJ_ASSESSOR_USERNAME))
+            .andExpect(jsonPath("$.dateAppCreated").value(DATE_APP_CREATED_VALUE))
+            .andExpect(jsonPath("$.iojReason").doesNotExist())
+            .andExpect(jsonPath("$.meansInitResult").value(MEANS_INIT_RESULT_VALUE))
+            .andExpect(jsonPath("$.meansInitStatus").value(MEANS_INIT_STATUS_VALUE))
+            .andExpect(jsonPath("$.meansFullResult").doesNotExist())
+            .andExpect(jsonPath("$.meansFullStatus").doesNotExist())
+            .andExpect(jsonPath("$.meansAssessorName").value(MEANS_ASSESSOR_NAME_VALUE))
+            .andExpect(jsonPath("$.dateMeansCreated").value(DATE_MEANS_CREATED_VALUE))
+            .andExpect(jsonPath("$.passportResult").value(PASSPORT_RESULT_VALUE))
+            .andExpect(jsonPath("$.passportStatus").value(PASSPORT_STATUS_VALUE))
+            .andExpect(jsonPath("$.passportAssessorName").value(PASSPORT_ASSESSOR_NAME_VALUE))
+            .andExpect(jsonPath("$.datePassportCreated").value(DATE_PASSPORT_CREATED_VALUE))
+            .andExpect(jsonPath("$.fundingDecision").value(FUNDING_DECISION_VALUE));
+    }
+
+    @Test
+    void givenValidRepId_whenFindRepOrderStateByRepIdIsInvokedAndFindsNoRepOrder_thenErrorIsThrown() throws Exception {
+        when(repOrderService.findRepOrderStateByRepId(MAAT_REF_VALUE))
+            .thenThrow(new RequestedObjectNotFoundException(String.format("No Rep Order found for ID: %s", MAAT_REF_VALUE)));
+
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-state/" + MAAT_REF_VALUE))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$.message").value(String.format("No Rep Order found for ID: %s", MAAT_REF_VALUE)));
+    }
+
+    @Test
     void givenValidParameters_whenFindFdcFastTrackingInvoked_thenIdsAreReturned() throws Exception {
         Set<Integer> expectedIds = Set.of(5,6);
         LocalDate date = LocalDate.now();

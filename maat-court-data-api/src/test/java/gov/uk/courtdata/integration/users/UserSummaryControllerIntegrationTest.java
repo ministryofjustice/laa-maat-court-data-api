@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import gov.uk.MAATCourtDataApplication;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.entity.FeatureToggleEntity;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.entity.RoleActionEntity;
 import gov.uk.courtdata.entity.RoleDataItemEntity;
@@ -99,6 +101,12 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
         .expiryDate(expiryDate)
         .build());
 
+    repos.featureToggleRepository.save(FeatureToggleEntity.builder()
+        .username(VALID_TEST_USER)
+        .featureName("Test feature 1")
+        .action("Create")
+        .build());
+
     repos.user.save(UserEntity.builder()
         .username(VALID_TEST_USER)
         .currentSession(VALID_SESSION_ID)
@@ -124,6 +132,7 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
         .andExpect(jsonPath("$.newWorkReasons[0]").value(VALID_NWORCODE))
         .andExpect(jsonPath("$.reservationsDTO.recordId").value(VALID_RESERVATION_ID))
         .andExpect(jsonPath("$.roleDataItem[0].roleName").value(AUTHORISED_ROLE))
+        .andExpect(jsonPath("$.featureToggle[0].username").value(VALID_TEST_USER))
         .andExpect(jsonPath("$.username").value(VALID_TEST_USER));
   }
 
@@ -136,7 +145,52 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
         .andExpect(jsonPath("$.roleActions").isEmpty())
         .andExpect(jsonPath("$.newWorkReasons").isEmpty())
         .andExpect(jsonPath("$.reservationsDTO").doesNotExist())
+        .andExpect(jsonPath("$.featureToggle").doesNotExist())
         .andExpect(jsonPath("$.username").value(INVALID_TEST_USER));
+  }
 
+  @Test
+  public void givenMultipleMatchingFeatureToggles_whenGetUserSummaryIsInvoked_thenPrioritisesUserSpecificToggles()
+      throws Exception {
+    repos.featureToggleRepository.save(FeatureToggleEntity.builder()
+        .username(VALID_TEST_USER)
+        .featureName("Test feature 2")
+        .action("Create")
+        .build());
+    // Public version of the same feature flag already specified for the user, should be ignored.
+    repos.featureToggleRepository.save(FeatureToggleEntity.builder()
+        .featureName("Test feature 1")
+        .action("Create")
+        .build());
+    repos.featureToggleRepository.save(FeatureToggleEntity.builder()
+        .featureName("Test feature 1")
+        .action("Update")
+        .build());
+    repos.featureToggleRepository.save(FeatureToggleEntity.builder()
+        .featureName("Test feature 3")
+        .action("Create")
+        .build());
+
+    mvc.perform(MockMvcRequestBuilders.get(GET_USER_SUMMARY_URL, VALID_TEST_USER))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.roleActions[0]").value(DISABLED_ACTION))
+        .andExpect(jsonPath("$.newWorkReasons[0]").value(VALID_NWORCODE))
+        .andExpect(jsonPath("$.reservationsDTO.recordId").value(VALID_RESERVATION_ID))
+        .andExpect(jsonPath("$.roleDataItem[0].roleName").value(AUTHORISED_ROLE))
+        .andExpect(jsonPath("$.featureToggle.length()").value(4))
+        .andExpect(jsonPath("$.featureToggle[0].username").value(VALID_TEST_USER))
+        .andExpect(jsonPath("$.featureToggle[0].featureName").value("Test feature 1"))
+        .andExpect(jsonPath("$.featureToggle[0].action").value("Create"))
+        .andExpect(jsonPath("$.featureToggle[1].username").value(VALID_TEST_USER))
+        .andExpect(jsonPath("$.featureToggle[1].featureName").value("Test feature 2"))
+        .andExpect(jsonPath("$.featureToggle[1].action").value("Create"))
+        .andExpect(jsonPath("$.featureToggle[2].username").doesNotExist())
+        .andExpect(jsonPath("$.featureToggle[2].featureName").value("Test feature 1"))
+        .andExpect(jsonPath("$.featureToggle[2].action").value("Update"))
+        .andExpect(jsonPath("$.featureToggle[3].username").doesNotExist())
+        .andExpect(jsonPath("$.featureToggle[3].featureName").value("Test feature 3"))
+        .andExpect(jsonPath("$.featureToggle[3].action").value("Create"))
+        .andExpect(jsonPath("$.username").value(VALID_TEST_USER));
   }
 }

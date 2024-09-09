@@ -18,4 +18,5 @@ public class UserSummaryDTO {
     private ReservationsDTO reservationsDTO;
     private String currentUserSession;
     private List<RoleDataItemDTO> roleDataItem;
+    private List<FeatureToggleDTO> featureToggle;
 }

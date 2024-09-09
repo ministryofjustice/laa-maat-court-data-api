@@ -1,6 +1,7 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.address.entity.Address;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
@@ -1410,6 +1411,18 @@ public class TestModelDataBuilder {
             .fundingDecision(FUNDING_DECISION_VALUE)
             .build();
         return repOrderStateDTO;
+    public static Address getAddress(int id) {
+        return Address.builder()
+                .id(id)
+                .city("mock-city")
+                .country("mock-country")
+                .county("mock-county")
+                .line1("mock-line1")
+                .line2("mock-line2")
+                .line3("mock-line3")
+                .dateCreated(LocalDateTime.now())
+                .userCreated(TEST_USER)
+                .build();
     }
 
     public CourtDataDTO getSaveAndLinkModelRaw() {

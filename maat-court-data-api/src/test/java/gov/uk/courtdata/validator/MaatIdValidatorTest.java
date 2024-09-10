@@ -59,20 +59,4 @@ public class MaatIdValidatorTest {
         assertThat(result).isNotPresent();
     }
 
-    @Test
-    public void testWhenMaatIdIsMissingFromPayloadWhenValidatingMaatIdDoesntExist_throwsException() {
-        ValidationException validationException = assertThrows(ValidationException.class,
-                () -> maatIdValidator.validateNotExists(0));
-        assertThat(validationException.getMessage()).isEqualTo(
-            "MAAT/REP ID is required, found [0]");
-    }
-
-    @Test
-    public void testWhenMaatIsNotNullButAlreadyExistsOnRepOrderWhenValidatingThatItDoesntExist_validationFails() {
-        when(repOrderService.exists(1000)).thenReturn(true);
-        ValidationException validationException = assertThrows(ValidationException.class,
-                () -> maatIdValidator.validateNotExists(1000));
-        assertThat(validationException.getMessage()).isEqualTo(
-            "There is already a record with MAAT/REP ID [1000]");
-    }
 }

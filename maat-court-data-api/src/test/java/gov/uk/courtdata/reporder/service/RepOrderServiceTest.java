@@ -87,7 +87,7 @@ class RepOrderServiceTest {
     void givenValidRepId_whenExistsIsInvoked_thenReturnTrue() {
         when(repOrderImpl.countWithSentenceOrderDate(any()))
                 .thenReturn(1L);
-        assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID)).isTrue();
+        assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID, Boolean.TRUE)).isTrue();
     }
 
     @Test
@@ -106,10 +106,17 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenInvalidRepId_whenExistsIsInvoked_thenReturnFalse() {
-        when(repOrderImpl.countWithSentenceOrderDate(any()))
+    void givenInvalidRepIdAndNoSentenceOrderDate_whenCountByIdIsInvoked_thenReturnFalse() {
+        when(repOrderImpl.countById(any()))
                 .thenReturn(0L);
-        assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID)).isFalse();
+        assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID, Boolean.FALSE)).isFalse();
+    }
+
+    @Test
+    void givenValidRepIdAndHasSentenceOrderDate_whenCountByIdIsInvoked_thenReturnTrue() {
+        when(repOrderImpl.countWithSentenceOrderDate(any()))
+                .thenReturn(1L);
+        assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID, Boolean.TRUE)).isTrue();
     }
 
     @Test

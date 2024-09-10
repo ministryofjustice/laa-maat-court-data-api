@@ -84,6 +84,9 @@ public class Repositories {
   public FdcItemsRepository fdcItemsRepository;
 
   @Autowired
+  public FeatureToggleRepository featureToggleRepository;
+
+  @Autowired
   public FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistory;
 
   @Autowired
@@ -242,6 +245,7 @@ public class Repositories {
         defendant,
         eformStaging,
         fdcContributions,
+        featureToggleRepository,
         financialAssessmentDetailsHistory,
         financialAssessmentDetails,
         financialAssessment,

@@ -1,7 +1,10 @@
 package gov.uk.courtdata.reporder.mapper;
 
 import gov.uk.courtdata.dto.AssessorDetails;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
@@ -12,6 +15,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
+
+import java.util.Comparator;
+import java.util.Optional;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -34,5 +40,39 @@ public interface RepOrderMapper {
                 .userName(repOrder.getUserCreated())
                 .build();
     }
+
+    default RepOrderStateDTO mapRepOrderState(RepOrderEntity repOrderEntity) {
+        if (repOrderEntity == null) {
+            return RepOrderStateDTO.builder().build();
+        }
+
+        Optional<FinancialAssessmentEntity> maxIdFinancialAssessmentEntity = repOrderEntity.getFinancialAssessments().stream()
+                .max(Comparator.comparingInt(FinancialAssessmentEntity::getId));
+        Optional<PassportAssessmentEntity> maxIdPassportAssessmentEntity = repOrderEntity.getPassportAssessments().stream()
+                .max(Comparator.comparingInt(PassportAssessmentEntity::getId));
+
+        return RepOrderStateDTO.builder()
+                .usn(repOrderEntity.getUsn())
+                .maatRef(repOrderEntity.getId())
+                .caseId(repOrderEntity.getCaseId())
+                .caseType(repOrderEntity.getCatyCaseType())
+                .iojResult(repOrderEntity.getIojResult())
+                .iojAssessorName(createIOJAssessorDetails(repOrderEntity))
+                .dateAppCreated(repOrderEntity.getDateCreated())
+                .iojReason(repOrderEntity.getIojResultNote())
+                .meansInitResult(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getInitResult).orElse(null))
+                .meansInitStatus(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getFassInitStatus).orElse(null))
+                .meansFullResult(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getFullResult).orElse(null))
+                .meansFullStatus(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getFassFullStatus).orElse(null))
+                .meansAssessorName(maxIdFinancialAssessmentEntity.map(fae -> UserEntityUtils.extractFullName(fae.getUserCreatedEntity())).orElse(null))
+                .dateMeansCreated(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getDateCreated).orElse(null))
+                .passportResult(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getResult).orElse(null))
+                .passportStatus(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getPastStatus).orElse(null))
+                .passportAssessorName(maxIdPassportAssessmentEntity.map(pae -> UserEntityUtils.extractFullName(pae.getUserCreatedEntity())).orElse(null))
+                .datePassportCreated(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getDateCreated).orElse(null))
+                .fundingDecision(repOrderEntity.getDecisionReasonCode())
+                .build();
+    }
+
 }
 

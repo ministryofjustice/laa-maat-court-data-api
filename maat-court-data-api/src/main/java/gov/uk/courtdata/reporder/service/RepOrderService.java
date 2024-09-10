@@ -1,6 +1,7 @@
 package gov.uk.courtdata.reporder.service;
 
 import gov.uk.courtdata.dto.AssessorDetails;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -128,5 +129,20 @@ public class RepOrderService {
 
     public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
         return repOrderImpl.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
+    }
+
+    public Integer findRepOrderIdByUsn(Integer usn) {
+        RepOrderEntity repOrderEntity = repOrderRepository.findByUsn(usn);
+        return repOrderEntity != null ? repOrderEntity.getId() : null;
+    }
+
+    public RepOrderStateDTO findRepOrderStateByUsn(Integer usn) {
+        RepOrderEntity repOrderEntity = repOrderRepository.findByUsn(usn);
+        return repOrderEntity != null ? repOrderMapper.mapRepOrderState(repOrderEntity) : null;
+    }
+
+    public RepOrderStateDTO findRepOrderStateByRepId(Integer repId) {
+        RepOrderEntity repOrderEntity = findByRepId(repId);
+        return repOrderMapper.mapRepOrderState(repOrderEntity);
     }
 }

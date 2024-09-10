@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Repository
 public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Integer>, JpaSpecificationExecutor<RepOrderEntity> {
-    List<RepOrderEntity> findByUsn(Integer usn);
+    RepOrderEntity findByUsn(Integer usn);
 
     @Query(value = """
                         SELECT *

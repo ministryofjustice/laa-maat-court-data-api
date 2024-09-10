@@ -36,6 +36,9 @@ public class HardshipReviewImpl {
     public HardshipReviewEntity create(final HardshipReviewDTO hardshipReviewDTO) {
         HardshipReviewEntity hardshipReview =
                 hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
+
+        hardshipReviewRepository.replaceOldHardshipReviews(hardshipReview.getRepId(), hardshipReview.getCourtType());
+
         return hardshipReviewRepository.saveAndFlush(hardshipReview);
     }
 
@@ -49,17 +52,26 @@ public class HardshipReviewImpl {
         existing.setReviewDate(hardshipReviewDTO.getReviewDate());
         existing.setNotes(hardshipReviewDTO.getNotes());
         existing.setDecisionNotes(hardshipReviewDTO.getDecisionNotes());
-        existing.setSolicitorRate(hardshipReviewDTO.getSolicitorCosts().getRate());
-        existing.setSolicitorHours(hardshipReviewDTO.getSolicitorCosts().getHours());
-        existing.setSolicitorVat(hardshipReviewDTO.getSolicitorCosts().getVat());
-        existing.setSolicitorDisb(hardshipReviewDTO.getSolicitorCosts().getDisbursements());
-        existing.setSolicitorEstTotalCost(hardshipReviewDTO.getSolicitorCosts().getEstimatedTotal());
         existing.setDisposableIncome(hardshipReviewDTO.getDisposableIncome());
         existing.setDisposableIncomeAfterHardship(hardshipReviewDTO.getDisposableIncomeAfterHardship());
         existing.setStatus(hardshipReviewDTO.getStatus().getStatus());
         existing.setUserModified(hardshipReviewDTO.getUserModified());
         existing.setNewWorkReason(
                 hardshipReviewMapper.newWorkReasonToNewWorkReasonEntity(hardshipReviewDTO.getNewWorkReason()));
+
+        if (hardshipReviewDTO.getSolicitorCosts() == null) {
+            existing.setSolicitorRate(null);
+            existing.setSolicitorHours(null);
+            existing.setSolicitorVat(null);
+            existing.setSolicitorDisb(null);
+            existing.setSolicitorEstTotalCost(null);
+        } else {
+            existing.setSolicitorRate(hardshipReviewDTO.getSolicitorCosts().getRate());
+            existing.setSolicitorHours(hardshipReviewDTO.getSolicitorCosts().getHours());
+            existing.setSolicitorVat(hardshipReviewDTO.getSolicitorCosts().getVat());
+            existing.setSolicitorDisb(hardshipReviewDTO.getSolicitorCosts().getDisbursements());
+            existing.setSolicitorEstTotalCost(hardshipReviewDTO.getSolicitorCosts().getEstimatedTotal());
+        }
 
         List<HardshipReviewDetail> detailItems = hardshipReviewDTO.getReviewDetails();
         existing.getReviewDetails().clear();

@@ -1,11 +1,10 @@
 package gov.uk.courtdata.reporder.controller;
 
-import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
-import gov.uk.courtdata.applicant.controller.StandardApiResponseCodes;
+import gov.uk.courtdata.annotation.StandardApiResponseCodes;
 import gov.uk.courtdata.dto.AssessorDetails;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
-import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
@@ -14,7 +13,6 @@ import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
-import gov.uk.courtdata.repository.RepOrderRepository;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,11 +23,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +57,6 @@ public class RepOrderController {
     private final MaatIdValidator maatIdValidator;
     private final RepOrderMvoRegService repOrderMvoRegService;
     private final UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
-    private final RepOrderRepository repOrderRepository;
 
     @RequestMapping(value = "/{repId}",
             method = {RequestMethod.GET, RequestMethod.HEAD},
@@ -101,16 +96,38 @@ public class RepOrderController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Retrieve rep order records by USN")
+    @Operation(description = "Retrieve rep order ID record by USN")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
     @StandardApiResponse
-    public ResponseEntity<Set<Integer>> findByUsn(@RequestParam(value = "usn") Integer usn) {
-        log.debug("Get Rep Order By USN Received");
-        List<RepOrderEntity> repOrderEntityList = repOrderRepository.findByUsn(usn);
-        return ResponseEntity.ok(repOrderEntityList.stream().map(RepOrderEntity::getId).collect(Collectors.toSet()));
+    public ResponseEntity<Integer> findRepOrderIdByUsn(@RequestParam(value = "usn") Integer usn) {
+        log.debug("Get Rep Order ID By USN Received");
+        return ResponseEntity.ok(repOrderService.findRepOrderIdByUsn(usn));
     }
+
+    @GetMapping(value = "/usn/{usn}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve rep order state details by USN")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+    @StandardApiResponse
+    public ResponseEntity<RepOrderStateDTO> findRepOrderStateByUsn(@PathVariable int usn) {
+        log.debug("Get Rep Order State By USN received");
+        return ResponseEntity.ok(repOrderService.findRepOrderStateByUsn(usn));
+    }
+
+    @GetMapping(value = "/rep-order-state/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve rep order state details by Rep ID")
+    @ApiResponse(responseCode = "200",
+        content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+    @StandardApiResponse
+    public ResponseEntity<RepOrderStateDTO> findRepOrderStateByRepId(@PathVariable int repId) {
+        log.info("Get Rep Order State Request received for repId : {}", repId);
+        return ResponseEntity.ok(repOrderService.findRepOrderStateByRepId(repId));
+    }
+
 
     @GetMapping(value = "/rep-order-mvo-reg/{mvoId}/current-registration", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a rep order record")
@@ -204,7 +221,6 @@ public class RepOrderController {
   @PatchMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Partial Update of a Rep record")
     @StandardApiResponseCodes
-    @NotFoundApiResponse
   public ResponseEntity<Void> updateRepOrder(@PathVariable int repId,
       @RequestBody Map<String, Object> updatedFields) {
     LoggingData.MAAT_ID.putInMDC(repId);

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.model.hardship;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
@@ -32,6 +33,7 @@ public class HardshipReviewDetail {
     private HardshipReviewDetailReason detailReason;
     private LocalDateTime timestamp;
     private String userCreated;
+    private Boolean active;
 
     @JsonIgnore()
     private LocalDateTime dateCreated;
@@ -43,8 +45,6 @@ public class HardshipReviewDetail {
     private String reasonResponse;
     @JsonIgnore
     private String userModified;
-    @JsonIgnore
-    private Boolean active;
     @JsonIgnore
     private LocalDateTime removedDate;
 

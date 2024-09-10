@@ -138,11 +138,11 @@ public class RepOrderService {
 
     public RepOrderStateDTO findRepOrderStateByUsn(Integer usn) {
         RepOrderEntity repOrderEntity = repOrderRepository.findByUsn(usn);
-        return repOrderEntity != null ? repOrderMapper.mapRepOrderState(repOrderEntity) : null;
+        return repOrderMapper.mapRepOrderState(repOrderEntity);
     }
 
     public RepOrderStateDTO findRepOrderStateByRepId(Integer repId) {
-        RepOrderEntity repOrderEntity = findByRepId(repId);
+        RepOrderEntity repOrderEntity = repOrderImpl.find(repId);
         return repOrderMapper.mapRepOrderState(repOrderEntity);
     }
 }

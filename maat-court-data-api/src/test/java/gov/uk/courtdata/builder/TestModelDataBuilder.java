@@ -87,6 +87,24 @@ public class TestModelDataBuilder {
     public static final ReservationsDTO RESERVATIONS_DTO = new ReservationsDTO();
     public static final Integer RESERVATION_ID = 100000;
 
+    private static final int USN_VALUE = 810529;
+    private static final int MAAT_REF_VALUE = 4799873;
+    private static final String CASE_ID_VALUE = "1400466826-10";
+    private static final String CASE_TYPE_VALUE = "SUMMARY ONLY";
+    private static final String IOJ_RESULT_VALUE = "PASS";
+    private static final String IOJ_ASSESSOR_FULL_NAME = "Maeve OConnor";
+    private static final String IOJ_ASSESSOR_USERNAME = "ocon-m";
+    private static final String DATE_APP_CREATED_VALUE = "2015-01-09";
+    private static final String MEANS_INIT_RESULT_VALUE = "PASS";
+    private static final String MEANS_INIT_STATUS_VALUE = "COMPLETE";
+    private static final String MEANS_ASSESSOR_NAME_VALUE = "Maeve OConnor";
+    private static final String DATE_MEANS_CREATED_VALUE = "2015-01-09T11:16:54";
+    private static final String PASSPORT_RESULT_VALUE = "FAIL";
+    private static final String PASSPORT_STATUS_VALUE = "COMPLETE";
+    private static final String PASSPORT_ASSESSOR_NAME_VALUE = "Maeve OConnor";
+    private static final String DATE_PASSPORT_CREATED_VALUE = "2015-01-09T11:16:29";
+    private static final String FUNDING_DECISION_VALUE = "GRANTED";
+
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
 
@@ -1368,6 +1386,31 @@ public class TestModelDataBuilder {
                 .dateCreated(LocalDateTime.now())
                 .userCreated("test-user")
                 .build();
+    }
+
+    public static RepOrderStateDTO getPopulatedRepOrderStateDTO() {
+        RepOrderStateDTO repOrderStateDTO = RepOrderStateDTO.builder()
+            .usn(USN_VALUE)
+            .maatRef(MAAT_REF_VALUE)
+            .caseId(CASE_ID_VALUE)
+            .caseType(CASE_TYPE_VALUE)
+            .iojResult(IOJ_RESULT_VALUE)
+            .iojAssessorName(new AssessorDetails(IOJ_ASSESSOR_FULL_NAME, IOJ_ASSESSOR_USERNAME))
+            .dateAppCreated(LocalDate.parse(DATE_APP_CREATED_VALUE))
+            .iojReason(null)
+            .meansInitResult(MEANS_INIT_RESULT_VALUE)
+            .meansInitStatus(MEANS_INIT_STATUS_VALUE)
+            .meansFullResult(null)
+            .meansFullStatus(null)
+            .meansAssessorName(MEANS_ASSESSOR_NAME_VALUE)
+            .dateMeansCreated(LocalDateTime.parse(DATE_MEANS_CREATED_VALUE))
+            .passportResult(PASSPORT_RESULT_VALUE)
+            .passportStatus(PASSPORT_STATUS_VALUE)
+            .passportAssessorName(PASSPORT_ASSESSOR_NAME_VALUE)
+            .datePassportCreated(LocalDateTime.parse(DATE_PASSPORT_CREATED_VALUE))
+            .fundingDecision(FUNDING_DECISION_VALUE)
+            .build();
+        return repOrderStateDTO;
     }
 
     public static Address getAddress(int id) {

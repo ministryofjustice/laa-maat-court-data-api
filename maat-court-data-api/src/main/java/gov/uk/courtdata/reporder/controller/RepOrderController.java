@@ -117,6 +117,16 @@ public class RepOrderController {
         return ResponseEntity.ok(repOrderService.findRepOrderStateByUsn(usn));
     }
 
+    @GetMapping(value = "/rep-order-state/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve rep order state details by Rep ID")
+    @ApiResponse(responseCode = "200",
+        content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+    @StandardApiResponse
+    public ResponseEntity<RepOrderStateDTO> findRepOrderStateByRepId(@PathVariable int repId) {
+        log.info("Get Rep Order State Request received for repId : {}", repId);
+        return ResponseEntity.ok(repOrderService.findRepOrderStateByRepId(repId));
+    }
 
 
     @GetMapping(value = "/rep-order-mvo-reg/{mvoId}/current-registration", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.applicant.controller;
 
+import gov.uk.courtdata.annotation.StandardApiResponseCodes;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.service.ApplicantDisabilitiesService;
 import io.swagger.v3.oas.annotations.Operation;

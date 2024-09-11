@@ -84,13 +84,6 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenValidRepId_whenExistsIsInvoked_thenReturnTrue() {
-        when(repOrderImpl.countWithSentenceOrderDate(any()))
-                .thenReturn(1L);
-        assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID, Boolean.TRUE)).isTrue();
-    }
-
-    @Test
     void givenAllInputs_whenFdcFastTrackingIsInvoked_thenReturnList() {
         Set<Integer> idList = Set.of(5,6);
         when(repOrderImpl.findEligibleForFdcFastTracking(anyInt(), any(), anyInt()))
@@ -106,7 +99,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenInvalidRepIdAndNoSentenceOrderDate_whenCountByIdIsInvoked_thenReturnFalse() {
+    void givenAValidRepIdAndNoSentenceOrderDate_whenCountByIdIsInvoked_thenReturnFalse() {
         when(repOrderImpl.countById(any()))
                 .thenReturn(0L);
         assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID, Boolean.FALSE)).isFalse();

@@ -101,7 +101,7 @@ public class RepOrderService {
     }
 
     @Transactional
-    public boolean exists(Integer repId, Boolean hasSentenceOrderDate) {
+    public boolean exists(Integer repId, boolean hasSentenceOrderDate) {
         log.info("Retrieve rep Order Count With Sentence Order Date - Transaction Processing - Start");
         if (!hasSentenceOrderDate) {
             return repOrderImpl.countById(repId) > 0;

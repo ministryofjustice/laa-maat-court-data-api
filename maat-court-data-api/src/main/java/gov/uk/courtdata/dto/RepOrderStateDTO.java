@@ -20,7 +20,7 @@ public class RepOrderStateDTO {
     private String caseType;
 
     private String iojResult;
-    private AssessorDetails iojAssessorName;
+    private String iojAssessorName;
     private LocalDate dateAppCreated;
     private String iojReason;
 

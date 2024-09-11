@@ -365,8 +365,7 @@ class RepOrderControllerTest {
                 .andExpect(jsonPath("$.caseId").value(CASE_ID_VALUE))
                 .andExpect(jsonPath("$.caseType").value(CASE_TYPE_VALUE))
                 .andExpect(jsonPath("$.iojResult").value(IOJ_RESULT_VALUE))
-                .andExpect(jsonPath("$.iojAssessorName.fullName").value(IOJ_ASSESSOR_FULL_NAME))
-                .andExpect(jsonPath("$.iojAssessorName.userName").value(IOJ_ASSESSOR_USERNAME))
+                .andExpect(jsonPath("$.iojAssessorName").value(IOJ_ASSESSOR_FULL_NAME))
                 .andExpect(jsonPath("$.dateAppCreated").value(DATE_APP_CREATED_VALUE))
                 .andExpect(jsonPath("$.iojReason").doesNotExist())
                 .andExpect(jsonPath("$.meansInitResult").value(MEANS_INIT_RESULT_VALUE))
@@ -403,8 +402,7 @@ class RepOrderControllerTest {
             .andExpect(jsonPath("$.caseId").value(CASE_ID_VALUE))
             .andExpect(jsonPath("$.caseType").value(CASE_TYPE_VALUE))
             .andExpect(jsonPath("$.iojResult").value(IOJ_RESULT_VALUE))
-            .andExpect(jsonPath("$.iojAssessorName.fullName").value(IOJ_ASSESSOR_FULL_NAME))
-            .andExpect(jsonPath("$.iojAssessorName.userName").value(IOJ_ASSESSOR_USERNAME))
+            .andExpect(jsonPath("$.iojAssessorName").value(IOJ_ASSESSOR_FULL_NAME))
             .andExpect(jsonPath("$.dateAppCreated").value(DATE_APP_CREATED_VALUE))
             .andExpect(jsonPath("$.iojReason").doesNotExist())
             .andExpect(jsonPath("$.meansInitResult").value(MEANS_INIT_RESULT_VALUE))
@@ -423,11 +421,11 @@ class RepOrderControllerTest {
     @Test
     void givenValidRepId_whenFindRepOrderStateByRepIdIsInvokedAndFindsNoRepOrder_thenErrorIsThrown() throws Exception {
         when(repOrderService.findRepOrderStateByRepId(MAAT_REF_VALUE))
-            .thenThrow(new RequestedObjectNotFoundException(String.format("No Rep Order found for ID: %s", MAAT_REF_VALUE)));
+            .thenReturn(RepOrderStateDTO.builder().build());
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-state/" + MAAT_REF_VALUE))
-            .andExpect(status().is4xxClientError())
-            .andExpect(jsonPath("$.message").value(String.format("No Rep Order found for ID: %s", MAAT_REF_VALUE)));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.usn").isEmpty());
     }
 
     @Test

@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
 @Builder
@@ -18,6 +21,8 @@ import java.time.LocalDateTime;
 })
 public class FinAssIncomeEvidenceEntity {
     @Id
+    @SequenceGenerator(name = "fin_ass_income_evidence_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_income_evidence_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
 
@@ -29,20 +34,23 @@ public class FinAssIncomeEvidenceEntity {
     @Column(name = "DATE_RECEIVED")
     private LocalDateTime dateReceived;
 
-    @Column(name = "DATE_CREATED", nullable = false)
+    @Column(name = "DATE_CREATED", nullable = false, updatable = false)
+    @CreationTimestamp
     private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED", nullable = false, length = 100)
     private String userCreated;
 
     @Column(name = "DATE_MODIFIED")
+    @UpdateTimestamp
     private LocalDateTime dateModified;
 
     @Column(name = "USER_MODIFIED", length = 100)
     private String userModified;
 
     @Column(name = "ACTIVE", length = 1)
-    private String active;
+    @Builder.Default
+    private String active = "Y";
 
     @Column(name = "REMOVED_DATE")
     private LocalDateTime removedDate;

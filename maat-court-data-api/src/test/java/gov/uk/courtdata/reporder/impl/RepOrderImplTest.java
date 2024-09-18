@@ -68,4 +68,10 @@ class RepOrderImplTest {
         repOrderImpl.findEligibleForFdcDelayedPickup(5, LocalDate.now(), 5);
         verify(repOrderRepository).findEligibleForFdcDelayedPickup(5, date, 5);
     }
+
+    @Test
+    void givenAValidRepId_whenCountByIdIsInvoked_thenRepOrderCountIsRetrieved() {
+        repOrderImpl.countById(TestModelDataBuilder.REP_ID);
+        verify(repOrderRepository).count(ArgumentMatchers.<Specification<RepOrderEntity>>any());
+    }
 }

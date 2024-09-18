@@ -57,4 +57,8 @@ public class RepOrderImpl {
     public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
         return repOrderRepository.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
     }
+
+    public long countById(Integer repId) {
+        return repOrderRepository.count(hasId(repId));
+    }
 }

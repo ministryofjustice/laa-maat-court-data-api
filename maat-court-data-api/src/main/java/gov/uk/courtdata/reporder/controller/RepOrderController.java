@@ -74,7 +74,7 @@ public class RepOrderController {
         log.info("Get Rep Order Request Received");
         if (request.getMethod().equals(RequestMethod.HEAD.name())) {
             HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.setContentLength(repOrderService.exists(repId) ? 1 : 0);
+            responseHeaders.setContentLength(repOrderService.exists(repId, hasSentenceOrderDate) ? 1 : 0);
             return ResponseEntity.ok().headers(responseHeaders).build();
         }
         return ResponseEntity.ok(repOrderService.find(repId, hasSentenceOrderDate));

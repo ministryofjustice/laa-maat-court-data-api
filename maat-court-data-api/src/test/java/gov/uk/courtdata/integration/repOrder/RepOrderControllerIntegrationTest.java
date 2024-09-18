@@ -284,6 +284,42 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
+    void givenAValidRepIdAndSentenceOrderDateFlagIsTrue_whenFindIsInvoked_thenZeroReturned() throws Exception {
+
+        var response = runSuccessScenario(
+                head(BASE_URL + SLASH + + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE + "?has_sentence_order_date=true")
+        );
+        var content = response.getResponse().getContentAsString();
+
+        softly.assertThat(content).isEqualTo("");
+        softly.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
+    }
+
+    @Test
+    void givenAValidRepIdAndSentenceOrderDateFlagIsFalse_whenFindIsInvoked_thenOneIsReturned() throws Exception {
+
+        var response = runSuccessScenario(
+                head(BASE_URL + SLASH + + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE + "?has_sentence_order_date=false")
+        );
+        var content = response.getResponse().getContentAsString();
+
+        softly.assertThat(content).isEqualTo("");
+        softly.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
+    }
+
+    @Test
+    void givenAValidRepIdAndDefaultSentenceOrderDateIsFalse_whenFindIsInvoked_thenOneIsReturned() throws Exception {
+
+        var response = runSuccessScenario(
+                head(BASE_URL + SLASH + + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE)
+        );
+        var content = response.getResponse().getContentAsString();
+
+        softly.assertThat(content).isEqualTo("");
+        softly.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
+    }
+
+    @Test
     void givenValidRepId_whenDeleteIsInvoked_theRepOrderIsDeleted() throws Exception {
 
         RepOrderEntity repOrderEntity = TestEntityDataBuilder.getPopulatedRepOrder(anyInt());

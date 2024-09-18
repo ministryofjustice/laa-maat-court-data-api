@@ -33,6 +33,7 @@ import java.util.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -134,7 +135,7 @@ class RepOrderControllerTest {
 
     @Test
     void givenHeadRequestWithValidRepIdAndNoOptionalParameters_whenFindIsInvoked_thenContentLengthIsOne() throws Exception {
-        when(repOrderService.exists(anyInt()))
+        when(repOrderService.exists(anyInt(), anyBoolean()))
                 .thenReturn(true);
 
         mvc.perform(MockMvcRequestBuilders.head(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID))
@@ -145,7 +146,7 @@ class RepOrderControllerTest {
 
     @Test
     void givenHeadRequestWithInvalidRepIdAndNoOptionalParameters_whenFindIsInvoked_thenContentLengthIsZero() throws Exception {
-        when(repOrderService.exists(anyInt()))
+        when(repOrderService.exists(anyInt(), anyBoolean()))
                 .thenReturn(false);
 
         mvc.perform(MockMvcRequestBuilders.head(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID))

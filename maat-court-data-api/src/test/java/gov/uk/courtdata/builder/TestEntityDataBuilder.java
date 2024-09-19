@@ -35,6 +35,7 @@ public class TestEntityDataBuilder {
     public static final Integer TEST_CASE_ID = 665313;
     public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
     public static final String TEST_ASN_SEQ = "123";
+    public static final Integer APPLICANT_ID = 2345;
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder().id(REP_ID).build();
     }
@@ -575,7 +576,7 @@ public class TestEntityDataBuilder {
     public static ContributionsEntity getContributionsEntity() {
 
         return ContributionsEntity.builder()
-                .applId(REP_ID)
+                .applicantId(APPLICANT_ID)
                 .userCreated(USER_NAME)
                 .contributionFileId(1)
                 .effectiveDate(TEST_DATE.toLocalDate())

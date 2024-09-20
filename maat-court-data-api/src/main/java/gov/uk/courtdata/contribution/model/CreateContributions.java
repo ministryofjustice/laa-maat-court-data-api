@@ -17,8 +17,8 @@ import jakarta.validation.constraints.NotNull;
 public class CreateContributions extends Contributions {
     private Integer repId;
 
-    @NotNull(message = "Null applId value was provided")
-    private Integer applId;
+    @NotNull(message = "Null applicantId value was provided")
+    private Integer applicantId;
 
     @NotEmpty(message = "Null or blank userCreated value was provided")
     private String userCreated;

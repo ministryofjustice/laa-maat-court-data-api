@@ -4,7 +4,6 @@ import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.ChildWeightingsEntity;
-import gov.uk.courtdata.entity.FinAssIncomeEvidenceEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.enums.FinancialAssessmentType;
@@ -19,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -86,18 +84,7 @@ public class FinancialAssessmentImpl {
             updateChildWeightings(financialAssessment, existingAssessment);
         }
 
-        // Retrieve the list of existing income evidence records from the existing assessment
-        List<FinAssIncomeEvidenceEntity> existingIncomeEvidences = existingAssessment.getFinAssIncomeEvidences();
-        existingIncomeEvidences.forEach(evidence -> {
-            log.info("Existing evidence: {}", evidence.getIncomeEvidence());
-            // Check if the current evidence is not present in the updated financial assessment
-            if (financialAssessment.getFinAssIncomeEvidences().stream()
-                    .noneMatch(dto -> dto.getIncomeEvidence().equals(evidence.getIncomeEvidence()))) {
-                log.info("Deleting Financial Assessment Income Evidence Id: {}", evidence.getId());
-                finAssIncomeEvidenceRepository.deleteById(evidence.getId());
-            }
-        });
-
+        finAssIncomeEvidenceRepository.deleteByFinancialAssessment_Id(financialAssessment.getId());
         existingAssessment.getFinAssIncomeEvidences().clear();
         // Iterate over each income evidence DTO in the updated financial assessment
         financialAssessment.getFinAssIncomeEvidences().forEach(dto ->

@@ -9,6 +9,7 @@ import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
+import gov.uk.courtdata.repository.FinAssIncomeEvidenceRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
@@ -38,6 +39,9 @@ class FinancialAssessmentImplTest {
 
     @Spy
     private PassportAssessmentRepository passportAssessmentRepository;
+
+    @Mock
+    private FinAssIncomeEvidenceRepository finAssIncomeEvidenceRepository;
 
     @Mock
     private HardshipReviewRepository hardshipReviewRepository;
@@ -80,6 +84,7 @@ class FinancialAssessmentImplTest {
 
         when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntity());
+        when(finAssIncomeEvidenceRepository.deleteByFinancialAssessment_Id(any())).thenReturn(1);
 
         financialAssessmentImpl.update(financialAssessment);
 
@@ -95,6 +100,7 @@ class FinancialAssessmentImplTest {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTO();
         financialAssessment.setFullAssessmentDate(LocalDateTime.now());
 
+        when(finAssIncomeEvidenceRepository.deleteByFinancialAssessment_Id(any())).thenReturn(1);
         when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntity());
 
@@ -110,6 +116,7 @@ class FinancialAssessmentImplTest {
     @Test
     void givenInitAssessmentWithDetails_whenUpdateIsInvoked_thenAssessmentDetailsAreUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTOWithDetails();
+        when(finAssIncomeEvidenceRepository.deleteByFinancialAssessment_Id(any())).thenReturn(1);
         when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntityWithDetails());
         when(financialAssessmentMapper.financialAssessmentDetailsToFinancialAssessmentDetailsEntity(any()))
@@ -124,6 +131,7 @@ class FinancialAssessmentImplTest {
     @Test
     void givenInitAssessmentWithChildWeightings_whenUpdateIsInvoked_thenChildWeightingsAreUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentWithChildWeightings();
+        when(finAssIncomeEvidenceRepository.deleteByFinancialAssessment_Id(any())).thenReturn(1);
         when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntityWithChildWeightings());
         when(financialAssessmentMapper.childWeightingsToChildWeightingsEntity(any()))

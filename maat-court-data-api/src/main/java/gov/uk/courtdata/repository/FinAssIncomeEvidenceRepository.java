@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FinAssIncomeEvidenceRepository extends JpaRepository<FinAssIncomeEvidenceEntity, Integer> {
+    Integer deleteByFinancialAssessment_Id(Integer id);
 }

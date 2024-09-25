@@ -486,6 +486,7 @@ public class TestEntityDataBuilder {
     public static FinAssIncomeEvidenceEntity getFinAssIncomeEvidenceEntity() {
 
         return FinAssIncomeEvidenceEntity.builder()
+                .id(1)
                 .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated(TEST_USER)

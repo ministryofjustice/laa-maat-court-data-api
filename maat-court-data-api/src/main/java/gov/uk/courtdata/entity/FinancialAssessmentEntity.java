@@ -52,7 +52,7 @@ public class FinancialAssessmentEntity implements Serializable {
     private NewWorkReasonEntity newWorkReason;
 
     @CreationTimestamp
-    @Column(name = "DATE_CREATED", nullable = false)
+    @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED")

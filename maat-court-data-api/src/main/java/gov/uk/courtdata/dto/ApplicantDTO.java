@@ -1,6 +1,5 @@
 package gov.uk.courtdata.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,12 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApplicantDTO implements Serializable {
-
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public ApplicantDTO(int id) {
-        this.id = id;
-    }
-
     @JsonValue
     private Integer id;
     private String firstName;

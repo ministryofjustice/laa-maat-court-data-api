@@ -204,8 +204,6 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-<<<<<<< HEAD
-=======
 
     public static FinancialAssessmentIncomeEvidence getFinancialAssessmentIncomeEvidence() {
         return FinancialAssessmentIncomeEvidence.builder()
@@ -216,7 +214,6 @@ public class TestModelDataBuilder {
                 .build();
     }
 
->>>>>>> 07612107 (Removed explicit delete and using clear for income evidence)
     public static FinancialAssessmentDetails getFinancialAssessmentDetails() {
         return FinancialAssessmentDetails.builder()
                 .criteriaDetailId(40)

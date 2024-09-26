@@ -9,7 +9,6 @@ import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
-import gov.uk.courtdata.repository.FinAssIncomeEvidenceRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
@@ -30,30 +29,20 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class FinancialAssessmentImplTest {
 
+    private static final Integer MOCK_FINANCIAL_ASSESSMENT_ID = 1000;
     @Spy
     @InjectMocks
     private FinancialAssessmentImpl financialAssessmentImpl;
-
     @Spy
     private FinancialAssessmentRepository financialAssessmentRepository;
-
     @Spy
     private PassportAssessmentRepository passportAssessmentRepository;
-
-    @Mock
-    private FinAssIncomeEvidenceRepository finAssIncomeEvidenceRepository;
-
     @Mock
     private HardshipReviewRepository hardshipReviewRepository;
-
     @Mock
     private FinancialAssessmentMapper financialAssessmentMapper;
-
     @Captor
     private ArgumentCaptor<FinancialAssessmentEntity> financialAssessmentEntityArgumentCaptor;
-
-    private static final Integer MOCK_FINANCIAL_ASSESSMENT_ID = 1000;
-
 
     @Test
     void whenFindIsInvoked_thenAssessmentIsRetrieved() {
@@ -84,7 +73,6 @@ class FinancialAssessmentImplTest {
 
         when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntity());
-        when(finAssIncomeEvidenceRepository.deleteByFinancialAssessment_Id(any())).thenReturn(1);
 
         financialAssessmentImpl.update(financialAssessment);
 
@@ -100,7 +88,6 @@ class FinancialAssessmentImplTest {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTO();
         financialAssessment.setFullAssessmentDate(LocalDateTime.now());
 
-        when(finAssIncomeEvidenceRepository.deleteByFinancialAssessment_Id(any())).thenReturn(1);
         when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntity());
 
@@ -116,7 +103,6 @@ class FinancialAssessmentImplTest {
     @Test
     void givenInitAssessmentWithDetails_whenUpdateIsInvoked_thenAssessmentDetailsAreUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentDTOWithDetails();
-        when(finAssIncomeEvidenceRepository.deleteByFinancialAssessment_Id(any())).thenReturn(1);
         when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntityWithDetails());
         when(financialAssessmentMapper.financialAssessmentDetailsToFinancialAssessmentDetailsEntity(any()))
@@ -131,7 +117,6 @@ class FinancialAssessmentImplTest {
     @Test
     void givenInitAssessmentWithChildWeightings_whenUpdateIsInvoked_thenChildWeightingsAreUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentWithChildWeightings();
-        when(finAssIncomeEvidenceRepository.deleteByFinancialAssessment_Id(any())).thenReturn(1);
         when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntityWithChildWeightings());
         when(financialAssessmentMapper.childWeightingsToChildWeightingsEntity(any()))
@@ -141,6 +126,20 @@ class FinancialAssessmentImplTest {
 
         verify(financialAssessmentRepository).saveAndFlush(any());
         verify(financialAssessmentImpl).updateChildWeightings(any(), any());
+    }
+
+    @Test
+    void givenInitAssessmentWithIncomeEvidence_whenUpdateIsInvoked_thenIncomeEvidenceAreUpdated() {
+        FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentWithIncomeEvidence();
+        when(financialAssessmentRepository.getReferenceById(any()))
+                .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntityWithIncomeEvidence());
+        when(financialAssessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(any()))
+                .thenReturn(TestEntityDataBuilder.getFinAssIncomeEvidenceEntity());
+
+        FinancialAssessmentEntity financialAssessmentEntity = financialAssessmentImpl.update(financialAssessment);
+
+        verify(financialAssessmentRepository).saveAndFlush(any());
+        assertThat(financialAssessmentEntity.getFinAssIncomeEvidences().size()).isEqualTo(1);
     }
 
     @Test

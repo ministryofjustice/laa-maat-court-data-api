@@ -35,7 +35,6 @@ public class FinancialAssessmentImpl {
     private final PassportAssessmentRepository passportAssessmentRepository;
     private final HardshipReviewRepository hardshipReviewRepository;
     private final FinancialAssessmentRepository financialAssessmentRepository;
-    private final FinAssIncomeEvidenceRepository finAssIncomeEvidenceRepository;
 
     public Optional<FinancialAssessmentEntity> find(int financialAssessmentId) {
         return financialAssessmentRepository.findById(financialAssessmentId);
@@ -84,7 +83,7 @@ public class FinancialAssessmentImpl {
             updateChildWeightings(financialAssessment, existingAssessment);
         }
 
-        finAssIncomeEvidenceRepository.deleteByFinancialAssessment_Id(financialAssessment.getId());
+        //Clear existing income evidences
         existingAssessment.getFinAssIncomeEvidences().clear();
         // Iterate over each income evidence DTO in the updated financial assessment
         financialAssessment.getFinAssIncomeEvidences().forEach(dto ->

@@ -27,7 +27,7 @@ public class FinAssIncomeEvidenceEntity {
     private Integer id;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "FIAS_ID", nullable = false)
     private FinancialAssessmentEntity financialAssessment;
 

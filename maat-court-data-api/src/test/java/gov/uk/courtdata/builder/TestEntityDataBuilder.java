@@ -3,6 +3,8 @@ package gov.uk.courtdata.builder;
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
+import gov.uk.courtdata.dto.FinAssIncomeEvidenceDTO;
+import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
@@ -222,6 +224,13 @@ public class TestEntityDataBuilder {
     public static FinancialAssessmentEntity getFinancialAssessmentEntityWithChildWeightings() {
         FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
         financialAssessment.addChildWeighting(getChildWeightingsEntity());
+        return financialAssessment;
+    }
+
+    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithIncomeEvidence() {
+        FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
+        financialAssessment.setId(100);
+        financialAssessment.addFinAssIncomeEvidences(getFinAssIncomeEvidenceEntity());
         return financialAssessment;
     }
 
@@ -483,7 +492,6 @@ public class TestEntityDataBuilder {
     }
 
     public static FinAssIncomeEvidenceEntity getFinAssIncomeEvidenceEntity() {
-
         return FinAssIncomeEvidenceEntity.builder()
                 .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))

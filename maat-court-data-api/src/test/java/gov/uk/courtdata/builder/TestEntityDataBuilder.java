@@ -200,7 +200,7 @@ public class TestEntityDataBuilder {
     public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(int repId,
                                                                                String assessmentStatus,
                                                                                NewWorkReasonEntity newWorkReason) {
-        return FinancialAssessmentEntity.builder()
+        FinancialAssessmentEntity financialAssessmentEntity = FinancialAssessmentEntity.builder()
                 .repOrder(getPopulatedRepOrder(repId))
                 .assessmentType(ASSESSMENT_TYPE)
                 .fassInitStatus(assessmentStatus)
@@ -213,6 +213,11 @@ public class TestEntityDataBuilder {
                 .newWorkReason(newWorkReason)
                 .userCreatedEntity(getUserEntity(TEST_USER))
                 .build();
+        financialAssessmentEntity.addFinAssIncomeEvidences(getFinAssIncomeEvidenceEntity());
+        FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity = getFinAssIncomeEvidenceEntity();
+        finAssIncomeEvidenceEntity.setIncomeEvidence("NINO");
+        financialAssessmentEntity.addFinAssIncomeEvidences(finAssIncomeEvidenceEntity);
+        return financialAssessmentEntity;
     }
 
     public static FinancialAssessmentEntity getFinancialAssessmentEntityWithDetails() {

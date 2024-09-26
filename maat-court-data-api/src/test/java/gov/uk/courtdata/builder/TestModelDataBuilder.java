@@ -204,6 +204,19 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+<<<<<<< HEAD
+=======
+
+    public static FinancialAssessmentIncomeEvidence getFinancialAssessmentIncomeEvidence() {
+        return FinancialAssessmentIncomeEvidence.builder()
+                .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated(TEST_USER)
+                .userModified(TEST_USER)
+                .incomeEvidence("WAGE SLIP")
+                .build();
+    }
+
+>>>>>>> 07612107 (Removed explicit delete and using clear for income evidence)
     public static FinancialAssessmentDetails getFinancialAssessmentDetails() {
         return FinancialAssessmentDetails.builder()
                 .criteriaDetailId(40)

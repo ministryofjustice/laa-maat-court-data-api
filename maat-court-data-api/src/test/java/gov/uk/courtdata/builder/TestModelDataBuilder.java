@@ -189,11 +189,11 @@ public class TestModelDataBuilder {
     public static FinancialAssessmentDTO getFinancialAssessmentWithIncomeEvidence() {
         FinancialAssessmentDTO financialAssessment = getFinancialAssessmentDTO();
         financialAssessment.setId(100);
-        financialAssessment.setFinAssIncomeEvidences(List.of(getFinAssIncomeEvidence()));
+        financialAssessment.setFinAssIncomeEvidences(List.of(getFinAssIncomeEvidenceDTO()));
         return financialAssessment;
     }
 
-    public static FinAssIncomeEvidenceDTO getFinAssIncomeEvidence(){
+    public static FinAssIncomeEvidenceDTO getFinAssIncomeEvidenceDTO(){
         return FinAssIncomeEvidenceDTO.builder()
                 .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))

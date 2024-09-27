@@ -296,8 +296,7 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         body.setId(assessmentToUpdate.getId());
         body.setRepId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS);
 
-        MvcResult result =
-                runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+        runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
         FinancialAssessmentEntity updatedAssessment = repos.financialAssessment.findById(assessmentToUpdate.getId()).orElse(null);
 
         assertThat(updatedAssessment.getFinAssIncomeEvidences().size()).isEqualTo(1);
@@ -311,13 +310,11 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
 
         UpdateFinancialAssessment body = TestModelDataBuilder.getUpdateFinancialAssessment();
         List<FinancialAssessmentIncomeEvidence> incomeEvidences = getFinancialAssessmentIncomeEvidences();
-
         body.setFinAssIncomeEvidences(incomeEvidences);
         body.setId(assessmentToUpdate.getId());
         body.setRepId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS);
 
-        MvcResult result =
-                runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+        runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
         FinancialAssessmentEntity updatedAssessment = repos.financialAssessment.findById(assessmentToUpdate.getId()).orElse(null);
 
         assertThat(updatedAssessment.getFinAssIncomeEvidences().size()).isEqualTo(3);
@@ -332,11 +329,10 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         FinancialAssessmentIncomeEvidence financialAssessmentIncomeEvidence2 = TestModelDataBuilder.getFinancialAssessmentIncomeEvidence();
         financialAssessmentIncomeEvidence.setIncomeEvidence("P60");
 
-        List<FinancialAssessmentIncomeEvidence> incomeEvidences = List.of(
+        return List.of(
                         financialAssessmentIncomeEvidence,
                         financialAssessmentIncomeEvidence1,
                         financialAssessmentIncomeEvidence2);
-        return incomeEvidences;
     }
 
     @Test

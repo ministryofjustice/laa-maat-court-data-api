@@ -723,6 +723,7 @@ Resources:
           - !Ref CognitoUserPoolClientDcesReportService
           - !Ref CognitoUserPoolClientDcesDrcReportService
           - !Ref CognitoUserPoolClientCrimeApplyAdaptor
+          - !Ref CognitoUserPoolClientFunctionalTestSuite
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiAuthorizerForDces:
     Type: 'AWS::ApiGatewayV2::Authorizer'

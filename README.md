@@ -29,16 +29,25 @@ This Application mainly supports 4 user Journeys. The Details of the journeys ca
 
 We're using [Gradle](https://gradle.org/) to build the application. This also includes plugins for generating IntelliJ configuration.
 
+### Obtaining environment variables for running locally
 
-### Decrypting docker-compose.override.yml
-The `docker-compose.override.yml` is encrypted using [git-crypt](https://github.com/AGWA/git-crypt). 
+To run the app locally, you will need to download the appropriate environment variables from the team
+vault in 1Password. These environment variables are stored as a .env file, which docker-compose uses
+when starting up the service. If you don't see the team vault, speak to your tech lead to get access.
 
-To run the app locally you need to be able to decrypt this file.
+To begin with, make sure that you have the 1Password CLI installed:
 
-See the Confluence page [GPG and git-crypt](https://dsdmoj.atlassian.net/wiki/spaces/ASLST/pages/3761963077/Java+Project+Setup+with+CircleCI+and+Helm+on+Cloud+Platform#GPG-and-git-crypt) for details.
-In summary, you will need to generate a GPG key, publish your key to a key server and have a member of the dev team who already has git-crypt setup for this repo.
+```sh
+op version
+```
 
-Once the steps have been completed you can decrypt your local copy of the repository by running `git-crypt unlock`. 
+If the command is not found, [follow the steps on the 1Password developer docs to get the CLI set-up](https://developer.1password.com/docs/cli/get-started/).
+
+Once you're ready to run the application:
+
+```sh
+./startup-local.sh
+```
 
 ### DB Configuration
 
@@ -81,8 +90,7 @@ Make sure that all tests are passing by running the following ‘gradle’ comma
 The apps should then start cleanly if you run
 
 ```sh
-docker-compose build
-docker-compose up
+./startup-local.sh
 ```
 
 laa-maat-court-data-api application will be running on http://localhost:8090 

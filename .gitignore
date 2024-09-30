@@ -48,3 +48,6 @@ docker-compose-debug.yml
 
 # CloudFormation
 *.packaged
+
+# Local environment variables for testing
+*.env

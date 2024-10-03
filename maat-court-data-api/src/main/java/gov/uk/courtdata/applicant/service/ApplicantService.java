@@ -51,9 +51,9 @@ public class ApplicantService {
         applicantRepository.deleteById(id);
     }
 
-    public void create(Applicant applicant) {
+    public Applicant create(Applicant applicant) {
         log.info("ApplicantService::create - Start");
-        applicantRepository.saveAndFlush(applicant);
+        return applicantRepository.saveAndFlush(applicant);
     }
 
     public void updateSendToCCLF(SendToCCLFDTO sendToCCLFDTO) {

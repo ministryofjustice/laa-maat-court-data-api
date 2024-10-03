@@ -2,9 +2,13 @@ package gov.uk.courtdata.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,6 +22,8 @@ import java.time.LocalDateTime;
 @Table(name = "APPLICANTS", schema = "TOGDATA")
 public class Applicant {
     @Id
+    @SequenceGenerator(name = "applicants_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicants_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
 
@@ -66,6 +72,7 @@ public class Applicant {
     @Column(name = "SEND_TO_CCLF", length = 1)
     private String sendToCclf;
 
+    @CreationTimestamp
     @Column(name = "DATE_CREATED", nullable = false)
     private LocalDateTime dateCreated;
 

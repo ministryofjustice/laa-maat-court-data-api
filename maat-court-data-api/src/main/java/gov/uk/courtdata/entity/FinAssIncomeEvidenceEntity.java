@@ -34,22 +34,22 @@ public class FinAssIncomeEvidenceEntity {
     @Column(name = "DATE_RECEIVED")
     private LocalDateTime dateReceived;
 
-    @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     @CreationTimestamp
+    @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED", nullable = false, length = 100)
     private String userCreated;
 
-    @Column(name = "DATE_MODIFIED")
     @UpdateTimestamp
+    @Column(name = "DATE_MODIFIED")
     private LocalDateTime dateModified;
 
     @Column(name = "USER_MODIFIED", length = 100)
     private String userModified;
 
-    @Column(name = "ACTIVE", length = 1)
     @Builder.Default
+    @Column(name = "ACTIVE", length = 1)
     private String active = "Y";
 
     @Column(name = "REMOVED_DATE")
@@ -68,7 +68,7 @@ public class FinAssIncomeEvidenceEntity {
     private String incomeEvidence;
 
     @JsonManagedReference
-    @JoinColumn(name = "APPL_ID")
+    @JoinColumn(name = "APPL_ID", updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Applicant applicant;
 

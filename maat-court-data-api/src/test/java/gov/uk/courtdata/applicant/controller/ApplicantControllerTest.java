@@ -20,11 +20,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
@@ -199,7 +197,6 @@ public class ApplicantControllerTest {
                 .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
     }
 
-
     @Test
     void givenValidRequest_whenUpdateApplicantIsInvoked_thenUpdateIsSuccess() throws Exception {
         mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + ID)
@@ -343,7 +340,6 @@ public class ApplicantControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
     }
-
 
     @Test
     void givenValidRequest_whenUpdateSendToCCLFIsInvoked_thenUpdateIsSuccess() throws Exception {

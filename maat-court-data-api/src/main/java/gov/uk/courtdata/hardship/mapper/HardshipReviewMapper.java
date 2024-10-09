@@ -40,6 +40,7 @@ public interface HardshipReviewMapper {
             final HardshipReviewDetailEntity reviewDetailEntity
     );
 
+    @Mapping(source = "detailType", target = "detailType", qualifiedByName = "mapHardshipReviewDetailTypeEnumToDetailType")
     HardshipReviewDetailEntity hardshipReviewDetailToHardshipReviewDetailEntity(
             final HardshipReviewDetail reviewDetail);
 
@@ -83,6 +84,14 @@ public interface HardshipReviewMapper {
     default HardshipReviewDetailType mapDetailTypeToHardshipReviewDetailTypeEnum(String detailType) {
         if (detailType != null) {
             return HardshipReviewDetailType.getFrom(detailType);
+        }
+        return null;
+    }
+
+    @Named("mapHardshipReviewDetailTypeEnumToDetailType")
+    default String mapHardshipReviewDetailTypeEnumToDetailType(HardshipReviewDetailType detailType) {
+        if (detailType !=  null) {
+            return detailType.getType();
         }
         return null;
     }

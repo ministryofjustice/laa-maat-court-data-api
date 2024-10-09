@@ -26,7 +26,7 @@ public class ContributionsEntity {
     private Integer id;
 
     @Column(name = "APPL_ID", nullable = false)
-    private Integer applId;
+    private Integer applicantId;
 
     @ToString.Exclude
     @JsonBackReference

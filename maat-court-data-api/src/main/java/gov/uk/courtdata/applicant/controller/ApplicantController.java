@@ -1,6 +1,8 @@
 package gov.uk.courtdata.applicant.controller;
 
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
+import gov.uk.courtdata.annotation.StandardApiResponse;
+import gov.uk.courtdata.annotation.StandardApiResponseCodes;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.applicant.dto.SendToCCLFDTO;
@@ -12,10 +14,12 @@ import gov.uk.courtdata.applicant.validator.ApplicantValidationProcessor;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.enums.LoggingData;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -29,6 +33,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -129,11 +136,17 @@ public class ApplicantController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create a Applicant record")
-    @StandardApiResponseCodes
+    @StandardApiResponse
+    @NotFoundApiResponse
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Created Applicant record",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Applicant.class)))
+    })
     public ResponseEntity<Applicant> createApplicant(@RequestBody @Valid Applicant applicant) {
         log.info("Create Applicant Request Received");
-        applicantService.create(applicant);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(applicantService.create(applicant));
     }
 
     @PutMapping(value = "/update-cclf", produces = MediaType.APPLICATION_JSON_VALUE)

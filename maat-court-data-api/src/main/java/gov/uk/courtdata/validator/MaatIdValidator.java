@@ -36,22 +36,4 @@ public class MaatIdValidator implements IValidator<Void, Integer> {
             throw new ValidationException(message);
         }
     }
-
-    /**
-     * Validate MAAT ID does not exist.
-     */
-    public void validateNotExists(Integer maatId) {
-
-        if (maatId != null && maatId > 0) {
-            if (repOrderService.exists(maatId)) {
-                String message = String.format("There is already a record with MAAT/REP ID [%d]",
-                    maatId);
-                throw new ValidationException(message);
-            }
-
-        } else {
-            String message = String.format("MAAT/REP ID is required, found [%d]", maatId);
-            throw new ValidationException(message);
-        }
-    }
 }

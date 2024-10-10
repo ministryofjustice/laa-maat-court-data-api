@@ -193,8 +193,9 @@ public class FinancialAssessmentEntity implements Serializable {
     }
 
     @ToString.Exclude
+    @Fetch(FetchMode.JOIN)
     @JsonManagedReference
-    @OneToMany(mappedBy = "financialAssessment", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "financialAssessment", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<FinAssIncomeEvidenceEntity> finAssIncomeEvidences = new ArrayList<>();
 
     public void addFinAssIncomeEvidences(FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity) {

@@ -29,27 +29,20 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class FinancialAssessmentImplTest {
 
+    private static final Integer MOCK_FINANCIAL_ASSESSMENT_ID = 1000;
     @Spy
     @InjectMocks
     private FinancialAssessmentImpl financialAssessmentImpl;
-
     @Spy
     private FinancialAssessmentRepository financialAssessmentRepository;
-
     @Spy
     private PassportAssessmentRepository passportAssessmentRepository;
-
     @Mock
     private HardshipReviewRepository hardshipReviewRepository;
-
     @Mock
     private FinancialAssessmentMapper financialAssessmentMapper;
-
     @Captor
     private ArgumentCaptor<FinancialAssessmentEntity> financialAssessmentEntityArgumentCaptor;
-
-    private static final Integer MOCK_FINANCIAL_ASSESSMENT_ID = 1000;
-
 
     @Test
     void whenFindIsInvoked_thenAssessmentIsRetrieved() {
@@ -133,6 +126,22 @@ class FinancialAssessmentImplTest {
 
         verify(financialAssessmentRepository).saveAndFlush(any());
         verify(financialAssessmentImpl).updateChildWeightings(any(), any());
+    }
+
+    @Test
+    void givenInitAssessmentWithIncomeEvidence_whenUpdateIsInvoked_thenIncomeEvidenceAreUpdated() {
+        FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentWithIncomeEvidence();
+        FinancialAssessmentEntity financialAssessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntityWithIncomeEvidence();
+        when(financialAssessmentRepository.getReferenceById(any()))
+                .thenReturn(financialAssessmentEntity);
+        when(financialAssessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(any()))
+                .thenReturn(TestEntityDataBuilder.getFinAssIncomeEvidenceEntity());
+        when(financialAssessmentRepository.saveAndFlush(any())).thenReturn(financialAssessmentEntity);
+
+        FinancialAssessmentEntity response = financialAssessmentImpl.update(financialAssessment);
+
+        verify(financialAssessmentRepository).saveAndFlush(any());
+        assertThat(response.getFinAssIncomeEvidences().size()).isEqualTo(1);
     }
 
     @Test

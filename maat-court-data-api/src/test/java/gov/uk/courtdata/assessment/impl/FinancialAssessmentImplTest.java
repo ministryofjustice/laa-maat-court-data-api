@@ -131,15 +131,17 @@ class FinancialAssessmentImplTest {
     @Test
     void givenInitAssessmentWithIncomeEvidence_whenUpdateIsInvoked_thenIncomeEvidenceAreUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentWithIncomeEvidence();
+        FinancialAssessmentEntity financialAssessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntityWithIncomeEvidence();
         when(financialAssessmentRepository.getReferenceById(any()))
-                .thenReturn(TestEntityDataBuilder.getFinancialAssessmentEntityWithIncomeEvidence());
+                .thenReturn(financialAssessmentEntity);
         when(financialAssessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(any()))
                 .thenReturn(TestEntityDataBuilder.getFinAssIncomeEvidenceEntity());
+        when(financialAssessmentRepository.saveAndFlush(any())).thenReturn(financialAssessmentEntity);
 
-        FinancialAssessmentEntity financialAssessmentEntity = financialAssessmentImpl.update(financialAssessment);
+        FinancialAssessmentEntity response = financialAssessmentImpl.update(financialAssessment);
 
         verify(financialAssessmentRepository).saveAndFlush(any());
-        assertThat(financialAssessmentEntity.getFinAssIncomeEvidences().size()).isEqualTo(1);
+        assertThat(response.getFinAssIncomeEvidences().size()).isEqualTo(1);
     }
 
     @Test

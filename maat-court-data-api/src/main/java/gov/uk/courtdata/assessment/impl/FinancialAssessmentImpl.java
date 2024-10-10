@@ -9,7 +9,6 @@ import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.enums.FinancialAssessmentType;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
-import gov.uk.courtdata.repository.FinAssIncomeEvidenceRepository;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
@@ -83,21 +82,14 @@ public class FinancialAssessmentImpl {
             updateChildWeightings(financialAssessment, existingAssessment);
         }
 
-        //Clear existing income evidences
         existingAssessment.getFinAssIncomeEvidences().clear();
-        // Iterate over each income evidence DTO in the updated financial assessment
         financialAssessment.getFinAssIncomeEvidences().forEach(dto ->
-                // Convert the DTO to an entity and add it to the existing assessment
                 existingAssessment.addFinAssIncomeEvidences(
                         assessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(dto)
                 )
         );
 
-        // Save and flush the updated financial assessment entity
-        financialAssessmentRepository.saveAndFlush(existingAssessment);
-        log.info("Financial Assessment updated successfully");
-
-        return existingAssessment;
+        return financialAssessmentRepository.saveAndFlush(existingAssessment);
     }
 
     void updateChildWeightings(FinancialAssessmentDTO financialAssessment, FinancialAssessmentEntity existingAssessment) {
@@ -179,7 +171,7 @@ public class FinancialAssessmentImpl {
         passportAssessmentRepository.updateAllPreviousPassportAssessmentsAsReplaced(
                 financialAssessment.getRepOrder().getId()
         );
-        hardshipReviewRepository.updateOldHardshipReviews(
+        hardshipReviewRepository.replaceOldHardshipReviews(
                 financialAssessment.getRepOrder().getId(), financialAssessment.getId()
         );
     }

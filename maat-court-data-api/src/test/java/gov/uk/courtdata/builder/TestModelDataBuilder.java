@@ -1,6 +1,7 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.address.entity.Address;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
@@ -42,7 +43,6 @@ public class TestModelDataBuilder {
     public static final String COURT_LOCATION = "London";
     public static final Integer IOJ_APPEAL_ID = 123;
     public static final Integer IOJ_REP_ID = 5635978;
-    public static final Integer FINANCIAL_ASSESSMENT_ID = 364563;
 
     public static final Integer REP_ID = 1234;
     public static final Integer MVO_ID = 5678;
@@ -50,8 +50,6 @@ public class TestModelDataBuilder {
     public static final String TEST_ARREST_SUMMONS_NUMBER = "1000000000000259068J";
 
     public static final LocalDateTime TEST_DATE = LocalDateTime.of(2022, 1, 1, 0, 0);
-
-    public static final String FINANCIAL_ASSESSMENT_STATUS = "COMPLETE";
 
     public static final String REGISTRATION = "SD51ZDW";
 
@@ -65,12 +63,6 @@ public class TestModelDataBuilder {
     public static final String RESERVATION_RECORD_NAME = "REP_ORDER";
     public static final String USER_SESSION = "User Session";
     public static final String USER_NAME = "ONE-T";
-
-    public static final String CASE_TYPE = "APPEAL CC";
-    public static final String APTY_CODE = "ASE";
-    public static final String OUTCOME = "SUCCESSFUL";
-    public static final String ASSESSMENT_RESULT = "PASS";
-    public static final BigDecimal CONTRIBUTION_AMOUNT = BigDecimal.valueOf(500.00);
     public static final String CORRESPONDENCE_STATUS = "appealCC";
     public static final String EFFECTIVE_DATE = "01-JAN-20233";
     public static final int MOCK_HRD_ID = 4253;
@@ -78,13 +70,28 @@ public class TestModelDataBuilder {
     public static final Integer CMU_ID = 456;
     public static final Integer AREA_ID = 789;
     public static final String DATE_RECEIVED = "2023-12-09";
-
     public static final String SEND_TO_CCLF = "y";
     public static final List<String> NEW_WORK_REASON_LIST = List.of("TEST_NWREASON");
     public static final List<String> ROLE_ACTIONS_LIST = List.of("TEST_ROLE");
-    public static final ReservationsEntity RESERVATIONS_ENTITY = new ReservationsEntity();
     public static final ReservationsDTO RESERVATIONS_DTO = new ReservationsDTO();
     public static final Integer RESERVATION_ID = 100000;
+    private static final int USN_VALUE = 810529;
+    private static final int MAAT_REF_VALUE = 4799873;
+    private static final String CASE_ID_VALUE = "1400466826-10";
+    private static final String CASE_TYPE_VALUE = "SUMMARY ONLY";
+    private static final String IOJ_RESULT_VALUE = "PASS";
+    private static final String IOJ_ASSESSOR_FULL_NAME = "Maeve OConnor";
+    private static final String DATE_APP_CREATED_VALUE = "2015-01-09";
+    private static final String MEANS_INIT_RESULT_VALUE = "PASS";
+    private static final String MEANS_INIT_STATUS_VALUE = "COMPLETE";
+    private static final String MEANS_ASSESSOR_NAME_VALUE = "Maeve OConnor";
+    private static final String DATE_MEANS_CREATED_VALUE = "2015-01-09T11:16:54";
+    private static final String PASSPORT_RESULT_VALUE = "FAIL";
+    private static final String PASSPORT_STATUS_VALUE = "COMPLETE";
+    private static final String PASSPORT_ASSESSOR_NAME_VALUE = "Maeve OConnor";
+    private static final String DATE_PASSPORT_CREATED_VALUE = "2015-01-09T11:16:29";
+    private static final String FUNDING_DECISION_VALUE = "GRANTED";
+    private static final Integer APPLICANT_ID = 2345;
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -387,7 +394,7 @@ public class TestModelDataBuilder {
         return """
                 {
                 "repId": 999,
-                "applId": 999,
+                "applicantId": 1234,
                 "userCreated": "test",
                 "contributionFileId": 9,
                 "effectiveDate": "2023-04-01T00:00:00.00",
@@ -411,7 +418,7 @@ public class TestModelDataBuilder {
         return """
                 {
                 "repId": 999,
-                "applId": 999,
+                "applicantId": 1234,
                 "userCreated": "",
                 "contributionFileId": 9,
                 "effectiveDate": "2023-04-01T00:00:00.00",
@@ -1235,7 +1242,7 @@ public class TestModelDataBuilder {
     public static CreateContributions getCreateContributions(Integer repId) {
         return CreateContributions.builder()
                 .repId(repId)
-                .applId(repId)
+                .applicantId(APPLICANT_ID)
                 .userCreated(USER_NAME)
                 .contributionFileId(1)
                 .effectiveDate(TEST_DATE.toLocalDate())
@@ -1280,7 +1287,7 @@ public class TestModelDataBuilder {
     public static ContributionsDTO getContributionsDTO() {
         return ContributionsDTO.builder()
                 .repId(REP_ID)
-                .applId(REP_ID)
+                .applicantID(REP_ID)
                 .userCreated(USER_NAME)
                 .contributionFileId(1)
                 .effectiveDate(TEST_DATE.toLocalDate())
@@ -1394,6 +1401,44 @@ public class TestModelDataBuilder {
                 .bankAccountNo("test-bank-account-no")
                 .dateCreated(LocalDateTime.now())
                 .userCreated("test-user")
+                .build();
+    }
+
+    public static RepOrderStateDTO getPopulatedRepOrderStateDTO() {
+        return RepOrderStateDTO.builder()
+            .usn(USN_VALUE)
+            .maatRef(MAAT_REF_VALUE)
+            .caseId(CASE_ID_VALUE)
+            .caseType(CASE_TYPE_VALUE)
+            .iojResult(IOJ_RESULT_VALUE)
+            .iojAssessorName(IOJ_ASSESSOR_FULL_NAME)
+            .dateAppCreated(LocalDate.parse(DATE_APP_CREATED_VALUE))
+            .iojReason(null)
+            .meansInitResult(MEANS_INIT_RESULT_VALUE)
+            .meansInitStatus(MEANS_INIT_STATUS_VALUE)
+            .meansFullResult(null)
+            .meansFullStatus(null)
+            .meansAssessorName(MEANS_ASSESSOR_NAME_VALUE)
+            .dateMeansCreated(LocalDateTime.parse(DATE_MEANS_CREATED_VALUE))
+            .passportResult(PASSPORT_RESULT_VALUE)
+            .passportStatus(PASSPORT_STATUS_VALUE)
+            .passportAssessorName(PASSPORT_ASSESSOR_NAME_VALUE)
+            .datePassportCreated(LocalDateTime.parse(DATE_PASSPORT_CREATED_VALUE))
+            .fundingDecision(FUNDING_DECISION_VALUE)
+            .build();
+    }
+
+    public static Address getAddress(int id) {
+        return Address.builder()
+                .id(id)
+                .city("mock-city")
+                .country("mock-country")
+                .county("mock-county")
+                .line1("mock-line1")
+                .line2("mock-line2")
+                .line3("mock-line3")
+                .dateCreated(LocalDateTime.now())
+                .userCreated(TEST_USER)
                 .build();
     }
 

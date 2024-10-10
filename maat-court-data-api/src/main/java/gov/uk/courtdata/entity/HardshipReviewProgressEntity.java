@@ -56,7 +56,7 @@ public class HardshipReviewProgressEntity {
 
     @Builder.Default
     @Column(name = "ACTIVE")
-    private String active = "N";
+    private String active = "Y";
 
     @Column(name = "REMOVED_DATE")
     private LocalDateTime removedDate;

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.users.service;
 
+import gov.uk.courtdata.dto.FeatureToggleDTO;
 import gov.uk.courtdata.dto.ReservationsDTO;
 import gov.uk.courtdata.dto.RoleDataItemDTO;
 import gov.uk.courtdata.dto.UserSummaryDTO;
@@ -14,6 +15,7 @@ import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleDataItemsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
 import gov.uk.courtdata.repository.UserRepository;
+import gov.uk.courtdata.service.FeatureToggleService;
 import gov.uk.courtdata.users.mapper.UserSummaryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +39,7 @@ public class UserSummaryService {
     private final RoleDataItemsRepository roleDataItemsRepository;
     private final RoleDataItemsMapper roleDataItemsMapper;
     private final ReservationsMapper reservationsMapper;
-
+    private final FeatureToggleService featureToggleService;
 
     public UserSummaryDTO getUserSummary(String username) {
 
@@ -54,9 +56,11 @@ public class UserSummaryService {
         Optional<ReservationsEntity> reservations = reservationsRepositoryHelper.getReservationByUserName(username);
         ReservationsDTO reservationsDTO = reservations.isEmpty() ? null : reservationsMapper.reservationsEntitytoDTO(reservations.get());
 
+        List<FeatureToggleDTO> featureToggleDtos = featureToggleService.getFeatureTogglesForUser(username);
+
         Optional<UserEntity> userEntity = userRepository.findById(username);
         String currentUserSession = userEntity.isEmpty() ? null : userEntity.get().getCurrentSession();
-        return userSummaryMapper.userToUserSummaryDTO(username, newWorkReasonForUser, userRoleActions, reservationsDTO, currentUserSession, roleDataItemDTOList);
+        return userSummaryMapper.userToUserSummaryDTO(username, newWorkReasonForUser, userRoleActions, reservationsDTO, currentUserSession, roleDataItemDTOList, featureToggleDtos);
     }
 
     public UserEntity getUser(String username) {

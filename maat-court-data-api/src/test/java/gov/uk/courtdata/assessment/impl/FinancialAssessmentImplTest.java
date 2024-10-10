@@ -173,7 +173,7 @@ class FinancialAssessmentImplTest {
 
         Integer repId = financialAssessment.getRepOrder().getId();
 
-        verify(hardshipReviewRepository).updateOldHardshipReviews(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
+        verify(hardshipReviewRepository).replaceOldHardshipReviews(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
         verify(passportAssessmentRepository).updateAllPreviousPassportAssessmentsAsReplaced(repId);
         verify(financialAssessmentRepository).updatePreviousFinancialAssessmentsAsReplaced(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
     }

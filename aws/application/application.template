@@ -722,6 +722,8 @@ Resources:
           - !Ref CognitoUserPoolClientATSService
           - !Ref CognitoUserPoolClientDcesReportService
           - !Ref CognitoUserPoolClientDcesDrcReportService
+          - !Ref CognitoUserPoolClientCrimeApplyAdaptor
+          - !Ref CognitoUserPoolClientFunctionalTestSuite
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiAuthorizerForDces:
     Type: 'AWS::ApiGatewayV2::Authorizer'
@@ -985,6 +987,20 @@ Resources:
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
       ClientName: "MAAT Orchestration Service"
+      UserPoolId: !Ref CognitoUserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      GenerateSecret: true
+      SupportedIdentityProviders: [ COGNITO ]
+      AllowedOAuthFlows: [ client_credentials ]
+      AllowedOAuthScopes: [ !Sub '${pAppName}/${pApiScope1}' ]
+      PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - 'ALLOW_REFRESH_TOKEN_AUTH'
+  CognitoUserPoolClientFunctionalTestSuite:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: CognitoUserPoolResourceServer1
+    Properties:
+      ClientName: "Functional Test Suite"
       UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlowsUserPoolClient: true
       GenerateSecret: true

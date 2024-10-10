@@ -1,6 +1,7 @@
 package gov.uk.courtdata.reporder.service;
 
 import gov.uk.courtdata.dto.AssessorDetails;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -100,8 +101,12 @@ public class RepOrderService {
     }
 
     @Transactional
-    public boolean exists(Integer repId) {
-        log.info("Retrieve rep Order Count With Sentence Order Date - Transaction Processing - Start");
+    public boolean exists(Integer repId, boolean hasSentenceOrderDate) {
+        if (!hasSentenceOrderDate) {
+            log.info("Retrieve rep Order count for repId: {}", repId);
+            return repOrderImpl.countById(repId) > 0;
+        }
+        log.info("Retrieve rep Order Count for repId: {} With Sentence Order Date", repId);
         return repOrderImpl.countWithSentenceOrderDate(repId) > 0;
     }
 
@@ -128,5 +133,20 @@ public class RepOrderService {
 
     public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
         return repOrderImpl.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
+    }
+
+    public Integer findRepOrderIdByUsn(Integer usn) {
+        RepOrderEntity repOrderEntity = repOrderRepository.findByUsn(usn);
+        return repOrderEntity != null ? repOrderEntity.getId() : null;
+    }
+
+    public RepOrderStateDTO findRepOrderStateByUsn(Integer usn) {
+        RepOrderEntity repOrderEntity = repOrderRepository.findByUsn(usn);
+        return repOrderMapper.mapRepOrderState(repOrderEntity);
+    }
+
+    public RepOrderStateDTO findRepOrderStateByRepId(Integer repId) {
+        RepOrderEntity repOrderEntity = repOrderImpl.find(repId);
+        return repOrderMapper.mapRepOrderState(repOrderEntity);
     }
 }

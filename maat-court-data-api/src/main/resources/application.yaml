@@ -38,7 +38,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
     open-in-view: false
-    show-sql: false
+    show-sql: true
     properties:
       hibernate:
         jdbc.lob.non_contextual_creation: true
@@ -119,6 +119,7 @@ api-endpoints:
   application-domain: /api/internal/v1/application
   applicant-domain: /api/internal/v1/applicant
   debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
+  address-domain: /api/internal/v1/address
 
 
 feature:

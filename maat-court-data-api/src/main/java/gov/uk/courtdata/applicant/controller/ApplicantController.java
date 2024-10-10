@@ -70,6 +70,15 @@ public class ApplicantController {
         return ResponseEntity.ok(repOrderApplicantLinksService.update(repOrderApplicantLinksDTO));
     }
 
+    @PostMapping(value = "/rep-order-applicant-links", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Create rep order applicant links")
+    @StandardApiResponseCodes
+    public ResponseEntity<RepOrderApplicantLinksDTO> createReOrderApplicantLinks(@RequestBody @Valid RepOrderApplicantLinksDTO repOrderApplicantLinksDTO) {
+        LoggingData.MAAT_ID.putInMDC(repOrderApplicantLinksDTO.getRepId());
+        log.info("Create Rep Order Applicant Links Request Received");
+        return ResponseEntity.ok(repOrderApplicantLinksService.create(repOrderApplicantLinksDTO));
+    }
+
     @GetMapping(value = "/applicant-history/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve applicant history")
     @StandardApiResponseCodes

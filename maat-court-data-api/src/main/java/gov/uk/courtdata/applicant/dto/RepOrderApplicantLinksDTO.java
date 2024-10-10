@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RepOrderApplicantLinksDTO {
-    @NotNull
     private Integer id;
     private Integer repId;
     private Integer partnerApplId;

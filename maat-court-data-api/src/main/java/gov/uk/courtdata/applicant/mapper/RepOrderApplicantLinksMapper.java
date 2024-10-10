@@ -16,5 +16,5 @@ public interface RepOrderApplicantLinksMapper {
     List<RepOrderApplicantLinksDTO> mapEntityToDTO(List<RepOrderApplicantLinksEntity> repOrderApplicantLinksEntities);
     RepOrderApplicantLinksDTO mapEntityToDTO(RepOrderApplicantLinksEntity repOrderApplicantLinksEntity);
     void updateRepOrderApplicantLinksDTOToRepOrderApplicantLinksEntity(RepOrderApplicantLinksDTO repOrderApplicantLinksDTO, @MappingTarget RepOrderApplicantLinksEntity repOrderApplicantLinksEntity);
-    RepOrderApplicantLinksEntity map(RepOrderApplicantLinksDTO repOrderApplicantLinksDTO);
+    RepOrderApplicantLinksEntity mapDTOToEntity(RepOrderApplicantLinksDTO repOrderApplicantLinksDTO);
 }

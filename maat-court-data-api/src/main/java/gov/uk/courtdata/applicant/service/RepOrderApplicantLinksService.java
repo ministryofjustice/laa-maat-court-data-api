@@ -46,7 +46,7 @@ public class RepOrderApplicantLinksService {
     @Transactional
     public RepOrderApplicantLinksDTO create(RepOrderApplicantLinksDTO repOrderApplicantLinksDTO) {
         log.info("RepOrderApplicantLinksService::create - Start");
-        RepOrderApplicantLinksEntity repOrderApplicantLinksEntity = repOrderApplicantLinksMapper.map(repOrderApplicantLinksDTO);
+        RepOrderApplicantLinksEntity repOrderApplicantLinksEntity = repOrderApplicantLinksMapper.mapDTOToEntity(repOrderApplicantLinksDTO);
         return repOrderApplicantLinksMapper.mapEntityToDTO(repOrderApplicantLinksRepository.saveAndFlush(repOrderApplicantLinksEntity));
     }
 

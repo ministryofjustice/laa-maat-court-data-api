@@ -40,25 +40,23 @@ public class ApplicantServiceTest {
 
     @Test
     void givenAValidInput_whenFindIsInvoked_thenShouldReturnApplicantDTO() {
-        when(applicantRepository.findById(anyInt())).thenReturn(Optional.of(Applicant.builder().id(1).build()));
-        applicantService.find(1);
-        verify(applicantRepository, atLeastOnce()).findById(1);
+        when(applicantRepository.findById(anyInt())).thenReturn(Optional.of(Applicant.builder().id(ID).build()));
+        applicantService.find(ID);
+        verify(applicantRepository, atLeastOnce()).findById(ID);
     }
 
     @Test
     void givenApplicantNotFound_whenFindIsInvoked_thenExceptionIsRaised() {
-        assertThatThrownBy(() -> {
-            applicantService.find(1);
-        }).isInstanceOf(RequestedObjectNotFoundException.class)
+        assertThatThrownBy(() -> applicantService.find(ID)).isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant not found for id ");
     }
 
     @Test
     void givenAValidInput_whenUpdateIsInvoked_thenUpdateIsSuccess() {
-        when(applicantRepository.findById(anyInt())).thenReturn(Optional.of(Applicant.builder().id(1).build()));
+        when(applicantRepository.findById(anyInt())).thenReturn(Optional.of(Applicant.builder().id(ID).build()));
         HashMap<String, Object> inputMap = new HashMap<>();
         inputMap.put("email", "test@test.co");
-        applicantService.update(1, inputMap);
+        applicantService.update(ID, inputMap);
         verify(applicantRepository, atLeastOnce()).findById(any());
         verify(applicantRepository, atLeastOnce()).save(any());
     }
@@ -66,13 +64,13 @@ public class ApplicantServiceTest {
 
     @Test
     void givenAValidInput_whenCreateIsInvoked_thenCreateIsSuccess() {
-        applicantService.create(Applicant.builder().id(1).build());
+        applicantService.create(Applicant.builder().build());
         verify(applicantRepository, atLeastOnce()).saveAndFlush(any());
     }
 
     @Test
     void givenAValidInput_whenDeleteIsInvoked_thenDeleteIsSuccess() {
-        applicantService.delete(1);
+        applicantService.delete(ID);
         verify(applicantRepository, atLeastOnce()).deleteById(any());
     }
 
@@ -80,8 +78,8 @@ public class ApplicantServiceTest {
     void givenAValidInput_whenUpdateSendToCCLFIsInvoked_thenUpdateIsSuccess() {
         doNothing().when(repOrderService).update(any(), any());
         doNothing().when(applicantHistoryService).update(any(), any());
-        when(applicantRepository.findById(anyInt())).thenReturn(Optional.of(Applicant.builder().id(1).build()));
-        SendToCCLFDTO sendToCCLFDTO = SendToCCLFDTO.builder().applId(1).repId(1).applHistoryId(1).build();
+        when(applicantRepository.findById(anyInt())).thenReturn(Optional.of(Applicant.builder().id(ID).build()));
+        SendToCCLFDTO sendToCCLFDTO = SendToCCLFDTO.builder().applId(ID).repId(ID).applHistoryId(ID).build();
         applicantService.updateSendToCCLF(sendToCCLFDTO);
         verify(repOrderService, atLeastOnce()).update(any(), any());
         verify(applicantHistoryService, atLeastOnce()).update(any(), any());

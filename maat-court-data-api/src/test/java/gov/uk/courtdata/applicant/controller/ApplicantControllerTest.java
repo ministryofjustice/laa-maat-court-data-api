@@ -19,12 +19,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
@@ -39,6 +39,7 @@ public class ApplicantControllerTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v1/application/applicant";
     private static final int ID = 1;
+    private static final int INVALID_ID = 999999999;
 
     @Autowired
     private MockMvc mvc;
@@ -87,13 +88,6 @@ public class ApplicantControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    void givenAEmptyContent_whenUpdateRepOrderApplicantLinkIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/rep-order-applicant-links")
-                        .content("{}")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
 
     @Test
     void givenInValidRequest_whenUpdateRepOrderApplicantLinkIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
@@ -115,6 +109,32 @@ public class ApplicantControllerTest {
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
+    }
+
+    @Test
+    void givenAValidRequest_whenCreateRepOrderApplicantLinkIsInvoked_thenCreateIsSuccess() throws Exception {
+        RepOrderApplicantLinksDTO repOrderApplicantLinksDTO = TestModelDataBuilder.getRepOrderApplicantLinksDTO(ID);
+        repOrderApplicantLinksDTO.setId(null);
+        when(repOrderApplicantLinksService.create(any()))
+                .thenReturn(repOrderApplicantLinksDTO);
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/rep-order-applicant-links")
+                        .content(objectMapper.writeValueAsString(repOrderApplicantLinksDTO))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenMissingRequestBody_whenCreateRepOrderApplicantLinkIsInvoked_thenBadRequestResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/rep-order-applicant-links"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenInvalidRequest_whenCreateRepOrderApplicantLinkIsInvoked_thenBadRequestResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/rep-order-applicant-links")
+                        .content(objectMapper.writeValueAsString(null))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -198,7 +218,6 @@ public class ApplicantControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
     }
-
 
     @Test
     void givenValidRequest_whenUpdateApplicantIsInvoked_thenUpdateIsSuccess() throws Exception {
@@ -343,7 +362,6 @@ public class ApplicantControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ErrorCodes.DB_ERROR));
     }
-
 
     @Test
     void givenValidRequest_whenUpdateSendToCCLFIsInvoked_thenUpdateIsSuccess() throws Exception {

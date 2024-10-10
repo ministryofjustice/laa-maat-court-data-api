@@ -43,4 +43,11 @@ public class RepOrderApplicantLinksService {
         return repOrderApplicantLinksMapper.mapEntityToDTO(repOrderApplicantLinksRepository.saveAndFlush(repOrderApplicantLinksEntity));
     }
 
+    @Transactional
+    public RepOrderApplicantLinksDTO create(RepOrderApplicantLinksDTO repOrderApplicantLinksDTO) {
+        log.info("RepOrderApplicantLinksService::create - Start");
+        RepOrderApplicantLinksEntity repOrderApplicantLinksEntity = repOrderApplicantLinksMapper.mapDTOToEntity(repOrderApplicantLinksDTO);
+        return repOrderApplicantLinksMapper.mapEntityToDTO(repOrderApplicantLinksRepository.saveAndFlush(repOrderApplicantLinksEntity));
+    }
+
 }

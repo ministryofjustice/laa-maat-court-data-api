@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
 @Builder
@@ -18,31 +21,36 @@ import java.time.LocalDateTime;
 })
 public class FinAssIncomeEvidenceEntity {
     @Id
+    @SequenceGenerator(name = "fin_ass_income_evidence_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_income_evidence_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "FIAS_ID", nullable = false)
     private FinancialAssessmentEntity financialAssessment;
 
     @Column(name = "DATE_RECEIVED")
     private LocalDateTime dateReceived;
 
-    @Column(name = "DATE_CREATED", nullable = false)
+    @CreationTimestamp
+    @Column(name = "DATE_CREATED", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
 
     @Column(name = "USER_CREATED", nullable = false, length = 100)
     private String userCreated;
 
+    @UpdateTimestamp
     @Column(name = "DATE_MODIFIED")
     private LocalDateTime dateModified;
 
     @Column(name = "USER_MODIFIED", length = 100)
     private String userModified;
 
+    @Builder.Default
     @Column(name = "ACTIVE", length = 1)
-    private String active;
+    private String active = "Y";
 
     @Column(name = "REMOVED_DATE")
     private LocalDateTime removedDate;
@@ -60,7 +68,7 @@ public class FinAssIncomeEvidenceEntity {
     private String incomeEvidence;
 
     @JsonManagedReference
-    @JoinColumn(name = "APPL_ID")
+    @JoinColumn(name = "APPL_ID", updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Applicant applicant;
 

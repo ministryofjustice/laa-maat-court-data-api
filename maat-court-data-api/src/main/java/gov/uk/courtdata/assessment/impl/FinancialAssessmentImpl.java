@@ -15,6 +15,7 @@ import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,6 +39,7 @@ public class FinancialAssessmentImpl {
         return financialAssessmentRepository.findById(financialAssessmentId);
     }
 
+    @Transactional
     public FinancialAssessmentEntity update(FinancialAssessmentDTO financialAssessment) {
         FinancialAssessmentEntity existingAssessment = financialAssessmentRepository.getReferenceById(financialAssessment.getId());
 
@@ -79,6 +81,13 @@ public class FinancialAssessmentImpl {
         if (!financialAssessment.getChildWeightings().isEmpty()) {
             updateChildWeightings(financialAssessment, existingAssessment);
         }
+
+        existingAssessment.getFinAssIncomeEvidences().clear();
+        financialAssessment.getFinAssIncomeEvidences().forEach(dto ->
+                existingAssessment.addFinAssIncomeEvidences(
+                        assessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(dto)
+                )
+        );
 
         return financialAssessmentRepository.saveAndFlush(existingAssessment);
     }

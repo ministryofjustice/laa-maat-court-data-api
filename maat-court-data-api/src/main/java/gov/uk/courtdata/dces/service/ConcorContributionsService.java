@@ -19,7 +19,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,9 +54,12 @@ public class ConcorContributionsService {
         return idsToUpdate;
     }
 
-    public List<ConcorContributionResponse> getConcorContributionFiles(ConcorContributionStatus status) {
-        log.info("Getting concor contribution file with status with the -> {}", status);
-        final List<ConcorContributionsEntity> concorFileList = concorRepository.findByStatus(status);
+    public List<ConcorContributionResponse> getConcorContributionFiles(ConcorContributionStatus status, Integer noOfRecords, Integer concorContributionId) {
+        log.info("Searching concor contribution file with status {}, startId {} and count {}", status, concorContributionId, noOfRecords);
+        Pageable pageable = PageRequest.of(0, noOfRecords, Sort.by("id"));
+        concorContributionId = concorContributionId == null ? 0 : concorContributionId;
+
+        final List<ConcorContributionsEntity> concorFileList = concorRepository.findByStatusAndIdGreaterThan(status, concorContributionId, pageable);
         return concorFileList.stream().map(cc -> ConcorContributionResponse.builder()
                         .concorContributionId(cc.getId())
                         .xmlContent(cc.getCurrentXml())

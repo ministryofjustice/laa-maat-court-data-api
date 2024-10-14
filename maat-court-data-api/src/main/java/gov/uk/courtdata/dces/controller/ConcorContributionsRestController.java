@@ -40,11 +40,13 @@ public class ConcorContributionsRestController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @GetMapping(value = "/concor-contribution-files", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Get a list of Contributions files")
-    public ResponseEntity<List<ConcorContributionResponse>> getConcorContributionFiles(@RequestParam(name = "status") final ConcorContributionStatus status) {
-        log.info("Get Concor contribution files with status {}" ,status);
-        List<ConcorContributionResponse> contributionResponses = concorContributionsService.getConcorContributionFiles(status);
-        log.info("findContributionFiles count {}", contributionResponses.size());
+    @Operation(description = "Search a list of Contributions files using filters like status, concorContributionId and total number of records to return. concorContributionId is optional but count is mandatory")
+    public ResponseEntity<List<ConcorContributionResponse>> concorContributionFiles(@RequestParam("status") final ConcorContributionStatus status,
+                                                                                    @RequestParam(name = "concorContributionId", required = false) final Integer concorContributionId,
+                                                                                    @RequestParam(name = "numberOfRecords") final Integer numberOfRecords) {
+        log.info("Search Concor contribution files");
+        List<ConcorContributionResponse> contributionResponses = concorContributionsService.getConcorContributionFiles(status, numberOfRecords, concorContributionId);
+
         return ResponseEntity.ok(contributionResponses);
     }
 

@@ -86,10 +86,11 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
         return entity;
     }
 
+
     @Test
-    @Order(1)
     void givenAACTIVEStatus_whenGetIsInvoked_theDataLoadedResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL+"ACTIVE")
+                        .queryParam("numberOfRecords", String.valueOf(3))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -100,6 +101,7 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
     @Order(2)
     void givenAREPLACEDStatus_whenGetIsInvoked_theEmptyResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL+"REPLACED")
+                        .queryParam("numberOfRecords", String.valueOf(3))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -110,6 +112,7 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
     @Order(3)
     void givenAnInvalidStatus_whenGetIsInvoked_theEmptyResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL+"XXX")
+                        .queryParam("numberOfRecords", String.valueOf(3))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

@@ -3,7 +3,6 @@ package gov.uk.courtdata.integration.correspondence;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;

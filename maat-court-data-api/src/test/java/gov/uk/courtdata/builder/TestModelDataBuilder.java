@@ -11,7 +11,6 @@ import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.Applicant;
-import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;

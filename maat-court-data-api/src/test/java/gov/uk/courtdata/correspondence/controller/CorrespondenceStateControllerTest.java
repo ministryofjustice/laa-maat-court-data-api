@@ -1,7 +1,6 @@
 package gov.uk.courtdata.correspondence.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.uk.courtdata.correspondence.service.CorrespondenceStateService;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
-import uk.gov.justice.laa.crime.enums.contribution.CorrespondenceStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -696,13 +695,6 @@ public class TestEntityDataBuilder {
                 .dateCreated(LocalDateTime.now())
                 .userCreated(USER_NAME)
                 .cotyCorresType("CONTRIBUTION_ORDER")
-                .build();
-    }
-
-    public static CorrespondenceStateEntity getCorrespondenceStateEntity(Integer repId, CorrespondenceStatus status) {
-        return CorrespondenceStateEntity.builder()
-                .repId(repId)
-                .status(status.getStatus())
                 .build();
     }
 

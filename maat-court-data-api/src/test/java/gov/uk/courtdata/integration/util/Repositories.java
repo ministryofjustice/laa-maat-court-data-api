@@ -112,9 +112,6 @@ public class Repositories {
   public CorrespondenceRepository correspondence;
 
   @Autowired
-  public CorrespondenceStateRepository correspondenceState;
-
-  @Autowired
   public CourtHouseCodesRepository courtHouseCodes;
 
   @Autowired
@@ -291,7 +288,6 @@ public class Repositories {
         contributionFileErrors,
         contributions,
         correspondence,
-        correspondenceState,
         courtHouseCodes,
         crownCourtCode,
         crownCourtOutcome,

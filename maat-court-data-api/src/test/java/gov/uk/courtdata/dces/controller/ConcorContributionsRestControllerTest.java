@@ -93,6 +93,21 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
+    void testContributionFileContentWhenNumberOfRecordIsNull() throws Exception {
+
+        when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, null, null))
+                .thenReturn(List.of(
+                        ConcorContributionResponse.builder().concorContributionId(1).xmlContent("FirstXMLFile").build(),
+                        ConcorContributionResponse.builder().concorContributionId(3).xmlContent("ThirdXMLFile").build()));
+
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
+                        .queryParam("status", ConcorContributionStatus.ACTIVE.name())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
     void testContributionFileContentWhenActiveFileNotAvailable() throws Exception {
 
         Integer numberOfRecords = 3;

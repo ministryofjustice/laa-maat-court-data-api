@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
+import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -27,10 +28,15 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenResponseIsReturned() throws Exception {
+        //ApplicantHistoryEntity applicantHistoryEntity = repos.applicantHistory.saveAndFlush(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
+        //Integer applHistoryId = applicantHistoryEntity.getId();
         RepOrderEntity repOrderEntity = repos.repOrder.save(
-            TestEntityDataBuilder.getPopulatedRepOrder());
+                TestEntityDataBuilder.getPopulatedRepOrder());
         RepOrderApplicantLinksEntity repOrderApplicantLinks = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
         repOrderApplicantLinks.setRepId(repOrderEntity.getId());
+        //ApplicantHistoryEntity u = repOrderApplicantLinks.getAphi();
+        //u.setId(applHistoryId);
+        //repOrderApplicantLinks.setAphi(u);
         repos.repOrderApplicantLinks.saveAndFlush(repOrderApplicantLinks);
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + repOrderEntity.getId()))
                 .andExpect(status().isOk())
@@ -47,7 +53,7 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
     void givenValidRequest_whenUpdateRepOrderApplicantLinksIsInvoked_thenUpdateIsSuccess() throws Exception {
         repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
         repos.repOrderApplicantLinks.saveAndFlush(
-            TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
+                TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
         Integer id = repos.repOrderApplicantLinks.findAll().get(0).getId();
         RepOrderApplicantLinksDTO recordToUpdate = TestModelDataBuilder.getRepOrderApplicantLinksDTO(id);
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/rep-order-applicant-links")

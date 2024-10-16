@@ -124,4 +124,11 @@ public class ApplicantHistoryEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ApplicantHistoryDisability> applicantHistoryDisabilities = new LinkedHashSet<>();
 
+    @Builder.Default
+    @ToString.Exclude
+    @Fetch(FetchMode.JOIN)
+    @JsonManagedReference
+    @JoinColumn(name = "PARTNER_APHI_ID")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RepOrderApplicantLinksEntity> repOrderApplicantLinksEntities = new LinkedHashSet<>();
 }

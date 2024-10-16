@@ -1,5 +1,11 @@
 package gov.uk.courtdata.integration.applicant;
 
+import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.SEND_TO_CCLF;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
@@ -11,10 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
-import static gov.uk.courtdata.builder.TestModelDataBuilder.SEND_TO_CCLF;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
@@ -100,5 +102,20 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
                         .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(ID, "Y")))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(404));
+    }
+
+    @Test
+    void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenResponseIsReturned1() throws Exception {
+        RepOrderEntity repOrderEntity = repos.repOrder.save(
+                TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderApplicantLinksEntity repOrderApplicantLinks = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
+        repOrderApplicantLinks.setRepId(repOrderEntity.getId());
+        repOrderApplicantLinks.setAphi(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
+        repos.repOrderApplicantLinks.saveAndFlush(repOrderApplicantLinks);
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + repOrderEntity.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id").isNotEmpty())
+                .andExpect(jsonPath("$[0].partnerApplId").value(11553844));
     }
 }

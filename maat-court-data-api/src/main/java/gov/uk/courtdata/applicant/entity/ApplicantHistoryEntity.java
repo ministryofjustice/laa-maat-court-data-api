@@ -13,11 +13,14 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@ToString
 @Entity
-@Data
 @Table(name = "APPLICANT_HISTORY", schema = "TOGDATA")
 public class ApplicantHistoryEntity {
 

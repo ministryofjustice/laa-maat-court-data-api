@@ -52,12 +52,8 @@ public class RepOrderApplicantLinksEntity {
     @Column(name = "USER_MODIFIED")
     private String userModified;
 
-    /*@Column(name = "PARTNER_APHI_ID")
-    private Integer partnerAphiId;*/
-
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "PARTNER_APHI_ID")
-    //@MapsId(value = "id")
     private ApplicantHistoryEntity aphi;
 }

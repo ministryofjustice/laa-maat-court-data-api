@@ -105,7 +105,7 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenApplicationHistoryResponse() throws Exception {
+    void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenApplicationHistoryResponseIsReturned() throws Exception {
         RepOrderEntity repOrderEntity = repos.repOrder.save(
                 TestEntityDataBuilder.getPopulatedRepOrder());
         RepOrderApplicantLinksEntity repOrderApplicantLinks = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();

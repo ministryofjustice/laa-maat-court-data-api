@@ -48,7 +48,7 @@ class ConcorContributionsRestControllerTest {
     @Test
     void testContributionFileContent() throws Exception {
 
-        when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE))
+        when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, 3, 121))
                 .thenReturn(List.of(
                         ConcorContributionResponse.builder().concorContributionId(1).xmlContent("FirstXMLFile").build(),
                         ConcorContributionResponse.builder().concorContributionId(2).xmlContent("SecondXMLFile").build(),
@@ -56,6 +56,8 @@ class ConcorContributionsRestControllerTest {
 
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
                         .queryParam("status", ConcorContributionStatus.ACTIVE.name())
+                        .queryParam("concorContributionId", String.valueOf(121))
+                        .queryParam("numberOfRecords", String.valueOf(3))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
@@ -68,12 +70,57 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testContributionFileContentWhenActiveFileNotAvailable() throws Exception {
+    void testContributionFileContentWhenContribIdIsNull() throws Exception {
 
-        when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE)).thenReturn(List.of());
+        when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, 3, null))
+                .thenReturn(List.of(
+                        ConcorContributionResponse.builder().concorContributionId(1).xmlContent("FirstXMLFile").build(),
+                        ConcorContributionResponse.builder().concorContributionId(2).xmlContent("SecondXMLFile").build(),
+                        ConcorContributionResponse.builder().concorContributionId(3).xmlContent("ThirdXMLFile").build()));
 
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
                         .queryParam("status", ConcorContributionStatus.ACTIVE.name())
+                        .queryParam("numberOfRecords", String.valueOf(3))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").exists())
+                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==2)].concorContributionId").exists())
+                .andExpect(jsonPath("$.[?(@.concorContributionId==2)].xmlContent").value("SecondXMLFile"))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId").exists())
+                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].xmlContent").value("ThirdXMLFile"));
+    }
+
+    @Test
+    void testContributionFileContentWhenNumberOfRecordIsNull() throws Exception {
+
+        when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, null, null))
+                .thenReturn(List.of(
+                        ConcorContributionResponse.builder().concorContributionId(1).xmlContent("FirstXMLFile").build(),
+                        ConcorContributionResponse.builder().concorContributionId(3).xmlContent("ThirdXMLFile").build()));
+
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
+                        .queryParam("status", ConcorContributionStatus.ACTIVE.name())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").exists())
+                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId").exists())
+                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].xmlContent").value("ThirdXMLFile"));
+
+    }
+
+    @Test
+    void testContributionFileContentWhenActiveFileNotAvailable() throws Exception {
+
+        Integer numberOfRecords = 3;
+        when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, numberOfRecords, null)).thenReturn(List.of());
+
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
+                        .queryParam("status", ConcorContributionStatus.ACTIVE.name())
+                        .queryParam("numberOfRecords", String.valueOf(numberOfRecords))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));

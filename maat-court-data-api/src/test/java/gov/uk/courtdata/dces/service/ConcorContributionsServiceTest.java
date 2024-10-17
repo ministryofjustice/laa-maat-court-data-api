@@ -27,6 +27,9 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyList;
@@ -95,14 +99,52 @@ class ConcorContributionsServiceTest {
 
     @Test
     void testGetContributionFilesWhenConcorFileStatusIsActive() {
-        when(concorRepository.findByStatus(statusCaptor.capture())).thenReturn(concorContributionFiles);
 
-        List<ConcorContributionResponse> xmlContents = concorService.getConcorContributionFiles(ACTIVE);
+        List<ConcorContributionsEntity> entities = List.of(
+                populateConcorContributionsEntity(344),
+                populateConcorContributionsEntity(345)
+        );
+        Pageable pageable = PageRequest.of(0, 3, Sort.by("id"));
+        when(concorRepository.findByStatusAndIdGreaterThan(ACTIVE, 343, pageable)).thenReturn(entities);
 
-        assertNotNull(xmlContents);
-        Assertions.assertFalse(xmlContents.isEmpty());
-        final ConcorContributionStatus capturedStatus = statusCaptor.getValue();
-        assertEquals(ACTIVE, capturedStatus);
+        List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 3, 343);
+
+        verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
+        assertNotNull(responseList);
+        Assertions.assertFalse(responseList.isEmpty());
+        Assertions.assertEquals(344,responseList.get(0).getConcorContributionId());
+
+    }
+
+    @Test
+    void testGetContributionFilesWhenConcorFileStatusIsActiveAndConcorContribIdIsNull() {
+
+        List<ConcorContributionsEntity> entities = List.of(
+                populateConcorContributionsEntity(343),
+                populateConcorContributionsEntity(344),
+                populateConcorContributionsEntity(345),
+                populateConcorContributionsEntity(346)
+
+        );
+        when(concorRepository.findByStatusAndIdGreaterThan(any(),any(), any())).thenReturn(entities);
+
+        List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, null, null);
+
+        verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
+        assertNotNull(responseList);
+        Assertions.assertFalse(responseList.isEmpty());
+        Assertions.assertEquals(343,responseList.get(0).getConcorContributionId());
+    }
+
+    @Test
+    void getConcorContributionFilesReturnsEmptyListWhenStartingIdIsInvalid() {
+        Pageable pageable = PageRequest.of(0, 2, Sort.by("id"));
+        when(concorRepository.findByStatusAndIdGreaterThan(ACTIVE, 999, pageable)).thenReturn(List.of());
+
+        List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 2, 999);
+
+        assertNotNull(responseList);
+        assertTrue(responseList.isEmpty());
     }
 
     @Test
@@ -353,5 +395,13 @@ class ConcorContributionsServiceTest {
         concorFile.setCurrentXml(xmlDoc);
         concorFile.setStatus(ACTIVE);
         concorContributionFiles.add(concorFile);
+    }
+
+    private ConcorContributionsEntity populateConcorContributionsEntity(Integer concorContribId) {
+        ConcorContributionsEntity concorFile = new ConcorContributionsEntity();
+        concorFile.setCurrentXml(getXmlDocContent());
+        concorFile.setStatus(ACTIVE);
+        concorFile.setId(concorContribId);
+        return concorFile;
     }
 }

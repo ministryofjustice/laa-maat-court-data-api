@@ -128,7 +128,7 @@ class ConcorContributionsServiceTest {
         );
         when(concorRepository.findByStatusAndIdGreaterThan(any(),any(), any())).thenReturn(entities);
 
-        List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 4, null);
+        List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, null, null);
 
         verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
         assertNotNull(responseList);

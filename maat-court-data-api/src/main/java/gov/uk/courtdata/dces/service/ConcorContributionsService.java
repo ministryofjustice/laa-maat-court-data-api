@@ -37,6 +37,7 @@ import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 @Service
 @RequiredArgsConstructor
 public class ConcorContributionsService {
+    private static final Integer DEFAULT_RECORD_COUNT = 200;
     private static final String USER_AUDIT = "DCES";
     private final ConcorContributionsRepository concorRepository;
     private final ContributionFileMapper contributionFileMapper;
@@ -55,11 +56,14 @@ public class ConcorContributionsService {
     }
 
     public List<ConcorContributionResponse> getConcorContributionFiles(ConcorContributionStatus status, Integer noOfRecords, Integer concorContributionId) {
+
+        concorContributionId = Optional.ofNullable(concorContributionId).orElse(0);
+        noOfRecords = Optional.ofNullable(noOfRecords).orElse(DEFAULT_RECORD_COUNT);
+
         log.info("Searching concor contribution file with status {}, startId {} and count {}", status, concorContributionId, noOfRecords);
         Pageable pageable = PageRequest.of(0, noOfRecords, Sort.by("id"));
-        concorContributionId = concorContributionId == null ? 0 : concorContributionId;
-
         final List<ConcorContributionsEntity> concorFileList = concorRepository.findByStatusAndIdGreaterThan(status, concorContributionId, pageable);
+
         return concorFileList.stream().map(cc -> ConcorContributionResponse.builder()
                         .concorContributionId(cc.getId())
                         .xmlContent(cc.getCurrentXml())

@@ -43,8 +43,8 @@ public class ConcorContributionsRestController {
     @Operation(description = "Search a list of Contributions files using filters like status, concorContributionId and total number of records to return. concorContributionId is optional but count is mandatory")
     public ResponseEntity<List<ConcorContributionResponse>> concorContributionFiles(@RequestParam("status") final ConcorContributionStatus status,
                                                                                     @RequestParam(name = "concorContributionId", required = false) final Integer concorContributionId,
-                                                                                    @RequestParam(name = "numberOfRecords") final Integer numberOfRecords) {
-        log.info("Search Concor contribution files");
+                                                                                    @RequestParam(name = "numberOfRecords", required = false) final Integer numberOfRecords) {
+        log.info("Search Concor contribution files with status {}, concorContributionId {} and numberOfRecords {}", status, concorContributionId, numberOfRecords);
         List<ConcorContributionResponse> contributionResponses = concorContributionsService.getConcorContributionFiles(status, numberOfRecords, concorContributionId);
 
         return ResponseEntity.ok(contributionResponses);

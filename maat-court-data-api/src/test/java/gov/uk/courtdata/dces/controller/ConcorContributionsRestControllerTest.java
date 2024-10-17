@@ -103,7 +103,12 @@ class ConcorContributionsRestControllerTest {
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
                         .queryParam("status", ConcorContributionStatus.ACTIVE.name())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").exists())
+                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId").exists())
+                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].xmlContent").value("ThirdXMLFile"));
 
     }
 

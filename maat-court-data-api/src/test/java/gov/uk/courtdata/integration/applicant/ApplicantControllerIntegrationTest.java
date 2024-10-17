@@ -28,7 +28,7 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenResponseIsReturned() throws Exception {
         RepOrderEntity repOrderEntity = repos.repOrder.save(
-            TestEntityDataBuilder.getPopulatedRepOrder());
+                TestEntityDataBuilder.getPopulatedRepOrder());
         RepOrderApplicantLinksEntity repOrderApplicantLinks = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
         repOrderApplicantLinks.setRepId(repOrderEntity.getId());
         repos.repOrderApplicantLinks.saveAndFlush(repOrderApplicantLinks);
@@ -47,7 +47,7 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
     void givenValidRequest_whenUpdateRepOrderApplicantLinksIsInvoked_thenUpdateIsSuccess() throws Exception {
         repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
         repos.repOrderApplicantLinks.saveAndFlush(
-            TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
+                TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
         Integer id = repos.repOrderApplicantLinks.findAll().get(0).getId();
         RepOrderApplicantLinksDTO recordToUpdate = TestModelDataBuilder.getRepOrderApplicantLinksDTO(id);
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/rep-order-applicant-links")
@@ -102,5 +102,20 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
                         .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(ID, "Y")))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(404));
+    }
+
+    @Test
+    void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenApplicationHistoryResponseIsReturned() throws Exception {
+        RepOrderEntity repOrderEntity = repos.repOrder.save(
+                TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderApplicantLinksEntity repOrderApplicantLinks = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
+        repOrderApplicantLinks.setRepId(repOrderEntity.getId());
+        repOrderApplicantLinks.setAphi(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
+        repos.repOrderApplicantLinks.saveAndFlush(repOrderApplicantLinks);
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + repOrderEntity.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].aphi").isNotEmpty())
+                .andExpect(jsonPath("$[0].aphi.applId").value(716));
     }
 }

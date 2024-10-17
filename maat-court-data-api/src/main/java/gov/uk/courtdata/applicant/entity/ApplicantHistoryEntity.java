@@ -13,11 +13,14 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@ToString
 @Entity
-@Data
 @Table(name = "APPLICANT_HISTORY", schema = "TOGDATA")
 public class ApplicantHistoryEntity {
 
@@ -124,4 +127,11 @@ public class ApplicantHistoryEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ApplicantHistoryDisability> applicantHistoryDisabilities = new LinkedHashSet<>();
 
+    @Builder.Default
+    @ToString.Exclude
+    @Fetch(FetchMode.JOIN)
+    @JsonManagedReference
+    @JoinColumn(name = "PARTNER_APHI_ID")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RepOrderApplicantLinksEntity> repOrderApplicantLinksEntities = new LinkedHashSet<>();
 }

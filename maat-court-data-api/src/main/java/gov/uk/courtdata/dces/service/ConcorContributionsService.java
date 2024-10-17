@@ -37,7 +37,7 @@ import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 @Service
 @RequiredArgsConstructor
 public class ConcorContributionsService {
-    private static final Integer DEFAULT_RECORD_COUNT = 200;
+    private static final Integer DEFAULT_RECORD_COUNT = 500;
     private static final String USER_AUDIT = "DCES";
     private final ConcorContributionsRepository concorRepository;
     private final ContributionFileMapper contributionFileMapper;

@@ -110,8 +110,7 @@ public class ApplicantController {
     @StandardApiResponseCodes
     public ResponseEntity<ApplicantHistoryEntity> createApplicantHistory(@RequestBody @Valid ApplicantHistoryEntity applicantHistoryEntity) {
         log.info("Create Applicant Request Received");
-        applicantHistoryService.create(applicantHistoryEntity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(applicantHistoryService.create(applicantHistoryEntity));
     }
 
 

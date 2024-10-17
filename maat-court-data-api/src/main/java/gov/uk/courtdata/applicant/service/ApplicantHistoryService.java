@@ -52,9 +52,9 @@ public class ApplicantHistoryService {
         applicantHistoryRepository.deleteById(id);
     }
 
-    public void create(ApplicantHistoryEntity applicantHistoryEntity) {
+    public ApplicantHistoryEntity create(ApplicantHistoryEntity applicantHistoryEntity) {
         log.info("ApplicantHistoryService::create - Start");
-        applicantHistoryRepository.saveAndFlush(applicantHistoryEntity);
+        return applicantHistoryRepository.saveAndFlush(applicantHistoryEntity);
     }
 
     public void update(Integer id, Map<String, Object> applicantHistory) {

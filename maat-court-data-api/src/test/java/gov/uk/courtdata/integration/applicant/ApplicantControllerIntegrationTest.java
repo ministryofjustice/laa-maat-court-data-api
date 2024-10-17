@@ -105,7 +105,7 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenResponseIsReturned1() throws Exception {
+    void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenApplicationHistoryResponse() throws Exception {
         RepOrderEntity repOrderEntity = repos.repOrder.save(
                 TestEntityDataBuilder.getPopulatedRepOrder());
         RepOrderApplicantLinksEntity repOrderApplicantLinks = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
@@ -115,7 +115,7 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + repOrderEntity.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id").isNotEmpty())
-                .andExpect(jsonPath("$[0].partnerApplId").value(11553844));
+                .andExpect(jsonPath("$[0].aphi").isNotEmpty())
+                .andExpect(jsonPath("$[0].aphi.applId").value(716));
     }
 }

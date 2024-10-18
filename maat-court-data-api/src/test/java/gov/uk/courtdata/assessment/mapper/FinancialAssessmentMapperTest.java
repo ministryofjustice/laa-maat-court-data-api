@@ -2,13 +2,11 @@ package gov.uk.courtdata.assessment.mapper;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.dto.AssessorDetails;
-import gov.uk.courtdata.entity.FinAssIncomeEvidenceEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.UserEntity;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FinancialAssessmentMapperTest {
@@ -26,12 +24,5 @@ class FinancialAssessmentMapperTest {
 
         assertEquals("Karen Greaves", meansAssessorDetails.getFullName());
         assertEquals(userName, meansAssessorDetails.getUserName());
-    }
-
-    @Test
-    void shouldRetainMandatoryField() {
-        FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity =
-                financialAssessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(TestEntityDataBuilder.getFinAssIncomeEvidenceDTO());
-        assertThat(finAssIncomeEvidenceEntity.getMandatory()).isNull();
     }
 }

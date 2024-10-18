@@ -20,5 +20,5 @@ public class RepOrderApplicantLinksDTO {
     private LocalDate unlinkDate;
     private String userCreated;
     private String userModified;
-    private ApplicantHistoryDTO aphi;
+    private Integer partnerAphiId;
 }

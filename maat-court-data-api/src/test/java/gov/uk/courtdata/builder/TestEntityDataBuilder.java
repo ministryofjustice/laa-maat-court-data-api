@@ -428,6 +428,7 @@ public class TestEntityDataBuilder {
     public static RepOrderApplicantLinksEntity getRepOrderApplicantLinksEntity() {
         return RepOrderApplicantLinksEntity.builder()
                 .repId(REP_ID)
+                .partnerAphiId(11553872)
                 .partnerApplId(11553844)
                 .linkDate(LocalDate.parse("2021-10-09"))
                 .unlinkDate(LocalDate.parse("2021-10-21"))

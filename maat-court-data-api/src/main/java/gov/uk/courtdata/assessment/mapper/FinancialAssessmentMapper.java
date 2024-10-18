@@ -56,6 +56,7 @@ public interface FinancialAssessmentMapper {
     ChildWeightings childWeightingsEntityToChildWeightings(final ChildWeightingsEntity childWeightingsEntity);
 
     @Mapping(target = "active", defaultValue = "Y")
+    @Mapping(target = "mandatory", ignore = true)
     FinAssIncomeEvidenceEntity finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(final FinAssIncomeEvidenceDTO finAssIncomeEvidenceDTO);
 
     FinAssIncomeEvidenceDTO finAssIncomeEvidenceEntityToFinAssIncomeEvidenceDTO(final FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity);

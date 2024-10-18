@@ -1,6 +1,5 @@
 package gov.uk.courtdata.applicant.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,8 +51,7 @@ public class RepOrderApplicantLinksEntity {
     @Column(name = "USER_MODIFIED")
     private String userModified;
 
-    @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "PARTNER_APHI_ID")
-    private ApplicantHistoryEntity aphi;
+    @Column(name = "PARTNER_APHI_ID")
+    private Integer partnerAphiId;
+
 }

@@ -138,6 +138,7 @@ public class TestModelDataBuilder {
         return RepOrderApplicantLinksDTO.builder()
                 .id(id)
                 .repId(2522394)
+                .partnerAphiId(11553872)
                 .partnerApplId(11553844)
                 .linkDate(LocalDate.parse("2021-10-09"))
                 .unlinkDate(LocalDate.parse("2021-10-22"))

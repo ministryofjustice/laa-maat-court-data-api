@@ -1,9 +1,11 @@
 package gov.uk.courtdata.assessment.impl;
 
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
+import gov.uk.courtdata.dto.FinAssIncomeEvidenceDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.ChildWeightingsEntity;
+import gov.uk.courtdata.entity.FinAssIncomeEvidenceEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.enums.FinancialAssessmentType;
@@ -17,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -82,6 +86,7 @@ public class FinancialAssessmentImpl {
             updateChildWeightings(financialAssessment, existingAssessment);
         }
 
+        populateMandatoryFlag(financialAssessment.getFinAssIncomeEvidences(), existingAssessment.getFinAssIncomeEvidences());
         existingAssessment.getFinAssIncomeEvidences().clear();
         financialAssessment.getFinAssIncomeEvidences().forEach(dto ->
                 existingAssessment.addFinAssIncomeEvidences(
@@ -90,6 +95,20 @@ public class FinancialAssessmentImpl {
         );
 
         return financialAssessmentRepository.saveAndFlush(existingAssessment);
+    }
+
+    public void populateMandatoryFlag(List<FinAssIncomeEvidenceDTO> finAssIncomeEvidenceDTOS,
+                                      List<FinAssIncomeEvidenceEntity> finAssIncomeEvidences) {
+        finAssIncomeEvidenceDTOS.forEach(finAssIncomeEvidenceDTO -> {
+                    if (Objects.isNull(finAssIncomeEvidenceDTO.getMandatory())) {
+                        Optional<FinAssIncomeEvidenceEntity> finAssIncomeEvidenceEntityOptional = finAssIncomeEvidences.stream()
+                                .filter(finAssIncomeEvidenceEntity -> finAssIncomeEvidenceEntity.getId().equals(finAssIncomeEvidenceDTO.getId()))
+                                .findFirst();
+                        finAssIncomeEvidenceEntityOptional.ifPresent(finAssIncomeEvidenceEntity ->
+                                finAssIncomeEvidenceDTO.setMandatory(finAssIncomeEvidenceEntity.getMandatory()));
+                    }
+                }
+        );
     }
 
     void updateChildWeightings(FinancialAssessmentDTO financialAssessment, FinancialAssessmentEntity existingAssessment) {

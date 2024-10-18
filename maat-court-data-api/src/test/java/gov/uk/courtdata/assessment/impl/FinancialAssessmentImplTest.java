@@ -3,9 +3,11 @@ package gov.uk.courtdata.assessment.impl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.dto.FinAssIncomeEvidenceDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.ChildWeightingsEntity;
+import gov.uk.courtdata.entity.FinAssIncomeEvidenceEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
@@ -14,17 +16,25 @@ import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND;
 import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FinancialAssessmentImplTest {
@@ -132,6 +142,7 @@ class FinancialAssessmentImplTest {
     void givenInitAssessmentWithIncomeEvidence_whenUpdateIsInvoked_thenIncomeEvidenceAreUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentWithIncomeEvidence();
         FinancialAssessmentEntity financialAssessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntityWithIncomeEvidence();
+        financialAssessmentEntity.getFinAssIncomeEvidences().get(0).setId(123);
         when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(financialAssessmentEntity);
         when(financialAssessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(any()))
@@ -275,5 +286,36 @@ class FinancialAssessmentImplTest {
 
         assertThat(existingAssessment.getChildWeightings().get(0).getChildWeightingId())
                 .isEqualTo(financialAssessment.getChildWeightings().get(0).getChildWeightingId());
+    }
+
+    @Test
+    void givenNewFinancialEvidenceDTOWithNullMandatoryField_whenPopulateMandatoryFlagIsInvoked_MandatoryFieldIsNotSet() {
+        FinAssIncomeEvidenceDTO finAssIncomeEvidenceDTO = TestModelDataBuilder.getFinAssIncomeEvidenceDTO();
+        finAssIncomeEvidenceDTO.setId(123);
+        List<FinAssIncomeEvidenceDTO> finAssIncomeEvidenceDTOS = List.of(finAssIncomeEvidenceDTO);
+
+        FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity = TestEntityDataBuilder.getFinAssIncomeEvidenceEntity();
+        finAssIncomeEvidenceEntity.setId(234);
+        List<FinAssIncomeEvidenceEntity> finAssIncomeEvidences = List.of(finAssIncomeEvidenceEntity);
+
+        financialAssessmentImpl.populateMandatoryFlag(finAssIncomeEvidenceDTOS, finAssIncomeEvidences);
+        assertThat(finAssIncomeEvidenceDTO.getMandatory()).isNull();
+    }
+
+    @Test
+    void givenExistingFinancialEvidenceDTOWithNullMandatoryField_whenPopulateMandatoryFlagIsInvoked_MandatoryFieldIsUpdated() {
+        int evidenceId = 123;
+
+        FinAssIncomeEvidenceDTO finAssIncomeEvidenceDTO = TestModelDataBuilder.getFinAssIncomeEvidenceDTO();
+        finAssIncomeEvidenceDTO.setId(evidenceId);
+        List<FinAssIncomeEvidenceDTO> finAssIncomeEvidenceDTOS = List.of(finAssIncomeEvidenceDTO);
+
+        FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity = TestEntityDataBuilder.getFinAssIncomeEvidenceEntity();
+        finAssIncomeEvidenceEntity.setId(evidenceId);
+        finAssIncomeEvidenceEntity.setMandatory("Y");
+        List<FinAssIncomeEvidenceEntity> finAssIncomeEvidences = List.of(finAssIncomeEvidenceEntity);
+
+        financialAssessmentImpl.populateMandatoryFlag(finAssIncomeEvidenceDTOS, finAssIncomeEvidences);
+        assertThat(finAssIncomeEvidenceDTO.getMandatory()).isEqualTo(finAssIncomeEvidenceEntity.getMandatory());
     }
 }

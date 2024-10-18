@@ -3,7 +3,6 @@ package gov.uk.courtdata.builder;
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
-import gov.uk.courtdata.dto.FinAssIncomeEvidenceDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.enums.Frequency;
@@ -509,18 +508,6 @@ public class TestEntityDataBuilder {
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated(TEST_USER)
                 .userModified(TEST_USER)
-                .active("Y")
-                .incomeEvidence("INE")
-                .build();
-    }
-
-    public static FinAssIncomeEvidenceDTO getFinAssIncomeEvidenceDTO() {
-        return FinAssIncomeEvidenceDTO.builder()
-                .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated(TEST_USER)
-                .userModified(TEST_USER)
-                .mandatory("Y")
                 .active("Y")
                 .incomeEvidence("INE")
                 .build();

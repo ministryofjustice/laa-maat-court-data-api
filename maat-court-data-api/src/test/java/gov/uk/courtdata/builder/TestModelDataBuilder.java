@@ -11,7 +11,6 @@ import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.Applicant;
-import gov.uk.courtdata.entity.CorrespondenceStateEntity;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.enums.*;
 import gov.uk.courtdata.hearing.dto.*;
@@ -27,7 +26,6 @@ import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
-import uk.gov.justice.laa.crime.enums.contribution.CorrespondenceStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -63,7 +61,6 @@ public class TestModelDataBuilder {
     public static final String RESERVATION_RECORD_NAME = "REP_ORDER";
     public static final String USER_SESSION = "User Session";
     public static final String USER_NAME = "ONE-T";
-    public static final String CORRESPONDENCE_STATUS = "appealCC";
     public static final String EFFECTIVE_DATE = "01-JAN-20233";
     public static final int MOCK_HRD_ID = 4253;
     public static final Integer CASE_ID = 123;
@@ -191,6 +188,34 @@ public class TestModelDataBuilder {
         FinancialAssessmentDTO financialAssessment = getFinancialAssessmentDTO();
         financialAssessment.setChildWeightings(List.of(getChildWeightings()));
         return financialAssessment;
+    }
+
+    public static FinancialAssessmentDTO getFinancialAssessmentWithIncomeEvidence() {
+        FinancialAssessmentDTO financialAssessment = getFinancialAssessmentDTO();
+        financialAssessment.setId(100);
+        financialAssessment.setFinAssIncomeEvidences(List.of(getFinAssIncomeEvidenceDTO()));
+        return financialAssessment;
+    }
+
+    public static FinAssIncomeEvidenceDTO getFinAssIncomeEvidenceDTO(){
+        return FinAssIncomeEvidenceDTO.builder()
+                .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated(TEST_USER)
+                .userModified(TEST_USER)
+                .active("Y")
+                .incomeEvidence("INE")
+                .build();
+    }
+
+
+    public static FinancialAssessmentIncomeEvidence getFinancialAssessmentIncomeEvidence() {
+        return FinancialAssessmentIncomeEvidence.builder()
+                .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated(TEST_USER)
+                .userModified(TEST_USER)
+                .incomeEvidence("WAGE SLIP")
+                .build();
     }
 
     public static FinancialAssessmentDetails getFinancialAssessmentDetails() {
@@ -1328,13 +1353,6 @@ public class TestModelDataBuilder {
                 .upfrontTotalMonths(5)
                 .firstReminderDaysDue(28)
                 .secondReminderDaysDue(7)
-                .build();
-    }
-
-    public static CorrespondenceStateEntity buildCorrespondenceStateEntity(Integer repId, CorrespondenceStatus status) {
-        return CorrespondenceStateEntity.builder()
-                .repId(repId)
-                .status(status.getStatus())
                 .build();
     }
 

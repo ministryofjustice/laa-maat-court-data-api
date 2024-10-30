@@ -94,4 +94,19 @@ public class Applicant {
     @Column(name = "PHONE_WORK", length = 20)
     private String phoneWork;
 
+    @Column(name = "HOME_ADDR_ID")
+    private Integer homeAddressId;
+
+    @Column(name = "EMST_CODE")
+    private String emstCode;
+
+    @Column(name = "ETHN_ID")
+    private Integer ethnId;
+
+    @Column(name = "DISABLED")
+    private String disabled;
+
+    @Column(name = "PAME_PAYMENT_METHOD")
+    private String pamePaymentMethod;
+
 }

@@ -4,22 +4,28 @@ import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.entity.*;
-import gov.uk.courtdata.enums.*;
+import gov.uk.courtdata.enums.ConcorContributionStatus;
+import gov.uk.courtdata.enums.Frequency;
+import gov.uk.courtdata.enums.HardshipReviewDetailReason;
+import gov.uk.courtdata.enums.HardshipReviewProgressAction;
+import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
-import uk.gov.justice.laa.crime.enums.contribution.CorrespondenceStatus;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static gov.uk.courtdata.builder.TestModelDataBuilder.*;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.REGISTRATION;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.USER_NAME;
 
 @Component
 public class TestEntityDataBuilder {
@@ -36,6 +42,7 @@ public class TestEntityDataBuilder {
     public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
     public static final String TEST_ASN_SEQ = "123";
     public static final Integer APPLICANT_ID = 2345;
+
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder().id(REP_ID).build();
     }
@@ -199,7 +206,7 @@ public class TestEntityDataBuilder {
     public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(int repId,
                                                                                String assessmentStatus,
                                                                                NewWorkReasonEntity newWorkReason) {
-        return FinancialAssessmentEntity.builder()
+        FinancialAssessmentEntity financialAssessmentEntity = FinancialAssessmentEntity.builder()
                 .repOrder(getPopulatedRepOrder(repId))
                 .assessmentType(ASSESSMENT_TYPE)
                 .fassInitStatus(assessmentStatus)
@@ -212,6 +219,11 @@ public class TestEntityDataBuilder {
                 .newWorkReason(newWorkReason)
                 .userCreatedEntity(getUserEntity(TEST_USER))
                 .build();
+        financialAssessmentEntity.addFinAssIncomeEvidences(getFinAssIncomeEvidenceEntity());
+        FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity = getFinAssIncomeEvidenceEntity();
+        finAssIncomeEvidenceEntity.setIncomeEvidence("NINO");
+        financialAssessmentEntity.addFinAssIncomeEvidences(finAssIncomeEvidenceEntity);
+        return financialAssessmentEntity;
     }
 
     public static FinancialAssessmentEntity getFinancialAssessmentEntityWithDetails() {
@@ -223,6 +235,13 @@ public class TestEntityDataBuilder {
     public static FinancialAssessmentEntity getFinancialAssessmentEntityWithChildWeightings() {
         FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
         financialAssessment.addChildWeighting(getChildWeightingsEntity());
+        return financialAssessment;
+    }
+
+    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithIncomeEvidence() {
+        FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
+        financialAssessment.setId(100);
+        financialAssessment.addFinAssIncomeEvidences(getFinAssIncomeEvidenceEntity());
         return financialAssessment;
     }
 
@@ -484,9 +503,7 @@ public class TestEntityDataBuilder {
     }
 
     public static FinAssIncomeEvidenceEntity getFinAssIncomeEvidenceEntity() {
-
         return FinAssIncomeEvidenceEntity.builder()
-                .id(1)
                 .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated(TEST_USER)
@@ -637,7 +654,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static ConcorContributionsEntity getConcorContributionsEntity(Integer repId, ConcorContributionStatus status){
+    public static ConcorContributionsEntity getConcorContributionsEntity(Integer repId, ConcorContributionStatus status) {
         return ConcorContributionsEntity.builder()
                 .status(status)
                 .repId(repId)
@@ -658,7 +675,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity(RepOrderEntity repOrder, String outcome){
+    public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity(RepOrderEntity repOrder, String outcome) {
         return RepOrderCCOutComeEntity.builder()
                 .repOrder(repOrder)
                 .outcome(outcome)
@@ -678,13 +695,6 @@ public class TestEntityDataBuilder {
                 .dateCreated(LocalDateTime.now())
                 .userCreated(USER_NAME)
                 .cotyCorresType("CONTRIBUTION_ORDER")
-                .build();
-    }
-
-    public static CorrespondenceStateEntity getCorrespondenceStateEntity(Integer repId, CorrespondenceStatus status) {
-        return CorrespondenceStateEntity.builder()
-                .repId(repId)
-                .status(status.getStatus())
                 .build();
     }
 

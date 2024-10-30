@@ -24,14 +24,13 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.NewWorkReason;
-import gov.uk.courtdata.model.assessment.ChildWeightings;
-import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
-import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
-import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
+import gov.uk.courtdata.model.assessment.*;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.assertj.core.api.SoftAssertions;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -285,6 +284,55 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         assertTrue(runUpdateAssessmentErrorScenario(
                 "Username is required",
                 UpdateFinancialAssessment.builder().id(existingAssessmentEntities.get(0).getId()).repId(1).initialAscrId(1).cmuId(1).build()));
+    }
+
+    @Test
+    void givenAnAssessmentWithIncomeEvidence_whenUpdateAssessmentIsInvoked_thenNewIncomeEvidenceIsReturned() throws Exception {
+        FinancialAssessmentEntity assessmentToUpdate =
+                existingAssessmentEntities.stream().filter(item -> item.getRepOrder().getId().equals(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS)).findFirst().orElse(null);
+
+        UpdateFinancialAssessment body = TestModelDataBuilder.getUpdateFinancialAssessment();
+        body.setFinAssIncomeEvidences(List.of(TestModelDataBuilder.getFinancialAssessmentIncomeEvidence()));
+        body.setId(assessmentToUpdate.getId());
+        body.setRepId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS);
+
+        runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+        FinancialAssessmentEntity updatedAssessment = repos.financialAssessment.findById(assessmentToUpdate.getId()).orElse(null);
+
+        assertThat(updatedAssessment.getFinAssIncomeEvidences().size()).isEqualTo(1);
+        assertThat(updatedAssessment.getFinAssIncomeEvidences().get(0).getIncomeEvidence()).isEqualTo("WAGE SLIP");
+    }
+
+    @Test
+    void givenAnAssessmentWithMultipleIncomeEvidence_whenUpdateAssessmentIsInvoked_thenNewIncomeEvidenceIsReturned() throws Exception {
+        FinancialAssessmentEntity assessmentToUpdate =
+                existingAssessmentEntities.stream().filter(item -> item.getRepOrder().getId().equals(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS)).findFirst().orElse(null);
+
+        UpdateFinancialAssessment body = TestModelDataBuilder.getUpdateFinancialAssessment();
+        List<FinancialAssessmentIncomeEvidence> incomeEvidences = getFinancialAssessmentIncomeEvidences();
+        body.setFinAssIncomeEvidences(incomeEvidences);
+        body.setId(assessmentToUpdate.getId());
+        body.setRepId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS);
+
+        runSuccessScenario(put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
+        FinancialAssessmentEntity updatedAssessment = repos.financialAssessment.findById(assessmentToUpdate.getId()).orElse(null);
+
+        assertThat(updatedAssessment.getFinAssIncomeEvidences().size()).isEqualTo(3);
+    }
+
+    @NotNull
+    private static List<FinancialAssessmentIncomeEvidence> getFinancialAssessmentIncomeEvidences() {
+        FinancialAssessmentIncomeEvidence financialAssessmentIncomeEvidence = TestModelDataBuilder.getFinancialAssessmentIncomeEvidence();
+        financialAssessmentIncomeEvidence.setIncomeEvidence("WAGE SLIP");
+        FinancialAssessmentIncomeEvidence financialAssessmentIncomeEvidence1 = TestModelDataBuilder.getFinancialAssessmentIncomeEvidence();
+        financialAssessmentIncomeEvidence.setIncomeEvidence("BANK STATEMENT");
+        FinancialAssessmentIncomeEvidence financialAssessmentIncomeEvidence2 = TestModelDataBuilder.getFinancialAssessmentIncomeEvidence();
+        financialAssessmentIncomeEvidence.setIncomeEvidence("P60");
+
+        return List.of(
+                        financialAssessmentIncomeEvidence,
+                        financialAssessmentIncomeEvidence1,
+                        financialAssessmentIncomeEvidence2);
     }
 
     @Test

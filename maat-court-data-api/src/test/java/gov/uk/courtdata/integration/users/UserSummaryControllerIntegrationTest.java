@@ -86,6 +86,7 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
         .enabled("Y")
         .insertAllowed("Y")
         .updateAllowed("Y")
+        .upsertAllowed("Y")
         .build());
 
     LocalDateTime reservationDate = LocalDateTime.now();
@@ -132,6 +133,7 @@ public class UserSummaryControllerIntegrationTest extends MockMvcIntegrationTest
         .andExpect(jsonPath("$.newWorkReasons[0]").value(VALID_NWORCODE))
         .andExpect(jsonPath("$.reservationsDTO.recordId").value(VALID_RESERVATION_ID))
         .andExpect(jsonPath("$.roleDataItem[0].roleName").value(AUTHORISED_ROLE))
+        .andExpect(jsonPath("$.roleDataItem[0].upsertAllowed").value("Y"))
         .andExpect(jsonPath("$.featureToggle[0].username").value(VALID_TEST_USER))
         .andExpect(jsonPath("$.username").value(VALID_TEST_USER));
   }

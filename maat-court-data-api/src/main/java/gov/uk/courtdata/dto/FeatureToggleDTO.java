@@ -15,4 +15,5 @@ public class FeatureToggleDTO {
   private String username;
   private String featureName;
   private String action;
+  private String isEnabled;
 }

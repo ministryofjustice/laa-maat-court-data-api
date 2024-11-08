@@ -721,7 +721,7 @@ Resources:
           - !Ref CognitoUserPoolClientCrimeValidationService
           - !Ref CognitoUserPoolClientATSService
           - !Ref CognitoUserPoolClientDcesReportService
-          - !Ref CognitoUserPoolClientDcesDrcReportService
+          - !Ref CognitoUserPoolClientDcesDrcIntegrationService
           - !Ref CognitoUserPoolClientCrimeApplyAdaptor
           - !Ref CognitoUserPoolClientFunctionalTestSuite
         Issuer: !GetAtt CognitoUserPool.ProviderURL
@@ -736,7 +736,7 @@ Resources:
       JwtConfiguration:
         Audience:
           - !Ref CognitoUserPoolClientDcesReportService
-          - !Ref CognitoUserPoolClientDcesDrcReportService
+          - !Ref CognitoUserPoolClientDcesDrcIntegrationService
         Issuer: !GetAtt CognitoUserPool.ProviderURL
   ApiAuthorizerForATSAndCAA:
     Type: 'AWS::ApiGatewayV2::Authorizer'
@@ -924,11 +924,11 @@ Resources:
       PreventUserExistenceErrors: ENABLED
       ExplicitAuthFlows:
         - 'ALLOW_REFRESH_TOKEN_AUTH'
-  CognitoUserPoolClientDcesDrcReportService:
+  CognitoUserPoolClientDcesDrcIntegrationService:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: CognitoUserPoolResourceServer1
     Properties:
-      ClientName: "DCES DRC Integration Report Service"
+      ClientName: "DCES DRC Integration Service"
       UserPoolId: !Ref CognitoUserPool
       AllowedOAuthFlowsUserPoolClient: true
       GenerateSecret: true

@@ -16,6 +16,6 @@ public interface FeatureToggleRepository extends JpaRepository<FeatureToggleEnti
    * @param username The username to get feature toggles for.
    * @return A list of feature toggles applicable to the user.
    */
-  @Query(value = "select ID, USER_NAME, FEATURE, ACTION from TOGDATA.FEATURE_TOGGLE where USER_NAME = :username or USER_NAME is null", nativeQuery = true)
+  @Query(value = "select ID, USER_NAME, FEATURE, ACTION, IS_ENABLED from TOGDATA.FEATURE_TOGGLE where USER_NAME = :username or USER_NAME is null", nativeQuery = true)
   List<FeatureToggleEntity> getAllFeatureTogglesForUser(@Param("username") String username);
 }

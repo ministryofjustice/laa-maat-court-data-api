@@ -196,7 +196,7 @@ public class DebtCollectionRepository {
                                                                                                                        WHERE FI.FDC_ID = FC.ID 
                                                                                                                          AND NVL(FI.PAID_AS_CLAIMED,'N') = 'N' 
                                                                                                                          AND FI.ADJUSTMENT_REASON IS NULL   
-                                                                                                                         AND FI.LATEST_COST_IND = 'CURRENT'  
+                                                                                                                         AND FI.LATEST_COST_IND = 'Current'  
                                                                                                                        ) 
                                                                                                      AND EXISTS (SELECT 1 FROM TOGDATA.FDC_ITEMS FITM    
                                                                                                                     WHERE FITM.FDC_ID = F.ID     
@@ -269,7 +269,7 @@ public class DebtCollectionRepository {
                                                                                            WHERE FI.FDC_ID = FC.ID 
                                                                                              AND NVL(FI.PAID_AS_CLAIMED,'N') = 'N' 
                                                                                              AND FI.ADJUSTMENT_REASON IS NULL  
-                                                                                             AND FI.LATEST_COST_IND = 'CURRENT'  
+                                                                                             AND FI.LATEST_COST_IND = 'Current'  
                                                                                            ) 
                                                                            AND EXISTS (SELECT 1 FROM TOGDATA.FDC_ITEMS FITM  
                                                                                         WHERE FITM.FDC_ID = F.ID   

@@ -39,4 +39,7 @@ public class RoleDataItemEntity {
     @Column(name = "UPDATE_ALLOWED")
     private String updateAllowed;
 
+    @Column(name = "UPSERT_ALLOWED")
+    private String upsertAllowed;
+
 }

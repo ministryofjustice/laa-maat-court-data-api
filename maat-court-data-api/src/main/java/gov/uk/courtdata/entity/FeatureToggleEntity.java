@@ -34,4 +34,7 @@ public class FeatureToggleEntity {
 
   @Column(name = "ACTION")
   private String action;
+
+  @Column(name = "IS_ENABLED")
+  private String isEnabled;
 }

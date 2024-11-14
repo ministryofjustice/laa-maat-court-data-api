@@ -20,4 +20,5 @@ public class RoleDataItemDTO {
     private String enabled;
     private String insertAllowed;
     private String updateAllowed;
+    private String upsertAllowed;
 }

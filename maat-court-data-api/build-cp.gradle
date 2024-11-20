@@ -1,0 +1,228 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'org.springframework.boot' version '3.1.5'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "org.sonarqube" version "4.0.0.2929"
+    id "info.solidsoft.pitest" version "1.9.11"
+}
+
+
+def versions = [
+        mapstructVersion                    : '1.3.1.Final',
+        springdocVersion                    : '2.1.0',
+        springAwsCloudVersion               : "3.0.1",
+        amazonSQSVersion                    : "2.1.1",
+        ojdbc8Version                       : '19.7.0.0',
+        gsonVersion                         : '2.8.6',
+        commLan3Vriosn                      : '3.10',
+        lombokMapStrutBinding               : '0.2.0',
+        sonarVersion                        : '2.7',
+        h2DBVersion                         : '1.4.200',
+        mockitoInlineVersion                : "5.2.0",
+        harmcrestVersion                    : '1.3',
+        festVersion                         : '1.4',
+        gradlePitest                        : '1.4.6',
+        pitest                              : '1.4.10',
+        sonarPitest                         : '0.5',
+        okhttpVersion                       : '4.9.3',
+        mockWebServerVersion                : '4.9.3',
+        hibernateJpaModelGen                : '6.3.1.Final',
+        gqlVersion                          : '2.7.5',
+        graphqlJavaTools                    : '13.0.2',
+        commonsIOVersion                    : '2.11.0',
+        xercesImplVersion                   : '2.12.2',
+        awsStsVersion                       : '2.20.69',
+        oracleXMLParserVersion              : '23.2.0.0',
+        micrometerCloudWatchVersion         : '1.9.0',
+        awaitilityVersion                   : '4.2.0',
+        awsJavaSdkVersion                   : '1.12.264',
+        testcontainersJunitJupiterVersion   : '1.19.0',
+        testcontainersLocalstackVersion     : '1.18.3',
+        cloudLocalstackUtilsVersion         : '0.2.23',
+        springContractStubRunnerVersion     : '4.0.1',
+        sentryBomVersion                    : '7.0.0',
+        crimeCommonsVersion                 : "2.10.0",
+        springCloudStubRunnerVersion        : "4.0.4"
+]
+
+group = 'gov.uk'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+sourceSets {
+    testSqsIntegration {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    testSqsIntegrationImplementation.extendsFrom implementation
+}
+
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+
+dependencies {
+
+    implementation platform("io.sentry:sentry-bom:$versions.sentryBomVersion")
+    implementation platform(SpringBootPlugin.BOM_COORDINATES)
+    annotationProcessor platform(SpringBootPlugin.BOM_COORDINATES)
+
+    implementation("io.sentry:sentry-spring-boot-starter-jakarta")
+    implementation("io.sentry:sentry-logback")
+    //Required for Logback configuration due to a dependency having their own implementation of SAXParserFactory
+    implementation "xerces:xercesImpl:$versions.xercesImplVersion"
+
+    // Spring
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-activemq'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client'
+
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springAwsCloudVersion"
+    implementation "org.springframework:spring-jms"
+    implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$versions.amazonSQSVersion"
+
+    implementation "software.amazon.awssdk:sts:$versions.awsStsVersion"
+
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion"
+
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: versions.springdocVersion
+    implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
+    annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
+
+    implementation "org.mapstruct:mapstruct:$versions.mapstructVersion"
+    annotationProcessor "org.mapstruct:mapstruct-processor:$versions.mapstructVersion"
+    //Required for lombok version > 1.18.16
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:$versions.lombokMapStrutBinding"
+
+    implementation "io.micrometer:micrometer-registry-cloudwatch2:$versions.micrometerCloudWatchVersion"
+
+    implementation group: 'io.sentry', name: 'sentry-spring-boot-starter'
+    implementation group: 'io.sentry', name: 'sentry-logback'
+
+    // DB Dependencies
+    implementation group: 'com.oracle.database.jdbc', name: 'ojdbc8', version: versions.ojdbc8Version
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+
+
+    implementation group: 'com.google.code.gson', name: 'gson', version: versions.gsonVersion
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: versions.commLan3Vriosn
+
+    annotationProcessor group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: versions.hibernateJpaModelGen
+
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-graphql'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    implementation group: 'com.graphql-java-kickstart', name: 'graphql-java-tools', version: versions.graphqlJavaTools
+
+    implementation group: 'com.oracle.database.xml', name: 'xmlparserv2', version: versions.oracleXMLParserVersion
+    implementation group: 'com.oracle.database.xml', name: 'xdb', version: versions.oracleXMLParserVersion
+
+    // Test Only
+    testImplementation "org.pitest:pitest:$versions.pitest"
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    testImplementation group: 'com.h2database', name: 'h2', version: versions.h2DBVersion
+    testImplementation "org.mockito:mockito-inline:$versions.mockitoInlineVersion"
+    testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: versions.harmcrestVersion
+    testImplementation group: 'commons-io', name: 'commons-io', version: versions.commonsIOVersion
+    testImplementation group: 'org.easytesting', name: 'fest-assert', version: versions.festVersion
+    testCompileOnly group: 'org.projectlombok', name: 'lombok'
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
+    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.springCloudStubRunnerVersion"
+
+    // Only required for SQS Integration test
+    // testSqsIntegrationImplementation "org.awaitility:awaitility:$versions.awaitilityVersion"
+    // testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: versions.awsJavaSdkVersion
+    // testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: versions.awsJavaSdkVersion
+    // testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainersJunitJupiterVersion"
+    // testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainersLocalstackVersion"
+    // testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$versions.cloudLocalstackUtilsVersion"
+    // testSqsIntegrationImplementation "com.h2database:h2"
+    // testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.springContractStubRunnerVersion"
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "**/entity/**",
+                    "**/dto/**",
+                    "**/config/**",
+                    "**/dao/**"
+            ])
+        }))
+    }
+}
+
+// task testSqsIntegration(type: Test) {
+//     useJUnitPlatform()
+//     testClassesDirs = sourceSets.testSqsIntegration.output.classesDirs
+//     classpath = sourceSets.testSqsIntegration.runtimeClasspath
+// }
+
+// check.dependsOn testSqsIntegration
+
+pitest {
+    targetClasses = ['gov.uk.courtdata.link.*', 'gov.uk.courtdata.unlink.*', 'gov.uk.courtdata.laastatus.*', 'gov.uk.courtdata.hearing.*', 'gov.uk.courtdata.dao.*']
+    excludedClasses = ['gov.uk.courtdata.hearing.dto.*', 'gov.uk.courtdata.hearing.mapper.*', 'gov.uk.courtdata.laastatus.client.*','gov.uk.courtdata.dao.convertor.*', 'gov.uk.courtdata.dao.oracle.*']
+    threads = 5
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
+    mutationThreshold = 60
+}
+
+tasks['sonar'].dependsOn test
+
+sonar {
+    properties {
+        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java, **/exception/**.java, **/enums/**.java, **/aspect/**.java, **/dao/oracle/**.java, **/**StoredProcedureRepository.java, **/helper/BooleanConverter.java"
+        property "sonar.coverage.exclusions", "**/MAATCourtDataApplication.java"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.projectKey", "ministryofjustice_laa-maat-court-data-api"
+        property "sonar.organization", "ministryofjustice"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.projectName", "laa-maat-court-data-api"
+        property "sonar.pitest.mode", "reuseReport"
+        property "sonar.pitest.reportsDirectory", "build/reports/pitest"
+        property "sonar.verbose", "true"
+    }
+}

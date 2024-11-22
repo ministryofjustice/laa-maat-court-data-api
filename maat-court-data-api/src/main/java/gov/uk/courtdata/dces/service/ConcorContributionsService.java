@@ -92,6 +92,11 @@ public class ConcorContributionsService {
                 .orElseThrow(() -> new RequestedObjectNotFoundException("log concor_contribution ID " + request.getConcorId() + ": not found"));
         log.info("log concor_contribution ID {}: found OK", concorEntity.getId());
         if (!StringUtils.isEmpty(request.getErrorText())) {
+            if (concorEntity.getContribFileId() == null) {
+                // returns HTTP status 400 with error code "Object Not Found" (rather than "DB error" as it would without this check).
+                throw new NoSuchElementException("log contribution_file (associated with concur_contribution ID "
+                        + request.getConcorId() + "): not found");
+            }
             saveErrorMessage(request, concorEntity);
         } else if (!debtCollectionService.updateContributionFileReceivedCount(concorEntity.getContribFileId())) {
             throw new NoSuchElementException("log contribution_file ID " + concorEntity.getContribFileId()

@@ -18,7 +18,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
@@ -224,6 +226,23 @@ class ConcorContributionsRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("message").value("Test Error"));
+    }
+
+    @Test
+    void testLogDrcProcessedNoContribFile() throws Exception {
+        int id = 1234;
+        String errorText = "";
+        LogContributionProcessedRequest request = LogContributionProcessedRequest.builder()
+                .concorId(id)
+                .errorText(errorText)
+                .build();
+        when(concorContributionsService.logContributionProcessed(request))
+                .thenThrow(new NoSuchElementException("contribution_file not found"));
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
+                        .content(createDrcUpdateJson(id, errorText))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("code").value("Object Not Found"));
     }
 
     @Test

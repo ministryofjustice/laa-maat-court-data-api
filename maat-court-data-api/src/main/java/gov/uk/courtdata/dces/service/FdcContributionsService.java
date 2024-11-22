@@ -1,7 +1,7 @@
 package gov.uk.courtdata.dces.service;
 
-import gov.uk.courtdata.dces.mapper.FdcContributionMapper;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
+import gov.uk.courtdata.dces.mapper.FdcContributionMapper;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
 import gov.uk.courtdata.dces.request.CreateFdcItemRequest;
@@ -146,6 +146,11 @@ public class FdcContributionsService {
                 .orElseThrow(() -> new RequestedObjectNotFoundException("log fdc_contribution ID " + request.getFdcId() + ": not found"));
         log.info("log fdc_contribution ID {}: found OK", fdcEntity.getId());
         if (!StringUtils.isEmpty(request.getErrorText())) {
+            if (fdcEntity.getContFileId() == null) {
+                // returns HTTP status 400 with error code "Object Not Found" (rather than "DB error" as it would without this check).
+                throw new NoSuchElementException("log contribution_file (associated with fd_contribution ID "
+                        + request.getFdcId() + "): not found");
+            }
             saveErrorMessage(request, fdcEntity);
         } else if (!debtCollectionService.updateContributionFileReceivedCount(fdcEntity.getContFileId())) {
             throw new NoSuchElementException("log contribution_file ID " + fdcEntity.getContFileId()

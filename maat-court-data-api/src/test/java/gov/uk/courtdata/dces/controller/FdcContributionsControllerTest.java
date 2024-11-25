@@ -2,12 +2,14 @@ package gov.uk.courtdata.dces.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
+import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
 import gov.uk.courtdata.dces.request.UpdateFdcContributionRequest;
 import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsResponse;
 import gov.uk.courtdata.dces.service.FdcContributionsService;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,6 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -32,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class FdcContributionsControllerTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement";
+    private static final String DRC_UPDATE_URL = "/log-fdc-response";
 
     @Autowired
     private MockMvc mvc;
@@ -146,4 +150,63 @@ class FdcContributionsControllerTest {
                 .andExpect(jsonPath("$.finalCost").value(expectedEntry.getFinalCost().doubleValue()));
     }
 
+    @Test
+    void testLogDrcProcessedNoErrorSuccess() throws Exception {
+        int id = 1234;
+        String errorText = "";
+        LogFdcProcessedRequest request = LogFdcProcessedRequest.builder()
+                .fdcId(id)
+                .errorText(errorText)
+                .build();
+        when(fdcContributionsService.logFdcProcessed(request))
+                .thenReturn(1111);
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
+                        .content(createDrcUpdateJson(id, errorText))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("1111"));
+    }
+
+    @Test
+    void testLogDrcProcessedError() throws Exception {
+        int id = 1234;
+        String errorText = "";
+        LogFdcProcessedRequest request = LogFdcProcessedRequest.builder()
+                .fdcId(id)
+                .errorText(errorText)
+                .build();
+        when(fdcContributionsService.logFdcProcessed(request))
+                .thenThrow(new MAATCourtDataException("Test Error"));
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
+                        .content(createDrcUpdateJson(id, errorText))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("message").value("Test Error"));
+    }
+
+    @Test
+    void testLogDrcProcessedNoContribFile() throws Exception {
+        int id = 1234;
+        String errorText = "";
+        LogFdcProcessedRequest request = LogFdcProcessedRequest.builder()
+                .fdcId(id)
+                .errorText(errorText)
+                .build();
+        when(fdcContributionsService.logFdcProcessed(request))
+                .thenThrow(new NoSuchElementException("contribution_file not found"));
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
+                        .content(createDrcUpdateJson(id, errorText))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("code").value("Object Not Found"));
+    }
+
+    private static String createDrcUpdateJson(int fdcId, String errorText){
+        return """
+                {
+                    "fdcId" : %s,
+                    "errorText" : "%s"
+                }
+                """.formatted(fdcId, errorText);
+    }
 }

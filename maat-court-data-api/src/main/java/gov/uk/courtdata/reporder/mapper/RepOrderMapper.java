@@ -71,6 +71,7 @@ public interface RepOrderMapper {
                 .passportAssessorName(maxIdPassportAssessmentEntity.map(pae -> UserEntityUtils.extractFullName(pae.getUserCreatedEntity())).orElse(null))
                 .datePassportCreated(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getDateCreated).orElse(null))
                 .fundingDecision(repOrderEntity.getDecisionReasonCode())
+                .ccRepDecision(repOrderEntity.getCrownRepOrderDecision())
                 .build();
     }
 

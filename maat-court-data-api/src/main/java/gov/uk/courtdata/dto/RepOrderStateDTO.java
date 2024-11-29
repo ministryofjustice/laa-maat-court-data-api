@@ -39,5 +39,5 @@ public class RepOrderStateDTO {
     private LocalDateTime datePassportCreated;
 
     private String fundingDecision;
-
+    private String ccRepDecision;
 }

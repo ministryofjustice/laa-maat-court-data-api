@@ -32,6 +32,7 @@ class RepOrderMapperTest {
     private static final String PASSPORT_STATUS = "COMPLETE";
     private static final LocalDateTime DATE_PASSPORT_CREATED = LocalDateTime.of(2015, 1, 9, 11, 16, 29);
     private static final String FUNDING_DECISION = "GRANTED";
+    private static final String CC_REP_DECISION = "Granted - Passed Means Test";
 
     private final RepOrderMapper repOrderMapper = new RepOrderMapperImpl(); // Assuming an implementation exists
 
@@ -108,6 +109,7 @@ class RepOrderMapperTest {
                 .userCreatedEntity(userEntity)
                 .userCreated(IOJ_ASSESSOR_USERNAME)
                 .decisionReasonCode(FUNDING_DECISION)
+                .crownRepOrderDecision(CC_REP_DECISION)
                 .build();
     }
 
@@ -140,7 +142,8 @@ class RepOrderMapperTest {
                 () -> assertEquals(PASSPORT_STATUS, repOrderState.getPassportStatus()),
                 () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getPassportAssessorName()),
                 () -> assertEquals(DATE_PASSPORT_CREATED, repOrderState.getDatePassportCreated()),
-                () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision())
+                () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
+                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision())
         );
     }
 
@@ -173,7 +176,8 @@ class RepOrderMapperTest {
                 () -> assertEquals(PASSPORT_STATUS, repOrderState.getPassportStatus()),
                 () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getPassportAssessorName()),
                 () -> assertEquals(DATE_PASSPORT_CREATED, repOrderState.getDatePassportCreated()),
-                () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision())
+                () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
+                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision())
         );
     }
 
@@ -207,7 +211,8 @@ class RepOrderMapperTest {
                 () -> assertEquals(PASSPORT_STATUS, repOrderState.getPassportStatus()),
                 () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getPassportAssessorName()),
                 () -> assertEquals(DATE_PASSPORT_CREATED, repOrderState.getDatePassportCreated()),
-                () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision())
+                () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
+                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision())
         );
     }
 }

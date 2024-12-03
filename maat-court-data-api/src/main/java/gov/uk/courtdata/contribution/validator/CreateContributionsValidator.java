@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class CreateContributionsValidator extends ContributionsValidator implements IValidator<Void, CreateContributions> {
+public class CreateContributionsValidator implements IValidator<Void, CreateContributions> {
 
     private final MaatIdValidator maatIdValidator;
 

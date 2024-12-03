@@ -7,7 +7,6 @@ import gov.uk.courtdata.contribution.model.CreateContributions;
 import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.service.ContributionsService;
 import gov.uk.courtdata.contribution.validator.CreateContributionsValidator;
-import gov.uk.courtdata.contribution.validator.UpdateContributionsValidator;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,7 +37,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ContributionsController {
 
     private final ContributionsService contributionsService;
-    private final UpdateContributionsValidator updateContributionsValidator;
     private final CreateContributionsValidator createContributionsValidator;
 
     @GetMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,17 +50,6 @@ public class ContributionsController {
         LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Request to retrieve contributions entry for repId {}", repId);
         return ResponseEntity.ok(contributionsService.find(repId, findLatestContribution));
-    }
-
-    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Update contributions entry")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @StandardApiResponse
-    @NotFoundApiResponse
-    public ResponseEntity<ContributionsDTO> update(@Valid @RequestBody UpdateContributions updateContributions) {
-        log.info("Request to update contributions entry for ID {}", updateContributions.getId());
-        updateContributionsValidator.validate(updateContributions);
-        return ResponseEntity.ok(contributionsService.update(updateContributions));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)

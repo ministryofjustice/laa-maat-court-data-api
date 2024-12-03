@@ -102,24 +102,6 @@ class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenAEmptyContributionId_whenUpdateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
-        UpdateContributions updateContributions = TestModelDataBuilder.getUpdateContributions(INVALID_CONTRIBUTION_ID);
-        assertTrue(runBadRequestErrorScenario("Contributions ID: " + INVALID_CONTRIBUTION_ID + " is invalid.",
-                put(ENDPOINT_URL).contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateContributions))));
-    }
-
-    @Test
-    void givenAValidContent_whenUpdateIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getUpdateContributions(contributionsEntity.getId())))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.repId").value(REP_ID));
-    }
-
-    @Test
     void givenAInvalidContributionId_whenFindIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
         assertTrue(runNotFoundErrorScenario("Contributions entry not found for repId " + INVALID_REP_ID,
                 get(ENDPOINT_URL + "/" + INVALID_REP_ID).contentType(MediaType.APPLICATION_JSON)));

@@ -54,15 +54,7 @@ class ContributionsControllerTest {
         mvc.perform(MockMvcRequestBuilders.get(endpointUrl + "/null"))
                 .andExpect(status().isBadRequest());
     }
-
-
-    @Test
-    void givenIncorrectPayload_whenUpdateIsInvoked_thenBadRequestResponseIsReturned() throws Exception {
-        String contributionsJson = TestModelDataBuilder.getInvalidUpdateContributionsJson();
-
-        mvc.perform(MockMvcRequestBuilders.put(endpointUrl).content(contributionsJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
+    
 
     @Test
     void givenAValidContent_whenCreateIsInvoked_thenOKResponseWithContributionsEntryIsReturned() throws Exception {

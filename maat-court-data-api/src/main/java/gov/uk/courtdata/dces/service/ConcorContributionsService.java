@@ -70,6 +70,17 @@ public class ConcorContributionsService {
                         .build()).toList();
     }
 
+    public ConcorContributionResponse getConcorContributionFile(Integer concorContributionId) {
+
+        log.info("Getting concor contribution file for concorContributionId {}", concorContributionId);
+        final Optional<ConcorContributionsEntity> concorFile = concorRepository.findById(concorContributionId);
+
+        return concorFile.map(cc -> ConcorContributionResponse.builder().concorContributionId(cc.getId())
+                .xmlContent(cc.getCurrentXml())
+                .build()).orElse(null);
+    }
+
+
     @Transactional(rollbackFor = MAATCourtDataException.class)
     @NotNull
     public Integer createContributionAndUpdateConcorStatus(CreateContributionFileRequest contributionRequest){

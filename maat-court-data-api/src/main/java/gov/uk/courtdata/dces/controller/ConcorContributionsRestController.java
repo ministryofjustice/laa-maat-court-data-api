@@ -53,11 +53,11 @@ public class ConcorContributionsRestController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @GetMapping(value = "/concor-contribution-file/{concorContributionId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Get the Contributions file for given concorContributionId")
+    @Operation(description = "Get the Concor Contribution ID and associated XML for given concorContributionId")
     public ResponseEntity<ConcorContributionResponse> concorContributionFile(
         @PathVariable final Integer concorContributionId
     ) {
-        log.info("Get Concor contribution file for concorContributionId {}", concorContributionId);
+        log.info("Get Concor Contribution ID and associated XML for concorContributionId {}", concorContributionId);
         ConcorContributionResponse contributionResponse = concorContributionsService.getConcorContributionFile(concorContributionId);
 
         return ResponseEntity.ok(contributionResponse);

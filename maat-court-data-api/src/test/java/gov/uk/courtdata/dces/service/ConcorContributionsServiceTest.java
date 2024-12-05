@@ -148,6 +148,22 @@ class ConcorContributionsServiceTest {
     }
 
     @Test
+    void getConcorContributionFileThrowsNotFoundExceptionWhenConcorContributionIdIsInvalid() {
+        when(concorRepository.findById(0)).thenReturn(Optional.empty());
+        Assertions.assertThrows(RequestedObjectNotFoundException.class,
+            () -> concorService.getConcorContributionFile(0));
+    }
+
+    @Test
+    void getConcorContributionFileReturnsResponseWhenConcorContributionIdIsValid() {
+        when(concorRepository.findById(110)).thenReturn(Optional.of(ConcorContributionsEntity.builder().id(110).currentXml("XmlContent").build()));
+        ConcorContributionResponse response = concorService.getConcorContributionFile(110);
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(110, response.getConcorContributionId());
+        Assertions.assertEquals("XmlContent", response.getXmlContent());
+    }
+
+    @Test
     void testWhenContributionRequestIsNullAndThrowException() {
         Assertions.assertThrows(ValidationException.class,
                 () -> concorService.createContributionAndUpdateConcorStatus(null));

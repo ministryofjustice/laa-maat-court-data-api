@@ -52,9 +52,10 @@ public class ConcorContributionsRestController {
 
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
+    @NotFoundApiResponse
     @GetMapping(value = "/concor-contribution-file/{concorContributionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Get the Concor Contribution ID and associated XML for given concorContributionId")
-    public ResponseEntity<ConcorContributionResponse> concorContributionFile(
+    public ResponseEntity<ConcorContributionResponse> findConcorContributionFile(
         @PathVariable final Integer concorContributionId
     ) {
         log.info("Get Concor Contribution ID and associated XML for concorContributionId {}", concorContributionId);

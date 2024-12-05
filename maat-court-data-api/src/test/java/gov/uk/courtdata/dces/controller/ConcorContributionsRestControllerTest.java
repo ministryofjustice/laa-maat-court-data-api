@@ -9,6 +9,7 @@ import gov.uk.courtdata.dces.response.ConcorContributionResponseDTO;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ class ConcorContributionsRestControllerTest {
     private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement";
     private static final String CREATE_CONTRIBUTION_FILE_URL = "/create-contribution-file";
     private static final String CONCOR_CONTRIBUTION_FILES_URL = "/concor-contribution-files";
+    private static final String CONCOR_CONTRIBUTION_FILE_URL = "/concor-contribution-file";
     private static final String DRC_UPDATE_URL = "/log-contribution-response";
 
     private static final String CONCOR_CONTRIBUTION_STATUS_URL = "/concor-contribution-status";
@@ -133,6 +135,40 @@ class ConcorContributionsRestControllerTest {
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testFindContributionFileWhenQueryParamIsNotProvided() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILE_URL))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testFindContributionFileWhenQueryParamIsNotAnInt() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILE_URL + "/0dewe"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testFindContributionFileWhenQueryParamIsNotValid() throws Exception {
+        when(concorContributionsService.getConcorContributionFile(0))
+            .thenThrow(new RequestedObjectNotFoundException("Concor Contribution ID 0 not found"));
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILE_URL + "/0"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testFindContributionFileWhenQueryParamIsValid() throws Exception {
+        when(concorContributionsService.getConcorContributionFile(110))
+            .thenReturn(ConcorContributionResponse.builder().concorContributionId(110).xmlContent("XMLFileContent").build());
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILE_URL + "/110"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.concorContributionId").value(110))
+            .andExpect(jsonPath("$.xmlContent").value("XMLFileContent"));
     }
 
     @Test

@@ -77,7 +77,7 @@ public class ConcorContributionsService {
 
         return concorFile.map(cc -> ConcorContributionResponse.builder().concorContributionId(cc.getId())
                 .xmlContent(cc.getCurrentXml())
-                .build()).orElse(null);
+                .build()).orElseThrow(() -> new RequestedObjectNotFoundException("Concor Contribution ID " + concorContributionId + " not found"));
     }
 
 

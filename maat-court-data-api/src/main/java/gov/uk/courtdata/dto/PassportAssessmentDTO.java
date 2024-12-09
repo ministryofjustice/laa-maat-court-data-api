@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import uk.gov.justice.laa.crime.dto.maat.UserDTO;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -60,4 +62,6 @@ public class PassportAssessmentDTO {
     private String whoDWPChecked;
     private String rtCode;
     private UserDTO userCreatedEntity;
+    @Builder.Default
+    private List<PassportAssessmentEvidenceDTO> passportAssessmentEvidences = new ArrayList<>();
 }

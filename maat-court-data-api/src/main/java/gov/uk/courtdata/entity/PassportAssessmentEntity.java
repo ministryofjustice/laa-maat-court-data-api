@@ -1,12 +1,17 @@
 package gov.uk.courtdata.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -112,6 +117,17 @@ public class PassportAssessmentEntity {
     private String whoDWPChecked;
     @Column(name = "RT_CODE")
     private String rtCode;
+
+    @ToString.Exclude
+    @Fetch(FetchMode.JOIN)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "passportAssessment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<PassportAssessmentEvidenceEntity> passportAssessmentEvidences = new ArrayList<>();
+
+    public void addPassportAssessmentEvidences(PassportAssessmentEvidenceEntity passportAssessmentEvidenceEntity) {
+        passportAssessmentEvidenceEntity.setPassportAssessment(this);
+        this.passportAssessmentEvidences.add(passportAssessmentEvidenceEntity);
+    }
 
     @ToString.Exclude
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)

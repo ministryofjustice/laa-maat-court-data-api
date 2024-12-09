@@ -1,6 +1,7 @@
 package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.annotation.StandardApiResponse;
+import gov.uk.courtdata.annotation.StandardApiResponseCodes;
 import gov.uk.courtdata.dces.request.*;
 import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
@@ -14,8 +15,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import static java.util.Objects.nonNull;
 
@@ -38,6 +42,7 @@ import static java.util.Objects.nonNull;
 public class FdcContributionsController {
 
     private final FdcContributionsService fdcContributionsService;
+    private static final int REQUEST_ID_LIST_SIZE_LIMIT = 1000;
 
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
@@ -45,7 +50,7 @@ public class FdcContributionsController {
     @Operation(description = "Get a list of final defence cost files")
     public ResponseEntity<FdcContributionsResponse> getFdcContributions(@RequestParam(name = "status") final FdcContributionsStatus status) {
         log.info("Get final defence cost contribution files with status {}" ,status);
-        FdcContributionsResponse contributionResponses = fdcContributionsService.getFdcContributionFiles(status);
+        FdcContributionsResponse contributionResponses = fdcContributionsService.getFdcContributions(status);
         log.info("getFdcContributions count {}", contributionResponses.getFdcContributions().size());
         return ResponseEntity.ok(contributionResponses);
     }
@@ -115,4 +120,19 @@ public class FdcContributionsController {
         log.info("Get FDC Contribution by Id {}", fdcContributionId);
         return ResponseEntity.ok(fdcContributionsService.getFdcContribution(fdcContributionId));
     }
+
+    @StandardApiResponseCodes
+    @GetMapping(value = "/fdc-contributions", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Get a list of FCD Contributions when given a list of fdc-contribution-ids")
+    public ResponseEntity<FdcContributionsResponse> getFdcContributions(@RequestBody final List<Integer> fdcContributionIdList) {
+        log.info("Request received to get the XML for {} IDs", fdcContributionIdList.size());
+        if (fdcContributionIdList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID List Empty");
+        } else if (fdcContributionIdList.size() > REQUEST_ID_LIST_SIZE_LIMIT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many IDs provided, max is " + REQUEST_ID_LIST_SIZE_LIMIT);
+        } else {
+            return ResponseEntity.ok(fdcContributionsService.getFdcContributions(fdcContributionIdList));
+        }
+    }
+
 }

@@ -55,6 +55,7 @@ import static org.mockito.Mockito.when;
 class FdcContributionsServiceTest {
     private List<FdcContributionsEntity> fdcContributionsEntityList;
 
+
     @InjectMocks
     private FdcContributionsService fdcContributionsService;
 
@@ -79,6 +80,8 @@ class FdcContributionsServiceTest {
     private final BigDecimal expectedLgfsCost = new BigDecimal("333.33");
     private final BigDecimal expectedFinalCost = new BigDecimal("1010.10");
     private final Integer expectedId = 111;
+    private FdcContributionEntry expectedEntry;
+
     @Captor
     private ArgumentCaptor<FdcContributionsStatus> statusCaptor;
     @Captor
@@ -89,26 +92,36 @@ class FdcContributionsServiceTest {
         expectedDateCalculated = LocalDate.now();
         expectedSentenceDate = LocalDate.now().minusDays(1);
         getFdcContributionsFile();
+        populateExpectedEntry();
     }
 
     @Test
     void testGetContributionFilesWhenFdcFileStatusIsRequested() {
         when(fdcContributionsRepository.findByStatus(statusCaptor.capture())).thenReturn(fdcContributionsEntityList);
-        FdcContributionsResponse response = fdcContributionsService.getFdcContributionFiles(REQUESTED);
+
+        when(fdcContributionMapper.mapFdcContribution(any())).thenReturn(expectedEntry);
+        FdcContributionsResponse response = fdcContributionsService.getFdcContributions(REQUESTED);
 
         assertNotNull(response);
-
-        List<FdcContributionEntry> fdcContributionEntries = response.getFdcContributions();
-        Assertions.assertFalse(fdcContributionEntries.isEmpty());
         final FdcContributionsStatus capturedStatus = statusCaptor.getValue();
         assertEquals(REQUESTED, capturedStatus);
-        FdcContributionEntry responseValue = fdcContributionEntries.get(0);
-        assertEquals(expectedId, responseValue.getId());
-        assertEquals(expectedFinalCost,responseValue.getFinalCost());
-        assertEquals(expectedAgfsCost,responseValue.getAgfsCost());
-        assertEquals(expectedLgfsCost,responseValue.getLgfsCost());
-        assertEquals(expectedDateCalculated,responseValue.getDateCalculated());
-        assertEquals(expectedSentenceDate,responseValue.getSentenceOrderDate());
+
+        assertEqualsWithExpectedValues(response);
+    }
+
+    @Test
+    void testGetContributionsWhenNotFound() {
+        when(fdcContributionsRepository.findByIdIn(any())).thenReturn(new ArrayList<>());
+        FdcContributionsResponse response = fdcContributionsService.getFdcContributions(List.of(1));
+        assertEquals(new ArrayList<>(), response.getFdcContributions());
+    }
+
+    @Test
+    void testGetContributionsWhenFound() {
+        when(fdcContributionsRepository.findByIdIn(any())).thenReturn(fdcContributionsEntityList);
+        when(fdcContributionMapper.mapFdcContribution(any())).thenReturn(expectedEntry);
+        FdcContributionsResponse response = fdcContributionsService.getFdcContributions(List.of(1));
+        assertEqualsWithExpectedValues(response);
     }
 
     @Test
@@ -392,6 +405,31 @@ class FdcContributionsServiceTest {
         fdcFile.setDateCalculated(expectedDateCalculated);
         fdcFile.setRepOrderEntity(repOrderEntity);
         fdcContributionsEntityList.add(fdcFile);
+    }
+
+    private void populateExpectedEntry() {
+        expectedEntry = FdcContributionEntry.builder()
+            .id(expectedId)
+            .finalCost(expectedFinalCost)
+            .agfsCost(expectedAgfsCost)
+            .lgfsCost(expectedLgfsCost)
+            .dateCalculated(expectedDateCalculated)
+            .sentenceOrderDate(expectedSentenceDate)
+            .build();
+    }
+
+
+    private void assertEqualsWithExpectedValues(FdcContributionsResponse response) {
+        List<FdcContributionEntry> fdcContributionEntries = response.getFdcContributions();
+        Assertions.assertFalse(fdcContributionEntries.isEmpty());
+        FdcContributionEntry responseValue = fdcContributionEntries.get(0);
+        FdcContributionsEntity expectedValue = fdcContributionsEntityList.get(0);
+        assertEquals(expectedValue.getId(), responseValue.getId());
+        assertEquals(expectedValue.getFinalCost(), responseValue.getFinalCost());
+        assertEquals(expectedValue.getAgfsCost(), responseValue.getAgfsCost());
+        assertEquals(expectedValue.getLgfsCost(), responseValue.getLgfsCost());
+        assertEquals(expectedValue.getDateCalculated(), responseValue.getDateCalculated());
+        assertEquals(expectedValue.getRepOrderEntity().getSentenceOrderDate(), responseValue.getSentenceOrderDate());
     }
 
     @Test

@@ -58,7 +58,7 @@ public class ConcorContributionsRestController {
     @StandardApiResponseCodes
     @GetMapping(value = "/concor-contribution-xml")
     @Operation(description = "Get a list of Concor Contribution ID and related XML when give a list of Concor Contribution IDs")
-    public ResponseEntity<List<ConcorContributionResponse>> getConcorContributionFiles(@RequestBody List<Integer> idList) {
+    public ResponseEntity<List<ConcorContributionResponse>> getConcorContributionXml(@RequestBody List<Integer> idList) {
 
         log.info("Request received to get the XML for {} IDs", idList.size());
         if (idList.isEmpty()) {

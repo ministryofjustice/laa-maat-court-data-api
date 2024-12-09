@@ -10,6 +10,8 @@ import gov.uk.courtdata.dces.service.ConcorContributionsService;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,6 +27,7 @@ import java.util.Set;
 
 import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,6 +39,7 @@ class ConcorContributionsRestControllerTest {
     private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement";
     private static final String CREATE_CONTRIBUTION_FILE_URL = "/create-contribution-file";
     private static final String CONCOR_CONTRIBUTION_FILES_URL = "/concor-contribution-files";
+    private static final String CONCOR_CONTRIBUTION_XML_URL = "/concor-contribution-xml";
     private static final String DRC_UPDATE_URL = "/log-contribution-response";
 
     private static final String CONCOR_CONTRIBUTION_STATUS_URL = "/concor-contribution-status";
@@ -299,6 +303,46 @@ class ConcorContributionsRestControllerTest {
                 .andExpect(jsonPath("$.status").value("SENT"));
     }
 
+    @Test
+    void givenEmptyListOfIds_whenXmlIsRequested_thenBadRequestError() throws Exception {
+
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content("[]"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.detail").value("ID List Empty"));
+    }
+
+    @Test
+    void givenLongListOfIds_whenXmlIsRequested_thenBadRequestError() throws Exception {
+        String longList = IntStream.rangeClosed(1, 351)
+            .mapToObj(Integer::toString)
+            .collect(Collectors.joining(","));
+
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content("["+longList+"]"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.detail").value("Too many IDs provided, max is 350"));
+    }
+
+    @Test
+    void givenValidListOfIds_whenXmlIsRequested_thenValidResponse() throws Exception {
+
+        when(concorContributionsService.getConcorContributionXml(any())).
+            thenReturn(List.of(ConcorContributionResponse.builder()
+                .concorContributionId(1)
+                .xmlContent("FirstXMLFile")
+                .build()));
+
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content("[110, 120]"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.[0].concorContributionId").value("1"))
+            .andExpect(jsonPath("$.[0].xmlContent").value("FirstXMLFile"));
+    }
+
 
     private String createDrcUpdateJson(int concorId, String errorText){
         return """
@@ -309,4 +353,5 @@ class ConcorContributionsRestControllerTest {
                 """.formatted(concorId, errorText);
 
     }
+
 }

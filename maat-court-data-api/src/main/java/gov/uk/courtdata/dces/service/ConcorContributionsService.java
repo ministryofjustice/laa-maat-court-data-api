@@ -16,6 +16,7 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.ConcorContributionsRepository;
 import gov.uk.courtdata.util.ValidationUtils;
 import jakarta.validation.constraints.NotNull;
+import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -63,11 +64,20 @@ public class ConcorContributionsService {
         log.info("Searching concor contribution file with status {}, startId {} and count {}", status, concorContributionId, noOfRecords);
         Pageable pageable = PageRequest.of(0, noOfRecords, Sort.by("id"));
         final List<ConcorContributionsEntity> concorFileList = concorRepository.findByStatusAndIdGreaterThan(status, concorContributionId, pageable);
+        return getConcorContributionResponses(concorFileList);
+    }
 
+    public List<ConcorContributionResponse> getConcorContributionXml(List<Integer> idList) {
+        List<ConcorContributionsEntity> concorFileList = concorRepository.findByIdIn(new HashSet(idList));
+        return getConcorContributionResponses(concorFileList);
+    }
+
+    private static List<ConcorContributionResponse> getConcorContributionResponses(
+        List<ConcorContributionsEntity> concorFileList) {
         return concorFileList.stream().map(cc -> ConcorContributionResponse.builder()
-                        .concorContributionId(cc.getId())
-                        .xmlContent(cc.getCurrentXml())
-                        .build()).toList();
+            .concorContributionId(cc.getId())
+            .xmlContent(cc.getCurrentXml())
+            .build()).toList();
     }
 
     @Transactional(rollbackFor = MAATCourtDataException.class)
@@ -153,4 +163,5 @@ public class ConcorContributionsService {
             return false;
         }
     }
+
 }

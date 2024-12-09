@@ -49,7 +49,7 @@ class FdcContributionsControllerTest {
         BigDecimal expectedCost2= new BigDecimal("444.44");
         BigDecimal expectedCost3= new BigDecimal("999.99");
 
-        when(fdcContributionsService.getFdcContributionFiles(FdcContributionsStatus.REQUESTED))
+        when(fdcContributionsService.getFdcContributions(FdcContributionsStatus.REQUESTED))
                 .thenReturn(FdcContributionsResponse.builder()
                         .fdcContributions(List.of(
                                 FdcContributionEntry.builder().id(1).finalCost(expectedCost1).build(),
@@ -73,7 +73,7 @@ class FdcContributionsControllerTest {
     @Test
     void testContributionFileResponseWhenActiveFileNotAvailable() throws Exception {
 
-        when(fdcContributionsService.getFdcContributionFiles(FdcContributionsStatus.REQUESTED))
+        when(fdcContributionsService.getFdcContributions(FdcContributionsStatus.REQUESTED))
                 .thenReturn(FdcContributionsResponse.builder().fdcContributions(List.of()).build());
 
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/fdc-contribution-files"))

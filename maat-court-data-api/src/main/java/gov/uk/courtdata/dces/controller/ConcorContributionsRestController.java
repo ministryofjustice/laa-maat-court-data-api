@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
+import gov.uk.courtdata.annotation.StandardApiResponseCodes;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("${api-endpoints.debt-collection-enforcement-domain}")
@@ -36,6 +39,8 @@ import java.util.List;
 public class ConcorContributionsRestController {
 
     private final ConcorContributionsService concorContributionsService;
+
+    private static final int REQUEST_ID_LIST_SIZE_LIMIT = 350;
 
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
@@ -48,6 +53,21 @@ public class ConcorContributionsRestController {
         List<ConcorContributionResponse> contributionResponses = concorContributionsService.getConcorContributionFiles(status, numberOfRecords, concorContributionId);
 
         return ResponseEntity.ok(contributionResponses);
+    }
+
+    @StandardApiResponseCodes
+    @GetMapping(value = "/concor-contribution-xml")
+    @Operation(description = "Get a list of Concor Contribution ID and related XML when give a list of Concor Contribution IDs")
+    public ResponseEntity<List<ConcorContributionResponse>> getConcorContributionFiles(@RequestBody List<Integer> idList) {
+
+        log.info("Request received to get the XML for {} IDs", idList.size());
+        if (idList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID List Empty");
+        } else if (idList.size() > REQUEST_ID_LIST_SIZE_LIMIT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many IDs provided, max is " + REQUEST_ID_LIST_SIZE_LIMIT);
+        } else {
+            return ResponseEntity.ok(concorContributionsService.getConcorContributionXml(idList));
+        }
     }
 
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
@@ -88,7 +108,5 @@ public class ConcorContributionsRestController {
         log.info("request {}", id);
         return ResponseEntity.ok(concorContributionsService.getConcorContribution(id));
     }
-
-
 
 }

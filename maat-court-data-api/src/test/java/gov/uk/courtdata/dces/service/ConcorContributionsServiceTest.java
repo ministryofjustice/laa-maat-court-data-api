@@ -352,6 +352,25 @@ class ConcorContributionsServiceTest {
         assertNull(actualResponse);
     }
 
+    @Test
+    void testGetConcorContributionXmlWhenNotFound() {
+        when(concorRepository.findByIdIn(any())).thenReturn(new ArrayList<>());
+        List<ConcorContributionResponse> actualResponse = concorService.getConcorContributionXml(List.of(1));
+        assertEquals(actualResponse, new ArrayList<>());
+    }
+
+    @Test
+    void testGetConcorContributionXmlWhenFound() {
+        List<ConcorContributionResponse> expectedResponse = List.of(ConcorContributionResponse.builder()
+                .concorContributionId(1)
+                .xmlContent(getXmlDocContent())
+                .build());
+
+        when(concorRepository.findByIdIn(any())).thenReturn(List.of(populateConcorContributionsEntity(1)));
+        List<ConcorContributionResponse> actualResponse = concorService.getConcorContributionXml(List.of(1));
+        assertEquals(actualResponse, expectedResponse);
+    }
+
     private LogContributionProcessedRequest createLogContributionProcessedRequest(int id, String errorText) {
         return LogContributionProcessedRequest.builder()
                 .concorId(id)
@@ -404,4 +423,5 @@ class ConcorContributionsServiceTest {
         concorFile.setId(concorContribId);
         return concorFile;
     }
+
 }

@@ -72,6 +72,20 @@ public class ConcorContributionsRestController {
 
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
+    @NotFoundApiResponse
+    @GetMapping(value = "/concor-contribution-file/{concorContributionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Get the Concor Contribution ID and associated XML for given concorContributionId")
+    public ResponseEntity<ConcorContributionResponse> findConcorContributionFile(
+        @PathVariable final Integer concorContributionId
+    ) {
+        log.info("Get Concor Contribution ID and associated XML for concorContributionId {}", concorContributionId);
+        ConcorContributionResponse contributionResponse = concorContributionsService.getConcorContributionFile(concorContributionId);
+
+        return ResponseEntity.ok(contributionResponse);
+    }
+
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
     @PostMapping(value = "/create-contribution-file", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Creating a contribution file and updating the status to Sent in the concor contribution")
     public ResponseEntity<Integer> updateContributionFileStatus(@RequestBody final CreateContributionFileRequest request) {

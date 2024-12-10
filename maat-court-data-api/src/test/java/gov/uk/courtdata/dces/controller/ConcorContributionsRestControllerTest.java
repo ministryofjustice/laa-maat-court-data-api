@@ -306,7 +306,7 @@ class ConcorContributionsRestControllerTest {
     @Test
     void givenEmptyListOfIds_whenXmlIsRequested_thenBadRequestError() throws Exception {
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content("[]"))
             .andExpect(status().isBadRequest())
@@ -319,7 +319,7 @@ class ConcorContributionsRestControllerTest {
             .mapToObj(Integer::toString)
             .collect(Collectors.joining(","));
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content("["+longList+"]"))
             .andExpect(status().isBadRequest())
@@ -335,7 +335,7 @@ class ConcorContributionsRestControllerTest {
                 .xmlContent("FirstXMLFile")
                 .build()));
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content("[110, 120]"))
             .andExpect(status().isOk())

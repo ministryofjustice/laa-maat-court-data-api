@@ -56,7 +56,7 @@ public class ConcorContributionsRestController {
     }
 
     @StandardApiResponseCodes
-    @GetMapping(value = "/concor-contribution-xml")
+    @PostMapping(value = "/concor-contribution-xml")
     @Operation(description = "Get a list of Concor Contribution ID and related XML when give a list of Concor Contribution IDs")
     public ResponseEntity<List<ConcorContributionResponse>> getConcorContributionXml(@RequestBody List<Integer> idList) {
 

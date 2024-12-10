@@ -122,7 +122,7 @@ public class FdcContributionsController {
     }
 
     @StandardApiResponseCodes
-    @GetMapping(value = "/fdc-contributions", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/fdc-contributions", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Get a list of FCD Contributions when given a list of fdc-contribution-ids")
     public ResponseEntity<FdcContributionsResponse> getFdcContributions(@RequestBody final List<Integer> fdcContributionIdList) {
         log.info("Request received to get the XML for {} IDs", fdcContributionIdList.size());

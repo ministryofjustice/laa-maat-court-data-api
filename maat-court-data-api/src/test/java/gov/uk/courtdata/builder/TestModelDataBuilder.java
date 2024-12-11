@@ -6,8 +6,6 @@ import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.Applicant;
@@ -24,8 +22,10 @@ import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
+import uk.gov.justice.laa.crime.enums.contribution.TransferStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -342,51 +342,6 @@ public class TestModelDataBuilder {
                 }""";
     }
 
-    public static String getUpdateContributionsJson() {
-        return """
-                {
-                "id": 999,
-                "userModified": "test",
-                "contributionFileId": 9,
-                "effectiveDate": "2023-04-01T00:00:00.00",
-                "calcDate": "2023-04-01T00:00:00.00",
-                "contributionCap": 9999,
-                "monthlyContributions": 99,
-                "upfrontContributions": 9,
-                "upliftApplied": "Y",
-                "basedOn": "Means",
-                "transferStatus": "RECEIVED",
-                "dateUpliftApplied": "2023-04-01T00:00:00.00",
-                "dateUpliftRemoved": "2023-04-02T00:00:00.00",
-                "createContributionOrder": "Y",
-                "correspondenceId": 9,
-                "ccOutcomeCount": 9,
-                "seHistoryId": 9
-                }""";
-    }
-
-    public static String getInvalidUpdateContributionsJson() {
-        return """
-                {
-                "id": 999,
-                "userModified": "test",
-                "contributionFileId": 9,
-                "calcDate": "2023-04-01T00:00:00.00",
-                "contributionCap": 9999,
-                "monthlyContributions": 99,
-                "upfrontContributions": 9,
-                "upliftApplied": "Y",
-                "basedOn": "Means",
-                "transferStatus": "RECEIVED",
-                "dateUpliftApplied": "2023-04-01T00:00:00.00",
-                "dateUpliftRemoved": "2023-04-02T00:00:00.00",
-                "createContributionOrder": "Y",
-                "correspondenceId": 9,
-                "ccOutcomeCount": 9,
-                "seHistoryId": 9
-                }""";
-    }
-
     public static String getCreateContributionsJson() {
         return """
                 {
@@ -405,9 +360,7 @@ public class TestModelDataBuilder {
                 "dateUpliftApplied": "2023-04-01T00:00:00.00",
                 "dateUpliftRemoved": "2023-04-02T00:00:00.00",
                 "createContributionOrder": "Y",
-                "correspondenceId": 9,
-                "ccOutcomeCount": 9,
-                "seHistoryId": 9
+                "correspondenceId": 9
                 }""";
     }
 
@@ -415,7 +368,6 @@ public class TestModelDataBuilder {
         return """
                 {
                 "repId": 999,
-                "applicantId": 1234,
                 "userCreated": "",
                 "contributionFileId": 9,
                 "effectiveDate": "2023-04-01T00:00:00.00",
@@ -1236,49 +1188,24 @@ public class TestModelDataBuilder {
 
     }
 
-    public static CreateContributions getCreateContributions(Integer repId) {
-        return CreateContributions.builder()
-                .repId(repId)
-                .applicantId(APPLICANT_ID)
-                .userCreated(USER_NAME)
-                .contributionFileId(1)
-                .effectiveDate(TEST_DATE.toLocalDate())
-                .calcDate(TEST_DATE.toLocalDate())
-                .contributionCap(new BigDecimal(9999))
-                .monthlyContributions(new BigDecimal(99))
-                .upfrontContributions(new BigDecimal(9))
-                .upliftApplied("Y")
-                .basedOn("Means")
-                .transferStatus("RECEIVED")
-                .dateUpliftApplied(TEST_DATE.toLocalDate())
-                .dateUpliftRemoved(TEST_DATE.toLocalDate())
-                .createContributionOrder("Y")
-                .correspondenceId(9)
-                .ccOutcomeCount(9)
-                .seHistoryId(9)
-                .build();
-    }
-
-    public static UpdateContributions getUpdateContributions(Integer contributionId) {
-        return UpdateContributions.builder()
-                .id(contributionId)
-                .userModified(USER_NAME)
-                .contributionFileId(2)
-                .effectiveDate(TEST_DATE.toLocalDate())
-                .calcDate(TEST_DATE.toLocalDate())
-                .contributionCap(new BigDecimal("8.00"))
-                .monthlyContributions(new BigDecimal("8888.00"))
-                .upfrontContributions(new BigDecimal("87.00"))
-                .upliftApplied("Y")
-                .basedOn("Means")
-                .transferStatus("RECEIVED")
-                .dateUpliftApplied(TEST_DATE.toLocalDate())
-                .dateUpliftRemoved(TEST_DATE.toLocalDate())
-                .createContributionOrder("Y")
-                .correspondenceId(10)
-                .ccOutcomeCount(10)
-                .seHistoryId(10)
-                .build();
+    public static CreateContributionRequest getCreateContributions(Integer repId) {
+        return new CreateContributionRequest()
+                .withRepId(repId)
+                .withApplicantId(APPLICANT_ID)
+                .withUserCreated(USER_NAME)
+                .withContributionFileId(1)
+                .withEffectiveDate(TEST_DATE.toLocalDate())
+                .withCalcDate(TEST_DATE.toLocalDate())
+                .withContributionCap(new BigDecimal(9999))
+                .withMonthlyContributions(new BigDecimal(99))
+                .withUpfrontContributions(new BigDecimal(9))
+                .withUpliftApplied("Y")
+                .withBasedOn("Means")
+                .withTransferStatus(TransferStatus.RECEIVED)
+                .withDateUpliftApplied(TEST_DATE.toLocalDate())
+                .withDateUpliftRemoved(TEST_DATE.toLocalDate())
+                .withCreateContributionOrder("Y")
+                .withCorrespondenceId(9);
     }
 
     public static ContributionsDTO getContributionsDTO() {

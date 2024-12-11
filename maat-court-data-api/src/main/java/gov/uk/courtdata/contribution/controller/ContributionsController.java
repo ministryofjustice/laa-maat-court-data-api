@@ -3,8 +3,6 @@ package gov.uk.courtdata.contribution.controller;
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.contribution.dto.ContributionsSummaryDTO;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.service.ContributionsService;
 import gov.uk.courtdata.contribution.validator.CreateContributionsValidator;
 import gov.uk.courtdata.dto.ContributionsDTO;
@@ -23,11 +21,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
 
 @Slf4j
 @RestController
@@ -56,11 +54,11 @@ public class ContributionsController {
     @Operation(description = "Create contributions entry")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
-    public ResponseEntity<ContributionsDTO> create(@Valid @RequestBody CreateContributions createContributions) {
-        LoggingData.MAAT_ID.putInMDC(createContributions.getRepId());
+    public ResponseEntity<ContributionsDTO> create(@Valid @RequestBody CreateContributionRequest createContributionRequest) {
+        LoggingData.MAAT_ID.putInMDC(createContributionRequest.getRepId());
         log.info("Request to create contributions entry");
-        createContributionsValidator.validate(createContributions);
-        return ResponseEntity.ok(contributionsService.create(createContributions));
+        createContributionsValidator.validate(createContributionRequest);
+        return ResponseEntity.ok(contributionsService.create(createContributionRequest));
     }
 
     @GetMapping(value = "/{repId}/summary", produces = MediaType.APPLICATION_JSON_VALUE)

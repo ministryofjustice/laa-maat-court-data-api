@@ -2,8 +2,6 @@ package gov.uk.courtdata.contribution.service;
 
 import gov.uk.courtdata.contribution.dto.ContributionsSummaryDTO;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.dto.ContributionsDTO;
@@ -13,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,20 +44,7 @@ public class ContributionsService {
     }
 
     @Transactional
-    public ContributionsDTO update(UpdateContributions updateContributions) {
-        Integer id = updateContributions.getId();
-        ContributionsEntity contributionsEntity = contributionsRepository.findById(id).orElse(null);
-
-        if (contributionsEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("Contributions entry not found for id %d", id));
-        }
-
-        contributionsMapper.updateContributionsToContributionsEntity(updateContributions, contributionsEntity);
-        return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(contributionsEntity));
-    }
-
-    @Transactional
-    public ContributionsDTO create(CreateContributions createContributions) {
+    public ContributionsDTO create(CreateContributionRequest createContributions) {
         Integer repId = createContributions.getRepId();
         ContributionsEntity existingContributionsEntity = contributionsRepository.findByRepOrder_IdAndLatestIsTrue(repId);
 

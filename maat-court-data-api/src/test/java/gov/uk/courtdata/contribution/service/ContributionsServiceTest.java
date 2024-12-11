@@ -1,32 +1,30 @@
 package gov.uk.courtdata.contribution.service;
 
-import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.contribution.mapper.ContributionsMapper;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ContributionsServiceTest {
@@ -73,31 +71,10 @@ class ContributionsServiceTest {
     }
 
     @Test
-    void givenAValidInput_whenUpdateIsInvoked_thenContributionsEntryIsUpdated() {
-        Integer testId = 666;
-        ContributionsEntity contributionsEntity = ContributionsEntity.builder().build();
-        when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(contributionsEntity));
-        when(repository.saveAndFlush(any(ContributionsEntity.class))).thenReturn(contributionsEntity);
-        contributionsService.update(UpdateContributions.builder().id(testId).build());
-        assertNotNull(contributionsEntity);
-        verify(repository).saveAndFlush(contributionsEntity);
-        verify(contributionsMapper).mapEntityToDTO(any(ContributionsEntity.class));
-    }
-
-    @Test
-    void givenContributionsEntryDoesntExist_whenUpdateIsInvoked_thenExceptionIsRaised() {
-        int testId = 666;
-        when(repository.findById(anyInt())).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> contributionsService.update(UpdateContributions.builder().id(testId).build()))
-                .isInstanceOf(RequestedObjectNotFoundException.class)
-                .hasMessageContaining("Contributions entry not found for id 666");
-    }
-
-    @Test
     void givenAValidContribution_whenCreateIsInvoked_thenContributionsEntryIsCreated() {
         ContributionsEntity contributionsEntity = ContributionsEntity.builder().build();
-        when(contributionsMapper.createContributionsToContributionsEntity(any(CreateContributions.class))).thenReturn(contributionsEntity);
-        contributionsService.create(CreateContributions.builder().repId(TestModelDataBuilder.REP_ID).build());
+        when(contributionsMapper.createContributionsToContributionsEntity(any(CreateContributionRequest.class))).thenReturn(contributionsEntity);
+        contributionsService.create(new CreateContributionRequest().withRepId(TestModelDataBuilder.REP_ID));
         verify(repository).findByRepOrder_IdAndLatestIsTrue(TestModelDataBuilder.REP_ID);
         verify(repository).saveAndFlush(any(ContributionsEntity.class));
         verify(contributionsMapper).createContributionsToContributionsEntity(any());
@@ -108,11 +85,11 @@ class ContributionsServiceTest {
         LocalDate testEffectiveDate = LocalDate.now();
         ContributionsEntity contributionsEntity = ContributionsEntity.builder().build();
         when(repository.findByRepOrder_IdAndLatestIsTrue(TestModelDataBuilder.REP_ID)).thenReturn(contributionsEntity);
-        when(contributionsMapper.createContributionsToContributionsEntity(any(CreateContributions.class))).thenReturn(contributionsEntity);
+        when(contributionsMapper.createContributionsToContributionsEntity(any(CreateContributionRequest.class))).thenReturn(contributionsEntity);
         when(repository.saveAndFlush(any(ContributionsEntity.class))).thenReturn(contributionsEntity);
         when(contributionsMapper.mapEntityToDTO(any(ContributionsEntity.class))).thenReturn(ContributionsDTO.builder().repId(TestModelDataBuilder.REP_ID).build());
 
-        contributionsService.create(CreateContributions.builder().repId(TestModelDataBuilder.REP_ID).effectiveDate(testEffectiveDate).build());
+        contributionsService.create(new CreateContributionRequest().withRepId(TestModelDataBuilder.REP_ID).withEffectiveDate(testEffectiveDate));
         verify(repository).updateExistingContributionToInactive(TestModelDataBuilder.REP_ID, testEffectiveDate);
         verify(repository).updateExistingContributionToPrior(TestModelDataBuilder.REP_ID);
         verify(repository).saveAndFlush(any(ContributionsEntity.class));

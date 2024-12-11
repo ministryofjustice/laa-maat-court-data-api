@@ -7,8 +7,6 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.contribution.dto.ContributionsSummaryDTO;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.service.ContributionsService;
 import gov.uk.courtdata.dto.ContributionsDTO;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
@@ -23,15 +21,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
+import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
 
     private static final Integer INVALID_REP_ID = 9999;
-
-    private static final Integer INVALID_CONTRIBUTION_ID = 8888;
-    private static final String CONTRIBUTION_FILE_NAME = "CONTRIBUTIONS_202307111234.xml";
-
     public Integer REP_ID = 1234;
 
     @Autowired
@@ -66,34 +61,14 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenInValidRepId_WhenFindIsInvoked_thenCorrectResponseIsReturned() {
-        assertThatThrownBy(() -> {
-            contributionsService.find(INVALID_REP_ID, true);
-        }).isInstanceOf(RequestedObjectNotFoundException.class)
+        assertThatThrownBy(() -> contributionsService.find(INVALID_REP_ID, true))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Contributions entry not found for repId");
     }
 
     @Test
-    void givenValidData_WhenUpdateIsInvoked_thenCorrectResponseIsReturned() {
-        Integer contributionId = getContributionId();
-        UpdateContributions updateContributions = TestModelDataBuilder.getUpdateContributions(contributionId);
-        ContributionsDTO result = contributionsService.update(updateContributions);
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(contributionId);
-        assertThat(result.getMonthlyContributions()).isEqualTo(updateContributions.getMonthlyContributions());
-    }
-
-    @Test
-    void givenInValidData_WhenUpdateIsInvoked_thenCorrectResponseIsReturned() {
-        assertThatThrownBy(() -> {
-            contributionsService.update(TestModelDataBuilder.getUpdateContributions(INVALID_CONTRIBUTION_ID));
-        }).isInstanceOf(RequestedObjectNotFoundException.class)
-                .hasMessageContaining("Contributions entry not found for id");
-    }
-
-
-    @Test
     void givenValidData_WhenCreateIsInvoked_thenCorrectResponseIsReturned() {
-        CreateContributions createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
+        CreateContributionRequest createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
         ContributionsDTO result = contributionsService.create(createContributions);
         assertThat(result).isNotNull();
         assertThat(result.getId()).isGreaterThan(0);
@@ -103,7 +78,7 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenInValidData_WhenCreateIsInvoked_thenCorrectResponseIsReturned() {
         assertThatThrownBy(() -> {
-            CreateContributions createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
+            CreateContributionRequest createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
             createContributions.setRepId(INVALID_REP_ID);
             contributionsService.create(createContributions);
         }).isInstanceOf(DataAccessException.class);
@@ -121,16 +96,9 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenInValidRepId_whenGetContributionsSummaryIsInvoked_thenCorrectResponseIsReturned() {
-        assertThatThrownBy(() -> {
-            contributionsService.getContributionsSummary(INVALID_REP_ID);
-        }).isInstanceOf(RequestedObjectNotFoundException.class)
+        assertThatThrownBy(() -> contributionsService.getContributionsSummary(INVALID_REP_ID))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("No contribution entries found for repId");
-    }
-
-    private Integer getContributionId() {
-        ContributionsEntity contributionsEntity = repos.contributions.findAll().get(0);
-        Integer contributionId = contributionsEntity.getId();
-        return contributionId;
     }
 
 }

@@ -2,8 +2,6 @@ package gov.uk.courtdata.contribution.controller;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.contribution.dto.ContributionsSummaryDTO;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.contribution.service.ContributionsService;
 import gov.uk.courtdata.contribution.validator.CreateContributionsValidator;
 import gov.uk.courtdata.dto.ContributionsDTO;
@@ -17,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,8 +59,8 @@ class ContributionsControllerTest {
     void givenAValidContent_whenCreateIsInvoked_thenOKResponseWithContributionsEntryIsReturned() throws Exception {
         String contributionsJson = TestModelDataBuilder.getCreateContributionsJson();
         ContributionsDTO contributionsDTO = ContributionsDTO.builder().id(TEST_CONTRIBUTIONS_ID).build();
-        when(createContributionsValidator.validate(any(CreateContributions.class))).thenReturn(Optional.empty());
-        when(contributionsService.create(any(CreateContributions.class))).thenReturn(contributionsDTO);
+        when(createContributionsValidator.validate(any(CreateContributionRequest.class))).thenReturn(Optional.empty());
+        when(contributionsService.create(any(CreateContributionRequest.class))).thenReturn(contributionsDTO);
 
         mvc.perform(MockMvcRequestBuilders.post(endpointUrl).content(contributionsJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

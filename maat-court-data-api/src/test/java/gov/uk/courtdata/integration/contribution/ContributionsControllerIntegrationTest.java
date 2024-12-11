@@ -3,7 +3,6 @@ package gov.uk.courtdata.integration.contribution;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -12,8 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.contribution.model.CreateContributions;
-import gov.uk.courtdata.contribution.model.UpdateContributions;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.entity.CorrespondenceEntity;
@@ -28,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
 
 @ExtendWith(SoftAssertionsExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
@@ -35,7 +33,6 @@ class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
 
 
     private static final Integer INVALID_REP_ID = 9999;
-    private static final Integer INVALID_CONTRIBUTION_ID = 8888;
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/contributions";
     public Integer REP_ID = 1234;
     @Autowired
@@ -83,7 +80,7 @@ class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAInvalidRepId_whenCreateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
-        CreateContributions createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
+        CreateContributionRequest createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
         createContributions.setRepId(INVALID_REP_ID);
         assertTrue(runBadRequestErrorScenario("MAAT/REP ID [" + INVALID_REP_ID + "] is invalid",
                 post(ENDPOINT_URL).contentType(MediaType.APPLICATION_JSON)

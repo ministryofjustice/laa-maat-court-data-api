@@ -38,7 +38,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 
 import static gov.uk.courtdata.enums.FdcContributionsStatus.SENT;
 
@@ -54,22 +53,22 @@ public class FdcContributionsService {
     private final DebtCollectionService debtCollectionService;
     private final FdcContributionMapper fdcContributionMapper;
 
-    private FdcContributionsResponse getFdcContributionsResponse(Supplier<List<FdcContributionsEntity>> repositoryCall) {
-        List<FdcContributionsEntity> fdcContributionsList = repositoryCall.get();
-        List<FdcContributionEntry> fdcContributionEntries = fdcContributionsList.stream()
-            .map(fdcContributionMapper::mapFdcContribution)
-            .toList();
-        return FdcContributionsResponse.builder().fdcContributions(fdcContributionEntries).build();
+    private FdcContributionsResponse buildFdcContributionsResponse(Supplier<List<FdcContributionsEntity>> repositoryCall) {
+        return FdcContributionsResponse.builder()
+            .fdcContributions(repositoryCall.get().stream()
+                .map(fdcContributionMapper::mapFdcContribution)
+            .toList())
+            .build();
     }
 
     public FdcContributionsResponse getFdcContributions(FdcContributionsStatus status) {
         log.info("Getting fdc contributions with status -> {}", status);
-        return getFdcContributionsResponse(() -> fdcContributionsRepository.findByStatus(status));
+        return buildFdcContributionsResponse(() -> fdcContributionsRepository.findByStatus(status));
     }
 
     public FdcContributionsResponse getFdcContributions(List<Integer> fdcContributionIdList) {
         log.info("Getting fdc contributions for IDs in a list of size {}", fdcContributionIdList.size());
-        return getFdcContributionsResponse(() -> fdcContributionsRepository.findByIdIn(new HashSet<>(fdcContributionIdList)));
+        return buildFdcContributionsResponse(() -> fdcContributionsRepository.findByIdIn(new HashSet<>(fdcContributionIdList)));
     }
 
     public FdcContributionsGlobalUpdateResponse fdcContributionGlobalUpdate() {

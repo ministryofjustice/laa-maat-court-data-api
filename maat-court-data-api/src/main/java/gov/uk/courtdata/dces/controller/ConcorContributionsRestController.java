@@ -55,7 +55,9 @@ public class ConcorContributionsRestController {
         return ResponseEntity.ok(contributionResponses);
     }
 
-    @StandardApiResponseCodes
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @NotFoundApiResponse
     @PostMapping(value = "/concor-contribution-xml")
     @Operation(description = "Get a list of Concor Contribution ID and related XML when give a list of Concor Contribution IDs")
     public ResponseEntity<List<ConcorContributionResponse>> getConcorContributionXml(@RequestBody List<Integer> idList) {

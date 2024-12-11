@@ -350,6 +350,17 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
+    void givenEmptyRequestBody_whenXmlIsRequested_thenBadRequestError() throws Exception {
+
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(""))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.detail").value("Failed to read request"));
+    }
+
+
+    @Test
     void givenLongListOfIds_whenXmlIsRequested_thenBadRequestError() throws Exception {
         String longList = IntStream.rangeClosed(1, 351)
             .mapToObj(Integer::toString)

@@ -55,6 +55,20 @@ public class FdcContributionsController {
         return ResponseEntity.ok(contributionResponses);
     }
 
+    @StandardApiResponseCodes
+    @PostMapping(value = "/fdc-contributions", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Get a list of FCD Contributions when given a list of fdc-contribution-ids")
+    public ResponseEntity<FdcContributionsResponse> getFdcContributions(@RequestBody final List<Integer> fdcContributionIdList) {
+        log.info("Request received to get the XML for {} IDs", fdcContributionIdList.size());
+        if (fdcContributionIdList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID List Empty");
+        } else if (fdcContributionIdList.size() > REQUEST_ID_LIST_SIZE_LIMIT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many IDs provided, max is " + REQUEST_ID_LIST_SIZE_LIMIT);
+        } else {
+            return ResponseEntity.ok(fdcContributionsService.getFdcContributions(fdcContributionIdList));
+        }
+    }
+
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @PostMapping(value = "/prepare-fdc-contributions-files", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -119,20 +133,6 @@ public class FdcContributionsController {
     public ResponseEntity<FdcContributionEntry> getFdcContribution(@PathVariable(name = "fdc-contribution-id") final Integer fdcContributionId) {
         log.info("Get FDC Contribution by Id {}", fdcContributionId);
         return ResponseEntity.ok(fdcContributionsService.getFdcContribution(fdcContributionId));
-    }
-
-    @StandardApiResponseCodes
-    @PostMapping(value = "/fdc-contributions", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Get a list of FCD Contributions when given a list of fdc-contribution-ids")
-    public ResponseEntity<FdcContributionsResponse> getFdcContributions(@RequestBody final List<Integer> fdcContributionIdList) {
-        log.info("Request received to get the XML for {} IDs", fdcContributionIdList.size());
-        if (fdcContributionIdList.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID List Empty");
-        } else if (fdcContributionIdList.size() > REQUEST_ID_LIST_SIZE_LIMIT) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many IDs provided, max is " + REQUEST_ID_LIST_SIZE_LIMIT);
-        } else {
-            return ResponseEntity.ok(fdcContributionsService.getFdcContributions(fdcContributionIdList));
-        }
     }
 
 }

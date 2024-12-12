@@ -10,6 +10,8 @@ import gov.uk.courtdata.dces.service.FdcContributionsService;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.exception.MAATCourtDataException;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,6 +39,7 @@ class FdcContributionsControllerTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement";
     private static final String DRC_UPDATE_URL = "/log-fdc-response";
+    private static final String FDC_CONTRIBUTIONS_URL = "/fdc-contributions";
 
     @Autowired
     private MockMvc mvc;
@@ -49,7 +53,7 @@ class FdcContributionsControllerTest {
         BigDecimal expectedCost2= new BigDecimal("444.44");
         BigDecimal expectedCost3= new BigDecimal("999.99");
 
-        when(fdcContributionsService.getFdcContributionFiles(FdcContributionsStatus.REQUESTED))
+        when(fdcContributionsService.getFdcContributions(FdcContributionsStatus.REQUESTED))
                 .thenReturn(FdcContributionsResponse.builder()
                         .fdcContributions(List.of(
                                 FdcContributionEntry.builder().id(1).finalCost(expectedCost1).build(),
@@ -73,7 +77,7 @@ class FdcContributionsControllerTest {
     @Test
     void testContributionFileResponseWhenActiveFileNotAvailable() throws Exception {
 
-        when(fdcContributionsService.getFdcContributionFiles(FdcContributionsStatus.REQUESTED))
+        when(fdcContributionsService.getFdcContributions(FdcContributionsStatus.REQUESTED))
                 .thenReturn(FdcContributionsResponse.builder().fdcContributions(List.of()).build());
 
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/fdc-contribution-files"))
@@ -200,6 +204,50 @@ class FdcContributionsControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("code").value("Object Not Found"));
     }
+
+    @Test
+    void givenEmptyListOfIds_whenFdcContributionsAreRequested_thenBadRequestError() throws Exception {
+
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + FDC_CONTRIBUTIONS_URL))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content("[]"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.detail").value("ID List Empty"));
+    }
+
+    @Test
+    void givenLongListOfIds_whenFdcContributionsAreRequested_thenBadRequestError() throws Exception {
+        String longList = IntStream.rangeClosed(1, 1001)
+            .mapToObj(Integer::toString)
+            .collect(Collectors.joining(","));
+
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + FDC_CONTRIBUTIONS_URL))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content("["+longList+"]"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.detail").value("Too many IDs provided, max is 1000"));
+    }
+
+    @Test
+    void givenValidListOfIds_whenFdcContributionsAreRequested_thenValidResponse() throws Exception {
+
+        when(fdcContributionsService.getFdcContributions(anyList())).
+            thenReturn(FdcContributionsResponse.builder()
+                        .fdcContributions(List.of(FdcContributionEntry.builder()
+                                .id(1)
+                                .accelerate("True")
+                        .build()))
+                .build());
+
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + FDC_CONTRIBUTIONS_URL))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content("[110, 120]"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.fdcContributions.[0].id").value("1"))
+            .andExpect(jsonPath("$.fdcContributions.[0].accelerate").value("True"));
+    }
+
+
 
     private static String createDrcUpdateJson(int fdcId, String errorText){
         return """

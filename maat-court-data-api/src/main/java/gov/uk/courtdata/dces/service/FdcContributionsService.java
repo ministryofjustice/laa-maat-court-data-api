@@ -22,6 +22,8 @@ import gov.uk.courtdata.repository.FdcContributionsRepository;
 import gov.uk.courtdata.repository.FdcItemsRepository;
 import gov.uk.courtdata.util.ValidationUtils;
 import jakarta.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +38,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 
 import static gov.uk.courtdata.enums.FdcContributionsStatus.SENT;
 
@@ -52,24 +53,22 @@ public class FdcContributionsService {
     private final DebtCollectionService debtCollectionService;
     private final FdcContributionMapper fdcContributionMapper;
 
-    private static final Function<FdcContributionsEntity, FdcContributionEntry> BUILD_FDC_ENTRY =
-            entity -> FdcContributionEntry.builder()
-                    .id(entity.getId())
-                    .maatId(entity.getRepOrderEntity().getId())
-                    .finalCost(entity.getFinalCost())
-                    .dateCalculated(entity.getDateCalculated())
-                    .lgfsCost(entity.getLgfsCost())
-                    .agfsCost(entity.getAgfsCost())
-                    .sentenceOrderDate(Objects.nonNull(entity.getRepOrderEntity()) ? entity.getRepOrderEntity().getSentenceOrderDate() : null)
-                    .build();
+    private FdcContributionsResponse buildFdcContributionsResponse(Supplier<List<FdcContributionsEntity>> repositoryCall) {
+        return FdcContributionsResponse.builder()
+            .fdcContributions(repositoryCall.get().stream()
+                .map(fdcContributionMapper::mapFdcContribution)
+            .toList())
+            .build();
+    }
 
-    public FdcContributionsResponse getFdcContributionFiles(FdcContributionsStatus status) {
-        log.info("Getting fdc contribution file with status with the -> {}", status);
-        final List<FdcContributionsEntity> fdcFileList = fdcContributionsRepository.findByStatus(status);
-        List<FdcContributionEntry> fdcContributionEntries = fdcFileList.stream()
-                .map(BUILD_FDC_ENTRY)
-                .toList();
-        return FdcContributionsResponse.builder().fdcContributions(fdcContributionEntries).build();
+    public FdcContributionsResponse getFdcContributions(FdcContributionsStatus status) {
+        log.info("Getting fdc contributions with status -> {}", status);
+        return buildFdcContributionsResponse(() -> fdcContributionsRepository.findByStatus(status));
+    }
+
+    public FdcContributionsResponse getFdcContributions(List<Integer> fdcContributionIdList) {
+        log.info("Getting fdc contributions for IDs in a list of size {}", fdcContributionIdList.size());
+        return buildFdcContributionsResponse(() -> fdcContributionsRepository.findByIdIn(new HashSet<>(fdcContributionIdList)));
     }
 
     public FdcContributionsGlobalUpdateResponse fdcContributionGlobalUpdate() {
@@ -249,4 +248,5 @@ public class FdcContributionsService {
         log.info("FDC Contribution found: {}", fdcEntity.getId());
         return fdcContributionMapper.mapFdcContribution(fdcEntity);
     }
+
 }

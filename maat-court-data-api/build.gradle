@@ -50,6 +50,7 @@ dependencies {
 
     implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$commonsRestClient:all"
     implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$crimeCommonsClasses"
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-mod-schemas:$commonsModSchemas"
 
     //Required for Logback configuration due to a dependency having their own implementation of SAXParserFactory
     implementation "xerces:xercesImpl:$xercesImplVersion"

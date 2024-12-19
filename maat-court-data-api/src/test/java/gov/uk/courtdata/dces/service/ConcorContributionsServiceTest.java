@@ -40,11 +40,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static gov.uk.courtdata.enums.ConcorContributionStatus.ACTIVE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyList;
@@ -87,8 +84,6 @@ class ConcorContributionsServiceTest {
     @Captor
     private ArgumentCaptor<List<ConcorContributionsEntity>> concorContributionEntityListArgumentCaptor;
     @Captor
-    private ArgumentCaptor<ConcorContributionStatus> statusCaptor;
-    @Captor
     private ArgumentCaptor<ContributionFileErrorsEntity> fileErrorCaptor;
 
     @BeforeEach
@@ -98,7 +93,7 @@ class ConcorContributionsServiceTest {
     }
 
     @Test
-    void testGetContributionFilesWhenConcorFileStatusIsActive() {
+    void givenSomeActiveContributions_whenGetConcorContributionFilesIsCalledWithStatusAndStartId_thenTheyAreReturned() {
 
         List<ConcorContributionsEntity> entities = List.of(
                 populateConcorContributionsEntity(344),
@@ -110,14 +105,14 @@ class ConcorContributionsServiceTest {
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 3, 343);
 
         verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
-        assertNotNull(responseList);
-        Assertions.assertFalse(responseList.isEmpty());
-        Assertions.assertEquals(344,responseList.get(0).getConcorContributionId());
+        assertThat(responseList).isNotNull();
+        assertThat(responseList.isEmpty()).isFalse();
+        assertThat(responseList.get(0).getConcorContributionId()).isEqualTo(344);
 
     }
 
     @Test
-    void testGetContributionFilesWhenConcorFileStatusIsActiveAndConcorContribIdIsNull() {
+    void givenSomeActiveContributions_whenGetConcorContributionFilesIsCalledWithNullStartId_thenTheyAreReturned() {
 
         List<ConcorContributionsEntity> entities = List.of(
                 populateConcorContributionsEntity(343),
@@ -131,40 +126,40 @@ class ConcorContributionsServiceTest {
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, null, null);
 
         verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
-        assertNotNull(responseList);
-        Assertions.assertFalse(responseList.isEmpty());
-        Assertions.assertEquals(343,responseList.get(0).getConcorContributionId());
+        assertThat(responseList).isNotNull();
+        assertThat(responseList.isEmpty()).isFalse();
+        assertThat(responseList.get(0).getConcorContributionId()).isEqualTo(343);
     }
 
     @Test
-    void getConcorContributionFilesReturnsEmptyListWhenStartingIdIsInvalid() {
+    void givenSomeActiveContributions_whenGetConcorContributionFilesIsCalledWithInvalidStartId_thenEmptyListIsReturned() {
         Pageable pageable = PageRequest.of(0, 2, Sort.by("id"));
         when(concorRepository.findByStatusAndIdGreaterThan(ACTIVE, 999, pageable)).thenReturn(List.of());
 
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 2, 999);
 
-        assertNotNull(responseList);
-        assertTrue(responseList.isEmpty());
+        assertThat(responseList).isNotNull();
+        assertThat(responseList.isEmpty()).isTrue();
     }
 
     @Test
-    void getConcorContributionFileThrowsNotFoundExceptionWhenConcorContributionIdIsInvalid() {
+    void givenSomeActiveContributions_whenGetConcorContributionFileIsCalledWithInvalidId_thenNotFoundExceptionIsThrown() {
         when(concorRepository.findById(0)).thenReturn(Optional.empty());
         Assertions.assertThrows(RequestedObjectNotFoundException.class,
             () -> concorService.getConcorContributionFile(0));
     }
 
     @Test
-    void getConcorContributionFileReturnsResponseWhenConcorContributionIdIsValid() {
+    void givenSomeContributionFiles_whenGetConcorContributionFileIsCalledWithValidId_thenItIsReturned() {
         when(concorRepository.findById(110)).thenReturn(Optional.of(ConcorContributionsEntity.builder().id(110).currentXml("XmlContent").build()));
         ConcorContributionResponse response = concorService.getConcorContributionFile(110);
-        Assertions.assertNotNull(response);
-        Assertions.assertEquals(110, response.getConcorContributionId());
-        Assertions.assertEquals("XmlContent", response.getXmlContent());
+        assertThat(response).isNotNull();
+        assertThat(response.getConcorContributionId()).isEqualTo(110);
+        assertThat(response.getXmlContent()).isEqualTo("XmlContent");
     }
 
     @Test
-    void testWhenContributionRequestIsNullAndThrowException() {
+    void givenNullContributionRequest_whencreateContributionAndUpdateConcorStatusIsCalled_thenValidationExceptionIsThrown() {
         Assertions.assertThrows(ValidationException.class,
                 () -> concorService.createContributionAndUpdateConcorStatus(null));
         verify(contributionFileRepository, never()).save(any());
@@ -173,7 +168,7 @@ class ConcorContributionsServiceTest {
     }
 
     @Test
-    void testCreateContributionFileAndUpdateConcorContributionStatus() {
+    void givenValidRequest_whenCreateContributionAndUpdateConcorStatusIsCalled_thenContributionFileIsCreatedAndStatusUpdatedToSent() {
         final CreateContributionFileRequest createContributionFileRequest
                 = CreateContributionFileRequest.builder()
                 .concorContributionIds(Set.of(1))
@@ -192,16 +187,18 @@ class ConcorContributionsServiceTest {
         final ContributionFilesEntity actualContributionFileEntity = contributionFilesEntityArgumentCaptor.getValue();
         final List<ConcorContributionsEntity> contributionEntityList =  concorContributionEntityListArgumentCaptor.getValue();
 
-        assertNotNull(actualResponse);
-        assertNotNull(actualContributionFileEntity);
-        assertEquals("<xml>ackDummyContent</xml>", actualContributionFileEntity.getAckXmlContent());
-        assertEquals(10, actualContributionFileEntity.getRecordsSent());
-        assertEquals(1, actualContributionFileEntity.getFileId());
-        assertNotNull(contributionEntityList);
+        assertThat(actualResponse).isNotNull();
+        assertThat(actualContributionFileEntity).isNotNull();
+        assertThat(actualContributionFileEntity.getAckXmlContent()).isEqualTo("<xml>ackDummyContent</xml>");
+        assertThat(actualContributionFileEntity.getRecordsSent()).isEqualTo(10);
+        assertThat(actualContributionFileEntity.getFileId()).isEqualTo(1);
+        assertThat(contributionEntityList).isNotNull();
+        assertThat(contributionEntityList.size()).isEqualTo(1);
+        assertThat(contributionEntityList.get(0).getStatus().name()).isEqualTo("SENT");
     }
 
     @Test
-    void testWhenContributionFileWithActiveStatusNotFound() {
+    void givenNonExistentIds_whenCreateContributionAndUpdateConcorStatusIsCalled_thenNoSuchElementExceptionIsThrown() {
         final CreateContributionFileRequest createContributionFileRequest = CreateContributionFileRequest.builder()
                 .concorContributionIds(Set.of(1))
                 .xmlContent(getXmlDocContent()).build();
@@ -214,25 +211,25 @@ class ConcorContributionsServiceTest {
                 concorService.createContributionAndUpdateConcorStatus(createContributionFileRequest));
 
         verify(debtCollectionRepository).saveContributionFilesEntity(contributionFilesEntityArgumentCaptor.capture());
-        assertEquals(1, contributionFilesEntityArgumentCaptor.getValue().getFileId());
+        assertThat(contributionFilesEntityArgumentCaptor.getValue().getFileId()).isEqualTo(1);
         verify(concorRepository, never()).saveAll(anyList());
     }
 
     @Test
-    void createContributionAndUpdateConcorStatusWhenCallFailed() {
+    void givenEmptyRequest_whenCreateContributionAndUpdateConcorStatusIsCalled_thenExceptionIsThrownAndNoDatabaseCallsAreMade() {
         final CreateContributionFileRequest mockDto = mock(CreateContributionFileRequest.class);
 
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
                 () -> concorService.createContributionAndUpdateConcorStatus(mockDto));
 
-        assertEquals("ContributionIds are empty/null.", exception.getMessage());
+        assertThat(exception.getMessage()).isEqualTo("ContributionIds are empty/null.");
         verify(contributionFileRepository, never()).save(any());
         verify(concorRepository, never()).findByStatus(any(ConcorContributionStatus.class));
         verify(concorRepository, never()).saveAll(anyList());
     }
 
     @Test
-    void testDrcUpdateSuccessNoErrorText() {
+    void givenValidRequest_whenLogContributionProcessedIsCalled_thenReceivedCountIsUpdated() {
         int id = 123;
         int repId = 456;
         int fileId = 10000;
@@ -250,7 +247,7 @@ class ConcorContributionsServiceTest {
     }
 
     @Test
-    void testDrcUpdateSuccessHasErrorText() {
+    void givenRequestWithError_whenLogContributionProcessedIsCalled_thenReceivedCountIsNotUpdatedAndErrorIsSaved() {
         int id = 123;
         int repId = 456;
         int fileId = 10000;
@@ -269,19 +266,19 @@ class ConcorContributionsServiceTest {
         verify(debtCollectionService, never()).updateContributionFileReceivedCount(fileId);
         ContributionFileErrorsEntity errorEntity = fileErrorCaptor.getValue();
 
-        assertEquals(errorText,errorEntity.getErrorText());
-        assertEquals(id, errorEntity.getConcorContributionId());
-        assertEquals(id,errorEntity.getContributionId());
-        assertEquals(fileId,errorEntity.getContributionFileId());
-        assertNull(errorEntity.getFdcContributionId());
-        assertEquals(repId,errorEntity.getRepId());
-        assertEquals(currDate.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
-        assertEquals(currDate.getMonth(), errorEntity.getDateCreated().getMonth());
-        assertEquals(currDate.getYear(), errorEntity.getDateCreated().getYear());
+        assertThat(errorEntity.getErrorText()).isEqualTo(errorText);
+        assertThat(errorEntity.getConcorContributionId()).isEqualTo(id);
+        assertThat(errorEntity.getContributionId()).isEqualTo(id);
+        assertThat(errorEntity.getContributionFileId()).isEqualTo(fileId);
+        assertThat(errorEntity.getFdcContributionId()).isNull();
+        assertThat(errorEntity.getRepId()).isEqualTo(repId);
+        assertThat(errorEntity.getDateCreated().getDayOfMonth()).isEqualTo(currDate.getDayOfMonth());
+        assertThat(errorEntity.getDateCreated().getMonth()).isEqualTo(currDate.getMonth());
+        assertThat(errorEntity.getDateCreated().getYear()).isEqualTo(currDate.getYear());
     }
 
     @Test
-    void testDrcUpdateNoConcorFound() {
+    void givenRequestWithInvalidID_whenLogContributionProcessIsCalled_thenRequestedObjectNotFoundExceptionIsThrownAndNoDBchangesAreMade() {
         int id = 123;
         String errorText = "Error Text";
 
@@ -297,7 +294,7 @@ class ConcorContributionsServiceTest {
     }
 
     @Test
-    void testDrcUpdateNoFileFound() {
+    void givenInvalidFileId_whenLogContributionProcessedIsCalled_thenNoSuchElementExceptionIsThrownAndNoErrorIsSaved() {
         int id = 123;
         int repId = 456;
         int fileId = 10000;
@@ -316,7 +313,7 @@ class ConcorContributionsServiceTest {
     }
 
     @Test
-    void testUpdateConcorContributionsStatus() {
+    void givenValidIDs_whenUpdateConcorContributionStatusAndResetContribFileIsCalled_thenStatusIsUpdatedAndContribFileIsReset() {
         when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of(1111, 2222));
         when(concorRepository.updateStatusAndResetContribFileForIds(any(), anyString(), any())).thenReturn(2);
 
@@ -325,11 +322,11 @@ class ConcorContributionsServiceTest {
 
         verify(concorRepository).findIdsForUpdate(any());
         verify(concorRepository).updateStatusAndResetContribFileForIds(any(), anyString(), any());
-        assertEquals(2, response.size());
+        assertThat(response.size()).isEqualTo(2);
     }
 
     @Test
-    void testUpdateConcorContributionsStatusWhenNotFound() {
+    void givenInvalidIDs_whenUpdateConcorContributionStatusAndResetContribFileIsCalled_thenStatusIsNotUpdatedAndContribFileIsNotReset() {
         when(concorRepository.findIdsForUpdate(any())).thenReturn(List.of());
 
         List<Integer> response = concorService.updateConcorContributionStatusAndResetContribFile(UpdateConcorContributionStatusRequest.builder().recordCount(1)
@@ -337,11 +334,11 @@ class ConcorContributionsServiceTest {
 
         verify(concorRepository).findIdsForUpdate(any());
         verify(concorRepository,never()).updateStatusAndResetContribFileForIds(any(), anyString(), any());
-        assertEquals(0, response.size());
+        assertThat(response.size()).isEqualTo(0);
     }
 
     @Test
-    void testGetConcorContributionWhenFound() {
+    void givenValidConcorContributionId_whenGetConcorContributionIsCalled_thenExpectedResponseIsReturned() {
         Integer concorContributionId = 1;
         ConcorContributionsEntity concorContributionsEntity = new ConcorContributionsEntity();
         ConcorContributionResponseDTO expectedResponse = ConcorContributionResponseDTO
@@ -355,28 +352,28 @@ class ConcorContributionsServiceTest {
 
         ConcorContributionResponseDTO actualResponse = concorService.getConcorContribution(concorContributionId);
 
-        assertEquals(expectedResponse, actualResponse);
+        assertThat(actualResponse).isEqualTo(expectedResponse);
     }
 
     @Test
-    void testGetConcorContributionWhenNotFound() {
+    void givenInvalidConcorContributionId_whenGetConcorContributionIsCalled_thenNullResponseIsReturned() {
         Integer concorContributionId = 1;
 
         when(concorRepository.findById(concorContributionId)).thenReturn(Optional.empty());
         ConcorContributionResponseDTO actualResponse = concorService.getConcorContribution(concorContributionId);
 
-        assertNull(actualResponse);
+        assertThat(actualResponse).isNull();
     }
 
     @Test
-    void testGetConcorContributionXmlWhenNotFound() {
+    void givenInvalidConcorContributionId_whenGetConcorContributionXmlIsCalled_thenEmptyResponseIsReturned() {
         when(concorRepository.findByIdIn(any())).thenReturn(new ArrayList<>());
         List<ConcorContributionResponse> actualResponse = concorService.getConcorContributionXml(List.of(1));
-        assertEquals(actualResponse, new ArrayList<>());
+        assertThat(actualResponse).containsExactlyElementsOf(new ArrayList<>());
     }
 
     @Test
-    void testGetConcorContributionXmlWhenFound() {
+    void givenValidConcorContributionId_whenGetConcorContributionXmlIsCalled_thenExpectedResponseIsReturned() {
         List<ConcorContributionResponse> expectedResponse = List.of(ConcorContributionResponse.builder()
                 .concorContributionId(1)
                 .xmlContent(getXmlDocContent())
@@ -384,7 +381,7 @@ class ConcorContributionsServiceTest {
 
         when(concorRepository.findByIdIn(any())).thenReturn(List.of(populateConcorContributionsEntity(1)));
         List<ConcorContributionResponse> actualResponse = concorService.getConcorContributionXml(List.of(1));
-        assertEquals(actualResponse, expectedResponse);
+        assertThat(actualResponse).isEqualTo(expectedResponse);
     }
 
     private LogContributionProcessedRequest createLogContributionProcessedRequest(int id, String errorText) {

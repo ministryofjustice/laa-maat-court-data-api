@@ -1,6 +1,5 @@
 package gov.uk.courtdata.dces.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -9,13 +8,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.jdbc.core.JdbcTemplate;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -34,22 +31,22 @@ class DebtCollectionRepositoryTest {
     ArgumentCaptor<String> mergeSQLCaptor;
 
     @Test
-    void verifyEligibleForFdcDelayedPickupStatement_IsExpected() {
+    void givenValidInput_whenSetEligibleForFdcDelayedPickup_thenVerifySQLStatement() {
         when(jdbcTemplate.update(mergeSQLCaptor.capture(), anyString()))
                 .thenReturn(1);
         debtCollectionRepository.setEligibleForFdcDelayedPickup("?");
 
-        assertNotNull(mergeSQLCaptor);
+        assertThat(mergeSQLCaptor).isNotNull();
         assertArrayEquals(fdcDelayedPickupStatementHash, getCaptorHash(), "A change has been detected in the DebtCollectionRepository.setEligibleForFdcDelayedPickup() please verify changes are correct. And update this test.");
     }
 
     @Test
-    void verifyEligibleForFdcFastTracking_IsExpected() {
+    void givenValidInput_whenSetEligibleForFdcFastTracking_thenVerifySQLStatement() {
         when(jdbcTemplate.update(mergeSQLCaptor.capture(), anyString()))
                 .thenReturn(1);
         debtCollectionRepository.setEligibleForFdcFastTracking("?");
 
-        assertNotNull(mergeSQLCaptor);
+        assertThat(mergeSQLCaptor).isNotNull();
         assertArrayEquals(fdcFastTrackingStatementHash, getCaptorHash(), "A change has been detected in the DebtCollectionRepository.setEligibleForFdcFastTracking() please verify changes are correct. And update this test.");
     }
 

@@ -48,7 +48,7 @@ class FdcContributionsControllerTest {
     private FdcContributionsService fdcContributionsService;
 
     @Test
-    void testContributionFileContent() throws Exception {
+    void givenRequestedStatus_whenGetFdcContributions_thenReturnListOfContributions() throws Exception {
         BigDecimal expectedCost1= new BigDecimal("100.1");
         BigDecimal expectedCost2= new BigDecimal("444.44");
         BigDecimal expectedCost3= new BigDecimal("999.99");
@@ -75,7 +75,7 @@ class FdcContributionsControllerTest {
     }
 
     @Test
-    void testContributionFileResponseWhenActiveFileNotAvailable() throws Exception {
+    void givenRequestedStatusAndNoActiveFiles_whenGetFdcContributions_thenReturnEmptyList() throws Exception {
 
         when(fdcContributionsService.getFdcContributions(FdcContributionsStatus.REQUESTED))
                 .thenReturn(FdcContributionsResponse.builder().fdcContributions(List.of()).build());
@@ -88,7 +88,7 @@ class FdcContributionsControllerTest {
     }
 
     @Test
-    void testContributionFileResponseWhenQueryParamIsNotProvided() throws Exception {
+    void givenNoStatusQueryParam_whenGetFdcContributions_thenBadRequestError() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/fdc-contribution-files"))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.detail").value("Required parameter 'status' is not present."))
@@ -96,7 +96,7 @@ class FdcContributionsControllerTest {
     }
 
     @Test
-    void testCreateFdcContribution() throws Exception {
+    void givenValidRequest_whenCreateFdcContribution_thenReturnCreatedContribution() throws Exception {
         CreateFdcContributionRequest request = CreateFdcContributionRequest.builder().build();
         FdcContributionsEntity fdcEntity = FdcContributionsEntity.builder().id(34545).build();
 
@@ -110,7 +110,7 @@ class FdcContributionsControllerTest {
     }
 
     @Test
-    void testCreateFdcContributionWhenRequestIsNull() throws Exception {
+    void givenNullRequest_whenCreateFdcContribution_thenBadRequestError() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/fdc-contribution")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
@@ -118,7 +118,7 @@ class FdcContributionsControllerTest {
 
 
     @Test
-    void testUpdateFdcContribution() throws Exception {
+    void givenValidRequest_whenUpdateFdcContribution_thenReturnUpdatedCount() throws Exception {
         UpdateFdcContributionRequest request = UpdateFdcContributionRequest.builder().build();
         when(fdcContributionsService.updateFdcContribution(any(UpdateFdcContributionRequest.class))).thenReturn(2);
 
@@ -130,14 +130,14 @@ class FdcContributionsControllerTest {
     }
 
     @Test
-    void testUpdateFdcContributionWhenRequestIsNull() throws Exception {
+    void givenNullRequest_whenUpdateFdcContribution_thenBadRequestError() throws Exception {
         mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/fdc-contribution")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void testGetFdcContribution() throws Exception {
+    void givenValidId_whenGetFdcContribution_thenReturnContribution() throws Exception {
         int fdcContributionId = 1;
         FdcContributionEntry expectedEntry = FdcContributionEntry.builder().id(fdcContributionId)
                 .status(FdcContributionsStatus.REQUESTED)
@@ -155,7 +155,7 @@ class FdcContributionsControllerTest {
     }
 
     @Test
-    void testLogDrcProcessedNoErrorSuccess() throws Exception {
+    void givenValidRequest_whenLogDrcProcessed_thenReturnSuccess() throws Exception {
         int id = 1234;
         String errorText = "";
         LogFdcProcessedRequest request = LogFdcProcessedRequest.builder()
@@ -172,7 +172,7 @@ class FdcContributionsControllerTest {
     }
 
     @Test
-    void testLogDrcProcessedError() throws Exception {
+    void givenServiceError_whenLogDrcProcessed_thenServerError() throws Exception {
         int id = 1234;
         String errorText = "";
         LogFdcProcessedRequest request = LogFdcProcessedRequest.builder()
@@ -189,7 +189,7 @@ class FdcContributionsControllerTest {
     }
 
     @Test
-    void testLogDrcProcessedNoContribFile() throws Exception {
+    void givenNoContributionFile_whenLogDrcProcessed_thenBadRequestError() throws Exception {
         int id = 1234;
         String errorText = "";
         LogFdcProcessedRequest request = LogFdcProcessedRequest.builder()

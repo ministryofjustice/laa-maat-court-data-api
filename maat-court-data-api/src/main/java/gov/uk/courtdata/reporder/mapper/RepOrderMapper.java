@@ -4,6 +4,7 @@ import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.CreateRepOrder;
@@ -50,6 +51,8 @@ public interface RepOrderMapper {
                 .max(Comparator.comparingInt(FinancialAssessmentEntity::getId));
         Optional<PassportAssessmentEntity> maxIdPassportAssessmentEntity = repOrderEntity.getPassportAssessments().stream()
                 .max(Comparator.comparingInt(PassportAssessmentEntity::getId));
+        Optional<IOJAppealEntity> maxIdIOJAppealEntity = repOrderEntity.getIojAppeal().stream()
+            .max(Comparator.comparingInt(IOJAppealEntity::getId));
 
         return RepOrderStateDTO.builder()
                 .usn(repOrderEntity.getUsn())
@@ -72,6 +75,9 @@ public interface RepOrderMapper {
                 .datePassportCreated(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getDateCreated).orElse(null))
                 .fundingDecision(repOrderEntity.getDecisionReasonCode())
                 .ccRepDecision(repOrderEntity.getCrownRepOrderDecision())
+                .iojAppealResult(maxIdIOJAppealEntity.map(IOJAppealEntity::getDecisionResult).orElse(null))
+                .iojAppealAssessorName(maxIdIOJAppealEntity.map(IOJAppealEntity::getUserCreated).orElse(null))
+                .iojAppealDate(maxIdIOJAppealEntity.map(IOJAppealEntity::getDecisionDate).orElse(null))
                 .build();
     }
 

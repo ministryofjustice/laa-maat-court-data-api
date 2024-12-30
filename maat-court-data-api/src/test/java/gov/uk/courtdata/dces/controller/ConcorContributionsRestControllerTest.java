@@ -346,7 +346,7 @@ class ConcorContributionsRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content("[]"))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.detail").value("ID List Empty"));
+            .andExpect(jsonPath("$.message").value("ID List Empty"));
     }
 
     @Test
@@ -370,7 +370,7 @@ class ConcorContributionsRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content("["+longList+"]"))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.detail").value("Too many IDs provided, max is 350"));
+            .andExpect(jsonPath("$.message").value("Too many IDs provided, max is 350"));
     }
 
     @Test

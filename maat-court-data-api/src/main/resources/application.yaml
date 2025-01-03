@@ -4,6 +4,7 @@ server:
 logging:
   level:
     root: INFO
+  include-application-name: false
 
 spring:
   graphql:

@@ -40,4 +40,8 @@ public class RepOrderStateDTO {
 
     private String fundingDecision;
     private String ccRepDecision;
+
+    private String iojAppealResult;
+    private String iojAppealAssessorName;
+    private LocalDateTime iojAppealDate;
 }

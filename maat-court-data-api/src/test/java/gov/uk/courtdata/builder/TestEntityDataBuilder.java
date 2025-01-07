@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
+import uk.gov.justice.laa.crime.enums.NewWorkReason;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -418,7 +419,7 @@ public class TestEntityDataBuilder {
         return NewWorkReasonEntity.builder()
                 .code("FMA")
                 .type("ASS")
-                .description("")
+                .description("First Means Assessment")
                 .dateCreated(TEST_DATE)
                 .userCreated(TEST_USER)
                 .build();

@@ -29,9 +29,11 @@ spring:
     hibernate:
       ddl-auto: update
     properties:
-      hibernate.jdbc.lob.non_contextual_creation: true
       hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
         enable_lazy_load_no_trans: true
+        jdbc:
+          lob.non_contextual_creation: true
   sql:
     init:
       platform: h2

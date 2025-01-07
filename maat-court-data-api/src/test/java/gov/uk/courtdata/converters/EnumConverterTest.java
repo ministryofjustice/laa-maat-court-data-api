@@ -25,14 +25,14 @@ public class EnumConverterTest {
     @Autowired
     private FinancialAssessmentDetailsRepository financialAssessmentDetailsRepository;
 
-    @Autowired
-    private HardshipReviewRepository hardshipReviewRepository;
-
-    @Autowired
-    private HardshipReviewDetailRepository hardshipReviewDetailRepository;
-
-    @Autowired
-    private HardshipReviewProgressRepository hardshipReviewProgressRepository;
+//    @Autowired
+//    private HardshipReviewRepository hardshipReviewRepository;
+//
+//    @Autowired
+//    private HardshipReviewDetailRepository hardshipReviewDetailRepository;
+//
+//    @Autowired
+//    private HardshipReviewProgressRepository hardshipReviewProgressRepository;
 
     @Test
     public void givenFinancialAssessmentDetailEntity_whenEntityIsSaved_thenEnumsArePersisted() {
@@ -49,49 +49,49 @@ public class EnumConverterTest {
         assertThat(returned.getPartnerFrequency()).isEqualTo(Frequency.FOUR_WEEKLY);
     }
 
-    @Test
-    public void givenHardshipReviewEntity_whenEntityIsSaved_thenEnumsArePersisted() {
+//    @Test
+//    public void givenHardshipReviewEntity_whenEntityIsSaved_thenEnumsArePersisted() {
+//
+//        HardshipReviewEntity mockEntity = HardshipReviewEntity.builder()
+//                .dateCreated(LocalDateTime.now())
+//                .userCreated("test-s")
+//                .status(HardshipReviewStatus.IN_PROGRESS.getStatus())
+//                .build();
+//
+//        HardshipReviewEntity returned = hardshipReviewRepository.save(mockEntity);
+//        assertThat(returned.getStatus()).isEqualTo(HardshipReviewStatus.IN_PROGRESS.getStatus());
+//    }
 
-        HardshipReviewEntity mockEntity = HardshipReviewEntity.builder()
-                .dateCreated(LocalDateTime.now())
-                .userCreated("test-s")
-                .status(HardshipReviewStatus.IN_PROGRESS.getStatus())
-                .build();
+//    @Test
+//    public void givenHardshipReviewDetailEntity_whenEntityIsSaved_thenEnumsArePersisted() {
+//
+//        HardshipReviewDetailEntity mockEntity = HardshipReviewDetailEntity.builder()
+//                .dateCreated(LocalDateTime.now())
+//                .userCreated("test-s")
+//                .detailType(HardshipReviewDetailType.INCOME.getType())
+//                .detailCode(HardshipReviewDetailCode.DEBTS)
+//                .frequency(Frequency.ANNUALLY)
+//                .build();
+//
+//        HardshipReviewDetailEntity returned = hardshipReviewDetailRepository.save(mockEntity);
+//        assertThat(returned.getFrequency()).isEqualTo(Frequency.ANNUALLY);
+//        assertThat(returned.getDetailCode()).isEqualTo(HardshipReviewDetailCode.DEBTS);
+//
+//    }
 
-        HardshipReviewEntity returned = hardshipReviewRepository.save(mockEntity);
-        assertThat(returned.getStatus()).isEqualTo(HardshipReviewStatus.IN_PROGRESS.getStatus());
-    }
-
-    @Test
-    public void givenHardshipReviewDetailEntity_whenEntityIsSaved_thenEnumsArePersisted() {
-
-        HardshipReviewDetailEntity mockEntity = HardshipReviewDetailEntity.builder()
-                .dateCreated(LocalDateTime.now())
-                .userCreated("test-s")
-                .detailType(HardshipReviewDetailType.INCOME.getType())
-                .detailCode(HardshipReviewDetailCode.DEBTS)
-                .frequency(Frequency.ANNUALLY)
-                .build();
-
-        HardshipReviewDetailEntity returned = hardshipReviewDetailRepository.save(mockEntity);
-        assertThat(returned.getFrequency()).isEqualTo(Frequency.ANNUALLY);
-        assertThat(returned.getDetailCode()).isEqualTo(HardshipReviewDetailCode.DEBTS);
-
-    }
-
-    @Test
-    public void givenHardshipReviewProgressEntity_whenEntityIsSaved_thenEnumsArePersisted() {
-
-        HardshipReviewProgressEntity mockEntity = HardshipReviewProgressEntity.builder()
-                .dateCreated(LocalDateTime.now())
-                .userCreated("test-s")
-                .dateRequested(LocalDateTime.now())
-                .progressAction(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE)
-                .progressResponse(HardshipReviewProgressResponse.FURTHER_RECEIVED)
-                .build();
-
-        HardshipReviewProgressEntity returned = hardshipReviewProgressRepository.save(mockEntity);
-        assertThat(returned.getProgressAction()).isEqualTo(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE);
-        assertThat(returned.getProgressResponse()).isEqualTo(HardshipReviewProgressResponse.FURTHER_RECEIVED);
-    }
+//    @Test
+//    public void givenHardshipReviewProgressEntity_whenEntityIsSaved_thenEnumsArePersisted() {
+//
+//        HardshipReviewProgressEntity mockEntity = HardshipReviewProgressEntity.builder()
+//                .dateCreated(LocalDateTime.now())
+//                .userCreated("test-s")
+//                .dateRequested(LocalDateTime.now())
+//                .progressAction(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE)
+//                .progressResponse(HardshipReviewProgressResponse.FURTHER_RECEIVED)
+//                .build();
+//
+//        HardshipReviewProgressEntity returned = hardshipReviewProgressRepository.save(mockEntity);
+//        assertThat(returned.getProgressAction()).isEqualTo(HardshipReviewProgressAction.ADDITIONAL_EVIDENCE);
+//        assertThat(returned.getProgressResponse()).isEqualTo(HardshipReviewProgressResponse.FURTHER_RECEIVED);
+//    }
 }

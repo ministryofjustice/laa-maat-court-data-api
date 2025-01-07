@@ -43,14 +43,14 @@ public class FinancialAssessmentDetailEntity {
     @Column(name = "APPLICANT_AMOUNT")
     private BigDecimal applicantAmount = BigDecimal.valueOf(0);
 
-    @Column(name = "APPLICANT_FREQ")
+    @Column(name = "APPLICANT_FREQ", columnDefinition = "VARCHAR2(8)")
     private Frequency applicantFrequency;
 
     @Builder.Default
     @Column(name = "PARTNER_AMOUNT")
     private BigDecimal partnerAmount = BigDecimal.valueOf(0);
 
-    @Column(name = "PARTNER_FREQ")
+    @Column(name = "PARTNER_FREQ", columnDefinition = "VARCHAR2(8)")
     private Frequency partnerFrequency;
 
     @UpdateTimestamp

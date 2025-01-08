@@ -2,7 +2,6 @@ package gov.uk.courtdata.dces.controller;
 
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
-import gov.uk.courtdata.annotation.StandardApiResponseCodes;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
@@ -10,6 +9,7 @@ import gov.uk.courtdata.dces.response.ConcorContributionResponse;
 import gov.uk.courtdata.dces.response.ConcorContributionResponseDTO;
 import gov.uk.courtdata.dces.service.ConcorContributionsService;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
+import gov.uk.courtdata.exception.ValidationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("${api-endpoints.debt-collection-enforcement-domain}")
@@ -64,9 +62,9 @@ public class ConcorContributionsRestController {
 
         log.info("Request received to get the XML for {} IDs", idList.size());
         if (idList.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID List Empty");
+            throw new ValidationException("ID List Empty");
         } else if (idList.size() > REQUEST_ID_LIST_SIZE_LIMIT) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many IDs provided, max is " + REQUEST_ID_LIST_SIZE_LIMIT);
+            throw new ValidationException("Too many IDs provided, max is " + REQUEST_ID_LIST_SIZE_LIMIT);
         } else {
             return ResponseEntity.ok(concorContributionsService.getConcorContributionXml(idList));
         }

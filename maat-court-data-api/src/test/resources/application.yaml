@@ -6,7 +6,6 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
-#    initilization-mode: embedded
     name: MLA
 
 
@@ -29,14 +28,17 @@ spring:
     hibernate:
       ddl-auto: update
     properties:
-      hibernate.jdbc.lob.non_contextual_creation: true
       hibernate:
         enable_lazy_load_no_trans: true
+        dialect: org.hibernate.dialect.H2Dialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
 #        format_sql: true
-  #        dialect: org.hibernate.dialect.H2Dialect
   sql:
     init:
       platform: h2
+      mode: embedded
 
   mvc:
     format:

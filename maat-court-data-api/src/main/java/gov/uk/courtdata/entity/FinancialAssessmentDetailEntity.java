@@ -2,6 +2,7 @@ package gov.uk.courtdata.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import gov.uk.courtdata.enums.Frequency;
+import java.io.Serial;
 import lombok.*;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.Hibernate;

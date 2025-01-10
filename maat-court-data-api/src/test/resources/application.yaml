@@ -2,11 +2,11 @@ spring:
   liquibase:
     enabled: false
   datasource:
-    url: jdbc:h2:mem:mla;DB_CLOSE_DELAY=-1;IGNORE_CATALOGS=TRUE
+    url: jdbc:h2:mem:mla;MODE=Oracle;IGNORE_CATALOGS=TRUE
     username: sa
     password:
     driver-class-name: org.h2.Driver
-    initilization-mode: embedded
+#    initilization-mode: embedded
     name: MLA
 
 
@@ -32,6 +32,8 @@ spring:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate:
         enable_lazy_load_no_trans: true
+#        format_sql: true
+  #        dialect: org.hibernate.dialect.H2Dialect
   sql:
     init:
       platform: h2

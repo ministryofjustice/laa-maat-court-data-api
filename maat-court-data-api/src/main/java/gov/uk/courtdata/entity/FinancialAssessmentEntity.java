@@ -2,6 +2,7 @@ package gov.uk.courtdata.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.io.Serial;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
@@ -26,6 +27,9 @@ import static jakarta.persistence.CascadeType.DETACH;
 @Entity
 @Table(name = "FINANCIAL_ASSESSMENTS", schema = "TOGDATA")
 public class FinancialAssessmentEntity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @SequenceGenerator(name = "fin_ass_seq", sequenceName = "S_FINA_ASS_ID", allocationSize = 1, schema = "TOGDATA")

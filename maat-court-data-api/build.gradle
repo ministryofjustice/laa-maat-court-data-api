@@ -56,35 +56,35 @@ dependencies {
     implementation "xerces:xercesImpl:$xercesImplVersion"
 
     // Spring
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-activemq'
+//    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+//    implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
+//    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-activemq'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-graphql'
 
 
     implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$springAwsCloudVersion"
-    implementation 'org.springframework:spring-jms'
+//    implementation 'org.springframework:spring-jms'
     implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$amazonSQSVersion"
 
-    implementation "software.amazon.awssdk:sts:$awsStsVersion"
+//    implementation "software.amazon.awssdk:sts:$awsStsVersion"
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: "$springdocVersion"
-    implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
+//    implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
     implementation group: 'commons-io', name: 'commons-io', version: "$commonsIOVersion"
 
     annotationProcessor 'org.projectlombok:lombok'
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
     //Required for lombok version > 1.18.16
-    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:$lombokMapStrutBinding"
+//    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:$lombokMapStrutBinding"
 
     implementation "io.micrometer:micrometer-registry-cloudwatch2:$micrometerCloudWatchVersion"
 
     // DB Dependencies
     implementation group: 'com.oracle.database.jdbc', name: 'ojdbc8', version: "$ojdbc8Version"
-    implementation group: 'com.oracle.database.xml', name: 'xmlparserv2', version: "$oracleXMLParserVersion"
+//    implementation group: 'com.oracle.database.xml', name: 'xmlparserv2', version: "$oracleXMLParserVersion"
     implementation group: 'com.oracle.database.xml', name: 'xdb', version: "$oracleXMLParserVersion"
 
     annotationProcessor group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: "$hibernateJpaModelGen"
@@ -95,21 +95,21 @@ dependencies {
     // Test Only
     testImplementation "org.pitest:pitest:$pitest"
     testImplementation group: 'com.h2database', name: 'h2', version: "$h2DBVersion"
-    testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
-    testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: "$harmcrestVersion"
+//    testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
+//    testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: "$harmcrestVersion"
     testImplementation group: 'org.easytesting', name: 'fest-assert', version: "$festVersion"
     testCompileOnly group: 'org.projectlombok', name: 'lombok'
-    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
+//    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
     testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$springCloudStubRunnerVersion"
 
     // Only required for SQS Integration test
-    testSqsIntegrationImplementation "org.awaitility:awaitility:$awaitilityVersion"
-    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: "$awsJavaSdkVersion"
+//    testSqsIntegrationImplementation "org.awaitility:awaitility:$awaitilityVersion"
+//    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: "$awsJavaSdkVersion"
     testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: "$awsJavaSdkVersion"
     testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$testcontainersJunitJupiterVersion"
     testSqsIntegrationImplementation "org.testcontainers:localstack:$testcontainersLocalstackVersion"
     testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$cloudLocalstackUtilsVersion"
-    testSqsIntegrationImplementation 'com.h2database:h2'
+//    testSqsIntegrationImplementation 'com.h2database:h2'
     testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$springContractStubRunnerVersion"
 }
 

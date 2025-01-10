@@ -2,12 +2,15 @@ spring:
   liquibase:
     enabled: false
   datasource:
-    url: jdbc:h2:mem:mla;DB_CLOSE_DELAY=-1;IGNORE_CATALOGS=TRUE
+    url: jdbc:h2:mem:mla;MODE=Oracle;DB_CLOSE_DELAY=-1;IGNORE_CATALOGS=TRUE
     username: sa
     password:
     driver-class-name: org.h2.Driver
-    initilization-mode: embedded
+#    initilization-mode: embedded
     name: MLA
+  session:
+    jdbc:
+      initialize-schema: embedded
 
 
 
@@ -35,6 +38,7 @@ spring:
   sql:
     init:
       platform: h2
+      mode: embedded
 
   mvc:
     format:

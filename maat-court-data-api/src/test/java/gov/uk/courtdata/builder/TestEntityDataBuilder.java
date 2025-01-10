@@ -418,7 +418,7 @@ public class TestEntityDataBuilder {
         return NewWorkReasonEntity.builder()
                 .code("FMA")
                 .type("ASS")
-                .description("")
+                .description("First Means Assessment")
                 .dateCreated(TEST_DATE)
                 .userCreated(TEST_USER)
                 .build();

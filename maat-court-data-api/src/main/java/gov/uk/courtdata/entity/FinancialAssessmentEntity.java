@@ -28,8 +28,8 @@ import static jakarta.persistence.CascadeType.DETACH;
 @Table(name = "FINANCIAL_ASSESSMENTS", schema = "TOGDATA")
 public class FinancialAssessmentEntity implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+//    @Serial
+//    private static final long serialVersionUID = 1L;
 
     @Id
     @SequenceGenerator(name = "fin_ass_seq", sequenceName = "S_FINA_ASS_ID", allocationSize = 1, schema = "TOGDATA")

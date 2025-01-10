@@ -325,9 +325,9 @@ public class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegra
         FinancialAssessmentIncomeEvidence financialAssessmentIncomeEvidence = TestModelDataBuilder.getFinancialAssessmentIncomeEvidence();
         financialAssessmentIncomeEvidence.setIncomeEvidence("WAGE SLIP");
         FinancialAssessmentIncomeEvidence financialAssessmentIncomeEvidence1 = TestModelDataBuilder.getFinancialAssessmentIncomeEvidence();
-        financialAssessmentIncomeEvidence.setIncomeEvidence("BANK STATEMENT");
+        financialAssessmentIncomeEvidence1.setIncomeEvidence("BANK STATEMENT");
         FinancialAssessmentIncomeEvidence financialAssessmentIncomeEvidence2 = TestModelDataBuilder.getFinancialAssessmentIncomeEvidence();
-        financialAssessmentIncomeEvidence.setIncomeEvidence("P60");
+        financialAssessmentIncomeEvidence2.setIncomeEvidence("P60");
 
         return List.of(
                         financialAssessmentIncomeEvidence,

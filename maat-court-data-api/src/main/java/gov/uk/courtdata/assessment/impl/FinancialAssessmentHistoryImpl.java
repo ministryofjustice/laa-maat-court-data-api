@@ -20,6 +20,7 @@ public class FinancialAssessmentHistoryImpl {
                                                           final int financialAssessmentId) {
         FinancialAssessmentsHistoryEntity financialAssessmentsHistoryEntity =
                 assessmentHistoryMapper.financialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(financialAssessmentsHistoryDTO);
+
         log.info("Executing save financialAssessmentsHistoryEntity for financialAssessmentId: {}", financialAssessmentId);
         return financialAssessmentsHistoryRepository.save(financialAssessmentsHistoryEntity);
     }

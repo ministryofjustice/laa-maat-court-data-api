@@ -88,6 +88,7 @@ dependencies {
     implementation group: 'com.oracle.database.xml', name: 'xdb', version: "$oracleXMLParserVersion"
 
     annotationProcessor group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: "$hibernateJpaModelGen"
+//    annotationProcessor group: 'org.hibernate.orm', name: 'hibernate-core', version: "6.3.0.Final"
     implementation group: 'com.graphql-java-kickstart', name: 'graphql-java-tools', version: "$graphqlJavaTools"
 
     implementation group: 'com.google.code.gson', name: 'gson', version: "$gsonVersion"

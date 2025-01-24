@@ -4,8 +4,5 @@ services:
   app:
     build:
       context: .
-    environment:
-    - DATASOURCE_URL=jdbc:oracle:thin:@host.docker.internal:1521:maatdb
-    - DATASOURCE_USERNAME=mla
     ports:
     - 8090:8090

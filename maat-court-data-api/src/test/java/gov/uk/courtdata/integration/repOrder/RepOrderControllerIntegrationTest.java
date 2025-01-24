@@ -2,7 +2,6 @@ package gov.uk.courtdata.integration.repOrder;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -322,7 +321,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenValidRepId_whenDeleteIsInvoked_theRepOrderIsDeleted() throws Exception {
 
-        RepOrderEntity repOrderEntity = TestEntityDataBuilder.getPopulatedRepOrder(anyInt());
+        RepOrderEntity repOrderEntity = TestEntityDataBuilder.getPopulatedRepOrder(REP_ID);
 
         mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + repOrderEntity.getId()))
                 .andExpect(status().isNoContent());

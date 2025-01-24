@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-public class FinancialAssessmentHistoryImplTest {
+class FinancialAssessmentHistoryImplTest {
 
     private static final int MOCK_FINANCIAL_ASSESSMENT_ID = 1000;
 
@@ -35,13 +35,13 @@ public class FinancialAssessmentHistoryImplTest {
     private FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         financialAssessmentsHistoryEntity = TestEntityDataBuilder.getFinancialAssessmentsHistoryEntity();
         financialAssessmentsHistoryDTO = TestModelDataBuilder.getFinancialAssessmentsHistoryDTO();
     }
 
     @Test
-    public void givenFinancialAssessmentsHistoryDTOAndFinancialAssessmentId_whenBuildAndSaveIsInvoked_thenFinancialAssessmentsHistoryEntityIsPersisted() {
+    void givenFinancialAssessmentsHistoryDTOAndFinancialAssessmentId_whenBuildAndSaveIsInvoked_thenFinancialAssessmentsHistoryEntityIsPersisted() {
         when(assessmentHistoryMapper.financialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(financialAssessmentsHistoryDTO))
                 .thenReturn(financialAssessmentsHistoryEntity);
 

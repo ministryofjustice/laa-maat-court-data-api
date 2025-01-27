@@ -33,7 +33,6 @@ public interface ConcorContributionsRepository extends JpaRepository<ConcorContr
                FROM ConcorContributionsEntity cc
                WHERE cc.status = 'SENT'
                AND cc.fullXml IS NOT NULL
-               AND cc.dateModified IS NOT NULL
                ORDER BY cc.id DESC""")
     List<Integer> findIdsForUpdate(Pageable pageable);
 

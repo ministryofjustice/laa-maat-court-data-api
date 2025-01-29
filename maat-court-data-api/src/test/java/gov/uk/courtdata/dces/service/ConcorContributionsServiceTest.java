@@ -34,6 +34,7 @@ import org.springframework.data.domain.Sort;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -100,16 +101,20 @@ class ConcorContributionsServiceTest {
     @Test
     void testGetContributionFilesWhenConcorFileStatusIsActive() {
 
+        List<Integer> entityIdList = List.of(344, 345);
+        Set<Integer> entitySetList = new HashSet<>(entityIdList);
         List<ConcorContributionsEntity> entities = List.of(
                 populateConcorContributionsEntity(344),
                 populateConcorContributionsEntity(345)
         );
         Pageable pageable = PageRequest.of(0, 3, Sort.by("id"));
-        when(concorRepository.findByStatusAndIdGreaterThan(ACTIVE, 343, pageable)).thenReturn(entities);
+        when(concorRepository.findByStatusAndIdGreaterThan(ACTIVE, 343, pageable)).thenReturn(entityIdList);
+        when(concorRepository.findByIdIn(entitySetList)).thenReturn(entities);
 
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 3, 343);
 
         verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
+        verify(concorRepository).findByIdIn(any());
         assertNotNull(responseList);
         Assertions.assertFalse(responseList.isEmpty());
         Assertions.assertEquals(344,responseList.get(0).getConcorContributionId());
@@ -118,7 +123,7 @@ class ConcorContributionsServiceTest {
 
     @Test
     void testGetContributionFilesWhenConcorFileStatusIsActiveAndConcorContribIdIsNull() {
-
+        List<Integer> entityIdList = List.of(343,344,345,346);
         List<ConcorContributionsEntity> entities = List.of(
                 populateConcorContributionsEntity(343),
                 populateConcorContributionsEntity(344),
@@ -126,11 +131,13 @@ class ConcorContributionsServiceTest {
                 populateConcorContributionsEntity(346)
 
         );
-        when(concorRepository.findByStatusAndIdGreaterThan(any(),any(), any())).thenReturn(entities);
+        when(concorRepository.findByStatusAndIdGreaterThan(any(),any(), any())).thenReturn(entityIdList);
+        when(concorRepository.findByIdIn(any())).thenReturn(entities);
 
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, null, null);
 
         verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
+        verify(concorRepository).findByIdIn(any());
         assertNotNull(responseList);
         Assertions.assertFalse(responseList.isEmpty());
         Assertions.assertEquals(343,responseList.get(0).getConcorContributionId());
@@ -140,7 +147,7 @@ class ConcorContributionsServiceTest {
     void getConcorContributionFilesReturnsEmptyListWhenStartingIdIsInvalid() {
         Pageable pageable = PageRequest.of(0, 2, Sort.by("id"));
         when(concorRepository.findByStatusAndIdGreaterThan(ACTIVE, 999, pageable)).thenReturn(List.of());
-
+        when(concorRepository.findByIdIn(any())).thenReturn(List.of());
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 2, 999);
 
         assertNotNull(responseList);

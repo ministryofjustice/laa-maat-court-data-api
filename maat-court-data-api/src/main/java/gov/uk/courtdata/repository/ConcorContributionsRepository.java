@@ -18,15 +18,16 @@ public interface ConcorContributionsRepository extends JpaRepository<ConcorContr
     List<ConcorContributionsEntity> findByIdIn(Set<Integer> ids);
 
     @Query("""
-       SELECT cc
+       SELECT cc.id
        FROM ConcorContributionsEntity cc
        WHERE cc.status = :status
        AND cc.id > :startId
        ORDER BY cc.id ASC""")
-    List<ConcorContributionsEntity> findByStatusAndIdGreaterThan(
+    List<Integer> findByStatusAndIdGreaterThan(
             @Param("status") ConcorContributionStatus status,
             @Param("startId") Integer startId,
             Pageable pageable);
+
 
     @Query("""
            SELECT cc.id

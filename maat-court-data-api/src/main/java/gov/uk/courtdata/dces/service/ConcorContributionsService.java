@@ -64,8 +64,8 @@ public class ConcorContributionsService {
 
         log.info("Searching concor contribution file with status {}, startId {} and count {}", status, concorContributionId, noOfRecords);
         Pageable pageable = PageRequest.of(0, noOfRecords, Sort.by("id"));
-        return buildConcorContributionResponseList(() -> concorRepository.findByStatusAndIdGreaterThan(status,
-            finalConcorContributionId, pageable));
+        Set<Integer> idList = new HashSet<>(concorRepository.findByStatusAndIdGreaterThan(status,finalConcorContributionId,pageable));
+        return buildConcorContributionResponseList(() -> concorRepository.findByIdIn(idList));
     }
 
     public List<ConcorContributionResponse> getConcorContributionXml(List<Integer> idList) {

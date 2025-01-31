@@ -1,7 +1,6 @@
 package gov.uk.courtdata.dces.service;
 
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
-import gov.uk.courtdata.dces.mapper.FdcContributionMapper;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
 import gov.uk.courtdata.dces.request.CreateFdcItemRequest;
@@ -51,14 +50,31 @@ public class FdcContributionsService {
     private final ContributionFileMapper contributionFileMapper;
     private final DebtCollectionRepository debtCollectionRepository;
     private final DebtCollectionService debtCollectionService;
-    private final FdcContributionMapper fdcContributionMapper;
 
     private FdcContributionsResponse buildFdcContributionsResponse(Supplier<List<FdcContributionsEntity>> repositoryCall) {
         return FdcContributionsResponse.builder()
             .fdcContributions(repositoryCall.get().stream()
-                .map(fdcContributionMapper::mapFdcContribution)
+                .map(this::mapContributionEntry)
             .toList())
             .build();
+    }
+
+    /***
+     * Maps the Entity into a Entry to be sent in the response, trimming un-needed fields.
+     * Note that FdcContributionMapper.mapContributionEntry does not map the RepOrderEntity fields.
+     * @param entity FdcContributionEntity Entity to be mapped
+     * @return mapped entity to be sent in response.
+     */
+    private FdcContributionEntry mapContributionEntry(FdcContributionsEntity entity){
+        return FdcContributionEntry.builder()
+                .id(entity.getId())
+                .finalCost(entity.getFinalCost())
+                .dateCalculated(entity.getDateCalculated())
+                .lgfsCost(entity.getLgfsCost())
+                .agfsCost(entity.getAgfsCost())
+                .maatId(entity.getRepOrderEntity().getId())
+                .sentenceOrderDate(Objects.nonNull(entity.getRepOrderEntity()) ? entity.getRepOrderEntity().getSentenceOrderDate() : null)
+                .build();
     }
 
     public FdcContributionsResponse getFdcContributions(FdcContributionsStatus status) {
@@ -246,7 +262,7 @@ public class FdcContributionsService {
         FdcContributionsEntity fdcEntity = fdcContributionsRepository.findById(fdcContributionId)
                 .orElseThrow(() -> new RequestedObjectNotFoundException("fdc_contribution could not be found by id"));
         log.info("FDC Contribution found: {}", fdcEntity.getId());
-        return fdcContributionMapper.mapFdcContribution(fdcEntity);
+        return mapContributionEntry(fdcEntity);
     }
 
 }

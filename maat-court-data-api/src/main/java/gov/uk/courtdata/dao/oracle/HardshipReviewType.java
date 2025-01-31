@@ -17,15 +17,14 @@ public class HardshipReviewType implements ORAData, ORADataFactory
 
   protected MutableStruct _struct;
 
-  protected static int[] _sqlType =  { 2,2002,2,12,91,12,12,2002,2,2,2003,2003,2002,93 };
+  protected static int[] _sqlType =  { 2,2002,2,12,91,12,12,2002,2,2,2003,2002,93 };
   protected static ORADataFactory[] _factory = new ORADataFactory[14];
   static
   {
     _factory[1] = NewWorkReasonType.getORADataFactory();
     _factory[7] = HrSolicitorCostType.getORADataFactory();
     _factory[10] = HRSectionTabType.getORADataFactory();
-    _factory[11] = HRProgressTabType.getORADataFactory();
-    _factory[12] = AssStatusType.getORADataFactory();
+    _factory[11] = AssStatusType.getORADataFactory();
   }
   protected static final HardshipReviewType _HardshipReviewTypeFactory = new HardshipReviewType();
 
@@ -36,7 +35,7 @@ public class HardshipReviewType implements ORAData, ORADataFactory
   { if (init) _struct = new MutableStruct(new Object[14], _sqlType, _factory); }
   public HardshipReviewType()
   { _init_struct(true); }
-  public HardshipReviewType(java.math.BigDecimal id, NewWorkReasonType newWorkReasonObject, java.math.BigDecimal cmuId, String reviewResult, java.sql.Timestamp reviewDate, String notes, String decisionNotes, HrSolicitorCostType solicitorCostsObject, java.math.BigDecimal disposIncome, java.math.BigDecimal disposIncomeAfterHardship, HRSectionTabType sectionTab, HRProgressTabType progressTab, AssStatusType statusObject, java.sql.Timestamp timeStamp) throws SQLException
+  public HardshipReviewType(java.math.BigDecimal id, NewWorkReasonType newWorkReasonObject, java.math.BigDecimal cmuId, String reviewResult, java.sql.Timestamp reviewDate, String notes, String decisionNotes, HrSolicitorCostType solicitorCostsObject, java.math.BigDecimal disposIncome, java.math.BigDecimal disposIncomeAfterHardship, HRSectionTabType sectionTab,  AssStatusType statusObject, java.sql.Timestamp timeStamp) throws SQLException
   { _init_struct(true);
     setId(id);
     setNewWorkReasonObject(newWorkReasonObject);
@@ -49,7 +48,6 @@ public class HardshipReviewType implements ORAData, ORADataFactory
     setDisposIncome(disposIncome);
     setDisposIncomeAfterHardship(disposIncomeAfterHardship);
     setSectionTab(sectionTab);
-    setProgressTab(progressTab);
     setStatusObject(statusObject);
     setTimeStamp(timeStamp);
   }
@@ -147,13 +145,6 @@ public class HardshipReviewType implements ORAData, ORADataFactory
 
   public void setSectionTab(HRSectionTabType sectionTab) throws SQLException
   { _struct.setAttribute(10, sectionTab); }
-
-
-  public HRProgressTabType getProgressTab() throws SQLException
-  { return (HRProgressTabType) _struct.getAttribute(11); }
-
-  public void setProgressTab(HRProgressTabType progressTab) throws SQLException
-  { _struct.setAttribute(11, progressTab); }
 
 
   public AssStatusType getStatusObject() throws SQLException

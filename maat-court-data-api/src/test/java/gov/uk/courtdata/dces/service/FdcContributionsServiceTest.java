@@ -1,6 +1,5 @@
 package gov.uk.courtdata.dces.service;
 
-import gov.uk.courtdata.dces.mapper.FdcContributionMapper;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
@@ -62,8 +61,6 @@ class FdcContributionsServiceTest {
     @Mock
     private ContributionFileMapper contributionFileMapper;
     @Mock
-    private FdcContributionMapper fdcContributionMapper;
-    @Mock
     private DebtCollectionRepository debtCollectionRepository;
     @Mock
     private DebtCollectionService debtCollectionService;
@@ -80,6 +77,7 @@ class FdcContributionsServiceTest {
     private final BigDecimal expectedLgfsCost = new BigDecimal("333.33");
     private final BigDecimal expectedFinalCost = new BigDecimal("1010.10");
     private final Integer expectedId = 111;
+    private final Integer expectedMaatId = 999;
     private FdcContributionEntry expectedEntry;
 
     @Captor
@@ -99,7 +97,6 @@ class FdcContributionsServiceTest {
     void testGetContributionFilesWhenFdcFileStatusIsRequested() {
         when(fdcContributionsRepository.findByStatus(statusCaptor.capture())).thenReturn(fdcContributionsEntityList);
 
-        when(fdcContributionMapper.mapFdcContribution(any())).thenReturn(expectedEntry);
         FdcContributionsResponse response = fdcContributionsService.getFdcContributions(REQUESTED);
 
         assertNotNull(response);
@@ -119,7 +116,6 @@ class FdcContributionsServiceTest {
     @Test
     void testGetContributionsWhenFound() {
         when(fdcContributionsRepository.findByIdIn(any())).thenReturn(fdcContributionsEntityList);
-        when(fdcContributionMapper.mapFdcContribution(any())).thenReturn(expectedEntry);
         FdcContributionsResponse response = fdcContributionsService.getFdcContributions(List.of(1));
         assertEqualsWithExpectedValues(response);
     }
@@ -395,6 +391,7 @@ class FdcContributionsServiceTest {
     private void getFdcContributionsFile() {
         fdcContributionsEntityList = new ArrayList<>();
         RepOrderEntity repOrderEntity = new RepOrderEntity();
+        repOrderEntity.setId(expectedMaatId);
         repOrderEntity.setSentenceOrderDate(expectedSentenceDate);
         FdcContributionsEntity fdcFile = new FdcContributionsEntity();
         fdcFile.setStatus(REQUESTED);
@@ -410,6 +407,7 @@ class FdcContributionsServiceTest {
     private void populateExpectedEntry() {
         expectedEntry = FdcContributionEntry.builder()
             .id(expectedId)
+            .maatId(expectedMaatId)
             .finalCost(expectedFinalCost)
             .agfsCost(expectedAgfsCost)
             .lgfsCost(expectedLgfsCost)
@@ -430,23 +428,18 @@ class FdcContributionsServiceTest {
         assertEquals(expectedValue.getLgfsCost(), responseValue.getLgfsCost());
         assertEquals(expectedValue.getDateCalculated(), responseValue.getDateCalculated());
         assertEquals(expectedValue.getRepOrderEntity().getSentenceOrderDate(), responseValue.getSentenceOrderDate());
+        assertEquals(expectedValue.getRepOrderEntity().getId(), responseValue.getMaatId());
+        assertEquals(expectedEntry, responseValue);
     }
 
     @Test
     void testGetFdcContribution() {
-        Integer fdcContributionId = 1;
-        FdcContributionsEntity expectedEntity = FdcContributionsEntity.builder().
-                id(fdcContributionId)
-                .status(REQUESTED)
-                .build();
-        FdcContributionEntry expectedEntry = FdcContributionEntry.builder().id(fdcContributionId).build();
+        when(fdcContributionsRepository.findById(expectedId)).thenReturn(Optional.of(fdcContributionsEntityList.get(0)));
 
-        when(fdcContributionsRepository.findById(fdcContributionId)).thenReturn(Optional.of(expectedEntity));
-        when(fdcContributionMapper.mapFdcContribution(expectedEntity)).thenReturn(expectedEntry);
-
-        FdcContributionEntry result = fdcContributionsService.getFdcContribution(fdcContributionId);
+        FdcContributionEntry result = fdcContributionsService.getFdcContribution(expectedId);
 
         assertNotNull(result);
+
         assertEquals(expectedEntry, result);
     }
 

@@ -73,7 +73,7 @@ public class FdcContributionsService {
                 .lgfsCost(entity.getLgfsCost())
                 .agfsCost(entity.getAgfsCost())
                 .maatId(entity.getRepOrderEntity().getId())
-                .sentenceOrderDate(Objects.nonNull(entity.getRepOrderEntity()) ? entity.getRepOrderEntity().getSentenceOrderDate() : null)
+                .sentenceOrderDate(entity.getRepOrderEntity().getSentenceOrderDate())
                 .build();
     }
 

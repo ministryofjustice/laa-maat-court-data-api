@@ -100,8 +100,4 @@ public class FdcContributionsEntity {
     @JoinColumn(name = "REP_ID", referencedColumnName = "ID")
     private RepOrderEntity repOrderEntity;
 
-    private LocalDate sentenceOrderDate;
-
-    private Integer maatId;
-
 }

@@ -79,12 +79,12 @@ public class FdcContributionsService {
 
     public FdcContributionsResponse getFdcContributions(FdcContributionsStatus status) {
         log.info("Getting fdc contributions with status -> {}", status);
-        return buildFdcContributionsResponse(() -> debtCollectionRepository.getFdcEntriesByStatus(status));
+        return buildFdcContributionsResponse(() -> debtCollectionRepository.findFdcEntriesByStatus(status));
     }
 
     public FdcContributionsResponse getFdcContributions(List<Integer> fdcContributionIdList) {
         log.info("Getting fdc contributions for IDs in a list of size {}", fdcContributionIdList.size());
-        return buildFdcContributionsResponse(() -> debtCollectionRepository.getFdcEntriesByIdIn(new HashSet<>(fdcContributionIdList)));
+        return buildFdcContributionsResponse(() -> debtCollectionRepository.findFdcEntriesByIdIn(new HashSet<>(fdcContributionIdList)));
     }
 
     public FdcContributionsGlobalUpdateResponse fdcContributionGlobalUpdate() {

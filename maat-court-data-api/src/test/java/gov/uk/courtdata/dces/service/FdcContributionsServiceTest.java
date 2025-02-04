@@ -95,7 +95,7 @@ class FdcContributionsServiceTest {
 
     @Test
     void testGetContributionFilesWhenFdcFileStatusIsRequested() {
-        when(fdcContributionsRepository.findByStatus(statusCaptor.capture())).thenReturn(fdcContributionsEntityList);
+        when(debtCollectionRepository.findFdcEntriesByStatus(statusCaptor.capture())).thenReturn(fdcContributionsEntityList);
 
         FdcContributionsResponse response = fdcContributionsService.getFdcContributions(REQUESTED);
 
@@ -108,14 +108,14 @@ class FdcContributionsServiceTest {
 
     @Test
     void testGetContributionsWhenNotFound() {
-        when(fdcContributionsRepository.findByIdIn(any())).thenReturn(new ArrayList<>());
+        when(debtCollectionRepository.findFdcEntriesByIdIn(any())).thenReturn(new ArrayList<>());
         FdcContributionsResponse response = fdcContributionsService.getFdcContributions(List.of(1));
         assertEquals(new ArrayList<>(), response.getFdcContributions());
     }
 
     @Test
     void testGetContributionsWhenFound() {
-        when(fdcContributionsRepository.findByIdIn(any())).thenReturn(fdcContributionsEntityList);
+        when(debtCollectionRepository.findFdcEntriesByIdIn(any())).thenReturn(fdcContributionsEntityList);
         FdcContributionsResponse response = fdcContributionsService.getFdcContributions(List.of(1));
         assertEqualsWithExpectedValues(response);
     }

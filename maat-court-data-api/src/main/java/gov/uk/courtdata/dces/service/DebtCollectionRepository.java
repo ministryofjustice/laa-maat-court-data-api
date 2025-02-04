@@ -44,7 +44,7 @@ public class DebtCollectionRepository {
         return jdbcTemplate.queryForList(query, String.class, fromDate, toDate);
     }
 
-    List<FdcContributionsEntity> getFdcEntriesByStatus(FdcContributionsStatus status){
+    List<FdcContributionsEntity> findFdcEntriesByStatus(FdcContributionsStatus status){
         String query = """
                 SELECT fdc.id, fdc.FINAL_COST, fdc.DATE_CALCULATED, fdc.LGFS_COST, fdc.AGFS_COST, rep.SENTENCE_ORDER_DATE, fdc.rep_id 
                 FROM TOGDATA.FDC_CONTRIBUTIONS fdc INNER JOIN TOGDATA.REP_ORDERS rep
@@ -54,7 +54,7 @@ public class DebtCollectionRepository {
         return jdbcTemplate.query(query, new FdcMapper(), status.toString());
     }
 
-    List<FdcContributionsEntity> getFdcEntriesByIdIn(Set<Integer> idList){
+    List<FdcContributionsEntity> findFdcEntriesByIdIn(Set<Integer> idList){
         String query = """
                 SELECT fdc.id, fdc.FINAL_COST, fdc.DATE_CALCULATED, fdc.LGFS_COST, fdc.AGFS_COST, rep.SENTENCE_ORDER_DATE, fdc.rep_id 
                 FROM TOGDATA.FDC_CONTRIBUTIONS fdc INNER JOIN TOGDATA.REP_ORDERS rep

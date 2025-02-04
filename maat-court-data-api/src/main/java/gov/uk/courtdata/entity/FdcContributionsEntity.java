@@ -96,8 +96,12 @@ public class FdcContributionsEntity {
     private String userModified;
 
     @JsonBackReference
-    @OneToOne(targetEntity = RepOrderEntity.class, fetch = FetchType.LAZY)
+    @OneToOne(targetEntity = RepOrderEntity.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "REP_ID", referencedColumnName = "ID")
     private RepOrderEntity repOrderEntity;
+
+    private LocalDate sentenceOrderDate;
+
+    private Integer maatId;
 
 }

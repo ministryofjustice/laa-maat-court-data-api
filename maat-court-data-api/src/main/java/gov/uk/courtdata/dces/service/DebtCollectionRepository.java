@@ -1,7 +1,10 @@
 package gov.uk.courtdata.dces.service;
 
+import gov.uk.courtdata.dces.mapper.FdcMapper;
 import gov.uk.courtdata.dces.util.ContributionFileUtil;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
+import gov.uk.courtdata.entity.FdcContributionsEntity;
+import gov.uk.courtdata.enums.FdcContributionsStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +42,26 @@ public class DebtCollectionRepository {
                 "AND TO_DATE(CF.DATE_CREATED) BETWEEN TO_DATE(?, 'dd/mm/yyyy') AND TO_DATE(?, 'dd/mm/yyyy') Order by CF.ID ASC";
 
         return jdbcTemplate.queryForList(query, String.class, fromDate, toDate);
+    }
+
+    List<FdcContributionsEntity> getFdcEntriesByStatus(FdcContributionsStatus status){
+        String query = """
+                SELECT fdc.id, fdc.FINAL_COST, fdc.DATE_CALCULATED, fdc.LGFS_COST, fdc.AGFS_COST, rep.SENTENCE_ORDER_DATE, fdc.rep_id 
+                FROM TOGDATA.FDC_CONTRIBUTIONS fdc INNER JOIN TOGDATA.REP_ORDERS rep
+                    ON fdc.rep_id = rep.id
+                    WHERE fdc.status = ?
+                """;
+        return jdbcTemplate.query(query, new FdcMapper(), status.toString());
+    }
+
+    List<FdcContributionsEntity> getFdcEntriesByIdIn(Set<Integer> idList){
+        String query = """
+                SELECT fdc.id, fdc.FINAL_COST, fdc.DATE_CALCULATED, fdc.LGFS_COST, fdc.AGFS_COST, rep.SENTENCE_ORDER_DATE, fdc.rep_id 
+                FROM TOGDATA.FDC_CONTRIBUTIONS fdc INNER JOIN TOGDATA.REP_ORDERS rep
+                    ON fdc.rep_id = rep.id
+                    WHERE fdc.id in ?
+                """;
+        return jdbcTemplate.query(query, new FdcMapper(), idList);
     }
 
     public boolean saveContributionFilesEntity(ContributionFilesEntity contributionFilesEntity) {

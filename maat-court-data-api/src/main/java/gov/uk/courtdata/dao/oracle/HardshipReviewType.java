@@ -32,7 +32,7 @@ public class HardshipReviewType implements ORAData, ORADataFactory
   { return _HardshipReviewTypeFactory; }
   /* constructors */
   protected void _init_struct(boolean init)
-  { if (init) _struct = new MutableStruct(new Object[14], _sqlType, _factory); }
+  { if (init) _struct = new MutableStruct(new Object[13], _sqlType, _factory); }
   public HardshipReviewType()
   { _init_struct(true); }
   public HardshipReviewType(java.math.BigDecimal id, NewWorkReasonType newWorkReasonObject, java.math.BigDecimal cmuId, String reviewResult, java.sql.Timestamp reviewDate, String notes, String decisionNotes, HrSolicitorCostType solicitorCostsObject, java.math.BigDecimal disposIncome, java.math.BigDecimal disposIncomeAfterHardship, HRSectionTabType sectionTab,  AssStatusType statusObject, java.sql.Timestamp timeStamp) throws SQLException
@@ -148,16 +148,16 @@ public class HardshipReviewType implements ORAData, ORADataFactory
 
 
   public AssStatusType getStatusObject() throws SQLException
-  { return (AssStatusType) _struct.getAttribute(12); }
+  { return (AssStatusType) _struct.getAttribute(11); }
 
   public void setStatusObject(AssStatusType statusObject) throws SQLException
-  { _struct.setAttribute(12, statusObject); }
+  { _struct.setAttribute(11, statusObject); }
 
 
   public java.sql.Timestamp getTimeStamp() throws SQLException
-  { return (java.sql.Timestamp) _struct.getAttribute(13); }
+  { return (java.sql.Timestamp) _struct.getAttribute(12); }
 
   public void setTimeStamp(java.sql.Timestamp timeStamp) throws SQLException
-  { _struct.setAttribute(13, timeStamp); }
+  { _struct.setAttribute(12, timeStamp); }
 
 }

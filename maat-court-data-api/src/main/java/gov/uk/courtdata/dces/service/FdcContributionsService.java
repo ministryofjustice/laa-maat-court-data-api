@@ -73,18 +73,18 @@ public class FdcContributionsService {
                 .lgfsCost(entity.getLgfsCost())
                 .agfsCost(entity.getAgfsCost())
                 .maatId(entity.getRepOrderEntity().getId())
-                .sentenceOrderDate(Objects.nonNull(entity.getRepOrderEntity()) ? entity.getRepOrderEntity().getSentenceOrderDate() : null)
+                .sentenceOrderDate(entity.getRepOrderEntity().getSentenceOrderDate())
                 .build();
     }
 
     public FdcContributionsResponse getFdcContributions(FdcContributionsStatus status) {
         log.info("Getting fdc contributions with status -> {}", status);
-        return buildFdcContributionsResponse(() -> fdcContributionsRepository.findByStatus(status));
+        return buildFdcContributionsResponse(() -> debtCollectionRepository.findFdcEntriesByStatus(status));
     }
 
     public FdcContributionsResponse getFdcContributions(List<Integer> fdcContributionIdList) {
         log.info("Getting fdc contributions for IDs in a list of size {}", fdcContributionIdList.size());
-        return buildFdcContributionsResponse(() -> fdcContributionsRepository.findByIdIn(new HashSet<>(fdcContributionIdList)));
+        return buildFdcContributionsResponse(() -> debtCollectionRepository.findFdcEntriesByIdIn(new HashSet<>(fdcContributionIdList)));
     }
 
     public FdcContributionsGlobalUpdateResponse fdcContributionGlobalUpdate() {

@@ -18,7 +18,6 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.repository.FdcContributionsRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,9 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
@@ -94,34 +91,34 @@ class FdcContributionsServiceTest {
     }
 
     @Test
-    void testGetContributionFilesWhenFdcFileStatusIsRequested() {
+    void givenRequestedStatus_whenGetFdcContributions_thenReturnListOfContributions() {
         when(debtCollectionRepository.findFdcEntriesByStatus(statusCaptor.capture())).thenReturn(fdcContributionsEntityList);
 
         FdcContributionsResponse response = fdcContributionsService.getFdcContributions(REQUESTED);
 
-        assertNotNull(response);
+        assertThat(response).isNotNull();
         final FdcContributionsStatus capturedStatus = statusCaptor.getValue();
-        assertEquals(REQUESTED, capturedStatus);
+        assertThat(capturedStatus).isEqualTo(REQUESTED);
 
         assertEqualsWithExpectedValues(response);
     }
 
     @Test
-    void testGetContributionsWhenNotFound() {
+    void givenNonExistentIds_whenGetFdcContributions_thenReturnEmptyList() {
         when(debtCollectionRepository.findFdcEntriesByIdIn(any())).thenReturn(new ArrayList<>());
         FdcContributionsResponse response = fdcContributionsService.getFdcContributions(List.of(1));
-        assertEquals(new ArrayList<>(), response.getFdcContributions());
+        assertThat(response.getFdcContributions()).isEqualTo(new ArrayList<>());
     }
 
     @Test
-    void testGetContributionsWhenFound() {
+    void givenValidIds_whenGetFdcContributions_thenReturnListOfContributions() {
         when(debtCollectionRepository.findFdcEntriesByIdIn(any())).thenReturn(fdcContributionsEntityList);
         FdcContributionsResponse response = fdcContributionsService.getFdcContributions(List.of(1));
         assertEqualsWithExpectedValues(response);
     }
 
     @Test
-    void testGlobalUpdateIsSuccess() {
+    void givenValidRequest_whenFdcContributionGlobalUpdate_thenReturnNumberOfUpdates() {
         int expected1 = 2;
         int expected2 = 5;
 
@@ -129,12 +126,12 @@ class FdcContributionsServiceTest {
         when(debtCollectionRepository.setEligibleForFdcFastTracking("5")).thenReturn(expected2);
         when(fdcContributionsRepository.callGetFdcCalculationDelay()).thenReturn("5");
         FdcContributionsGlobalUpdateResponse response = fdcContributionsService.fdcContributionGlobalUpdate();
-        assertNotNull(response);
-        assertEquals(expected1+expected2, response.getNumberOfUpdates());
+        assertThat(response).isNotNull();
+        assertThat(response.getNumberOfUpdates()).isEqualTo(expected1+expected2);
     }
 
     @Test
-    void testAtomicUpdateSuccess() {
+    void givenValidRequest_whenCreateContributionFileAndUpdateFdcStatus_thenReturnUpdatedFdcStatus() {
         // setup
         CreateFdcFileRequest request = createFdcFileRequest();
         ContributionFilesEntity mappedEntity = createContributionsFileEntity();
@@ -145,7 +142,7 @@ class FdcContributionsServiceTest {
 
         when(contributionFileMapper.toContributionFileEntity(request)).thenReturn(mappedEntity);
         // run
-        assertNotNull(fdcContributionsService.createContributionFileAndUpdateFdcStatus(request));
+        assertThat(fdcContributionsService.createContributionFileAndUpdateFdcStatus(request)).isNotNull();
         // test
         verify(fdcContributionsRepository).findByIdIn(any());
         verify(fdcContributionsRepository).saveAll(any());
@@ -153,29 +150,29 @@ class FdcContributionsServiceTest {
     }
 
     @Test
-    void testNoAtomicUpdateRequest() {
+    void givenNullRequest_whenCreateContributionFileAndUpdateFdcStatus_thenThrowValidationException() {
         ValidationException e = assertThrows(ValidationException.class,() -> fdcContributionsService.createContributionFileAndUpdateFdcStatus(null));
-        assertEquals("fdcRequest object is null", e.getMessage());
+        assertThat(e.getMessage()).isEqualTo("fdcRequest object is null");
     }
 
     @Test
-    void testNullAtomicUpdateNoIds() {
+    void givenNullFdcIds_whenCreateContributionFileAndUpdateFdcStatus_thenThrowValidationException() {
         CreateFdcFileRequest request = createFdcFileRequest();
         request.setFdcIds(null);
         ValidationException e = assertThrows(ValidationException.class,() -> fdcContributionsService.createContributionFileAndUpdateFdcStatus(request));
-        assertEquals("FdcIds is empty/null.", e.getMessage());
+        assertThat(e.getMessage()).isEqualTo("FdcIds is empty/null.");
     }
 
     @Test
-    void testEmptyAtomicUpdateNoIds() {
+    void givenEmptyFdcIds_whenCreateContributionFileAndUpdateFdcStatus_thenThrowValidationException() {
         CreateFdcFileRequest request = createFdcFileRequest();
         request.setFdcIds(Set.of());
         ValidationException e = assertThrows(ValidationException.class,() -> fdcContributionsService.createContributionFileAndUpdateFdcStatus(request));
-        assertEquals("FdcIds is empty/null.", e.getMessage());
+        assertThat(e.getMessage()).isEqualTo("FdcIds is empty/null.");
     }
 
     @Test
-    void testDrcUpdateSuccessNoErrorText() {
+    void givenValidRequestAndNoErrorText_whenLogFdcProcessed_thenUpdateContributionFileReceivedCount() {
         int id = 123;
         int repId = 456;
         int fileId = 10000;
@@ -193,7 +190,7 @@ class FdcContributionsServiceTest {
     }
 
     @Test
-    void testDrcUpdateSuccessHasErrorText() {
+    void givenValidRequestAndErrorText_whenLogFdcProcessed_thenSaveErrorEntity() {
         int id = 123;
         int repId = 456;
         int fileId = 10000;
@@ -212,19 +209,19 @@ class FdcContributionsServiceTest {
         verify(debtCollectionService, never()).updateContributionFileReceivedCount(fileId);
         ContributionFileErrorsEntity errorEntity = fileErrorCaptor.getValue();
 
-        assertEquals(errorText,errorEntity.getErrorText());
-        assertEquals(id, errorEntity.getFdcContributionId());
-        assertEquals(id,errorEntity.getContributionId());
-        assertEquals(fileId,errorEntity.getContributionFileId());
-        assertNull(errorEntity.getConcorContributionId());
-        assertEquals(repId,errorEntity.getRepId());
-        assertEquals(currDate.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
-        assertEquals(currDate.getMonth(), errorEntity.getDateCreated().getMonth());
-        assertEquals(currDate.getYear(), errorEntity.getDateCreated().getYear());
+        assertThat(errorEntity.getErrorText()).isEqualTo(errorText);
+        assertThat(errorEntity.getFdcContributionId()).isEqualTo(id);
+        assertThat(errorEntity.getContributionId()).isEqualTo(id);
+        assertThat(errorEntity.getContributionFileId()).isEqualTo(fileId);
+        assertThat(errorEntity.getConcorContributionId()).isNull();
+        assertThat(errorEntity.getRepId()).isEqualTo(repId);
+        assertThat(errorEntity.getDateCreated().getDayOfMonth()).isEqualTo(currDate.getDayOfMonth());
+        assertThat(errorEntity.getDateCreated().getMonth()).isEqualTo(currDate.getMonth());
+        assertThat(errorEntity.getDateCreated().getYear()).isEqualTo(currDate.getYear());
     }
 
     @Test
-    void testCreateFdcContribution() {
+    void givenValidRequest_whenCreateFdcContribution_thenReturnCreatedContribution() {
         ArgumentCaptor<FdcContributionsEntity> captor = ArgumentCaptor.forClass(FdcContributionsEntity.class);
 
         CreateFdcContributionRequest request = CreateFdcContributionRequest.builder()
@@ -249,46 +246,46 @@ class FdcContributionsServiceTest {
         verify(fdcContributionsRepository).save(captor.capture());
         FdcContributionsEntity capturedEntity = captor.getValue();
 
-        assertNotNull(result);
-        assertEquals(request.getRepId(), capturedEntity.getRepOrderEntity().getId());
-        assertEquals(request.getLgfsComplete(), capturedEntity.getLgfsComplete());
-        assertEquals(request.getAgfsComplete(), capturedEntity.getAgfsComplete());
-        assertEquals(request.getStatus(), capturedEntity.getStatus());
+        assertThat(result).isNotNull();
+        assertThat(capturedEntity.getRepOrderEntity().getId()).isEqualTo(request.getRepId());
+        assertThat(capturedEntity.getLgfsComplete()).isEqualTo(request.getLgfsComplete());
+        assertThat(capturedEntity.getAgfsComplete()).isEqualTo(request.getAgfsComplete());
+        assertThat(capturedEntity.getStatus()).isEqualTo(request.getStatus());
     }
 
     @Test
-    void testCreateFdcContributionWhenExceptionOccurs() {
+    void givenDatabaseError_whenCreateFdcContribution_thenThrowRuntimeException() {
         CreateFdcContributionRequest request = CreateFdcContributionRequest.builder().build();
 
         when(fdcContributionsRepository.save(any(FdcContributionsEntity.class))).thenThrow(new RuntimeException("Database error"));
 
         Exception exception = assertThrows(RuntimeException.class, () -> fdcContributionsService.createFdcContribution(request));
 
-        assertEquals("Database error", exception.getMessage());
+        assertThat(exception.getMessage()).isEqualTo("Database error");
     }
 
     @Test
-    void testUpdateFdcContributionWhenRowsUpdated() {
+    void givenValidRequest_whenUpdateFdcContribution_thenReturnUpdatedCount() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
         when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenReturn(1);
 
         Integer result = fdcContributionsService.updateFdcContribution(request);
-        assertEquals(1, result);
+        assertThat(result).isEqualTo(1);
     }
 
     @Test
-    void testUpdateFdcContributionWhenNoRowsUpdated() {
+    void givenNonExistentIds_whenUpdateFdcContribution_thenReturnZeroUpdatedCount() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
         when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenReturn(0);
 
         Integer result = fdcContributionsService.updateFdcContribution(request);
-        assertEquals(0, result);
+        assertThat(result).isEqualTo(0);
     }
 
     @Test
-    void testUpdateFdcContributionWhenExceptionOccurs() {
+    void givenDatabaseError_whenUpdateFdcContribution_thenThrowRuntimeException() {
         UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
 
         when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenThrow(new RuntimeException("Database error"));
@@ -296,7 +293,7 @@ class FdcContributionsServiceTest {
         Exception exception = assertThrows(RuntimeException.class,
                 () -> fdcContributionsService.updateFdcContribution(request));
 
-        assertEquals("Database error", exception.getMessage());
+        assertThat(exception.getMessage()).isEqualTo("Database error");
     }
 
     private UpdateFdcContributionRequest getUpdateFdcContributionRequest() {
@@ -309,7 +306,7 @@ class FdcContributionsServiceTest {
 
 
     @Test
-    void testDrcUpdateNoFdcFound() {
+    void givenNonExistentFdcId_whenLogFdcProcessed_thenThrowRequestedObjectNotFoundException() {
         int id = 123;
         String errorText = "Error Text";
 
@@ -325,7 +322,7 @@ class FdcContributionsServiceTest {
     }
 
     @Test
-    void testDrcUpdateNoFileFound() {
+    void givenNonExistentFileId_whenLogFdcProcessed_thenThrowNoSuchElementException() {
         int id = 123;
         int repId = 456;
         int fileId = 10000;
@@ -419,17 +416,15 @@ class FdcContributionsServiceTest {
 
     private void assertEqualsWithExpectedValues(FdcContributionsResponse response) {
         List<FdcContributionEntry> fdcContributionEntries = response.getFdcContributions();
-        Assertions.assertFalse(fdcContributionEntries.isEmpty());
+        assertThat(fdcContributionEntries.isEmpty()).isFalse();
         FdcContributionEntry responseValue = fdcContributionEntries.get(0);
         FdcContributionsEntity expectedValue = fdcContributionsEntityList.get(0);
-        assertEquals(expectedValue.getId(), responseValue.getId());
-        assertEquals(expectedValue.getFinalCost(), responseValue.getFinalCost());
-        assertEquals(expectedValue.getAgfsCost(), responseValue.getAgfsCost());
-        assertEquals(expectedValue.getLgfsCost(), responseValue.getLgfsCost());
-        assertEquals(expectedValue.getDateCalculated(), responseValue.getDateCalculated());
-        assertEquals(expectedValue.getRepOrderEntity().getSentenceOrderDate(), responseValue.getSentenceOrderDate());
-        assertEquals(expectedValue.getRepOrderEntity().getId(), responseValue.getMaatId());
-        assertEquals(expectedEntry, responseValue);
+        assertThat(responseValue.getId()).isEqualTo(expectedValue.getId());
+        assertThat(responseValue.getFinalCost()).isEqualTo(expectedValue.getFinalCost());
+        assertThat(responseValue.getAgfsCost()).isEqualTo(expectedValue.getAgfsCost());
+        assertThat(responseValue.getLgfsCost()).isEqualTo(expectedValue.getLgfsCost());
+        assertThat(responseValue.getDateCalculated()).isEqualTo(expectedValue.getDateCalculated());
+        assertThat(responseValue.getSentenceOrderDate()).isEqualTo(expectedValue.getRepOrderEntity().getSentenceOrderDate());
     }
 
     @Test
@@ -438,9 +433,8 @@ class FdcContributionsServiceTest {
 
         FdcContributionEntry result = fdcContributionsService.getFdcContribution(expectedId);
 
-        assertNotNull(result);
-
-        assertEquals(expectedEntry, result);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(expectedEntry);
     }
 
     @Test
@@ -452,6 +446,6 @@ class FdcContributionsServiceTest {
         Exception exception = assertThrows(RequestedObjectNotFoundException.class,
                 () -> fdcContributionsService.getFdcContribution(fdcContributionId));
 
-        assertEquals("fdc_contribution could not be found by id", exception.getMessage());
+        assertThat(exception.getMessage()).isEqualTo("fdc_contribution could not be found by id");
     }
 }

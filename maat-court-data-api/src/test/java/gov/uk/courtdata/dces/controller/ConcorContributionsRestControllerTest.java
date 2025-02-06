@@ -54,7 +54,7 @@ class ConcorContributionsRestControllerTest {
     private ConcorContributionsService concorContributionsService;
 
     @Test
-    void testContributionFileContent() throws Exception {
+    void givenActiveStatusAndValidConcorContributionIdAndNumberOfRecords_whenGetConcorContributionFiles_thenReturnListOfContributions() throws Exception {
 
         when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, 3, 121))
                 .thenReturn(List.of(
@@ -78,7 +78,7 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testContributionFileContentWhenContribIdIsNull() throws Exception {
+    void givenActiveStatusAndNullConcorContributionId_whenGetConcorContributionFiles_thenReturnListOfContributions() throws Exception {
 
         when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, 3, null))
                 .thenReturn(List.of(
@@ -101,7 +101,7 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testContributionFileContentWhenNumberOfRecordIsNull() throws Exception {
+    void givenActiveStatusAndNullNumberOfRecords_whenGetConcorContributionFiles_thenReturnListOfContributions() throws Exception {
 
         when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, null, null))
                 .thenReturn(List.of(
@@ -121,7 +121,7 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testContributionFileContentWhenActiveFileNotAvailable() throws Exception {
+    void givenActiveStatusAndNoActiveFiles_whenGetConcorContributionFiles_thenReturnEmptyList() throws Exception {
 
         Integer numberOfRecords = 3;
         when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, numberOfRecords, null)).thenReturn(List.of());
@@ -135,28 +135,28 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testContributionFileContentWhenQueryParamIsNotProvided() throws Exception {
+    void givenNoQueryParams_whenGetConcorContributionFiles_thenBadRequestError() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void testFindContributionFileWhenQueryParamIsNotProvided() throws Exception {
+    void givenNoPathVariable_whenFindConcorContributionFile_thenNotFoundError() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILE_URL))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isNotFound());
     }
 
     @Test
-    void testFindContributionFileWhenQueryParamIsNotAnInt() throws Exception {
+    void givenInvalidPathVariable_whenFindConcorContributionFile_thenBadRequestError() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILE_URL + "/0dewe"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    void testFindContributionFileWhenQueryParamIsNotValid() throws Exception {
+    void givenNonExistentConcorContributionId_whenFindConcorContributionFile_thenNotFoundError() throws Exception {
         when(concorContributionsService.getConcorContributionFile(0))
             .thenThrow(new RequestedObjectNotFoundException("Concor Contribution ID 0 not found"));
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILE_URL + "/0"))
@@ -165,7 +165,7 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testFindContributionFileWhenQueryParamIsValid() throws Exception {
+    void givenValidConcorContributionId_whenFindConcorContributionFile_thenReturnContributionFile() throws Exception {
         when(concorContributionsService.getConcorContributionFile(110))
             .thenReturn(ConcorContributionResponse.builder().concorContributionId(110).xmlContent("XMLFileContent").build());
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILE_URL + "/110"))
@@ -176,7 +176,7 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testUpdateContributionFileStatus() throws Exception {
+    void givenValidRequest_whenUpdateContributionFileStatus_thenReturnUpdatedStatus() throws Exception {
         final CreateContributionFileRequest createContributionFileRequest = CreateContributionFileRequest.builder()
                 .recordsSent(123)
                 .xmlContent("XMLFileContent")
@@ -195,7 +195,7 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testUpdateContributionFileStatusWhenTransactionRollback() throws Exception {
+    void givenMAATCourtDataException_whenUpdateContributionFileStatus_thenServerError() throws Exception {
         final CreateContributionFileRequest createContributionFileRequest = CreateContributionFileRequest.builder()
                 .recordsSent(123)
                 .xmlContent("XMLFileContent")
@@ -214,7 +214,7 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testUpdateContributionFileStatusWhenXmlFileIsNotProvided() throws Exception {
+    void givenEmptyXmlFile_whenUpdateContributionFileStatus_thenBadRequestError() throws Exception {
         final CreateContributionFileRequest createContributionFileRequest = CreateContributionFileRequest.builder()
                 .recordsSent(123)
                 .xmlContent("XMLFileContent")
@@ -235,7 +235,7 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testLogDrcProcessedNoErrorSuccess() throws Exception {
+    void givenValidRequest_whenLogContributionProcessed_thenReturnSuccess() throws Exception {
         int id = 1234;
         String errorText = "";
         LogContributionProcessedRequest request = LogContributionProcessedRequest.builder()
@@ -252,7 +252,7 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testLogDrcProcessedError() throws Exception {
+    void givenServiceError_whenLogContributionProcessed_thenServerError() throws Exception {
         int id = 1234;
         String errorText = "";
         LogContributionProcessedRequest request = LogContributionProcessedRequest.builder()
@@ -269,7 +269,7 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testLogDrcProcessedNoContribFile() throws Exception {
+    void givenNoContributionFile_whenLogContributionProcessed_thenBadRequestError() throws Exception {
         int id = 1234;
         String errorText = "";
         LogContributionProcessedRequest request = LogContributionProcessedRequest.builder()
@@ -286,7 +286,7 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testUpdateContributionStatus() throws Exception {
+    void givenValidRequest_whenUpdateContributionStatus_thenReturnUpdatedIds() throws Exception {
 
         UpdateConcorContributionStatusRequest request = UpdateConcorContributionStatusRequest.builder().build();
         final ObjectMapper objectMapper = new ObjectMapper();
@@ -306,7 +306,7 @@ class ConcorContributionsRestControllerTest {
     }
 
     @Test
-    void testUpdateContributionStatusWhenNotFound() throws Exception {
+    void givenNoUpdatedIds_whenUpdateContributionStatus_thenReturnEmptyList() throws Exception {
 
         UpdateConcorContributionStatusRequest request = UpdateConcorContributionStatusRequest.builder().build();
         final ObjectMapper objectMapper = new ObjectMapper();
@@ -323,7 +323,7 @@ class ConcorContributionsRestControllerTest {
 
 
     @Test
-    void testGetContributionWhenFound() throws Exception {
+    void givenValidId_whenGetContribution_thenReturnContribution() throws Exception {
 
         Integer id = 100;
         ConcorContributionResponseDTO responseDTO = ConcorContributionResponseDTO.builder()
@@ -346,7 +346,7 @@ class ConcorContributionsRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content("[]"))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.detail").value("ID List Empty"));
+            .andExpect(jsonPath("$.message").value("ID List Empty"));
     }
 
     @Test
@@ -370,7 +370,7 @@ class ConcorContributionsRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content("["+longList+"]"))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.detail").value("Too many IDs provided, max is 350"));
+            .andExpect(jsonPath("$.message").value("Too many IDs provided, max is 350"));
     }
 
     @Test

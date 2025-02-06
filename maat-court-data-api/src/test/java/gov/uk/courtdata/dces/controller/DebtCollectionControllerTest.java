@@ -29,7 +29,7 @@ class DebtCollectionControllerTest {
     private DebtCollectionService debtCollectionService;
 
     @Test
-    void testContributionFileContent_FailScenario() throws Exception {
+    void givenInvalidDateFormat_whenGetContributionFiles_thenBadRequest() throws Exception {
 
         final LocalDate fromDate = LocalDate.of(2020,1,1);
         final LocalDate toDate = LocalDate.of(2020,11,1);
@@ -45,7 +45,7 @@ class DebtCollectionControllerTest {
     }
 
     @Test
-    void testContributionFileContent() throws Exception {
+    void givenValidDateRange_whenGetContributionFiles_thenReturnListOfContributions() throws Exception {
 
         final LocalDate fromDate = LocalDate.of(2020,1,1);
         final LocalDate toDate = LocalDate.of(2020,11,1);
@@ -60,7 +60,7 @@ class DebtCollectionControllerTest {
     }
 
     @Test
-    void testFdcFileContent() throws Exception {
+    void givenValidDateRange_whenGetFdcFiles_thenReturnListOfFdcFiles() throws Exception {
 
         final LocalDate fromDate = LocalDate.of(2020,9,1);
         final LocalDate toDate = LocalDate.of(2020,11,1);
@@ -73,7 +73,7 @@ class DebtCollectionControllerTest {
     }
 
     @Test
-    void givenIncorrectDateParameter_whenApiIsInvoked_then400ErrorIsThrown() throws Exception {
+    void givenInvalidDateParameter_whenGetFdcFiles_thenBadRequest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL +"/final-defence-cost"))
                         .queryParam("fromDate", "01-01-2021")
                         .queryParam("toDate", "asdf")

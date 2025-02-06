@@ -16,6 +16,7 @@ import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -55,13 +56,15 @@ public class DebtCollectionRepository {
     }
 
     List<FdcContributionsEntity> findFdcEntriesByIdIn(Set<Integer> idList){
-        String query = """
+        String query = String.format(
+                """
                 SELECT fdc.id, fdc.FINAL_COST, fdc.DATE_CALCULATED, fdc.LGFS_COST, fdc.AGFS_COST, rep.SENTENCE_ORDER_DATE, fdc.rep_id 
                 FROM TOGDATA.FDC_CONTRIBUTIONS fdc INNER JOIN TOGDATA.REP_ORDERS rep
                     ON fdc.rep_id = rep.id
-                    WHERE fdc.id in ?
-                """;
-        return jdbcTemplate.query(query, new FdcMapper(), idList);
+                    WHERE fdc.id in ( %s )
+                """, String.join(",", Collections.nCopies(idList.size(), "?")) );
+
+        return jdbcTemplate.query(query, new FdcMapper(), idList.toArray());
     }
 
     public boolean saveContributionFilesEntity(ContributionFilesEntity contributionFilesEntity) {

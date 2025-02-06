@@ -91,6 +91,7 @@ dependencies {
     implementation group: 'com.graphql-java-kickstart', name: 'graphql-java-tools', version: "$graphqlJavaTools"
 
     implementation group: 'com.google.code.gson', name: 'gson', version: "$gsonVersion"
+    implementation group: 'org.hibernate.orm', name: 'hibernate-core', version: "$hibernateCore"
 
     // Test Only
     testImplementation "org.pitest:pitest:$pitest"

@@ -419,12 +419,12 @@ class FdcContributionsServiceTest {
         assertThat(fdcContributionEntries.isEmpty()).isFalse();
         FdcContributionEntry responseValue = fdcContributionEntries.get(0);
         FdcContributionsEntity expectedValue = fdcContributionsEntityList.get(0);
-        assertEquals(expectedValue.getId(), responseValue.getId());
-        assertEquals(expectedValue.getFinalCost(), responseValue.getFinalCost());
-        assertEquals(expectedValue.getAgfsCost(), responseValue.getAgfsCost());
-        assertEquals(expectedValue.getLgfsCost(), responseValue.getLgfsCost());
-        assertEquals(expectedValue.getDateCalculated(), responseValue.getDateCalculated());
-        assertEquals(expectedValue.getRepOrderEntity().getSentenceOrderDate(), responseValue.getSentenceOrderDate());
+        assertThat(responseValue.getId()).isEqualTo(expectedValue.getId());
+        assertThat(responseValue.getFinalCost()).isEqualTo(expectedValue.getFinalCost());
+        assertThat(responseValue.getAgfsCost()).isEqualTo(expectedValue.getAgfsCost());
+        assertThat(responseValue.getLgfsCost()).isEqualTo(expectedValue.getLgfsCost());
+        assertThat(responseValue.getDateCalculated()).isEqualTo(expectedValue.getDateCalculated());
+        assertThat(responseValue.getSentenceOrderDate()).isEqualTo(expectedValue.getRepOrderEntity().getSentenceOrderDate());
     }
 
     @Test
@@ -433,8 +433,8 @@ class FdcContributionsServiceTest {
 
         FdcContributionEntry result = fdcContributionsService.getFdcContribution(expectedId);
 
-        assertNotNull(result);
-        assertEquals(expectedEntry, result);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(expectedEntry);
     }
 
     @Test

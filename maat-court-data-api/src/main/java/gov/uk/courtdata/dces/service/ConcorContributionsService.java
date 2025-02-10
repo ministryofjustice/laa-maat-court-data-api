@@ -39,7 +39,7 @@ import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 @Service
 @RequiredArgsConstructor
 public class ConcorContributionsService {
-    private static final Integer DEFAULT_RECORD_COUNT = 500;
+    private static final Integer DEFAULT_RECORD_COUNT = 350;
     private static final String USER_AUDIT = "DCES";
     private final ConcorContributionsRepository concorRepository;
     private final ContributionFileMapper contributionFileMapper;
@@ -61,7 +61,10 @@ public class ConcorContributionsService {
 
         Integer finalConcorContributionId = Optional.ofNullable(concorContributionId).orElse(0);
         noOfRecords = Optional.ofNullable(noOfRecords).orElse(DEFAULT_RECORD_COUNT);
-
+        // check if asked for zero values. Should return as requested, no need for further processing.
+        if (noOfRecords==0){
+            return List.of();
+        }
         log.info("Searching concor contribution file with status {}, startId {} and count {}", status, concorContributionId, noOfRecords);
         Pageable pageable = PageRequest.of(0, noOfRecords, Sort.by("id"));
         return buildConcorContributionResponseList(() -> concorRepository.findByStatusAndIdGreaterThan(status,

@@ -68,6 +68,7 @@ public class FdcContributionsService {
     private FdcContributionEntry mapContributionEntry(FdcContributionsEntity entity){
         return FdcContributionEntry.builder()
                 .id(entity.getId())
+                .contFileId(entity.getContFileId())
                 .finalCost(entity.getFinalCost())
                 .dateCalculated(entity.getDateCalculated())
                 .lgfsCost(entity.getLgfsCost())
@@ -75,6 +76,8 @@ public class FdcContributionsService {
                 .maatId(entity.getRepOrderEntity().getId())
                 .sentenceOrderDate(entity.getRepOrderEntity().getSentenceOrderDate())
                 .status(entity.getStatus())
+                .userModified(entity.getUserModified())
+                .dateModified(entity.getDateModified())
                 .build();
     }
 

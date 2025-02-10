@@ -74,6 +74,7 @@ public class FdcContributionsService {
                 .agfsCost(entity.getAgfsCost())
                 .maatId(entity.getRepOrderEntity().getId())
                 .sentenceOrderDate(entity.getRepOrderEntity().getSentenceOrderDate())
+                .status(entity.getStatus())
                 .build();
     }
 

@@ -281,7 +281,7 @@ class FdcContributionsServiceTest {
         when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenReturn(0);
 
         Integer result = fdcContributionsService.updateFdcContribution(request);
-        assertThat(result).isEqualTo(0);
+        assertThat(result).isZero();
     }
 
     @Test
@@ -410,13 +410,14 @@ class FdcContributionsServiceTest {
             .lgfsCost(expectedLgfsCost)
             .dateCalculated(expectedDateCalculated)
             .sentenceOrderDate(expectedSentenceDate)
+            .status(REQUESTED)
             .build();
     }
 
 
     private void assertEqualsWithExpectedValues(FdcContributionsResponse response) {
         List<FdcContributionEntry> fdcContributionEntries = response.getFdcContributions();
-        assertThat(fdcContributionEntries.isEmpty()).isFalse();
+        assertThat(fdcContributionEntries).isNotEmpty();
         FdcContributionEntry responseValue = fdcContributionEntries.get(0);
         FdcContributionsEntity expectedValue = fdcContributionsEntityList.get(0);
         assertThat(responseValue.getId()).isEqualTo(expectedValue.getId());
@@ -425,6 +426,7 @@ class FdcContributionsServiceTest {
         assertThat(responseValue.getLgfsCost()).isEqualTo(expectedValue.getLgfsCost());
         assertThat(responseValue.getDateCalculated()).isEqualTo(expectedValue.getDateCalculated());
         assertThat(responseValue.getSentenceOrderDate()).isEqualTo(expectedValue.getRepOrderEntity().getSentenceOrderDate());
+        assertThat(responseValue).isEqualTo(expectedEntry);
     }
 
     @Test
@@ -433,8 +435,7 @@ class FdcContributionsServiceTest {
 
         FdcContributionEntry result = fdcContributionsService.getFdcContribution(expectedId);
 
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(expectedEntry);
+        assertThat(result).isNotNull().isEqualTo(expectedEntry);
     }
 
     @Test

@@ -2,6 +2,7 @@ package gov.uk.courtdata.dces.mapper;
 
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.enums.FdcContributionsStatus;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -22,6 +23,7 @@ public class FdcMapper implements RowMapper<FdcContributionsEntity> {
         fdcEntity.setFinalCost(rs.getBigDecimal("FINAL_COST"));
         fdcEntity.setLgfsCost(rs.getBigDecimal("LGFS_COST"));
         fdcEntity.setAgfsCost(rs.getBigDecimal("AGFS_COST"));
+        fdcEntity.setStatus(FdcContributionsStatus.valueOf(rs.getString("STATUS")));
 
         Date dateCalculated = rs.getDate("DATE_CALCULATED");
         if(Objects.nonNull(dateCalculated)){

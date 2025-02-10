@@ -47,7 +47,7 @@ public class DebtCollectionRepository {
 
     List<FdcContributionsEntity> findFdcEntriesByStatus(FdcContributionsStatus status){
         String query = """
-                SELECT fdc.id, fdc.FINAL_COST, fdc.DATE_CALCULATED, fdc.LGFS_COST, fdc.AGFS_COST, rep.SENTENCE_ORDER_DATE, fdc.rep_id 
+                SELECT fdc.id, fdc.FINAL_COST, fdc.DATE_CALCULATED, fdc.LGFS_COST, fdc.AGFS_COST, rep.SENTENCE_ORDER_DATE, fdc.rep_id, fdc.status
                 FROM TOGDATA.FDC_CONTRIBUTIONS fdc INNER JOIN TOGDATA.REP_ORDERS rep
                     ON fdc.rep_id = rep.id
                     WHERE fdc.status = ?
@@ -58,7 +58,7 @@ public class DebtCollectionRepository {
     List<FdcContributionsEntity> findFdcEntriesByIdIn(Set<Integer> idList){
         String query = String.format(
                 """
-                SELECT fdc.id, fdc.FINAL_COST, fdc.DATE_CALCULATED, fdc.LGFS_COST, fdc.AGFS_COST, rep.SENTENCE_ORDER_DATE, fdc.rep_id 
+                SELECT fdc.id, fdc.FINAL_COST, fdc.DATE_CALCULATED, fdc.LGFS_COST, fdc.AGFS_COST, rep.SENTENCE_ORDER_DATE, fdc.rep_id, fdc.status
                 FROM TOGDATA.FDC_CONTRIBUTIONS fdc INNER JOIN TOGDATA.REP_ORDERS rep
                     ON fdc.rep_id = rep.id
                     WHERE fdc.id in ( %s )

@@ -34,7 +34,5 @@ public class ApplicationHardshipReviewDTO extends GenericDTO {
     @Builder.Default
     private Collection<HRSectionDTO> section = new ArrayList<>();
     @Builder.Default
-    private Collection<HRProgressDTO> progress = new ArrayList<>();
-    @Builder.Default
     private AssessmentStatusDTO asessmentStatus = new AssessmentStatusDTO();
 }

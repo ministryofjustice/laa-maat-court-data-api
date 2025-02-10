@@ -1,10 +1,11 @@
 package gov.uk.courtdata.dao.convertor;
 
 import gov.uk.courtdata.dao.convertor.helper.ConvertorHelper;
-import gov.uk.courtdata.dao.oracle.*;
-import gov.uk.courtdata.dto.application.HRProgressDTO;
-import gov.uk.courtdata.dto.application.HRSectionDTO;
+import gov.uk.courtdata.dao.oracle.HRSectionTabType;
+import gov.uk.courtdata.dao.oracle.HardshipReviewType;
+import gov.uk.courtdata.dao.oracle.HrSectionType;
 import gov.uk.courtdata.dto.application.ApplicationHardshipReviewDTO;
+import gov.uk.courtdata.dto.application.HRSectionDTO;
 import gov.uk.courtdata.validator.MAATApplicationException;
 import gov.uk.courtdata.validator.MAATSystemException;
 
@@ -115,21 +116,7 @@ public class HardshipReviewConvertor extends Convertor {
 					getDTO().getSection().add( sectionConverter.getDTO());
 				}
 			}
-			
-			//HrProgress
-			getDTO().setProgress(			new ArrayList<HRProgressDTO>());		
-			
-			if(getOracleType().getProgressTab() != null)
-			{
-				HrProgressType[] progressTypes = getOracleType().getProgressTab().getArray();
-				HRProgressConvertor progressConverter = new HRProgressConvertor();
-				
-				for(int i = 0; i < progressTypes.length ; i++ )
-				{
-					progressConverter.setDTOFromType(progressTypes[i]);
-					getDTO().getProgress().add( progressConverter.getDTO());
-				}
-			}			
+
 		}
 		catch (NullPointerException nex)
 		{
@@ -201,24 +188,6 @@ public class HardshipReviewConvertor extends Convertor {
 					sectionTypes[i++] = sectionConverter.getOracleType();
 				}
 				getOracleType().setSectionTab(new HRSectionTabType(sectionTypes));
-			}	
-			
-			//HrProgress 
-			
-			Collection<HRProgressDTO> progress = getDTO().getProgress();
-			if ( getDTO().getProgress() != null)
-			{
-				HrProgressType[] 		progressTypes 		= new HrProgressType[progress.size()];
-				HRProgressConvertor 	progressConverter 	= new HRProgressConvertor();
-				Iterator<HRProgressDTO> it					= progress.iterator();
-				int i = 0;
-				
-				while(it.hasNext())
-				{
-					progressConverter.setTypeFromDTO(it.next());
-					progressTypes[i++] = progressConverter.getOracleType();
-				}
-				getOracleType().setProgressTab(new HRProgressTabType(progressTypes));
 			}
 		}		
 		catch (NullPointerException nex)

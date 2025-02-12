@@ -330,7 +330,8 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].finalCost").value(expectedEntity.getFinalCost().doubleValue()))
                 .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].lgfsCost").value(expectedEntity.getLgfsCost().doubleValue()))
                 .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].agfsCost").value(expectedEntity.getAgfsCost().doubleValue()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].dateCalculated").value(expectedEntity.getDateCalculated().toString()));
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].dateCalculated").value(expectedEntity.getDateCalculated().toString()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].status").value(expectedEntity.getStatus().toString()));
     }
 
     @Test

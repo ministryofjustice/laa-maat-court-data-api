@@ -44,8 +44,6 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
     @SpyBean
     DebtCollectionRepository debtCollectionRepositorySpy;
 
-    private static int savedEntityId1;
-    private static int savedEntityId2;
     private static int savedEntityId3;
     private static int savedEntityId4;
 
@@ -59,8 +57,8 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
         file1Id = repos.contributionFiles.save(buildFileEntity(fileOne, false)).getFileId();
         file2Id = repos.contributionFiles.save(buildFileEntity(fileTwo, true)).getFileId();
 
-        savedEntityId1 = repos.concorContributions.save(buildConcorEntity(ConcorContributionStatus.ACTIVE, "<xml 1 content dummy",file1Id)).getId();
-        savedEntityId2 = repos.concorContributions.save(buildConcorEntity(ConcorContributionStatus.SENT, "<xml 2 content dummy",file1Id)).getId();
+        repos.concorContributions.save(buildConcorEntity(ConcorContributionStatus.ACTIVE, "<xml 1 content dummy",file1Id));
+        repos.concorContributions.save(buildConcorEntity(ConcorContributionStatus.SENT, "<xml 2 content dummy",file1Id));
         savedEntityId3 = repos.concorContributions.save(buildConcorEntity(ConcorContributionStatus.ACTIVE, "<xml 3 content dummy",null)).getId();
         savedEntityId4 = repos.concorContributions.save(buildConcorEntity(ConcorContributionStatus.SENT, "<xml 4 content dummy",file2Id)).getId();
     }
@@ -118,6 +116,17 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("code").value("BAD_REQUEST"))
                 .andExpect(jsonPath("message").value("The provided value 'XXX' is the incorrect type for the 'status' parameter."));
+    }
+
+    @Test
+    @Order(4)
+    void givenZeroNumberOfRecords_whenGetIsInvoked_theEmptyResponseIsReturned() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL+"REPLACED")
+                        .queryParam("numberOfRecords", String.valueOf(0))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(0)));
     }
 
     @Test

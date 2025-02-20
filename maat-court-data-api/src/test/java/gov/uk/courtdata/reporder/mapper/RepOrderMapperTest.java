@@ -39,6 +39,7 @@ class RepOrderMapperTest {
     private static final String IOJ_APPEAL_RESULT_FAIL = "FAIL";
     private static final String IOJ_APPEAL_ASSESSOR_NAME = "ocon-m";
     private static final LocalDateTime IOJ_APPEAL_DATE = LocalDateTime.of(2015, 1, 9, 11, 16, 32);
+    private static final String REVIEW_TYPE = "NAFI";
 
     private final RepOrderMapper repOrderMapper = new RepOrderMapperImpl(); // Assuming an implementation exists
 
@@ -85,6 +86,7 @@ class RepOrderMapperTest {
                 .fassInitStatus(MEANS_STATUS)
                 .dateCreated(DATE_MEANS_CREATED)
                 .userCreatedEntity(userEntity)
+                .rtCode(REVIEW_TYPE)
                 .build();
 
         financialAssessmentInitialFail = FinancialAssessmentEntity.builder()
@@ -201,7 +203,8 @@ class RepOrderMapperTest {
                 () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getPassportAssessorName()),
                 () -> assertEquals(DATE_PASSPORT_CREATED, repOrderState.getDatePassportCreated()),
                 () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
-                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision())
+                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision()),
+                () -> assertEquals(REVIEW_TYPE, repOrderState.getReviewType())
         );
     }
 

@@ -78,6 +78,7 @@ public interface RepOrderMapper {
                 .iojAppealResult(maxIdIOJAppealEntity.map(IOJAppealEntity::getDecisionResult).orElse(null))
                 .iojAppealAssessorName(maxIdIOJAppealEntity.map(IOJAppealEntity::getUserCreated).orElse(null))
                 .iojAppealDate(maxIdIOJAppealEntity.map(IOJAppealEntity::getDecisionDate).orElse(null))
+                .reviewType(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getRtCode).orElse(null))
                 .build();
     }
 

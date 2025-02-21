@@ -39,6 +39,8 @@ class RepOrderMapperTest {
     private static final String IOJ_APPEAL_RESULT_FAIL = "FAIL";
     private static final String IOJ_APPEAL_ASSESSOR_NAME = "ocon-m";
     private static final LocalDateTime IOJ_APPEAL_DATE = LocalDateTime.of(2015, 1, 9, 11, 16, 32);
+    private static final String MEANS_REVIEW_TYPE = "NAFI";
+    private static final String PASSPORT_REVIEW_TYPE = "ER";
 
     private final RepOrderMapper repOrderMapper = new RepOrderMapperImpl(); // Assuming an implementation exists
 
@@ -68,6 +70,7 @@ class RepOrderMapperTest {
                 .pastStatus(PASSPORT_STATUS)
                 .dateCreated(DATE_PASSPORT_CREATED)
                 .userCreatedEntity(userEntity)
+                .rtCode(PASSPORT_REVIEW_TYPE)
                 .build();
 
         passportAssessmentFail = PassportAssessmentEntity.builder()
@@ -85,6 +88,7 @@ class RepOrderMapperTest {
                 .fassInitStatus(MEANS_STATUS)
                 .dateCreated(DATE_MEANS_CREATED)
                 .userCreatedEntity(userEntity)
+                .rtCode(MEANS_REVIEW_TYPE)
                 .build();
 
         financialAssessmentInitialFail = FinancialAssessmentEntity.builder()
@@ -167,7 +171,8 @@ class RepOrderMapperTest {
                 () -> assertNull(repOrderState.getIojAppealAssessorName()),
                 () -> assertNull(repOrderState.getIojAppealDate()),
                 () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
-                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision())
+                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision()),
+                () -> assertEquals(PASSPORT_REVIEW_TYPE, repOrderState.getPassportReviewType())
         );
     }
 
@@ -201,7 +206,8 @@ class RepOrderMapperTest {
                 () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getPassportAssessorName()),
                 () -> assertEquals(DATE_PASSPORT_CREATED, repOrderState.getDatePassportCreated()),
                 () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
-                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision())
+                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision()),
+                () -> assertEquals(MEANS_REVIEW_TYPE, repOrderState.getMeansReviewType())
         );
     }
 

@@ -78,7 +78,8 @@ public interface RepOrderMapper {
                 .iojAppealResult(maxIdIOJAppealEntity.map(IOJAppealEntity::getDecisionResult).orElse(null))
                 .iojAppealAssessorName(maxIdIOJAppealEntity.map(IOJAppealEntity::getUserCreated).orElse(null))
                 .iojAppealDate(maxIdIOJAppealEntity.map(IOJAppealEntity::getDecisionDate).orElse(null))
-                .reviewType(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getRtCode).orElse(null))
+                .meansReviewType(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getRtCode).orElse(null))
+                .passportReviewType(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getRtCode).orElse(null))
                 .build();
     }
 

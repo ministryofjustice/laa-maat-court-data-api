@@ -44,4 +44,7 @@ public class RepOrderStateDTO {
     private String iojAppealResult;
     private String iojAppealAssessorName;
     private LocalDateTime iojAppealDate;
+
+    private String meansReviewType;
+    private String passportReviewType;
 }

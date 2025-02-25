@@ -7,6 +7,12 @@ import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
+import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
+import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
+import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
+import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
+import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
+import gov.uk.courtdata.dces.request.UpdateFdcContributionRequest;
 import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.ReservationsEntity;
@@ -31,7 +37,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
 
 @Component
 public class TestModelDataBuilder {
@@ -1567,4 +1576,76 @@ public class TestModelDataBuilder {
 
                 .build();
     }
+
+    public static LogContributionProcessedRequest getLogContributionProcessedRequest(int id, String errorText) {
+        return LogContributionProcessedRequest.builder()
+                .concorId(id)
+                .errorText(errorText)
+                .build();
+    }
+
+    public static LogFdcProcessedRequest getLogFdcProcessedRequest(int id, String errorText) {
+        return LogFdcProcessedRequest.builder()
+                .fdcId(id)
+                .errorText(errorText)
+                .build();
+    }
+
+
+    public static CreateContributionFileRequest getContributionRequest() {
+        return CreateContributionFileRequest.builder()
+                .concorContributionIds(Set.of(1))
+                .xmlContent("<xml>content</xml>")
+                .ackXmlContent("<ackXml>content</ackXml>")
+                .recordsSent(1)
+                .xmlFileName("testFilename.xml")
+                .build();
+    }
+
+    public static CreateFdcFileRequest getFdcFileRequest() {
+        return CreateFdcFileRequest.builder()
+                .xmlFileName("filename.xml")
+                .xmlContent("<xml>content</xml>")
+                .ackXmlContent("<ackXml>content</ackXml>")
+                .fdcIds(Set.of(1))
+                .xmlFileName("testFilename.xml")
+                .build();
+    }
+
+    public static String getFdcDrcUpdateJson(int fdcId, String errorText){
+        return """
+                {
+                    "fdcId" : %s,
+                    "errorText" : "%s"
+                }
+                """.formatted(fdcId, errorText);
+    }
+
+    public static String getConcorDrcUpdateJson(int concorId, String errorText){
+        return """
+                {
+                    "concorId" : %s,
+                    "errorText" : "%s"
+                }
+                """.formatted(concorId, errorText);
+    }
+
+
+    public static UpdateFdcContributionRequest getUpdateFdcContributionRequest() {
+        return UpdateFdcContributionRequest.builder()
+                .repId(REP_ID)
+                .newStatus(FdcContributionsStatus.SENT)
+                .previousStatus(REQUESTED)
+                .build();
+    }
+
+    public static CreateFdcContributionRequest getCreateFdcContributionRequest() {
+        return CreateFdcContributionRequest.builder()
+                .repId(REP_ID)
+                .lgfsComplete("N")
+                .agfsComplete("Y")
+                .status(REQUESTED)
+                .build();
+    }
+
 }

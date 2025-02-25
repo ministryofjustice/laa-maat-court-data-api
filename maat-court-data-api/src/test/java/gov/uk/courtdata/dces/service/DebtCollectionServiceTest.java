@@ -1,5 +1,6 @@
 package gov.uk.courtdata.dces.service;
 
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.util.ContributionFileUtil;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
@@ -41,7 +42,6 @@ class DebtCollectionServiceTest {
 
     @InjectMocks
     private DebtCollectionService debtCollectionService;
-    private static final String USER_CREATED = "MLA";
 
     private ContributionFilesEntity contributionFilesEntity;
 
@@ -51,19 +51,8 @@ class DebtCollectionServiceTest {
    @BeforeEach
     void setUp() {
        String xmlDoc = FileUtils.readResourceToString("eform/request/xmlDoc_default.xml");
-       getContributionFile(xmlDoc);
-
+       this.contributionFilesEntity = TestEntityDataBuilder.getPopulatedContributionFilesEntity(-100, xmlDoc);
    }
-
-    private void getContributionFile(String xmlDoc) {
-        contributionFilesEntity =  ContributionFilesEntity.builder()
-                .xmlContent(xmlDoc)
-                .userCreated(USER_CREATED)
-                .dateReceived(LocalDate.now())
-                .dateSent(LocalDate.now())
-                .build();
-    }
-
 
     @Test
     void givenDateRange_whenGetContributionFiles_thenReturnXmlContents() {
@@ -71,8 +60,9 @@ class DebtCollectionServiceTest {
         when(debtCollectionRepository.getContributionFiles(LocalDate.now().format(dateTimeFormatter),LocalDate.now().format(dateTimeFormatter)))
                 .thenReturn(List.of(contributionFilesEntity.getXmlContent()));
         List<String> xmlXontents = debtCollectionService.getContributionFiles(LocalDate.now(),LocalDate.now());
-        assertThat(xmlXontents).isNotNull();
-        assertThat(xmlXontents.isEmpty()).isFalse();
+        assertThat(xmlXontents)
+                .isNotNull()
+                .isNotEmpty();
     }
 
 
@@ -82,8 +72,9 @@ class DebtCollectionServiceTest {
         when(debtCollectionRepository.getFdcFiles(LocalDate.now().format(dateTimeFormatter),LocalDate.now().format(dateTimeFormatter)))
                 .thenReturn(List.of(contributionFilesEntity.getXmlContent()));
         List<String> xmlXontents = debtCollectionService.getFdcFiles(LocalDate.now(),LocalDate.now());
-        assertThat(xmlXontents).isNotNull();
-        assertThat(xmlXontents.isEmpty()).isFalse();
+        assertThat(xmlXontents)
+                .isNotNull()
+                .isNotEmpty();
     }
 
     @Test
@@ -144,20 +135,4 @@ class DebtCollectionServiceTest {
                 .hasMessageContaining("0 row(s) updated");
     }
 
-    private ContributionFilesEntity getContributionFilesEntity(int id) {
-        return new ContributionFilesEntity(
-                id,
-                "dummyFile.txt",
-                10,
-                0,
-                LocalDate.of(2023, 10, 10),
-                "dummyUser",
-                LocalDate.of(2023, 10, 11),
-                "anotherDummyUser",
-                "<xml>dummyContent</xml>",
-                LocalDate.of(2023, 10, 12),
-                LocalDate.of(2023, 10, 13),
-                "<xml>ackDummyContent</xml>"
-        );
-    }
 }

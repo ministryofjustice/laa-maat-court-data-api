@@ -1,9 +1,10 @@
 package gov.uk.courtdata.dces.service;
 
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
-import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
 import gov.uk.courtdata.dces.request.UpdateFdcContributionRequest;
 import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
@@ -51,7 +52,6 @@ import static org.mockito.Mockito.when;
 class FdcContributionsServiceTest {
     private List<FdcContributionsEntity> fdcContributionsEntityList;
 
-
     @InjectMocks
     private FdcContributionsService fdcContributionsService;
 
@@ -86,7 +86,7 @@ class FdcContributionsServiceTest {
     void setUp() {
         expectedDateCalculated = LocalDate.now();
         expectedSentenceDate = LocalDate.now().minusDays(1);
-        getFdcContributionsFile();
+        setupFdcContributionsFile();
         populateExpectedEntry();
     }
 
@@ -133,8 +133,8 @@ class FdcContributionsServiceTest {
     @Test
     void givenValidRequest_whenCreateContributionFileAndUpdateFdcStatus_thenReturnUpdatedFdcStatus() {
         // setup
-        CreateFdcFileRequest request = createFdcFileRequest();
-        ContributionFilesEntity mappedEntity = createContributionsFileEntity();
+        CreateFdcFileRequest request = TestModelDataBuilder.getFdcFileRequest();
+        ContributionFilesEntity mappedEntity = TestEntityDataBuilder.getPopulatedContributionFilesEntity(1);
 
         when(debtCollectionRepository.saveContributionFilesEntity(mappedEntity)).thenReturn(true);
         when(fdcContributionsRepository.findByIdIn(request.getFdcIds())).thenReturn(fdcContributionsEntityList);
@@ -157,7 +157,7 @@ class FdcContributionsServiceTest {
 
     @Test
     void givenNullFdcIds_whenCreateContributionFileAndUpdateFdcStatus_thenThrowValidationException() {
-        CreateFdcFileRequest request = createFdcFileRequest();
+        CreateFdcFileRequest request = TestModelDataBuilder.getFdcFileRequest();
         request.setFdcIds(null);
         ValidationException e = assertThrows(ValidationException.class,() -> fdcContributionsService.createContributionFileAndUpdateFdcStatus(request));
         assertThat(e.getMessage()).isEqualTo("FdcIds is empty/null.");
@@ -165,7 +165,7 @@ class FdcContributionsServiceTest {
 
     @Test
     void givenEmptyFdcIds_whenCreateContributionFileAndUpdateFdcStatus_thenThrowValidationException() {
-        CreateFdcFileRequest request = createFdcFileRequest();
+        CreateFdcFileRequest request = TestModelDataBuilder.getFdcFileRequest();
         request.setFdcIds(Set.of());
         ValidationException e = assertThrows(ValidationException.class,() -> fdcContributionsService.createContributionFileAndUpdateFdcStatus(request));
         assertThat(e.getMessage()).isEqualTo("FdcIds is empty/null.");
@@ -177,12 +177,12 @@ class FdcContributionsServiceTest {
         int repId = 456;
         int fileId = 10000;
 
-        FdcContributionsEntity concorEntity = createFdcContributionsEntity(id, repId, fileId);
+        FdcContributionsEntity concorEntity = TestEntityDataBuilder.getPopulatedFdcContributionsEntity(id, repId, fileId);
 
         when(fdcContributionsRepository.findById(id)).thenReturn(Optional.of(concorEntity));
         when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(true);
         // do
-        fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, ""));
+        fdcContributionsService.logFdcProcessed(TestModelDataBuilder.getLogFdcProcessedRequest(id, ""));
         // verify
         verify(fdcContributionsRepository).findById(id);
         verify(debtCollectionService).updateContributionFileReceivedCount(fileId);
@@ -197,13 +197,13 @@ class FdcContributionsServiceTest {
         String errorText = "Error Text";
         LocalDateTime currDate = LocalDateTime.now();
 
-        FdcContributionsEntity fdcEntity = createFdcContributionsEntity(id, repId, fileId);
+        FdcContributionsEntity fdcEntity = TestEntityDataBuilder.getPopulatedFdcContributionsEntity(id, repId, fileId);
 
         when(fdcContributionsRepository.findById(id)).thenReturn(Optional.of(fdcEntity));
 
         doNothing().when(debtCollectionService).saveError(fileErrorCaptor.capture());
         // do
-        fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, errorText));
+        fdcContributionsService.logFdcProcessed(TestModelDataBuilder.getLogFdcProcessedRequest(id, errorText));
         // verify
         verify(fdcContributionsRepository).findById(id);
         verify(debtCollectionService, never()).updateContributionFileReceivedCount(fileId);
@@ -266,7 +266,7 @@ class FdcContributionsServiceTest {
 
     @Test
     void givenValidRequest_whenUpdateFdcContribution_thenReturnUpdatedCount() {
-        UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
+        UpdateFdcContributionRequest request = TestModelDataBuilder.getUpdateFdcContributionRequest();
 
         when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenReturn(1);
 
@@ -276,7 +276,7 @@ class FdcContributionsServiceTest {
 
     @Test
     void givenNonExistentIds_whenUpdateFdcContribution_thenReturnZeroUpdatedCount() {
-        UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
+        UpdateFdcContributionRequest request = TestModelDataBuilder.getUpdateFdcContributionRequest();
 
         when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenReturn(0);
 
@@ -286,7 +286,7 @@ class FdcContributionsServiceTest {
 
     @Test
     void givenDatabaseError_whenUpdateFdcContribution_thenThrowRuntimeException() {
-        UpdateFdcContributionRequest request = getUpdateFdcContributionRequest();
+        UpdateFdcContributionRequest request = TestModelDataBuilder.getUpdateFdcContributionRequest();
 
         when(fdcContributionsRepository.updateStatus(anyInt(), anyString(), any(), any())).thenThrow(new RuntimeException("Database error"));
 
@@ -296,15 +296,6 @@ class FdcContributionsServiceTest {
         assertThat(exception.getMessage()).isEqualTo("Database error");
     }
 
-    private UpdateFdcContributionRequest getUpdateFdcContributionRequest() {
-        return UpdateFdcContributionRequest.builder()
-                .repId(1)
-                .newStatus(FdcContributionsStatus.SENT)
-                .previousStatus(REQUESTED)
-                .build();
-    }
-
-
     @Test
     void givenNonExistentFdcId_whenLogFdcProcessed_thenThrowRequestedObjectNotFoundException() {
         int id = 123;
@@ -313,7 +304,7 @@ class FdcContributionsServiceTest {
         when(fdcContributionsRepository.findById(id)).thenReturn(Optional.empty());
         // do
         assertThrows(RequestedObjectNotFoundException.class, () ->
-                fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, errorText)));
+                fdcContributionsService.logFdcProcessed(TestModelDataBuilder.getLogFdcProcessedRequest(id, errorText)));
         // verify
         verify(fdcContributionsRepository).findById(id);
         verify(contributionFilesRepository, never()).findById(any());
@@ -327,106 +318,16 @@ class FdcContributionsServiceTest {
         int repId = 456;
         int fileId = 10000;
 
-        FdcContributionsEntity fdcEntity = createFdcContributionsEntity(id, repId, fileId);
+        FdcContributionsEntity fdcEntity = TestEntityDataBuilder.getPopulatedFdcContributionsEntity(id, repId, fileId);
         when(fdcContributionsRepository.findById(id)).thenReturn(Optional.of(fdcEntity));
         // do
         assertThrows(NoSuchElementException.class, () ->
-                fdcContributionsService.logFdcProcessed(createLogFdcProcessedRequest(id, "")));
+                fdcContributionsService.logFdcProcessed(TestModelDataBuilder.getLogFdcProcessedRequest(id, "")));
         // verify
         verify(fdcContributionsRepository).findById(id);
         verify(debtCollectionService).updateContributionFileReceivedCount(any());
         // verify no error is saved, as file is not found.
         verify(debtCollectionService, never()).saveError(any());
-    }
-
-    private LogFdcProcessedRequest createLogFdcProcessedRequest(int id, String errorText) {
-        return LogFdcProcessedRequest.builder()
-                .fdcId(id)
-                .errorText(errorText)
-                .build();
-    }
-
-    private static FdcContributionsEntity createFdcContributionsEntity(int id, int repId, int fileId) {
-        RepOrderEntity repOrderEntity = RepOrderEntity.builder()
-                .id(repId)
-                .build();
-
-        return FdcContributionsEntity.builder()
-                .id(id)
-                .repOrderEntity(repOrderEntity)
-                .contFileId(fileId)
-                .build();
-    }
-
-    private CreateFdcFileRequest createFdcFileRequest() {
-        return CreateFdcFileRequest.builder()
-                .xmlFileName("filename.xml")
-                .xmlContent("<xml></xml>")
-                .ackXmlContent("<ackXml></ackXml>")
-                .fdcIds(Set.of(1))
-                .build();
-    }
-
-    private ContributionFilesEntity createContributionsFileEntity() {
-        LocalDate date = LocalDate.now();
-        return ContributionFilesEntity.builder()
-                .fileId(1)
-                .fileName("filename.xml")
-                .recordsSent(1)
-                .recordsReceived(1)
-                .dateCreated(date)
-                .userCreated("DCES")
-                .dateSent(date)
-                .userModified("DCES")
-                .xmlContent("<xml>test</xml>")
-                .dateModified(date)
-                .dateModified(date)
-                .ackXmlContent("<xml>ackXML<xml>")
-                .build();
-    }
-
-    private void getFdcContributionsFile() {
-        fdcContributionsEntityList = new ArrayList<>();
-        RepOrderEntity repOrderEntity = new RepOrderEntity();
-        repOrderEntity.setId(expectedMaatId);
-        repOrderEntity.setSentenceOrderDate(expectedSentenceDate);
-        FdcContributionsEntity fdcFile = new FdcContributionsEntity();
-        fdcFile.setStatus(REQUESTED);
-        fdcFile.setId(expectedId);
-        fdcFile.setAgfsCost(expectedAgfsCost);
-        fdcFile.setLgfsCost(expectedLgfsCost);
-        fdcFile.setFinalCost(expectedFinalCost);
-        fdcFile.setDateCalculated(expectedDateCalculated);
-        fdcFile.setRepOrderEntity(repOrderEntity);
-        fdcContributionsEntityList.add(fdcFile);
-    }
-
-    private void populateExpectedEntry() {
-        expectedEntry = FdcContributionEntry.builder()
-            .id(expectedId)
-            .maatId(expectedMaatId)
-            .finalCost(expectedFinalCost)
-            .agfsCost(expectedAgfsCost)
-            .lgfsCost(expectedLgfsCost)
-            .dateCalculated(expectedDateCalculated)
-            .sentenceOrderDate(expectedSentenceDate)
-            .status(REQUESTED)
-            .build();
-    }
-
-
-    private void assertEqualsWithExpectedValues(FdcContributionsResponse response) {
-        List<FdcContributionEntry> fdcContributionEntries = response.getFdcContributions();
-        assertThat(fdcContributionEntries).isNotEmpty();
-        FdcContributionEntry responseValue = fdcContributionEntries.get(0);
-        FdcContributionsEntity expectedValue = fdcContributionsEntityList.get(0);
-        assertThat(responseValue.getId()).isEqualTo(expectedValue.getId());
-        assertThat(responseValue.getFinalCost()).isEqualTo(expectedValue.getFinalCost());
-        assertThat(responseValue.getAgfsCost()).isEqualTo(expectedValue.getAgfsCost());
-        assertThat(responseValue.getLgfsCost()).isEqualTo(expectedValue.getLgfsCost());
-        assertThat(responseValue.getDateCalculated()).isEqualTo(expectedValue.getDateCalculated());
-        assertThat(responseValue.getSentenceOrderDate()).isEqualTo(expectedValue.getRepOrderEntity().getSentenceOrderDate());
-        assertThat(responseValue).isEqualTo(expectedEntry);
     }
 
     @Test
@@ -448,5 +349,53 @@ class FdcContributionsServiceTest {
                 () -> fdcContributionsService.getFdcContribution(fdcContributionId));
 
         assertThat(exception.getMessage()).isEqualTo("fdc_contribution could not be found by id");
+    }
+
+    /***
+     * Create a contributions file to the exact specifications so that mappings can be properly tested.
+     */
+    private void setupFdcContributionsFile() {
+        fdcContributionsEntityList = new ArrayList<>();
+        RepOrderEntity repOrderEntity = TestEntityDataBuilder.getPopulatedRepOrder();
+        repOrderEntity.setId(expectedMaatId);
+        repOrderEntity.setSentenceOrderDate(expectedSentenceDate);
+        FdcContributionsEntity fdcFile = TestEntityDataBuilder.getPopulatedFdcContributionsEntity(expectedId);
+        fdcFile.setStatus(REQUESTED);
+        fdcFile.setId(expectedId);
+        fdcFile.setAgfsCost(expectedAgfsCost);
+        fdcFile.setLgfsCost(expectedLgfsCost);
+        fdcFile.setFinalCost(expectedFinalCost);
+        fdcFile.setDateCalculated(expectedDateCalculated);
+        fdcFile.setRepOrderEntity(repOrderEntity);
+        fdcContributionsEntityList.add(fdcFile);
+    }
+
+    private void populateExpectedEntry() {
+        expectedEntry = FdcContributionEntry.builder()
+                .id(expectedId)
+                .maatId(expectedMaatId)
+                .finalCost(expectedFinalCost)
+                .agfsCost(expectedAgfsCost)
+                .lgfsCost(expectedLgfsCost)
+                .dateCalculated(expectedDateCalculated)
+                .sentenceOrderDate(expectedSentenceDate)
+                .status(REQUESTED)
+                .contFileId(-999)
+                .build();
+    }
+
+
+    private void assertEqualsWithExpectedValues(FdcContributionsResponse response) {
+        List<FdcContributionEntry> fdcContributionEntries = response.getFdcContributions();
+        assertThat(fdcContributionEntries).isNotEmpty();
+        FdcContributionEntry responseValue = fdcContributionEntries.get(0);
+        FdcContributionsEntity expectedValue = fdcContributionsEntityList.get(0);
+        assertThat(responseValue.getId()).isEqualTo(expectedValue.getId());
+        assertThat(responseValue.getFinalCost()).isEqualTo(expectedValue.getFinalCost());
+        assertThat(responseValue.getAgfsCost()).isEqualTo(expectedValue.getAgfsCost());
+        assertThat(responseValue.getLgfsCost()).isEqualTo(expectedValue.getLgfsCost());
+        assertThat(responseValue.getDateCalculated()).isEqualTo(expectedValue.getDateCalculated());
+        assertThat(responseValue.getSentenceOrderDate()).isEqualTo(expectedValue.getRepOrderEntity().getSentenceOrderDate());
+        assertThat(responseValue).isEqualTo(expectedEntry);
     }
 }

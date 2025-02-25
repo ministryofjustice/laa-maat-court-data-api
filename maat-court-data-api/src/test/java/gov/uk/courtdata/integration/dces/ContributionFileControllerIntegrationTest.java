@@ -2,7 +2,6 @@ package gov.uk.courtdata.integration.dces;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class ContributionFileControllerIntegrationTest extends MockMvcIntegrationTest {
+class ContributionFileControllerIntegrationTest extends MockMvcIntegrationTest {
     private static final String BASE_URL = "/api/internal/v1/debt-collection-enforcement/contribution-file";
 
     private Integer fileId;
@@ -28,11 +27,11 @@ public class ContributionFileControllerIntegrationTest extends MockMvcIntegratio
         final var repOrder = repos.repOrder.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
         final int repId = repOrder.getId();
 
-        final var contributionFile = repos.contributionFiles.saveAndFlush(
-                TestEntityDataBuilder.getPopulatedContributionFilesEntity(null));
+        final var contributionFile = TestEntityDataBuilder.getPopulatedContributionFilesEntity(null);
+        repos.contributionFiles.saveAndFlush(contributionFile);
         this.fileId = contributionFile.getFileId();
 
-        final var concorContribution = ConcorContributionsEntity.builder().repId(repId).contribFileId(fileId).status(SENT).build();
+        final var concorContribution = TestEntityDataBuilder.getConcorContributionsEntity(repId, SENT);
         repos.concorContributions.saveAndFlush(concorContribution);
         this.contributionId = concorContribution.getId();
 

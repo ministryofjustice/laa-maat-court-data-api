@@ -1,6 +1,7 @@
 package gov.uk.courtdata.dces.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
 import gov.uk.courtdata.dces.request.UpdateFdcContributionRequest;
@@ -163,7 +164,7 @@ class FdcContributionsControllerTest {
         when(fdcContributionsService.logFdcProcessed(request))
                 .thenReturn(1111);
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
-                        .content(createDrcUpdateJson(id, errorText))
+                        .content(TestModelDataBuilder.getFdcDrcUpdateJson(id, errorText))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value("1111"));
@@ -180,7 +181,7 @@ class FdcContributionsControllerTest {
         when(fdcContributionsService.logFdcProcessed(request))
                 .thenThrow(new MAATCourtDataException("Test Error"));
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
-                        .content(createDrcUpdateJson(id, errorText))
+                        .content(TestModelDataBuilder.getFdcDrcUpdateJson(id, errorText))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("message").value("Test Error"));
@@ -197,7 +198,7 @@ class FdcContributionsControllerTest {
         when(fdcContributionsService.logFdcProcessed(request))
                 .thenThrow(new NoSuchElementException("contribution_file not found"));
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
-                        .content(createDrcUpdateJson(id, errorText))
+                        .content(TestModelDataBuilder.getFdcDrcUpdateJson(id, errorText))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("code").value("Object Not Found"));
@@ -243,16 +244,5 @@ class FdcContributionsControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.fdcContributions.[0].id").value("1"))
             .andExpect(jsonPath("$.fdcContributions.[0].accelerate").value("True"));
-    }
-
-
-
-    private static String createDrcUpdateJson(int fdcId, String errorText){
-        return """
-                {
-                    "fdcId" : %s,
-                    "errorText" : "%s"
-                }
-                """.formatted(fdcId, errorText);
     }
 }

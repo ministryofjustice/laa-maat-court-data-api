@@ -742,6 +742,7 @@ public class TestEntityDataBuilder {
 
     public static FdcContributionsEntity getPopulatedFdcContributionsEntity(Integer id, Integer repId, Integer fileId){
         return FdcContributionsEntity.builder()
+                .id(id)
                 .status(FdcContributionsStatus.REQUESTED)
                 .repOrderEntity(getPopulatedRepOrder(repId))
                 .finalCost(BigDecimal.valueOf(111.1))

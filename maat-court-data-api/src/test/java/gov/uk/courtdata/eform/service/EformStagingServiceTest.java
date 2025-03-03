@@ -14,10 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 
 import java.util.Optional;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,10 +40,10 @@ class EformStagingServiceTest {
             .maatRef(MAAT_ID)
             .build();
 
-    @MockBean
+    @MockitoBean
     private EformStagingRepository mockEformStagingRepository;
 
-    @MockBean
+    @MockitoBean
     private EformStagingDTOMapper mockEformStagingDTOMapper;
 
     private EformStagingService eformStagingService;

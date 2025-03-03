@@ -1,6 +1,5 @@
 package gov.uk.courtdata.eform.service;
 
-import gov.uk.courtdata.eform.exception.UsnException;
 import gov.uk.courtdata.eform.repository.EformAuditRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsAudit;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,11 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +32,7 @@ public class EformAuditServiceTest {
             .maatRef(null)
             .build();
 
-    @MockBean
+    @MockitoBean
     private EformAuditRepository mockEformAuditRepository;
 
     private EformAuditService eformAuditService;

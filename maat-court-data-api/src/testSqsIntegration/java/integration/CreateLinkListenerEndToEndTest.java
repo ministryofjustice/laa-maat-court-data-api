@@ -10,10 +10,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -38,10 +38,10 @@ class CreateLinkListenerEndToEndTest {
 
     private static final int ONCE = 1;
 
-    @MockBean
+    @MockitoBean
     private CreateLinkService createLinkService;
 
-    @MockBean
+    @MockitoBean
     private QueueMessageLogService queueMessageLogService;
 
 

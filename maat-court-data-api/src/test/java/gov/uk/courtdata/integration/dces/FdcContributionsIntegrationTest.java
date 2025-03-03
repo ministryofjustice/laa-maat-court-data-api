@@ -17,8 +17,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -61,7 +61,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     private static int file2Id;
     private static final String FILE_TWO = "FileTwo";
 
-    @SpyBean
+    @MockitoSpyBean
     DebtCollectionRepository debtCollectionRepositorySpy;
 
     @BeforeEach

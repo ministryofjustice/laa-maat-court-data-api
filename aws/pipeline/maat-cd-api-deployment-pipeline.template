@@ -205,8 +205,6 @@ Resources:
           - !ImportValue mgmt-prod-PrivateSubnetA
           - !ImportValue mgmt-prod-PrivateSubnetB
           - !ImportValue mgmt-prod-PrivateSubnetC
-        SecurityGroupIds:
-          - !ImportValue sonarqube-CodeTestingSecurityGroup
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Artifacts:
         Location: !ImportValue pipeline-ArtifactBucket
@@ -233,9 +231,6 @@ Resources:
             Value: !Ref ApplicationName
           - Name: IS_ROUTE_TO_LIVE
             Value: !Ref pIsRouteToLive
-          - Name: SONARQUBE_TOKEN
-            Type: PARAMETER_STORE
-            Value: /maat-cd-api/SONARQUBE_TOKEN
       TimeoutInMinutes: 25
 
   Pipeline:

@@ -47,4 +47,6 @@ public class RepOrderStateDTO {
 
     private String meansReviewType;
     private String passportReviewType;
+    private String meansWorkReason;
+    private String passportWorkReason;
 }

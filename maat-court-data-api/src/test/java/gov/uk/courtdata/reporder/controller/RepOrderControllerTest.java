@@ -18,15 +18,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -68,17 +67,17 @@ class RepOrderControllerTest {
 
     @Autowired
     private MockMvc mvc;
-    @MockBean
+    @MockitoBean
     private UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
-    @MockBean
+    @MockitoBean
     private MaatIdValidator maatIdValidator;
-    @MockBean
+    @MockitoBean
     private RepOrderService repOrderService;
-    @MockBean
+    @MockitoBean
     private RepOrderMvoRegService repOrderMvoRegService;
-    @MockBean
+    @MockitoBean
     private RepOrderMvoService repOrderMvoService;
-    @MockBean
+    @MockitoBean
     private RepOrderRepository repOrderRepository;
 
     @Test

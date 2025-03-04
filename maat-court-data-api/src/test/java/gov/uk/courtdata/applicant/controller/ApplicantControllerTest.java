@@ -17,13 +17,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
 
 import java.util.List;
 
@@ -44,16 +42,16 @@ public class ApplicantControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @MockBean
+    @MockitoBean
     private ApplicantService applicantService;
 
-    @MockBean
+    @MockitoBean
     private ApplicantHistoryService applicantHistoryService;
 
-    @MockBean
+    @MockitoBean
     private RepOrderApplicantLinksService repOrderApplicantLinksService;
 
-    @MockBean
+    @MockitoBean
     private ApplicantValidationProcessor validator;
 
     @Autowired

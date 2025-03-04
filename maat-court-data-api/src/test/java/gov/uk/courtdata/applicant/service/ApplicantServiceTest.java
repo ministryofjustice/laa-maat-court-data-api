@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.HashMap;
 import java.util.Optional;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,12 +25,12 @@ import static org.mockito.Mockito.*;
 public class ApplicantServiceTest {
 
     private static final int ID = 1;
-    @MockBean
+    @MockitoBean
     private ApplicantRepository applicantRepository;
     private ApplicantService applicantService;
-    @MockBean
+    @MockitoBean
     private RepOrderService repOrderService;
-    @MockBean
+    @MockitoBean
     private ApplicantHistoryService applicantHistoryService;
 
     @BeforeEach

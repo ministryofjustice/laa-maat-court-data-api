@@ -199,12 +199,6 @@ Resources:
       Name: !Join [ "", [ !Ref ApplicationName , "-appbuild" ] ]
       Description: !Join [ '', [ 'Project to build the Java application ', !Ref ApplicationName ] ]
       EncryptionKey: !ImportValue pipeline-EncryptionKey
-      VpcConfig:
-        VpcId: !ImportValue mgmt-prod-VpcId
-        Subnets:
-          - !ImportValue mgmt-prod-PrivateSubnetA
-          - !ImportValue mgmt-prod-PrivateSubnetB
-          - !ImportValue mgmt-prod-PrivateSubnetC
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Artifacts:
         Location: !ImportValue pipeline-ArtifactBucket

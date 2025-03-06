@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Repository
@@ -33,6 +34,8 @@ public class StoredProcedureRepository {
     private static final String PROCEDURE_NAME_NOT_SET_EXCEPTION = "The procedure name has not been set";
     private static final int MIN_SQL_ERROR_CODE = 20000;
     private static final int MAX_SQL_ERROR_CODE = 21999;
+    private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("^[A-Za-z0-9_]+$");
+
 
     public ApplicationDTO executeStoredProcedure(StoredProcedureRequest storedProcedure) throws
             MAATApplicationException, SQLException {
@@ -118,14 +121,29 @@ public class StoredProcedureRepository {
     protected CallableStatement getDbProcedureStatement(Connection connection, StoredProcedureRequest request)
             throws SQLException, MAATApplicationException {
 
+        String packageName = request.getDbPackageName();
+        String procedureName = request.getProcedureName();
+
         if (StringUtils.isBlank(request.getDbPackageName())) {
             throw new MAATApplicationException(PACKAGE_NAME_NOT_SET_EXCEPTION);
-        } else if ((StringUtils.isBlank(request.getProcedureName()))) {
+        }
+
+        if ((StringUtils.isBlank(request.getProcedureName()))) {
             throw new MAATApplicationException(PROCEDURE_NAME_NOT_SET_EXCEPTION);
         }
-        return connection.prepareCall(
-                "{ call %s.%s( ? )}".formatted(request.getDbPackageName(), request.getProcedureName())
-        );
+
+        // Validate that the identifiers contain only allowed characters
+        if (!IDENTIFIER_PATTERN.matcher(packageName).matches()) {
+            throw new MAATApplicationException("Invalid package name");
+        }
+
+        if (!IDENTIFIER_PATTERN.matcher(procedureName).matches()) {
+            throw new MAATApplicationException("Invalid procedure name");
+        }
+
+        String sql = String.format("{ call %s.%s( ? )}", packageName, procedureName);
+
+        return connection.prepareCall(sql);
     }
 
 

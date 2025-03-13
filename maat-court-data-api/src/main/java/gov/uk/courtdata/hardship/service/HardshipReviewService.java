@@ -2,6 +2,8 @@ package gov.uk.courtdata.hardship.service;
 
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
+import gov.uk.courtdata.helper.ReflectionHelper;
+import java.time.LocalDateTime;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
@@ -81,17 +83,10 @@ public class HardshipReviewService {
 
     @Transactional
     public void patch(int hardshipReviewId, Map<String, Object> updateFields) {
-        Optional<HardshipReviewEntity> hardshipReviewEntityOptional = hardshipReviewRepository.findById(hardshipReviewId);
-        if (hardshipReviewEntityOptional.isEmpty()) {
-            throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for ID: %s", hardshipReviewId));
-        } else {
-            HardshipReviewEntity hardshipReviewEntity = hardshipReviewEntityOptional.get();
-            updateFields.forEach((key, value) -> {
-                Field field = ReflectionUtils.findField(HardshipReviewEntity.class, key);
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, hardshipReviewEntity, value);
-            });
-            hardshipReviewRepository.save(hardshipReviewEntity);
-        }
+        HardshipReviewEntity hardshipReviewEntity = hardshipReviewRepository.findById(hardshipReviewId)
+            .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("No Hardship Review found for ID: %s", hardshipReviewId)));
+
+        ReflectionHelper.updateEntityFromMap(hardshipReviewEntity, updateFields);
+        hardshipReviewRepository.save(hardshipReviewEntity);
     }
 }

@@ -7,6 +7,7 @@ import gov.uk.courtdata.dto.FinancialAssessmentDTO;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
@@ -87,11 +88,7 @@ public class FinancialAssessmentService {
     @Transactional
     public void patchFinancialAssessment(int financialAssessmentId, Map<String, Object> updateFields) {
         FinancialAssessmentEntity financialAssessmentEntity = findFinancialAssessmentEntity(financialAssessmentId);
-        updateFields.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(FinancialAssessmentEntity.class, key);
-            field.setAccessible(true);
-            ReflectionUtils.setField(field, financialAssessmentEntity, value);
-        });
+        ReflectionHelper.updateEntityFromMap(financialAssessmentEntity, updateFields);
         financialAssessmentRepository.save(financialAssessmentEntity);
     }
 }

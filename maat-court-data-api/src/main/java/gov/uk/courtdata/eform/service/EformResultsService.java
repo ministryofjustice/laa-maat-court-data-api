@@ -1,16 +1,14 @@
 package gov.uk.courtdata.eform.service;
 
-import gov.uk.courtdata.eform.exception.USNExceptionUtil;
 import gov.uk.courtdata.eform.exception.UsnException;
 import gov.uk.courtdata.eform.repository.EformResultsRepository;
 import gov.uk.courtdata.eform.repository.entity.EformResultsEntity;
+import gov.uk.courtdata.helper.ReflectionHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,20 +37,10 @@ public class EformResultsService {
 
     @Transactional
     public void updateEformResultFields(Integer usn, EformResultsEntity eformResultsEntity) {
-        Optional<EformResultsEntity> latestEformResult = Optional.ofNullable(eformResultsRepository.findTopByUsnOrderByIdDesc(usn));
+        EformResultsEntity latestEformResult = Optional.ofNullable(eformResultsRepository.findTopByUsnOrderByIdDesc(usn))
+            .orElseThrow(() -> new UsnException(HttpStatus.NOT_FOUND, String.format(USN_NOT_FOUND, usn)));
 
-        if (latestEformResult.isPresent()) {
-            for (Field declaredField: EformResultsEntity.class.getDeclaredFields()) {
-                ReflectionUtils.makeAccessible(declaredField);
-                Object fieldValue = ReflectionUtils.getField(declaredField, eformResultsEntity);
-                if (fieldValue != null) {
-                    ReflectionUtils.setField(declaredField, latestEformResult.get(), fieldValue);
-                }
-            }
-
-            eformResultsRepository.save(latestEformResult.get());
-        } else {
-            throw new UsnException(HttpStatus.NOT_FOUND, String.format(USN_NOT_FOUND, usn));
-        }
+        ReflectionHelper.updateEntityFromObject(latestEformResult, eformResultsEntity);
+        eformResultsRepository.save(latestEformResult);
     }
 }

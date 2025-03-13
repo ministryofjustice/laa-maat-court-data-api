@@ -175,7 +175,7 @@ class HardshipReviewServiceTest {
                 .id(MOCK_HARDSHIP_ID)
                 .repId(MOCK_REP_ID)
                 .build();
-        String requestJson = "{\"replaced\":\"Y\"}";
+        String requestJson = "{\"replaced\":\"Y\", \"reviewDate\":\"2025-03-12T14:11:25.771034452\"}";
         Map<String, Object> updateFields = new ObjectMapper().readValue(requestJson, HashMap.class);
         when(hardshipReviewRepository.findById(MOCK_HARDSHIP_ID)).thenReturn(Optional.of(hardshipReviewEntity));
         hardshipReviewService.patch(MOCK_HARDSHIP_ID, updateFields);

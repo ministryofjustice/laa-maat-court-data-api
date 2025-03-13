@@ -2,7 +2,7 @@ package gov.uk.courtdata.hardship.service;
 
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
-import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
+import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
@@ -14,12 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -81,17 +78,10 @@ public class HardshipReviewService {
 
     @Transactional
     public void patch(int hardshipReviewId, Map<String, Object> updateFields) {
-        Optional<HardshipReviewEntity> hardshipReviewEntityOptional = hardshipReviewRepository.findById(hardshipReviewId);
-        if (hardshipReviewEntityOptional.isEmpty()) {
-            throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for ID: %s", hardshipReviewId));
-        } else {
-            HardshipReviewEntity hardshipReviewEntity = hardshipReviewEntityOptional.get();
-            updateFields.forEach((key, value) -> {
-                Field field = ReflectionUtils.findField(HardshipReviewEntity.class, key);
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, hardshipReviewEntity, value);
-            });
-            hardshipReviewRepository.save(hardshipReviewEntity);
-        }
+        HardshipReviewEntity hardshipReviewEntity = hardshipReviewRepository.findById(hardshipReviewId)
+            .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("No Hardship Review found for ID: %s", hardshipReviewId)));
+
+        ReflectionHelper.updateEntityFromMap(hardshipReviewEntity, updateFields);
+        hardshipReviewRepository.save(hardshipReviewEntity);
     }
 }

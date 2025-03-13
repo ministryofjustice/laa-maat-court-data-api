@@ -5,13 +5,13 @@ import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ReflectionUtils;
 
 @Slf4j
 @Service
@@ -84,20 +83,11 @@ public class RepOrderService {
     @Transactional
     public void update(Integer repId, Map<String, Object> repOrder) {
         log.info("RepOrderService::update - Start");
-      RepOrderEntity currentRepOrder = repOrderRepository.findById(repId)
-          .orElseThrow(() -> new RequestedObjectNotFoundException(
-              String.format("Rep Order not found for id %d", repId)));
+        RepOrderEntity currentRepOrder = repOrderRepository.findById(repId)
+            .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("Rep Order not found for id %d", repId)));
 
-        if (currentRepOrder != null) {
-            repOrder.forEach((key, value) -> {
-                Field field = ReflectionUtils.findField(RepOrderEntity.class, key);
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, currentRepOrder, value);
-            });
-            repOrderRepository.save(currentRepOrder);
-        } else {
-          throw new RequestedObjectNotFoundException("Rep Order not found for id " + repId);
-        }
+        ReflectionHelper.updateEntityFromMap(currentRepOrder, repOrder);
+        repOrderRepository.save(currentRepOrder);
     }
 
     @Transactional

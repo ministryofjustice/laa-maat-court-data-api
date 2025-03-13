@@ -8,6 +8,7 @@ import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.entity.RoleDataItemEntity;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.mapper.ReservationsMapper;
 import gov.uk.courtdata.mapper.RoleDataItemsMapper;
 import gov.uk.courtdata.helper.ReservationsRepositoryHelper;
@@ -20,9 +21,7 @@ import gov.uk.courtdata.users.mapper.UserSummaryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -82,25 +81,13 @@ public class UserSummaryService {
 
     public void updateUser(UserEntity updateFields) {
         UserEntity userEntity = getUser(updateFields.getUsername());
-        for (Field declaredField : UserEntity.class.getDeclaredFields()) {
-            ReflectionUtils.makeAccessible(declaredField);
-            Object fieldValue = ReflectionUtils.getField(declaredField, updateFields);
-            if (fieldValue != null) {
-                ReflectionUtils.setField(declaredField, userEntity, fieldValue);
-            }
-        }
+        ReflectionHelper.updateEntityFromObject(userEntity, updateFields);
         userRepository.save(userEntity);
     }
 
     public void patchUser(String username, Map<String, Object> updateFields) {
         UserEntity userEntity = getUser(username);
-        updateFields.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(UserEntity.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, userEntity, value);
-            }
-        });
+        ReflectionHelper.updateEntityFromMap(userEntity, updateFields);
         userRepository.save(userEntity);
     }
 }

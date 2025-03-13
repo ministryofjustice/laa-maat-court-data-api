@@ -3,6 +3,7 @@ package gov.uk.courtdata.eform.service;
 import gov.uk.courtdata.eform.exception.UsnException;
 import gov.uk.courtdata.eform.repository.EformsDecisionHistoryRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsDecisionHistory;
+import gov.uk.courtdata.helper.ReflectionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -51,20 +52,10 @@ public class EformsDecisionHistoryService {
 
     @Transactional
     public void updateEformsDecisionHistoryFields(Integer usn, EformsDecisionHistory eformsDecisionHistory) {
+        EformsDecisionHistory latestEformsDecisionHistory = Optional.ofNullable(eformsDecisionHistoryRepository.findTopByUsnOrderByIdDesc(usn))
+            .orElseThrow(() -> new UsnException(HttpStatus.NOT_FOUND, String.format(USN_NOT_FOUND, usn)));
 
-        Optional<EformsDecisionHistory> latestEformsDecisionHistory = Optional.ofNullable(eformsDecisionHistoryRepository.findTopByUsnOrderByIdDesc(usn));
-
-        if (latestEformsDecisionHistory.isPresent()) {
-            for (Field declaredField : EformsDecisionHistory.class.getDeclaredFields()) {
-                ReflectionUtils.makeAccessible(declaredField);
-                Object fieldValue = ReflectionUtils.getField(declaredField, eformsDecisionHistory);
-                if (fieldValue != null) {
-                    ReflectionUtils.setField(declaredField, latestEformsDecisionHistory.get(), fieldValue);
-                }
-            }
-            eformsDecisionHistoryRepository.save(latestEformsDecisionHistory.get());
-        } else {
-            throw new UsnException(HttpStatus.NOT_FOUND, String.format(USN_NOT_FOUND, usn));
-        }
+        ReflectionHelper.updateEntityFromObject(latestEformsDecisionHistory, eformsDecisionHistory);
+        eformsDecisionHistoryRepository.save(latestEformsDecisionHistory);
     }
 }

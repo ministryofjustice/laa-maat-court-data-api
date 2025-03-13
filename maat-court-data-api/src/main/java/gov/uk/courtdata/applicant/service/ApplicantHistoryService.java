@@ -5,6 +5,7 @@ import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.mapper.ApplicantHistoryMapper;
 import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.helper.ReflectionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,15 +63,7 @@ public class ApplicantHistoryService {
         ApplicantHistoryEntity currentApplicantHistory = applicantHistoryRepository.findById(id)
                 .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("Applicant History not found for id %d", id)));
 
-        if (currentApplicantHistory != null) {
-            applicantHistory.forEach((key, value) -> {
-                Field field = ReflectionUtils.findField(ApplicantHistoryEntity.class, key);
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, currentApplicantHistory, value);
-            });
-            applicantHistoryRepository.save(currentApplicantHistory);
-        } else {
-            throw new RequestedObjectNotFoundException("Applicant History not found for id " + id);
-        }
+        ReflectionHelper.updateEntityFromMap(currentApplicantHistory, applicantHistory);
+        applicantHistoryRepository.save(currentApplicantHistory);
     }
 }

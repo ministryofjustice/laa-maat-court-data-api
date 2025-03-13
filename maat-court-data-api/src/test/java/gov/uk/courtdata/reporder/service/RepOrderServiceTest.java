@@ -9,6 +9,7 @@ import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.RepOrderRepository;
+import java.time.LocalDateTime;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -161,6 +162,7 @@ class RepOrderServiceTest {
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrder));
         HashMap<String, Object> inputMap = new HashMap<>();
         inputMap.put("iojResult", "PASS");
+        inputMap.put("dateModified", LocalDateTime.now().toString());
         repOrderService.update(TestModelDataBuilder.REP_ID, inputMap);
         verify(repOrderRepository, atLeastOnce()).findById(any());
         verify(repOrderRepository, atLeastOnce()).save(any());

@@ -11,7 +11,7 @@ public class ReflectionHelper {
     public static <T> void updateEntityFromMap(T entity, Map<String, Object> updateFields) {
         updateFields.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(entity.getClass(), key);
-            field.setAccessible(true);
+            ReflectionUtils.makeAccessible(field);
 
             if (field.getType().equals(LocalDateTime.class)) {
                 value = LocalDateTime.parse(String.valueOf(value));

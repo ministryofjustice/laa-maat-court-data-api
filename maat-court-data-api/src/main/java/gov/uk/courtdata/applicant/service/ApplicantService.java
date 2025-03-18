@@ -4,13 +4,12 @@ import gov.uk.courtdata.applicant.dto.SendToCCLFDTO;
 import gov.uk.courtdata.applicant.repository.ApplicantRepository;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 
 @Slf4j
@@ -33,18 +32,9 @@ public class ApplicantService {
         Applicant currentApplicant = applicantRepository.findById(id)
                 .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("Applicant not found for id %d", id)));
 
-        if (currentApplicant != null) {
-            applicant.forEach((key, value) -> {
-                Field field = ReflectionUtils.findField(Applicant.class, key);
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, currentApplicant, value);
-            });
-            applicantRepository.save(currentApplicant);
-        } else {
-            throw new RequestedObjectNotFoundException("Applicant not found for id " + id);
-        }
+        ReflectionHelper.updateEntityFromMap(currentApplicant, applicant);
+        applicantRepository.save(currentApplicant);
     }
-
 
     public void delete(Integer id) {
         log.info("ApplicantService::delete - Start");

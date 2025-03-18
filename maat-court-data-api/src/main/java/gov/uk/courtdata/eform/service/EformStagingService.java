@@ -5,14 +5,11 @@ import gov.uk.courtdata.eform.exception.USNExceptionUtil;
 import gov.uk.courtdata.eform.mapper.EformStagingDTOMapper;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.eform.repository.entity.EformsStagingEntity;
+import gov.uk.courtdata.helper.ReflectionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ReflectionUtils;
-
-import java.lang.reflect.Field;
-import java.util.Optional;
 
 /**
  * The responsibility of this class is to provide data repository access without verification,
@@ -63,19 +60,10 @@ public class EformStagingService {
 
     @Transactional
     public void updateEformStagingFields(Integer usn, EformsStagingEntity eformsStaging) {
-        Optional<EformsStagingEntity> eformsStagingRecord = eformStagingRepository.findById(usn);
+        EformsStagingEntity eformsStagingRecord = eformStagingRepository.findById(usn)
+            .orElseThrow(() -> USNExceptionUtil.nonexistent(usn));
 
-        if (eformsStagingRecord.isPresent()) {
-            for (Field declaredField : EformsStagingEntity.class.getDeclaredFields()) {
-                ReflectionUtils.makeAccessible(declaredField);
-                Object fieldValue = ReflectionUtils.getField(declaredField, eformsStaging);
-                if (fieldValue != null) {
-                    ReflectionUtils.setField(declaredField, eformsStagingRecord.get(), fieldValue);
-                }
-            }
-            eformStagingRepository.save(eformsStagingRecord.get());
-        } else {
-            throw USNExceptionUtil.nonexistent(usn);
-        }
+        ReflectionHelper.updateEntityFromObject(eformsStagingRecord, eformsStaging);
+        eformStagingRepository.save(eformsStagingRecord);
     }
 }

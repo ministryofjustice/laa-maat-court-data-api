@@ -7,6 +7,7 @@ import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
+import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
@@ -15,11 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -100,18 +98,10 @@ public class PassportAssessmentService {
     }
 
     public void patch(int passportAssessmentId, Map<String, Object> updateFields) {
-        Optional<PassportAssessmentEntity> passportAssessmentEntityOptional = passportAssessmentRepository.findById(passportAssessmentId);
-        if (passportAssessmentEntityOptional .isPresent()) {
-            PassportAssessmentEntity passportAssessmentEntity = passportAssessmentEntityOptional.get();
-            updateFields.forEach((key, value) -> {
-                Field field = ReflectionUtils.findField(PassportAssessmentEntity.class, key);
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, passportAssessmentEntity, value);
-            });
-            passportAssessmentRepository.save(passportAssessmentEntity);
-        } else {
-            String message = String.format("No Passport Assessment found for passport assessment Id: [%s]", passportAssessmentId);
-            throw new RequestedObjectNotFoundException(message);
-        }
+        PassportAssessmentEntity passportAssessmentEntity = passportAssessmentRepository.findById(passportAssessmentId)
+            .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("No Passport Assessment found for passport assessment Id: [%s]", passportAssessmentId)));
+
+        ReflectionHelper.updateEntityFromMap(passportAssessmentEntity, updateFields);
+        passportAssessmentRepository.save(passportAssessmentEntity);
     }
 }

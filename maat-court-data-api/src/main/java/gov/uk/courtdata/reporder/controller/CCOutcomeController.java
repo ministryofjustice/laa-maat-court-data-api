@@ -120,36 +120,12 @@ public class CCOutcomeController {
         LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Find RepOrder CC Outcome Request Received");
         validator.validate(repId);
-        return ResponseEntity.ok(service.findByRepId(repId));
+        List<RepOrderCCOutcomeDTO> outcomes = service.findByRepId(repId);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("X-Total-Records", String.valueOf(outcomes.size()));
+        return new ResponseEntity<>(service.findByRepId(repId), responseHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/reporder/{repId}",
-            method = {RequestMethod.HEAD},
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @Operation(description = "Retrieve a RepOrder CCOutCome size in the header")
-    @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "400",
-            description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
-            description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    public ResponseEntity<List<RepOrderCCOutcomeDTO>> findByRepIdLengthInHeader(@PathVariable int repId) {
-        LoggingData.MAAT_ID.putInMDC(repId);
-        log.info("Find RepOrder CC Outcome Request Received");
-        validator.validate(repId);
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentLength(service.findByRepId(repId).size());
-        return ResponseEntity.ok().headers(responseHeaders).build();
-    }
 
     @Operation(description = "Deleting Crown Court Outcome by a Rep Order Id")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))

@@ -8,6 +8,7 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
 import gov.uk.courtdata.reporder.service.CCOutcomeService;
 import gov.uk.courtdata.reporder.validator.CCOutComeValidationProcessor;
+import gov.uk.courtdata.util.ApiHeaders;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -122,7 +123,7 @@ public class CCOutcomeController {
         validator.validate(repId);
         List<RepOrderCCOutcomeDTO> outcomes = service.findByRepId(repId);
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("X-Total-Records", String.valueOf(outcomes.size()));
+        responseHeaders.add(ApiHeaders.TOTAL_RECORDS, String.valueOf(outcomes.size()));
         return new ResponseEntity<>(service.findByRepId(repId), responseHeaders, HttpStatus.OK);
     }
 

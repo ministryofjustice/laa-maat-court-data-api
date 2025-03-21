@@ -14,6 +14,7 @@ import gov.uk.courtdata.entity.RepOrderCCOutComeEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
+import gov.uk.courtdata.util.ApiHeaders;
 import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
@@ -23,7 +24,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -142,7 +142,7 @@ class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
         repos.crownCourtProcessing.saveAndFlush(repOrderCCOutComeEntity);
         MvcResult result = runSuccessScenario(MockMvcRequestBuilders.head(
                 ENDPOINT_URL + "/reporder/" + mockRepId1));
-        assertThat(result.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
+        assertThat(result.getResponse().getHeader(ApiHeaders.TOTAL_RECORDS)).isEqualTo("1");
     }
 
     @Test
@@ -151,6 +151,6 @@ class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
         repos.crownCourtProcessing.saveAndFlush(repOrderCCOutComeEntity);
         MvcResult result = runSuccessScenario(MockMvcRequestBuilders.head(
                 ENDPOINT_URL + "/reporder/" + mockRepId2));
-        assertThat(result.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
+        assertThat(result.getResponse().getHeader(ApiHeaders.TOTAL_RECORDS)).isEqualTo("0");
     }
 }

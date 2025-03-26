@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.wqoffence.service.WQOffenceService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -35,29 +37,17 @@ class WQOffenceControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    void givenValidParameters_whenGetNewOffenceCountIsInvoked_thenReturnNewOffenceCount()
-            throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1})
+    void givenValidParameters_whenGetNewOffenceCountIsInvoked_thenReturnCorrectNewOffenceCount(
+            int expectedCount) throws Exception {
         when(wqOffenceService.getNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID,
-                TestModelDataBuilder.TEST_OFFENCE_ID)).thenReturn(1);
+                TestModelDataBuilder.TEST_OFFENCE_ID)).thenReturn(expectedCount);
         mvc.perform(MockMvcRequestBuilders.get(
                         ENDPOINT_URL + "/" + TestModelDataBuilder.TEST_OFFENCE_ID + "/case/"
                                 + TestModelDataBuilder.TEST_CASE_ID))
                 .andExpect(status().isOk())
-                .andExpect(content().string("1"))
+                .andExpect(content().string(String.valueOf(expectedCount)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
-
-    @Test
-    void givenInvalidParameters_whenGetNewOffenceCountIsInvoked_thenReturn0() throws Exception {
-        when(wqOffenceService.getNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID,
-                TestModelDataBuilder.TEST_OFFENCE_ID)).thenReturn(0);
-        mvc.perform(MockMvcRequestBuilders.get(
-                        ENDPOINT_URL + "/" + TestModelDataBuilder.TEST_OFFENCE_ID + "/case/"
-                                + TestModelDataBuilder.TEST_CASE_ID))
-                .andExpect(status().isOk())
-                .andExpect(content().string("0"))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
-
 }

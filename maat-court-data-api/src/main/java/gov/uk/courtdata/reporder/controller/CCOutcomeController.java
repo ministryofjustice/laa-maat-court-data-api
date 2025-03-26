@@ -123,7 +123,7 @@ public class CCOutcomeController {
         List<RepOrderCCOutcomeDTO> outcomes = service.findByRepId(repId);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add(ApiHeaders.TOTAL_RECORDS, String.valueOf(outcomes.size()));
-        return new ResponseEntity<>(service.findByRepId(repId), responseHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(outcomes, responseHeaders, HttpStatus.OK);
     }
 
 

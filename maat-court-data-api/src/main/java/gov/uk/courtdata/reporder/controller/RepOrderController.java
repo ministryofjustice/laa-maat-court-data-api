@@ -48,8 +48,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "RepOrders", description = "Rest API for rep orders")
 @RequestMapping("${api-endpoints.assessments-domain}/rep-orders")
+@Tag(name = "RepOrder", description = "Rest API for rep orders")
 public class RepOrderController {
 
     private final RepOrderService repOrderService;
@@ -202,10 +202,7 @@ public class RepOrderController {
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "/{repId}/ioj-assessor-details",
-            method = {RequestMethod.GET},
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(value = "/{repId}/ioj-assessor-details", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve details of the interests of justice assessor for a given representation order")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)

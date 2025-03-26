@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "RepOrders", description = "Rest API for RepOrder Capital")
 @RequestMapping("${api-endpoints.assessments-domain}/rep-orders/capital")
+@Tag(name = "RepOrder", description = "Rest API for capital assets")
 public class RepOrderCapitalController {
 
     private final RepOrderCapitalService service;

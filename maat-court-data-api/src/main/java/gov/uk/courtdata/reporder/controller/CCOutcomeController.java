@@ -34,8 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "RepOrders", description = "Rest API for RepOrder CC OutCome")
 @RequestMapping("${api-endpoints.assessments-domain}/rep-orders/cc-outcome")
+@Tag(name = "RepOrder", description = "Rest API for crown court outcomes")
 public class CCOutcomeController {
 
     private final CCOutcomeService service;

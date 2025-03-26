@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "WQOffence", description = "Rest API for WQ Offence")
 @RequestMapping("${api-endpoints.assessments-domain}/wq-offence")
+@Tag(name = "WorkQueue", description = "Rest API for work queue offences")
 public class WQOffenceController {
 
     private final WQOffenceService wqOffenceService;

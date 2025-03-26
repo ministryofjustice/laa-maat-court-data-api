@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "offence", description = "Rest API for offence")
 @RequestMapping("${api-endpoints.assessments-domain}/offence")
+@Tag(name = "offence", description = "Rest API for offences")
 public class OffenceController {
 
     private final OffenceService offenceService;

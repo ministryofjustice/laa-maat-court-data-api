@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Rep Order Equity", description = "Rest API for rep order equity")
 @RequestMapping("/api/internal/v1/assessment/rep-order-equity")
+@Tag(name = "RepOrder", description = "Rest API for rep order equity")
 public class RepOrderEquityController {
 
     private final RepOrderEquityService repOrderEquityService;

@@ -14,28 +14,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${api-endpoints.assessments-domain}/rep-orders/capital")
+@RequestMapping("${api-endpoints.assessments-domain}/rep-orders/{repId}/capital-assets")
 @Tag(name = "RepOrder", description = "Rest API for capital assets")
 public class RepOrderCapitalController {
 
     private final RepOrderCapitalService service;
-
     private final MaatIdValidator maatIdValidator;
 
-    @RequestMapping(value = "/reporder/{repId}",
-            method = RequestMethod.HEAD,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @Operation(description = "Retrieve a rep order capital record")
+    @GetMapping(value = "/count", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve Capital Asset Count")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )

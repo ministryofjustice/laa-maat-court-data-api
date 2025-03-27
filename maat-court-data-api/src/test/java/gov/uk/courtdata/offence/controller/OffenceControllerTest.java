@@ -33,7 +33,7 @@ class OffenceControllerTest {
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/offence";
 
     @Test
-    void givenInvalidRoute_whenFindOffenceByCaseIdIsInvoked_thenNotFoundIsReturned()
+    void givenInvalidRoute_whenRequestIsMade_thenNotFoundIsReturned()
             throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/case/")
                         .contentType(MediaType.APPLICATION_JSON))

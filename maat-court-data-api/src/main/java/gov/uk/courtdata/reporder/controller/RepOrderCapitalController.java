@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,12 +46,10 @@ public class RepOrderCapitalController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<HttpHeaders> getCapitalAssetCount(@PathVariable int repId) {
-      LoggingData.MAAT_ID.putInMDC(repId);
+    public ResponseEntity<Integer> getCapitalAssetCount(@PathVariable int repId) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Rep Order Capital Asset Count Request Received");
         maatIdValidator.validate(repId);
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentLength(service.getCapitalAssetCount(repId));
-        return ResponseEntity.ok().headers(responseHeaders).build();
+        return ResponseEntity.ok(service.getCapitalAssetCount(repId));
     }
 }

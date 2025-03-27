@@ -30,7 +30,7 @@ class WQOffenceControllerTest {
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/wq-offence";
 
     @Test
-    void givenIncorrectParameters_whenGetNewOffenceCountIsInvoked_thenErrorIsThrown()
+    void givenInvalidRoute_whenRequestIsMade_thenNotFoundIsReturned()
             throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/case/")
                         .contentType(MediaType.APPLICATION_JSON))

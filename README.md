@@ -90,7 +90,7 @@ Make sure that all tests are passing by running the following ‘gradle’ comma
 The apps should then start cleanly if you run
 
 ```sh
-./startup-local.sh
+./start-local.sh
 ```
 
 laa-maat-court-data-api application will be running on http://localhost:8090 

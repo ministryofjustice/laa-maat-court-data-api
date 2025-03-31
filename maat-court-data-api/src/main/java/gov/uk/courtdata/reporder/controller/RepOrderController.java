@@ -3,8 +3,8 @@ package gov.uk.courtdata.reporder.controller;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponseCodes;
 import gov.uk.courtdata.dto.AssessorDetails;
-import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
@@ -13,24 +13,23 @@ import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
+import gov.uk.courtdata.util.ApiHeaders;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,7 +40,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,26 +56,21 @@ public class RepOrderController {
     private final RepOrderMvoRegService repOrderMvoRegService;
     private final UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
 
-    @RequestMapping(value = "/{repId}",
-            method = {RequestMethod.GET, RequestMethod.HEAD},
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a rep order record")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
     @StandardApiResponse
-    public ResponseEntity<Object> find(HttpServletRequest request, @PathVariable int repId,
+    public ResponseEntity<Object> find(@PathVariable int repId,
                                        @RequestParam(value = "has_sentence_order_date", defaultValue = "false")
                                        boolean hasSentenceOrderDate) {
         LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Get Rep Order Request Received");
-        if (request.getMethod().equals(RequestMethod.HEAD.name())) {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.setContentLength(repOrderService.exists(repId, hasSentenceOrderDate) ? 1 : 0);
-            return ResponseEntity.ok().headers(responseHeaders).build();
-        }
-        return ResponseEntity.ok(repOrderService.find(repId, hasSentenceOrderDate));
+        RepOrderDTO repOrderDTO = repOrderService.find(repId, hasSentenceOrderDate);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add(ApiHeaders.TOTAL_RECORDS, String.valueOf(repOrderDTO != null ? 1 : 0));
+        return new ResponseEntity<>(repOrderDTO, responseHeaders, HttpStatus.OK);
     }
 
     @PostMapping(value = "/update-date-completed", produces = MediaType.APPLICATION_JSON_VALUE)

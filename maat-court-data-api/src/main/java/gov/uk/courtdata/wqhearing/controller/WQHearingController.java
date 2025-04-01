@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "WQ hearing", description = "Rest API for WQ hearing")
 @RequestMapping("${api-endpoints.assessments-domain}/wq-hearing")
+@Tag(name = "WorkQueue", description = "Rest API for work queue hearings")
 public class WQHearingController {
 
     private final WQHearingService wqHearingService;

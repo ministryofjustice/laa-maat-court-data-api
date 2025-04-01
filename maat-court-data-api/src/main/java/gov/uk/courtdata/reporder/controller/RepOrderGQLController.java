@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "RepOrdersGQL", description = "Rest API for rep orders")
+@Tag(name = "RepOrder", description = "Rest API for rep orders")
 public class RepOrderGQLController implements GraphQLQueryResolver {
 
     private final RepOrderService repOrderService;

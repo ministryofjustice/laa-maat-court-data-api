@@ -1,8 +1,28 @@
 package gov.uk.courtdata.reporder.controller;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.constants.ErrorCodes;
-import gov.uk.courtdata.dto.*;
+import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.dto.RepOrderMvoDTO;
+import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
@@ -12,29 +32,25 @@ import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.reporder.validator.UpdateAppDateCompletedValidator;
 import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.util.ApiHeaders;
 import gov.uk.courtdata.validator.MaatIdValidator;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(RepOrderController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -67,16 +83,22 @@ class RepOrderControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
     @MockitoBean
     private UpdateAppDateCompletedValidator updateAppDateCompletedValidator;
+
     @MockitoBean
     private MaatIdValidator maatIdValidator;
+
     @MockitoBean
     private RepOrderService repOrderService;
+
     @MockitoBean
     private RepOrderMvoRegService repOrderMvoRegService;
+
     @MockitoBean
     private RepOrderMvoService repOrderMvoService;
+
     @MockitoBean
     private RepOrderRepository repOrderRepository;
 
@@ -134,24 +156,22 @@ class RepOrderControllerTest {
 
     @Test
     void givenHeadRequestWithValidRepIdAndNoOptionalParameters_whenFindIsInvoked_thenContentLengthIsOne() throws Exception {
-        when(repOrderService.exists(anyInt(), anyBoolean()))
-                .thenReturn(true);
+        when(repOrderService.find(anyInt(), anyBoolean()))
+                .thenReturn(TestModelDataBuilder.getRepOrderDTO());
 
         mvc.perform(MockMvcRequestBuilders.head(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID))
                 .andExpect(status().isOk())
-                .andExpect(content().string(""))
-                .andExpect(header().string(HttpHeaders.CONTENT_LENGTH, "1"));
+                .andExpect(header().string(ApiHeaders.TOTAL_RECORDS, "1"));
     }
 
     @Test
-    void givenHeadRequestWithInvalidRepIdAndNoOptionalParameters_whenFindIsInvoked_thenContentLengthIsZero() throws Exception {
-        when(repOrderService.exists(anyInt(), anyBoolean()))
-                .thenReturn(false);
+    void givenHeadRequestWithInvalidRepIdAndNoOptionalParameters_whenFindIsInvoked_thenErrorIsThrown() throws Exception {
+        when(repOrderService.find(anyInt(), anyBoolean()))
+                .thenThrow(new RequestedObjectNotFoundException("No Rep Order found for ID: 1234"));
 
         mvc.perform(MockMvcRequestBuilders.head(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID))
-                .andExpect(status().isOk())
-                .andExpect(content().string(""))
-                .andExpect(header().string(HttpHeaders.CONTENT_LENGTH, "0"));
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("No Rep Order found for ID: 1234"));
     }
 
     @Test

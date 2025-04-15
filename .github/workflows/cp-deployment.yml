@@ -46,7 +46,7 @@ jobs:
           docker tag maat-cda $REGISTRY/$REPOSITORY:$GITHUB_TAG
 
           echo "Pushing the Docker image to $REGISTRY/$REPOSITORY:$GITHUB_TAG"
-          docker push --all-tags $REGISTRY/$REPOSITORY
+          docker push $REGISTRY/$REPOSITORY:$GITHUB_TAG
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ vars.ECR_REPOSITORY }}

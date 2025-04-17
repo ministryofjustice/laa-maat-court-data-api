@@ -40,7 +40,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
     open-in-view: false
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         jdbc.lob.non_contextual_creation: true

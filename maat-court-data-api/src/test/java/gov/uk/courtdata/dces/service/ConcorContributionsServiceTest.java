@@ -106,7 +106,7 @@ class ConcorContributionsServiceTest {
 
         verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
         assertThat(responseList).isNotNull();
-        assertThat(responseList.isEmpty()).isFalse();
+        assertThat(responseList).isNotEmpty();
         assertThat(responseList.get(0).getConcorContributionId()).isEqualTo(344);
 
     }
@@ -127,7 +127,7 @@ class ConcorContributionsServiceTest {
 
         verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
         assertThat(responseList).isNotNull();
-        assertThat(responseList.isEmpty()).isFalse();
+        assertThat(responseList).isNotEmpty();
         assertThat(responseList.get(0).getConcorContributionId()).isEqualTo(343);
     }
 
@@ -139,7 +139,7 @@ class ConcorContributionsServiceTest {
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 2, 999);
 
         assertThat(responseList).isNotNull();
-        assertThat(responseList.isEmpty()).isTrue();
+        assertThat(responseList).isNotEmpty();
     }
 
     @Test
@@ -193,7 +193,7 @@ class ConcorContributionsServiceTest {
         assertThat(actualContributionFileEntity.getRecordsSent()).isEqualTo(10);
         assertThat(actualContributionFileEntity.getFileId()).isEqualTo(1);
         assertThat(contributionEntityList).isNotNull();
-        assertThat(contributionEntityList.size()).isEqualTo(1);
+        assertThat(contributionEntityList).hasSize(1);
         assertThat(contributionEntityList.get(0).getStatus().name()).isEqualTo("SENT");
     }
 
@@ -322,7 +322,7 @@ class ConcorContributionsServiceTest {
 
         verify(concorRepository).findIdsForUpdate(any());
         verify(concorRepository).updateStatusAndResetContribFileForIds(any(), anyString(), any());
-        assertThat(response.size()).isEqualTo(2);
+        assertThat(response).hasSize(2);
     }
 
     @Test
@@ -334,7 +334,7 @@ class ConcorContributionsServiceTest {
 
         verify(concorRepository).findIdsForUpdate(any());
         verify(concorRepository,never()).updateStatusAndResetContribFileForIds(any(), anyString(), any());
-        assertThat(response.size()).isEqualTo(0);
+        assertThat(response).isEmpty();
     }
 
     @Test

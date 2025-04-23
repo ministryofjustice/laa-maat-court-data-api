@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,21 +23,16 @@ public class DebtCollectionService {
     private final ContributionFileErrorsRepository contributionFileErrorsRepository;
     private final ContributionFilesRepository contributionFilesRepository;
 
-    public List<String> getContributionFiles(final LocalDate fromDate, final LocalDate toDate) {
-        log.info("date with the -> {} {}", fromDate, toDate);
-        return debtCollectionRepository.getContributionFiles(convertToCorrectDateFormat(fromDate), convertToCorrectDateFormat(toDate));
+    public List<String> getContributionFiles(LocalDate fromDate, LocalDate toDate) {
+        log.info("date range -> {} {}", fromDate, toDate);
+        List<ContributionFilesEntity> contributionFilesList = contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId("FDC%", fromDate, toDate);
+        return contributionFilesList.stream().map(ContributionFilesEntity::getXmlContent).toList();
     }
 
-    public List<String> getFdcFiles(final LocalDate fromDate, final LocalDate toDate) {
-        log.info("date with the -> {} {}", fromDate, toDate);
-        return debtCollectionRepository.getFdcFiles(convertToCorrectDateFormat(fromDate), convertToCorrectDateFormat(toDate));
-    }
-
-    String convertToCorrectDateFormat(LocalDate localDate) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        log.info("Printing before date " + localDate.toString());
-        log.info("Printing after date " + localDate.format(dateTimeFormatter));
-        return localDate.format(dateTimeFormatter);
+    public List<String> getFdcFiles(LocalDate fromDate, LocalDate toDate) {
+        log.info("date range -> {} {}", fromDate, toDate);
+        List<ContributionFilesEntity> contributionFilesList = contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId("CONTRIBUTIONS%", fromDate, toDate);
+        return contributionFilesList.stream().map(ContributionFilesEntity::getXmlContent).toList();
     }
 
     public void saveError(ContributionFileErrorsEntity entity) {

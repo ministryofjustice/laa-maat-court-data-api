@@ -3,6 +3,7 @@ package gov.uk.courtdata.integration.dces;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
+import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,17 +12,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class ContributionFileControllerIntegrationTest extends MockMvcIntegrationTest {
+class ContributionFileControllerIntegrationTest extends MockMvcIntegrationTest {
     private static final String BASE_URL = "/api/internal/v1/debt-collection-enforcement/contribution-file";
 
     private Integer fileId;
     private Integer contributionId;
+
+    private static final String FDC_CURRENT_XML = "<xml>CURRENT CONTENT</xml>";
 
     @BeforeEach
     public void setUp() {
@@ -29,7 +35,7 @@ public class ContributionFileControllerIntegrationTest extends MockMvcIntegratio
         final int repId = repOrder.getId();
 
         final var contributionFile = repos.contributionFiles.saveAndFlush(
-                TestEntityDataBuilder.getPopulatedContributionFilesEntity(null));
+                TestEntityDataBuilder.getPopulatedContributionFilesEntity(null, "CONTRIBUTIONS_TEST_FILE"));
         this.fileId = contributionFile.getFileId();
 
         final var concorContribution = ConcorContributionsEntity.builder().repId(repId).contribFileId(fileId).status(SENT).build();
@@ -38,6 +44,31 @@ public class ContributionFileControllerIntegrationTest extends MockMvcIntegratio
 
         repos.contributionFileErrors.saveAndFlush(
                 TestEntityDataBuilder.getContributionFileErrorsEntity(fileId, contributionId));
+
+        // Save Concor Contribution Files to verify range behaviour
+
+        // save a future value
+        saveEntityWithCreationDate("CONTRIBUTIONS_TEST_FILE_FUTURE", LocalDate.of(3000,6,15));
+        saveEntityWithCreationDate("CONTRIBUTIONS_TEST_FILE_NEAR_FUTURE", LocalDate.now().plusDays(1));
+        // save a long passed value
+        saveEntityWithCreationDate("CONTRIBUTIONS_TEST_FILE_PAST", LocalDate.of(1000,6,15));
+        saveEntityWithCreationDate("CONTRIBUTIONS_TEST_FILE_NEAR_PAST", LocalDate.now().minusDays(1));
+
+        // Save FDC Entries
+        repos.contributionFiles.saveAndFlush(
+                TestEntityDataBuilder.getPopulatedContributionFilesEntity(null, "FDC_TEST_FILE_CURRENT", FDC_CURRENT_XML));
+        // save a future value
+        saveEntityWithCreationDate("FDC_TEST_FILE_FUTURE", LocalDate.of(3000,6,15));
+        saveEntityWithCreationDate("FDC_TEST_FILE_NEAR_FUTURE", LocalDate.now().plusDays(1));
+        // save a long passed value
+        saveEntityWithCreationDate("FDC_TEST_FILE_PAST", LocalDate.of(1000,6,15));
+        saveEntityWithCreationDate("FDC_TEST_FILE_NEAR_PAST", LocalDate.now().minusDays(1));
+    }
+
+    private void saveEntityWithCreationDate(String fileName, LocalDate creationDate){
+        ContributionFilesEntity entity = repos.contributionFiles.saveAndFlush(TestEntityDataBuilder.getPopulatedContributionFilesEntity(null, fileName));
+        entity.setDateCreated(creationDate);
+        repos.contributionFiles.save(entity);
     }
 
     @AfterEach
@@ -122,4 +153,56 @@ public class ContributionFileControllerIntegrationTest extends MockMvcIntegratio
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error/{contributionId}", invalidFileId, invalidContributionId))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void givenCorrectParameters_whenGetConcorContributionFileByDateRangeInvoked_thenResponseIsReturned() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/concorFiles")
+                        .param("fromDate", "2000-01-01")
+                        .param("toDate", "2200-12-30"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(3));
+    }
+
+    @Test
+    void givenExactParameters_whenGetConcorContributionFileByDateRangeInvoked_thenResponseIsReturned() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/concorFiles")
+                        .param("fromDate", LocalDate.now().format(DateTimeFormatter.ISO_DATE))
+                        .param("toDate", LocalDate.now().format(DateTimeFormatter.ISO_DATE)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(1));
+    }
+
+
+    @Test
+    void givenOneDayRange_whenGetFdcContributionFileByDateRangeInvoked_thenOneResponseIsReturned() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/fdcFiles")
+                        .param("fromDate", LocalDate.now().format(DateTimeFormatter.ISO_DATE))
+                        .param("toDate", LocalDate.now().format(DateTimeFormatter.ISO_DATE)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.[0]").value(FDC_CURRENT_XML));
+    }
+
+    @Test
+    void givenSmallRange_whenGetFdcContributionFileByDateRangeInvoked_thenSurroundingValuesReturned() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/fdcFiles")
+                        .param("fromDate", LocalDate.now().minusDays(3).format(DateTimeFormatter.ISO_DATE))
+                        .param("toDate", LocalDate.now().plusDays(3).format(DateTimeFormatter.ISO_DATE)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(3));
+    }
+
+    @Test
+    void givenHugeRange_whenGetFdcContributionFileByDateRangeInvoked_thenAllValuesAreReturned() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/fdcFiles")
+                        .param("fromDate", LocalDate.of(0,1,1).format(DateTimeFormatter.ISO_DATE))
+                        .param("toDate", LocalDate.of(5000,1,1).format(DateTimeFormatter.ISO_DATE)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(5));
+    }
+
 }

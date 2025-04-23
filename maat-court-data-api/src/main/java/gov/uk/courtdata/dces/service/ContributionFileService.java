@@ -32,10 +32,6 @@ public class ContributionFileService {
         return entityList.stream().map(ContributionFilesEntity::getXmlContent).toList();
     }
 
-    public List<ContributionFilesEntity> getContributionFiles(LocalDate fromDate, LocalDate toDate){
-        return contributionFileRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId("CONTRIBUTION%", fromDate, toDate);
-    }
-
     public List<ContributionFileErrorResponse> getAllContributionFileError(int contributionFileId) {
         return contributionFileErrorRepository.findByContributionFileId(contributionFileId).stream()
                 .map(contributionFileMapper::toContributionFileErrorResponse).toList();

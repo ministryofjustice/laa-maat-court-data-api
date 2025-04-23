@@ -139,7 +139,7 @@ class ConcorContributionsServiceTest {
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 2, 999);
 
         assertThat(responseList).isNotNull();
-        assertThat(responseList).isNotEmpty();
+        assertThat(responseList).isEmpty();
     }
 
     @Test

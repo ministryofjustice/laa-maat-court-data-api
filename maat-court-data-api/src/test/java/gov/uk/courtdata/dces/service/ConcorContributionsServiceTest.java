@@ -105,8 +105,9 @@ class ConcorContributionsServiceTest {
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 3, 343);
 
         verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
-        assertThat(responseList).isNotNull();
-        assertThat(responseList).isNotEmpty();
+        assertThat(responseList)
+                .isNotNull()
+                .isNotEmpty();
         assertThat(responseList.get(0).getConcorContributionId()).isEqualTo(344);
 
     }
@@ -119,15 +120,15 @@ class ConcorContributionsServiceTest {
                 populateConcorContributionsEntity(344),
                 populateConcorContributionsEntity(345),
                 populateConcorContributionsEntity(346)
-
         );
         when(concorRepository.findByStatusAndIdGreaterThan(any(),any(), any())).thenReturn(entities);
 
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, null, null);
 
         verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
-        assertThat(responseList).isNotNull();
-        assertThat(responseList).isNotEmpty();
+        assertThat(responseList)
+                .isNotNull()
+                .isNotEmpty();
         assertThat(responseList.get(0).getConcorContributionId()).isEqualTo(343);
     }
 
@@ -138,8 +139,9 @@ class ConcorContributionsServiceTest {
 
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 2, 999);
 
-        assertThat(responseList).isNotNull();
-        assertThat(responseList).isEmpty();
+        assertThat(responseList)
+                .isNotNull()
+                .isEmpty();
     }
 
     @Test
@@ -192,8 +194,9 @@ class ConcorContributionsServiceTest {
         assertThat(actualContributionFileEntity.getAckXmlContent()).isEqualTo("<xml>ackDummyContent</xml>");
         assertThat(actualContributionFileEntity.getRecordsSent()).isEqualTo(10);
         assertThat(actualContributionFileEntity.getFileId()).isEqualTo(1);
-        assertThat(contributionEntityList).isNotNull();
-        assertThat(contributionEntityList).hasSize(1);
+        assertThat(contributionEntityList)
+                .isNotNull()
+                .hasSize(1);
         assertThat(contributionEntityList.get(0).getStatus().name()).isEqualTo("SENT");
     }
 

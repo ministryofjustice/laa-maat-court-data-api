@@ -4,6 +4,7 @@ import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +40,10 @@ class RepOrderMapperTest {
     private static final String IOJ_APPEAL_RESULT_FAIL = "FAIL";
     private static final String IOJ_APPEAL_ASSESSOR_NAME = "ocon-m";
     private static final LocalDateTime IOJ_APPEAL_DATE = LocalDateTime.of(2015, 1, 9, 11, 16, 32);
+    private static final String MEANS_REVIEW_TYPE = "NAFI";
+    private static final String PASSPORT_REVIEW_TYPE = "ER";
+    private static final String MEANS_WORK_REASON = "HR";
+    private static final String PASSPORT_WORK_REASON = "FMA";
 
     private final RepOrderMapper repOrderMapper = new RepOrderMapperImpl(); // Assuming an implementation exists
 
@@ -68,6 +73,8 @@ class RepOrderMapperTest {
                 .pastStatus(PASSPORT_STATUS)
                 .dateCreated(DATE_PASSPORT_CREATED)
                 .userCreatedEntity(userEntity)
+                .rtCode(PASSPORT_REVIEW_TYPE)
+                .nworCode(PASSPORT_WORK_REASON)
                 .build();
 
         passportAssessmentFail = PassportAssessmentEntity.builder()
@@ -85,6 +92,8 @@ class RepOrderMapperTest {
                 .fassInitStatus(MEANS_STATUS)
                 .dateCreated(DATE_MEANS_CREATED)
                 .userCreatedEntity(userEntity)
+                .rtCode(MEANS_REVIEW_TYPE)
+                .newWorkReason(NewWorkReasonEntity.builder().code(MEANS_WORK_REASON).build())
                 .build();
 
         financialAssessmentInitialFail = FinancialAssessmentEntity.builder()
@@ -167,7 +176,9 @@ class RepOrderMapperTest {
                 () -> assertNull(repOrderState.getIojAppealAssessorName()),
                 () -> assertNull(repOrderState.getIojAppealDate()),
                 () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
-                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision())
+                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision()),
+                () -> assertEquals(PASSPORT_REVIEW_TYPE, repOrderState.getPassportReviewType()),
+                () -> assertEquals(PASSPORT_WORK_REASON, repOrderState.getPassportWorkReason())
         );
     }
 
@@ -201,7 +212,9 @@ class RepOrderMapperTest {
                 () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getPassportAssessorName()),
                 () -> assertEquals(DATE_PASSPORT_CREATED, repOrderState.getDatePassportCreated()),
                 () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
-                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision())
+                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision()),
+                () -> assertEquals(MEANS_REVIEW_TYPE, repOrderState.getMeansReviewType()),
+                () -> assertEquals(MEANS_WORK_REASON, repOrderState.getMeansWorkReason())
         );
     }
 

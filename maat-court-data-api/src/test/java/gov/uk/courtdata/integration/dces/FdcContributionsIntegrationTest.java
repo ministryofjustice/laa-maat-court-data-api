@@ -3,6 +3,7 @@ package gov.uk.courtdata.integration.dces;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dces.request.CreateFdcItemRequest;
 import gov.uk.courtdata.dces.service.DebtCollectionRepository;
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
@@ -16,12 +17,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -61,45 +61,34 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     private static int file2Id;
     private static final String FILE_TWO = "FileTwo";
 
-    @SpyBean
+    @MockitoSpyBean
     DebtCollectionRepository debtCollectionRepositorySpy;
 
     @BeforeEach
     public void setUp() {
-        int file1Id = repos.contributionFiles.save(buildFileEntity(FILE_ONE, false)).getFileId();
-        file2Id = repos.contributionFiles.save(buildFileEntity(FILE_TWO, true)).getFileId();
+        int file1Id = saveContributionFile(FILE_ONE, false);
+        file2Id = saveContributionFile(FILE_TWO, true);
 
-        expectedId1 = repos.fdcContributions.save(buildFdcEntity(EXPECTED_STATUS_1, EXPECTED_FINAL_COST_1, file1Id)).getId();
+        expectedId1 = saveFdcContribution(EXPECTED_STATUS_1, EXPECTED_FINAL_COST_1, file1Id);
         repos.fdcItemsRepository.save(FdcItemsEntity.builder().fdcId(expectedId1).build());
-        expectedId2 = repos.fdcContributions.save(buildFdcEntity(EXPECTED_STATUS_2, EXPECTED_FINAL_COST_2, 99999999)).getId();
-        expectedId3 = repos.fdcContributions.save(buildFdcEntity(EXPECTED_STATUS_3, EXPECTED_FINAL_COST_3, null)).getId();
-        expectedId4 = repos.fdcContributions.save(buildFdcEntity(EXPECTED_STATUS_4, EXPECTED_FINAL_COST_4, file2Id)).getId();
+
+        expectedId2 = saveFdcContribution(EXPECTED_STATUS_2, EXPECTED_FINAL_COST_2, 99999999);
+        expectedId3 = saveFdcContribution(EXPECTED_STATUS_3, EXPECTED_FINAL_COST_3, null);
+        expectedId4 = saveFdcContribution(EXPECTED_STATUS_4, EXPECTED_FINAL_COST_4, file2Id);
+
     }
 
-    private ContributionFilesEntity buildFileEntity(String fileIdentifier, boolean isBlankXml) {
-        ContributionFilesEntity entity = ContributionFilesEntity.builder()
-                .fileName(fileIdentifier)
-                .recordsReceived(0)
-                .recordsSent(10)
-                .build();
-        if (!isBlankXml){
-            entity.setXmlContent("<xml>"+fileIdentifier+"</xml>");
-            entity.setAckXmlContent("<ackXml>"+fileIdentifier+"</ackXml>");
-        }
-        return entity;
+    private int saveFdcContribution(FdcContributionsStatus status, String finalCost, Integer fileId){
+        var repOrderEntity = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
+        var fdcEntity = TestEntityDataBuilder.getFdcContibutionsEntity(status, finalCost, fileId, repOrderEntity);
+        repos.fdcContributions.save(fdcEntity);
+        return fdcEntity.getId();
     }
 
-    private FdcContributionsEntity buildFdcEntity(FdcContributionsStatus status, String finalCost, Integer fileId) {
-        BigDecimal finalCostBigDecimal = new BigDecimal(finalCost);
-        return FdcContributionsEntity.builder()
-                .status(status)
-                .repOrderEntity(repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder()))
-                .finalCost(finalCostBigDecimal)
-                .agfsCost(finalCostBigDecimal)
-                .lgfsCost(finalCostBigDecimal)
-                .dateCalculated(TestEntityDataBuilder.TEST_DATE.toLocalDate())
-                .contFileId(fileId)
-                .build();
+    private int saveContributionFile(String fileName, boolean isBlankXml){
+        var fileEntity = TestEntityDataBuilder.getContributionFilesEntity(fileName, 10, 0, isBlankXml);
+        repos.contributionFiles.save(fileEntity);
+        return fileEntity.getFileId();
     }
 
     @Test
@@ -179,8 +168,8 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void testLogDrcProcessedNoErrors() throws Exception {
-        String s = createLogDrcProcessedRequest(expectedId4,"");
+    void givenSuccessfulDRCResponse_whenLogDrcProcessedIsCalled_thenLoggedCorrectly() throws Exception {
+        String s = TestModelDataBuilder.getFdcDrcUpdateJson(expectedId4,"");
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -197,9 +186,9 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void testLogDrcProcessedWithErrors() throws Exception {
+    void givenDRCResponseWithError_whenLogDrcProcessedIsCalled_thenLoggedCorrectly() throws Exception {
         String errorText = "ErrorText";
-        String s = createLogDrcProcessedRequest(expectedId4,errorText);
+        String s = TestModelDataBuilder.getFdcDrcUpdateJson(expectedId4,errorText);
         LocalDateTime dateTimeCheck = LocalDateTime.now();
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
@@ -226,8 +215,8 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void testLogDrcProcessedNoFile() throws Exception {
-        String s = createLogDrcProcessedRequest(expectedId3,"");
+    void givenNullAssociatedFile_whenLogDrcProcessedIsCalled_thenUnsuccessfulAndNotLogged() throws Exception {
+        String s = TestModelDataBuilder.getFdcDrcUpdateJson(expectedId3,"");
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -240,8 +229,8 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
 
 
     @Test
-    void testLogDrcProcessedMissingFile() throws Exception {
-        String s = createLogDrcProcessedRequest(expectedId2,"");
+    void givenMissingAssociatedFile_whenLogDrcProcessedIsCalled_thenUnsuccessfulAndNotLogged() throws Exception {
+        String s = TestModelDataBuilder.getFdcDrcUpdateJson(expectedId2,"");
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -253,10 +242,10 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void testLogDrcProcessedTestRollback() throws Exception {
+    void givenErrorInSave_whenLogDrcProcessedIsCalled_thenFileCounterIsNotChanged() throws Exception {
         int fdcId = expectedId4;
         String errorString = StringUtils.repeat("*", 5000);
-        String s = createLogDrcProcessedRequest(fdcId,errorString);
+        String s = TestModelDataBuilder.getFdcDrcUpdateJson(fdcId,errorString);
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -272,7 +261,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void testFindFdcById_WhereIdListIsValid() throws Exception {
+    void givenIdsAsInts_whenFindFdcByIdIsCalled_thenSuccessfulWithResults() throws Exception {
         String s = String.format("[%s,%s]", expectedId1, expectedId4);
 
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post(FDC_CONTRIBUTION_FIND_BY_ID_ENDPOINT_URL)
@@ -287,7 +276,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void testFindFdcById_WhereIdsStringProvided() throws Exception {
+    void givenIdsAsStrings_whenFindFdcByIdIsCalled_thenSuccessfulWithResults() throws Exception {
         String s = String.format("[%s,%s]", expectedId1,expectedId3);
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post(FDC_CONTRIBUTION_FIND_BY_ID_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -301,7 +290,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void testFindFdcById_WhereIdsNotFound() throws Exception {
+    void givenUnusedIds_whenFindFdcByIdisCalled_thenSuccessfulAndEmptyListReturned() throws Exception {
         String s = String.format("[%s,%s]", -1111, 4444);
         mockMvc.perform(MockMvcRequestBuilders.post(FDC_CONTRIBUTION_FIND_BY_ID_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -313,7 +302,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void testFindFdcById_WhereIdsNotProvided() throws Exception {
+    void givenEmptyIdList_whenFindFdcByIdisCalled_thenBadRequest() throws Exception {
         String s = "[]";
         mockMvc.perform(MockMvcRequestBuilders.post(FDC_CONTRIBUTION_FIND_BY_ID_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -321,21 +310,8 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
-    void validateFdcPresent(ResultActions result, Integer expectedFdcId) throws Exception {
-        FdcContributionsEntity expectedEntity = repos.fdcContributions.findById(expectedFdcId).get();
-        result.
-                andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].id").exists())
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].maatId").value(expectedEntity.getRepOrderEntity().getId()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].sentenceOrderDate").value(expectedEntity.getRepOrderEntity().getSentenceOrderDate().toString()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].finalCost").value(expectedEntity.getFinalCost().doubleValue()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].lgfsCost").value(expectedEntity.getLgfsCost().doubleValue()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].agfsCost").value(expectedEntity.getAgfsCost().doubleValue()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].dateCalculated").value(expectedEntity.getDateCalculated().toString()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].status").value(expectedEntity.getStatus().toString()));
-    }
-
     @Test
-    void testDeleteFdcItem() throws Exception {
+    void givenAnFdcItemId_whenDeleteFdcItemCalled_thenIsDeleted() throws Exception {
         long originalFdcItemCount = repos.fdcItemsRepository.count();
         String parameter = "/fdc-id/{fdc-id}";
         mockMvc.perform(MockMvcRequestBuilders.delete(FDC_ITEMS_URL+parameter, expectedId1))
@@ -346,7 +322,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void testCreateFdcItemWithDefaultedValues() throws Exception {
+    void givenMissingValues_whenCreateFdcItemIsCalled_thenValuesAreDefaultAndCorrect() throws Exception {
         long originalFdcItemCount = repos.fdcItemsRepository.count();
         String itemType = "Test";
         CreateFdcItemRequest request = CreateFdcItemRequest.builder()
@@ -375,7 +351,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         assertEquals("DCES", savedEntity.getUserModified());
     }
     @Test
-    void testCreateFdcItemWithExplicitValues() throws Exception {
+    void givenExplicitValues_whenCreateFdcItemIsCalled_thenValuesAreCorrect() throws Exception {
         long originalFdcItemCount = repos.fdcItemsRepository.count();
         String itemType = "Test";
         LocalDate expectedDate = LocalDate.of(2000,1,1);
@@ -418,11 +394,17 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         assertEquals(expectedAdjustReason, savedEntity.getAdjustmentReason());
     }
 
-    private String createLogDrcProcessedRequest(Integer id, String errorText) {
-        return  """
-                    {
-                        "fdcId" : %s,
-                        "errorText" : "%s"
-                    }""".formatted(id,errorText);
+
+    void validateFdcPresent(ResultActions result, Integer expectedFdcId) throws Exception {
+        FdcContributionsEntity expectedEntity = repos.fdcContributions.findById(expectedFdcId).get();
+        result.
+                andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].id").exists())
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].maatId").value(expectedEntity.getRepOrderEntity().getId()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].sentenceOrderDate").value(expectedEntity.getRepOrderEntity().getSentenceOrderDate().toString()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].finalCost").value(expectedEntity.getFinalCost().doubleValue()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].lgfsCost").value(expectedEntity.getLgfsCost().doubleValue()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].agfsCost").value(expectedEntity.getAgfsCost().doubleValue()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].dateCalculated").value(expectedEntity.getDateCalculated().toString()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].status").value(expectedEntity.getStatus().toString()));
     }
 }

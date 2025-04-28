@@ -3,12 +3,11 @@ package gov.uk.courtdata.address.service;
 import gov.uk.courtdata.address.repository.AddressRepository;
 import gov.uk.courtdata.address.entity.Address;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.helper.ReflectionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 
 @Slf4j
@@ -29,16 +28,8 @@ public class AddressService {
         Address currentAddress = addressRepository.findById(id)
                 .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("Address not found for id %d", id)));
 
-        if (currentAddress != null) {
-            address.forEach((key, value) -> {
-                Field field = ReflectionUtils.findField(Address.class, key);
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, currentAddress, value);
-            });
-            addressRepository.save(currentAddress);
-        } else {
-            throw new RequestedObjectNotFoundException("Address not found for id " + id);
-        }
+        ReflectionHelper.updateEntityFromMap(currentAddress, address);
+        addressRepository.save(currentAddress);
     }
 
     public void delete(Integer id) {

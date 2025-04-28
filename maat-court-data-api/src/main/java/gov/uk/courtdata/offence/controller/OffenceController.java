@@ -8,20 +8,21 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "offence", description = "Rest API for offence")
 @RequestMapping("${api-endpoints.assessments-domain}/offence")
+@Tag(name = "offence", description = "Rest API for offences")
 public class OffenceController {
 
     private final OffenceService offenceService;
@@ -48,10 +49,7 @@ public class OffenceController {
         return ResponseEntity.ok(offenceService.findByCaseId(caseId));
     }
 
-    @RequestMapping(value = "/{offenceId}/case/{caseId}",
-            method = {RequestMethod.HEAD},
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(value = "/{offenceId}/case/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve new offence count")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
@@ -68,10 +66,9 @@ public class OffenceController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<Object> getNewOffenceCount(@PathVariable String offenceId, @PathVariable int caseId) {
+    public ResponseEntity<Object> getNewOffenceCount(@PathVariable String offenceId,
+            @PathVariable int caseId) {
         log.info("Get new offence count");
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentLength(offenceService.getNewOffenceCount(caseId, offenceId));
-        return ResponseEntity.ok().headers(responseHeaders).build();
+        return ResponseEntity.ok(offenceService.getNewOffenceCount(caseId, offenceId));
     }
 }

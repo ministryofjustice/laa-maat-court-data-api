@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
@@ -32,9 +32,9 @@ class ContributionsControllerTest {
     private static final Integer TEST_CONTRIBUTIONS_ID = 999;
     @Autowired
     private MockMvc mvc;
-    @MockBean
+    @MockitoBean
     private ContributionsService contributionsService;
-    @MockBean
+    @MockitoBean
     private CreateContributionsValidator createContributionsValidator;
 
     @Test

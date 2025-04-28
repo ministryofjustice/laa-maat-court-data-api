@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "WQ Link Register", description = "Rest API for WQ Link Register")
 @RequestMapping("${api-endpoints.assessments-domain}/wq-link-register")
+@Tag(name = "WorkQueue", description = "Rest API for work queue link register")
 public class WQLinkRegisterController {
 
     private final WQLinkRegisterService wqLinkRegisterService;

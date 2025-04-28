@@ -5,6 +5,7 @@ import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
+import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
 import gov.uk.courtdata.enums.HardshipReviewProgressAction;
@@ -624,6 +625,21 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static ContributionFilesEntity getContributionFilesEntity(String fileName, Integer recordsSent, Integer recordsReceived, boolean isBlankXml) {
+        ContributionFilesEntity entity = ContributionFilesEntity.builder()
+                .fileName(fileName)
+                .recordsSent(recordsSent)
+                .recordsReceived(recordsReceived)
+                .dateCreated(TEST_DATE.toLocalDate())
+                .userCreated(TEST_USER)
+                .build();
+        if (!isBlankXml){
+            entity.setXmlContent("<xml>"+fileName+"</xml>");
+            entity.setAckXmlContent("<ackXml>"+fileName+"</ackXml>");
+        }
+        return entity;
+    }
+
     public static ContributionFilesEntity getPopulatedContributionFilesEntity(Integer fileId) {
         return getPopulatedContributionFilesEntity(fileId, "CONTRIBUTIONS_202405210958");
     }
@@ -636,6 +652,23 @@ public class TestEntityDataBuilder {
         return ContributionFilesEntity.builder()
                 .fileId(fileId)
                 .fileName(fileName)
+                .recordsSent(53)
+                .recordsReceived(42)
+                .dateCreated(TEST_DATE.toLocalDate())
+                .userCreated(USER_CREATED_TEST_S)
+                .dateModified(TEST_DATE.toLocalDate().plusDays(3))
+                .userModified(TEST_USER)
+                .xmlContent(xmlContent)
+                .dateSent(TEST_DATE.toLocalDate().plusDays(1))
+                .dateReceived(TEST_DATE.toLocalDate().plusDays(2))
+                .ackXmlContent("<ackXml>content</ackXml>")
+                .build();
+    }
+
+    public static ContributionFilesEntity getPopulatedContributionFilesEntity(Integer fileId, String xmlContent) {
+        return ContributionFilesEntity.builder()
+                .fileId(fileId)
+                .fileName("CONTRIBUTIONS_202405210958")
                 .recordsSent(53)
                 .recordsReceived(42)
                 .dateCreated(TEST_DATE.toLocalDate())
@@ -668,6 +701,76 @@ public class TestEntityDataBuilder {
                 .repId(repId)
                 .dateCreated(TEST_DATE.toLocalDate())
                 .userCreated(TEST_USER)
+                .build();
+    }
+
+    public static ConcorContributionsEntity getConcorContributionsEntity(Integer repId, ConcorContributionStatus status, Integer fileId, String currentXml) {
+        return ConcorContributionsEntity.builder()
+                .status(status)
+                .repId(repId)
+                .contribFileId(fileId)
+                .currentXml(currentXml)
+                .dateCreated(TEST_DATE.toLocalDate())
+                .userCreated(TEST_USER)
+                .build();
+    }
+
+    public static ConcorContributionsEntity getPopulatedConcorContributionsEntity(Integer id) {
+        return ConcorContributionsEntity.builder()
+                .id(id)
+                .status(ConcorContributionStatus.ACTIVE)
+                .repId(REP_ID)
+                .contribFileId(123)
+                .currentXml("<xml>currentXml</xml>")
+                .fullXml("<xml>fullXml</xml>")
+                .ackCode("1")
+                .dateCreated(TEST_DATE.toLocalDate())
+                .userCreated(TEST_USER)
+                .build();
+    }
+
+    public static ConcorContributionsEntity getPopulatedConcorContributionsEntity(Integer id, String currentXml) {
+        var entity = getPopulatedConcorContributionsEntity(id);
+        entity.setCurrentXml(currentXml);
+        return entity;
+    }
+
+    public static FdcContributionsEntity getPopulatedFdcContributionsEntity(Integer id){
+        return FdcContributionsEntity.builder()
+                .id(id)
+                .status(FdcContributionsStatus.REQUESTED)
+                .repOrderEntity(getPopulatedRepOrder())
+                .finalCost(BigDecimal.valueOf(111.1))
+                .agfsCost(BigDecimal.valueOf(222.2))
+                .lgfsCost(BigDecimal.valueOf(333.3))
+                .dateCalculated(TEST_DATE.toLocalDate())
+                .contFileId(-999)
+                .build();
+    }
+
+    public static FdcContributionsEntity getPopulatedFdcContributionsEntity(Integer id, Integer repId, Integer fileId){
+        return FdcContributionsEntity.builder()
+                .id(id)
+                .status(FdcContributionsStatus.REQUESTED)
+                .repOrderEntity(getPopulatedRepOrder(repId))
+                .finalCost(BigDecimal.valueOf(111.1))
+                .agfsCost(BigDecimal.valueOf(222.2))
+                .lgfsCost(BigDecimal.valueOf(333.3))
+                .dateCalculated(TEST_DATE.toLocalDate())
+                .contFileId(fileId)
+                .build();
+    }
+
+    public static FdcContributionsEntity getFdcContibutionsEntity(FdcContributionsStatus status, String finalCost, Integer fileId, RepOrderEntity repOrder) {
+        BigDecimal finalCostBigDecimal = new BigDecimal(finalCost);
+        return FdcContributionsEntity.builder()
+                .status(status)
+                .repOrderEntity(repOrder)
+                .finalCost(finalCostBigDecimal)
+                .agfsCost(finalCostBigDecimal)
+                .lgfsCost(finalCostBigDecimal)
+                .dateCalculated(TEST_DATE.toLocalDate())
+                .contFileId(fileId)
                 .build();
     }
 

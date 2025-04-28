@@ -1,6 +1,7 @@
 package gov.uk.courtdata.dces.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.request.UpdateConcorContributionStatusRequest;
@@ -17,8 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -50,7 +51,7 @@ class ConcorContributionsRestControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @MockBean
+    @MockitoBean
     private ConcorContributionsService concorContributionsService;
 
     @Test
@@ -245,7 +246,7 @@ class ConcorContributionsRestControllerTest {
         when(concorContributionsService.logContributionProcessed(request))
                 .thenReturn(1111);
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
-                .content(createDrcUpdateJson(id, errorText))
+                .content(TestModelDataBuilder.getConcorDrcUpdateJson(id, errorText))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value("1111"));
@@ -262,7 +263,7 @@ class ConcorContributionsRestControllerTest {
         when(concorContributionsService.logContributionProcessed(request))
                 .thenThrow(new MAATCourtDataException("Test Error"));
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
-                        .content(createDrcUpdateJson(id, errorText))
+                        .content(TestModelDataBuilder.getConcorDrcUpdateJson(id, errorText))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("message").value("Test Error"));
@@ -279,7 +280,7 @@ class ConcorContributionsRestControllerTest {
         when(concorContributionsService.logContributionProcessed(request))
                 .thenThrow(new NoSuchElementException("contribution_file not found"));
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
-                        .content(createDrcUpdateJson(id, errorText))
+                        .content(TestModelDataBuilder.getConcorDrcUpdateJson(id, errorText))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("code").value("Object Not Found"));
@@ -388,17 +389,6 @@ class ConcorContributionsRestControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.[0].concorContributionId").value("1"))
             .andExpect(jsonPath("$.[0].xmlContent").value("FirstXMLFile"));
-    }
-
-
-    private String createDrcUpdateJson(int concorId, String errorText){
-        return """
-                {
-                    "concorId" : %s,
-                    "errorText" : "%s"
-                }
-                """.formatted(concorId, errorText);
-
     }
 
 }

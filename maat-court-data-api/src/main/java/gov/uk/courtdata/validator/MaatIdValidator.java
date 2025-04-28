@@ -2,7 +2,6 @@ package gov.uk.courtdata.validator;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 public class MaatIdValidator implements IValidator<Void, Integer> {
 
     private final RepOrderRepository repOrderRepository;
-    private final RepOrderService repOrderService;
 
     /**
      * Validate MAAT ID exists.

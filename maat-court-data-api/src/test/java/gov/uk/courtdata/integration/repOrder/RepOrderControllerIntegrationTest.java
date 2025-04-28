@@ -3,7 +3,6 @@ package gov.uk.courtdata.integration.repOrder;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -22,6 +21,7 @@ import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
+import gov.uk.courtdata.util.ApiHeaders;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,7 +36,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -112,15 +111,25 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenValidRepId_whenFindIsInvoked_thenRepOrderIsReturned() throws Exception {
         RepOrderDTO repOrderDTO = getUpdatedRepOrderDTO();
-        assertTrue(runSuccessScenario(repOrderDTO, get(BASE_URL + SLASH + REP_ID)));
+        var response = runSuccessScenario(
+                get(BASE_URL + SLASH + REP_ID)
+        );
+        softly.assertThat(response.getResponse().getContentAsString())
+                .isEqualTo(objectMapper.writeValueAsString(repOrderDTO));
+        softly.assertThat(response.getResponse().getHeader(ApiHeaders.TOTAL_RECORDS))
+                .isEqualTo("1");
     }
 
     @Test
     void givenValidRepIdAndSentenceOrderDateFlagIsTrue_whenFindIsInvoked_thenRepOrderIsReturned() throws Exception {
         RepOrderDTO repOrderDTO = getUpdatedRepOrderDTO();
-        assertTrue(runSuccessScenario(repOrderDTO,
+        var response = runSuccessScenario(
                 get(BASE_URL + SLASH + REP_ID + "?has_sentence_order_date=true")
-        ));
+        );
+        softly.assertThat(response.getResponse().getContentAsString())
+                .isEqualTo(objectMapper.writeValueAsString(repOrderDTO));
+        softly.assertThat(response.getResponse().getHeader(ApiHeaders.TOTAL_RECORDS))
+                .isEqualTo("1");
     }
 
     @Test
@@ -261,61 +270,6 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(jsonPath("$.id").value(request.getRepId()))
                 .andExpect(jsonPath("$.userModified").value(request.getUserModified()))
                 .andExpect(jsonPath("$.crownRepOrderDecision").value(request.getCrownRepOrderDecision()));
-    }
-
-    @Test
-    void givenHeadRequestWithRepId_whenFindIsInvoked_thenReturnMetadata() throws Exception {
-        var response = runSuccessScenario(
-                head(BASE_URL + SLASH + REP_ID)
-        );
-        var content = response.getResponse().getContentAsString();
-
-        softly.assertThat(content).isEqualTo("");
-        softly.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
-
-        response = runSuccessScenario(
-                head(BASE_URL + SLASH + INVALID_REP_ID)
-        );
-        content = response.getResponse().getContentAsString();
-
-        softly.assertThat(content).isEqualTo("");
-        softly.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
-    }
-
-    @Test
-    void givenAValidRepIdAndSentenceOrderDateFlagIsTrue_whenFindIsInvoked_thenZeroReturned() throws Exception {
-
-        var response = runSuccessScenario(
-                head(BASE_URL + SLASH + + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE + "?has_sentence_order_date=true")
-        );
-        var content = response.getResponse().getContentAsString();
-
-        softly.assertThat(content).isEqualTo("");
-        softly.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("0");
-    }
-
-    @Test
-    void givenAValidRepIdAndSentenceOrderDateFlagIsFalse_whenFindIsInvoked_thenOneIsReturned() throws Exception {
-
-        var response = runSuccessScenario(
-                head(BASE_URL + SLASH + + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE + "?has_sentence_order_date=false")
-        );
-        var content = response.getResponse().getContentAsString();
-
-        softly.assertThat(content).isEqualTo("");
-        softly.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
-    }
-
-    @Test
-    void givenAValidRepIdAndDefaultSentenceOrderDateIsFalse_whenFindIsInvoked_thenOneIsReturned() throws Exception {
-
-        var response = runSuccessScenario(
-                head(BASE_URL + SLASH + + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE)
-        );
-        var content = response.getResponse().getContentAsString();
-
-        softly.assertThat(content).isEqualTo("");
-        softly.assertThat(response.getResponse().getHeader(HttpHeaders.CONTENT_LENGTH)).isEqualTo("1");
     }
 
     @Test

@@ -38,7 +38,7 @@ class ContributionFileControllerIntegrationTest extends MockMvcIntegrationTest {
                 TestEntityDataBuilder.getPopulatedContributionFilesEntity(null, "CONTRIBUTIONS_TEST_FILE"));
         this.fileId = contributionFile.getFileId();
 
-        final var concorContribution = ConcorContributionsEntity.builder().repId(repId).contribFileId(fileId).status(SENT).build();
+        final var concorContribution = TestEntityDataBuilder.getConcorContributionsEntity(repId, SENT);
         repos.concorContributions.saveAndFlush(concorContribution);
         this.contributionId = concorContribution.getId();
 

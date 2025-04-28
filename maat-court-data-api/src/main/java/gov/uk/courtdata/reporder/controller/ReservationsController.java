@@ -33,8 +33,8 @@ import uk.gov.justice.laa.crime.commons.common.Constants;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Reservations", description = "Rest API for Reservations")
 @RequestMapping("/api/internal/v1")
+@Tag(name = "RepOrder", description = "Rest API for rep order reservations")
 public class ReservationsController {
     private final ReservationsService reservationsService;
 

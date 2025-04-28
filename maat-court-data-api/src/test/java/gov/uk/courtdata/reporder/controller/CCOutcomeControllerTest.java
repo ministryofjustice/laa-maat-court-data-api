@@ -2,17 +2,19 @@ package gov.uk.courtdata.reporder.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
 import gov.uk.courtdata.reporder.service.CCOutcomeService;
 import gov.uk.courtdata.reporder.validator.CCOutComeValidationProcessor;
+import gov.uk.courtdata.util.ApiHeaders;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -31,10 +33,10 @@ class CCOutcomeControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @MockBean
+    @MockitoBean
     private CCOutComeValidationProcessor validator;
 
-    @MockBean
+    @MockitoBean
     private CCOutcomeService service;
 
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/cc-outcome";
@@ -92,7 +94,8 @@ class CCOutcomeControllerTest {
     @Test
     void givenACorrectParameters_whenFindByRepIdIsInvoked_thenOutcomeIsSuccess() throws Exception {
         when(validator.validate(TestModelDataBuilder.REP_ID)).thenReturn(Optional.empty());
-        List repOrderCCOutComeDTOS = List.of(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
+        List<@NotNull RepOrderCCOutcomeDTO> repOrderCCOutComeDTOS =
+                List.of(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
         when(service.findByRepId(TestModelDataBuilder.REP_ID)).thenReturn(repOrderCCOutComeDTOS);
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/reporder/" + TestModelDataBuilder.REP_ID))
                 .andExpect(status().isOk())
@@ -102,15 +105,20 @@ class CCOutcomeControllerTest {
     }
 
     @Test
-    void givenACorrectParameters_whenFindByRepIdIsInvoked_thenReturnOutcomeCount() throws Exception {
+    void givenValidHeadRequest_whenFindByRepIdIsInvoked_thenReturnOutcomeCount() throws Exception {
         when(validator.validate(TestModelDataBuilder.REP_ID)).thenReturn(Optional.empty());
-        List repOrderCCOutComeDTOS = List.of(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
+        List<@NotNull RepOrderCCOutcomeDTO> repOrderCCOutComeDTOS =
+                List.of(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
         when(service.findByRepId(TestModelDataBuilder.REP_ID)).thenReturn(repOrderCCOutComeDTOS);
 
-        mvc.perform(MockMvcRequestBuilders.head(String.format("%s/reporder/%d", ENDPOINT_URL, TestModelDataBuilder.REP_ID)))
+        /*
+         * Should also be checking that the body is blank here,
+         * but this will not work because MockMVC does not properly remove the body when responding to head requests
+         */
+        mvc.perform(MockMvcRequestBuilders.head(
+                        String.format("%s/reporder/%d", ENDPOINT_URL, TestModelDataBuilder.REP_ID)))
                 .andExpect(status().isOk())
-                .andExpect(content().string(""))
-                .andExpect(header().string(HttpHeaders.CONTENT_LENGTH, "1"));
+                .andExpect(header().string(ApiHeaders.TOTAL_RECORDS, "1"));
     }
 
     @Test

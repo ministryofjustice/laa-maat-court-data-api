@@ -1,6 +1,8 @@
 package gov.uk.courtdata.integration.dces;
 
 import gov.uk.MAATCourtDataApplication;
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dces.service.DebtCollectionRepository;
 import gov.uk.courtdata.entity.ConcorContributionsEntity;
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
@@ -15,8 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
@@ -31,6 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
+import static gov.uk.courtdata.enums.ConcorContributionStatus.ACTIVE;
 
 @ExtendWith(SoftAssertionsExtension.class)
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
@@ -41,49 +45,32 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
     private static final String ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/concor-contribution-files?status=";
     private static final String DRC_UPDATE_URL = "/api/internal/v1/debt-collection-enforcement/log-contribution-response";
 
-    @SpyBean
+    @MockitoSpyBean
     DebtCollectionRepository debtCollectionRepositorySpy;
 
     private static int savedEntityId3;
     private static int savedEntityId4;
 
-    private static final String fileOne = "FileOne";
+    private static final String FILE_ONE_NAME = "FileOne";
     private static int file1Id;
-    private static final String fileTwo = "FileTwo";
+    private static final String FILE_TWO_NAME = "FileTwo";
     private static int file2Id;
 
     @BeforeEach
     public void setUp() {
-        file1Id = repos.contributionFiles.save(buildFileEntity(fileOne, false)).getFileId();
-        file2Id = repos.contributionFiles.save(buildFileEntity(fileTwo, true)).getFileId();
+        file1Id = repos.contributionFiles.save(TestEntityDataBuilder.getContributionFilesEntity(FILE_ONE_NAME, 10, 0, false)).getFileId();
+        file2Id = repos.contributionFiles.save(TestEntityDataBuilder.getContributionFilesEntity(FILE_TWO_NAME, 10, 0, true)).getFileId();
 
-        repos.concorContributions.save(buildConcorEntity(ConcorContributionStatus.ACTIVE, "<xml 1 content dummy",file1Id));
-        repos.concorContributions.save(buildConcorEntity(ConcorContributionStatus.SENT, "<xml 2 content dummy",file1Id));
-        savedEntityId3 = repos.concorContributions.save(buildConcorEntity(ConcorContributionStatus.ACTIVE, "<xml 3 content dummy",null)).getId();
-        savedEntityId4 = repos.concorContributions.save(buildConcorEntity(ConcorContributionStatus.SENT, "<xml 4 content dummy",file2Id)).getId();
+        saveConcorEntity(null, ACTIVE, file1Id, "<xml>1 content dummy</xml>");
+        saveConcorEntity(null, SENT, file1Id, "<xml>2 content dummy</xml>");
+        savedEntityId3 = saveConcorEntity(null, ACTIVE, null, "<xml>3 content dummy</xml>");
+        savedEntityId4 = saveConcorEntity(null, SENT, file2Id, "<xml>4 content dummy</xml>");
     }
 
-    private ConcorContributionsEntity buildConcorEntity(ConcorContributionStatus status, String xml, Integer fileId) {
-        return ConcorContributionsEntity.builder()
-                .status(status)
-                .currentXml(xml)
-                .contribFileId(fileId)
-                .build();
+    private int saveConcorEntity(Integer repId, ConcorContributionStatus status, Integer fileId, String currentXml){
+        ConcorContributionsEntity concorEntity = TestEntityDataBuilder.getConcorContributionsEntity(repId, status, fileId, currentXml);
+        return repos.concorContributions.save(concorEntity).getId();
     }
-
-    private ContributionFilesEntity buildFileEntity(String fileIdentifier, boolean isBlankXml) {
-        ContributionFilesEntity entity = ContributionFilesEntity.builder()
-                .fileName(fileIdentifier)
-                .recordsReceived(0)
-                .recordsSent(10)
-                .build();
-        if (!isBlankXml) {
-            entity.setXmlContent("<xml>"+fileIdentifier+"</xml>");
-            entity.setAckXmlContent("<ackXml>"+fileIdentifier+"</ackXml>");
-        }
-        return entity;
-    }
-
 
     @Test
     void givenAACTIVEStatus_whenGetIsInvoked_theDataLoadedResponseIsReturned() throws Exception {
@@ -168,7 +155,7 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
 
     @Test
     void testLogDrcProcessedNoErrors() throws Exception {
-        String s = createLogDrcProcessedRequest(savedEntityId4,"");
+        String s = TestModelDataBuilder.getConcorDrcUpdateJson(savedEntityId4,"");
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -187,7 +174,7 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
     @Test
     void testLogDrcProcessedWithErrors() throws Exception {
         String errorText = "ErrorText";
-        String s = createLogDrcProcessedRequest(savedEntityId4,errorText);
+        String s = TestModelDataBuilder.getConcorDrcUpdateJson(savedEntityId4,errorText);
         LocalDateTime dateTimeCheck = LocalDateTime.now();
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
@@ -215,7 +202,7 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
 
     @Test
     void testLogDrcProcessedNoFile() throws Exception {
-        String s = createLogDrcProcessedRequest(savedEntityId3,"");
+        String s = TestModelDataBuilder.getConcorDrcUpdateJson(savedEntityId3,"");
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -224,13 +211,5 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check no values in errors
         assertEquals(0, repos.contributionFileErrors.count());
-    }
-
-    private String createLogDrcProcessedRequest(Integer id, String errorText) {
-        return  """
-                    {
-                        "concorId" : %s,
-                        "errorText" : "%s"
-                    }""".formatted(id,errorText);
     }
 }

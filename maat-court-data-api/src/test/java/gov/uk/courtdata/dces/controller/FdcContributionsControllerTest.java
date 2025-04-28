@@ -1,6 +1,7 @@
 package gov.uk.courtdata.dces.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
 import gov.uk.courtdata.dces.request.UpdateFdcContributionRequest;
@@ -16,8 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -42,7 +43,7 @@ class FdcContributionsControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @MockBean
+    @MockitoBean
     private FdcContributionsService fdcContributionsService;
 
     @Test
@@ -163,7 +164,7 @@ class FdcContributionsControllerTest {
         when(fdcContributionsService.logFdcProcessed(request))
                 .thenReturn(1111);
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
-                        .content(createDrcUpdateJson(id, errorText))
+                        .content(TestModelDataBuilder.getFdcDrcUpdateJson(id, errorText))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value("1111"));
@@ -180,7 +181,7 @@ class FdcContributionsControllerTest {
         when(fdcContributionsService.logFdcProcessed(request))
                 .thenThrow(new MAATCourtDataException("Test Error"));
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
-                        .content(createDrcUpdateJson(id, errorText))
+                        .content(TestModelDataBuilder.getFdcDrcUpdateJson(id, errorText))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("message").value("Test Error"));
@@ -197,7 +198,7 @@ class FdcContributionsControllerTest {
         when(fdcContributionsService.logFdcProcessed(request))
                 .thenThrow(new NoSuchElementException("contribution_file not found"));
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
-                        .content(createDrcUpdateJson(id, errorText))
+                        .content(TestModelDataBuilder.getFdcDrcUpdateJson(id, errorText))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("code").value("Object Not Found"));
@@ -243,16 +244,5 @@ class FdcContributionsControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.fdcContributions.[0].id").value("1"))
             .andExpect(jsonPath("$.fdcContributions.[0].accelerate").value("True"));
-    }
-
-
-
-    private static String createDrcUpdateJson(int fdcId, String errorText){
-        return """
-                {
-                    "fdcId" : %s,
-                    "errorText" : "%s"
-                }
-                """.formatted(fdcId, errorText);
     }
 }

@@ -6,6 +6,7 @@ import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
@@ -78,6 +79,13 @@ public interface RepOrderMapper {
                 .iojAppealResult(maxIdIOJAppealEntity.map(IOJAppealEntity::getDecisionResult).orElse(null))
                 .iojAppealAssessorName(maxIdIOJAppealEntity.map(IOJAppealEntity::getUserCreated).orElse(null))
                 .iojAppealDate(maxIdIOJAppealEntity.map(IOJAppealEntity::getDecisionDate).orElse(null))
+                .meansReviewType(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getRtCode).orElse(null))
+                .passportReviewType(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getRtCode).orElse(null))
+                .passportWorkReason(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getNworCode).orElse(null))
+                .meansWorkReason(maxIdFinancialAssessmentEntity
+                        .map(FinancialAssessmentEntity::getNewWorkReason)
+                        .map(NewWorkReasonEntity::getCode)
+                        .orElse(null))
                 .build();
     }
 

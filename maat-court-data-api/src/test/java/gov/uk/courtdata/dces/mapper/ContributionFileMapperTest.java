@@ -1,6 +1,7 @@
 package gov.uk.courtdata.dces.mapper;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
 import gov.uk.courtdata.dces.request.CreateFileRequest;
@@ -12,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -23,14 +22,14 @@ class ContributionFileMapperTest {
 
     @Test
     void givenCreateFdcFileRequest_whenToContributionFileEntity_thenReturnMappedEntity() {
-        CreateFdcFileRequest request = createFdcRequest();
+        CreateFdcFileRequest request = TestModelDataBuilder.getFdcFileRequest();
         ContributionFilesEntity mapped = mapper.toContributionFileEntity(request);
         assertValidMappedObject(mapped, request);
     }
 
     @Test
     void givenCreateContributionFileRequest_whenToContributionFileEntity_thenReturnMappedEntity() {
-        CreateContributionFileRequest request = createContributionRequest();
+        CreateContributionFileRequest request = TestModelDataBuilder.getContributionRequest();
         ContributionFilesEntity mapped = mapper.toContributionFileEntity(request);
         assertValidMappedObject(mapped, request);
 
@@ -100,23 +99,4 @@ class ContributionFileMapperTest {
         );
     }
 
-    private CreateContributionFileRequest createContributionRequest() {
-        return CreateContributionFileRequest.builder()
-                .concorContributionIds(Set.of(1))
-                .xmlContent("<xml>content</xml>")
-                .ackXmlContent("<ackXml>content</ackXml>")
-                .recordsSent(1)
-                .xmlFileName("testFilename.xml")
-                .build();
-    }
-
-    private CreateFdcFileRequest createFdcRequest() {
-        return CreateFdcFileRequest.builder()
-                .fdcIds(Set.of(1))
-                .xmlContent("<xml>content</xml>")
-                .ackXmlContent("<ackXml>content</ackXml>")
-                .recordsSent(1)
-                .xmlFileName("testFilename.xml")
-                .build();
-    }
 }

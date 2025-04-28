@@ -19,6 +19,8 @@ spring:
     driver-class-name: oracle.jdbc.OracleDriver
     hikari:
       maximum-pool-size: 50
+      minimum-idle: 5 # Min number of idle connections in the pool as otherwise will default to maximum-pool-size
+      leak-detection-threshold: 30000 # will flag leaks in the logs - connections held for > 30 seconds outside the pool
 
   liquibase:
     enabled: false
@@ -38,7 +40,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
     open-in-view: false
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         jdbc.lob.non_contextual_creation: true

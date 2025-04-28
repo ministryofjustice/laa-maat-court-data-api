@@ -117,10 +117,10 @@ class ConcorContributionsServiceTest {
     void givenSomeActiveContributions_whenGetConcorContributionFilesIsCalledWithNullStartId_thenTheyAreReturned() {
 
         List<ConcorContributionsEntity> entities = List.of(
-                populateConcorContributionsEntity(343),
-                populateConcorContributionsEntity(344),
-                populateConcorContributionsEntity(345),
-                populateConcorContributionsEntity(346)
+                TestEntityDataBuilder.getPopulatedConcorContributionsEntity(343, testXml),
+                TestEntityDataBuilder.getPopulatedConcorContributionsEntity(344, testXml),
+                TestEntityDataBuilder.getPopulatedConcorContributionsEntity(345, testXml),
+                TestEntityDataBuilder.getPopulatedConcorContributionsEntity(346, testXml)
         );
         when(concorRepository.findByStatusAndIdGreaterThan(any(),any(), any())).thenReturn(entities);
 

@@ -665,23 +665,6 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static ContributionFilesEntity getPopulatedContributionFilesEntity(Integer fileId, String xmlContent) {
-        return ContributionFilesEntity.builder()
-                .fileId(fileId)
-                .fileName("CONTRIBUTIONS_202405210958")
-                .recordsSent(53)
-                .recordsReceived(42)
-                .dateCreated(TEST_DATE.toLocalDate())
-                .userCreated(USER_CREATED_TEST_S)
-                .dateModified(TEST_DATE.toLocalDate().plusDays(3))
-                .userModified(TEST_USER)
-                .xmlContent(xmlContent)
-                .dateSent(TEST_DATE.toLocalDate().plusDays(1))
-                .dateReceived(TEST_DATE.toLocalDate().plusDays(2))
-                .ackXmlContent("<ackXml>content</ackXml>")
-                .build();
-    }
-
     public static ContributionFileErrorsEntity getContributionFileErrorsEntity(int fileId, int contributionId) {
         return ContributionFileErrorsEntity.builder()
                 .contributionFileId(fileId)

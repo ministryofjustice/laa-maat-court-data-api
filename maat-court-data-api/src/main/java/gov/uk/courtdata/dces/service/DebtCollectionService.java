@@ -25,13 +25,13 @@ public class DebtCollectionService {
 
     public List<String> getContributionFiles(LocalDate fromDate, LocalDate toDate) {
         log.info("date range -> {} {}", fromDate, toDate);
-        List<ContributionFilesEntity> contributionFilesList = contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId("FDC%", fromDate, toDate);
+        List<ContributionFilesEntity> contributionFilesList = contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId("CONTRIBUTIONS%", fromDate, toDate);
         return contributionFilesList.stream().map(ContributionFilesEntity::getXmlContent).toList();
     }
 
     public List<String> getFdcFiles(LocalDate fromDate, LocalDate toDate) {
         log.info("date range -> {} {}", fromDate, toDate);
-        List<ContributionFilesEntity> contributionFilesList = contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId("CONTRIBUTIONS%", fromDate, toDate);
+        List<ContributionFilesEntity> contributionFilesList = contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId("FDC%", fromDate, toDate);
         return contributionFilesList.stream().map(ContributionFilesEntity::getXmlContent).toList();
     }
 

@@ -53,7 +53,7 @@ class DebtCollectionServiceTest {
 
     @Test
     void givenDateRange_whenGetContributionFiles_thenReturnXmlContents() {
-        when(contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId(eq("FDC%"),any(LocalDate.class), any(LocalDate.class)))
+        when(contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId(eq("CONTRIBUTIONS%"),any(LocalDate.class), any(LocalDate.class)))
                 .thenReturn(List.of(contributionFilesEntity));
         List<String> xmlContents = debtCollectionService.getContributionFiles(LocalDate.now(),LocalDate.now());
         assertThat(xmlContents)
@@ -63,7 +63,7 @@ class DebtCollectionServiceTest {
 
     @Test
     void givenDateRange_whenGetFdcFiles_thenReturnXmlContents() {
-       when(contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId(eq("CONTRIBUTIONS%"),any(LocalDate.class), any(LocalDate.class)))
+       when(contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId(eq("FDC%"),any(LocalDate.class), any(LocalDate.class)))
                 .thenReturn(List.of(contributionFilesEntity));
        List<String> xmlContents = debtCollectionService.getFdcFiles(LocalDate.now(),LocalDate.now());
        assertThat(xmlContents)

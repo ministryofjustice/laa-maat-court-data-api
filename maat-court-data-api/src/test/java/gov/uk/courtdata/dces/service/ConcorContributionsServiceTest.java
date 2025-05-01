@@ -121,7 +121,6 @@ class ConcorContributionsServiceTest {
                 TestEntityDataBuilder.getPopulatedConcorContributionsEntity(344, testXml),
                 TestEntityDataBuilder.getPopulatedConcorContributionsEntity(345, testXml),
                 TestEntityDataBuilder.getPopulatedConcorContributionsEntity(346, testXml)
-
         );
         when(concorRepository.findByStatusAndIdGreaterThan(any(),any(), any())).thenReturn(entities);
 

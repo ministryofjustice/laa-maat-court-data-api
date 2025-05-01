@@ -641,26 +641,17 @@ public class TestEntityDataBuilder {
     }
 
     public static ContributionFilesEntity getPopulatedContributionFilesEntity(Integer fileId) {
-        return ContributionFilesEntity.builder()
-                .fileId(fileId)
-                .fileName("CONTRIBUTIONS_202405210958")
-                .recordsSent(53)
-                .recordsReceived(42)
-                .dateCreated(TEST_DATE.toLocalDate())
-                .userCreated(USER_CREATED_TEST_S)
-                .dateModified(TEST_DATE.toLocalDate().plusDays(3))
-                .userModified(TEST_USER)
-                .xmlContent("<xml>content</xml>")
-                .dateSent(TEST_DATE.toLocalDate().plusDays(1))
-                .dateReceived(TEST_DATE.toLocalDate().plusDays(2))
-                .ackXmlContent("<ackXml>content</ackXml>")
-                .build();
+        return getPopulatedContributionFilesEntity(fileId, "CONTRIBUTIONS_202405210958");
     }
 
-    public static ContributionFilesEntity getPopulatedContributionFilesEntity(Integer fileId, String xmlContent) {
+    public static ContributionFilesEntity getPopulatedContributionFilesEntity(Integer fileId, String fileName) {
+        return getPopulatedContributionFilesEntity(fileId, fileName, "<xml>content</xml>");
+    }
+
+    public static ContributionFilesEntity getPopulatedContributionFilesEntity(Integer fileId, String fileName, String xmlContent){
         return ContributionFilesEntity.builder()
                 .fileId(fileId)
-                .fileName("CONTRIBUTIONS_202405210958")
+                .fileName(fileName)
                 .recordsSent(53)
                 .recordsReceived(42)
                 .dateCreated(TEST_DATE.toLocalDate())

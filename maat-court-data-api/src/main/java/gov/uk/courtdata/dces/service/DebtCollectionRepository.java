@@ -29,22 +29,9 @@ public class DebtCollectionRepository {
     private final JdbcTemplate jdbcTemplate;
     private static final String USER_AUDIT = "DCES";
 
-    List<String> getContributionFiles(final String fromDate, final String toDate) {
-        String query = "SELECT cf.xml_content FROM TOGDATA.CONTRIBUTION_FILES CF " +
-                "WHERE CF.FILE_NAME LIKE '%%CONTRIBUTIONS%%' " +
-                "AND TO_DATE(CF.DATE_CREATED) BETWEEN TO_DATE(?, 'dd/mm/yyyy') AND TO_DATE(?, 'dd/mm/yyyy') Order by CF.ID ASC";
-
-        return jdbcTemplate.queryForList(query, String.class, fromDate, toDate);
-    }
-
-    List<String> getFdcFiles(final String fromDate, final String toDate) {
-        String query = "SELECT cf.xml_content FROM TOGDATA.CONTRIBUTION_FILES CF " +
-                "WHERE CF.FILE_NAME LIKE '%%FDC%%' " +
-                "AND TO_DATE(CF.DATE_CREATED) BETWEEN TO_DATE(?, 'dd/mm/yyyy') AND TO_DATE(?, 'dd/mm/yyyy') Order by CF.ID ASC";
-
-        return jdbcTemplate.queryForList(query, String.class, fromDate, toDate);
-    }
-
+    /*
+    Native query to avoid issues with JPA populating REP_ORDER object solely for the SENTENCE_ORDER_DATE.
+     */
     List<FdcContributionsEntity> findFdcEntriesByStatus(FdcContributionsStatus status){
         String query = """
                 SELECT fdc.id, fdc.FINAL_COST, fdc.DATE_CALCULATED, fdc.LGFS_COST, fdc.AGFS_COST, rep.SENTENCE_ORDER_DATE, fdc.REP_ID, fdc.STATUS, fdc.USER_MODIFIED, fdc.DATE_MODIFIED, fdc.CONT_FILE_ID
@@ -55,6 +42,9 @@ public class DebtCollectionRepository {
         return jdbcTemplate.query(query, new FdcMapper(), status.toString());
     }
 
+    /*
+    Native query to avoid issues with JPA populating REP_ORDER object solely for the SENTENCE_ORDER_DATE.
+     */
     List<FdcContributionsEntity> findFdcEntriesByIdIn(Set<Integer> idList){
         String query = String.format(
                 """
@@ -63,7 +53,6 @@ public class DebtCollectionRepository {
                     ON fdc.rep_id = rep.id
                     WHERE fdc.id in ( %s )
                 """, String.join(",", Collections.nCopies(idList.size(), "?")) );
-
         return jdbcTemplate.query(query, new FdcMapper(), idList.toArray());
     }
 
@@ -88,6 +77,13 @@ public class DebtCollectionRepository {
         return true;
     }
 
+    /***
+     * This method inserts/updates CONTRIBUTION_FILES. It's required due to the manipulation/saving of the XML type fields
+     * These fields do not have a proper mapping on JPA, and as such they are treated as characters, with the inbuilt character
+     * limits. Which XML, as a clob extension, do not have. This method avoids this issue by saving as a clob using jdbcTemplates.
+     * @param contributionFilesEntity The entity to be saved. If isUpdate=false, the id will be populated on INSERT
+     * @param isUpdate If this is an INSERT, or UPDATE action
+     */
     private void runContributionFilesSqlStatement(ContributionFilesEntity contributionFilesEntity, boolean isUpdate) {
         String sqlStatement;
         Map<String, String> fieldValueMap = ContributionFileUtil.generateSqlFieldValueMap(contributionFilesEntity, isUpdate);
@@ -118,6 +114,12 @@ public class DebtCollectionRepository {
         }
     }
 
+    /***
+     * A helper method to generate the SQL needed for the CONTRIBUTION_FILES INSERT statements.
+     *
+     * @param fieldMap Map containing all the field names, and values to be inserted.
+     * @return The SQL statement to INSERT those field/values into the DB.
+     */
     private String generateInsertSQLStatement(Map<String, String> fieldMap) {
         String sql = "INSERT INTO TOGDATA.CONTRIBUTION_FILES (%s) VALUES (%s)";
 
@@ -127,6 +129,12 @@ public class DebtCollectionRepository {
         return sql.formatted(fields,values);
     }
 
+    /***
+     * A helper method to generate the SQL needed for the CONTRIBUTION_FILES UPDATE statements.
+     *
+     * @param fieldMap Map containing all the field names, and values to be updated.
+     * @return The SQL statement to UPDATE the field/values.
+     */
     private String generateUpdateSQLStatement(Map<String, String> fieldMap) {
         String sql = "UPDATE TOGDATA.CONTRIBUTION_FILES SET %s WHERE ID=?";
         List<String> updateSqlLine = new ArrayList<>();
@@ -140,6 +148,17 @@ public class DebtCollectionRepository {
         return field+"="+value;
     }
 
+
+    /***
+     * Sets the STATUS of Fdc Contributions to either INVALID, or REQUESTED, when they meet a range of criteria.
+     * More detail on the FDC Merge statements can be found here:
+     * <a href="https://dsdmoj.atlassian.net/wiki/spaces/DCES/pages/4541743889/Global+FDC+Contribution+Update+PL+SQL+issues">Global FDC Contribution Update PL SQL issues</a>
+     * More detail on this part, including with inline comments can be found here:
+     * <a href="https://dsdmoj.atlassian.net/wiki/spaces/DCES/pages/4541744335/1st+LOOP+FdcDelayedPickup+Change+to+an+UPDATE+statement">1st LOOP FdcDelayedPickup Change to an UPDATE statement</a>
+     * @param delay number of months. Sets the delay before the FDC will be flagged for pickup.
+     *              Used in "( TRUNC( ADD_MONTHS( NVL(R.SENTENCE_ORDER_DATE, SYSDATE ), ?) ) <= TRUNC(SYSDATE) )"
+     * @return Number of entries modified. Includes both INVALID, and REQUESTED changes.
+     */
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
     public int setEligibleForFdcDelayedPickup(String delay) {
         log.info("eligibleForFdcDelayedPickup entered");
@@ -206,6 +225,16 @@ public class DebtCollectionRepository {
         return jdbcTemplate.update(query, delay);
     }
 
+    /***
+     * Sets the STATUS of Fdc Contributions to either INVALID, or REQUESTED, when they meet a range of criteria.
+     * More detail on the FDC Merge statements can be found here:
+     *      * <a href="https://dsdmoj.atlassian.net/wiki/spaces/DCES/pages/4541743889/Global+FDC+Contribution+Update+PL+SQL+issues">Global FDC Contribution Update PL SQL issues</a>
+     *      * More detail on this part, including with inline comments can be found here:
+     *      * <a href="https://dsdmoj.atlassian.net/wiki/spaces/DCES/pages/4543512577/2nd+LOOP+FdcFastTracking+Change+to+an+UPDATE+statementstatement">2nd LOOP FdcFastTracking Change to an UPDATE statement</a>
+     * @param delay number of months. The lower bound for the date for those being accelerated.
+     *              Used in "TRUNC( ADD_MONTHS( R.SENTENCE_ORDER_DATE, ?) ) > TRUNC(SYSDATE)"
+     * @return Number of entries modified. Includes both INVALID, and REQUESTED changes.
+     */
     @SuppressWarnings("squid:S1192") // ignore "Can be a constant" as is not relevant here.
     public int setEligibleForFdcFastTracking(String delay) {
         log.info("eligibleForFdcFastTracking entered");

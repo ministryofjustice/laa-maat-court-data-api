@@ -13,13 +13,8 @@ import java.util.List;
 @Repository
 public interface ContributionFilesRepository extends JpaRepository<ContributionFilesEntity, Integer> {
 
-    @Query(value = "SELECT cf.xml_content FROM TOGDATA.CONTRIBUTION_FILES CF WHERE CF.FILE_NAME like '%%CONTRIBUTIONS%%' AND CF.DATE_CREATED BETWEEN fromDate and toDate",
-            nativeQuery = true)
-    List<String> getContribution(LocalDate fromDate, LocalDate toDate);
 
-    @Query(value = "SELECT cf.xml_content FROM TOGDATA.CONTRIBUTION_FILES CF WHERE CF.FILE_NAME like '%%FDC%%' AND CF.DATE_CREATED BETWEEN fromDate and toDate",
-            nativeQuery = true)
-    List<String> getFDC(LocalDate fromDate, LocalDate toDate);
+    List<ContributionFilesEntity> getByFileNameLikeAndDateCreatedBetweenOrderByFileId(String filename, LocalDate fromDate, LocalDate toDate);
 
     @Modifying
     @Query("""

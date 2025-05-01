@@ -10,7 +10,6 @@ import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import gov.uk.courtdata.testutils.FileUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,19 +20,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtCollectionServiceTest {
-
-    @Mock
-    private DebtCollectionRepository debtCollectionRepository;
 
     @Mock
     private ContributionFilesRepository contributionFilesRepository;
@@ -51,42 +48,27 @@ class DebtCollectionServiceTest {
    @BeforeEach
     void setUp() {
        String xmlDoc = FileUtils.readResourceToString("eform/request/xmlDoc_default.xml");
-       this.contributionFilesEntity = TestEntityDataBuilder.getPopulatedContributionFilesEntity(-100, xmlDoc);
+       contributionFilesEntity = TestEntityDataBuilder.getPopulatedContributionFilesEntity(null, "CONTRIBUTIONS_TEST_DATA", xmlDoc);
    }
 
     @Test
     void givenDateRange_whenGetContributionFiles_thenReturnXmlContents() {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        when(debtCollectionRepository.getContributionFiles(LocalDate.now().format(dateTimeFormatter),LocalDate.now().format(dateTimeFormatter)))
-                .thenReturn(List.of(contributionFilesEntity.getXmlContent()));
-        List<String> xmlXontents = debtCollectionService.getContributionFiles(LocalDate.now(),LocalDate.now());
-        assertThat(xmlXontents)
+        when(contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId(eq("CONTRIBUTIONS%"),any(LocalDate.class), any(LocalDate.class)))
+                .thenReturn(List.of(contributionFilesEntity));
+        List<String> xmlContents = debtCollectionService.getContributionFiles(LocalDate.now(),LocalDate.now());
+        assertThat(xmlContents)
                 .isNotNull()
                 .isNotEmpty();
     }
-
 
     @Test
     void givenDateRange_whenGetFdcFiles_thenReturnXmlContents() {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        when(debtCollectionRepository.getFdcFiles(LocalDate.now().format(dateTimeFormatter),LocalDate.now().format(dateTimeFormatter)))
-                .thenReturn(List.of(contributionFilesEntity.getXmlContent()));
-        List<String> xmlXontents = debtCollectionService.getFdcFiles(LocalDate.now(),LocalDate.now());
-        assertThat(xmlXontents)
-                .isNotNull()
-                .isNotEmpty();
-    }
-
-    @Test
-    void givenDate_whenConvertToCorrectDateFormat_thenReturnFormattedString() {
-
-        String formattedDate = debtCollectionService.convertToCorrectDateFormat( LocalDate.of(2020,9,1));
-        assertThat(formattedDate).isEqualTo("01/09/2020");
-    }
-    @Test
-    void givenDate_whenConvertToCorrectDateFormat_thenReturnCorrectFormattedString() {
-        String formattedDate = debtCollectionService.convertToCorrectDateFormat( LocalDate.of(2020,9,1));
-        Assertions.assertNotEquals("01-09-2020",formattedDate);
+       when(contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId(eq("FDC%"),any(LocalDate.class), any(LocalDate.class)))
+                .thenReturn(List.of(contributionFilesEntity));
+       List<String> xmlContents = debtCollectionService.getFdcFiles(LocalDate.now(),LocalDate.now());
+       assertThat(xmlContents)
+               .isNotNull()
+               .isNotEmpty();
     }
 
     @Test

@@ -1,0 +1,56 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+appNameEnv: "laa-maat-court-data-api"
+environment: "development"
+
+maat-api:
+
+  ingress:
+    whitelist_source_range: "35.178.209.113/32, 3.8.51.207/32, 35.177.252.54/32, 13.43.9.198/32, 18.132.208.127/32, 13.42.163.245/32"
+    setidentifier: "ingress-laa-maat-court-data-api-development-green"
+    awsweight: 100
+    hosts: "laa-maat-api-dev.apps.live.cloud-platform.service.justice.gov.uk"
+    host: "laa-maat-api-dev.apps.live.cloud-platform.service.justice.gov.uk"
+
+  replicaCount: 1 # One pod without scaling
+  revisionHistoryLimit: 2 # Specifies the number of old ReplicaSets to retain to allow rollback
+  minReadySeconds: 10 # Specifies the minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available
+  strategy:
+    type: Recreate # For recreate, all existing Pods are killed before new ones are created when
+
+
+  spec:
+    containers:
+      image: "<account_no>.dkr.ecr.eu-west-2.amazonaws.com/laa-aws-infrastructure/laa-maat-court-data-api-development:<tag>" # This will be overwritten by the actual tag that's passed in via the helm command in the github action.
+      imagePullPolicy: "IfNotPresent"
+      securityContext:
+        runAsUser: 1000 # This is the user ID for "tomee" used in Dockerfile
+      port: 8090
+      env:
+        UNLINK_QUEUE: ""
+        CLOUD_PLATFORM_QUEUE_REGION: ""
+        SENTRY_ENV: ""
+        CDA_BASE_URL: ""
+        TOGDATA_DATASOURCE_USERNAME: ""
+        CREATE_LINK_CP_STATUS_JOB_QUEUE: ""
+        AWS_DEFAULT_REGION: ""
+        CDA_OAUTH_URL: ""
+        POST_MVP_ENABLED: ""
+        HEARING_RESULTED_QUEUE: ""
+        ENABLE_CLOUDWATCH_METRICS: ""
+        CREATE_LINK_QUEUE: ""
+        CLOUDWATCH_STEP: ""
+        CLOUDWATCH_BATCH_SIZE: ""
+        DATASOURCE_URL: ""
+      secret: 
+        DATASOURCE_USERNAME_NAME: ""
+        DATASOURCE_USERNAME_KEY: ""
+        DATASOURCE_PASSWORD_NAME: ""
+        DATASOURCE_PASSWORD_KEY: ""
+        CDA_OAUTH_CLIENT_ID_NAME: ""
+        CDA_OAUTH_CLIENT_ID_KEY": ""
+        CDA_OAUTH_CLIENT_SECRET_NAME: ""
+        DCDA_OAUTH_CLIENT_SECRET_KEY: ""
+        TOGDATA_DATASOURCE_PASSWORD_NAME: ""
+        TOGDATA_DATASOURCE_PASSWORD_KEY: ""

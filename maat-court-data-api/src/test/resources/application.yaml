@@ -71,7 +71,6 @@ cloud-platform:
         link: link
         unlink: unlink
         hearingResulted: hearing
-        createLinkCpStatusJob: createLinkCpStatusJob
         meansAssessmentPostProcessing: meansAssessmentPostProcessing
         config:
           messageDelay: 900
@@ -81,8 +80,8 @@ cda:
   url: "http://dummy:0000/"
   oauth:
     url: cdaAuthUrl
-    clientId: cdaClient
-    clientSecret: cdaPass
+    client-id: cdaClient
+    client-secret: cdaPass
   laastatus:
     url: ${cda.url}/api/internal/v1/representation_orders
   hearing:

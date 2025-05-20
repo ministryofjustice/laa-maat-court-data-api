@@ -19,7 +19,7 @@ java:
   host_env: development
 
 jwt:
-  issuerUri: https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_ZaFnb3kFD
+  issuerUri: https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_zAlvz7NlW
 
 cdaApi:
   baseUrl: https://dev.court-data-adaptor.service.justice.gov.uk/api/internal/v2

@@ -77,12 +77,16 @@ jobs:
           kubectl config set-credentials deploy-user --token=${{ secrets.KUBE_TOKEN }}
           kubectl config set-context ${KUBE_CLUSTER} --cluster=${KUBE_CLUSTER} --user=deploy-user --namespace=${KUBE_NAMESPACE}
           kubectl config use-context ${KUBE_CLUSTER}
+          kubectl --namespace=${KUBE_NAMESPACE} get pods
 
       - name: Helm deploy to Dev environment
         id: deploy-to-dev
         run: |
-          cd helm_deploy/laa-maat-data-api
-          helm upgrade laa-maat-data-api -f values-dev.yaml . --namespace ${KUBE_NAMESPACE} --install --set laa-maat-data-api.spec.containers.image="$REGISTRY/$REPOSITORY:$GITHUB_TAG"
+          helm upgrade laa-maat-data-api ./helm_deploy/laa-maat-data-api/. \
+                      --install --wait \
+                      --namespace=${KUBE_NAMESPACE} \
+                      --values ./helm_deploy/laa-maat-data-api/values-dev.yaml \
+                      --set laa-maat-data-api.spec.containers.image="$REGISTRY/$REPOSITORY:$GITHUB_TAG"
         env:
           REGISTRY: ${{ secrets.ECR_REGISTRY_URL }}
           REPOSITORY: ${{ vars.ECR_REPOSITORY }}

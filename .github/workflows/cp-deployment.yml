@@ -9,6 +9,7 @@ on:
     branches:
       - main
       - LASB-4078
+  workflow_dispatch:
 
 jobs:
 
@@ -61,14 +62,6 @@ jobs:
       KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
     steps:
-      # - name: Populating k8s yml files with variables
-      #   id: populate-k8s-files
-      #   run: |
-      #     cat cloud-platform-helm/maat_api/values_development.yaml | envsubst > cloud-platform-helm/deployment.yml
-      #   env: # TODO These envs needs updating depending on what is referenced in the k8s yml files above
-      #     # SOURCE_APP_TAG: ${{ env.SOURCE_APP_TAG }}
-      #     REGISTRY: ${{ secrets.ECR_REGISTRY_URL }}
-      #     REPOSITORY: ${{ vars.ECR_REPOSITORY }}
       - name: Authenticating to the Kubernetes cluster
         id: authenticate-k8s-cluster
         run: |
@@ -81,8 +74,104 @@ jobs:
       - name: Helm deploy to Dev environment
         id: deploy-to-dev
         run: |
-          cd helm_deploy/laa-maat-data-api
-          helm upgrade laa-maat-data-api -f values-dev.yaml . --namespace ${KUBE_NAMESPACE} --install --set laa-maat-data-api.spec.containers.image="$REGISTRY/$REPOSITORY:$GITHUB_TAG"
+          helm upgrade laa-maat-data-api ./helm_deploy/laa-maat-data-api/. \
+                      --install --wait \
+                      --namespace=${KUBE_NAMESPACE} \
+                      --values ./helm_deploy/laa-maat-data-api/values-dev.yaml \
+                      --set laa-maat-data-api.spec.containers.image="$REGISTRY/$REPOSITORY:$GITHUB_TAG"
+        env:
+          REGISTRY: ${{ secrets.ECR_REGISTRY_URL }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          GITHUB_TAG: ${{ github.sha }}
+
+  deploy-to-test:
+    name: deploy-to-test
+    needs: [application-image-build]
+    runs-on: ubuntu-latest
+    environment: test
+    env:
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+    steps:
+      - name: Authenticating to the Kubernetes cluster
+        id: authenticate-k8s-cluster
+        run: |
+          echo "${{ secrets.KUBE_CERT }}" > ca.crt
+          kubectl config set-cluster ${KUBE_CLUSTER} --certificate-authority=./ca.crt --server=https://${KUBE_CLUSTER}
+          kubectl config set-credentials deploy-user --token=${{ secrets.KUBE_TOKEN }}
+          kubectl config set-context ${KUBE_CLUSTER} --cluster=${KUBE_CLUSTER} --user=deploy-user --namespace=${KUBE_NAMESPACE}
+          kubectl config use-context ${KUBE_CLUSTER}
+
+      - name: Helm deploy to Test environment
+        id: deploy-to-test
+        run: |
+          helm upgrade laa-maat-data-api ./helm_deploy/laa-maat-data-api/. \
+                      --install --wait \
+                      --namespace=${KUBE_NAMESPACE} \
+                      --values ./helm_deploy/laa-maat-data-api/values-test.yaml \
+                      --set laa-maat-data-api.spec.containers.image="$REGISTRY/$REPOSITORY:$GITHUB_TAG"
+        env:
+          REGISTRY: ${{ secrets.ECR_REGISTRY_URL }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          GITHUB_TAG: ${{ github.sha }}
+
+  deploy-to-uat:
+    name: deploy-to-uat
+    needs: [application-image-build]
+    runs-on: ubuntu-latest
+    environment: uat
+    env:
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+    steps:
+      - name: Authenticating to the Kubernetes cluster
+        id: authenticate-k8s-cluster
+        run: |
+          echo "${{ secrets.KUBE_CERT }}" > ca.crt
+          kubectl config set-cluster ${KUBE_CLUSTER} --certificate-authority=./ca.crt --server=https://${KUBE_CLUSTER}
+          kubectl config set-credentials deploy-user --token=${{ secrets.KUBE_TOKEN }}
+          kubectl config set-context ${KUBE_CLUSTER} --cluster=${KUBE_CLUSTER} --user=deploy-user --namespace=${KUBE_NAMESPACE}
+          kubectl config use-context ${KUBE_CLUSTER}
+
+      - name: Helm deploy to UAT environment
+        id: deploy-to-uat
+        run: |
+          helm upgrade laa-maat-data-api ./helm_deploy/laa-maat-data-api/. \
+                      --install --wait \
+                      --namespace=${KUBE_NAMESPACE} \
+                      --values ./helm_deploy/laa-maat-data-api/values-uat.yaml \
+                      --set laa-maat-data-api.spec.containers.image="$REGISTRY/$REPOSITORY:$GITHUB_TAG"
+        env:
+          REGISTRY: ${{ secrets.ECR_REGISTRY_URL }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          GITHUB_TAG: ${{ github.sha }}
+
+  deploy-to-production:
+    name: deploy-to-production
+    needs: [application-image-build, deploy-to-development]
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+    steps:
+      - name: Authenticating to the Kubernetes cluster
+        id: authenticate-k8s-cluster
+        run: |
+          echo "${{ secrets.KUBE_CERT }}" > ca.crt
+          kubectl config set-cluster ${KUBE_CLUSTER} --certificate-authority=./ca.crt --server=https://${KUBE_CLUSTER}
+          kubectl config set-credentials deploy-user --token=${{ secrets.KUBE_TOKEN }}
+          kubectl config set-context ${KUBE_CLUSTER} --cluster=${KUBE_CLUSTER} --user=deploy-user --namespace=${KUBE_NAMESPACE}
+          kubectl config use-context ${KUBE_CLUSTER}
+
+      - name: Helm deploy to Production environment
+        id: deploy-to-production
+        run: |
+          helm upgrade laa-maat-data-api ./helm_deploy/laa-maat-data-api/. \
+                      --install --wait \
+                      --namespace=${KUBE_NAMESPACE} \
+                      --values ./helm_deploy/laa-maat-data-api/values-prod.yaml \
+                      --set laa-maat-data-api.spec.containers.image="$REGISTRY/$REPOSITORY:$GITHUB_TAG"
         env:
           REGISTRY: ${{ secrets.ECR_REGISTRY_URL }}
           REPOSITORY: ${{ vars.ECR_REPOSITORY }}

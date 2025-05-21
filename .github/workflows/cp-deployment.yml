@@ -77,7 +77,6 @@ jobs:
           kubectl config set-credentials deploy-user --token=${{ secrets.KUBE_TOKEN }}
           kubectl config set-context ${KUBE_CLUSTER} --cluster=${KUBE_CLUSTER} --user=deploy-user --namespace=${KUBE_NAMESPACE}
           kubectl config use-context ${KUBE_CLUSTER}
-          kubectl --namespace=${KUBE_NAMESPACE} get pods
 
       - name: Helm deploy to Dev environment
         id: deploy-to-dev

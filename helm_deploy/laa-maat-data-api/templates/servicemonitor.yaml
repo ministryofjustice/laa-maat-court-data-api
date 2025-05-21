@@ -1,0 +1,19 @@
+{{- if .Values.actuator.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "laa-maat-data-api.fullname" .  }}-monitoring
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "laa-maat-data-api.selectorLabels" . | nindent 6 }}
+  endpoints:
+    {{- if not (eq (toString .Values.actuator.port) "http") }}
+    - port: actuator
+    {{- else }}
+    - port: http
+    {{- end }}
+      interval: {{ .Values.actuator.metrics.scrapeInterval }}
+      path: {{ .Values.actuator.metrics.path }}
+{{- end }}

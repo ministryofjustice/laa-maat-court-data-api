@@ -32,51 +32,51 @@ env:
   - name: CDA_API_OAUTH_CLIENT_ID
     valueFrom:
         secretKeyRef:
-            name: maat-api-oauth-client-credentials
+            name: maat-api-env-variables
             key: CDA_API_OAUTH_CLIENT_ID
   - name: CDA_API_OAUTH_CLIENT_SECRET
     valueFrom:
         secretKeyRef:
-            name: maat-api-oauth-client-credentials
+            name: maat-api-env-variables
             key: CDA_API_OAUTH_CLIENT_SECRET
   - name: TOGDATA_DATASOURCE_USERNAME
     valueFrom:
         secretKeyRef:
-            name: maat-api-oauth-client-credentials
+            name: maat-api-env-variables
             key: TOGDATA_DATASOURCE_USERNAME
   - name: TOGDATA_DATASOURCE_PASSWORD
     valueFrom:
         secretKeyRef:
-            name: maat-api-oauth-client-credentials
+            name: maat-api-env-variables
             key: TOGDATA_DATASOURCE_PASSWORD
   - name: DATASOURCE_URL
     valueFrom:
         secretKeyRef:
-            name: maat-api-oauth-client-credentials
+            name: maat-api-env-variables
             key: DATASOURCE_URL
   - name: DATASOURCE_USERNAME
     valueFrom:
         secretKeyRef:
-            name: maat-api-oauth-client-credentials
+            name: maat-api-env-variables
             key: DATASOURCE_USERNAME
   - name: DATASOURCE_PASSWORD
     valueFrom:
         secretKeyRef:
-            name: maat-api-oauth-client-credentials
+            name: maat-api-env-variables
             key: DATASOURCE_PASSWORD
   - name: CREATE_LINK_QUEUE
     valueFrom:
         secretKeyRef:
-            name: maat-api-oauth-client-credentials
+            name: maat-api-env-variables
             key: CREATE_LINK_QUEUE
   - name: UNLINK_QUEUE
     valueFrom:
         secretKeyRef:
-            name: maat-api-oauth-client-credentials
+            name: maat-api-env-variables
             key: UNLINK_QUEUE
   - name: HEARING_RESULTED_QUEUE
     valueFrom:
         secretKeyRef:
-            name: maat-api-oauth-client-credentials
+            name: maat-api-env-variables
             key: HEARING_RESULTED_QUEUE
 {{- end -}}

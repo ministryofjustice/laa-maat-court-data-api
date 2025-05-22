@@ -74,10 +74,8 @@ jobs:
       - name: Helm deploy to Dev environment
         id: deploy-to-dev
         run: |
-          helm upgrade laa-maat-data-api ./helm_deploy/laa-maat-data-api/. \
-                      --install --wait \
-                      --namespace=${KUBE_NAMESPACE} \
-                      --values ./helm_deploy/laa-maat-data-api/values-dev.yaml \
+          cd helm_deploy/laa-maat-data-api
+          helm upgrade laa-maat-data-api -f values-dev.yaml . --install --namespace=${KUBE_NAMESPACE} \
                       --set laa-maat-data-api.spec.containers.image="$REGISTRY/$REPOSITORY:$GITHUB_TAG"
         env:
           REGISTRY: ${{ secrets.ECR_REGISTRY_URL }}

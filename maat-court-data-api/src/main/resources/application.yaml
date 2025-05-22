@@ -38,6 +38,9 @@ spring:
             client-id: ${CDA_OAUTH_CLIENT_ID}
             client-secret: ${CDA_OAUTH_CLIENT_SECRET}
             authorization-grant-type: client_credentials
+      resource-server:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URI}
 
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect

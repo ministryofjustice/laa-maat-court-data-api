@@ -11,8 +11,6 @@ spring:
     jdbc:
       initialize-schema: embedded
 
-
-
   security:
     oauth2:
       client:
@@ -24,6 +22,9 @@ spring:
             client-id: dummyURL
             client-secret: dummyURL
             authorization-grant-type: client_credentials
+      resource-server:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URI:http://localhost:9999}
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect

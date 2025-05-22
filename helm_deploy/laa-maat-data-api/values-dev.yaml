@@ -88,11 +88,5 @@ cloudPlatform:
   aws:
     sqs:
       region: eu-west-2
-      queue:
-        hearingResulted: crime-apps-dev-hearing-resulted-queue
-        prosecutionConcluded:
-          url: crime-apps-dev-prosecution-concluded-queue
-          listenerEnabled: true
-          scheduleEnabled: true
 
 postMvpEnabled: false

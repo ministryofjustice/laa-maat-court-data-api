@@ -77,11 +77,9 @@ jobs:
         run: |
           cd helm_deploy/laa-maat-data-api
           helm upgrade laa-maat-data-api -f values-dev.yaml . --install --namespace=${KUBE_NAMESPACE} \
-                      --set laa-maat-data-api.spec.containers.image="$REGISTRY/$REPOSITORY:77f03d8ba53f4b7db25832b4a6b3d4fc5d3136b5"
+                      --set image.tag="77f03d8ba53f4b7db25832b4a6b3d4fc5d3136b5"
         env:
-          REGISTRY: ${{ secrets.ECR_REGISTRY_URL }}
-          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-#          GITHUB_TAG: ${{ github.sha }}
+          GITHUB_TAG: ${{ github.sha }}
 
   deploy-to-test:
     name: deploy-to-test
@@ -109,10 +107,8 @@ jobs:
                       --install --wait \
                       --namespace=${KUBE_NAMESPACE} \
                       --values ./helm_deploy/laa-maat-data-api/values-test.yaml \
-                      --set laa-maat-data-api.spec.containers.image="$REGISTRY/$REPOSITORY:$GITHUB_TAG"
+                      --set image.tag="$GITHUB_TAG"
         env:
-          REGISTRY: ${{ secrets.ECR_REGISTRY_URL }}
-          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
           GITHUB_TAG: ${{ github.sha }}
 
   deploy-to-uat:

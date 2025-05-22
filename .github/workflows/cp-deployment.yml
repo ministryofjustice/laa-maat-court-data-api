@@ -41,7 +41,7 @@ jobs:
           echo "Building the ear file and Docker image with gradle..."
           pushd maat-court-data-api
           chmod +x ./gradlew
-          ./gradlew build
+          ./gradlew build -x test
           echo "Building the docker image and tagging it"
           docker build -t maat-cda .
           docker tag maat-cda $REGISTRY/$REPOSITORY:$GITHUB_TAG

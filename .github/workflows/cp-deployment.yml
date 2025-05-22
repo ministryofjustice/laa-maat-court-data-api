@@ -13,49 +13,49 @@ on:
 
 jobs:
 
-#  application-image-build:
-#    name: application-image-build
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - uses: actions/setup-java@v4
-#        with:
-#          distribution: 'corretto'
-#          java-version: '17'
-#      - uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 #v4.0.2
-#        with:
-#          role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-#          aws-region: ${{ vars.ECR_REGION }}
-#      - uses: aws-actions/amazon-ecr-login@v2
-#        id: login-ecr
-#      - name: Pre-build
-#        id: tag-image
-#        run: |
-#          java -version
-#          echo "Pulling in SQS integration test Docker image dependencies"
-#          docker pull localstack/localstack
-#          echo "Finished pulling localstack/localstack test dependency"
-#      - name: Build & Push Image
-#        id: build-and-push-image
-#        run: |
-#          echo "Building the ear file and Docker image with gradle..."
-#          pushd maat-court-data-api
-#          chmod +x ./gradlew
-#          ./gradlew build
-#          echo "Building the docker image and tagging it"
-#          docker build -t maat-cda .
-#          docker tag maat-cda $REGISTRY/$REPOSITORY:$GITHUB_TAG
-#          echo "Pushing the Docker image to $REGISTRY/$REPOSITORY:$GITHUB_TAG"
-#          docker push $REGISTRY/$REPOSITORY:$GITHUB_TAG
-#        env:
-#          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-#          GITHUB_TAG: ${{ github.sha }}
+  application-image-build:
+    name: application-image-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.ECR_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: login-ecr
+      - name: Pre-build
+        id: tag-image
+        run: |
+          java -version
+          echo "Pulling in SQS integration test Docker image dependencies"
+          docker pull localstack/localstack
+          echo "Finished pulling localstack/localstack test dependency"
+      - name: Build & Push Image
+        id: build-and-push-image
+        run: |
+          echo "Building the ear file and Docker image with gradle..."
+          pushd maat-court-data-api
+          chmod +x ./gradlew
+          ./gradlew build
+          echo "Building the docker image and tagging it"
+          docker build -t maat-cda .
+          docker tag maat-cda $REGISTRY/$REPOSITORY:$GITHUB_TAG
+          echo "Pushing the Docker image to $REGISTRY/$REPOSITORY:$GITHUB_TAG"
+          docker push $REGISTRY/$REPOSITORY:$GITHUB_TAG
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          GITHUB_TAG: ${{ github.sha }}
 
 
   deploy-to-development:
     name: deploy-to-development
-#    needs: [application-image-build]
+    needs: [application-image-build]
     runs-on: ubuntu-latest
     environment: development
     env:
@@ -76,14 +76,13 @@ jobs:
         id: deploy-to-dev
         run: |
           cd helm_deploy/laa-maat-data-api
-          helm upgrade laa-maat-data-api -f values-dev.yaml . --install --namespace=${KUBE_NAMESPACE} \
-                      --set image.tag="77f03d8ba53f4b7db25832b4a6b3d4fc5d3136b5"
+          helm upgrade laa-maat-data-api -f values-dev.yaml . --install --wait --namespace=${KUBE_NAMESPACE} --set image.tag="$GITHUB_TAG"
         env:
           GITHUB_TAG: ${{ github.sha }}
 
   deploy-to-test:
     name: deploy-to-test
-#    needs: [application-image-build]
+    needs: [application-image-build]
     runs-on: ubuntu-latest
     environment: test
     env:
@@ -113,7 +112,7 @@ jobs:
 
   deploy-to-uat:
     name: deploy-to-uat
-#    needs: [application-image-build]
+    needs: [application-image-build]
     runs-on: ubuntu-latest
     environment: uat
     env:
@@ -137,15 +136,13 @@ jobs:
                       --install --wait \
                       --namespace=${KUBE_NAMESPACE} \
                       --values ./helm_deploy/laa-maat-data-api/values-uat.yaml \
-                      --set laa-maat-data-api.spec.containers.image="$REGISTRY/$REPOSITORY:$GITHUB_TAG"
+                      --set image.tag="$GITHUB_TAG"
         env:
-          REGISTRY: ${{ secrets.ECR_REGISTRY_URL }}
-          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
           GITHUB_TAG: ${{ github.sha }}
 
   deploy-to-production:
     name: deploy-to-production
-#    needs: [application-image-build, deploy-to-development]
+    needs: [application-image-build, deploy-to-development]
     runs-on: ubuntu-latest
     environment: production
     env:
@@ -169,8 +166,6 @@ jobs:
                       --install --wait \
                       --namespace=${KUBE_NAMESPACE} \
                       --values ./helm_deploy/laa-maat-data-api/values-prod.yaml \
-                      --set laa-maat-data-api.spec.containers.image="$REGISTRY/$REPOSITORY:$GITHUB_TAG"
+                      --set laa-maat-data-api.spec.containers.image="$GITHUB_TAG"
         env:
-          REGISTRY: ${{ secrets.ECR_REGISTRY_URL }}
-          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
           GITHUB_TAG: ${{ github.sha }}

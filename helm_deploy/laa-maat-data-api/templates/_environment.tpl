@@ -9,7 +9,7 @@ env:
   - name: SENTRY_DSN
     valueFrom:
         secretKeyRef:
-            name: sentry-dsn
+            name: maat-api-env-variables
             key: SENTRY_DSN
   - name: SENTRY_ENV
     value: {{ .Values.java.host_env }}
@@ -28,7 +28,7 @@ env:
   - name: AWS_DEFAULT_REGION
     value: {{ .Values.aws_region }}
   - name: POST_MVP_ENABLED
-    value: {{ .Values.postMvpEnabled }}
+    value: "{{ .Values.postMvpEnabled }}"
   - name: CDA_API_OAUTH_CLIENT_ID
     valueFrom:
         secretKeyRef:

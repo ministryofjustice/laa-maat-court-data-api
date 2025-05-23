@@ -17,9 +17,9 @@ env:
     value: {{ .Values.sentry.sampleRate | quote }}
   - name: LOG_LEVEL
     value: {{ .Values.logging.level }}
-  - name: CDA_API_BASE_URL
+  - name: CDA_BASE_URL
     value: {{ .Values.cdaApi.baseUrl }}
-  - name: CDA_API_OAUTH_URL
+  - name: CDA_OAUTH_URL
     value: {{ .Values.cdaApi.oauthUrl }}
   - name: JWT_ISSUER_URI
     value: {{ .Values.jwt.issuerUri }}
@@ -29,11 +29,6 @@ env:
     value: {{ .Values.aws_region }}
   - name: POST_MVP_ENABLED
     value: "{{ .Values.postMvpEnabled }}"
-  - name: CDA_OAUTH_URL
-    valueFrom:
-        secretKeyRef:
-            name: maat-api-env-variables
-            key: CDA_OAUTH_URL
   - name: CDA_API_OAUTH_CLIENT_ID
     valueFrom:
         secretKeyRef:

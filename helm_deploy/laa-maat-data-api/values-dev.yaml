@@ -46,12 +46,12 @@ ingress:
   externalAnnotations: {}
   internalHost:
     host: laa-maat-data-api-dev.apps.live.cloud-platform.service.justice.gov.uk
-    path: /api/internal/v1/orchestration
+    path: /
   externalHost:
     host: laa-maat-data-api-dev.apps.live.cloud-platform.service.justice.gov.uk
     paths:
-      swaggerPath: /open-api/swagger-ui
-      openApiPath: /open-api/api-docs
+      swaggerPath: /open-api/api-docs
+      openApiPath: /open-api
   tls: []
   className: default
 

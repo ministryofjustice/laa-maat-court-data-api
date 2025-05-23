@@ -16,7 +16,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @EnableWebSecurity
 public class ResourceServerConfiguration {
 
-    public static final String SCOPE_MAATAPI_STANDARD = "SCOPE_maatapi/standard";
+    public static final String SCOPE_MAATAPI_STANDARD = "SCOPE_maat-api-dev/standard";
 
     @Bean
     protected BearerTokenAuthenticationEntryPoint bearerTokenAuthenticationEntryPoint() {

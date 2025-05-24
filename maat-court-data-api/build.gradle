@@ -55,14 +55,15 @@ dependencies {
     implementation "xerces:xercesImpl:$xercesImplVersion"
 
     // Spring
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-activemq'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-graphql'
-
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$oauth2ResourceServerVersion"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-starter-aop"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-graphql"
 
     implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$springAwsCloudVersion"
     implementation 'org.springframework:spring-jms'

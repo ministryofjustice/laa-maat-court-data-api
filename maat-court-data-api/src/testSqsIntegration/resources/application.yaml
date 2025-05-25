@@ -64,9 +64,6 @@ cloud-platform:
         unlink: unlink
         hearingResulted: hearing
         meansAssessmentPostProcessing: meansAssessmentPostProcessing
-        config:
-          messageDelay: 900
-          messageDelayDuration: 120
 
 cda:
   url: "http://localhost:1234/"

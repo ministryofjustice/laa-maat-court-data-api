@@ -103,8 +103,6 @@ dependencies {
     testCompileOnly group: 'org.projectlombok', name: 'lombok'
     testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
     testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$springCloudStubRunnerVersion"
-//    testImplementation "org.springframework.boot:spring-boot-starter-test"
-//    testImplementation "org.springframework.security:spring-security-test"
 
     // Only required for SQS Integration test
     testSqsIntegrationImplementation "org.awaitility:awaitility:$awaitilityVersion"

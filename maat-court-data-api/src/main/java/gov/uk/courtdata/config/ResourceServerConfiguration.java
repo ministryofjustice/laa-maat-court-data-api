@@ -17,7 +17,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @EnableWebSecurity
 public class ResourceServerConfiguration {
 
-    @Value("${cda.hearing.url}")
+    @Value("${httpRequest.scope}")
     private String maatApiScope;
 
     @Bean

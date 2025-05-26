@@ -41,7 +41,6 @@ spring:
       resource-server:
         jwt:
           issuer-uri: ${JWT_ISSUER_URI}
-        scope: ${SCOPE_MAATAPI}
 
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
@@ -66,6 +65,9 @@ spring:
         static: ${CLOUD_PLATFORM_QUEUE_REGION}
         auto: false
       credentials.use-default-aws-credentials-chain: true
+
+httpRequest:
+  scope: ${SCOPE_MAATAPI}
 
 springdoc:
   packagesToScan: gov.uk.courtdata
@@ -128,7 +130,6 @@ api-endpoints:
   debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
   address-domain: /api/internal/v1/address
 
-
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}
 
@@ -144,7 +145,6 @@ management:
   tracing:
     propagation:
       type: w3c,b3
-
 
 aws:
   region: ${AWS_DEFAULT_REGION}

@@ -101,6 +101,9 @@ sentry:
   release: 1.1.1
   servername: aws-ecs-con
 
+httpRequest:
+  scope: maat-api-dev
+
 springdoc:
   api-docs:
     path: /maat-api

@@ -21,6 +21,8 @@ java:
 jwt:
   issuerUri: https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_zAlvz7NlW
 
+scope: maat-api-dev
+
 cdaApi:
   baseUrl: https://dev.court-data-adaptor.service.justice.gov.uk/api/internal/v2
   oauthUrl: https://dev.court-data-adaptor.service.justice.gov.uk/oauth/token

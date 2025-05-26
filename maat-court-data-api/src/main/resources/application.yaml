@@ -41,6 +41,7 @@ spring:
       resource-server:
         jwt:
           issuer-uri: ${JWT_ISSUER_URI}
+        scope: ${SCOPE_MAATAPI}
 
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect

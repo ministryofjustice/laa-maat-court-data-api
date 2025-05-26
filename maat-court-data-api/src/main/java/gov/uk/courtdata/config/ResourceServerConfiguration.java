@@ -1,5 +1,6 @@
 package gov.uk.courtdata.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -16,7 +17,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @EnableWebSecurity
 public class ResourceServerConfiguration {
 
-    public static final String SCOPE_MAATAPI_STANDARD = "SCOPE_maat-api-dev/standard";
+    @Value("${cda.hearing.url}")
+    private String maatApiScope;
 
     @Bean
     protected BearerTokenAuthenticationEntryPoint bearerTokenAuthenticationEntryPoint() {
@@ -37,7 +39,7 @@ public class ResourceServerConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/open-api/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/api/**").hasAuthority(SCOPE_MAATAPI_STANDARD)
+                        .requestMatchers("/api/**").hasAuthority("SCOPE_" + maatApiScope + "/standard")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2ResourceServer) ->
                         oauth2ResourceServer

@@ -23,6 +23,8 @@ env:
     value: {{ .Values.cdaApi.oauthUrl }}
   - name: JWT_ISSUER_URI
     value: {{ .Values.jwt.issuerUri }}
+  - name: SCOPE_MAATAPI
+    value: {{ .Values.scope }}
   - name: CLOUD_PLATFORM_QUEUE_REGION
     value: {{ .Values.cloudPlatform.aws.sqs.region }}
   - name: AWS_DEFAULT_REGION

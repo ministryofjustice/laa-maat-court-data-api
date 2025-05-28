@@ -21,6 +21,8 @@ java:
 jwt:
   issuerUri: https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_ZaFnb3kFD
 
+scope: maat-api-uat
+
 cdaApi:
   baseUrl: https://uat.court-data-adaptor.service.justice.gov.uk/api/internal/v2
   oauthUrl: https://uat.court-data-adaptor.service.justice.gov.uk/oauth/token
@@ -30,7 +32,7 @@ serviceAccount:
   create: false
   # Annotations to add to the service account
   annotations: {}
-
+  name: "maat-data-api"
 
 service:
   type: ClusterIP
@@ -47,12 +49,12 @@ ingress:
   externalAnnotations: {}
   internalHost:
     host: laa-maat-data-api-uat.apps.live.cloud-platform.service.justice.gov.uk
-    path: /api/internal/v1/orchestration
+    path: /
   externalHost:
     host: laa-maat-data-api-uat.apps.live.cloud-platform.service.justice.gov.uk
     paths:
-      swaggerPath: /open-api/swagger-ui
-      openApiPath: /open-api/api-docs
+      swaggerPath: /open-api/api-docs
+      openApiPath: /open-api
   tls: []
   className: default
 
@@ -70,7 +72,7 @@ actuator:
     path: /actuator/prometheus
   health:
     path: /actuator/health
-  port: 8300
+  port: 8100
   liveness:
     initialDelaySeconds: 45
     periodSeconds: 10
@@ -89,11 +91,5 @@ cloudPlatform:
   aws:
     sqs:
       region: eu-west-2
-      queue:
-        hearingResulted: crime-apps-dev-hearing-resulted-queue
-        prosecutionConcluded:
-          url: crime-apps-dev-prosecution-concluded-queue
-          listenerEnabled: true
-          scheduleEnabled: true
 
 postMvpEnabled: false

@@ -11,8 +11,6 @@ spring:
     jdbc:
       initialize-schema: embedded
 
-
-
   security:
     oauth2:
       client:
@@ -24,6 +22,9 @@ spring:
             client-id: dummyURL
             client-secret: dummyURL
             authorization-grant-type: client_credentials
+      resource-server:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URI:http://localhost:9999}
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
@@ -99,6 +100,9 @@ sentry:
   dsn: https://39f002f57fb94029b7f96843e59d1b55:f14e3ee3bf7d4c72aea8b6a0b93e569b@sentry.service.dsd.io/173?stacktrace.app.packages=uk.gov
   release: 1.1.1
   servername: aws-ecs-con
+
+httpRequest:
+  scope: maat-api-dev
 
 springdoc:
   api-docs:

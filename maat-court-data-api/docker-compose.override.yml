@@ -11,6 +11,8 @@ services:
       - ENABLE_CLOUDWATCH_METRICS=false
       - ENABLE_SPRING_CLOUD_SQS=false
       - POST_MVP_ENABLED=false
+      - LOG_LEVEL=INFO
+      - JWT_ISSUER_URI=https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_zAlvz7NlW
     env_file:
       - app.env
 
@@ -23,6 +25,7 @@ services:
     ports:
       - "8090:8090"
       - "8091:8091"
+      - "8100:8100"
     command: java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8091 -jar app.jar
 
 networks:

@@ -65,7 +65,7 @@ Create the name of the service account to use
 Create ingress configuration
 */}}
 {{- define "laa-maat-data-api.ingress" -}}
-{{- $internalAllowlistSourceRange := (lookup "v1" "Secret" .Release.Namespace "ingress-internal-allowlist-source-range").data.INTERNAL_ALLOWLIST_SOURCE_RANGE | b64dec }}
+{{- $internalAllowlistSourceRange := (lookup "v1" "Secret" .Release.Namespace "maat-api-env-variables").data.INTERNAL_ALLOWLIST_SOURCE_RANGE | b64dec }}
 {{- if $internalAllowlistSourceRange }}
   nginx.ingress.kubernetes.io/whitelist-source-range: {{ $internalAllowlistSourceRange }}
   external-dns.alpha.kubernetes.io/set-identifier: {{ include "laa-maat-data-api.fullname" . }}-{{ $.Values.ingress.environmentName}}-green
@@ -76,7 +76,7 @@ Create ingress configuration
 Create external ingress configuration
 */}}
 {{- define "laa-maat-data-api.externalIngress" -}}
-{{- $externalAllowlistSourceRange := (lookup "v1" "Secret" .Release.Namespace "ingress-external-allowlist-source-range").data.EXTERNAL_ALLOWLIST_SOURCE_RANGE | b64dec }}
+{{- $externalAllowlistSourceRange := (lookup "v1" "Secret" .Release.Namespace "maat-api-env-variables").data.EXTERNAL_ALLOWLIST_SOURCE_RANGE | b64dec }}
 {{- if $externalAllowlistSourceRange }}
   nginx.ingress.kubernetes.io/whitelist-source-range: {{ $externalAllowlistSourceRange }}
   external-dns.alpha.kubernetes.io/set-identifier: {{ include "laa-maat-data-api.fullname" . }}-external-{{ $.Values.ingress.environmentName}}-green

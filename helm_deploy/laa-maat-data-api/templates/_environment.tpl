@@ -9,7 +9,7 @@ env:
   - name: SENTRY_DSN
     valueFrom:
         secretKeyRef:
-            name: sentry-dsn
+            name: maat-api-env-variables
             key: SENTRY_DSN
   - name: SENTRY_ENV
     value: {{ .Values.java.host_env }}
@@ -17,18 +17,20 @@ env:
     value: {{ .Values.sentry.sampleRate | quote }}
   - name: LOG_LEVEL
     value: {{ .Values.logging.level }}
-  - name: CDA_API_BASE_URL
+  - name: CDA_BASE_URL
     value: {{ .Values.cdaApi.baseUrl }}
-  - name: CDA_API_OAUTH_URL
+  - name: CDA_OAUTH_URL
     value: {{ .Values.cdaApi.oauthUrl }}
   - name: JWT_ISSUER_URI
     value: {{ .Values.jwt.issuerUri }}
+  - name: SCOPE_MAATAPI
+    value: {{ .Values.scope }}
   - name: CLOUD_PLATFORM_QUEUE_REGION
     value: {{ .Values.cloudPlatform.aws.sqs.region }}
   - name: AWS_DEFAULT_REGION
     value: {{ .Values.aws_region }}
   - name: POST_MVP_ENABLED
-    value: {{ .Values.postMvpEnabled }}
+    value: "{{ .Values.postMvpEnabled }}"
   - name: CDA_API_OAUTH_CLIENT_ID
     valueFrom:
         secretKeyRef:

@@ -35,7 +35,9 @@ public class ResourceServerConfiguration {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf((csrf) -> csrf.disable())
+                .csrf(csrf
+                        // MAAT Data API is only used by other micro services that are non-browser
+                        -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/open-api/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()

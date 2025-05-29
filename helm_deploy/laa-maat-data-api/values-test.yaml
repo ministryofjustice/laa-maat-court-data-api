@@ -19,7 +19,7 @@ java:
   host_env: test
 
 jwt:
-  issuerUri: https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_ZaFnb3kFD
+  issuerUri: https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_Zs2HUYazD
 
 scope: maat-api-test
 

@@ -19,7 +19,7 @@ java:
   host_env: uat
 
 jwt:
-  issuerUri: https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_ZaFnb3kFD
+  issuerUri: https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_XFCfvP0R6
 
 scope: maat-api-uat
 

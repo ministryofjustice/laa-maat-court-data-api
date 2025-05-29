@@ -19,7 +19,7 @@ java:
   host_env: production
 
 jwt:
-  issuerUri: https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_ZaFnb3kFD
+  issuerUri: https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_N4A3KN5Bo
 
 scope: maat-api-prod
 

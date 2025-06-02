@@ -31,12 +31,12 @@ env:
     value: {{ .Values.aws_region }}
   - name: POST_MVP_ENABLED
     value: "{{ .Values.postMvpEnabled }}"
-  - name: CDA_API_OAUTH_CLIENT_ID
+  - name: CDA_OAUTH_CLIENT_ID
     valueFrom:
         secretKeyRef:
             name: maat-api-env-variables
             key: CDA_API_OAUTH_CLIENT_ID
-  - name: CDA_API_OAUTH_CLIENT_SECRET
+  - name: CDA_OAUTH_CLIENT_SECRET
     valueFrom:
         secretKeyRef:
             name: maat-api-env-variables

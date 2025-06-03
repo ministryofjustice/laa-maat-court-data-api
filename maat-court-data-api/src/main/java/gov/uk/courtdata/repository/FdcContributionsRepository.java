@@ -16,6 +16,11 @@ public interface FdcContributionsRepository extends JpaRepository<FdcContributio
     List<FdcContributionsEntity> findByStatus(FdcContributionsStatus status);
     List<FdcContributionsEntity> findByIdIn(Set<Integer> ids);
 
+    /***
+     * This method will return the FDC_CALCULATION_DELAY that has been set in the MAAT DB.
+     * This value is used to determine the date range for both accelerated and delayed FDCs.
+     * @return
+     */
     @Query(value = "SELECT TOGDATA.REF_DATA_MANAGEMENT.GET_CONFIG_PARAMETER('FDC_CALCULATION_DELAY', sysdate) FROM DUAL", nativeQuery = true)
     String callGetFdcCalculationDelay();
 

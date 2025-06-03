@@ -19,8 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -62,4 +64,25 @@ public class ContributionFileController {
         return ResponseEntity.ok(contributionFileService.getContributionFileError(contributionId, contributionFileId).orElseThrow(
                 () -> new RequestedObjectNotFoundException("Contribution file error not found"))); // to get ErrorDTO
     }
+
+    @Operation(description = "Retrieve the XML from all fdc CONTRIBUTION FILES matching the given date range")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @GetMapping(value = "/fdcFiles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getFdcContributionFiles(@RequestParam(name = "fromDate") final LocalDate fromDate,
+                                                                @RequestParam(name = "toDate") final LocalDate toDate) {
+        log.info("Search FDC CONTRIBUTION_FILES between fromDate {} and toDate {}", fromDate, toDate);
+        return ResponseEntity.ok(contributionFileService.getContributionFilesNamedLikeBetweenDate("FDC%", fromDate, toDate));
+    }
+
+    @Operation(description = "Retrieve the XML from all fdc CONTRIBUTION FILES matching the given date range")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @StandardApiResponse
+    @GetMapping(value = "/concorFiles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getConcorContributionFiles(@RequestParam(name = "fromDate") final LocalDate fromDate,
+                                                                   @RequestParam(name = "toDate") final LocalDate toDate) {
+        log.info("Search CONCOR CONTRIBUTION_FILES between fromDate {} and toDate {}", fromDate, toDate);
+        return ResponseEntity.ok(contributionFileService.getContributionFilesNamedLikeBetweenDate("CONTRIBUTIONS%", fromDate, toDate));
+    }
+
 }

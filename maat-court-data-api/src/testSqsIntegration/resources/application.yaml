@@ -20,9 +20,9 @@ spring:
             tokenUri: dummyURL
         registration:
           cda:
-            clientId: dummyURL
-            clientSecret: dummyURL
-            authorizationGrantType: client_credentials
+            client-id: dummyURL
+            client-secret: dummyURL
+            authorization-grant-type: client_credentials
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
@@ -63,11 +63,7 @@ cloud-platform:
         link: link
         unlink: unlink
         hearingResulted: hearing
-        createLinkCpStatusJob: createLinkCpStatusJob
         meansAssessmentPostProcessing: meansAssessmentPostProcessing
-        config:
-          messageDelay: 900
-          messageDelayDuration: 120
 
 cda:
   url: "http://localhost:1234/"

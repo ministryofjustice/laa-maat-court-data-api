@@ -3,7 +3,9 @@ server:
 
 logging:
   level:
-    root: INFO
+    root: ${LOG_LEVEL}
+    org.springframework.web: ${LOG_LEVEL}
+    org.springframework.security: ${LOG_LEVEL}
 
 spring:
   graphql:
@@ -33,9 +35,12 @@ spring:
             token-uri: ${CDA_OAUTH_URL}
         registration:
           cda:
-            clientId: ${CDA_OAUTH_CLIENT_ID}
-            clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
-            authorizationGrantType: client_credentials
+            client-id: ${CDA_OAUTH_CLIENT_ID}
+            client-secret: ${CDA_OAUTH_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+      resource-server:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URI}
 
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
@@ -61,6 +66,9 @@ spring:
         auto: false
       credentials.use-default-aws-credentials-chain: true
 
+httpRequest:
+  scope: ${SCOPE_MAATAPI}
+
 springdoc:
   packagesToScan: gov.uk.courtdata
   show-actuator: true
@@ -81,7 +89,6 @@ cloud-platform:
         link: ${CREATE_LINK_QUEUE}
         unlink: ${UNLINK_QUEUE}
         hearingResulted: ${HEARING_RESULTED_QUEUE}
-        createLinkCpStatusJob: ${CREATE_LINK_CP_STATUS_JOB_QUEUE}
         config:
           messageDelay: 900
           messageDelayDuration: 120
@@ -123,40 +130,21 @@ api-endpoints:
   debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
   address-domain: /api/internal/v1/address
 
-
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}
 
 version: 0.0.1
 
 management:
-  health:
-    jms:
-      enabled: false
-  tracing:
-    propagation:
-      type: w3c,b3
+  server:
+    port: 8100
   endpoints:
     web:
       exposure:
-        include: health
-  metrics:
-    enable:
-      process: false
-      jdbc: true
-      logback: false
-      spring: true
-      tomcat: false
-      hikaricp: true
-      jvm: true
-      system: true
-    export:
-      cloudwatch:
-        enabled: ${ENABLE_CLOUDWATCH_METRICS}
-        namespace: MAAT-COURT-DATA-API
-        batch-size: ${CLOUDWATCH_BATCH_SIZE}
-        step: ${CLOUDWATCH_STEP}
-
+        include: health,info,metrics,prometheus
+  tracing:
+    propagation:
+      type: w3c,b3
 
 aws:
   region: ${AWS_DEFAULT_REGION}

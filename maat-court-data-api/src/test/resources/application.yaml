@@ -11,8 +11,6 @@ spring:
     jdbc:
       initialize-schema: embedded
 
-
-
   security:
     oauth2:
       client:
@@ -24,6 +22,9 @@ spring:
             client-id: dummyURL
             client-secret: dummyURL
             authorization-grant-type: client_credentials
+      resource-server:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URI:http://localhost:9999}
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
@@ -71,7 +72,6 @@ cloud-platform:
         link: link
         unlink: unlink
         hearingResulted: hearing
-        createLinkCpStatusJob: createLinkCpStatusJob
         meansAssessmentPostProcessing: meansAssessmentPostProcessing
         config:
           messageDelay: 900
@@ -81,8 +81,8 @@ cda:
   url: "http://dummy:0000/"
   oauth:
     url: cdaAuthUrl
-    clientId: cdaClient
-    clientSecret: cdaPass
+    client-id: cdaClient
+    client-secret: cdaPass
   laastatus:
     url: ${cda.url}/api/internal/v1/representation_orders
   hearing:
@@ -100,6 +100,9 @@ sentry:
   dsn: https://39f002f57fb94029b7f96843e59d1b55:f14e3ee3bf7d4c72aea8b6a0b93e569b@sentry.service.dsd.io/173?stacktrace.app.packages=uk.gov
   release: 1.1.1
   servername: aws-ecs-con
+
+httpRequest:
+  scope: maat-api-dev
 
 springdoc:
   api-docs:

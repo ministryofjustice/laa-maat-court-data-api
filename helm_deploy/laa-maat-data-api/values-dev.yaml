@@ -1,0 +1,95 @@
+# Default values for laa-maat-data-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+
+image:
+  repository: 754256621582.dkr.ecr.eu-west-2.amazonaws.com/laa-crime-apps-team/laa-maat-data-api-dev
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  # tag: latest
+
+sentry:
+  sampleRate: 0.05
+
+aws_region: eu-west-2
+
+java:
+  host_env: development
+
+jwt:
+  issuerUri: https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_zAlvz7NlW
+
+scope: maat-api-dev
+
+cdaApi:
+  baseUrl: https://dev.court-data-adaptor.service.justice.gov.uk/api/internal/v2
+  oauthUrl: https://dev.court-data-adaptor.service.justice.gov.uk/oauth/token
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  name: "maat-data-api"
+
+service:
+  type: ClusterIP
+  port: 8090
+
+ingress:
+  environmentName: laa-maat-data-api-dev
+  enabled: true
+  annotations:
+    external-dns.alpha.kubernetes.io/aws-weight: "100"
+    external-dns.alpha.kubernetes.io/set-identifier: "laa-maat-data-api-laa-maat-data-api-dev-green"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "300"
+  externalAnnotations: {}
+  internalHost:
+    host: laa-maat-data-api-dev.apps.live.cloud-platform.service.justice.gov.uk
+    path: /
+  externalHost:
+    host: laa-maat-data-api-dev.apps.live.cloud-platform.service.justice.gov.uk
+    paths:
+      swaggerPath: /open-api/api-docs
+      openApiPath: /open-api
+  tls: []
+  className: default
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+actuator:
+  metrics:
+    enabled: true
+    scrapeInterval: 15s
+    path: /actuator/prometheus
+  health:
+    path: /actuator/health
+  port: 8100
+  liveness:
+    initialDelaySeconds: 45
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 5
+  readiness:
+    initialDelaySeconds: 45
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 5
+
+logging:
+  level: DEBUG
+
+cloudPlatform:
+  aws:
+    sqs:
+      region: eu-west-2
+
+postMvpEnabled: false

@@ -47,9 +47,12 @@ dependencies {
 
     implementation platform("io.sentry:sentry-bom:$sentryBomVersion")
 
-    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$commonsRestClient:all"
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$commonsRestClient"
     implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$crimeCommonsClasses"
     implementation "uk.gov.justice.service.laa-crime:crime-commons-mod-schemas:$commonsModSchemas"
+
+    implementation("io.sentry:sentry-spring-boot-starter-jakarta")
+    implementation("io.sentry:sentry-logback")
 
     //Required for Logback configuration due to a dependency having their own implementation of SAXParserFactory
     implementation "xerces:xercesImpl:$xercesImplVersion"
@@ -98,7 +101,7 @@ dependencies {
     testImplementation "org.pitest:pitest:$pitest"
     testImplementation group: 'com.h2database', name: 'h2', version: "$h2DBVersion"
     testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
-    testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: "$harmcrestVersion"
+    //testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: "$harmcrestVersion"
     testImplementation group: 'org.easytesting', name: 'fest-assert', version: "$festVersion"
     testCompileOnly group: 'org.projectlombok', name: 'lombok'
     testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
@@ -120,7 +123,9 @@ jacoco {
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform() {
+//       excludeTags 'skip'
+    }
     finalizedBy jacocoTestReport
 }
 

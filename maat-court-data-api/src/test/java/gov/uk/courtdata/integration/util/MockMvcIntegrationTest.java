@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,10 @@ import java.net.ServerSocket;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Tag("skip")
 @AutoConfigureMockMvc(addFilters = false)
 public abstract class MockMvcIntegrationTest {
 
@@ -58,10 +61,10 @@ public abstract class MockMvcIntegrationTest {
 
     @BeforeAll
     static void beforeAll() {
-        WireMock.configureFor(WIREMOCK_PORT);
+        //WireMock.configureFor(WIREMOCK_PORT);
 
-        WireMockConfiguration wireMockServerConfig = WireMockConfiguration.options().port(WIREMOCK_PORT);
-        wireMockServer = new WireMockServer(wireMockServerConfig);
+        //WireMockConfiguration wireMockServerConfig = options().port(WIREMOCK_PORT);
+        wireMockServer = new WireMockServer(options().dynamicPort());
         wireMockServer.start();
         waitUntil(() -> wireMockServer.isRunning());
     }
@@ -84,6 +87,12 @@ public abstract class MockMvcIntegrationTest {
 
     @BeforeEach
     void resetWireMockAndClearAllRepositoriesBeforeEach() {
+        //WireMock.configureFor(WIREMOCK_PORT);
+
+        WireMockConfiguration wireMockServerConfig = options().dynamicPort();
+        wireMockServer = new WireMockServer(wireMockServerConfig);
+        wireMockServer.start();
+        waitUntil(() -> wireMockServer.isRunning());
         configureObjectMapper(objectMapper);
         wireMockServer.resetAll();
         repos.clearAll();

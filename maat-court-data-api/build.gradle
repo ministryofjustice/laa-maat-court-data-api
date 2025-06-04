@@ -101,7 +101,7 @@ dependencies {
     testImplementation "org.pitest:pitest:$pitest"
     testImplementation group: 'com.h2database', name: 'h2', version: "$h2DBVersion"
     testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
-    //testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: "$harmcrestVersion"
+    testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: "$harmcrestVersion"
     testImplementation group: 'org.easytesting', name: 'fest-assert', version: "$festVersion"
     testCompileOnly group: 'org.projectlombok', name: 'lombok'
     testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
@@ -123,9 +123,7 @@ jacoco {
 }
 
 test {
-    useJUnitPlatform() {
-//       excludeTags 'skip'
-    }
+    useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
 

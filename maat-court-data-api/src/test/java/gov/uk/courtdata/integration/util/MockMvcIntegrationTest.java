@@ -28,10 +28,8 @@ import java.net.ServerSocket;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Tag("skip")
 @AutoConfigureMockMvc(addFilters = false)
 public abstract class MockMvcIntegrationTest {
 
@@ -61,10 +59,10 @@ public abstract class MockMvcIntegrationTest {
 
     @BeforeAll
     static void beforeAll() {
-        //WireMock.configureFor(WIREMOCK_PORT);
+        WireMock.configureFor(WIREMOCK_PORT);
 
-        //WireMockConfiguration wireMockServerConfig = options().port(WIREMOCK_PORT);
-        wireMockServer = new WireMockServer(options().dynamicPort());
+        WireMockConfiguration wireMockServerConfig = WireMockConfiguration.options().port(WIREMOCK_PORT);
+        wireMockServer = new WireMockServer(wireMockServerConfig);
         wireMockServer.start();
         waitUntil(() -> wireMockServer.isRunning());
     }
@@ -87,10 +85,6 @@ public abstract class MockMvcIntegrationTest {
 
     @BeforeEach
     void resetWireMockAndClearAllRepositoriesBeforeEach() {
-        //WireMock.configureFor(WIREMOCK_PORT);
-
-        WireMockConfiguration wireMockServerConfig = options().dynamicPort();
-        wireMockServer = new WireMockServer(wireMockServerConfig);
         wireMockServer.start();
         waitUntil(() -> wireMockServer.isRunning());
         configureObjectMapper(objectMapper);

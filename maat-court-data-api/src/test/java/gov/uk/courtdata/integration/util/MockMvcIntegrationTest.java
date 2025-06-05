@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,8 @@ public abstract class MockMvcIntegrationTest {
 
     @BeforeEach
     void resetWireMockAndClearAllRepositoriesBeforeEach() {
+        wireMockServer.start();
+        waitUntil(() -> wireMockServer.isRunning());
         configureObjectMapper(objectMapper);
         wireMockServer.resetAll();
         repos.clearAll();

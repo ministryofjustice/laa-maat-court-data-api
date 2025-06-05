@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import uk.gov.justice.laa.crime.commons.jackson.ZonedDateTimeDeserializer;
+import uk.gov.justice.laa.crime.jackson.ZonedDateTimeDeserializer;
 
 import java.time.ZonedDateTime;
 

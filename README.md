@@ -25,7 +25,7 @@ This Application mainly supports 4 user Journeys. The Details of the journeys ca
 4. Grade
 5. AWS CLI
 6. kubectl
-7. Java 17
+7. Java 21
 
 We're using [Gradle](https://gradle.org/) to build the application. This also includes plugins for generating IntelliJ configuration.
 

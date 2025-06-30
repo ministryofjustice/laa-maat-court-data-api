@@ -1,4 +1,4 @@
-FROM amazoncorretto:17-alpine
+FROM amazoncorretto:21-alpine
 RUN mkdir -p /opt/maat-courtdata-api/
 WORKDIR /opt/maat-courtdata-api/
 COPY ./build/libs/maat-courtdata-api.jar /opt/maat-courtdata-api/app.jar

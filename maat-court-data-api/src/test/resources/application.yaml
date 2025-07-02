@@ -123,3 +123,4 @@ api-endpoints:
   debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
   user-domain: /api/internal/v1/users
   address-domain: /api/internal/v1/address
+  billing-domain: /api/internal/v1/billing

@@ -25,7 +25,7 @@ public class MaatReferenceService {
         return ResponseEntity.ok().build();
     }
     
-    private Boolean isTableEmpty() {
+    private boolean isTableEmpty() {
         return maatReferenceRepository.count() == 0;
     }
 }

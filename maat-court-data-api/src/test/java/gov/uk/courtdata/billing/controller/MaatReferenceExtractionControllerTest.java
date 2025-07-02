@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @WebMvcTest(MaatReferenceExtractionController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class MaatReferenceExtractionControllerTest {
+class MaatReferenceExtractionControllerTest {
     private static final String ENDPOINT_URL = "/api/internal/v1/billing/populate-maat-references";
 
     @Autowired

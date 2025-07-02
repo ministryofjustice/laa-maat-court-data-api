@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class MaatReferenceServiceTest {
+class MaatReferenceServiceTest {
 
     @Mock
     private MaatReferenceRepository maatReferenceRepository;

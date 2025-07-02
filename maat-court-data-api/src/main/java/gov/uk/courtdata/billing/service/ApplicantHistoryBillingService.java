@@ -16,8 +16,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ApplicantHistoryBillingService {
-    ApplicantHistoryRepository applicantHistoryRepository;
-    ApplicantHistoryBillingMapper applicantHistoryBillingMapper;
+
+    private final ApplicantHistoryRepository applicantHistoryRepository;
+    private final ApplicantHistoryBillingMapper applicantHistoryBillingMapper;
 
     public List<ApplicantHistoryBillingDTO> extractApplicantHistory() {
         List<ApplicantHistoryEntity> applicantHistoryEntities = applicantHistoryRepository.extractApplicantHistoryBilling();

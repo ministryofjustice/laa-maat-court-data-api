@@ -6,7 +6,6 @@ import gov.uk.courtdata.billing.dto.ApplicantHistoryBillingDTO;
 import gov.uk.courtdata.billing.mapper.ApplicantHistoryBillingMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import org.hibernate.ObjectNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,10 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 class ApplicantHistoryBillingServiceTest {
@@ -43,12 +42,11 @@ class ApplicantHistoryBillingServiceTest {
     }
 
     @Test
-    void givenNoApplicantHistoriesToExtract_whenExtractApplicantHistoryBillingIsInvoked_thenExceptionRaised() {
+    void givenNoApplicantHistoriesToExtract_whenExtractApplicantHistoryBillingIsInvoked_thenEmptyListReturned() {
         when(repository.extractApplicantHistoryBilling()).thenReturn(new ArrayList<>());
 
-        assertThatThrownBy(() -> {
-            service.extractApplicantHistory();
-        }).isInstanceOf(ObjectNotFoundException.class)
-                .hasMessageContaining("No applicant histories retrieved based on MAAT_REFS_TO_EXTRACT table.");
+        List<ApplicantHistoryBillingDTO> DTOs = service.extractApplicantHistory();
+
+        assertTrue(DTOs.isEmpty(), "Applicant history billing data returned when none expected.");
     }
 }

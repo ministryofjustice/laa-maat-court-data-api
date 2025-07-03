@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
-public class ApplicantHistoryBillingServiceTest {
+class ApplicantHistoryBillingServiceTest {
 
     @Mock
     private ApplicantHistoryRepository repository;

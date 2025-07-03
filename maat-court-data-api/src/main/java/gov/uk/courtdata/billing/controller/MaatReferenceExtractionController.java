@@ -23,7 +23,7 @@ public class MaatReferenceExtractionController {
     private final MaatReferenceService maatReferenceService;
     
     @PostMapping(value = "/populate-maat-references")
-    @Operation(description = "Populate the MAAT_REFS_TO_EXTRACT table with data from REP_ORDERS")
+    @Operation(description = "Create MAAT reference records")
     @StandardApiResponseCodes
     public ResponseEntity<Object> populateMaatReferencesToExtract() {
         log.info("Populate MAAT references Request received");

@@ -144,4 +144,14 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
                 .message(errorMessage)
                 .build());
     }
+
+    @ExceptionHandler(RecordsAlreadyExistException.class)
+    public ResponseEntity<ErrorDTO> handleRecordsAlreadyExistException(RecordsAlreadyExistException ex) {
+        String errorMessage = ex.getMessage();
+        log.error(errorMessage);
+
+        return ResponseEntity.internalServerError().body(ErrorDTO.builder()
+            .message(errorMessage)
+            .build());
+    }
 }

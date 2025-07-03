@@ -28,7 +28,7 @@ class MaatReferenceExtractionControllerTest {
     private MaatReferenceService maatReferenceService;
 
     @Test
-    void givenNoInput_whenPopulateMaatReferencesToExtract_thenResponseIsReturned() throws Exception {
+    void givenNoInput_whenPopulateMaatReferencesToExtract_thenSuccessResponseIsReturned() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL))
             .andExpect(status().isOk());
         verify(maatReferenceService).populateTable();

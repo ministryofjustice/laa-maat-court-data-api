@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface MaatReferenceRepository extends JpaRepository<MaatReferenceEntity, Integer> {
     
     @Modifying
-    @Query(value = "INSERT INTO TOGDATA.maat_refs_to_extract (MAAT_ID, APPL_ID, APHI_ID) SELECT id, appl_id, aphi_id FROM rep_orders WHERE send_to_cclf = 'Y'", nativeQuery = true)
+    @Query(value = "INSERT INTO TOGDATA.maat_refs_to_extract (MAAT_ID, APPL_ID, APHI_ID) SELECT id, appl_id, aphi_id FROM TOGDATA.rep_orders WHERE send_to_cclf = 'Y'", nativeQuery = true)
     void populateMaatReferences();
 }

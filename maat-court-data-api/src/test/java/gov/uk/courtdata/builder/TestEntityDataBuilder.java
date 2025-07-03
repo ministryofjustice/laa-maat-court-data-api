@@ -3,6 +3,7 @@ package gov.uk.courtdata.builder;
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
+import gov.uk.courtdata.billing.entity.MaatReferenceEntity;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
@@ -43,6 +44,7 @@ public class TestEntityDataBuilder {
     public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
     public static final String TEST_ASN_SEQ = "123";
     public static final Integer APPLICANT_ID = 2345;
+    public static final Integer APPLICANT_HISTORY_ID = 9876;
 
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder().id(REP_ID).build();
@@ -890,6 +892,14 @@ public class TestEntityDataBuilder {
                 .defendantId("556677")
                 .caseUrn("testCaseURN")
                 .build();
+    }
+
+    public MaatReferenceEntity getMaatReferenceEntity() {
+        return MaatReferenceEntity.builder()
+            .maatId(REP_ID)
+            .applicantId(APPLICANT_ID)
+            .applicantHistoryId(APPLICANT_HISTORY_ID)
+            .build();
     }
 
 }

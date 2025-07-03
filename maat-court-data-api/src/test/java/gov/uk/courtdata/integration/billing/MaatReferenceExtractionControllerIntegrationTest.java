@@ -1,6 +1,7 @@
 package gov.uk.courtdata.integration.billing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -22,8 +23,11 @@ public class MaatReferenceExtractionControllerIntegrationTest extends MockMvcInt
     private TestEntityDataBuilder testEntityDataBuilder;
     
     @Test
-    void givenNoInput_whenPopulateMaatReferencesToExtract_thenSuccessResponseIsReturned() throws Exception {
+    void givenAValidRepOrder_whenPopulateMaatReferencesToExtract_thenSuccessResponseIsReturned() throws Exception {
+        repos.repOrder.saveAndFlush(testEntityDataBuilder.getPopulatedRepOrderToSendToCclf());
+        
         assertThat(runSuccessScenario(post(ENDPOINT_URL)).getResponse().getStatus()).isEqualTo(200);
+        assertEquals(1, repos.maatReference.count());
     }
     
     @Test

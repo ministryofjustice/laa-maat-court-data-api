@@ -43,6 +43,7 @@ public class TestEntityDataBuilder {
     public static final Integer TEST_CASE_ID = 665313;
     public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
     public static final String TEST_ASN_SEQ = "123";
+    public static final Integer APPLICATION_ID = 7852;
     public static final Integer APPLICANT_ID = 2345;
     public static final Integer APPLICANT_HISTORY_ID = 9876;
 
@@ -92,6 +93,23 @@ public class TestEntityDataBuilder {
                 .sentenceOrderDate(sentenceOrderDate)
                 .dateReceived(dateReceived)
                 .build();
+    }
+
+    public static RepOrderEntity getPopulatedRepOrderToSendToCclf() {
+        return RepOrderEntity.builder()
+            .catyCaseType("case-type")
+            .magsOutcome("outcome")
+            .magsOutcomeDate(TEST_DATE.toString())
+            .magsOutcomeDateSet(TEST_DATE)
+            .committalDate(TEST_DATE.toLocalDate())
+            .decisionReasonCode("rder-code")
+            .crownRepOrderDecision("cc-rep-doc")
+            .crownRepOrderType("cc-rep-type")
+            .sentenceOrderDate(TEST_DATE.toLocalDate())
+            .applicationId(APPLICATION_ID)
+            .applicantHistoryId(APPLICANT_HISTORY_ID)
+            .isSendToCCLF(true)
+            .build();
     }
 
     public static ApplicantDisabilitiesEntity getApplicantDisabilitiesEntity() {

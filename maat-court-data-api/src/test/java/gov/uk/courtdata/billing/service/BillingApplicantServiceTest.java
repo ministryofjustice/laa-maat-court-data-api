@@ -1,14 +1,18 @@
 package gov.uk.courtdata.billing.service;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
-
+import gov.uk.courtdata.billing.entity.BillingApplicantEntity;
 import gov.uk.courtdata.billing.repository.BillingApplicantRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BillingApplicantServiceTest {
@@ -24,8 +28,15 @@ class BillingApplicantServiceTest {
     }
 
     @Test
-    void givenNoInput_whenPopulateTableInvoked_thenInsertIsSuccessful() {
-        billingApplicantService.findAllApplicantsForBilling();
+    void givenNoInput_whenFindAllApplicantsForBillingInvoked_thenGetBillingApplicants() {
+        List<BillingApplicantEntity> applicants = new ArrayList<>();
+        BillingApplicantEntity applicant = new BillingApplicantEntity();
+        applicants.add(applicant);
+        when(billingApplicantRepository.findAllApplicantsForBilling()).thenReturn(applicants);
+
+        List<BillingApplicantEntity> applicantEntities = billingApplicantService.findAllApplicantsForBilling();
+
+        Assertions.assertTrue(!applicantEntities.isEmpty());
         verify(billingApplicantRepository, atLeastOnce()).findAllApplicantsForBilling();
     }
 

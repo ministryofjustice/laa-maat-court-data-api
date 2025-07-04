@@ -100,12 +100,17 @@ class ConcorContributionsServiceTest {
                 TestEntityDataBuilder.getPopulatedConcorContributionsEntity(344, testXml),
                 TestEntityDataBuilder.getPopulatedConcorContributionsEntity(345, testXml)
         );
+        List<Integer> idList = List.of(344,345);
+        Set<Integer> idSet = Set.copyOf(idList);
+
         Pageable pageable = PageRequest.of(0, 3, Sort.by("id"));
-        when(concorRepository.findByStatusAndIdGreaterThan(ACTIVE, 343, pageable)).thenReturn(entities);
+        when(concorRepository.findIdsByStatusAndIdGreaterThan(ACTIVE, 343, pageable)).thenReturn(idList);
+        when(concorRepository.findByIdIn(idSet)).thenReturn(entities);
 
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 3, 343);
 
-        verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
+        verify(concorRepository).findIdsByStatusAndIdGreaterThan(ACTIVE, 343, pageable);
+        verify(concorRepository).findByIdIn(idSet);
         assertThat(responseList)
                 .isNotNull()
                 .isNotEmpty();
@@ -122,11 +127,19 @@ class ConcorContributionsServiceTest {
                 TestEntityDataBuilder.getPopulatedConcorContributionsEntity(345, testXml),
                 TestEntityDataBuilder.getPopulatedConcorContributionsEntity(346, testXml)
         );
-        when(concorRepository.findByStatusAndIdGreaterThan(any(),any(), any())).thenReturn(entities);
 
+        List<Integer> idList = List.of(343,344,345,346);
+        Set<Integer> idSet = Set.copyOf(idList);
+        Pageable pageable = PageRequest.of(0, 350, Sort.by("id"));
+
+
+        when(concorRepository.findIdsByStatusAndIdGreaterThan(ACTIVE, 0, pageable)).thenReturn(idList);
+        when(concorRepository.findByIdIn(idSet)).thenReturn(entities);
+        // do
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, null, null);
-
-        verify(concorRepository).findByStatusAndIdGreaterThan(any(), any(), any());
+        // verify
+        verify(concorRepository).findIdsByStatusAndIdGreaterThan(any(), any(), any());
+        verify(concorRepository).findByIdIn(idSet);
         assertThat(responseList)
                 .isNotNull()
                 .isNotEmpty();
@@ -136,8 +149,7 @@ class ConcorContributionsServiceTest {
     @Test
     void givenSomeActiveContributions_whenGetConcorContributionFilesIsCalledWithInvalidStartId_thenEmptyListIsReturned() {
         Pageable pageable = PageRequest.of(0, 2, Sort.by("id"));
-        when(concorRepository.findByStatusAndIdGreaterThan(ACTIVE, 999, pageable)).thenReturn(List.of());
-
+        when(concorRepository.findIdsByStatusAndIdGreaterThan(ACTIVE, 999, pageable)).thenReturn(List.of());
         List<ConcorContributionResponse> responseList = concorService.getConcorContributionFiles(ACTIVE, 2, 999);
 
         assertThat(responseList)

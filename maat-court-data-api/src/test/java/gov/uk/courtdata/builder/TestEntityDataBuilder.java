@@ -3,7 +3,6 @@ package gov.uk.courtdata.builder;
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
-import gov.uk.courtdata.billing.dto.ApplicantHistoryBillingDTO;
 import gov.uk.courtdata.billing.entity.ApplicantHistoryBillingEntity;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.ConcorContributionStatus;

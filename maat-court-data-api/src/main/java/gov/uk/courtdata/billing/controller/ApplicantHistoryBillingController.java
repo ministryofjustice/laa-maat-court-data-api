@@ -1,6 +1,7 @@
 package gov.uk.courtdata.billing.controller;
 
 import gov.uk.courtdata.annotation.StandardApiResponseCodes;
+import gov.uk.courtdata.billing.dto.ApplicantHistoryBillingDTO;
 import gov.uk.courtdata.billing.service.ApplicantHistoryBillingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -23,7 +26,7 @@ public class ApplicantHistoryBillingController {
     @GetMapping
     @Operation(description = "Extract applicant history based on MAAT references.")
     @StandardApiResponseCodes
-    public ResponseEntity<Object> getApplicantHistory() {
+    public ResponseEntity<List<ApplicantHistoryBillingDTO>> getApplicantHistory() {
         log.info("Request received to extract applicant history for billing data.");
         return ResponseEntity.ok(applicantHistoryBillingService.extractApplicantHistory());
     }

@@ -1,9 +1,9 @@
 package gov.uk.courtdata.billing.service;
 
-import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
-import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
 import gov.uk.courtdata.billing.dto.ApplicantHistoryBillingDTO;
+import gov.uk.courtdata.billing.entity.ApplicantHistoryBillingEntity;
 import gov.uk.courtdata.billing.mapper.ApplicantHistoryBillingMapper;
+import gov.uk.courtdata.billing.repository.ApplicantHistoryBillingRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ApplicantHistoryBillingServiceTest {
 
     @Mock
-    private ApplicantHistoryRepository repository;
+    private ApplicantHistoryBillingRepository repository;
     @Mock
     private ApplicantHistoryBillingMapper mapper;
     @InjectMocks
@@ -32,8 +32,8 @@ class ApplicantHistoryBillingServiceTest {
     @Test
     void givenApplicantHistoriesToExtract_whenExtractApplicantHistoryBillingIsInvoked_thenApplicantHistoriesReturned() {
         when(repository.extractApplicantHistoryBilling())
-                .thenReturn(List.of(TestEntityDataBuilder.getApplicantHistoryEntity("Y")));
-        when(mapper.mapEntityToDTO(any(ApplicantHistoryEntity.class)))
+                .thenReturn(List.of(TestEntityDataBuilder.getApplicantHistoryBillingEntity()));
+        when(mapper.mapEntityToDTO(any(ApplicantHistoryBillingEntity.class)))
                 .thenReturn(TestModelDataBuilder.getApplicantHistoryBillingDTO());
 
         List<ApplicantHistoryBillingDTO> DTOs = service.extractApplicantHistory();

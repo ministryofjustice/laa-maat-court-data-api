@@ -25,7 +25,7 @@ import java.util.List;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class BillingApplicantControllerTest {
 
-    private static final String ENDPOINT_URL = "/api/internal/v1/billing/billing-applicants";
+    private static final String ENDPOINT_URL = "/api/internal/v1/billing/applicants";
 
     @Autowired
     private MockMvc mvc;

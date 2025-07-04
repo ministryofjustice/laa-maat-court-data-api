@@ -23,7 +23,7 @@ public class BillingApplicantController {
 
     private final BillingApplicantService billingApplicantService;
 
-    @GetMapping(value = "/billing-applicants")
+    @GetMapping(value = "/applicants")
     @Operation(description = "Get the applicants from MAAT for billing")
     @StandardApiResponseCodes
     public ResponseEntity<List<BillingApplicantEntity>> getApplicantsToBill() {

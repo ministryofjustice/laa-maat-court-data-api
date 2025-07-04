@@ -1,7 +1,6 @@
 package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.reporderhistory.entity.RepOrderHistoryEntity;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -105,6 +104,9 @@ public class RepOrderEntity {
 
     @Column(name = "RDER_CODE")
     private String decisionReasonCode;
+
+    @Column(name = "CCOO_OUTCOME")
+    private String crownOutcome;
 
     @Column(name = "CC_REP_ID")
     private Integer crownRepId;

@@ -24,8 +24,8 @@ jwt:
 scope: maat-api-test
 
 cdaApi:
-  baseUrl: https://test.court-data-adaptor.service.justice.gov.uk/api/internal/v2
-  oauthUrl: https://test.court-data-adaptor.service.justice.gov.uk/oauth/token
+  baseUrl: https://laa-court-data-adaptor-test.apps.live.cloud-platform.service.justice.gov.uk
+  oauthUrl: https://laa-court-data-adaptor-test.apps.live.cloud-platform.service.justice.gov.uk/oauth/token
 
 serviceAccount:
   # Specifies whether a service account should be created

@@ -24,7 +24,7 @@ jwt:
 scope: maat-api-prod
 
 cdaApi:
-  baseUrl: https://court-data-adaptor.service.justice.gov.uk/api/internal/v2
+  baseUrl: https://court-data-adaptor.service.justice.gov.uk
   oauthUrl: https://court-data-adaptor.service.justice.gov.uk/oauth/token
 
 serviceAccount:

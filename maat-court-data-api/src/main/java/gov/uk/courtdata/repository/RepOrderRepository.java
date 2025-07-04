@@ -57,5 +57,34 @@ public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Intege
                         """, nativeQuery = true)
     Set<Integer> findEligibleForFdcFastTracking(@Param("delayPeriod") int delayPeriod, @Param("dateReceived") LocalDate dateReceived, @Param("numRecords") int numRecords);
 
+    @Query(value = """
+                        SELECT  r.id
+                              , r.appl_id
+                              , r.arrest_summons_no
+                              , r.efel_fee_level
+                              , r.supp_account_code
+                              , r.maco_court
+                              , r.mcoo_outcome
+                              , r.date_received
+                              , r.cc_reporder_date
+                              , r.ofty_offence_type
+                              , r.cc_withdrawal_date
+                              , r.aphi_id
+                              , r.case_id
+                              , r.committal_date
+                              , r.rors_status
+                              , r.apty_code
+                              , r.ccoo_outcome
+                              , r.date_created
+                              , r.user_created
+                              , r.date_modified
+                              , r.user_modified
+                              , r.caty_case_type
+                        FROM    REP_ORDERS r
+                        JOIN    MAAT_REFS_TO_EXTRACT ex
+                        ON      r.ID = ex.MAAT_ID
+    """, nativeQuery = true)
+    List<RepOrderEntity> getRepOrdersForBilling();
+
 }
 

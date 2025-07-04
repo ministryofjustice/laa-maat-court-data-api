@@ -5,6 +5,7 @@ import gov.uk.courtdata.address.entity.Address;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
+import gov.uk.courtdata.billing.dto.ApplicantHistoryBillingDTO;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
@@ -190,6 +191,25 @@ public class TestModelDataBuilder {
                 .gender("Male")
                 .sendToCclf(sendToCclf)
                 .userCreated("TEST")
+                .build();
+    }
+
+    public static ApplicantHistoryBillingDTO getApplicantHistoryBillingDTO() {
+        return ApplicantHistoryBillingDTO.builder()
+                .id(1)
+                .asAtDate(LocalDate.parse("2006-10-06"))
+                .applId(716)
+                .firstName("test_first")
+                .lastName("test_last")
+                .otherNames("test")
+                .dob(LocalDate.parse("1981-10-14"))
+                .gender("Male")
+                .niNumber("JM933396A")
+                .foreignId(null)
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("TEST")
+                .dateModified(null)
+                .userModified(null)
                 .build();
     }
 

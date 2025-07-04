@@ -129,6 +129,7 @@ api-endpoints:
   applicant-domain: /api/internal/v1/applicant
   debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
   address-domain: /api/internal/v1/address
+  billing-domain: /api/internal/v1/billing
 
 feature:
   postMvpEnabled: ${POST_MVP_ENABLED}

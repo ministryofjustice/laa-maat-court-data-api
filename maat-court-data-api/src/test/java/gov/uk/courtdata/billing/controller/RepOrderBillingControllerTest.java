@@ -4,6 +4,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,12 +69,13 @@ class RepOrderBillingControllerTest {
             .repOrderIds(List.of(10034567, 10034568, 10034591))
             .build();
 
-        doThrow(new MAATCourtDataException("Error")).when(repOrderBillingService).resetRepOrdersSentForBilling(request);
+        doThrow(new MAATCourtDataException("Unable to reset rep orders")).when(repOrderBillingService).resetRepOrdersSentForBilling(request);
 
         mockMvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL)
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("message").value("Unable to reset rep orders"));
     }
 
     @Test

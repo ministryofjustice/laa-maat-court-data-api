@@ -90,12 +90,14 @@ class RepOrderBillingServiceTest {
             .build();
 
         when(repOrderRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getRepOrderIds()))
-            .thenReturn(0);
+            .thenReturn(1);
 
         MAATCourtDataException exception = assertThrows(MAATCourtDataException.class,
             () -> repOrderBillingService.resetRepOrdersSentForBilling(request));
 
-        assertEquals("Unable to reset rep orders sent for billing", exception.getMessage());
+        assertEquals(
+            "Unable to reset rep orders sent for billing as only 1 rep order(s) could be processed (from a total of 2 rep order(s))"
+            , exception.getMessage());
     }
 
     @Test

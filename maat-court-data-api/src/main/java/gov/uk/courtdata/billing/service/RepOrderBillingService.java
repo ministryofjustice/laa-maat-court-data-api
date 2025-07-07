@@ -7,6 +7,7 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.RepOrderRepository;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,7 +50,9 @@ public class RepOrderBillingService {
             request.getUserModified(), request.getRepOrderIds());
 
         if (updatedRows != request.getRepOrderIds().size()) {
-            throw new MAATCourtDataException("Unable to reset rep orders sent for billing");
+            String message = MessageFormat.format("Unable to reset rep orders sent for billing as only {0} rep order(s) could be processed (from a total of {1} rep order(s))", updatedRows, request.getRepOrderIds().size());
+            log.error(message);
+            throw new MAATCourtDataException(message);
         }
     }
 }

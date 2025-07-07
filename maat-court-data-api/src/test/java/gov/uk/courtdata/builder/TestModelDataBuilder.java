@@ -1,6 +1,7 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
+import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
 import gov.uk.courtdata.address.entity.Address;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
@@ -803,6 +804,24 @@ public class TestModelDataBuilder {
                 .crownRepOrderDecision("cc-rep-doc")
                 .crownRepOrderType("cc-rep-type")
                 .build();
+    }
+
+    public static RepOrderBillingDTO getRepOrderBillingDTO(Integer id) {
+        return RepOrderBillingDTO.builder()
+            .id(id)
+            .applicantId(123)
+            .arrestSummonsNo("arrest-summons")
+            .magsCourtId(1)
+            .magsCourtOutcome("outcome")
+            .dateReceived(TEST_DATE.toLocalDate())
+            .offenceType("burglary")
+            .caseId("case-id")
+            .committalDate(TEST_DATE.toLocalDate())
+            .repOrderStatus("curr")
+            .userCreated("test-user")
+            .dateCreated(TEST_DATE.toLocalDate())
+            .caseType("case-type")
+            .build();
     }
 
     public static List<RepOrderMvoRegDTO> getRepOrderMvoRegDTOList() {

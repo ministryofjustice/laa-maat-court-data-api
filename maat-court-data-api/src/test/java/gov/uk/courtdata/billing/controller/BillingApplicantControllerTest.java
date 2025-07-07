@@ -46,5 +46,4 @@ class BillingApplicantControllerTest {
 
         verify(billingApplicantService).findAllApplicantsForBilling();
     }
-
 }

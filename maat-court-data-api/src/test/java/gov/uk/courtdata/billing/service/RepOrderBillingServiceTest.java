@@ -1,15 +1,18 @@
 package gov.uk.courtdata.billing.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
 import gov.uk.courtdata.billing.mapper.RepOrderBillingMapper;
 import gov.uk.courtdata.billing.request.UpdateRepOrderBillingRequest;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import java.util.Collections;
@@ -63,9 +66,7 @@ class RepOrderBillingServiceTest {
             .repOrderIds(Collections.emptyList())
             .build();
 
-        boolean result = repOrderBillingService.resetRepOrdersSentForBilling(request);
-
-        assertTrue(result);
+        assertDoesNotThrow(() -> repOrderBillingService.resetRepOrdersSentForBilling(request));
     }
 
     @Test
@@ -91,9 +92,10 @@ class RepOrderBillingServiceTest {
         when(repOrderRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getRepOrderIds()))
             .thenReturn(0);
 
-        boolean result = repOrderBillingService.resetRepOrdersSentForBilling(request);
+        MAATCourtDataException exception = assertThrows(MAATCourtDataException.class,
+            () -> repOrderBillingService.resetRepOrdersSentForBilling(request));
 
-        assertFalse(result);
+        assertEquals("Unable to reset rep orders sent for billing", exception.getMessage());
     }
 
     @Test
@@ -108,8 +110,6 @@ class RepOrderBillingServiceTest {
         when(repOrderRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getRepOrderIds()))
             .thenReturn(repOrdersIdsToUpdate.size());
 
-        boolean result = repOrderBillingService.resetRepOrdersSentForBilling(request);
-
-        assertTrue(result);
+        assertDoesNotThrow(() -> repOrderBillingService.resetRepOrdersSentForBilling(request));
     }
 }

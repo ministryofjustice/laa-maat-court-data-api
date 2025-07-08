@@ -36,17 +36,17 @@ class ApplicantHistoryBillingServiceTest {
         when(mapper.mapEntityToDTO(any(ApplicantHistoryBillingEntity.class)))
                 .thenReturn(TestModelDataBuilder.getApplicantHistoryBillingDTO());
 
-        List<ApplicantHistoryBillingDTO> DTOs = service.extractApplicantHistory();
+        List<ApplicantHistoryBillingDTO> dtos = service.extractApplicantHistory();
 
-        assertEquals(List.of(TestModelDataBuilder.getApplicantHistoryBillingDTO()), DTOs);
+        assertEquals(List.of(TestModelDataBuilder.getApplicantHistoryBillingDTO()), dtos);
     }
 
     @Test
     void givenNoApplicantHistoriesToExtract_whenExtractApplicantHistoryBillingIsInvoked_thenEmptyListReturned() {
         when(repository.extractApplicantHistoryBilling()).thenReturn(new ArrayList<>());
 
-        List<ApplicantHistoryBillingDTO> DTOs = service.extractApplicantHistory();
+        List<ApplicantHistoryBillingDTO> dtos = service.extractApplicantHistory();
 
-        assertTrue(DTOs.isEmpty(), "Applicant history billing data returned when none expected.");
+        assertTrue(dtos.isEmpty(), "Applicant history billing data returned when none expected.");
     }
 }

@@ -16,8 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class MaatReferenceExtractionControllerIntegrationTest extends MockMvcIntegrationTest {
 
-    private static final String CREATE_ENDPOINT_URL = "/api/internal/v1/billing/populate-maat-references";
-    private static final String DELETE_ENDPOINT_URL = "/api/internal/v1/billing/delete-maat-references";
+    private static final String ENDPOINT_URL = "/api/internal/v1/billing/maat-references";
 
     @Autowired
     private TestEntityDataBuilder testEntityDataBuilder;
@@ -26,7 +25,7 @@ public class MaatReferenceExtractionControllerIntegrationTest extends MockMvcInt
     void givenAValidRepOrder_whenPopulateMaatReferencesToExtract_thenSuccessResponseIsReturned() throws Exception {
         repos.repOrder.saveAndFlush(testEntityDataBuilder.getPopulatedRepOrderToSendToCclf());
         
-        assertThat(runSuccessScenario(post(CREATE_ENDPOINT_URL)).getResponse().getStatus()).isEqualTo(200);
+        assertThat(runSuccessScenario(post(ENDPOINT_URL)).getResponse().getStatus()).isEqualTo(200);
         assertEquals(1, repos.maatReference.count());
     }
     
@@ -36,7 +35,7 @@ public class MaatReferenceExtractionControllerIntegrationTest extends MockMvcInt
         
         assertTrue(
             runServerErrorScenario("The MAAT_REFS_TO_EXTRACT table already has entries",
-                post(CREATE_ENDPOINT_URL)));
+                post(ENDPOINT_URL)));
     }
 
     @Test
@@ -44,7 +43,7 @@ public class MaatReferenceExtractionControllerIntegrationTest extends MockMvcInt
         repos.maatReference.saveAndFlush(testEntityDataBuilder.getMaatReferenceEntity());
 
         assertEquals(1, repos.maatReference.count());
-        assertThat(runSuccessScenario(delete(DELETE_ENDPOINT_URL)).getResponse().getStatus()).isEqualTo(200);
+        assertThat(runSuccessScenario(delete(ENDPOINT_URL)).getResponse().getStatus()).isEqualTo(200);
         assertEquals(0, repos.maatReference.count());
     }
 

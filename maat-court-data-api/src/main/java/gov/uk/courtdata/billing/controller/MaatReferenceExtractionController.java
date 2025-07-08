@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Maat Reference Extraction", description = "Rest API for extracting MAAT references to send to billing teams")
-@RequestMapping("${api-endpoints.billing-domain}")
+@RequestMapping("${api-endpoints.billing-domain}/maat-references")
 public class MaatReferenceExtractionController {
     
     private final MaatReferenceService maatReferenceService;
     
-    @PostMapping(value = "/populate-maat-references")
+    @PostMapping
     @Operation(description = "Create MAAT reference records")
     @StandardApiResponseCodes
     public ResponseEntity<Object> populateMaatReferencesToExtract() {
@@ -31,7 +31,7 @@ public class MaatReferenceExtractionController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping(value = "/delete-maat-references")
+    @DeleteMapping
     @Operation(description = "Delete MAAT reference records")
     @StandardApiResponseCodes
     public ResponseEntity<Object> deleteMaatReferences() {

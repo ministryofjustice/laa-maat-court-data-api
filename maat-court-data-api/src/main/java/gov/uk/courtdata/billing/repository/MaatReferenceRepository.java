@@ -12,4 +12,8 @@ public interface MaatReferenceRepository extends JpaRepository<MaatReferenceEnti
     @Modifying
     @Query(value = "INSERT INTO TOGDATA.maat_refs_to_extract (MAAT_ID, APPL_ID, APHI_ID) SELECT id, appl_id, aphi_id FROM TOGDATA.rep_orders WHERE send_to_cclf = 'Y'", nativeQuery = true)
     void populateMaatReferences();
+    
+    @Modifying
+    @Query(value = "DELETE FROM TOGDATA.maat_refs_to_extract", nativeQuery = true)
+    void deleteMaatReferences();
 }

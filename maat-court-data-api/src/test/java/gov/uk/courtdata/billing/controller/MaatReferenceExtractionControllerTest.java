@@ -19,7 +19,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @AutoConfigureMockMvc(addFilters = false)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class MaatReferenceExtractionControllerTest {
-    private static final String ENDPOINT_URL = "/api/internal/v1/billing/populate-maat-references";
+    private static final String POST_ENDPOINT_URL = "/api/internal/v1/billing/populate-maat-references";
+    private static final String DELETE_ENDPOINT_URL = "/api/internal/v1/billing/delete-maat-references";
 
     @Autowired
     private MockMvc mvc;
@@ -29,16 +30,24 @@ class MaatReferenceExtractionControllerTest {
 
     @Test
     void givenNoInput_whenPopulateMaatReferencesToExtract_thenSuccessResponseIsReturned() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL))
+        mvc.perform(MockMvcRequestBuilders.post(POST_ENDPOINT_URL))
             .andExpect(status().isOk());
         verify(maatReferenceService).populateTable();
     }
+    
     @Test
     void givenRecordsAlreadyExist_whenPopulateMaatReferencesToExtract_thenReturnError() throws Exception {
         when(maatReferenceService.populateTable()).thenThrow(RecordsAlreadyExistException.class);
 
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL))
+        mvc.perform(MockMvcRequestBuilders.post(POST_ENDPOINT_URL))
             .andExpect(status().isInternalServerError());
         verify(maatReferenceService).populateTable();
+    }
+
+    @Test
+    void givenNoInput_whenDeleteMaatReferences_thenSuccessResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.delete(DELETE_ENDPOINT_URL))
+            .andExpect(status().isOk());
+        verify(maatReferenceService).deleteMaatReferences();
     }
 }

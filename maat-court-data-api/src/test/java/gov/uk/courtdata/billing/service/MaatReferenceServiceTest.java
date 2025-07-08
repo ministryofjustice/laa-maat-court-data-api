@@ -40,4 +40,10 @@ class MaatReferenceServiceTest {
         Assertions.assertThrows(RecordsAlreadyExistException.class,
             () -> maatReferenceService.populateTable());
     }
+    
+    @Test
+    void givenNoInput_whenDeleteMaatReferencesInvoked_thenDeleteIsSuccessful() {
+        maatReferenceService.deleteMaatReferences();
+        verify(maatReferenceRepository, atLeastOnce()).deleteMaatReferences();
+    }
 }

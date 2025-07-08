@@ -28,4 +28,10 @@ public class MaatReferenceService {
     private boolean isTableEmpty() {
         return maatReferenceRepository.count() == 0;
     }
+
+    @Transactional
+    public ResponseEntity<Void> deleteMaatReferences() {
+        maatReferenceRepository.deleteMaatReferences();
+        return ResponseEntity.ok().build();
+    }
 }

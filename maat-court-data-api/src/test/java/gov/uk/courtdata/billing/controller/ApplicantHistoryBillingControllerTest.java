@@ -2,12 +2,13 @@ package gov.uk.courtdata.billing.controller;
 
 import gov.uk.courtdata.billing.service.ApplicantHistoryBillingService;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.dao.QueryTimeoutException;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -18,6 +19,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ApplicantHistoryBillingController.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureMockMvc(addFilters = false)
 class ApplicantHistoryBillingControllerTest {
 
@@ -41,11 +43,11 @@ class ApplicantHistoryBillingControllerTest {
     }
 
     @Test
-    void givenNoApplicantHistoryBillingDataPresent_whenGetApplicantHistoryIsCalled_thenNotFoundResponse() throws Exception {
-        when(service.extractApplicantHistory()).thenThrow(new RequestedObjectNotFoundException(EXCEPTION_MSG));
+    void givenNoApplicantHistoryBillingDataPresent_whenGetApplicantHistoryIsCalled_thenInternalServerErrorResponse() throws Exception {
+        when(service.extractApplicantHistory()).thenThrow(new QueryTimeoutException(EXCEPTION_MSG));
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value(EXCEPTION_MSG));
     }

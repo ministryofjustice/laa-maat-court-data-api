@@ -117,10 +117,10 @@ feature:
 version: 0.0.1
 
 api-endpoints:
-  assessments-domain: /api/internal/v1/assessment
+  address-domain: /api/internal/v1/address
   application-domain: /api/internal/v1/application
   applicant-domain: /api/internal/v1/applicant
+  assessments-domain: /api/internal/v1/assessment
+  billing-domain: /api/internal/v1/billing
   debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
   user-domain: /api/internal/v1/users
-  address-domain: /api/internal/v1/address
-  billing-domain: /api/internal/v1/billing

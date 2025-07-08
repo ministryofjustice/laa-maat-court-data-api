@@ -4,8 +4,11 @@ import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.billing.entity.ApplicantHistoryBillingEntity;
+import gov.uk.courtdata.billing.entity.MaatReferenceEntity;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
+import gov.uk.courtdata.enums.CrownCourtCaseType;
+import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
@@ -16,6 +19,8 @@ import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.enums.AppealType;
+import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
@@ -23,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
@@ -43,7 +49,9 @@ public class TestEntityDataBuilder {
     public static final Integer TEST_CASE_ID = 665313;
     public static final String TEST_OFFENCE_ID = "634169aa-265b-4bb5-a7b0-04718f896d2f";
     public static final String TEST_ASN_SEQ = "123";
+    public static final Integer APPLICATION_ID = 7852;
     public static final Integer APPLICANT_ID = 2345;
+    public static final Integer APPLICANT_HISTORY_ID = 9876;
 
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder().id(REP_ID).build();
@@ -91,6 +99,50 @@ public class TestEntityDataBuilder {
                 .sentenceOrderDate(sentenceOrderDate)
                 .dateReceived(dateReceived)
                 .build();
+    }
+
+    public static RepOrderEntity getPopulatedRepOrderToSendToCclf() {
+        return RepOrderEntity.builder()
+            .catyCaseType("case-type")
+            .magsOutcome("outcome")
+            .magsOutcomeDate(TEST_DATE.toString())
+            .magsOutcomeDateSet(TEST_DATE)
+            .committalDate(TEST_DATE.toLocalDate())
+            .decisionReasonCode("rder-code")
+            .crownRepOrderDecision("cc-rep-doc")
+            .crownRepOrderType("cc-rep-type")
+            .sentenceOrderDate(TEST_DATE.toLocalDate())
+            .applicationId(APPLICATION_ID)
+            .applicantHistoryId(APPLICANT_HISTORY_ID)
+            .isSendToCCLF(true)
+            .build();
+    }
+
+    public static RepOrderEntity getPopulatedRepOrderForBilling(Integer id) {
+        return RepOrderEntity.builder()
+            .id(id)
+            .applicationId(12)
+            .arrestSummonsNo("ARREST-5678")
+            .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
+            .suppAccountCode("AB123C")
+            .macoCourt("34")
+            .magsOutcome(MagCourtOutcome.COMMITTED.getOutcome())
+            .dateReceived(LocalDate.of(2025, 6, 10))
+            .crownRepOrderDate(LocalDate.of(2025, 6, 12))
+            .oftyOffenceType("BURGLARY")
+            .crownWithdrawalDate(LocalDate.of(2025, 6, 30))
+            .applicantHistoryId(96)
+            .caseId("CASE-123-C")
+            .committalDate(LocalDate.of(2025, 6, 11))
+            .rorsStatus("CURR")
+            .appealTypeCode(AppealType.ACN.getCode())
+            .crownOutcome(CrownCourtTrialOutcome.CONVICTED.getValue())
+            .dateCreated(LocalDate.of(2025, 6, 20))
+            .userCreated("joe-bloggs")
+            .dateModified(LocalDate.of(2025, 6, 21).atStartOfDay())
+            .userModified("alice-smith")
+            .catyCaseType(CrownCourtCaseType.EITHER_WAY.getValue())
+            .build();
     }
 
     public static ApplicantDisabilitiesEntity getApplicantDisabilitiesEntity() {
@@ -910,6 +962,14 @@ public class TestEntityDataBuilder {
                 .defendantId("556677")
                 .caseUrn("testCaseURN")
                 .build();
+    }
+
+    public MaatReferenceEntity getMaatReferenceEntity() {
+        return MaatReferenceEntity.builder()
+            .maatId(REP_ID)
+            .applicantId(APPLICANT_ID)
+            .applicantHistoryId(APPLICANT_HISTORY_ID)
+            .build();
     }
 
 }

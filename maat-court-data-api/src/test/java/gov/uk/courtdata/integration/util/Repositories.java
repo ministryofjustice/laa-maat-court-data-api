@@ -3,6 +3,7 @@ package gov.uk.courtdata.integration.util;
 import gov.uk.courtdata.applicant.repository.ApplicantDisabilitiesRepository;
 import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
+import gov.uk.courtdata.billing.repository.MaatReferenceRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.eform.repository.EformStagingRepository;
@@ -269,7 +270,10 @@ public class Repositories {
 
   @Autowired
   public XLATResultRepository xlatResult;
-
+  
+  @Autowired
+  public MaatReferenceRepository maatReference;
+  
   @Autowired
   private RepositoryUtil repositoryUtil;
 
@@ -340,7 +344,8 @@ public class Repositories {
         wqSession,
         xlatOffence,
         fdcItemsRepository,
-        xlatResult};
+        xlatResult,
+        maatReference};
   }
 
   public void insertCommonTestData() {

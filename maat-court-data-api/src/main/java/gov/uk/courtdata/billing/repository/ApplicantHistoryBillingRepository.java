@@ -2,7 +2,9 @@ package gov.uk.courtdata.billing.repository;
 
 import gov.uk.courtdata.billing.entity.ApplicantHistoryBillingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -49,4 +51,17 @@ public interface ApplicantHistoryBillingRepository extends JpaRepository<Applica
                         FETCH FIRST 10 ROWS ONLY
                         """, nativeQuery = true)
     List<ApplicantHistoryBillingEntity> extractApplicantHistoryBilling();
+
+    @Modifying
+    @Query(value = """
+                        UPDATE
+                            TOGDATA.APPLICANT_HISTORY 
+                        SET 
+                            SEND_TO_CCLF = null, 
+                            DATE_MODIFIED = CURRENT_DATE, 
+                            USER_MODIFIED = :userModified
+                        WHERE 
+                            ID IN :ids
+                        """, nativeQuery = true)
+    void updateApplicantHistoryBilling(@Param("userModified") String userModified, @Param("ids") List<Integer> ids);
 }

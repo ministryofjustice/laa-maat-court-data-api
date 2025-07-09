@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
 import gov.uk.courtdata.billing.mapper.RepOrderBillingMapper;
-import gov.uk.courtdata.billing.request.UpdateRepOrderBillingRequest;
+import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
@@ -61,9 +61,9 @@ class RepOrderBillingServiceTest {
 
     @Test
     void givenNoRepOrdersToUpdate_whenResetRepOrdersSentForBillingIsInvoked_thenReturnsTrue() {
-        UpdateRepOrderBillingRequest request = UpdateRepOrderBillingRequest.builder()
+        UpdateBillingRequest request = UpdateBillingRequest.builder()
             .userModified("joe-bloggs")
-            .repOrderIds(Collections.emptyList())
+            .ids(Collections.emptyList())
             .build();
 
         assertDoesNotThrow(() -> repOrderBillingService.resetRepOrdersSentForBilling(request));
@@ -71,9 +71,9 @@ class RepOrderBillingServiceTest {
 
     @Test
     void givenUsernameNotSupplied_whenResetRepOrdersSentForBillingIsInvoked_thenReturnsFalse() {
-        UpdateRepOrderBillingRequest request = UpdateRepOrderBillingRequest.builder()
+        UpdateBillingRequest request = UpdateBillingRequest.builder()
             .userModified(null)
-            .repOrderIds(List.of(1003456, 1003457))
+            .ids(List.of(1003456, 1003457))
             .build();
 
         ValidationException exception = assertThrows(ValidationException.class,
@@ -84,12 +84,12 @@ class RepOrderBillingServiceTest {
 
     @Test
     void givenRepOrdersNotSuccessfullyUpdated_whenResetRepOrdersSentForBillingIsInvoked_thenReturnsFalse() {
-        UpdateRepOrderBillingRequest request = UpdateRepOrderBillingRequest.builder()
+        UpdateBillingRequest request = UpdateBillingRequest.builder()
             .userModified("joe-bloggs")
-            .repOrderIds(List.of(1003456, 1003457))
+            .ids(List.of(1003456, 1003457))
             .build();
 
-        when(repOrderRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getRepOrderIds()))
+        when(repOrderRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getIds()))
             .thenReturn(1);
 
         MAATCourtDataException exception = assertThrows(MAATCourtDataException.class,
@@ -104,12 +104,12 @@ class RepOrderBillingServiceTest {
     void givenRepOrdersSuccessfullyUpdated_whenResetRepOrdersSentForBillingIsInvoked_thenReturnsTrue() {
         List<Integer> repOrdersIdsToUpdate = List.of(1003456, 1003457);
 
-        UpdateRepOrderBillingRequest request = UpdateRepOrderBillingRequest.builder()
+        UpdateBillingRequest request = UpdateBillingRequest.builder()
             .userModified("joe-bloggs")
-            .repOrderIds(List.of(1003456, 1003457))
+            .ids(List.of(1003456, 1003457))
             .build();
 
-        when(repOrderRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getRepOrderIds()))
+        when(repOrderRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getIds()))
             .thenReturn(repOrdersIdsToUpdate.size());
 
         assertDoesNotThrow(() -> repOrderBillingService.resetRepOrdersSentForBilling(request));

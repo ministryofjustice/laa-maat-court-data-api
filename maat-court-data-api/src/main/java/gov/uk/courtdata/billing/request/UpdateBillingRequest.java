@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UpdateRepOrderBillingRequest {
+public class UpdateBillingRequest {
     @NotNull
     private String userModified;
     @NotNull
-    private List<Integer> repOrderIds;
+    private List<Integer> ids;
 }

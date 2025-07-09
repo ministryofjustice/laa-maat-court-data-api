@@ -2,7 +2,7 @@ package gov.uk.courtdata.billing.service;
 
 import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
 import gov.uk.courtdata.billing.mapper.RepOrderBillingMapper;
-import gov.uk.courtdata.billing.request.UpdateRepOrderBillingRequest;
+import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
@@ -37,8 +37,8 @@ public class RepOrderBillingService {
     }
 
     @Transactional(rollbackFor = MAATCourtDataException.class)
-    public void resetRepOrdersSentForBilling(UpdateRepOrderBillingRequest request) {
-        if (request.getRepOrderIds().isEmpty()) {
+    public void resetRepOrdersSentForBilling(UpdateBillingRequest request) {
+        if (request.getIds().isEmpty()) {
             return;
         }
 
@@ -47,10 +47,10 @@ public class RepOrderBillingService {
         }
 
         int updatedRows = repOrderRepository.resetBillingFlagForRepOrderIds(
-            request.getUserModified(), request.getRepOrderIds());
+            request.getUserModified(), request.getIds());
 
-        if (updatedRows != request.getRepOrderIds().size()) {
-            String message = MessageFormat.format("Unable to reset rep orders sent for billing as only {0} rep order(s) could be processed (from a total of {1} rep order(s))", updatedRows, request.getRepOrderIds().size());
+        if (updatedRows != request.getIds().size()) {
+            String message = MessageFormat.format("Unable to reset rep orders sent for billing as only {0} rep order(s) could be processed (from a total of {1} rep order(s))", updatedRows, request.getIds().size());
             log.error(message);
             throw new MAATCourtDataException(message);
         }

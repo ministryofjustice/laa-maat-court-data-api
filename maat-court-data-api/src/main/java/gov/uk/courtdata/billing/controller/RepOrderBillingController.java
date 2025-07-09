@@ -1,7 +1,7 @@
 package gov.uk.courtdata.billing.controller;
 
 import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
-import gov.uk.courtdata.billing.request.UpdateRepOrderBillingRequest;
+import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.billing.service.RepOrderBillingService;
 import gov.uk.courtdata.annotation.StandardApiResponseCodes;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +36,7 @@ public class RepOrderBillingController {
     @PatchMapping
     @Operation(description = "Reset rep orders for billing")
     @StandardApiResponseCodes
-    public ResponseEntity<Void> patchRepOrders(@Valid @RequestBody final UpdateRepOrderBillingRequest request) {
+    public ResponseEntity<Void> patchRepOrders(@Valid @RequestBody final UpdateBillingRequest request) {
         repOrderBillingService.resetRepOrdersSentForBilling(request);
 
         return ResponseEntity.ok().build();

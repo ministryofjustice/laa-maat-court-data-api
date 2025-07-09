@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.uk.courtdata.billing.request.UpdateRepOrderBillingRequest;
+import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.billing.service.RepOrderBillingService;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.MAATCourtDataException;
@@ -51,9 +51,9 @@ class RepOrderBillingControllerTest {
 
     @Test
     void givenInvalidRequest_whenPatchRepOrderForBillingIsInvoked_thenFailureResponseIsReturned() throws Exception {
-        UpdateRepOrderBillingRequest request = UpdateRepOrderBillingRequest.builder()
+        UpdateBillingRequest request = UpdateBillingRequest.builder()
             .userModified(null)
-            .repOrderIds(List.of(10034567, 10034568, 10034591))
+            .ids(List.of(10034567, 10034568, 10034591))
             .build();
 
         mockMvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL)
@@ -64,9 +64,9 @@ class RepOrderBillingControllerTest {
 
     @Test
     void givenDownstreamException_whenPatchRepOrderForBillingIsInvoked_thenFailureResponseIsReturned() throws Exception {
-        UpdateRepOrderBillingRequest request = UpdateRepOrderBillingRequest.builder()
+        UpdateBillingRequest request = UpdateBillingRequest.builder()
             .userModified("joe-bloggs")
-            .repOrderIds(List.of(10034567, 10034568, 10034591))
+            .ids(List.of(10034567, 10034568, 10034591))
             .build();
 
         doThrow(new MAATCourtDataException("Unable to reset rep orders")).when(repOrderBillingService).resetRepOrdersSentForBilling(request);
@@ -80,9 +80,9 @@ class RepOrderBillingControllerTest {
 
     @Test
     void givenValidRequest_whenPatchRepOrderForBillingIsInvoked_thenSuccessResponseIsReturned() throws Exception {
-        UpdateRepOrderBillingRequest request = UpdateRepOrderBillingRequest.builder()
+        UpdateBillingRequest request = UpdateBillingRequest.builder()
             .userModified("joe-bloggs")
-            .repOrderIds(List.of(10034567, 10034568, 10034591))
+            .ids(List.of(10034567, 10034568, 10034591))
             .build();
 
         mockMvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL)

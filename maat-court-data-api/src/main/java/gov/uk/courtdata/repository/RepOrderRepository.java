@@ -1,8 +1,10 @@
 package gov.uk.courtdata.repository;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -80,11 +82,22 @@ public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Intege
                               , r.date_modified
                               , r.user_modified
                               , r.caty_case_type
-                        FROM    REP_ORDERS r
-                        JOIN    MAAT_REFS_TO_EXTRACT ex
+                        FROM    TOGDATA.REP_ORDERS r
+                        JOIN    TOGDATA.MAAT_REFS_TO_EXTRACT ex
                         ON      r.ID = ex.MAAT_ID
     """, nativeQuery = true)
     List<RepOrderEntity> getRepOrdersForBilling();
+
+    @Modifying
+    @Transactional
+    @Query("""
+           UPDATE RepOrderEntity repOrder
+           SET    repOrder.isSendToCCLF = null,
+                  repOrder.dateModified = CURRENT_DATE,
+                  repOrder.userModified = :userModified
+           WHERE  repOrder.id in :repOrderIds
+    """)
+    int resetBillingFlagForRepOrderIds(@Param("userModified") String userModified, @Param("repOrderIds") List<Integer> repOrderIds);
 
 }
 

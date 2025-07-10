@@ -3,6 +3,7 @@ package gov.uk.courtdata.builder;
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
+import gov.uk.courtdata.billing.entity.ApplicantHistoryBillingEntity;
 import gov.uk.courtdata.billing.entity.MaatReferenceEntity;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
@@ -506,6 +507,25 @@ public class TestEntityDataBuilder {
                 .sendToCclf(sendToCclf)
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("TEST")
+                .build();
+    }
+
+    public static ApplicantHistoryBillingEntity getApplicantHistoryBillingEntity() {
+        return ApplicantHistoryBillingEntity.builder()
+                .id(666)
+                .applId(666)
+                .asAtDate(LocalDate.parse("2006-10-06"))
+                .firstName("test_first")
+                .lastName("test_last")
+                .otherNames("test")
+                .dob(LocalDate.parse("1981-10-14"))
+                .gender("Male")
+                .niNumber("JM933396A")
+                .foreignId("T35T")
+                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
+                .userCreated("TEST")
+                .dateModified(null)
+                .userModified(null)
                 .build();
     }
 

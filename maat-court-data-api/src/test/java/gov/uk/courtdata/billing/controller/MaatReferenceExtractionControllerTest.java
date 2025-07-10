@@ -35,7 +35,7 @@ class MaatReferenceExtractionControllerTest {
     }
     
     @Test
-    void givenRecordsAlreadyExist_whenPopulateMaatReferencesToExtract_thenReturnError() throws Exception {
+    void givenRecordsAlreadyExist_whenPopulateMaatReferencesToExtract_thenErrorResponseIsReturned() throws Exception {
         when(maatReferenceService.populateTable()).thenThrow(RecordsAlreadyExistException.class);
 
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL))

@@ -30,7 +30,7 @@ public class MaatReferenceExtractionControllerIntegrationTest extends MockMvcInt
     }
     
     @Test
-    void givenRecordsAlreadyExist_whenPopulateMaatReferencesToExtract_thenReturnError() throws Exception {
+    void givenRecordsAlreadyExist_whenPopulateMaatReferencesToExtract_thenErrorResponseIsReturned() throws Exception {
         repos.maatReference.saveAndFlush(testEntityDataBuilder.getMaatReferenceEntity());
         
         assertTrue(

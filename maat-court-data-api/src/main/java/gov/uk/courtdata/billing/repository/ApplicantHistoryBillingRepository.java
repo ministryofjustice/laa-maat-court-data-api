@@ -63,5 +63,5 @@ public interface ApplicantHistoryBillingRepository extends JpaRepository<Applica
                         WHERE 
                             ID IN :ids
                         """, nativeQuery = true)
-    void updateApplicantHistoryBilling(@Param("userModified") String userModified, @Param("ids") List<Integer> ids);
+    int resetApplicantHistoryBilling(@Param("userModified") String userModified, @Param("ids") List<Integer> ids);
 }

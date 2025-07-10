@@ -34,9 +34,9 @@ class ApplicantHistoryBillingServiceTest {
     @Test
     void givenApplicantHistoriesToExtract_whenExtractApplicantHistoryBillingIsInvoked_thenApplicantHistoriesReturned() {
         when(repository.extractApplicantHistoryBilling())
-                .thenReturn(List.of(TestEntityDataBuilder.getApplicantHistoryBillingEntity()));
+            .thenReturn(List.of(TestEntityDataBuilder.getApplicantHistoryBillingEntity()));
         when(mapper.mapEntityToDTO(any(ApplicantHistoryBillingEntity.class)))
-                .thenReturn(TestModelDataBuilder.getApplicantHistoryBillingDTO());
+            .thenReturn(TestModelDataBuilder.getApplicantHistoryBillingDTO());
 
         List<ApplicantHistoryBillingDTO> dtos = service.extractApplicantHistory();
 
@@ -55,11 +55,13 @@ class ApplicantHistoryBillingServiceTest {
     @Test
     void givenValidRequestData_whenResetApplicantHistoryIsInvoked_thenApplicantHistoriesAreReset() {
         UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
-        when(repository.resetApplicantHistoryBilling(anyString(), anyList())).thenReturn(request.getIds().size());
+        when(repository.resetApplicantHistoryBilling(anyString(), anyList())).thenReturn(
+            request.getIds().size());
 
         service.resetApplicantHistory(request);
 
-        verify(repository).resetApplicantHistoryBilling(request.getUserModified(), request.getIds());
+        verify(repository).resetApplicantHistoryBilling(request.getUserModified(),
+            request.getIds());
     }
 
     @Test
@@ -70,8 +72,8 @@ class ApplicantHistoryBillingServiceTest {
         assertThatThrownBy(() -> {
             service.resetApplicantHistory(request);
         }).isInstanceOf(MAATCourtDataException.class)
-                .hasMessageContaining(String.format(
-                        "Number of applicant histories reset: %d, does not equal those supplied in request: %d.",
-                        1, request.getIds().size()));
+            .hasMessageContaining(String.format(
+                "Number of applicant histories reset: %d, does not equal those supplied in request: %d.",
+                1, request.getIds().size()));
     }
 }

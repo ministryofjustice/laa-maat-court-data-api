@@ -40,24 +40,26 @@ class ApplicantHistoryBillingControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void givenApplicantHistoryBillingDataPresent_whenGetApplicantHistoryIsCalled_thenOkResponseWithData() throws Exception {
+    void givenApplicantHistoryBillingDataPresent_whenGetApplicantHistoryIsCalled_thenOkResponseWithData()
+        throws Exception {
         when(service.extractApplicantHistory())
-                .thenReturn(List.of(TestModelDataBuilder.getApplicantHistoryBillingDTO()));
+            .thenReturn(List.of(TestModelDataBuilder.getApplicantHistoryBillingDTO()));
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].applId").value(716));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.[0].applId").value(716));
     }
 
     @Test
-    void givenNoApplicantHistoryBillingDataPresent_whenGetApplicantHistoryIsCalled_thenInternalServerErrorResponse() throws Exception {
+    void givenNoApplicantHistoryBillingDataPresent_whenGetApplicantHistoryIsCalled_thenInternalServerErrorResponse()
+        throws Exception {
         when(service.extractApplicantHistory()).thenThrow(new QueryTimeoutException(EXCEPTION_MSG));
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL))
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(EXCEPTION_MSG));
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.message").value(EXCEPTION_MSG));
     }
 
     @Test
@@ -68,30 +70,33 @@ class ApplicantHistoryBillingControllerTest {
         mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL)
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
     }
 
     @ParameterizedTest
     @MethodSource("gov.uk.courtdata.builder.TestModelDataBuilder#getUpdateBillingRequests")
-    void givenInvalidRequest_whenResetApplicantHistoryIsCalled_thenBadRequestResponse(UpdateBillingRequest request) throws Exception {
+    void givenInvalidRequest_whenResetApplicantHistoryIsCalled_thenBadRequestResponse(
+        UpdateBillingRequest request) throws Exception {
         doNothing().when(service).resetApplicantHistory(request);
 
         mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL)
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest());
     }
 
     @Test
-    void givenIncorrectNumberOfRowsUpdated_whenResetApplicantHistoryIsCalled_thenInternalServerErrorResponse() throws Exception {
+    void givenIncorrectNumberOfRowsUpdated_whenResetApplicantHistoryIsCalled_thenInternalServerErrorResponse()
+        throws Exception {
         UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
-        doThrow(new MAATCourtDataException(EXCEPTION_MSG)).when(service).resetApplicantHistory(request);
+        doThrow(new MAATCourtDataException(EXCEPTION_MSG)).when(service)
+            .resetApplicantHistory(request);
 
         mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL)
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(EXCEPTION_MSG));
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.message").value(EXCEPTION_MSG));
     }
 }

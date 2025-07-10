@@ -30,9 +30,9 @@ public class ApplicantHistoryBillingService {
 
         if (!applicantHistoryEntities.isEmpty()) {
             applicantHistoryDTOs = applicantHistoryEntities
-                    .stream()
-                    .map(applicantHistoryBillingMapper::mapEntityToDTO)
-                    .toList();
+                .stream()
+                .map(applicantHistoryBillingMapper::mapEntityToDTO)
+                .toList();
         }
 
         return applicantHistoryDTOs;
@@ -42,13 +42,14 @@ public class ApplicantHistoryBillingService {
     public void resetApplicantHistory(UpdateBillingRequest request) {
         List<Integer> ids = request.getIds();
 
-        int updatedRows = applicantHistoryBillingRepository.resetApplicantHistoryBilling(request.getUserModified(), ids);
+        int updatedRows = applicantHistoryBillingRepository.resetApplicantHistoryBilling(
+            request.getUserModified(), ids);
         log.info("Send to CCLF flag has been reset for extracted applicant histories.");
 
         if (updatedRows != ids.size()) {
             String errorMsg = String.format(
-                    "Number of applicant histories reset: %d, does not equal those supplied in request: %d.",
-                    updatedRows, ids.size());
+                "Number of applicant histories reset: %d, does not equal those supplied in request: %d.",
+                updatedRows, ids.size());
             log.error(errorMsg);
             throw new MAATCourtDataException(errorMsg);
         }

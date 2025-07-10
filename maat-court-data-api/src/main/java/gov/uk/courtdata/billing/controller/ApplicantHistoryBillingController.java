@@ -34,7 +34,8 @@ public class ApplicantHistoryBillingController {
     @PatchMapping
     @Operation(description = "Reset CCLF extract flag for list of applicant histories.")
     @StandardApiResponseCodes
-    public ResponseEntity<Void> resetApplicantHistory(@Valid @RequestBody final UpdateBillingRequest request) {
+    public ResponseEntity<Void> resetApplicantHistory(
+        @Valid @RequestBody final UpdateBillingRequest request) {
         log.info("Request received to reset CCLF flag for applicant histories.");
         applicantHistoryBillingService.resetApplicantHistory(request);
         return ResponseEntity.ok().build();

@@ -14,6 +14,8 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,13 +51,9 @@ class RepOrderBillingControllerTest {
                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
-    @Test
-    void givenInvalidRequest_whenPatchRepOrderForBillingIsInvoked_thenFailureResponseIsReturned() throws Exception {
-        UpdateBillingRequest request = UpdateBillingRequest.builder()
-            .userModified(null)
-            .ids(List.of(10034567, 10034568, 10034591))
-            .build();
-
+    @ParameterizedTest
+    @MethodSource("gov.uk.courtdata.builder.TestModelDataBuilder#getUpdateBillingRequests")
+    void givenInvalidRequest_whenPatchRepOrderForBillingIsInvoked_thenFailureResponseIsReturned(UpdateBillingRequest request) throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL)
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -64,10 +62,7 @@ class RepOrderBillingControllerTest {
 
     @Test
     void givenDownstreamException_whenPatchRepOrderForBillingIsInvoked_thenFailureResponseIsReturned() throws Exception {
-        UpdateBillingRequest request = UpdateBillingRequest.builder()
-            .userModified("joe-bloggs")
-            .ids(List.of(10034567, 10034568, 10034591))
-            .build();
+        UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
 
         doThrow(new MAATCourtDataException("Unable to reset rep orders")).when(repOrderBillingService).resetRepOrdersSentForBilling(request);
 
@@ -80,10 +75,7 @@ class RepOrderBillingControllerTest {
 
     @Test
     void givenValidRequest_whenPatchRepOrderForBillingIsInvoked_thenSuccessResponseIsReturned() throws Exception {
-        UpdateBillingRequest request = UpdateBillingRequest.builder()
-            .userModified("joe-bloggs")
-            .ids(List.of(10034567, 10034568, 10034591))
-            .build();
+        UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
 
         mockMvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL)
                 .content(objectMapper.writeValueAsString(request))

@@ -30,6 +30,7 @@ import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
+import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
@@ -42,6 +43,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
 
@@ -220,6 +222,19 @@ public class TestModelDataBuilder {
                 .userModified("joe-bloggs")
                 .ids(List.of(1003456, 1003457))
                 .build();
+    }
+
+    public static Stream<UpdateBillingRequest> getUpdateBillingRequests() {
+        return Stream.of(
+                UpdateBillingRequest.builder()
+                        .userModified("")
+                        .ids(List.of(1003456, 1003457))
+                        .build(),
+                UpdateBillingRequest.builder()
+                        .userModified("joe-bloggs")
+                        .ids(List.of())
+                        .build()
+        );
     }
 
     public static FinancialAssessmentDTO getFinancialAssessmentWithChildWeightings() {

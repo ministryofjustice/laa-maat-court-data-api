@@ -7,6 +7,7 @@ import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.billing.dto.ApplicantHistoryBillingDTO;
+import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
@@ -211,6 +212,13 @@ public class TestModelDataBuilder {
                 .userCreated("TEST")
                 .dateModified(null)
                 .userModified(null)
+                .build();
+    }
+
+    public static UpdateBillingRequest getUpdateBillingRequest() {
+        return UpdateBillingRequest.builder()
+                .userModified("joe-bloggs")
+                .ids(List.of(1003456, 1003457))
                 .build();
     }
 

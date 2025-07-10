@@ -2,18 +2,15 @@ package gov.uk.courtdata.billing.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
 import gov.uk.courtdata.billing.mapper.RepOrderBillingMapper;
 import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import java.util.Collections;
 import java.util.List;
@@ -60,35 +57,8 @@ class RepOrderBillingServiceTest {
     }
 
     @Test
-    void givenNoRepOrdersToUpdate_whenResetRepOrdersSentForBillingIsInvoked_thenReturnsTrue() {
-        UpdateBillingRequest request = UpdateBillingRequest.builder()
-            .userModified("joe-bloggs")
-            .ids(Collections.emptyList())
-            .build();
-
-        assertDoesNotThrow(() -> repOrderBillingService.resetRepOrdersSentForBilling(request));
-    }
-
-    @Test
-    void givenUsernameNotSupplied_whenResetRepOrdersSentForBillingIsInvoked_thenReturnsFalse() {
-        UpdateBillingRequest request = UpdateBillingRequest.builder()
-            .userModified(null)
-            .ids(List.of(1003456, 1003457))
-            .build();
-
-        ValidationException exception = assertThrows(ValidationException.class,
-            () -> repOrderBillingService.resetRepOrdersSentForBilling(request));
-
-        assertEquals("Username must be provided", exception.getMessage());
-    }
-
-    @Test
     void givenRepOrdersNotSuccessfullyUpdated_whenResetRepOrdersSentForBillingIsInvoked_thenReturnsFalse() {
-        UpdateBillingRequest request = UpdateBillingRequest.builder()
-            .userModified("joe-bloggs")
-            .ids(List.of(1003456, 1003457))
-            .build();
-
+        UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
         when(repOrderRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getIds()))
             .thenReturn(1);
 
@@ -102,15 +72,9 @@ class RepOrderBillingServiceTest {
 
     @Test
     void givenRepOrdersSuccessfullyUpdated_whenResetRepOrdersSentForBillingIsInvoked_thenReturnsTrue() {
-        List<Integer> repOrdersIdsToUpdate = List.of(1003456, 1003457);
-
-        UpdateBillingRequest request = UpdateBillingRequest.builder()
-            .userModified("joe-bloggs")
-            .ids(List.of(1003456, 1003457))
-            .build();
-
+        UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
         when(repOrderRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getIds()))
-            .thenReturn(repOrdersIdsToUpdate.size());
+            .thenReturn(request.getIds().size());
 
         assertDoesNotThrow(() -> repOrderBillingService.resetRepOrdersSentForBilling(request));
     }

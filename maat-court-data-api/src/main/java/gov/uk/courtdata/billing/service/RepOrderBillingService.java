@@ -38,14 +38,6 @@ public class RepOrderBillingService {
 
     @Transactional(rollbackFor = MAATCourtDataException.class)
     public void resetRepOrdersSentForBilling(UpdateBillingRequest request) {
-        if (request.getIds().isEmpty()) {
-            return;
-        }
-
-        if (StringUtils.isBlank(request.getUserModified())) {
-            throw new ValidationException("Username must be provided");
-        }
-
         int updatedRows = repOrderRepository.resetBillingFlagForRepOrderIds(
             request.getUserModified(), request.getIds());
 

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.billing.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UpdateBillingRequest {
-    @NotNull
+    @NotBlank
     private String userModified;
-    @NotNull
+    @NotEmpty
     private List<Integer> ids;
 }

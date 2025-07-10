@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @AutoConfigureMockMvc(addFilters = false)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class MaatReferenceExtractionControllerTest {
-    private static final String ENDPOINT_URL = "/api/internal/v1/billing/populate-maat-references";
+    private static final String ENDPOINT_URL = "/api/internal/v1/billing/maat-references";
 
     @Autowired
     private MockMvc mvc;
@@ -33,12 +33,20 @@ class MaatReferenceExtractionControllerTest {
             .andExpect(status().isOk());
         verify(maatReferenceService).populateTable();
     }
+    
     @Test
-    void givenRecordsAlreadyExist_whenPopulateMaatReferencesToExtract_thenReturnError() throws Exception {
+    void givenRecordsAlreadyExist_whenPopulateMaatReferencesToExtract_thenErrorResponseIsReturned() throws Exception {
         when(maatReferenceService.populateTable()).thenThrow(RecordsAlreadyExistException.class);
 
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL))
             .andExpect(status().isInternalServerError());
         verify(maatReferenceService).populateTable();
+    }
+
+    @Test
+    void givenNoInput_whenDeleteMaatReferences_thenSuccessResponseIsReturned() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL))
+            .andExpect(status().isOk());
+        verify(maatReferenceService).deleteMaatReferences();
     }
 }

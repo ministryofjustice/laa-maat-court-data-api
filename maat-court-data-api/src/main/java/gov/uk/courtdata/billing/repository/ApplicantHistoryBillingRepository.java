@@ -49,7 +49,6 @@ public interface ApplicantHistoryBillingRepository extends JpaRepository<Applica
                             A2.USER_MODIFIED
                         FROM TOGDATA.APPLICANT_HISTORY A2
                         WHERE A2.SEND_TO_CCLF = 'Y'
-                        FETCH FIRST 10 ROWS ONLY
                         """, nativeQuery = true)
     List<ApplicantHistoryBillingEntity> extractApplicantHistoryBilling();
 

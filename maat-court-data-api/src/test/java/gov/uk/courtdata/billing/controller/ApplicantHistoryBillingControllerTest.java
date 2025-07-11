@@ -65,7 +65,6 @@ class ApplicantHistoryBillingControllerTest {
     @Test
     void givenValidRequest_whenResetApplicantHistoryIsCalled_thenOkResponse() throws Exception {
         UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
-        doNothing().when(service).resetApplicantHistory(request);
 
         mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL)
                 .content(objectMapper.writeValueAsString(request))
@@ -77,8 +76,6 @@ class ApplicantHistoryBillingControllerTest {
     @MethodSource("gov.uk.courtdata.builder.TestModelDataBuilder#getUpdateBillingRequests")
     void givenInvalidRequest_whenResetApplicantHistoryIsCalled_thenBadRequestResponse(
         UpdateBillingRequest request) throws Exception {
-        doNothing().when(service).resetApplicantHistory(request);
-
         mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL)
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))

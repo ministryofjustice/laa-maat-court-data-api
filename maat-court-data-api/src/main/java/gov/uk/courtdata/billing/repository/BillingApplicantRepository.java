@@ -3,8 +3,10 @@ package gov.uk.courtdata.billing.repository;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import gov.uk.courtdata.billing.entity.BillingApplicantEntity;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface BillingApplicantRepository extends JpaRepository<BillingApplicantEntity, Integer> {
@@ -24,5 +26,16 @@ public interface BillingApplicantRepository extends JpaRepository<BillingApplica
             """,
             nativeQuery = true)
     List<BillingApplicantEntity> findAllApplicantsForBilling();
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+        UPDATE TOGDATA.APPLICANTS
+        SET     SEND_TO_CCLF = NULL,
+            DATE_MODIFIED = CURRENT_TIMESTAMP,
+            USER_MODIFIED = :username
+        WHERE ID IN (:applicantIds)
+        """, nativeQuery = true)
+    int resetApplicantBilling(List<Integer> applicantIds, String username);
 }
 

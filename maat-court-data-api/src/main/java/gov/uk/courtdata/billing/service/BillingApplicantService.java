@@ -2,6 +2,7 @@ package gov.uk.courtdata.billing.service;
 
 import gov.uk.courtdata.billing.entity.BillingApplicantEntity;
 import gov.uk.courtdata.billing.repository.BillingApplicantRepository;
+import gov.uk.courtdata.billing.request.UpdateRepOrderBillingRequest;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +16,10 @@ public class BillingApplicantService {
 
     public List<BillingApplicantEntity> findAllApplicantsForBilling() {
         return billingApplicantRepository.findAllApplicantsForBilling();
+    }
+
+    public void resetApplicantBilling(UpdateRepOrderBillingRequest request) {
+        billingApplicantRepository.resetApplicantBilling(request.getRepOrderIds(), request.getUserModified());
     }
 
 }

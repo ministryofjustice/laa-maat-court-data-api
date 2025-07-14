@@ -1,6 +1,6 @@
 package gov.uk.courtdata.billing.repository;
 
-import gov.uk.courtdata.billing.entity.ApplicantEntity;
+import gov.uk.courtdata.billing.entity.BillingApplicantEntity;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
         );
         """
 })
-class ApplicantResetRepositoryTest {
+class BillingApplicantRepositoryTest {
 
     @Autowired
-    private ApplicantResetRepository repository;
+    private BillingApplicantRepository repository;
 
     @Autowired
     private EntityManager entityManager;
@@ -38,20 +38,20 @@ class ApplicantResetRepositoryTest {
     @Test
     @Transactional
     void shouldResetSendToCclfFlag() {
-        ApplicantEntity entity = new ApplicantEntity();
+        BillingApplicantEntity entity = new BillingApplicantEntity();
         entity.setId(1);
         entity.setSendToCclf("Y");
         entity.setDateCreated(LocalDateTime.now());
         entity.setUserCreated("test_user");
         repository.save(entity);
 
-        int updatedRows = repository.resetApplicant(List.of(1), "system_user");
+        int updatedRows = repository.resetApplicantBilling(List.of(1), "system_user");
         System.out.println("Rows updated: " + updatedRows);
 
         entityManager.flush();
         entityManager.clear();
 
-        ApplicantEntity updated = repository.findById(1).orElseThrow();
+        BillingApplicantEntity updated = repository.findById(1).orElseThrow();
         assertThat(updated.getSendToCclf()).isNull();
         assertThat(updated.getUserModified()).isEqualTo("system_user");
     }

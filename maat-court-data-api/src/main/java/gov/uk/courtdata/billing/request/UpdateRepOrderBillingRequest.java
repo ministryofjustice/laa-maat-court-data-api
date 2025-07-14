@@ -1,6 +1,7 @@
 package gov.uk.courtdata.billing.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UpdateRepOrderBillingRequest {
-    @NotNull
+    @NotBlank(message = "userModified must not be blank")
     private String userModified;
-    @NotNull
+
+    @NotEmpty(message = "repOrderIds must not be empty")
     private List<Integer> repOrderIds;
 }

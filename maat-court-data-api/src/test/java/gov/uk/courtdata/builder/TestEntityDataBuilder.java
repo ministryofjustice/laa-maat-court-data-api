@@ -5,6 +5,7 @@ import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.billing.entity.ApplicantHistoryBillingEntity;
 import gov.uk.courtdata.billing.entity.MaatReferenceEntity;
+import gov.uk.courtdata.billing.entity.RepOrderBillingEntity;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.enums.CrownCourtCaseType;
@@ -118,30 +119,30 @@ public class TestEntityDataBuilder {
             .build();
     }
 
-    public static RepOrderEntity getPopulatedRepOrderForBilling(Integer id) {
-        return RepOrderEntity.builder()
+    public static RepOrderBillingEntity getPopulatedRepOrderForBilling(Integer id) {
+        return RepOrderBillingEntity.builder()
             .id(id)
-            .applicationId(12)
+            .applicantId(123)
             .arrestSummonsNo("ARREST-5678")
             .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
-            .suppAccountCode("AB123C")
-            .macoCourt("34")
-            .magsOutcome(MagCourtOutcome.COMMITTED.getOutcome())
+            .supplierAccountCode("AB123C")
+            .magsCourtId("34")
+            .magsCourtOutcome(MagCourtOutcome.COMMITTED.getOutcome())
             .dateReceived(LocalDate.of(2025, 6, 10))
-            .crownRepOrderDate(LocalDate.of(2025, 6, 12))
-            .oftyOffenceType("BURGLARY")
-            .crownWithdrawalDate(LocalDate.of(2025, 6, 30))
+            .crownCourtRepOrderDate(LocalDate.of(2025, 6, 12))
+            .offenceType("BURGLARY")
+            .crownCourtWithdrawalDate(LocalDate.of(2025, 6, 30))
             .applicantHistoryId(96)
             .caseId("CASE-123-C")
             .committalDate(LocalDate.of(2025, 6, 11))
-            .rorsStatus("CURR")
+            .repOrderStatus("CURR")
             .appealTypeCode(AppealType.ACN.getCode())
-            .crownOutcome(CrownCourtTrialOutcome.CONVICTED.getValue())
+            .crownCourtOutcome(CrownCourtTrialOutcome.CONVICTED.getValue())
             .dateCreated(LocalDate.of(2025, 6, 20))
             .userCreated("joe-bloggs")
             .dateModified(LocalDate.of(2025, 6, 21).atStartOfDay())
             .userModified("alice-smith")
-            .catyCaseType(CrownCourtCaseType.EITHER_WAY.getValue())
+            .caseType(CrownCourtCaseType.EITHER_WAY.getValue())
             .build();
     }
 

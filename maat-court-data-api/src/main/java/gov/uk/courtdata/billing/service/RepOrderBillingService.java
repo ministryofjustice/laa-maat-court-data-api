@@ -1,12 +1,12 @@
 package gov.uk.courtdata.billing.service;
 
 import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
+import gov.uk.courtdata.billing.entity.RepOrderBillingEntity;
 import gov.uk.courtdata.billing.mapper.RepOrderBillingMapper;
+import gov.uk.courtdata.billing.repository.RepOrderBillingRepository;
 import gov.uk.courtdata.billing.request.UpdateRepOrderBillingRequest;
-import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.repository.RepOrderRepository;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
@@ -22,10 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RepOrderBillingService {
 
-    private final RepOrderRepository repOrderRepository;
+    private final RepOrderBillingRepository repOrderBillingRepository;
 
     public List<RepOrderBillingDTO> getRepOrdersForBilling() {
-        List<RepOrderEntity> extractedRepOrders = repOrderRepository.getRepOrdersForBilling();
+        List<RepOrderBillingEntity> extractedRepOrders = repOrderBillingRepository.getRepOrdersForBilling();
 
         if (extractedRepOrders.isEmpty()) {
             return Collections.emptyList();
@@ -46,7 +46,7 @@ public class RepOrderBillingService {
             throw new ValidationException("Username must be provided");
         }
 
-        int updatedRows = repOrderRepository.resetBillingFlagForRepOrderIds(
+        int updatedRows = repOrderBillingRepository.resetBillingFlagForRepOrderIds(
             request.getUserModified(), request.getRepOrderIds());
 
         if (updatedRows != request.getRepOrderIds().size()) {

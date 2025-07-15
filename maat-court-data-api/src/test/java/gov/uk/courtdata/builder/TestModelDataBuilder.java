@@ -7,6 +7,7 @@ import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.billing.dto.ApplicantHistoryBillingDTO;
+import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
@@ -29,6 +30,7 @@ import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
+import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
 import uk.gov.justice.laa.crime.enums.AppealType;
@@ -44,6 +46,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
 
@@ -215,6 +218,26 @@ public class TestModelDataBuilder {
                 .dateModified(null)
                 .userModified(null)
                 .build();
+    }
+
+    public static UpdateBillingRequest getUpdateBillingRequest() {
+        return UpdateBillingRequest.builder()
+                .userModified("joe-bloggs")
+                .ids(List.of(1003456, 1003457))
+                .build();
+    }
+
+    public static Stream<UpdateBillingRequest> getUpdateBillingRequests() {
+        return Stream.of(
+                UpdateBillingRequest.builder()
+                        .userModified("")
+                        .ids(List.of(1003456, 1003457))
+                        .build(),
+                UpdateBillingRequest.builder()
+                        .userModified("joe-bloggs")
+                        .ids(List.of())
+                        .build()
+        );
     }
 
     public static FinancialAssessmentDTO getFinancialAssessmentWithChildWeightings() {

@@ -3,7 +3,7 @@ package gov.uk.courtdata.billing.service;
 import gov.uk.courtdata.billing.entity.BillingApplicantEntity;
 import gov.uk.courtdata.billing.repository.BillingApplicantRepository;
 import gov.uk.courtdata.billing.repository.BillingApplicantUpdateRepository;
-import gov.uk.courtdata.billing.request.UpdateRepOrderBillingRequest;
+import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,13 +50,13 @@ class BillingApplicantServiceTest {
 
     @Test
     void shouldResetCclfFlagSuccessfully() {
-        UpdateRepOrderBillingRequest request = new UpdateRepOrderBillingRequest();
+        UpdateBillingRequest request = new UpdateBillingRequest();
         request.setUserModified("test_user");
-        request.setRepOrderIds(List.of(1, 2, 3));
+        request.setIds(List.of(1, 2, 3));
 
         billingApplicantService.resetApplicantBilling(request);
 
-        verify(billingApplicantUpdateRepository).resetApplicantBilling(request.getRepOrderIds(), request.getUserModified());
+        verify(billingApplicantUpdateRepository).resetApplicantBilling(request.getIds(), request.getUserModified());
     }
 
 }

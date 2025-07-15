@@ -1,7 +1,7 @@
 package gov.uk.courtdata.billing.controller;
 
 import gov.uk.courtdata.billing.entity.BillingApplicantEntity;
-import gov.uk.courtdata.billing.request.UpdateRepOrderBillingRequest;
+import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.billing.service.BillingApplicantService;
 import gov.uk.courtdata.eform.controller.StandardApiResponseCodes;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,9 +38,9 @@ public class BillingApplicantController {
     @PatchMapping
     @Operation(description = "Reset SEND_TO_CCLF flag for applicants by IDs and username")
     @StandardApiResponseCodes
-    public ResponseEntity<Void> resetApplicantBilling(@Valid @RequestBody UpdateRepOrderBillingRequest request) {
+    public ResponseEntity<Void> resetApplicantBilling(@Valid @RequestBody UpdateBillingRequest request) {
         log.info("Reset Applicant CCLF flag Request received for applicantIds: {} by user: {}",
-                request.getRepOrderIds(), request.getUserModified());
+                request.getIds(), request.getUserModified());
         billingApplicantService.resetApplicantBilling(request);
         log.info("Reset Applicant CCLF flag Request completed successfully");
         return ResponseEntity.ok().build();

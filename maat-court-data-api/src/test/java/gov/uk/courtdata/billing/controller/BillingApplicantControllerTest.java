@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.billing.entity.BillingApplicantEntity;
-import gov.uk.courtdata.billing.request.UpdateRepOrderBillingRequest;
+import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.billing.service.BillingApplicantService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +56,9 @@ class BillingApplicantControllerTest {
 
     @Test
     void shouldResetApplicantBillingSuccessfully() throws Exception {
-        UpdateRepOrderBillingRequest request = new UpdateRepOrderBillingRequest();
+        UpdateBillingRequest request = new UpdateBillingRequest();
         request.setUserModified("test_user");
-        request.setRepOrderIds(List.of(1, 2, 3));
+        request.setIds(List.of(1, 2, 3));
 
         mvc.perform(patch(ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -70,9 +70,9 @@ class BillingApplicantControllerTest {
 
     @Test
     void shouldReturnBadRequestForInvalidInput() throws Exception {
-        UpdateRepOrderBillingRequest request = new UpdateRepOrderBillingRequest();
+        UpdateBillingRequest request = new UpdateBillingRequest();
         request.setUserModified("");
-        request.setRepOrderIds(List.of());
+        request.setIds(List.of());
 
         mvc.perform(patch(ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)

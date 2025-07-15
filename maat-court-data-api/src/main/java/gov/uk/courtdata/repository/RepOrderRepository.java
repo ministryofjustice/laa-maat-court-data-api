@@ -82,8 +82,8 @@ public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Intege
                               , r.date_modified
                               , r.user_modified
                               , r.caty_case_type
-                        FROM    REP_ORDERS r
-                        JOIN    MAAT_REFS_TO_EXTRACT ex
+                        FROM    TOGDATA.REP_ORDERS r
+                        JOIN    TOGDATA.MAAT_REFS_TO_EXTRACT ex
                         ON      r.ID = ex.MAAT_ID
     """, nativeQuery = true)
     List<RepOrderEntity> getRepOrdersForBilling();

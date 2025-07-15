@@ -2,6 +2,7 @@ package gov.uk.courtdata.billing.service;
 
 import gov.uk.courtdata.billing.entity.BillingApplicantEntity;
 import gov.uk.courtdata.billing.repository.BillingApplicantRepository;
+import gov.uk.courtdata.billing.repository.BillingApplicantUpdateRepository;
 import gov.uk.courtdata.billing.request.UpdateRepOrderBillingRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,11 +22,17 @@ class BillingApplicantServiceTest {
     @Mock
     private BillingApplicantRepository billingApplicantRepository;
 
+    @Mock
+    private BillingApplicantUpdateRepository billingApplicantUpdateRepository;
+
     private BillingApplicantService billingApplicantService;
 
     @BeforeEach
     void setUp() {
-        billingApplicantService = new BillingApplicantService(billingApplicantRepository);
+        billingApplicantService = new BillingApplicantService(
+                billingApplicantRepository,
+                billingApplicantUpdateRepository
+        );
     }
 
     @Test
@@ -49,7 +56,7 @@ class BillingApplicantServiceTest {
 
         billingApplicantService.resetApplicantBilling(request);
 
-        verify(billingApplicantRepository).resetApplicantBilling(request.getRepOrderIds(), request.getUserModified());
+        verify(billingApplicantUpdateRepository).resetApplicantBilling(request.getRepOrderIds(), request.getUserModified());
     }
 
 }

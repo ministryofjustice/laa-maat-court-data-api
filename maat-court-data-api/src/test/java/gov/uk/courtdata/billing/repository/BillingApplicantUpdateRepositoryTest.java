@@ -1,6 +1,6 @@
 package gov.uk.courtdata.billing.repository;
 
-import gov.uk.courtdata.billing.entity.BillingApplicantEntity;
+import gov.uk.courtdata.billing.entity.BillingApplicantUpdateEntity;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
         );
         """
 })
-class BillingApplicantRepositoryTest {
+class BillingApplicantUpdateRepositoryTest {
 
     @Autowired
-    private BillingApplicantRepository repository;
+    private BillingApplicantUpdateRepository updateRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -38,21 +38,27 @@ class BillingApplicantRepositoryTest {
     @Test
     @Transactional
     void shouldResetSendToCclfFlag() {
-        BillingApplicantEntity entity = new BillingApplicantEntity();
-        entity.setId(1);
-        entity.setSendToCclf("Y");
-        entity.setDateCreated(LocalDateTime.now());
-        entity.setUserCreated("test_user");
-        repository.save(entity);
+        BillingApplicantUpdateEntity entity = BillingApplicantUpdateEntity.builder()
+                .id(1)
+                .sendToCclf("Y")
+                .dateModified(LocalDateTime.now())
+                .userModified("initial_user")
+                .build();
 
-        int updatedRows = repository.resetApplicantBilling(List.of(1), "system_user");
-        System.out.println("Rows updated: " + updatedRows);
+        entityManager.persist(entity);
+        entityManager.flush();
+        entityManager.clear();
+
+        int updatedRows = updateRepository.resetApplicantBilling(List.of(1), "system_user");
+
+        assertThat(updatedRows).isEqualTo(1);
 
         entityManager.flush();
         entityManager.clear();
 
-        BillingApplicantEntity updated = repository.findById(1).orElseThrow();
+        BillingApplicantUpdateEntity updated = entityManager.find(BillingApplicantUpdateEntity.class, 1);
         assertThat(updated.getSendToCclf()).isNull();
         assertThat(updated.getUserModified()).isEqualTo("system_user");
+        assertThat(updated.getDateModified()).isNotNull();
     }
 }

@@ -12,10 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UpdateRepOrderBillingRequest {
+public class UpdateBillingRequest {
     @NotBlank(message = "userModified must not be blank")
     private String userModified;
-
-    @NotEmpty(message = "repOrderIds must not be empty")
-    private List<Integer> repOrderIds;
+    @NotEmpty(message = "Ids must not be empty")
+    private List<Integer> ids;
 }

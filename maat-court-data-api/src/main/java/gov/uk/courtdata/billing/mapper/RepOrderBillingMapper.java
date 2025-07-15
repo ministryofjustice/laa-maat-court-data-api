@@ -1,7 +1,7 @@
 package gov.uk.courtdata.billing.mapper;
 
 import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
-import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.billing.entity.RepOrderBillingEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,33 +9,33 @@ import org.apache.commons.lang3.StringUtils;
 public class RepOrderBillingMapper {
     private RepOrderBillingMapper() { }
 
-    public static RepOrderBillingDTO mapEntityToDTO(RepOrderEntity repOrderEntity) {
-        Integer magsCourtId = StringUtils.isEmpty(repOrderEntity.getMacoCourt())
-            ? null : Integer.parseInt(repOrderEntity.getMacoCourt());
+    public static RepOrderBillingDTO mapEntityToDTO(RepOrderBillingEntity repOrderEntity) {
+        Integer magsCourtId = StringUtils.isEmpty(repOrderEntity.getMagsCourtId())
+            ? null : Integer.parseInt(repOrderEntity.getMagsCourtId());
 
         return RepOrderBillingDTO.builder()
             .id(repOrderEntity.getId())
-            .applicantId(repOrderEntity.getApplicationId())
+            .applicantId(repOrderEntity.getApplicantId())
             .arrestSummonsNo(repOrderEntity.getArrestSummonsNo())
             .evidenceFeeLevel(repOrderEntity.getEvidenceFeeLevel())
-            .supplierAccountCode(repOrderEntity.getSuppAccountCode())
+            .supplierAccountCode(repOrderEntity.getSupplierAccountCode())
             .magsCourtId(magsCourtId)
-            .magsCourtOutcome(repOrderEntity.getMagsOutcome())
+            .magsCourtOutcome(repOrderEntity.getMagsCourtOutcome())
             .dateReceived(repOrderEntity.getDateReceived())
-            .crownCourtRepOrderDate(repOrderEntity.getCrownRepOrderDate())
-            .offenceType(repOrderEntity.getOftyOffenceType())
-            .crownCourtWithdrawalDate(repOrderEntity.getCrownWithdrawalDate())
+            .crownCourtRepOrderDate(repOrderEntity.getCrownCourtRepOrderDate())
+            .offenceType(repOrderEntity.getOffenceType())
+            .crownCourtWithdrawalDate(repOrderEntity.getCrownCourtWithdrawalDate())
             .applicantHistoryId(repOrderEntity.getApplicantHistoryId())
             .caseId(repOrderEntity.getCaseId())
             .committalDate(repOrderEntity.getCommittalDate())
-            .repOrderStatus(repOrderEntity.getRorsStatus())
+            .repOrderStatus(repOrderEntity.getRepOrderStatus())
             .appealTypeCode(repOrderEntity.getAppealTypeCode())
-            .crownCourtOutcome(repOrderEntity.getCrownOutcome())
+            .crownCourtOutcome(repOrderEntity.getCrownCourtOutcome())
             .dateCreated(repOrderEntity.getDateCreated())
             .userCreated(repOrderEntity.getUserCreated())
             .dateModified(repOrderEntity.getDateModified())
             .userModified(repOrderEntity.getUserModified())
-            .caseType(repOrderEntity.getCatyCaseType())
+            .caseType(repOrderEntity.getCaseType())
             .build();
     }
 }

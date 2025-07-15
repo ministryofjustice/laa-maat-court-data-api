@@ -3,8 +3,8 @@ package gov.uk.courtdata.billing.mapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
+import gov.uk.courtdata.billing.entity.RepOrderBillingEntity;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.enums.CrownCourtCaseType;
 import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
 import java.time.LocalDate;
@@ -22,7 +22,7 @@ class RepOrderBillingMapperTest {
     void givenARepOrderEntity_whenMapEntityToDtoIsInvoked_thenDtoIsReturned() {
         RepOrderBillingDTO expectedRepOrder = RepOrderBillingDTO.builder()
             .id(123)
-            .applicantId(12)
+            .applicantId(123)
             .arrestSummonsNo("ARREST-5678")
             .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
             .supplierAccountCode("AB123C")
@@ -45,7 +45,7 @@ class RepOrderBillingMapperTest {
             .caseType(CrownCourtCaseType.EITHER_WAY.getValue())
             .build();
 
-        RepOrderEntity entity = TestEntityDataBuilder.getPopulatedRepOrderForBilling(123);
+        RepOrderBillingEntity entity = TestEntityDataBuilder.getPopulatedRepOrderForBilling(123);
 
         RepOrderBillingDTO actualRepOrder = RepOrderBillingMapper.mapEntityToDTO(entity);
 

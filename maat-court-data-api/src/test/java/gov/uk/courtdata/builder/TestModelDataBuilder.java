@@ -33,8 +33,11 @@ import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
+import uk.gov.justice.laa.crime.enums.AppealType;
+import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
+import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.enums.contribution.TransferStatus;
 
 import java.math.BigDecimal;
@@ -853,17 +856,26 @@ public class TestModelDataBuilder {
         return RepOrderBillingDTO.builder()
             .id(id)
             .applicantId(123)
-            .arrestSummonsNo("arrest-summons")
-            .magsCourtId(1)
-            .magsCourtOutcome("outcome")
-            .dateReceived(TEST_DATE.toLocalDate())
-            .offenceType("burglary")
-            .caseId("case-id")
-            .committalDate(TEST_DATE.toLocalDate())
-            .repOrderStatus("curr")
-            .userCreated("test-user")
-            .dateCreated(TEST_DATE.toLocalDate())
-            .caseType("case-type")
+            .arrestSummonsNo("ARREST-5678")
+            .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
+            .supplierAccountCode("AB123C")
+            .magsCourtId(34)
+            .magsCourtOutcome(MagCourtOutcome.COMMITTED.getOutcome())
+            .dateReceived(LocalDate.of(2025, 6, 10))
+            .crownCourtRepOrderDate(LocalDate.of(2025, 6, 12))
+            .offenceType("BURGLARY")
+            .crownCourtWithdrawalDate(LocalDate.of(2025, 6, 30))
+            .applicantHistoryId(96)
+            .caseId("CASE-123-C")
+            .committalDate(LocalDate.of(2025, 6, 11))
+            .repOrderStatus("CURR")
+            .appealTypeCode(AppealType.ACN.getCode())
+            .crownCourtOutcome(CrownCourtTrialOutcome.CONVICTED.getValue())
+            .dateCreated(LocalDate.of(2025, 6, 20))
+            .userCreated("joe-bloggs")
+            .dateModified(LocalDate.of(2025, 6, 21).atStartOfDay())
+            .userModified("alice-smith")
+            .caseType(CrownCourtCaseType.EITHER_WAY.getValue())
             .build();
     }
 

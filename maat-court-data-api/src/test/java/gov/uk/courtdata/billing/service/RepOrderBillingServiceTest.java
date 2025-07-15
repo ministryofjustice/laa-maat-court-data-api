@@ -6,12 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
-import gov.uk.courtdata.billing.mapper.RepOrderBillingMapper;
 import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.billing.repository.RepOrderBillingRepository;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -24,14 +23,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class RepOrderBillingServiceTest {
 
     @Mock
-    private RepOrderRepository repOrderRepository;
+    private RepOrderBillingRepository repOrderBillingRepository;
 
     @InjectMocks
     private RepOrderBillingService repOrderBillingService;
 
     @Test
     void givenNoRepOrders_whenGetRepOrdersForBillingIsInvoked_thenEmptyListIsReturned() {
-        when(repOrderRepository.getRepOrdersForBilling()).thenReturn(Collections.emptyList());
+        when(repOrderBillingRepository.getRepOrdersForBilling()).thenReturn(Collections.emptyList());
 
         List<RepOrderBillingDTO> repOrders = repOrderBillingService.getRepOrdersForBilling();
 
@@ -40,14 +39,14 @@ class RepOrderBillingServiceTest {
 
     @Test
     void givenRepOrdersExist_whenGetRepOrdersForBillingIsInvoked_thenRepOrdersAreReturned() {
-        when(repOrderRepository.getRepOrdersForBilling()).thenReturn(List.of(
-            TestEntityDataBuilder.getPopulatedRepOrder(123),
-            TestEntityDataBuilder.getPopulatedRepOrder(124)
+        when(repOrderBillingRepository.getRepOrdersForBilling()).thenReturn(List.of(
+            TestEntityDataBuilder.getPopulatedRepOrderForBilling(123),
+            TestEntityDataBuilder.getPopulatedRepOrderForBilling(124)
         ));
 
         List<RepOrderBillingDTO> expectedRepOrders = List.of(
-            RepOrderBillingMapper.mapEntityToDTO(TestEntityDataBuilder.getPopulatedRepOrder(123)),
-            RepOrderBillingMapper.mapEntityToDTO(TestEntityDataBuilder.getPopulatedRepOrder(124))
+            TestModelDataBuilder.getRepOrderBillingDTO(123),
+            TestModelDataBuilder.getRepOrderBillingDTO(124)
         );
 
         List<RepOrderBillingDTO> repOrders = repOrderBillingService.getRepOrdersForBilling();
@@ -59,7 +58,7 @@ class RepOrderBillingServiceTest {
     @Test
     void givenRepOrdersNotSuccessfullyUpdated_whenResetRepOrdersSentForBillingIsInvoked_thenReturnsFalse() {
         UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
-        when(repOrderRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getIds()))
+        when(repOrderBillingRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getIds()))
             .thenReturn(1);
 
         MAATCourtDataException exception = assertThrows(MAATCourtDataException.class,
@@ -73,7 +72,7 @@ class RepOrderBillingServiceTest {
     @Test
     void givenRepOrdersSuccessfullyUpdated_whenResetRepOrdersSentForBillingIsInvoked_thenReturnsTrue() {
         UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
-        when(repOrderRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getIds()))
+        when(repOrderBillingRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getIds()))
             .thenReturn(request.getIds().size());
 
         assertDoesNotThrow(() -> repOrderBillingService.resetRepOrdersSentForBilling(request));

@@ -59,8 +59,4 @@ public class BillingApplicantEntity {
 
     @Column(name = "user_modified")
     private String userModified;
-
-    @Column(name = "SEND_TO_CCLF")
-    private String sendToCclf;
-
 }

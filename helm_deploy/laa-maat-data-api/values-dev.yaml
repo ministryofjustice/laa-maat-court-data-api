@@ -46,6 +46,7 @@ ingress:
     external-dns.alpha.kubernetes.io/set-identifier: "laa-maat-data-api-laa-maat-data-api-dev-green"
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "300"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "180"
   externalAnnotations: {}
   internalHost:
     host: laa-maat-data-api-dev.apps.live.cloud-platform.service.justice.gov.uk

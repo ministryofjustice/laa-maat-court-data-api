@@ -59,5 +59,4 @@ public class BillingApplicantEntity {
 
     @Column(name = "user_modified")
     private String userModified;
-
 }

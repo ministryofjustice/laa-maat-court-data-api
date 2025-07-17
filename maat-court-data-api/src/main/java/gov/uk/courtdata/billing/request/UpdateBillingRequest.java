@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UpdateBillingRequest {
-    @NotBlank
+    @NotBlank(message = "userModified must not be blank")
     private String userModified;
-    @NotEmpty
+    @NotEmpty(message = "Ids must not be empty")
     private List<Integer> ids;
 }

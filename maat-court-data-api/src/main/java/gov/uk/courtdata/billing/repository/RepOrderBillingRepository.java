@@ -47,7 +47,7 @@ public interface RepOrderBillingRepository extends JpaRepository<RepOrderBilling
         SET     r.SEND_TO_CCLF = null,
                 r.DATE_MODIFIED = CURRENT_DATE,
                 r.USER_MODIFIED = :userModified
-        WHERE   r.ID IN :reporderids
+        WHERE   r.ID IN :ids
     """, nativeQuery = true)
-    int resetBillingFlagForRepOrderIds(@Param("userModified") String userModified, @Param("repOrderIds") List<Integer> repOrderIds);
+    int resetBillingFlagForRepOrderIds(@Param("userModified") String userModified, @Param("ids") List<Integer> ids);
 }

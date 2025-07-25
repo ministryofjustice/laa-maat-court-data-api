@@ -85,6 +85,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:$lombokMapStrutBinding"
 
     implementation "io.micrometer:micrometer-registry-cloudwatch2:$micrometerCloudWatchVersion"
+    implementation "io.micrometer:micrometer-registry-prometheus"
 
     // DB Dependencies
     implementation group: 'com.oracle.database.jdbc', name: 'ojdbc8', version: "$ojdbc8Version"

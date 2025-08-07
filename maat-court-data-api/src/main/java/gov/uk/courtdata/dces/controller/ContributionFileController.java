@@ -75,7 +75,7 @@ public class ContributionFileController {
         return ResponseEntity.ok(contributionFileService.getContributionFilesNamedLikeBetweenDate("FDC%", fromDate, toDate));
     }
 
-    @Operation(description = "Retrieve the XML from all fdc CONTRIBUTION FILES matching the given date range")
+    @Operation(description = "Retrieve the XML from all CONCOR CONTRIBUTION FILES matching the given date range")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @GetMapping(value = "/concorFiles", produces = MediaType.APPLICATION_JSON_VALUE)

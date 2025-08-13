@@ -55,7 +55,7 @@ public class CourtDataDTOBuilder {
             offence.setOffenceId(offenceEntity.map(OffenceEntity::getOffenceId).orElse(null));
 
             log.info("legal status {}, date {}", offence.getLegalAidStatus(), offence.getLegalAidStatusDate());
-            if (!offence.getLegalAidStatus().equals("AP") && offence.getLegalAidStatusDate() != null) {
+            if (offence.getLegalAidStatusDate() != null && !offence.getLegalAidStatus().equals("AP")) {
                 log.info("Offence legal status date {}", offenceEntity.get().getLegalAidStatusDate());
                 offence.setLegalAidStatusDate(offenceEntity.get().getLegalAidStatusDate().toString());
             }

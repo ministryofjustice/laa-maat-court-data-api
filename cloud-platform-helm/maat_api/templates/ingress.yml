@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: maat-api-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ .Values.maat-api.ingress.whitelist_source_range }}
+    external-dns.alpha.kubernetes.io/set-identifier: {{ .Values.maat-api.ingress.setidentifier }}
+    external-dns.alpha.kubernetes.io/aws-weight: {{ quote .Values.maat-api.ingress.awsweight }}
+spec:
+  ingressClassName: default
+  tls:
+    - hosts:
+        - {{ .Values.maat-api.ingress.hosts }}
+  rules:
+    - host: {{ .Values.maat-api.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: maat-api-service
+                port:
+                  number: 8090

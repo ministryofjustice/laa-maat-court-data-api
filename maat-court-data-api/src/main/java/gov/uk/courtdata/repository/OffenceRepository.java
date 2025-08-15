@@ -23,8 +23,8 @@ public interface OffenceRepository extends JpaRepository<OffenceEntity, AsnSeqTx
     @Query(value = "SELECT COUNT(*) FROM MLA.XXMLA_OFFENCE WHERE CASE_ID = ?1 AND ASN_SEQ = ?2", nativeQuery = true)
     Integer getOffenceCountForAsnSeq(Integer caseId, String asnSeq);
 
-    @Query(value = "SELECT * FROM MLA.XXMLA_OFFENCE WHERE ROWNUM = 1 AND CASE_ID = :caseId AND ASN_SEQ = :asnSeq " +
-                    "AND OFFENCE_CODE = :offenceCode ORDER BY TX_ID DESC", nativeQuery = true)
+    @Query(value = "SELECT * FROM MLA.XXMLA_OFFENCE WHERE CASE_ID = :caseId AND ASN_SEQ = :asnSeq " +
+                    "AND OFFENCE_CODE = :offenceCode ORDER BY TX_ID DESC FETCH FIRST 1 ROW ONLY", nativeQuery = true)
     Optional<OffenceEntity> findByMaxTxId(Integer caseId, String offenceCode, String asnSeq);
 
     List<OffenceEntity> findByCaseId(Integer caseId);

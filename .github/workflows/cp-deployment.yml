@@ -79,6 +79,11 @@ jobs:
         env:
           GITHUB_TAG: ${{ github.sha }}
 
+      - name: Notify Slack channel
+        uses: ./.github/actions/slack-notify-composite-action
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
   deploy-to-test:
     name: deploy-to-test
     needs: [application-image-build]
@@ -105,6 +110,11 @@ jobs:
           helm upgrade laa-maat-data-api -f values-test.yaml . --install --wait --namespace=${KUBE_NAMESPACE} --set image.tag="$GITHUB_TAG"
         env:
           GITHUB_TAG: ${{ github.sha }}
+
+      - name: Notify Slack channel
+        uses: ./.github/actions/slack-notify-composite-action
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-to-uat:
     name: deploy-to-uat
@@ -133,6 +143,11 @@ jobs:
         env:
           GITHUB_TAG: ${{ github.sha }}
 
+      - name: Notify Slack channel
+        uses: ./.github/actions/slack-notify-composite-action
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
   deploy-to-production:
     name: deploy-to-production
     needs: [application-image-build, deploy-to-development]
@@ -159,3 +174,8 @@ jobs:
           helm upgrade laa-maat-data-api -f values-prod.yaml . --install --wait --namespace=${KUBE_NAMESPACE} --set image.tag="$GITHUB_TAG"
         env:
           GITHUB_TAG: ${{ github.sha }}
+
+      - name: Notify Slack channel
+        uses: ./.github/actions/slack-notify-composite-action
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}

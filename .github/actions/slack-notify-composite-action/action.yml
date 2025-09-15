@@ -1,0 +1,79 @@
+name: Slack channel notification
+description: "Send notification to Slack channel"
+
+inputs:
+  slack-channel:
+    description: "The name of the Slack channel to which notifications will be sent. Default - laa-crimeapps-ci"
+    required: false
+    default: "laa-crimeapps-ci"
+  webhook-url:
+    description: "The webhook URL of the Slack channel."
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Calculate build start time
+      id: build-run-time
+      shell: bash
+      run: |
+        echo "BUILD_RUN_TIME=$(date +'%m/%d/%Y %T')" >> $GITHUB_OUTPUT
+
+    - name: Notify success to Slack
+      id: slack-success
+      if: ${{ success() }}
+      uses: slackapi/slack-github-action@v1
+      with:
+        payload: |
+          {
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Deployment Successful! :partying_face:",
+                  "emoji": true
+                }
+              },
+              {
+                "type": "section",
+                "fields": [
+                  { "type": "mrkdwn", "text": "*Project:* ${{ github.event.repository.name }}" },
+                  { "type": "mrkdwn", "text": "*When:* ${{ steps.build-run-time.outputs.BUILD_RUN_TIME }}" },
+                  { "type": "mrkdwn", "text": "*Branch:* \n${{ github.ref_name }}" },
+                  { "type": "mrkdwn", "text": "*Successful Job:* \n${{ github.job }}" }
+                ]
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "action_id": "deployment_link",
+                    "text": { "type": "plain_text", "text": "View Run" },
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ inputs.webhook-url }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+    - name: Notify failure to Slack
+      if: ${{ failure() }}
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,commit,author,ref,workflow,job,took
+        text: |
+          :x: Deployment failed in *${{ github.workflow }}*  
+          *Repo:* ${{ github.repository }}  
+          *Branch:* ${{ github.ref_name }}  
+          *Job:* ${{ github.job }}  
+          *Actor:* ${{ github.actor }}  
+          *Run:* https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ inputs.webhook-url }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

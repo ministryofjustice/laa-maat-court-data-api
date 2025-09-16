@@ -5,7 +5,9 @@ permissions:
   contents: read
 
 on:
-  workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
 
 jobs:
 

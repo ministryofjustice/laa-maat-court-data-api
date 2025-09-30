@@ -14,27 +14,18 @@ import java.util.Set;
 
 @Repository
 public interface ConcorContributionsRepository extends JpaRepository<ConcorContributionsEntity, Integer> {
+
+    interface IdOnly { Integer getId(); }
+
     List<ConcorContributionsEntity> findByStatus(ConcorContributionStatus status);
     List<ConcorContributionsEntity> findByIdIn(Set<Integer> ids);
 
-    @Query("""
-       SELECT cc.id
-       FROM ConcorContributionsEntity cc
-       WHERE cc.status = :status
-       AND cc.id > :startId
-       """)
-    List<Integer> findIdsByStatusAndIdGreaterThan(
-            @Param("status") ConcorContributionStatus status,
-            @Param("startId") Integer startId,
-            Pageable pageable);
+    List<IdOnly> findByStatusAndIdGreaterThan(ConcorContributionStatus status,
+                                              Integer startId,
+                                              Pageable pageable);
 
-    @Query("""
-           SELECT cc.id
-               FROM ConcorContributionsEntity cc
-               WHERE cc.status = 'SENT'
-               AND cc.fullXml IS NOT NULL
-               ORDER BY cc.id DESC""")
-    List<Integer> findIdsForUpdate(Pageable pageable);
+    List<IdOnly> findByStatusAndFullXmlIsNotNullOrderByIdDesc(ConcorContributionStatus status,
+                                                              Pageable pageable);
 
     @Modifying
     @Transactional

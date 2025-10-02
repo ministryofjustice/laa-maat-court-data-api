@@ -50,7 +50,8 @@ public class ConcorContributionsService {
     /** Resets a number of concor_contribution rows to status = ACTIVE | REPLACED, contrib_file_id = (null). */
     @Transactional
     public List<Integer> updateConcorContributionStatusAndResetContribFile(UpdateConcorContributionStatusRequest request) {
-        List<Integer> idsToUpdate = concorRepository.findIdsForUpdate(Pageable.ofSize(request.getRecordCount()));
+        List<Integer> idsToUpdate = concorRepository.findByStatusAndFullXmlIsNotNullOrderByIdDesc(SENT, Pageable.ofSize(request.getRecordCount()))
+                .stream().map(ConcorContributionsRepository.IdOnly::getId).toList();
         if (!idsToUpdate.isEmpty()) {
             concorRepository.updateStatusAndResetContribFileForIds(request.getStatus(), USER_AUDIT, idsToUpdate);
         }
@@ -67,7 +68,8 @@ public class ConcorContributionsService {
         }
         log.info("Searching concor contribution file with status {}, startId {} and count {}", status, concorContributionId, noOfRecords);
         Pageable pageable = PageRequest.of(0, noOfRecords, Sort.by("id"));
-        List<Integer> idList = concorRepository.findIdsByStatusAndIdGreaterThan(status, finalConcorContributionId, pageable);
+        List<Integer> idList = concorRepository.findByStatusAndIdGreaterThan(status, finalConcorContributionId, pageable)
+                .stream().map(ConcorContributionsRepository.IdOnly::getId).toList();
         return buildConcorContributionResponseList(() -> concorRepository.findByIdIn(Set.copyOf(idList)));
     }
 

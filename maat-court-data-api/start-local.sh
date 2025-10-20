@@ -30,4 +30,4 @@ fi
 echo ".env file successfully retrieved."
 
 echo "Starting Docker containers..."
-docker compose up --build
+docker-compose up --build

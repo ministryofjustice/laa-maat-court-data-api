@@ -2,7 +2,6 @@ package gov.uk.courtdata.exception;
 
 import gov.uk.courtdata.constants.ErrorCodes;
 import gov.uk.courtdata.dto.ErrorDTO;
-import gov.uk.courtdata.eform.exception.UsnException;
 import gov.uk.courtdata.validator.MAATApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -118,18 +117,6 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
         log.warn(errorMessage);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder()
                 .code(HttpStatus.BAD_REQUEST.name())
-                .message(errorMessage)
-                .build());
-    }
-
-    @ExceptionHandler(UsnException.class)
-    public ResponseEntity<ErrorDTO> handleUsnValidationException(UsnException ex) {
-        String errorMessage = ex.getMessage();
-        log.warn(errorMessage);
-        HttpStatus httpStatus = ex.getHttpResponseCode();
-        
-        return ResponseEntity.status(httpStatus).body(ErrorDTO.builder()
-                .code(httpStatus.name())
                 .message(errorMessage)
                 .build());
     }

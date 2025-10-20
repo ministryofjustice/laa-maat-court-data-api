@@ -7,7 +7,7 @@ import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
 import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
-import gov.uk.courtdata.eform.controller.StandardApiResponseCodes;
+import gov.uk.courtdata.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;

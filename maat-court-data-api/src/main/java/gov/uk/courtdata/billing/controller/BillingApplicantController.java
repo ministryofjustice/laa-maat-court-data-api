@@ -3,7 +3,7 @@ package gov.uk.courtdata.billing.controller;
 import gov.uk.courtdata.billing.entity.BillingApplicantEntity;
 import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.billing.service.BillingApplicantService;
-import gov.uk.courtdata.eform.controller.StandardApiResponseCodes;
+import gov.uk.courtdata.controller.StandardApiResponseCodes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

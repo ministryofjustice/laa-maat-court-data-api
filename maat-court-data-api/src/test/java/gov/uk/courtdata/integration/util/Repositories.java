@@ -6,7 +6,6 @@ import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.billing.repository.MaatReferenceRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.contribution.repository.ContributionsRepository;
-import gov.uk.courtdata.eform.repository.EformStagingRepository;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.integration.MockNewWorkReasonRepository;
 import gov.uk.courtdata.repository.AppealTypeRepository;
@@ -129,9 +128,6 @@ public class Repositories {
 
   @Autowired
   public DefendantRepository defendant;
-
-  @Autowired
-  public EformStagingRepository eformStaging;
 
   @Autowired
   public FdcContributionsRepository fdcContributions;
@@ -298,7 +294,6 @@ public class Repositories {
         crownCourtProcessing,
         defendantMAATData,
         defendant,
-        eformStaging,
         fdcContributions,
         featureToggleRepository,
         financialAssessmentDetailsHistory,

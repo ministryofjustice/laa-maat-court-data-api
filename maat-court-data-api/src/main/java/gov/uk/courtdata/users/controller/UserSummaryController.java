@@ -4,7 +4,7 @@ import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.UserSummaryDTO;
-import gov.uk.courtdata.eform.controller.StandardApiResponseCodes;
+import gov.uk.courtdata.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.model.authorization.AuthorizationResponse;
 import gov.uk.courtdata.users.service.UserSummaryService;

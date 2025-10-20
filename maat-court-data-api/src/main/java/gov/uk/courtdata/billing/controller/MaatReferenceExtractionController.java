@@ -1,7 +1,7 @@
 package gov.uk.courtdata.billing.controller;
 
 import gov.uk.courtdata.billing.service.MaatReferenceService;
-import gov.uk.courtdata.eform.controller.StandardApiResponseCodes;
+import gov.uk.courtdata.controller.StandardApiResponseCodes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

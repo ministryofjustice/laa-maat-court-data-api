@@ -1,4 +1,4 @@
-package gov.uk.courtdata.eform.controller;
+package gov.uk.courtdata.controller;
 
 import gov.uk.courtdata.dto.ErrorDTO;
 import io.swagger.v3.oas.annotations.media.Content;

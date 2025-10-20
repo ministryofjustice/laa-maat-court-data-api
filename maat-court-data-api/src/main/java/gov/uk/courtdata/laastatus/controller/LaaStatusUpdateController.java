@@ -1,7 +1,7 @@
 package gov.uk.courtdata.laastatus.controller;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.eform.controller.StandardApiResponseCodes;
+import gov.uk.courtdata.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.exception.MAATCourtDataException;

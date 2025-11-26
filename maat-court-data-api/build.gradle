@@ -12,8 +12,9 @@ group = 'gov.uk'
 description = 'This is a Facade application to the existing LAA legacy Applications MAAT/MLRA.'
 
 java {
-    sourceCompatibility = "$javaVersion"
-    targetCompatibility = "$javaVersion"
+    toolchain {
+        languageVersion = JavaLanguageVersion.of("$javaVersion")
+    }
 }
 
 sourceSets {

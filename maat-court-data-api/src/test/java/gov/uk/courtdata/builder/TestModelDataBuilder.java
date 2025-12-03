@@ -33,10 +33,13 @@ import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
+import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
 import uk.gov.justice.laa.crime.enums.AppealType;
 import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
+import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
+import uk.gov.justice.laa.crime.enums.IojAppealDecisionReason;
 import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.enums.contribution.TransferStatus;
 
@@ -57,6 +60,7 @@ public class TestModelDataBuilder {
     public static final JurisdictionType JURISDICTION_TYPE_MAGISTRATES = JurisdictionType.MAGISTRATES;
     public static final String COURT_LOCATION = "London";
     public static final Integer IOJ_APPEAL_ID = 123;
+    public static final Integer LEGACY_IOJ_APPEAL_ID = 234;
     public static final Integer IOJ_REP_ID = 5635978;
 
     public static final Integer REP_ID = 1234;
@@ -514,6 +518,18 @@ public class TestModelDataBuilder {
                 .userModified("test-s")
                 .dateModified(dateModified)
                 .build();
+    }
+
+    public static ApiGetIojAppealResponse getApiGetIojAppealResponse() {
+        return new ApiGetIojAppealResponse()
+            .withLegacyAppealId(LEGACY_IOJ_APPEAL_ID)
+            .withReceivedDate(getIOJTestDate())
+            .withAppealReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
+            .withAppealAssessor(IojAppealAssessor.JUDGE)
+            .withAppealSuccessful(true)
+            .withDecisionReason(IojAppealDecisionReason.LOSS_OF_LIBERTY)
+            .withNotes("Test notes")
+            .withDecisionDate(getIOJTestDate());
     }
 
     private static LocalDateTime getIOJTestDate() {

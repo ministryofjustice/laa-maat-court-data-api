@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_IOJ_APPEAL_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -142,5 +143,23 @@ public class IOJAppealServiceTest {
         var newlyUpdatedIOJAppealDTO = iojAppealService.update(updateIOJAppeal);
 
         assertEquals(newlyUpdatedIOJAppealDTO.getDateModified(), matchingDateModified);
+    }
+
+    @Test
+    public void whenFindByLegacyIdIsInvoked_thenIOJAppealIsRetrieved() {
+        var apiGetIojAppealResponse = TestModelDataBuilder.getApiGetIojAppealResponse();
+        when(iojAppealImpl.find(any())).thenReturn(TestEntityDataBuilder.getIOJAppealEntity());
+        when(iojAppealMapper.toApiGetIojAppealResponse(any(IOJAppealEntity.class))).thenReturn(apiGetIojAppealResponse);
+        var returnedIOJAppeal = iojAppealService.findByLegacyAppealId(LEGACY_IOJ_APPEAL_ID);
+        assertEquals(LEGACY_IOJ_APPEAL_ID, returnedIOJAppeal.getLegacyAppealId());
+    }
+
+    @Test
+    public void whenFindByLegacyIdIsInvokedWithInvalidId_thenNotFoundExceptionIsThrown() {
+        when(iojAppealImpl.find(LEGACY_IOJ_APPEAL_ID)).thenReturn(null);
+
+        assertThatExceptionOfType(RequestedObjectNotFoundException.class)
+            .isThrownBy(() -> iojAppealService.findByLegacyAppealId(LEGACY_IOJ_APPEAL_ID))
+            .withMessageContaining(String.format("No IOJ Appeal found for ID: %d", LEGACY_IOJ_APPEAL_ID));
     }
 }

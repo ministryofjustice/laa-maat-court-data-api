@@ -124,6 +124,7 @@ sentry:
 
 api-endpoints:
   assessments-domain: /api/internal/v1/assessment
+  assessments-domain-v2: /api/internal/v2/assessment
   user-domain: /api/internal/v1/users
   application-domain: /api/internal/v1/application
   applicant-domain: /api/internal/v1/applicant

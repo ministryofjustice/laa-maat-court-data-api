@@ -121,6 +121,7 @@ api-endpoints:
   application-domain: /api/internal/v1/application
   applicant-domain: /api/internal/v1/applicant
   assessments-domain: /api/internal/v1/assessment
+  assessments-domain-v2: /api/internal/v2/assessment
   billing-domain: /api/internal/v1/billing
   debt-collection-enforcement-domain: /api/internal/v1/debt-collection-enforcement
   user-domain: /api/internal/v1/users

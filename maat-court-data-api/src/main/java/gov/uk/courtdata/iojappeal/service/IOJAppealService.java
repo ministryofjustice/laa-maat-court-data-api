@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
 
 @Slf4j
 @Service
@@ -73,5 +74,14 @@ public class IOJAppealService {
             throw new RequestedObjectNotFoundException(String.format("No IOJ Appeal found for REP ID: %s", repId));
         }
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public ApiGetIojAppealResponse findByLegacyAppealId(int legacyIojAppealId) {
+        IOJAppealEntity iojAppealEntity = iojAppealImpl.find(legacyIojAppealId);
+        if (iojAppealEntity == null) {
+            throw new RequestedObjectNotFoundException(String.format("No IOJ Appeal found for ID: %s", legacyIojAppealId));
+        }
+        return iojAppealMapper.toApiGetIojAppealResponse(iojAppealEntity);
     }
 }

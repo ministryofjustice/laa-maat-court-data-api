@@ -107,6 +107,7 @@ version: 0.0.1
 
 api-endpoints:
   assessments-domain: /api/internal/v1/assessment
+  assessments-domain-v2: /api/internal/v2/assessment
   application-domain: /api/internal/v1/application
   applicant-domain: /api/internal/v1/applicant
   user-domain: /api/internal/v1/users

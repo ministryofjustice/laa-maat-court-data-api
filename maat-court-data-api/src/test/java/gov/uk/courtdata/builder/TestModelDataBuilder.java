@@ -32,8 +32,13 @@ import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
+import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
+import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
+import uk.gov.justice.laa.crime.common.model.ioj.IojAppeal;
+import uk.gov.justice.laa.crime.common.model.ioj.IojAppealMetadata;
 import uk.gov.justice.laa.crime.enums.AppealType;
 import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
@@ -530,6 +535,40 @@ public class TestModelDataBuilder {
             .withDecisionReason(IojAppealDecisionReason.LOSS_OF_LIBERTY)
             .withNotes("Test notes")
             .withDecisionDate(getIOJTestDate());
+    }
+
+    public static ApiCreateIojAppealRequest getApiCreateIojAppealRequest(Integer repId) {
+        IojAppeal iojAppeal = new IojAppeal()
+            .withReceivedDate(getIOJTestDate())
+            .withAppealReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
+            .withAppealAssessor(IojAppealAssessor.CASEWORKER)
+            .withAppealSuccessful(true)
+            .withDecisionReason(IojAppealDecisionReason.LOSS_OF_LIBERTY)
+            .withNotes("Test notes")
+            .withDecisionDate(getIOJTestDate());
+
+        ApiUserSession apiUserSession = new ApiUserSession()
+            .withUserName("test-s")
+            .withSessionId("test-f6E3E618A32AC870D07A65CD7AB9131AD");
+
+        IojAppealMetadata iojAppealMetadata = new IojAppealMetadata()
+            .withLegacyApplicationId(repId)
+            .withApplicationReceivedDate(getIOJTestDate().toLocalDate())
+            .withCaseManagementUnitId(253)
+            .withUserSession(apiUserSession);
+
+        return new ApiCreateIojAppealRequest()
+            .withIojAppeal(iojAppeal)
+            .withIojAppealMetadata(iojAppealMetadata);
+    }
+
+    public static ApiCreateIojAppealRequest getApiCreateIojAppealRequest() {
+        return getApiCreateIojAppealRequest(REP_ID);
+    }
+
+    public static ApiCreateIojAppealResponse getApiCreateIojAppealResponse() {
+        return new ApiCreateIojAppealResponse()
+            .withLegacyAppealId(LEGACY_IOJ_APPEAL_ID);
     }
 
     private static LocalDateTime getIOJTestDate() {

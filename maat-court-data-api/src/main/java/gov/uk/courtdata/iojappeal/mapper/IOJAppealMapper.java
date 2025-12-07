@@ -8,7 +8,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
+import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
+import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
+import uk.gov.justice.laa.crime.common.model.ioj.IojAppeal;
 import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
 import uk.gov.justice.laa.crime.enums.IojAppealDecisionReason;
 
@@ -23,7 +26,23 @@ public interface IOJAppealMapper {
     IOJAppealDTO toIOJAppealDTO(UpdateIOJAppeal iojAppeal);
 
     @Mapping(target = "repOrder.id", source = "repId")
-    IOJAppealEntity toIOJIojAppealEntity(IOJAppealDTO iojAppealDTO);
+    IOJAppealEntity toIojAppealEntity(IOJAppealDTO iojAppealDTO);
+
+    @Mapping(target = "repOrder.id", source = "iojAppealMetadata.legacyApplicationId")
+    @Mapping(target = "appealSetupDate", source = "iojAppeal.receivedDate")
+    @Mapping(target = "nworCode", source = "iojAppeal.appealReason")
+    @Mapping(target = "userCreated", source = "iojAppealMetadata.userSession.userName")
+    @Mapping(target = "cmuId", source = "iojAppealMetadata.caseManagementUnitId")
+    @Mapping(target = "appealSetupResult", source = "iojAppeal", qualifiedByName = "mapAppealSetupResult")
+    @Mapping(target = "decisionDate", source = "iojAppeal.decisionDate")
+    @Mapping(target = "decisionResult", source = "iojAppeal", qualifiedByName = "mapDecisionResult")
+    @Mapping(target = "iderCode", source = "iojAppeal.decisionReason", qualifiedByName = "mapIderCode")
+    @Mapping(target = "notes", source = "iojAppeal.notes")
+    @Mapping(target = "iapsStatus", constant = "COMPLETE")
+    IOJAppealEntity toIojAppealEntity(ApiCreateIojAppealRequest apiCreateIojAppealRequest);
+
+    @Mapping(target = "legacyAppealId", source = "id")
+    ApiCreateIojAppealResponse toApiCreateIojResponse(IOJAppealEntity iojAppealEntity);
 
     @Mapping(target = "legacyAppealId", source = "id")
     @Mapping(target = "receivedDate", source = "appealSetupDate")
@@ -32,6 +51,33 @@ public interface IOJAppealMapper {
     @Mapping(target = "appealSuccessful", source = "decisionResult", qualifiedByName = "isAppealSuccesful")
     @Mapping(target = "decisionReason", source = "iderCode", qualifiedByName = "mapDecisionReason")
     ApiGetIojAppealResponse toApiGetIojAppealResponse(IOJAppealEntity iojAppealEntity);
+
+    @Named("mapAppealSetupResult")
+    static String mapAppealSetupResult(IojAppeal iojAppeal) {
+        boolean appealSuccessful = iojAppeal.getAppealSuccessful();
+        IojAppealAssessor iojAppealAssessor = iojAppeal.getAppealAssessor();
+        if (iojAppealAssessor == IojAppealAssessor.JUDGE) {
+            return "REFER";
+        }
+        if (appealSuccessful) {
+            return "GRANT";
+        }
+        return "REFUSED";
+    }
+
+    @Named("mapDecisionResult")
+    static String mapDecisionResult(IojAppeal iojAppeal) {
+        boolean appealSuccessful = iojAppeal.getAppealSuccessful();
+        if (appealSuccessful) {
+            return "PASS";
+        }
+        return "FAIL";
+    }
+
+    @Named("mapIderCode")
+    static String mapIderCode(IojAppealDecisionReason decisionReason) {
+        return decisionReason.getCode();
+    }
 
     @Named("mapAppealAssessor")
     static IojAppealAssessor mapAppealAssessor(String appealSetupResult) {

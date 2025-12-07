@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
+import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
 
 @Slf4j
@@ -53,6 +55,19 @@ public class IOJAppealService {
 
         log.info("Create IOJ Appeal - Transaction Processing - end");
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
+    }
+
+    @Transactional(rollbackFor = RuntimeException.class)
+    public ApiCreateIojAppealResponse create(ApiCreateIojAppealRequest apiCreateIojAppealRequest) {
+        log.info("Create IOJ Appeal - Transaction Processing - Start");
+        log.info("Creating new IOJAppeal record");
+        var iojAppealEntity = iojAppealImpl.create(apiCreateIojAppealRequest);
+
+        log.info("Update previous IOJ Appeal records and set them to replaced");
+        iojAppealImpl.setOldIOJAppealsReplaced(iojAppealEntity.getRepOrder().getId(), iojAppealEntity.getId());
+
+        log.info("Create IOJ Appeal - Transaction Processing - end");
+        return iojAppealMapper.toApiCreateIojResponse(iojAppealEntity);
     }
 
     @Transactional(rollbackFor = RuntimeException.class)

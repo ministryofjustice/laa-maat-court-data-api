@@ -28,11 +28,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(IOJAppealControllerV2.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class IOJAppealControllerV2Test {
+class IOJAppealControllerV2Test {
 
     private static final boolean IS_VALID = true;
     private static final int INVALID_REP_ID = 3456;
-    private static final String ENDPOINT_URL = "/api/internal/v2/assessment/ioj-appeal";
+    private static final String ENDPOINT_URL = "/api/internal/v2/assessment/ioj-appeals";
     @Autowired
     private MockMvc mvc;
     @MockitoBean
@@ -43,7 +43,7 @@ public class IOJAppealControllerV2Test {
     private ObjectMapper objectMapper;
 
     @Test
-    public void givenValidLegacyIojAppealID_whenGetIOJAppealIsCalled_thenReturnValidIOJAppealResponse() throws Exception {
+    void givenValidLegacyIojAppealID_whenGetIOJAppealIsCalled_thenReturnValidIOJAppealResponse() throws Exception {
         when(iojAppealService.findByLegacyAppealId(LEGACY_IOJ_APPEAL_ID)).thenReturn(TestModelDataBuilder.getApiGetIojAppealResponse());
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + LEGACY_IOJ_APPEAL_ID))
                 .andExpect(status().isOk())
@@ -52,7 +52,7 @@ public class IOJAppealControllerV2Test {
     }
 
     @Test
-    public void givenNonExistentIOJAppealID_WhenGetIOJAppealIsCalled_ThenReturnBadRequestResponse_Error() throws Exception {
+    void givenNonExistentIOJAppealID_WhenGetIOJAppealIsCalled_ThenReturnBadRequestResponse_Error() throws Exception {
         when(iojAppealService.findByLegacyAppealId(LEGACY_IOJ_APPEAL_ID)).thenThrow(new RequestedObjectNotFoundException("No IOJAppeal object found. ID: " + LEGACY_IOJ_APPEAL_ID));
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + LEGACY_IOJ_APPEAL_ID))
                 .andExpect(status().is4xxClientError())
@@ -60,44 +60,42 @@ public class IOJAppealControllerV2Test {
                 .andExpect(jsonPath("$.message").value("No IOJAppeal object found. ID: " + LEGACY_IOJ_APPEAL_ID));
     }
 
-//    @Test
-//    public void givenValidCreateIOJAppeal_whenCreateIOJAppealIsCalled_thenReturnCreatedIOJAppealObjectWithID() throws Exception {
-//        //given
-//        var createIOJAppeal = TestModelDataBuilder.getCreateIOJAppealObject();
-//        var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
-//
-//        when(iojAppealService.create(createIOJAppeal)).thenReturn(iojAppealDTO);
-//
-//        var createIOJAppealJson = objectMapper.writeValueAsString(createIOJAppeal);
-//        //on call check the id of the object and any other value
-//        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.id").value(IOJ_APPEAL_ID));
-//    }
-//
-//    @Test
-//    public void givenInvalidCreateIOJAppeal_whenCreateIOJAppealIsCalled_thenFailRequestParameterSchemaValidation() throws Exception {
-//        //given
-//        var createIOJAppeal = TestModelDataBuilder.getCreateIOJAppealObject(!IS_VALID);
-//
-//        var createIOJAppealJson = objectMapper.writeValueAsString(createIOJAppeal);
-//        //on call check the id of the object and any other value
-//        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().is4xxClientError());
-//    }
-//
-//    @Test
-//    public void createIOJAppeal_ServerError_RequestBodyIsMissing() throws Exception {
-//
-//        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("").contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().is4xxClientError());
-//    }
-//
-//    @Test
-//    public void createIOJAppeal_BadRequest_RequestEmptyBody() throws Exception {
-//
-//        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().is4xxClientError());
-//    }
+    @Test
+    void givenValidCreateIOJAppeal_whenCreateIOJAppealIsCalled_thenReturnCreatedIOJAppealObjectWithID() throws Exception {
+        //given
+        var apiCreateIojAppealRequest = TestModelDataBuilder.getApiCreateIojAppealRequest();
+        var apiCreateIojAppealResponse = TestModelDataBuilder.getApiCreateIojAppealResponse();
+
+        when(iojAppealService.create(apiCreateIojAppealRequest)).thenReturn(apiCreateIojAppealResponse);
+
+        var createIOJAppealJson = objectMapper.writeValueAsString(apiCreateIojAppealRequest);
+        //on call check the id of the object and any other value
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.legacyAppealId").value(LEGACY_IOJ_APPEAL_ID));
+    }
+
+    @Test
+    void givenInvalidCreateIOJAppeal_whenCreateIOJAppealIsCalled_thenFailRequestParameterSchemaValidation() throws Exception {
+        //given
+        var createIOJAppeal = TestModelDataBuilder.getCreateIOJAppealObject(!IS_VALID);
+
+        var createIOJAppealJson = objectMapper.writeValueAsString(createIOJAppeal);
+        //on call check the id of the object and any other value
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void createIOJAppeal_ServerError_RequestBodyIsMissing() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void createIOJAppeal_BadRequest_RequestEmptyBody() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
 }

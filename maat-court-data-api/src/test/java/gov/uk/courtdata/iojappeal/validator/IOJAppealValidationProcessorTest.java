@@ -18,7 +18,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class IOJAppealValidationProcessorTest {
+class IOJAppealValidationProcessorTest {
 
     @InjectMocks
     private IOJAppealValidationProcessor iojAppealValidationProcessor;
@@ -27,7 +27,7 @@ public class IOJAppealValidationProcessorTest {
     private IOJAppealRepository iojAppealRepository;
 
     @Test
-    public void givenAnIOJUpdateWithExistingEntityInDBAndNullModifiedDate_ThenDoNothing() {
+    void givenAnIOJUpdateWithExistingEntityInDBAndNullModifiedDate_ThenDoNothing() {
         //given
         var updateIOJAppealObject = TestModelDataBuilder.getUpdateIOJAppealObject();
         var dbEntity = TestEntityDataBuilder.getIOJAppealEntity("IN PROGRESS");
@@ -38,11 +38,11 @@ public class IOJAppealValidationProcessorTest {
     }
 
     @Test
-    public void givenAnIOJUpdateWithExistingEntityInDBAndHasMatchingModifiedDate_ThenDoNothing() {
+    void givenAnIOJUpdateWithExistingEntityInDBAndHasMatchingModifiedDate_ThenDoNothing() {
         //given
         var matchingDateModified = LocalDateTime.of(2023, 1, 1, 10, 0);
         var updateIOJAppealObject = TestModelDataBuilder.getUpdateIOJAppealObject(matchingDateModified);
-        var dbEntity = TestEntityDataBuilder.getIOJAppealEntity(matchingDateModified, "IN PROGRESS");
+        var dbEntity = TestEntityDataBuilder.getIoJAppealEntity(matchingDateModified, "IN PROGRESS");
 
         when(iojAppealRepository.findById(any())).thenReturn(Optional.of(dbEntity));
 
@@ -50,7 +50,7 @@ public class IOJAppealValidationProcessorTest {
     }
 
     @Test
-    public void givenAnIOJUpdateWithNonExistingRecordInDB_ThenThrowValidationException() {
+    void givenAnIOJUpdateWithNonExistingRecordInDB_ThenThrowValidationException() {
         when(iojAppealRepository.findById(any())).thenReturn(Optional.empty());
         Assertions.assertThrows(ValidationException.class, () -> {
             iojAppealValidationProcessor.validate(TestModelDataBuilder.getUpdateIOJAppealObject());
@@ -58,20 +58,20 @@ public class IOJAppealValidationProcessorTest {
     }
 
     @Test
-    public void givenAnIOJUpdateWithDifferentModifiedDateAsOnDB_ThenThrowValidationException() {
+    void givenAnIOJUpdateWithDifferentModifiedDateAsOnDB_ThenThrowValidationException() {
         var mismatchedDateModified = LocalDateTime.of(2023, 1, 1, 10, 0);
-        when(iojAppealRepository.findById(any())).thenReturn(Optional.of(TestEntityDataBuilder.getIOJAppealEntity(mismatchedDateModified, "IN PROGRESS")));
+        when(iojAppealRepository.findById(any())).thenReturn(Optional.of(TestEntityDataBuilder.getIoJAppealEntity(mismatchedDateModified, "IN PROGRESS")));
         Assertions.assertThrows(ValidationException.class, () -> {
             iojAppealValidationProcessor.validate(TestModelDataBuilder.getUpdateIOJAppealObject());
         });
     }
 
     @Test
-    public void givenAnIOJUpdateWithNullModifiedDate_andDBEntityWithModifiedDate_ThenThrowValidationException() {
+    void givenAnIOJUpdateWithNullModifiedDate_andDBEntityWithModifiedDate_ThenThrowValidationException() {
         //given
         var dbEntityDateModified = LocalDateTime.of(2023, 1, 1, 10, 0);
         var updateIOJAppealObject = TestModelDataBuilder.getUpdateIOJAppealObject(null);
-        var dbEntity = TestEntityDataBuilder.getIOJAppealEntity(dbEntityDateModified, "IN PROGRESS");
+        var dbEntity = TestEntityDataBuilder.getIoJAppealEntity(dbEntityDateModified, "IN PROGRESS");
 
         when(iojAppealRepository.findById(any())).thenReturn(Optional.of(dbEntity));
         Assertions.assertThrows(ValidationException.class, () -> {
@@ -80,11 +80,11 @@ public class IOJAppealValidationProcessorTest {
     }
 
     @Test
-    public void givenAnIOJUpdateWithModifiedDate_andDBEntityWithNullModifiedDate_ThenThrowValidationException() {
+    void givenAnIOJUpdateWithModifiedDate_andDBEntityWithNullModifiedDate_ThenThrowValidationException() {
         //given
         var updateEntityDateModified = LocalDateTime.of(2023, 1, 1, 10, 0);
         var updateIOJAppealObject = TestModelDataBuilder.getUpdateIOJAppealObject(updateEntityDateModified);
-        var dbEntity = TestEntityDataBuilder.getIOJAppealEntity(null, "IN PROGRESS");
+        var dbEntity = TestEntityDataBuilder.getIoJAppealEntity(null, "IN PROGRESS");
 
         when(iojAppealRepository.findById(any())).thenReturn(Optional.of(dbEntity));
         Assertions.assertThrows(ValidationException.class, () -> {
@@ -93,7 +93,7 @@ public class IOJAppealValidationProcessorTest {
     }
 
     @Test
-    public void givenAnIOJUpdateWithStatusCompleteInDB_ThenThrowValidationException() {
+    void givenAnIOJUpdateWithStatusCompleteInDB_ThenThrowValidationException() {
 
         when(iojAppealRepository.findById(any())).thenReturn(Optional.of(TestEntityDataBuilder.getIOJAppealEntity("COMPLETE")));
         Assertions.assertThrows(ValidationException.class, () -> {

@@ -18,6 +18,7 @@ import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.enums.AppealType;
@@ -326,10 +327,10 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static IOJAppealEntity getIOJAppealEntity(LocalDateTime dateModified, String iapStatus) {
+    public static IOJAppealEntity getIOJAppealEntity(LocalDateTime dateModified, String iapStatus, Integer repId) {
         return IOJAppealEntity.builder()
                 .id(IOJ_APPEAL_ID)
-                .repOrder(getPopulatedRepOrder(IOJ_REP_ID))
+                .repOrder(getPopulatedRepOrder(Objects.isNull(repId) ? IOJ_REP_ID : repId))
                 .appealSetupDate(LocalDateTime.of(2022, 1, 1, 10, 0))
                 .nworCode("NEW")
                 .userCreated(USER_CREATED_TEST_S)
@@ -345,16 +346,24 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static IOJAppealEntity getIoJAppealEntity(LocalDateTime dateModified, String iapStatus) {
+        return getIOJAppealEntity(dateModified, iapStatus, null);
+    }
+
     public static IOJAppealEntity getIOJAppealEntity() {
-        return getIOJAppealEntity(null, null);
+        return getIOJAppealEntity(null, null, null);
     }
 
     public static IOJAppealEntity getIOJAppealEntity(LocalDateTime dateModified) {
-        return getIOJAppealEntity(dateModified, null);
+        return getIOJAppealEntity(dateModified, null, null);
     }
 
     public static IOJAppealEntity getIOJAppealEntity(String iapStatus) {
-        return getIOJAppealEntity(null, iapStatus);
+        return getIOJAppealEntity(null, iapStatus, null);
+    }
+
+    public static IOJAppealEntity getIojAppealEntity(String iapStatus, int repId) {
+        return getIOJAppealEntity(null, iapStatus, repId);
     }
 
     public static PassportAssessmentEntity getPassportAssessmentEntity() {

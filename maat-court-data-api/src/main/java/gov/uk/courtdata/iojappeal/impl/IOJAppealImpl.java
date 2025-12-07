@@ -7,6 +7,7 @@ import gov.uk.courtdata.repository.IOJAppealRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 
 @Slf4j
 @Service
@@ -25,7 +26,12 @@ public class IOJAppealImpl {
     }
 
     public IOJAppealEntity create(IOJAppealDTO iojAppealDTO) {
-        var iojAppealEntity = iojAppealMapper.toIOJIojAppealEntity(iojAppealDTO);
+        var iojAppealEntity = iojAppealMapper.toIojAppealEntity(iojAppealDTO);
+        return iojAppealRepository.save(iojAppealEntity);
+    }
+
+    public IOJAppealEntity create(ApiCreateIojAppealRequest apiCreateIojAppealRequest) {
+        var iojAppealEntity = iojAppealMapper.toIojAppealEntity(apiCreateIojAppealRequest);
         return iojAppealRepository.save(iojAppealEntity);
     }
 

@@ -1,8 +1,6 @@
 package gov.uk.courtdata;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -10,8 +8,6 @@ import gov.uk.courtdata.util.GitProperty;
 import gov.uk.courtdata.util.VersionMetadata;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
-import org.hamcrest.Matchers;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,14 +53,14 @@ class VersioningActuatorInfoContributorTest {
     Map<String, Object> infoDetails = info.getDetails();
 
     Object rawVersionMetaData = infoDetails.get("versionMetaData");
-    assertThat(rawVersionMetaData, IsInstanceOf.instanceOf(Map.class));
+    assertThat(rawVersionMetaData).isInstanceOf(Map.class);
 
     Map<String, String> versionMetaData = (Map<String, String>) rawVersionMetaData;
-    assertAll(
-        () -> assertThat(versionMetaData, Matchers.hasKey("semanticVersion")),
-        () -> assertEquals(semanticVersion, versionMetaData.get("semanticVersion")),
-        () -> assertThat(versionMetaData, Matchers.hasKey("git.commit.id")),
-        () -> assertEquals(gitCommitId, versionMetaData.get("git.commit.id"))
-    );
+
+    assertThat(versionMetaData)
+            .as("metadata should contain expected version fields")
+            .containsKeys("semanticVersion", "git.commit.id")
+            .containsEntry("semanticVersion", semanticVersion)
+            .containsEntry("git.commit.id", gitCommitId);
   }
 }

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.integration.repOrder;
 
-import static org.fest.assertions.Assertions.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.jayway.jsonpath.JsonPath;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -30,13 +32,13 @@ import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @ExtendWith(SoftAssertionsExtension.class)
@@ -72,18 +74,19 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     void setUp() {
         RepOrderEntity repOrdTestData = TestEntityDataBuilder.getPopulatedRepOrder();
         repOrdTestData.setSentenceOrderDate(null);
-      RepOrderEntity repOrder = repos.repOrder.save(repOrdTestData);
+        RepOrderEntity repOrder = repos.repOrder.save(repOrdTestData);
         REP_ORDER_ID_NO_SENTENCE_ORDER_DATE = repOrder.getId();
 
-      RepOrderEntity repOrderEntity = repos.repOrder.save(
-          TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrderEntity = repos.repOrder.save(
+                TestEntityDataBuilder.getPopulatedRepOrder());
         REP_ID = repOrderEntity.getId();
 
-      repos.repOrderMvo.save(
+        repos.repOrderMvo.save(
                 TestEntityDataBuilder.getRepOrderMvoEntity(TestEntityDataBuilder.MVO_ID, repOrder)
         );
-      repos.repOrderMvoReg.save(
-                TestEntityDataBuilder.getRepOrderMvoRegEntity(TestEntityDataBuilder.REP_ID, repOrder)
+        repos.repOrderMvoReg.save(
+                TestEntityDataBuilder.getRepOrderMvoRegEntity(TestEntityDataBuilder.REP_ID,
+                        repOrder)
         );
     }
 
@@ -102,9 +105,12 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenIncorrectRepIdAndSentenceOrderDateFlagIsTrue_whenFindIsInvoked_thenRepOrderIsReturned() throws Exception {
-        assertTrue(runNotFoundErrorScenario("No Rep Order found for ID: " + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE,
-                get(BASE_URL + SLASH + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE + "?has_sentence_order_date=true")
+    void givenIncorrectRepIdAndSentenceOrderDateFlagIsTrue_whenFindIsInvoked_thenRepOrderIsReturned()
+            throws Exception {
+        assertTrue(runNotFoundErrorScenario(
+                "No Rep Order found for ID: " + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE,
+                get(BASE_URL + SLASH + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE
+                        + "?has_sentence_order_date=true")
         ));
     }
 
@@ -121,7 +127,8 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenValidRepIdAndSentenceOrderDateFlagIsTrue_whenFindIsInvoked_thenRepOrderIsReturned() throws Exception {
+    void givenValidRepIdAndSentenceOrderDateFlagIsTrue_whenFindIsInvoked_thenRepOrderIsReturned()
+            throws Exception {
         RepOrderDTO repOrderDTO = getUpdatedRepOrderDTO();
         var response = runSuccessScenario(
                 get(BASE_URL + SLASH + REP_ID + "?has_sentence_order_date=true")
@@ -133,7 +140,8 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenRepIdIsMissing_whenUpdateAppDateCompletedIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
+    void givenRepIdIsMissing_whenUpdateAppDateCompletedIsInvoked_theCorrectErrorResponseIsReturned()
+            throws Exception {
         assertTrue(runBadRequestErrorScenario("Rep Id is missing from request and is required",
                 post(BASE_URL + SLASH + "update-date-completed")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -146,8 +154,10 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenDateIsMissing_whenUpdateAppDateCompletedIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
-        assertTrue(runBadRequestErrorScenario("Assessment Date completed is missing from request and is required",
+    void givenDateIsMissing_whenUpdateAppDateCompletedIsInvoked_theCorrectErrorResponseIsReturned()
+            throws Exception {
+        assertTrue(runBadRequestErrorScenario(
+                "Assessment Date completed is missing from request and is required",
                 post(BASE_URL + SLASH + "update-date-completed")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
@@ -160,7 +170,8 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenInvalidRepId_whenUpdateAppDateCompletedIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
+    void givenInvalidRepId_whenUpdateAppDateCompletedIsInvoked_theCorrectErrorResponseIsReturned()
+            throws Exception {
         assertTrue(runBadRequestErrorScenario("MAAT/REP ID [" + INVALID_REP_ID + "] is invalid",
                 post(BASE_URL + SLASH + "update-date-completed")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -175,10 +186,12 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenValidParameters_whenUpdateAppDateCompletedIsInvoked_theCompletedDateShouldUpdate() throws Exception {
+    void givenValidParameters_whenUpdateAppDateCompletedIsInvoked_theCompletedDateShouldUpdate()
+            throws Exception {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        LocalDate expectedDate = LocalDateTime.parse(TestModelDataBuilder.APP_DATE_COMPLETED, formatter).toLocalDate();
+        LocalDate expectedDate = LocalDateTime.parse(TestModelDataBuilder.APP_DATE_COMPLETED,
+                formatter).toLocalDate();
 
         runSuccessScenario(MockMvcRequestBuilders.post(BASE_URL + SLASH + "update-date-completed")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -191,30 +204,39 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenInvalidMvoId_whenFindByCurrentRegistrationIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenInvalidMvoId_whenFindByCurrentRegistrationIsInvoked_thenCorrectErrorResponseIsReturned()
+            throws Exception {
         assertTrue(runNotFoundErrorScenario("No Rep Order MVO Reg found for ID: " + INVALID_MVO_ID,
                 get(MVO_REG_ENDPOINT_URL + "/" + INVALID_MVO_ID + "/" + CURRENT_REGISTRATION)
         ));
     }
 
     @Test
-    void givenValidMvoId_whenFindByCurrentRegistrationIsInvoked_thenRepOrderMvoRegIsReturned() throws Exception {
+    void givenValidMvoId_whenFindByCurrentRegistrationIsInvoked_thenRepOrderMvoRegIsReturned()
+            throws Exception {
         assertTrue(runSuccessScenario(List.of(TestModelDataBuilder.getRepOrderMvoRegDTO()),
-                get(MVO_REG_ENDPOINT_URL + "/" + TestEntityDataBuilder.MVO_ID + "/" + CURRENT_REGISTRATION)
+                get(MVO_REG_ENDPOINT_URL + "/" + TestEntityDataBuilder.MVO_ID + "/"
+                        + CURRENT_REGISTRATION)
         ));
     }
 
     @Test
-    void givenInvalidRepId_whenFindByRepIdAndVehicleOwnerIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenInvalidRepId_whenFindByRepIdAndVehicleOwnerIsInvoked_thenCorrectErrorResponseIsReturned()
+            throws Exception {
         assertTrue(runNotFoundErrorScenario("No Rep Order MVO found for ID: " + INVALID_REP_ID,
-                get(MVO_ENDPOINT_URL + "/" + INVALID_REP_ID + "?owner=" + VEHICLE_OWNER_INDICATOR_YES)
+                get(MVO_ENDPOINT_URL + "/" + INVALID_REP_ID + "?owner="
+                        + VEHICLE_OWNER_INDICATOR_YES)
         ));
     }
 
     @Test
-    void givenValidRepId_whenFindByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoIsReturned() throws Exception {
-        assertTrue(runSuccessScenario(TestModelDataBuilder.getRepOrderMvoDTO(TestModelDataBuilder.MVO_ID, REP_ORDER_ID_NO_SENTENCE_ORDER_DATE),
-                get(MVO_ENDPOINT_URL + "/" + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE + "?owner=" + VEHICLE_OWNER_INDICATOR_YES)
+    void givenValidRepId_whenFindByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoIsReturned()
+            throws Exception {
+        assertTrue(runSuccessScenario(
+                TestModelDataBuilder.getRepOrderMvoDTO(TestModelDataBuilder.MVO_ID,
+                        REP_ORDER_ID_NO_SENTENCE_ORDER_DATE),
+                get(MVO_ENDPOINT_URL + "/" + REP_ORDER_ID_NO_SENTENCE_ORDER_DATE + "?owner="
+                        + VEHICLE_OWNER_INDICATOR_YES)
         ));
     }
 
@@ -233,9 +255,10 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenRepIdIsMissing_whenUpdateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
+    void givenRepIdIsMissing_whenUpdateIsInvoked_theCorrectErrorResponseIsReturned()
+            throws Exception {
         assertTrue(runBadRequestErrorScenario(
-            "MAAT/REP ID is required, found [null]",
+                "MAAT/REP ID is required, found [null]",
                 put(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
@@ -246,9 +269,10 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenInvalidRepId_whenUpdateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
+    void givenInvalidRepId_whenUpdateIsInvoked_theCorrectErrorResponseIsReturned()
+            throws Exception {
         assertTrue(runBadRequestErrorScenario(
-            "MAAT/REP ID [" + INVALID_REP_ID + "] is invalid",
+                "MAAT/REP ID [" + INVALID_REP_ID + "] is invalid",
                 put(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
@@ -269,7 +293,8 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(request.getRepId()))
                 .andExpect(jsonPath("$.userModified").value(request.getUserModified()))
-                .andExpect(jsonPath("$.crownRepOrderDecision").value(request.getCrownRepOrderDecision()));
+                .andExpect(jsonPath("$.crownRepOrderDecision").value(
+                        request.getCrownRepOrderDecision()));
     }
 
     @Test
@@ -297,7 +322,8 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
         repos.repOrder.save(repOrder);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + REP_ID + "/ioj-assessor-details"))
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get(BASE_URL + "/" + REP_ID + "/ioj-assessor-details"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.fullName").value("Karen Greaves"))
@@ -306,94 +332,148 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenTooLargeAsk_whenFdcDelayedCalled_thenAllAvailableValidRepOrdersReturned() throws Exception {
+    void givenTooLargeAsk_whenFdcDelayedCalled_thenAllAvailableValidRepOrdersReturned()
+            throws Exception {
         setUpFdcMinDelayAppliesEntities();
-        mockMvc.perform(MockMvcRequestBuilders.get(FDC_DELAYED_ENDPOINT_URL,5, LocalDate.now(), 5)
+        MvcResult result = mockMvc.perform(get(FDC_DELAYED_ENDPOINT_URL, 5, LocalDate.now(), 5)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").isArray())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$", Matchers.containsInAnyOrder(repOrderValid.getId(), repOrderValid2.getId())));
+                .andReturn();
+
+        List<Integer> ids =
+                JsonPath.parse(result.getResponse().getContentAsString()).read("$");
+        assertThat(ids).containsExactlyInAnyOrder(repOrderValid.getId(), repOrderValid2.getId());
     }
 
     @Test
     void givenSingleAsk_whenFdcDelayedCalled_thenOnlyOneValidRepOrdersReturned() throws Exception {
         setUpFdcMinDelayAppliesEntities();
-        mockMvc.perform(MockMvcRequestBuilders.get(FDC_DELAYED_ENDPOINT_URL,5, LocalDate.now(), 1)
+        MvcResult result = mockMvc.perform(get(FDC_DELAYED_ENDPOINT_URL, 5, LocalDate.now(), 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$", Matchers.containsInAnyOrder(repOrderValid.getId())));
+                .andReturn();
+
+        List<Integer> ids =
+                JsonPath.parse(result.getResponse().getContentAsString()).read("$");
+        assertThat(ids).containsExactlyInAnyOrder(repOrderValid.getId());
     }
 
     @Test
-    void givenTooLargeAsk_whenFdcFastTrackCalled_thenAllAvailableValidRepOrdersReturned() throws Exception {
+    void givenTooLargeAsk_whenFdcFastTrackCalled_thenAllAvailableValidRepOrdersReturned()
+            throws Exception {
         setUpFdcMinDelayAppliesEntities();
-        mockMvc.perform(MockMvcRequestBuilders.get(FDC_FAST_TRACK_ENDPOINT_URL,5, LocalDate.now(), 5)
+        MvcResult result = mockMvc.perform(get(FDC_FAST_TRACK_ENDPOINT_URL, 5, LocalDate.now(), 5)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$", Matchers.containsInAnyOrder(repOrderFuture.getId(), repOrderFuture2.getId())));
+                .andReturn();
+
+        List<Integer> ids =
+                JsonPath.parse(result.getResponse().getContentAsString()).read("$");
+        assertThat(ids).containsExactlyInAnyOrder(repOrderFuture.getId(), repOrderFuture2.getId());
     }
 
     @Test
-    void givenSingleAsk_whenFdcFastTrackCalled_thenOnlyOneValidRepOrdersReturned() throws Exception {
+    void givenSingleAsk_whenFdcFastTrackCalled_thenOnlyOneValidRepOrdersReturned()
+            throws Exception {
         setUpFdcMinDelayAppliesEntities();
-        mockMvc.perform(MockMvcRequestBuilders.get(FDC_FAST_TRACK_ENDPOINT_URL,5, LocalDate.now(), 1)
+        MvcResult result = mockMvc.perform(get(FDC_FAST_TRACK_ENDPOINT_URL, 5, LocalDate.now(), 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$", Matchers.containsInAnyOrder(repOrderFuture.getId())));
+                .andReturn();
+
+        List<Integer> ids =
+                JsonPath.parse(result.getResponse().getContentAsString()).read("$");
+        assertThat(ids).containsExactlyInAnyOrder(repOrderFuture.getId());
     }
 
     private void setUpFdcMinDelayAppliesEntities() {
-        LocalDate dateJan2010 = LocalDate.of(2010,1,1);
+        LocalDate dateJan2010 = LocalDate.of(2010, 1, 1);
         LocalDate dateFuture = LocalDate.now().plus(1, ChronoUnit.MONTHS);
 
         // basic entity to satisfy basic MinDelayApplies criteria
-        repOrderValid = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateJan2010));
-        repos.concorContributions.save(TestEntityDataBuilder.getConcorContributionsEntity(repOrderValid.getId(), ConcorContributionStatus.SENT));
-        repos.crownCourtProcessing.save(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrderValid, "ACQUITTAL"));
-
+        repOrderValid = repos.repOrder.save(
+                TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateJan2010));
+        repos.concorContributions.save(
+                TestEntityDataBuilder.getConcorContributionsEntity(repOrderValid.getId(),
+                        ConcorContributionStatus.SENT));
+        repos.crownCourtProcessing.save(
+                TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrderValid, "ACQUITTAL"));
 
         // 2nd entity to allow for testing quantity for MinDelayApplies
-        repOrderValid2 = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateJan2010));
-        repos.concorContributions.save(TestEntityDataBuilder.getConcorContributionsEntity(repOrderValid2.getId(), ConcorContributionStatus.SENT));
-        repos.crownCourtProcessing.save(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrderValid2, "ACQUITTAL"));
+        repOrderValid2 = repos.repOrder.save(
+                TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateJan2010));
+        repos.concorContributions.save(
+                TestEntityDataBuilder.getConcorContributionsEntity(repOrderValid2.getId(),
+                        ConcorContributionStatus.SENT));
+        repos.crownCourtProcessing.save(
+                TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrderValid2, "ACQUITTAL"));
 
         // SCENARIOS:
         RepOrderEntity repOrder;
         // STATUS != 'SENT'
-        repOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateJan2010));
-        repos.concorContributions.save(TestEntityDataBuilder.getConcorContributionsEntity(repOrder.getId(), ConcorContributionStatus.REPLACED));
-        repos.crownCourtProcessing.save(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrder, "ACQUITTAL"));
+        repOrder = repos.repOrder.save(
+                TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateJan2010));
+        repos.concorContributions.save(
+                TestEntityDataBuilder.getConcorContributionsEntity(repOrder.getId(),
+                        ConcorContributionStatus.REPLACED));
+        repos.crownCourtProcessing.save(
+                TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrder, "ACQUITTAL"));
 
         // CCOO_OUTCOME IS NULL
-        repOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateJan2010));
-        repos.concorContributions.save(TestEntityDataBuilder.getConcorContributionsEntity(repOrder.getId(), ConcorContributionStatus.SENT));
-        repos.crownCourtProcessing.save(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrder, null));
+        repOrder = repos.repOrder.save(
+                TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateJan2010));
+        repos.concorContributions.save(
+                TestEntityDataBuilder.getConcorContributionsEntity(repOrder.getId(),
+                        ConcorContributionStatus.SENT));
+        repos.crownCourtProcessing.save(
+                TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrder, null));
 
         // SENTENCE_ORDER_DATE IS NULL
-        repOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(null, dateJan2010));
-        repos.concorContributions.save(TestEntityDataBuilder.getConcorContributionsEntity(repOrder.getId(), ConcorContributionStatus.SENT));
-        repos.crownCourtProcessing.save(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrder, "ACQUITTAL"));
+        repOrder = repos.repOrder.save(
+                TestEntityDataBuilder.getPopulatedRepOrder(null, dateJan2010));
+        repos.concorContributions.save(
+                TestEntityDataBuilder.getConcorContributionsEntity(repOrder.getId(),
+                        ConcorContributionStatus.SENT));
+        repos.crownCourtProcessing.save(
+                TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrder, "ACQUITTAL"));
 
         // SENTENCE_ORDER_DATE > NOW
-        repOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(dateFuture, dateJan2010));
-        repos.concorContributions.save(TestEntityDataBuilder.getConcorContributionsEntity(repOrder.getId(), ConcorContributionStatus.SENT));
-        repos.crownCourtProcessing.save(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrder, "ACQUITTAL"));
+        repOrder = repos.repOrder.save(
+                TestEntityDataBuilder.getPopulatedRepOrder(dateFuture, dateJan2010));
+        repos.concorContributions.save(
+                TestEntityDataBuilder.getConcorContributionsEntity(repOrder.getId(),
+                        ConcorContributionStatus.SENT));
+        repos.crownCourtProcessing.save(
+                TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrder, "ACQUITTAL"));
 
         // DATE_RECEIVED<'01-JAN-2015'
-        repOrderFuture = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateFuture));
-        repos.concorContributions.save(TestEntityDataBuilder.getConcorContributionsEntity(repOrderFuture.getId(), ConcorContributionStatus.SENT));
-        repos.crownCourtProcessing.save(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrderFuture, "ACQUITTAL"));
+        repOrderFuture = repos.repOrder.save(
+                TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateFuture));
+        repos.concorContributions.save(
+                TestEntityDataBuilder.getConcorContributionsEntity(repOrderFuture.getId(),
+                        ConcorContributionStatus.SENT));
+        repos.crownCourtProcessing.save(
+                TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrderFuture, "ACQUITTAL"));
 
-        repOrderFuture2 = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateFuture));
-        repos.concorContributions.save(TestEntityDataBuilder.getConcorContributionsEntity(repOrderFuture2.getId(), ConcorContributionStatus.SENT));
-        repos.crownCourtProcessing.save(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrderFuture2, "ACQUITTAL"));
+        repOrderFuture2 = repos.repOrder.save(
+                TestEntityDataBuilder.getPopulatedRepOrder(dateJan2010, dateFuture));
+        repos.concorContributions.save(
+                TestEntityDataBuilder.getConcorContributionsEntity(repOrderFuture2.getId(),
+                        ConcorContributionStatus.SENT));
+        repos.crownCourtProcessing.save(
+                TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrderFuture2, "ACQUITTAL"));
     }
 
 

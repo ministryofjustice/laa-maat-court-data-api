@@ -16,12 +16,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.RESERVATION_ID;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(ReservationsService.class)
-public class ReservationsServiceTest {
+class ReservationsServiceTest {
 
     @MockitoBean
     ReservationsRepository reservationsRepository;

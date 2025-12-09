@@ -102,9 +102,9 @@ dependencies {
     // Test Only
     testImplementation "com.h2database:h2"
     testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
-    testImplementation "org.hamcrest:hamcrest-all:$harmcrestVersion"
-    testImplementation "org.easytesting:fest-assert:$festVersion"
+    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$springCloudStubRunnerVersion"
     testCompileOnly "org.projectlombok:lombok"
+
     testAnnotationProcessor "org.projectlombok:lombok"
     testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$springCloudStubRunnerVersion"
 

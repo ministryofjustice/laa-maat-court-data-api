@@ -52,8 +52,8 @@ dependencies {
     implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$crimeCommonsClasses"
     implementation "uk.gov.justice.service.laa-crime:crime-commons-mod-schemas:$commonsModSchemas"
 
-    implementation("io.sentry:sentry-spring-boot-starter-jakarta")
-    implementation("io.sentry:sentry-logback")
+    implementation "io.sentry:sentry-logback"
+    implementation "io.sentry:sentry-spring-boot-starter-jakarta"
 
     //Required for Logback configuration due to a dependency having their own implementation of SAXParserFactory
     implementation "xerces:xercesImpl:$xercesImplVersion"
@@ -79,11 +79,9 @@ dependencies {
     implementation "commons-io:commons-io:$commonsIOVersion"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion"
 
-    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor "org.projectlombok:lombok"
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
-    //Required for lombok version > 1.18.16
-    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:$lombokMapStrutBinding"
 
     implementation "io.micrometer:micrometer-registry-cloudwatch2:$micrometerCloudWatchVersion"
     implementation "io.micrometer:micrometer-registry-prometheus"
@@ -97,7 +95,6 @@ dependencies {
     implementation "com.graphql-java-kickstart:graphql-java-tools:$graphqlJavaTools"
 
     implementation "com.google.code.gson:gson:$gsonVersion"
-    implementation "org.hibernate.orm:hibernate-core:$hibernateCore"
 
     // Test Only
     testImplementation "com.h2database:h2"
@@ -106,17 +103,16 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok"
 
     testAnnotationProcessor "org.projectlombok:lombok"
-    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$springCloudStubRunnerVersion"
 
     // Only required for SQS Integration test
+    testSqsIntegrationImplementation 'com.h2database:h2'
     testSqsIntegrationImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk:$awsJavaSdkVersion"
     testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk-sqs:$awsJavaSdkVersion"
     testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$testcontainersJunitJupiterVersion"
     testSqsIntegrationImplementation "org.testcontainers:localstack:$testcontainersLocalstackVersion"
     testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$cloudLocalstackUtilsVersion"
-    testSqsIntegrationImplementation 'com.h2database:h2'
-    testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$springContractStubRunnerVersion"
+    testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$springCloudStubRunnerVersion"
 }
 
 jacoco {

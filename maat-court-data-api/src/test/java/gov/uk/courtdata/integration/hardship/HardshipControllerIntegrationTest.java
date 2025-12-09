@@ -1,12 +1,7 @@
 package gov.uk.courtdata.integration.hardship;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.NO;
-import static gov.uk.courtdata.constants.CourtDataConstants.YES;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,7 +21,6 @@ import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
-import gov.uk.courtdata.model.hardship.HardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
@@ -49,7 +43,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private final String BASE_URL = "/api/internal/v1/assessment/hardship";
     private final String HARDSHIP_URL = BASE_URL + "/{hardshipId}";
     private final String HARDSHIP_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
-    private Integer MOCK_REP_ID_2 = 5555;
 
     private HardshipReviewEntity existingHardshipReview;
     private FinancialAssessmentEntity existingFinancialAssessment;
@@ -57,7 +50,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private NewWorkReasonEntity existingNewWorkReason;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         setupTestData();
@@ -176,72 +169,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(jsonPath("$.status").value(request.getStatus().getValue()));
     }
 
-    private void assertPersistedHardshipReviewDataIsCorrectOnCreation(CreateHardshipReview inputReviewData, HardshipReviewEntity createdHardshipReviewEntity) {
-        assertPersistedHardshipReviewDataIsCorrect(inputReviewData, createdHardshipReviewEntity);
-        assertThat(createdHardshipReviewEntity.getFinancialAssessmentId()).isEqualTo(inputReviewData.getFinancialAssessmentId());
-        assertThat(createdHardshipReviewEntity.getUserCreated()).isEqualTo(inputReviewData.getUserCreated());
-        assertThat(createdHardshipReviewEntity.getRepId()).isEqualTo(inputReviewData.getRepId());
-        assertThat(createdHardshipReviewEntity.getCourtType()).isEqualTo(inputReviewData.getCourtType());
-    }
-
-    private void assertPersistedHardshipReviewDataIsCorrectOnUpdate(UpdateHardshipReview inputReviewData, HardshipReviewEntity updatedHardshipReview) {
-        assertPersistedHardshipReviewDataIsCorrect(inputReviewData, updatedHardshipReview);
-        assertThat(updatedHardshipReview.getUserModified()).isEqualTo(inputReviewData.getUserModified());
-        assertThat(updatedHardshipReview.getUpdated()).isNotEqualTo(inputReviewData.getUpdated());
-    }
-
-    private <T extends HardshipReview> void assertPersistedHardshipReviewDataIsCorrect(T inputReviewData, HardshipReviewEntity hardshipReviewEntity) {
-
-        assertThat(hardshipReviewEntity).isNotNull();
-        assertThat(hardshipReviewEntity.getNewWorkReason().getCode()).isEqualTo(inputReviewData.getNworCode());
-
-        assertThat(hardshipReviewEntity.getCmuId()).isEqualTo(inputReviewData.getCmuId());
-        assertThat(hardshipReviewEntity.getReviewDate()).isEqualTo(inputReviewData.getReviewDate());
-        assertThat(hardshipReviewEntity.getResultDate()).isEqualTo(inputReviewData.getResultDate());
-        assertThat(hardshipReviewEntity.getStatus()).isEqualTo(inputReviewData.getStatus().getStatus());
-        assertThat(hardshipReviewEntity.getSolicitorDisb()).isEqualTo(inputReviewData.getSolicitorCosts().getDisbursements());
-        assertThat(hardshipReviewEntity.getSolicitorEstTotalCost()).isEqualTo(inputReviewData.getSolicitorCosts().getEstimatedTotal());
-        assertThat(hardshipReviewEntity.getSolicitorHours()).isEqualTo(inputReviewData.getSolicitorCosts().getHours());
-        assertThat(hardshipReviewEntity.getSolicitorRate()).isEqualTo(inputReviewData.getSolicitorCosts().getRate());
-        assertThat(hardshipReviewEntity.getSolicitorVat()).isEqualTo(inputReviewData.getSolicitorCosts().getVat());
-        assertThat(hardshipReviewEntity.getReviewResult()).isEqualTo(inputReviewData.getReviewResult());
-        assertThat(hardshipReviewEntity.getDisposableIncomeAfterHardship()).isEqualTo(inputReviewData.getDisposableIncomeAfterHardship());
-        assertThat(hardshipReviewEntity.getDisposableIncome()).isEqualTo(inputReviewData.getDisposableIncome());
-
-        List<HardshipReviewDetailEntity> reviewDetails = repos.hardshipReviewDetail.findAllByHardshipReviewId(
-            hardshipReviewEntity.getId());
-        assertThat(reviewDetails).hasSameSizeAs(inputReviewData.getReviewDetails());
-
-        for (int i = 0; i < reviewDetails.size(); i++) {
-            HardshipReviewDetail expectedReviewDetails = inputReviewData.getReviewDetails().get(i);
-            HardshipReviewDetailEntity persistedReviewDetails = reviewDetails.get(i);
-
-            assertThat(persistedReviewDetails.getDetailType()).isEqualTo(expectedReviewDetails.getDetailType());
-            assertThat(persistedReviewDetails.getUserCreated()).isEqualTo(expectedReviewDetails.getUserCreated());
-            assertThat(persistedReviewDetails.getFrequency()).isEqualTo(expectedReviewDetails.getFrequency());
-            assertThat(persistedReviewDetails.getOtherDescription()).isEqualTo(
-                    expectedReviewDetails.getOtherDescription());
-            assertThat(persistedReviewDetails.getAmount()).isEqualTo(expectedReviewDetails.getAmount());
-            assertThat(persistedReviewDetails.getAccepted()).isEqualTo(expectedReviewDetails.getAccepted());
-            assertThat(persistedReviewDetails.getActive()).isEqualTo(expectedReviewDetails.getActive() ? YES : NO);
-            assertThat(persistedReviewDetails.getDetailReason().getReason()).isEqualTo(
-                    expectedReviewDetails.getDetailReason().getReason());
-        }
-    }
-
-    private boolean runCreateHardshipReviewErrorScenario(String errorMessage, CreateHardshipReview body) throws Exception {
-        return runBadRequestErrorScenario(
-                errorMessage,
-                post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
-    }
-
-    private boolean runUpdateHardshipReviewErrorScenario(String errorMessage, UpdateHardshipReview body) throws Exception {
-        return runBadRequestErrorScenario(
-                errorMessage,
-                put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
-    }
-
-
     private void setupTestData() {
         existingNewWorkReason = repos.mockNewWorkReason.save(
                 TestEntityDataBuilder.getNewWorkReasonEntity());
@@ -249,8 +176,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         RepOrderEntity repOrderEntity = repos.repOrder.save(
             TestEntityDataBuilder.getPopulatedRepOrder());
         RepOrderEntity repOrderForUnlink = repos.repOrder.save(
-            TestEntityDataBuilder.getPopulatedRepOrder(MOCK_REP_ID_2));
-        MOCK_REP_ID_2 = repOrderForUnlink.getId();
+            TestEntityDataBuilder.getPopulatedRepOrder());
 
         existingFinancialAssessment = repos.financialAssessment.save(
             getTestFinancialAssessment(repOrderEntity));
@@ -307,7 +233,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     private HardshipReviewDetailReason getTestHardshipReviewDetailReason() {
-//        return HardshipReviewDetailReason.getFrom(existingHardshipReviewDetailReason.getReason());
         return HardshipReviewDetailReason.ALLOWABLE_EXPENSE;
     }
 

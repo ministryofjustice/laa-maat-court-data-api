@@ -1,15 +1,15 @@
 plugins {
-    id 'java'
-    id 'jacoco'
-    id 'org.springframework.boot' version "$springframeworkBootVersion"
-    id 'io.spring.dependency-management' version "$springDependencyManagementVersion"
-    id 'com.javiersc.semver.project' version "$semverVersion"
-    id 'com.gorylenko.gradle-git-properties' version "$gitPropertiesVersion"
-    id 'info.solidsoft.pitest' version "$pitestVersion"
+    id "java"
+    id "jacoco"
+    id "org.springframework.boot" version "$springframeworkBootVersion"
+    id "io.spring.dependency-management" version "$springDependencyManagementVersion"
+    id "com.javiersc.semver.project" version "$semverVersion"
+    id "com.gorylenko.gradle-git-properties" version "$gitPropertiesVersion"
+    id "info.solidsoft.pitest" version "$pitestVersion"
 }
 
-group = 'gov.uk'
-description = 'This is a Facade application to the existing LAA legacy Applications MAAT/MLRA.'
+group = "gov.uk"
+description = "This is a Facade application to the existing LAA legacy Applications MAAT/MLRA."
 
 java {
     toolchain {

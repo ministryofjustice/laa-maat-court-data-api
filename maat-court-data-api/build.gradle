@@ -95,13 +95,14 @@ dependencies {
     implementation "com.graphql-java-kickstart:graphql-java-tools:$graphqlJavaTools"
 
     implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "org.hibernate.orm:hibernate-core:$hibernateCore"
 
     // Test Only
     testImplementation "com.h2database:h2"
     testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
     testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$springCloudStubRunnerVersion"
-    testCompileOnly "org.projectlombok:lombok"
 
+    testCompileOnly "org.projectlombok:lombok"
     testAnnotationProcessor "org.projectlombok:lombok"
 
     // Only required for SQS Integration test

@@ -100,8 +100,7 @@ dependencies {
     implementation "org.hibernate.orm:hibernate-core:$hibernateCore"
 
     // Test Only
-    testImplementation "org.pitest:pitest:$pitest"
-    testImplementation "com.h2database:h2:$h2DBVersion"
+    testImplementation "com.h2database:h2"
     testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
     testImplementation "org.hamcrest:hamcrest-all:$harmcrestVersion"
     testImplementation "org.easytesting:fest-assert:$festVersion"

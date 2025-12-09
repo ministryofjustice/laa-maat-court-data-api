@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class FinancialAssessmentHistoryServiceTest {
+class FinancialAssessmentHistoryServiceTest {
 
     @InjectMocks
     private FinancialAssessmentHistoryService financialAssessmentHistoryService;
@@ -45,7 +45,7 @@ public class FinancialAssessmentHistoryServiceTest {
     private static final int MOCK_FINANCIAL_ASSESSMENT_ID = 1000;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         assessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntity();
         financialAssessmentsHistoryDTO = TestModelDataBuilder.getFinancialAssessmentsHistoryDTO();
 
@@ -58,7 +58,7 @@ public class FinancialAssessmentHistoryServiceTest {
     }
 
     @Test
-    public void givenCorrectFinancialAssessmentId_whenCreateAssessmentHistoryIsInvoked_thenAssessmentsHistoryIsCreated() {
+    void givenCorrectFinancialAssessmentId_whenCreateAssessmentHistoryIsInvoked_thenAssessmentsHistoryIsCreated() {
         financialAssessmentHistoryService.createAssessmentHistory(MOCK_FINANCIAL_ASSESSMENT_ID, true);
 
         verify(financialAssessmentImpl).find(MOCK_FINANCIAL_ASSESSMENT_ID);

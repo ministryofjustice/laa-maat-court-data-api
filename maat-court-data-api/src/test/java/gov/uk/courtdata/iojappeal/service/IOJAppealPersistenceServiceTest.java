@@ -1,4 +1,12 @@
-package gov.uk.courtdata.iojappeal.impl;
+package gov.uk.courtdata.iojappeal.service;
+
+import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -6,25 +14,22 @@ import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.repository.IOJAppealRepository;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-
-import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
-import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
-class IOJAppealImplTest {
+class IOJAppealPersistenceServiceTest {
 
     @Spy
     @InjectMocks
-    private IOJAppealImpl iojAppealImpl;
+    private IOJAppealPersistenceService iojAppealPersistenceService;
 
     @Spy
     private IOJAppealRepository iojAppealRepository;
@@ -38,7 +43,7 @@ class IOJAppealImplTest {
     @Test
     void whenFindIsInvoked_thenAssessmentIsRetrieved() {
         when(iojAppealRepository.getReferenceById(any())).thenReturn(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).build());
-        var iojAppeal = iojAppealImpl.find(IOJ_APPEAL_ID);
+        var iojAppeal = iojAppealPersistenceService.find(IOJ_APPEAL_ID);
         assertEquals(IOJ_APPEAL_ID, iojAppeal.getId());
     }
 
@@ -48,18 +53,17 @@ class IOJAppealImplTest {
                 .builder()
                 .id(IOJ_APPEAL_ID)
                 .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(IOJ_REP_ID)).build());
-        var iojAppeal = iojAppealImpl.findByRepId(IOJ_REP_ID);
+        var iojAppeal = iojAppealPersistenceService.findByRepId(IOJ_REP_ID);
         assertEquals(IOJ_APPEAL_ID, iojAppeal.getId());
         assertEquals(IOJ_REP_ID, iojAppeal.getRepOrder().getId());
     }
 
     @Test
     void whenCreateIsInvoked_thenIOJAppealIsSaved() {
-
+        var createdIOJAppealEntity = TestEntityDataBuilder.getIOJAppealEntity();
         var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
-        when(iojAppealMapper.toIojAppealEntity(any(IOJAppealDTO.class))).thenReturn(TestEntityDataBuilder.getIOJAppealEntity());
 
-        iojAppealImpl.create(iojAppealDTO);
+        iojAppealPersistenceService.create(createdIOJAppealEntity);
 
         verify(iojAppealRepository).save(iojAppealEntityArgumentCaptor.capture());
 
@@ -67,9 +71,9 @@ class IOJAppealImplTest {
     }
 
     @Test
-    void whenSetOldIOJAppealReplaced_thenAllIOJAppealRecordsWithGivenREP_IDAreSetToReplaced() {
+    void whenSetOldIOJAppealReplaced_thenAllIOJAppealRecordsWithGivenRepId_thenIDAreSetToReplaced() {
 
-        iojAppealImpl.setOldIOJAppealsReplaced(IOJ_REP_ID, 124);
+        iojAppealPersistenceService.setOldIOJAppealsReplaced(IOJ_REP_ID, 124);
 
         verify(iojAppealRepository).setOldIOJAppealsReplaced(IOJ_REP_ID, 124);
     }
@@ -82,7 +86,7 @@ class IOJAppealImplTest {
 
         when(iojAppealRepository.getReferenceById(any())).thenReturn(updatedIOJAppealEntity);
 
-        iojAppealImpl.update(iojAppealDTO);
+        iojAppealPersistenceService.update(iojAppealDTO);
 
         verify(iojAppealRepository).save(iojAppealEntityArgumentCaptor.capture());
 

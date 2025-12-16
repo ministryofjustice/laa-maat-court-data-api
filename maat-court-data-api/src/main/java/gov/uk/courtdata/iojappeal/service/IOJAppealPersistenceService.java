@@ -1,4 +1,4 @@
-package gov.uk.courtdata.iojappeal.impl;
+package gov.uk.courtdata.iojappeal.service;
 
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
@@ -12,10 +12,9 @@ import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class IOJAppealImpl {
+public class IOJAppealPersistenceService {
 
     private final IOJAppealRepository iojAppealRepository;
-    private final IOJAppealMapper iojAppealMapper;
 
     public IOJAppealEntity find(Integer iojAppealId) {
         return iojAppealRepository.getReferenceById(iojAppealId);
@@ -25,14 +24,8 @@ public class IOJAppealImpl {
         return iojAppealRepository.findByRepId(repId);
     }
 
-    public IOJAppealEntity create(IOJAppealDTO iojAppealDTO) {
-        var iojAppealEntity = iojAppealMapper.toIojAppealEntity(iojAppealDTO);
-        return iojAppealRepository.save(iojAppealEntity);
-    }
-
-    public IOJAppealEntity create(ApiCreateIojAppealRequest apiCreateIojAppealRequest) {
-        var iojAppealEntity = iojAppealMapper.toIojAppealEntity(apiCreateIojAppealRequest);
-        return iojAppealRepository.save(iojAppealEntity);
+    public void create(IOJAppealEntity iojAppealEntity) {
+        iojAppealRepository.save(iojAppealEntity);
     }
 
     public void setOldIOJAppealsReplaced(Integer repId, Integer iojAppealIDNotToUpdate) {

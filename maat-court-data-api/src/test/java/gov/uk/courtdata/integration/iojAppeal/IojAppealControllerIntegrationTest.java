@@ -50,7 +50,7 @@ class IojAppealControllerIntegrationTest extends MockMvcIntegrationTest {
   void givenLegacyIojAppealId_whenGetIOJAppealIsInvoked_thenApiGetIojAppealResponseIsReturned() throws Exception {
     IOJAppealEntity iojAppealEntity = repos.iojAppeal.save(TestEntityDataBuilder.getIojAppealEntity("COMPLETE", repId));
     int legacyIojAppealId = iojAppealEntity.getId();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     String appealSetupDate = iojAppealEntity.getAppealSetupDate().format(formatter);
     String decisionDate = iojAppealEntity.getDecisionDate().format(formatter);
 
@@ -80,12 +80,12 @@ class IojAppealControllerIntegrationTest extends MockMvcIntegrationTest {
         .andExpect(jsonPath("$.legacyAppealId").exists());
 
     IOJAppealEntity iojAppealEntity = repos.iojAppeal.findByRepId(repId);
-    softly.assertThat(iojAppealEntity.getAppealSetupDate()).isEqualTo(apiCreateIojAppealRequest.getIojAppeal().getReceivedDate());
+    softly.assertThat(iojAppealEntity.getAppealSetupDate().toLocalDate()).isEqualTo(apiCreateIojAppealRequest.getIojAppeal().getReceivedDate());
     softly.assertThat(iojAppealEntity.getNworCode()).isEqualTo(apiCreateIojAppealRequest.getIojAppeal().getAppealReason().getCode());
     softly.assertThat(iojAppealEntity.getDecisionResult()).isEqualTo("PASS");
     softly.assertThat(iojAppealEntity.getIderCode()).isEqualTo(apiCreateIojAppealRequest.getIojAppeal().getDecisionReason().getCode());
     softly.assertThat(iojAppealEntity.getNotes()).isEqualTo(apiCreateIojAppealRequest.getIojAppeal().getNotes());
-    softly.assertThat(iojAppealEntity.getDecisionDate()).isEqualTo(apiCreateIojAppealRequest.getIojAppeal().getDecisionDate());
+    softly.assertThat(iojAppealEntity.getDecisionDate().toLocalDate()).isEqualTo(apiCreateIojAppealRequest.getIojAppeal().getDecisionDate());
     softly.assertThat(iojAppealEntity.getRepOrder().getId()).isEqualTo(apiCreateIojAppealRequest.getIojAppealMetadata().getLegacyApplicationId());
     softly.assertThat(iojAppealEntity.getCmuId()).isEqualTo(apiCreateIojAppealRequest.getIojAppealMetadata().getCaseManagementUnitId());
     softly.assertThat(iojAppealEntity.getUserCreated()).isEqualTo(apiCreateIojAppealRequest.getIojAppealMetadata().getUserSession().getUserName());

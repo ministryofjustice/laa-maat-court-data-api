@@ -528,24 +528,24 @@ public class TestModelDataBuilder {
     public static ApiGetIojAppealResponse getApiGetIojAppealResponse() {
         return new ApiGetIojAppealResponse()
             .withLegacyAppealId(LEGACY_IOJ_APPEAL_ID)
-            .withReceivedDate(getIOJTestDate())
+            .withReceivedDate(getIOJTestDate().toLocalDate())
             .withAppealReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
             .withAppealAssessor(IojAppealAssessor.JUDGE)
             .withAppealSuccessful(true)
             .withDecisionReason(IojAppealDecisionReason.LOSS_OF_LIBERTY)
             .withNotes("Test notes")
-            .withDecisionDate(getIOJTestDate());
+            .withDecisionDate(getIOJTestDate().toLocalDate());
     }
 
     public static ApiCreateIojAppealRequest getApiCreateIojAppealRequest(Integer repId) {
         IojAppeal iojAppeal = new IojAppeal()
-            .withReceivedDate(getIOJTestDate())
+            .withReceivedDate(getIOJTestDate().toLocalDate())
             .withAppealReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
             .withAppealAssessor(IojAppealAssessor.CASEWORKER)
             .withAppealSuccessful(true)
             .withDecisionReason(IojAppealDecisionReason.LOSS_OF_LIBERTY)
             .withNotes("Test notes")
-            .withDecisionDate(getIOJTestDate());
+            .withDecisionDate(getIOJTestDate().toLocalDate());
 
         ApiUserSession apiUserSession = new ApiUserSession()
             .withUserName("test-s")

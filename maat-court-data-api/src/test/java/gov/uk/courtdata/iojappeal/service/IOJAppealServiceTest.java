@@ -9,6 +9,7 @@ import gov.uk.courtdata.iojappeal.impl.IOJAppealImpl;
 import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
+import gov.uk.courtdata.repository.IOJAppealRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,6 +38,9 @@ public class IOJAppealServiceTest {
     @Mock
     private IOJAppealMapper iojAppealMapper;
 
+    @Mock
+    private IOJAppealRepository iojAppealRepository;
+
     @Test
     public void whenFindIsInvoked_thenIOJAppealIsRetrieved() {
         var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
@@ -51,19 +55,19 @@ public class IOJAppealServiceTest {
         when(iojAppealImpl.find(IOJ_REP_ID)).thenReturn(null);
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
-                .isThrownBy(() -> iojAppealService.find(IOJ_REP_ID))
-                .withMessageContaining(String.format("No IOJ Appeal found for ID: %d", IOJ_REP_ID));
+            .isThrownBy(() -> iojAppealService.find(IOJ_REP_ID))
+            .withMessageContaining(String.format("No IOJ Appeal found for ID: %d", IOJ_REP_ID));
     }
 
     @Test
     public void whenFindByRepIdIsInvoked_thenIOJAppealIsRetrieved() {
         IOJAppealEntity iojAppealEntity = IOJAppealEntity
-                .builder()
-                .id(IOJ_APPEAL_ID)
-                .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID)).build();
+            .builder()
+            .id(IOJ_APPEAL_ID)
+            .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID)).build();
         when(iojAppealImpl.findByRepId(IOJ_REP_ID)).thenReturn(iojAppealEntity);
         when(iojAppealMapper.toIOJAppealDTO(iojAppealEntity))
-                .thenReturn(IOJAppealDTO.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build());
+            .thenReturn(IOJAppealDTO.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build());
 
         IOJAppealDTO returnedIOJAppeal = iojAppealService.findByRepId(IOJ_REP_ID);
 
@@ -78,21 +82,22 @@ public class IOJAppealServiceTest {
         when(iojAppealImpl.findByRepId(IOJ_REP_ID)).thenReturn(null);
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
-                .isThrownBy(() -> iojAppealService.findByRepId(IOJ_REP_ID))
-                .withMessageContaining(String.format("No IOJ Appeal found for REP ID: %d", IOJ_REP_ID));
+            .isThrownBy(() -> iojAppealService.findByRepId(IOJ_REP_ID))
+            .withMessageContaining(String.format("No IOJ Appeal found for REP ID: %d", IOJ_REP_ID));
     }
 
     @Test
     public void whenFindCurrentPassedAppealByRepIdIsInvoked_thenIOJAppealIsRetrieved() {
         IOJAppealEntity iojAppealEntity = IOJAppealEntity
-                .builder()
-                .id(IOJ_APPEAL_ID)
-                .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID)).build();
+            .builder()
+            .id(IOJ_APPEAL_ID)
+            .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID)).build();
         when(iojAppealImpl.findCurrentPassedByRepId(IOJ_REP_ID)).thenReturn(iojAppealEntity);
         when(iojAppealMapper.toIOJAppealDTO(iojAppealEntity))
-                .thenReturn(IOJAppealDTO.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build());
+            .thenReturn(IOJAppealDTO.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build());
 
-        IOJAppealDTO returnedIOJAppeal = iojAppealService.findCurrentPassedAppealByRepId(IOJ_REP_ID);
+        IOJAppealDTO returnedIOJAppeal = iojAppealService.findCurrentPassedAppealByRepId(
+            IOJ_REP_ID);
 
         verify(iojAppealImpl).findCurrentPassedByRepId(IOJ_REP_ID);
         verify(iojAppealMapper).toIOJAppealDTO(iojAppealEntity);
@@ -105,8 +110,8 @@ public class IOJAppealServiceTest {
         when(iojAppealImpl.findCurrentPassedByRepId(IOJ_REP_ID)).thenReturn(null);
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
-                .isThrownBy(() -> iojAppealService.findCurrentPassedAppealByRepId(IOJ_REP_ID))
-                .withMessageContaining(String.format("No IOJ Appeal found for REP ID: %d", IOJ_REP_ID));
+            .isThrownBy(() -> iojAppealService.findCurrentPassedAppealByRepId(IOJ_REP_ID))
+            .withMessageContaining(String.format("No IOJ Appeal found for REP ID: %d", IOJ_REP_ID));
     }
 
     @Test
@@ -114,11 +119,13 @@ public class IOJAppealServiceTest {
         var createdIOJAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
         var createIOJAppeal = TestModelDataBuilder.getCreateIOJAppealObject();
 
-        when(iojAppealMapper.toIOJAppealDTO(any(CreateIOJAppeal.class))).thenReturn(createdIOJAppealDTO);
+        when(iojAppealMapper.toIOJAppealDTO(any(CreateIOJAppeal.class))).thenReturn(
+            createdIOJAppealDTO);
 
         when(iojAppealImpl.create(any())).thenReturn(TestEntityDataBuilder.getIOJAppealEntity());
 
-        when(iojAppealMapper.toIOJAppealDTO(any(IOJAppealEntity.class))).thenReturn(createdIOJAppealDTO);
+        when(iojAppealMapper.toIOJAppealDTO(any(IOJAppealEntity.class))).thenReturn(
+            createdIOJAppealDTO);
 
         var newlyCreatedIOJAppealDTO = iojAppealService.create(createIOJAppeal);
 
@@ -135,12 +142,34 @@ public class IOJAppealServiceTest {
         var updatedIOJAppealDTO = TestModelDataBuilder.getIOJAppealDTO(matchingDateModified);
         var updatedIOJEntity = TestEntityDataBuilder.getIOJAppealEntity(matchingDateModified);
 
-        when(iojAppealMapper.toIOJAppealDTO(any(UpdateIOJAppeal.class))).thenReturn(updatedIOJAppealDTO);
+        when(iojAppealMapper.toIOJAppealDTO(any(UpdateIOJAppeal.class))).thenReturn(
+            updatedIOJAppealDTO);
         when(iojAppealImpl.update(any())).thenReturn(updatedIOJEntity);
-        when(iojAppealMapper.toIOJAppealDTO(any(IOJAppealEntity.class))).thenReturn(updatedIOJAppealDTO);
+        when(iojAppealMapper.toIOJAppealDTO(any(IOJAppealEntity.class))).thenReturn(
+            updatedIOJAppealDTO);
 
         var newlyUpdatedIOJAppealDTO = iojAppealService.update(updateIOJAppeal);
 
         assertEquals(newlyUpdatedIOJAppealDTO.getDateModified(), matchingDateModified);
+    }
+
+    @Test
+    void givenValidIoJAppealId_whenRollbackIsInvoked_thenIoJAppealIsRolledBack() {
+        IOJAppealEntity iojAppealEntity = TestEntityDataBuilder.getIOJAppealEntity();
+        when(iojAppealImpl.find(iojAppealEntity.getId())).thenReturn(iojAppealEntity);
+
+        iojAppealService.rollback(iojAppealEntity.getId());
+
+        assertThat(iojAppealEntity.getReplaced()).isEqualTo("Y");
+        verify(iojAppealRepository).save(any(IOJAppealEntity.class));
+    }
+
+    @Test
+    void givenInvalidIoJAppealId_whenRollbackIsInvoked_thenExceptionIsRaised() {
+        when(iojAppealImpl.find(IOJ_APPEAL_ID)).thenReturn(null);
+
+        assertThatExceptionOfType(RequestedObjectNotFoundException.class).isThrownBy(
+                () -> iojAppealService.rollback(IOJ_APPEAL_ID))
+            .withMessageContaining(String.format("No IOJ Appeal found for ID: %d", IOJ_APPEAL_ID));
     }
 }

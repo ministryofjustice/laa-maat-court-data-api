@@ -78,7 +78,7 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
     }
 
     @Test
-    void givenAACTIVEStatus_whenGetIsInvoked_theDataLoadedResponseIsReturned() throws Exception {
+    void givenAActiveStatus_whenGetIsInvoked_theDataLoadedResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "ACTIVE")
                         .queryParam("numberOfRecords", String.valueOf(3))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -89,7 +89,7 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
 
     @Test
     @Order(2)
-    void givenAREPLACEDStatus_whenGetIsInvoked_theEmptyResponseIsReturned() throws Exception {
+    void givenAReplacedStatus_whenGetIsInvoked_theEmptyResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "REPLACED")
                         .queryParam("numberOfRecords", String.valueOf(3))
                         .contentType(MediaType.APPLICATION_JSON))

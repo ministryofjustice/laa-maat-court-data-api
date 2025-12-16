@@ -7,6 +7,7 @@ import gov.uk.courtdata.iojappeal.impl.IOJAppealImpl;
 import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
+import gov.uk.courtdata.repository.IOJAppealRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class IOJAppealService {
 
     private final IOJAppealImpl iojAppealImpl;
     private final IOJAppealMapper iojAppealMapper;
+    private final IOJAppealRepository iojAppealRepository;
 
     @Transactional(readOnly = true)
     public IOJAppealDTO find(Integer iojAppealId) {
@@ -73,5 +75,12 @@ public class IOJAppealService {
             throw new RequestedObjectNotFoundException(String.format("No IOJ Appeal found for REP ID: %s", repId));
         }
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
+    }
+
+    @Transactional
+    public void rollback(int iojAppealId) {
+        IOJAppealEntity iojAppealEntity = iojAppealImpl.find(iojAppealId);
+        iojAppealEntity.setReplaced("Y");
+        iojAppealRepository.save(iojAppealEntity);
     }
 }

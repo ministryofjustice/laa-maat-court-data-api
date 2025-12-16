@@ -1,6 +1,7 @@
 package gov.uk.courtdata.iojappeal.controller;
 
 import gov.uk.courtdata.annotation.NotFoundApiResponse;
+import gov.uk.courtdata.annotation.StandardApiResponseCodes;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.enums.LoggingData;
@@ -15,11 +16,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -113,5 +116,14 @@ public class IOJAppealController {
         var updatedIojAppealDTO = iojAppealService.update(iojAppeal);
 
         return ResponseEntity.ok(updatedIojAppealDTO);
+    }
+
+    @PatchMapping("/rollback/{iojAppealId}")
+    @Operation(description = "Rollback an existing Interest of Justice appeal record")
+    @StandardApiResponseCodes
+    public ResponseEntity<Void> rollbackIOJAppeal(@PathVariable @NotBlank Integer iojAppealId) {
+        log.info("Rollback IoJ Appeal request received with id: {}", iojAppealId);
+        iojAppealService.rollback(iojAppealId);
+        return ResponseEntity.ok().build();
     }
 }

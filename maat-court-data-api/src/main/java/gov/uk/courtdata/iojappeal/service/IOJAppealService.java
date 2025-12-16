@@ -26,7 +26,8 @@ public class IOJAppealService {
     public IOJAppealDTO find(Integer iojAppealId) {
         IOJAppealEntity iojAppealEntity = iojAppealImpl.find(iojAppealId);
         if (iojAppealEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No IOJ Appeal found for ID: %s", iojAppealId));
+            throw new RequestedObjectNotFoundException(
+                String.format("No IOJ Appeal found for ID: %s", iojAppealId));
         }
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
     }
@@ -35,7 +36,8 @@ public class IOJAppealService {
     public IOJAppealDTO findByRepId(int repId) {
         IOJAppealEntity iojAppealEntity = iojAppealImpl.findByRepId(repId);
         if (iojAppealEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No IOJ Appeal found for REP ID: %s", repId));
+            throw new RequestedObjectNotFoundException(
+                String.format("No IOJ Appeal found for REP ID: %s", repId));
         }
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
     }
@@ -50,7 +52,8 @@ public class IOJAppealService {
 
         log.info("Update previous IOJ Appeal records and set them to replaced");
 
-        iojAppealImpl.setOldIOJAppealsReplaced(iojAppealEntity.getRepOrder().getId(), iojAppealEntity.getId());
+        iojAppealImpl.setOldIOJAppealsReplaced(iojAppealEntity.getRepOrder().getId(),
+            iojAppealEntity.getId());
 
         log.info("Create IOJ Appeal - Transaction Processing - end");
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
@@ -72,7 +75,8 @@ public class IOJAppealService {
     public IOJAppealDTO findCurrentPassedAppealByRepId(int repId) {
         IOJAppealEntity iojAppealEntity = iojAppealImpl.findCurrentPassedByRepId(repId);
         if (iojAppealEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No IOJ Appeal found for REP ID: %s", repId));
+            throw new RequestedObjectNotFoundException(
+                String.format("No IOJ Appeal found for REP ID: %s", repId));
         }
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
     }
@@ -80,6 +84,12 @@ public class IOJAppealService {
     @Transactional
     public void rollback(int iojAppealId) {
         IOJAppealEntity iojAppealEntity = iojAppealImpl.find(iojAppealId);
+
+        if (iojAppealEntity == null) {
+            throw new RequestedObjectNotFoundException(
+                String.format("No IOJ Appeal found for ID: %s", iojAppealId));
+        }
+
         iojAppealEntity.setReplaced("Y");
         iojAppealRepository.save(iojAppealEntity);
     }

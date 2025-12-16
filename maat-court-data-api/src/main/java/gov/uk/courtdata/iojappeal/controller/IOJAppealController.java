@@ -48,8 +48,8 @@ public class IOJAppealController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<IOJAppealDTO> getIOJAppeal(@PathVariable Integer iojAppealId,
-                                                     @Parameter(description = "Used for tracing calls")
-                                                     @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        @Parameter(description = "Used for tracing calls")
+        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
         log.info("Get IOJ Appeal Received: id: {}", iojAppealId);
         return ResponseEntity.ok(iojAppealService.find(iojAppealId));
     }
@@ -61,8 +61,8 @@ public class IOJAppealController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<IOJAppealDTO> getIOJAppealByRepId(@PathVariable int repId,
-                                                            @Parameter(description = "Used for tracing calls")
-                                                            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        @Parameter(description = "Used for tracing calls")
+        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
         LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Get IOJ Appeal by repId: {}", repId);
         return ResponseEntity.ok(iojAppealService.findByRepId(repId));
@@ -75,8 +75,8 @@ public class IOJAppealController {
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<IOJAppealDTO> getCurrentPassedIOJAppealByRepId(@PathVariable int repId,
-                                                                         @Parameter(description = "Used for tracing calls")
-                                                                         @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        @Parameter(description = "Used for tracing calls")
+        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
         LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Get IOJ Appeal by repId: {}", repId);
         return ResponseEntity.ok(iojAppealService.findCurrentPassedAppealByRepId(repId));
@@ -87,10 +87,11 @@ public class IOJAppealController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = IOJAppealDTO.class)))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<IOJAppealDTO> createIOJAppeal(@Parameter(description = "Interest of Justice appeal data", content = @Content(mediaType = "application/json",
+    public ResponseEntity<IOJAppealDTO> createIOJAppeal(
+        @Parameter(description = "Interest of Justice appeal data", content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = CreateIOJAppeal.class))) @Valid @RequestBody CreateIOJAppeal iojAppeal,
-                                                        @Parameter(description = "Used for tracing calls")
-                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        @Parameter(description = "Used for tracing calls")
+        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
         LoggingData.MAAT_ID.putInMDC(iojAppeal.getRepId());
         log.info("Create IOJ Appeal Request Received");
 
@@ -104,10 +105,11 @@ public class IOJAppealController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = IOJAppealDTO.class)))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<IOJAppealDTO> updateIOJAppeal(@Parameter(description = "Interest of Justice appeal data", content = @Content(mediaType = "application/json",
+    public ResponseEntity<IOJAppealDTO> updateIOJAppeal(
+        @Parameter(description = "Interest of Justice appeal data", content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = UpdateIOJAppeal.class))) @Valid @RequestBody UpdateIOJAppeal iojAppeal,
-                                                        @Parameter(description = "Used for tracing calls")
-                                                        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+        @Parameter(description = "Used for tracing calls")
+        @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
         LoggingData.MAAT_ID.putInMDC(iojAppeal.getRepId());
         log.info("Update IOJ Appeal Request Received with ID: {}", iojAppeal.getId());
 

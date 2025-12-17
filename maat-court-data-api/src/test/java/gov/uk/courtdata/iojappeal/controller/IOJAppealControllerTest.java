@@ -20,6 +20,8 @@ import java.util.Optional;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,6 +33,7 @@ public class IOJAppealControllerTest {
     private static final boolean IS_VALID = true;
     private static final int INVALID_REP_ID = 3456;
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/ioj-appeal";
+    private static final String ROLLBACK_URL = ENDPOINT_URL + "/rollback/{iojAppealId}";
     @Autowired
     private MockMvc mvc;
     @MockitoBean
@@ -41,77 +44,92 @@ public class IOJAppealControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void givenValidIOJAppealID_whenGetIOJAppealIsCalled_thenReturnValidIOJAppealResponse_Success() throws Exception {
-        when(iojAppealService.find(IOJ_APPEAL_ID)).thenReturn(TestModelDataBuilder.getIOJAppealDTO());
+    public void givenValidIOJAppealID_whenGetIOJAppealIsCalled_thenReturnValidIOJAppealResponse_Success()
+        throws Exception {
+        when(iojAppealService.find(IOJ_APPEAL_ID)).thenReturn(
+            TestModelDataBuilder.getIOJAppealDTO());
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + IOJ_APPEAL_ID))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(IOJ_APPEAL_ID));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id").value(IOJ_APPEAL_ID));
     }
 
     @Test
-    public void givenNonExistentIOJAppealID_WhenGetIOJAppealIsCalled_ThenReturnBadRequestResponse_Error() throws Exception {
-        when(iojAppealService.find(IOJ_APPEAL_ID)).thenThrow(new RequestedObjectNotFoundException("No IOJAppeal object found. ID: " + IOJ_APPEAL_ID));
+    public void givenNonExistentIOJAppealID_WhenGetIOJAppealIsCalled_ThenReturnBadRequestResponse_Error()
+        throws Exception {
+        when(iojAppealService.find(IOJ_APPEAL_ID)).thenThrow(new RequestedObjectNotFoundException(
+            "No IOJAppeal object found. ID: " + IOJ_APPEAL_ID));
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + IOJ_APPEAL_ID))
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("No IOJAppeal object found. ID: " + IOJ_APPEAL_ID));
+            .andExpect(status().is4xxClientError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.message").value("No IOJAppeal object found. ID: " + IOJ_APPEAL_ID));
     }
 
     @Test
-    public void givenCorrectParameters_whenGetIOJAppealByRepIdIsInvoked_thenIOJAppealIsReturned() throws Exception {
+    public void givenCorrectParameters_whenGetIOJAppealByRepIdIsInvoked_thenIOJAppealIsReturned()
+        throws Exception {
         IOJAppealDTO iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
         when(iojAppealService.findByRepId(IOJ_REP_ID)).thenReturn(iojAppealDTO);
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/" + IOJ_REP_ID))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(String.valueOf(IOJ_APPEAL_ID)))
-                .andExpect(jsonPath("$.repId").value(String.valueOf(IOJ_REP_ID)));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id").value(String.valueOf(IOJ_APPEAL_ID)))
+            .andExpect(jsonPath("$.repId").value(String.valueOf(IOJ_REP_ID)));
 
         verify(iojAppealService).findByRepId(IOJ_REP_ID);
     }
 
     @Test
-    public void givenInvalidRepId_whenGetIOJAppealByRepIdIsInvoked_then404NotFoundErrorIsThrown() throws Exception {
+    public void givenInvalidRepId_whenGetIOJAppealByRepIdIsInvoked_then404NotFoundErrorIsThrown()
+        throws Exception {
         when(iojAppealService.findByRepId(INVALID_REP_ID))
-                .thenThrow(new RequestedObjectNotFoundException(String.format("No IOJAppeal object found for repId %s", INVALID_REP_ID)));
+            .thenThrow(new RequestedObjectNotFoundException(
+                String.format("No IOJAppeal object found for repId %s", INVALID_REP_ID)));
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/" + INVALID_REP_ID))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 
     @Test
-    public void givenCorrectParameters_whenGetCurrentPassedIOJAppealByRepIdIsCalled_thenReturnValidIOJAppealResponse_Success() throws Exception {
+    public void givenCorrectParameters_whenGetCurrentPassedIOJAppealByRepIdIsCalled_thenReturnValidIOJAppealResponse_Success()
+        throws Exception {
         IOJAppealDTO iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
         when(iojAppealService.findCurrentPassedAppealByRepId(IOJ_REP_ID)).thenReturn(iojAppealDTO);
 
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/" + IOJ_REP_ID + "/current-passed"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(String.valueOf(IOJ_APPEAL_ID)))
-                .andExpect(jsonPath("$.repId").value(String.valueOf(IOJ_REP_ID)));
+        mvc.perform(
+                MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/" + IOJ_REP_ID + "/current-passed"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id").value(String.valueOf(IOJ_APPEAL_ID)))
+            .andExpect(jsonPath("$.repId").value(String.valueOf(IOJ_REP_ID)));
 
         verify(iojAppealService).findCurrentPassedAppealByRepId(IOJ_REP_ID);
     }
 
     @Test
-    public void givenInvalidRepId_whenGetCurrentPassedIOJAppealByRepIdIsCalled_then404NotFoundErrorIsThrown() throws Exception {
+    public void givenInvalidRepId_whenGetCurrentPassedIOJAppealByRepIdIsCalled_then404NotFoundErrorIsThrown()
+        throws Exception {
         when(iojAppealService.findCurrentPassedAppealByRepId(INVALID_REP_ID))
-                .thenThrow(new RequestedObjectNotFoundException(String.format("No IOJAppeal object found for repId %s", INVALID_REP_ID)));
+            .thenThrow(new RequestedObjectNotFoundException(
+                String.format("No IOJAppeal object found for repId %s", INVALID_REP_ID)));
 
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/repId/" + INVALID_REP_ID + "/current-passed"))
-                .andExpect(status().isNotFound());
+        mvc.perform(MockMvcRequestBuilders.get(
+                ENDPOINT_URL + "/repId/" + INVALID_REP_ID + "/current-passed"))
+            .andExpect(status().isNotFound());
     }
 
     @Test
-    public void givenNullRepId_whenGetIOJAppealByRepIdIsInvoked_thenBadRequestIsThrown() throws Exception {
+    public void givenNullRepId_whenGetIOJAppealByRepIdIsInvoked_thenBadRequestIsThrown()
+        throws Exception {
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + "/repId/null"))
-                .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void givenValidCreateIOJAppeal_whenCreateIOJAppealIsCalled_thenReturnCreatedIOJAppealObjectWithID() throws Exception {
+    public void givenValidCreateIOJAppeal_whenCreateIOJAppealIsCalled_thenReturnCreatedIOJAppealObjectWithID()
+        throws Exception {
         //given
         var createIOJAppeal = TestModelDataBuilder.getCreateIOJAppealObject();
         var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
@@ -120,39 +138,45 @@ public class IOJAppealControllerTest {
 
         var createIOJAppealJson = objectMapper.writeValueAsString(createIOJAppeal);
         //on call check the id of the object and any other value
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(IOJ_APPEAL_ID));
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id").value(IOJ_APPEAL_ID));
     }
 
     @Test
-    public void givenInvalidCreateIOJAppeal_whenCreateIOJAppealIsCalled_thenFailRequestParameterSchemaValidation() throws Exception {
+    public void givenInvalidCreateIOJAppeal_whenCreateIOJAppealIsCalled_thenFailRequestParameterSchemaValidation()
+        throws Exception {
         //given
         var createIOJAppeal = TestModelDataBuilder.getCreateIOJAppealObject(!IS_VALID);
 
         var createIOJAppealJson = objectMapper.writeValueAsString(createIOJAppeal);
         //on call check the id of the object and any other value
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().is4xxClientError());
     }
 
     @Test
     public void createIOJAppeal_ServerError_RequestBodyIsMissing() throws Exception {
 
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().is4xxClientError());
     }
 
     @Test
     public void createIOJAppeal_BadRequest_RequestEmptyBody() throws Exception {
 
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void givenUpdateIOJAppeal_whenUpdateOJAppealIsCalled_thenReturnUpdatedIOJAppeal() throws Exception {
+    public void givenUpdateIOJAppeal_whenUpdateOJAppealIsCalled_thenReturnUpdatedIOJAppeal()
+        throws Exception {
         //given
         var updateIOJAppeal = TestModelDataBuilder.getUpdateIOJAppealObject();
         var updatedIOJAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
@@ -162,35 +186,66 @@ public class IOJAppealControllerTest {
 
         var updateIOJAppealJson = objectMapper.writeValueAsString(updateIOJAppeal);
         //on call check the id of the object and any other value
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(updateIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(IOJ_APPEAL_ID));
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(updateIOJAppealJson)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id").value(IOJ_APPEAL_ID));
     }
 
     @Test
-    public void givenInvalidUpdateIOJAppeal_whenUpdateOJAppealIsCalled_thenFailRequestParameterSchemaValidation() throws Exception {
+    public void givenInvalidUpdateIOJAppeal_whenUpdateOJAppealIsCalled_thenFailRequestParameterSchemaValidation()
+        throws Exception {
         //given
         var updateIOJAppeal = TestModelDataBuilder.getUpdateIOJAppealObject(false);
         var updateIOJAppealJson = objectMapper.writeValueAsString(updateIOJAppeal);
 
         //on call check the id of the object and any other value
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(updateIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(updateIOJAppealJson)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void givenUpdateIOJAppeal_whenUpdateOJAppealIsCalled_AndValidationFails_thenReturnError() throws Exception {
+    public void givenUpdateIOJAppeal_whenUpdateOJAppealIsCalled_AndValidationFails_thenReturnError()
+        throws Exception {
         //given
         var updateIOJAppeal = TestModelDataBuilder.getUpdateIOJAppealObject();
 
-        when(iojAppealValidationProcessor.validate(updateIOJAppeal)).thenThrow(new ValidationException("IOJ Appeal does not exist in Db. ID: " + updateIOJAppeal.getId()));
+        when(iojAppealValidationProcessor.validate(updateIOJAppeal)).thenThrow(
+            new ValidationException(
+                "IOJ Appeal does not exist in Db. ID: " + updateIOJAppeal.getId()));
 
         var updateIOJAppealJson = objectMapper.writeValueAsString(updateIOJAppeal);
         //on call check the id of the object and any other value
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(updateIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("IOJ Appeal does not exist in Db. ID: " + updateIOJAppeal.getId()));
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(updateIOJAppealJson)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().is4xxClientError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.message").value(
+                "IOJ Appeal does not exist in Db. ID: " + updateIOJAppeal.getId()));
+    }
+
+    @Test
+    void givenValidIoJAppealId_whenRollbackIoJAppealIsCalled_thenOKResponseIsReturned()
+        throws Exception {
+        doNothing().when(iojAppealService).rollback(IOJ_APPEAL_ID);
+
+        mvc.perform(MockMvcRequestBuilders.patch(ROLLBACK_URL, IOJ_APPEAL_ID))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenAnInvalidIoJAppealId_whenRollbackIoJAppealIsCalled_thenNotFoundResponseIsReturned()
+        throws Exception {
+        String exceptionMessage = String.format("No IOJ Appeal found for ID: %d", IOJ_APPEAL_ID);
+
+        doThrow(new RequestedObjectNotFoundException(exceptionMessage)).when(iojAppealService)
+            .rollback(IOJ_APPEAL_ID);
+
+        mvc.perform(MockMvcRequestBuilders.patch(ROLLBACK_URL, IOJ_APPEAL_ID))
+            .andExpect(status().isNotFound())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.message").value(exceptionMessage));
     }
 }

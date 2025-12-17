@@ -123,7 +123,7 @@ public class IOJAppealController {
     @PatchMapping("/rollback/{iojAppealId}")
     @Operation(description = "Rollback an existing Interest of Justice appeal record")
     @StandardApiResponseCodes
-    public ResponseEntity<Void> rollbackIOJAppeal(@PathVariable @NotBlank Integer iojAppealId) {
+    public ResponseEntity<Void> rollbackIOJAppeal(@PathVariable Integer iojAppealId) {
         log.info("Rollback IoJ Appeal request received with id: {}", iojAppealId);
         iojAppealService.rollback(iojAppealId);
         return ResponseEntity.ok().build();

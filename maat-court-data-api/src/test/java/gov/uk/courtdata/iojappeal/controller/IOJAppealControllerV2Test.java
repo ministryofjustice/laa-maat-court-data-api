@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @AutoConfigureMockMvc(addFilters = false)
 class IOJAppealControllerV2Test {
 
-    private static final boolean IS_INVALID = false;
+    private static final boolean IS_VALID = true;
     private static final String ENDPOINT_URL = "/api/internal/v2/assessment/ioj-appeals";
     @Autowired
     private MockMvc mvc;
@@ -70,7 +70,7 @@ class IOJAppealControllerV2Test {
 
     @Test
     void givenInvalidCreateIOJAppeal_whenCreateIOJAppealIsCalled_thenFailRequestParameterSchemaValidation() throws Exception {
-        var createIOJAppeal = TestModelDataBuilder.getCreateIOJAppealObject(IS_INVALID);
+        var createIOJAppeal = TestModelDataBuilder.getCreateIOJAppealObject(!IS_VALID);
         var createIOJAppealJson = objectMapper.writeValueAsString(createIOJAppeal);
 
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson).contentType(MediaType.APPLICATION_JSON))

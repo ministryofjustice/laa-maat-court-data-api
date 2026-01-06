@@ -153,6 +153,8 @@ public class StoredProcedureRepository {
         try {
             wantedConnection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
         } catch (SQLException exception) {
+            log.error("Connection request failed from driver manager", exception);
+            log.error(exception.getMessage());
             throw new MAATApplicationException("Could not retrieve a connection to the database");
         }
 

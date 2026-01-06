@@ -53,6 +53,7 @@ public interface IOJAppealMapper {
     @Mapping(target = "appealSuccessful", source = "decisionResult", qualifiedByName = "isAppealSuccessful")
     @Mapping(target = "decisionReason", source = "iderCode", qualifiedByName = "mapDecisionReason")
     @Mapping(target = "decisionDate", source = "decisionDate", qualifiedByName = "mapDateTimeToDate")
+    @Mapping(target = "caseManagementUnitId", source = "cmuId")
     ApiGetIojAppealResponse toApiGetIojAppealResponse(IOJAppealEntity iojAppealEntity);
 
     @Named("mapAppealSetupResult")

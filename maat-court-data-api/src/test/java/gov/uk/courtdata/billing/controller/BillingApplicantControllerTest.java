@@ -1,6 +1,5 @@
 package gov.uk.courtdata.billing.controller;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -49,7 +48,7 @@ class BillingApplicantControllerTest {
 
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$.length()").value((1)));
 
         verify(billingApplicantService).findAllApplicantsForBilling();
     }

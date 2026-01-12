@@ -28,7 +28,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -69,7 +68,7 @@ class ConcorContributionsRestControllerTest {
                         .queryParam("numberOfRecords", String.valueOf(3))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").exists())
                 .andExpect(jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
                 .andExpect(jsonPath("$.[?(@.concorContributionId==2)].concorContributionId").exists())
@@ -92,7 +91,7 @@ class ConcorContributionsRestControllerTest {
                         .queryParam("numberOfRecords", String.valueOf(3))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").exists())
                 .andExpect(jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
                 .andExpect(jsonPath("$.[?(@.concorContributionId==2)].concorContributionId").exists())
@@ -113,7 +112,7 @@ class ConcorContributionsRestControllerTest {
                         .queryParam("status", ConcorContributionStatus.ACTIVE.name())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").exists())
                 .andExpect(jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
                 .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId").exists())
@@ -132,7 +131,7 @@ class ConcorContributionsRestControllerTest {
                         .queryParam("numberOfRecords", String.valueOf(numberOfRecords))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpect(jsonPath("$.length()").value(0));
     }
 
     @Test
@@ -300,7 +299,7 @@ class ConcorContributionsRestControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(jsonPath("$.[0]").value(111L))
                 .andExpect(jsonPath("$.[1]").value(222L))
                 .andExpect(jsonPath("$.[2]").value(333L));
@@ -319,7 +318,7 @@ class ConcorContributionsRestControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpect(jsonPath("$.length()").value(0));
     }
 
 

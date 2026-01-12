@@ -9,8 +9,8 @@ import java.util.Date;
 
 @Data
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class FdcItemDTO extends GenericDTO {
 
     private Long id;

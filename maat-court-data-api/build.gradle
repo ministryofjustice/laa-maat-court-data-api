@@ -1,19 +1,20 @@
 plugins {
-    id 'java'
-    id 'jacoco'
-    id 'org.springframework.boot' version "$springframeworkBootVersion"
-    id 'io.spring.dependency-management' version "$springDependencyManagementVersion"
-    id 'com.javiersc.semver.project' version "$semverVersion"
-    id 'com.gorylenko.gradle-git-properties' version "$gitPropertiesVersion"
-    id 'info.solidsoft.pitest' version "$pitestVersion"
+    id "java"
+    id "jacoco"
+    id "org.springframework.boot" version "$springframeworkBootVersion"
+    id "io.spring.dependency-management" version "$springDependencyManagementVersion"
+    id "com.javiersc.semver.project" version "$semverVersion"
+    id "com.gorylenko.gradle-git-properties" version "$gitPropertiesVersion"
+    id "info.solidsoft.pitest" version "$pitestVersion"
 }
 
-group = 'gov.uk'
-description = 'This is a Facade application to the existing LAA legacy Applications MAAT/MLRA.'
+group = "gov.uk"
+description = "This is a Facade application to the existing LAA legacy Applications MAAT/MLRA."
 
 java {
-    sourceCompatibility = "$javaVersion"
-    targetCompatibility = "$javaVersion"
+    toolchain {
+        languageVersion = JavaLanguageVersion.of("$javaVersion")
+    }
 }
 
 sourceSets {
@@ -51,8 +52,8 @@ dependencies {
     implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$crimeCommonsClasses"
     implementation "uk.gov.justice.service.laa-crime:crime-commons-mod-schemas:$commonsModSchemas"
 
-    implementation("io.sentry:sentry-spring-boot-starter-jakarta")
-    implementation("io.sentry:sentry-logback")
+    implementation "io.sentry:sentry-logback"
+    implementation "io.sentry:sentry-spring-boot-starter-jakarta"
 
     //Required for Logback configuration due to a dependency having their own implementation of SAXParserFactory
     implementation "xerces:xercesImpl:$xercesImplVersion"
@@ -68,55 +69,51 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.boot:spring-boot-starter-graphql"
 
-    implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$springAwsCloudVersion"
-    implementation 'org.springframework:spring-jms'
+    implementation "org.springframework:spring-jms"
     implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$amazonSQSVersion"
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$springAwsCloudVersion"
 
     implementation "software.amazon.awssdk:sts:$awsStsVersion"
 
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: "$springdocVersion"
-    implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
-    implementation group: 'commons-io', name: 'commons-io', version: "$commonsIOVersion"
+    implementation "io.projectreactor.netty:reactor-netty"
+    implementation "commons-io:commons-io:$commonsIOVersion"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion"
 
-    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor "org.projectlombok:lombok"
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
-    //Required for lombok version > 1.18.16
-    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:$lombokMapStrutBinding"
 
     implementation "io.micrometer:micrometer-registry-cloudwatch2:$micrometerCloudWatchVersion"
     implementation "io.micrometer:micrometer-registry-prometheus"
 
     // DB Dependencies
-    implementation group: 'com.oracle.database.jdbc', name: 'ojdbc8', version: "$ojdbc8Version"
-    implementation group: 'com.oracle.database.xml', name: 'xmlparserv2', version: "$oracleXMLParserVersion"
-    implementation group: 'com.oracle.database.xml', name: 'xdb', version: "$oracleXMLParserVersion"
+    implementation "com.oracle.database.jdbc:ojdbc8:$ojdbc8Version"
+    implementation "com.oracle.database.xml:xmlparserv2:$oracleXMLParserVersion"
+    implementation "com.oracle.database.xml:xdb:$oracleXMLParserVersion"
 
-    annotationProcessor group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: "$hibernateJpaModelGen"
-    implementation group: 'com.graphql-java-kickstart', name: 'graphql-java-tools', version: "$graphqlJavaTools"
+    annotationProcessor "org.hibernate:hibernate-jpamodelgen:$hibernateJpaModelGen"
+    implementation "com.graphql-java-kickstart:graphql-java-tools:$graphqlJavaTools"
 
-    implementation group: 'com.google.code.gson', name: 'gson', version: "$gsonVersion"
-    implementation group: 'org.hibernate.orm', name: 'hibernate-core', version: "$hibernateCore"
+    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "org.hibernate.orm:hibernate-core:$hibernateCore"
 
     // Test Only
-    testImplementation "org.pitest:pitest:$pitest"
-    testImplementation group: 'com.h2database', name: 'h2', version: "$h2DBVersion"
+    testImplementation "com.h2database:h2"
     testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
-    testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: "$harmcrestVersion"
-    testImplementation group: 'org.easytesting', name: 'fest-assert', version: "$festVersion"
-    testCompileOnly group: 'org.projectlombok', name: 'lombok'
-    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
     testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$springCloudStubRunnerVersion"
 
+    testCompileOnly "org.projectlombok:lombok"
+    testAnnotationProcessor "org.projectlombok:lombok"
+
     // Only required for SQS Integration test
+    testSqsIntegrationImplementation 'com.h2database:h2'
     testSqsIntegrationImplementation "org.awaitility:awaitility:$awaitilityVersion"
-    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: "$awsJavaSdkVersion"
-    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: "$awsJavaSdkVersion"
+    testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk:$awsJavaSdkVersion"
+    testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk-sqs:$awsJavaSdkVersion"
     testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$testcontainersJunitJupiterVersion"
     testSqsIntegrationImplementation "org.testcontainers:localstack:$testcontainersLocalstackVersion"
     testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$cloudLocalstackUtilsVersion"
-    testSqsIntegrationImplementation 'com.h2database:h2'
-    testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$springContractStubRunnerVersion"
+    testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$springCloudStubRunnerVersion"
 }
 
 jacoco {

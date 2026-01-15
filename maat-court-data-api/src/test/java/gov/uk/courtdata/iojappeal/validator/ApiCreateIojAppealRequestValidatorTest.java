@@ -24,7 +24,7 @@ class ApiCreateIojAppealRequestValidatorTest {
           request.getIojAppeal().setAppealSuccessful(null);
           request.getIojAppealMetadata().setLegacyApplicationId(null);
           request.getIojAppealMetadata().setApplicationReceivedDate(null);
-          int expectedErrorCount = 3; // 1 field validation on appeal, 2 on metadata.
+          int expectedErrorCount = 2; // 1 field validation on appeal, 1 on metadata.
           List<String> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
           assertThat(returnedErrorList).hasSize(expectedErrorCount);
           assertThat(returnedErrorList.stream()

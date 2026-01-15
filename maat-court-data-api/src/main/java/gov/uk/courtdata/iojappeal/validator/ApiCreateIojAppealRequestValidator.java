@@ -31,9 +31,6 @@ public class ApiCreateIojAppealRequestValidator {
         if (ObjectUtils.isEmpty(metadata.getLegacyApplicationId())) {
             errorList.add(getMissingFieldErrorText(LEGACY_APPLICATION_ID.getName()));
         }
-        if (ObjectUtils.isEmpty(metadata.getApplicationReceivedDate())) {
-            errorList.add(getMissingFieldErrorText(APPLICATION_RECEIVED_DATE.getName()));
-        }
         if (ObjectUtils.isEmpty(appeal.getAppealSuccessful())) {
             errorList.add(getMissingFieldErrorText(APPEAL_SUCCESSFUL.getName()));
         }

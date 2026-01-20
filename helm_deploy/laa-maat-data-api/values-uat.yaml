@@ -36,7 +36,8 @@ serviceAccount:
 
 service:
   type: ClusterIP
-  port: 8090
+  port: 80
+  targetPort: 8090
 
 ingress:
   environmentName: laa-maat-data-api-uat

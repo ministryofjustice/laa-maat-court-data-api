@@ -4,7 +4,6 @@ import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.iojappeal.service.IOJAppealV2Service;
 import gov.uk.courtdata.iojappeal.validator.ApiCreateIojAppealRequestValidator;
-import io.sentry.Sentry;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +36,6 @@ public class IOJAppealControllerV2 implements IOJAppealApi {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiCreateIojAppealResponse> create(ApiCreateIojAppealRequest iojAppeal) {
-        Sentry.captureMessage("Sentry test message");
         LoggingData.MAAT_ID.putInMDC(iojAppeal.getIojAppealMetadata().getLegacyApplicationId());
         log.info("Create IOJ Appeal Request Received");
 

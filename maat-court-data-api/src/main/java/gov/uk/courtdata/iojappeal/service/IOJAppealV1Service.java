@@ -10,9 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
-import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
-import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
 
 @Slf4j
 @Service
@@ -47,7 +44,7 @@ public class IOJAppealV1Service {
 
         log.info("Creating new IoJAppeal record");
         IOJAppealEntity iojAppealEntity = iojAppealMapper.toIojAppealEntity(iojAppealDTO);
-        iojAppealPersistenceService.create(iojAppealEntity);
+        iojAppealPersistenceService.save(iojAppealEntity);
 
         log.info("Update previous IoJ Appeal records and set them to replaced");
 

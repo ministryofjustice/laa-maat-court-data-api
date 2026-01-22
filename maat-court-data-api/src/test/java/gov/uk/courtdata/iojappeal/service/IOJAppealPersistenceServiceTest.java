@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.repository.IOJAppealRepository;
@@ -59,11 +58,11 @@ class IOJAppealPersistenceServiceTest {
     }
 
     @Test
-    void whenCreateIsInvoked_thenIOJAppealIsSaved() {
+    void whenSaveIsInvoked_thenIOJAppealIsSaved() {
         var createdIOJAppealEntity = TestEntityDataBuilder.getIOJAppealEntity();
         var iojAppealDTO = TestModelDataBuilder.getIOJAppealDTO();
 
-        iojAppealPersistenceService.create(createdIOJAppealEntity);
+        iojAppealPersistenceService.save(createdIOJAppealEntity);
 
         verify(iojAppealRepository).save(iojAppealEntityArgumentCaptor.capture());
 

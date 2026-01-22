@@ -4,6 +4,7 @@ import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.iojappeal.service.IOJAppealV2Service;
 import gov.uk.courtdata.iojappeal.validator.ApiCreateIojAppealRequestValidator;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,5 +49,14 @@ public class IOJAppealControllerV2 implements IOJAppealApi {
         ApiCreateIojAppealResponse apiCreateIojAppealResponse = iojAppealService.create(iojAppeal);
 
         return ResponseEntity.ok(apiCreateIojAppealResponse);
+    }
+
+    @PatchMapping("/rollback/{iojAppealId}")
+    @Operation(description = "Rollback an existing Interest of Justice appeal record")
+    @StandardApiResponseCodes
+    public ResponseEntity<Void> rollbackIOJAppeal(@PathVariable Integer iojAppealId) {
+        log.info("Rollback IoJ Appeal request received with id: {}", iojAppealId);
+        iojAppealService.rollback(iojAppealId);
+        return ResponseEntity.ok().build();
     }
 }

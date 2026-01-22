@@ -3,6 +3,7 @@ package gov.uk.courtdata.iojappeal.service;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_IOJ_APPEAL_ID;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.any;
@@ -65,5 +66,25 @@ class IOJAppealV2ServiceTest {
         assertEquals(LEGACY_IOJ_APPEAL_ID, apiCreateIojResponse.getLegacyAppealId());
 
         verify(iojAppealPersistenceService).setOldIOJAppealsReplaced(IOJ_REP_ID, IOJ_APPEAL_ID);
+    }
+
+    @Test
+    void givenValidIoJAppealId_whenRollbackIsInvoked_thenIoJAppealIsRolledBack() {
+        IOJAppealEntity iojAppealEntity = TestEntityDataBuilder.getIOJAppealEntity();
+        when(iojAppealPersistenceService.find(iojAppealEntity.getId())).thenReturn(iojAppealEntity);
+
+        iojAppealService.rollback(iojAppealEntity.getId());
+
+        assertThat(iojAppealEntity.getReplaced()).isEqualTo("Y");
+        verify(iojAppealPersistenceService).save(any(IOJAppealEntity.class));
+    }
+
+    @Test
+    void givenInvalidIoJAppealId_whenRollbackIsInvoked_thenExceptionIsRaised() {
+        when(iojAppealPersistenceService.find(IOJ_APPEAL_ID)).thenReturn(null);
+
+        assertThatExceptionOfType(RequestedObjectNotFoundException.class).isThrownBy(
+                () -> iojAppealService.rollback(IOJ_APPEAL_ID))
+            .withMessageContaining(String.format("No IOJ Appeal found for ID: %d", IOJ_APPEAL_ID));
     }
 }

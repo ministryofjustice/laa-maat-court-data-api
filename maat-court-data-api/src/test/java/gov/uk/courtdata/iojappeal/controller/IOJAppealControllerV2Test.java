@@ -1,6 +1,8 @@
 package gov.uk.courtdata.iojappeal.controller;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_IOJ_APPEAL_ID;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,6 +28,7 @@ class IOJAppealControllerV2Test {
 
     private static final boolean IS_VALID = true;
     private static final String ENDPOINT_URL = "/api/internal/v2/assessment/ioj-appeals";
+    private static final String ROLLBACK_URL = ENDPOINT_URL + "/rollback/{iojAppealId}";
     @Autowired
     private MockMvc mvc;
     @MockitoBean
@@ -87,5 +90,28 @@ class IOJAppealControllerV2Test {
     void givenCreateIOJAppeal_whenGivenBadRequest_thenRequestBodyIsEmpty() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void givenValidIoJAppealId_whenRollbackIoJAppealIsCalled_thenOKResponseIsReturned()
+        throws Exception {
+        doNothing().when(iojAppealService).rollback(LEGACY_IOJ_APPEAL_ID);
+
+        mvc.perform(MockMvcRequestBuilders.patch(ROLLBACK_URL, LEGACY_IOJ_APPEAL_ID))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenAnInvalidIoJAppealId_whenRollbackIoJAppealIsCalled_thenNotFoundResponseIsReturned()
+        throws Exception {
+        String exceptionMessage = String.format("No IOJ Appeal found for ID: %d", LEGACY_IOJ_APPEAL_ID);
+
+        doThrow(new RequestedObjectNotFoundException(exceptionMessage)).when(iojAppealService)
+            .rollback(LEGACY_IOJ_APPEAL_ID);
+
+        mvc.perform(MockMvcRequestBuilders.patch(ROLLBACK_URL, LEGACY_IOJ_APPEAL_ID))
+            .andExpect(status().isNotFound())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.message").value(exceptionMessage));
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
+import uk.gov.justice.laa.crime.enums.CurrentStatus;
 
 @Slf4j
 @Service
@@ -50,7 +51,7 @@ public class IOJAppealV2Service {
                 String.format("No IOJ Appeal found for ID: %s", iojAppealId));
         }
 
-        iojAppealEntity.setReplaced("Y");
+        iojAppealEntity.setIapsStatus(CurrentStatus.IN_PROGRESS.getStatus());
         iojAppealPersistenceService.save(iojAppealEntity);
     }
 }

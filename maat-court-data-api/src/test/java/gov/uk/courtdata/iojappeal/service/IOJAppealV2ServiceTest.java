@@ -75,7 +75,7 @@ class IOJAppealV2ServiceTest {
 
         iojAppealService.rollback(iojAppealEntity.getId());
 
-        assertThat(iojAppealEntity.getReplaced()).isEqualTo("Y");
+        assertThat(iojAppealEntity.getIapsStatus()).isEqualTo("IN PROGRESS");
         verify(iojAppealPersistenceService).save(any(IOJAppealEntity.class));
     }
 

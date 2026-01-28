@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
+import uk.gov.justice.laa.crime.enums.CurrentStatus;
 
 @Slf4j
 @Service
@@ -23,7 +24,7 @@ public class IOJAppealV2Service {
     public ApiCreateIojAppealResponse create(ApiCreateIojAppealRequest apiCreateIojAppealRequest) {
         log.info("Create IoJ Appeal - Transaction Processing - Start");
         IOJAppealEntity iojAppealEntity = iojAppealMapper.toIojAppealEntity(apiCreateIojAppealRequest);
-        iojAppealPersistenceService.create(iojAppealEntity);
+        iojAppealPersistenceService.save(iojAppealEntity);
 
         log.info("Update previous IoJ Appeal records and set them to replaced");
         iojAppealPersistenceService.setOldIOJAppealsReplaced(iojAppealEntity.getRepOrder().getId(), iojAppealEntity.getId());
@@ -39,5 +40,18 @@ public class IOJAppealV2Service {
             throw new RequestedObjectNotFoundException(String.format("No IoJ Appeal found for ID: %s", iojAppealId));
         }
         return iojAppealMapper.toApiGetIojAppealResponse(iojAppealEntity);
+    }
+
+    @Transactional
+    public void rollback(int iojAppealId) {
+        IOJAppealEntity iojAppealEntity = iojAppealPersistenceService.find(iojAppealId);
+
+        if (iojAppealEntity == null) {
+            throw new RequestedObjectNotFoundException(
+                String.format("No IOJ Appeal found for ID: %s", iojAppealId));
+        }
+
+        iojAppealEntity.setIapsStatus(CurrentStatus.IN_PROGRESS.getStatus());
+        iojAppealPersistenceService.save(iojAppealEntity);
     }
 }

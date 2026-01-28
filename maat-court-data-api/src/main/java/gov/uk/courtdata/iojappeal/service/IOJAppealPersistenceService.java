@@ -2,12 +2,10 @@ package gov.uk.courtdata.iojappeal.service;
 
 import gov.uk.courtdata.dto.IOJAppealDTO;
 import gov.uk.courtdata.entity.IOJAppealEntity;
-import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.repository.IOJAppealRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 
 @Slf4j
 @Service
@@ -24,7 +22,7 @@ public class IOJAppealPersistenceService {
         return iojAppealRepository.findByRepId(repId);
     }
 
-    public void create(IOJAppealEntity iojAppealEntity) {
+    public void save(IOJAppealEntity iojAppealEntity) {
         iojAppealRepository.save(iojAppealEntity);
     }
 

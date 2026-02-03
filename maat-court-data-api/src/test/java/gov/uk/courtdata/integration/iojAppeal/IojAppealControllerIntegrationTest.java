@@ -3,6 +3,7 @@ package gov.uk.courtdata.integration.iojAppeal;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
@@ -21,9 +22,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
+import uk.gov.justice.laa.crime.enums.CurrentStatus;
 import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
@@ -91,5 +92,17 @@ class IojAppealControllerIntegrationTest extends MockMvcIntegrationTest {
     softly.assertThat(iojAppealEntity.getUserCreated()).isEqualTo(apiCreateIojAppealRequest.getIojAppealMetadata().getUserSession().getUserName());
     softly.assertThat(iojAppealEntity.getIapsStatus()).isEqualTo("COMPLETE");
     softly.assertThat(iojAppealEntity.getAppealSetupResult()).isEqualTo("GRANT");
+  }
+
+  @Test
+  void givenValidIoJAppealId_whenRollbackIoJAppealIsInvoked_thenIoJAppealIsRolledBack() throws Exception {
+    IOJAppealEntity iojAppealEntity = repos.iojAppeal.save(TestEntityDataBuilder.getIojAppealEntity("COMPLETE", repId));
+    Integer iojAppealId = iojAppealEntity.getId();
+
+    mockMvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/rollback/" + iojAppealId))
+        .andExpect(status().isOk());
+
+    IOJAppealEntity rolledBackIoJAppealEntity = repos.iojAppeal.findByRepId(repId);
+    assertThat(rolledBackIoJAppealEntity.getIapsStatus()).isEqualTo(CurrentStatus.IN_PROGRESS.getStatus());
   }
 }

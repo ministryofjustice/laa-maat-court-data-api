@@ -22,9 +22,7 @@ public class IOJAppealV1Service {
     @Transactional(readOnly = true)
     public IOJAppealDTO find(Integer iojAppealId) {
         IOJAppealEntity iojAppealEntity = iojAppealPersistenceService.find(iojAppealId);
-        if (iojAppealEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No IoJ Appeal found for ID: %s", iojAppealId));
-        }
+
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);
     }
 

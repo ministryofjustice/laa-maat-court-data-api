@@ -1,7 +1,6 @@
 package gov.uk.courtdata.iojappeal.service;
 
 import gov.uk.courtdata.entity.IOJAppealEntity;
-import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,20 +35,13 @@ public class IOJAppealV2Service {
     @Transactional(readOnly = true)
     public ApiGetIojAppealResponse find(int iojAppealId) {
         IOJAppealEntity iojAppealEntity = iojAppealPersistenceService.find(iojAppealId);
-        if (iojAppealEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No IoJ Appeal found for ID: %s", iojAppealId));
-        }
+
         return iojAppealMapper.toApiGetIojAppealResponse(iojAppealEntity);
     }
 
     @Transactional
     public void rollback(int iojAppealId) {
         IOJAppealEntity iojAppealEntity = iojAppealPersistenceService.find(iojAppealId);
-
-        if (iojAppealEntity == null) {
-            throw new RequestedObjectNotFoundException(
-                String.format("No IOJ Appeal found for ID: %s", iojAppealId));
-        }
 
         iojAppealEntity.setIapsStatus(CurrentStatus.IN_PROGRESS.getStatus());
         iojAppealPersistenceService.save(iojAppealEntity);

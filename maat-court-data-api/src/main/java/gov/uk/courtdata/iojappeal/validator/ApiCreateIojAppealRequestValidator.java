@@ -1,7 +1,6 @@
 package gov.uk.courtdata.iojappeal.validator;
 
 import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.APPEAL_SUCCESSFUL;
-import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.APPLICATION_RECEIVED_DATE;
 import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_APPEAL_REASON_IS_INVALID;
 import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_FIELD_IS_MISSING;
 import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_INCORRECT_COMBINATION;

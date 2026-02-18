@@ -4,7 +4,6 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_IOJ_APPEAL_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
@@ -13,7 +12,6 @@ import static org.mockito.Mockito.when;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.IOJAppealEntity;
-import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,15 +42,6 @@ class IOJAppealV2ServiceTest {
     }
 
     @Test
-    void whenFindByLegacyIdIsInvokedWithInvalidId_thenNotFoundExceptionIsThrown() {
-        when(iojAppealPersistenceService.find(LEGACY_IOJ_APPEAL_ID)).thenReturn(null);
-
-        assertThatExceptionOfType(RequestedObjectNotFoundException.class)
-            .isThrownBy(() -> iojAppealService.find(LEGACY_IOJ_APPEAL_ID))
-            .withMessageContaining(String.format("No IoJ Appeal found for ID: %d", LEGACY_IOJ_APPEAL_ID));
-    }
-
-    @Test
     void whenCreateIsInvoked_thenApiCreateIojAppealResponseIsCreated() {
         var createdApiCreateIojResponse = TestModelDataBuilder.getApiCreateIojAppealResponse();
         var apiCreateIojRequest = TestModelDataBuilder.getApiCreateIojAppealRequest();
@@ -77,14 +66,5 @@ class IOJAppealV2ServiceTest {
 
         assertThat(iojAppealEntity.getIapsStatus()).isEqualTo("IN PROGRESS");
         verify(iojAppealPersistenceService).save(any(IOJAppealEntity.class));
-    }
-
-    @Test
-    void givenInvalidIoJAppealId_whenRollbackIsInvoked_thenExceptionIsRaised() {
-        when(iojAppealPersistenceService.find(IOJ_APPEAL_ID)).thenReturn(null);
-
-        assertThatExceptionOfType(RequestedObjectNotFoundException.class).isThrownBy(
-                () -> iojAppealService.rollback(IOJ_APPEAL_ID))
-            .withMessageContaining(String.format("No IOJ Appeal found for ID: %d", IOJ_APPEAL_ID));
     }
 }

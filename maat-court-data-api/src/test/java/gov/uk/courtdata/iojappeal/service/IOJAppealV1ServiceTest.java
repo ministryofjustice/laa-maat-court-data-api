@@ -47,15 +47,6 @@ class IOJAppealV1ServiceTest {
     }
 
     @Test
-    void whenFindIsInvokedWithInvalidId_thenNotFoundExceptionIsThrown() {
-        when(iojAppealPersistenceService.find(IOJ_REP_ID)).thenReturn(null);
-
-        assertThatExceptionOfType(RequestedObjectNotFoundException.class)
-                .isThrownBy(() -> iojAppealService.find(IOJ_REP_ID))
-                .withMessageContaining(String.format("No IoJ Appeal found for ID: %d", IOJ_REP_ID));
-    }
-
-    @Test
     void whenFindByRepIdIsInvoked_thenIOJAppealIsRetrieved() {
         IOJAppealEntity iojAppealEntity = IOJAppealEntity
                 .builder()

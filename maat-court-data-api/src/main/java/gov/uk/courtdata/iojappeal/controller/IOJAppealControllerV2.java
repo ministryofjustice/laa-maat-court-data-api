@@ -2,6 +2,7 @@ package gov.uk.courtdata.iojappeal.controller;
 
 import gov.uk.courtdata.enums.LoggingData;
 
+import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.iojappeal.service.IOJAppealV2Service;
 import gov.uk.courtdata.iojappeal.validator.ApiCreateIojAppealRequestValidator;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
-import uk.gov.justice.laa.crime.exception.ValidationException;
+import uk.gov.justice.laa.crime.error.ErrorMessage;
 
 @Slf4j
 @RestController
@@ -44,9 +45,9 @@ public class IOJAppealControllerV2 implements IOJAppealApi {
         LoggingData.MAAT_ID.putInMDC(iojAppeal.getIojAppealMetadata().getLegacyApplicationId());
         log.info("Create IOJ Appeal Request Received");
 
-        List<String> validationErrors = ApiCreateIojAppealRequestValidator.validateRequest(iojAppeal);
+        List<ErrorMessage> validationErrors = ApiCreateIojAppealRequestValidator.validateRequest(iojAppeal);
         if (!validationErrors.isEmpty()) {
-            throw new ValidationException("Unable to create IoJ Appeal: " + validationErrors);
+            throw new CrimeValidationException(validationErrors);
         }
 
         ApiCreateIojAppealResponse apiCreateIojAppealResponse = iojAppealService.create(iojAppeal);

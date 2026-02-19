@@ -19,6 +19,7 @@ import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -32,6 +33,7 @@ import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
 class IojAppealControllerIntegrationTest extends MockMvcIntegrationTest {
 
   private static final String ENDPOINT_URL = "/api/internal/v2/assessment/ioj-appeals";
+  private static final String TRACE_ID = "abc123456789";
   private int repId;
 
   @Autowired
@@ -92,6 +94,31 @@ class IojAppealControllerIntegrationTest extends MockMvcIntegrationTest {
     softly.assertThat(iojAppealEntity.getUserCreated()).isEqualTo(apiCreateIojAppealRequest.getIojAppealMetadata().getUserSession().getUserName());
     softly.assertThat(iojAppealEntity.getIapsStatus()).isEqualTo("COMPLETE");
     softly.assertThat(iojAppealEntity.getAppealSetupResult()).isEqualTo("GRANT");
+  }
+
+  @Test
+  void givenApiCreateIojAppealRequestWithMissingLegacyApplicationId_whenCreateIOJAppealIsInvoked_thenProblemDetailIsReturned()
+      throws Exception {
+    ApiCreateIojAppealRequest apiCreateIojAppealRequest = TestModelDataBuilder.getApiCreateIojAppealRequest(repId);
+    apiCreateIojAppealRequest.getIojAppealMetadata().setLegacyApplicationId(null);
+    String apiCreateIojAppealJson = objectMapper.writeValueAsString(apiCreateIojAppealRequest);
+    MDC.put("traceId", TRACE_ID);
+    
+    mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+            .content(apiCreateIojAppealJson)
+            .contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.type").value("about:blank"))
+        .andExpect(jsonPath("$.title").value("Bad Request"))
+        .andExpect(jsonPath("$.status").value(400))
+        .andExpect(jsonPath("$.detail").value("Validation Failure"))
+        .andExpect(jsonPath("$.instance").value("/api/internal/v2/assessment/ioj-appeals"))
+        .andExpect(jsonPath("$.errors.code").value("VALIDATION_FAILURE"))
+        .andExpect(jsonPath("$.errors.traceId").value(TRACE_ID))
+        .andExpect(jsonPath("$.errors.errors[0].field").value("Legacy Application Id"))
+        .andExpect(jsonPath("$.errors.errors[0].message").value("Legacy Application Id is missing."));
+    
+    MDC.clear();
   }
 
   @Test

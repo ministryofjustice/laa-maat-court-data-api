@@ -5,39 +5,36 @@ import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidato
 import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_FIELD_IS_MISSING;
 import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_INCORRECT_COMBINATION;
 import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.LEGACY_APPLICATION_ID;
-import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.REQUEST;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.ObjectUtils;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
 import uk.gov.justice.laa.crime.enums.NewWorkReason;
 import uk.gov.justice.laa.crime.enums.NewWorkReason.NewWorkReasonType;
+import uk.gov.justice.laa.crime.error.ErrorMessage;
 
 @UtilityClass
 public class ApiCreateIojAppealRequestValidator {
-    public List<String> validateRequest(ApiCreateIojAppealRequest request) {
-        if (Objects.isNull(request)) {
-            return List.of(getMissingFieldErrorText(REQUEST.getName()));
-        }
-        var errorList = new ArrayList<String>();
+    public List<ErrorMessage> validateRequest(ApiCreateIojAppealRequest request) {
+        var errorList = new ArrayList<ErrorMessage>();
         var metadata = request.getIojAppealMetadata();
         var appeal = request.getIojAppeal();
 
         if (ObjectUtils.isEmpty(metadata.getLegacyApplicationId())) {
-            errorList.add(getMissingFieldErrorText(LEGACY_APPLICATION_ID.getName()));
+            addErrorMessage(LEGACY_APPLICATION_ID.getName(), 
+                getMissingFieldErrorText(LEGACY_APPLICATION_ID.getName()), errorList);
         }
         if (ObjectUtils.isEmpty(appeal.getAppealSuccessful())) {
-            errorList.add(getMissingFieldErrorText(APPEAL_SUCCESSFUL.getName()));
+            addErrorMessage(APPEAL_SUCCESSFUL.getName(), getMissingFieldErrorText(APPEAL_SUCCESSFUL.getName()), errorList);
         }
         if (!appeal.getAppealReason().getType().equalsIgnoreCase(NewWorkReasonType.HARDIOJ)) {
-            errorList.add(ERROR_APPEAL_REASON_IS_INVALID.getName());
+            addErrorMessage("Appeal reason", ERROR_APPEAL_REASON_IS_INVALID.getName(), errorList);
         }
         if (isInvalidAssessorForReason(appeal.getAppealReason(), appeal.getAppealAssessor())) {
-            errorList.add(ERROR_INCORRECT_COMBINATION.getName());
+            addErrorMessage("Assessor and Appeal reason", ERROR_INCORRECT_COMBINATION.getName(), errorList);
         }
         return errorList;
     }
@@ -52,5 +49,10 @@ public class ApiCreateIojAppealRequestValidator {
 
     private String getMissingFieldErrorText(String fieldName) {
         return String.format(ERROR_FIELD_IS_MISSING.getName(), fieldName);
+    }
+
+    private void addErrorMessage(
+        String fieldName, String errorMessage, List<ErrorMessage> errorList) {
+        errorList.add(new ErrorMessage(fieldName, errorMessage));
     }
 }

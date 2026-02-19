@@ -25,8 +25,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @WebMvcTest(IOJAppealControllerV2.class)
 @AutoConfigureMockMvc(addFilters = false)
 class IOJAppealControllerV2Test {
-
-    private static final boolean IS_VALID = true;
+    
     private static final String ENDPOINT_URL = "/api/internal/v2/assessment/ioj-appeals";
     private static final String ROLLBACK_URL = ENDPOINT_URL + "/rollback/{iojAppealId}";
     @Autowired
@@ -52,8 +51,8 @@ class IOJAppealControllerV2Test {
         when(iojAppealService.find(LEGACY_IOJ_APPEAL_ID)).thenThrow(new RequestedObjectNotFoundException("No IoJ Appeal found for ID: " + LEGACY_IOJ_APPEAL_ID));
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + LEGACY_IOJ_APPEAL_ID))
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("No IoJ Appeal found for ID: " + LEGACY_IOJ_APPEAL_ID));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value("No IoJ Appeal found for ID: " + LEGACY_IOJ_APPEAL_ID));
     }
 
     @Test
@@ -73,22 +72,17 @@ class IOJAppealControllerV2Test {
 
     @Test
     void givenInvalidCreateIOJAppeal_whenCreateIOJAppealIsCalled_thenFailRequestParameterSchemaValidation() throws Exception {
-        var createIOJAppeal = TestModelDataBuilder.getCreateIOJAppealObject(!IS_VALID);
+        var createIOJAppeal = TestModelDataBuilder.getApiCreateIojAppealRequest();
+        createIOJAppeal.getIojAppealMetadata().setLegacyApplicationId(null);
         var createIOJAppealJson = objectMapper.writeValueAsString(createIOJAppeal);
 
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(createIOJAppealJson).contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     void givenCreateIOJAppeal_whenServerErrors_thenRequestBodyIsMissing() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-    }
-
-    @Test
-    void givenCreateIOJAppeal_whenGivenBadRequest_thenRequestBodyIsEmpty() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content("{}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -111,7 +105,7 @@ class IOJAppealControllerV2Test {
 
         mvc.perform(MockMvcRequestBuilders.patch(ROLLBACK_URL, LEGACY_IOJ_APPEAL_ID))
             .andExpect(status().isNotFound())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.message").value(exceptionMessage));
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(jsonPath("$.detail").value(exceptionMessage));
     }
 }

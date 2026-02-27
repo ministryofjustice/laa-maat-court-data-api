@@ -34,7 +34,7 @@ import uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason;
     PassportAssessmentMapperV2Impl.class,
     PassportAssessmentMapperHelper.class
 })
-public class PassportAssessmentMapperTest {
+class PassportAssessmentMapperTest {
     
     @MockitoBean
     private RepOrderApplicantLinksRepository repOrderApplicantLinksRepository;
@@ -74,17 +74,17 @@ public class PassportAssessmentMapperTest {
 
         when(repOrderApplicantLinksRepository.findAllByRepId(anyInt())).thenReturn(List.of(
             applicantLinksEntity));
-        when(repOrderApplicantLinksMapper.mapEntityToDTO(eq(List.of(applicantLinksEntity)))).thenReturn(List.of(repOrderApplicantLinksDto));
+        when(repOrderApplicantLinksMapper.mapEntityToDTO(List.of(applicantLinksEntity))).thenReturn(List.of(repOrderApplicantLinksDto));
         
         var response = passportAssessmentMapper.toApiGetPassportedAssessmentResponse(entity);
 
         assertThat(response.getLegacyAssessmentId()).isEqualTo(entity.getId());
-        assertThat(response.getAssessmentId()).isEqualTo(null);
+        assertThat(response.getAssessmentId()).isNull();
         assertThat(response.getUsn()).isEqualTo(entity.getUsn());
         assertThat(response.getAssessmentDate()).isEqualTo(entity.getAssessmentDate());
         assertThat(response.getAssessmentReason().getCode()).isEqualTo(entity.getNworCode());
         assertThat(response.getReviewType().getCode()).isEqualTo(entity.getRtCode());
-        assertThat(response.getDeclaredUnder18()).isEqualTo(true);
+        assertThat(response.getDeclaredUnder18()).isTrue();
         assertThat(response.getDeclaredBenefit().getBenefitType()).isEqualTo(BenefitType.INCOME_SUPPORT);
         assertThat(response.getDeclaredBenefit().getLastSignOnDate()).isEqualTo(entity.getLastSignOnDate());
         assertThat(response.getDeclaredBenefit().getBenefitRecipient()).isEqualTo(BenefitRecipient.PARTNER);
@@ -308,7 +308,7 @@ public class PassportAssessmentMapperTest {
         
         when(repOrderApplicantLinksRepository.findAllByRepId(anyInt())).thenReturn(List.of(
             applicantLinksEntity));
-        when(repOrderApplicantLinksMapper.mapEntityToDTO(eq(List.of(applicantLinksEntity)))).thenReturn(List.of(repOrderApplicantLinksDto));
+        when(repOrderApplicantLinksMapper.mapEntityToDTO(List.of(applicantLinksEntity))).thenReturn(List.of(repOrderApplicantLinksDto));
         
         Integer partnerLegacyId = passportAssessmentMapperHelper.mapPartnerLegacyId(entity);
 
@@ -329,8 +329,8 @@ public class PassportAssessmentMapperTest {
 
         when(repOrderApplicantLinksRepository.findAllByRepId(anyInt())).thenReturn(List.of(
             previousApplicantLinksEntity, currentApplicantLinksEntity));
-        when(repOrderApplicantLinksMapper.mapEntityToDTO(eq(List.of(
-            previousApplicantLinksEntity, currentApplicantLinksEntity)))).thenReturn(
+        when(repOrderApplicantLinksMapper.mapEntityToDTO(List.of(
+            previousApplicantLinksEntity, currentApplicantLinksEntity))).thenReturn(
                 List.of(previousRepOrderApplicantLinksDto, currentRepOrderApplicantLinksDto));
 
         Integer partnerLegacyId = passportAssessmentMapperHelper.mapPartnerLegacyId(entity);

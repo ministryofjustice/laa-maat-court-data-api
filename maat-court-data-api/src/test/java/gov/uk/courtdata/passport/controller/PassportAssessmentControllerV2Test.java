@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(PassportAssessmentControllerV2.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class PassportAssessmentControllerV2Test {
+class PassportAssessmentControllerV2Test {
 
     private static final String ENDPOINT_URL = "/api/internal/v2/assessment/passport-assessments";
     

@@ -36,14 +36,10 @@ public interface PassportAssessmentMapper {
     
     @Named("under18Mapper")
     default Boolean mapUnder18(PassportAssessmentEntity passportAssessmentEntity) {
-        if ((passportAssessmentEntity.getUnder18HeardInYouthCourt() != null
+        return ((passportAssessmentEntity.getUnder18HeardInYouthCourt() != null
             && passportAssessmentEntity.getUnder18HeardInYouthCourt().equals("Y"))
             || (passportAssessmentEntity.getUnder18HeardInMagsCourt() != null 
-            && passportAssessmentEntity.getUnder18HeardInMagsCourt().equals("Y"))) {
-            return true;
-        }
-        
-        return false;
+            && passportAssessmentEntity.getUnder18HeardInMagsCourt().equals("Y"))) ? true : false;
     }
 
     @Named("benefitTypeMapper")
@@ -100,11 +96,10 @@ public interface PassportAssessmentMapper {
                     return PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED;
             }  
         } else if (passportAssessmentEntity.getResult().equals("TEMP")) {
-            switch (passportAssessmentEntity.getPcobConfirmation()) {
-                case "NOCONFPOS":
-                    return PassportAssessmentDecisionReason.DWP_CHECK_UNAVAILABLE;
-                case "INCUSTODY":
-                    return PassportAssessmentDecisionReason.IN_CUSTODY;
+            if (passportAssessmentEntity.getPcobConfirmation().equals("NOCONFPOS")) {
+                return PassportAssessmentDecisionReason.DWP_CHECK_UNAVAILABLE;
+            } else if (passportAssessmentEntity.getPcobConfirmation().equals("INCUSTODY")) {
+                return PassportAssessmentDecisionReason.IN_CUSTODY;
             }
         } else if (passportAssessmentEntity.getResult().equals("FAIL CONTINUE")) {
             return PassportAssessmentDecisionReason.DWP_CHECK;

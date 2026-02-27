@@ -296,7 +296,7 @@ class PassportAssessmentMapperTest {
         
         Integer partnerLegacyId = passportAssessmentMapperHelper.mapPartnerLegacyId(entity);
 
-        assertThat(partnerLegacyId).isEqualTo(null);
+        assertThat(partnerLegacyId).isNull();
     }
     
     @Test

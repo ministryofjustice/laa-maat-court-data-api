@@ -39,7 +39,7 @@ public interface PassportAssessmentMapper {
         return ((passportAssessmentEntity.getUnder18HeardInYouthCourt() != null
             && passportAssessmentEntity.getUnder18HeardInYouthCourt().equals("Y"))
             || (passportAssessmentEntity.getUnder18HeardInMagsCourt() != null 
-            && passportAssessmentEntity.getUnder18HeardInMagsCourt().equals("Y"))) ? true : false;
+            && passportAssessmentEntity.getUnder18HeardInMagsCourt().equals("Y")));
     }
 
     @Named("benefitTypeMapper")

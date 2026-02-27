@@ -400,7 +400,7 @@ public class TestEntityDataBuilder {
                 .dateCompleted(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .usn(1234)
                 .whoDWPChecked("ABC")
-                .rtCode("DEF")
+                .rtCode("ER")
                 .build();
     }
 

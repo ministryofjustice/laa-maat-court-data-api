@@ -30,7 +30,6 @@ import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
-import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
@@ -39,13 +38,20 @@ import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.IojAppeal;
 import uk.gov.justice.laa.crime.common.model.ioj.IojAppealMetadata;
+import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
+import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
 import uk.gov.justice.laa.crime.enums.AppealType;
+import uk.gov.justice.laa.crime.enums.BenefitRecipient;
+import uk.gov.justice.laa.crime.enums.BenefitType;
 import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
 import uk.gov.justice.laa.crime.enums.IojAppealDecisionReason;
 import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.enums.PassportAssessmentDecision;
+import uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason;
+import uk.gov.justice.laa.crime.enums.ReviewType;
 import uk.gov.justice.laa.crime.enums.contribution.TransferStatus;
 
 import java.math.BigDecimal;
@@ -98,6 +104,8 @@ public class TestModelDataBuilder {
     public static final List<String> ROLE_ACTIONS_LIST = List.of("TEST_ROLE");
     public static final ReservationsDTO RESERVATIONS_DTO = new ReservationsDTO();
     public static final Integer RESERVATION_ID = 100000;
+    public static final Integer PASSPORT_ASSESSMENT_ID = 1234;
+    public static final Integer LEGACY_PASSPORT_ASSESSMENT_ID = 5678;
     private static final int USN_VALUE = 810529;
     private static final int MAAT_REF_VALUE = 4799873;
     private static final String CASE_ID_VALUE = "1400466826-10";
@@ -583,6 +591,28 @@ public class TestModelDataBuilder {
                                  .username("test-f")
                                  .build()
                 ).build();
+    }
+
+    public static ApiGetPassportedAssessmentResponse getApiGetPassportedAssessmentResponse() {
+        
+        DeclaredBenefit declaredBenefit = new DeclaredBenefit()
+            .withBenefitType(BenefitType.UC)
+            .withLastSignOnDate(LocalDateTime.now().minusDays(15))
+            .withBenefitRecipient(BenefitRecipient.APPLICANT)
+            .withLegacyPartnerId(null);
+        
+        return new ApiGetPassportedAssessmentResponse()
+            .withAssessmentId(PASSPORT_ASSESSMENT_ID.toString())
+            .withLegacyAssessmentId(LEGACY_PASSPORT_ASSESSMENT_ID)
+            .withUsn(USN_VALUE)
+            .withAssessmentDate(LocalDateTime.now().minusDays(1))
+            .withAssessmentReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
+            .withReviewType(ReviewType.EM)
+            .withDeclaredUnder18(false)
+            .withDeclaredBenefit(declaredBenefit)
+            .withAssessmentDecision(PassportAssessmentDecision.PASS)
+            .withDecisionReason(PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED)
+            .withNotes("Test notes");
     }
 
     public static String getCreatePassportAssessmentJson() {

@@ -55,6 +55,8 @@ public class PassportAssessmentEntity {
     private LocalDateTime partnerDob;
     @Column(name = "INCOME_SUPPORT")
     private String incomeSupport;
+    @Column(name = "UNIVERSAL_CREDIT")
+    private String universalCredit;
     @Column(name = "JOB_SEEKERS")
     private String jobSeekers;
     @Column(name = "STATE_PENSION_CREDIT")

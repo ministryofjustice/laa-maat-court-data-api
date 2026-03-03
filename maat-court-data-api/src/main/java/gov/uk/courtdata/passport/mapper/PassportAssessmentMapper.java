@@ -30,7 +30,7 @@ public interface PassportAssessmentMapper {
         PassportAssessmentEntity passportAssessmentEntity);
     
     @Named("under18Mapper")
-    default Boolean mapUnder18(PassportAssessmentEntity passportAssessmentEntity) {
+    default boolean mapUnder18(PassportAssessmentEntity passportAssessmentEntity) {
         return ((passportAssessmentEntity.getUnder18HeardInYouthCourt() != null
             && passportAssessmentEntity.getUnder18HeardInYouthCourt().equals("Y"))
             || (passportAssessmentEntity.getUnder18HeardInMagsCourt() != null 

@@ -1,13 +1,13 @@
 package gov.uk.courtdata.passport.mapper;
 
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import org.mapstruct.Condition;
+import org.mapstruct.ConditionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
-import uk.gov.justice.laa.crime.enums.BenefitRecipient;
-import uk.gov.justice.laa.crime.enums.BenefitType;
 import uk.gov.justice.laa.crime.enums.PassportAssessmentDecision;
 import uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason;
 
@@ -20,13 +20,8 @@ public interface PassportAssessmentMapper {
     @Mapping(target = "reviewType", source = "rtCode")
     @Mapping(target = "declaredUnder18", source = "passportAssessmentEntity", 
         qualifiedByName = "under18Mapper")
-    @Mapping(target = "declaredBenefit.benefitType", source = "passportAssessmentEntity",
-        qualifiedByName = "benefitTypeMapper")
-    @Mapping(target = "declaredBenefit.lastSignOnDate", source = "lastSignOnDate")
-    @Mapping(target = "declaredBenefit.benefitRecipient", source = "passportAssessmentEntity", 
-        qualifiedByName = "benefitRecipientMapper")
-    @Mapping(target = "declaredBenefit.legacyPartnerId", source = "passportAssessmentEntity", 
-        qualifiedByName = "partnerLegacyIdMapper")
+    @Mapping(target = "declaredBenefit", source = "passportAssessmentEntity",
+        qualifiedByName = "declaredBenefitMapper", conditionQualifiedByName = "isOver18")
     @Mapping(target = "assessmentDecision", source = "passportAssessmentEntity", 
         qualifiedByName = "assessmentDecisionMapper")
     @Mapping(target = "decisionReason", source = "passportAssessmentEntity", 
@@ -42,32 +37,10 @@ public interface PassportAssessmentMapper {
             && passportAssessmentEntity.getUnder18HeardInMagsCourt().equals("Y")));
     }
 
-    @Named("benefitTypeMapper")
-    default BenefitType mapBenefitType(PassportAssessmentEntity passportAssessmentEntity) {
-        if (passportAssessmentEntity.getIncomeSupport() != null 
-            && passportAssessmentEntity.getIncomeSupport().equals("Y")) {
-            return BenefitType.INCOME_SUPPORT;
-        } else if (passportAssessmentEntity.getJobSeekers() != null 
-            && passportAssessmentEntity.getJobSeekers().equals("Y")) {
-            return BenefitType.JSA;
-        } else if (passportAssessmentEntity.getEsa() != null 
-            && passportAssessmentEntity.getEsa().equals("Y")) {
-            return BenefitType.ESA;
-        } else if (passportAssessmentEntity.getStatePensionCredit() != null 
-            && passportAssessmentEntity.getStatePensionCredit().equals("Y")) {
-            return BenefitType.GSPC;
-        } else if (passportAssessmentEntity.getUniversalCredit().equals("Y")) {
-            return BenefitType.UC;
-        }
-        
-        return null;
-    }
-    
-    @Named("benefitRecipientMapper")
-    default BenefitRecipient mapBenefitRecipient(PassportAssessmentEntity passportAssessmentEntity) {
-        return passportAssessmentEntity.getPartnerBenefitClaimed() != null 
-            && passportAssessmentEntity.getPartnerBenefitClaimed().equals("Y") 
-            ? BenefitRecipient.PARTNER : BenefitRecipient.APPLICANT;
+    @Condition(appliesTo = ConditionStrategy.SOURCE_PARAMETERS)
+    @Named("isOver18")
+    default boolean isOver18(PassportAssessmentEntity passportAssessmentEntity) {
+        return !mapUnder18(passportAssessmentEntity);
     }
 
     @Named("assessmentDecisionMapper")

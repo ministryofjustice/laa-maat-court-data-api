@@ -3,7 +3,6 @@ package gov.uk.courtdata.passport.mapper;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Named.named;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
@@ -61,7 +60,6 @@ class PassportAssessmentMapperTest {
     @Test
     void givenPassportAssessmentEntity_whenMapToApiGetPassportedAssessmentResponse_thenAllFieldsMapped() {
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
-        entity.setUnder18HeardInMagsCourt("Y");
         entity.setIncomeSupport("Y");
         entity.setJobSeekers(null);
         entity.setEsa(null);
@@ -84,7 +82,7 @@ class PassportAssessmentMapperTest {
         assertThat(response.getAssessmentDate()).isEqualTo(entity.getAssessmentDate());
         assertThat(response.getAssessmentReason().getCode()).isEqualTo(entity.getNworCode());
         assertThat(response.getReviewType().getCode()).isEqualTo(entity.getRtCode());
-        assertThat(response.getDeclaredUnder18()).isTrue();
+        assertThat(response.getDeclaredUnder18()).isFalse();
         assertThat(response.getDeclaredBenefit().getBenefitType()).isEqualTo(BenefitType.INCOME_SUPPORT);
         assertThat(response.getDeclaredBenefit().getLastSignOnDate()).isEqualTo(entity.getLastSignOnDate());
         assertThat(response.getDeclaredBenefit().getBenefitRecipient()).isEqualTo(BenefitRecipient.PARTNER);
@@ -93,6 +91,18 @@ class PassportAssessmentMapperTest {
             PassportAssessmentDecision.PASS);
         assertThat(response.getDecisionReason()).isEqualTo(PassportAssessmentDecisionReason.DWP_CHECK);
         assertThat(response.getNotes()).isEqualTo(entity.getPassportNote());
+    }
+
+    @Test
+    void givenPassportAssessmentEntityForUnder18_whenMapToApiGetPassportedAssessmentResponse_thenDeclaredBenefitIsNotMapped() {
+        var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
+        entity.setUnder18HeardInMagsCourt("Y");
+
+        var response = passportAssessmentMapper.toApiGetPassportedAssessmentResponse(entity);
+
+        assertThat(response.getLegacyAssessmentId()).isEqualTo(entity.getId());
+        assertThat(response.getDeclaredUnder18()).isTrue();
+        assertThat(response.getDeclaredBenefit()).isNull();
     }
     
     private static Stream<Arguments> declaredUnder18TestData() {
@@ -192,7 +202,7 @@ class PassportAssessmentMapperTest {
         entity.setStatePensionCredit(pensionCredit);
         entity.setUniversalCredit(universalCredit);
 
-        BenefitType benefitType = passportAssessmentMapper.mapBenefitType(entity);
+        BenefitType benefitType = passportAssessmentMapperHelper.mapBenefitType(entity);
 
         assertThat(benefitType).isEqualTo(expectedBenefit);
     }
@@ -217,7 +227,7 @@ class PassportAssessmentMapperTest {
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setPartnerBenefitClaimed(partnerBenefitClaimed);
 
-        BenefitRecipient benefitRecipient = passportAssessmentMapper.mapBenefitRecipient(entity);
+        BenefitRecipient benefitRecipient = passportAssessmentMapperHelper.mapBenefitRecipient(entity);
 
         assertThat(benefitRecipient).isEqualTo(expectedRecipient);
     }

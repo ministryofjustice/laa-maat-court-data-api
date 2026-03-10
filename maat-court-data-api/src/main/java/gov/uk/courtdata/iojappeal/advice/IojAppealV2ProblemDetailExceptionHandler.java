@@ -1,13 +1,13 @@
 package gov.uk.courtdata.iojappeal.advice;
 
-import gov.uk.courtdata.constants.ErrorCodes;
 import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.iojappeal.controller.IOJAppealControllerV2;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,10 +16,11 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
+import uk.gov.justice.laa.crime.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.error.ErrorExtension;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
@@ -30,64 +31,92 @@ import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
 @RestControllerAdvice(assignableTypes = IOJAppealControllerV2.class)
 public class IojAppealV2ProblemDetailExceptionHandler {
 
-    @ExceptionHandler(RequestedObjectNotFoundException.class)
-    public ResponseEntity<ProblemDetail> handleMethodArgumentTypeMismatchException(RequestedObjectNotFoundException ex) {
-        return buildSimpleErrorResponse(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.name(), ex.getMessage());
+    private final ObjectProvider<TraceIdHandler> traceIdHandlerProvider;
+
+    private String getTraceId() {
+        return Optional.ofNullable(traceIdHandlerProvider.getIfAvailable())
+                .map(TraceIdHandler::getTraceId)
+                .orElse("");
     }
 
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
-    public ResponseEntity<ProblemDetail> handleMethodArgumentTypeMismatchException(Exception ex) {
-        return buildSimpleErrorResponse(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.name(), ex.getMessage());
+    @ExceptionHandler(RequestedObjectNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleNotFound(
+            RequestedObjectNotFoundException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, ProblemDetailError.OBJECT_NOT_FOUND,
+                ex.getMessage(), List.of());
+    }
+
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class,
+            HttpMessageNotReadableException.class})
+    public ResponseEntity<ProblemDetail> handleBadRequest(Exception ex) {
+        log.warn("Bad request. TraceId={} Detail={}", getTraceId(), ex.getMessage());
+        return buildResponse(HttpStatus.BAD_REQUEST, ProblemDetailError.BAD_REQUEST);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ProblemDetail> handleValidation(DataIntegrityViolationException ex) {
-        return buildSimpleErrorResponse(HttpStatus.NOT_FOUND, ErrorCodes.DB_ERROR, ex.getMessage());
+    public ResponseEntity<ProblemDetail> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex) {
+        log.warn("DB error. TraceId={} Detail={}", getTraceId(), ex.getMessage());
+        return buildResponse(HttpStatus.BAD_REQUEST, ProblemDetailError.DB_ERROR);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ProblemDetail> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException ex) {
+
+        log.warn("Bean validation failed. TraceId={} Detail={}", getTraceId(),
+                ex.getMessage());
+        var messages = ex.getBindingResult().getFieldErrors().stream()
+                .map(e -> new ErrorMessage(e.getField(), e.getDefaultMessage()))
+                .toList();
+
+        return buildResponse(HttpStatus.BAD_REQUEST, ProblemDetailError.VALIDATION_FAILURE,
+                messages);
     }
 
     @ExceptionHandler(CrimeValidationException.class)
-    public ResponseEntity<ProblemDetail> handleValidation(CrimeValidationException ex) {
-        ErrorExtension extension = buildErrorExtension(
-            "VALIDATION_FAILURE", MDC.get("traceId"), ex.getExceptionMessages());
-        return buildSimpleErrorResponse(HttpStatus.BAD_REQUEST, "Validation Failure", extension);
+    public ResponseEntity<ProblemDetail> handleValidationFailure(CrimeValidationException ex) {
+        log.warn("Crime validation exception. TraceId={} Errors={} Detail={}",
+                getTraceId(),
+                ex.getExceptionMessages().size(), String.join(", ",
+                        ex.getExceptionMessages().stream().map(ErrorMessage::message).toList()));
+        return buildResponse(HttpStatus.BAD_REQUEST, ProblemDetailError.VALIDATION_FAILURE,
+                ex.getExceptionMessages());
     }
-    
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleUnhandled(Exception ex) {
-        // avoid leaking internals; log full exception, return generic detail
-        ProblemDetail pd = ProblemDetailUtil.buildProblemDetail(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Unexpected error",
-                buildErrorExtension(HttpStatus.INTERNAL_SERVER_ERROR.name(), MDC.get("traceId"), List.of()
-        ));
-        logError(HttpStatus.INTERNAL_SERVER_ERROR.toString(), ex.getMessage());
-        return ResponseEntity.status(pd.getStatus()).body(pd);
+        log.error("Unhandled exception. TraceId={}", getTraceId(), ex);
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                ProblemDetailError.APPLICATION_ERROR);
     }
 
-    private ResponseEntity<ProblemDetail> buildSimpleErrorResponse(
-            HttpStatusCode status, String message, ErrorExtension extension) {
-        logError(status.toString(), message);
-        return new ResponseEntity<>(ProblemDetailUtil.buildProblemDetail(status, message, extension), status);
-    }
-
-    private ResponseEntity<ProblemDetail> buildSimpleErrorResponse(
-            HttpStatusCode status, String errorCode, String message) {
-        logError(status.toString(), message);
-        // create extension with empty list. Detail will suffice.
-        ErrorExtension extension = buildErrorExtension(errorCode, MDC.get("traceId"), List.of());
-        return buildSimpleErrorResponse(status, message, extension);
-    }
-
-    private ErrorExtension buildErrorExtension(String code, String traceId, List<ErrorMessage> errorMessages) {
+    private ErrorExtension buildErrorExtension(String code, String traceId,
+            List<ErrorMessage> errorMessages) {
         return ProblemDetailUtil.buildErrorExtension(code, traceId, errorMessages);
     }
 
-    private void logError(String status, String message) {
-        log.error(
-                "Exception Occurred. Status - {}, Detail - {}, TraceId - {}",
-                status,
-                message,
-                "");
+    private ResponseEntity<ProblemDetail> buildResponse(
+            HttpStatusCode status, ProblemDetailError error, String detailOverride,
+            List<ErrorMessage> errors) {
+
+        ErrorExtension extension = buildErrorExtension(error.code(), getTraceId(),
+                errors);
+        return ResponseEntity.status(status)
+                .body(ProblemDetailUtil.buildProblemDetail(status, detailOverride, extension));
     }
+
+    private ResponseEntity<ProblemDetail> buildResponse(
+            HttpStatusCode status, ProblemDetailError error) {
+
+        return buildResponse(status, error, error.defaultDetail(), List.of());
+    }
+
+    private ResponseEntity<ProblemDetail> buildResponse(
+            HttpStatusCode status, ProblemDetailError error, List<ErrorMessage> errors) {
+
+        return buildResponse(status, error, error.defaultDetail(), errors);
+    }
+
 }
 

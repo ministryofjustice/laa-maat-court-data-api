@@ -42,6 +42,7 @@ public class IojAppealV2ProblemDetailExceptionHandler {
     @ExceptionHandler(RequestedObjectNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleNotFound(
             RequestedObjectNotFoundException ex) {
+        log.info("Resource not found. TraceId={} Detail={}", getTraceId(), ex.getMessage());
         return buildResponse(HttpStatus.NOT_FOUND, ProblemDetailError.OBJECT_NOT_FOUND,
                 ex.getMessage(), List.of());
     }
@@ -56,7 +57,7 @@ public class IojAppealV2ProblemDetailExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ProblemDetail> handleDataIntegrityViolation(
             DataIntegrityViolationException ex) {
-        log.warn("DB error. TraceId={} Detail={}", getTraceId(), ex.getMessage());
+        log.warn("DB constraint violation. TraceId={}", getTraceId(), ex);
         return buildResponse(HttpStatus.BAD_REQUEST, ProblemDetailError.DB_ERROR);
     }
 

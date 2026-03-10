@@ -7,10 +7,8 @@ import static org.mockito.Mockito.when;
 import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -21,9 +19,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import uk.gov.justice.laa.crime.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.error.ErrorExtension;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
+import uk.gov.justice.laa.crime.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
 
 class IojAppealV2ProblemDetailExceptionHandlerTest {
@@ -42,11 +40,6 @@ class IojAppealV2ProblemDetailExceptionHandlerTest {
     void setUp() {
         when(traceIdHandler.getTraceId()).thenReturn(TEST_TRACE_ID);
         when(traceIdHandlerProvider.getIfAvailable()).thenReturn(traceIdHandler);
-    }
-
-    @AfterEach
-    void tearDown() {
-        MDC.clear();
     }
 
     @Test

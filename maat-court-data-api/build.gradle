@@ -52,6 +52,9 @@ dependencies {
     implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$crimeCommonsClasses"
     implementation "uk.gov.justice.service.laa-crime:crime-commons-mod-schemas:$commonsModSchemas"
 
+    implementation 'io.micrometer:micrometer-tracing'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+
     implementation "io.sentry:sentry-logback"
     implementation "io.sentry:sentry-spring-boot-starter-jakarta"
 

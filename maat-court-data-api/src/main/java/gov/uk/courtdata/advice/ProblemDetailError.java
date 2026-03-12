@@ -1,4 +1,4 @@
-package gov.uk.courtdata.iojappeal.advice;
+package gov.uk.courtdata.advice;
 
 public enum ProblemDetailError {
 

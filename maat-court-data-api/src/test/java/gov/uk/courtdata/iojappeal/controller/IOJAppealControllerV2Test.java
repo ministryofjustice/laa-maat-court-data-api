@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.iojappeal.advice.ProblemDetailError;
+import gov.uk.courtdata.advice.ProblemDetailError;
 import gov.uk.courtdata.iojappeal.service.IOJAppealV2Service;
 import gov.uk.courtdata.iojappeal.validator.ApiCreateIojAppealRequestValidator;
 import org.junit.jupiter.api.Test;

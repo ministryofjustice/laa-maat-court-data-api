@@ -12,7 +12,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.iojappeal.advice.ProblemDetailError;
+import gov.uk.courtdata.advice.ProblemDetailError;
 import java.time.format.DateTimeFormatter;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;

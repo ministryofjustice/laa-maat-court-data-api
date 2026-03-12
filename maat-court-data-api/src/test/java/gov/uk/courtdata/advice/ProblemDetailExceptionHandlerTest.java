@@ -1,4 +1,4 @@
-package gov.uk.courtdata.iojappeal.advice;
+package gov.uk.courtdata.advice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -24,7 +24,7 @@ import uk.gov.justice.laa.crime.error.ErrorMessage;
 import uk.gov.justice.laa.crime.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
 
-class IojAppealV2ProblemDetailExceptionHandlerTest {
+class ProblemDetailExceptionHandlerTest {
 
     private static final String TEST_TRACE_ID = "abc-123";
 
@@ -33,8 +33,8 @@ class IojAppealV2ProblemDetailExceptionHandlerTest {
     @SuppressWarnings("unchecked")
     private final ObjectProvider<TraceIdHandler> traceIdHandlerProvider = mock(ObjectProvider.class);
 
-    private final IojAppealV2ProblemDetailExceptionHandler handler =
-            new IojAppealV2ProblemDetailExceptionHandler(traceIdHandlerProvider);
+    private final ProblemDetailExceptionHandler handler =
+            new ProblemDetailExceptionHandler(traceIdHandlerProvider);
 
     @BeforeEach
     void setUp() {

@@ -1,4 +1,4 @@
-package gov.uk.courtdata.iojappeal.advice;
+package gov.uk.courtdata.advice;
 
 import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -29,7 +29,7 @@ import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
 @RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes = IOJAppealControllerV2.class)
-public class IojAppealV2ProblemDetailExceptionHandler {
+public class ProblemDetailExceptionHandler {
 
     private final ObjectProvider<TraceIdHandler> traceIdHandlerProvider;
 

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
@@ -17,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import uk.gov.justice.laa.crime.error.ErrorExtension;
@@ -156,6 +159,36 @@ class ProblemDetailExceptionHandlerTest {
     }
 
     @Test
+    void handleHttpRequestMethodNotSupportedException_thenReturns405() {
+        HttpRequestMethodNotSupportedException exception = new HttpRequestMethodNotSupportedException("PUT");
+
+        ResponseEntity<ProblemDetail> response = handler.handleMethodNotSupported(exception);
+
+        assertProblemDetail(
+                response,
+                HttpStatus.METHOD_NOT_ALLOWED,
+                ProblemDetailError.METHOD_NOT_ALLOWED.defaultDetail(),
+                ProblemDetailError.METHOD_NOT_ALLOWED.code(),
+                List.of()
+        );
+    }
+
+    @Test
+    void givenHttpMediaTypeNotSupportedException_whenHandleUnsupportedMediaType_thenReturns415() {
+        HttpMediaTypeNotSupportedException exception = new HttpMediaTypeNotSupportedException("application/xml");
+
+        ResponseEntity<ProblemDetail> response = handler.handleUnsupportedMediaType(exception);
+
+        assertProblemDetail(
+                response,
+                HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                ProblemDetailError.UNSUPPORTED_MEDIA_TYPE.defaultDetail(),
+                ProblemDetailError.UNSUPPORTED_MEDIA_TYPE.code(),
+                List.of()
+        );
+    }
+
+    @Test
     void handleUnhandled_returns500() {
         RuntimeException ex = new RuntimeException("Error");
 
@@ -203,7 +236,8 @@ class ProblemDetailExceptionHandlerTest {
     }
 
     private ErrorExtension getErrorExtension(ProblemDetail body) {
-        return ProblemDetailUtil.getErrorExtension(body)
-                .orElseThrow(() -> new AssertionError("Expected error extension to be present"));
+        Optional<ErrorExtension> errorExtension = ProblemDetailUtil.getErrorExtension(body);
+        assertThat(errorExtension).isPresent();
+        return errorExtension.get();
     }
 }

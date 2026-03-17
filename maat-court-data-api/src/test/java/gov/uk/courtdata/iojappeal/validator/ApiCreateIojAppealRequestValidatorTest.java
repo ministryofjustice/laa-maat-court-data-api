@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
 import uk.gov.justice.laa.crime.enums.NewWorkReason;
+import uk.gov.justice.laa.crime.error.ErrorMessage;
 
 class ApiCreateIojAppealRequestValidatorTest {
 
@@ -25,10 +26,10 @@ class ApiCreateIojAppealRequestValidatorTest {
           request.getIojAppealMetadata().setLegacyApplicationId(null);
           request.getIojAppealMetadata().setApplicationReceivedDate(null);
           int expectedErrorCount = 2; // 1 field validation on appeal, 1 on metadata.
-          List<String> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
+          List<ErrorMessage> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
           assertThat(returnedErrorList).hasSize(expectedErrorCount);
           assertThat(returnedErrorList.stream()
-              .filter(x -> x.contains(" is missing."))
+              .filter(x -> x.message().contains(" is missing."))
               .count())
               .isEqualTo(expectedErrorCount);
     }
@@ -50,12 +51,12 @@ class ApiCreateIojAppealRequestValidatorTest {
         request.getIojAppeal().setAppealAssessor(assessor);
         request.getIojAppeal().setAppealReason(reason);
 
-        List<String> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
+        List<ErrorMessage> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
         if (isValidCombination) {
             assertThat(returnedErrorList).isEmpty();
         } else {
             assertThat(returnedErrorList).hasSize(1);
-            assertThat(returnedErrorList.getFirst()).isEqualTo(ERROR_INCORRECT_COMBINATION.getName());
+            assertThat(returnedErrorList.getFirst().message()).isEqualTo(ERROR_INCORRECT_COMBINATION.getName());
         }
     }
 
@@ -68,8 +69,8 @@ class ApiCreateIojAppealRequestValidatorTest {
         var request = TestModelDataBuilder.getApiCreateIojAppealRequest();
         request.getIojAppeal().setAppealReason(reason);
 
-        List<String> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
+        List<ErrorMessage> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
         assertThat(returnedErrorList).hasSize(1);
-        assertThat(returnedErrorList.getFirst()).isEqualTo(ERROR_APPEAL_REASON_IS_INVALID.getName());
+        assertThat(returnedErrorList.getFirst().message()).isEqualTo(ERROR_APPEAL_REASON_IS_INVALID.getName());
     }
 }

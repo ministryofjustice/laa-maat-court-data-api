@@ -33,20 +33,21 @@ public class IOJAppealPersistenceService {
     }
 
     public IOJAppealEntity update(IOJAppealDTO iojAppealDTO) {
-        var existingIOJAppealEntity = iojAppealRepository.getReferenceById(iojAppealDTO.getId());
+        var existingIOJAppealEntity = iojAppealRepository.findById(iojAppealDTO.getId())
+                .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("No IoJ Appeal found for ID: %s", iojAppealDTO.getId())));
 
-        existingIOJAppealEntity.setAppealSetupDate(iojAppealDTO.getAppealSetupDate());
-        existingIOJAppealEntity.setNworCode(iojAppealDTO.getNworCode());
-        existingIOJAppealEntity.setCmuId(iojAppealDTO.getCmuId());
-        existingIOJAppealEntity.setIapsStatus(iojAppealDTO.getIapsStatus());
-        existingIOJAppealEntity.setAppealSetupResult(iojAppealDTO.getAppealSetupResult());
-        existingIOJAppealEntity.setDecisionDate(iojAppealDTO.getDecisionDate());
-        existingIOJAppealEntity.setDecisionResult(iojAppealDTO.getDecisionResult());
-        existingIOJAppealEntity.setIderCode(iojAppealDTO.getIderCode());
-        existingIOJAppealEntity.setNotes(iojAppealDTO.getNotes());
-        existingIOJAppealEntity.setUserModified(iojAppealDTO.getUserModified());
+            existingIOJAppealEntity.setAppealSetupDate(iojAppealDTO.getAppealSetupDate());
+            existingIOJAppealEntity.setNworCode(iojAppealDTO.getNworCode());
+            existingIOJAppealEntity.setCmuId(iojAppealDTO.getCmuId());
+            existingIOJAppealEntity.setIapsStatus(iojAppealDTO.getIapsStatus());
+            existingIOJAppealEntity.setAppealSetupResult(iojAppealDTO.getAppealSetupResult());
+            existingIOJAppealEntity.setDecisionDate(iojAppealDTO.getDecisionDate());
+            existingIOJAppealEntity.setDecisionResult(iojAppealDTO.getDecisionResult());
+            existingIOJAppealEntity.setIderCode(iojAppealDTO.getIderCode());
+            existingIOJAppealEntity.setNotes(iojAppealDTO.getNotes());
+            existingIOJAppealEntity.setUserModified(iojAppealDTO.getUserModified());
 
-        return iojAppealRepository.save(existingIOJAppealEntity);
+            return iojAppealRepository.save(existingIOJAppealEntity);
     }
 
     public IOJAppealEntity findCurrentPassedByRepId(int repId) {

@@ -1,7 +1,11 @@
-package gov.uk.courtdata.exception;
+package gov.uk.courtdata.advice;
 
 import gov.uk.courtdata.constants.ErrorCodes;
 import gov.uk.courtdata.dto.ErrorDTO;
+import gov.uk.courtdata.exception.MAATCourtDataException;
+import gov.uk.courtdata.exception.RecordsAlreadyExistException;
+import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.validator.MAATApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;

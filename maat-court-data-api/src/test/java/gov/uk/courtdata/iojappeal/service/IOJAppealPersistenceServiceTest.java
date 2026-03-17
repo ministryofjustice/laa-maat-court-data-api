@@ -96,7 +96,8 @@ class IOJAppealPersistenceServiceTest {
         var dateModified = LocalDateTime.of(2022, 1, 1, 10, 0);
         var updatedIOJAppealEntity = TestEntityDataBuilder.getIOJAppealEntity(dateModified);
 
-        when(iojAppealRepository.getReferenceById(any())).thenReturn(updatedIOJAppealEntity);
+        when(iojAppealRepository.findById(any())).thenReturn(
+            Optional.ofNullable(updatedIOJAppealEntity));
 
         iojAppealPersistenceService.update(iojAppealDTO);
 

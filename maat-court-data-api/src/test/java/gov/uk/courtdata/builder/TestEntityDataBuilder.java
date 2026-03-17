@@ -54,6 +54,10 @@ public class TestEntityDataBuilder {
     public static final Integer APPLICATION_ID = 7852;
     public static final Integer APPLICANT_ID = 2345;
     public static final Integer APPLICANT_HISTORY_ID = 9876;
+    public static final String CASE_URN = "52SB0067421";
+    public static final String LIBRA_ID = "CP665371";
+    public static final String ASN_NUMBER = "ASN123456";
+    public static final String NI_NUMBER = "TEST_NINO";
 
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder().id(REP_ID).build();
@@ -625,8 +629,8 @@ public class TestEntityDataBuilder {
                 .maatCat(253)
                 .createdUserId(TEST_USER)
                 .mlrCat(253)
-                .caseUrn("52SB0067421")
-                .libraId("CP665371")
+                .caseUrn(CASE_URN)
+                .libraId(LIBRA_ID)
                 .build();
     }
 
@@ -982,4 +986,17 @@ public class TestEntityDataBuilder {
             .build();
     }
 
+    public static Applicant getApplicant(Integer applicantId) {
+        return Applicant.builder()
+                .id(applicantId)
+                .firstName("FirstName")
+                .lastName("LastName")
+                .userCreated("TEST-S")
+                .userModified("TEST-M")
+                .niNumber(NI_NUMBER)
+                .dob(TEST_DATE.toLocalDate())
+                .dateCreated(TEST_DATE)
+                .dateModified(TEST_DATE)
+                .build();
+    }
 }

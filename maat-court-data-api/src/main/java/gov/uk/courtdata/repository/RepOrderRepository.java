@@ -56,5 +56,26 @@ public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Intege
                         """, nativeQuery = true)
     Set<Integer> findEligibleForFdcFastTracking(@Param("delayPeriod") int delayPeriod, @Param("dateReceived") LocalDate dateReceived, @Param("numRecords") int numRecords);
 
+
+    @Query(value = """
+                SELECT rep.id
+                FROM TOGDATA.REP_ORDERS rep, TOGDATA.APPLICANTS app 
+                WHERE rep.APPL_ID = app.id
+                 AND (UPPER(app.FIRST_NAME) LIKE UPPER(CONCAT('%', :firstName, '%')))
+                  AND (UPPER(app.LAST_NAME) LIKE UPPER(CONCAT('%', :lastName, '%')))
+                  AND (rep.ARREST_SUMMONS_NO = :asn)
+                  AND (app.DOB = :dob)
+                  AND (:niNumber IS NULL OR app.NI_NUMBER = :niNumber)
+                  AND (:committalDate IS NULL OR rep.COMMITTAL_DATE = :committalDate)
+                  AND (:caseType IS NULL OR rep.CATY_CASE_TYPE = :caseType)
+            """, nativeQuery = true)
+    Set<Integer> findRepId(
+            @Param("firstName") String firstName,
+            @Param("lastName") String lastName,
+            @Param("asn") String asn,
+            @Param("dob") LocalDate dob,
+            @Param("niNumber") String niNumber,
+            @Param("committalDate") LocalDate committalDate,
+            @Param("caseType") String caseType);
 }
 

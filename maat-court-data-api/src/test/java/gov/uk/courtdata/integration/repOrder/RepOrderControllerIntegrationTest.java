@@ -15,8 +15,10 @@ import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.UserEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.CreateRepOrder;
@@ -53,6 +55,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     private static final String MVO_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders/rep-order-mvo";
     private static final String FDC_DELAYED_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders?fdcDelayedPickup=true&delay={delay}&dateReceived={dateReceived}&numRecords={numRecords}";
     private static final String FDC_FAST_TRACK_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders?fdcFastTrack=true&delay={delay}&dateReceived={dateReceived}&numRecords={numRecords}";
+    private static final String SEARCH_MAAT_APPLICATION = "/api/internal/v1/assessment/rep-orders/search-maat-application";
     private static final String CURRENT_REGISTRATION = "current-registration";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
     private RepOrderEntity repOrderValid;
@@ -68,13 +71,19 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @InjectSoftAssertions
     private SoftAssertions softly;
-
+    RepOrderEntity repOrder;
+    Applicant applicant;
+    WqLinkRegisterEntity wqLinkRegisterEntity;
 
     @BeforeEach
     void setUp() {
+        applicant = repos.applicantRepository.save(TestEntityDataBuilder.getApplicant(1));
         RepOrderEntity repOrdTestData = TestEntityDataBuilder.getPopulatedRepOrder();
         repOrdTestData.setSentenceOrderDate(null);
-        RepOrderEntity repOrder = repos.repOrder.save(repOrdTestData);
+        repOrdTestData.setArrestSummonsNo(TestEntityDataBuilder.ASN_NUMBER);
+        repOrdTestData.setApplicationId(applicant.getId());
+        repOrdTestData.setCatyCaseType("SUMMARY ONLY");
+        repOrder = repos.repOrder.save(repOrdTestData);
         REP_ORDER_ID_NO_SENTENCE_ORDER_DATE = repOrder.getId();
 
         RepOrderEntity repOrderEntity = repos.repOrder.save(
@@ -88,6 +97,9 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                 TestEntityDataBuilder.getRepOrderMvoRegEntity(TestEntityDataBuilder.REP_ID,
                         repOrder)
         );
+        WqLinkRegisterEntity linkRegisterEntity = TestEntityDataBuilder.getWQLinkRegisterEntity(TestEntityDataBuilder.REP_ID);
+        linkRegisterEntity.setMaatId(REP_ORDER_ID_NO_SENTENCE_ORDER_DATE);
+        wqLinkRegisterEntity = repos.wqLinkRegister.save(linkRegisterEntity);
     }
 
     private RepOrderDTO getUpdatedRepOrderDTO() {
@@ -476,5 +488,39 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                 TestEntityDataBuilder.getRepOrderCCOutcomeEntity(repOrderFuture2, "ACQUITTAL"));
     }
 
+    @Test
+    void givenAEmptyContent_whenSearchApplicationIsInvoked_thenCorrectErrorResponseIsReturned()
+            throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
+                        .content("{}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenAInvalidInput_whenSearchApplicationIsInvoked_thenCorrectErrorResponseIsReturned()
+            throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
+                        .content(TestModelDataBuilder.getMaatSearchRequestJson("Invalid_FirstName"))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Representation order not found"));
+    }
+
+    @Test
+    void givenAValidInput_whenSearchApplicationIsInvoked_thenCorrectResponseIsReturned()
+            throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
+                        .content(TestModelDataBuilder.getMaatSearchRequestJson("FirstName"))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.maatId").value(REP_ORDER_ID_NO_SENTENCE_ORDER_DATE))
+                .andExpect(jsonPath("$.isLinked").value(Boolean.TRUE))
+                .andExpect(jsonPath("$.linkingDetail.caseUrn").value(TestEntityDataBuilder.CASE_URN))
+                .andExpect(jsonPath("$.linkingDetail.libraId").value(TestEntityDataBuilder.LIBRA_ID))
+                .andExpect(jsonPath("$.linkingDetail.caseId").value(TestEntityDataBuilder.TEST_CASE_ID));
+    }
 
 }

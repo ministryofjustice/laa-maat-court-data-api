@@ -3,12 +3,15 @@ package gov.uk.courtdata.reporder.controller;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponseCodes;
 import gov.uk.courtdata.dto.AssessorDetails;
+import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.model.reporder.MaatSearchRequest;
+import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
@@ -21,10 +24,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.time.LocalDate;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,16 +31,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -248,4 +243,16 @@ public class RepOrderController {
         Set<Integer> repIdList = repOrderService.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
         return ResponseEntity.ok(repIdList);
     }
+
+
+    @PostMapping(value = "/search-maat-application", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve the representation order to determine whether the MAAT ID returned is already linked to an existing case")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+            schema = @Schema(implementation = MaatSearchResponse.class)))
+    @StandardApiResponse
+    public ResponseEntity<MaatSearchResponse> searchMaatApplication(@Valid @RequestBody MaatSearchRequest maatSearchRequest) {
+        log.info("Search Maat application request is received");
+        return ResponseEntity.ok(repOrderService.searchMaatApplication(maatSearchRequest));
+    }
+
 }

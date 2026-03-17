@@ -2,6 +2,7 @@ package gov.uk.courtdata.integration.util;
 
 import gov.uk.courtdata.applicant.repository.ApplicantDisabilitiesRepository;
 import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
+import gov.uk.courtdata.applicant.repository.ApplicantRepository;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.billing.repository.MaatReferenceRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -77,6 +78,9 @@ public class Repositories {
 
   @Autowired
   public AppealTypeRepository appealType;
+
+  @Autowired
+  public ApplicantRepository applicantRepository;
 
   @Autowired
   public ApplicantDisabilitiesRepository applicantDisabilities;
@@ -273,10 +277,14 @@ public class Repositories {
   @Autowired
   private RepositoryUtil repositoryUtil;
 
+  @Autowired
+  private WqLinkRegisterRepository wqLinkRegisterRepository;
+
 
   @NotNull
   private JpaRepository[] allRepositories() {
     return new JpaRepository[]{appealType,
+            applicantRepository,
         applicantDisabilities,
         applicantHistory,
         caseRepository,
@@ -340,7 +348,8 @@ public class Repositories {
         xlatOffence,
         fdcItemsRepository,
         xlatResult,
-        maatReference};
+        maatReference,
+            wqLinkRegisterRepository};
   }
 
   public void insertCommonTestData() {

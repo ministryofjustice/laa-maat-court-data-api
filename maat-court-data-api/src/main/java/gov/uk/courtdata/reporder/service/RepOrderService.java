@@ -149,15 +149,17 @@ public class RepOrderService {
 
     public MaatSearchResponse searchMaatApplication(MaatSearchRequest request) {
 
-        Set<Integer> repIdSet = repOrderRepository.findRepId(request.getFirstName(), request.getLastName(),
-                request.getAsn(), request.getDob(), request.getNiNumber(), request.getCommittalDate(), request.getCaseType()
-        );
+        Set<Integer> repIdSet = repOrderRepository.findRepId(request);
 
-        Integer maatId = Optional.ofNullable(repIdSet)
-                .filter(repIds -> repIds.size() == 1)
-                .map(repIds -> repIds.iterator().next())
-                .orElseThrow(() -> new RequestedObjectNotFoundException("Representation order not found"));
+        if (repIdSet == null || repIdSet.isEmpty()) {
+            throw new RequestedObjectNotFoundException("Representation order not found");
+        }
 
+        if (repIdSet.size() > 1) {
+            throw new RequestedObjectNotFoundException("Multiple representation orders found for the given search criteria");
+        }
+
+        Integer maatId = repIdSet.iterator().next();
         List<WqLinkRegisterEntity> linkRegisterList = linkRegisterRepository.findBymaatId(maatId);
 
         return repOrderMapper.mapMaatSearchResponse(maatId, linkRegisterList);

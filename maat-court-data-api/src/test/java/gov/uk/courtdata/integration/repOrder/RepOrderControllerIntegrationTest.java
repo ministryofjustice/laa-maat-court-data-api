@@ -71,35 +71,34 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @InjectSoftAssertions
     private SoftAssertions softly;
-    RepOrderEntity repOrder;
-    Applicant applicant;
-    WqLinkRegisterEntity wqLinkRegisterEntity;
+    RepOrderEntity testRepOrderEntity;
+
 
     @BeforeEach
     void setUp() {
-        applicant = repos.applicantRepository.save(TestEntityDataBuilder.getApplicant(1));
+        Applicant applicant = repos.applicantRepository.save(TestEntityDataBuilder.getApplicant(1));
         RepOrderEntity repOrdTestData = TestEntityDataBuilder.getPopulatedRepOrder();
         repOrdTestData.setSentenceOrderDate(null);
         repOrdTestData.setArrestSummonsNo(TestEntityDataBuilder.ASN_NUMBER);
         repOrdTestData.setApplicationId(applicant.getId());
         repOrdTestData.setCatyCaseType("SUMMARY ONLY");
-        repOrder = repos.repOrder.save(repOrdTestData);
-        REP_ORDER_ID_NO_SENTENCE_ORDER_DATE = repOrder.getId();
+        testRepOrderEntity = repos.repOrder.save(repOrdTestData);
+        REP_ORDER_ID_NO_SENTENCE_ORDER_DATE = testRepOrderEntity.getId();
 
         RepOrderEntity repOrderEntity = repos.repOrder.save(
                 TestEntityDataBuilder.getPopulatedRepOrder());
         REP_ID = repOrderEntity.getId();
 
         repos.repOrderMvo.save(
-                TestEntityDataBuilder.getRepOrderMvoEntity(TestEntityDataBuilder.MVO_ID, repOrder)
+                TestEntityDataBuilder.getRepOrderMvoEntity(TestEntityDataBuilder.MVO_ID, testRepOrderEntity)
         );
         repos.repOrderMvoReg.save(
                 TestEntityDataBuilder.getRepOrderMvoRegEntity(TestEntityDataBuilder.REP_ID,
-                        repOrder)
+                        testRepOrderEntity)
         );
         WqLinkRegisterEntity linkRegisterEntity = TestEntityDataBuilder.getWQLinkRegisterEntity(TestEntityDataBuilder.REP_ID);
         linkRegisterEntity.setMaatId(REP_ORDER_ID_NO_SENTENCE_ORDER_DATE);
-        wqLinkRegisterEntity = repos.wqLinkRegister.save(linkRegisterEntity);
+        repos.wqLinkRegister.save(linkRegisterEntity);
     }
 
     private RepOrderDTO getUpdatedRepOrderDTO() {

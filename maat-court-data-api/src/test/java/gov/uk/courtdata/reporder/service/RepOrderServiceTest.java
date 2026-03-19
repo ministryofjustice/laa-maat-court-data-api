@@ -8,7 +8,6 @@ import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.model.reporder.MaatSearchRequest;
-import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.RepOrderRepository;
@@ -178,25 +177,38 @@ class RepOrderServiceTest {
     @Test
     void givenAInvalidRequest_whenSearchMaatApplicationIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
 
-        when(repOrderRepository.findRepId(anyString(), anyString(), anyString(), any(LocalDate.class), anyString(), any(LocalDate.class) ,anyString()))
-                .thenReturn(Collections.EMPTY_SET);
+        when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(Collections.EMPTY_SET);
         RequestedObjectNotFoundException expectedException = assertThrows(RequestedObjectNotFoundException.class,
                 () -> repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest()));
         assertEquals("Representation order not found", expectedException.getMessage());
     }
 
     @Test
+    void givenAInvalidRequestAndMissingRepOrder_whenSearchMaatApplicationIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
+
+        when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(null);
+        RequestedObjectNotFoundException expectedException = assertThrows(RequestedObjectNotFoundException.class,
+                () -> repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest()));
+        assertEquals("Representation order not found", expectedException.getMessage());
+    }
+
+    @Test
+    void givenInvalidRequestAndFoundMultipleRepOrder_whenSearchMaatApplicationIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
+
+        when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(Set.of(TestModelDataBuilder.REP_ID, TestModelDataBuilder.REP_ID + 1));
+        RequestedObjectNotFoundException expectedException = assertThrows(RequestedObjectNotFoundException.class,
+                () -> repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest()));
+        assertEquals("Multiple representation orders found for the given search criteria", expectedException.getMessage());
+    }
+
+    @Test
     void givenAValidRequest_whenSearchMaatApplicationIsInvoked_thenReturnCorrectResponse() {
 
-        when(repOrderRepository.findRepId(anyString(), anyString(), anyString(), any(LocalDate.class), anyString(), any(LocalDate.class), anyString()))
-                .thenReturn(Set.of(TestModelDataBuilder.REP_ID));
-
+        when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(Set.of(TestModelDataBuilder.REP_ID));
         List<WqLinkRegisterEntity> linkList = List.of(TestEntityDataBuilder.getWQLinkRegisterEntity(1234));
         when(wqLinkRegisterRepository.findBymaatId(anyInt())).thenReturn(linkList);
-
         repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest());
-
-        verify(repOrderRepository).findRepId(anyString(), anyString(), anyString(), any(LocalDate.class), anyString(), any(LocalDate.class), anyString());
+        verify(repOrderRepository).findRepId(any(MaatSearchRequest.class));
         verify(wqLinkRegisterRepository).findBymaatId(anyInt());
     }
 

@@ -1,5 +1,15 @@
 package gov.uk.courtdata.passport.mapper;
 
+import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.PASS;
+import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.TEMP_PASS;
+import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.FAIL_BYPASS;
+import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.FAIL;
+import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.APPLICANT_AGE;
+import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.DWP_CHECK;
+import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED;
+import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.DWP_CHECK_UNAVAILABLE;
+import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.IN_CUSTODY;
+
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import java.util.Map;
 import java.util.Set;
@@ -56,15 +66,10 @@ public interface PassportAssessmentMapper {
     default PassportAssessmentDecisionReason mapDecisionReason(
         PassportAssessmentEntity passportAssessmentEntity) {
         final Map<PassportAssessmentDecision, Set<PassportAssessmentDecisionReason>> decisionReasonCombinations = Map.of(
-            PassportAssessmentDecision.PASS, Set.of(PassportAssessmentDecisionReason.APPLICANT_AGE,
-                PassportAssessmentDecisionReason.DWP_CHECK,
-                PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED),
-            PassportAssessmentDecision.TEMP_PASS,
-            Set.of(PassportAssessmentDecisionReason.DWP_CHECK_UNAVAILABLE,
-                PassportAssessmentDecisionReason.IN_CUSTODY),
-            PassportAssessmentDecision.FAIL_BYPASS,
-            Set.of(PassportAssessmentDecisionReason.DWP_CHECK),
-            PassportAssessmentDecision.FAIL, Set.of()
+            PASS, Set.of(APPLICANT_AGE, DWP_CHECK, DOCUMENTATION_SUPPLIED),
+            TEMP_PASS, Set.of(DWP_CHECK_UNAVAILABLE, IN_CUSTODY),
+            FAIL_BYPASS, Set.of(DWP_CHECK),
+            FAIL, Set.of()
         );
 
         String pcobConfirmation = passportAssessmentEntity.getPcobConfirmation();

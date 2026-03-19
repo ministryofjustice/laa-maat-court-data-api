@@ -27,6 +27,8 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.model.reporder.MaatSearchRequest;
+import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
@@ -80,6 +82,8 @@ class RepOrderControllerTest {
     private static final String PASSPORT_ASSESSOR_NAME_VALUE = "Maeve OConnor";
     private static final String DATE_PASSPORT_CREATED_VALUE = "2015-01-09T11:16:29";
     private static final String FUNDING_DECISION_VALUE = "GRANTED";
+
+    private static final String SEARCH_MAAT_APPLICATION = "/api/internal/v1/assessment/rep-orders/search-maat-application";
 
     @Autowired
     private MockMvc mvc;
@@ -611,5 +615,40 @@ class RepOrderControllerTest {
                 .andExpect(
                         jsonPath("detail").value("Required parameter 'numRecords' is not present."))
                 .andExpect(jsonPath("title").value("Bad Request"));
+    }
+
+    @Test
+    void givenAInvalidInput_whenSearchApplicationIsInvoked_thenCorrectErrorResponseIsReturned()
+            throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
+                        .content("{}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenAValidInputAndEmptyMaat_whenSearchApplicationIsInvoked_thenCorrectErrorResponseIsReturned()
+            throws Exception {
+        when(repOrderService.searchMaatApplication(any(MaatSearchRequest.class)))
+                .thenThrow(new RequestedObjectNotFoundException("Representation order not found"));
+        mvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
+                        .content(TestModelDataBuilder.getMaatSearchRequestJson("Invalid"))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Representation order not found"));
+    }
+
+    @Test
+    void givenAValidRequest_whenSearchApplicationIsInvoked_thenCorrectResponseIsReturned()
+            throws Exception {
+        when(repOrderService.searchMaatApplication(any(MaatSearchRequest.class))).thenReturn(TestModelDataBuilder.getMaatSearchResponse());
+
+        mvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
+                        .content(TestModelDataBuilder.getMaatSearchRequestJson("FirstName"))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.maatId").value(TestModelDataBuilder.REP_ID));
+
     }
 }

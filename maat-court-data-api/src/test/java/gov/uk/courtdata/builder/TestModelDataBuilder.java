@@ -30,6 +30,8 @@ import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
+import gov.uk.courtdata.model.reporder.MaatSearchRequest;
+import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
@@ -123,6 +125,8 @@ public class TestModelDataBuilder {
     private static final String DATE_PASSPORT_CREATED_VALUE = "2015-01-09T11:16:29";
     private static final String FUNDING_DECISION_VALUE = "GRANTED";
     private static final Integer APPLICANT_ID = 2345;
+    public static final String ASN_NUMBER = "ASN123456";
+    public static final String NI_NUMBER = "TEST_NINO";
 
     TestEntityDataBuilder testEntityDataBuilder;
     Gson gson;
@@ -1807,4 +1811,35 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+    public static MaatSearchResponse getMaatSearchResponse() {
+        return MaatSearchResponse.builder()
+                .maatId(REP_ID)
+                .build();
+    }
+
+    public static String getMaatSearchRequestJson(String firstName) {
+        return """
+                {
+                  "firstName": "%s",
+                  "lastName": "LastName",
+                  "dob": "%s",
+                  "asn": "%s",
+                  "committalDate": "%s",
+                  "niNumber": "%s",
+                  "caseType": "%s"
+                }
+                """.formatted(firstName, TEST_DATE.toLocalDate(), ASN_NUMBER, TEST_DATE.toLocalDate(), NI_NUMBER, CASE_TYPE_VALUE);
+    }
+
+    public static MaatSearchRequest getMaatSearchRequest() {
+        return MaatSearchRequest.builder()
+                .firstName("FirstName")
+                .lastName("LastName")
+                .dob(TEST_DATE.toLocalDate())
+                .committalDate(TEST_DATE.toLocalDate())
+                .asn(ASN_NUMBER)
+                .niNumber(NI_NUMBER)
+                .caseType(CASE_TYPE_VALUE)
+                .build();
+    }
 }

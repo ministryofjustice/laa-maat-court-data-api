@@ -4,23 +4,29 @@ import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.model.reporder.MaatSearchRequest;
+import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 @Slf4j
 @Service
@@ -30,6 +36,7 @@ public class RepOrderService {
     private final RepOrderImpl repOrderImpl;
     private final RepOrderMapper repOrderMapper;
     private final RepOrderRepository repOrderRepository;
+    private final WqLinkRegisterRepository linkRegisterRepository;
 
     public RepOrderEntity findByRepId(Integer repId) {
         RepOrderEntity repOrder;
@@ -138,5 +145,23 @@ public class RepOrderService {
     public RepOrderStateDTO findRepOrderStateByRepId(Integer repId) {
         RepOrderEntity repOrderEntity = repOrderImpl.find(repId);
         return repOrderMapper.mapRepOrderState(repOrderEntity);
+    }
+
+    public MaatSearchResponse searchMaatApplication(MaatSearchRequest request) {
+
+        Set<Integer> repIdSet = repOrderRepository.findRepId(request);
+
+        if (repIdSet == null || repIdSet.isEmpty()) {
+            throw new RequestedObjectNotFoundException("Representation order not found");
+        }
+
+        if (repIdSet.size() > 1) {
+            throw new RequestedObjectNotFoundException("Multiple representation orders found for the given search criteria");
+        }
+
+        Integer maatId = repIdSet.iterator().next();
+        List<WqLinkRegisterEntity> linkRegisterList = linkRegisterRepository.findBymaatId(maatId);
+
+        return repOrderMapper.mapMaatSearchResponse(maatId, linkRegisterList);
     }
 }

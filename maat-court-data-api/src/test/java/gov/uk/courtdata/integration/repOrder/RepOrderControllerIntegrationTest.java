@@ -71,8 +71,6 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @InjectSoftAssertions
     private SoftAssertions softly;
-    RepOrderEntity testRepOrderEntity;
-
 
     @BeforeEach
     void setUp() {
@@ -82,19 +80,19 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         repOrdTestData.setArrestSummonsNo(TestEntityDataBuilder.ASN_NUMBER);
         repOrdTestData.setApplicationId(applicant.getId());
         repOrdTestData.setCatyCaseType("SUMMARY ONLY");
-        testRepOrderEntity = repos.repOrder.save(repOrdTestData);
-        REP_ORDER_ID_NO_SENTENCE_ORDER_DATE = testRepOrderEntity.getId();
+        RepOrderEntity repOrder = repos.repOrder.save(repOrdTestData);
+        REP_ORDER_ID_NO_SENTENCE_ORDER_DATE = repOrder.getId();
 
         RepOrderEntity repOrderEntity = repos.repOrder.save(
                 TestEntityDataBuilder.getPopulatedRepOrder());
         REP_ID = repOrderEntity.getId();
 
         repos.repOrderMvo.save(
-                TestEntityDataBuilder.getRepOrderMvoEntity(TestEntityDataBuilder.MVO_ID, testRepOrderEntity)
+                TestEntityDataBuilder.getRepOrderMvoEntity(TestEntityDataBuilder.MVO_ID, repOrder)
         );
         repos.repOrderMvoReg.save(
                 TestEntityDataBuilder.getRepOrderMvoRegEntity(TestEntityDataBuilder.REP_ID,
-                        testRepOrderEntity)
+                        repOrder)
         );
         WqLinkRegisterEntity linkRegisterEntity = TestEntityDataBuilder.getWQLinkRegisterEntity(TestEntityDataBuilder.REP_ID);
         linkRegisterEntity.setMaatId(REP_ORDER_ID_NO_SENTENCE_ORDER_DATE);

@@ -79,6 +79,7 @@ class PassportAssessmentMapperTest {
         assertThat(response.getLegacyAssessmentId()).isEqualTo(entity.getId());
         assertThat(response.getAssessmentId()).isNull();
         assertThat(response.getUsn()).isEqualTo(entity.getUsn());
+        assertThat(response.getCaseManagementUnitId()).isEqualTo(entity.getCmuId());
         assertThat(response.getAssessmentDate()).isEqualTo(entity.getAssessmentDate());
         assertThat(response.getAssessmentReason().getCode()).isEqualTo(entity.getNworCode());
         assertThat(response.getReviewType().getCode()).isEqualTo(entity.getRtCode());
@@ -255,9 +256,13 @@ class PassportAssessmentMapperTest {
                 named("pcobConfirmation","INCUSTODY"), 
                 named("expectedDecisionReason", PassportAssessmentDecisionReason.IN_CUSTODY)),
             Arguments.of(
-                named("result", "FAIL CONTINUE"), 
-                named("pcobConfirmation","AGEREL"), 
-                named("expectedDecisionReason", PassportAssessmentDecisionReason.DWP_CHECK))
+                named("result", "FAIL CONTINUE"),
+                named("pcobConfirmation","DWP"),
+                named("expectedDecisionReason", PassportAssessmentDecisionReason.DWP_CHECK)),
+            Arguments.of(
+                named("result", "FAIL CONTINUE"),
+                named("pcobConfirmation","AGEREL"),
+                named("expectedDecisionReason", null))
         );
     }
     
@@ -283,7 +288,10 @@ class PassportAssessmentMapperTest {
                 named("expectedAssessmentDecision", PassportAssessmentDecision.TEMP_PASS)),
             Arguments.of(
                 named("result", "FAIL CONTINUE"),
-                named("expectedAssessmentDecision", PassportAssessmentDecision.FAIL_BYPASS))
+                named("expectedAssessmentDecision", PassportAssessmentDecision.FAIL_BYPASS)),
+            Arguments.of(
+                named("result", "FAIL"),
+                named("expectedAssessmentDecision", PassportAssessmentDecision.FAIL))
         );
     }
 

@@ -641,14 +641,15 @@ class RepOrderControllerTest {
     @Test
     void givenAValidRequest_whenSearchApplicationIsInvoked_thenCorrectResponseIsReturned()
             throws Exception {
-        when(repOrderService.searchMaatApplication(any(MaatSearchRequest.class))).thenReturn(TestModelDataBuilder.getMaatSearchResponse());
+        when(repOrderService.searchMaatApplication(any(MaatSearchRequest.class)))
+                .thenReturn(List.of(TestModelDataBuilder.getMaatSearchResponse()));
 
         mvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
                         .content(TestModelDataBuilder.getMaatSearchRequestJson("FirstName"))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.maatId").value(TestModelDataBuilder.REP_ID));
+                .andExpect(jsonPath("$[0].maatId").value(TestModelDataBuilder.REP_ID));
 
     }
 }

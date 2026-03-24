@@ -147,7 +147,7 @@ public class RepOrderService {
         return repOrderMapper.mapRepOrderState(repOrderEntity);
     }
 
-    public MaatSearchResponse searchMaatApplication(MaatSearchRequest request) {
+    public List<MaatSearchResponse> searchMaatApplication(MaatSearchRequest request) {
 
         Set<Integer> repIdSet = repOrderRepository.findRepId(request);
 
@@ -155,13 +155,11 @@ public class RepOrderService {
             throw new RequestedObjectNotFoundException("Representation order not found");
         }
 
-        if (repIdSet.size() > 1) {
-            throw new RequestedObjectNotFoundException("Multiple representation orders found for the given search criteria");
-        }
-
-        Integer maatId = repIdSet.iterator().next();
-        List<WqLinkRegisterEntity> linkRegisterList = linkRegisterRepository.findBymaatId(maatId);
-
-        return repOrderMapper.mapMaatSearchResponse(maatId, linkRegisterList);
+        return repIdSet.stream()
+                .map(repId -> {
+                    List<WqLinkRegisterEntity> linkRegisterList = linkRegisterRepository.findBymaatId(repId);
+                    return repOrderMapper.mapMaatSearchResponse(repId, linkRegisterList);
+                })
+                .toList();
     }
 }

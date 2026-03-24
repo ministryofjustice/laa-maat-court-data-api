@@ -513,11 +513,11 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.maatId").value(REP_ORDER_ID_NO_SENTENCE_ORDER_DATE))
-                .andExpect(jsonPath("$.isLinked").value(Boolean.TRUE))
-                .andExpect(jsonPath("$.linkingDetail.caseUrn").value(TestEntityDataBuilder.CASE_URN))
-                .andExpect(jsonPath("$.linkingDetail.libraId").value(TestEntityDataBuilder.LIBRA_ID))
-                .andExpect(jsonPath("$.linkingDetail.caseId").value(TestEntityDataBuilder.TEST_CASE_ID));
+                .andExpect(jsonPath("$[0].maatId").value(REP_ORDER_ID_NO_SENTENCE_ORDER_DATE))
+                .andExpect(jsonPath("$[0].isLinked").value(Boolean.TRUE))
+                .andExpect(jsonPath("$[0].linkingDetail.caseUrn").value(TestEntityDataBuilder.CASE_URN))
+                .andExpect(jsonPath("$[0].linkingDetail.libraId").value(TestEntityDataBuilder.LIBRA_ID))
+                .andExpect(jsonPath("$[0].linkingDetail.caseId").value(TestEntityDataBuilder.TEST_CASE_ID));
     }
 
 }

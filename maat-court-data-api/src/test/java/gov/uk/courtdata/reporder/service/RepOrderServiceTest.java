@@ -8,6 +8,7 @@ import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.model.reporder.MaatSearchRequest;
+import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.RepOrderRepository;
@@ -193,15 +194,6 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenInvalidRequestAndFoundMultipleRepOrder_whenSearchMaatApplicationIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
-
-        when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(Set.of(TestModelDataBuilder.REP_ID, TestModelDataBuilder.REP_ID + 1));
-        RequestedObjectNotFoundException expectedException = assertThrows(RequestedObjectNotFoundException.class,
-                () -> repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest()));
-        assertEquals("Multiple representation orders found for the given search criteria", expectedException.getMessage());
-    }
-
-    @Test
     void givenAValidRequest_whenSearchMaatApplicationIsInvoked_thenReturnCorrectResponse() {
 
         when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(Set.of(TestModelDataBuilder.REP_ID));
@@ -210,6 +202,19 @@ class RepOrderServiceTest {
         repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest());
         verify(repOrderRepository).findRepId(any(MaatSearchRequest.class));
         verify(wqLinkRegisterRepository).findBymaatId(anyInt());
+    }
+
+    @Test
+    void givenInvalidRequestAndFoundMultipleRepOrder_whenSearchMaatApplicationIsInvoked_thenReturnCorrectResponse() {
+
+        when(repOrderRepository.findRepId(any(MaatSearchRequest.class)))
+                .thenReturn(Set.of(TestModelDataBuilder.REP_ID, TestModelDataBuilder.REP_ID + 1));
+        List<WqLinkRegisterEntity> linkList = List.of(TestEntityDataBuilder.getWQLinkRegisterEntity(1234));
+        when(wqLinkRegisterRepository.findBymaatId(anyInt())).thenReturn(linkList);
+        List<MaatSearchResponse> maatSearchResponseList = repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest());
+        verify(repOrderRepository).findRepId(any(MaatSearchRequest.class));
+        verify(wqLinkRegisterRepository, times(2)).findBymaatId(anyInt());
+        assertEquals(maatSearchResponseList.size(),2);
     }
 
 }

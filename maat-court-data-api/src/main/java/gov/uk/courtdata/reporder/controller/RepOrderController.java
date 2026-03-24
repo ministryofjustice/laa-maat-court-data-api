@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -258,7 +259,7 @@ public class RepOrderController {
     @PostMapping(value = "/search-maat-application", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve the representation order to determine whether the MAAT ID returned is already linked to an existing case")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = MaatSearchResponse.class)))
+            array = @ArraySchema(schema = @Schema(implementation = MaatSearchResponse.class))))
     @StandardApiResponse
     public ResponseEntity<List<MaatSearchResponse>> searchMaatApplication(@Valid @RequestBody MaatSearchRequest maatSearchRequest) {
         log.info("Search Maat application request is received");

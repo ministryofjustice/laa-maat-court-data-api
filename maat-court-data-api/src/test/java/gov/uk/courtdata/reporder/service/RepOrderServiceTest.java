@@ -214,7 +214,7 @@ class RepOrderServiceTest {
         List<MaatSearchResponse> maatSearchResponseList = repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest());
         verify(repOrderRepository).findRepId(any(MaatSearchRequest.class));
         verify(wqLinkRegisterRepository, times(2)).findBymaatId(anyInt());
-        assertEquals(maatSearchResponseList.size(),2);
+        assertEquals(2,maatSearchResponseList.size());
     }
 
 }

@@ -62,4 +62,18 @@ class ApiCreateIojAppealRequestValidatorTest {
         assertThat(returnedErrorList).hasSize(1);
         assertThat(returnedErrorList.getFirst().message()).isEqualTo(ERROR_APPEAL_REASON_IS_INVALID.getName());
     }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NewWorkReason.class,
+            names = {"PRI", "NEW", "JR"})
+    void whenValidAppealReasonSelected_thenValidationPasses(NewWorkReason reason) {
+        var request = TestModelDataBuilder.getApiCreateIojAppealRequest();
+        request.getIojAppeal().setAppealReason(reason);
+
+        List<ErrorMessage> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
+
+        assertThat(returnedErrorList)
+                .noneMatch(error -> ERROR_APPEAL_REASON_IS_INVALID.getName().equals(error.message()));
+    }
 }

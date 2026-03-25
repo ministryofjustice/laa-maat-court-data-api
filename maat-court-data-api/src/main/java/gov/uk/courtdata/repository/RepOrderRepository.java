@@ -1,6 +1,7 @@
 package gov.uk.courtdata.repository;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.model.reporder.MaatSearchRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -56,5 +57,19 @@ public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Intege
                         """, nativeQuery = true)
     Set<Integer> findEligibleForFdcFastTracking(@Param("delayPeriod") int delayPeriod, @Param("dateReceived") LocalDate dateReceived, @Param("numRecords") int numRecords);
 
+
+    @Query(value = """
+                SELECT rep.id
+                FROM TOGDATA.REP_ORDERS rep, TOGDATA.APPLICANTS app 
+                WHERE rep.APPL_ID = app.id
+                AND UPPER(app.FIRST_NAME) LIKE UPPER(CONCAT('%', :#{#req.firstName}, '%'))
+                AND UPPER(app.LAST_NAME) LIKE UPPER(CONCAT('%', :#{#req.lastName}, '%'))
+                AND rep.ARREST_SUMMONS_NO = :#{#req.asn}
+                AND app.DOB = :#{#req.dob}
+                AND (:#{#req.niNumber} IS NULL OR app.NI_NUMBER = :#{#req.niNumber})
+                AND (:#{#req.committalDate} IS NULL OR rep.COMMITTAL_DATE = :#{#req.committalDate})
+                AND (:#{#req.caseType} IS NULL OR rep.CATY_CASE_TYPE = :#{#req.caseType})
+            """, nativeQuery = true)
+    Set<Integer> findRepId(@Param("req") MaatSearchRequest req);
 }
 

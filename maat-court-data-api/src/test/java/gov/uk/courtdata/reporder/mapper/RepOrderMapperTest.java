@@ -1,17 +1,19 @@
 package gov.uk.courtdata.reporder.mapper;
 
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.RepOrderStateDTO;
-import gov.uk.courtdata.entity.FinancialAssessmentEntity;
-import gov.uk.courtdata.entity.IOJAppealEntity;
-import gov.uk.courtdata.entity.PassportAssessmentEntity;
-import gov.uk.courtdata.entity.NewWorkReasonEntity;
-import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.entity.UserEntity;
+import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 class RepOrderMapperTest {
 
@@ -327,4 +329,31 @@ class RepOrderMapperTest {
             () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision())
         );
     }
+
+    @Test
+    void givenAValidRequestAndNullLinking_whenMapMaatSearchResponseIsInvoked_thenCorrectResponseShouldReturn() {
+        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, null);
+        assertEquals(TestEntityDataBuilder.REP_ID, response.getMaatId());
+        assertFalse(response.isLinked());
+    }
+
+    @Test
+    void givenAValidRequestAndEmptyLinking_whenMapMaatSearchResponseIsInvoked_thenCorrectResponseShouldReturn() {
+        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, Collections.emptyList());
+        assertEquals(TestEntityDataBuilder.REP_ID, response.getMaatId());
+        assertFalse(response.isLinked());
+    }
+    @Test
+    void givenAValidRequest_whenMapMaatSearchResponseIsInvoked_thenCorrectResponseShouldReturn() {
+        List<WqLinkRegisterEntity> wqLinkRegisterEntities = List.of(TestEntityDataBuilder.getWQLinkRegisterEntity(1235));
+        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, wqLinkRegisterEntities);
+        assertEquals(TestEntityDataBuilder.REP_ID, response.getMaatId());
+        assertTrue(response.isLinked());
+        assertEquals(TestEntityDataBuilder.LIBRA_ID, response.getLinkingDetail().getLibraId());
+        assertEquals(TestEntityDataBuilder.CASE_URN, response.getLinkingDetail().getCaseUrn());
+        assertEquals(TestEntityDataBuilder.TEST_CASE_ID, response.getLinkingDetail().getCaseId());
+        assertEquals("16", response.getLinkingDetail().getCjsAreaCode());
+        assertEquals("B16BG", response.getLinkingDetail().getCjsLocation());
+    }
+
 }

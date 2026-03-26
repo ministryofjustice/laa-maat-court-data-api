@@ -55,7 +55,7 @@ class ApiCreateIojAppealRequestValidatorTest {
         names = {"PRI", "NEW", "JR"},
         mode = EnumSource.Mode.EXCLUDE)
     void whenInvalidAppealReasonSelected_thenReturnsCorrectError(NewWorkReason reason) {
-        var request = TestModelDataBuilder.getApiCreateIojAppealRequest();
+        ApiCreateIojAppealRequest request = TestModelDataBuilder.getApiCreateIojAppealRequest();
         request.getIojAppeal().setAppealReason(reason);
 
         List<ErrorMessage> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
@@ -68,7 +68,7 @@ class ApiCreateIojAppealRequestValidatorTest {
             value = NewWorkReason.class,
             names = {"PRI", "NEW", "JR"})
     void whenValidAppealReasonSelected_thenValidationPasses(NewWorkReason reason) {
-        var request = TestModelDataBuilder.getApiCreateIojAppealRequest();
+        ApiCreateIojAppealRequest request = TestModelDataBuilder.getApiCreateIojAppealRequest();
         request.getIojAppeal().setAppealReason(reason);
 
         List<ErrorMessage> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);

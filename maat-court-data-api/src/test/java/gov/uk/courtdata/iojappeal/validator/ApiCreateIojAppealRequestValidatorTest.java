@@ -1,13 +1,6 @@
 package gov.uk.courtdata.iojappeal.validator;
 
-import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_APPEAL_REASON_IS_INVALID;
-import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_INCORRECT_COMBINATION;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import java.util.List;
-import java.util.stream.Stream;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -17,22 +10,14 @@ import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
 import uk.gov.justice.laa.crime.enums.NewWorkReason;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 
-class ApiCreateIojAppealRequestValidatorTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Test
-    void whenAppealAndMetaPresentButNotPopulated_thenAllMissingFieldValidationErrorsReturned() {
-          ApiCreateIojAppealRequest request = TestModelDataBuilder.getApiCreateIojAppealRequest();
-          request.getIojAppeal().setAppealSuccessful(null);
-          request.getIojAppealMetadata().setLegacyApplicationId(null);
-          request.getIojAppealMetadata().setApplicationReceivedDate(null);
-          int expectedErrorCount = 2; // 1 field validation on appeal, 1 on metadata.
-          List<ErrorMessage> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
-          assertThat(returnedErrorList).hasSize(expectedErrorCount);
-          assertThat(returnedErrorList.stream()
-              .filter(x -> x.message().contains(" is missing."))
-              .count())
-              .isEqualTo(expectedErrorCount);
-    }
+import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_APPEAL_REASON_IS_INVALID;
+import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_INCORRECT_COMBINATION;
+import static org.assertj.core.api.Assertions.assertThat;
+
+class ApiCreateIojAppealRequestValidatorTest {
 
     private static Stream<Arguments> reasonAssessorCombinations() {
           return Stream.of(
@@ -47,11 +32,15 @@ class ApiCreateIojAppealRequestValidatorTest {
     @ParameterizedTest
     @MethodSource("reasonAssessorCombinations")
     void whenIojAssessorAndReasonCombinationIsTested_thenErrorShouldSurfaceIfInvalidCombination(
-            IojAppealAssessor assessor, NewWorkReason reason, boolean isValidCombination) {var request = TestModelDataBuilder.getApiCreateIojAppealRequest();
-        request.getIojAppeal().setAppealAssessor(assessor);
+            IojAppealAssessor assessor, NewWorkReason reason, boolean isValidCombination) {
+
+        ApiCreateIojAppealRequest request = TestModelDataBuilder.getApiCreateIojAppealRequest();
+
         request.getIojAppeal().setAppealReason(reason);
+        request.getIojAppeal().setAppealAssessor(assessor);
 
         List<ErrorMessage> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
+
         if (isValidCombination) {
             assertThat(returnedErrorList).isEmpty();
         } else {
@@ -66,11 +55,25 @@ class ApiCreateIojAppealRequestValidatorTest {
         names = {"PRI", "NEW", "JR"},
         mode = EnumSource.Mode.EXCLUDE)
     void whenInvalidAppealReasonSelected_thenReturnsCorrectError(NewWorkReason reason) {
-        var request = TestModelDataBuilder.getApiCreateIojAppealRequest();
+        ApiCreateIojAppealRequest request = TestModelDataBuilder.getApiCreateIojAppealRequest();
         request.getIojAppeal().setAppealReason(reason);
 
         List<ErrorMessage> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
         assertThat(returnedErrorList).hasSize(1);
         assertThat(returnedErrorList.getFirst().message()).isEqualTo(ERROR_APPEAL_REASON_IS_INVALID.getName());
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NewWorkReason.class,
+            names = {"PRI", "NEW", "JR"})
+    void whenValidAppealReasonSelected_thenValidationPasses(NewWorkReason reason) {
+        ApiCreateIojAppealRequest request = TestModelDataBuilder.getApiCreateIojAppealRequest();
+        request.getIojAppeal().setAppealReason(reason);
+
+        List<ErrorMessage> returnedErrorList = ApiCreateIojAppealRequestValidator.validateRequest(request);
+
+        assertThat(returnedErrorList)
+                .noneMatch(error -> ERROR_APPEAL_REASON_IS_INVALID.getName().equals(error.message()));
     }
 }

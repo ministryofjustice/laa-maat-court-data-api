@@ -22,7 +22,7 @@ runs:
     - name: Notify success to Slack
       id: slack-success
       if: ${{ success() }}
-      uses: slackapi/slack-github-action@v1
+      uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 #v3
       with:
         payload: |
           {
@@ -63,7 +63,7 @@ runs:
 
     - name: Notify failure to Slack
       if: ${{ failure() }}
-      uses: 8398a7/action-slack@v3
+      uses: 8398a7/action-slack@77eaa4f1c608a7d68b38af4e3f739dcd8cba273e #v3
       with:
         status: ${{ job.status }}
         fields: repo,commit,author,ref,workflow,job,took

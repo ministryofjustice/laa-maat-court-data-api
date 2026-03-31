@@ -22,6 +22,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import uk.gov.justice.laa.crime.error.ProblemDetailError;
 import uk.gov.justice.laa.crime.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.error.ErrorExtension;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
@@ -105,31 +106,29 @@ public class ProblemDetailExceptionHandler {
                 ProblemDetailError.APPLICATION_ERROR);
     }
 
-    private ErrorExtension buildErrorExtension(String code, String traceId,
-            List<ErrorMessage> errorMessages) {
-        return ProblemDetailUtil.buildErrorExtension(code, traceId, errorMessages);
-    }
-
     private ResponseEntity<ProblemDetail> buildResponse(
             HttpStatusCode status, ProblemDetailError error, String detailOverride,
             List<ErrorMessage> errors) {
 
-        ErrorExtension extension = buildErrorExtension(error.code(), getTraceId(),
-                errors);
         return ResponseEntity.status(status)
-                .body(ProblemDetailUtil.buildProblemDetail(status, detailOverride, extension));
+                .body(ProblemDetailUtil.buildProblemDetail(
+                        status,
+                        detailOverride,
+                        ProblemDetailUtil.buildErrorExtension(error.code(), getTraceId(), errors)));
     }
 
     private ResponseEntity<ProblemDetail> buildResponse(
             HttpStatusCode status, ProblemDetailError error) {
 
-        return buildResponse(status, error, error.defaultDetail(), List.of());
+        return ResponseEntity.status(status)
+                .body(ProblemDetailUtil.buildProblemDetail(status, error, getTraceId(), List.of()));
     }
 
     private ResponseEntity<ProblemDetail> buildResponse(
             HttpStatusCode status, ProblemDetailError error, List<ErrorMessage> errors) {
 
-        return buildResponse(status, error, error.defaultDetail(), errors);
+        return ResponseEntity.status(status)
+                .body(ProblemDetailUtil.buildProblemDetail(status, error, getTraceId(), errors));
     }
 
 }

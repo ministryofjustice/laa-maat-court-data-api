@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 import uk.gov.justice.laa.crime.enums.CurrentStatus;
 import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
+import uk.gov.justice.laa.crime.enums.NewWorkReason;
 import uk.gov.justice.laa.crime.error.ProblemDetailError;
 
 import java.time.format.DateTimeFormatter;
@@ -132,11 +133,11 @@ class IojAppealControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenCreateIojAppealRequestWithMissingLegacyApplicationId_whenCreateIojAppealIsInvoked_thenValidationProblemDetailIsReturned()
+    void givenCreateIojAppealRequestWithInvalidAppealReason_whenCreateIojAppealIsInvoked_thenValidationProblemDetailIsReturned()
             throws Exception {
         ApiCreateIojAppealRequest apiCreateIojAppealRequest = TestModelDataBuilder.getApiCreateIojAppealRequest(
                 repId);
-        apiCreateIojAppealRequest.getIojAppealMetadata().setLegacyApplicationId(null);
+        apiCreateIojAppealRequest.getIojAppeal().setAppealReason(NewWorkReason.CFC);
         String apiCreateIojAppealJson = objectMapper.writeValueAsString(apiCreateIojAppealRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
@@ -151,9 +152,9 @@ class IojAppealControllerIntegrationTest extends MockMvcIntegrationTest {
                         ProblemDetailError.VALIDATION_FAILURE.defaultDetail()))
                 .andExpect(jsonPath("$.instance").value("/api/internal/v2/assessment/ioj-appeals"))
                 .andExpect(jsonPath("$.errors.code").value("VALIDATION_FAILURE"))
-                .andExpect(jsonPath("$.errors.errors[0].field").value("Legacy Application Id"))
+                .andExpect(jsonPath("$.errors.errors[0].field").value("Appeal reason"))
                 .andExpect(jsonPath("$.errors.errors[0].message").value(
-                        "Legacy Application Id is missing."));
+                        "Appeal Reason Is Invalid."));
     }
 
     @Test

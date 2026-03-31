@@ -59,11 +59,11 @@ public interface RepOrderRepository extends JpaRepository<RepOrderEntity, Intege
 
 
     @Query(value = """
-                SELECT rep.id
-                FROM TOGDATA.REP_ORDERS rep, TOGDATA.APPLICANTS app 
-                WHERE rep.APPL_ID = app.id
-                AND UPPER(app.FIRST_NAME) LIKE UPPER(CONCAT('%', :#{#req.firstName}, '%'))
-                AND UPPER(app.LAST_NAME) LIKE UPPER(CONCAT('%', :#{#req.lastName}, '%'))
+                SELECT DISTINCT rep.id
+                FROM TOGDATA.REP_ORDERS rep 
+                JOIN TOGDATA.APPLICANTS app ON (rep.APPL_ID = app.id)
+                WHERE UPPER(app.FIRST_NAME) LIKE UPPER('%'||:#{#req.firstName}||'%')
+                AND UPPER(app.LAST_NAME) LIKE UPPER ('%'||:#{#req.lastName}||'%')
                 AND rep.ARREST_SUMMONS_NO = :#{#req.asn}
                 AND app.DOB = :#{#req.dob}
                 AND (:#{#req.niNumber} IS NULL OR app.NI_NUMBER = :#{#req.niNumber})

@@ -17,13 +17,15 @@ runs:
       id: build-run-time
       shell: bash
       run: |
-        echo "BUILD_RUN_TIME=$(date +'%m/%d/%Y %T')" >> $GITHUB_OUTPUT
+        echo "BUILD_RUN_TIME=$(date +'%d/%m/%Y %T')" >> $GITHUB_OUTPUT
 
     - name: Notify success to Slack
       id: slack-success
       if: ${{ success() }}
       uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 #v3
       with:
+        webhook: ${{ inputs.webhook-url }}
+        webhook-type: incoming-webhook
         payload: |
           {
             "blocks": [
@@ -57,23 +59,45 @@ runs:
               }
             ]
           }
-      env:
-        SLACK_WEBHOOK_URL: ${{ inputs.webhook-url }}
-        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
     - name: Notify failure to Slack
       if: ${{ failure() }}
-      uses: 8398a7/action-slack@77eaa4f1c608a7d68b38af4e3f739dcd8cba273e #v3
+      uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95
       with:
-        status: ${{ job.status }}
-        fields: repo,commit,author,ref,workflow,job,took
-        text: |
-          :x: Deployment failed in *${{ github.workflow }}*  
-          *Repo:* ${{ github.repository }}  
-          *Branch:* ${{ github.ref_name }}  
-          *Job:* ${{ github.job }}  
-          *Actor:* ${{ github.actor }}  
-          *Run:* https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      env:
-        SLACK_WEBHOOK_URL: ${{ inputs.webhook-url }}
-        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        webhook: ${{ inputs.webhook-url }}
+        webhook-type: incoming-webhook
+        payload: |
+          {
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Deployment Failed :x:",
+                  "emoji": true
+                }
+              },
+              {
+                "type": "section",
+                "fields": [
+                  { "type": "mrkdwn", "text": "*Repo:* ${{ github.repository }}" },
+                  { "type": "mrkdwn", "text": "*Branch:*\n${{ github.ref_name }}" },
+                  { "type": "mrkdwn", "text": "*Job:*\n${{ github.job }}" },
+                  { "type": "mrkdwn", "text": "*Actor:*\n${{ github.actor }}" },
+                  { "type": "mrkdwn", "text": "*When:* ${{ steps.build-run-time.outputs.BUILD_RUN_TIME }}" },
+                  { "type": "mrkdwn", "text": "*Workflow:*\n${{ github.workflow }}" }
+                ]
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "action_id": "run_link",
+                    "text": { "type": "plain_text", "text": "View Run" },
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              }
+            ]
+          }

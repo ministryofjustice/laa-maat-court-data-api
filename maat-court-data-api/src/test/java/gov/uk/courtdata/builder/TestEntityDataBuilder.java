@@ -1,15 +1,47 @@
 package gov.uk.courtdata.builder;
 
+import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.REGISTRATION;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.USER_NAME;
+
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
-import gov.uk.courtdata.billing.entity.ApplicantHistoryBillingEntity;
-import gov.uk.courtdata.billing.entity.MaatReferenceEntity;
-import gov.uk.courtdata.billing.entity.RepOrderBillingEntity;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.Applicant;
+import gov.uk.courtdata.entity.ChildWeightHistoryEntity;
+import gov.uk.courtdata.entity.ChildWeightingsEntity;
+import gov.uk.courtdata.entity.ConcorContributionsEntity;
+import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
+import gov.uk.courtdata.entity.ContributionFilesEntity;
+import gov.uk.courtdata.entity.ContributionsEntity;
+import gov.uk.courtdata.entity.CorrespondenceEntity;
+import gov.uk.courtdata.entity.DefendantMAATDataEntity;
+import gov.uk.courtdata.entity.FdcContributionsEntity;
+import gov.uk.courtdata.entity.FinAssIncomeEvidenceEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailsHistoryEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentsHistoryEntity;
+import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
+import gov.uk.courtdata.entity.HardshipReviewEntity;
+import gov.uk.courtdata.entity.HardshipReviewProgressEntity;
+import gov.uk.courtdata.entity.IOJAppealEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
+import gov.uk.courtdata.entity.OffenceEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.entity.RepOrderCCOutComeEntity;
+import gov.uk.courtdata.entity.RepOrderCPDataEntity;
+import gov.uk.courtdata.entity.RepOrderCapitalEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.RepOrderMvoEntity;
+import gov.uk.courtdata.entity.RepOrderMvoRegEntity;
+import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
+import gov.uk.courtdata.entity.UserEntity;
+import gov.uk.courtdata.entity.WQHearingEntity;
+import gov.uk.courtdata.entity.WQOffenceEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
-import gov.uk.courtdata.enums.CrownCourtCaseType;
-import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
@@ -18,24 +50,15 @@ import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
-import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.enums.AppealType;
-import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
-import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
-import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
-
-import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
-import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
-import static gov.uk.courtdata.builder.TestModelDataBuilder.REGISTRATION;
-import static gov.uk.courtdata.builder.TestModelDataBuilder.USER_NAME;
+import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
 @Component
 public class TestEntityDataBuilder {
@@ -121,33 +144,6 @@ public class TestEntityDataBuilder {
             .applicationId(APPLICATION_ID)
             .applicantHistoryId(APPLICANT_HISTORY_ID)
             .isSendToCCLF(true)
-            .build();
-    }
-
-    public static RepOrderBillingEntity getPopulatedRepOrderForBilling(Integer id) {
-        return RepOrderBillingEntity.builder()
-            .id(id)
-            .applicantId(123)
-            .arrestSummonsNo("ARREST-5678")
-            .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
-            .supplierAccountCode("AB123C")
-            .magsCourtId("34")
-            .magsCourtOutcome(MagCourtOutcome.COMMITTED.getOutcome())
-            .dateReceived(LocalDate.of(2025, 6, 10))
-            .crownCourtRepOrderDate(LocalDate.of(2025, 6, 12))
-            .offenceType("BURGLARY")
-            .crownCourtWithdrawalDate(LocalDate.of(2025, 6, 30))
-            .applicantHistoryId(96)
-            .caseId("CASE-123-C")
-            .committalDate(LocalDate.of(2025, 6, 11))
-            .repOrderStatus("CURR")
-            .appealTypeCode(AppealType.ACN.getCode())
-            .crownCourtOutcome(CrownCourtTrialOutcome.CONVICTED.getValue())
-            .dateCreated(LocalDate.of(2025, 6, 20))
-            .userCreated("joe-bloggs")
-            .dateModified(LocalDate.of(2025, 6, 21).atStartOfDay())
-            .userModified("alice-smith")
-            .caseType(CrownCourtCaseType.EITHER_WAY.getValue())
             .build();
     }
 
@@ -521,25 +517,6 @@ public class TestEntityDataBuilder {
                 .sendToCclf(sendToCclf)
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("TEST")
-                .build();
-    }
-
-    public static ApplicantHistoryBillingEntity getApplicantHistoryBillingEntity() {
-        return ApplicantHistoryBillingEntity.builder()
-                .id(666)
-                .applId(666)
-                .asAtDate(LocalDate.parse("2006-10-06"))
-                .firstName("test_first")
-                .lastName("test_last")
-                .otherNames("test")
-                .dob(LocalDate.parse("1981-10-14"))
-                .gender("Male")
-                .niNumber("JM933396A")
-                .foreignId("T35T")
-                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated("TEST")
-                .dateModified(null)
-                .userModified(null)
                 .build();
     }
 
@@ -976,14 +953,6 @@ public class TestEntityDataBuilder {
                 .defendantId("556677")
                 .caseUrn("testCaseURN")
                 .build();
-    }
-
-    public MaatReferenceEntity getMaatReferenceEntity() {
-        return MaatReferenceEntity.builder()
-            .maatId(REP_ID)
-            .applicantId(APPLICANT_ID)
-            .applicantHistoryId(APPLICANT_HISTORY_ID)
-            .build();
     }
 
     public static Applicant getApplicant(Integer applicantId) {

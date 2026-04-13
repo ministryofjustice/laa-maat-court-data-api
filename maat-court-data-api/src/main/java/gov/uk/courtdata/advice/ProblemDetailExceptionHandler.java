@@ -5,6 +5,8 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.iojappeal.controller.IOJAppealControllerV2;
 import java.util.List;
 import java.util.Optional;
+
+import gov.uk.courtdata.passport.controller.PassportAssessmentControllerV2;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
@@ -24,14 +26,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import uk.gov.justice.laa.crime.error.ProblemDetailError;
 import uk.gov.justice.laa.crime.tracing.TraceIdHandler;
-import uk.gov.justice.laa.crime.error.ErrorExtension;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
 
 @Slf4j
 @RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(assignableTypes = IOJAppealControllerV2.class)
+@RestControllerAdvice(assignableTypes = {IOJAppealControllerV2.class, PassportAssessmentControllerV2.class})
 public class ProblemDetailExceptionHandler {
 
     private final ObjectProvider<TraceIdHandler> traceIdHandlerProvider;

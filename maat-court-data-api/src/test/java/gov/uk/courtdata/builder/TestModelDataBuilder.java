@@ -40,8 +40,12 @@ import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.IojAppeal;
 import uk.gov.justice.laa.crime.common.model.ioj.IojAppealMetadata;
+import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentRequest;
+import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentResponse;
 import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
 import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
+import uk.gov.justice.laa.crime.common.model.passported.PassportedAssessment;
+import uk.gov.justice.laa.crime.common.model.passported.PassportedAssessmentMetadata;
 import uk.gov.justice.laa.crime.enums.AppealType;
 import uk.gov.justice.laa.crime.enums.BenefitRecipient;
 import uk.gov.justice.laa.crime.enums.BenefitType;
@@ -657,6 +661,54 @@ public class TestModelDataBuilder {
                 "whoDWPChecked": "ABC",
                 "rtCode": "DEF"
                 }""";
+    }
+
+    public static ApiCreatePassportedAssessmentRequest buildValidPopulatedCreatePassportedAssessmentRequest(boolean isUnder18) {
+        return buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, 456,isUnder18, true);
+    }
+
+    public static ApiCreatePassportedAssessmentRequest buildValidPopulatedCreatePassportedAssessmentRequest(Integer repId, Integer partnerId, boolean isUnder18, boolean hasDeclaredBenefits) {
+        ApiCreatePassportedAssessmentRequest request = new ApiCreatePassportedAssessmentRequest();
+
+        PassportedAssessment pa = new PassportedAssessment()
+                .withAssessmentDate(LocalDateTime.now())
+                .withNotes("Test Notes")
+                .withDecisionReason(PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED)
+                .withAssessmentDecision(PassportAssessmentDecision.PASS)
+                .withAssessmentReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
+                .withDeclaredUnder18(isUnder18)
+                .withReviewType(ReviewType.NAFI);
+
+        if(hasDeclaredBenefits){
+            pa.setDeclaredBenefit(buildDeclaredBenefit(partnerId));
+        }
+
+        request.setPassportedAssessment(pa);
+
+        PassportedAssessmentMetadata pam = new PassportedAssessmentMetadata()
+                .withApplicationId(123)
+                .withLegacyApplicationId(repId)
+                .withUserSession(new ApiUserSession("test-user","1234567890abfcdef"))
+                .withCaseManagementUnitId(CMU_ID)
+                .withUsn(USN_VALUE);
+
+        request.setPassportedAssessmentMetadata(pam);
+
+        return request;
+    }
+
+    public static ApiCreatePassportedAssessmentResponse buildValidCreatePassportedAssessmentResponse() {
+        return new ApiCreatePassportedAssessmentResponse()
+                .withAssessmentId(PASSPORT_ASSESSMENT_ID.toString())
+                .withLegacyAssessmentId(LEGACY_PASSPORT_ASSESSMENT_ID);
+    }
+
+    public static DeclaredBenefit buildDeclaredBenefit(Integer partnerId) {
+        return new DeclaredBenefit()
+                .withBenefitType(BenefitType.ESA)
+                .withBenefitRecipient(BenefitRecipient.APPLICANT)
+                .withLastSignOnDate(LocalDateTime.now())
+                .withLegacyPartnerId(partnerId);
     }
 
     public static String getUpdatePassportAssessmentJson() {

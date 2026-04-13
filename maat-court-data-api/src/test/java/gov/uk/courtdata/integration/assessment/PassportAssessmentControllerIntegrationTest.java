@@ -8,6 +8,11 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.APPLICANT_AGE;
+import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.PASS;
 
 import com.jayway.jsonpath.JsonPath;
 import gov.uk.MAATCourtDataApplication;
@@ -38,6 +43,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
@@ -81,6 +88,8 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         existingPassportAssessmentEntity = repos.passportAssessment.save(
                 PassportAssessmentEntity.builder()
                         .repOrder(noOutstandingRepOrder)
+                        .result(PASS.getCode())
+                        .pcobConfirmation(APPLICANT_AGE.getConfirmation())
                         .assessmentDate(testCreationDate)
                         .userCreated(testUser)
                         .pastStatus("IN PROGRESS")
@@ -91,6 +100,8 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 PassportAssessmentEntity.builder()
                         .repOrder(completedRepOrder)
                         .assessmentDate(testCreationDate)
+                        .result(PASS.getCode())
+                        .pcobConfirmation(APPLICANT_AGE.getConfirmation())
                         .userCreated(testUser)
                         .replaced("N")
                         .pastStatus("COMPLETE")
@@ -140,6 +151,23 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         assertTrue(runSuccessScenario(
                 passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(existingPassportAssessmentEntity),
                 get(ASSESSMENT_BY_REP_ID_URL, existingPassportAssessmentEntity.getRepOrder().getId())));
+    }
+
+    @Test
+    void givenAValidRepId_whenGetAssessmentByRepIdV2IsInvoked_theCorrectResponseIsReturned() throws Exception {
+        assertTrue(runSuccessScenario(
+                passportMapperV2.toApiGetPassportedAssessmentResponse(existingPassportAssessmentEntity),
+                get(BASE_V2_URL+"/"+existingPassportAssessmentEntity.getId(), existingPassportAssessmentEntity.getId())
+        ));
+    }
+
+    @Test
+    void givenAnInvalidRepId_whenGetAssessmentByRepIdV2IsInvoked_theCorrectResponseIsReturned() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_V2_URL + "/"+0)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is(404))
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+                .andExpect(jsonPath("$.detail").value("No Passported Assessment found for ID: 0"));
     }
 
     @Test

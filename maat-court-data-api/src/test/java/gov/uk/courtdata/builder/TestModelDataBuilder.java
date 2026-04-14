@@ -35,6 +35,9 @@ import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiGetPassportEvidenceResponse;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiIncomeEvidence;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiPassportEvidenceMetadata;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
@@ -63,6 +66,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
+import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 
 import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
 
@@ -617,6 +621,36 @@ public class TestModelDataBuilder {
             .withAssessmentDecision(PassportAssessmentDecision.PASS)
             .withDecisionReason(PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED)
             .withNotes("Test notes");
+    }
+    
+    public static ApiGetPassportEvidenceResponse getApiGetPassportedEvidenceResponse() {
+        return new ApiGetPassportEvidenceResponse()
+            .withPassportEvidenceMetadata(getApiPassportEvidenceMetadata())
+            .withApplicantEvidenceItems(getApiIncomeEvidence())
+            .withPartnerEvidenceItems(getApiIncomeEvidence());
+    }
+
+
+    public static ApiPassportEvidenceMetadata getApiPassportEvidenceMetadata() {
+        LocalDate date = LocalDate.now();
+        
+        return new ApiPassportEvidenceMetadata()
+            .withEvidenceDueDate(date)
+            .withEvidenceReceivedDate(date)
+            .withIncomeEvidenceNotes("Notes here")
+            .withFirstReminderDate(date)
+            .withSecondReminderDate(date)
+            .withUpliftAppliedDate(date)
+            .withUpliftRemovedDate(date);
+    }
+    
+    public static List<ApiIncomeEvidence> getApiIncomeEvidence() {
+        return List.of(new ApiIncomeEvidence()
+            .withId(1)
+            .withDescription("Description here")
+            .withEvidenceType(IncomeEvidenceType.CDS15)
+            .withDateReceived(LocalDate.now())
+            .withMandatory(true));
     }
 
     public static String getCreatePassportAssessmentJson() {

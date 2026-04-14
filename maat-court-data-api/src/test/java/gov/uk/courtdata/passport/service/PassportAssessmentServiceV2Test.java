@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import gov.uk.courtdata.applicant.service.PartnerService;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
@@ -27,12 +28,15 @@ class PassportAssessmentServiceV2Test {
     @Mock
     private PassportAssessmentMapper passportAssessmentMapper;
     
+    @Mock
+    private PartnerService partnerService;
+    
     @Test
     void whenFindByLegacyIdIsInvoked_thenPassportedAssessmentIsRetrieved() {
         var apiGetPassportedAssessmentResponse = TestModelDataBuilder.getApiGetPassportedAssessmentResponse();
         when(passportAssessmentPersistenceService.find(any())).thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
         when(passportAssessmentMapper.toApiGetPassportedAssessmentResponse(any(
-            PassportAssessmentEntity.class))).thenReturn(apiGetPassportedAssessmentResponse);
+            PassportAssessmentEntity.class), any())).thenReturn(apiGetPassportedAssessmentResponse);
         var returnedPassportedAssessment = passportAssessmentService.find(LEGACY_PASSPORT_ASSESSMENT_ID);
         assertEquals(LEGACY_PASSPORT_ASSESSMENT_ID, returnedPassportedAssessment.getLegacyAssessmentId());
     }

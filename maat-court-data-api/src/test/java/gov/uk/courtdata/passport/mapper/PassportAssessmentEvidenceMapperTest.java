@@ -18,7 +18,7 @@ import uk.gov.justice.laa.crime.common.model.evidence.ApiGetPassportEvidenceResp
 import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 
 @ExtendWith(MockitoExtension.class)
-public class PassportAssessmentEvidenceMapperTest {
+class PassportAssessmentEvidenceMapperTest {
 
     private static final Integer APPLICANT_ID = 123;
     private static final Integer INVALID_APPLICANT_ID = 786;

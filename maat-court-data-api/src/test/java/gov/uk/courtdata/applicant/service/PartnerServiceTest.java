@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class PartnerServiceTest {
+class PartnerServiceTest {
     
     private static final Integer PARTNER_ID = 11553844;
     

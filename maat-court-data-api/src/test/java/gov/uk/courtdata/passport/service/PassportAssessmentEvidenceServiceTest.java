@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.common.model.evidence.ApiGetPassportEvidenceResponse;
 
 @ExtendWith(MockitoExtension.class)
-public class PassportAssessmentEvidenceServiceTest {
+class PassportAssessmentEvidenceServiceTest {
     
     @InjectMocks
     private PassportAssessmentEvidenceService passportAssessmentEvidenceService;

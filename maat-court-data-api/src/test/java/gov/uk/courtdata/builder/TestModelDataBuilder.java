@@ -1,7 +1,5 @@
 package gov.uk.courtdata.builder;
 
-import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
-
 import com.google.gson.Gson;
 import gov.uk.courtdata.address.entity.Address;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
@@ -15,58 +13,13 @@ import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
 import gov.uk.courtdata.dces.request.UpdateFdcContributionRequest;
-import gov.uk.courtdata.dto.AssessorDetails;
-import gov.uk.courtdata.dto.ChildWeightHistoryDTO;
-import gov.uk.courtdata.dto.ContributionsDTO;
-import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.dto.FinAssIncomeEvidenceDTO;
-import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.dto.FinancialAssessmentDetailsHistoryDTO;
-import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
-import gov.uk.courtdata.dto.HardshipReviewDTO;
-import gov.uk.courtdata.dto.IOJAppealDTO;
-import gov.uk.courtdata.dto.OffenceDTO;
-import gov.uk.courtdata.dto.PassportAssessmentDTO;
-import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
-import gov.uk.courtdata.dto.RepOrderDTO;
-import gov.uk.courtdata.dto.RepOrderMvoDTO;
-import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
-import gov.uk.courtdata.dto.RepOrderStateDTO;
-import gov.uk.courtdata.dto.ReservationsDTO;
-import gov.uk.courtdata.dto.UserSummaryDTO;
-import gov.uk.courtdata.dto.WQHearingDTO;
-import gov.uk.courtdata.dto.WQLinkRegisterDTO;
+import gov.uk.courtdata.dto.*;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.ReservationsEntity;
-import gov.uk.courtdata.enums.CrownCourtCaseType;
-import gov.uk.courtdata.enums.FdcContributionsStatus;
-import gov.uk.courtdata.enums.Frequency;
-import gov.uk.courtdata.enums.HardshipReviewDetailReason;
-import gov.uk.courtdata.enums.HardshipReviewProgressAction;
-import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
-import gov.uk.courtdata.enums.JurisdictionType;
-import gov.uk.courtdata.hearing.dto.DefendantDTO;
-import gov.uk.courtdata.hearing.dto.HearingDTO;
-import gov.uk.courtdata.hearing.dto.HearingOffenceDTO;
-import gov.uk.courtdata.hearing.dto.PleaDTO;
-import gov.uk.courtdata.hearing.dto.ResultDTO;
-import gov.uk.courtdata.hearing.dto.SessionDTO;
-import gov.uk.courtdata.hearing.dto.VerdictDTO;
-import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.CreateRepOrder;
-import gov.uk.courtdata.model.NewWorkReason;
-import gov.uk.courtdata.model.RepOrderCCOutcome;
-import gov.uk.courtdata.model.UpdateCCOutcome;
-import gov.uk.courtdata.model.UpdateRepOrder;
-import gov.uk.courtdata.model.UpdateSentenceOrder;
-import gov.uk.courtdata.model.assessment.ChildWeightings;
-import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
-import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
-import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
-import gov.uk.courtdata.model.assessment.FinancialAssessmentIncomeEvidence;
-import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
-import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
-import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
+import gov.uk.courtdata.enums.*;
+import gov.uk.courtdata.hearing.dto.*;
+import gov.uk.courtdata.model.*;
+import gov.uk.courtdata.model.assessment.*;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
@@ -76,15 +29,12 @@ import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import gov.uk.courtdata.model.reporder.MaatSearchRequest;
 import gov.uk.courtdata.model.reporder.MaatSearchResponse;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiGetPassportEvidenceResponse;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiIncomeEvidence;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiPassportEvidenceMetadata;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
@@ -92,16 +42,30 @@ import uk.gov.justice.laa.crime.common.model.ioj.IojAppeal;
 import uk.gov.justice.laa.crime.common.model.ioj.IojAppealMetadata;
 import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
 import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
+import uk.gov.justice.laa.crime.enums.AppealType;
 import uk.gov.justice.laa.crime.enums.BenefitRecipient;
 import uk.gov.justice.laa.crime.enums.BenefitType;
-import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
+import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
+import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
 import uk.gov.justice.laa.crime.enums.IojAppealDecisionReason;
+import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.enums.PassportAssessmentDecision;
 import uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason;
 import uk.gov.justice.laa.crime.enums.ReviewType;
 import uk.gov.justice.laa.crime.enums.contribution.TransferStatus;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Stream;
+import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
+
+import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
 
 @Component
 public class TestModelDataBuilder {
@@ -615,6 +579,36 @@ public class TestModelDataBuilder {
             .withAssessmentDecision(PassportAssessmentDecision.PASS)
             .withDecisionReason(PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED)
             .withNotes("Test notes");
+    }
+
+    public static ApiGetPassportEvidenceResponse getApiGetPassportedEvidenceResponse() {
+        return new ApiGetPassportEvidenceResponse()
+            .withPassportEvidenceMetadata(getApiPassportEvidenceMetadata())
+            .withApplicantEvidenceItems(getApiIncomeEvidence())
+            .withPartnerEvidenceItems(getApiIncomeEvidence());
+    }
+
+
+    public static ApiPassportEvidenceMetadata getApiPassportEvidenceMetadata() {
+        LocalDate date = LocalDate.now();
+
+        return new ApiPassportEvidenceMetadata()
+            .withEvidenceDueDate(date)
+            .withEvidenceReceivedDate(date)
+            .withIncomeEvidenceNotes("Notes here")
+            .withFirstReminderDate(date)
+            .withSecondReminderDate(date)
+            .withUpliftAppliedDate(date)
+            .withUpliftRemovedDate(date);
+    }
+
+    public static List<ApiIncomeEvidence> getApiIncomeEvidence() {
+        return List.of(new ApiIncomeEvidence()
+            .withId(1)
+            .withDescription("Description here")
+            .withEvidenceType(IncomeEvidenceType.CDS15)
+            .withDateReceived(LocalDate.now())
+            .withMandatory(true));
     }
 
     public static String getCreatePassportAssessmentJson() {
@@ -1800,20 +1794,6 @@ public class TestModelDataBuilder {
                   "caseType": "%s"
                 }
                 """.formatted(firstName, TEST_DATE.toLocalDate(), ASN_NUMBER, TEST_DATE.toLocalDate(), NI_NUMBER, CASE_TYPE_VALUE);
-    }
-
-    public static String getMaatSearchRequestJsonWithNullDob() {
-        return """
-                {
-                  "firstName": "firstName",
-                  "lastName": "LastName",
-                  "dob": null,
-                  "asn": "%s",
-                  "committalDate": "%s",
-                  "niNumber": "%s",
-                  "caseType": "%s"
-                }
-                """.formatted(ASN_NUMBER, TEST_DATE.toLocalDate(), NI_NUMBER, CASE_TYPE_VALUE);
     }
 
     public static MaatSearchRequest getMaatSearchRequest() {

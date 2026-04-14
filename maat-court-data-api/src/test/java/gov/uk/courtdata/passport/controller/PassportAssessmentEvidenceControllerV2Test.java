@@ -23,7 +23,7 @@ import uk.gov.justice.laa.crime.common.model.evidence.ApiPassportEvidenceMetadat
 
 @WebMvcTest(PassportAssessmentEvidenceControllerV2.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class PassportAssessmentEvidenceControllerV2Test {
+class PassportAssessmentEvidenceControllerV2Test {
     
     private static final String ENDPOINT_URL = "/api/internal/v2/assessment/passport-assessments";
 

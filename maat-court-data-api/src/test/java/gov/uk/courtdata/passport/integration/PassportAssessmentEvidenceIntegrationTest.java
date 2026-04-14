@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
+class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v2/assessment/passport-assessments/{id}/evidence";
     private PassportAssessmentEntity passportAssessmentEntity;

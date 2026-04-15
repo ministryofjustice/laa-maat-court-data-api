@@ -117,6 +117,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         hardshipReview.setRepId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS);
         hardshipReview.setReplaced("N");
         hardshipReview.setNewWorkReason(existingNewWorkReason);
+        hardshipReview.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
 
         repos.hardshipReview.save(hardshipReview);
     }
@@ -239,8 +240,15 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                         .stream()
                         .filter(review -> review.getRepId().equals(repId) && review.getReplaced().equals("Y"))
                         .count();
+        // Check that existing hardship with the Financial Id in request is kept.
+        long nonUpdatedHardshipReviewCount =
+                repos.hardshipReview.findAll()
+                        .stream()
+                        .filter(review -> review.getRepId().equals(repId) && review.getReplaced().equals("N"))
+                        .count();
 
-        assertThat(updatedHardshipReviewCount).isEqualTo(1L);
+        assertThat(updatedHardshipReviewCount).isZero();
+        assertThat(nonUpdatedHardshipReviewCount).isEqualTo(1L);
 
         // Check that there are now 2 passport assessments for the given repId.
         // One current and the other marked as replaced.
@@ -258,7 +266,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
         assertThat(newPassportAssessments).hasSize(1);
 
-        PassportAssessmentEntity createdPassportAssessment = newPassportAssessments.get(0);
+        PassportAssessmentEntity createdPassportAssessment = newPassportAssessments.getFirst();
 
         expectedResponse.setId(createdPassportAssessment.getId());
         expectedResponse.setDateCreated(createdPassportAssessment.getDateCreated());
@@ -429,7 +437,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
         assertThat(matchingPassportAssessments).hasSize(1);
 
-        PassportAssessmentEntity updatedPassportAssessment = matchingPassportAssessments.get(0);
+        PassportAssessmentEntity updatedPassportAssessment = matchingPassportAssessments.getFirst();
 
         expectedResponse.setDateModified(updatedPassportAssessment.getDateModified());
 

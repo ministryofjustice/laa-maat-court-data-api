@@ -40,7 +40,6 @@ public class PassportAssessmentPersistenceService {
         passportAssessmentRepository.updatePreviousPassportAssessmentsAsReplaced(
                 passportAssessmentEntity.getRepOrder().getId(), passportAssessmentEntity.getId()
         );
-        // todo This needs to keep one? But how to identify?
         financialAssessmentRepository.updateAllPreviousFinancialAssessmentsAsReplaced(
                 passportAssessmentEntity.getRepOrder().getId()
         );

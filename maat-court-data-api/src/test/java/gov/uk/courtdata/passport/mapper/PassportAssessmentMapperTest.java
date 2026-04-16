@@ -398,8 +398,8 @@ class PassportAssessmentMapperTest {
         var entity = passportAssessmentMapper.toPassportAssessmentEntity(request);
 
         verify(repOrderService).findByRepId(any());
-        int applicantCallNum = (populatePartner) ? 1 : 0;
-        verify(applicantService, times(applicantCallNum)).find(any());
+        int findApplicantCallCount = (populatePartner) ? 1 : 0;
+        verify(applicantService, times(findApplicantCallCount)).find(any());
 
         validatePassportedAssessmentV2UnconditionalMappings(request, entity);
         validatePartnerDetails(partner, entity);

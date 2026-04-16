@@ -4,10 +4,15 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.PASSPORT_ASSESSMENT_
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -21,6 +26,10 @@ class PassportAssessmentPersistenceServiceTest {
 
     @Mock
     private PassportAssessmentRepository passportAssessmentRepository;
+    @Mock
+    private HardshipReviewRepository hardshipReviewRepository;
+    @Mock
+    private FinancialAssessmentRepository financialAssessmentRepository;
     
     @InjectMocks
     private PassportAssessmentPersistenceService passportAssessmentPersistenceService;
@@ -43,5 +52,20 @@ class PassportAssessmentPersistenceServiceTest {
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
             .isThrownBy(() -> passportAssessmentPersistenceService.find(PASSPORT_ASSESSMENT_ID))
             .withMessageContaining(String.format("No Passported Assessment found for ID: %d", PASSPORT_ASSESSMENT_ID));
+    }
+
+    @Test
+    void givenCreateCalled_whenCreateIsInvoked_thenRepositoryCallsAreMade(){
+        when(passportAssessmentRepository.save(any())).thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
+        doNothing().when(passportAssessmentRepository).updatePreviousPassportAssessmentsAsReplaced(any(), any());
+        doNothing().when(financialAssessmentRepository).updateAllPreviousFinancialAssessmentsAsReplaced(any());
+        doNothing().when(hardshipReviewRepository).replaceOldHardshipReviews(any());
+
+        passportAssessmentPersistenceService.create(TestEntityDataBuilder.getPassportAssessmentEntity());
+
+        verify(passportAssessmentRepository).save(any());
+        verify(passportAssessmentRepository).updatePreviousPassportAssessmentsAsReplaced(any(), any());
+        verify(financialAssessmentRepository).updateAllPreviousFinancialAssessmentsAsReplaced(any());
+        verify(hardshipReviewRepository).replaceOldHardshipReviews(any());
     }
 }

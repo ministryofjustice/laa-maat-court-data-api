@@ -3,6 +3,8 @@ package gov.uk.courtdata.integration.assessment;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,10 +30,14 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import gov.uk.courtdata.repository.HardshipReviewRepository;
+import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -40,6 +46,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MvcResult;
@@ -49,11 +56,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
-    private final String BASE_URL = "/api/internal/v1/assessment/passport-assessments";
-    private final String BASE_V2_URL = "/api/internal/v2/assessment/passport-assessments";
-    private final String ASSESSMENT_URL = BASE_URL + "/{passportAssessmentId}";
-    private final String ASSESSMENT_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
-    private final Integer INVALID_ASSESSMENT_ID = 999;
+    private static final String BASE_URL = "/api/internal/v1/assessment/passport-assessments";
+    private static final String BASE_V2_URL = "/api/internal/v2/assessment/passport-assessments";
+    private static final String ASSESSMENT_URL = BASE_URL + "/{passportAssessmentId}";
+    private static final String ASSESSMENT_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
+    private static final Integer INVALID_ASSESSMENT_ID = 999;
 
     @Autowired
     private PassportAssessmentMapper passportAssessmentMapper;
@@ -61,12 +68,21 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
     @MockitoSpyBean
     private gov.uk.courtdata.passport.mapper.PassportAssessmentMapper passportMapperV2;
 
+    @MockitoSpyBean
+    private HardshipReviewRepository hardshipReviewRepository;
+
+    @MockitoSpyBean
+    private FinancialAssessmentRepository financialAssessmentRepository;
+
+    @MockitoSpyBean
+    private PassportAssessmentRepository passportAssessmentRepository;
+
     private PassportAssessmentEntity existingPassportAssessmentEntity;
     private FinancialAssessmentEntity existingFinancialAssessmentEntity;
     private PassportAssessmentEntity completePassportAssessmentEntity;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         setupTestData();
     }
 
@@ -76,11 +92,10 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
         RepOrderEntity noOutstandingRepOrder = repos.repOrder.save(
             TestEntityDataBuilder.getPopulatedRepOrder());
-        Integer REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS = noOutstandingRepOrder.getId();
+        Integer repIdWithNoOutstandingAssessments = noOutstandingRepOrder.getId();
 
         RepOrderEntity completedRepOrder = repos.repOrder.save(
             TestEntityDataBuilder.getPopulatedRepOrder());
-        Integer REP_ID_WITH_COMPLETED_ASSESSMENT = completedRepOrder.getId();
 
         NewWorkReasonEntity existingNewWorkReason =
             repos.mockNewWorkReason.save(TestEntityDataBuilder.getFmaNewWorkReasonEntity());
@@ -108,13 +123,13 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                         .build());
 
         FinancialAssessmentEntity testFinancialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
-        testFinancialAssessment.getRepOrder().setId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS);
+        testFinancialAssessment.getRepOrder().setId(repIdWithNoOutstandingAssessments);
 
         existingFinancialAssessmentEntity = repos.financialAssessment.save(testFinancialAssessment);
 
         HardshipReviewEntity hardshipReview = TestEntityDataBuilder.getHardshipReviewEntity();
         hardshipReview.setId(null);
-        hardshipReview.setRepId(REP_ID_WITH_NO_OUTSTANDING_ASSESSMENTS);
+        hardshipReview.setRepId(repIdWithNoOutstandingAssessments);
         hardshipReview.setReplaced("N");
         hardshipReview.setNewWorkReason(existingNewWorkReason);
         hardshipReview.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
@@ -279,10 +294,9 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         assertThat(objectMapper.writeValueAsString(expectedResponse)).isEqualTo(result.getResponse().getContentAsString());
     }
 
-    /** Truth Table for variations.
-     * Covers main routes of the mapping/saving/partnerId population.
-     */
-    private static Stream<Arguments> createAssessmentV2Conditions() {
+
+    /** Simple 3 boolean truth table */
+    private static Stream<Arguments> threeBooleanTruthTable() {
         return Stream.of(
                 Arguments.of(true, true, true ),
                 Arguments.of(true, true, false ),
@@ -295,8 +309,16 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         );
     }
 
+    /**
+     * Test to verify behaviour of the CreatePassportedAssessment V2 endpoint. Flags are set in order to test different
+     * logical paths. The specific testing of values is in the PassportMapper unit tests, but are here for completeness.
+     *
+     * @param isUnder18 boolean controlling if the request being made should be flagged as under-18.
+     * @param hasDeclaredBenefits boolean controlling if the request being made should have a DeclaredBenefit section.
+     * @param populatePartner boolean controlling if the request being made should have a partner applicant set.
+     */
     @ParameterizedTest
-    @MethodSource("createAssessmentV2Conditions")
+    @MethodSource("threeBooleanTruthTable")
     void givenFullRequest_whenCreateAssessmentV2IsInvoked_theCorrectResponseIsReturned(boolean isUnder18, boolean hasDeclaredBenefits, boolean populatePartner) throws Exception {
 
         Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
@@ -342,6 +364,79 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         // validate mapper is being called.
         verify(passportMapperV2).toPassportAssessmentEntity(any());
         verify(passportMapperV2).toApiCreatePassportedAssessmentResponse(any());
+    }
+
+    @Test
+    void givenMaatFailureOnHardshipReplacement_whenCreateAssessmentV2IsInvoked_theTransactionIsRolledBack() throws Exception {
+        doThrow(new DataIntegrityViolationException("Test Exception")).when(hardshipReviewRepository).replaceOldHardshipReviews(any());
+        runAndValidateDatabaseFailureOnCreatePassportedV2();
+    }
+
+    @Test
+    void givenMaatFailureOnFinancialReplacement_whenCreateAssessmentV2IsInvoked_theTransactionIsRolledBack() throws Exception {
+        doThrow(new DataIntegrityViolationException("Test Exception")).when(financialAssessmentRepository).updateAllPreviousFinancialAssessmentsAsReplaced(any());
+        runAndValidateDatabaseFailureOnCreatePassportedV2();
+    }
+
+    @Test
+    void givenMaatFailureOnAssessmentReplacement_whenCreateAssessmentV2IsInvoked_theTransactionIsRolledBack() throws Exception {
+        doThrow(new DataIntegrityViolationException("Test Exception")).when(passportAssessmentRepository).updatePreviousPassportAssessmentsAsReplaced(any(), any());
+        runAndValidateDatabaseFailureOnCreatePassportedV2();
+    }
+
+    void runAndValidateDatabaseFailureOnCreatePassportedV2() throws Exception {
+
+        Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
+        Integer partnerId = repos.applicantRepository.save(TestEntityDataBuilder.getApplicant(TestEntityDataBuilder.APPLICANT_ID)).getId();
+
+        var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, partnerId, false, true);
+
+        // add watchers to allow mapper verification. Can rely on mapper tests.
+        when(passportMapperV2.toPassportAssessmentEntity(any())).thenCallRealMethod();
+        when(passportMapperV2.toApiCreatePassportedAssessmentResponse(any())).thenCallRealMethod();
+        doThrow(new DataIntegrityViolationException("Test Exception")).when(hardshipReviewRepository).replaceOldHardshipReviews(any());
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.title").value("Bad Request"))
+                .andExpect(jsonPath("$.detail").value("Request violates a data constraint"));
+
+
+        List<PassportAssessmentEntity> passportAssessments = repos.passportAssessment.findAll().stream()
+                .filter(assessment -> repId.equals(assessment.getRepOrder().getId()))
+                .toList();
+
+        // check we've set not set any old passported assessments to replaced.
+        assertThat(passportAssessments.stream().filter(x-> "Y".equals(x.getReplaced()))
+                .map(PassportAssessmentEntity::getId)).isEmpty();
+        // check there is still only one value. The other should have been rolled back.
+        assertThat(passportAssessments.stream().filter(x-> "N".equals(x.getReplaced()))
+                .map(PassportAssessmentEntity::getId).toList()).hasSize(1);
+
+
+        // check the old financial has been replaced.
+        assertThat(repos.financialAssessment.findAll().stream()
+                .filter(x -> x.getRepOrder().getId().equals(repId))
+                .filter(x->"Y".equals(x.getReplaced()))).isEmpty();
+        assertThat(repos.financialAssessment.findAll().stream()
+                .filter(x -> x.getRepOrder().getId().equals(repId))
+                .filter(x->"N".equals(x.getReplaced()))).hasSize(1);
+        // check old hardship reviews have been replaced.
+        assertThat(repos.hardshipReview.findAll().stream()
+                .filter(x -> x.getRepId().equals(repId))
+                .filter(x->"Y".equals(x.getReplaced()))).isEmpty();
+        assertThat(repos.hardshipReview.findAll().stream()
+                .filter(x -> x.getRepId().equals(repId))
+                .filter(x->"N".equals(x.getReplaced()))).hasSize(1);
+
+        // validate mapper is being called.
+        verify(passportMapperV2).toPassportAssessmentEntity(any());
+        verify(passportMapperV2, times(0)).toApiCreatePassportedAssessmentResponse(any());
     }
 
     @Test

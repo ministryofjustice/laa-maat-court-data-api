@@ -54,7 +54,7 @@ class PassportAssessmentControllerV2Test {
     }
 
     @Test
-    void givenFullRequest_whenCreateIsCalled_thenReturnSuccessfulResponseIsReturned() throws Exception {
+    void givenFullRequest_whenCreateIsCalled_thenReturnSuccessfulResponse() throws Exception {
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(false);
         var expectedEntity = TestModelDataBuilder.buildValidCreatePassportedAssessmentResponse();
         when(passportAssessmentService.create(any())).thenReturn(expectedEntity);
@@ -67,7 +67,7 @@ class PassportAssessmentControllerV2Test {
     }
 
     @Test
-    void givenAPartialRequest_whenCreateIsCalled_thenValidationFailureResponseIsReturned() throws Exception {
+    void givenAPartialRequest_whenCreateIsCalled_thenReturnValidationFailureResponse() throws Exception {
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(false);
         request.getPassportedAssessment().setAssessmentReason(null);
         var expectedEntity = TestModelDataBuilder.buildValidCreatePassportedAssessmentResponse();
@@ -80,7 +80,7 @@ class PassportAssessmentControllerV2Test {
     }
 
     @Test
-    void givenFullRequestAndMaatFailure_whenCreateIsCalled_thenFailureResponseIsReturned() throws Exception {
+    void givenFullRequestAndMaatFailure_whenCreateIsCalled_thenReturnFailureResponse() throws Exception {
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(false);
         when(passportAssessmentService.create(any())).thenThrow(new DataIntegrityViolationException("Test Error"));
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)

@@ -128,7 +128,7 @@ public abstract class PassportAssessmentMapper {
     public abstract PassportAssessmentEntity toPassportAssessmentEntity(ApiCreatePassportedAssessmentRequest request);
 
     @AfterMapping
-    public PassportAssessmentEntity after(ApiCreatePassportedAssessmentRequest source, @MappingTarget PassportAssessmentEntity target) {
+    public PassportAssessmentEntity mapPartnerFields(ApiCreatePassportedAssessmentRequest source, @MappingTarget PassportAssessmentEntity target) {
         if (Boolean.FALSE.equals(source.getPassportedAssessment().getDeclaredUnder18())
                 && source.getPassportedAssessment().getDeclaredBenefit() != null
                 && source.getPassportedAssessment().getDeclaredBenefit().getLegacyPartnerId() != null) {
@@ -160,7 +160,7 @@ public abstract class PassportAssessmentMapper {
      * @return String containing "Y" or "N".
      */
     public String mapBenefitType(BenefitType expected, ApiCreatePassportedAssessmentRequest request){
-        if(Boolean.FALSE.equals(request.getPassportedAssessment().getDeclaredUnder18())
+        if (Boolean.FALSE.equals(request.getPassportedAssessment().getDeclaredUnder18())
                 && request.getPassportedAssessment().getDeclaredBenefit() != null
                 && expected.equals(request.getPassportedAssessment().getDeclaredBenefit().getBenefitType())){
             return "Y";
@@ -168,11 +168,11 @@ public abstract class PassportAssessmentMapper {
         return "N";
     }
 
-    // TODO: Get logic for determining values here. Request is placeholder to allow for full access to objects.
+    // TODO: LCAM-2074 - Get logic for determining values here. Request is placeholder to allow for full access to objects.
     // Understanding is this is an either/or, so both logic will be linked.
     public String mapUnder18CourtType(boolean isMags, ApiCreatePassportedAssessmentRequest request){
-        if(Boolean.TRUE.equals(request.getPassportedAssessment().getDeclaredUnder18())){
-            if(isMags){
+        if (Boolean.TRUE.equals(request.getPassportedAssessment().getDeclaredUnder18())){
+            if (isMags){
                 return "N";
             }
             return "Y";

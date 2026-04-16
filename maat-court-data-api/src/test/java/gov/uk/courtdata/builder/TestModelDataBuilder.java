@@ -670,7 +670,7 @@ public class TestModelDataBuilder {
     public static ApiCreatePassportedAssessmentRequest buildValidPopulatedCreatePassportedAssessmentRequest(Integer repId, Integer partnerId, boolean isUnder18, boolean hasDeclaredBenefits) {
         ApiCreatePassportedAssessmentRequest request = new ApiCreatePassportedAssessmentRequest();
 
-        PassportedAssessment pa = new PassportedAssessment()
+        PassportedAssessment assessment = new PassportedAssessment()
                 .withAssessmentDate(LocalDateTime.now())
                 .withNotes("Test Notes")
                 .withDecisionReason(PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED)
@@ -680,19 +680,19 @@ public class TestModelDataBuilder {
                 .withReviewType(ReviewType.NAFI);
 
         if(hasDeclaredBenefits){
-            pa.setDeclaredBenefit(buildDeclaredBenefit(partnerId));
+            assessment.setDeclaredBenefit(buildDeclaredBenefit(partnerId));
         }
 
-        request.setPassportedAssessment(pa);
+        request.setPassportedAssessment(assessment);
 
-        PassportedAssessmentMetadata pam = new PassportedAssessmentMetadata()
+        PassportedAssessmentMetadata metadata = new PassportedAssessmentMetadata()
                 .withApplicationId(123)
                 .withLegacyApplicationId(repId)
                 .withUserSession(new ApiUserSession("test-user","1234567890abfcdef"))
                 .withCaseManagementUnitId(CMU_ID)
                 .withUsn(USN_VALUE);
 
-        request.setPassportedAssessmentMetadata(pam);
+        request.setPassportedAssessmentMetadata(metadata);
 
         return request;
     }
@@ -709,6 +709,14 @@ public class TestModelDataBuilder {
                 .withBenefitRecipient(BenefitRecipient.APPLICANT)
                 .withLastSignOnDate(LocalDateTime.now())
                 .withLegacyPartnerId(partnerId);
+    }
+
+    public static DeclaredBenefit buildDeclaredBenefit(BenefitRecipient benefitRecipient) {
+        return new DeclaredBenefit()
+                .withBenefitType(BenefitType.ESA)
+                .withBenefitRecipient(benefitRecipient)
+                .withLastSignOnDate(LocalDateTime.now())
+                .withLegacyPartnerId(null);
     }
 
     public static String getUpdatePassportAssessmentJson() {

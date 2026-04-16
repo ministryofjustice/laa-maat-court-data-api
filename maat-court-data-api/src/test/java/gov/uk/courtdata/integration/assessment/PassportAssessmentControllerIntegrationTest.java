@@ -384,7 +384,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         runAndValidateDatabaseFailureOnCreatePassportedV2();
     }
 
-    void runAndValidateDatabaseFailureOnCreatePassportedV2() throws Exception {
+    private void runAndValidateDatabaseFailureOnCreatePassportedV2() throws Exception {
 
         Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
         Integer partnerId = repos.applicantRepository.save(TestEntityDataBuilder.getApplicant(TestEntityDataBuilder.APPLICANT_ID)).getId();

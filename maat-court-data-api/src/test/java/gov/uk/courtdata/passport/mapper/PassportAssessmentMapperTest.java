@@ -537,7 +537,7 @@ class PassportAssessmentMapperTest {
 //        assertThat(entity.getUnder18HeardInYouthCourt()).isEqualTo(request.getPassportedAssessment().getDecisionReason().getConfirmation());
     }
 
-    public void validateBenefitTypeMapping(BenefitType expectedBenefit, PassportAssessmentEntity entity) {
+    private void validateBenefitTypeMapping(BenefitType expectedBenefit, PassportAssessmentEntity entity) {
         assertThat(entity.getIncomeSupport()).isEqualTo(isBenefitType(expectedBenefit, BenefitType.INCOME_SUPPORT));
         assertThat(entity.getJobSeekers()).isEqualTo(isBenefitType(expectedBenefit, BenefitType.JSA));
         assertThat(entity.getEsa()).isEqualTo(isBenefitType(expectedBenefit, BenefitType.ESA));
@@ -545,7 +545,7 @@ class PassportAssessmentMapperTest {
         assertThat(entity.getUniversalCredit()).isEqualTo(isBenefitType(expectedBenefit, BenefitType.UC));
     }
 
-    public void validatePartnerDetails(Applicant expectedPartner, PassportAssessmentEntity entity){
+    private void validatePartnerDetails(Applicant expectedPartner, PassportAssessmentEntity entity){
         if (expectedPartner != null){
             assertThat(entity.getPartnerDob().toLocalDate()).isEqualTo(expectedPartner.getDob());
             assertThat(entity.getPartnerSurname()).isEqualTo(expectedPartner.getLastName());

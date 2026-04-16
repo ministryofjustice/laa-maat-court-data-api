@@ -27,7 +27,7 @@ public interface PassportAssessmentEvidenceMapper {
     @Mapping(target = "applicantEvidenceItems", ignore = true)
     @Mapping(target = "partnerEvidenceItems", ignore = true)
 ApiGetPassportEvidenceResponse toApiGetPassportEvidenceResponse(
-        PassportAssessmentEntity passportAssessmentEntity, List<PassportAssessmentEvidenceEntity> passportAssessmentEvidenceEntity, @Context Integer partnerLegacyId);
+        PassportAssessmentEntity passportAssessmentEntity, @Context Integer partnerLegacyId);
     
     @AfterMapping
     default void mapEvidence(PassportAssessmentEntity passportAssessmentEntity, 

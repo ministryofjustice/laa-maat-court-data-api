@@ -1,6 +1,5 @@
 package gov.uk.courtdata.passport.service;
 
-import static gov.uk.courtdata.builder.TestEntityDataBuilder.APPLICANT_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_PASSPORT_ASSESSMENT_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -9,12 +8,8 @@ import static org.mockito.Mockito.when;
 import gov.uk.courtdata.applicant.service.PartnerService;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.passport.mapper.PassportAssessmentEvidenceMapper;
-import gov.uk.courtdata.repository.PassportAssessmentEvidenceRepository;
-import java.time.LocalDateTime;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,27 +28,17 @@ class PassportAssessmentEvidenceServiceTest {
 
     @Mock
     private PassportAssessmentEvidenceMapper passportAssessmentEvidenceMapper;
-
-    @Mock
-    private PassportAssessmentEvidenceRepository passportAssessmentEvidenceRepository;
     
     @Mock
     private PartnerService partnerService;
 
     @Test
     void whenFindIsInvoked_thenPassportEvidenceIsRetrieved() {
-        Applicant applicant = Applicant.builder()
-            .id(APPLICANT_ID)
-            .build();
-
         PassportAssessmentEntity passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         ApiGetPassportEvidenceResponse apiGetPassportEvidenceResponse = TestModelDataBuilder.getApiGetPassportedEvidenceResponse();
         when(passportAssessmentPersistenceService.find(any())).thenReturn(passportAssessmentEntity);
-        when(passportAssessmentEvidenceRepository.findByPassportAssessment(any()))
-            .thenReturn(List.of(TestEntityDataBuilder.getPassportAssessmentEvidenceEntity(passportAssessmentEntity, applicant,
-                LocalDateTime.now())));
         when(partnerService.getPartnerLegacyId(any())).thenReturn(1);
-        when(passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(any(), any(), any())).thenReturn(apiGetPassportEvidenceResponse);
+        when(passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(any(), any())).thenReturn(apiGetPassportEvidenceResponse);
         
         ApiGetPassportEvidenceResponse returnedPassportedAssessmentEvidence = passportAssessmentEvidenceService.find(LEGACY_PASSPORT_ASSESSMENT_ID);
         

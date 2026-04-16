@@ -47,16 +47,16 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
             .andExpect(jsonPath("$.passportEvidenceMetadata.firstReminderDate").value(passportAssessmentEntity.getFirstPassportReminderDate().toLocalDate().toString()))
             .andExpect(jsonPath("$.passportEvidenceMetadata.secondReminderDate").value(passportAssessmentEntity.getSecondPassportReminderDate().toLocalDate().toString()))
             .andExpect(jsonPath("$.passportEvidenceMetadata.incomeEvidenceNotes").value(passportAssessmentEntity.getPassportEvidenceNotes()))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].id").value(applicantEvidenceEntity.getId()))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].dateReceived").value(applicantEvidenceEntity.getDateReceived().toLocalDate().toString()))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].evidenceType").value(IncomeEvidenceType.getFrom(applicantEvidenceEntity.getIncomeEvidence()).getName()))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].mandatory").value(applicantEvidenceEntity.getMandatory().equals("Y")))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].description").value(applicantEvidenceEntity.getOtherText()))
-            .andExpect(jsonPath("$.partnerEvidenceItems[0].id").value(partnerEvidenceEntity.getId()))
-            .andExpect(jsonPath("$.partnerEvidenceItems[0].dateReceived").value(partnerEvidenceEntity.getDateReceived().toLocalDate().toString()))
-            .andExpect(jsonPath("$.partnerEvidenceItems[0].evidenceType").value(IncomeEvidenceType.getFrom(partnerEvidenceEntity.getIncomeEvidence()).getName()))
-            .andExpect(jsonPath("$.partnerEvidenceItems[0].mandatory").value(partnerEvidenceEntity.getMandatory().equals("Y")))
-            .andExpect(jsonPath("$.partnerEvidenceItems[0].description").value(partnerEvidenceEntity.getOtherText()));
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].id").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getId()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].dateReceived").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getDateReceived().toLocalDate().toString()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].evidenceType").value(IncomeEvidenceType.getFrom(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getIncomeEvidence()).getName()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].mandatory").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getMandatory().equals("Y")))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].description").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getOtherText()))
+            .andExpect(jsonPath("$.partnerEvidenceItems[0].id").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getId()))
+            .andExpect(jsonPath("$.partnerEvidenceItems[0].dateReceived").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getDateReceived().toLocalDate().toString()))
+            .andExpect(jsonPath("$.partnerEvidenceItems[0].evidenceType").value(IncomeEvidenceType.getFrom(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getIncomeEvidence()).getName()))
+            .andExpect(jsonPath("$.partnerEvidenceItems[0].mandatory").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getMandatory().equals("Y")))
+            .andExpect(jsonPath("$.partnerEvidenceItems[0].description").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getOtherText()));
     }
 
     private void buildEntities() {
@@ -88,28 +88,26 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
         passportAssessmentEntity.setFirstPassportReminderDate(dateNow);
         passportAssessmentEntity.setSecondPassportReminderDate(dateNow);
         passportAssessmentEntity.setPassportEvidenceNotes("Evidence notes");
-        passportAssessmentEntity = repos.passportAssessment.saveAndFlush(passportAssessmentEntity);
-
+        
         applicantEvidenceEntity =
             TestEntityDataBuilder.getPassportAssessmentEvidenceEntity(passportAssessmentEntity, applicantEntity, LocalDateTime.now());
         applicantEvidenceEntity.setId(null);
         applicantEvidenceEntity.setPassportAssessment(passportAssessmentEntity);
-        repos.passportAssessmentEvidence.saveAndFlush(applicantEvidenceEntity);
-
+        passportAssessmentEntity.addPassportAssessmentEvidences(applicantEvidenceEntity);
+        
         partnerEvidenceEntity =
             TestEntityDataBuilder.getPassportAssessmentEvidenceEntity(passportAssessmentEntity, partnerEntity, LocalDateTime.now());
         partnerEvidenceEntity.setId(null);
         partnerEvidenceEntity.setPassportAssessment(passportAssessmentEntity);
-        repos.passportAssessmentEvidence.saveAndFlush(partnerEvidenceEntity);
+        passportAssessmentEntity.addPassportAssessmentEvidences(partnerEvidenceEntity);
+        
+        passportAssessmentEntity = repos.passportAssessment.saveAndFlush(passportAssessmentEntity);
     }
     
     @AfterEach
     void clearDatabase() {
         // We have to delete here in order to avoid foreign key violations when using the superclass repos.clearAll
-        repos.passportAssessmentEvidence.deleteAllInBatch();
-        repos.passportAssessmentEvidence.flush();
-
-        repos.passportAssessment.deleteAllInBatch();
+        repos.passportAssessment.deleteAll();
         repos.passportAssessment.flush();
         
         repos.repOrder.deleteAllInBatch();

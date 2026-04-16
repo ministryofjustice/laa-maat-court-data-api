@@ -9,8 +9,6 @@ import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEvidenceEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,13 +34,10 @@ class PassportAssessmentEvidenceMapperTest {
         Applicant partner = buildPartner();
         PassportAssessmentEvidenceEntity passportAssessmentPartnerEvidenceEntity = 
             buildPartnerEvidence(partner, passportAssessmentEntity);
-
-        List<PassportAssessmentEvidenceEntity> passportAssessmentEvidenceEntities = new ArrayList<>();
         
         ApiGetPassportEvidenceResponse response = 
             passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(
-            passportAssessmentEntity, passportAssessmentEvidenceEntities, 
-            passportAssessmentPartnerEvidenceEntity.getApplicant().getId());
+            passportAssessmentEntity, passportAssessmentPartnerEvidenceEntity.getApplicant().getId());
 
         // Metadata
         assertThat(response.getPassportEvidenceMetadata().getEvidenceDueDate()).isEqualTo(passportAssessmentEntity.getPassportEvidenceDueDate().toLocalDate());
@@ -74,9 +69,7 @@ class PassportAssessmentEvidenceMapperTest {
         Applicant applicant = buildApplicant();
         buildApplicantEvidence(applicant, passportAssessmentEntity);
 
-        List<PassportAssessmentEvidenceEntity> passportAssessmentEvidenceEntities = new ArrayList<>();
-
-        ApiGetPassportEvidenceResponse response = passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(passportAssessmentEntity, passportAssessmentEvidenceEntities, null);
+        ApiGetPassportEvidenceResponse response = passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(passportAssessmentEntity, null);
         
         assertThat(response.getPartnerEvidenceItems().isEmpty());
     }
@@ -95,11 +88,9 @@ class PassportAssessmentEvidenceMapperTest {
         // Second evidence for partner
         buildPartnerEvidence(partner, passportAssessmentEntity);
 
-        List<PassportAssessmentEvidenceEntity> passportAssessmentEvidenceEntities = new ArrayList<>();
-
         ApiGetPassportEvidenceResponse response =
             passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(
-                passportAssessmentEntity, passportAssessmentEvidenceEntities,
+                passportAssessmentEntity,
                 partner.getId());
         
         assertThat(response.getApplicantEvidenceItems().size()).isEqualTo(2);
@@ -113,10 +104,8 @@ class PassportAssessmentEvidenceMapperTest {
         Applicant applicant = buildApplicant();
         buildApplicantEvidence(applicant, passportAssessmentEntity);
 
-        List<PassportAssessmentEvidenceEntity> passportAssessmentEvidenceEntities = new ArrayList<>();
-
         assertThatThrownBy(() -> passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(
-            passportAssessmentEntity, passportAssessmentEvidenceEntities, null))
+            passportAssessmentEntity, null))
             .isInstanceOf(ValidationException.class)
             .hasMessageContaining("Partner ID or Applicant ID does not match ID on evidence entity");
     }

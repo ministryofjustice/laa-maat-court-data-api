@@ -37,7 +37,6 @@ import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.IOJAppealRepository;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import gov.uk.courtdata.repository.OffenceRepository;
-import gov.uk.courtdata.repository.PassportAssessmentEvidenceRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.repository.PleaRepository;
 import gov.uk.courtdata.repository.ProceedingRepository;
@@ -180,9 +179,6 @@ public class Repositories {
   public PassportAssessmentRepository passportAssessment;
 
   @Autowired
-  public PassportAssessmentEvidenceRepository passportAssessmentEvidence;
-
-  @Autowired
   public PleaRepository plea;
 
   @Autowired
@@ -320,7 +316,6 @@ public class Repositories {
         mockNewWorkReason,
         offence,
         passportAssessment,
-        passportAssessmentEvidence,
         plea,
         proceeding,
         queueMessageLog,

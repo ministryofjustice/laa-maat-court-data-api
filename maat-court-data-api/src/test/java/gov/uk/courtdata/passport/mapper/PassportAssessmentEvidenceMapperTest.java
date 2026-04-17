@@ -9,18 +9,28 @@ import gov.uk.courtdata.entity.PassportAssessmentEvidenceEntity;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.justice.laa.crime.common.model.evidence.ApiGetPassportEvidenceResponse;
 import uk.gov.justice.laa.crime.common.model.evidence.ApiIncomeEvidence;
 import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {
+    PassportAssessmentEvidenceMapperImpl.class,
+    PassportAssessmentMapperHelper.class
+})
 class PassportAssessmentEvidenceMapperTest {
 
     private static final Integer APPLICANT_ID = 123;
     LocalDateTime dateNow = LocalDateTime.now();
+
+    @Autowired
+    private PassportAssessmentEvidenceMapper passportAssessmentEvidenceMapper;
     
-    PassportAssessmentEvidenceMapper passportAssessmentEvidenceMapper = new PassportAssessmentEvidenceMapperImpl();
+    @Autowired
+    private PassportAssessmentMapperHelper passportAssessmentMapperHelper;
     
     @Test
     void givenPassportAssessmentEntity_whenMapToApiGetPassportEvidenceResponse_thenMetadataIsMapped() {

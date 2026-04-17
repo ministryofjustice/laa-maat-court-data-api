@@ -7,32 +7,24 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import uk.gov.justice.laa.crime.common.model.evidence.ApiGetPassportEvidenceResponse;
 import uk.gov.justice.laa.crime.common.model.evidence.ApiIncomeEvidence;
-import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", uses = PassportAssessmentMapperHelper.class)
 public interface PassportAssessmentEvidenceMapper {
     
-    @Mapping(target = "passportEvidenceMetadata.evidenceDueDate", source = "passportAssessmentEntity.passportEvidenceDueDate")
-    @Mapping(target = "passportEvidenceMetadata.evidenceReceivedDate", source = "passportAssessmentEntity.allPassportEvidenceReceivedDate")
-    @Mapping(target = "passportEvidenceMetadata.upliftAppliedDate", source = "passportAssessmentEntity.passportUpliftApplyDate")
-    @Mapping(target = "passportEvidenceMetadata.upliftRemovedDate", source = "passportAssessmentEntity.passportUpliftRemoveDate")
-    @Mapping(target = "passportEvidenceMetadata.firstReminderDate", source = "passportAssessmentEntity.firstPassportReminderDate")
-    @Mapping(target = "passportEvidenceMetadata.secondReminderDate", source = "passportAssessmentEntity.secondPassportReminderDate")
-    @Mapping(target = "passportEvidenceMetadata.incomeEvidenceNotes", source = "passportAssessmentEntity.passportEvidenceNotes")
-ApiGetPassportEvidenceResponse toApiGetPassportEvidenceResponse(
+    @Mapping(target = "passportEvidenceMetadata.evidenceDueDate", source = "passportEvidenceDueDate")
+    @Mapping(target = "passportEvidenceMetadata.evidenceReceivedDate", source = "allPassportEvidenceReceivedDate")
+    @Mapping(target = "passportEvidenceMetadata.upliftAppliedDate", source = "passportUpliftApplyDate")
+    @Mapping(target = "passportEvidenceMetadata.upliftRemovedDate", source = "passportUpliftRemoveDate")
+    @Mapping(target = "passportEvidenceMetadata.firstReminderDate", source = "firstPassportReminderDate")
+    @Mapping(target = "passportEvidenceMetadata.secondReminderDate", source = "secondPassportReminderDate")
+    @Mapping(target = "passportEvidenceMetadata.incomeEvidenceNotes", source = "passportEvidenceNotes")
+    ApiGetPassportEvidenceResponse toApiGetPassportEvidenceResponse(
         PassportAssessmentEntity passportAssessmentEntity);
     
-    default ApiIncomeEvidence toApiIncomeEvidence(PassportAssessmentEvidenceEntity evidenceEntity) {
-        ApiIncomeEvidence incomeEvidence = new ApiIncomeEvidence();
-        
-        incomeEvidence.setId(evidenceEntity.getId());
-        if (evidenceEntity.getDateReceived() != null) {
-            incomeEvidence.setDateReceived(evidenceEntity.getDateReceived().toLocalDate());
-        }
-        incomeEvidence.setDescription(evidenceEntity.getOtherText());
-        incomeEvidence.setMandatory(evidenceEntity.getMandatory() != null && evidenceEntity.getMandatory().equals("Y"));
-        incomeEvidence.setEvidenceType(IncomeEvidenceType.getFrom(evidenceEntity.getIncomeEvidence()));
-        
-        return incomeEvidence;
-    }
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "dateReceived", source = "dateReceived", qualifiedByName = "mapEvidenceDateReceived")
+    @Mapping(target = "description", source = "otherText")
+    @Mapping(target = "mandatory", source = "mandatory", qualifiedByName = "mapEvidenceMandatory")
+    @Mapping(target = "evidenceType", source = "incomeEvidence", qualifiedByName = "mapEvidenceType")
+    ApiIncomeEvidence toApiIncomeEvidence(PassportAssessmentEvidenceEntity evidenceEntity);
 }

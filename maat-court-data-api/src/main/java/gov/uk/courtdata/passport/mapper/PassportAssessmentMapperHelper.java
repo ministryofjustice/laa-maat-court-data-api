@@ -1,6 +1,8 @@
 package gov.uk.courtdata.passport.mapper;
 
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Context;
 import org.mapstruct.Named;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
 import uk.gov.justice.laa.crime.enums.BenefitRecipient;
 import uk.gov.justice.laa.crime.enums.BenefitType;
+import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 
 @Component
 @RequiredArgsConstructor
@@ -51,5 +54,20 @@ public class PassportAssessmentMapperHelper {
         return passportAssessmentEntity.getPartnerBenefitClaimed() != null
             && passportAssessmentEntity.getPartnerBenefitClaimed().equals("Y")
             ? BenefitRecipient.PARTNER : BenefitRecipient.APPLICANT;
+    }
+
+    @Named("mapEvidenceDateReceived")
+    public LocalDate mapEvidenceDateReceived(LocalDateTime dateReceived) {
+        return dateReceived != null ? dateReceived.toLocalDate() : null;
+    }
+
+    @Named("mapEvidenceMandatory")
+    public boolean mapEvidenceMandatory(String mandatory) {
+        return "Y".equals(mandatory);
+    }
+    
+    @Named("mapEvidenceType")
+    public IncomeEvidenceType mapEvidenceType(String evidenceType) {
+        return IncomeEvidenceType.getFrom(evidenceType);
     }
 }

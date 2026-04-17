@@ -626,8 +626,8 @@ public class TestModelDataBuilder {
     public static ApiGetPassportEvidenceResponse getApiGetPassportedEvidenceResponse() {
         return new ApiGetPassportEvidenceResponse()
             .withPassportEvidenceMetadata(getApiPassportEvidenceMetadata())
-            .withApplicantEvidenceItems(getApiIncomeEvidence())
-            .withPartnerEvidenceItems(getApiIncomeEvidence());
+            .withApplicantEvidenceItems(List.of(getApiIncomeEvidence()))
+            .withPartnerEvidenceItems(List.of(getApiIncomeEvidence()));
     }
 
 
@@ -644,13 +644,13 @@ public class TestModelDataBuilder {
             .withUpliftRemovedDate(date);
     }
     
-    public static List<ApiIncomeEvidence> getApiIncomeEvidence() {
-        return List.of(new ApiIncomeEvidence()
+    public static ApiIncomeEvidence getApiIncomeEvidence() {
+        return new ApiIncomeEvidence()
             .withId(1)
             .withDescription("Description here")
             .withEvidenceType(IncomeEvidenceType.CDS15)
             .withDateReceived(LocalDate.now())
-            .withMandatory(true));
+            .withMandatory(true);
     }
 
     public static String getCreatePassportAssessmentJson() {

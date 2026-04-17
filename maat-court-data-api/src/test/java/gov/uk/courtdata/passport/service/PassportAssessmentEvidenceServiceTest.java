@@ -8,18 +8,30 @@ import static org.mockito.Mockito.when;
 import gov.uk.courtdata.applicant.service.PartnerService;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEvidenceEntity;
 import gov.uk.courtdata.passport.mapper.PassportAssessmentEvidenceMapper;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.common.model.evidence.ApiGetPassportEvidenceResponse;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiIncomeEvidence;
+import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 
 @ExtendWith(MockitoExtension.class)
 class PassportAssessmentEvidenceServiceTest {
     
+    private static final Integer APPLICANT_ID = 111111;
+    private static final Integer PARTNER_ID = 222222;
+    private PassportAssessmentEntity passportAssessmentEntity;
+    private PassportAssessmentEvidenceEntity applicantEvidenceEntity;
+    private PassportAssessmentEvidenceEntity partnerEvidenceEntity;
+
     @InjectMocks
     private PassportAssessmentEvidenceService passportAssessmentEvidenceService;
 
@@ -34,11 +46,28 @@ class PassportAssessmentEvidenceServiceTest {
 
     @Test
     void whenFindIsInvoked_thenPassportEvidenceIsRetrieved() {
-        PassportAssessmentEntity passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
+        buildEntities();
+        
         ApiGetPassportEvidenceResponse apiGetPassportEvidenceResponse = TestModelDataBuilder.getApiGetPassportedEvidenceResponse();
+        ApiIncomeEvidence applicantApiGetIncomeEvidenceResponse = new ApiIncomeEvidence()
+            .withId(1)
+            .withDescription("Applicant evidence")
+            .withEvidenceType(IncomeEvidenceType.NINO)
+            .withDateReceived(LocalDate.now().minusDays(2))
+            .withMandatory(true);
+
+        ApiIncomeEvidence partnerApiGetIncomeEvidenceResponse = new ApiIncomeEvidence()
+            .withId(2)
+            .withDescription("Partner evidence")
+            .withEvidenceType(IncomeEvidenceType.OTHER_ADHOC)
+            .withDateReceived(LocalDate.now().minusDays(1))
+            .withMandatory(true);
+        
         when(passportAssessmentPersistenceService.find(any())).thenReturn(passportAssessmentEntity);
-        when(partnerService.getPartnerLegacyId(any())).thenReturn(1);
-        when(passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(any(), any())).thenReturn(apiGetPassportEvidenceResponse);
+        when(partnerService.getPartnerLegacyId(any())).thenReturn(PARTNER_ID);
+        when(passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(any())).thenReturn(apiGetPassportEvidenceResponse);
+        when(passportAssessmentEvidenceMapper.toApiIncomeEvidence(applicantEvidenceEntity)).thenReturn(applicantApiGetIncomeEvidenceResponse);
+        when(passportAssessmentEvidenceMapper.toApiIncomeEvidence(partnerEvidenceEntity)).thenReturn(partnerApiGetIncomeEvidenceResponse);
         
         ApiGetPassportEvidenceResponse returnedPassportedAssessmentEvidence = passportAssessmentEvidenceService.find(LEGACY_PASSPORT_ASSESSMENT_ID);
         
@@ -81,5 +110,23 @@ class PassportAssessmentEvidenceServiceTest {
             returnedPassportedAssessmentEvidence.getPartnerEvidenceItems().getFirst().getDateReceived());
         assertEquals(apiGetPassportEvidenceResponse.getPartnerEvidenceItems().getFirst().getMandatory(),
             returnedPassportedAssessmentEvidence.getPartnerEvidenceItems().getFirst().getMandatory());
+    }
+    
+    void buildEntities() {
+        passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
+        Applicant applicant = Applicant.builder().id(APPLICANT_ID).build();
+        Applicant partner = Applicant.builder().id(PARTNER_ID).build();
+        passportAssessmentEntity.getRepOrder().setApplicationId(applicant.getId());
+        
+        applicantEvidenceEntity =
+            TestEntityDataBuilder.getPassportAssessmentEvidenceEntity(
+                passportAssessmentEntity, applicant, LocalDateTime.now());
+
+        partnerEvidenceEntity =
+            TestEntityDataBuilder.getPassportAssessmentEvidenceEntity(
+                passportAssessmentEntity, partner, LocalDateTime.now());
+
+        passportAssessmentEntity.addPassportAssessmentEvidences(applicantEvidenceEntity);
+        passportAssessmentEntity.addPassportAssessmentEvidences(partnerEvidenceEntity);
     }
 }

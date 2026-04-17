@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import gov.uk.courtdata.applicant.service.PartnerService;
+import gov.uk.courtdata.applicant.service.PartnerResolver;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.Applicant;
@@ -42,7 +42,7 @@ class PassportAssessmentEvidenceServiceTest {
     private PassportAssessmentEvidenceMapper passportAssessmentEvidenceMapper;
     
     @Mock
-    private PartnerService partnerService;
+    private PartnerResolver partnerResolver;
 
     @Test
     void whenFindIsInvoked_thenPassportEvidenceIsRetrieved() {
@@ -64,7 +64,7 @@ class PassportAssessmentEvidenceServiceTest {
             .withMandatory(true);
         
         when(passportAssessmentPersistenceService.find(any())).thenReturn(passportAssessmentEntity);
-        when(partnerService.getPartnerLegacyId(any())).thenReturn(PARTNER_ID);
+        when(partnerResolver.getPartnerLegacyId(any())).thenReturn(PARTNER_ID);
         when(passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(any())).thenReturn(apiGetPassportEvidenceResponse);
         when(passportAssessmentEvidenceMapper.toApiIncomeEvidence(applicantEvidenceEntity)).thenReturn(applicantApiGetIncomeEvidenceResponse);
         when(passportAssessmentEvidenceMapper.toApiIncomeEvidence(partnerEvidenceEntity)).thenReturn(partnerApiGetIncomeEvidenceResponse);

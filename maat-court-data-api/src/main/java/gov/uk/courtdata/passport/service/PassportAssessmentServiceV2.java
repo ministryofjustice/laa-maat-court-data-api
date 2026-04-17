@@ -1,6 +1,6 @@
 package gov.uk.courtdata.passport.service;
 
-import gov.uk.courtdata.applicant.service.PartnerService;
+import gov.uk.courtdata.applicant.service.PartnerResolver;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.passport.mapper.PassportAssessmentMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +16,14 @@ public class PassportAssessmentServiceV2 {
 
     private final PassportAssessmentPersistenceService passportAssessmentPersistenceService;
     private final PassportAssessmentMapper passportAssessmentMapper;
-    private final PartnerService partnerService;
+    private final PartnerResolver partnerResolver;
     
     @Transactional(readOnly = true)
     public ApiGetPassportedAssessmentResponse find(int passportAssessmentId) {
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentPersistenceService.find(passportAssessmentId);
 
         Integer partnerLegacyId =
-            partnerService.getPartnerLegacyId(passportAssessmentEntity.getRepOrder().getId());
+            partnerResolver.getPartnerLegacyId(passportAssessmentEntity.getRepOrder().getId());
         
         return passportAssessmentMapper.toApiGetPassportedAssessmentResponse(passportAssessmentEntity,
             partnerLegacyId);

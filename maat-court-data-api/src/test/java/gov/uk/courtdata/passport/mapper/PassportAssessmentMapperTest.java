@@ -168,7 +168,7 @@ class PassportAssessmentMapperTest {
         entity.setUnder18HeardInYouthCourt(heardInYouthCourt);
         entity.setUnder18HeardInMagsCourt(heardInMagsCourt);
 
-        Boolean under18 = passportAssessmentMapper.mapUnder18(entity);
+        Boolean under18 = passportAssessmentMapperHelper.mapUnder18(entity);
 
         assertThat(under18).isEqualTo(expectedUnder18Declaration);
     }
@@ -295,7 +295,7 @@ class PassportAssessmentMapperTest {
         entity.setResult(result);
         entity.setPcobConfirmation(pcobConfirmation);
         
-        PassportAssessmentDecisionReason reason = passportAssessmentMapper.mapDecisionReason(entity);
+        PassportAssessmentDecisionReason reason = passportAssessmentMapperHelper.mapDecisionReason(entity);
         
         assertThat(reason).isEqualTo(expectedDecisionReason);
     }
@@ -323,7 +323,7 @@ class PassportAssessmentMapperTest {
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setResult(result);
 
-        PassportAssessmentDecision assessmentDecision = passportAssessmentMapper.mapAssessmentDecision(entity);
+        PassportAssessmentDecision assessmentDecision = passportAssessmentMapperHelper.mapAssessmentDecision(entity);
 
         assertThat(assessmentDecision).isEqualTo(expectedAssessmentDecision);
     }
@@ -440,7 +440,7 @@ class PassportAssessmentMapperTest {
     void givenSpecificBenefitRecipient_whenMapToEntityCalled_thenPartnerBenefitIsMappingCorrectly(BenefitRecipient benefitRecipient, String expectedOutput){
         DeclaredBenefit declaredBenefit = TestModelDataBuilder.buildDeclaredBenefit(benefitRecipient);
 
-        assertThat(passportAssessmentMapper.mapPartnerBenefitClaimed(declaredBenefit)).isEqualTo(expectedOutput);
+        assertThat(passportAssessmentMapperHelper.mapPartnerBenefitClaimed(declaredBenefit)).isEqualTo(expectedOutput);
     }
 
     @MethodSource(value = "benefitMapperTestData")

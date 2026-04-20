@@ -1,39 +1,23 @@
 package gov.uk.courtdata.passport.mapper;
 
-import static uk.gov.justice.laa.crime.enums.BenefitRecipient.PARTNER;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.PASS;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.TEMP_PASS;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.FAIL_BYPASS;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.FAIL;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.APPLICANT_AGE;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.DWP_CHECK;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.DWP_CHECK_UNAVAILABLE;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.IN_CUSTODY;
-
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Set;
 
 import org.mapstruct.AfterMapping;
-import org.mapstruct.Condition;
-import org.mapstruct.ConditionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentRequest;
 import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentResponse;
 import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
-import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
 import uk.gov.justice.laa.crime.enums.BenefitType;
-import uk.gov.justice.laa.crime.enums.PassportAssessmentDecision;
-import uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason;
+
+import static gov.uk.courtdata.constants.CourtDataConstants.NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring",
     implementationName = "<CLASS_NAME>V2Impl", uses = PassportAssessmentMapperHelper.class, imports = {LocalDateTime.class, BenefitType.class})
@@ -61,48 +45,6 @@ public abstract class PassportAssessmentMapper {
         qualifiedByName = "decisionReasonMapper")
     public abstract ApiGetPassportedAssessmentResponse toApiGetPassportedAssessmentResponse(
             PassportAssessmentEntity passportAssessmentEntity);
-
-    @Named("under18Mapper")
-    public boolean mapUnder18(PassportAssessmentEntity passportAssessmentEntity) {
-        return ((passportAssessmentEntity.getUnder18HeardInYouthCourt() != null
-            && passportAssessmentEntity.getUnder18HeardInYouthCourt().equals("Y"))
-            || (passportAssessmentEntity.getUnder18HeardInMagsCourt() != null
-            && passportAssessmentEntity.getUnder18HeardInMagsCourt().equals("Y")));
-    }
-
-    @Condition(appliesTo = ConditionStrategy.SOURCE_PARAMETERS)
-    @Named("isOver18")
-    public boolean isOver18(PassportAssessmentEntity passportAssessmentEntity) {
-        return !mapUnder18(passportAssessmentEntity);
-    }
-
-    @Named("assessmentDecisionMapper")
-    PassportAssessmentDecision mapAssessmentDecision(
-        PassportAssessmentEntity passportAssessmentEntity) {
-        return PassportAssessmentDecision.getFrom(passportAssessmentEntity.getResult());
-    }
-
-    @Named("decisionReasonMapper")
-    public PassportAssessmentDecisionReason mapDecisionReason(
-        PassportAssessmentEntity passportAssessmentEntity) {
-        final Map<PassportAssessmentDecision, Set<PassportAssessmentDecisionReason>> decisionReasonCombinations = Map.of(
-            PASS, Set.of(APPLICANT_AGE, DWP_CHECK, DOCUMENTATION_SUPPLIED),
-            TEMP_PASS, Set.of(DWP_CHECK_UNAVAILABLE, IN_CUSTODY),
-            FAIL_BYPASS, Set.of(DWP_CHECK),
-            FAIL, Set.of()
-        );
-
-        String pcobConfirmation = passportAssessmentEntity.getPcobConfirmation();
-        Set<PassportAssessmentDecisionReason> allowedReasons = decisionReasonCombinations.get(
-            PassportAssessmentDecision.getFrom(passportAssessmentEntity.getResult()));
-
-        if (allowedReasons != null && (allowedReasons.isEmpty() || allowedReasons.contains(
-            PassportAssessmentDecisionReason.getFrom(pcobConfirmation)))) {
-            return PassportAssessmentDecisionReason.getFrom(pcobConfirmation);
-        } else {
-            return null;
-        }
-    }
 
     @Mapping(target = "legacyAssessmentId", source = "id")
     public abstract ApiCreatePassportedAssessmentResponse toApiCreatePassportedAssessmentResponse(PassportAssessmentEntity entity);
@@ -142,11 +84,6 @@ public abstract class PassportAssessmentMapper {
         return target;
     }
 
-    @Named("mapPartnerBenefitClaimed")
-    public String mapPartnerBenefitClaimed(DeclaredBenefit declaredBenefit){
-        return (declaredBenefit != null && PARTNER.equals(declaredBenefit.getBenefitRecipient())?"Y":"N");
-    }
-
     /**
      * Helper method to allow repopulation of benefit type by comparison.
      * Returns "Y" or "N" based on two different criteria:
@@ -166,7 +103,7 @@ public abstract class PassportAssessmentMapper {
         return Boolean.FALSE.equals(assessment.getDeclaredUnder18())
                 && declaredBenefit != null
                 && expected.equals(declaredBenefit.getBenefitType())
-                ? "Y" : "N";
+                ? YES : NO;
     }
 
     // TODO: LCAM-2074 - Get logic for determining values here. Request is placeholder to allow for full access to objects.
@@ -174,11 +111,11 @@ public abstract class PassportAssessmentMapper {
     public String mapUnder18CourtType(boolean isMags, ApiCreatePassportedAssessmentRequest request){
         if (Boolean.TRUE.equals(request.getPassportedAssessment().getDeclaredUnder18())){
             if (isMags){
-                return "N";
+                return NO;
             }
-            return "Y";
+            return YES;
         }
-        return "N";
+        return NO;
     }
 
 }

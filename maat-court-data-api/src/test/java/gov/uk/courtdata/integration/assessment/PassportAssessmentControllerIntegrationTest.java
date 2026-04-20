@@ -368,7 +368,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
     @Test
     void givenMaatFailureOnHardshipReplacement_whenCreateAssessmentV2IsInvoked_theTransactionIsRolledBack() throws Exception {
-        doThrow(new DataIntegrityViolationException("Test Exception")).when(hardshipReviewRepository).replaceOldHardshipReviews(any());
+        doThrow(new DataIntegrityViolationException("Test Exception")).when(hardshipReviewRepository).replaceAllByRepId(any());
         runAndValidateDatabaseFailureOnCreatePassportedV2();
     }
 
@@ -394,7 +394,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         // add watchers to allow mapper verification. Can rely on mapper tests.
         when(passportMapperV2.toPassportAssessmentEntity(any())).thenCallRealMethod();
         when(passportMapperV2.toApiCreatePassportedAssessmentResponse(any())).thenCallRealMethod();
-        doThrow(new DataIntegrityViolationException("Test Exception")).when(hardshipReviewRepository).replaceOldHardshipReviews(any());
+        doThrow(new DataIntegrityViolationException("Test Exception")).when(hardshipReviewRepository).replaceAllByRepId(any());
 
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)

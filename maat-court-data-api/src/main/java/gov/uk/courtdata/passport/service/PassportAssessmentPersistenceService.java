@@ -43,7 +43,7 @@ public class PassportAssessmentPersistenceService {
         financialAssessmentRepository.updateAllPreviousFinancialAssessmentsAsReplaced(
                 passportAssessmentEntity.getRepOrder().getId()
         );
-        hardshipReviewRepository.replaceOldHardshipReviews(
+        hardshipReviewRepository.replaceAllByRepId(
                 passportAssessmentEntity.getRepOrder().getId()
         );
     }

@@ -190,7 +190,7 @@ public class FinancialAssessmentImpl {
         passportAssessmentRepository.updateAllPreviousPassportAssessmentsAsReplaced(
                 financialAssessment.getRepOrder().getId()
         );
-        hardshipReviewRepository.replaceOldHardshipReviews(
+        hardshipReviewRepository.replaceAllByRepIdExcludingFinancialAssessment(
                 financialAssessment.getRepOrder().getId(), financialAssessment.getId()
         );
     }

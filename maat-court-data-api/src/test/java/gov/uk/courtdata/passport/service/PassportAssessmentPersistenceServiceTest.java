@@ -59,13 +59,13 @@ class PassportAssessmentPersistenceServiceTest {
         when(passportAssessmentRepository.save(any())).thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
         doNothing().when(passportAssessmentRepository).updatePreviousPassportAssessmentsAsReplaced(any(), any());
         doNothing().when(financialAssessmentRepository).updateAllPreviousFinancialAssessmentsAsReplaced(any());
-        doNothing().when(hardshipReviewRepository).replaceOldHardshipReviews(any());
+        doNothing().when(hardshipReviewRepository).replaceAllByRepId(any());
 
         passportAssessmentPersistenceService.create(TestEntityDataBuilder.getPassportAssessmentEntity());
 
         verify(passportAssessmentRepository).save(any());
         verify(passportAssessmentRepository).updatePreviousPassportAssessmentsAsReplaced(any(), any());
         verify(financialAssessmentRepository).updateAllPreviousFinancialAssessmentsAsReplaced(any());
-        verify(hardshipReviewRepository).replaceOldHardshipReviews(any());
+        verify(hardshipReviewRepository).replaceAllByRepId(any());
     }
 }

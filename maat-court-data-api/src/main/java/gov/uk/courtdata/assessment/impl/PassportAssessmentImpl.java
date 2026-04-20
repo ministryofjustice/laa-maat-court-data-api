@@ -78,7 +78,7 @@ public class PassportAssessmentImpl {
         financialAssessmentRepository.updateAllPreviousFinancialAssessmentsAsReplaced(
                 passportAssessment.getRepOrder().getId()
         );
-        hardshipReviewRepository.replaceOldHardshipReviews(
+        hardshipReviewRepository.replaceAllByRepIdExcludingFinancialAssessment(
                 passportAssessment.getRepOrder().getId(), financialAssessmentId
         );
     }

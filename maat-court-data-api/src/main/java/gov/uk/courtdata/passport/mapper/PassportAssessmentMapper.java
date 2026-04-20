@@ -160,12 +160,13 @@ public abstract class PassportAssessmentMapper {
      * @return String containing "Y" or "N".
      */
     public String mapBenefitType(BenefitType expected, ApiCreatePassportedAssessmentRequest request){
-        if (Boolean.FALSE.equals(request.getPassportedAssessment().getDeclaredUnder18())
-                && request.getPassportedAssessment().getDeclaredBenefit() != null
-                && expected.equals(request.getPassportedAssessment().getDeclaredBenefit().getBenefitType())){
-            return "Y";
-        }
-        return "N";
+        var assessment = request.getPassportedAssessment();
+        var declaredBenefit = assessment.getDeclaredBenefit();
+
+        return Boolean.FALSE.equals(assessment.getDeclaredUnder18())
+                && declaredBenefit != null
+                && expected.equals(declaredBenefit.getBenefitType())
+                ? "Y" : "N";
     }
 
     // TODO: LCAM-2074 - Get logic for determining values here. Request is placeholder to allow for full access to objects.

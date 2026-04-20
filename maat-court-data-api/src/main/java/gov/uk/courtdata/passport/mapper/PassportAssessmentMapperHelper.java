@@ -63,10 +63,8 @@ public class PassportAssessmentMapperHelper {
 
     @Named("under18Mapper")
     public boolean mapUnder18(PassportAssessmentEntity passportAssessmentEntity) {
-        return ((passportAssessmentEntity.getUnder18HeardInYouthCourt() != null
-                && passportAssessmentEntity.getUnder18HeardInYouthCourt().equals(YES))
-                || (passportAssessmentEntity.getUnder18HeardInMagsCourt() != null
-                && passportAssessmentEntity.getUnder18HeardInMagsCourt().equals(YES)));
+        return YES.equals(passportAssessmentEntity.getUnder18HeardInYouthCourt())
+                || YES.equals(passportAssessmentEntity.getUnder18HeardInMagsCourt());
     }
 
     @Condition(appliesTo = ConditionStrategy.SOURCE_PARAMETERS)

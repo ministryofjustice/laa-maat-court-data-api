@@ -57,7 +57,8 @@ public class PassportAssessmentMapperHelper {
 
     @Named("mapPartnerBenefitClaimed")
     public String mapPartnerBenefitClaimed(DeclaredBenefit declaredBenefit){
-        return (declaredBenefit != null && PARTNER.equals(declaredBenefit.getBenefitRecipient())?YES:NO);
+        return (declaredBenefit != null && PARTNER.equals(declaredBenefit.getBenefitRecipient())
+                ? YES : NO);
     }
 
     @Named("under18Mapper")

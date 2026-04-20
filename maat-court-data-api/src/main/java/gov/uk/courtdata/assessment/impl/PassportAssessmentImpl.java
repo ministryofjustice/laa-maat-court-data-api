@@ -72,10 +72,10 @@ public class PassportAssessmentImpl {
     }
 
     public void setOldPassportAssessmentAsReplaced(PassportAssessmentEntity passportAssessment, Integer financialAssessmentId) {
-        passportAssessmentRepository.updatePreviousPassportAssessmentsAsReplaced(
+        passportAssessmentRepository.replaceAllByRepIdExcludingPassportedAssessment(
                 passportAssessment.getRepOrder().getId(), passportAssessment.getId()
         );
-        financialAssessmentRepository.updateAllPreviousFinancialAssessmentsAsReplaced(
+        financialAssessmentRepository.replaceAllByRepId(
                 passportAssessment.getRepOrder().getId()
         );
         hardshipReviewRepository.replaceAllByRepIdExcludingFinancialAssessment(

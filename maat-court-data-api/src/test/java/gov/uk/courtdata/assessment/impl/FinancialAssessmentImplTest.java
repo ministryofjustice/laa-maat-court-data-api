@@ -190,8 +190,8 @@ class FinancialAssessmentImplTest {
         Integer repId = financialAssessment.getRepOrder().getId();
 
         verify(hardshipReviewRepository).replaceAllByRepIdExcludingFinancialAssessment(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
-        verify(passportAssessmentRepository).updateAllPreviousPassportAssessmentsAsReplaced(repId);
-        verify(financialAssessmentRepository).updatePreviousFinancialAssessmentsAsReplaced(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
+        verify(passportAssessmentRepository).replaceAllByRepId(repId);
+        verify(financialAssessmentRepository).replaceAllByRepIdExcludingFinancialAssessment(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
     }
 
     @Test

@@ -57,15 +57,15 @@ class PassportAssessmentPersistenceServiceTest {
     @Test
     void givenCreateCalled_whenCreateIsInvoked_thenRepositoryCallsAreMade(){
         when(passportAssessmentRepository.save(any())).thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
-        doNothing().when(passportAssessmentRepository).updatePreviousPassportAssessmentsAsReplaced(any(), any());
-        doNothing().when(financialAssessmentRepository).updateAllPreviousFinancialAssessmentsAsReplaced(any());
+        doNothing().when(passportAssessmentRepository).replaceAllByRepIdExcludingPassportedAssessment(any(), any());
+        doNothing().when(financialAssessmentRepository).replaceAllByRepId(any());
         doNothing().when(hardshipReviewRepository).replaceAllByRepId(any());
 
         passportAssessmentPersistenceService.create(TestEntityDataBuilder.getPassportAssessmentEntity());
 
         verify(passportAssessmentRepository).save(any());
-        verify(passportAssessmentRepository).updatePreviousPassportAssessmentsAsReplaced(any(), any());
-        verify(financialAssessmentRepository).updateAllPreviousFinancialAssessmentsAsReplaced(any());
+        verify(passportAssessmentRepository).replaceAllByRepIdExcludingPassportedAssessment(any(), any());
+        verify(financialAssessmentRepository).replaceAllByRepId(any());
         verify(hardshipReviewRepository).replaceAllByRepId(any());
     }
 }

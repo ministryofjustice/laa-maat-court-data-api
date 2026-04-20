@@ -184,10 +184,10 @@ public class FinancialAssessmentImpl {
     }
 
     public void setOldAssessmentReplaced(FinancialAssessmentEntity financialAssessment) {
-        financialAssessmentRepository.updatePreviousFinancialAssessmentsAsReplaced(
+        financialAssessmentRepository.replaceAllByRepIdExcludingFinancialAssessment(
                 financialAssessment.getRepOrder().getId(), financialAssessment.getId()
         );
-        passportAssessmentRepository.updateAllPreviousPassportAssessmentsAsReplaced(
+        passportAssessmentRepository.replaceAllByRepId(
                 financialAssessment.getRepOrder().getId()
         );
         hardshipReviewRepository.replaceAllByRepIdExcludingFinancialAssessment(

@@ -37,10 +37,10 @@ public class PassportAssessmentPersistenceService {
     }
 
     private void invalidateOldData(PassportAssessmentEntity passportAssessmentEntity) {
-        passportAssessmentRepository.updatePreviousPassportAssessmentsAsReplaced(
+        passportAssessmentRepository.replaceAllByRepIdExcludingPassportedAssessment(
                 passportAssessmentEntity.getRepOrder().getId(), passportAssessmentEntity.getId()
         );
-        financialAssessmentRepository.updateAllPreviousFinancialAssessmentsAsReplaced(
+        financialAssessmentRepository.replaceAllByRepId(
                 passportAssessmentEntity.getRepOrder().getId()
         );
         hardshipReviewRepository.replaceAllByRepId(

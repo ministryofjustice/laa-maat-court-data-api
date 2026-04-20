@@ -374,13 +374,13 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
     @Test
     void givenMaatFailureOnFinancialReplacement_whenCreateAssessmentV2IsInvoked_theTransactionIsRolledBack() throws Exception {
-        doThrow(new DataIntegrityViolationException("Test Exception")).when(financialAssessmentRepository).updateAllPreviousFinancialAssessmentsAsReplaced(any());
+        doThrow(new DataIntegrityViolationException("Test Exception")).when(financialAssessmentRepository).replaceAllByRepId(any());
         runAndValidateDatabaseFailureOnCreatePassportedV2();
     }
 
     @Test
     void givenMaatFailureOnAssessmentReplacement_whenCreateAssessmentV2IsInvoked_theTransactionIsRolledBack() throws Exception {
-        doThrow(new DataIntegrityViolationException("Test Exception")).when(passportAssessmentRepository).updatePreviousPassportAssessmentsAsReplaced(any(), any());
+        doThrow(new DataIntegrityViolationException("Test Exception")).when(passportAssessmentRepository).replaceAllByRepIdExcludingPassportedAssessment(any(), any());
         runAndValidateDatabaseFailureOnCreatePassportedV2();
     }
 

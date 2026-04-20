@@ -59,19 +59,21 @@ public abstract class PassportAssessmentMapper {
     @Mapping(target = "passportNote", source = "passportedAssessment.notes")
     @Mapping(target = "usn", source = "passportedAssessmentMetadata.usn")
     @Mapping(target = "cmuId", source = "passportedAssessmentMetadata.caseManagementUnitId")
-    @Mapping(target = "incomeSupport", expression = "java(mapBenefitType(BenefitType.INCOME_SUPPORT, request))")
-    @Mapping(target = "jobSeekers", expression = "java(mapBenefitType(BenefitType.JSA, request))")
-    @Mapping(target = "esa", expression = "java(mapBenefitType(BenefitType.ESA, request))")
-    @Mapping(target = "statePensionCredit", expression = "java(mapBenefitType(BenefitType.GSPC, request))")
-    @Mapping(target = "universalCredit", expression = "java(mapBenefitType(BenefitType.UC, request))")
     @Mapping(target = "repOrder", source = "passportedAssessmentMetadata.legacyApplicationId", qualifiedByName = "mapRepOrder")
-    @Mapping(target = "under18HeardInYouthCourt", expression = "java(mapUnder18CourtType(false, request))")
-    @Mapping(target = "under18HeardInMagsCourt", expression = "java(mapUnder18CourtType(true, request))")
     public abstract PassportAssessmentEntity toPassportAssessmentEntity(ApiCreatePassportedAssessmentRequest request);
 
     @AfterMapping
     public PassportAssessmentEntity mapPartnerFields(ApiCreatePassportedAssessmentRequest source, @MappingTarget PassportAssessmentEntity target) {
-        if (Boolean.FALSE.equals(source.getPassportedAssessment().getDeclaredUnder18())
+        target.setIncomeSupport(mapBenefitType(BenefitType.INCOME_SUPPORT, source));
+        target.setJobSeekers(mapBenefitType(BenefitType.JSA, source));
+        target.setEsa(mapBenefitType(BenefitType.ESA, source));
+        target.setStatePensionCredit(mapBenefitType(BenefitType.GSPC, source));
+        target.setUniversalCredit(mapBenefitType(BenefitType.UC, source));
+        // TODO: LCAM-2074 To be finalized.
+        target.setUnder18HeardInYouthCourt(mapUnder18CourtType(false, source));
+        target.setUnder18HeardInMagsCourt(mapUnder18CourtType(true, source));
+
+                if (Boolean.FALSE.equals(source.getPassportedAssessment().getDeclaredUnder18())
                 && source.getPassportedAssessment().getDeclaredBenefit() != null
                 && source.getPassportedAssessment().getDeclaredBenefit().getLegacyPartnerId() != null) {
             Applicant partner = passportAssessmentMapperHelper.getPartnerEntity(source.getPassportedAssessment().getDeclaredBenefit().getLegacyPartnerId());

@@ -2,6 +2,7 @@ package gov.uk.courtdata.applicant.service;
 
 import gov.uk.courtdata.applicant.dto.SendToCCLFDTO;
 import gov.uk.courtdata.applicant.repository.ApplicantRepository;
+import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.reporder.service.RepOrderService;
@@ -76,7 +77,7 @@ public class ApplicantServiceTest {
 
     @Test
     void givenAValidInput_whenUpdateSendToCCLFIsInvoked_thenUpdateIsSuccess() {
-        doNothing().when(repOrderService).update(any(), any());
+        when(repOrderService.update(any(), any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
         doNothing().when(applicantHistoryService).update(any(), any());
         when(applicantRepository.findById(anyInt())).thenReturn(Optional.of(Applicant.builder().id(ID).build()));
         SendToCCLFDTO sendToCCLFDTO = SendToCCLFDTO.builder().applId(ID).repId(ID).applHistoryId(ID).build();

@@ -88,13 +88,13 @@ public class RepOrderService {
     }
 
     @Transactional
-    public void update(Integer repId, Map<String, Object> repOrder) {
+    public RepOrderDTO update(Integer repId, Map<String, Object> repOrder) {
         log.info("RepOrderService::update - Start");
         RepOrderEntity currentRepOrder = repOrderRepository.findById(repId)
             .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("Rep Order not found for id %d", repId)));
 
         ReflectionHelper.updateEntityFromMap(currentRepOrder, repOrder);
-        repOrderRepository.save(currentRepOrder);
+        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderRepository.save(currentRepOrder));
     }
 
     @Transactional

@@ -4,10 +4,7 @@ import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.assertj.core.api.Assertions.within;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Named.named;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
@@ -17,7 +14,6 @@ import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.applicant.service.ApplicantService;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -383,26 +379,16 @@ class PassportAssessmentMapperTest {
     @ValueSource(booleans = {true, false})
     void givenCreateRequestWithDeclaredBenefit_whenMapToEntityCalled_thenPartnerDetailsAreMappingCorrectly(boolean populatePartner){
         var repOrder = TestEntityDataBuilder.getPopulatedRepOrder(REP_ID);
-        Applicant partner = null;
         Integer partnerId = null;
         if(populatePartner){
-            partner = TestEntityDataBuilder.getApplicant(TestEntityDataBuilder.APPLICANT_ID);
             partnerId = TestEntityDataBuilder.APPLICANT_ID;
         }
-
-        when(repOrderService.findByRepId(any())).thenReturn(repOrder);
-        when(applicantService.find(any())).thenReturn(partner);
 
         ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repOrder.getId(), partnerId, false, true);
 
         var entity = passportAssessmentMapper.toPassportAssessmentEntity(request);
 
-        verify(repOrderService).findByRepId(any());
-        int findApplicantCallCount = (populatePartner) ? 1 : 0;
-        verify(applicantService, times(findApplicantCallCount)).find(any());
-
         validatePassportedAssessmentV2UnconditionalMappings(request, entity);
-        validatePartnerDetails(partner, entity);
 
         BenefitType expectedBenefit = request.getPassportedAssessment().getDeclaredBenefit().getBenefitType();
         validateBenefitTypeMapping(expectedBenefit, entity);
@@ -413,18 +399,12 @@ class PassportAssessmentMapperTest {
     void givenCreateRequestWithNoDeclaredBenefit_whenMapToEntityCalled_thenEntityIsCorrectlyCreated(){
         var repOrder = TestEntityDataBuilder.getPopulatedRepOrder(REP_ID);
 
-        when(repOrderService.findByRepId(any())).thenReturn(repOrder);
-
         ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repOrder.getId(), null, false, false);
 
         var entity = passportAssessmentMapper.toPassportAssessmentEntity(request);
 
-        verify(repOrderService).findByRepId(any());
-        verify(applicantService, times(0)).find(any());
-
         validatePassportedAssessmentV2UnconditionalMappings(request, entity);
         validateBenefitTypeMapping(null, entity);
-        validatePartnerDetails(null, entity);
         assertThat(entity.getPartnerBenefitClaimed()).isEqualTo("N");
     }
 
@@ -437,7 +417,7 @@ class PassportAssessmentMapperTest {
 
     @MethodSource(value = "benefitMapperTestData")
     @ParameterizedTest
-    void givenSpecificBenefitRecipient_whenMapToEntityCalled_thenPartnerBenefitIsMappingCorrectly(BenefitRecipient benefitRecipient, String expectedOutput){
+    void givenSpecificBenefitRecipient_whenMapPartnerBenefitClaimedCalled_thenPartnerBenefitIsMappingCorrectly(BenefitRecipient benefitRecipient, String expectedOutput){
         DeclaredBenefit declaredBenefit = TestModelDataBuilder.buildDeclaredBenefit(benefitRecipient);
 
         assertThat(passportAssessmentMapperHelper.mapPartnerBenefitClaimed(declaredBenefit)).isEqualTo(expectedOutput);
@@ -447,65 +427,36 @@ class PassportAssessmentMapperTest {
     @ParameterizedTest
     void givenCreateRequestWithSpecificBenefitRecipient_whenMapToEntityCalled_thenPartnerBenefitIsMappingCorrectly(BenefitRecipient benefitRecipient, String expectedOutput){
         var repOrder = TestEntityDataBuilder.getPopulatedRepOrder(REP_ID);
-        Applicant partner = TestEntityDataBuilder.getApplicant(TestEntityDataBuilder.APPLICANT_ID);
         Integer partnerId = TestEntityDataBuilder.APPLICANT_ID;
-
-        when(repOrderService.findByRepId(any())).thenReturn(repOrder);
-        when(applicantService.find(any())).thenReturn(partner);
-
 
         ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repOrder.getId(), partnerId, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(benefitRecipient);
 
         var entity = passportAssessmentMapper.toPassportAssessmentEntity(request);
 
-        verify(repOrderService).findByRepId(any());
-        verify(applicantService).find(any());
-
         validatePassportedAssessmentV2UnconditionalMappings(request, entity);
         validateBenefitTypeMapping(request.getPassportedAssessment().getDeclaredBenefit().getBenefitType(), entity);
-        validatePartnerDetails(partner, entity);
 
         assertThat(entity.getPartnerBenefitClaimed()).isEqualTo(expectedOutput);
     }
 
-    private static Stream<Arguments> twoBooleanTruthTable() {
-        return Stream.of(
-                Arguments.of(true, true ),
-                Arguments.of(true, false ),
-                Arguments.of(false, true ),
-                Arguments.of(false, false )
-        );
-    }
-
-    @MethodSource("twoBooleanTruthTable")
     @ParameterizedTest
-    void givenCreateRequestUnder18_whenMapToEntityCalled_thenBenefitAndPartnerDetailsShouldBeEmpty(boolean hasDeclaredBenefits, boolean populatePartner){
+    @ValueSource(booleans = {true, false})
+    void givenCreateRequestUnder18_whenMapToEntityCalled_thenBenefitDetailsShouldBeEmpty(boolean hasDeclaredBenefits){
         var repOrder = TestEntityDataBuilder.getPopulatedRepOrder(REP_ID);
-        Applicant partner = null;
-        Integer partnerId = null;
-        if(populatePartner){
-            partner = TestEntityDataBuilder.getApplicant(TestEntityDataBuilder.APPLICANT_ID);
-            partnerId = TestEntityDataBuilder.APPLICANT_ID;
-        }
-
-        when(repOrderService.findByRepId(any())).thenReturn(repOrder);
-        when(applicantService.find(any())).thenReturn(partner);
+        Integer partnerId;
+        partnerId = TestEntityDataBuilder.APPLICANT_ID;
 
         ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repOrder.getId(), partnerId, true, hasDeclaredBenefits);
 
         var entity = passportAssessmentMapper.toPassportAssessmentEntity(request);
 
-        verify(repOrderService).findByRepId(any());
-        verify(applicantService, times(0)).find(any());
         // general mappings should be correct.
         validatePassportedAssessmentV2UnconditionalMappings(request, entity);
 
         // check case specific mappings.
         validateBenefitTypeMapping(null, entity);
         assertThat(entity.getPartnerBenefitClaimed()).isEqualTo("N");
-        // under18 should have no partner entries.
-        validatePartnerDetails(null, entity);
 
     }
 
@@ -545,22 +496,7 @@ class PassportAssessmentMapperTest {
         assertThat(entity.getUniversalCredit()).isEqualTo(isBenefitType(expectedBenefit, BenefitType.UC));
     }
 
-    private void validatePartnerDetails(Applicant expectedPartner, PassportAssessmentEntity entity){
-        if (expectedPartner != null){
-            assertThat(entity.getPartnerDob().toLocalDate()).isEqualTo(expectedPartner.getDob());
-            assertThat(entity.getPartnerSurname()).isEqualTo(expectedPartner.getLastName());
-            assertThat(entity.getPartnerFirstName()).isEqualTo(expectedPartner.getFirstName());
-            assertThat(entity.getPartnerNiNumber()).isEqualTo(expectedPartner.getNiNumber());
-            assertThat(entity.getPartnerOtherNames()).isEqualTo(expectedPartner.getOtherNames());
-        } else{
-            assertThat(entity.getPartnerDob()).isNull();
-            assertThat(entity.getPartnerSurname()).isNull();
-            assertThat(entity.getPartnerFirstName()).isNull();
-            assertThat(entity.getPartnerNiNumber()).isNull();
-            assertThat(entity.getPartnerOtherNames()).isNull();
-        }
 
-    }
 
     private String isBenefitType(BenefitType actualType, BenefitType expected){
         return expected.equals(actualType) ? "Y" : "N";

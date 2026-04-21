@@ -3,8 +3,6 @@ package gov.uk.courtdata.assessment.impl;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
-import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +17,6 @@ public class PassportAssessmentImpl {
 
     private final PassportAssessmentMapper assessmentMapper;
     private final PassportAssessmentRepository passportAssessmentRepository;
-    private final FinancialAssessmentRepository financialAssessmentRepository;
-    private final HardshipReviewRepository hardshipReviewRepository;
 
     public PassportAssessmentEntity find(Integer passportAssessmentId) {
         return passportAssessmentRepository.getReferenceById(passportAssessmentId);
@@ -71,15 +67,4 @@ public class PassportAssessmentImpl {
         return passportAssessmentRepository.save(passportAssessmentEntity);
     }
 
-    public void setOldPassportAssessmentAsReplaced(PassportAssessmentEntity passportAssessment, Integer financialAssessmentId) {
-        passportAssessmentRepository.replaceAllByRepIdExcludingPassportedAssessment(
-                passportAssessment.getRepOrder().getId(), passportAssessment.getId()
-        );
-        financialAssessmentRepository.replaceAllByRepId(
-                passportAssessment.getRepOrder().getId()
-        );
-        hardshipReviewRepository.replaceAllByRepIdExcludingFinancialAssessment(
-                passportAssessment.getRepOrder().getId(), financialAssessmentId
-        );
-    }
 }

@@ -52,7 +52,7 @@ class RepOrderServiceTest {
     private WqLinkRegisterRepository wqLinkRegisterRepository;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         repOrderMapper = Mappers.getMapper(RepOrderMapper.class);
         repOrderService = new RepOrderService(repOrderImpl,
                 repOrderMapper,
@@ -110,14 +110,14 @@ class RepOrderServiceTest {
     void givenAValidRepIdAndNoSentenceOrderDate_whenCountByIdIsInvoked_thenReturnFalse() {
         when(repOrderImpl.countById(any()))
                 .thenReturn(0L);
-        assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID, Boolean.FALSE)).isFalse();
+        assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID)).isFalse();
     }
 
     @Test
     void givenValidRepIdAndHasSentenceOrderDate_whenCountByIdIsInvoked_thenReturnTrue() {
         when(repOrderImpl.countWithSentenceOrderDate(any()))
                 .thenReturn(1L);
-        assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID, Boolean.TRUE)).isTrue();
+        assertThat(repOrderService.existsWithSentenceOrderDate(TestModelDataBuilder.REP_ID)).isTrue();
     }
 
     @Test
@@ -177,19 +177,19 @@ class RepOrderServiceTest {
 
     @Test
     void givenAInvalidRequest_whenSearchMaatApplicationIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
-
+        var request = TestModelDataBuilder.getMaatSearchRequest();
         when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(Collections.EMPTY_SET);
         RequestedObjectNotFoundException expectedException = assertThrows(RequestedObjectNotFoundException.class,
-                () -> repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest()));
+                () -> repOrderService.searchMaatApplication(request));
         assertEquals("Representation order not found", expectedException.getMessage());
     }
 
     @Test
     void givenAInvalidRequestAndMissingRepOrder_whenSearchMaatApplicationIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
-
+        var request = TestModelDataBuilder.getMaatSearchRequest();
         when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(null);
         RequestedObjectNotFoundException expectedException = assertThrows(RequestedObjectNotFoundException.class,
-                () -> repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest()));
+                () -> repOrderService.searchMaatApplication(request));
         assertEquals("Representation order not found", expectedException.getMessage());
     }
 

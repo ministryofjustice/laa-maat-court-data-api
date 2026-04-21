@@ -27,6 +27,7 @@ public class PassportAssessmentService {
     private final PassportAssessmentImpl passportAssessmentImpl;
     private final PassportAssessmentMapper passportAssessmentMapper;
     private final PassportAssessmentRepository passportAssessmentRepository;
+    private final AssessmentReplacementService assessmentReplacementService;
 
     @Transactional(readOnly = true)
     public PassportAssessmentDTO find(Integer passportAssessmentId) {
@@ -73,9 +74,7 @@ public class PassportAssessmentService {
         log.info("Creating new passport assessment record");
         PassportAssessmentEntity assessmentEntity = passportAssessmentImpl.create(passportAssessmentDTO);
         log.info("Setting outdated records as replaced");
-        passportAssessmentImpl.setOldPassportAssessmentAsReplaced(
-                assessmentEntity, createPassportAssessment.getFinancialAssessmentId()
-        );
+        assessmentReplacementService.replacePreviousAssessments(assessmentEntity);
         log.info("Create Passport Assessment - Transaction Processing - End");
         return buildPassportAssessmentDTO(assessmentEntity);
     }

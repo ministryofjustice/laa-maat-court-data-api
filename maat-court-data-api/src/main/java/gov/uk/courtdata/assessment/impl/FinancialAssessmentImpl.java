@@ -12,7 +12,6 @@ import gov.uk.courtdata.enums.FinancialAssessmentType;
 import gov.uk.courtdata.model.assessment.ChildWeightings;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +35,6 @@ public class FinancialAssessmentImpl {
 
     private final FinancialAssessmentMapper assessmentMapper;
     private final PassportAssessmentRepository passportAssessmentRepository;
-    private final HardshipReviewRepository hardshipReviewRepository;
     private final FinancialAssessmentRepository financialAssessmentRepository;
 
     public Optional<FinancialAssessmentEntity> find(int financialAssessmentId) {
@@ -181,18 +179,6 @@ public class FinancialAssessmentImpl {
                 assessmentMapper.financialAssessmentDtoToFinancialAssessmentEntity(financialAssessment);
         assessmentEntity.setAssessmentType(FinancialAssessmentType.INIT.getValue());
         return financialAssessmentRepository.saveAndFlush(assessmentEntity);
-    }
-
-    public void setOldAssessmentReplaced(FinancialAssessmentEntity financialAssessment) {
-        financialAssessmentRepository.replaceAllByRepIdExcludingFinancialAssessment(
-                financialAssessment.getRepOrder().getId(), financialAssessment.getId()
-        );
-        passportAssessmentRepository.replaceAllByRepId(
-                financialAssessment.getRepOrder().getId()
-        );
-        hardshipReviewRepository.replaceAllByRepIdExcludingFinancialAssessment(
-                financialAssessment.getRepOrder().getId(), financialAssessment.getId()
-        );
     }
 
     public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId) {

@@ -12,7 +12,6 @@ import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
@@ -48,8 +47,6 @@ class FinancialAssessmentImplTest {
     private FinancialAssessmentRepository financialAssessmentRepository;
     @Spy
     private PassportAssessmentRepository passportAssessmentRepository;
-    @Mock
-    private HardshipReviewRepository hardshipReviewRepository;
     @Mock
     private FinancialAssessmentMapper financialAssessmentMapper;
     @Captor
@@ -179,19 +176,6 @@ class FinancialAssessmentImplTest {
         OutstandingAssessmentResultDTO result = financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
         assertThat(result.isOutstandingAssessments()).isTrue();
         assertThat(result.getMessage()).isEqualTo(MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
-    }
-
-    @Test
-    void givenFinancialAssessment_whenSetOldAssessmentReplacedIsInvoked_thenOldAssessmentsAreReplaced() {
-        FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
-
-        financialAssessmentImpl.setOldAssessmentReplaced(financialAssessment);
-
-        Integer repId = financialAssessment.getRepOrder().getId();
-
-        verify(hardshipReviewRepository).replaceAllByRepIdExcludingFinancialAssessment(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
-        verify(passportAssessmentRepository).replaceAllByRepId(repId);
-        verify(financialAssessmentRepository).replaceAllByRepIdExcludingFinancialAssessment(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
     }
 
     @Test

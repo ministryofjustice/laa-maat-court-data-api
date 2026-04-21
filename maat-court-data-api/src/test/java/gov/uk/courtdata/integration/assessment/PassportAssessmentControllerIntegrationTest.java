@@ -1,5 +1,7 @@
 package gov.uk.courtdata.integration.assessment;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -108,7 +110,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                         .assessmentDate(testCreationDate)
                         .userCreated(testUser)
                         .pastStatus("IN PROGRESS")
-                        .replaced("N")
+                        .replaced(NO)
                         .build());
 
         completePassportAssessmentEntity = repos.passportAssessment.save(
@@ -118,7 +120,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                         .result(PASS.getCode())
                         .pcobConfirmation(APPLICANT_AGE.getConfirmation())
                         .userCreated(testUser)
-                        .replaced("N")
+                        .replaced(NO)
                         .pastStatus("COMPLETE")
                         .build());
 
@@ -130,7 +132,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         HardshipReviewEntity hardshipReview = TestEntityDataBuilder.getHardshipReviewEntity();
         hardshipReview.setId(null);
         hardshipReview.setRepId(repIdWithNoOutstandingAssessments);
-        hardshipReview.setReplaced("N");
+        hardshipReview.setReplaced(NO);
         hardshipReview.setNewWorkReason(existingNewWorkReason);
         hardshipReview.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
 
@@ -244,7 +246,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         long updatedFinancialAssessmentsCount =
             repos.financialAssessment.findAll()
                         .stream()
-                        .filter(assessment -> assessment.getRepOrder().getId().equals(repId) && assessment.getReplaced().equals("Y"))
+                        .filter(assessment -> assessment.getRepOrder().getId().equals(repId) && assessment.getReplaced().equals(YES))
                         .count();
 
         assertThat(updatedFinancialAssessmentsCount).isEqualTo(1L);
@@ -253,17 +255,10 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         long updatedHardshipReviewCount =
             repos.hardshipReview.findAll()
                         .stream()
-                        .filter(review -> review.getRepId().equals(repId) && review.getReplaced().equals("Y"))
-                        .count();
-        // Check that existing hardship with the Financial Id in request is kept.
-        long nonUpdatedHardshipReviewCount =
-                repos.hardshipReview.findAll()
-                        .stream()
-                        .filter(review -> review.getRepId().equals(repId) && review.getReplaced().equals("N"))
+                        .filter(review -> review.getRepId().equals(repId) && review.getReplaced().equals(YES))
                         .count();
 
-        assertThat(updatedHardshipReviewCount).isZero();
-        assertThat(nonUpdatedHardshipReviewCount).isEqualTo(1L);
+        assertThat(updatedHardshipReviewCount).isEqualTo(1L);
 
         // Check that there are now 2 passport assessments for the given repId.
         // One current and the other marked as replaced.
@@ -277,7 +272,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
         List<PassportAssessmentEntity> newPassportAssessments =
                 matchingPassportAssessments
-                        .stream().filter(assessment -> assessment.getReplaced().equals("N")).toList();
+                        .stream().filter(assessment -> assessment.getReplaced().equals(NO)).toList();
 
         assertThat(newPassportAssessments).hasSize(1);
 
@@ -332,34 +327,46 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
         MvcResult result =
                 runSuccessScenario(post(BASE_V2_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)));
-        Integer createdId = JsonPath.parse(result.getResponse().getContentAsString()).read("$.legacyAssessmentId");
+        Integer createdPassportedAssessmentId = JsonPath.parse(result.getResponse().getContentAsString()).read("$.legacyAssessmentId");
 
         List<PassportAssessmentEntity> passportAssessments = repos.passportAssessment.findAll().stream()
-                .filter(assessment -> repId.equals(assessment.getRepOrder().getId()))
+                .filter(a -> repId.equals(a.getRepOrder().getId()))
+                .toList();
+        List<HardshipReviewEntity> hardshipReviews = repos.hardshipReview.findAll().stream()
+                .filter(hr -> hr.getRepId().equals(repId))
+                .toList();
+        List<FinancialAssessmentEntity> financialAssessments = repos.financialAssessment.findAll().stream()
+                .filter(fa -> fa.getRepOrder().getId().equals(repId))
                 .toList();
 
         // check we've set all old passported assessments to replaced.
-        assertThat(passportAssessments.stream().filter(x-> "Y".equals(x.getReplaced()))
-                .map(PassportAssessmentEntity::getId).toList()).doesNotContain(createdId).hasSize(passportAssessments.size()-1);
-        // check the id is correct and saved.
-        assertThat(passportAssessments.stream().filter(x-> "N".equals(x.getReplaced()))
-                .map(PassportAssessmentEntity::getId).toList()).contains(createdId).hasSize(1);
-
+        assertThat(passportAssessments.stream()
+                .filter(a-> YES.equals(a.getReplaced()))
+                .map(PassportAssessmentEntity::getId).toList())
+                .hasSize(1)
+                .doesNotContain(createdPassportedAssessmentId);
+        // check the id is correct and saved and not replaced.
+        assertThat(passportAssessments.stream()
+                .filter(x-> NO.equals(x.getReplaced()))
+                .map(PassportAssessmentEntity::getId).toList())
+                .hasSize(1)
+                .contains(createdPassportedAssessmentId);
 
         // check the old financial has been replaced.
-        assertThat(repos.financialAssessment.findAll().stream()
-                .filter(x -> x.getRepOrder().getId().equals(repId))
-                .filter(x->"Y".equals(x.getReplaced()))).hasSize(1);
-        assertThat(repos.financialAssessment.findAll().stream()
-                .filter(x -> x.getRepOrder().getId().equals(repId))
-                .filter(x->"N".equals(x.getReplaced()))).isEmpty();
+        assertThat(financialAssessments.stream()
+                .filter(x->NO.equals(x.getReplaced())))
+                .isEmpty();
+        assertThat(financialAssessments.stream()
+                .filter(x->YES.equals(x.getReplaced())))
+                .hasSize(1);
+
         // check old hardship reviews have been replaced.
-        assertThat(repos.hardshipReview.findAll().stream()
-                .filter(x -> x.getRepId().equals(repId))
-                .filter(x->"Y".equals(x.getReplaced()))).hasSize(1);
-        assertThat(repos.hardshipReview.findAll().stream()
-                .filter(x -> x.getRepId().equals(repId))
-                .filter(x->"N".equals(x.getReplaced()))).isEmpty();
+        assertThat(hardshipReviews.stream()
+                .filter(x->NO.equals(x.getReplaced())))
+                .isEmpty();
+        assertThat(hardshipReviews.stream()
+                .filter(x->YES.equals(x.getReplaced())))
+                .hasSize(1);
 
         // validate mapper is being called.
         verify(passportMapperV2).toPassportAssessmentEntity(any());
@@ -412,27 +419,27 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .toList();
 
         // check we've set not set any old passported assessments to replaced.
-        assertThat(passportAssessments.stream().filter(x-> "Y".equals(x.getReplaced()))
+        assertThat(passportAssessments.stream().filter(x-> YES.equals(x.getReplaced()))
                 .map(PassportAssessmentEntity::getId)).isEmpty();
         // check there is still only one value. The other should have been rolled back.
-        assertThat(passportAssessments.stream().filter(x-> "N".equals(x.getReplaced()))
+        assertThat(passportAssessments.stream().filter(x-> NO.equals(x.getReplaced()))
                 .map(PassportAssessmentEntity::getId).toList()).hasSize(1);
 
 
         // check the old financial has been replaced.
         assertThat(repos.financialAssessment.findAll().stream()
                 .filter(x -> x.getRepOrder().getId().equals(repId))
-                .filter(x->"Y".equals(x.getReplaced()))).isEmpty();
+                .filter(x->YES.equals(x.getReplaced()))).isEmpty();
         assertThat(repos.financialAssessment.findAll().stream()
                 .filter(x -> x.getRepOrder().getId().equals(repId))
-                .filter(x->"N".equals(x.getReplaced()))).hasSize(1);
+                .filter(x->NO.equals(x.getReplaced()))).hasSize(1);
         // check old hardship reviews have been replaced.
         assertThat(repos.hardshipReview.findAll().stream()
                 .filter(x -> x.getRepId().equals(repId))
-                .filter(x->"Y".equals(x.getReplaced()))).isEmpty();
+                .filter(x->YES.equals(x.getReplaced()))).isEmpty();
         assertThat(repos.hardshipReview.findAll().stream()
                 .filter(x -> x.getRepId().equals(repId))
-                .filter(x->"N".equals(x.getReplaced()))).hasSize(1);
+                .filter(x->NO.equals(x.getReplaced()))).hasSize(1);
 
         // validate mapper is being called.
         verify(passportMapperV2).toPassportAssessmentEntity(any());

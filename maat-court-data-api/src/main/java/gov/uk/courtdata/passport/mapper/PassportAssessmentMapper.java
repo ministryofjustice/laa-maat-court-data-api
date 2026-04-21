@@ -1,6 +1,5 @@
 package gov.uk.courtdata.passport.mapper;
 
-import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 
 import java.time.LocalDateTime;
@@ -10,7 +9,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
-import org.springframework.beans.factory.annotation.Autowired;
 import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentRequest;
 import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentResponse;
 import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
@@ -21,16 +19,8 @@ import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring",
     implementationName = "<CLASS_NAME>V2Impl", uses = PassportAssessmentMapperHelper.class, imports = {LocalDateTime.class, BenefitType.class})
-public abstract class PassportAssessmentMapper {
-
-    PassportAssessmentMapperHelper passportAssessmentMapperHelper;
-
-    @Autowired
-    public void setMapperHelper(PassportAssessmentMapperHelper passportAssessmentMapperHelper) {
-        this.passportAssessmentMapperHelper = passportAssessmentMapperHelper;
-    }
-
-
+public interface PassportAssessmentMapper {
+    
     @Mapping(target = "caseManagementUnitId", source = "cmuId")
     @Mapping(target = "legacyAssessmentId", source = "id")
     @Mapping(target = "assessmentReason", source = "nworCode")
@@ -43,12 +33,20 @@ public abstract class PassportAssessmentMapper {
         qualifiedByName = "assessmentDecisionMapper")
     @Mapping(target = "decisionReason", source = "passportAssessmentEntity",
         qualifiedByName = "decisionReasonMapper")
-    public abstract ApiGetPassportedAssessmentResponse toApiGetPassportedAssessmentResponse(
+    ApiGetPassportedAssessmentResponse toApiGetPassportedAssessmentResponse(
             PassportAssessmentEntity passportAssessmentEntity);
 
     @Mapping(target = "legacyAssessmentId", source = "id")
-    public abstract ApiCreatePassportedAssessmentResponse toApiCreatePassportedAssessmentResponse(PassportAssessmentEntity entity);
+    ApiCreatePassportedAssessmentResponse toApiCreatePassportedAssessmentResponse(PassportAssessmentEntity entity);
 
+    /**
+     * Mapper will populate all fields based on the logic set out, and without business logic requirements.
+     * Of note:
+     * <ul>
+     *     <li>Partner fields will not be populated.</li>
+     *     <li>RepOrder will not be populated apart from the id.</li>
+     * </ul>
+     */
     @Mapping(target = "pastStatus", constant = "COMPLETE")
     @Mapping(target = "dateCompleted", expression = "java(LocalDateTime.now())")
     @Mapping(target = "nworCode", source = "passportedAssessment.assessmentReason")
@@ -60,10 +58,13 @@ public abstract class PassportAssessmentMapper {
     @Mapping(target = "usn", source = "passportedAssessmentMetadata.usn")
     @Mapping(target = "cmuId", source = "passportedAssessmentMetadata.caseManagementUnitId")
     @Mapping(target = "repOrder", source = "passportedAssessmentMetadata.legacyApplicationId", qualifiedByName = "mapRepOrder")
-    public abstract PassportAssessmentEntity toPassportAssessmentEntity(ApiCreatePassportedAssessmentRequest request);
+    PassportAssessmentEntity toPassportAssessmentEntity(ApiCreatePassportedAssessmentRequest request);
 
+    /**
+     * Helper method which populates the benefit types and under18 court values.
+     */
     @AfterMapping
-    public PassportAssessmentEntity mapPartnerFields(ApiCreatePassportedAssessmentRequest source, @MappingTarget PassportAssessmentEntity target) {
+    default PassportAssessmentEntity mapPartnerFields(ApiCreatePassportedAssessmentRequest source, @MappingTarget PassportAssessmentEntity target) {
         target.setIncomeSupport(mapBenefitType(BenefitType.INCOME_SUPPORT, source));
         target.setJobSeekers(mapBenefitType(BenefitType.JSA, source));
         target.setEsa(mapBenefitType(BenefitType.ESA, source));
@@ -72,17 +73,6 @@ public abstract class PassportAssessmentMapper {
         // TODO: LCAM-2074 To be finalized.
         target.setUnder18HeardInYouthCourt(mapUnder18CourtType(false, source));
         target.setUnder18HeardInMagsCourt(mapUnder18CourtType(true, source));
-
-                if (Boolean.FALSE.equals(source.getPassportedAssessment().getDeclaredUnder18())
-                && source.getPassportedAssessment().getDeclaredBenefit() != null
-                && source.getPassportedAssessment().getDeclaredBenefit().getLegacyPartnerId() != null) {
-            Applicant partner = passportAssessmentMapperHelper.getPartnerEntity(source.getPassportedAssessment().getDeclaredBenefit().getLegacyPartnerId());
-            target.setPartnerDob(partner.getDob().atStartOfDay());
-            target.setPartnerFirstName(partner.getFirstName());
-            target.setPartnerSurname(partner.getLastName());
-            target.setPartnerOtherNames(partner.getOtherNames());
-            target.setPartnerNiNumber(partner.getNiNumber());
-        }
         return target;
     }
 
@@ -98,7 +88,7 @@ public abstract class PassportAssessmentMapper {
      * @param request Request object that is under inspection.
      * @return String containing "Y" or "N".
      */
-    public String mapBenefitType(BenefitType expected, ApiCreatePassportedAssessmentRequest request){
+    default String mapBenefitType(BenefitType expected, ApiCreatePassportedAssessmentRequest request){
         var assessment = request.getPassportedAssessment();
         var declaredBenefit = assessment.getDeclaredBenefit();
 
@@ -110,7 +100,7 @@ public abstract class PassportAssessmentMapper {
 
     // TODO: LCAM-2074 - Get logic for determining values here. Request is placeholder to allow for full access to objects.
     // Understanding is this is an either/or, so both logic will be linked.
-    public String mapUnder18CourtType(boolean isMags, ApiCreatePassportedAssessmentRequest request){
+    default String mapUnder18CourtType(boolean isMags, ApiCreatePassportedAssessmentRequest request){
         if (Boolean.TRUE.equals(request.getPassportedAssessment().getDeclaredUnder18())){
             if (isMags){
                 return NO;

@@ -2,8 +2,6 @@ package gov.uk.courtdata.passport.service;
 
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class PassportAssessmentPersistenceService {
     
     private final PassportAssessmentRepository passportAssessmentRepository;
-    private final HardshipReviewRepository hardshipReviewRepository;
-    private final FinancialAssessmentRepository financialAssessmentRepository;
     
     public PassportAssessmentEntity find(Integer passportAssessmentId) {
         return passportAssessmentRepository.findById(passportAssessmentId)
@@ -26,25 +22,7 @@ public class PassportAssessmentPersistenceService {
     }
 
     @Transactional
-    public PassportAssessmentEntity create(PassportAssessmentEntity passportAssessmentEntity) {
-        save(passportAssessmentEntity);
-        invalidateOldData(passportAssessmentEntity);
-        return passportAssessmentEntity;
-    }
-
     public PassportAssessmentEntity save(PassportAssessmentEntity passportAssessmentEntity) {
         return passportAssessmentRepository.save(passportAssessmentEntity);
-    }
-
-    private void invalidateOldData(PassportAssessmentEntity passportAssessmentEntity) {
-        passportAssessmentRepository.replaceAllByRepIdExcludingPassportedAssessment(
-                passportAssessmentEntity.getRepOrder().getId(), passportAssessmentEntity.getId()
-        );
-        financialAssessmentRepository.replaceAllByRepId(
-                passportAssessmentEntity.getRepOrder().getId()
-        );
-        hardshipReviewRepository.replaceAllByRepId(
-                passportAssessmentEntity.getRepOrder().getId()
-        );
     }
 }

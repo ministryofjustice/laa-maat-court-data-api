@@ -4,16 +4,12 @@ import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.applicant.mapper.RepOrderApplicantLinksMapper;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
-import gov.uk.courtdata.applicant.service.ApplicantService;
-import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
-import gov.uk.courtdata.reporder.service.RepOrderService;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Condition;
 import org.mapstruct.ConditionStrategy;
@@ -44,15 +40,13 @@ public class PassportAssessmentMapperHelper {
     
     private final RepOrderApplicantLinksRepository repOrderApplicantLinksRepository;
     private final RepOrderApplicantLinksMapper repOrderApplicantLinksMapper;
-    private final RepOrderService repOrderService;
-    private final ApplicantService applicantService;
 
     @Named("mapRepOrder")
     public RepOrderEntity mapRepOrder(Integer repOrderId) {
-        if(repOrderId == null){
-            return null;
-        }
-        return repOrderService.findByRepId(repOrderId);
+        RepOrderEntity repOrder = new RepOrderEntity();
+        repOrder.setId(repOrderId);
+
+        return repOrder;
     }
 
     @Named("mapPartnerBenefitClaimed")
@@ -168,12 +162,5 @@ public class PassportAssessmentMapperHelper {
             mapEntityToDTO(repOrderApplicantLinksEntities);
     }
 
-    protected Applicant getPartnerEntity(Integer id){
-        try {
-            return applicantService.find(id);
-        } catch (RequestedObjectNotFoundException e){
-            return null;
-        }
-    }
 
 }

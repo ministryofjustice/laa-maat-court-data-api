@@ -1,5 +1,6 @@
 package gov.uk.courtdata.iojappeal.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -10,13 +11,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
+import uk.gov.justice.laa.crime.error.ErrorExtension;
 import uk.gov.justice.laa.crime.error.ProblemDetailError;
+import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
+
+import java.util.Optional;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_IOJ_APPEAL_ID;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -60,14 +68,14 @@ class IOJAppealControllerV2Test {
                 new RequestedObjectNotFoundException(
                         "No IoJ Appeal found for ID: " + LEGACY_IOJ_APPEAL_ID));
 
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + LEGACY_IOJ_APPEAL_ID))
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + LEGACY_IOJ_APPEAL_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(
-                        jsonPath("$.errors.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
-                .andExpect(jsonPath("$.detail").value(
-                        "No IoJ Appeal found for ID: " + LEGACY_IOJ_APPEAL_ID));
+                .andReturn();
 
+        validateProblemDetailResponse(result.getResponse().getContentAsString(),
+                ProblemDetailError.OBJECT_NOT_FOUND.code(),
+                "No IoJ Appeal found for ID: " + LEGACY_IOJ_APPEAL_ID);
         verify(iojAppealService).find(LEGACY_IOJ_APPEAL_ID);
     }
 
@@ -99,26 +107,29 @@ class IOJAppealControllerV2Test {
         createIOJAppeal.getIojAppealMetadata().setLegacyApplicationId(null);
         var createIOJAppealJson = objectMapper.writeValueAsString(createIOJAppeal);
 
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
                         .content(createIOJAppealJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors.code").value(
-                        ProblemDetailError.VALIDATION_FAILURE.code()))
-                .andExpect(jsonPath("$.detail").value(
-                        ProblemDetailError.VALIDATION_FAILURE.defaultDetail()));
+                .andReturn();
+
+        validateProblemDetailResponse(result.getResponse().getContentAsString(),
+                ProblemDetailError.VALIDATION_FAILURE.code(),
+                ProblemDetailError.VALIDATION_FAILURE.defaultDetail());
     }
 
     @Test
     void givenMissingRequestBody_whenCreateIojAppealIsCalled_thenBadRequestIsReturned()
             throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
                         .content("")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors.code").value(ProblemDetailError.BAD_REQUEST.code()))
-                .andExpect(
-                        jsonPath("$.detail").value(ProblemDetailError.BAD_REQUEST.defaultDetail()));
+                .andReturn();
+
+        validateProblemDetailResponse(result.getResponse().getContentAsString(),
+                ProblemDetailError.BAD_REQUEST.code(),
+                ProblemDetailError.BAD_REQUEST.defaultDetail());
     }
 
     @Test
@@ -139,12 +150,20 @@ class IOJAppealControllerV2Test {
         doThrow(new RequestedObjectNotFoundException(exceptionMessage)).when(iojAppealService)
                 .rollback(LEGACY_IOJ_APPEAL_ID);
 
-        mvc.perform(MockMvcRequestBuilders.patch(ROLLBACK_URL, LEGACY_IOJ_APPEAL_ID))
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.patch(ROLLBACK_URL, LEGACY_IOJ_APPEAL_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(
-                        jsonPath("$.errors.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
-                .andExpect(jsonPath("$.detail").value(
-                        "No IOJ Appeal found for ID: " + LEGACY_IOJ_APPEAL_ID));
+                .andReturn();
+
+        validateProblemDetailResponse(result.getResponse().getContentAsString(),
+                ProblemDetailError.OBJECT_NOT_FOUND.code(),
+                "No IOJ Appeal found for ID: " + LEGACY_IOJ_APPEAL_ID);
+    }
+
+    private void validateProblemDetailResponse(String responseString, String expectedCode, String expectedDetail) throws JsonProcessingException {
+        ProblemDetail problemDetail = ProblemDetailUtil.parseProblemDetailJson(responseString);
+        assertThat(problemDetail.getDetail()).isEqualTo(expectedDetail);
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        assertThat(extension).isPresent().get().hasFieldOrPropertyWithValue("code", expectedCode);
     }
 }

@@ -1,6 +1,7 @@
 package gov.uk.courtdata.passport.service;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_PASSPORT_ASSESSMENT_ID;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -11,6 +12,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEvidenceEntity;
+import gov.uk.courtdata.exception.RecordEmptyException;
 import gov.uk.courtdata.passport.mapper.PassportAssessmentEvidenceMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -110,6 +112,19 @@ class PassportAssessmentEvidenceServiceTest {
             returnedPassportedAssessmentEvidence.getPartnerEvidenceItems().getFirst().getDateReceived());
         assertEquals(apiGetPassportEvidenceResponse.getPartnerEvidenceItems().getFirst().getMandatory(),
             returnedPassportedAssessmentEvidence.getPartnerEvidenceItems().getFirst().getMandatory());
+    }
+
+    @Test
+    void givenNoApplicantIdOnEvidence_whenFindIsInvoked_thenExceptionIsThrown() {
+        buildEntities();
+        applicantEvidenceEntity.getApplicant().setId(null);
+
+        when(passportAssessmentPersistenceService.find(any())).thenReturn(passportAssessmentEntity);
+        when(partnerResolver.getPartnerLegacyId(any())).thenReturn(PARTNER_ID);
+
+        assertThatThrownBy(() -> passportAssessmentEvidenceService.find(LEGACY_PASSPORT_ASSESSMENT_ID)).isInstanceOf(
+                RecordEmptyException.class)
+            .hasMessageContaining("Passport assessment evidence is missing applicant reference");
     }
     
     void buildEntities() {

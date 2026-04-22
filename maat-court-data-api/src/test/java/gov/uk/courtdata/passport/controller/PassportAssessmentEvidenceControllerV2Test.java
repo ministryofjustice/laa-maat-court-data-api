@@ -41,9 +41,13 @@ class PassportAssessmentEvidenceControllerV2Test {
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + LEGACY_PASSPORT_ASSESSMENT_ID + "/evidence"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.passportEvidenceMetadata").isNotEmpty())
-            .andExpect(jsonPath("$.applicantEvidenceItems").isNotEmpty())
-            .andExpect(jsonPath("$.partnerEvidenceItems").isNotEmpty());
+            .andExpect(jsonPath("$.passportEvidenceMetadata").exists())
+            .andExpect(jsonPath("$.applicantEvidenceItems").isArray())
+            .andExpect(jsonPath("$.partnerEvidenceItems").isArray())
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].id").exists())
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].evidenceType").exists())
+            .andExpect(jsonPath("$.partnerEvidenceItems[0].id").exists())
+            .andExpect(jsonPath("$.partnerEvidenceItems[0].evidenceType").exists());
     }
 
     @Test

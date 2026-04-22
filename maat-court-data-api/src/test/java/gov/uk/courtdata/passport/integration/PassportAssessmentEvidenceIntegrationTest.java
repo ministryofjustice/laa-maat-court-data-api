@@ -4,7 +4,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -16,7 +15,6 @@ import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,12 +24,10 @@ import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
 
     private static final String ENDPOINT_URL = "/api/internal/v2/assessment/passport-assessments/{id}/evidence";
+    private static final LocalDateTime DATE_TIME = LocalDateTime.of(2026, 4, 21, 12, 0);
     private PassportAssessmentEntity passportAssessmentEntity;
     private PassportAssessmentEvidenceEntity applicantEvidenceEntity;
     private PassportAssessmentEvidenceEntity partnerEvidenceEntity;
-    
-    @Autowired
-    private ObjectMapper objectMapper;
     
     @Test
     void givenValidRequest_whenFindIsInvoked_thenPassportEvidenceIsReturned() throws Exception {
@@ -60,8 +56,6 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
     }
 
     private void buildEntities() {
-        LocalDateTime dateNow = LocalDateTime.now();
-
         Applicant applicantEntity = repos.applicantRepository.saveAndFlush(Applicant.builder()
             .build());
 
@@ -81,22 +75,24 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
 
         passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         passportAssessmentEntity.getRepOrder().setId(repOrderEntity.getId());
-        passportAssessmentEntity.setPassportEvidenceDueDate(dateNow);
-        passportAssessmentEntity.setAllPassportEvidenceReceivedDate(dateNow);
-        passportAssessmentEntity.setPassportUpliftApplyDate(dateNow);
-        passportAssessmentEntity.setPassportUpliftRemoveDate(dateNow);
-        passportAssessmentEntity.setFirstPassportReminderDate(dateNow);
-        passportAssessmentEntity.setSecondPassportReminderDate(dateNow);
+        passportAssessmentEntity.setPassportEvidenceDueDate(DATE_TIME);
+        passportAssessmentEntity.setAllPassportEvidenceReceivedDate(DATE_TIME);
+        passportAssessmentEntity.setPassportUpliftApplyDate(DATE_TIME);
+        passportAssessmentEntity.setPassportUpliftRemoveDate(DATE_TIME);
+        passportAssessmentEntity.setFirstPassportReminderDate(DATE_TIME);
+        passportAssessmentEntity.setSecondPassportReminderDate(DATE_TIME);
         passportAssessmentEntity.setPassportEvidenceNotes("Evidence notes");
         
         applicantEvidenceEntity =
-            TestEntityDataBuilder.getPassportAssessmentEvidenceEntity(passportAssessmentEntity, applicantEntity, LocalDateTime.now());
+            TestEntityDataBuilder.getPassportAssessmentEvidenceEntity(passportAssessmentEntity, applicantEntity,
+                DATE_TIME);
         applicantEvidenceEntity.setId(null);
         applicantEvidenceEntity.setPassportAssessment(passportAssessmentEntity);
         passportAssessmentEntity.addPassportAssessmentEvidences(applicantEvidenceEntity);
         
         partnerEvidenceEntity =
-            TestEntityDataBuilder.getPassportAssessmentEvidenceEntity(passportAssessmentEntity, partnerEntity, LocalDateTime.now());
+            TestEntityDataBuilder.getPassportAssessmentEvidenceEntity(passportAssessmentEntity, partnerEntity,
+                DATE_TIME);
         partnerEvidenceEntity.setId(null);
         partnerEvidenceEntity.setPassportAssessment(passportAssessmentEntity);
         passportAssessmentEntity.addPassportAssessmentEvidences(partnerEvidenceEntity);

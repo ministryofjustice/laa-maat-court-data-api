@@ -1,9 +1,8 @@
 package gov.uk.courtdata.passport.service;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_PASSPORT_ASSESSMENT_ID;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.applicant.service.PartnerResolver;
@@ -47,7 +46,7 @@ class PassportAssessmentEvidenceServiceTest {
     private PartnerResolver partnerResolver;
 
     @Test
-    void whenFindIsInvoked_thenPassportEvidenceIsRetrieved() {
+    void givenValidPassportAssessmentId_whenFindIsInvoked_thenEvidenceIsSeparatedByApplicantAndPartnerAndReturned() {
         buildEntities();
         
         ApiGetPassportEvidenceResponse apiGetPassportEvidenceResponse = TestModelDataBuilder.getApiGetPassportedEvidenceResponse();
@@ -65,53 +64,25 @@ class PassportAssessmentEvidenceServiceTest {
             .withDateReceived(LocalDate.now().minusDays(1))
             .withMandatory(true);
         
-        when(passportAssessmentPersistenceService.find(any())).thenReturn(passportAssessmentEntity);
-        when(partnerResolver.getPartnerLegacyId(any())).thenReturn(PARTNER_ID);
-        when(passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(any())).thenReturn(apiGetPassportEvidenceResponse);
+        when(passportAssessmentPersistenceService.find(LEGACY_PASSPORT_ASSESSMENT_ID)).thenReturn(passportAssessmentEntity);
+        when(partnerResolver.getPartnerLegacyId(passportAssessmentEntity.getRepOrder().getId())).thenReturn(PARTNER_ID);
+        when(passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(passportAssessmentEntity)).thenReturn(apiGetPassportEvidenceResponse);
         when(passportAssessmentEvidenceMapper.toApiIncomeEvidence(applicantEvidenceEntity)).thenReturn(applicantApiGetIncomeEvidenceResponse);
         when(passportAssessmentEvidenceMapper.toApiIncomeEvidence(partnerEvidenceEntity)).thenReturn(partnerApiGetIncomeEvidenceResponse);
         
-        ApiGetPassportEvidenceResponse returnedPassportedAssessmentEvidence = passportAssessmentEvidenceService.find(LEGACY_PASSPORT_ASSESSMENT_ID);
-        
-        // Metadata
-        assertEquals(apiGetPassportEvidenceResponse.getPassportEvidenceMetadata().getEvidenceDueDate(),
-            returnedPassportedAssessmentEvidence.getPassportEvidenceMetadata().getEvidenceDueDate());
-        assertEquals(apiGetPassportEvidenceResponse.getPassportEvidenceMetadata().getEvidenceReceivedDate(),
-            returnedPassportedAssessmentEvidence.getPassportEvidenceMetadata().getEvidenceReceivedDate());
-        assertEquals(apiGetPassportEvidenceResponse.getPassportEvidenceMetadata().getUpliftAppliedDate(),
-            returnedPassportedAssessmentEvidence.getPassportEvidenceMetadata().getUpliftAppliedDate());
-        assertEquals(apiGetPassportEvidenceResponse.getPassportEvidenceMetadata().getUpliftRemovedDate(),
-            returnedPassportedAssessmentEvidence.getPassportEvidenceMetadata().getUpliftRemovedDate());
-        assertEquals(apiGetPassportEvidenceResponse.getPassportEvidenceMetadata().getFirstReminderDate(),
-            returnedPassportedAssessmentEvidence.getPassportEvidenceMetadata().getFirstReminderDate());
-        assertEquals(apiGetPassportEvidenceResponse.getPassportEvidenceMetadata().getSecondReminderDate(),
-            returnedPassportedAssessmentEvidence.getPassportEvidenceMetadata().getSecondReminderDate());
-        assertEquals(apiGetPassportEvidenceResponse.getPassportEvidenceMetadata().getIncomeEvidenceNotes(),
-            returnedPassportedAssessmentEvidence.getPassportEvidenceMetadata().getIncomeEvidenceNotes());
+        ApiGetPassportEvidenceResponse response = passportAssessmentEvidenceService.find(LEGACY_PASSPORT_ASSESSMENT_ID);
 
-        // Applicant evidence
-        assertEquals(apiGetPassportEvidenceResponse.getApplicantEvidenceItems().getFirst().getId(),
-            returnedPassportedAssessmentEvidence.getApplicantEvidenceItems().getFirst().getId());
-        assertEquals(apiGetPassportEvidenceResponse.getApplicantEvidenceItems().getFirst().getEvidenceType(),
-            returnedPassportedAssessmentEvidence.getApplicantEvidenceItems().getFirst().getEvidenceType());
-        assertEquals(apiGetPassportEvidenceResponse.getApplicantEvidenceItems().getFirst().getDescription(),
-            returnedPassportedAssessmentEvidence.getApplicantEvidenceItems().getFirst().getDescription());
-        assertEquals(apiGetPassportEvidenceResponse.getApplicantEvidenceItems().getFirst().getDateReceived(),
-            returnedPassportedAssessmentEvidence.getApplicantEvidenceItems().getFirst().getDateReceived());
-        assertEquals(apiGetPassportEvidenceResponse.getApplicantEvidenceItems().getFirst().getMandatory(),
-            returnedPassportedAssessmentEvidence.getApplicantEvidenceItems().getFirst().getMandatory());
+        assertThat(apiGetPassportEvidenceResponse.getPassportEvidenceMetadata())
+            .usingRecursiveComparison()
+            .isEqualTo(response.getPassportEvidenceMetadata());
 
-        // Partner evidence
-        assertEquals(apiGetPassportEvidenceResponse.getPartnerEvidenceItems().getFirst().getId(),
-            returnedPassportedAssessmentEvidence.getPartnerEvidenceItems().getFirst().getId());
-        assertEquals(apiGetPassportEvidenceResponse.getPartnerEvidenceItems().getFirst().getEvidenceType(),
-            returnedPassportedAssessmentEvidence.getPartnerEvidenceItems().getFirst().getEvidenceType());
-        assertEquals(apiGetPassportEvidenceResponse.getPartnerEvidenceItems().getFirst().getDescription(),
-            returnedPassportedAssessmentEvidence.getPartnerEvidenceItems().getFirst().getDescription());
-        assertEquals(apiGetPassportEvidenceResponse.getPartnerEvidenceItems().getFirst().getDateReceived(),
-            returnedPassportedAssessmentEvidence.getPartnerEvidenceItems().getFirst().getDateReceived());
-        assertEquals(apiGetPassportEvidenceResponse.getPartnerEvidenceItems().getFirst().getMandatory(),
-            returnedPassportedAssessmentEvidence.getPartnerEvidenceItems().getFirst().getMandatory());
+        assertThat(apiGetPassportEvidenceResponse.getApplicantEvidenceItems())
+            .usingRecursiveComparison()
+            .isEqualTo(response.getApplicantEvidenceItems());
+
+        assertThat(apiGetPassportEvidenceResponse.getPartnerEvidenceItems())
+            .usingRecursiveComparison()
+            .isEqualTo(response.getPartnerEvidenceItems());
     }
 
     @Test
@@ -119,15 +90,15 @@ class PassportAssessmentEvidenceServiceTest {
         buildEntities();
         applicantEvidenceEntity.getApplicant().setId(null);
 
-        when(passportAssessmentPersistenceService.find(any())).thenReturn(passportAssessmentEntity);
-        when(partnerResolver.getPartnerLegacyId(any())).thenReturn(PARTNER_ID);
+        when(passportAssessmentPersistenceService.find(LEGACY_PASSPORT_ASSESSMENT_ID)).thenReturn(passportAssessmentEntity);
+        when(partnerResolver.getPartnerLegacyId(passportAssessmentEntity.getRepOrder().getId())).thenReturn(PARTNER_ID);
 
         assertThatThrownBy(() -> passportAssessmentEvidenceService.find(LEGACY_PASSPORT_ASSESSMENT_ID)).isInstanceOf(
                 RecordEmptyException.class)
             .hasMessageContaining("Passport assessment evidence is missing applicant reference");
     }
     
-    void buildEntities() {
+    private void buildEntities() {
         passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         Applicant applicant = Applicant.builder().id(APPLICANT_ID).build();
         Applicant partner = Applicant.builder().id(PARTNER_ID).build();

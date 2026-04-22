@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.justice.laa.crime.common.model.evidence.ApiGetPassportEvidenceResponse;
 import uk.gov.justice.laa.crime.common.model.evidence.ApiIncomeEvidence;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiPassportEvidenceMetadata;
 import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 
 @ExtendWith(SpringExtension.class)
@@ -24,13 +25,10 @@ import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 class PassportAssessmentEvidenceMapperTest {
 
     private static final Integer APPLICANT_ID = 123;
-    LocalDateTime dateNow = LocalDateTime.now();
+    private static final LocalDateTime DATE_TIME = LocalDateTime.of(2026, 4, 21, 12, 0);
 
     @Autowired
     private PassportAssessmentEvidenceMapper passportAssessmentEvidenceMapper;
-    
-    @Autowired
-    private PassportAssessmentMapperHelper passportAssessmentMapperHelper;
     
     @Test
     void givenPassportAssessmentEntity_whenMapToApiGetPassportEvidenceResponse_thenMetadataIsMapped() {
@@ -40,14 +38,25 @@ class PassportAssessmentEvidenceMapperTest {
             passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(
             passportAssessmentEntity);
 
-        // Metadata
-        assertThat(response.getPassportEvidenceMetadata().getEvidenceDueDate()).isEqualTo(passportAssessmentEntity.getPassportEvidenceDueDate().toLocalDate());
-        assertThat(response.getPassportEvidenceMetadata().getEvidenceReceivedDate()).isEqualTo(passportAssessmentEntity.getAllPassportEvidenceReceivedDate().toLocalDate());
-        assertThat(response.getPassportEvidenceMetadata().getUpliftAppliedDate()).isEqualTo(passportAssessmentEntity.getPassportUpliftApplyDate().toLocalDate());
-        assertThat(response.getPassportEvidenceMetadata().getUpliftRemovedDate()).isEqualTo(passportAssessmentEntity.getPassportUpliftRemoveDate().toLocalDate());
-        assertThat(response.getPassportEvidenceMetadata().getFirstReminderDate()).isEqualTo(passportAssessmentEntity.getFirstPassportReminderDate().toLocalDate());
-        assertThat(response.getPassportEvidenceMetadata().getSecondReminderDate()).isEqualTo(passportAssessmentEntity.getSecondPassportReminderDate().toLocalDate());
-        assertThat(response.getPassportEvidenceMetadata().getIncomeEvidenceNotes()).isEqualTo(passportAssessmentEntity.getPassportEvidenceNotes());
+        assertThat(response.getPassportEvidenceMetadata())
+            .extracting(
+                ApiPassportEvidenceMetadata::getEvidenceDueDate,
+                ApiPassportEvidenceMetadata::getEvidenceReceivedDate,
+                ApiPassportEvidenceMetadata::getUpliftAppliedDate,
+                ApiPassportEvidenceMetadata::getUpliftRemovedDate,
+                ApiPassportEvidenceMetadata::getFirstReminderDate,
+                ApiPassportEvidenceMetadata::getSecondReminderDate,
+                ApiPassportEvidenceMetadata::getIncomeEvidenceNotes
+            )
+            .containsExactly(
+                passportAssessmentEntity.getPassportEvidenceDueDate().toLocalDate(),
+                passportAssessmentEntity.getAllPassportEvidenceReceivedDate().toLocalDate(),
+                passportAssessmentEntity.getPassportUpliftApplyDate().toLocalDate(),
+                passportAssessmentEntity.getPassportUpliftRemoveDate().toLocalDate(),
+                passportAssessmentEntity.getFirstPassportReminderDate().toLocalDate(),
+                passportAssessmentEntity.getSecondPassportReminderDate().toLocalDate(),
+                passportAssessmentEntity.getPassportEvidenceNotes()
+            );
     }
 
     @Test
@@ -71,12 +80,12 @@ class PassportAssessmentEvidenceMapperTest {
     private PassportAssessmentEntity buildPassportAssessment() {
         PassportAssessmentEntity passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         passportAssessmentEntity.getRepOrder().setApplicationId(APPLICANT_ID);
-        passportAssessmentEntity.setPassportEvidenceDueDate(dateNow);
-        passportAssessmentEntity.setAllPassportEvidenceReceivedDate(dateNow);
-        passportAssessmentEntity.setPassportUpliftApplyDate(dateNow);
-        passportAssessmentEntity.setPassportUpliftRemoveDate(dateNow);
-        passportAssessmentEntity.setFirstPassportReminderDate(dateNow);
-        passportAssessmentEntity.setSecondPassportReminderDate(dateNow);
+        passportAssessmentEntity.setPassportEvidenceDueDate(DATE_TIME);
+        passportAssessmentEntity.setAllPassportEvidenceReceivedDate(DATE_TIME);
+        passportAssessmentEntity.setPassportUpliftApplyDate(DATE_TIME);
+        passportAssessmentEntity.setPassportUpliftRemoveDate(DATE_TIME);
+        passportAssessmentEntity.setFirstPassportReminderDate(DATE_TIME);
+        passportAssessmentEntity.setSecondPassportReminderDate(DATE_TIME);
         passportAssessmentEntity.setPassportEvidenceNotes("Evidence notes");
 
         return passportAssessmentEntity;
@@ -90,7 +99,7 @@ class PassportAssessmentEvidenceMapperTest {
 
     private PassportAssessmentEvidenceEntity buildApplicantEvidence(Applicant applicant, PassportAssessmentEntity passportAssessmentEntity) {
         PassportAssessmentEvidenceEntity passportAssessmentApplicantEvidenceEntity =
-            TestEntityDataBuilder.getPassportAssessmentEvidenceEntity(passportAssessmentEntity, applicant, dateNow);
+            TestEntityDataBuilder.getPassportAssessmentEvidenceEntity(passportAssessmentEntity, applicant, DATE_TIME);
 
         passportAssessmentEntity.addPassportAssessmentEvidences(passportAssessmentApplicantEvidenceEntity);
 

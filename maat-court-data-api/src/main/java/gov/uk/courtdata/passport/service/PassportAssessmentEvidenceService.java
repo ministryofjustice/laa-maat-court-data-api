@@ -3,6 +3,7 @@ package gov.uk.courtdata.passport.service;
 import gov.uk.courtdata.applicant.service.PartnerResolver;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEvidenceEntity;
+import gov.uk.courtdata.exception.RecordEmptyException;
 import gov.uk.courtdata.passport.mapper.PassportAssessmentEvidenceMapper;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,14 @@ public class PassportAssessmentEvidenceService {
         Integer applicantId = evidenceEntity.getApplicant() != null
             ? evidenceEntity.getApplicant().getId()
             : null;
-        return applicantId == null || applicantId.equals(partnerId);
+
+        if (applicantId == null) {
+            throw new RecordEmptyException(
+                "Passport assessment evidence is missing applicant reference"
+            );
+        }
+
+        return applicantId.equals(partnerId);
     }
 
 }

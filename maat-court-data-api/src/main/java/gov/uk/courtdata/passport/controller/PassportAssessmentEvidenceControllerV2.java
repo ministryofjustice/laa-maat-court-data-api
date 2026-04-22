@@ -1,6 +1,6 @@
 package gov.uk.courtdata.passport.controller;
 
-import gov.uk.courtdata.annotation.StandardApiResponseCodes;
+import gov.uk.courtdata.annotation.StandardProblemDetailErrorResponse;
 import gov.uk.courtdata.passport.service.PassportAssessmentEvidenceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +25,7 @@ public class PassportAssessmentEvidenceControllerV2 {
     
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve passport assessment evidence")
-    @StandardApiResponseCodes
+    @StandardProblemDetailErrorResponse
     public ResponseEntity<ApiGetPassportEvidenceResponse> find(@PathVariable int id) {
         log.info("Get Passported Assessment Evidence Received: id: {}", id);
         return ResponseEntity.ok(passportAssessmentEvidenceService.find(id));

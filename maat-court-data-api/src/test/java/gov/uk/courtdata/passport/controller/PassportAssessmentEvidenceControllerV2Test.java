@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.justice.laa.crime.common.model.evidence.ApiGetPassportEvidenceResponse;
 import uk.gov.justice.laa.crime.common.model.evidence.ApiPassportEvidenceMetadata;
+import uk.gov.justice.laa.crime.error.ProblemDetailError;
 
 @WebMvcTest(PassportAssessmentEvidenceControllerV2.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -46,12 +47,13 @@ class PassportAssessmentEvidenceControllerV2Test {
     }
 
     @Test
-    void givenNonExistentLegacyPassportAssessmentId_whenFindIsCalled_thenReturnBadRequestResponseError() throws Exception {
+    void givenNonExistentLegacyPassportAssessmentId_whenFindIsCalled_thenReturnNotFoundResponse() throws Exception {
         when(passportAssessmentEvidenceService.find(LEGACY_PASSPORT_ASSESSMENT_ID)).thenThrow(new RequestedObjectNotFoundException("No Passport Assessment found for ID: " + LEGACY_PASSPORT_ASSESSMENT_ID));
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + LEGACY_PASSPORT_ASSESSMENT_ID + "/evidence"))
-            .andExpect(status().is4xxClientError())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.message").value("No Passport Assessment found for ID: " + LEGACY_PASSPORT_ASSESSMENT_ID));
+            .andExpect(status().isNotFound())
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(jsonPath("$.errors.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
+            .andExpect(jsonPath("$.detail").value("No Passport Assessment found for ID: " + LEGACY_PASSPORT_ASSESSMENT_ID));
     }
 
     @Test

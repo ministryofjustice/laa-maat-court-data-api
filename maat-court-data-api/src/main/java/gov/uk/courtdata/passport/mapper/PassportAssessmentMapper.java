@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import org.mapstruct.Condition;
 import org.mapstruct.ConditionStrategy;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -40,7 +41,7 @@ public interface PassportAssessmentMapper {
     @Mapping(target = "decisionReason", source = "passportAssessmentEntity",
         qualifiedByName = "decisionReasonMapper")
     ApiGetPassportedAssessmentResponse toApiGetPassportedAssessmentResponse(
-        PassportAssessmentEntity passportAssessmentEntity);
+        PassportAssessmentEntity passportAssessmentEntity, @Context Integer partnerLegacyId);
 
     @Named("under18Mapper")
     default boolean mapUnder18(PassportAssessmentEntity passportAssessmentEntity) {

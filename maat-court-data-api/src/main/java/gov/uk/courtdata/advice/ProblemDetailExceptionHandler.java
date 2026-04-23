@@ -1,8 +1,11 @@
 package gov.uk.courtdata.advice;
 
 import gov.uk.courtdata.exception.CrimeValidationException;
+import gov.uk.courtdata.exception.RecordEmptyException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.iojappeal.controller.IOJAppealControllerV2;
+import gov.uk.courtdata.passport.controller.PassportAssessmentControllerV2;
+import gov.uk.courtdata.passport.controller.PassportAssessmentEvidenceControllerV2;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +25,16 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import uk.gov.justice.laa.crime.error.ErrorMessage;
 import uk.gov.justice.laa.crime.error.ProblemDetailError;
 import uk.gov.justice.laa.crime.tracing.TraceIdHandler;
-import uk.gov.justice.laa.crime.error.ErrorExtension;
-import uk.gov.justice.laa.crime.error.ErrorMessage;
 import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
 
 @Slf4j
 @RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(assignableTypes = IOJAppealControllerV2.class)
+@RestControllerAdvice(assignableTypes = {IOJAppealControllerV2.class, 
+    PassportAssessmentControllerV2.class, PassportAssessmentEvidenceControllerV2.class})
 public class ProblemDetailExceptionHandler {
 
     private final ObjectProvider<TraceIdHandler> traceIdHandlerProvider;
@@ -97,6 +100,13 @@ public class ProblemDetailExceptionHandler {
                         ex.getExceptionMessages().stream().map(ErrorMessage::message).toList()));
         return buildResponse(HttpStatus.BAD_REQUEST, ProblemDetailError.VALIDATION_FAILURE,
                 ex.getExceptionMessages());
+    }
+
+    @ExceptionHandler(RecordEmptyException.class)
+    public ResponseEntity<ProblemDetail> handleRecordEmpty(RecordEmptyException ex) {
+        log.warn("Required record is empty. TraceId={} Detail={}", getTraceId(), ex.getMessage());
+        return buildResponse(HttpStatus.NOT_FOUND, ProblemDetailError.OBJECT_NOT_FOUND, 
+            ex.getMessage(), List.of());
     }
 
     @ExceptionHandler(Exception.class)

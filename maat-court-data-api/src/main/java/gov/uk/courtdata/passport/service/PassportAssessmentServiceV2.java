@@ -4,9 +4,8 @@ import gov.uk.courtdata.applicant.service.ApplicantService;
 import gov.uk.courtdata.assessment.service.AssessmentReplacementService;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
-import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.passport.mapper.PassportAssessmentMapper;
-import gov.uk.courtdata.reporder.service.RepOrderService;
+import gov.uk.courtdata.passport.validator.CreatePassportAssessmentV2Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,9 +15,6 @@ import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAsses
 import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
 import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
 import uk.gov.justice.laa.crime.common.model.passported.PassportedAssessment;
-import uk.gov.justice.laa.crime.error.ErrorMessage;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -27,12 +23,11 @@ public class PassportAssessmentServiceV2 {
 
     private final PassportAssessmentPersistenceService passportAssessmentPersistenceService;
     private final PassportAssessmentMapper passportAssessmentMapper;
+    private final CreatePassportAssessmentV2Validator validator;
 
-    private final RepOrderService repOrderService;
     private final AssessmentReplacementService assessmentReplacementService;
     private final ApplicantService applicantService;
 
-    
     @Transactional(readOnly = true)
     public ApiGetPassportedAssessmentResponse find(int passportAssessmentId) {
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentPersistenceService.find(passportAssessmentId);
@@ -42,7 +37,7 @@ public class PassportAssessmentServiceV2 {
 
     @Transactional
     public ApiCreatePassportedAssessmentResponse create(ApiCreatePassportedAssessmentRequest request) {
-        verifyRepOrderPresent(request);
+        validator.validateCreateRequest(request);
         PassportAssessmentEntity entity = passportAssessmentMapper.toPassportAssessmentEntity(request);
         populatePartnerDetails(request, entity);
 
@@ -74,16 +69,6 @@ public class PassportAssessmentServiceV2 {
             entity.setPartnerSurname(partner.getLastName());
             entity.setPartnerOtherNames(partner.getOtherNames());
             entity.setPartnerNiNumber(partner.getNiNumber());
-        }
-    }
-
-    private void verifyRepOrderPresent(ApiCreatePassportedAssessmentRequest request){
-        Integer repOrderId = request.getPassportedAssessmentMetadata().getLegacyApplicationId();
-        boolean repOrderExists = repOrderService.exists(repOrderId);
-
-        if(!repOrderExists){
-            log.error("RepOrderId {} specified on Passported Assessment Create Request does not exist", repOrderId);
-            throw new CrimeValidationException(List.of(new ErrorMessage("legacyApplicationId","RepOrder does not exist")));
         }
     }
 }

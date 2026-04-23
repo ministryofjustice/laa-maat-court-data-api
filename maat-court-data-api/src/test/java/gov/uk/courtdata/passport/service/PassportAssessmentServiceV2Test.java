@@ -5,7 +5,6 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_PASSPORT_ASSE
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -17,9 +16,8 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
-import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.passport.mapper.PassportAssessmentMapper;
-import gov.uk.courtdata.reporder.service.RepOrderService;
+import gov.uk.courtdata.passport.validator.CreatePassportAssessmentV2Validator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,7 +48,7 @@ class PassportAssessmentServiceV2Test {
     private ApplicantService applicantService;
 
     @Mock
-    private RepOrderService repOrderService;
+    private CreatePassportAssessmentV2Validator  createPassportAssessmentV2Validator;
 
     @Captor
     ArgumentCaptor<PassportAssessmentEntity> passportCaptor;
@@ -69,21 +67,12 @@ class PassportAssessmentServiceV2Test {
     }
 
     @Test
-    void givenRequestWithNoRepOrderId_whenCreateIsInvoked_thenShouldError(){
-        ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(null, APPLICANT_ID, false, true );
-
-        when(repOrderService.exists(null)).thenReturn(false);
-        assertThrows(CrimeValidationException.class,()->passportAssessmentService.create(request));
-    }
-
-    @Test
     void givenRequest_whenCreateIsInvoked_thenShouldSucceed(){
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, APPLICANT_ID, false, true );
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         var partner = TestEntityDataBuilder.getApplicant(APPLICANT_ID);
         var response = TestModelDataBuilder.buildValidCreatePassportedAssessmentResponse();
 
-        when(repOrderService.exists(REP_ID)).thenReturn(true);
         when(passportAssessmentMapper.toPassportAssessmentEntity(request)).thenReturn(entity);
         when(passportAssessmentPersistenceService.save(entity)).thenReturn(entity);
         when(applicantService.find(APPLICANT_ID)).thenReturn(partner);
@@ -91,7 +80,7 @@ class PassportAssessmentServiceV2Test {
 
         passportAssessmentService.create(request);
 
-        verify(repOrderService).exists(REP_ID);
+        verify(createPassportAssessmentV2Validator).validateCreateRequest(request);
         verify(passportAssessmentMapper).toPassportAssessmentEntity(request);
         verify(passportAssessmentPersistenceService).save(entity);
         verify(assessmentReplacementService).replacePreviousAssessments(entity);
@@ -141,7 +130,6 @@ class PassportAssessmentServiceV2Test {
 
         var response = TestModelDataBuilder.buildValidCreatePassportedAssessmentResponse();
 
-        when(repOrderService.exists(REP_ID)).thenReturn(true);
         when(passportAssessmentMapper.toPassportAssessmentEntity(request)).thenReturn(entity);
         when(passportAssessmentPersistenceService.save(passportCaptor.capture())).thenReturn(entity);
         when(passportAssessmentMapper.toApiCreatePassportedAssessmentResponse(any())).thenReturn(response);

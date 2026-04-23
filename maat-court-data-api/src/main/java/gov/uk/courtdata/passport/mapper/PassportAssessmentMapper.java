@@ -49,11 +49,15 @@ public interface PassportAssessmentMapper {
      */
     @Mapping(target = "pastStatus", constant = "COMPLETE")
     @Mapping(target = "dateCompleted", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "assessmentDate", source = "passportedAssessment.assessmentDate")
     @Mapping(target = "nworCode", source = "passportedAssessment.assessmentReason")
+    @Mapping(target = "result", source = "passportedAssessment.assessmentDecision.code")
     @Mapping(target = "rtCode", source = "passportedAssessment.reviewType")
     @Mapping(target = "pcobConfirmation", source = "passportedAssessment.decisionReason.confirmation")
     @Mapping(target = "partnerBenefitClaimed", source = "passportedAssessment.declaredBenefit",
     qualifiedByName = "mapPartnerBenefitClaimed")
+    @Mapping(target = "lastSignOnDate", source = "passportedAssessment.declaredBenefit",
+            qualifiedByName = "mapLastSignOnDate")
     @Mapping(target = "passportNote", source = "passportedAssessment.notes")
     @Mapping(target = "usn", source = "passportedAssessmentMetadata.usn")
     @Mapping(target = "cmuId", source = "passportedAssessmentMetadata.caseManagementUnitId")

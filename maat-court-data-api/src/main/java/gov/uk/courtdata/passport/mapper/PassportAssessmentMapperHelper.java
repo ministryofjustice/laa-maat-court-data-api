@@ -5,6 +5,8 @@ import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.applicant.mapper.RepOrderApplicantLinksMapper;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -105,6 +107,15 @@ public class PassportAssessmentMapperHelper {
         declaredBenefit.setLegacyPartnerId(mapPartnerLegacyId(passportAssessmentEntity));
 
         return declaredBenefit;
+    }
+
+    @Named("mapLastSignOnDate")
+    public LocalDateTime mapLastSignOnDate(DeclaredBenefit declaredBenefit) {
+        if(declaredBenefit != null
+                && BenefitType.JSA.equals(declaredBenefit.getBenefitType())){
+            return declaredBenefit.getLastSignOnDate();
+        }
+        return null;
     }
 
     BenefitType mapBenefitType(PassportAssessmentEntity passportAssessmentEntity) {

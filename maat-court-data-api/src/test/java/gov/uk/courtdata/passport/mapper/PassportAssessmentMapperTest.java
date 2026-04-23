@@ -469,9 +469,35 @@ class PassportAssessmentMapperTest {
         }
     }
 
+    @Test
+    void givenJSA_whenMapperIsCalled_thenLastSignOnMapped(){
+        var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(false);
+        var signOnDateTime = LocalDateTime.now();
+        request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
+        request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(signOnDateTime);
+
+        var result = passportAssessmentMapper.toPassportAssessmentEntity(request);
+
+        assertThat(result).hasFieldOrPropertyWithValue("lastSignOnDate", signOnDateTime);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = BenefitType.class, mode = EnumSource.Mode.EXCLUDE, names = "JSA")
+    void givenNonJSA_whenMapperIsCalled_thenLastSignOnNotMapped(BenefitType benefitType){
+        var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(false);
+        var signOnDateTime = LocalDateTime.now();
+        request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(benefitType);
+        request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(signOnDateTime);
+
+        var result = passportAssessmentMapper.toPassportAssessmentEntity(request);
+
+        assertThat(result).hasFieldOrPropertyWithValue("lastSignOnDate", null);
+    }
+
     private void validatePassportedAssessmentV2UnconditionalMappings(ApiCreatePassportedAssessmentRequest request, PassportAssessmentEntity entity){
         assertThat(entity.getPastStatus()).isEqualTo("COMPLETE");
         assertThat(entity.getDateCompleted()).isNotNull().isCloseTo(LocalDateTime.now(), within(1, ChronoUnit.MINUTES));
+        assertThat(entity.getAssessmentDate()).isNotNull().isCloseTo(LocalDateTime.now(), within(1, ChronoUnit.MINUTES));
         assertThat(entity.getNworCode()).isEqualTo(request.getPassportedAssessment().getAssessmentReason().getCode());
         assertThat(entity.getRtCode()).isEqualTo(request.getPassportedAssessment().getReviewType().getCode());
         assertThat(entity.getPcobConfirmation()).isEqualTo(request.getPassportedAssessment().getDecisionReason().getConfirmation());
@@ -479,6 +505,7 @@ class PassportAssessmentMapperTest {
         assertThat(entity.getPassportNote()).isEqualTo(request.getPassportedAssessment().getNotes());
         assertThat(entity.getUsn()).isEqualTo(request.getPassportedAssessmentMetadata().getUsn());
         assertThat(entity.getCmuId()).isEqualTo(request.getPassportedAssessmentMetadata().getCaseManagementUnitId());
+        assertThat(entity.getResult()).isEqualTo(request.getPassportedAssessment().getAssessmentDecision().getCode());
         // TODO: LCAM-2074 - Under 18 court asserts.
 //        assertThat(entity.getUnder18HeardInMagsCourt()).isEqualTo(request.getPassportedAssessment().getDecisionReason().getConfirmation());
 //        assertThat(entity.getUnder18HeardInYouthCourt()).isEqualTo(request.getPassportedAssessment().getDecisionReason().getConfirmation());

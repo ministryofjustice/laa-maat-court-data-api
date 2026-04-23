@@ -106,7 +106,7 @@ public class ProblemDetailExceptionHandler {
     public ResponseEntity<ProblemDetail> handleRecordEmpty(RecordEmptyException ex) {
         log.warn("Required record is empty. TraceId={} Detail={}", getTraceId(), ex.getMessage());
         return buildResponse(HttpStatus.NOT_FOUND, ProblemDetailError.OBJECT_NOT_FOUND, 
-            ex.getMessage(), null);
+            ex.getMessage(), List.of());
     }
 
     @ExceptionHandler(Exception.class)

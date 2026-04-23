@@ -8,14 +8,9 @@ import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.stream.Stream;
 
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.TEST_ID;
@@ -48,18 +43,38 @@ class AssessmentReplacementServiceTest {
         verify(passportAssessmentRepository).replaceAllByRepId(REP_ID);
     }
 
-    @ParameterizedTest
-    @MethodSource(value = "idPopulationFailureTestData")
-    void givenFinancialAssessmentMissingIds_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced(Integer assessmentId, boolean hasRepOrderEntity, Integer repId) {
+    @Test
+    void givenFinancialAssessmentMissingRepOrderId_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
         FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
-        financialAssessment.setId(assessmentId);
-        if(!hasRepOrderEntity){
-            financialAssessment.setRepOrder(null);
-        } else {
-            financialAssessment.getRepOrder().setId(repId);
-        }
+        financialAssessment.setId(TEST_ID);
+        financialAssessment.getRepOrder().setId(null);
         assessmentReplacementService.replacePreviousAssessments(financialAssessment);
+        verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
+    }
 
+    @Test
+    void givenFinancialAssessmentMissingRepOrder_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
+        FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
+        financialAssessment.setId(TEST_ID);
+        financialAssessment.setRepOrder(null);
+        assessmentReplacementService.replacePreviousAssessments(financialAssessment);
+        verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
+    }
+
+    @Test
+    void givenFinancialAssessmentMissingAssessmentId_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
+        FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
+        financialAssessment.setId(null);
+        assessmentReplacementService.replacePreviousAssessments(financialAssessment);
+        verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
+    }
+
+    @Test
+    void givenFinancialAssessmentMissingAssessmentIdAndMissingRepOrder_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
+        FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
+        financialAssessment.setId(null);
+        financialAssessment.setRepOrder(null);
+        assessmentReplacementService.replacePreviousAssessments(financialAssessment);
         verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
     }
 
@@ -76,37 +91,39 @@ class AssessmentReplacementServiceTest {
         verify(passportAssessmentRepository).replaceAllByRepIdExcludingPassportedAssessment(REP_ID, TEST_ID);
     }
 
-    @ParameterizedTest
-    @MethodSource(value = "idPopulationFailureTestData")
-    void givenPassportedAssessmentMissingIds_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced(Integer assessmentId, boolean hasRepOrderEntity, Integer repId) {
+    @Test
+    void givenPassportedAssessmentMissingRepOrderId_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
         PassportAssessmentEntity passportedAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
-        passportedAssessment.setId(assessmentId);
-        if(!hasRepOrderEntity){
-            passportedAssessment.setRepOrder(null);
-        } else {
-            passportedAssessment.getRepOrder().setId(repId);
-        }
+        passportedAssessment.setId(TEST_ID);
+        passportedAssessment.getRepOrder().setId(null);
         assessmentReplacementService.replacePreviousAssessments(passportedAssessment);
-
         verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
     }
 
-    /**
-     * Basic matrix representing the following values:
-     * <ul>
-     * <li>{@code assessmentId} - {@code Integer} - The value to set the AssessmentId to</li>
-     * <li>{@code hasRepOrderEntity} - {@code Boolean} - determines if the RepOrderEntity should be present on the assessment.</li>
-     * <li>{@code repOrderId} - {@code Integer} - The value to set the RepOrderId to</li>
-     * </ul>
-     * Covers the different variations of the three being populated. With the exception of if {@code hasRepOrderEntity = false}, {@code repOrderId} will be ignored.
-     */
-    private static Stream<Arguments> idPopulationFailureTestData() {
-        return Stream.of(
-                Arguments.of(TEST_ID, true, null ),
-                Arguments.of(TEST_ID, false, null ),
-                Arguments.of(null, true, REP_ID ),
-                Arguments.of(null, true, null ),
-                Arguments.of(null, false, null)
-        );
+    @Test
+    void givenPassportedAssessmentMissingRepOrder_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
+        PassportAssessmentEntity passportedAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
+        passportedAssessment.setId(TEST_ID);
+        passportedAssessment.setRepOrder(null);
+        assessmentReplacementService.replacePreviousAssessments(passportedAssessment);
+        verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
+    }
+
+    @Test
+    void givenPassportedAssessmentMissingAssessmentId_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
+        PassportAssessmentEntity passportedAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
+        passportedAssessment.setId(null);
+        assessmentReplacementService.replacePreviousAssessments(passportedAssessment);
+        verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
+    }
+
+    @Test
+    void givenPassportedAssessmentMissingAssessmentIdAndMissingRepOrder_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
+        PassportAssessmentEntity passportedAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
+        passportedAssessment.setId(null);
+        passportedAssessment.setRepOrder(null);
+        assessmentReplacementService.replacePreviousAssessments(passportedAssessment);
+        verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
     }
 }
+

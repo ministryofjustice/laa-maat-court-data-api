@@ -78,7 +78,7 @@ class PassportAssessmentServiceV2Test {
     }
 
     @Test
-    void givenNoRepOrderId_whenCreateisInvoked_thenShouldError(){
+    void givenNoRepOrderId_whenCreateIsInvoked_thenShouldError(){
         ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(null, APPLICANT_ID, false, true );
 
         when(repOrderService.exists(null)).thenReturn(false);
@@ -103,7 +103,7 @@ class PassportAssessmentServiceV2Test {
         verify(repOrderService).exists(REP_ID);
         verify(passportAssessmentMapper).toPassportAssessmentEntity(request);
         verify(passportAssessmentPersistenceService).save(entity);
-        verify(assessmentReplacementService).replacePreviousAssessments(any(PassportAssessmentEntity.class));
+        verify(assessmentReplacementService).replacePreviousAssessments(entity);
         verify(applicantService).find(APPLICANT_ID);
         verify(passportAssessmentMapper).toApiCreatePassportedAssessmentResponse(entity);
 
@@ -117,7 +117,7 @@ class PassportAssessmentServiceV2Test {
      * Will populate if isUnder18=false, declaredBenefit=true and has a partner id.
      * any, false, APPLICANT_ID is invalid, as partnerId exists on the declaredBenefit.
      */
-    private static Stream<Arguments> validNoPartnerPopulationConditions() {
+    private static Stream<Arguments> partnerPopulationConditionsThatShouldNotMap() {
         return Stream.of(
                 Arguments.of(true, true, APPLICANT_ID ),
                 Arguments.of(true, true, null ),
@@ -127,7 +127,7 @@ class PassportAssessmentServiceV2Test {
         );
     }
 
-    @MethodSource(value= "validNoPartnerPopulationConditions")
+    @MethodSource(value= "partnerPopulationConditionsThatShouldNotMap")
     @ParameterizedTest
     void givenConditionsShouldNotPopulatePartner_whenPopulatePartnerIsInvoked_thenPartnerIsNotMapped(boolean isUnder18, boolean hasDeclaredBenefit, Integer partnerId){
         PassportAssessmentEntity entity = new PassportAssessmentEntity();

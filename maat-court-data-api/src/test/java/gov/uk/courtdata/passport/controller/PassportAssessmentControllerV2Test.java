@@ -2,7 +2,10 @@ package gov.uk.courtdata.passport.controller;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_PASSPORT_ASSESSMENT_ID;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -70,17 +73,17 @@ class PassportAssessmentControllerV2Test {
     void givenAPartialRequest_whenCreateIsCalled_thenReturnValidationFailureResponse() throws Exception {
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(false);
         request.getPassportedAssessment().setAssessmentReason(null);
-        var expectedEntity = TestModelDataBuilder.buildValidCreatePassportedAssessmentResponse();
-        when(passportAssessmentService.create(any())).thenReturn(expectedEntity);
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+                .andExpect(jsonPath("$.detail").value("Validation failure"));
+        verify(passportAssessmentService, never()).create(any());
     }
 
     @Test
-    void givenFullRequestAndMaatFailure_whenCreateIsCalled_thenReturnFailureResponse() throws Exception {
+    void givenMaatDatabaseException_whenCreateIsCalled_thenReturnCorrectErrorResponse() throws Exception {
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(false);
         when(passportAssessmentService.create(any())).thenThrow(new DataIntegrityViolationException("Test Error"));
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
@@ -89,5 +92,6 @@ class PassportAssessmentControllerV2Test {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect(jsonPath("$.detail").value("Request violates a data constraint"));
+        verify(passportAssessmentService, times(1)).create(any());
     }
 }

@@ -375,14 +375,10 @@ class PassportAssessmentMapperTest {
     }
 
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    void givenCreateRequestWithDeclaredBenefit_whenMapToEntityCalled_thenPartnerDetailsAreMappingCorrectly(boolean populatePartner){
+    @Test
+    void givenCreateRequestWithDeclaredBenefit_whenMapped_thenBenefitFieldsAreSetCorrectly(){
         var repOrder = TestEntityDataBuilder.getPopulatedRepOrder(REP_ID);
-        Integer partnerId = null;
-        if(populatePartner){
-            partnerId = TestEntityDataBuilder.APPLICANT_ID;
-        }
+        Integer partnerId = TestEntityDataBuilder.APPLICANT_ID;
 
         ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repOrder.getId(), partnerId, false, true);
 
@@ -417,7 +413,7 @@ class PassportAssessmentMapperTest {
 
     @MethodSource(value = "benefitMapperTestData")
     @ParameterizedTest
-    void givenSpecificBenefitRecipient_whenMapPartnerBenefitClaimedCalled_thenPartnerBenefitIsMappingCorrectly(BenefitRecipient benefitRecipient, String expectedOutput){
+    void givenSpecificBenefitRecipient_whenMapPartnerBenefitClaimedCalled_thenPartnerBenefitIsMappedCorrectly(BenefitRecipient benefitRecipient, String expectedOutput){
         DeclaredBenefit declaredBenefit = TestModelDataBuilder.buildDeclaredBenefit(benefitRecipient);
 
         assertThat(passportAssessmentMapperHelper.mapPartnerBenefitClaimed(declaredBenefit)).isEqualTo(expectedOutput);
@@ -425,7 +421,7 @@ class PassportAssessmentMapperTest {
 
     @MethodSource(value = "benefitMapperTestData")
     @ParameterizedTest
-    void givenCreateRequestWithSpecificBenefitRecipient_whenMapToEntityCalled_thenPartnerBenefitIsMappingCorrectly(BenefitRecipient benefitRecipient, String expectedOutput){
+    void givenCreateRequestWithSpecificBenefitRecipient_whenMapToEntityCalled_thenPartnerBenefitIsMappedCorrectly(BenefitRecipient benefitRecipient, String expectedOutput){
         var repOrder = TestEntityDataBuilder.getPopulatedRepOrder(REP_ID);
         Integer partnerId = TestEntityDataBuilder.APPLICANT_ID;
 

@@ -107,17 +107,10 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenAValidRepIdAndNoSentenceOrderDate_whenCountByIdIsInvoked_thenReturnFalse() {
-        when(repOrderImpl.countById(any()))
-                .thenReturn(0L);
+    void givenAValidRepIdAndNoSentenceOrderDate_whenExistsIsInvoked_thenReturnFalse() {
+        when(repOrderImpl.exists(any()))
+                .thenReturn(false);
         assertThat(repOrderService.exists(TestModelDataBuilder.REP_ID)).isFalse();
-    }
-
-    @Test
-    void givenValidRepIdAndHasSentenceOrderDate_whenCountByIdIsInvoked_thenReturnTrue() {
-        when(repOrderImpl.countWithSentenceOrderDate(any()))
-                .thenReturn(1L);
-        assertThat(repOrderService.existsWithSentenceOrderDate(TestModelDataBuilder.REP_ID)).isTrue();
     }
 
     @Test
@@ -178,7 +171,7 @@ class RepOrderServiceTest {
     @Test
     void givenAInvalidRequest_whenSearchMaatApplicationIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
         var request = TestModelDataBuilder.getMaatSearchRequest();
-        when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(Collections.EMPTY_SET);
+        when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(Collections.emptySet());
         RequestedObjectNotFoundException expectedException = assertThrows(RequestedObjectNotFoundException.class,
                 () -> repOrderService.searchMaatApplication(request));
         assertEquals("Representation order not found", expectedException.getMessage());

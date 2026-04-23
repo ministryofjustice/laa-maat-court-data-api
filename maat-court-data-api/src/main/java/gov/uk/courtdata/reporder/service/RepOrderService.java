@@ -96,19 +96,13 @@ public class RepOrderService {
         repOrderRepository.save(currentRepOrder);
     }
 
-    @Transactional
-    public boolean existsWithSentenceOrderDate(Integer repId) {
-        log.info("Retrieve rep Order Count for repId: {} With Sentence Order Date", repId);
-        return repOrderImpl.countWithSentenceOrderDate(repId) > 0;
-    }
-
     @Transactional(readOnly = true)
     public boolean exists(Integer repId){
         if(repId == null){
             return false;
         }
         log.info("Retrieve rep Order count for repId: {}", repId);
-        return repOrderImpl.countById(repId) > 0;
+        return repOrderImpl.exists(repId);
     }
 
     @Transactional

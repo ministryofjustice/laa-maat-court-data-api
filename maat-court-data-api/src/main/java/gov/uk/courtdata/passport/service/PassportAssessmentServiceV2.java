@@ -82,8 +82,8 @@ public class PassportAssessmentServiceV2 {
         boolean repOrderExists = repOrderService.exists(repOrderId);
 
         if(!repOrderExists){
-            log.error("RepOrder does not exist");
-            throw new CrimeValidationException(List.of(new ErrorMessage("request","RepOrder does not exist")));
+            log.error("RepOrderId {} specified on Passported Assessment Create Request does not exist", repOrderId);
+            throw new CrimeValidationException(List.of(new ErrorMessage("legacyApplicationId","RepOrder does not exist")));
         }
     }
 }

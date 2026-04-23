@@ -121,7 +121,7 @@ class ConcorContributionsServiceTest {
         assertThat(responseList)
                 .isNotNull()
                 .isNotEmpty();
-        assertThat(responseList.get(0).getConcorContributionId()).isEqualTo(344);
+        assertThat(responseList.getFirst().getConcorContributionId()).isEqualTo(344);
 
     }
 
@@ -151,7 +151,7 @@ class ConcorContributionsServiceTest {
         assertThat(responseList)
                 .isNotNull()
                 .isNotEmpty();
-        assertThat(responseList.get(0).getConcorContributionId()).isEqualTo(343);
+        assertThat(responseList.getFirst().getConcorContributionId()).isEqualTo(343);
     }
 
     @Test
@@ -218,7 +218,7 @@ class ConcorContributionsServiceTest {
         assertThat(contributionEntityList)
                 .isNotNull()
                 .hasSize(1);
-        assertThat(contributionEntityList.get(0).getStatus().name()).isEqualTo("SENT");
+        assertThat(contributionEntityList.getFirst().getStatus().name()).isEqualTo("SENT");
     }
 
     @Test
@@ -305,11 +305,11 @@ class ConcorContributionsServiceTest {
     void givenRequestWithInvalidID_whenLogContributionProcessIsCalled_thenRequestedObjectNotFoundExceptionIsThrownAndNoDBchangesAreMade() {
         int id = 123;
         String errorText = "Error Text";
-
+        var request = TestModelDataBuilder.getLogContributionProcessedRequest(id, errorText);
         when(concorRepository.findById(id)).thenReturn(Optional.empty());
         // do
         assertThrows(RequestedObjectNotFoundException.class, () ->
-            concorService.logContributionProcessed(TestModelDataBuilder.getLogContributionProcessedRequest(id, errorText)));
+            concorService.logContributionProcessed(request));
         // verify
         verify(concorRepository).findById(id);
         verify(contributionFileRepository, never()).findById(any());
@@ -323,12 +323,13 @@ class ConcorContributionsServiceTest {
         int repId = 456;
         int fileId = 10000;
 
+        var request = TestModelDataBuilder.getLogContributionProcessedRequest(id, "");
         ConcorContributionsEntity concorEntity = TestEntityDataBuilder.getConcorContributionsEntity(repId,ACTIVE,fileId,"");
         when(concorRepository.findById(id)).thenReturn(Optional.of(concorEntity));
         when(debtCollectionService.updateContributionFileReceivedCount(fileId)).thenReturn(false);
         // do
         assertThrows(NoSuchElementException.class, () ->
-                concorService.logContributionProcessed(TestModelDataBuilder.getLogContributionProcessedRequest(id, "")));
+                concorService.logContributionProcessed(request));
         // verify
         verify(concorRepository).findById(id);
         verify(debtCollectionService).updateContributionFileReceivedCount(any());

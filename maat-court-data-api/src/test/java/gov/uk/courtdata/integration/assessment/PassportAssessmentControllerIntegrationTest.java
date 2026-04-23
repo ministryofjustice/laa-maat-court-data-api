@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.APPLICANT_AGE;
 import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.PASS;
+import static uk.gov.justice.laa.crime.error.ProblemDetailError.VALIDATION_FAILURE;
 
 import com.jayway.jsonpath.JsonPath;
 import gov.uk.MAATCourtDataApplication;
@@ -33,8 +34,10 @@ import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
@@ -50,9 +53,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import uk.gov.justice.laa.crime.error.ErrorExtension;
+import uk.gov.justice.laa.crime.error.ErrorMessage;
+import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
 
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
@@ -371,6 +378,35 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         // validate mapper is being called.
         verify(passportMapperV2).toPassportAssessmentEntity(any());
         verify(passportMapperV2).toApiCreatePassportedAssessmentResponse(any());
+    }
+
+    @Test
+    void givenRepOrderInvalid_whenCreateAssessmentV2IsInvoked_theValidationResponseIsReturned() throws Exception {
+        Integer repId = 0;
+
+        var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, true, true);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andReturn();
+
+        ProblemDetail problemDetail = ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
+        assertThat(problemDetail)
+                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
+                .hasFieldOrPropertyWithValue("status", 400)
+                .hasFieldOrPropertyWithValue("title", "Bad Request")
+                .hasFieldOrPropertyWithValue("detail", VALIDATION_FAILURE.defaultDetail())
+                .hasFieldOrPropertyWithValue("instance", URI.create(BASE_V2_URL));
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        assertThat(extension).isPresent().get()
+                .hasFieldOrPropertyWithValue("code", VALIDATION_FAILURE.code());
+
+        var expectedErrorMessage = new ErrorMessage("legacyApplicationId","RepOrder does not exist");
+        List<ErrorMessage> errors = extension.get().errors();
+        assertThat(errors).containsOnly(expectedErrorMessage);
     }
 
     @Test

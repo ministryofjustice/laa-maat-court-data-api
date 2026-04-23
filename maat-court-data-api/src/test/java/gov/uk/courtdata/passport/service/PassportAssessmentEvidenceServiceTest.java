@@ -86,6 +86,38 @@ class PassportAssessmentEvidenceServiceTest {
     }
 
     @Test
+    void givenValidPassportAssessmentIdWithNoPartnerEvidence_whenFindIsInvoked_thenApplicantEvidenceIsReturned() {
+        buildEntities();
+        passportAssessmentEntity.getPassportAssessmentEvidences().removeLast();
+
+        ApiGetPassportEvidenceResponse apiGetPassportEvidenceResponse = TestModelDataBuilder.getApiGetPassportedEvidenceResponse();
+        ApiIncomeEvidence applicantApiGetIncomeEvidenceResponse = new ApiIncomeEvidence()
+            .withId(1)
+            .withDescription("Applicant evidence")
+            .withEvidenceType(IncomeEvidenceType.NINO)
+            .withDateReceived(LocalDate.now().minusDays(2))
+            .withMandatory(true);
+
+        when(passportAssessmentPersistenceService.find(LEGACY_PASSPORT_ASSESSMENT_ID)).thenReturn(passportAssessmentEntity);
+        when(partnerResolver.getPartnerLegacyId(passportAssessmentEntity.getRepOrder().getId())).thenReturn(PARTNER_ID);
+        when(passportAssessmentEvidenceMapper.toApiGetPassportEvidenceResponse(passportAssessmentEntity)).thenReturn(apiGetPassportEvidenceResponse);
+        when(passportAssessmentEvidenceMapper.toApiIncomeEvidence(applicantEvidenceEntity)).thenReturn(applicantApiGetIncomeEvidenceResponse);
+
+        ApiGetPassportEvidenceResponse response = passportAssessmentEvidenceService.find(LEGACY_PASSPORT_ASSESSMENT_ID);
+
+        assertThat(apiGetPassportEvidenceResponse.getPassportEvidenceMetadata())
+            .usingRecursiveComparison()
+            .isEqualTo(response.getPassportEvidenceMetadata());
+
+        assertThat(apiGetPassportEvidenceResponse.getApplicantEvidenceItems())
+            .usingRecursiveComparison()
+            .isEqualTo(response.getApplicantEvidenceItems());
+
+        assertThat(apiGetPassportEvidenceResponse.getPartnerEvidenceItems())
+            .isEmpty();
+    }
+
+    @Test
     void givenNoApplicantIdOnEvidence_whenFindIsInvoked_thenExceptionIsThrown() {
         buildEntities();
         applicantEvidenceEntity.getApplicant().setId(null);

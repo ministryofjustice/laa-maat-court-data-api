@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
+import uk.gov.justice.laa.crime.error.ProblemDetailError;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
@@ -53,6 +54,81 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
             .andExpect(jsonPath("$.partnerEvidenceItems[0].evidenceType").value(IncomeEvidenceType.getFrom(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getIncomeEvidence()).getName()))
             .andExpect(jsonPath("$.partnerEvidenceItems[0].mandatory").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getMandatory().equals("Y")))
             .andExpect(jsonPath("$.partnerEvidenceItems[0].description").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getOtherText()));
+    }
+
+    @Test
+    void givenNonExistentPassportAssessmentId_whenFindIsInvoked_thenNotFoundProblemDetailIsReturned()
+        throws Exception {
+
+        int nonExistentPassportAssessmentId = Integer.MAX_VALUE;
+
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL, nonExistentPassportAssessmentId))
+            .andExpect(status().isNotFound())
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(jsonPath("$.type").value("about:blank"))
+            .andExpect(jsonPath("$.title").value("Not Found"))
+            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.detail")
+                .value("No Passported Assessment found for ID: " + nonExistentPassportAssessmentId))
+            .andExpect(
+                jsonPath("$.instance").value(
+                    "/api/internal/v2/assessment/passport-assessments/" + 
+                        nonExistentPassportAssessmentId + "/evidence"))
+            .andExpect(
+                jsonPath("$.errors.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
+            .andExpect(jsonPath("$.errors.errors").isArray())
+            .andExpect(jsonPath("$.errors.errors").isEmpty());
+    }
+    
+    @Test
+    void givenNoApplicantIdOnEvidence_whenFindIsInvoked_thenExceptionIsThrown() throws Exception {
+        buildEntities();
+        applicantEvidenceEntity.setApplicant(null);
+        applicantEvidenceEntity.setPassportAssessment(passportAssessmentEntity);
+        passportAssessmentEntity.getPassportAssessmentEvidences().set(0, applicantEvidenceEntity);
+        passportAssessmentEntity = repos.passportAssessment.saveAndFlush(passportAssessmentEntity);
+        
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL, passportAssessmentEntity.getId()))
+            .andExpect(status().isNotFound())
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(jsonPath("$.type").value("about:blank"))
+            .andExpect(jsonPath("$.title").value("Not Found"))
+            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.detail")
+                .value("Passport assessment evidence is missing applicant reference"))
+            .andExpect(
+                jsonPath("$.instance").value(
+                    "/api/internal/v2/assessment/passport-assessments/" +
+                        passportAssessmentEntity.getId() + "/evidence"))
+            .andExpect(
+                jsonPath("$.errors.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
+            .andExpect(jsonPath("$.errors.errors").isArray())
+            .andExpect(jsonPath("$.errors.errors").isEmpty());
+    }
+
+    @Test
+    void givenNoPartnerEvidence_whenFindIsInvoked_thenApplicantPassportEvidenceIsReturned()
+        throws Exception {
+        buildEntities();
+        passportAssessmentEntity.getPassportAssessmentEvidences().removeLast();
+        passportAssessmentEntity = repos.passportAssessment.saveAndFlush(passportAssessmentEntity);
+        
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL, passportAssessmentEntity.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.passportEvidenceMetadata.evidenceDueDate").value(passportAssessmentEntity.getPassportEvidenceDueDate().toLocalDate().toString()))
+            .andExpect(jsonPath("$.passportEvidenceMetadata.evidenceReceivedDate").value(passportAssessmentEntity.getAllPassportEvidenceReceivedDate().toLocalDate().toString()))
+            .andExpect(jsonPath("$.passportEvidenceMetadata.upliftAppliedDate").value(passportAssessmentEntity.getPassportUpliftApplyDate().toLocalDate().toString()))
+            .andExpect(jsonPath("$.passportEvidenceMetadata.upliftRemovedDate").value(passportAssessmentEntity.getPassportUpliftRemoveDate().toLocalDate().toString()))
+            .andExpect(jsonPath("$.passportEvidenceMetadata.firstReminderDate").value(passportAssessmentEntity.getFirstPassportReminderDate().toLocalDate().toString()))
+            .andExpect(jsonPath("$.passportEvidenceMetadata.secondReminderDate").value(passportAssessmentEntity.getSecondPassportReminderDate().toLocalDate().toString()))
+            .andExpect(jsonPath("$.passportEvidenceMetadata.incomeEvidenceNotes").value(passportAssessmentEntity.getPassportEvidenceNotes()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].id").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getId()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].dateReceived").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getDateReceived().toLocalDate().toString()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].evidenceType").value(IncomeEvidenceType.getFrom(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getIncomeEvidence()).getName()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].mandatory").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getMandatory().equals("Y")))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].description").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getOtherText()))
+            .andExpect(jsonPath("$.partnerEvidenceItems").isEmpty());
     }
 
     private void buildEntities() {

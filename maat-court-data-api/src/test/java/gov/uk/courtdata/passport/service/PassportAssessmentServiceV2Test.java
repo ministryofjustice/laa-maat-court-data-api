@@ -25,6 +25,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -50,6 +52,9 @@ class PassportAssessmentServiceV2Test {
     @Mock
     private RepOrderService repOrderService;
 
+    @Captor
+    ArgumentCaptor<PassportAssessmentEntity> passportCaptor;
+
     @InjectMocks
     private PassportAssessmentServiceV2 passportAssessmentService;
 
@@ -64,21 +69,7 @@ class PassportAssessmentServiceV2Test {
     }
 
     @Test
-    void givenOver18AndPartner_whenPopulatePartnerIsInvoked_thenPartnerIsFoundAndMapped(){
-        PassportAssessmentEntity entity = new PassportAssessmentEntity();
-        Applicant partner = TestEntityDataBuilder.getApplicant(APPLICANT_ID);
-
-        when(applicantService.find(APPLICANT_ID)).thenReturn(partner);
-
-        ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, APPLICANT_ID, false, true );
-        passportAssessmentService.populatePartnerDetails(request, entity);
-
-        verify(applicantService).find(any());
-        validatePartnerDetails(partner, entity);
-    }
-
-    @Test
-    void givenNoRepOrderId_whenCreateIsInvoked_thenShouldError(){
+    void givenRequestWithNoRepOrderId_whenCreateIsInvoked_thenShouldError(){
         ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(null, APPLICANT_ID, false, true );
 
         when(repOrderService.exists(null)).thenReturn(false);
@@ -86,7 +77,7 @@ class PassportAssessmentServiceV2Test {
     }
 
     @Test
-    void givenRepOrderId_whenCreateIsInvoked_thenShouldSucceed(){
+    void givenRequest_whenCreateIsInvoked_thenShouldSucceed(){
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, APPLICANT_ID, false, true );
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         var partner = TestEntityDataBuilder.getApplicant(APPLICANT_ID);
@@ -108,7 +99,6 @@ class PassportAssessmentServiceV2Test {
         verify(passportAssessmentMapper).toApiCreatePassportedAssessmentResponse(entity);
 
         validatePartnerDetails(partner, entity);
-
     }
 
     /**
@@ -119,24 +109,46 @@ class PassportAssessmentServiceV2Test {
      */
     private static Stream<Arguments> partnerPopulationConditionsThatShouldNotMap() {
         return Stream.of(
-                Arguments.of(true, true, APPLICANT_ID ),
-                Arguments.of(true, true, null ),
-                Arguments.of(true, false, null ),
-                Arguments.of(false, true, null ),
-                Arguments.of(false, false, null )
+                Arguments.of(true, true, APPLICANT_ID ), // isUnder18 should fail.
+                Arguments.of(true, true, null ),         // isUnder18 should fail.
+                Arguments.of(true, false, null ),        // isUnder18 should fail.
+                Arguments.of(false, true, null ),        // no PartnerId.
+                Arguments.of(false, false, null )        // no declaredBenefit.
         );
     }
 
     @MethodSource(value= "partnerPopulationConditionsThatShouldNotMap")
     @ParameterizedTest
-    void givenConditionsShouldNotPopulatePartner_whenPopulatePartnerIsInvoked_thenPartnerIsNotMapped(boolean isUnder18, boolean hasDeclaredBenefit, Integer partnerId){
+    void givenConditionsShouldNotPopulatePartner_whenCreateIsInvoked_thenPartnerIsNotMapped(boolean isUnder18, boolean hasDeclaredBenefit, Integer partnerId){
+        ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, partnerId, isUnder18, hasDeclaredBenefit );
+        runCreateForPartnerValidation(request, null);
+        verify(applicantService, never()).find(any());
+    }
+
+    @Test
+    void givenPartnerId_whenCreateIsInvoked_thenPartnerIsMapped(){
+        ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, APPLICANT_ID, false, true );
+        var partner = TestEntityDataBuilder.getApplicant(APPLICANT_ID);
+        when(applicantService.find(APPLICANT_ID)).thenReturn(partner);
+
+        runCreateForPartnerValidation(request, partner);
+
+        verify(applicantService).find(any());
+    }
+
+    private void runCreateForPartnerValidation(ApiCreatePassportedAssessmentRequest request, Applicant expectedPartner){
         PassportAssessmentEntity entity = new PassportAssessmentEntity();
 
-        ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, partnerId, isUnder18, hasDeclaredBenefit );
-        passportAssessmentService.populatePartnerDetails(request, entity);
+        var response = TestModelDataBuilder.buildValidCreatePassportedAssessmentResponse();
 
-        verify(applicantService, never()).find(any());
-        validatePartnerDetails(null, entity);
+        when(repOrderService.exists(REP_ID)).thenReturn(true);
+        when(passportAssessmentMapper.toPassportAssessmentEntity(request)).thenReturn(entity);
+        when(passportAssessmentPersistenceService.save(passportCaptor.capture())).thenReturn(entity);
+        when(passportAssessmentMapper.toApiCreatePassportedAssessmentResponse(any())).thenReturn(response);
+
+        passportAssessmentService.create(request);
+
+        validatePartnerDetails(expectedPartner, passportCaptor.getValue());
     }
 
     private void validatePartnerDetails(Applicant expectedPartner, PassportAssessmentEntity entity){

@@ -62,7 +62,7 @@ public class PassportAssessmentServiceV2 {
      * @param request Create request sent that is being mapped and saved.
      * @param entity PassportAssessmentEntity that will have fields populated.
      */
-    protected void populatePartnerDetails(ApiCreatePassportedAssessmentRequest request, PassportAssessmentEntity entity){
+    private void populatePartnerDetails(ApiCreatePassportedAssessmentRequest request, PassportAssessmentEntity entity){
         PassportedAssessment assessment = request.getPassportedAssessment();
         DeclaredBenefit declaredBenefit = assessment.getDeclaredBenefit();
         if(Boolean.FALSE.equals(assessment.getDeclaredUnder18())
@@ -77,7 +77,7 @@ public class PassportAssessmentServiceV2 {
         }
     }
 
-    protected void verifyRepOrderPresent(ApiCreatePassportedAssessmentRequest request){
+    private void verifyRepOrderPresent(ApiCreatePassportedAssessmentRequest request){
         Integer repOrderId = request.getPassportedAssessmentMetadata().getLegacyApplicationId();
         boolean repOrderExists = repOrderService.exists(repOrderId);
 

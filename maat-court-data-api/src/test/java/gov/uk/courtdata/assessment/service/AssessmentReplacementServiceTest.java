@@ -19,8 +19,8 @@ import java.util.stream.Stream;
 
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.TEST_ID;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentReplacementServiceTest {
@@ -60,10 +60,7 @@ class AssessmentReplacementServiceTest {
         }
         assessmentReplacementService.replacePreviousAssessments(financialAssessment);
 
-        // All situation should resolve the same way.
-        verify(financialAssessmentRepository, times(0)).replaceAllByRepIdExcludingFinancialAssessment(REP_ID, TEST_ID);
-        verify(hardshipReviewRepository, times(0)).replaceAllByRepIdExcludingFinancialAssessment(REP_ID, TEST_ID);
-        verify(passportAssessmentRepository, times(0)).replaceAllByRepId(REP_ID);
+        verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
     }
 
 
@@ -91,10 +88,7 @@ class AssessmentReplacementServiceTest {
         }
         assessmentReplacementService.replacePreviousAssessments(passportedAssessment);
 
-        // All situation should resolve the same way.
-        verify(financialAssessmentRepository, times(0)).replaceAllByRepId(REP_ID);
-        verify(hardshipReviewRepository, times(0)).replaceAllByRepId(REP_ID);
-        verify(passportAssessmentRepository, times(0)).replaceAllByRepId(REP_ID);
+        verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
     }
 
     /**

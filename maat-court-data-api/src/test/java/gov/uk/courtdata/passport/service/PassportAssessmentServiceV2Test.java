@@ -7,7 +7,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -135,7 +135,7 @@ class PassportAssessmentServiceV2Test {
         ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, partnerId, isUnder18, hasDeclaredBenefit );
         passportAssessmentService.populatePartnerDetails(request, entity);
 
-        verify(applicantService, times(0)).find(any());
+        verify(applicantService, never()).find(any());
         validatePartnerDetails(null, entity);
     }
 

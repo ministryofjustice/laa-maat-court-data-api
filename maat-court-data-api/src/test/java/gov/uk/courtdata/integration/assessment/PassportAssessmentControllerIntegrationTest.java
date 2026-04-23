@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -401,8 +401,6 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         // add watchers to allow mapper verification. Can rely on mapper tests.
         when(passportMapperV2.toPassportAssessmentEntity(any())).thenCallRealMethod();
         when(passportMapperV2.toApiCreatePassportedAssessmentResponse(any())).thenCallRealMethod();
-        doThrow(new DataIntegrityViolationException("Test Exception")).when(hardshipReviewRepository).replaceAllByRepId(any());
-
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -443,7 +441,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
         // validate mapper is being called.
         verify(passportMapperV2).toPassportAssessmentEntity(any());
-        verify(passportMapperV2, times(0)).toApiCreatePassportedAssessmentResponse(any());
+        verify(passportMapperV2, never()).toApiCreatePassportedAssessmentResponse(any());
     }
 
     @Test

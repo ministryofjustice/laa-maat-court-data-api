@@ -97,6 +97,8 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         WqLinkRegisterEntity linkRegisterEntity = TestEntityDataBuilder.getWQLinkRegisterEntity(TestEntityDataBuilder.REP_ID);
         linkRegisterEntity.setMaatId(REP_ORDER_ID_NO_SENTENCE_ORDER_DATE);
         repos.wqLinkRegister.save(linkRegisterEntity);
+
+        repos.repOrderCPData.save(TestEntityDataBuilder.getRepOrderEntity(REP_ORDER_ID_NO_SENTENCE_ORDER_DATE));
     }
 
     private RepOrderDTO getUpdatedRepOrderDTO() {

@@ -217,6 +217,9 @@ public class RepOrderController {
   @PatchMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Partial Update of a Rep record")
     @StandardApiResponseCodes
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
   public ResponseEntity<RepOrderDTO> updateRepOrder(@PathVariable int repId,
       @RequestBody Map<String, Object> updatedFields) {
     LoggingData.MAAT_ID.putInMDC(repId);

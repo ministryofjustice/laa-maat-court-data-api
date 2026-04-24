@@ -19,7 +19,6 @@ public class MaatSearchRequest {
     private String firstName;
     @NotNull
     private String lastName;
-    @NotNull
     private LocalDate dob;
     private String niNumber;
     @NotNull

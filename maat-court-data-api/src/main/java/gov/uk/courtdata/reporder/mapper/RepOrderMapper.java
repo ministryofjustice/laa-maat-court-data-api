@@ -83,7 +83,7 @@ public interface RepOrderMapper {
                 .build();
     }
 
-    default MaatSearchResponse mapMaatSearchResponse(Integer maatId, List<WqLinkRegisterEntity> wqList) {
+    default MaatSearchResponse mapMaatSearchResponse(Integer maatId, List<WqLinkRegisterEntity> wqList, String caseUrn) {
         if (wqList == null || wqList.isEmpty()) {
             return MaatSearchResponse.builder()
                     .maatId(maatId)
@@ -98,12 +98,19 @@ public interface RepOrderMapper {
                 .isLinked(true)
                 .linkingDetail(LinkingDetail.builder()
                         .libraId(link.getLibraId())
-                        .caseUrn(link.getCaseUrn())
+                        .caseUrn(caseUrn)
                         .cjsAreaCode(link.getCjsAreaCode())
                         .cjsLocation(link.getCjsLocation())
                         .caseId(link.getCaseId())
                         .build())
                 .build();
+    }
+
+    default MaatSearchResponse mapMaatSearchResponse(Integer maatId, List<WqLinkRegisterEntity> wqList) {
+        String caseUrn = (wqList == null || wqList.isEmpty())
+            ? null
+            : wqList.get(0).getCaseUrn();
+        return mapMaatSearchResponse(maatId, wqList, caseUrn);
     }
 }
 

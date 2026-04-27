@@ -1,7 +1,6 @@
 package gov.uk.courtdata.reporder.mapper;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.model.reporder.MaatSearchResponse;
@@ -332,21 +331,21 @@ class RepOrderMapperTest {
 
     @Test
     void givenAValidRequestAndNullLinking_whenMapMaatSearchResponseIsInvoked_thenCorrectResponseShouldReturn() {
-        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, null);
+        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, null, null);
         assertEquals(TestEntityDataBuilder.REP_ID, response.getMaatId());
         assertFalse(response.isLinked());
     }
 
     @Test
     void givenAValidRequestAndEmptyLinking_whenMapMaatSearchResponseIsInvoked_thenCorrectResponseShouldReturn() {
-        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, Collections.emptyList());
+        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, Collections.emptyList(), null);
         assertEquals(TestEntityDataBuilder.REP_ID, response.getMaatId());
         assertFalse(response.isLinked());
     }
     @Test
     void givenAValidRequest_whenMapMaatSearchResponseIsInvoked_thenCorrectResponseShouldReturn() {
         List<WqLinkRegisterEntity> wqLinkRegisterEntities = List.of(TestEntityDataBuilder.getWQLinkRegisterEntity(1235));
-        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, wqLinkRegisterEntities);
+        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, wqLinkRegisterEntities, TestEntityDataBuilder.CASE_URN);
         assertEquals(TestEntityDataBuilder.REP_ID, response.getMaatId());
         assertTrue(response.isLinked());
         assertEquals(TestEntityDataBuilder.LIBRA_ID, response.getLinkingDetail().getLibraId());

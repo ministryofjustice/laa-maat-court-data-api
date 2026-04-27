@@ -105,12 +105,5 @@ public interface RepOrderMapper {
                         .build())
                 .build();
     }
-
-    default MaatSearchResponse mapMaatSearchResponse(Integer maatId, List<WqLinkRegisterEntity> wqList) {
-        String caseUrn = (wqList == null || wqList.isEmpty())
-            ? null
-            : wqList.get(0).getCaseUrn();
-        return mapMaatSearchResponse(maatId, wqList, caseUrn);
-    }
 }
 

@@ -16,14 +16,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 import uk.gov.justice.laa.crime.enums.CurrentStatus;
 import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
 import uk.gov.justice.laa.crime.enums.NewWorkReason;
+import uk.gov.justice.laa.crime.error.ErrorExtension;
+import uk.gov.justice.laa.crime.error.ErrorMessage;
 import uk.gov.justice.laa.crime.error.ProblemDetailError;
+import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
 
+import java.net.URI;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -78,20 +86,25 @@ class IojAppealControllerIntegrationTest extends MockMvcIntegrationTest {
 
         int nonExistentIojAppealId = Integer.MAX_VALUE;
 
-        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + nonExistentIojAppealId))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + nonExistentIojAppealId))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type").value("about:blank"))
-                .andExpect(jsonPath("$.title").value("Not Found"))
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.detail")
-                        .value("No IoJ Appeal found for ID: " + nonExistentIojAppealId))
-                .andExpect(
-                        jsonPath("$.instance").value(ENDPOINT_URL + "/" + nonExistentIojAppealId))
-                .andExpect(
-                        jsonPath("$.errors.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
-                .andExpect(jsonPath("$.errors.errors").isArray())
-                .andExpect(jsonPath("$.errors.errors").isEmpty());
+                .andReturn();
+
+
+
+        ProblemDetail problemDetail = ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
+        softly.assertThat(problemDetail)
+                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
+                .hasFieldOrPropertyWithValue("title", "Not Found")
+                .hasFieldOrPropertyWithValue("detail", "No IoJ Appeal found for ID: " + nonExistentIojAppealId)
+                .hasFieldOrPropertyWithValue("status", 404)
+                .hasFieldOrPropertyWithValue("instance", URI.create(ENDPOINT_URL + "/" + nonExistentIojAppealId));
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        softly.assertThat(extension).isPresent().get()
+                .hasFieldOrPropertyWithValue("code", ProblemDetailError.OBJECT_NOT_FOUND.code())
+                .hasFieldOrPropertyWithValue("errors", List.of());
+
     }
 
     @Test
@@ -140,21 +153,29 @@ class IojAppealControllerIntegrationTest extends MockMvcIntegrationTest {
         apiCreateIojAppealRequest.getIojAppeal().setAppealReason(NewWorkReason.CFC);
         String apiCreateIojAppealJson = objectMapper.writeValueAsString(apiCreateIojAppealRequest);
 
-        mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
                         .content(apiCreateIojAppealJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type").value("about:blank"))
-                .andExpect(jsonPath("$.title").value("Bad Request"))
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.detail").value(
-                        ProblemDetailError.VALIDATION_FAILURE.defaultDetail()))
-                .andExpect(jsonPath("$.instance").value("/api/internal/v2/assessment/ioj-appeals"))
-                .andExpect(jsonPath("$.errors.code").value("VALIDATION_FAILURE"))
-                .andExpect(jsonPath("$.errors.errors[0].field").value("Appeal reason"))
-                .andExpect(jsonPath("$.errors.errors[0].message").value(
-                        "Appeal Reason Is Invalid."));
+                .andReturn();
+
+
+        ProblemDetail problemDetail = ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
+
+        softly.assertThat(problemDetail)
+                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
+                .hasFieldOrPropertyWithValue("title", "Bad Request")
+                .hasFieldOrPropertyWithValue("detail", ProblemDetailError.VALIDATION_FAILURE.defaultDetail())
+                .hasFieldOrPropertyWithValue("status", 400)
+                .hasFieldOrPropertyWithValue("instance", URI.create(ENDPOINT_URL));
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        softly.assertThat(extension).isPresent().get()
+                .hasFieldOrPropertyWithValue("code", ProblemDetailError.VALIDATION_FAILURE.code());
+        List<ErrorMessage> errors = extension.get().errors();
+        softly.assertThat(errors.getFirst())
+                .hasFieldOrPropertyWithValue("field", "Appeal reason")
+                .hasFieldOrPropertyWithValue("message", "Appeal Reason Is Invalid.");
     }
 
     @Test
@@ -173,40 +194,49 @@ class IojAppealControllerIntegrationTest extends MockMvcIntegrationTest {
                     }
                 """;
 
-        mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
                         .content(malformedJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type").value("about:blank"))
-                .andExpect(jsonPath("$.title").value("Bad Request"))
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(
-                        jsonPath("$.detail").value(ProblemDetailError.BAD_REQUEST.defaultDetail()))
-                .andExpect(jsonPath("$.instance").value(ENDPOINT_URL))
-                .andExpect(jsonPath("$.errors.code").value(ProblemDetailError.BAD_REQUEST.code()))
-                .andExpect(jsonPath("$.errors.errors").isArray())
-                .andExpect(jsonPath("$.errors.errors").isEmpty());
+                .andReturn();
+
+        ProblemDetail problemDetail = ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
+        softly.assertThat(problemDetail)
+                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
+                .hasFieldOrPropertyWithValue("title", "Bad Request")
+                .hasFieldOrPropertyWithValue("detail", ProblemDetailError.BAD_REQUEST.defaultDetail())
+                .hasFieldOrPropertyWithValue("status", 400)
+                .hasFieldOrPropertyWithValue("instance", URI.create(ENDPOINT_URL));
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        softly.assertThat(extension).isPresent().get()
+                .hasFieldOrPropertyWithValue("code", ProblemDetailError.BAD_REQUEST.code())
+                .hasFieldOrPropertyWithValue("errors", List.of());
     }
+
 
     @Test
     void givenMissingRequestBody_whenCreateIojAppealIsInvoked_thenBadRequestProblemDetailIsReturned()
             throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
                         .content("")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type").value("about:blank"))
-                .andExpect(jsonPath("$.title").value("Bad Request"))
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(
-                        jsonPath("$.detail").value(ProblemDetailError.BAD_REQUEST.defaultDetail()))
-                .andExpect(jsonPath("$.instance").value(ENDPOINT_URL))
-                .andExpect(jsonPath("$.errors.code").value(ProblemDetailError.BAD_REQUEST.code()))
-                .andExpect(jsonPath("$.errors.errors").isArray())
-                .andExpect(jsonPath("$.errors.errors").isEmpty());
+                .andReturn();
+
+        ProblemDetail problemDetail = ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
+        softly.assertThat(problemDetail)
+                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
+                .hasFieldOrPropertyWithValue("title", "Bad Request")
+                .hasFieldOrPropertyWithValue("detail", ProblemDetailError.BAD_REQUEST.defaultDetail())
+                .hasFieldOrPropertyWithValue("status", 400)
+                .hasFieldOrPropertyWithValue("instance", URI.create(ENDPOINT_URL));
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        softly.assertThat(extension).isPresent().get()
+                .hasFieldOrPropertyWithValue("code", ProblemDetailError.BAD_REQUEST.code())
+                .hasFieldOrPropertyWithValue("errors", List.of());
     }
 
     @Test
@@ -231,20 +261,22 @@ class IojAppealControllerIntegrationTest extends MockMvcIntegrationTest {
 
         int nonExistentIojAppealId = Integer.MAX_VALUE;
 
-        mockMvc.perform(MockMvcRequestBuilders.patch(
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch(
                         ENDPOINT_URL + "/rollback/" + nonExistentIojAppealId))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type").value("about:blank"))
-                .andExpect(jsonPath("$.title").value("Not Found"))
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.detail")
-                        .value("No IoJ Appeal found for ID: " + nonExistentIojAppealId))
-                .andExpect(jsonPath("$.instance")
-                        .value(ENDPOINT_URL + "/rollback/" + nonExistentIojAppealId))
-                .andExpect(
-                        jsonPath("$.errors.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
-                .andExpect(jsonPath("$.errors.errors").isArray())
-                .andExpect(jsonPath("$.errors.errors").isEmpty());
+                .andReturn();
+
+        ProblemDetail problemDetail = ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
+        softly.assertThat(problemDetail)
+                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
+                .hasFieldOrPropertyWithValue("title", "Not Found")
+                .hasFieldOrPropertyWithValue("detail", "No IoJ Appeal found for ID: " + nonExistentIojAppealId)
+                .hasFieldOrPropertyWithValue("status", 404)
+                .hasFieldOrPropertyWithValue("instance", URI.create(ENDPOINT_URL+ "/rollback/" + nonExistentIojAppealId));
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        softly.assertThat(extension).isPresent().get()
+                .hasFieldOrPropertyWithValue("code", ProblemDetailError.OBJECT_NOT_FOUND.code())
+                .hasFieldOrPropertyWithValue("errors", List.of());
     }
 }

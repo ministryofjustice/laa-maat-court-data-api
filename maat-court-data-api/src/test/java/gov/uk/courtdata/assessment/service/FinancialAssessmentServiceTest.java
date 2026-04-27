@@ -52,6 +52,9 @@ class FinancialAssessmentServiceTest {
     @Mock
     private FinancialAssessmentRepository financialAssessmentRepository;
 
+    @Mock
+    private AssessmentReplacementService assessmentReplacementService;
+
     @Test
     void whenFindIsInvoked_thenAssessmentIsRetrieved() {
         FinancialAssessmentDTO financialAssessmentDTO = FinancialAssessmentDTO.builder().id(1000).build();
@@ -86,7 +89,7 @@ class FinancialAssessmentServiceTest {
                 .thenReturn(FinancialAssessmentDTO.builder().id(1000).build());
 
         FinancialAssessmentDTO returnedAssessment = financialAssessmentService.create(financialAssessment);
-        verify(financialAssessmentImpl).setOldAssessmentReplaced(any(FinancialAssessmentEntity.class));
+        verify(assessmentReplacementService).replacePreviousAssessments(any(FinancialAssessmentEntity.class));
 
         assertThat(returnedAssessment.getId()).isEqualTo(1000);
     }
@@ -115,7 +118,7 @@ class FinancialAssessmentServiceTest {
         );
         OutstandingAssessmentResultDTO result = financialAssessmentService.checkForOutstandingAssessments(TEST_REP_ID);
         verify(financialAssessmentImpl).checkForOutstandingAssessments(any());
-        assertThat(result.isOutstandingAssessments()).isEqualTo(true);
+        assertThat(result.isOutstandingAssessments()).isTrue();
         assertThat(result.getMessage()).isEqualTo(MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
     }
 
@@ -126,7 +129,7 @@ class FinancialAssessmentServiceTest {
         );
         OutstandingAssessmentResultDTO result = financialAssessmentService.checkForOutstandingAssessments(TEST_REP_ID);
         verify(financialAssessmentImpl).checkForOutstandingAssessments(TEST_REP_ID);
-        assertThat(result.isOutstandingAssessments()).isEqualTo(false);
+        assertThat(result.isOutstandingAssessments()).isFalse();
     }
 
     @Test

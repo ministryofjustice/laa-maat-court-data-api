@@ -28,6 +28,7 @@ public class FinancialAssessmentService {
     private final FinancialAssessmentImpl financialAssessmentImpl;
     private final FinancialAssessmentMapper assessmentMapper;
     private final FinancialAssessmentRepository financialAssessmentRepository;
+    private final AssessmentReplacementService assessmentReplacementService;
 
     @Transactional(readOnly = true)
     public FinancialAssessmentDTO find(int financialAssessmentId) {
@@ -58,7 +59,7 @@ public class FinancialAssessmentService {
                 assessmentMapper.createFinancialAssessmentToFinancialAssessmentDTO(financialAssessment);
         log.info("Creating new financial assessment record");
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.create(assessmentDTO);
-        financialAssessmentImpl.setOldAssessmentReplaced(assessmentEntity);
+        assessmentReplacementService.replacePreviousAssessments(assessmentEntity);
         log.info("Create Financial Assessment - Transaction Processing - End");
         return assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
     }

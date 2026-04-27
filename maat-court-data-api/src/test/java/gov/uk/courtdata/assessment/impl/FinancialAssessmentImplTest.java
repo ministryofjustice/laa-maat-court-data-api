@@ -12,8 +12,8 @@ import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -47,8 +47,6 @@ class FinancialAssessmentImplTest {
     private FinancialAssessmentRepository financialAssessmentRepository;
     @Spy
     private PassportAssessmentRepository passportAssessmentRepository;
-    @Mock
-    private HardshipReviewRepository hardshipReviewRepository;
     @Mock
     private FinancialAssessmentMapper financialAssessmentMapper;
     @Captor
@@ -142,7 +140,7 @@ class FinancialAssessmentImplTest {
     void givenInitAssessmentWithIncomeEvidence_whenUpdateIsInvoked_thenIncomeEvidenceAreUpdated() {
         FinancialAssessmentDTO financialAssessment = TestModelDataBuilder.getFinancialAssessmentWithIncomeEvidence();
         FinancialAssessmentEntity financialAssessmentEntity = TestEntityDataBuilder.getFinancialAssessmentEntityWithIncomeEvidence();
-        financialAssessmentEntity.getFinAssIncomeEvidences().get(0).setId(123);
+        financialAssessmentEntity.getFinAssIncomeEvidences().getFirst().setId(123);
         when(financialAssessmentRepository.getReferenceById(any()))
                 .thenReturn(financialAssessmentEntity);
         when(financialAssessmentMapper.finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(any()))
@@ -152,7 +150,9 @@ class FinancialAssessmentImplTest {
         FinancialAssessmentEntity response = financialAssessmentImpl.update(financialAssessment);
 
         verify(financialAssessmentRepository).saveAndFlush(any());
-        assertThat(response.getFinAssIncomeEvidences().size()).isEqualTo(1);
+
+
+        assertThat(response.getFinAssIncomeEvidences()).asInstanceOf(InstanceOfAssertFactories.LIST).hasSize(1);
     }
 
     @Test
@@ -179,19 +179,6 @@ class FinancialAssessmentImplTest {
     }
 
     @Test
-    void givenFinancialAssessment_whenSetOldAssessmentReplacedIsInvoked_thenOldAssessmentsAreReplaced() {
-        FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
-
-        financialAssessmentImpl.setOldAssessmentReplaced(financialAssessment);
-
-        Integer repId = financialAssessment.getRepOrder().getId();
-
-        verify(hardshipReviewRepository).replaceOldHardshipReviews(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
-        verify(passportAssessmentRepository).updateAllPreviousPassportAssessmentsAsReplaced(repId);
-        verify(financialAssessmentRepository).updatePreviousFinancialAssessmentsAsReplaced(repId, MOCK_FINANCIAL_ASSESSMENT_ID);
-    }
-
-    @Test
     void givenNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentNotFoundResultIsRetrieved() {
         when(financialAssessmentRepository.findOutstandingFinancialAssessments(any())).thenReturn(0L);
         when(passportAssessmentRepository.findOutstandingPassportAssessments(any())).thenReturn(0L);
@@ -208,7 +195,7 @@ class FinancialAssessmentImplTest {
         );
 
         financialAssessmentImpl.updateAssessmentDetails(financialAssessment, existingAssessment);
-        assertThat(existingAssessment.getAssessmentDetails()).asList().isEmpty();
+        assertThat(existingAssessment.getAssessmentDetails()).asInstanceOf(InstanceOfAssertFactories.LIST).isEmpty();
     }
 
     @Test
@@ -221,8 +208,8 @@ class FinancialAssessmentImplTest {
         );
         financialAssessmentImpl.updateAssessmentDetails(financialAssessment, existingAssessment);
 
-        FinancialAssessmentDetails passed = financialAssessment.getAssessmentDetails().get(0);
-        FinancialAssessmentDetailEntity updated = existingAssessment.getAssessmentDetails().get(0);
+        FinancialAssessmentDetails passed = financialAssessment.getAssessmentDetails().getFirst();
+        FinancialAssessmentDetailEntity updated = existingAssessment.getAssessmentDetails().getFirst();
 
         assertThat(updated.getApplicantAmount()).isEqualTo(passed.getApplicantAmount());
         assertThat(updated.getApplicantFrequency()).isEqualTo(passed.getApplicantFrequency());
@@ -241,8 +228,8 @@ class FinancialAssessmentImplTest {
 
         financialAssessmentImpl.updateAssessmentDetails(financialAssessment, existingAssessment);
 
-        FinancialAssessmentDetails passed = financialAssessment.getAssessmentDetails().get(0);
-        FinancialAssessmentDetailEntity updated = existingAssessment.getAssessmentDetails().get(0);
+        FinancialAssessmentDetails passed = financialAssessment.getAssessmentDetails().getFirst();
+        FinancialAssessmentDetailEntity updated = existingAssessment.getAssessmentDetails().getFirst();
 
         assertThat(updated.getCriteriaDetailId()).isEqualTo(passed.getCriteriaDetailId());
     }
@@ -256,7 +243,7 @@ class FinancialAssessmentImplTest {
         );
 
         financialAssessmentImpl.updateAssessmentDetails(financialAssessment, existingAssessment);
-        assertThat(existingAssessment.getAssessmentDetails()).asList().isEmpty();
+        assertThat(existingAssessment.getAssessmentDetails()).asInstanceOf(InstanceOfAssertFactories.LIST).isEmpty();
     }
 
     @Test
@@ -269,8 +256,8 @@ class FinancialAssessmentImplTest {
         );
         financialAssessmentImpl.updateChildWeightings(financialAssessment, existingAssessment);
 
-        assertThat(existingAssessment.getChildWeightings().get(0).getNoOfChildren())
-                .isEqualTo(financialAssessment.getChildWeightings().get(0).getNoOfChildren());
+        assertThat(existingAssessment.getChildWeightings().getFirst().getNoOfChildren())
+                .isEqualTo(financialAssessment.getChildWeightings().getFirst().getNoOfChildren());
     }
 
     @Test
@@ -284,8 +271,8 @@ class FinancialAssessmentImplTest {
 
         financialAssessmentImpl.updateChildWeightings(financialAssessment, existingAssessment);
 
-        assertThat(existingAssessment.getChildWeightings().get(0).getChildWeightingId())
-                .isEqualTo(financialAssessment.getChildWeightings().get(0).getChildWeightingId());
+        assertThat(existingAssessment.getChildWeightings().getFirst().getChildWeightingId())
+                .isEqualTo(financialAssessment.getChildWeightings().getFirst().getChildWeightingId());
     }
 
     @Test

@@ -1831,6 +1831,20 @@ public class TestModelDataBuilder {
                 """.formatted(firstName, TEST_DATE.toLocalDate(), ASN_NUMBER, TEST_DATE.toLocalDate(), NI_NUMBER, CASE_TYPE_VALUE);
     }
 
+    public static String getMaatSearchRequestJsonWithNullDob() {
+        return """
+                {
+                  "firstName": "firstName",
+                  "lastName": "LastName",
+                  "dob": null,
+                  "asn": "%s",
+                  "committalDate": "%s",
+                  "niNumber": "%s",
+                  "caseType": "%s"
+                }
+                """.formatted(ASN_NUMBER, TEST_DATE.toLocalDate(), NI_NUMBER, CASE_TYPE_VALUE);
+    }
+
     public static MaatSearchRequest getMaatSearchRequest() {
         return MaatSearchRequest.builder()
                 .firstName("FirstName")

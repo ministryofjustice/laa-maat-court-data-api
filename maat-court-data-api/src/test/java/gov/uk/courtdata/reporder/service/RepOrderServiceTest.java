@@ -3,6 +3,7 @@ package gov.uk.courtdata.reporder.service;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.AssessorDetails;
+import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -11,6 +12,7 @@ import gov.uk.courtdata.model.reporder.MaatSearchRequest;
 import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import java.time.LocalDateTime;
 
@@ -26,6 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.*;
 
+import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -51,13 +54,17 @@ class RepOrderServiceTest {
     @Mock
     private WqLinkRegisterRepository wqLinkRegisterRepository;
 
+    @Mock
+    private RepOrderCPDataRepository repOrderCPDataRepository;
+
     @BeforeEach
     public void setup() {
         repOrderMapper = Mappers.getMapper(RepOrderMapper.class);
         repOrderService = new RepOrderService(repOrderImpl,
                 repOrderMapper,
                 repOrderRepository,
-                wqLinkRegisterRepository);
+                wqLinkRegisterRepository,
+                repOrderCPDataRepository);
     }
 
     @Test
@@ -215,6 +222,26 @@ class RepOrderServiceTest {
         verify(repOrderRepository).findRepId(any(MaatSearchRequest.class));
         verify(wqLinkRegisterRepository, times(2)).findBymaatId(anyInt());
         assertEquals(2,maatSearchResponseList.size());
+    }
+
+    @Test
+    void givenAValidRequest_whenMaatIdReturned_thenResponseContainsCaseUrn() {
+        WqLinkRegisterEntity linkWithoutCaseUrn = TestEntityDataBuilder.getWQLinkRegisterEntityWithoutCaseUrn();
+        RepOrderCPDataEntity repOrder = TestEntityDataBuilder.getRepOrderEntity(REP_ID);
+
+        when(repOrderRepository.findRepId(any(MaatSearchRequest.class)))
+            .thenReturn(Set.of(REP_ID));
+        when(wqLinkRegisterRepository.findBymaatId(REP_ID)).thenReturn(
+            List.of(linkWithoutCaseUrn));
+        when(repOrderCPDataRepository.findByrepOrderId(REP_ID)).thenReturn(
+            Optional.of(repOrder));
+
+        List<MaatSearchResponse> maatSearchResponseList = repOrderService.searchMaatApplication(
+            TestModelDataBuilder.getMaatSearchRequest());
+
+        assertEquals(1, maatSearchResponseList.size());
+        MaatSearchResponse response = maatSearchResponseList.get(0);
+        assertEquals(repOrder.getCaseUrn(), response.getLinkingDetail().getCaseUrn());
     }
 
 }

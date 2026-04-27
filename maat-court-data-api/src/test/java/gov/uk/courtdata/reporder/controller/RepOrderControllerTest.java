@@ -652,4 +652,20 @@ class RepOrderControllerTest {
                 .andExpect(jsonPath("$[0].maatId").value(TestModelDataBuilder.REP_ID));
 
     }
+
+    @Test
+    void givenRequestWithoutDateOfBirth_whenSearchApplicationIsInvoked_thenIsValidRequest()
+            throws Exception {
+        when(repOrderService.searchMaatApplication(any(MaatSearchRequest.class)))
+            .thenReturn(List.of(TestModelDataBuilder.getMaatSearchResponse()));
+
+        String maatSearchRequestJson = TestModelDataBuilder.getMaatSearchRequestJsonWithNullDob();
+
+        mvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
+            .content(maatSearchRequestJson)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$[0].maatId").value(TestModelDataBuilder.REP_ID));
+    }
 }

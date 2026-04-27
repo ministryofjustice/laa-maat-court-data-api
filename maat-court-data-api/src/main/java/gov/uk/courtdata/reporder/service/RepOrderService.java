@@ -3,6 +3,7 @@ package gov.uk.courtdata.reporder.service;
 import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -14,6 +15,7 @@ import gov.uk.courtdata.model.reporder.MaatSearchRequest;
 import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -37,6 +39,7 @@ public class RepOrderService {
     private final RepOrderMapper repOrderMapper;
     private final RepOrderRepository repOrderRepository;
     private final WqLinkRegisterRepository linkRegisterRepository;
+    private final RepOrderCPDataRepository repOrderCPDataRepository;
 
     public RepOrderEntity findByRepId(Integer repId) {
         RepOrderEntity repOrder;
@@ -158,8 +161,14 @@ public class RepOrderService {
         return repIdSet.stream()
                 .map(repId -> {
                     List<WqLinkRegisterEntity> linkRegisterList = linkRegisterRepository.findBymaatId(repId);
-                    return repOrderMapper.mapMaatSearchResponse(repId, linkRegisterList);
+                    String caseUrn = getCaseUrn(repId);
+                    return repOrderMapper.mapMaatSearchResponse(repId, linkRegisterList, caseUrn);
                 })
                 .toList();
+    }
+
+    private String getCaseUrn(Integer repId) {
+        Optional<RepOrderCPDataEntity> repOrder = repOrderCPDataRepository.findByrepOrderId(repId);
+        return repOrder.map(RepOrderCPDataEntity::getCaseUrn).orElse(null);
     }
 }

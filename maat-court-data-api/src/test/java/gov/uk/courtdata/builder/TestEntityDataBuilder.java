@@ -634,6 +634,21 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static WqLinkRegisterEntity getWQLinkRegisterEntityWithoutCaseUrn() {
+
+        return WqLinkRegisterEntity.builder()
+            .createdTxId(1234)
+            .caseId(TEST_CASE_ID)
+            .maatId(REP_ID)
+            .cjsAreaCode("16")
+            .cjsLocation("B16BG")
+            .maatCat(253)
+            .createdUserId(TEST_USER)
+            .mlrCat(253)
+            .libraId(LIBRA_ID)
+            .build();
+    }
+
     public static WQOffenceEntity getWQOffenceEntity(Integer offenceTxId) {
 
         return WQOffenceEntity.builder()
@@ -891,9 +906,13 @@ public class TestEntityDataBuilder {
     }
 
     public RepOrderCPDataEntity getRepOrderEntity() {
+        return getRepOrderEntity(REP_ID);
+    }
+    
+    public static RepOrderCPDataEntity getRepOrderEntity(Integer repId) {
         return RepOrderCPDataEntity.builder()
-                .repOrderId(REP_ID)
-                .caseUrn("caseurn1")
+                .repOrderId(repId)
+                .caseUrn(CASE_URN)
                 .dateCreated(LocalDateTime.now())
                 .userCreated("user")
                 .dateModified(LocalDateTime.now())

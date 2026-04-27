@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maat-api-deployment
+  labels:
+    app: maat-api-application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: maat-api-application
+  template:
+    metadata:
+      labels:
+        app: maat-api-application
+    spec:
+      containers:
+        - name: maat-api-application
+          image: {{ .Values.maat-api.spec.containers.image }}
+          imagePullPolicy: {{ .Values.maat-api.spec.containers.imagePullPolicy }}
+          securityContext:
+            runAsUser: {{ .Values.maat-api.spec.containers.securityContext.runAsUser }} # This is the user ID for "tomee" used in Dockerfile
+          ports:
+            - containerPort: {{ .Values.maat-api.spec.containers.port }}
+          env:
+          - name: UNLINK_QUEUE
+            value: {{ .Values.maat-api.spec.containers.env.UNLINK_QUEUE }}
+          - name: CLOUD_PLATFORM_QUEUE_REGION
+            value: {{ .Values.maat-api.spec.containers.env.CLOUD_PLATFORM_QUEUE_REGION }}
+          - name: SENTRY_ENV
+            value: {{ .Values.maat-api.spec.containers.env.SENTRY_ENV }}
+          - name: CDA_BASE_URL
+            value: {{ .Values.maat-api.spec.containers.env.CDA_BASE_URL }}
+          - name: TOGDATA_DATASOURCE_USERNAME
+            value: {{ .Values.maat-api.spec.containers.env.TOGDATA_DATASOURCE_USERNAME }}
+          - name: CREATE_LINK_CP_STATUS_JOB_QUEUE
+            value: {{ .Values.maat-api.spec.containers.env.CREATE_LINK_CP_STATUS_JOB_QUEUE }}
+          - name: AWS_DEFAULT_REGION
+            value: {{ .Values.maat-api.spec.containers.env.AWS_DEFAULT_REGION }}
+          - name: CDA_OAUTH_URL
+            value: {{ .Values.maat-api.spec.containers.env.CDA_OAUTH_URL }}
+          - name: POST_MVP_ENABLED
+            value: {{ .Values.maat-api.spec.containers.env.POST_MVP_ENABLED }}
+          - name: HEARING_RESULTED_QUEUE
+            value: {{ .Values.maat-api.spec.containers.env.HEARING_RESULTED_QUEUE }}
+          - name: ENABLE_CLOUDWATCH_METRICS
+            value: {{ .Values.maat-api.spec.containers.env.ENABLE_CLOUDWATCH_METRICS }}
+          - name: CREATE_LINK_QUEUE
+            value: {{ .Values.maat-api.spec.containers.env.CREATE_LINK_QUEUE }}
+          - name: CLOUDWATCH_STEP
+            value: {{ .Values.maat-api.spec.containers.env.CLOUDWATCH_STEP }}
+          - name: CLOUDWATCH_BATCH_SIZE
+            value: {{ .Values.maat-api.spec.containers.env.CLOUDWATCH_BATCH_SIZE }}
+          - name: DATASOURCE_URL
+            value: {{ .Values.maat-api.spec.containers.env.DATASOURCE_URL }}
+          - name: DATASOURCE_USERNAME # This secret is stored in ??? in Landing Zone Parameter Store
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.maat-api.spec.containers.secret.DATASOURCE_USERNAME_NAME }} # This is the name of the kubernetes_secret
+                key: {{ .Values.maat-api.spec.containers.secret.DATASOURCE_USERNAME_KEY }} # This is the key you have given for the secret value in the AWS Console
+          - name: DATASOURCE_PASSWORD # This secret is stored in ??? in Landing Zone Parameter Store
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.maat-api.spec.containers.secret.DATASOURCE_PASSWORD_NAME }}
+                key: {{ .Values.maat-api.spec.containers.secret.DATASOURCE_PASSWORD_KEY }}
+          - name: CDA_OAUTH_CLIENT_ID # This secret is stored in ??? in Landing Zone Parameter Store
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.maat-api.spec.containers.secret.CDA_OAUTH_CLIENT_ID_NAME }}
+                key: {{ .Values.maat-api.spec.containers.secret.CDA_OAUTH_CLIENT_ID_KEY }}
+          - name: CDA_OAUTH_CLIENT_SECRET # This secret is stored in ??? in Landing Zone Parameter Store
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.maat-api.spec.containers.secret.CDA_OAUTH_CLIENT_SECRET_NAME }}
+                key: {{ .Values.maat-api.spec.containers.secret.DCDA_OAUTH_CLIENT_SECRET_KEY }}
+          - name: TOGDATA_DATASOURCE_PASSWORD # This secret is stored in ??? in Landing Zone Parameter Store
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.maat-api.spec.containers.secret.TOGDATA_DATASOURCE_PASSWORD_NAME }}
+                key: {{ .Values.maat-api.spec.containers.secret.TOGDATA_DATASOURCE_PASSWORD_KEY }}

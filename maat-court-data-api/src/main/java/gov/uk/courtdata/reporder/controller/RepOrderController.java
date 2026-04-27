@@ -217,12 +217,15 @@ public class RepOrderController {
   @PatchMapping(value = "/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Partial Update of a Rep record")
     @StandardApiResponseCodes
-  public ResponseEntity<Void> updateRepOrder(@PathVariable int repId,
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    )
+  public ResponseEntity<RepOrderDTO> updateRepOrder(@PathVariable int repId,
       @RequestBody Map<String, Object> updatedFields) {
     LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Partial Update of Rep Order Request Received");
-    repOrderService.update(repId, updatedFields);
-        return ResponseEntity.ok().build();
+        RepOrderDTO updatedRepOrderDTO = repOrderService.update(repId, updatedFields);
+        return ResponseEntity.ok(updatedRepOrderDTO);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"fdcDelayedPickup=true"})

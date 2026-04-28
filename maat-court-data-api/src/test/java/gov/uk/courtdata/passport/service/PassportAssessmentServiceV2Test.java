@@ -31,6 +31,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentRequest;
+import uk.gov.justice.laa.crime.enums.BenefitRecipient;
 
 import java.util.stream.Stream;
 
@@ -74,6 +75,7 @@ class PassportAssessmentServiceV2Test {
     @Test
     void givenRequest_whenCreateIsInvoked_thenShouldSucceed(){
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, APPLICANT_ID, false, true );
+        request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         var partner = TestEntityDataBuilder.getApplicant(APPLICANT_ID);
         var response = TestModelDataBuilder.buildValidCreatePassportedAssessmentResponse();
@@ -138,6 +140,7 @@ class PassportAssessmentServiceV2Test {
     @Test
     void givenPartnerId_whenCreateIsInvoked_thenPartnerIsMapped(){
         ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, APPLICANT_ID, false, true );
+        request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
         var partner = TestEntityDataBuilder.getApplicant(APPLICANT_ID);
         when(applicantService.find(APPLICANT_ID)).thenReturn(partner);
 

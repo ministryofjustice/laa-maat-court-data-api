@@ -59,6 +59,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import uk.gov.justice.laa.crime.enums.BenefitType;
 import uk.gov.justice.laa.crime.error.ErrorExtension;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
@@ -72,6 +73,9 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
     private static final String ASSESSMENT_URL = BASE_URL + "/{passportAssessmentId}";
     private static final String ASSESSMENT_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
     private static final Integer INVALID_ASSESSMENT_ID = 999;
+    private static final String LEGACY_APPLICATION_ID_FIELD = "passportedAssessmentMetadata.legacyApplicationId";
+    private static final String LAST_SIGN_ON_DATE_FIELD = "passportedAssessment.declaredBenefit.lastSignOnDate";
+
 
     @Autowired
     private PassportAssessmentMapper passportAssessmentMapper;
@@ -414,7 +418,37 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         assertThat(extension).isPresent().get()
                 .hasFieldOrPropertyWithValue("code", VALIDATION_FAILURE.code());
 
-        var expectedErrorMessage = new ErrorMessage("legacyApplicationId","RepOrder does not exist");
+        var expectedErrorMessage = new ErrorMessage(LEGACY_APPLICATION_ID_FIELD,"RepOrder does not exist");
+        List<ErrorMessage> errors = extension.get().errors();
+        assertThat(errors).containsOnly(expectedErrorMessage);
+    }
+
+    @Test
+    void givenJobSeekersNoSignOnDate_whenCreateAssessmentV2IsInvoked_theValidationResponseIsReturned() throws Exception {
+        Integer repId =existingPassportAssessmentEntity.getRepOrder().getId();
+        var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, false, true);
+        request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(null);
+        request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andReturn();
+
+        ProblemDetail problemDetail = ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
+        assertThat(problemDetail)
+                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
+                .hasFieldOrPropertyWithValue("status", 400)
+                .hasFieldOrPropertyWithValue("title", "Bad Request")
+                .hasFieldOrPropertyWithValue("detail", VALIDATION_FAILURE.defaultDetail())
+                .hasFieldOrPropertyWithValue("instance", URI.create(BASE_V2_URL));
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        assertThat(extension).isPresent().get()
+                .hasFieldOrPropertyWithValue("code", VALIDATION_FAILURE.code());
+
+        var expectedErrorMessage = new ErrorMessage(LAST_SIGN_ON_DATE_FIELD,"last sign on date cannot be null for job seekers");
         List<ErrorMessage> errors = extension.get().errors();
         assertThat(errors).containsOnly(expectedErrorMessage);
     }

@@ -26,6 +26,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CreatePassportAssessmentV2ValidatorTest {
 
+
+    private static final String LEGACY_APPLICATION_ID_FIELD = "passportedAssessmentMetadata.legacyApplicationId";
+    private static final String LAST_SIGN_ON_DATE_FIELD = "passportedAssessment.declaredBenefit.lastSignOnDate";
+
     @Mock
     RepOrderService repOrderService;
 
@@ -45,7 +49,7 @@ class CreatePassportAssessmentV2ValidatorTest {
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
         request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(null);
-        var expectedErrorMessage = new ErrorMessage("lastSignOnDate","last sign on date cannot be null for job seekers");
+        var expectedErrorMessage = new ErrorMessage(LAST_SIGN_ON_DATE_FIELD,"last sign on date cannot be null for job seekers");
         when(repOrderService.exists(REP_ID)).thenReturn(true);
 
         CrimeValidationException e = assertThrows(CrimeValidationException.class,()
@@ -70,7 +74,7 @@ class CreatePassportAssessmentV2ValidatorTest {
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
         request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(LocalDateTime.now());
-        var expectedErrorMessage = new ErrorMessage("legacyApplicationId","RepOrder does not exist");
+        var expectedErrorMessage = new ErrorMessage(LEGACY_APPLICATION_ID_FIELD,"RepOrder does not exist");
         when(repOrderService.exists(REP_ID)).thenReturn(false);
 
         CrimeValidationException e = assertThrows(CrimeValidationException.class,()

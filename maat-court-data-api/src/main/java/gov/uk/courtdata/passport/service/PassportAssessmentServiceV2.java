@@ -19,6 +19,8 @@ import uk.gov.justice.laa.crime.common.model.passported.PassportedAssessment;
 
 import java.time.LocalDateTime;
 
+import static uk.gov.justice.laa.crime.enums.BenefitRecipient.PARTNER;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -53,7 +55,7 @@ public class PassportAssessmentServiceV2 {
     }
 
     /***
-     * Populates the partner fields on the PassportAssessmentEntity if request passed 3 conditions<ul>
+     * Populate the partner fields on the PassportAssessmentEntity if request passed 3 conditions<ul>
      *     <li>is over 18</li>
      *     <li>has a declared benefit</li>
      *     <li>has a partner id</li>
@@ -67,6 +69,7 @@ public class PassportAssessmentServiceV2 {
         DeclaredBenefit declaredBenefit = assessment.getDeclaredBenefit();
         if(Boolean.FALSE.equals(assessment.getDeclaredUnder18())
                 && declaredBenefit != null
+                && PARTNER.equals(declaredBenefit.getBenefitRecipient())
                 && declaredBenefit.getLegacyPartnerId() != null){
             Applicant partner = applicantService.find(declaredBenefit.getLegacyPartnerId());
             entity.setPartnerDob(partner.getDob().atStartOfDay());

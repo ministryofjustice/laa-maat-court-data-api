@@ -1,5 +1,6 @@
 package gov.uk.courtdata.iojappeal.controller;
 
+import gov.uk.courtdata.annotation.StandardProblemDetailErrorResponse;
 import gov.uk.courtdata.enums.LoggingData;
 
 import gov.uk.courtdata.exception.CrimeValidationException;
@@ -35,12 +36,14 @@ public class IOJAppealControllerV2 implements IOJAppealApi {
     private final IOJAppealV2Service iojAppealService;
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @StandardProblemDetailErrorResponse
     public ResponseEntity<ApiGetIojAppealResponse> find(@PathVariable int id) {
         log.info("Get IOJ Appeal Received: id: {}", id);
         return ResponseEntity.ok(iojAppealService.find(id));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @StandardProblemDetailErrorResponse
     public ResponseEntity<ApiCreateIojAppealResponse> create(@Valid @RequestBody ApiCreateIojAppealRequest iojAppeal) {
         LoggingData.MAAT_ID.putInMDC(iojAppeal.getIojAppealMetadata().getLegacyApplicationId());
         log.info("Create IOJ Appeal Request Received");
@@ -57,7 +60,7 @@ public class IOJAppealControllerV2 implements IOJAppealApi {
 
     @PatchMapping("/rollback/{iojAppealId}")
     @Operation(description = "Rollback an existing Interest of Justice appeal record")
-    @StandardApiResponseCodes
+    @StandardProblemDetailErrorResponse
     public ResponseEntity<Void> rollbackIOJAppeal(@PathVariable Integer iojAppealId) {
         log.info("Rollback IoJ Appeal request received with id: {}", iojAppealId);
         iojAppealService.rollback(iojAppealId);

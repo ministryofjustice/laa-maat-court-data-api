@@ -48,7 +48,6 @@ public interface PassportAssessmentMapper {
      * </ul>
      */
     @Mapping(target = "pastStatus", constant = "COMPLETE")
-    @Mapping(target = "dateCompleted", expression = "java(LocalDateTime.now())")
     @Mapping(target = "assessmentDate", source = "passportedAssessment.assessmentDate")
     @Mapping(target = "nworCode", source = "passportedAssessment.assessmentReason")
     @Mapping(target = "result", source = "passportedAssessment.assessmentDecision.code")
@@ -68,12 +67,14 @@ public interface PassportAssessmentMapper {
      * Helper method which populates the benefit types and under18 court values.
      */
     @AfterMapping
-    default PassportAssessmentEntity mapPartnerFields(ApiCreatePassportedAssessmentRequest source, @MappingTarget PassportAssessmentEntity target) {
+    default PassportAssessmentEntity toPassportAssessmentEntityAdditionalMapping(ApiCreatePassportedAssessmentRequest source, @MappingTarget PassportAssessmentEntity target) {
         target.setIncomeSupport(mapBenefitType(BenefitType.INCOME_SUPPORT, source));
         target.setJobSeekers(mapBenefitType(BenefitType.JSA, source));
         target.setEsa(mapBenefitType(BenefitType.ESA, source));
         target.setStatePensionCredit(mapBenefitType(BenefitType.GSPC, source));
         target.setUniversalCredit(mapBenefitType(BenefitType.UC, source));
+        target.setDateCompleted(LocalDateTime.now());
+
         // TODO: LCAM-2074 To be finalized.
         target.setUnder18HeardInYouthCourt(mapUnder18CourtType(false, source));
         target.setUnder18HeardInMagsCourt(mapUnder18CourtType(true, source));

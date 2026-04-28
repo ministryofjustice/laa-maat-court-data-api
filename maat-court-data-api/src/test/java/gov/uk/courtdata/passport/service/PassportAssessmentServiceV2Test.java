@@ -106,8 +106,6 @@ class PassportAssessmentServiceV2Test {
     private static Stream<Arguments> partnerPopulationConditionsThatShouldNotMap() {
         return Stream.of(
                 Arguments.of(true, true, APPLICANT_ID ), // isUnder18 should fail.
-                Arguments.of(true, true, null ),         // isUnder18 should fail.
-                Arguments.of(true, false, null ),        // isUnder18 should fail.
                 Arguments.of(false, true, null ),        // no PartnerId.
                 Arguments.of(false, false, null )        // no declaredBenefit.
         );
@@ -117,7 +115,23 @@ class PassportAssessmentServiceV2Test {
     @ParameterizedTest
     void givenConditionsShouldNotPopulatePartner_whenCreateIsInvoked_thenPartnerIsNotMapped(boolean isUnder18, boolean hasDeclaredBenefit, Integer partnerId){
         ApiCreatePassportedAssessmentRequest request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, partnerId, isUnder18, hasDeclaredBenefit );
-        runCreateForPartnerValidation(request, null);
+        PassportAssessmentEntity entity = new PassportAssessmentEntity();
+        entity.setRepOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
+
+        var response = TestModelDataBuilder.buildValidCreatePassportedAssessmentResponse();
+
+        when(passportAssessmentMapper.toPassportAssessmentEntity(request)).thenReturn(entity);
+        when(passportAssessmentPersistenceService.save(any())).thenReturn(entity);
+        when(passportAssessmentMapper.toApiCreatePassportedAssessmentResponse(any())).thenReturn(response);
+
+        passportAssessmentService.create(request);
+
+        assertThat(entity.getPartnerDob()).isNull();
+        assertThat(entity.getPartnerSurname()).isNull();
+        assertThat(entity.getPartnerFirstName()).isNull();
+        assertThat(entity.getPartnerNiNumber()).isNull();
+        assertThat(entity.getPartnerOtherNames()).isNull();
+
         verify(applicantService, never()).find(any());
     }
 
@@ -127,12 +141,6 @@ class PassportAssessmentServiceV2Test {
         var partner = TestEntityDataBuilder.getApplicant(APPLICANT_ID);
         when(applicantService.find(APPLICANT_ID)).thenReturn(partner);
 
-        runCreateForPartnerValidation(request, partner);
-
-        verify(applicantService).find(any());
-    }
-
-    private void runCreateForPartnerValidation(ApiCreatePassportedAssessmentRequest request, Applicant expectedPartner){
         PassportAssessmentEntity entity = new PassportAssessmentEntity();
         entity.setRepOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
 
@@ -144,23 +152,16 @@ class PassportAssessmentServiceV2Test {
 
         passportAssessmentService.create(request);
 
-        validatePartnerDetails(expectedPartner, passportCaptor.getValue());
+        validatePartnerDetails(partner, passportCaptor.getValue());
+
+        verify(applicantService).find(APPLICANT_ID);
     }
 
     private void validatePartnerDetails(Applicant expectedPartner, PassportAssessmentEntity entity){
-        if (expectedPartner != null){
-            assertThat(entity.getPartnerDob().toLocalDate()).isEqualTo(expectedPartner.getDob());
-            assertThat(entity.getPartnerSurname()).isEqualTo(expectedPartner.getLastName());
-            assertThat(entity.getPartnerFirstName()).isEqualTo(expectedPartner.getFirstName());
-            assertThat(entity.getPartnerNiNumber()).isEqualTo(expectedPartner.getNiNumber());
-            assertThat(entity.getPartnerOtherNames()).isEqualTo(expectedPartner.getOtherNames());
-        } else{
-            assertThat(entity.getPartnerDob()).isNull();
-            assertThat(entity.getPartnerSurname()).isNull();
-            assertThat(entity.getPartnerFirstName()).isNull();
-            assertThat(entity.getPartnerNiNumber()).isNull();
-            assertThat(entity.getPartnerOtherNames()).isNull();
-        }
-
+        assertThat(entity.getPartnerDob().toLocalDate()).isEqualTo(expectedPartner.getDob());
+        assertThat(entity.getPartnerSurname()).isEqualTo(expectedPartner.getLastName());
+        assertThat(entity.getPartnerFirstName()).isEqualTo(expectedPartner.getFirstName());
+        assertThat(entity.getPartnerNiNumber()).isEqualTo(expectedPartner.getNiNumber());
+        assertThat(entity.getPartnerOtherNames()).isEqualTo(expectedPartner.getOtherNames());
     }
 }

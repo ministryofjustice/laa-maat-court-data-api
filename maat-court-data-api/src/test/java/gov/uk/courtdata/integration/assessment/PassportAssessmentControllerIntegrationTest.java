@@ -382,7 +382,8 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
         // check assessment completed date has been set on the RepOrder.
         Optional<RepOrderEntity> repOrder = repos.repOrder.findById(repId);
-        assertThat(repOrder).isPresent().get().hasFieldOrPropertyWithValue("assessmentDateCompleted", LocalDate.now());
+        assertThat(repOrder).isPresent();
+        assertThat(repOrder.get().getAssessmentDateCompleted()).isEqualTo(LocalDate.now());
 
         // validate mapper is being called.
         verify(passportMapperV2).toPassportAssessmentEntity(any());

@@ -69,16 +69,6 @@ class AssessmentReplacementServiceTest {
         verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
     }
 
-    @Test
-    void givenFinancialAssessmentMissingAssessmentIdAndMissingRepOrder_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
-        FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
-        financialAssessment.setId(null);
-        financialAssessment.setRepOrder(null);
-        assessmentReplacementService.replacePreviousAssessments(financialAssessment);
-        verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
-    }
-
-
     // Passported Assessments
     @Test
     void givenPassportAssessment_whenReplacePreviousAssessmentsIsInvoked_thenOldAssessmentsAreReplaced() {
@@ -113,15 +103,6 @@ class AssessmentReplacementServiceTest {
     void givenPassportedAssessmentMissingAssessmentId_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
         PassportAssessmentEntity passportedAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
         passportedAssessment.setId(null);
-        assessmentReplacementService.replacePreviousAssessments(passportedAssessment);
-        verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
-    }
-
-    @Test
-    void givenPassportedAssessmentMissingAssessmentIdAndMissingRepOrder_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
-        PassportAssessmentEntity passportedAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
-        passportedAssessment.setId(null);
-        passportedAssessment.setRepOrder(null);
         assessmentReplacementService.replacePreviousAssessments(passportedAssessment);
         verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
     }

@@ -9,7 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.springframework.http.MediaType;
-import uk.gov.justice.laa.crime.error.ProblemDetailError;
+import org.springframework.http.ProblemDetail;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -18,13 +18,13 @@ import uk.gov.justice.laa.crime.error.ProblemDetailError;
         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
     @ApiResponse(responseCode = "400", description = "Bad Request.", 
         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, 
-        schema = @Schema(implementation = ProblemDetailError.class))),
+        schema = @Schema(implementation = ProblemDetail.class))),
     @ApiResponse(responseCode = "404", description = "Not Found.",
         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = ProblemDetailError.class))),
+            schema = @Schema(implementation = ProblemDetail.class))),
     @ApiResponse(responseCode = "500", description = "Server Error.", 
         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, 
-        schema = @Schema(implementation = ProblemDetailError.class))),
+        schema = @Schema(implementation = ProblemDetail.class))),
 })
 public @interface StandardProblemDetailErrorResponse {
 

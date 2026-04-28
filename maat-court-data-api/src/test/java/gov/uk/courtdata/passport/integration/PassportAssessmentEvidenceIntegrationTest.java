@@ -75,9 +75,9 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
                     "/api/internal/v2/assessment/passport-assessments/" + 
                         nonExistentPassportAssessmentId + "/evidence"))
             .andExpect(
-                jsonPath("$.errors.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
-            .andExpect(jsonPath("$.errors.errors").isArray())
-            .andExpect(jsonPath("$.errors.errors").isEmpty());
+                jsonPath("$.errorContext.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
+            .andExpect(jsonPath("$.errorContext.errors").isArray())
+            .andExpect(jsonPath("$.errorContext.errors").isEmpty());
     }
     
     @Test
@@ -105,9 +105,9 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
                     "/api/internal/v2/assessment/passport-assessments/" +
                         passportAssessmentEntity.getId() + "/evidence"))
             .andExpect(
-                jsonPath("$.errors.code").value(ProblemDetailError.APPLICATION_ERROR.code()))
-            .andExpect(jsonPath("$.errors.errors").isArray())
-            .andExpect(jsonPath("$.errors.errors").isEmpty());
+                jsonPath("$.errorContext.code").value(ProblemDetailError.APPLICATION_ERROR.code()))
+            .andExpect(jsonPath("$.errorContext.errors").isArray())
+            .andExpect(jsonPath("$.errorContext.errors").isEmpty());
     }
 
     @Test

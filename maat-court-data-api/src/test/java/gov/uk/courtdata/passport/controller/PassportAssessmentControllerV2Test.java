@@ -46,7 +46,7 @@ class PassportAssessmentControllerV2Test {
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + LEGACY_PASSPORT_ASSESSMENT_ID))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-            .andExpect(jsonPath("$.errors.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
+            .andExpect(jsonPath("$.errorContext.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
             .andExpect(jsonPath("$.detail").value("No Passport Assessment found for ID: " + LEGACY_PASSPORT_ASSESSMENT_ID));
     }
 }

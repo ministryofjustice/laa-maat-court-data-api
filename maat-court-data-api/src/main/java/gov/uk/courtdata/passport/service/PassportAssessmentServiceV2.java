@@ -54,10 +54,12 @@ public class PassportAssessmentServiceV2 {
         return passportAssessmentMapper.toApiCreatePassportedAssessmentResponse(entity);
     }
 
-    /***
-     * Populate the partner fields on the PassportAssessmentEntity if request passed 3 conditions<ul>
+    /**
+     * Conditionally populate the partner fields on the PassportAssessmentEntity based on:
+     * <ul>
      *     <li>is over 18</li>
      *     <li>has a declared benefit</li>
+     *     <li>partner is the benefit recipient</li>
      *     <li>has a partner id</li>
      * </ul>
      * Otherwise will leave fields unpopulated.
@@ -66,7 +68,8 @@ public class PassportAssessmentServiceV2 {
      */
     private void populatePartnerDetails(ApiCreatePassportedAssessmentRequest request, PassportAssessmentEntity entity){
         PassportedAssessment assessment = request.getPassportedAssessment();
-        DeclaredBenefit declaredBenefit = assessment.getDeclaredBenefit();
+        DeclaredBenefit declaredBenefit = request.getPassportedAssessment().getDeclaredBenefit();
+        // check if should populate
         if(Boolean.FALSE.equals(assessment.getDeclaredUnder18())
                 && declaredBenefit != null
                 && PARTNER.equals(declaredBenefit.getBenefitRecipient())

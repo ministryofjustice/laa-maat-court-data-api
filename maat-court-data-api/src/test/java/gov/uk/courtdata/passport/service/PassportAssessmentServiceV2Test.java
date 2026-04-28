@@ -108,6 +108,7 @@ class PassportAssessmentServiceV2Test {
     private static Stream<Arguments> partnerPopulationConditionsThatShouldNotMap() {
         return Stream.of(
                 Arguments.of(true, true, APPLICANT_ID ), // isUnder18 should fail.
+                Arguments.of(false, true, APPLICANT_ID ), // Applicant is Recipient. ( Default )
                 Arguments.of(false, true, null ),        // no PartnerId.
                 Arguments.of(false, false, null )        // no declaredBenefit.
         );

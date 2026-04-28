@@ -1,5 +1,6 @@
 package gov.uk.courtdata.passport.validator;
 
+import gov.uk.courtdata.applicant.service.ApplicantService;
 import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import lombok.AllArgsConstructor;
@@ -7,12 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentRequest;
 import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
+import uk.gov.justice.laa.crime.common.model.passported.PassportedAssessment;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static uk.gov.justice.laa.crime.enums.BenefitRecipient.PARTNER;
 import static uk.gov.justice.laa.crime.enums.BenefitType.JSA;
 
 @Slf4j
@@ -23,11 +26,14 @@ public class CreatePassportAssessmentV2Validator {
     private final RepOrderService repOrderService;
     private static final String LEGACY_APPLICATION_ID_FIELD = "passportedAssessmentMetadata.legacyApplicationId";
     private static final String LAST_SIGN_ON_DATE_FIELD = "passportedAssessment.declaredBenefit.lastSignOnDate";
+    private static final String LEGACY_PARTNER_ID_FIELD = "passportedAssessment.declaredBenefit.legacyPartnerId";
+    private final ApplicantService applicantService;
 
     public void validateCreateRequest(ApiCreatePassportedAssessmentRequest request){
         List<ErrorMessage> errorMessages = Stream.of(
                 validateLastSignOnDate(request),
-                validateRepOrder(request)
+                validateRepOrder(request),
+                validatePartner(request)
         ).flatMap(Optional::stream).toList();
         if(!errorMessages.isEmpty()){
             throw new CrimeValidationException(errorMessages);
@@ -55,5 +61,22 @@ public class CreatePassportAssessmentV2Validator {
         }
         return Optional.empty();
     }
+
+    private Optional<ErrorMessage> validatePartner(ApiCreatePassportedAssessmentRequest request){
+        PassportedAssessment assessment = request.getPassportedAssessment();
+        DeclaredBenefit declaredBenefit = assessment.getDeclaredBenefit();
+        if(Boolean.FALSE.equals(assessment.getDeclaredUnder18())
+                && declaredBenefit != null
+                && PARTNER.equals(declaredBenefit.getBenefitRecipient())){
+            if(declaredBenefit.getLegacyPartnerId() == null){
+                return Optional.of(new ErrorMessage(LEGACY_PARTNER_ID_FIELD,"Partner Id must be populated if partner receiving benefit"));
+            }
+            else if (!applicantService.exists(declaredBenefit.getLegacyPartnerId())) {
+                return Optional.of(new ErrorMessage(LEGACY_PARTNER_ID_FIELD,"Partner does not exist"));
+            }
+        }
+        return Optional.empty();
+    }
+
 
 }

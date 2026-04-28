@@ -16,6 +16,7 @@ import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,11 +62,17 @@ public class RepOrderService {
         return repOrderMapper.repOrderEntityToRepOrderDTO(repOrder);
     }
 
+    @SuppressWarnings("squid:S6809")
     @Transactional
     public RepOrderDTO updateDateCompleted(final UpdateAppDateCompleted updateAppDateCompleted) {
+        return repOrderMapper.repOrderEntityToRepOrderDTO(updateDateCompleted(updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted()));
+    }
+
+    @Transactional
+    public RepOrderEntity updateDateCompleted(Integer repId, LocalDateTime dateCompleted) {
         log.info("update app date completed - Transaction Processing - Start");
-        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderImpl
-                .updateAppDateCompleted(updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted()));
+        return repOrderImpl
+                .updateAppDateCompleted(repId, dateCompleted);
     }
 
     @Transactional

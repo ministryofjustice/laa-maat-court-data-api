@@ -35,6 +35,7 @@ import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -43,6 +44,7 @@ import java.util.stream.Stream;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
+import gov.uk.courtdata.repository.RepOrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -85,6 +87,9 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
     @MockitoSpyBean
     private PassportAssessmentRepository passportAssessmentRepository;
+
+    @MockitoSpyBean
+    private RepOrderRepository repOrderRepository;
 
     private PassportAssessmentEntity existingPassportAssessmentEntity;
     private FinancialAssessmentEntity existingFinancialAssessmentEntity;
@@ -375,6 +380,10 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .filter(x->YES.equals(x.getReplaced())))
                 .hasSize(1);
 
+        // check assessment completed date has been set on the RepOrder.
+        Optional<RepOrderEntity> repOrder = repos.repOrder.findById(repId);
+        assertThat(repOrder).isPresent().get().hasFieldOrPropertyWithValue("assessmentDateCompleted", LocalDate.now());
+
         // validate mapper is being called.
         verify(passportMapperV2).toPassportAssessmentEntity(any());
         verify(passportMapperV2).toApiCreatePassportedAssessmentResponse(any());
@@ -427,6 +436,12 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         runAndValidateDatabaseFailureOnCreatePassportedV2();
     }
 
+    @Test
+    void givenMaatFailureOnRepOrderDateSetting_whenCreateAssessmentV2IsInvoked_theTransactionIsRolledBack() throws Exception {
+        doThrow(new DataIntegrityViolationException("Test Exception")).when(repOrderRepository).saveAndFlush(any());
+        runAndValidateDatabaseFailureOnCreatePassportedV2();
+    }
+
     private void runAndValidateDatabaseFailureOnCreatePassportedV2() throws Exception {
 
         Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
@@ -474,6 +489,11 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         assertThat(repos.hardshipReview.findAll().stream()
                 .filter(x -> x.getRepId().equals(repId))
                 .filter(x->NO.equals(x.getReplaced()))).hasSize(1);
+
+        // check assessment completed date has not been set.
+        Optional<RepOrderEntity> repOrder = repos.repOrder.findById(repId);
+        assertThat(repOrder).isPresent().get().hasFieldOrPropertyWithValue("assessmentDateCompleted", null);
+
 
         // validate mapper is being called.
         verify(passportMapperV2).toPassportAssessmentEntity(any());

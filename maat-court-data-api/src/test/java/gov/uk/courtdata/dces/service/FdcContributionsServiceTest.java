@@ -5,6 +5,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
+import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
 import gov.uk.courtdata.dces.request.UpdateFdcContributionRequest;
 import gov.uk.courtdata.dces.response.FdcContributionEntry;
 import gov.uk.courtdata.dces.response.FdcContributionsGlobalUpdateResponse;
@@ -302,9 +303,10 @@ class FdcContributionsServiceTest {
         String errorText = "Error Text";
 
         when(fdcContributionsRepository.findById(id)).thenReturn(Optional.empty());
+        LogFdcProcessedRequest request = TestModelDataBuilder.getLogFdcProcessedRequest(id, errorText);
         // do
         assertThrows(RequestedObjectNotFoundException.class, () ->
-                fdcContributionsService.logFdcProcessed(TestModelDataBuilder.getLogFdcProcessedRequest(id, errorText)));
+                fdcContributionsService.logFdcProcessed(request));
         // verify
         verify(fdcContributionsRepository).findById(id);
         verify(contributionFilesRepository, never()).findById(any());
@@ -319,10 +321,11 @@ class FdcContributionsServiceTest {
         int fileId = 10000;
 
         FdcContributionsEntity fdcEntity = TestEntityDataBuilder.getPopulatedFdcContributionsEntity(id, repId, fileId);
+        LogFdcProcessedRequest request = TestModelDataBuilder.getLogFdcProcessedRequest(id, "");
         when(fdcContributionsRepository.findById(id)).thenReturn(Optional.of(fdcEntity));
         // do
         assertThrows(NoSuchElementException.class, () ->
-                fdcContributionsService.logFdcProcessed(TestModelDataBuilder.getLogFdcProcessedRequest(id, "")));
+                fdcContributionsService.logFdcProcessed(request));
         // verify
         verify(fdcContributionsRepository).findById(id);
         verify(debtCollectionService).updateContributionFileReceivedCount(any());
@@ -332,7 +335,7 @@ class FdcContributionsServiceTest {
 
     @Test
     void testGetFdcContribution() {
-        when(fdcContributionsRepository.findById(expectedId)).thenReturn(Optional.of(fdcContributionsEntityList.get(0)));
+        when(fdcContributionsRepository.findById(expectedId)).thenReturn(Optional.of(fdcContributionsEntityList.getFirst()));
 
         FdcContributionEntry result = fdcContributionsService.getFdcContribution(expectedId);
 
@@ -351,9 +354,7 @@ class FdcContributionsServiceTest {
         assertThat(exception.getMessage()).isEqualTo("fdc_contribution could not be found by id");
     }
 
-    /***
-     * Create a contributions file to the exact specifications so that mappings can be properly tested.
-     */
+    /** Create a contributions file to the exact specifications so that mappings can be properly tested. */
     private void setupFdcContributionsFile() {
         fdcContributionsEntityList = new ArrayList<>();
         RepOrderEntity repOrderEntity = TestEntityDataBuilder.getPopulatedRepOrder();
@@ -388,8 +389,8 @@ class FdcContributionsServiceTest {
     private void assertEqualsWithExpectedValues(FdcContributionsResponse response) {
         List<FdcContributionEntry> fdcContributionEntries = response.getFdcContributions();
         assertThat(fdcContributionEntries).isNotEmpty();
-        FdcContributionEntry responseValue = fdcContributionEntries.get(0);
-        FdcContributionsEntity expectedValue = fdcContributionsEntityList.get(0);
+        FdcContributionEntry responseValue = fdcContributionEntries.getFirst();
+        FdcContributionsEntity expectedValue = fdcContributionsEntityList.getFirst();
         assertThat(responseValue.getId()).isEqualTo(expectedValue.getId());
         assertThat(responseValue.getFinalCost()).isEqualTo(expectedValue.getFinalCost());
         assertThat(responseValue.getAgfsCost()).isEqualTo(expectedValue.getAgfsCost());

@@ -13,7 +13,7 @@ import org.mapstruct.ReportingPolicy;
  */
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface HearingDTOMapper {
-    /***
+    /**
      *  Map from hearing resulted to hearing DTO.
      * @param hearingResulted
      * @return

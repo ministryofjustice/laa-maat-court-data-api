@@ -77,7 +77,7 @@ public class DebtCollectionRepository {
         return true;
     }
 
-    /***
+    /**
      * This method inserts/updates CONTRIBUTION_FILES. It's required due to the manipulation/saving of the XML type fields
      * These fields do not have a proper mapping on JPA, and as such they are treated as characters, with the inbuilt character
      * limits. Which XML, as a clob extension, do not have. This method avoids this issue by saving as a clob using jdbcTemplates.
@@ -114,7 +114,7 @@ public class DebtCollectionRepository {
         }
     }
 
-    /***
+    /**
      * A helper method to generate the SQL needed for the CONTRIBUTION_FILES INSERT statements.
      *
      * @param fieldMap Map containing all the field names, and values to be inserted.
@@ -149,7 +149,7 @@ public class DebtCollectionRepository {
     }
 
 
-    /***
+    /**
      * Sets the STATUS of Fdc Contributions to either INVALID, or REQUESTED, when they meet a range of criteria.
      * More detail on the FDC Merge statements can be found here:
      * <a href="https://dsdmoj.atlassian.net/wiki/spaces/DCES/pages/4541743889/Global+FDC+Contribution+Update+PL+SQL+issues">Global FDC Contribution Update PL SQL issues</a>
@@ -225,7 +225,7 @@ public class DebtCollectionRepository {
         return jdbcTemplate.update(query, delay);
     }
 
-    /***
+    /**
      * Sets the STATUS of Fdc Contributions to either INVALID, or REQUESTED, when they meet a range of criteria.
      * More detail on the FDC Merge statements can be found here:
      *      * <a href="https://dsdmoj.atlassian.net/wiki/spaces/DCES/pages/4541743889/Global+FDC+Contribution+Update+PL+SQL+issues">Global FDC Contribution Update PL SQL issues</a>

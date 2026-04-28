@@ -59,7 +59,7 @@ public class FdcContributionsService {
             .build();
     }
 
-    /***
+    /**
      * Maps the Entity into a Entry to be sent in the response, trimming un-needed fields.
      * Note that FdcContributionMapper.mapContributionEntry does not map the RepOrderEntity fields.
      * @param entity FdcContributionEntity Entity to be mapped

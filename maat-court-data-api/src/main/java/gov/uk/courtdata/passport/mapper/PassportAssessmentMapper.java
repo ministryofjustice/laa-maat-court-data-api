@@ -75,7 +75,7 @@ public interface PassportAssessmentMapper {
         target.setUniversalCredit(mapBenefitType(BenefitType.UC, source));
         target.setDateCompleted(LocalDateTime.now());
 
-        // TODO: LCAM-2074 To be finalized.
+        // TODO: LCAM-2073 To be finalized.
         target.setUnder18HeardInYouthCourt(mapUnder18CourtType(false, source));
         target.setUnder18HeardInMagsCourt(mapUnder18CourtType(true, source));
         return target;
@@ -103,7 +103,7 @@ public interface PassportAssessmentMapper {
                 ? YES : NO;
     }
 
-    // TODO: LCAM-2074 - Get logic for determining values here. Request is placeholder to allow for full access to objects.
+    // TODO: LCAM-2073 - Get logic for determining values here. Request is placeholder to allow for full access to objects.
     // Understanding is this is an either/or, so both logic will be linked.
     default String mapUnder18CourtType(boolean isMags, ApiCreatePassportedAssessmentRequest request){
         if (Boolean.TRUE.equals(request.getPassportedAssessment().getDeclaredUnder18())){

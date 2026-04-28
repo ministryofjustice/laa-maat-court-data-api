@@ -506,7 +506,7 @@ class PassportAssessmentMapperTest {
         assertThat(entity.getUsn()).isEqualTo(request.getPassportedAssessmentMetadata().getUsn());
         assertThat(entity.getCmuId()).isEqualTo(request.getPassportedAssessmentMetadata().getCaseManagementUnitId());
         assertThat(entity.getResult()).isEqualTo(request.getPassportedAssessment().getAssessmentDecision().getCode());
-        // TODO: LCAM-2074 - Under 18 court asserts.
+        // TODO: LCAM-2073 - Under 18 court asserts.
 //        assertThat(entity.getUnder18HeardInMagsCourt()).isEqualTo(request.getPassportedAssessment().getDecisionReason().getConfirmation());
 //        assertThat(entity.getUnder18HeardInYouthCourt()).isEqualTo(request.getPassportedAssessment().getDecisionReason().getConfirmation());
     }

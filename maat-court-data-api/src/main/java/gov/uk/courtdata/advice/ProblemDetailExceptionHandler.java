@@ -1,7 +1,7 @@
 package gov.uk.courtdata.advice;
 
 import gov.uk.courtdata.exception.CrimeValidationException;
-import gov.uk.courtdata.exception.RecordEmptyException;
+import gov.uk.courtdata.exception.InvalidPassportEvidenceStateException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.iojappeal.controller.IOJAppealControllerV2;
 import gov.uk.courtdata.passport.controller.PassportAssessmentControllerV2;
@@ -102,10 +102,10 @@ public class ProblemDetailExceptionHandler {
                 ex.getExceptionMessages());
     }
 
-    @ExceptionHandler(RecordEmptyException.class)
-    public ResponseEntity<ProblemDetail> handleRecordEmpty(RecordEmptyException ex) {
+    @ExceptionHandler(InvalidPassportEvidenceStateException.class)
+    public ResponseEntity<ProblemDetail> handleInvalidPassportEvidenceState(InvalidPassportEvidenceStateException ex) {
         log.warn("Required record is empty. TraceId={} Detail={}", getTraceId(), ex.getMessage());
-        return buildResponse(HttpStatus.NOT_FOUND, ProblemDetailError.OBJECT_NOT_FOUND, 
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ProblemDetailError.APPLICATION_ERROR, 
             ex.getMessage(), List.of());
     }
 

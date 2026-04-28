@@ -11,7 +11,7 @@ import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEvidenceEntity;
-import gov.uk.courtdata.exception.RecordEmptyException;
+import gov.uk.courtdata.exception.InvalidPassportEvidenceStateException;
 import gov.uk.courtdata.passport.mapper.PassportAssessmentEvidenceMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -126,7 +126,7 @@ class PassportAssessmentEvidenceServiceTest {
         when(partnerResolver.getPartnerLegacyId(passportAssessmentEntity.getRepOrder().getId())).thenReturn(PARTNER_ID);
 
         assertThatThrownBy(() -> passportAssessmentEvidenceService.find(LEGACY_PASSPORT_ASSESSMENT_ID)).isInstanceOf(
-                RecordEmptyException.class)
+                InvalidPassportEvidenceStateException.class)
             .hasMessageContaining("Passport assessment evidence is missing applicant reference");
     }
     

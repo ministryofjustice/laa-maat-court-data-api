@@ -89,11 +89,11 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
         passportAssessmentEntity = repos.passportAssessment.saveAndFlush(passportAssessmentEntity);
         
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL, passportAssessmentEntity.getId()))
-            .andExpect(status().isNotFound())
+            .andExpect(status().isInternalServerError())
             .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
             .andExpect(jsonPath("$.type").value("about:blank"))
-            .andExpect(jsonPath("$.title").value("Not Found"))
-            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.title").value("Internal Server Error"))
+            .andExpect(jsonPath("$.status").value(500))
             .andExpect(jsonPath("$.detail")
                 .value("Passport assessment evidence is missing applicant reference"))
             .andExpect(
@@ -101,7 +101,7 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
                     "/api/internal/v2/assessment/passport-assessments/" +
                         passportAssessmentEntity.getId() + "/evidence"))
             .andExpect(
-                jsonPath("$.errors.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
+                jsonPath("$.errors.code").value(ProblemDetailError.APPLICATION_ERROR.code()))
             .andExpect(jsonPath("$.errors.errors").isArray())
             .andExpect(jsonPath("$.errors.errors").isEmpty());
     }

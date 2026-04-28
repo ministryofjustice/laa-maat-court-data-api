@@ -44,16 +44,16 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
             .andExpect(jsonPath("$.passportEvidenceMetadata.firstReminderDate").value(passportAssessmentEntity.getFirstPassportReminderDate().toLocalDate().toString()))
             .andExpect(jsonPath("$.passportEvidenceMetadata.secondReminderDate").value(passportAssessmentEntity.getSecondPassportReminderDate().toLocalDate().toString()))
             .andExpect(jsonPath("$.passportEvidenceMetadata.incomeEvidenceNotes").value(passportAssessmentEntity.getPassportEvidenceNotes()))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].id").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getId()))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].dateReceived").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getDateReceived().toLocalDate().toString()))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].evidenceType").value(IncomeEvidenceType.getFrom(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getIncomeEvidence()).getName()))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].mandatory").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getMandatory().equals("Y")))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].description").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getOtherText()))
-            .andExpect(jsonPath("$.partnerEvidenceItems[0].id").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getId()))
-            .andExpect(jsonPath("$.partnerEvidenceItems[0].dateReceived").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getDateReceived().toLocalDate().toString()))
-            .andExpect(jsonPath("$.partnerEvidenceItems[0].evidenceType").value(IncomeEvidenceType.getFrom(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getIncomeEvidence()).getName()))
-            .andExpect(jsonPath("$.partnerEvidenceItems[0].mandatory").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getMandatory().equals("Y")))
-            .andExpect(jsonPath("$.partnerEvidenceItems[0].description").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(1).getOtherText()));
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].id").value(applicantEvidenceEntity.getId()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].dateReceived").value(applicantEvidenceEntity.getDateReceived().toLocalDate().toString()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].evidenceType").value(IncomeEvidenceType.getFrom(applicantEvidenceEntity.getIncomeEvidence()).getName()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].mandatory").value(applicantEvidenceEntity.getMandatory().equals("Y")))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].description").value(applicantEvidenceEntity.getOtherText()))
+            .andExpect(jsonPath("$.partnerEvidenceItems[0].id").value(partnerEvidenceEntity.getId()))
+            .andExpect(jsonPath("$.partnerEvidenceItems[0].dateReceived").value(partnerEvidenceEntity.getDateReceived().toLocalDate().toString()))
+            .andExpect(jsonPath("$.partnerEvidenceItems[0].evidenceType").value(IncomeEvidenceType.getFrom(partnerEvidenceEntity.getIncomeEvidence()).getName()))
+            .andExpect(jsonPath("$.partnerEvidenceItems[0].mandatory").value(partnerEvidenceEntity.getMandatory().equals("Y")))
+            .andExpect(jsonPath("$.partnerEvidenceItems[0].description").value(partnerEvidenceEntity.getOtherText()));
     }
 
     @Test
@@ -83,9 +83,13 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenNoApplicantIdOnEvidence_whenFindIsInvoked_thenExceptionIsThrown() throws Exception {
         buildEntities();
-        applicantEvidenceEntity.setApplicant(null);
+
+        applicantEvidenceEntity =
+            TestEntityDataBuilder.getPassportAssessmentEvidenceEntity(passportAssessmentEntity, null,
+                DATE_TIME);
+        applicantEvidenceEntity.setId(null);
         applicantEvidenceEntity.setPassportAssessment(passportAssessmentEntity);
-        passportAssessmentEntity.getPassportAssessmentEvidences().set(0, applicantEvidenceEntity);
+        passportAssessmentEntity.addPassportAssessmentEvidences(applicantEvidenceEntity);
         passportAssessmentEntity = repos.passportAssessment.saveAndFlush(passportAssessmentEntity);
         
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL, passportAssessmentEntity.getId()))
@@ -123,11 +127,11 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
             .andExpect(jsonPath("$.passportEvidenceMetadata.firstReminderDate").value(passportAssessmentEntity.getFirstPassportReminderDate().toLocalDate().toString()))
             .andExpect(jsonPath("$.passportEvidenceMetadata.secondReminderDate").value(passportAssessmentEntity.getSecondPassportReminderDate().toLocalDate().toString()))
             .andExpect(jsonPath("$.passportEvidenceMetadata.incomeEvidenceNotes").value(passportAssessmentEntity.getPassportEvidenceNotes()))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].id").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getId()))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].dateReceived").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getDateReceived().toLocalDate().toString()))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].evidenceType").value(IncomeEvidenceType.getFrom(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getIncomeEvidence()).getName()))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].mandatory").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getMandatory().equals("Y")))
-            .andExpect(jsonPath("$.applicantEvidenceItems[0].description").value(passportAssessmentEntity.getPassportAssessmentEvidences().get(0).getOtherText()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].id").value(applicantEvidenceEntity.getId()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].dateReceived").value(applicantEvidenceEntity.getDateReceived().toLocalDate().toString()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].evidenceType").value(IncomeEvidenceType.getFrom(applicantEvidenceEntity.getIncomeEvidence()).getName()))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].mandatory").value(applicantEvidenceEntity.getMandatory().equals("Y")))
+            .andExpect(jsonPath("$.applicantEvidenceItems[0].description").value(applicantEvidenceEntity.getOtherText()))
             .andExpect(jsonPath("$.partnerEvidenceItems").isEmpty());
     }
 
@@ -150,6 +154,7 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
         repos.repOrderApplicantLinks.saveAndFlush(repOrderApplicantLinksEntity);
 
         passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
+        passportAssessmentEntity.setId(null);
         passportAssessmentEntity.getRepOrder().setId(repOrderEntity.getId());
         passportAssessmentEntity.setPassportEvidenceDueDate(DATE_TIME);
         passportAssessmentEntity.setAllPassportEvidenceReceivedDate(DATE_TIME);

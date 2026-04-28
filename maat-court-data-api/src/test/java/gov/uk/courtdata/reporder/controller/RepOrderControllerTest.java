@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,7 +27,6 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
 import gov.uk.courtdata.model.reporder.MaatSearchRequest;
-import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import gov.uk.courtdata.reporder.service.RepOrderMvoRegService;
 import gov.uk.courtdata.reporder.service.RepOrderMvoService;
 import gov.uk.courtdata.reporder.service.RepOrderService;
@@ -71,7 +69,6 @@ class RepOrderControllerTest {
     private static final String CASE_TYPE_VALUE = "SUMMARY ONLY";
     private static final String IOJ_RESULT_VALUE = "PASS";
     private static final String IOJ_ASSESSOR_FULL_NAME = "Maeve OConnor";
-    private static final String IOJ_ASSESSOR_USERNAME = "ocon-m";
     private static final String DATE_APP_CREATED_VALUE = "2015-01-09";
     private static final String MEANS_INIT_RESULT_VALUE = "PASS";
     private static final String MEANS_INIT_STATUS_VALUE = "COMPLETE";
@@ -348,15 +345,20 @@ class RepOrderControllerTest {
 
     @Test
     void givenValidRequest_whenUpdateRepOrderIsInvoked_thenUpdateIsSuccess() throws Exception {
-        doNothing().when(repOrderService)
-                .update(TestModelDataBuilder.REP_ID, Map.of("iojResult", "PASS"));
-
+        RepOrderDTO repOrderDTO = TestModelDataBuilder.getRepOrderDTO();
+        repOrderDTO.setIojResult(IOJ_RESULT_VALUE);
         String requestJson = "{\"iojResult\":\"PASS\"}";
+
+        when(repOrderService.update(TestModelDataBuilder.REP_ID, Map.of("iojResult", IOJ_RESULT_VALUE)))
+            .thenReturn(repOrderDTO);
+
         mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/" + TestModelDataBuilder.REP_ID)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        verify(repOrderService).update(TestModelDataBuilder.REP_ID, Map.of("iojResult", "PASS"));
+                .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(TestModelDataBuilder.REP_ID))
+            .andExpect(jsonPath("$.iojResult").value(IOJ_RESULT_VALUE));
+        verify(repOrderService).update(TestModelDataBuilder.REP_ID, Map.of("iojResult", IOJ_RESULT_VALUE));
     }
 
 

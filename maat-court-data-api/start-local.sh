@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # Specify the vault and the document name in 1Password
-VAULT="LAA Crime Apps - Shared"
+VAULT="LAA Crime Apps"
 DOCUMENT="EnvironmentVariables-MAATCourtDataApi-App"
 APP_ENV_FILE="./app.env"
 

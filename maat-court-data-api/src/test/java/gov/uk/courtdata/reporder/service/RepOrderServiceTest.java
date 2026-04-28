@@ -3,6 +3,7 @@ package gov.uk.courtdata.reporder.service;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.AssessorDetails;
+import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -166,13 +167,17 @@ class RepOrderServiceTest {
     @Test
     void givenAValidInput_whenUpdateIsInvoked_thenUpdateIsSuccess() {
         RepOrderEntity repOrder = TestEntityDataBuilder.getPopulatedRepOrder(TestModelDataBuilder.REP_ID);
-        when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrder));
         HashMap<String, Object> inputMap = new HashMap<>();
         inputMap.put("iojResult", "PASS");
         inputMap.put("dateModified", LocalDateTime.now().toString());
-        repOrderService.update(TestModelDataBuilder.REP_ID, inputMap);
+        when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrder));
+        when(repOrderRepository.save(repOrder)).thenReturn(repOrder);
+        RepOrderDTO repOrderDTO = repOrderService.update(TestModelDataBuilder.REP_ID, inputMap);
         verify(repOrderRepository, atLeastOnce()).findById(any());
         verify(repOrderRepository, atLeastOnce()).save(any());
+        assertEquals(TestModelDataBuilder.REP_ID ,repOrderDTO.getId());
+        assertEquals(inputMap.get("iojResult"), repOrderDTO.getIojResult());
+        assertEquals(inputMap.get("dateModified").toString(), repOrderDTO.getDateModified().toString());
     }
 
     @Test

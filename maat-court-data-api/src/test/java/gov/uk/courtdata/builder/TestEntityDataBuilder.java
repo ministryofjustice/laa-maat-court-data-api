@@ -408,6 +408,27 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static PassportAssessmentEvidenceEntity getPassportAssessmentEvidenceEntity(
+        PassportAssessmentEntity passportAssessmentEntity, Applicant applicant, LocalDateTime date) {
+        
+        return PassportAssessmentEvidenceEntity.builder()
+            .id(5678)
+            .passportAssessment(passportAssessmentEntity)
+            .dateReceived(date)
+            .dateCreated(date)
+            .userCreated(passportAssessmentEntity.getUserCreated())
+            .dateModified(date)
+            .userModified(passportAssessmentEntity.getUserCreated())
+            .active("Y")
+            .removedDate(null)
+            .mandatory("Y")
+            .otherText("Applicant NINO")
+            .adhoc(null)
+            .incomeEvidence("NINO")
+            .applicant(applicant)
+            .build();
+    }
+
     public static HardshipReviewEntity getHardshipReviewEntityWithRelationships() {
         HardshipReviewEntity hardshipReview = getHardshipReviewEntity();
         hardshipReview.addReviewDetail(getHardshipReviewDetailsEntity());

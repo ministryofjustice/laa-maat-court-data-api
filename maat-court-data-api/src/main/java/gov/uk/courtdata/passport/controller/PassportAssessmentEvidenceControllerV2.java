@@ -1,7 +1,7 @@
 package gov.uk.courtdata.passport.controller;
 
 import gov.uk.courtdata.annotation.StandardProblemDetailErrorResponse;
-import gov.uk.courtdata.passport.service.PassportAssessmentServiceV2;
+import gov.uk.courtdata.passport.service.PassportAssessmentEvidenceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -12,22 +12,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiGetPassportEvidenceResponse;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Passported assessment", description = "Rest API for passported assessments")
-@RequestMapping("${api-endpoints.assessments-domain-v2}/passport-assessments")
-public class PassportAssessmentControllerV2 {
-
-    private final PassportAssessmentServiceV2 passportAssessmentService;
+@RequestMapping("${api-endpoints.assessments-domain-v2}/passport-assessments/{id}/evidence")
+public class PassportAssessmentEvidenceControllerV2 {
     
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Retrieve a passport assessment")
+    private final PassportAssessmentEvidenceService passportAssessmentEvidenceService;
+    
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve passport assessment evidence")
     @StandardProblemDetailErrorResponse
-    public ResponseEntity<ApiGetPassportedAssessmentResponse> find(@PathVariable int id) {
-        log.info("Get Passported Assessment Received: id: {}", id);
-        return ResponseEntity.ok(passportAssessmentService.find(id));
+    public ResponseEntity<ApiGetPassportEvidenceResponse> find(@PathVariable int id) {
+        log.info("Get Passported Assessment Evidence Received: id: {}", id);
+        return ResponseEntity.ok(passportAssessmentEvidenceService.find(id));
     }
 }

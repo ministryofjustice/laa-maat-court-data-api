@@ -35,6 +35,9 @@ import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiGetPassportEvidenceResponse;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiIncomeEvidence;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiPassportEvidenceMetadata;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
@@ -67,6 +70,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
+import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 
 import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
 
@@ -621,6 +625,36 @@ public class TestModelDataBuilder {
             .withAssessmentDecision(PassportAssessmentDecision.PASS)
             .withDecisionReason(PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED)
             .withNotes("Test notes");
+    }
+    
+    public static ApiGetPassportEvidenceResponse getApiGetPassportedEvidenceResponse() {
+        return new ApiGetPassportEvidenceResponse()
+            .withPassportEvidenceMetadata(getApiPassportEvidenceMetadata())
+            .withApplicantEvidenceItems(List.of(getApiIncomeEvidence()))
+            .withPartnerEvidenceItems(List.of(getApiIncomeEvidence()));
+    }
+
+
+    public static ApiPassportEvidenceMetadata getApiPassportEvidenceMetadata() {
+        LocalDate date = LocalDate.now();
+        
+        return new ApiPassportEvidenceMetadata()
+            .withEvidenceDueDate(date)
+            .withEvidenceReceivedDate(date)
+            .withIncomeEvidenceNotes("Notes here")
+            .withFirstReminderDate(date)
+            .withSecondReminderDate(date)
+            .withUpliftAppliedDate(date)
+            .withUpliftRemovedDate(date);
+    }
+    
+    public static ApiIncomeEvidence getApiIncomeEvidence() {
+        return new ApiIncomeEvidence()
+            .withId(1)
+            .withDescription("Description here")
+            .withEvidenceType(IncomeEvidenceType.CDS15)
+            .withDateReceived(LocalDate.now())
+            .withMandatory(true);
     }
 
     public static String getCreatePassportAssessmentJson() {
@@ -1889,6 +1923,20 @@ public class TestModelDataBuilder {
                   "caseType": "%s"
                 }
                 """.formatted(firstName, TEST_DATE.toLocalDate(), ASN_NUMBER, TEST_DATE.toLocalDate(), NI_NUMBER, CASE_TYPE_VALUE);
+    }
+
+    public static String getMaatSearchRequestJsonWithNullDob() {
+        return """
+                {
+                  "firstName": "firstName",
+                  "lastName": "LastName",
+                  "dob": null,
+                  "asn": "%s",
+                  "committalDate": "%s",
+                  "niNumber": "%s",
+                  "caseType": "%s"
+                }
+                """.formatted(ASN_NUMBER, TEST_DATE.toLocalDate(), NI_NUMBER, CASE_TYPE_VALUE);
     }
 
     public static MaatSearchRequest getMaatSearchRequest() {

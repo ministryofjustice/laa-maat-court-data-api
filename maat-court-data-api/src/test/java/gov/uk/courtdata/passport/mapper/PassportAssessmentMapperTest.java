@@ -6,7 +6,6 @@ import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static org.assertj.core.api.Assertions.within;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Named.named;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
@@ -90,11 +89,9 @@ class PassportAssessmentMapperTest {
         RepOrderApplicantLinksDTO repOrderApplicantLinksDto = getRepOrderApplicantLinksDto(
             entity, applicantLinksEntity, null);
 
-        when(repOrderApplicantLinksRepository.findAllByRepId(anyInt())).thenReturn(List.of(
-            applicantLinksEntity));
         when(repOrderApplicantLinksMapper.mapEntityToDTO(List.of(applicantLinksEntity))).thenReturn(List.of(repOrderApplicantLinksDto));
         
-        var response = passportAssessmentMapper.toApiGetPassportedAssessmentResponse(entity);
+        var response = passportAssessmentMapper.toApiGetPassportedAssessmentResponse(entity, applicantLinksEntity.getPartnerApplId());
 
         assertThat(response.getLegacyAssessmentId()).isEqualTo(entity.getId());
         assertThat(response.getAssessmentId()).isNull();
@@ -119,7 +116,7 @@ class PassportAssessmentMapperTest {
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setUnder18HeardInMagsCourt(YES);
 
-        var response = passportAssessmentMapper.toApiGetPassportedAssessmentResponse(entity);
+        var response = passportAssessmentMapper.toApiGetPassportedAssessmentResponse(entity, null);
 
         assertThat(response.getLegacyAssessmentId()).isEqualTo(entity.getId());
         assertThat(response.getDeclaredUnder18()).isTrue();

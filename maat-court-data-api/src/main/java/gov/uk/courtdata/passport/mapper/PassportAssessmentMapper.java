@@ -1,6 +1,11 @@
 package gov.uk.courtdata.passport.mapper;
 
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import java.util.Map;
+import java.util.Set;
+import org.mapstruct.Condition;
+import org.mapstruct.ConditionStrategy;
+import org.mapstruct.Context;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +25,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring",
     implementationName = "<CLASS_NAME>V2Impl", uses = PassportAssessmentMapperHelper.class, imports = {LocalDateTime.class, BenefitType.class})
 public interface PassportAssessmentMapper {
-    
+
     @Mapping(target = "caseManagementUnitId", source = "cmuId")
     @Mapping(target = "legacyAssessmentId", source = "id")
     @Mapping(target = "assessmentReason", source = "nworCode")
@@ -34,7 +39,7 @@ public interface PassportAssessmentMapper {
     @Mapping(target = "decisionReason", source = "passportAssessmentEntity",
         qualifiedByName = "decisionReasonMapper")
     ApiGetPassportedAssessmentResponse toApiGetPassportedAssessmentResponse(
-            PassportAssessmentEntity passportAssessmentEntity);
+        PassportAssessmentEntity passportAssessmentEntity, @Context Integer partnerLegacyId);
 
     @Mapping(target = "legacyAssessmentId", source = "id")
     ApiCreatePassportedAssessmentResponse toApiCreatePassportedAssessmentResponse(PassportAssessmentEntity entity);

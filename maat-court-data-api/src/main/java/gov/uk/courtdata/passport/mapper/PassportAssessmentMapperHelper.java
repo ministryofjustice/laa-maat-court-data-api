@@ -5,7 +5,7 @@ import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.applicant.mapper.RepOrderApplicantLinksMapper;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +13,7 @@ import java.util.Set;
 
 import gov.uk.courtdata.entity.RepOrderEntity;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Context;
 import org.mapstruct.Condition;
 import org.mapstruct.ConditionStrategy;
 import org.mapstruct.Named;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
 import uk.gov.justice.laa.crime.enums.BenefitRecipient;
 import uk.gov.justice.laa.crime.enums.BenefitType;
+import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 import uk.gov.justice.laa.crime.enums.PassportAssessmentDecision;
 import uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason;
 
@@ -39,7 +41,7 @@ import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.IN
 @Component
 @RequiredArgsConstructor
 public class PassportAssessmentMapperHelper {
-    
+
     private final RepOrderApplicantLinksRepository repOrderApplicantLinksRepository;
     private final RepOrderApplicantLinksMapper repOrderApplicantLinksMapper;
 
@@ -98,13 +100,14 @@ public class PassportAssessmentMapperHelper {
     }
 
     @Named("declaredBenefitMapper")
-    public DeclaredBenefit mapDeclaredBenefit(PassportAssessmentEntity passportAssessmentEntity) {
+    public DeclaredBenefit mapDeclaredBenefit(PassportAssessmentEntity passportAssessmentEntity,
+        @Context Integer partnerLegacyId) {
         DeclaredBenefit declaredBenefit = new DeclaredBenefit();
 
         declaredBenefit.setBenefitType(mapBenefitType(passportAssessmentEntity));
         declaredBenefit.setLastSignOnDate(passportAssessmentEntity.getLastSignOnDate());
         declaredBenefit.setBenefitRecipient(mapBenefitRecipient(passportAssessmentEntity));
-        declaredBenefit.setLegacyPartnerId(mapPartnerLegacyId(passportAssessmentEntity));
+        declaredBenefit.setLegacyPartnerId(partnerLegacyId);
 
         return declaredBenefit;
     }
@@ -137,6 +140,22 @@ public class PassportAssessmentMapperHelper {
         }
 
         return null;
+    }
+
+
+    @Named("mapEvidenceDateReceived")
+    public LocalDate mapEvidenceDateReceived(LocalDateTime dateReceived) {
+        return dateReceived != null ? dateReceived.toLocalDate() : null;
+    }
+
+    @Named("mapEvidenceMandatory")
+    public boolean mapEvidenceMandatory(String mandatory) {
+        return "Y".equals(mandatory);
+    }
+
+    @Named("mapEvidenceType")
+    public IncomeEvidenceType mapEvidenceType(String evidenceType) {
+        return IncomeEvidenceType.getFrom(evidenceType);
     }
     
     BenefitRecipient mapBenefitRecipient(PassportAssessmentEntity passportAssessmentEntity) {
@@ -172,6 +191,5 @@ public class PassportAssessmentMapperHelper {
         return repOrderApplicantLinksMapper.
             mapEntityToDTO(repOrderApplicantLinksEntities);
     }
-
 
 }

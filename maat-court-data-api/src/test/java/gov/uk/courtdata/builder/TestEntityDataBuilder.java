@@ -409,6 +409,27 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static PassportAssessmentEvidenceEntity getPassportAssessmentEvidenceEntity(
+        PassportAssessmentEntity passportAssessmentEntity, Applicant applicant, LocalDateTime date) {
+        
+        return PassportAssessmentEvidenceEntity.builder()
+            .id(5678)
+            .passportAssessment(passportAssessmentEntity)
+            .dateReceived(date)
+            .dateCreated(date)
+            .userCreated(passportAssessmentEntity.getUserCreated())
+            .dateModified(date)
+            .userModified(passportAssessmentEntity.getUserCreated())
+            .active("Y")
+            .removedDate(null)
+            .mandatory("Y")
+            .otherText("Applicant NINO")
+            .adhoc(null)
+            .incomeEvidence("NINO")
+            .applicant(applicant)
+            .build();
+    }
+
     public static HardshipReviewEntity getHardshipReviewEntityWithRelationships() {
         HardshipReviewEntity hardshipReview = getHardshipReviewEntity();
         hardshipReview.addReviewDetail(getHardshipReviewDetailsEntity());
@@ -633,6 +654,21 @@ public class TestEntityDataBuilder {
                 .caseUrn(CASE_URN)
                 .libraId(LIBRA_ID)
                 .build();
+    }
+
+    public static WqLinkRegisterEntity getWQLinkRegisterEntityWithoutCaseUrn() {
+
+        return WqLinkRegisterEntity.builder()
+            .createdTxId(1234)
+            .caseId(TEST_CASE_ID)
+            .maatId(REP_ID)
+            .cjsAreaCode("16")
+            .cjsLocation("B16BG")
+            .maatCat(253)
+            .createdUserId(TEST_USER)
+            .mlrCat(253)
+            .libraId(LIBRA_ID)
+            .build();
     }
 
     public static WQOffenceEntity getWQOffenceEntity(Integer offenceTxId) {
@@ -892,9 +928,13 @@ public class TestEntityDataBuilder {
     }
 
     public RepOrderCPDataEntity getRepOrderEntity() {
+        return getRepOrderEntity(REP_ID);
+    }
+    
+    public static RepOrderCPDataEntity getRepOrderEntity(Integer repId) {
         return RepOrderCPDataEntity.builder()
-                .repOrderId(REP_ID)
-                .caseUrn("caseurn1")
+                .repOrderId(repId)
+                .caseUrn(CASE_URN)
                 .dateCreated(LocalDateTime.now())
                 .userCreated("user")
                 .dateModified(LocalDateTime.now())

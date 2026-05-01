@@ -11,6 +11,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import gov.uk.courtdata.applicant.service.PartnerResolver;
 import gov.uk.courtdata.applicant.service.ApplicantService;
 import gov.uk.courtdata.assessment.service.AssessmentReplacementService;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -38,6 +39,9 @@ import java.util.stream.Stream;
 @ExtendWith(MockitoExtension.class)
 class PassportAssessmentServiceV2Test {
 
+    @InjectMocks
+    private PassportAssessmentServiceV2 passportAssessmentService;
+
     @Mock
     private AssessmentReplacementService assessmentReplacementService;
 
@@ -46,6 +50,9 @@ class PassportAssessmentServiceV2Test {
 
     @Mock
     private PassportAssessmentMapper passportAssessmentMapper;
+
+    @Mock
+    private PartnerResolver partnerResolver;
 
     @Mock
     private ApplicantService applicantService;
@@ -67,7 +74,7 @@ class PassportAssessmentServiceV2Test {
         var apiGetPassportedAssessmentResponse = TestModelDataBuilder.getApiGetPassportedAssessmentResponse();
         when(passportAssessmentPersistenceService.find(any())).thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
         when(passportAssessmentMapper.toApiGetPassportedAssessmentResponse(any(
-            PassportAssessmentEntity.class))).thenReturn(apiGetPassportedAssessmentResponse);
+            PassportAssessmentEntity.class), any())).thenReturn(apiGetPassportedAssessmentResponse);
         var returnedPassportedAssessment = passportAssessmentService.find(LEGACY_PASSPORT_ASSESSMENT_ID);
         assertEquals(LEGACY_PASSPORT_ASSESSMENT_ID, returnedPassportedAssessment.getLegacyAssessmentId());
     }

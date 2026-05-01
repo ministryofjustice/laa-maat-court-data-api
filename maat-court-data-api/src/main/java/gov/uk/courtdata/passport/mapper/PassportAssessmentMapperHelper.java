@@ -1,13 +1,8 @@
 package gov.uk.courtdata.passport.mapper;
 
-import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
-import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
-import gov.uk.courtdata.applicant.mapper.RepOrderApplicantLinksMapper;
-import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,9 +36,6 @@ import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.IN
 @Component
 @RequiredArgsConstructor
 public class PassportAssessmentMapperHelper {
-
-    private final RepOrderApplicantLinksRepository repOrderApplicantLinksRepository;
-    private final RepOrderApplicantLinksMapper repOrderApplicantLinksMapper;
 
     @Named("mapRepOrder")
     public RepOrderEntity mapRepOrder(Integer repOrderId) {
@@ -162,34 +154,6 @@ public class PassportAssessmentMapperHelper {
         return passportAssessmentEntity.getPartnerBenefitClaimed() != null
             && passportAssessmentEntity.getPartnerBenefitClaimed().equals(YES)
             ? PARTNER : BenefitRecipient.APPLICANT;
-    }
-    
-     Integer mapPartnerLegacyId(PassportAssessmentEntity passportAssessmentEntity) {
-        List<RepOrderApplicantLinksDTO> applicantLinks = findPartner(passportAssessmentEntity);
-
-        if (applicantLinks == null) {
-            return null;
-        }
-        
-        return applicantLinks.stream()
-            .filter(repOrderApplicantLink ->
-                repOrderApplicantLink.getUnlinkDate() == null &&
-                repOrderApplicantLink.getLinkDate() != null)
-            .map(RepOrderApplicantLinksDTO::getPartnerApplId)
-            .findFirst()
-            .orElse(null);
-    }
-
-    private List<RepOrderApplicantLinksDTO> findPartner(PassportAssessmentEntity passportAssessmentEntity) {
-        List<RepOrderApplicantLinksEntity> repOrderApplicantLinksEntities = 
-            repOrderApplicantLinksRepository.findAllByRepId(passportAssessmentEntity.getRepOrder().getId());
-        
-        if (repOrderApplicantLinksEntities.isEmpty()) {
-            return null;
-        }
-
-        return repOrderApplicantLinksMapper.
-            mapEntityToDTO(repOrderApplicantLinksEntities);
     }
 
 }

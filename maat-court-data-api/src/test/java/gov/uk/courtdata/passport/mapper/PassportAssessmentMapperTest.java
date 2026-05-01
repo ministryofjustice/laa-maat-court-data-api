@@ -324,57 +324,6 @@ class PassportAssessmentMapperTest {
     }
 
     @Test
-    void givenNoApplicantLinks_whenMapPartnerLegacyIdCalled_thenNoLegacyPartnerIdIsMapped() {
-        var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
-
-        when(repOrderApplicantLinksRepository.findAllByRepId(anyInt())).thenReturn(List.of());
-        
-        Integer partnerLegacyId = passportAssessmentMapperHelper.mapPartnerLegacyId(entity);
-
-        assertThat(partnerLegacyId).isNull();
-    }
-    
-    @Test
-    void givenSingleApplicantLinks_whenMapPartnerLegacyIdCalled_thenLegacyPartnerIdIsMapped() {
-        var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
-        var applicantLinksEntity = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
-
-        RepOrderApplicantLinksDTO repOrderApplicantLinksDto = getRepOrderApplicantLinksDto(entity, applicantLinksEntity, null);
-        
-        when(repOrderApplicantLinksRepository.findAllByRepId(anyInt())).thenReturn(List.of(
-            applicantLinksEntity));
-        when(repOrderApplicantLinksMapper.mapEntityToDTO(List.of(applicantLinksEntity))).thenReturn(List.of(repOrderApplicantLinksDto));
-        
-        Integer partnerLegacyId = passportAssessmentMapperHelper.mapPartnerLegacyId(entity);
-
-        assertThat(partnerLegacyId).isEqualTo(applicantLinksEntity.getPartnerApplId());
-    }
-
-    @Test
-    void givenMultipleApplicantLinks_whenMapPartnerLegacyIdCalled_thenLegacyPartnerIdIsMapped() {
-        var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
-        var previousApplicantLinksEntity = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
-        var currentApplicantLinksEntity = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
-        currentApplicantLinksEntity.setPartnerApplId(3456);
-
-        RepOrderApplicantLinksDTO previousRepOrderApplicantLinksDto = getRepOrderApplicantLinksDto(
-            entity, previousApplicantLinksEntity, LocalDate.now());
-        RepOrderApplicantLinksDTO currentRepOrderApplicantLinksDto = getRepOrderApplicantLinksDto(
-            entity, currentApplicantLinksEntity, null);
-
-        when(repOrderApplicantLinksRepository.findAllByRepId(anyInt())).thenReturn(List.of(
-            previousApplicantLinksEntity, currentApplicantLinksEntity));
-        when(repOrderApplicantLinksMapper.mapEntityToDTO(List.of(
-            previousApplicantLinksEntity, currentApplicantLinksEntity))).thenReturn(
-                List.of(previousRepOrderApplicantLinksDto, currentRepOrderApplicantLinksDto));
-
-        Integer partnerLegacyId = passportAssessmentMapperHelper.mapPartnerLegacyId(entity);
-
-        assertThat(partnerLegacyId).isEqualTo(currentApplicantLinksEntity.getPartnerApplId());
-    }
-
-
-    @Test
     void givenCreateRequestWithDeclaredBenefit_whenMapped_thenBenefitFieldsAreSetCorrectly(){
         var repOrder = TestEntityDataBuilder.getPopulatedRepOrder(REP_ID);
         Integer partnerId = TestEntityDataBuilder.APPLICANT_ID;

@@ -1,5 +1,6 @@
 package gov.uk.courtdata.integration.assessment;
 
+import static gov.uk.courtdata.builder.TestEntityDataBuilder.APPLICANT_ID;
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,10 +22,12 @@ import static uk.gov.justice.laa.crime.error.ProblemDetailError.VALIDATION_FAILU
 
 import com.jayway.jsonpath.JsonPath;
 import gov.uk.MAATCourtDataApplication;
+import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
+import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.entity.NewWorkReasonEntity;
@@ -189,8 +192,18 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
     @Test
     void givenAValidRepId_whenGetAssessmentByRepIdV2IsInvoked_theCorrectResponseIsReturned() throws Exception {
+        var repId = existingPassportAssessmentEntity.getRepOrder().getId();
+        Applicant partner = TestEntityDataBuilder.getApplicant(null);
+        repos.applicantRepository.save(partner);
+
+        var link = new RepOrderApplicantLinksEntity();
+        link.setRepId(repId);
+        link.setPartnerApplId(partner.getId());
+        link.setLinkDate(LocalDate.of(2000,1,1));
+        repos.repOrderApplicantLinks.save(link);
+
         assertTrue(runSuccessScenario(
-                passportMapperV2.toApiGetPassportedAssessmentResponse(existingPassportAssessmentEntity),
+                passportMapperV2.toApiGetPassportedAssessmentResponse(existingPassportAssessmentEntity, partner.getId()),
                 get(BASE_V2_URL+"/"+existingPassportAssessmentEntity.getId(), existingPassportAssessmentEntity.getId())
         ));
     }
@@ -333,7 +346,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
     void givenFullRequest_whenCreateAssessmentV2IsInvoked_theCorrectResponseIsReturned(boolean isUnder18, boolean hasDeclaredBenefits, boolean populatePartner) throws Exception {
 
         Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
-        Integer partnerId = (populatePartner? repos.applicantRepository.save(TestEntityDataBuilder.getApplicant(TestEntityDataBuilder.APPLICANT_ID)).getId() : null);
+        Integer partnerId = (populatePartner? repos.applicantRepository.save(TestEntityDataBuilder.getApplicant(APPLICANT_ID)).getId() : null);
 
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, partnerId, isUnder18, hasDeclaredBenefits);
 
@@ -480,7 +493,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
     private void runAndValidateDatabaseFailureOnCreatePassportedV2() throws Exception {
 
         Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
-        Integer partnerId = repos.applicantRepository.save(TestEntityDataBuilder.getApplicant(TestEntityDataBuilder.APPLICANT_ID)).getId();
+        Integer partnerId = repos.applicantRepository.save(TestEntityDataBuilder.getApplicant(APPLICANT_ID)).getId();
 
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, partnerId, false, true);
 

@@ -39,9 +39,6 @@ import java.util.stream.Stream;
 @ExtendWith(MockitoExtension.class)
 class PassportAssessmentServiceV2Test {
 
-    @InjectMocks
-    private PassportAssessmentServiceV2 passportAssessmentService;
-
     @Mock
     private AssessmentReplacementService assessmentReplacementService;
 

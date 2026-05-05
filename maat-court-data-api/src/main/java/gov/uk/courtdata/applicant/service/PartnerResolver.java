@@ -19,4 +19,14 @@ public class PartnerResolver {
             .map(RepOrderApplicantLinksEntity::getPartnerApplId)
             .orElse(null);
     }
+
+    public boolean hasLinkedPartner(Integer repId, Integer partnerId){
+        if(repId == null || partnerId == null){
+            return false;
+        }
+        else{
+            return repOrderApplicantLinksRepository.
+                    existsByRepIdAndPartnerApplIdAndLinkDateIsNotNullAndUnlinkDateIsNull(repId, partnerId);
+        }
+    }
 }

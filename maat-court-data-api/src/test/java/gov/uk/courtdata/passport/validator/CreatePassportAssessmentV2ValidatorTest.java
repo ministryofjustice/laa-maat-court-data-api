@@ -1,6 +1,6 @@
 package gov.uk.courtdata.passport.validator;
 
-import gov.uk.courtdata.applicant.service.ApplicantService;
+import gov.uk.courtdata.applicant.service.PartnerResolver;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.reporder.service.RepOrderService;
@@ -36,7 +36,7 @@ class CreatePassportAssessmentV2ValidatorTest {
     @Mock
     RepOrderService repOrderService;
     @Mock
-    ApplicantService applicantService;
+    PartnerResolver partnerResolver;
 
     @InjectMocks
     CreatePassportAssessmentV2Validator createPassportAssessmentV2Validator;
@@ -44,7 +44,7 @@ class CreatePassportAssessmentV2ValidatorTest {
     @Test
     void givenValidRequest_whenValidateIsInvoked_thenShouldSucceed() {
         when(repOrderService.exists(REP_ID)).thenReturn(true);
-        when(applicantService.exists(APPLICANT_ID)).thenReturn(true);
+        when(partnerResolver.hasLinkedPartner(REP_ID, APPLICANT_ID)).thenReturn(true);
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
         assertDoesNotThrow(()
@@ -91,7 +91,7 @@ class CreatePassportAssessmentV2ValidatorTest {
     }
 
     @Test
-    void givenRequestWithPartnerRecipientNoId_whenValidateIsInvoked_thenShouldSucceed() {
+    void givenRequestWithPartnerRecipientNoId_whenValidateIsInvoked_thenShouldError() {
         when(repOrderService.exists(REP_ID)).thenReturn(true);
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
@@ -106,13 +106,13 @@ class CreatePassportAssessmentV2ValidatorTest {
     }
 
     @Test
-    void givenRequestWithPartnerRecipientDoesNotExist_whenValidateIsInvoked_thenShouldSucceed() {
+    void givenRequestWithPartnerRecipientDoesNotExist_whenValidateIsInvoked_thenShouldError() {
         when(repOrderService.exists(REP_ID)).thenReturn(true);
-        when(applicantService.exists(APPLICANT_ID)).thenReturn(false);
+        when(partnerResolver.hasLinkedPartner(REP_ID, APPLICANT_ID)).thenReturn(false);
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
 
-        var expectedErrorMessage = new ErrorMessage(LEGACY_PARTNER_ID_FIELD,"Partner does not exist");
+        var expectedErrorMessage = new ErrorMessage(LEGACY_PARTNER_ID_FIELD,"Partner is not linked to Rep Order");
 
         CrimeValidationException e = assertThrows(CrimeValidationException.class,()
                 -> createPassportAssessmentV2Validator.validateCreateRequest(request));

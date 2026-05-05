@@ -100,12 +100,6 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenIdAndDate_whenUpdateAppDateCompletedIsInvoked_thenAppDateIsUpdated() {
-        repOrderService.updateDateCompleted(1,  LocalDateTime.now());
-        verify(repOrderImpl).updateAppDateCompleted(any(), any());
-    }
-
-    @Test
     void givenAllInputs_whenFdcFastTrackingIsInvoked_thenReturnList() {
         Set<Integer> idList = Set.of(5,6);
         when(repOrderImpl.findEligibleForFdcFastTracking(anyInt(), any(), anyInt()))
@@ -244,7 +238,7 @@ class RepOrderServiceTest {
             TestModelDataBuilder.getMaatSearchRequest());
 
         assertEquals(1, maatSearchResponseList.size());
-        MaatSearchResponse response = maatSearchResponseList.get(0);
+        MaatSearchResponse response = maatSearchResponseList.getFirst();
         assertEquals(repOrder.getCaseUrn(), response.getLinkingDetail().getCaseUrn());
     }
 

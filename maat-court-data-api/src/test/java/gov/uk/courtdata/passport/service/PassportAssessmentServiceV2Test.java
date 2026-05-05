@@ -6,7 +6,6 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,7 +19,6 @@ import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.passport.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.passport.validator.CreatePassportAssessmentV2Validator;
-import gov.uk.courtdata.reporder.service.RepOrderService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -55,9 +53,6 @@ class PassportAssessmentServiceV2Test {
     private ApplicantService applicantService;
 
     @Mock
-    private RepOrderService repOrderService;
-
-    @Mock
     private CreatePassportAssessmentV2Validator  createPassportAssessmentV2Validator;
 
     @Captor
@@ -88,7 +83,6 @@ class PassportAssessmentServiceV2Test {
         when(passportAssessmentPersistenceService.save(entity)).thenReturn(entity);
         when(applicantService.find(APPLICANT_ID)).thenReturn(partner);
         when(passportAssessmentMapper.toApiCreatePassportedAssessmentResponse(entity)).thenReturn(response);
-        when(repOrderService.updateDateCompleted(eq(REP_ID), any())).thenReturn(entity.getRepOrder());
 
         passportAssessmentService.create(request);
 
@@ -97,7 +91,6 @@ class PassportAssessmentServiceV2Test {
         verify(passportAssessmentPersistenceService).save(entity);
         verify(assessmentReplacementService).replacePreviousAssessments(entity);
         verify(applicantService).find(APPLICANT_ID);
-        verify(repOrderService).updateDateCompleted(eq(REP_ID), any());
         verify(passportAssessmentMapper).toApiCreatePassportedAssessmentResponse(entity);
 
         validatePartnerDetails(partner, entity);

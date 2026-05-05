@@ -515,12 +515,16 @@ public class TestEntityDataBuilder {
     }
 
     public static RepOrderApplicantLinksEntity getRepOrderApplicantLinksEntity() {
+        return getRepOrderApplicantLinksEntity(REP_ID, 11553844, LocalDate.parse("2021-10-21"));
+    }
+
+    public static RepOrderApplicantLinksEntity getRepOrderApplicantLinksEntity(Integer repId, Integer partnerId, LocalDate unlinkDate){
         return RepOrderApplicantLinksEntity.builder()
-                .repId(REP_ID)
+                .repId(repId)
                 .partnerAphiId(11553872)
-                .partnerApplId(11553844)
+                .partnerApplId(partnerId)
                 .linkDate(LocalDate.parse("2021-10-09"))
-                .unlinkDate(LocalDate.parse("2021-10-21"))
+                .unlinkDate(unlinkDate)
                 .userCreated("test-u")
                 .userModified(TEST_USER)
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))

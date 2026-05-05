@@ -1,6 +1,6 @@
 package gov.uk.courtdata.passport.validator;
 
-import gov.uk.courtdata.applicant.service.ApplicantService;
+import gov.uk.courtdata.applicant.service.PartnerResolver;
 import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import lombok.AllArgsConstructor;
@@ -27,7 +27,7 @@ public class CreatePassportAssessmentV2Validator {
     private static final String LEGACY_APPLICATION_ID_FIELD = "passportedAssessmentMetadata.legacyApplicationId";
     private static final String LAST_SIGN_ON_DATE_FIELD = "passportedAssessment.declaredBenefit.lastSignOnDate";
     private static final String LEGACY_PARTNER_ID_FIELD = "passportedAssessment.declaredBenefit.legacyPartnerId";
-    private final ApplicantService applicantService;
+    private final PartnerResolver partnerResolver;
 
     public void validateCreateRequest(ApiCreatePassportedAssessmentRequest request){
         List<ErrorMessage> errorMessages = Stream.of(
@@ -71,8 +71,8 @@ public class CreatePassportAssessmentV2Validator {
             if(declaredBenefit.getLegacyPartnerId() == null){
                 return Optional.of(new ErrorMessage(LEGACY_PARTNER_ID_FIELD,"Partner Id must be populated if partner receiving benefit"));
             }
-            else if (!applicantService.exists(declaredBenefit.getLegacyPartnerId())) {
-                return Optional.of(new ErrorMessage(LEGACY_PARTNER_ID_FIELD,"Partner does not exist"));
+            else if(!partnerResolver.hasLinkedPartner(request.getPassportedAssessmentMetadata().getLegacyApplicationId(), declaredBenefit.getLegacyPartnerId())){
+                return Optional.of(new ErrorMessage(LEGACY_PARTNER_ID_FIELD,"Partner is not linked to Rep Order"));
             }
         }
         return Optional.empty();

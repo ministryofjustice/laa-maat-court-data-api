@@ -62,6 +62,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import uk.gov.justice.laa.crime.enums.BenefitRecipient;
 import uk.gov.justice.laa.crime.enums.BenefitType;
 import uk.gov.justice.laa.crime.error.ErrorExtension;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
@@ -77,6 +78,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
     private static final String ASSESSMENT_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
     private static final Integer INVALID_ASSESSMENT_ID = 999;
     private static final String LEGACY_APPLICATION_ID_FIELD = "passportedAssessmentMetadata.legacyApplicationId";
+    private static final String LEGACY_PARTNER_ID_FIELD = "passportedAssessment.declaredBenefit.legacyPartnerId";
     private static final String LAST_SIGN_ON_DATE_FIELD = "passportedAssessment.declaredBenefit.lastSignOnDate";
 
 
@@ -346,7 +348,11 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
     void givenFullRequest_whenCreateAssessmentV2IsInvoked_theCorrectResponseIsReturned(boolean isUnder18, boolean hasDeclaredBenefits, boolean populatePartner) throws Exception {
 
         Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
-        Integer partnerId = (populatePartner? repos.applicantRepository.save(TestEntityDataBuilder.getApplicant(APPLICANT_ID)).getId() : null);
+        Integer partnerId = null;
+        if(populatePartner){
+            partnerId = repos.applicantRepository.save(TestEntityDataBuilder.getApplicant(APPLICANT_ID)).getId();
+            repos.repOrderApplicantLinks.save(TestEntityDataBuilder.getRepOrderApplicantLinksEntity(repId, partnerId, null));
+        }
 
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, partnerId, isUnder18, hasDeclaredBenefits);
 
@@ -400,7 +406,6 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         // check assessment completed date has been set on the RepOrder.
         Optional<RepOrderEntity> repOrder = repos.repOrder.findById(repId);
         assertThat(repOrder).isPresent();
-        assertThat(repOrder.get().getAssessmentDateCompleted()).isEqualTo(LocalDate.now());
 
         // validate mapper is being called.
         verify(passportMapperV2).toPassportAssessmentEntity(any());
@@ -467,6 +472,97 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
     }
 
     @Test
+    void givenPartnerRecipientWithNoLinkedPartner_whenCreateAssessmentV2IsInvoked_theValidationResponseIsReturned() throws Exception {
+        Integer repId =existingPassportAssessmentEntity.getRepOrder().getId();
+        var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, 0, false, true);
+        request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andReturn();
+
+        ProblemDetail problemDetail = ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
+        assertThat(problemDetail)
+                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
+                .hasFieldOrPropertyWithValue("status", 400)
+                .hasFieldOrPropertyWithValue("title", "Bad Request")
+                .hasFieldOrPropertyWithValue("detail", VALIDATION_FAILURE.defaultDetail())
+                .hasFieldOrPropertyWithValue("instance", URI.create(BASE_V2_URL));
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        assertThat(extension).isPresent().get()
+                .hasFieldOrPropertyWithValue("code", VALIDATION_FAILURE.code());
+
+        var expectedErrorMessage = new ErrorMessage(LEGACY_PARTNER_ID_FIELD,"Partner is not linked to Rep Order");
+        List<ErrorMessage> errors = extension.get().errors();
+        assertThat(errors).containsOnly(expectedErrorMessage);
+    }
+
+    @Test
+    void givenPartnerRecipientWithOtherLinkedPartner_whenCreateAssessmentV2IsInvoked_theValidationResponseIsReturned() throws Exception {
+        Integer repId =existingPassportAssessmentEntity.getRepOrder().getId();
+        repos.repOrderApplicantLinks.save(TestEntityDataBuilder.getRepOrderApplicantLinksEntity(repId, APPLICANT_ID, null));
+        var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, 0, false, true);
+        request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andReturn();
+
+        ProblemDetail problemDetail = ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
+        assertThat(problemDetail)
+                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
+                .hasFieldOrPropertyWithValue("status", 400)
+                .hasFieldOrPropertyWithValue("title", "Bad Request")
+                .hasFieldOrPropertyWithValue("detail", VALIDATION_FAILURE.defaultDetail())
+                .hasFieldOrPropertyWithValue("instance", URI.create(BASE_V2_URL));
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        assertThat(extension).isPresent().get()
+                .hasFieldOrPropertyWithValue("code", VALIDATION_FAILURE.code());
+
+        var expectedErrorMessage = new ErrorMessage(LEGACY_PARTNER_ID_FIELD,"Partner is not linked to Rep Order");
+        List<ErrorMessage> errors = extension.get().errors();
+        assertThat(errors).containsOnly(expectedErrorMessage);
+    }
+
+    @Test
+    void givenPartnerRecipientWithUnLinkedPartner_whenCreateAssessmentV2IsInvoked_theValidationResponseIsReturned() throws Exception {
+        Integer repId =existingPassportAssessmentEntity.getRepOrder().getId();
+        Integer partnerId = repos.applicantRepository.save(TestEntityDataBuilder.getApplicant(APPLICANT_ID)).getId();
+        repos.repOrderApplicantLinks.save(TestEntityDataBuilder.getRepOrderApplicantLinksEntity(repId, partnerId, LocalDate.parse("2021-10-09")));
+
+        var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, partnerId, false, true);
+        request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andReturn();
+
+        ProblemDetail problemDetail = ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
+        assertThat(problemDetail)
+                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
+                .hasFieldOrPropertyWithValue("status", 400)
+                .hasFieldOrPropertyWithValue("title", "Bad Request")
+                .hasFieldOrPropertyWithValue("detail", VALIDATION_FAILURE.defaultDetail())
+                .hasFieldOrPropertyWithValue("instance", URI.create(BASE_V2_URL));
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        assertThat(extension).isPresent().get()
+                .hasFieldOrPropertyWithValue("code", VALIDATION_FAILURE.code());
+
+        var expectedErrorMessage = new ErrorMessage(LEGACY_PARTNER_ID_FIELD,"Partner is not linked to Rep Order");
+        List<ErrorMessage> errors = extension.get().errors();
+        assertThat(errors).containsOnly(expectedErrorMessage);
+    }
+
+    @Test
     void givenMaatFailureOnHardshipReplacement_whenCreateAssessmentV2IsInvoked_theTransactionIsRolledBack() throws Exception {
         doThrow(new DataIntegrityViolationException("Test Exception")).when(hardshipReviewRepository).replaceAllByRepId(any());
         runAndValidateDatabaseFailureOnCreatePassportedV2();
@@ -481,12 +577,6 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
     @Test
     void givenMaatFailureOnAssessmentReplacement_whenCreateAssessmentV2IsInvoked_theTransactionIsRolledBack() throws Exception {
         doThrow(new DataIntegrityViolationException("Test Exception")).when(passportAssessmentRepository).replaceAllByRepIdExcludingPassportedAssessment(any(), any());
-        runAndValidateDatabaseFailureOnCreatePassportedV2();
-    }
-
-    @Test
-    void givenMaatFailureOnRepOrderDateSetting_whenCreateAssessmentV2IsInvoked_theTransactionIsRolledBack() throws Exception {
-        doThrow(new DataIntegrityViolationException("Test Exception")).when(repOrderRepository).saveAndFlush(any());
         runAndValidateDatabaseFailureOnCreatePassportedV2();
     }
 

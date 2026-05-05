@@ -14,4 +14,6 @@ public interface RepOrderApplicantLinksRepository extends JpaRepository<RepOrder
     
     Optional<RepOrderApplicantLinksEntity> findFirstByRepIdAndLinkDateIsNotNullAndUnlinkDateIsNull(Integer repId);
 
+    boolean existsByRepIdAndPartnerApplIdAndLinkDateIsNotNullAndUnlinkDateIsNull(Integer repId, Integer partnerApplId);
+
 }

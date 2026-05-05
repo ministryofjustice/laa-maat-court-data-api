@@ -7,7 +7,6 @@ import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.passport.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.passport.validator.CreatePassportAssessmentV2Validator;
-import gov.uk.courtdata.reporder.service.RepOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,8 +16,6 @@ import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAsses
 import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
 import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
 import uk.gov.justice.laa.crime.common.model.passported.PassportedAssessment;
-
-import java.time.LocalDateTime;
 
 import static uk.gov.justice.laa.crime.enums.BenefitRecipient.PARTNER;
 
@@ -33,7 +30,6 @@ public class PassportAssessmentServiceV2 {
     private final CreatePassportAssessmentV2Validator validator;
 
     private final AssessmentReplacementService assessmentReplacementService;
-    private final RepOrderService repOrderService;
     private final ApplicantService applicantService;
 
     @Transactional(readOnly = true)
@@ -55,7 +51,6 @@ public class PassportAssessmentServiceV2 {
 
         entity = passportAssessmentPersistenceService.save(entity);
         assessmentReplacementService.replacePreviousAssessments(entity);
-        repOrderService.updateDateCompleted(entity.getRepOrder().getId(), LocalDateTime.now());
 
         return passportAssessmentMapper.toApiCreatePassportedAssessmentResponse(entity);
     }
@@ -78,8 +73,7 @@ public class PassportAssessmentServiceV2 {
         // check if should populate
         if(Boolean.FALSE.equals(assessment.getDeclaredUnder18())
                 && declaredBenefit != null
-                && PARTNER.equals(declaredBenefit.getBenefitRecipient())
-                && declaredBenefit.getLegacyPartnerId() != null){
+                && PARTNER.equals(declaredBenefit.getBenefitRecipient())){
             Applicant partner = applicantService.find(declaredBenefit.getLegacyPartnerId());
             entity.setPartnerDob(partner.getDob().atStartOfDay());
             entity.setPartnerFirstName(partner.getFirstName());

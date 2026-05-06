@@ -6,6 +6,7 @@ import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -18,5 +19,10 @@ public class PassportAssessmentPersistenceService {
         return passportAssessmentRepository.findById(passportAssessmentId)
             .orElseThrow(() -> new RequestedObjectNotFoundException(
                 String.format("No Passported Assessment found for ID: %s", passportAssessmentId)));
+    }
+
+    @Transactional
+    public PassportAssessmentEntity save(PassportAssessmentEntity passportAssessmentEntity) {
+        return passportAssessmentRepository.save(passportAssessmentEntity);
     }
 }

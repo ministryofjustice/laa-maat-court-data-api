@@ -53,4 +53,8 @@ public class ApplicantService {
         applicantHistoryService.update(sendToCCLFDTO.getApplId(), Map.of("sendToCclf", "Y"));
     }
 
+    public boolean exists(Integer id){
+        return applicantRepository.existsById(id);
+    }
+
 }

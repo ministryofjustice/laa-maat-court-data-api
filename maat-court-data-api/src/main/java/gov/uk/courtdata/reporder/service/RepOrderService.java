@@ -28,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Slf4j
 @Service
@@ -100,14 +99,13 @@ public class RepOrderService {
         return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderRepository.save(currentRepOrder));
     }
 
-    @Transactional
-    public boolean exists(Integer repId, boolean hasSentenceOrderDate) {
-        if (!hasSentenceOrderDate) {
-            log.info("Retrieve rep Order count for repId: {}", repId);
-            return repOrderImpl.countById(repId) > 0;
+    @Transactional(readOnly = true)
+    public boolean exists(Integer repId){
+        if(repId == null){
+            return false;
         }
-        log.info("Retrieve rep Order Count for repId: {} With Sentence Order Date", repId);
-        return repOrderImpl.countWithSentenceOrderDate(repId) > 0;
+        log.info("Retrieve rep Order count for repId: {}", repId);
+        return repOrderImpl.exists(repId);
     }
 
     @Transactional

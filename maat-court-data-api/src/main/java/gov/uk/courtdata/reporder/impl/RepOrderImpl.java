@@ -42,10 +42,6 @@ public class RepOrderImpl {
         return repOrderRepository.saveAndFlush(repOrderEntity);
     }
 
-    public long countWithSentenceOrderDate(Integer repId) {
-        return repOrderRepository.count(hasId(repId).and(hasSentenceOrderDate()));
-    }
-
     public void delete(Integer repId) {
         repOrderRepository.deleteById(repId);
     }
@@ -58,7 +54,7 @@ public class RepOrderImpl {
         return repOrderRepository.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
     }
 
-    public long countById(Integer repId) {
-        return repOrderRepository.count(hasId(repId));
+    public boolean exists(Integer repId) {
+        return repOrderRepository.exists(hasId(repId));
     }
 }

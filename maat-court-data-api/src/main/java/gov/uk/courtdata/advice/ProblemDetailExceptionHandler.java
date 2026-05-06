@@ -8,6 +8,8 @@ import gov.uk.courtdata.passport.controller.PassportAssessmentControllerV2;
 import gov.uk.courtdata.passport.controller.PassportAssessmentEvidenceControllerV2;
 import java.util.List;
 import java.util.Optional;
+
+import gov.uk.courtdata.passport.controller.PassportAssessmentControllerV2;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
@@ -28,13 +30,16 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 import uk.gov.justice.laa.crime.error.ProblemDetailError;
 import uk.gov.justice.laa.crime.tracing.TraceIdHandler;
+import uk.gov.justice.laa.crime.error.ErrorMessage;
 import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
 
 @Slf4j
 @RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(assignableTypes = {IOJAppealControllerV2.class, 
-    PassportAssessmentControllerV2.class, PassportAssessmentEvidenceControllerV2.class})
+@RestControllerAdvice(assignableTypes = {
+        IOJAppealControllerV2.class,
+        PassportAssessmentControllerV2.class,
+        PassportAssessmentEvidenceControllerV2.class})
 public class ProblemDetailExceptionHandler {
 
     private final ObjectProvider<TraceIdHandler> traceIdHandlerProvider;
@@ -105,7 +110,7 @@ public class ProblemDetailExceptionHandler {
     @ExceptionHandler(InvalidPassportEvidenceStateException.class)
     public ResponseEntity<ProblemDetail> handleInvalidPassportEvidenceState(InvalidPassportEvidenceStateException ex) {
         log.warn("Required record is empty. TraceId={} Detail={}", getTraceId(), ex.getMessage());
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ProblemDetailError.APPLICATION_ERROR, 
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ProblemDetailError.APPLICATION_ERROR,
             ex.getMessage(), List.of());
     }
 

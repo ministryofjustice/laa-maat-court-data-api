@@ -14,11 +14,11 @@ public interface FinancialAssessmentRepository extends JpaRepository<FinancialAs
 
     @Modifying
     @Query(value = "UPDATE TOGDATA.FINANCIAL_ASSESSMENTS fa set fa.REPLACED = 'Y' WHERE fa.REP_ID = :repId", nativeQuery = true)
-    void updateAllPreviousFinancialAssessmentsAsReplaced(@Param("repId") Integer repId);
+    void replaceAllByRepId(@Param("repId") Integer repId);
 
     @Modifying
     @Query(value = "UPDATE TOGDATA.FINANCIAL_ASSESSMENTS fa set fa.REPLACED = 'Y' WHERE fa.ID <> :id AND fa.REP_ID = :repId", nativeQuery = true)
-    void updatePreviousFinancialAssessmentsAsReplaced(@Param("repId") Integer repId, @Param("id") Integer id);
+    void replaceAllByRepIdExcludingFinancialAssessment(@Param("repId") Integer repId, @Param("id") Integer id);
 
     @Query(value = "SELECT * FROM TOGDATA.FINANCIAL_ASSESSMENTS fa WHERE fa.REP_ID = :repId AND DATE_COMPLETED IS NOT NULL AND fa.REPLACED = 'N'", nativeQuery = true)
     Optional<FinancialAssessmentEntity> findCompletedAssessmentByRepId(@Param("repId") Integer repId);

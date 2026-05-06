@@ -37,7 +37,7 @@ public class HardshipReviewImpl {
         HardshipReviewEntity hardshipReview =
                 hardshipReviewMapper.hardshipReviewDTOToHardshipReviewEntity(hardshipReviewDTO);
 
-        hardshipReviewRepository.replaceOldHardshipReviews(hardshipReview.getRepId(), hardshipReview.getCourtType());
+        hardshipReviewRepository.replaceAllByRepIdAndCourtType(hardshipReview.getRepId(), hardshipReview.getCourtType());
 
         return hardshipReviewRepository.saveAndFlush(hardshipReview);
     }

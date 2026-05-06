@@ -50,12 +50,6 @@ class RepOrderImplTest {
     }
 
     @Test
-    void givenAValidRepId_whenCountByIdAndSentenceOrderDateIsNotNullInvoked_thenRepOrderCountIsRetrieved() {
-        repOrderImpl.countWithSentenceOrderDate(TestModelDataBuilder.REP_ID);
-        verify(repOrderRepository).count(ArgumentMatchers.<Specification<RepOrderEntity>>any());
-    }
-
-    @Test
     void givenValidValues_whenFindingForFdcFastTracking_thenInvokesRepository() {
         LocalDate date = LocalDate.now();
         repOrderImpl.findEligibleForFdcFastTracking(5, LocalDate.now(), 5);
@@ -70,8 +64,9 @@ class RepOrderImplTest {
     }
 
     @Test
-    void givenAValidRepId_whenCountByIdIsInvoked_thenRepOrderCountIsRetrieved() {
-        repOrderImpl.countById(TestModelDataBuilder.REP_ID);
-        verify(repOrderRepository).count(ArgumentMatchers.<Specification<RepOrderEntity>>any());
+    void givenAValidRepId_whenExistsByIdIsInvoked_thenReturnsTrue() {
+        repOrderImpl.exists(TestModelDataBuilder.REP_ID);
+        verify(repOrderRepository).exists(
+                ArgumentMatchers.<Specification<RepOrderEntity>>any());
     }
 }

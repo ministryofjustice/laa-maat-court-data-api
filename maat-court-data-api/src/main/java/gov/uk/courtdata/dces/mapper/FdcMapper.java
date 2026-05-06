@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Objects;
 
-/***
+/**
  * Mapper to map the basic needed fields for FDC processing.
  * Note that this will only map the SentenceOrderDate, and Id fields on the RepOrderEntity.
  */

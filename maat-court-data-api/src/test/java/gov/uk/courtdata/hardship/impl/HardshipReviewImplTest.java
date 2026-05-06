@@ -12,6 +12,7 @@ import gov.uk.courtdata.repository.HardshipReviewRepository;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -46,6 +47,11 @@ class HardshipReviewImplTest {
 
     @Captor
     private ArgumentCaptor<HardshipReviewEntity> hardshipReviewEntityArgumentCaptor;
+
+    @AfterEach
+    void assertAll(){
+        softly.assertAll();
+    }
 
     @Test
     void givenExistingHardshipId_whenFindIsInvoked_thenHardshipIsRetrieved() {
@@ -88,7 +94,7 @@ class HardshipReviewImplTest {
 
         hardshipReviewImpl.create(hardshipReviewDTO);
         verify(hardshipReviewRepository).saveAndFlush(hardshipReviewEntityArgumentCaptor.capture());
-        verify(hardshipReviewRepository).replaceOldHardshipReviews(
+        verify(hardshipReviewRepository).replaceAllByRepIdAndCourtType(
                 TestEntityDataBuilder.REP_ID, hardshipReviewDTO.getCourtType()
         );
         assertThat(hardshipReviewEntityArgumentCaptor.getValue().getId())

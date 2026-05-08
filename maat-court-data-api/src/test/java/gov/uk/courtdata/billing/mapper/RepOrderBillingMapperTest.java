@@ -1,6 +1,6 @@
 package gov.uk.courtdata.billing.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
 import gov.uk.courtdata.billing.entity.RepOrderBillingEntity;
@@ -51,6 +51,6 @@ class RepOrderBillingMapperTest {
 
         RepOrderBillingDTO actualRepOrder = RepOrderBillingMapper.mapEntityToDTO(entity);
 
-        assertEquals(expectedRepOrder, actualRepOrder);
+        assertThat(actualRepOrder).isEqualTo(expectedRepOrder);
     }
 }

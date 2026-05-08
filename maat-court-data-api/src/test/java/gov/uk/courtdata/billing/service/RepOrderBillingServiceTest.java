@@ -1,8 +1,8 @@
 package gov.uk.courtdata.billing.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
@@ -36,7 +36,7 @@ class RepOrderBillingServiceTest {
 
         List<RepOrderBillingDTO> repOrders = repOrderBillingService.getRepOrdersForBilling();
 
-        assertEquals(Collections.emptyList(), repOrders);
+        assertThat(repOrders).isEmpty();
     }
 
     @Test
@@ -51,8 +51,7 @@ class RepOrderBillingServiceTest {
 
         List<RepOrderBillingDTO> repOrders = repOrderBillingService.getRepOrdersForBilling();
 
-        assertEquals(2, repOrders.size());
-        assertEquals(expectedRepOrders, repOrders);
+        assertThat(repOrders).hasSize(2).containsExactlyInAnyOrderElementsOf(expectedRepOrders);
     }
 
     @Test
@@ -61,12 +60,10 @@ class RepOrderBillingServiceTest {
         when(repOrderBillingRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getIds()))
                 .thenReturn(1);
 
-        MAATCourtDataException exception = assertThrows(
-                MAATCourtDataException.class, () -> repOrderBillingService.resetRepOrdersSentForBilling(request));
-
-        assertEquals(
-                "Unable to reset rep orders sent for billing as only 1 rep order(s) could be processed (from a total of 2 rep order(s))",
-                exception.getMessage());
+        assertThatThrownBy(() -> repOrderBillingService.resetRepOrdersSentForBilling(request))
+                .isInstanceOf(MAATCourtDataException.class)
+                .hasMessage(
+                        "Unable to reset rep orders sent for billing as only 1 rep order(s) could be processed (from a total of 2 rep order(s))");
     }
 
     @Test
@@ -74,7 +71,7 @@ class RepOrderBillingServiceTest {
         UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
         when(repOrderBillingRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getIds()))
                 .thenReturn(request.getIds().size());
-
-        assertDoesNotThrow(() -> repOrderBillingService.resetRepOrdersSentForBilling(request));
+        assertThatCode(() -> repOrderBillingService.resetRepOrdersSentForBilling(request))
+                .doesNotThrowAnyException();
     }
 }

@@ -1,8 +1,7 @@
 package gov.uk.courtdata.assessment.service;
 
 import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
@@ -153,8 +152,8 @@ class FinancialAssessmentServiceTest {
         AssessorDetails meansAssessorDetails =
                 financialAssessmentService.findMeansAssessorDetails(MOCK_FINANCIAL_ASSESSMENT_ID);
 
-        assertEquals("Karen Greaves", meansAssessorDetails.getFullName());
-        assertEquals(username, meansAssessorDetails.getUserName());
+        assertThat(meansAssessorDetails.getFullName()).isEqualTo("Karen Greaves");
+        assertThat(meansAssessorDetails.getUserName()).isEqualTo(username);
     }
 
     @Test
@@ -165,9 +164,8 @@ class FinancialAssessmentServiceTest {
         RequestedObjectNotFoundException actualException = Assertions.assertThrows(
                 RequestedObjectNotFoundException.class,
                 () -> financialAssessmentService.findMeansAssessorDetails(unknownFinancialAssessmentId));
-
-        assertEquals(
-                "No Financial Assessment found for financial assessment Id: [99999]", actualException.getMessage());
+        assertThat(actualException.getMessage())
+                .isEqualTo("No Financial Assessment found for financial assessment Id: [99999]");
     }
 
     @Test

@@ -6,66 +6,55 @@ import static gov.uk.courtdata.enums.CrownCourtCaseType.EITHER_WAY;
 import static gov.uk.courtdata.enums.CrownCourtCaseType.INDICTABLE;
 import static gov.uk.courtdata.enums.CrownCourtCaseType.caseTypeForAppeal;
 import static gov.uk.courtdata.enums.CrownCourtCaseType.caseTypeForTrial;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gov.uk.courtdata.exception.ValidationException;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-public class CrownCourtCaseTypeTest {
+class CrownCourtCaseTypeTest {
 
     @Test
-    public void givenCaseTypeForTrialIsEmpty_ExceptionThrown() {
-
-        Assertions.assertThrows(ValidationException.class, () -> {
-            caseTypeForTrial(null);
-        });
+    void givenCaseTypeForTrialIsEmpty_ExceptionThrown() {
+        assertThatThrownBy(() -> caseTypeForTrial(null)).isInstanceOf(ValidationException.class);
     }
 
     @Test
-    public void givenCaseTypeForTrialIsIndictable_ReturnsTrue() {
-
-        assertAll("CaseTypeForTrial", () -> assertTrue(caseTypeForTrial(INDICTABLE.getValue())));
+    void givenCaseTypeForTrialIsIndictable_ReturnsTrue() {
+        assertThat(caseTypeForTrial(INDICTABLE.getValue())).isTrue();
     }
 
     @Test
-    public void givenCaseTypeForTrialIsEitherWayOnly_ReturnsTrue() {
-
-        assertAll("CaseTypeForTrial", () -> assertTrue(caseTypeForTrial(EITHER_WAY.getValue())));
+    void givenCaseTypeForTrialIsEitherWayOnly_ReturnsTrue() {
+        assertThat(caseTypeForTrial(EITHER_WAY.getValue())).isTrue();
     }
 
     @Test
-    public void givenCaseTypeForTrialIsCCAlready_ReturnsTrue() {
-
-        assertAll("CaseTypeForTrial", () -> assertTrue(caseTypeForTrial(CC_ALREADY.getValue())));
+    void givenCaseTypeForTrialIsCCAlready_ReturnsTrue() {
+        assertThat(caseTypeForTrial(CC_ALREADY.getValue())).isTrue();
     }
 
     @Test
-    public void givenCaseTypeForTrialNotValid_ReturnsFalse() {
-
-        assertAll("CaseTypeForTrial", () -> assertFalse(caseTypeForTrial(APPEAL_CC.getValue())));
+    void givenCaseTypeForTrialNotValid_ReturnsFalse() {
+        assertThat(caseTypeForTrial(APPEAL_CC.getValue())).isFalse();
     }
 
     @Test
-    public void givenCaseTypeForAppealIsEmpty_ExceptionThrown() {
-
-        Assertions.assertThrows(ValidationException.class, () -> {
-            caseTypeForAppeal(null);
-        });
+    void givenCaseTypeForAppealIsEmpty_ExceptionThrown() {
+        assertThatThrownBy(() -> caseTypeForAppeal(null)).isInstanceOf(ValidationException.class);
     }
 
     @Test
-    public void givenCaseTypeForAppealIsAppealCC_ReturnsTrue() {
-
-        assertAll("CaseTypeForAppeal", () -> assertTrue(caseTypeForAppeal(APPEAL_CC.getValue())));
+    void givenCaseTypeForAppealIsAppealCC_ReturnsTrue() {
+        assertThat(caseTypeForAppeal(APPEAL_CC.getValue())).isTrue();
     }
 
-    @Test
-    public void givenCaseTypeNotForAppeal_ReturnsFalse() {
-
-        assertAll("CaseTypeForAppeal", () -> assertFalse(caseTypeForAppeal(EITHER_WAY.getValue())));
+    @ParameterizedTest
+    @EnumSource(value = CrownCourtCaseType.class, names = "APPEAL_CC", mode = EnumSource.Mode.EXCLUDE)
+    void givenCaseTypeNotForAppeal_ReturnsFalse(CrownCourtCaseType caseType) {
+        assertThat(caseTypeForAppeal(caseType.getValue())).isFalse();
     }
 }

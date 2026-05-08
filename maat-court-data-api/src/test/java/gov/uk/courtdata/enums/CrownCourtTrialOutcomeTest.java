@@ -4,60 +4,50 @@ import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.CONVICTED;
 import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.PART_CONVICTED;
 import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.isConvicted;
 import static gov.uk.courtdata.enums.CrownCourtTrialOutcome.isTrial;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gov.uk.courtdata.exception.ValidationException;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-public class CrownCourtTrialOutcomeTest {
+class CrownCourtTrialOutcomeTest {
 
     @Test
-    public void givenOutcomeIsEmpty_ExceptionThrown() {
-
-        Assertions.assertThrows(ValidationException.class, () -> {
-            isConvicted(null);
-        });
+    void givenOutcomeIsEmpty_ExceptionThrown() {
+        assertThatThrownBy(() -> isConvicted(null)).isInstanceOf(ValidationException.class);
     }
 
     @Test
-    public void givenOutComeIsConvicted_ReturnsTrue() {
-
-        assertAll("TrialOutcome", () -> assertTrue(isConvicted(CONVICTED.getValue())));
+    void givenOutcomeIsConvicted_ReturnsTrue() {
+        assertThat(isConvicted(CONVICTED.getValue())).isTrue();
     }
 
     @Test
-    public void givenOutComeIsPartConvicted_ReturnsTrue() {
-
-        assertAll("TrialOutcome", () -> assertTrue(isConvicted(PART_CONVICTED.getValue())));
+    void givenOutcomeIsPartConvicted_ReturnsTrue() {
+        assertThat(isConvicted(PART_CONVICTED.getValue())).isTrue();
     }
 
     @Test
-    public void givenOutComeIsNotConvicted_ReturnsFalse() {
-
-        assertAll("TrialOutcome", () -> assertFalse(isConvicted("ACQUITTED")));
+    void givenOutcomeIsNotConvicted_ReturnsFalse() {
+        assertThat(isConvicted("ACQUITTED")).isFalse();
     }
 
     @Test
-    public void givenOutcomeIsEmptyForTrial_ExceptionThrown() {
+    void givenOutcomeIsEmptyForTrial_ExceptionThrown() {
+        assertThatThrownBy(() -> isTrial(null)).isInstanceOf(ValidationException.class);
+    }
 
-        Assertions.assertThrows(ValidationException.class, () -> {
-            isTrial(null);
-        });
+    @ParameterizedTest
+    @EnumSource(value = CrownCourtTrialOutcome.class)
+    void givenOutcomeIsForTrial_ReturnsTrue(CrownCourtTrialOutcome outcome) {
+        assertThat(isTrial(outcome.getValue())).isTrue();
     }
 
     @Test
-    public void givenOutComeIsForTrial_ReturnsTrue() {
-
-        assertAll("TrialOutcome", () -> assertTrue(isTrial(CONVICTED.getValue())));
-    }
-
-    @Test
-    public void givenOutComeIsNotTrial_ReturnsFalse() {
-
-        assertAll("TrialOutcome", () -> assertFalse(isTrial("INVALID")));
+    void givenOutcomeIsInvalid_ReturnsFalse() {
+        assertThat(isTrial("INVALID")).isFalse();
     }
 }

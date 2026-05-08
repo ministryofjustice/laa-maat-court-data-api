@@ -1,7 +1,6 @@
 package gov.uk.courtdata.dces.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -44,10 +43,10 @@ class DebtCollectionRepositoryTest {
         debtCollectionRepository.setEligibleForFdcDelayedPickup("?");
 
         assertThat(mergeSQLCaptor).isNotNull();
-        assertArrayEquals(
-                fdcDelayedPickupStatementHash,
-                getCaptorHash(),
-                "A change has been detected in the DebtCollectionRepository.setEligibleForFdcDelayedPickup() please verify changes are correct. And update this test.");
+        assertThat(getCaptorHash())
+                .as(
+                        "A change has been detected in the DebtCollectionRepository.setEligibleForFdcDelayedPickup() please verify changes are correct. And update this test.")
+                .isEqualTo(fdcDelayedPickupStatementHash);
     }
 
     @Test
@@ -56,10 +55,10 @@ class DebtCollectionRepositoryTest {
         debtCollectionRepository.setEligibleForFdcFastTracking("?");
 
         assertThat(mergeSQLCaptor).isNotNull();
-        assertArrayEquals(
-                fdcFastTrackingStatementHash,
-                getCaptorHash(),
-                "A change has been detected in the DebtCollectionRepository.setEligibleForFdcFastTracking() please verify changes are correct. And update this test.");
+        assertThat(getCaptorHash())
+                .as(
+                        "A change has been detected in the DebtCollectionRepository.setEligibleForFdcFastTracking() please verify changes are correct. And update this test.")
+                .isEqualTo(fdcFastTrackingStatementHash);
     }
 
     byte[] getCaptorHash() {

@@ -1,8 +1,7 @@
 package gov.uk.courtdata.billing.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -48,7 +47,7 @@ class ApplicantHistoryBillingServiceTest {
 
         List<ApplicantHistoryBillingDTO> dtos = service.extractApplicantHistory();
 
-        assertEquals(List.of(TestModelDataBuilder.getApplicantHistoryBillingDTO()), dtos);
+        assertThat(dtos).containsOnly(TestModelDataBuilder.getApplicantHistoryBillingDTO());
     }
 
     @Test
@@ -56,8 +55,7 @@ class ApplicantHistoryBillingServiceTest {
         when(repository.extractApplicantHistoryBilling()).thenReturn(new ArrayList<>());
 
         List<ApplicantHistoryBillingDTO> dtos = service.extractApplicantHistory();
-
-        assertTrue(dtos.isEmpty(), "Applicant history billing data returned when none expected.");
+        assertThat(dtos).isEmpty();
     }
 
     @Test
@@ -76,9 +74,9 @@ class ApplicantHistoryBillingServiceTest {
         UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
         when(repository.resetApplicantHistoryBilling(anyString(), anyList())).thenReturn(1);
 
-        assertThatThrownBy(() -> {
-                    service.resetApplicantHistory(request);
-                })
+        assertThatThrownBy(() ->
+                    service.resetApplicantHistory(request)
+                )
                 .isInstanceOf(MAATCourtDataException.class)
                 .hasMessageContaining(String.format(
                         "Number of applicant histories reset: %d, does not equal those supplied in request: %d.",

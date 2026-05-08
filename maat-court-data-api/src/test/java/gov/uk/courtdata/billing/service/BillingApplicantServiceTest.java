@@ -1,5 +1,6 @@
 package gov.uk.courtdata.billing.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,7 +13,6 @@ import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +45,7 @@ class BillingApplicantServiceTest {
 
         List<BillingApplicantEntity> applicantEntities = billingApplicantService.findAllApplicantsForBilling();
 
-        Assertions.assertTrue(!applicantEntities.isEmpty());
+        assertThat(applicantEntities).isNotEmpty();
         verify(billingApplicantRepository, atLeastOnce()).findAllApplicantsForBilling();
     }
 

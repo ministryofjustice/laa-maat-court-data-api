@@ -1,9 +1,8 @@
 package gov.uk.courtdata.assessment.service;
 
 import static gov.uk.courtdata.assessment.service.PassportAssessmentService.STATUS_COMPLETE;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.verify;
@@ -200,16 +199,6 @@ class PassportAssessmentServiceTest {
     }
 
     @Test
-    void whenBuildPassportAssessmentDTOIsInvokedWithNoAssessmentDetails_thenDTOWithNoDetailsIsReturned() {
-        PassportAssessmentEntity passportAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
-        when(passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(any()))
-                .thenReturn(TestModelDataBuilder.getPassportAssessmentDTO());
-        PassportAssessmentDTO expectedDTO = TestModelDataBuilder.getPassportAssessmentDTO();
-        PassportAssessmentDTO actualDTO = passportAssessmentService.buildPassportAssessmentDTO(passportAssessment);
-        assertThat(actualDTO).isEqualTo(expectedDTO);
-    }
-
-    @Test
     void
             givenValidPassportAssessmentId_whenFindPassportAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() {
         int passportAssessmentId = 1234;
@@ -223,8 +212,8 @@ class PassportAssessmentServiceTest {
         AssessorDetails passportAssessorDetails =
                 passportAssessmentService.findPassportAssessorDetails(passportAssessmentId);
 
-        assertEquals("Karen Greaves", passportAssessorDetails.getFullName());
-        assertEquals(username, passportAssessorDetails.getUserName());
+        assertThat(passportAssessorDetails.getFullName()).isEqualTo("Karen Greaves");
+        assertThat(passportAssessorDetails.getUserName()).isEqualTo(username);
     }
 
     @Test

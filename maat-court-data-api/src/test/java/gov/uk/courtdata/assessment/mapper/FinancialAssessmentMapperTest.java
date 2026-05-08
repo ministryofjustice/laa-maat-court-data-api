@@ -1,6 +1,6 @@
 package gov.uk.courtdata.assessment.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.dto.AssessorDetails;
@@ -25,7 +25,7 @@ class FinancialAssessmentMapperTest {
         AssessorDetails meansAssessorDetails =
                 financialAssessmentMapper.createMeansAssessorDetails(financialAssessmentEntity);
 
-        assertEquals("Karen Greaves", meansAssessorDetails.getFullName());
-        assertEquals(userName, meansAssessorDetails.getUserName());
+        assertThat(meansAssessorDetails.getFullName()).isEqualTo("Karen Greaves");
+        assertThat(meansAssessorDetails.getUserName()).isEqualTo(userName);
     }
 }

@@ -2,8 +2,7 @@ package gov.uk.courtdata.assessment.impl;
 
 import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND;
 import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -67,8 +66,11 @@ class FinancialAssessmentImplTest {
 
         Optional<FinancialAssessmentEntity> returned = financialAssessmentImpl.find(MOCK_FINANCIAL_ASSESSMENT_ID);
 
-        assertTrue(returned.isPresent());
-        assertThat(returned.get().getId()).isEqualTo(MOCK_FINANCIAL_ASSESSMENT_ID);
+        assertThat(returned)
+                .isPresent()
+                .map(FinancialAssessmentEntity::getId)
+                .get()
+                .isEqualTo(MOCK_FINANCIAL_ASSESSMENT_ID);
     }
 
     @Test

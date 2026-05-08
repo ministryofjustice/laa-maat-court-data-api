@@ -74,9 +74,7 @@ class ApplicantHistoryBillingServiceTest {
         UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
         when(repository.resetApplicantHistoryBilling(anyString(), anyList())).thenReturn(1);
 
-        assertThatThrownBy(() ->
-                    service.resetApplicantHistory(request)
-                )
+        assertThatThrownBy(() -> service.resetApplicantHistory(request))
                 .isInstanceOf(MAATCourtDataException.class)
                 .hasMessageContaining(String.format(
                         "Number of applicant histories reset: %d, does not equal those supplied in request: %d.",

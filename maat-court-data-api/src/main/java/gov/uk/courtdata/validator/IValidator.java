@@ -7,7 +7,7 @@ import java.util.Optional;
 /**
  * Interface for validator.
  *
- * @param <V>  object to validate.
+ * @param <V> object to validate.
  * @param <T> return type.
  */
 public interface IValidator<T, V> {

@@ -58,12 +58,12 @@ public class LaaStatusUpdateControllerTest {
                 MessageCollection.builder().messages(new ArrayList<>()).build();
         String caseDetailsJson =
                 """
-            {
-              "maatId": 5635539,
-              "caseUrn": "EITHERWAY",
-              "laaTransactionId": "48e60e52-70f9-415d-8c57-c25a16419a7c"
-            }
-                                      """;
+                        {
+                          "maatId": 5635539,
+                          "caseUrn": "EITHERWAY",
+                          "laaTransactionId": "48e60e52-70f9-415d-8c57-c25a16419a7c"
+                        }
+                        """;
         final CaseDetails caseDetails = gson.fromJson(caseDetailsJson, CaseDetails.class);
 
         // when
@@ -87,10 +87,10 @@ public class LaaStatusUpdateControllerTest {
                 MessageCollection.builder().messages(new ArrayList<>()).build();
         String caseDetailsJson =
                 """
-            {
-              "maatId": 5635539,
-              "caseUrn": "EITHERWAY"
-            }
+                        {
+                          "maatId": 5635539,
+                          "caseUrn": "EITHERWAY"
+                        }
                         """;
         final CaseDetails caseDetails = gson.fromJson(caseDetailsJson, CaseDetails.class);
 
@@ -116,11 +116,11 @@ public class LaaStatusUpdateControllerTest {
                 MessageCollection.builder().messages(validationMessages).build();
         String caseDetailsJson =
                 """
-            {
-              "maatId": 5635539,
-              "caseUrn": "EITHERWAY",
-              "laaTransactionId": "48e60e52-70f9-415d-8c57-c25a16419a7c"
-            }
+                        {
+                          "maatId": 5635539,
+                          "caseUrn": "EITHERWAY",
+                          "laaTransactionId": "48e60e52-70f9-415d-8c57-c25a16419a7c"
+                        }
                         """;
         final CaseDetails caseDetails = gson.fromJson(caseDetailsJson, CaseDetails.class);
 
@@ -142,11 +142,11 @@ public class LaaStatusUpdateControllerTest {
         // given
         String caseDetailsJson =
                 """
-            {
-              "maatId": 5635539,
-              "caseUrn": "EITHERWAY",
-              "laaTransactionId": "48e60e52-70f9-415d-8c57-c25a16419a7c"
-            }
+                        {
+                          "maatId": 5635539,
+                          "caseUrn": "EITHERWAY",
+                          "laaTransactionId": "48e60e52-70f9-415d-8c57-c25a16419a7c"
+                        }
                         """;
         final CaseDetails caseDetails = gson.fromJson(caseDetailsJson, CaseDetails.class);
 

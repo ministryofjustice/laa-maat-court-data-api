@@ -31,6 +31,7 @@ public class MAATApplicationException extends ApplicationException {
     /**
      * Constructs an instance of <code>MAATApplicationException</code> with
      * the specified detail message.
+     *
      * @param message The detail message.
      */
     public MAATApplicationException(String message) {
@@ -40,6 +41,7 @@ public class MAATApplicationException extends ApplicationException {
     /**
      * Constructs an instance of <code>MAATApplicationException</code> with
      * the specified root cause.
+     *
      * @param rootCause The root cause of this exception
      */
     public MAATApplicationException(Throwable rootCause) {
@@ -49,7 +51,8 @@ public class MAATApplicationException extends ApplicationException {
     /**
      * Constructs an instance of <code>MAATApplicationException</code> with
      * the specified root cause and detail message.
-     * @param message The detail message.
+     *
+     * @param message   The detail message.
      * @param rootCause The root cause of this exception
      */
     public MAATApplicationException(String message, Throwable rootCause) {

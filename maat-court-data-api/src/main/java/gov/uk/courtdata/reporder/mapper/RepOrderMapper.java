@@ -3,7 +3,12 @@ package gov.uk.courtdata.reporder.mapper;
 import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.dto.RepOrderStateDTO;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.IOJAppealEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.reporder.LinkingDetail;
@@ -14,7 +19,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import org.mapstruct.*;
+import org.mapstruct.Builder;
+import org.mapstruct.CollectionMappingStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         componentModel = "spring",

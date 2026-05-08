@@ -135,11 +135,11 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
         int expectedRecordsSent = 2;
         String s =
                 """
-                {
-                    "recordsSent": %s,
-                    "concorContributionIds": [%s],
-                    "xmlFileName" : "%s"
-                }""";
+                        {
+                            "recordsSent": %s,
+                            "concorContributionIds": [%s],
+                            "xmlFileName" : "%s"
+                        }""";
         s = s.formatted(expectedRecordsSent, savedEntityId3, expectedFilename);
         mockMvc.perform(MockMvcRequestBuilders.post(ATOMIC_UPDATE_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)

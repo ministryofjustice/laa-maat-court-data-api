@@ -32,6 +32,7 @@ public class InitialAssessmentType implements ORAData, ORADataFactory {
     public static ORADataFactory getORADataFactory() {
         return _InitialAssessmentTypeFactory;
     }
+
     /* constructors */
     protected void _init_struct(boolean init) {
         if (init) _struct = new MutableStruct(new Object[17], _sqlType, _factory);
@@ -96,6 +97,7 @@ public class InitialAssessmentType implements ORAData, ORADataFactory {
         o._struct = new MutableStruct((STRUCT) d, _sqlType, _factory);
         return o;
     }
+
     /* accessor methods */
     public java.sql.Timestamp getAssessmentDate() throws SQLException {
         return (java.sql.Timestamp) _struct.getAttribute(0);

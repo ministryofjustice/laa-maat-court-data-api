@@ -21,6 +21,7 @@ public interface FdcContributionsRepository extends JpaRepository<FdcContributio
     /**
      * This method will return the FDC_CALCULATION_DELAY that has been set in the MAAT DB.
      * This value is used to determine the date range for both accelerated and delayed FDCs.
+     *
      * @return
      */
     @Query(
@@ -32,12 +33,12 @@ public interface FdcContributionsRepository extends JpaRepository<FdcContributio
     @Modifying
     @Query(
             """
-           UPDATE FdcContributionsEntity f
-               SET f.status = :newStatus,
-               f.userModified = :userModified,
-               f.dateModified = CURRENT_DATE
-               WHERE f.repOrderEntity.id = :repId
-               AND f.status = :previousStatus""")
+                    UPDATE FdcContributionsEntity f
+                        SET f.status = :newStatus,
+                        f.userModified = :userModified,
+                        f.dateModified = CURRENT_DATE
+                        WHERE f.repOrderEntity.id = :repId
+                        AND f.status = :previousStatus""")
     Integer updateStatus(
             @Param("repId") Integer repId,
             @Param("userModified") String userModified,
@@ -47,11 +48,11 @@ public interface FdcContributionsRepository extends JpaRepository<FdcContributio
     @Modifying
     @Query(
             """
-           UPDATE FdcContributionsEntity f
-               SET f.status = :newStatus,
-               f.userModified = :userModified,
-               f.dateModified = CURRENT_DATE
-               WHERE f.repOrderEntity.id = :repId""")
+                    UPDATE FdcContributionsEntity f
+                        SET f.status = :newStatus,
+                        f.userModified = :userModified,
+                        f.dateModified = CURRENT_DATE
+                        WHERE f.repOrderEntity.id = :repId""")
     Integer updateStatusByRepId(
             @Param("repId") Integer repId,
             @Param("userModified") String userModified,

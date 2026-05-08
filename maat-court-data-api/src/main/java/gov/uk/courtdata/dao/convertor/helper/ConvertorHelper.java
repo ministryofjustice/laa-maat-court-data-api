@@ -1,6 +1,9 @@
 package gov.uk.courtdata.dao.convertor.helper;
 
-import gov.uk.courtdata.dto.application.*;
+import gov.uk.courtdata.dto.application.Currency;
+import gov.uk.courtdata.dto.application.SysGenDate;
+import gov.uk.courtdata.dto.application.SysGenLong;
+import gov.uk.courtdata.dto.application.SysGenString;
 import uk.gov.justice.laa.crime.util.DateUtil;
 
 import java.io.IOException;

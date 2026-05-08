@@ -6,7 +6,13 @@ import gov.uk.courtdata.model.RepOrderCCOutcome;
 
 import java.util.List;
 
-import org.mapstruct.*;
+import org.mapstruct.Builder;
+import org.mapstruct.CollectionMappingStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         componentModel = "spring",

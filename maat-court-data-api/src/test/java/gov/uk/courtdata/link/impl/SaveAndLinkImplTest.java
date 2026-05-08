@@ -1,10 +1,22 @@
 package gov.uk.courtdata.link.impl;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.dto.CourtDataDTO;
-import gov.uk.courtdata.link.processor.*;
+import gov.uk.courtdata.link.processor.CaseInfoProcessor;
+import gov.uk.courtdata.link.processor.DefendantInfoProcessor;
+import gov.uk.courtdata.link.processor.OffenceInfoProcessor;
+import gov.uk.courtdata.link.processor.ProceedingsInfoProcessor;
+import gov.uk.courtdata.link.processor.RepOrderCPInfoProcessor;
+import gov.uk.courtdata.link.processor.RepOrderInfoProcessor;
+import gov.uk.courtdata.link.processor.ResultsInfoProcessor;
+import gov.uk.courtdata.link.processor.SessionInfoProcessor;
+import gov.uk.courtdata.link.processor.SolicitorInfoProcessor;
+import gov.uk.courtdata.link.processor.WqCoreInfoProcessor;
+import gov.uk.courtdata.link.processor.WqLinkRegisterProcessor;
 import gov.uk.courtdata.repository.IdentifierRepository;
 
 import org.junit.jupiter.api.Test;

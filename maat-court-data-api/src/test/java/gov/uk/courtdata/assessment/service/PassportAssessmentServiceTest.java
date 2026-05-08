@@ -4,7 +4,10 @@ import static gov.uk.courtdata.assessment.service.PassportAssessmentService.STAT
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.assessment.impl.PassportAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;

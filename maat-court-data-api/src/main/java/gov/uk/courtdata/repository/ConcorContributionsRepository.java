@@ -33,12 +33,12 @@ public interface ConcorContributionsRepository extends JpaRepository<ConcorContr
     @Transactional
     @Query(
             """
-           UPDATE ConcorContributionsEntity cc
-               SET cc.status = :newStatus,
-               cc.contribFileId = NULL,
-               cc.dateModified = CURRENT_DATE,
-               cc.userModified = :userModified
-               WHERE cc.id IN :ids""")
+                    UPDATE ConcorContributionsEntity cc
+                        SET cc.status = :newStatus,
+                        cc.contribFileId = NULL,
+                        cc.dateModified = CURRENT_DATE,
+                        cc.userModified = :userModified
+                        WHERE cc.id IN :ids""")
     int updateStatusAndResetContribFileForIds(
             @Param("newStatus") ConcorContributionStatus newStatus,
             @Param("userModified") String userModified,

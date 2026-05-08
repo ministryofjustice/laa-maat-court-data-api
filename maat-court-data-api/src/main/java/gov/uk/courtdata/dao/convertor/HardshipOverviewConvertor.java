@@ -9,7 +9,6 @@ import java.sql.SQLException;
 
 /**
  * @author SWAN-D
- *
  */
 public class HardshipOverviewConvertor extends Convertor {
 
@@ -33,8 +32,10 @@ public class HardshipOverviewConvertor extends Convertor {
             return null;
         }
     }
+
     /**
      * sets the local instance of the dto
+     *
      * @see Convertor#setDTO(Object)
      */
     @Override

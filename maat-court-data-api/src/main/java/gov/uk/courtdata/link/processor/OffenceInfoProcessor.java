@@ -1,6 +1,8 @@
 package gov.uk.courtdata.link.processor;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
+import static gov.uk.courtdata.constants.CourtDataConstants.PENDING_IOJ_DECISION;
 import static gov.uk.courtdata.util.DateUtil.parse;
 
 import gov.uk.courtdata.dto.CourtDataDTO;

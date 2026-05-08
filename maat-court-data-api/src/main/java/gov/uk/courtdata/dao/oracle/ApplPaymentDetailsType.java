@@ -28,6 +28,7 @@ public class ApplPaymentDetailsType implements ORAData, ORADataFactory {
     public static ORADataFactory getORADataFactory() {
         return _ApplPaymentDetailsTypeFactory;
     }
+
     /* constructors */
     protected void _init_struct(boolean init) {
         if (init) _struct = new MutableStruct(new Object[5], _sqlType, _factory);
@@ -68,6 +69,7 @@ public class ApplPaymentDetailsType implements ORAData, ORADataFactory {
         o._struct = new MutableStruct((STRUCT) d, _sqlType, _factory);
         return o;
     }
+
     /* accessor methods */
     public PaymentMethodType getPaymentMethodObject() throws SQLException {
         return (PaymentMethodType) _struct.getAttribute(0);

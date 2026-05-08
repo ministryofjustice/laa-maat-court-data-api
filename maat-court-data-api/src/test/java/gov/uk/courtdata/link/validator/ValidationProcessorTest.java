@@ -1,7 +1,9 @@
 package gov.uk.courtdata.link.validator;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;

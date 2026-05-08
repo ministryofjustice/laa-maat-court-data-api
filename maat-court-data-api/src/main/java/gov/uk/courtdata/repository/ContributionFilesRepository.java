@@ -20,11 +20,11 @@ public interface ContributionFilesRepository extends JpaRepository<ContributionF
     @Modifying
     @Query(
             """
-           UPDATE ContributionFilesEntity cf
-           SET cf.recordsReceived = COALESCE(cf.recordsReceived, 0) + 1,
-               cf.dateReceived = CURRENT_DATE,
-               cf.dateModified = CURRENT_DATE,
-               cf.userModified = :userModified
-           WHERE cf.fileId = :id""")
+                    UPDATE ContributionFilesEntity cf
+                    SET cf.recordsReceived = COALESCE(cf.recordsReceived, 0) + 1,
+                        cf.dateReceived = CURRENT_DATE,
+                        cf.dateModified = CURRENT_DATE,
+                        cf.userModified = :userModified
+                    WHERE cf.fileId = :id""")
     int incrementRecordsReceived(@Param("id") Integer id, @Param("userModified") String userModified);
 }

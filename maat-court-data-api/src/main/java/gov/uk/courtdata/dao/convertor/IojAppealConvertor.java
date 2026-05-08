@@ -10,12 +10,12 @@ import java.sql.SQLException;
 
 /**
  * @author SWAN-D
- *
  */
 public class IojAppealConvertor extends Convertor {
 
     /**
      * Returns the instance of the DTO cast to the appropriate class
+     *
      * @see Convertor#getDTO()
      */
     @Override
@@ -25,6 +25,7 @@ public class IojAppealConvertor extends Convertor {
 
     /**
      * sets the local instance of the dto
+     *
      * @see Convertor#setDTO(Object)
      */
     @Override

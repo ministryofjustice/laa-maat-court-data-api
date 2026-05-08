@@ -15,7 +15,6 @@ import java.util.Iterator;
 
 /**
  * @author SWAN-D
- *
  */
 public class FullAssessmentConvertor extends Convertor {
 

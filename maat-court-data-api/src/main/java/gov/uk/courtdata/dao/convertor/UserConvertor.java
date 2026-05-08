@@ -10,7 +10,6 @@ import java.sql.SQLException;
 
 /**
  * @author SWAN-D
- *
  */
 public class UserConvertor extends Convertor {
 

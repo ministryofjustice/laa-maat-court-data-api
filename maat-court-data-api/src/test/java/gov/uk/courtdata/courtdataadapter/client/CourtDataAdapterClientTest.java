@@ -1,7 +1,12 @@
 package gov.uk.courtdata.courtdataadapter.client;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;

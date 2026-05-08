@@ -2,7 +2,9 @@ package gov.uk.courtdata.users.controller;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.TEST_USER;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.UserEntity;
@@ -54,12 +56,12 @@ public class UserSummaryControllerTest {
     void givenValidParameters_whenCreateUserIsInvoked_thenReturnStatusOK() throws Exception {
         String requestJson =
                 """
-                {
-                  "username" : "test-f",
-                  "loggedIn" : "Y",
-                  "currentSession" : "mock-session"
-                }
-                """;
+                        {
+                          "username" : "test-f",
+                          "loggedIn" : "Y",
+                          "currentSession" : "mock-session"
+                        }
+                        """;
 
         mvc.perform(MockMvcRequestBuilders.post(USER_ENDPOINT_URL)
                         .content(requestJson)
@@ -89,11 +91,11 @@ public class UserSummaryControllerTest {
                 .thenReturn(UserEntity.builder().username(TEST_USER).build());
         String requestJson =
                 """
-                {
-                  "loggedIn" : "Y",
-                  "currentSession" : "mock-session"
-                }
-                """;
+                        {
+                          "loggedIn" : "Y",
+                          "currentSession" : "mock-session"
+                        }
+                        """;
         mvc.perform(MockMvcRequestBuilders.patch(USER_ENDPOINT_URL + TEST_USER)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))

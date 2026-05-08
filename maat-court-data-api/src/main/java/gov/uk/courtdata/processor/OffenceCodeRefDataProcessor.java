@@ -1,6 +1,8 @@
 package gov.uk.courtdata.processor;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import static gov.uk.courtdata.constants.CourtDataConstants.AUTO_USER;
+import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.UNKNOWN_OFFENCE;
 
 import gov.uk.courtdata.entity.XLATOffenceEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;

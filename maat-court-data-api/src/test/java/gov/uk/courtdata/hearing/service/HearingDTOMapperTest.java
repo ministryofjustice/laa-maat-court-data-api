@@ -2,9 +2,18 @@ package gov.uk.courtdata.hearing.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import gov.uk.courtdata.hearing.dto.*;
+import gov.uk.courtdata.hearing.dto.DefendantDTO;
+import gov.uk.courtdata.hearing.dto.HearingDTO;
+import gov.uk.courtdata.hearing.dto.HearingOffenceDTO;
+import gov.uk.courtdata.hearing.dto.ResultDTO;
+import gov.uk.courtdata.hearing.dto.SessionDTO;
 import gov.uk.courtdata.hearing.mapper.HearingDTOMapper;
-import gov.uk.courtdata.model.*;
+import gov.uk.courtdata.model.Defendant;
+import gov.uk.courtdata.model.Offence;
+import gov.uk.courtdata.model.Plea;
+import gov.uk.courtdata.model.Result;
+import gov.uk.courtdata.model.Session;
+import gov.uk.courtdata.model.Verdict;
 import gov.uk.courtdata.model.hearing.HearingResulted;
 
 import org.junit.jupiter.api.Test;

@@ -15,6 +15,7 @@ public interface FeatureToggleRepository extends JpaRepository<FeatureToggleEnti
     /**
      * Gets the feature toggles for a user, which is a combination of user-specific feature toggles,
      * in addition to those which are applicable to all users through a null username.
+     *
      * @param username The username to get feature toggles for.
      * @return A list of feature toggles applicable to the user.
      */

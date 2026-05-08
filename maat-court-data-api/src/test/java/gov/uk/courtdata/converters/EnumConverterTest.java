@@ -2,12 +2,18 @@ package gov.uk.courtdata.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
+import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
+import gov.uk.courtdata.entity.HardshipReviewEntity;
+import gov.uk.courtdata.entity.HardshipReviewProgressEntity;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
 import gov.uk.courtdata.enums.HardshipReviewProgressAction;
 import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
-import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.repository.FinancialAssessmentDetailsRepository;
+import gov.uk.courtdata.repository.HardshipReviewDetailRepository;
+import gov.uk.courtdata.repository.HardshipReviewProgressRepository;
+import gov.uk.courtdata.repository.HardshipReviewRepository;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 

@@ -13,7 +13,14 @@ import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
-import org.mapstruct.*;
+import org.mapstruct.Builder;
+import org.mapstruct.CollectionMappingStrategy;
+import org.mapstruct.InheritInverseConfiguration;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         componentModel = "spring",

@@ -1,6 +1,8 @@
 package gov.uk.courtdata.hearing.validator;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.hearing.HearingResulted;

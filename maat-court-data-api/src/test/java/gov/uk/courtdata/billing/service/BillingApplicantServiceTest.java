@@ -1,6 +1,8 @@
 package gov.uk.courtdata.billing.service;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.billing.entity.BillingApplicantEntity;
 import gov.uk.courtdata.billing.repository.BillingApplicantRepository;

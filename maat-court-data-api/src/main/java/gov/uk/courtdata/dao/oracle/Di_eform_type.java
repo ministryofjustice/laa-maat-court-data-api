@@ -23,6 +23,7 @@ public class Di_eform_type implements ORAData, ORADataFactory {
     public static ORADataFactory getORADataFactory() {
         return _Di_eform_typeFactory;
     }
+
     /* constructors */
     protected void _init_struct(boolean init) {
         if (init) _struct = new MutableStruct(new Object[3], _sqlType, _factory);
@@ -56,6 +57,7 @@ public class Di_eform_type implements ORAData, ORADataFactory {
         o._struct = new MutableStruct((STRUCT) d, _sqlType, _factory);
         return o;
     }
+
     /* accessor methods */
     public java.math.BigDecimal getUsn() throws SQLException {
         return (java.math.BigDecimal) _struct.getAttribute(0);

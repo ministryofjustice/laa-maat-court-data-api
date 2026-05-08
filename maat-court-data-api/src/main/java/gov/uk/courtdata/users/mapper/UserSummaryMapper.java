@@ -7,7 +7,12 @@ import gov.uk.courtdata.dto.UserSummaryDTO;
 
 import java.util.List;
 
-import org.mapstruct.*;
+import org.mapstruct.Builder;
+import org.mapstruct.CollectionMappingStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         componentModel = "spring",

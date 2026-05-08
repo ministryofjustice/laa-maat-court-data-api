@@ -51,6 +51,7 @@ public class ApplicationType implements ORAData, ORADataFactory {
     public static ORADataFactory getORADataFactory() {
         return _ApplicationTypeFactory;
     }
+
     /* constructors */
     protected void _init_struct(boolean init) {
         if (init) _struct = new MutableStruct(new Object[48], _sqlType, _factory);
@@ -177,6 +178,7 @@ public class ApplicationType implements ORAData, ORADataFactory {
         o._struct = new MutableStruct((STRUCT) d, _sqlType, _factory);
         return o;
     }
+
     /* accessor methods */
     public java.math.BigDecimal getRepId() throws SQLException {
         return (java.math.BigDecimal) _struct.getAttribute(0);

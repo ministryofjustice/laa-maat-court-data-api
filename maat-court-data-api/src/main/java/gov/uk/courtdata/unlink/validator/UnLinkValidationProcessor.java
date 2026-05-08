@@ -24,6 +24,7 @@ public class UnLinkValidationProcessor {
 
     /**
      * Validate the Unlink request.
+     *
      * @param unlink
      */
     public void validate(Unlink unlink) {
@@ -40,6 +41,7 @@ public class UnLinkValidationProcessor {
 
     /**
      * Check if maat-id has any active link.
+     *
      * @param linkRegisterEntities
      * @param maatId
      */

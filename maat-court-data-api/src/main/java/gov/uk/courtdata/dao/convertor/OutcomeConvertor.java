@@ -10,7 +10,6 @@ import java.sql.SQLException;
 
 /**
  * @author SWAN-D
- *
  */
 public class OutcomeConvertor extends Convertor {
 
@@ -24,6 +23,7 @@ public class OutcomeConvertor extends Convertor {
 
     /**
      * Returns the instance of the OracleType class cast appropriately
+     *
      * @see Convertor#getOracleType()
      */
     @Override
@@ -41,6 +41,7 @@ public class OutcomeConvertor extends Convertor {
 
     /**
      * sets the local instance of the dto
+     *
      * @see Convertor#setDTO(Object)
      */
     @Override
@@ -54,6 +55,7 @@ public class OutcomeConvertor extends Convertor {
     /**
      * Updates the local instance of the DTO by converting the dao in the
      * oracle type object passed as a parameter
+     *
      * @see Convertor#setDTOFromType(Object)
      */
     @Override
@@ -82,6 +84,7 @@ public class OutcomeConvertor extends Convertor {
     /**
      * Updates the local instance of the Oracle type by converting the dao in the
      * dto object passed as a parameter
+     *
      * @see Convertor#setTypeFromDTO(Object)
      */
     @Override

@@ -4,7 +4,17 @@ import static gov.uk.courtdata.constants.CourtDataConstants.COMMON_PLATFORM;
 
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.link.processor.*;
+import gov.uk.courtdata.link.processor.CaseInfoProcessor;
+import gov.uk.courtdata.link.processor.DefendantInfoProcessor;
+import gov.uk.courtdata.link.processor.OffenceInfoProcessor;
+import gov.uk.courtdata.link.processor.ProceedingsInfoProcessor;
+import gov.uk.courtdata.link.processor.RepOrderCPInfoProcessor;
+import gov.uk.courtdata.link.processor.RepOrderInfoProcessor;
+import gov.uk.courtdata.link.processor.ResultsInfoProcessor;
+import gov.uk.courtdata.link.processor.SessionInfoProcessor;
+import gov.uk.courtdata.link.processor.SolicitorInfoProcessor;
+import gov.uk.courtdata.link.processor.WqCoreInfoProcessor;
+import gov.uk.courtdata.link.processor.WqLinkRegisterProcessor;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

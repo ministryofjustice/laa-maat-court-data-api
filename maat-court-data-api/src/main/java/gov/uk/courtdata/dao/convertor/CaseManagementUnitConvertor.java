@@ -1,7 +1,6 @@
 /**
  * 08/05/2009 SWA-D  remove the circular dependency of the area dto, as the area dto has a collection of the
  * cmu dto in the first place.
- *
  */
 package gov.uk.courtdata.dao.convertor;
 

@@ -6,12 +6,26 @@ import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
-import gov.uk.courtdata.model.laastatus.*;
+import gov.uk.courtdata.model.laastatus.Address;
+import gov.uk.courtdata.model.laastatus.Attributes;
+import gov.uk.courtdata.model.laastatus.Contact;
+import gov.uk.courtdata.model.laastatus.DefenceOrganisation;
+import gov.uk.courtdata.model.laastatus.Defendant;
+import gov.uk.courtdata.model.laastatus.DefendantData;
+import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
+import gov.uk.courtdata.model.laastatus.Offence;
+import gov.uk.courtdata.model.laastatus.Organisation;
+import gov.uk.courtdata.model.laastatus.Relationships;
+import gov.uk.courtdata.model.laastatus.RepOrderData;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import lombok.AllArgsConstructor;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;

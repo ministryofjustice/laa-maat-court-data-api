@@ -1,6 +1,8 @@
 package gov.uk.courtdata.unlink.service;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.Unlink;

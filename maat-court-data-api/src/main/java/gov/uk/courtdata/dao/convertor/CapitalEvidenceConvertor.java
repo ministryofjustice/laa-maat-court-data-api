@@ -30,8 +30,10 @@ public class CapitalEvidenceConvertor extends Convertor {
             return null;
         }
     }
+
     /**
      * sets the local instance of the dto
+     *
      * @see Convertor#setDTO(Object)
      */
     @Override

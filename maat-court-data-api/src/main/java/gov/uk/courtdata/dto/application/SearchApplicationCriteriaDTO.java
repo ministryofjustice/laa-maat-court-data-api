@@ -13,9 +13,7 @@ import org.apache.commons.logging.LogFactory;
  * This value object holds the users entered search criteria.
  * Its used by the main MAAT Search page, to retrieve MAAT Applications (aka RepOrder/Case).
  *
- *
  * @author LING-G
- *
  */
 public class SearchApplicationCriteriaDTO {
     private static final Log log = LogFactory.getLog(SearchApplicationCriteriaDTO.class);

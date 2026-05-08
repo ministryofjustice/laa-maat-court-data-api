@@ -1,11 +1,21 @@
 package gov.uk.courtdata.reporder.mapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.dto.RepOrderStateDTO;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.IOJAppealEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.UserEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 
 import java.time.LocalDate;

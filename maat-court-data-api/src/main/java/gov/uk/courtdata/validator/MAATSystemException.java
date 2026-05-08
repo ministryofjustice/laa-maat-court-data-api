@@ -32,6 +32,7 @@ public class MAATSystemException extends SystemException {
     /**
      * Constructs an instance of <code>MAATApplicationException</code> with
      * the specified detail message.
+     *
      * @param message The detail message.
      */
     public MAATSystemException(String message) {
@@ -41,6 +42,7 @@ public class MAATSystemException extends SystemException {
     /**
      * Constructs an instance of <code>MAATApplicationException</code> with
      * the specified root cause.
+     *
      * @param rootCause The root cause of this exception
      */
     public MAATSystemException(Throwable rootCause) {
@@ -50,7 +52,8 @@ public class MAATSystemException extends SystemException {
     /**
      * Constructs an instance of <code>MAATApplicationException</code> with
      * the specified root cause and detail message.
-     * @param message The detail message.
+     *
+     * @param message   The detail message.
      * @param rootCause The root cause of this exception
      */
     public MAATSystemException(String message, Throwable rootCause) {

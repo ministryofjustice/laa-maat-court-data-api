@@ -4,7 +4,9 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.IOJAppealDTO;

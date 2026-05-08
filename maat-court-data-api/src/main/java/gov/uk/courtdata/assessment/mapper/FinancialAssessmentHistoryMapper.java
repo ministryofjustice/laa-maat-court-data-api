@@ -3,9 +3,19 @@ package gov.uk.courtdata.assessment.mapper;
 import gov.uk.courtdata.dto.ChildWeightHistoryDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDetailsHistoryDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.ChildWeightHistoryEntity;
+import gov.uk.courtdata.entity.ChildWeightingsEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailsHistoryEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentsHistoryEntity;
 
-import org.mapstruct.*;
+import org.mapstruct.Builder;
+import org.mapstruct.CollectionMappingStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.IGNORE,

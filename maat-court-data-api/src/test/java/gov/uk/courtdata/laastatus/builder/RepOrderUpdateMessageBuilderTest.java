@@ -2,7 +2,10 @@ package gov.uk.courtdata.laastatus.builder;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,7 +16,11 @@ import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Offence;
-import gov.uk.courtdata.model.laastatus.*;
+import gov.uk.courtdata.model.laastatus.Address;
+import gov.uk.courtdata.model.laastatus.Contact;
+import gov.uk.courtdata.model.laastatus.DefenceOrganisation;
+import gov.uk.courtdata.model.laastatus.DefendantData;
+import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 

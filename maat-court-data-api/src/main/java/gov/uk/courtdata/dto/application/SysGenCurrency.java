@@ -1,6 +1,8 @@
 package gov.uk.courtdata.dto.application;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.math.BigInteger;

@@ -19,15 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
         statements = {
             "CREATE SCHEMA IF NOT EXISTS TOGDATA;",
             """
-        CREATE TABLE IF NOT EXISTS TOGDATA.APPLICANTS (
-            ID INT PRIMARY KEY,
-            SEND_TO_CCLF VARCHAR(1),
-            DATE_CREATED TIMESTAMP,
-            USER_CREATED VARCHAR(100),
-            DATE_MODIFIED TIMESTAMP,
-            USER_MODIFIED VARCHAR(100)
-        );
-        """
+                        CREATE TABLE IF NOT EXISTS TOGDATA.APPLICANTS (
+                            ID INT PRIMARY KEY,
+                            SEND_TO_CCLF VARCHAR(1),
+                            DATE_CREATED TIMESTAMP,
+                            USER_CREATED VARCHAR(100),
+                            DATE_MODIFIED TIMESTAMP,
+                            USER_MODIFIED VARCHAR(100)
+                        );
+                        """
         })
 class BillingApplicantUpdateRepositoryTest {
 

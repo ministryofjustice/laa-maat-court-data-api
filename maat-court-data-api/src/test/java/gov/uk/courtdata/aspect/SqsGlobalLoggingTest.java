@@ -69,14 +69,14 @@ class SqsGlobalLoggingTest {
         // given
         final String message =
                 """
-                {
-                  "maatId": null,
-                  "caseUrn": "CASNUM-ABC123",
-                  "metadata": {
-                       "laaTransactionId": "c77c96ff-7cad-44cc-9e12-5bc80f5f2d9e"
-                    }
-                }
-                """;
+                        {
+                          "maatId": null,
+                          "caseUrn": "CASNUM-ABC123",
+                          "metadata": {
+                               "laaTransactionId": "c77c96ff-7cad-44cc-9e12-5bc80f5f2d9e"
+                            }
+                        }
+                        """;
         final MessageHeaders headers = new MessageHeaders(new HashMap<>());
         RuntimeException expectedRuntimeException = new RuntimeException("Error processing message");
         doThrow(expectedRuntimeException).when(mockQueueMessageLogService).createLog(MessageType.HEARING, message);
@@ -100,14 +100,14 @@ class SqsGlobalLoggingTest {
         // given
         final String message =
                 """
-                {
-                  "maatId": 6184652,
-                  "caseUrn": "CASNUM-ABC123",
-                  "metadata": {
-                       "laaTransactionId": "c77c96ff-7cad-44cc-9e12-5bc80f5f2d9e"
-                    }
-                }
-                """;
+                        {
+                          "maatId": 6184652,
+                          "caseUrn": "CASNUM-ABC123",
+                          "metadata": {
+                               "laaTransactionId": "c77c96ff-7cad-44cc-9e12-5bc80f5f2d9e"
+                            }
+                        }
+                        """;
         final MessageHeaders headers = new MessageHeaders(new HashMap<>());
         final RuntimeException expectedRuntimeException = new RuntimeException("Error processing message");
 

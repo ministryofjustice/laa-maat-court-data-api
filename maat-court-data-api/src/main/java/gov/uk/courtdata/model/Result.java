@@ -2,7 +2,8 @@ package gov.uk.courtdata.model;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.RESULT_CODE_1000;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder

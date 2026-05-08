@@ -101,11 +101,11 @@ class UserSummaryServiceTest {
                 UserEntity.builder().username(userName).loggedIn("N").build();
         String requestJson =
                 """
-                {
-                  "loggedIn" : "Y",
-                  "currentSession" : null
-                }
-                """;
+                        {
+                          "loggedIn" : "Y",
+                          "currentSession" : null
+                        }
+                        """;
         Map<String, Object> updateFields = new ObjectMapper().readValue(requestJson, HashMap.class);
         when(userRepository.findById(userName)).thenReturn(Optional.of(userEntity));
         userSummaryService.patchUser(userName, updateFields);

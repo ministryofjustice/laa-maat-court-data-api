@@ -18,12 +18,12 @@ public interface BillingApplicantUpdateRepository extends JpaRepository<BillingA
     @Query(
             value =
                     """
-        UPDATE TOGDATA.APPLICANTS
-        SET     SEND_TO_CCLF = NULL,
-                DATE_MODIFIED = CURRENT_TIMESTAMP,
-                USER_MODIFIED = :username
-        WHERE ID IN (:applicantIds)
-        """,
+                            UPDATE TOGDATA.APPLICANTS
+                            SET     SEND_TO_CCLF = NULL,
+                                    DATE_MODIFIED = CURRENT_TIMESTAMP,
+                                    USER_MODIFIED = :username
+                            WHERE ID IN (:applicantIds)
+                            """,
             nativeQuery = true)
     int resetApplicantBilling(List<Integer> applicantIds, String username);
 }

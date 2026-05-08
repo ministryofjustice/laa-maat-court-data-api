@@ -65,8 +65,9 @@ public class PassportAssessmentServiceV2 {
      *     <li>has a partner id</li>
      * </ul>
      * Otherwise will leave fields unpopulated.
+     *
      * @param request Create request sent that is being mapped and saved.
-     * @param entity PassportAssessmentEntity that will have fields populated.
+     * @param entity  PassportAssessmentEntity that will have fields populated.
      */
     private void populatePartnerDetails(ApiCreatePassportedAssessmentRequest request, PassportAssessmentEntity entity) {
         PassportedAssessment assessment = request.getPassportedAssessment();

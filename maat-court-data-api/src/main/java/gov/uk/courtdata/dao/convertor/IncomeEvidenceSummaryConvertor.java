@@ -1,7 +1,11 @@
 package gov.uk.courtdata.dao.convertor;
 
 import gov.uk.courtdata.dao.convertor.helper.ConvertorHelper;
-import gov.uk.courtdata.dao.oracle.*;
+import gov.uk.courtdata.dao.oracle.ExtraEvidenceTabtype;
+import gov.uk.courtdata.dao.oracle.ExtraEvidenceType;
+import gov.uk.courtdata.dao.oracle.IncomeEvidenceSummaryType;
+import gov.uk.courtdata.dao.oracle.IncomeEvidenceTabType;
+import gov.uk.courtdata.dao.oracle.IncomeEvidenceType;
 import gov.uk.courtdata.dto.application.EvidenceDTO;
 import gov.uk.courtdata.dto.application.ExtraEvidenceDTO;
 import gov.uk.courtdata.dto.application.IncomeEvidenceSummaryDTO;
@@ -14,12 +18,10 @@ import java.util.Iterator;
 
 /**
  * @author SWAN-D
- *
  */
 public class IncomeEvidenceSummaryConvertor extends Convertor {
 
     /**
-     *
      * @see Convertor#getDTO()
      */
     @Override
@@ -45,6 +47,7 @@ public class IncomeEvidenceSummaryConvertor extends Convertor {
 
     /**
      * sets the local instance of the dto
+     *
      * @see Convertor#setDTO(Object)
      */
     @Override
@@ -58,6 +61,7 @@ public class IncomeEvidenceSummaryConvertor extends Convertor {
     /**
      * Updates the local instance of the DTO by converting the dao in the
      * oracle type object passed as a parameter
+     *
      * @see Convertor#setDTOFromType(Object)
      */
     @Override
@@ -139,6 +143,7 @@ public class IncomeEvidenceSummaryConvertor extends Convertor {
     /**
      * Updates the local instance of the Oracle type by converting the dao in the
      * dto object passed as a parameter
+     *
      * @see Convertor#setTypeFromDTO(Object)
      */
     @Override

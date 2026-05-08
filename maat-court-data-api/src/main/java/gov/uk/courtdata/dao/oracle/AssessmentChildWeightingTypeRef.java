@@ -1,7 +1,11 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,6 +22,7 @@ public class AssessmentChildWeightingTypeRef implements ORAData, ORADataFactory 
     public static ORADataFactory getORADataFactory() {
         return _AssessmentChildWeightingTypeRefFactory;
     }
+
     /* constructor */
     public AssessmentChildWeightingTypeRef() {}
 

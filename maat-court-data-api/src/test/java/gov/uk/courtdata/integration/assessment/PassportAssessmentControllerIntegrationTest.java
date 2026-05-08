@@ -337,7 +337,9 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .isEqualTo(result.getResponse().getContentAsString());
     }
 
-    /** Simple 3 boolean truth table */
+    /**
+     * Simple 3 boolean truth table
+     */
     private static Stream<Arguments> threeBooleanTruthTable() {
         return Stream.of(
                 Arguments.of(true, true, true),
@@ -354,9 +356,9 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
      * Test to verify behaviour of the CreatePassportedAssessment V2 endpoint. Flags are set in order to test different
      * logical paths. The specific testing of values is in the PassportMapper unit tests, but are here for completeness.
      *
-     * @param isUnder18 boolean controlling if the request being made should be flagged as under-18.
+     * @param isUnder18           boolean controlling if the request being made should be flagged as under-18.
      * @param hasDeclaredBenefits boolean controlling if the request being made should have a DeclaredBenefit section.
-     * @param populatePartner boolean controlling if the request being made should have a partner applicant set.
+     * @param populatePartner     boolean controlling if the request being made should have a partner applicant set.
      */
     @ParameterizedTest
     @MethodSource("threeBooleanTruthTable")

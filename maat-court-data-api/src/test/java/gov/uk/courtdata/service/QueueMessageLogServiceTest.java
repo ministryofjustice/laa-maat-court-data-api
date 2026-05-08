@@ -1,6 +1,9 @@
 package gov.uk.courtdata.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -11,7 +14,10 @@ import gov.uk.courtdata.repository.QueueMessageLogRepository;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -166,14 +172,14 @@ class QueueMessageLogServiceTest {
 
         String payload =
                 """
-                {
-                    "data": {
-                        "attributes": {
-                            "maat_reference": 324334
+                        {
+                            "data": {
+                                "attributes": {
+                                    "maat_reference": 324334
+                                }
+                            }
                         }
-                    }
-                }
-                """;
+                        """;
 
         queueMessageLogService.createLog(MessageType.LAA_STATUS_UPDATE, payload);
 

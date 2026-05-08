@@ -1,6 +1,8 @@
 package gov.uk.courtdata.link.processor;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
+import static gov.uk.courtdata.constants.CourtDataConstants.NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.CaseEntity;

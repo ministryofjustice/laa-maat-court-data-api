@@ -1,6 +1,7 @@
 package gov.uk.courtdata.hearing.service;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 
 import gov.uk.courtdata.enums.FunctionType;
 import gov.uk.courtdata.enums.JurisdictionType;

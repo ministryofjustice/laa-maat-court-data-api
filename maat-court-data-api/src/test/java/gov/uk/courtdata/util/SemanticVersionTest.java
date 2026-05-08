@@ -33,9 +33,9 @@ class SemanticVersionTest {
     @Test
     void shouldLoadSemanticVersionsFromFile() throws IOException {
         String fileContent = """
-        1.0.0
-        1.1.0
-        1.2.0""";
+                1.0.0
+                1.1.0
+                1.2.0""";
         FileUtils.writeStringToFile(versionFile, fileContent, Charset.defaultCharset());
 
         assertEquals("1.0.0|1.1.0|1.2.0", createSemanticVersion().asText());

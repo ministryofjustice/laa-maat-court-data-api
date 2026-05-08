@@ -1,7 +1,12 @@
 package gov.uk.courtdata.enums;
 
-import static gov.uk.courtdata.enums.CrownCourtAppealOutcome.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static gov.uk.courtdata.enums.CrownCourtAppealOutcome.PART_SUCCESS;
+import static gov.uk.courtdata.enums.CrownCourtAppealOutcome.SUCCESSFUL;
+import static gov.uk.courtdata.enums.CrownCourtAppealOutcome.UNSUCCESSFUL;
+import static gov.uk.courtdata.enums.CrownCourtAppealOutcome.isAppeal;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.uk.courtdata.exception.ValidationException;
 

@@ -1,7 +1,9 @@
 package gov.uk.courtdata.hearing.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.hearing.HearingResulted;

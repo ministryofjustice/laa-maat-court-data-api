@@ -4,7 +4,14 @@
 package gov.uk.courtdata.dao.convertor;
 
 import gov.uk.courtdata.dao.convertor.helper.ConvertorHelper;
-import gov.uk.courtdata.dao.oracle.*;
+import gov.uk.courtdata.dao.oracle.ApplicantLinkType;
+import gov.uk.courtdata.dao.oracle.ApplicantLinksTabtype;
+import gov.uk.courtdata.dao.oracle.ApplicationType;
+import gov.uk.courtdata.dao.oracle.AssessmentSummaryTabType;
+import gov.uk.courtdata.dao.oracle.AssessmentSummaryType;
+import gov.uk.courtdata.dao.oracle.DigiMeansAssessTabtype;
+import gov.uk.courtdata.dao.oracle.DigiMeansAssessType;
+import gov.uk.courtdata.dao.oracle.PassportAssessmentType;
 import gov.uk.courtdata.dto.application.ApplicantLinkDTO;
 import gov.uk.courtdata.dto.application.ApplicationDTO;
 import gov.uk.courtdata.dto.application.AssessmentSummaryDTO;
@@ -18,12 +25,12 @@ import java.util.Iterator;
 
 /**
  * @author SWAN-D
- *
  */
 public class ApplicationConvertor extends Convertor {
 
     /**
      * Returns the instance of the DTO cast to the appropriate class
+     *
      * @see Convertor#getDTO()
      */
     @Override
@@ -33,6 +40,7 @@ public class ApplicationConvertor extends Convertor {
 
     /**
      * Returns the instance of the OracleType class cast appropriately
+     *
      * @see Convertor#getOracleType()
      */
     @Override
@@ -50,6 +58,7 @@ public class ApplicationConvertor extends Convertor {
 
     /**
      * sets the local instance of the dto
+     *
      * @see Convertor#setDTO(Object)
      */
     @Override
@@ -63,6 +72,7 @@ public class ApplicationConvertor extends Convertor {
     /**
      * Updates the local instance of the DTO by converting the dao in the
      * oracle type object passed as a parameter
+     *
      * @see Convertor#setDTOFromType(Object)
      */
     @Override
@@ -274,6 +284,7 @@ public class ApplicationConvertor extends Convertor {
     /**
      * Updates the local instance of the Oracle type by converting the dao in the
      * dto object passed as a parameter
+     *
      * @see Convertor#setTypeFromDTO(Object)
      */
     @Override

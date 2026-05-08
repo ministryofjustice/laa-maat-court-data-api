@@ -33,6 +33,7 @@ public class CrownCourtOverviewType implements ORAData, ORADataFactory {
     public static ORADataFactory getORADataFactory() {
         return _CrownCourtOverviewTypeFactory;
     }
+
     /* constructors */
     protected void _init_struct(boolean init) {
         if (init) _struct = new MutableStruct(new Object[7], _sqlType, _factory);
@@ -77,6 +78,7 @@ public class CrownCourtOverviewType implements ORAData, ORADataFactory {
         o._struct = new MutableStruct((STRUCT) d, _sqlType, _factory);
         return o;
     }
+
     /* accessor methods */
     public String getAvailable() throws SQLException {
         return (String) _struct.getAttribute(0);

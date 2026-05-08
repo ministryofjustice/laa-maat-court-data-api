@@ -5,7 +5,6 @@ package gov.uk.courtdata.validator;
 
 /**
  * @author SWAN-D
- *
  */
 public class GlobalSearchOperatorException extends MAATApplicationException {
 

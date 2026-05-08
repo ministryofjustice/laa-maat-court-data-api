@@ -24,7 +24,11 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.NewWorkReason;
-import gov.uk.courtdata.model.assessment.*;
+import gov.uk.courtdata.model.assessment.ChildWeightings;
+import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
+import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
+import gov.uk.courtdata.model.assessment.FinancialAssessmentIncomeEvidence;
+import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 
 import java.util.List;
 import java.util.Objects;

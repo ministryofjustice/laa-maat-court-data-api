@@ -1,7 +1,9 @@
 package gov.uk.courtdata.integration.iojAppeal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -191,16 +193,16 @@ class IojAppealControllerIntegrationTest extends MockMvcIntegrationTest {
 
         String malformedJson =
                 """
-                {
-                  "iojAppealMetadata": {
-                    "legacyApplicationId": 123
-                  },
-                  "iojAppeal": {
-                    "receivedDate": "2025-01-01",
-                    "appealReason": {
-                      "code": "M"
-                    }
-                """;
+                        {
+                          "iojAppealMetadata": {
+                            "legacyApplicationId": 123
+                          },
+                          "iojAppeal": {
+                            "receivedDate": "2025-01-01",
+                            "appealReason": {
+                              "code": "M"
+                            }
+                        """;
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
                         .content(malformedJson)

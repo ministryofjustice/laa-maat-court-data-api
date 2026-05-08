@@ -148,11 +148,11 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         int expectedRecordsSent = 2;
         String s =
                 """
-                                {
-                                    "recordsSent": %s,
-                                    "fdcIds": [%s],
-                                    "xmlFileName" : "%s"
-                                }""";
+                        {
+                            "recordsSent": %s,
+                            "fdcIds": [%s],
+                            "xmlFileName" : "%s"
+                        }""";
         s = s.formatted(expectedRecordsSent, expectedId4, expectedFilename);
         mockMvc.perform(MockMvcRequestBuilders.post(ATOMIC_UPDATE_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)

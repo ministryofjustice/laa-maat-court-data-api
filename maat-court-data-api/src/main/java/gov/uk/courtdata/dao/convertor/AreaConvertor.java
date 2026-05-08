@@ -15,16 +15,19 @@ import java.util.Iterator;
 
 /**
  * Represents an administrative area
- * @author OBOD-L
  *
+ * @author OBOD-L
  */
 public class AreaConvertor extends Convertor {
 
-    /** default constructor */
+    /**
+     * default constructor
+     */
     public AreaConvertor() {}
 
     /**
      * This will create a local instance of the DTO appropriate for this convertor
+     *
      * @see Convertor#getDto()
      */
     @Override

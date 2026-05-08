@@ -3,7 +3,9 @@ package gov.uk.courtdata.applicant.service;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.mapper.ApplicantHistoryMapper;

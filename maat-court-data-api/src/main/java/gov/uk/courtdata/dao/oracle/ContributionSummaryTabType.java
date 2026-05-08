@@ -2,7 +2,11 @@ package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
 import oracle.jpub.runtime.MutableArray;
-import oracle.sql.*;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,6 +23,7 @@ public class ContributionSummaryTabType implements ORAData, ORADataFactory {
     public static ORADataFactory getORADataFactory() {
         return _ContributionSummaryTabTypeFactory;
     }
+
     /* constructors */
     public ContributionSummaryTabType() {
         this((ContributionSummaryType[]) null);

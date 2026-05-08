@@ -9,8 +9,8 @@ import gov.uk.courtdata.validator.MAATSystemException;
 /**
  * This generic class is extended by all of the DTO classes in this application. It defines 3
  * abstract methods which must be implemented, but also holds the related oracle java type object.
- * @author SWAN-D
  *
+ * @author SWAN-D
  */
 public abstract class Convertor {
 
@@ -27,6 +27,7 @@ public abstract class Convertor {
     /**
      * This method will convert the native java object attributes to populate
      * the oracle java types of the embedded type class.
+     *
      * @return
      */
     public abstract void setTypeFromDTO(Object dto) throws MAATApplicationException, MAATSystemException;
@@ -34,6 +35,7 @@ public abstract class Convertor {
     /**
      * This method must be overridden to return the object cast to the appropriate
      * class type.
+     *
      * @return
      */
     public abstract Object getOracleType() throws MAATApplicationException, MAATSystemException;

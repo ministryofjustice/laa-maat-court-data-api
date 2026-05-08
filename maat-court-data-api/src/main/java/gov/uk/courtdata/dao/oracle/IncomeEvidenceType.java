@@ -28,6 +28,7 @@ public class IncomeEvidenceType implements ORAData, ORADataFactory {
     public static ORADataFactory getORADataFactory() {
         return _IncomeEvidenceTypeFactory;
     }
+
     /* constructors */
     protected void _init_struct(boolean init) {
         if (init) _struct = new MutableStruct(new Object[5], _sqlType, _factory);
@@ -68,6 +69,7 @@ public class IncomeEvidenceType implements ORAData, ORADataFactory {
         o._struct = new MutableStruct((STRUCT) d, _sqlType, _factory);
         return o;
     }
+
     /* accessor methods */
     public java.math.BigDecimal getId() throws SQLException {
         return (java.math.BigDecimal) _struct.getAttribute(0);

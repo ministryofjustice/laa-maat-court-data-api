@@ -3,7 +3,11 @@ package gov.uk.courtdata.contribution.mapper;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.entity.ContribCalcParametersEntity;
 
-import org.mapstruct.*;
+import org.mapstruct.Builder;
+import org.mapstruct.CollectionMappingStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         componentModel = "spring",

@@ -1,6 +1,8 @@
 package gov.uk.courtdata.unlink.impl;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import static gov.uk.courtdata.constants.CourtDataConstants.SYSTEM_UNLINKED;
+import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
+import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UNLINK_EVENT;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
@@ -11,7 +13,11 @@ import gov.uk.courtdata.enums.InCommonPlatformFlag;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
-import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.repository.IdentifierRepository;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
+import gov.uk.courtdata.repository.UnlinkReasonRepository;
+import gov.uk.courtdata.repository.WqCoreRepository;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;

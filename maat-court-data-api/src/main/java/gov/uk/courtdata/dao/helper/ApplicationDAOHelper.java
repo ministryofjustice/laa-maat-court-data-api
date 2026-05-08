@@ -25,7 +25,6 @@ import java.util.Locale;
  * <br>
  *
  * @author SWAN-D
- *
  */
 public class ApplicationDAOHelper {
 
@@ -37,6 +36,7 @@ public class ApplicationDAOHelper {
     /**
      * This method will iterate the collection of search parameters in the criteria to generate
      * a collection of corresponding oracle types to pass to the database interface method.
+     *
      * @param criteria
      * @return
      */

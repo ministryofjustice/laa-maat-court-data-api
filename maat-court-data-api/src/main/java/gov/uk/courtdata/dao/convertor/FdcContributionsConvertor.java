@@ -1,7 +1,11 @@
 package gov.uk.courtdata.dao.convertor;
 
 import gov.uk.courtdata.dao.convertor.helper.ConvertorHelper;
-import gov.uk.courtdata.dao.oracle.*;
+import gov.uk.courtdata.dao.oracle.FdcContributionsType;
+import gov.uk.courtdata.dao.oracle.FdcItemsTabtype;
+import gov.uk.courtdata.dao.oracle.FdcItemsType;
+import gov.uk.courtdata.dao.oracle.FdcNotesTabtype;
+import gov.uk.courtdata.dao.oracle.FdcNotesType;
 import gov.uk.courtdata.dto.application.FdcContributionDTO;
 import gov.uk.courtdata.dto.application.FdcItemDTO;
 import gov.uk.courtdata.dto.application.NoteDTO;
@@ -14,12 +18,12 @@ import java.util.Iterator;
 
 /**
  * @author obod-l
- *
  */
 public class FdcContributionsConvertor extends Convertor {
 
     /**
      * Returns the instance of the DTO cast to the appropriate class
+     *
      * @see Convertor#getDTO()
      */
     @Override
@@ -30,6 +34,7 @@ public class FdcContributionsConvertor extends Convertor {
 
     /**
      * Returns the instance of the OracleType class cast appropriately
+     *
      * @see Convertor#getOracleType()
      */
     @Override
@@ -64,6 +69,7 @@ public class FdcContributionsConvertor extends Convertor {
     /**
      * Updates the local instance of the DTO by converting the dao in the
      * oracle type object passed as a parameter
+     *
      * @see Convertor#setDTOFromType(Object)
      */
     @Override
@@ -167,6 +173,7 @@ public class FdcContributionsConvertor extends Convertor {
     /**
      * Updates the local instance of the Oracle type by converting the dao in the
      * dto object passed as a parameter
+     *
      * @see Convertor#setTypeFromDTO(Object)
      */
     @Override

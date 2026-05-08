@@ -105,8 +105,9 @@ public interface PassportAssessmentMapper {
      *     <li>Otherwise it will compare the declared benefit type on the request
      *     and the provided benefit type.</li>
      * </ul>
+     *
      * @param expected BenefitType that is expected if this value should be true.
-     * @param request Request object that is under inspection.
+     * @param request  Request object that is under inspection.
      * @return String containing "Y" or "N".
      */
     default String mapBenefitType(BenefitType expected, ApiCreatePassportedAssessmentRequest request) {

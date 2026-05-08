@@ -4,7 +4,10 @@ import gov.uk.courtdata.enums.FunctionType;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.model.Session;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 

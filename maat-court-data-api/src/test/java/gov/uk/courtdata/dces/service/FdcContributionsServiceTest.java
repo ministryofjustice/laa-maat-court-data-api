@@ -376,7 +376,9 @@ class FdcContributionsServiceTest {
         assertThat(exception.getMessage()).isEqualTo("fdc_contribution could not be found by id");
     }
 
-    /** Create a contributions file to the exact specifications so that mappings can be properly tested. */
+    /**
+     * Create a contributions file to the exact specifications so that mappings can be properly tested.
+     */
     private void setupFdcContributionsFile() {
         fdcContributionsEntityList = new ArrayList<>();
         RepOrderEntity repOrderEntity = TestEntityDataBuilder.getPopulatedRepOrder();

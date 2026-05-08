@@ -48,7 +48,9 @@ public class ConcorContributionsService {
     private final DebtCollectionService debtCollectionService;
     private final ConcorContributionMapper concorContributionMapper;
 
-    /** Resets a number of concor_contribution rows to status = ACTIVE | REPLACED, contrib_file_id = (null). */
+    /**
+     * Resets a number of concor_contribution rows to status = ACTIVE | REPLACED, contrib_file_id = (null).
+     */
     @Transactional
     public List<Integer> updateConcorContributionStatusAndResetContribFile(
             UpdateConcorContributionStatusRequest request) {
@@ -189,7 +191,9 @@ public class ConcorContributionsService {
         return contributionFileEntity;
     }
 
-    /** Sets specific concor_contribution rows to status = SENT, contrib_file_id = (non-null). */
+    /**
+     * Sets specific concor_contribution rows to status = SENT, contrib_file_id = (non-null).
+     */
     private boolean updateConcorContributionStatusAndSetContribFile(
             Set<Integer> ids, ConcorContributionStatus status, final Integer contributionFileId) {
         final List<ConcorContributionsEntity> concorFileList = concorRepository.findByIdIn(ids);

@@ -1,7 +1,14 @@
 package gov.uk.courtdata.enums;
 
-import static gov.uk.courtdata.enums.CrownCourtCaseType.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static gov.uk.courtdata.enums.CrownCourtCaseType.APPEAL_CC;
+import static gov.uk.courtdata.enums.CrownCourtCaseType.CC_ALREADY;
+import static gov.uk.courtdata.enums.CrownCourtCaseType.EITHER_WAY;
+import static gov.uk.courtdata.enums.CrownCourtCaseType.INDICTABLE;
+import static gov.uk.courtdata.enums.CrownCourtCaseType.caseTypeForAppeal;
+import static gov.uk.courtdata.enums.CrownCourtCaseType.caseTypeForTrial;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import gov.uk.courtdata.exception.ValidationException;
 

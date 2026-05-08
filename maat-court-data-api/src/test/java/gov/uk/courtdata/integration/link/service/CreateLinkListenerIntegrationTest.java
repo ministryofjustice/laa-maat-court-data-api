@@ -118,17 +118,17 @@ public class CreateLinkListenerIntegrationTest extends MockMvcIntegrationTest {
 
     public String getSaveAndLinkString() {
         return """
-            {
-              "category": 12,
-              "laaTransactionId":"e439dfc8-664e-4c8e-a999-d756dcf112c2",
-              "caseUrn":"caseurn1",
-              "asn": "123456754",
-              "docLanguage": "EN",
-              "caseCreationDate": "2019-08-16",
-              "cjsAreaCode": "16",
-              "createdUser": "testUser",
-              "cjsLocation": "B16BG",
-              "isActive" : true
-            }""";
+                {
+                  "category": 12,
+                  "laaTransactionId":"e439dfc8-664e-4c8e-a999-d756dcf112c2",
+                  "caseUrn":"caseurn1",
+                  "asn": "123456754",
+                  "docLanguage": "EN",
+                  "caseCreationDate": "2019-08-16",
+                  "cjsAreaCode": "16",
+                  "createdUser": "testUser",
+                  "cjsLocation": "B16BG",
+                  "isActive" : true
+                }""";
     }
 }

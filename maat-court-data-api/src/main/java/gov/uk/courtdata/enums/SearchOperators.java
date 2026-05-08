@@ -6,7 +6,6 @@ import lombok.Getter;
  * Search logical operators.
  *
  * @author LING-G
- *
  */
 @Getter
 public enum SearchOperators {

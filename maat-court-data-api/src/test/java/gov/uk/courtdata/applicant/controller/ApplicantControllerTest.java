@@ -1,8 +1,15 @@
 package gov.uk.courtdata.applicant.controller;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;

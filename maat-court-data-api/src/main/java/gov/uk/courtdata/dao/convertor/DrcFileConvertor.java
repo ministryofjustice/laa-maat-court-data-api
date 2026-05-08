@@ -10,12 +10,12 @@ import java.sql.SQLException;
 
 /**
  * @author obod-l
- *
  */
 public class DrcFileConvertor extends Convertor {
 
     /**
      * Returns the instance of the DTO cast to the appropriate class
+     *
      * @see Convertor#getDTO()
      */
     @Override
@@ -26,6 +26,7 @@ public class DrcFileConvertor extends Convertor {
 
     /**
      * Returns the instance of the OracleType class cast appropriately
+     *
      * @see Convertor#getOracleType()
      */
     @Override
@@ -64,6 +65,7 @@ public class DrcFileConvertor extends Convertor {
     /**
      * Updates the local instance of the DTO by converting the dao in the
      * oracle type object passed as a parameter
+     *
      * @see Convertor#setDTOFromType(Object)
      */
     @Override
@@ -95,6 +97,7 @@ public class DrcFileConvertor extends Convertor {
     /**
      * Updates the local instance of the Oracle type by converting the dao in the
      * dto object passed as a parameter
+     *
      * @see Convertor#setTypeFromDTO(Object)
      */
     @Override

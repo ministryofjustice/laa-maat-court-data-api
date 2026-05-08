@@ -15,7 +15,6 @@ import java.util.Iterator;
 
 /**
  * @author SWAN-D
- *
  */
 public class PropertyConvertor extends Convertor {
 
@@ -29,6 +28,7 @@ public class PropertyConvertor extends Convertor {
 
     /**
      * Returns the instance of the OracleType class cast appropriately
+     *
      * @see Convertor#getOracleType()
      */
     @Override
@@ -46,6 +46,7 @@ public class PropertyConvertor extends Convertor {
 
     /**
      * sets the local instance of the dto
+     *
      * @see Convertor#setDTO(Object)
      */
     @Override
@@ -59,8 +60,9 @@ public class PropertyConvertor extends Convertor {
     /**
      * Updates the local instance of the DTO by converting the dao in the
      * oracle type object passed as a parameter
-     * @see Convertor#setDTOFromType(Object)
      *
+     * @see Convertor#setDTOFromType(Object)
+     * <p>
      * CREATE OR REPLACE TYPE TOGDATA.property_type    as object
      * (
      * id                           number(10),
@@ -80,7 +82,6 @@ public class PropertyConvertor extends Convertor {
      * tennant_in_place             varchar2(1),
      * time_stamp                   timestamp
      * )
-     *
      */
     @Override
     public void setDTOFromType(Object oracleType) throws MAATApplicationException, MAATSystemException {
@@ -169,6 +170,7 @@ public class PropertyConvertor extends Convertor {
     /**
      * Updates the local instance of the Oracle type by converting the dao in the
      * dto object passed as a parameter
+     *
      * @see Convertor#setTypeFromDTO(Object)
      */
     @Override

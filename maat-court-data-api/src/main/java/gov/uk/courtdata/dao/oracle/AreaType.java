@@ -28,6 +28,7 @@ public class AreaType implements ORAData, ORADataFactory {
     public static ORADataFactory getORADataFactory() {
         return _AreaTypeFactory;
     }
+
     /* constructors */
     protected void _init_struct(boolean init) {
         if (init) _struct = new MutableStruct(new Object[6], _sqlType, _factory);
@@ -70,6 +71,7 @@ public class AreaType implements ORAData, ORADataFactory {
         o._struct = new MutableStruct((STRUCT) d, _sqlType, _factory);
         return o;
     }
+
     /* accessor methods */
     public java.math.BigDecimal getId() throws SQLException {
         return (java.math.BigDecimal) _struct.getAttribute(0);

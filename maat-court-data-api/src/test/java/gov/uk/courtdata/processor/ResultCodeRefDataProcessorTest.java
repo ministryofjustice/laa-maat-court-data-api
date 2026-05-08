@@ -1,6 +1,8 @@
 package gov.uk.courtdata.processor;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import static gov.uk.courtdata.constants.CourtDataConstants.AUTO_USER;
+import static gov.uk.courtdata.constants.CourtDataConstants.RESULT_CODE_DESCRIPTION;
+import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,7 +17,11 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)

@@ -3,13 +3,20 @@ package gov.uk.courtdata.offence.helper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.offence.model.OffenceSummary;
 import gov.uk.courtdata.offence.model.Plea;
-import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.repository.OffenceRepository;
+import gov.uk.courtdata.repository.ResultRepository;
+import gov.uk.courtdata.repository.WQOffenceRepository;
+import gov.uk.courtdata.repository.WQResultRepository;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
+import gov.uk.courtdata.repository.XLATResultRepository;
 
 import java.util.List;
 import java.util.UUID;

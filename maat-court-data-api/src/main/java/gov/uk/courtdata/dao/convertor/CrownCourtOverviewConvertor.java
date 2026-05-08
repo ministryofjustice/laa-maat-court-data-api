@@ -1,7 +1,14 @@
 package gov.uk.courtdata.dao.convertor;
 
 import gov.uk.courtdata.dao.convertor.helper.ConvertorHelper;
-import gov.uk.courtdata.dao.oracle.*;
+import gov.uk.courtdata.dao.oracle.ApplPaymentDetailsType;
+import gov.uk.courtdata.dao.oracle.ContributionSummaryTabType;
+import gov.uk.courtdata.dao.oracle.ContributionSummaryType;
+import gov.uk.courtdata.dao.oracle.ContributionsType;
+import gov.uk.courtdata.dao.oracle.CorrespondenceTabType;
+import gov.uk.courtdata.dao.oracle.CorrespondenceType;
+import gov.uk.courtdata.dao.oracle.CrownCourtOverviewType;
+import gov.uk.courtdata.dao.oracle.CrownCourtSummaryType;
 import gov.uk.courtdata.dto.application.ContributionSummaryDTO;
 import gov.uk.courtdata.dto.application.CorrespondenceDTO;
 import gov.uk.courtdata.dto.application.CrownCourtOverviewDTO;
@@ -14,7 +21,6 @@ import java.util.Iterator;
 
 /**
  * @author SWAN-D
- *
  */
 public class CrownCourtOverviewConvertor extends Convertor {
 
@@ -28,6 +34,7 @@ public class CrownCourtOverviewConvertor extends Convertor {
 
     /**
      * Returns the instance of the OracleType class cast appropriately
+     *
      * @see Convertor#getOracleType()
      */
     @Override
@@ -45,6 +52,7 @@ public class CrownCourtOverviewConvertor extends Convertor {
 
     /**
      * sets the local instance of the dto
+     *
      * @see Convertor#setDTO(Object)
      */
     @Override
@@ -58,6 +66,7 @@ public class CrownCourtOverviewConvertor extends Convertor {
     /**
      * Updates the local instance of the DTO by converting the dao in the
      * oracle type object passed as a parameter
+     *
      * @see Convertor#setDTOFromType(Object)
      */
     @Override
@@ -134,6 +143,7 @@ public class CrownCourtOverviewConvertor extends Convertor {
     /**
      * Updates the local instance of the Oracle type by converting the dao in the
      * dto object passed as a parameter
+     *
      * @see Convertor#setTypeFromDTO(Object)
      */
     @Override

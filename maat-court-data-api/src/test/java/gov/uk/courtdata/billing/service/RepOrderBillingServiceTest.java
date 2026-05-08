@@ -6,13 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
+import gov.uk.courtdata.billing.repository.RepOrderBillingRepository;
 import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.billing.repository.RepOrderBillingRepository;
+
 import java.util.Collections;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,15 +41,13 @@ class RepOrderBillingServiceTest {
 
     @Test
     void givenRepOrdersExist_whenGetRepOrdersForBillingIsInvoked_thenRepOrdersAreReturned() {
-        when(repOrderBillingRepository.getRepOrdersForBilling()).thenReturn(List.of(
-            TestEntityDataBuilder.getPopulatedRepOrderForBilling(123),
-            TestEntityDataBuilder.getPopulatedRepOrderForBilling(124)
-        ));
+        when(repOrderBillingRepository.getRepOrdersForBilling())
+                .thenReturn(List.of(
+                        TestEntityDataBuilder.getPopulatedRepOrderForBilling(123),
+                        TestEntityDataBuilder.getPopulatedRepOrderForBilling(124)));
 
         List<RepOrderBillingDTO> expectedRepOrders = List.of(
-            TestModelDataBuilder.getRepOrderBillingDTO(123),
-            TestModelDataBuilder.getRepOrderBillingDTO(124)
-        );
+                TestModelDataBuilder.getRepOrderBillingDTO(123), TestModelDataBuilder.getRepOrderBillingDTO(124));
 
         List<RepOrderBillingDTO> repOrders = repOrderBillingService.getRepOrdersForBilling();
 
@@ -59,21 +59,21 @@ class RepOrderBillingServiceTest {
     void givenRepOrdersNotSuccessfullyUpdated_whenResetRepOrdersSentForBillingIsInvoked_thenReturnsFalse() {
         UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
         when(repOrderBillingRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getIds()))
-            .thenReturn(1);
+                .thenReturn(1);
 
-        MAATCourtDataException exception = assertThrows(MAATCourtDataException.class,
-            () -> repOrderBillingService.resetRepOrdersSentForBilling(request));
+        MAATCourtDataException exception = assertThrows(
+                MAATCourtDataException.class, () -> repOrderBillingService.resetRepOrdersSentForBilling(request));
 
         assertEquals(
-            "Unable to reset rep orders sent for billing as only 1 rep order(s) could be processed (from a total of 2 rep order(s))"
-            , exception.getMessage());
+                "Unable to reset rep orders sent for billing as only 1 rep order(s) could be processed (from a total of 2 rep order(s))",
+                exception.getMessage());
     }
 
     @Test
     void givenRepOrdersSuccessfullyUpdated_whenResetRepOrdersSentForBillingIsInvoked_thenReturnsTrue() {
         UpdateBillingRequest request = TestModelDataBuilder.getUpdateBillingRequest();
         when(repOrderBillingRepository.resetBillingFlagForRepOrderIds(request.getUserModified(), request.getIds()))
-            .thenReturn(request.getIds().size());
+                .thenReturn(request.getIds().size());
 
         assertDoesNotThrow(() -> repOrderBillingService.resetRepOrdersSentForBilling(request));
     }

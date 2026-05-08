@@ -1,32 +1,36 @@
 package gov.uk.courtdata.laastatus.processor;
 
-import com.google.gson.Gson;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.repository.OffenceRepository;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
+import com.google.gson.Gson;
 
 @ExtendWith(MockitoExtension.class)
 public class UpdateOffenceInfoProcessorTest {
 
     @InjectMocks
     private UpdateOffenceInfoProcessor offenceInfoProcessor;
+
     @Spy
     private OffenceRepository offenceRepository;
 
     private TestModelDataBuilder testModelDataBuilder;
+
     @Captor
     private ArgumentCaptor<List<OffenceEntity>> OffenceCaptor;
 
@@ -40,9 +44,10 @@ public class UpdateOffenceInfoProcessorTest {
 
         // given
         CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
-        Offence offence = courtDataDTO.getCaseDetails().getDefendant().getOffences().get(0);
+        Offence offence =
+                courtDataDTO.getCaseDetails().getDefendant().getOffences().get(0);
 
-        //when
+        // when
         offenceInfoProcessor.process(courtDataDTO);
 
         // then
@@ -53,6 +58,5 @@ public class UpdateOffenceInfoProcessorTest {
         assertThat(OffenceCaptor.getValue().get(0).getOffenceWording()).isEqualTo(offence.getOffenceWording());
         assertThat(OffenceCaptor.getValue().get(0).getIojDecision()).isEqualTo(offence.getIojDecision());
         assertThat(OffenceCaptor.getValue().get(0).getWqOffence()).isEqualTo(offence.getWqOffence());
-
     }
 }

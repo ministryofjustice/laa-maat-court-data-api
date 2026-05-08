@@ -4,9 +4,10 @@ import gov.uk.courtdata.entity.RepOrderCCOutComeEntity;
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -22,8 +23,9 @@ public class CCOutcomeImpl {
     public RepOrderCCOutComeEntity find(Integer id) {
         return courtProcessingRepository.findById(id).orElse(null);
     }
+
     public RepOrderCCOutComeEntity update(RepOrderCCOutComeEntity repOrderCCOutComeEntity) {
-         return courtProcessingRepository.saveAndFlush(repOrderCCOutComeEntity);
+        return courtProcessingRepository.saveAndFlush(repOrderCCOutComeEntity);
     }
 
     public List<RepOrderCCOutComeEntity> findByRepId(Integer repId) {
@@ -33,6 +35,4 @@ public class CCOutcomeImpl {
     public Integer deleteByRepId(Integer repId) {
         return courtProcessingRepository.deleteByRepOrder_Id(repId);
     }
-
-
 }

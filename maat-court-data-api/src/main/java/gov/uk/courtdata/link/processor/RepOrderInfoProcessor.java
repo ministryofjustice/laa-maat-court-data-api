@@ -5,17 +5,17 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class RepOrderInfoProcessor implements Process {
 
     private final RepOrderRepository repOrderRepository;
-
 
     @Override
     public void process(CourtDataDTO saveAndLinkModel) {

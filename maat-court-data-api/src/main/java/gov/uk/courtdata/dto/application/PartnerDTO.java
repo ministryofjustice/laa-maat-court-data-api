@@ -1,6 +1,5 @@
 package gov.uk.courtdata.dto.application;
 
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,5 +16,4 @@ public class PartnerDTO extends GenericDTO {
     private String surname;
     private String nationaInsuranceNumber;
     private Date dateOfBirth;
-
 }

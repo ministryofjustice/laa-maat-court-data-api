@@ -8,7 +8,8 @@ import java.math.MathContext;
 public class Currency extends BigDecimal implements Serializable {
 
     private static final long serialVersionUID = -730899275611349938L;
-    public Currency(){
+
+    public Currency() {
         super("0");
     }
 

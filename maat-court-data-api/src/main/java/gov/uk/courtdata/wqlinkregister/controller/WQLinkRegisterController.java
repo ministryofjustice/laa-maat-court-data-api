@@ -9,9 +9,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,21 +32,21 @@ public class WQLinkRegisterController {
 
     @GetMapping(value = "/{maatID}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve WQ Link Register record")
-    @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-    )
-    @ApiResponse(responseCode = "400",
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(
+            responseCode = "400",
             description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "500",
             description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<WQLinkRegisterDTO>> findOffenceByMaatId(@PathVariable int maatID) {
         LoggingData.MAAT_ID.putInMDC(maatID);
         log.info("Find WQ Link Register by  maat id Request Received");

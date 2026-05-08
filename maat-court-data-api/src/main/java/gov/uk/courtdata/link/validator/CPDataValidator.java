@@ -1,5 +1,8 @@
 package gov.uk.courtdata.link.validator;
 
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.CaseDetails;
@@ -7,12 +10,10 @@ import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.validator.IValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -27,11 +28,12 @@ public class CPDataValidator implements IValidator<Void, CaseDetails> {
         if (isEmpty(caseDetails.getCaseUrn()))
             throw new ValidationException("CaseURN can't be null or empty on request.");
 
-        Optional<RepOrderCPDataEntity> repOrderCPDataEntity = repOrderCPDataRepository.findByrepOrderId(caseDetails.getMaatId());
+        Optional<RepOrderCPDataEntity> repOrderCPDataEntity =
+                repOrderCPDataRepository.findByrepOrderId(caseDetails.getMaatId());
 
         if (repOrderCPDataEntity.isEmpty())
-                throw new ValidationException(
-                        format("%s has no common platform data created against Maat application.", caseDetails.getMaatId()));
+            throw new ValidationException(format(
+                    "%s has no common platform data created against Maat application.", caseDetails.getMaatId()));
 
         return Optional.empty();
     }

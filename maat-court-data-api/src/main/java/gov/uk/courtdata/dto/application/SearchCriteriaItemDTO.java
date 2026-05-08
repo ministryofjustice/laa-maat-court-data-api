@@ -9,10 +9,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class SearchCriteriaItemDTO {
 
-	
-	private String propertyName;
-	private String operator;
-	private String value;
-	private String dataType;
-
+    private String propertyName;
+    private String operator;
+    private String value;
+    private String dataType;
 }

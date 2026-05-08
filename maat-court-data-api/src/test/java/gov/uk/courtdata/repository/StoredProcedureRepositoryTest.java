@@ -1,17 +1,17 @@
 package gov.uk.courtdata.repository;
 
-import gov.uk.courtdata.model.StoredProcedureRequest;
-import gov.uk.courtdata.validator.MAATApplicationException;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import gov.uk.courtdata.model.StoredProcedureRequest;
+import gov.uk.courtdata.validator.MAATApplicationException;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class StoredProcedureRepositoryTest {
@@ -110,5 +110,4 @@ class StoredProcedureRepositoryTest {
         });
         assertEquals("Invalid procedure name", ex.getMessage());
     }
-
 }

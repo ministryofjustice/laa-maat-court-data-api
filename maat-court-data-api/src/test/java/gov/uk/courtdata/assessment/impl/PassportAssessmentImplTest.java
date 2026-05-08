@@ -1,5 +1,8 @@
 package gov.uk.courtdata.assessment.impl;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.*;
+
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -7,16 +10,14 @@ import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class PassportAssessmentImplTest {
@@ -38,10 +39,12 @@ class PassportAssessmentImplTest {
 
     private static final int MOCK_ASSESSMENT_ID = 1000;
 
-
     @Test
     void whenFindIsInvoked_thenAssessmentIsRetrieved() {
-        when(passportAssessmentRepository.getReferenceById(any())).thenReturn(PassportAssessmentEntity.builder().id(MOCK_ASSESSMENT_ID).build());
+        when(passportAssessmentRepository.getReferenceById(any()))
+                .thenReturn(PassportAssessmentEntity.builder()
+                        .id(MOCK_ASSESSMENT_ID)
+                        .build());
         PassportAssessmentEntity returned = passportAssessmentImpl.find(MOCK_ASSESSMENT_ID);
         assertThat(returned.getId()).isEqualTo(MOCK_ASSESSMENT_ID);
     }
@@ -49,14 +52,10 @@ class PassportAssessmentImplTest {
     @Test
     void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
         when(passportAssessmentRepository.findByRepId(MOCK_REP_ID))
-                .thenReturn(
-                        Optional.of(
-                                PassportAssessmentEntity.builder()
-                                        .id(MOCK_ASSESSMENT_ID)
-                                        .repOrder(RepOrderEntity.builder().id(MOCK_REP_ID).build())
-                                        .build()
-                        )
-                );
+                .thenReturn(Optional.of(PassportAssessmentEntity.builder()
+                        .id(MOCK_ASSESSMENT_ID)
+                        .repOrder(RepOrderEntity.builder().id(MOCK_REP_ID).build())
+                        .build()));
 
         PassportAssessmentEntity returned = passportAssessmentImpl.findByRepId(MOCK_REP_ID);
 
@@ -68,15 +67,22 @@ class PassportAssessmentImplTest {
     void whenCreateIsInvoked_thenAssessmentIsSaved() {
         PassportAssessmentDTO passportAssessment = TestModelDataBuilder.getPassportAssessmentDTO();
 
-        when(passportAssessmentMapper.passportAssessmentDtoToPassportAssessmentEntity(any())).thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
+        when(passportAssessmentMapper.passportAssessmentDtoToPassportAssessmentEntity(any()))
+                .thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
 
         passportAssessmentImpl.create(passportAssessment);
 
         verify(passportAssessmentRepository).save(passportAssessmentEntityArgumentCaptor.capture());
 
-        assertThat(passportAssessmentEntityArgumentCaptor.getValue().getRepOrder().getId()).isEqualTo(passportAssessment.getRepId());
-        assertThat(passportAssessmentEntityArgumentCaptor.getValue().getPartnerBenefitClaimed()).isEqualTo("Y");
-        assertThat(passportAssessmentEntityArgumentCaptor.getValue().getUserCreated()).isEqualTo("test-f");
+        assertThat(passportAssessmentEntityArgumentCaptor
+                        .getValue()
+                        .getRepOrder()
+                        .getId())
+                .isEqualTo(passportAssessment.getRepId());
+        assertThat(passportAssessmentEntityArgumentCaptor.getValue().getPartnerBenefitClaimed())
+                .isEqualTo("Y");
+        assertThat(passportAssessmentEntityArgumentCaptor.getValue().getUserCreated())
+                .isEqualTo("test-f");
     }
 
     @Test
@@ -85,7 +91,8 @@ class PassportAssessmentImplTest {
         PassportAssessmentDTO passportAssessment = TestModelDataBuilder.getPassportAssessmentDTO();
         passportAssessment.setDateCompleted(now);
 
-        when(passportAssessmentRepository.getReferenceById(any())).thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
+        when(passportAssessmentRepository.getReferenceById(any()))
+                .thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
 
         passportAssessmentImpl.update(passportAssessment);
 

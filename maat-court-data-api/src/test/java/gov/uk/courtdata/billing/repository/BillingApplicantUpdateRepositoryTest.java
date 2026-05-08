@@ -1,22 +1,24 @@
 package gov.uk.courtdata.billing.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import gov.uk.courtdata.billing.entity.BillingApplicantUpdateEntity;
 import jakarta.persistence.EntityManager;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @DataJpaTest
-@Sql(statements = {
-        "CREATE SCHEMA IF NOT EXISTS TOGDATA;",
-        """
+@Sql(
+        statements = {
+            "CREATE SCHEMA IF NOT EXISTS TOGDATA;",
+            """
         CREATE TABLE IF NOT EXISTS TOGDATA.APPLICANTS (
             ID INT PRIMARY KEY,
             SEND_TO_CCLF VARCHAR(1),
@@ -26,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
             USER_MODIFIED VARCHAR(100)
         );
         """
-})
+        })
 class BillingApplicantUpdateRepositoryTest {
 
     @Autowired

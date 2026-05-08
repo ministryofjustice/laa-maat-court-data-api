@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
 
-import java.util.UUID;
-
 @Builder
 @AllArgsConstructor
 @ToString

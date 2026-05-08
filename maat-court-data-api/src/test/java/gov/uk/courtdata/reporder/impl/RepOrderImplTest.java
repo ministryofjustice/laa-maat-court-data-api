@@ -1,10 +1,17 @@
 package gov.uk.courtdata.reporder.impl;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.repository.RepOrderRepository;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -12,13 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RepOrderImplTest {
@@ -28,7 +28,6 @@ class RepOrderImplTest {
 
     @Mock
     private RepOrderRepository repOrderRepository;
-
 
     @Test
     void testUpdateAppDateCompleted_whenUpdateIsSuccess() {
@@ -66,7 +65,6 @@ class RepOrderImplTest {
     @Test
     void givenAValidRepId_whenExistsByIdIsInvoked_thenReturnsTrue() {
         repOrderImpl.exists(TestModelDataBuilder.REP_ID);
-        verify(repOrderRepository).exists(
-                ArgumentMatchers.<Specification<RepOrderEntity>>any());
+        verify(repOrderRepository).exists(ArgumentMatchers.<Specification<RepOrderEntity>>any());
     }
 }

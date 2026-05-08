@@ -1,10 +1,10 @@
 package gov.uk.courtdata.entity;
 
-import lombok.*;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Builder
@@ -47,5 +47,4 @@ public class RepOrderMvoRegEntity {
     @Size(max = 100)
     @Column(name = "USER_MODIFIED", length = 100)
     private String userModified;
-
 }

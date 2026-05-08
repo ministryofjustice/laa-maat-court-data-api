@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import gov.uk.courtdata.billing.service.MaatReferenceService;
 import gov.uk.courtdata.exception.RecordsAlreadyExistException;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,24 +30,21 @@ class MaatReferenceExtractionControllerTest {
 
     @Test
     void givenNoInput_whenPopulateMaatReferencesToExtract_thenSuccessResponseIsReturned() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL))
-            .andExpect(status().isOk());
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)).andExpect(status().isOk());
         verify(maatReferenceService).populateTable();
     }
-    
+
     @Test
     void givenRecordsAlreadyExist_whenPopulateMaatReferencesToExtract_thenErrorResponseIsReturned() throws Exception {
         when(maatReferenceService.populateTable()).thenThrow(RecordsAlreadyExistException.class);
 
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL))
-            .andExpect(status().isInternalServerError());
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)).andExpect(status().isInternalServerError());
         verify(maatReferenceService).populateTable();
     }
 
     @Test
     void givenNoInput_whenDeleteMaatReferences_thenSuccessResponseIsReturned() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL))
-            .andExpect(status().isOk());
+        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL)).andExpect(status().isOk());
         verify(maatReferenceService).deleteMaatReferences();
     }
 }

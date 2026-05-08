@@ -1,10 +1,11 @@
 package gov.uk.courtdata.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.entity.UserEntity;
-import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class UserEntityUtilsTest {
 

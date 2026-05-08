@@ -1,7 +1,13 @@
 package gov.uk.courtdata.controller;
 
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.service.ResultsService;
+
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,11 +17,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
-
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @WebMvcTest(XLATResultController.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class XLATResultControllerTest {
@@ -23,8 +24,10 @@ public class XLATResultControllerTest {
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/xlat-result";
     private static final Integer TEST_WQ_TYPE = 5555;
     private static final Integer TEST_SUB_TYPE = 666;
+
     @Autowired
     private MockMvc mvc;
+
     @MockitoBean
     private ResultsService resultsService;
 
@@ -63,5 +66,4 @@ public class XLATResultControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0]").value(TestModelDataBuilder.TEST_RESULT_CODE));
     }
-
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.uk.courtdata.dto.application;
 
@@ -14,10 +14,8 @@ import java.util.Collection;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class DrcConversationDTO extends GenericDTO 
-{
-	private	long							rep_id;
-	private DrcDTO							drcDTO;
-	private	Collection<DrcProcessDTO> 		drcProcessStages;
-
+public class DrcConversationDTO extends GenericDTO {
+    private long rep_id;
+    private DrcDTO drcDTO;
+    private Collection<DrcProcessDTO> drcProcessStages;
 }

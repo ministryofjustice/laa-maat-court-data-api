@@ -6,10 +6,12 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.slf4j.LoggerFactory;
 
 /**
@@ -34,20 +36,17 @@ public class LoggingMemoryAppender extends ListAppender<ILoggingEvent> {
     }
 
     private String createFailureMessage(String message, Level level) {
-        String allLogEvents = this.list.stream()
-                .map(Object::toString)
-                .collect(Collectors.joining(","));
+        String allLogEvents = this.list.stream().map(Object::toString).collect(Collectors.joining(","));
 
         return String.format(
                 "Failed to find a logging event with message matching [%s] and Level %s in [%s]",
-                message,
-                level,
-                allLogEvents);
+                message, level, allLogEvents);
     }
 
     public int countEventsForLogger(String loggerName) {
         return (int) this.list.stream()
-                .filter(event -> event.getLoggerName().contains(loggerName)).count();
+                .filter(event -> event.getLoggerName().contains(loggerName))
+                .count();
     }
 
     public List<ILoggingEvent> search(String string) {
@@ -58,8 +57,8 @@ public class LoggingMemoryAppender extends ListAppender<ILoggingEvent> {
 
     public List<ILoggingEvent> search(String string, Level level) {
         return this.list.stream()
-                .filter(event -> event.toString().contains(string)
-                        && event.getLevel().equals(level))
+                .filter(event ->
+                        event.toString().contains(string) && event.getLevel().equals(level))
                 .collect(Collectors.toList());
     }
 
@@ -72,11 +71,9 @@ public class LoggingMemoryAppender extends ListAppender<ILoggingEvent> {
     }
 
     public void addAppenderTo(Class<?> clazz) {
-        ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(
-                clazz);
+        ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(clazz);
         logger.setLevel(Level.ALL);
         logger.addAppender(this);
         setContext((LoggerContext) LoggerFactory.getILoggerFactory());
     }
 }
-

@@ -12,16 +12,16 @@ import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
 @AllArgsConstructor
 public class CourtDataDTOBuilder {
-
 
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
     private final SolicitorMAATDataRepository solicitorMAATDataRepository;
@@ -37,20 +37,21 @@ public class CourtDataDTOBuilder {
         log.info("Building CourtDataDTO from caseDetails ");
         final Integer maatId = caseDetails.getMaatId();
         List<WqLinkRegisterEntity> wqLinkRegisterEntityList = wqLinkRegisterRepository.findBymaatId(maatId);
-        final Optional<SolicitorMAATDataEntity> optSolicitorMAATDataEntity = solicitorMAATDataRepository.findBymaatId(maatId);
+        final Optional<SolicitorMAATDataEntity> optSolicitorMAATDataEntity =
+                solicitorMAATDataRepository.findBymaatId(maatId);
         SolicitorMAATDataEntity solicitorMAATDataEntity = optSolicitorMAATDataEntity.orElse(null);
 
-        final Optional<DefendantMAATDataEntity> optDefendantMAATDataEntity = defendantMAATDataRepository.findBymaatId(maatId);
+        final Optional<DefendantMAATDataEntity> optDefendantMAATDataEntity =
+                defendantMAATDataRepository.findBymaatId(maatId);
         DefendantMAATDataEntity defendantMAATDataEntity = optDefendantMAATDataEntity.orElse(null);
-        WqLinkRegisterEntity wqLinkRegisterEntity = wqLinkRegisterEntityList.iterator().next();
+        WqLinkRegisterEntity wqLinkRegisterEntity =
+                wqLinkRegisterEntityList.iterator().next();
 
         log.info("Build status message to post.");
 
         caseDetails.getDefendant().getOffences().forEach(offence -> {
-
-            Optional<OffenceEntity> offenceEntity
-                    = offenceRepository.findByMaxTxId(wqLinkRegisterEntity.getCaseId(), offence.getOffenceCode(),
-                    offence.getAsnSeq());
+            Optional<OffenceEntity> offenceEntity = offenceRepository.findByMaxTxId(
+                    wqLinkRegisterEntity.getCaseId(), offence.getOffenceCode(), offence.getAsnSeq());
 
             offence.setOffenceId(offenceEntity.map(OffenceEntity::getOffenceId).orElse(null));
 
@@ -58,7 +59,8 @@ public class CourtDataDTOBuilder {
             if (!offence.getLegalAidStatus().equals("AP") && offence.getLegalAidStatusDate() == null) {
                 log.info("Offence legal status date {}", offenceEntity.get().getLegalAidStatusDate());
                 if (offenceEntity.get().getLegalAidStatusDate() != null) {
-                    offence.setLegalAidStatusDate(offenceEntity.get().getLegalAidStatusDate().toString());
+                    offence.setLegalAidStatusDate(
+                            offenceEntity.get().getLegalAidStatusDate().toString());
                 }
             }
         });
@@ -72,6 +74,4 @@ public class CourtDataDTOBuilder {
                 .solicitorMAATDataEntity(solicitorMAATDataEntity)
                 .build();
     }
-
-
 }

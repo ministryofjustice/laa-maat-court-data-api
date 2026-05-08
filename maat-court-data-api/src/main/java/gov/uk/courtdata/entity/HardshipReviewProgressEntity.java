@@ -2,12 +2,13 @@ package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.enums.HardshipReviewProgressAction;
 import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -21,7 +22,11 @@ public class HardshipReviewProgressEntity {
 
     @Id
     @Column(name = "ID")
-    @SequenceGenerator(name = "hardship_review_progress_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "hardship_review_progress_seq",
+            sequenceName = "S_GENERAL_SEQUENCE",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hardship_review_progress_seq")
     private Integer id;
 

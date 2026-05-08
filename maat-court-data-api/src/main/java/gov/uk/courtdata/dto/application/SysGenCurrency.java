@@ -1,23 +1,23 @@
 package gov.uk.courtdata.dto.application;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.math.MathContext;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Data
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class SysGenCurrency extends Currency implements Serializable {
 
     private static final long serialVersionUID = 4441570960123040475L;
 
     public SysGenCurrency() {
         super();
-
     }
 
     public SysGenCurrency(char[] chars, int i, int i1) {

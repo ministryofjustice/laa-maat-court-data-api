@@ -5,6 +5,7 @@ import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -25,6 +26,4 @@ public class HearingValidationProcessor {
         linkRegisterValidator.validate(maatId);
         log.info("Hearing Validation Completed for MAAT ID: {}", maatId);
     }
-
-
 }

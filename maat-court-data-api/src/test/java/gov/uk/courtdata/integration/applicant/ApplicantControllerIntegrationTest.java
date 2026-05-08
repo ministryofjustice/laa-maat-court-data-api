@@ -13,6 +13,7 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -27,18 +28,19 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenCorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenResponseIsReturned() throws Exception {
-        RepOrderEntity repOrderEntity = repos.repOrder.save(
-            TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrderEntity = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
         RepOrderApplicantLinksEntity repOrderApplicantLinks = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
         repOrderApplicantLinks.setRepId(repOrderEntity.getId());
         repos.repOrderApplicantLinks.saveAndFlush(repOrderApplicantLinks);
-        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + repOrderEntity.getId()))
+        mockMvc.perform(MockMvcRequestBuilders.get(
+                        ENDPOINT_URL + "/rep-order-applicant-links/" + repOrderEntity.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    void givenIncorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenIncorrectRepId_whenGetRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned()
+            throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/rep-order-applicant-links/" + INVALID_REP_ID))
                 .andExpect(status().isBadRequest());
     }
@@ -46,8 +48,7 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenValidRequest_whenUpdateRepOrderApplicantLinksIsInvoked_thenUpdateIsSuccess() throws Exception {
         repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
-        repos.repOrderApplicantLinks.saveAndFlush(
-            TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
+        repos.repOrderApplicantLinks.saveAndFlush(TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
         Integer id = repos.repOrderApplicantLinks.findAll().get(0).getId();
         RepOrderApplicantLinksDTO recordToUpdate = TestModelDataBuilder.getRepOrderApplicantLinksDTO(id);
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/rep-order-applicant-links")
@@ -57,11 +58,13 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.userModified").value(recordToUpdate.getUserModified()))
-                .andExpect(jsonPath("$.unlinkDate").value(recordToUpdate.getUnlinkDate().toString()));
+                .andExpect(jsonPath("$.unlinkDate")
+                        .value(recordToUpdate.getUnlinkDate().toString()));
     }
 
     @Test
-    void givenInValidRequest_whenUpdateRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenInValidRequest_whenUpdateRepOrderApplicantLinksIsInvoked_thenCorrectErrorResponseIsReturned()
+            throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/rep-order-applicant-links")
                         .content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderApplicantLinksDTO(ID)))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -88,7 +91,8 @@ public class ApplicantControllerIntegrationTest extends MockMvcIntegrationTest {
         repos.applicantHistory.saveAndFlush(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
         Integer id = repos.applicantHistory.findAll().get(0).getId();
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL + "/applicant-history")
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantHistoryDTO(id, SEND_TO_CCLF)))
+                        .content(objectMapper.writeValueAsString(
+                                TestModelDataBuilder.getApplicantHistoryDTO(id, SEND_TO_CCLF)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

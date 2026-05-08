@@ -1,16 +1,16 @@
 package gov.uk.courtdata.reporder.impl;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.repository.CrownCourtProcessingRepository;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
-
 
 @ExtendWith(MockitoExtension.class)
 class CCOutcomeImplTest {
@@ -44,5 +44,4 @@ class CCOutcomeImplTest {
         repOrderCCOutcomeImpl.find(any());
         verify(repository, atLeastOnce()).findById(any());
     }
-
 }

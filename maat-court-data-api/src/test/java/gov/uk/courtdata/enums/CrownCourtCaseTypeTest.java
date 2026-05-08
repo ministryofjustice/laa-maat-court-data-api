@@ -1,11 +1,12 @@
 package gov.uk.courtdata.enums;
 
-import gov.uk.courtdata.exception.ValidationException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import static gov.uk.courtdata.enums.CrownCourtCaseType.*;
 import static org.junit.jupiter.api.Assertions.*;
+
+import gov.uk.courtdata.exception.ValidationException;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CrownCourtCaseTypeTest {
 
@@ -20,29 +21,25 @@ public class CrownCourtCaseTypeTest {
     @Test
     public void givenCaseTypeForTrialIsIndictable_ReturnsTrue() {
 
-        assertAll("CaseTypeForTrial",
-                () -> assertTrue(caseTypeForTrial(INDICTABLE.getValue())));
+        assertAll("CaseTypeForTrial", () -> assertTrue(caseTypeForTrial(INDICTABLE.getValue())));
     }
 
     @Test
     public void givenCaseTypeForTrialIsEitherWayOnly_ReturnsTrue() {
 
-        assertAll("CaseTypeForTrial",
-                () -> assertTrue(caseTypeForTrial(EITHER_WAY.getValue())));
+        assertAll("CaseTypeForTrial", () -> assertTrue(caseTypeForTrial(EITHER_WAY.getValue())));
     }
 
     @Test
     public void givenCaseTypeForTrialIsCCAlready_ReturnsTrue() {
 
-        assertAll("CaseTypeForTrial",
-                () -> assertTrue(caseTypeForTrial(CC_ALREADY.getValue())));
+        assertAll("CaseTypeForTrial", () -> assertTrue(caseTypeForTrial(CC_ALREADY.getValue())));
     }
 
     @Test
     public void givenCaseTypeForTrialNotValid_ReturnsFalse() {
 
-        assertAll("CaseTypeForTrial",
-                () -> assertFalse(caseTypeForTrial(APPEAL_CC.getValue())));
+        assertAll("CaseTypeForTrial", () -> assertFalse(caseTypeForTrial(APPEAL_CC.getValue())));
     }
 
     @Test
@@ -53,19 +50,15 @@ public class CrownCourtCaseTypeTest {
         });
     }
 
-
     @Test
     public void givenCaseTypeForAppealIsAppealCC_ReturnsTrue() {
 
-        assertAll("CaseTypeForAppeal",
-                () -> assertTrue(caseTypeForAppeal(APPEAL_CC.getValue())));
+        assertAll("CaseTypeForAppeal", () -> assertTrue(caseTypeForAppeal(APPEAL_CC.getValue())));
     }
-
 
     @Test
     public void givenCaseTypeNotForAppeal_ReturnsFalse() {
 
-        assertAll("CaseTypeForAppeal",
-                () -> assertFalse(caseTypeForAppeal(EITHER_WAY.getValue())));
+        assertAll("CaseTypeForAppeal", () -> assertFalse(caseTypeForAppeal(EITHER_WAY.getValue())));
     }
 }

@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,19 +27,15 @@ class WQOffenceControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenAInvalidCaseIdAndOffenceId_whenGetNewOffenceCountIsInvoked_thenZeroIsReturned()
-            throws Exception {
-        var response = runSuccessScenario(
-                get(ENDPOINT_URL + "/" + INVALID_OFFENCE_ID + "/case/" + INVALID_CASE_ID));
+    void givenAInvalidCaseIdAndOffenceId_whenGetNewOffenceCountIsInvoked_thenZeroIsReturned() throws Exception {
+        var response = runSuccessScenario(get(ENDPOINT_URL + "/" + INVALID_OFFENCE_ID + "/case/" + INVALID_CASE_ID));
         assertThat(response.getResponse().getContentAsString()).isEqualTo("0");
     }
 
     @Test
-    void givenAValidCaseIdAndOffenceId_whenGetNewOffenceCountIsInvoked_thenOneIsReturned()
-            throws Exception {
-        var response = runSuccessScenario(
-                get(ENDPOINT_URL + "/" + TestEntityDataBuilder.TEST_OFFENCE_ID + "/case/"
-                        + TestEntityDataBuilder.TEST_CASE_ID));
+    void givenAValidCaseIdAndOffenceId_whenGetNewOffenceCountIsInvoked_thenOneIsReturned() throws Exception {
+        var response = runSuccessScenario(get(ENDPOINT_URL + "/" + TestEntityDataBuilder.TEST_OFFENCE_ID + "/case/"
+                + TestEntityDataBuilder.TEST_CASE_ID));
         assertThat(response.getResponse().getContentAsString()).isEqualTo("1");
     }
 }

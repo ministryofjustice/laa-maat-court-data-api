@@ -12,9 +12,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 @Builder
 @AllArgsConstructor
@@ -25,7 +26,11 @@ import java.time.LocalDateTime;
 @Table(name = "ADDRESSES", schema = "TOGDATA")
 public class Address {
     @Id
-    @SequenceGenerator(name = "addresses_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "addresses_gen_seq",
+            sequenceName = "S_GENERAL_SEQUENCE",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "addresses_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
@@ -63,5 +68,4 @@ public class Address {
 
     @Column(name = "USER_MODIFIED", length = 100)
     private String userModified;
-
 }

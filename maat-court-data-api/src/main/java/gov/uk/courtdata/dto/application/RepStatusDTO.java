@@ -15,5 +15,4 @@ public class RepStatusDTO extends GenericDTO {
     private String description;
     private Boolean updateAllowed;
     private Boolean removeContribs;
-
 }

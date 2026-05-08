@@ -2,11 +2,12 @@ package gov.uk.courtdata.billing.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Builder
 @AllArgsConstructor
@@ -17,7 +18,11 @@ import java.time.LocalDateTime;
 public class ApplicantHistoryBillingEntity {
     @Id
     @Column(name = "ID")
-    @SequenceGenerator(name = "applicant_history_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "applicant_history_gen_seq",
+            sequenceName = "S_GENERAL_SEQUENCE",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicant_history_gen_seq")
     private Integer id;
 

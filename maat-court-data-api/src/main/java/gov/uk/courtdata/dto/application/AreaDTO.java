@@ -23,5 +23,4 @@ public class AreaDTO extends GenericDTO {
     private Date timeStamp;
 
     private Collection<CaseManagementUnitDTO> caseManagementUnits;
-
 }

@@ -1,27 +1,29 @@
 package gov.uk.courtdata.applicant.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
+
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.applicant.mapper.ApplicantDisabilitiesMapper;
 import gov.uk.courtdata.applicant.repository.ApplicantDisabilitiesRepository;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class ApplicantDisabilitiesServiceTest {
 
     public static final int ID = 1;
+
     @Mock
     private ApplicantDisabilitiesRepository applicantDisabilitiesRepository;
 
@@ -33,7 +35,9 @@ public class ApplicantDisabilitiesServiceTest {
 
     @Test
     void givenAValidInput_whenFindIsInvoked_thenShouldReturnApplicantHistoryDTO() {
-        when(applicantDisabilitiesRepository.findById(anyInt())).thenReturn(Optional.ofNullable(ApplicantDisabilitiesEntity.builder().id(ID).build()));
+        when(applicantDisabilitiesRepository.findById(anyInt()))
+                .thenReturn(Optional.ofNullable(
+                        ApplicantDisabilitiesEntity.builder().id(ID).build()));
         applicantDisabilitiesService.find(ID);
         verify(applicantDisabilitiesRepository, atLeastOnce()).findById(ID);
         verify(applicantDisabilitiesMapper, atLeastOnce()).mapEntityToDTO(any());
@@ -41,8 +45,7 @@ public class ApplicantDisabilitiesServiceTest {
 
     @Test
     void givenApplicantDisabilitiesNotFound_whenFindIsInvoked_thenExceptionIsRaised() {
-        assertThatThrownBy(() -> applicantDisabilitiesService
-                .find(ID))
+        assertThatThrownBy(() -> applicantDisabilitiesService.find(ID))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant Disability details not found for id ");
     }
@@ -50,19 +53,21 @@ public class ApplicantDisabilitiesServiceTest {
     @Test
     void givenAValidInput_whenUpdateIsInvoked_thenUpdateIsSuccess() {
         when(applicantDisabilitiesRepository.findById(any()))
-                .thenReturn(Optional.of(ApplicantDisabilitiesEntity.builder().id(ID).build()));
+                .thenReturn(
+                        Optional.of(ApplicantDisabilitiesEntity.builder().id(ID).build()));
         applicantDisabilitiesService.update(TestModelDataBuilder.getApplicantDisabilitiesDTO());
         verify(applicantDisabilitiesRepository, atLeastOnce()).findById(any());
         verify(applicantDisabilitiesRepository, atLeastOnce()).save(any());
         verify(applicantDisabilitiesMapper, atLeastOnce()).mapEntityToDTO(any());
-        verify(applicantDisabilitiesMapper, atLeastOnce()).updateApplicantDisabilitiesDTOToApplicantDisabilitiesEntity(any(), any());
+        verify(applicantDisabilitiesMapper, atLeastOnce())
+                .updateApplicantDisabilitiesDTOToApplicantDisabilitiesEntity(any(), any());
     }
 
     @Test
     void givenApplicantDisabilitiesNotFound_whenUpdateIsInvoked_thenExceptionIsRaised() {
         when(applicantDisabilitiesRepository.findById(any())).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> applicantDisabilitiesService
-                .update(TestModelDataBuilder.getApplicantDisabilitiesDTO()))
+        assertThatThrownBy(
+                        () -> applicantDisabilitiesService.update(TestModelDataBuilder.getApplicantDisabilitiesDTO()))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant Disability details not found for id");
     }
@@ -77,7 +82,8 @@ public class ApplicantDisabilitiesServiceTest {
     @Test
     void givenAValidInput_whenDeleteIsInvoked_thenDeleteIsSuccess() {
         when(applicantDisabilitiesRepository.findById(any()))
-                .thenReturn(Optional.of(ApplicantDisabilitiesEntity.builder().id(ID).build()));
+                .thenReturn(
+                        Optional.of(ApplicantDisabilitiesEntity.builder().id(ID).build()));
         applicantDisabilitiesService.delete(ID);
         verify(applicantDisabilitiesRepository, atLeastOnce()).findById(any());
     }
@@ -85,8 +91,8 @@ public class ApplicantDisabilitiesServiceTest {
     @Test
     void givenApplicantDisabilitiesNotFound_whenDeleteIsInvoked_thenExceptionIsRaised() {
         when(applicantDisabilitiesRepository.findById(any())).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> applicantDisabilitiesService.delete(ID)).isInstanceOf(RequestedObjectNotFoundException.class)
+        assertThatThrownBy(() -> applicantDisabilitiesService.delete(ID))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant Disability details not found for id");
     }
-
 }

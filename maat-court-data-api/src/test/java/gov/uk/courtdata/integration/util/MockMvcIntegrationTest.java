@@ -1,12 +1,14 @@
 package gov.uk.courtdata.integration.util;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.courtdata.dto.ErrorDTO;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -22,12 +24,12 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
 @AutoConfigureMockMvc(addFilters = false)
 public abstract class MockMvcIntegrationTest {
@@ -60,7 +62,8 @@ public abstract class MockMvcIntegrationTest {
     static void beforeAll() {
         WireMock.configureFor(WIREMOCK_PORT);
 
-        WireMockConfiguration wireMockServerConfig = WireMockConfiguration.options().port(WIREMOCK_PORT);
+        WireMockConfiguration wireMockServerConfig =
+                WireMockConfiguration.options().port(WIREMOCK_PORT);
         wireMockServer = new WireMockServer(wireMockServerConfig);
         wireMockServer.start();
         waitUntil(() -> wireMockServer.isRunning());
@@ -75,8 +78,7 @@ public abstract class MockMvcIntegrationTest {
     private static void waitUntil(Supplier<Boolean> isComplete) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        while (!isComplete.get() &&
-                stopWatch.getTime(TimeUnit.SECONDS) < 3) {
+        while (!isComplete.get() && stopWatch.getTime(TimeUnit.SECONDS) < 3) {
             // Loop until complete or timeout is reached
         }
         stopWatch.reset();
@@ -111,39 +113,47 @@ public abstract class MockMvcIntegrationTest {
         return mockMvc.perform(request).andExpect(status().isOk()).andReturn();
     }
 
-    public <T> boolean runSuccessScenario(T expectedResponseBody, MockHttpServletRequestBuilder request) throws Exception {
+    public <T> boolean runSuccessScenario(T expectedResponseBody, MockHttpServletRequestBuilder request)
+            throws Exception {
         MvcResult result = runSuccessScenario(request);
         String expectedJson = objectMapper.writeValueAsString(expectedResponseBody);
         String actualJson = result.getResponse().getContentAsString();
-        JSONAssert.assertEquals(expectedJson,
-                actualJson,
-                JSONCompareMode.LENIENT);
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
         return true;
     }
 
-    public boolean runBadRequestErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
-        ErrorDTO expectedError = ErrorDTO.builder().code(HttpStatus.BAD_REQUEST.name()).message(expectedErrorMessage).build();
+    public boolean runBadRequestErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request)
+            throws Exception {
+        ErrorDTO expectedError = ErrorDTO.builder()
+                .code(HttpStatus.BAD_REQUEST.name())
+                .message(expectedErrorMessage)
+                .build();
         return runErrorScenario(expectedError, request, status().isBadRequest());
     }
 
-    public boolean runNotFoundErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
-        ErrorDTO expectedError = ErrorDTO.builder().code(HttpStatus.NOT_FOUND.name()).message(expectedErrorMessage).build();
+    public boolean runNotFoundErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request)
+            throws Exception {
+        ErrorDTO expectedError = ErrorDTO.builder()
+                .code(HttpStatus.NOT_FOUND.name())
+                .message(expectedErrorMessage)
+                .build();
         return runErrorScenario(expectedError, request, status().isNotFound());
     }
 
-    public boolean runServerErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request) throws Exception {
-        ErrorDTO expectedError = ErrorDTO.builder().message(expectedErrorMessage).build();
+    public boolean runServerErrorScenario(String expectedErrorMessage, MockHttpServletRequestBuilder request)
+            throws Exception {
+        ErrorDTO expectedError =
+                ErrorDTO.builder().message(expectedErrorMessage).build();
         return runErrorScenario(expectedError, request, status().is5xxServerError());
     }
 
-    private boolean runErrorScenario(ErrorDTO expectedError,
-                                     MockHttpServletRequestBuilder request,
-                                     ResultMatcher resultMatcher) throws Exception {
-        MvcResult result = mockMvc.perform(request)
-                .andExpect(resultMatcher)
-                .andReturn();
+    private boolean runErrorScenario(
+            ErrorDTO expectedError, MockHttpServletRequestBuilder request, ResultMatcher resultMatcher)
+            throws Exception {
+        MvcResult result = mockMvc.perform(request).andExpect(resultMatcher).andReturn();
 
-        JSONAssert.assertEquals(objectMapper.writeValueAsString(expectedError),
+        JSONAssert.assertEquals(
+                objectMapper.writeValueAsString(expectedError),
                 result.getResponse().getContentAsString(),
                 JSONCompareMode.STRICT);
 

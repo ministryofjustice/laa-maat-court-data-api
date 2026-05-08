@@ -1,22 +1,24 @@
 package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.enums.ConcorContributionStatus;
-import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import jakarta.xml.bind.annotation.XmlType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDate;
+
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Data
 @Builder
@@ -28,7 +30,11 @@ import java.time.LocalDate;
 public class ConcorContributionsEntity {
 
     @Id
-    @SequenceGenerator(name = "concor_contributions_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "concor_contributions_gen_seq",
+            sequenceName = "S_GENERAL_SEQUENCE",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "concor_contributions_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
@@ -53,7 +59,7 @@ public class ConcorContributionsEntity {
     private Integer seHistoryId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "STATUS",length = 20)
+    @Column(name = "STATUS", length = 20)
     private ConcorContributionStatus status;
 
     @Column(name = "CONTRIB_FILE_ID")

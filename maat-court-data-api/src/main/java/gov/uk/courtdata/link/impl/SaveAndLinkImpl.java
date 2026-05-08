@@ -1,15 +1,16 @@
 package gov.uk.courtdata.link.impl;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.COMMON_PLATFORM;
+
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.link.processor.*;
 import gov.uk.courtdata.repository.IdentifierRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import static gov.uk.courtdata.constants.CourtDataConstants.COMMON_PLATFORM;
 
 @Slf4j
 @Component
@@ -64,5 +65,4 @@ public class SaveAndLinkImpl {
         courtDataDTO.setProceedingId(identifierRepository.getProceedingID());
         courtDataDTO.setCaseId(identifierRepository.getCaseID());
     }
-
 }

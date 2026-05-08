@@ -1,17 +1,15 @@
 package gov.uk.courtdata.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import gov.uk.courtdata.converter.AbstractEnumConverter;
+import jakarta.persistence.Converter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import jakarta.persistence.Converter;
-
+import com.fasterxml.jackson.annotation.JsonValue;
 
 @Getter
 @AllArgsConstructor
 public enum HardshipReviewDetailCode implements PersistableEnum<String> {
-
     UNSECURED_LOAN("UNSECURED LOAN", "Unsecured Loan"),
     SECURED_LOAN("SECURED LOAN", "Secured Loan"),
     CAR_LOAN("CAR LOAN", "Car Loan"),
@@ -36,6 +34,7 @@ public enum HardshipReviewDetailCode implements PersistableEnum<String> {
 
     @JsonValue
     private final String code;
+
     private final String description;
 
     @Override
@@ -44,7 +43,8 @@ public enum HardshipReviewDetailCode implements PersistableEnum<String> {
     }
 
     @Converter(autoApply = true)
-    private static class HardshipReviewDetailCodeConverter extends AbstractEnumConverter<HardshipReviewDetailCode, String> {
+    private static class HardshipReviewDetailCodeConverter
+            extends AbstractEnumConverter<HardshipReviewDetailCode, String> {
         protected HardshipReviewDetailCodeConverter() {
             super(HardshipReviewDetailCode.class);
         }

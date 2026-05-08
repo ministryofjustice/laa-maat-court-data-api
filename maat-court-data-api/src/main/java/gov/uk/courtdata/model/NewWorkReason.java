@@ -1,12 +1,13 @@
 package gov.uk.courtdata.model;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonValue;
 
 @Data
 @Builder
@@ -16,6 +17,7 @@ public class NewWorkReason {
 
     @JsonValue
     private String code;
+
     private String type;
     private String description;
     private LocalDateTime dateCreated;

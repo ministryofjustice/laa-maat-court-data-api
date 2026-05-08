@@ -1,13 +1,11 @@
 package gov.uk.courtdata.enums;
 
 public enum LAAStatus {
-
     GRANTED("GR"),
     GRANTED_FOR_TWO_ADVOCATES("G2"),
     GRANTED_WITH_QC("GQ"),
     FAILED_ON_IOJ("FJ"),
     FAILED_BOTH_IOJ_AND_MEANS("FB");
-
 
     private String value;
 

@@ -8,7 +8,9 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+
 import java.util.List;
+
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,9 +38,11 @@ class WQHearingControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenAValidParameter_whenFindByMaatIdAndHearingUUIDIsInvoked_thenWQLinkRegisterIsReturned() throws Exception {
         List<WQHearingEntity> wqHearingEntityList = List.of(TestEntityDataBuilder.getWQHearingEntity(8064716));
-        WQHearingEntity wqHearing =  repos.wqHearing.getReferenceById(8064716);
+        WQHearingEntity wqHearing = repos.wqHearing.getReferenceById(8064716);
         wqHearingEntityList.get(0).setCreatedDateTime(wqHearing.getCreatedDateTime());
         wqHearingEntityList.get(0).setUpdatedDateTime(wqHearing.getUpdatedDateTime());
-        assertTrue(runSuccessScenario(wqHearingEntityList, get(ENDPOINT_URL + TestModelDataBuilder.TEST_OFFENCE_ID + "/maatId/" + TestModelDataBuilder.REP_ID)));
+        assertTrue(runSuccessScenario(
+                wqHearingEntityList,
+                get(ENDPOINT_URL + TestModelDataBuilder.TEST_OFFENCE_ID + "/maatId/" + TestModelDataBuilder.REP_ID)));
     }
 }

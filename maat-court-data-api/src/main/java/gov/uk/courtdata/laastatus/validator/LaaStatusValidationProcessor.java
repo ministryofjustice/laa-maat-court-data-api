@@ -7,6 +7,7 @@ import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import gov.uk.courtdata.validator.SolicitorValidator;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,7 +20,6 @@ public class LaaStatusValidationProcessor {
     private final LaaStatusValidator laaStatusValidator;
     private final DefendantValidator defendantValidator;
 
-
     public MessageCollection validate(CaseDetails caseDetails) {
 
         Integer maatId = caseDetails.getMaatId();
@@ -29,7 +29,5 @@ public class LaaStatusValidationProcessor {
         defendantValidator.validate(maatId);
 
         return laaStatusValidator.validate(caseDetails);
-
-
     }
 }

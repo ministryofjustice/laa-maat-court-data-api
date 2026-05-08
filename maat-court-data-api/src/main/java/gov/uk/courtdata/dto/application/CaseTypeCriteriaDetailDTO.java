@@ -17,5 +17,4 @@ public class CaseTypeCriteriaDetailDTO extends GenericDTO {
     private Double partnerValue;
     private String applicantFreq;
     private String partnerFreq;
-
 }

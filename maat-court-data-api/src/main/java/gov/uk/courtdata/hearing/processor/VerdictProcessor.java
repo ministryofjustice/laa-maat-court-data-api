@@ -7,10 +7,11 @@ import gov.uk.courtdata.repository.VerdictRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -21,18 +22,18 @@ public class VerdictProcessor {
 
     public void process(final HearingDTO hearingDTO) {
 
-        if (hearingDTO.getOffence().getVerdict()!=null) {
+        if (hearingDTO.getOffence().getVerdict() != null) {
 
             VerdictDTO verdictDTO = hearingDTO.getOffence().getVerdict();
-            VerdictEntity verdictEntity = VerdictEntity
-                    .builder()
+            VerdictEntity verdictEntity = VerdictEntity.builder()
                     .txId(hearingDTO.getTxId())
                     .caseId(hearingDTO.getCaseId())
                     .maatId(hearingDTO.getMaatId())
                     .offenceId(verdictDTO.getOffenceId())
                     .verdictDate(DateUtil.parse(verdictDTO.getVerdictDate()))
                     .category(verdictDTO.getCategory())
-                    .categoryType(Optional.ofNullable(verdictDTO.getCategoryType()).orElse(""))
+                    .categoryType(
+                            Optional.ofNullable(verdictDTO.getCategoryType()).orElse(""))
                     .cjsVerdictCode(verdictDTO.getCjsVerdictCode())
                     .verdictCode(verdictDTO.getVerdictCode())
                     .createdOn(LocalDateTime.now())

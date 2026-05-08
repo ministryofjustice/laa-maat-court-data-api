@@ -1,11 +1,16 @@
 package gov.uk.courtdata.hearing.processor;
 
-import com.google.gson.Gson;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.PleaEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.PleaRepository;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,11 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import com.google.gson.Gson;
 
 @ExtendWith(MockitoExtension.class)
 public class PleaProcessorTest {
@@ -43,7 +44,7 @@ public class PleaProcessorTest {
     public void givenCaseProcessor_whenProcessIsInvoke_thenSavePlea() {
         HearingDTO hearingDTO = testModelDataBuilder.getHearingDTOForCCOutcome();
 
-        //when
+        // when
         pleaProcessor.process(hearingDTO);
         verify(pleaRepository).save(pleaEntityArgumentCaptor.capture());
         assertThat(pleaEntityArgumentCaptor.getValue().getPleaValue()).isEqualTo("NOT_GUILTY");
@@ -55,7 +56,7 @@ public class PleaProcessorTest {
     @Test
     public void givenCaseProcessor_whenPleaIsNull_thenSavePlea() {
         Assertions.assertThrows(NullPointerException.class, () -> {
-            //when
+            // when
             pleaProcessor.process(HearingDTO.builder().build());
             verify(pleaRepository, times(10)).save(any());
         });

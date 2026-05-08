@@ -1,8 +1,8 @@
 package gov.uk.courtdata.enums;
 
- import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 public class WQTypeTest {
 
@@ -12,12 +12,14 @@ public class WQTypeTest {
         boolean result = WQType.isActionableQueue(1);
         assertThat(result).isFalse();
     }
+
     @Test
     public void givenIndictableWQ_actionableResultIsReturned() {
 
         boolean result = WQType.isActionableQueue(2);
         assertThat(result).isTrue();
     }
+
     @Test
     public void givenConclusionsWQ_actionableResultIsReturned() {
 

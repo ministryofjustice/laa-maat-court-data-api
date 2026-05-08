@@ -6,9 +6,10 @@ import gov.uk.courtdata.laastatus.builder.RepOrderUpdateMessageBuilder;
 import gov.uk.courtdata.model.laastatus.LaaStatusUpdate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.util.Map;
+
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -21,10 +22,9 @@ public class LaaStatusPostCDAService {
 
     public void process(final CourtDataDTO courtDataDTO) {
 
-        LaaStatusUpdate repOrderData =
-                repOrderUpdateMessageBuilder.build(courtDataDTO.getCaseDetails());
-        Map<String,String> headers = repOrderUpdateMessageBuilder.buildHeaders(courtDataDTO);
+        LaaStatusUpdate repOrderData = repOrderUpdateMessageBuilder.build(courtDataDTO.getCaseDetails());
+        Map<String, String> headers = repOrderUpdateMessageBuilder.buildHeaders(courtDataDTO);
 
-        courtDataAdapterClient.postLaaStatus(repOrderData,headers);
+        courtDataAdapterClient.postLaaStatus(repOrderData, headers);
     }
 }

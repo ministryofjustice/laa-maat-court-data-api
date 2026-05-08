@@ -1,5 +1,6 @@
 package gov.uk.courtdata.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.*;
 
 import gov.uk.courtdata.entity.XLATResultEntity;
 import gov.uk.courtdata.enums.WQType;
@@ -7,12 +8,11 @@ import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.XLATResultRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -31,8 +31,7 @@ public class ResultCodeRefDataProcessor {
     public void processResultCode(final Integer resultCode) {
 
         if (resultCode != null) {
-            Optional<XLATResultEntity> xlatResult =
-                    xlatResultRepository.findById(resultCode);
+            Optional<XLATResultEntity> xlatResult = xlatResultRepository.findById(resultCode);
             if (xlatResult.isEmpty()) {
                 createNewXLATResult(resultCode);
                 log.info("A New CJS Result Code : " + resultCode + " has been added to the Ref Data");
@@ -41,7 +40,6 @@ public class ResultCodeRefDataProcessor {
             throw new MAATCourtDataException("A Null Result Code is passed in");
         }
     }
-
 
     private void createNewXLATResult(final Integer resultCode) {
 
@@ -56,8 +54,6 @@ public class ResultCodeRefDataProcessor {
                 .build();
 
         xlatResultRepository.save(xlatResultEntity);
-
-
     }
 
     /**
@@ -67,8 +63,9 @@ public class ResultCodeRefDataProcessor {
      * @return
      */
     private String buildNotesContent(Integer resultCode) {
-        return String.format("New Result code %s  has been received " +
-                "and automatically added to the Intervention queue. Please contact support.'", resultCode);
+        return String.format(
+                "New Result code %s  has been received "
+                        + "and automatically added to the Intervention queue. Please contact support.'",
+                resultCode);
     }
-
 }

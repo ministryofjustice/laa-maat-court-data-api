@@ -25,6 +25,4 @@ public class DrcProcessDTO extends GenericDTO {
     private String charges;
     private String type;
     private Date lastPaymentTime;
-
-
 }

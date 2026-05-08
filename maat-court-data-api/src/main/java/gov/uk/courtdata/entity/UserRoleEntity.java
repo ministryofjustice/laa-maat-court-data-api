@@ -1,15 +1,16 @@
 package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.model.id.UserRoleId;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Data
 @Builder

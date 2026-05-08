@@ -1,5 +1,8 @@
 package gov.uk.courtdata.authorization.validator;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.RESERVATION_SPECIAL_USERNAMES;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.authorization.UserReservation;
@@ -8,12 +11,10 @@ import gov.uk.courtdata.repository.UserRepository;
 import gov.uk.courtdata.validator.IValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.RESERVATION_SPECIAL_USERNAMES;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -43,15 +44,16 @@ public class UserReservationValidator implements IValidator<Void, UserReservatio
     }
 
     private void checkUserSession(UserSession session) {
-        UserEntity user = userRepository.findById(session.getUsername())
-                .orElse(null);
+        UserEntity user = userRepository.findById(session.getUsername()).orElse(null);
 
         if (user != null && isValidSessionOrUserName(user, session)) {
             return;
         }
         throw new ValidationException("Stale user session, reservation not allowed");
     }
+
     private boolean isValidSessionOrUserName(UserEntity user, UserSession session) {
-        return session.getId().equals(user.getCurrentSession()) || RESERVATION_SPECIAL_USERNAMES.contains(session.getUsername());
+        return session.getId().equals(user.getCurrentSession())
+                || RESERVATION_SPECIAL_USERNAMES.contains(session.getUsername());
     }
 }

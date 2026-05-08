@@ -22,6 +22,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,9 +37,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -49,12 +50,10 @@ public class ApplicantController {
     private final RepOrderApplicantLinksService repOrderApplicantLinksService;
     private final ApplicantValidationProcessor applicantValidationProcessor;
 
-
     @GetMapping(value = "/rep-order-applicant-links/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve rep order applicant links")
     @StandardApiResponseCodes
-    public ResponseEntity<List<RepOrderApplicantLinksDTO>> getReOrderApplicantLinks(
-            @PathVariable int repId) {
+    public ResponseEntity<List<RepOrderApplicantLinksDTO>> getReOrderApplicantLinks(@PathVariable int repId) {
         LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Get Rep Order Applicant Links Request Received");
         applicantValidationProcessor.validate(repId);
@@ -64,7 +63,8 @@ public class ApplicantController {
     @PutMapping(value = "/rep-order-applicant-links", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update rep order applicant links")
     @StandardApiResponseCodes
-    public ResponseEntity<RepOrderApplicantLinksDTO> updateReOrderApplicantLinks(@RequestBody @Valid RepOrderApplicantLinksDTO repOrderApplicantLinksDTO) {
+    public ResponseEntity<RepOrderApplicantLinksDTO> updateReOrderApplicantLinks(
+            @RequestBody @Valid RepOrderApplicantLinksDTO repOrderApplicantLinksDTO) {
         LoggingData.MAAT_ID.putInMDC(repOrderApplicantLinksDTO.getRepId());
         log.info("Update Rep Order Applicant Links Request Received");
         return ResponseEntity.ok(repOrderApplicantLinksService.update(repOrderApplicantLinksDTO));
@@ -73,7 +73,8 @@ public class ApplicantController {
     @PostMapping(value = "/rep-order-applicant-links", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create rep order applicant links")
     @StandardApiResponseCodes
-    public ResponseEntity<RepOrderApplicantLinksDTO> createReOrderApplicantLinks(@RequestBody @Valid RepOrderApplicantLinksDTO repOrderApplicantLinksDTO) {
+    public ResponseEntity<RepOrderApplicantLinksDTO> createReOrderApplicantLinks(
+            @RequestBody @Valid RepOrderApplicantLinksDTO repOrderApplicantLinksDTO) {
         LoggingData.MAAT_ID.putInMDC(repOrderApplicantLinksDTO.getRepId());
         log.info("Create Rep Order Applicant Links Request Received");
         return ResponseEntity.ok(repOrderApplicantLinksService.create(repOrderApplicantLinksDTO));
@@ -82,8 +83,7 @@ public class ApplicantController {
     @GetMapping(value = "/applicant-history/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve applicant history")
     @StandardApiResponseCodes
-    public ResponseEntity<ApplicantHistoryDTO> getApplicantHistory(
-            @PathVariable int id) {
+    public ResponseEntity<ApplicantHistoryDTO> getApplicantHistory(@PathVariable int id) {
         log.info("Get Applicant History Request Received");
         return ResponseEntity.ok(applicantHistoryService.find(id));
     }
@@ -91,7 +91,8 @@ public class ApplicantController {
     @PutMapping(value = "/applicant-history", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update applicant history")
     @StandardApiResponseCodes
-    public ResponseEntity<ApplicantHistoryDTO> updateApplicantHistory(@RequestBody @Valid ApplicantHistoryDTO applicantHistoryDTO) {
+    public ResponseEntity<ApplicantHistoryDTO> updateApplicantHistory(
+            @RequestBody @Valid ApplicantHistoryDTO applicantHistoryDTO) {
         log.info("Update Applicant History Request Received");
         return ResponseEntity.ok(applicantHistoryService.update(applicantHistoryDTO));
     }
@@ -108,11 +109,11 @@ public class ApplicantController {
     @PostMapping(value = "/applicant-history", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create a Applicant History record")
     @StandardApiResponseCodes
-    public ResponseEntity<ApplicantHistoryEntity> createApplicantHistory(@RequestBody @Valid ApplicantHistoryEntity applicantHistoryEntity) {
+    public ResponseEntity<ApplicantHistoryEntity> createApplicantHistory(
+            @RequestBody @Valid ApplicantHistoryEntity applicantHistoryEntity) {
         log.info("Create Applicant Request Received");
         return ResponseEntity.ok(applicantHistoryService.create(applicantHistoryEntity));
     }
-
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a Applicant record")
@@ -146,12 +147,16 @@ public class ApplicantController {
     @Operation(description = "Create a Applicant record")
     @StandardApiResponse
     @NotFoundApiResponse
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "Created Applicant record",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Applicant.class)))
-    })
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Created Applicant record",
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = Applicant.class)))
+            })
     public ResponseEntity<Applicant> createApplicant(@RequestBody @Valid Applicant applicant) {
         log.info("Create Applicant Request Received");
         return ResponseEntity.ok(applicantService.create(applicant));

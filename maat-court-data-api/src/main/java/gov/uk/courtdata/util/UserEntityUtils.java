@@ -2,9 +2,10 @@ package gov.uk.courtdata.util;
 
 import gov.uk.courtdata.entity.UserEntity;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
 
 @UtilityClass
 public class UserEntityUtils {

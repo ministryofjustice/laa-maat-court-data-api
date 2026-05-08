@@ -2,7 +2,6 @@ package gov.uk.courtdata.hearing.dto;
 
 import lombok.*;
 
-
 @Data
 @Builder
 @NoArgsConstructor

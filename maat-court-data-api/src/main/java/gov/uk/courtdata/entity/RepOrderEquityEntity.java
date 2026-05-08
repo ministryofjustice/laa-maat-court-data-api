@@ -1,16 +1,16 @@
 package gov.uk.courtdata.entity;
 
 import jakarta.annotation.Nullable;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Builder
 @AllArgsConstructor
@@ -23,7 +23,11 @@ public class RepOrderEquityEntity {
     @Id
     @Column(name = "ID", nullable = false)
     @NotNull
-    @SequenceGenerator(name = "rep_order_equity_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "rep_order_equity_seq",
+            sequenceName = "S_GENERAL_SEQUENCE",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rep_order_equity_seq")
     private Integer id;
 

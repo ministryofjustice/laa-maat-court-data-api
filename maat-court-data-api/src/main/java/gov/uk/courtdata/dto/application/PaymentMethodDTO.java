@@ -12,5 +12,4 @@ import lombok.experimental.SuperBuilder;
 public class PaymentMethodDTO extends GenericDTO {
     private String paymentMethod;
     private String description;
-
 }

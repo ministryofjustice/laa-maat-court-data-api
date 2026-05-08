@@ -1,5 +1,12 @@
 package gov.uk.courtdata.laastatus.builder;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
@@ -9,27 +16,20 @@ import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.laastatus.*;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class
-RepOrderUpdateMessageBuilderTest {
+public class RepOrderUpdateMessageBuilderTest {
 
     @Mock
     private RepOrderCPDataRepository repOrderCPDataRepository;
@@ -40,46 +40,55 @@ RepOrderUpdateMessageBuilderTest {
     @InjectMocks
     private RepOrderUpdateMessageBuilder repOrderUpdateMessageBuilder;
 
-
     @Test
     public void givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenReturnedLaaStatusUpdate() {
 
-        CaseDetails caseDetails = CaseDetails.builder().maatId(1234567)
-                .defendant(Defendant.builder().surname("Smith")
-                        .offences(Collections.singletonList(Offence.builder().offenceCode("67")
-                                .offenceId("987").legalAidStatus("OK").legalAidStatusDate("2010-10-10").build()))
+        CaseDetails caseDetails = CaseDetails.builder()
+                .maatId(1234567)
+                .defendant(Defendant.builder()
+                        .surname("Smith")
+                        .offences(Collections.singletonList(Offence.builder()
+                                .offenceCode("67")
+                                .offenceId("987")
+                                .legalAidStatus("OK")
+                                .legalAidStatusDate("2010-10-10")
+                                .build()))
                         .build())
                 .build();
 
-        Optional<RepOrderCPDataEntity> repOrderCPData = Optional.of(RepOrderCPDataEntity.builder().defendantId("555666").build());
+        Optional<RepOrderCPDataEntity> repOrderCPData =
+                Optional.of(RepOrderCPDataEntity.builder().defendantId("555666").build());
         when(repOrderCPDataRepository.findByrepOrderId(anyInt())).thenReturn(repOrderCPData);
 
         LaaStatusUpdate laaStatusUpdate = repOrderUpdateMessageBuilder.build(caseDetails);
 
-
         assertThat(laaStatusUpdate.getData().getAttributes().getMaatReference()).isEqualTo(1234567);
 
-        gov.uk.courtdata.model.laastatus.Offence offence =
-                laaStatusUpdate.getData().getAttributes().getOffences().iterator().next();
+        gov.uk.courtdata.model.laastatus.Offence offence = laaStatusUpdate
+                .getData()
+                .getAttributes()
+                .getOffences()
+                .iterator()
+                .next();
 
-        assertAll("VerifyOffence",
+        assertAll(
+                "VerifyOffence",
                 () -> assertNotNull(offence.getOffenceId()),
                 () -> assertNotNull(offence.getStatusCode()),
                 () -> assertNotNull(offence.getEffectiveEndDate()),
                 () -> assertEquals("987", offence.getOffenceId()),
                 () -> assertEquals("OK", offence.getStatusCode()),
-                () -> assertEquals("2010-10-10", offence.getEffectiveEndDate())
-        );
+                () -> assertEquals("2010-10-10", offence.getEffectiveEndDate()));
 
-        DefendantData defData = laaStatusUpdate.getData().getRelationships().getDefendant().getData();
+        DefendantData defData =
+                laaStatusUpdate.getData().getRelationships().getDefendant().getData();
 
-        assertAll("VerifyDefendant",
+        assertAll(
+                "VerifyDefendant",
                 () -> assertNotNull(defData.getId()),
                 () -> assertNotNull(defData.getType()),
                 () -> assertEquals("555666", defData.getId()),
-                () -> assertEquals("defendants", defData.getType())
-        );
-
+                () -> assertEquals("defendants", defData.getType()));
 
         verify(repOrderCPDataRepository).findByrepOrderId(anyInt());
         verify(solicitorMAATDataRepository).findBymaatId(anyInt());
@@ -88,28 +97,36 @@ RepOrderUpdateMessageBuilderTest {
     @Test
     public void testSolicitor_whenIsRepOrderUpdateMessageBuilderInvoked_thenReturnedLaaStatusUpdate() {
 
-        CaseDetails caseDetails = CaseDetails.builder().maatId(1234567)
-                .defendant(Defendant.builder().surname("Smith")
-                        .offences(Collections.singletonList(Offence.builder().offenceCode("67")
-                                .offenceId("987").legalAidStatus("OK").legalAidStatusDate("2010-10-10").build()))
+        CaseDetails caseDetails = CaseDetails.builder()
+                .maatId(1234567)
+                .defendant(Defendant.builder()
+                        .surname("Smith")
+                        .offences(Collections.singletonList(Offence.builder()
+                                .offenceCode("67")
+                                .offenceId("987")
+                                .legalAidStatus("OK")
+                                .legalAidStatusDate("2010-10-10")
+                                .build()))
                         .build())
                 .build();
 
         Optional<SolicitorMAATDataEntity> optSolicitor = Optional.of(SolicitorMAATDataEntity.builder()
-                .accountCode("456").accountName("Solicitor Name Ltd").build());
+                .accountCode("456")
+                .accountName("Solicitor Name Ltd")
+                .build());
         when(solicitorMAATDataRepository.findBymaatId(anyInt())).thenReturn(optSolicitor);
 
         LaaStatusUpdate laaStatusUpdate = repOrderUpdateMessageBuilder.build(caseDetails);
 
         DefenceOrganisation defOrg = laaStatusUpdate.getData().getAttributes().getDefenceOrganisation();
 
-        assertAll("VerifyDefenceOrganisation",
+        assertAll(
+                "VerifyDefenceOrganisation",
                 () -> assertNotNull(defOrg.getLaaContractNumber()),
                 () -> assertNotNull(defOrg.getOrganisation().getName()),
-                () -> assertEquals("Solicitor Name Ltd", defOrg.getOrganisation().getName()),
-                () -> assertEquals("456", defOrg.getLaaContractNumber())
-        );
-
+                () -> assertEquals(
+                        "Solicitor Name Ltd", defOrg.getOrganisation().getName()),
+                () -> assertEquals("456", defOrg.getLaaContractNumber()));
     }
 
     @Test
@@ -123,11 +140,15 @@ RepOrderUpdateMessageBuilderTest {
 
         LaaStatusUpdate laaStatusUpdate = repOrderUpdateMessageBuilder.build(caseDetails);
 
-        Address address =
-                laaStatusUpdate.getData().getAttributes()
-                        .getDefenceOrganisation().getOrganisation().getAddress();
+        Address address = laaStatusUpdate
+                .getData()
+                .getAttributes()
+                .getDefenceOrganisation()
+                .getOrganisation()
+                .getAddress();
 
-        assertAll("VerifyAddress",
+        assertAll(
+                "VerifyAddress",
                 () -> assertNotNull(address),
                 () -> assertNotNull(address.getAddress1()),
                 () -> assertNotNull(address.getAddress2()),
@@ -138,14 +159,11 @@ RepOrderUpdateMessageBuilderTest {
                 () -> assertEquals(address.getAddress2(), optSolicitor.get().getLine2()),
                 () -> assertEquals(address.getAddress3(), optSolicitor.get().getLine3()),
                 () -> assertEquals(address.getAddress4(), optSolicitor.get().getCity()),
-                () -> assertEquals(address.getPostcode(), optSolicitor.get().getPostcode())
-        );
-
+                () -> assertEquals(address.getPostcode(), optSolicitor.get().getPostcode()));
     }
 
     @Test
     public void testSolicitorContact_isAvailableOnLaaStatusUpdate_Request() {
-
 
         CaseDetails caseDetails = buildSampleCase();
 
@@ -155,56 +173,63 @@ RepOrderUpdateMessageBuilderTest {
 
         LaaStatusUpdate laaStatusUpdate = repOrderUpdateMessageBuilder.build(caseDetails);
 
-        Contact contact =
-                laaStatusUpdate.getData().getAttributes()
-                        .getDefenceOrganisation().getOrganisation().getContact();
+        Contact contact = laaStatusUpdate
+                .getData()
+                .getAttributes()
+                .getDefenceOrganisation()
+                .getOrganisation()
+                .getContact();
 
-        assertAll("VerifyContact",
+        assertAll(
+                "VerifyContact",
                 () -> assertNotNull(contact),
                 () -> assertNotNull(contact.getWork()),
                 () -> assertNotNull(contact.getPrimaryEmail()),
                 () -> assertNotNull(contact.getSecondaryEmail()),
                 () -> assertEquals(contact.getWork(), optSolicitor.get().getPhone()),
                 () -> assertEquals(contact.getPrimaryEmail(), optSolicitor.get().getAdminEmail()),
-                () -> assertEquals(contact.getSecondaryEmail(), optSolicitor.get().getEmail())
-        );
-
+                () -> assertEquals(
+                        contact.getSecondaryEmail(), optSolicitor.get().getEmail()));
     }
-
 
     @Test
     public void givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenHeaderDetailsAreReturned() {
 
-        //given
-        CaseDetails caseDetails = CaseDetails.builder().laaTransactionId(UUID.fromString("6f5b34ea-e038-4f1c-bfe5-d6bf622444f0")).build();
-        CourtDataDTO courtDataDTO = CourtDataDTO.builder().caseDetails(caseDetails).txId(123456).build();
+        // given
+        CaseDetails caseDetails = CaseDetails.builder()
+                .laaTransactionId(UUID.fromString("6f5b34ea-e038-4f1c-bfe5-d6bf622444f0"))
+                .build();
+        CourtDataDTO courtDataDTO =
+                CourtDataDTO.builder().caseDetails(caseDetails).txId(123456).build();
 
-        //when
+        // when
         Map<String, String> headers = repOrderUpdateMessageBuilder.buildHeaders(courtDataDTO);
 
-        //then
-        assertAll("VerifyHeaders",
+        // then
+        assertAll(
+                "VerifyHeaders",
                 () -> assertEquals("6f5b34ea-e038-4f1c-bfe5-d6bf622444f0", headers.get(CDA_TRANSACTION_ID_HEADER)),
                 () -> assertEquals("123456", headers.get("Laa-Status-Transaction-Id")));
     }
 
-
     @Test
-    public void givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenHeaderDetailsAreReturnedWithMullTxnID() {
+    public void
+            givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenHeaderDetailsAreReturnedWithMullTxnID() {
 
-        //given
+        // given
         CaseDetails caseDetails = CaseDetails.builder().build();
-        CourtDataDTO courtDataDTO = CourtDataDTO.builder().caseDetails(caseDetails).txId(123456).build();
+        CourtDataDTO courtDataDTO =
+                CourtDataDTO.builder().caseDetails(caseDetails).txId(123456).build();
 
-        //when
+        // when
         Map<String, String> headers = repOrderUpdateMessageBuilder.buildHeaders(courtDataDTO);
 
-        //then
-        assertAll("VerifyHeaders",
+        // then
+        assertAll(
+                "VerifyHeaders",
                 () -> assertNull(headers.get(CDA_TRANSACTION_ID_HEADER)),
                 () -> assertEquals("123456", headers.get("Laa-Status-Transaction-Id")));
     }
-
 
     private Optional<SolicitorMAATDataEntity> buildCompleteSolicitorDetails() {
 
@@ -220,25 +245,21 @@ RepOrderUpdateMessageBuilderTest {
                 .adminEmail("test@test.com")
                 .email("test@test.com")
                 .build());
-
     }
-
 
     private CaseDetails buildSampleCase() {
 
         return CaseDetails.builder()
                 .maatId(864325)
-                .defendant(
-                        Defendant.builder()
-                                .surname("Gregory")
-                                .offences(Collections.singletonList(
-                                        Offence.builder()
-                                                .offenceCode("CJ01501")
-                                                .offenceId("987")
-                                                .legalAidStatus("GR")
-                                                .legalAidStatusDate("2010-10-10")
-                                                .build()))
-                                .build())
+                .defendant(Defendant.builder()
+                        .surname("Gregory")
+                        .offences(Collections.singletonList(Offence.builder()
+                                .offenceCode("CJ01501")
+                                .offenceId("987")
+                                .legalAidStatus("GR")
+                                .legalAidStatusDate("2010-10-10")
+                                .build()))
+                        .build())
                 .build();
     }
 }

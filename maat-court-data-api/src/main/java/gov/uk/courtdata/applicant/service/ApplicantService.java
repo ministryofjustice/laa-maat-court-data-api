@@ -8,9 +8,10 @@ import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.util.Map;
+
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -23,14 +24,18 @@ public class ApplicantService {
 
     public Applicant find(Integer id) {
         log.info("ApplicantService::find - Start");
-        return applicantRepository.findById(id)
-                .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("Applicant not found for id %d", id)));
+        return applicantRepository
+                .findById(id)
+                .orElseThrow(
+                        () -> new RequestedObjectNotFoundException(String.format("Applicant not found for id %d", id)));
     }
 
     public void update(Integer id, Map<String, Object> applicant) {
         log.info("ApplicantService::update - Start");
-        Applicant currentApplicant = applicantRepository.findById(id)
-                .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("Applicant not found for id %d", id)));
+        Applicant currentApplicant = applicantRepository
+                .findById(id)
+                .orElseThrow(
+                        () -> new RequestedObjectNotFoundException(String.format("Applicant not found for id %d", id)));
 
         ReflectionHelper.updateEntityFromMap(currentApplicant, applicant);
         applicantRepository.save(currentApplicant);
@@ -53,8 +58,7 @@ public class ApplicantService {
         applicantHistoryService.update(sendToCCLFDTO.getApplId(), Map.of("sendToCclf", "Y"));
     }
 
-    public boolean exists(Integer id){
+    public boolean exists(Integer id) {
         return applicantRepository.existsById(id);
     }
-
 }

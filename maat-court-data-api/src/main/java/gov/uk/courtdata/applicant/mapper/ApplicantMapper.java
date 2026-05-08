@@ -2,6 +2,7 @@ package gov.uk.courtdata.applicant.mapper;
 
 import gov.uk.courtdata.applicant.dto.ApplicantDTO;
 import gov.uk.courtdata.entity.Applicant;
+
 import org.mapstruct.*;
 
 @Mapper(
@@ -16,5 +17,4 @@ public interface ApplicantMapper {
     Applicant mapDTOToEntity(ApplicantDTO applicantDTO);
 
     Applicant updateApplicantEntity(ApplicantDTO applicantDTO, @MappingTarget Applicant applicant);
-
 }

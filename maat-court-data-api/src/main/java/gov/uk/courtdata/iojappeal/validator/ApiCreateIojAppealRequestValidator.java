@@ -1,5 +1,8 @@
 package gov.uk.courtdata.iojappeal.validator;
 
+import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_APPEAL_REASON_IS_INVALID;
+import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_INCORRECT_COMBINATION;
+
 import lombok.experimental.UtilityClass;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
@@ -9,9 +12,6 @@ import uk.gov.justice.laa.crime.error.ErrorMessage;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_APPEAL_REASON_IS_INVALID;
-import static gov.uk.courtdata.iojappeal.enums.ApiCreateIojAppealRequestValidatorFields.ERROR_INCORRECT_COMBINATION;
 
 @UtilityClass
 public class ApiCreateIojAppealRequestValidator {
@@ -31,13 +31,12 @@ public class ApiCreateIojAppealRequestValidator {
     private boolean isInvalidAssessorForReason(NewWorkReason reason, IojAppealAssessor assessor) {
         return switch (reason) {
             case NEW -> assessor != IojAppealAssessor.CASEWORKER;
-            case JR  -> assessor != IojAppealAssessor.JUDGE;
-            default  -> false;
+            case JR -> assessor != IojAppealAssessor.JUDGE;
+            default -> false;
         };
     }
 
-    private void addErrorMessage(
-        String fieldName, String errorMessage, List<ErrorMessage> errorList) {
+    private void addErrorMessage(String fieldName, String errorMessage, List<ErrorMessage> errorList) {
         errorList.add(new ErrorMessage(fieldName, errorMessage));
     }
 }

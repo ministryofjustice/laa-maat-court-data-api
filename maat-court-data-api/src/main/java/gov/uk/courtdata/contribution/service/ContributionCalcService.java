@@ -7,6 +7,7 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.ContribCalcParametersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +21,11 @@ public class ContributionCalcService {
 
     @Transactional(readOnly = true)
     public ContributionCalcParametersDTO getContributionCalcParameters(final String effectiveDate) {
-        ContribCalcParametersEntity contribCalcParametersEntity = contribCalcParametersRepository
-                .findCurrentContribCalcParameters(effectiveDate);
+        ContribCalcParametersEntity contribCalcParametersEntity =
+                contribCalcParametersRepository.findCurrentContribCalcParameters(effectiveDate);
         if (contribCalcParametersEntity == null) {
             throw new RequestedObjectNotFoundException(
-                    String.format("No Contribution Calc Parameters found with the effective date: %s",
-                                  effectiveDate
-                    ));
+                    String.format("No Contribution Calc Parameters found with the effective date: %s", effectiveDate));
         }
         return contributionsCalcParametersMapper.mapEntityToDTO(contribCalcParametersEntity);
     }

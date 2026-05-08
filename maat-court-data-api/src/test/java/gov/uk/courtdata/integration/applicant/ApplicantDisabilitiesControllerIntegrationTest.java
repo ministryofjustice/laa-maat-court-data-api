@@ -9,6 +9,7 @@ import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -52,9 +53,11 @@ public class ApplicantDisabilitiesControllerIntegrationTest extends MockMvcInteg
     }
 
     @Test
-    void givenInValidRequest_whenUpdateApplicantDisabilitiesIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenInValidRequest_whenUpdateApplicantDisabilitiesIsInvoked_thenCorrectErrorResponseIsReturned()
+            throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO(INVALID_ID)))
+                        .content(objectMapper.writeValueAsString(
+                                TestModelDataBuilder.getApplicantDisabilitiesDTO(INVALID_ID)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(404));
     }
@@ -77,13 +80,11 @@ public class ApplicantDisabilitiesControllerIntegrationTest extends MockMvcInteg
     void givenValidRequest_whenDeleteApplicantDisabilitiesIsInvoked_thenUpdateIsSuccess() throws Exception {
         createApplicantDisabilities();
         Integer id = repos.applicantDisabilities.findAll().get(0).getId();
-        mockMvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/" + id)
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/" + id).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     private void createApplicantDisabilities() {
         repos.applicantDisabilities.save(TestEntityDataBuilder.getApplicantDisabilitiesEntity());
     }
-
 }

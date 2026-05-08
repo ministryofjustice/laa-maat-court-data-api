@@ -1,22 +1,23 @@
 package gov.uk.courtdata.converters;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import gov.uk.courtdata.entity.*;
 import gov.uk.courtdata.enums.Frequency;
-import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
-import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
 import gov.uk.courtdata.enums.HardshipReviewProgressAction;
+import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
 import gov.uk.courtdata.repository.*;
+import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
+
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
-
-import java.time.LocalDateTime;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
@@ -76,7 +77,6 @@ public class EnumConverterTest {
         HardshipReviewDetailEntity returned = hardshipReviewDetailRepository.save(mockEntity);
         assertThat(returned.getFrequency()).isEqualTo(Frequency.ANNUALLY);
         assertThat(returned.getDetailCode()).isEqualTo(HardshipReviewDetailCode.DEBTS);
-
     }
 
     @Test

@@ -1,21 +1,21 @@
 package gov.uk.courtdata.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.DETACH;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Getter
 @Setter
@@ -205,7 +205,6 @@ public class FinancialAssessmentEntity implements Serializable {
 
     @ToString.Exclude
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME",
-            insertable = false, updatable = false)
+    @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME", insertable = false, updatable = false)
     private UserEntity userCreatedEntity;
 }

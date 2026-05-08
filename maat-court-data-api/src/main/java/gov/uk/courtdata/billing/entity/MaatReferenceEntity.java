@@ -30,9 +30,8 @@ public class MaatReferenceEntity {
     @Id
     @Column(name = "APPL_ID")
     private Integer applicantId;
-    
+
     @Id
     @Column(name = "APHI_ID")
     private Integer applicantHistoryId;
-    
 }

@@ -1,30 +1,34 @@
 package gov.uk.courtdata.link.processor;
 
-import com.google.gson.Gson;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.ProceedingEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.ProceedingRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
+import com.google.gson.Gson;
 
 @ExtendWith(MockitoExtension.class)
 public class ProceedingsInfoProcessorTest {
 
     @InjectMocks
     private ProceedingsInfoProcessor proceedingsInfoProcessor;
+
     @Spy
     private ProceedingRepository proceedingRepository;
 
     private TestModelDataBuilder testModelDataBuilder;
+
     @Captor
     private ArgumentCaptor<ProceedingEntity> proceedingInfoCaptor;
 
@@ -48,6 +52,5 @@ public class ProceedingsInfoProcessorTest {
         assertThat(proceedingInfoCaptor.getValue().getMaatId()).isEqualTo(caseDetails.getMaatId());
         assertThat(proceedingInfoCaptor.getValue().getProceedingId()).isEqualTo(courtDataDTO.getProceedingId());
         assertThat(proceedingInfoCaptor.getValue().getCreatedUser()).isEqualTo(caseDetails.getCreatedUser());
-
     }
 }

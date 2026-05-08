@@ -1,9 +1,9 @@
 package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.model.id.CaseTxnId;
+import jakarta.persistence.*;
 import lombok.*;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Data
@@ -17,16 +17,20 @@ public class SessionEntity {
     @Id
     @Column(name = "TX_ID")
     private Integer txId;
+
     @Id
     @Column(name = "CASE_ID")
     private Integer caseId;
+
     @Column(name = "COURT_LOCATION")
     private String courtLocation;
+
     @Column(name = "DATE_OF_HEARING")
     private LocalDate dateOfHearing;
+
     @Column(name = "POST_HEARING_CUSTODY")
     private String postHearingCustody;
+
     @Column(name = "SESSIONVALIDATEDATE")
     private LocalDate sessionValidateDate;
-
 }

@@ -1,16 +1,18 @@
 package gov.uk.courtdata.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailCode;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Getter
 @Setter
@@ -23,7 +25,11 @@ import java.time.LocalDateTime;
 public class HardshipReviewDetailEntity {
 
     @Id
-    @SequenceGenerator(name = "hardship_review_detail_seq", sequenceName = "S_HARDSHIP_DETAIL_ID", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "hardship_review_detail_seq",
+            sequenceName = "S_HARDSHIP_DETAIL_ID",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hardship_review_detail_seq")
     @Column(name = "ID")
     private Integer id;
@@ -90,5 +96,4 @@ public class HardshipReviewDetailEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "HARD_ID", nullable = false)
     private HardshipReviewEntity hardshipReview;
-
 }

@@ -23,9 +23,10 @@ public class IOJAppealDTO extends GenericDTO {
 
     @Builder.Default
     private IOJDecisionReasonDTO appealReason = new IOJDecisionReasonDTO();
+
     @Builder.Default
     private AssessmentStatusDTO assessmentStatusDTO = new AssessmentStatusDTO();
+
     @Builder.Default
     private NewWorkReasonDTO newWorkReasonDTO = new NewWorkReasonDTO();
-
 }

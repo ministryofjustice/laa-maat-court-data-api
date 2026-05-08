@@ -4,9 +4,9 @@ import gov.uk.courtdata.annotation.NotFoundApiResponse;
 import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.assessment.service.PassportAssessmentService;
 import gov.uk.courtdata.assessment.validator.PassportAssessmentValidationProcessor;
+import gov.uk.courtdata.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
-import gov.uk.courtdata.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
@@ -16,9 +16,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,15 +43,21 @@ public class PassportAssessmentController {
     private final PassportAssessmentService passportAssessmentService;
     private final PassportAssessmentValidationProcessor passportAssessmentValidationProcessor;
 
-
     @GetMapping(value = "/{passportAssessmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a passport assessment record")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PassportAssessmentDTO.class)))
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = PassportAssessmentDTO.class)))
     @StandardApiResponse
     @NotFoundApiResponse
-    public ResponseEntity<PassportAssessmentDTO> getAssessment(@PathVariable int passportAssessmentId,
-                                                               @Parameter(description = "Used for tracing calls")
-                                                               @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+    public ResponseEntity<PassportAssessmentDTO> getAssessment(
+            @PathVariable int passportAssessmentId,
+            @Parameter(description = "Used for tracing calls")
+                    @RequestHeader(value = "Laa-Transaction-Id", required = false)
+                    String laaTransactionId) {
         log.debug("Get Passport Assessment Request Received");
         passportAssessmentValidationProcessor.validate(passportAssessmentId);
         PassportAssessmentDTO passportAssessment = passportAssessmentService.find(passportAssessmentId);
@@ -58,12 +66,19 @@ public class PassportAssessmentController {
 
     @GetMapping(value = "repId/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a passport assessment record by repId")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PassportAssessmentDTO.class)))
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = PassportAssessmentDTO.class)))
     @NotFoundApiResponse
     @StandardApiResponse
-    public ResponseEntity<PassportAssessmentDTO> getAssessmentByRepId(@PathVariable int repId,
-                                                                      @Parameter(description = "Used for tracing calls")
-                                                                      @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+    public ResponseEntity<PassportAssessmentDTO> getAssessmentByRepId(
+            @PathVariable int repId,
+            @Parameter(description = "Used for tracing calls")
+                    @RequestHeader(value = "Laa-Transaction-Id", required = false)
+                    String laaTransactionId) {
         LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Get Passport Assessment by repId = {}", repId);
         PassportAssessmentDTO passportAssessment = passportAssessmentService.findByRepId(repId);
@@ -72,13 +87,25 @@ public class PassportAssessmentController {
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update a passport assessment record")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PassportAssessmentDTO.class)))
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = PassportAssessmentDTO.class)))
     @StandardApiResponse
     public ResponseEntity<PassportAssessmentDTO> updateAssessment(
-            @Parameter(description = "Passport assessment data", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = UpdatePassportAssessment.class))) @RequestBody UpdatePassportAssessment passportAssessment,
+            @Parameter(
+                            description = "Passport assessment data",
+                            content =
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = UpdatePassportAssessment.class)))
+                    @RequestBody
+                    UpdatePassportAssessment passportAssessment,
             @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+                    @RequestHeader(value = "Laa-Transaction-Id", required = false)
+                    String laaTransactionId) {
         LoggingData.MAAT_ID.putInMDC(passportAssessment.getRepId());
         log.debug("Update Passport Assessment Request Received");
         passportAssessmentValidationProcessor.validate(passportAssessment);
@@ -88,12 +115,25 @@ public class PassportAssessmentController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create a new passport assessment record")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PassportAssessmentDTO.class)))
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = PassportAssessmentDTO.class)))
     @StandardApiResponse
-    public ResponseEntity<PassportAssessmentDTO> createAssessment(@Parameter(description = "Passport assessment data", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = CreatePassportAssessment.class))) @RequestBody CreatePassportAssessment passportAssessment,
-                                                                  @Parameter(description = "Used for tracing calls")
-                                                                  @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId) {
+    public ResponseEntity<PassportAssessmentDTO> createAssessment(
+            @Parameter(
+                            description = "Passport assessment data",
+                            content =
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = CreatePassportAssessment.class)))
+                    @RequestBody
+                    CreatePassportAssessment passportAssessment,
+            @Parameter(description = "Used for tracing calls")
+                    @RequestHeader(value = "Laa-Transaction-Id", required = false)
+                    String laaTransactionId) {
         LoggingData.USN.putInMDC(passportAssessment.getUsn());
         LoggingData.MAAT_ID.putInMDC(passportAssessment.getRepId());
         log.debug("Create Passport Assessment Request Received");
@@ -102,7 +142,9 @@ public class PassportAssessmentController {
         return ResponseEntity.ok(newAssessment);
     }
 
-    @GetMapping(value = "/{passportAssessmentId}/passport-assessor-details", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(
+            value = "/{passportAssessmentId}/passport-assessor-details",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve details of the passport assessor for a given passport assessment id")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
@@ -114,8 +156,8 @@ public class PassportAssessmentController {
     @PatchMapping(value = "/{passportAssessmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update a subset of passport assessment")
     @StandardApiResponseCodes
-    public ResponseEntity<Void> patchPassportAssessment(@PathVariable int passportAssessmentId,
-                                                   @RequestBody Map<String, Object> updateFields) {
+    public ResponseEntity<Void> patchPassportAssessment(
+            @PathVariable int passportAssessmentId, @RequestBody Map<String, Object> updateFields) {
         log.info("Request received to update Passport Assessment with Id: {}", passportAssessmentId);
         passportAssessmentService.patch(passportAssessmentId, updateFields);
         return ResponseEntity.ok().build();

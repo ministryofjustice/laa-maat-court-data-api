@@ -14,6 +14,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @Tag(name = "Debt Collection Enforcement", description = "Rest API for Debt Collection Enforcement Service")
@@ -34,55 +35,77 @@ public class ContributionFileController {
     private final ContributionFileService contributionFileService;
 
     @Operation(description = "Retrieve a single contribution file by its unique ID")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = ContributionFileResponse.class)))
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ContributionFileResponse.class)))
     @StandardApiResponse
     @NotFoundApiResponse
     @GetMapping("/{contributionFileId}")
     public ResponseEntity<ContributionFileResponse> getContributionFile(@PathVariable int contributionFileId) {
-        return ResponseEntity.ok(contributionFileService.getContributionFile(contributionFileId).orElseThrow(
-                () -> new RequestedObjectNotFoundException("Contribution file not found"))); // to get ErrorDTO
+        return ResponseEntity.ok(contributionFileService
+                .getContributionFile(contributionFileId)
+                .orElseThrow(
+                        () -> new RequestedObjectNotFoundException("Contribution file not found"))); // to get ErrorDTO
     }
 
     @Operation(description = "Retrieve the collection of contribution file errors by contribution file ID")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-            array = @ArraySchema(schema = @Schema(implementation = ContributionFileErrorResponse.class))))
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array =
+                                    @ArraySchema(
+                                            schema = @Schema(implementation = ContributionFileErrorResponse.class))))
     @StandardApiResponse
     @GetMapping("/{contributionFileId}/error")
-    public ResponseEntity<List<ContributionFileErrorResponse>> getAllContributionFileError(@PathVariable int contributionFileId) {
+    public ResponseEntity<List<ContributionFileErrorResponse>> getAllContributionFileError(
+            @PathVariable int contributionFileId) {
         return ResponseEntity.ok(contributionFileService.getAllContributionFileError(contributionFileId));
     }
 
     @Operation(description = "Retrieve a single contribution file error by its unique IDs")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = ContributionFileErrorResponse.class)))
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ContributionFileErrorResponse.class)))
     @StandardApiResponse
     @NotFoundApiResponse
     @GetMapping("/{contributionFileId}/error/{contributionId}")
-    public ResponseEntity<ContributionFileErrorResponse> getContributionFileError(@PathVariable int contributionFileId,
-                                                                                  @PathVariable int contributionId) {
-        return ResponseEntity.ok(contributionFileService.getContributionFileError(contributionId, contributionFileId).orElseThrow(
-                () -> new RequestedObjectNotFoundException("Contribution file error not found"))); // to get ErrorDTO
+    public ResponseEntity<ContributionFileErrorResponse> getContributionFileError(
+            @PathVariable int contributionFileId, @PathVariable int contributionId) {
+        return ResponseEntity.ok(contributionFileService
+                .getContributionFileError(contributionId, contributionFileId)
+                .orElseThrow(() ->
+                        new RequestedObjectNotFoundException("Contribution file error not found"))); // to get ErrorDTO
     }
 
     @Operation(description = "Retrieve the XML from all fdc CONTRIBUTION FILES matching the given date range")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @GetMapping(value = "/fdcFiles", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> getFdcContributionFiles(@RequestParam(name = "fromDate") final LocalDate fromDate,
-                                                                @RequestParam(name = "toDate") final LocalDate toDate) {
+    public ResponseEntity<List<String>> getFdcContributionFiles(
+            @RequestParam(name = "fromDate") final LocalDate fromDate,
+            @RequestParam(name = "toDate") final LocalDate toDate) {
         log.info("Search FDC CONTRIBUTION_FILES between fromDate {} and toDate {}", fromDate, toDate);
-        return ResponseEntity.ok(contributionFileService.getContributionFilesNamedLikeBetweenDate("FDC%", fromDate, toDate));
+        return ResponseEntity.ok(
+                contributionFileService.getContributionFilesNamedLikeBetweenDate("FDC%", fromDate, toDate));
     }
 
     @Operation(description = "Retrieve the XML from all CONCOR CONTRIBUTION FILES matching the given date range")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @GetMapping(value = "/concorFiles", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> getConcorContributionFiles(@RequestParam(name = "fromDate") final LocalDate fromDate,
-                                                                   @RequestParam(name = "toDate") final LocalDate toDate) {
+    public ResponseEntity<List<String>> getConcorContributionFiles(
+            @RequestParam(name = "fromDate") final LocalDate fromDate,
+            @RequestParam(name = "toDate") final LocalDate toDate) {
         log.info("Search CONCOR CONTRIBUTION_FILES between fromDate {} and toDate {}", fromDate, toDate);
-        return ResponseEntity.ok(contributionFileService.getContributionFilesNamedLikeBetweenDate("CONTRIBUTIONS%", fromDate, toDate));
+        return ResponseEntity.ok(
+                contributionFileService.getContributionFilesNamedLikeBetweenDate("CONTRIBUTIONS%", fromDate, toDate));
     }
-
 }

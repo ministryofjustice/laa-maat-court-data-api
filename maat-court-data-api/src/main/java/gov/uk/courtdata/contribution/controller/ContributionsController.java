@@ -13,9 +13,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
+
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
 
 @Slf4j
 @RestController
@@ -42,9 +44,9 @@ public class ContributionsController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @NotFoundApiResponse
-    public ResponseEntity<List<ContributionsDTO>> find(@PathVariable @NotNull int repId,
-                                                       @RequestParam(value = "findLatestContribution", defaultValue = "false")
-                                                       boolean findLatestContribution) {
+    public ResponseEntity<List<ContributionsDTO>> find(
+            @PathVariable @NotNull int repId,
+            @RequestParam(value = "findLatestContribution", defaultValue = "false") boolean findLatestContribution) {
         LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Request to retrieve contributions entry for repId {}", repId);
         return ResponseEntity.ok(contributionsService.find(repId, findLatestContribution));
@@ -54,7 +56,8 @@ public class ContributionsController {
     @Operation(description = "Create contributions entry")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
-    public ResponseEntity<ContributionsDTO> create(@Valid @RequestBody CreateContributionRequest createContributionRequest) {
+    public ResponseEntity<ContributionsDTO> create(
+            @Valid @RequestBody CreateContributionRequest createContributionRequest) {
         LoggingData.MAAT_ID.putInMDC(createContributionRequest.getRepId());
         log.info("Request to create contributions entry");
         createContributionsValidator.validate(createContributionRequest);

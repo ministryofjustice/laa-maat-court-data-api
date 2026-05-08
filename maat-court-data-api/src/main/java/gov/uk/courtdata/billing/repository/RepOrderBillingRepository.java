@@ -2,7 +2,9 @@ package gov.uk.courtdata.billing.repository;
 
 import gov.uk.courtdata.billing.entity.RepOrderBillingEntity;
 import jakarta.transaction.Transactional;
+
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +13,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RepOrderBillingRepository extends JpaRepository<RepOrderBillingEntity, Integer> {
-    @Query(value = """
+    @Query(
+            value =
+                    """
         SELECT  r.id
               , r.appl_id
               , r.arrest_summons_no
@@ -37,17 +41,21 @@ public interface RepOrderBillingRepository extends JpaRepository<RepOrderBilling
         FROM    TOGDATA.REP_ORDERS r
         JOIN    TOGDATA.MAAT_REFS_TO_EXTRACT ex
         ON      r.ID = ex.MAAT_ID
-    """, nativeQuery = true)
+    """,
+            nativeQuery = true)
     List<RepOrderBillingEntity> getRepOrdersForBilling();
 
     @Modifying
     @Transactional
-    @Query(value = """
+    @Query(
+            value =
+                    """
         UPDATE  TOGDATA.REP_ORDERS r
         SET     r.SEND_TO_CCLF = null,
                 r.DATE_MODIFIED = CURRENT_DATE,
                 r.USER_MODIFIED = :userModified
         WHERE   r.ID IN :ids
-    """, nativeQuery = true)
+    """,
+            nativeQuery = true)
     int resetBillingFlagForRepOrderIds(@Param("userModified") String userModified, @Param("ids") List<Integer> ids);
 }

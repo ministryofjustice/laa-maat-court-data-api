@@ -1,14 +1,15 @@
 package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.model.id.ConfigParametersId;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @Builder
@@ -46,5 +47,4 @@ public class ConfigParametersEntity {
 
     @Column(name = "USER_MODIFIED")
     private String userModified;
-
 }

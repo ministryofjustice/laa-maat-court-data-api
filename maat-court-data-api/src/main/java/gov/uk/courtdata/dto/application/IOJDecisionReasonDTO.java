@@ -12,5 +12,4 @@ import lombok.experimental.SuperBuilder;
 public class IOJDecisionReasonDTO extends GenericDTO {
     private String code;
     private String description;
-
 }

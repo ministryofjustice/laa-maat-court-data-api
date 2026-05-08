@@ -1,17 +1,19 @@
 package gov.uk.courtdata.assessment.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.UserEntity;
+
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class FinancialAssessmentMapperTest {
 
-    private final FinancialAssessmentMapper financialAssessmentMapper = Mappers.getMapper(FinancialAssessmentMapper.class);
+    private final FinancialAssessmentMapper financialAssessmentMapper =
+            Mappers.getMapper(FinancialAssessmentMapper.class);
 
     @Test
     void shouldSuccessfullyCreateMeansAssessorDetails_fromFinancialAssessmentEntity() {
@@ -20,7 +22,8 @@ class FinancialAssessmentMapperTest {
         UserEntity userEntity = TestEntityDataBuilder.getUserEntity();
         financialAssessmentEntity.setUserCreatedEntity(userEntity);
 
-        AssessorDetails meansAssessorDetails = financialAssessmentMapper.createMeansAssessorDetails(financialAssessmentEntity);
+        AssessorDetails meansAssessorDetails =
+                financialAssessmentMapper.createMeansAssessorDetails(financialAssessmentEntity);
 
         assertEquals("Karen Greaves", meansAssessorDetails.getFullName());
         assertEquals(userName, meansAssessorDetails.getUserName());

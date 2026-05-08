@@ -4,16 +4,17 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_PASSPORT_ASSE
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.passport.service.PassportAssessmentServiceV2;
+import uk.gov.justice.laa.crime.error.ProblemDetailError;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,39 +24,46 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import uk.gov.justice.laa.crime.error.ProblemDetailError;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(PassportAssessmentControllerV2.class)
 @AutoConfigureMockMvc(addFilters = false)
 class PassportAssessmentControllerV2Test {
 
     private static final String ENDPOINT_URL = "/api/internal/v2/assessment/passport-assessments";
-    
+
     @Autowired
     private MockMvc mvc;
-    
+
     @MockitoBean
     PassportAssessmentServiceV2 passportAssessmentService;
+
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
-    void givenValidLegacyPassportAssessmentId_whenFindIsCalled_thenReturnValidPassportAssessmentResponse() throws Exception {
-        when(passportAssessmentService.find(LEGACY_PASSPORT_ASSESSMENT_ID)).thenReturn(TestModelDataBuilder.getApiGetPassportedAssessmentResponse());
+    void givenValidLegacyPassportAssessmentId_whenFindIsCalled_thenReturnValidPassportAssessmentResponse()
+            throws Exception {
+        when(passportAssessmentService.find(LEGACY_PASSPORT_ASSESSMENT_ID))
+                .thenReturn(TestModelDataBuilder.getApiGetPassportedAssessmentResponse());
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + LEGACY_PASSPORT_ASSESSMENT_ID))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.legacyAssessmentId").value(LEGACY_PASSPORT_ASSESSMENT_ID));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.legacyAssessmentId").value(LEGACY_PASSPORT_ASSESSMENT_ID));
     }
 
     @Test
     void givenNonExistentLegacyPassportAssessmentId_whenFindIsCalled_thenReturnNotFoundResponse() throws Exception {
-        when(passportAssessmentService.find(LEGACY_PASSPORT_ASSESSMENT_ID)).thenThrow(new RequestedObjectNotFoundException("No Passport Assessment found for ID: " + LEGACY_PASSPORT_ASSESSMENT_ID));
+        when(passportAssessmentService.find(LEGACY_PASSPORT_ASSESSMENT_ID))
+                .thenThrow(new RequestedObjectNotFoundException(
+                        "No Passport Assessment found for ID: " + LEGACY_PASSPORT_ASSESSMENT_ID));
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + LEGACY_PASSPORT_ASSESSMENT_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.errorContext.code").value(ProblemDetailError.OBJECT_NOT_FOUND.code()))
-                .andExpect(jsonPath("$.detail").value("No Passport Assessment found for ID: " + LEGACY_PASSPORT_ASSESSMENT_ID));
+                .andExpect(jsonPath("$.detail")
+                        .value("No Passport Assessment found for ID: " + LEGACY_PASSPORT_ASSESSMENT_ID));
     }
 
     @Test

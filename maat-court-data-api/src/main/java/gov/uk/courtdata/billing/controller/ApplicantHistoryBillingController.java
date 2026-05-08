@@ -9,15 +9,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Applicant History Billing Extract", description = "Rest API for extracting applicant history to send to billing teams.")
+@Tag(
+        name = "Applicant History Billing Extract",
+        description = "Rest API for extracting applicant history to send to billing teams.")
 @RequestMapping("${api-endpoints.billing-domain}/applicant-history")
 public class ApplicantHistoryBillingController {
 
@@ -34,8 +37,7 @@ public class ApplicantHistoryBillingController {
     @PatchMapping
     @Operation(description = "Reset CCLF extract flag for list of applicant histories.")
     @StandardApiResponseCodes
-    public ResponseEntity<Void> resetApplicantHistory(
-        @Valid @RequestBody final UpdateBillingRequest request) {
+    public ResponseEntity<Void> resetApplicantHistory(@Valid @RequestBody final UpdateBillingRequest request) {
         log.info("Request received to reset CCLF flag for applicant histories.");
         applicantHistoryBillingService.resetApplicantHistory(request);
         return ResponseEntity.ok().build();

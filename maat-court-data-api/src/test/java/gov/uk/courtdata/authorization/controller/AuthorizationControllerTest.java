@@ -1,8 +1,13 @@
 package gov.uk.courtdata.authorization.controller;
 
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import gov.uk.courtdata.authorization.service.AuthorizationService;
 import gov.uk.courtdata.authorization.validator.UserReservationValidator;
 import gov.uk.courtdata.exception.ValidationException;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,10 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AuthorizationController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -59,10 +60,10 @@ public class AuthorizationControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenIsRoleActionAuthorizedIsInvoked_thenReturn400ClientError() throws Exception {
-        when(authorizationService.isRoleActionAuthorized(any(), any())).thenThrow(
-                new ValidationException("Username and action are required")
-        );
+    public void givenIncorrectParameters_whenIsRoleActionAuthorizedIsInvoked_thenReturn400ClientError()
+            throws Exception {
+        when(authorizationService.isRoleActionAuthorized(any(), any()))
+                .thenThrow(new ValidationException("Username and action are required"));
 
         mvc.perform(MockMvcRequestBuilders.get(getRoleActionUrl("FAKE_ACTION")))
                 .andExpect(status().is4xxClientError())
@@ -86,10 +87,10 @@ public class AuthorizationControllerTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenIsNewWorkReasonAuthorizedIsInvoked_thenReturn400ClientError() throws Exception {
-        when(authorizationService.isNewWorkReasonAuthorized(any(), any())).thenThrow(
-                new ValidationException("Username and new work reason are required")
-        );
+    public void givenIncorrectParameters_whenIsNewWorkReasonAuthorizedIsInvoked_thenReturn400ClientError()
+            throws Exception {
+        when(authorizationService.isNewWorkReasonAuthorized(any(), any()))
+                .thenThrow(new ValidationException("Username and new work reason are required"));
 
         mvc.perform(MockMvcRequestBuilders.get(getWorkReasonUrl("FAKE_WORK_REASON")))
                 .andExpect(status().is4xxClientError())
@@ -116,9 +117,8 @@ public class AuthorizationControllerTest {
 
     @Test
     public void givenIncorrectParameters_whenIsReservedIsInvoked_thenReturn400ClientError() throws Exception {
-        when(userReservationValidator.validate(any())).thenThrow(
-                new ValidationException("User session attributes are missing")
-        );
+        when(userReservationValidator.validate(any()))
+                .thenThrow(new ValidationException("User session attributes are missing"));
 
         mvc.perform(MockMvcRequestBuilders.get(getIsReservedUrl(1000000, "test-f6E3E618A32AC870D07A65CD7AB9131AD")))
                 .andExpect(status().is4xxClientError())
@@ -126,4 +126,3 @@ public class AuthorizationControllerTest {
                 .andExpect(jsonPath("$.message").value("User session attributes are missing"));
     }
 }
-

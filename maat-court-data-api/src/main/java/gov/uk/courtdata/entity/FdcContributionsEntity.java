@@ -1,6 +1,5 @@
 package gov.uk.courtdata.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -9,11 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Data
 @Builder
@@ -25,12 +27,16 @@ import java.time.LocalDate;
 public class FdcContributionsEntity {
 
     @Id
-    @SequenceGenerator(name = "fdc_contributions_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "fdc_contributions_gen_seq",
+            sequenceName = "S_GENERAL_SEQUENCE",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fdc_contributions_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-    @Column(name= "CONT_FILE_ID")
+    @Column(name = "CONT_FILE_ID")
     private Integer contFileId;
 
     @Column(name = "DATE_CALCULATED")
@@ -70,9 +76,11 @@ public class FdcContributionsEntity {
     @Builder.Default
     @Column(name = "LGFS_VAT")
     private BigDecimal lgfsVat = BigDecimal.valueOf(0);
+
     @Builder.Default
     @Column(name = "AGFS_VAT")
     private BigDecimal agfsVat = BigDecimal.valueOf(0);
+
     @Builder.Default
     @Column(name = "JUD_APPORTION_PERCENT")
     private BigDecimal judApportionPercent = BigDecimal.valueOf(0);
@@ -99,5 +107,4 @@ public class FdcContributionsEntity {
     @OneToOne(targetEntity = RepOrderEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "REP_ID", referencedColumnName = "ID")
     private RepOrderEntity repOrderEntity;
-
 }

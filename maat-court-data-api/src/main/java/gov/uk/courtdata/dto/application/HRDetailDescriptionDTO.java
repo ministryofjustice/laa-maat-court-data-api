@@ -13,5 +13,4 @@ public class HRDetailDescriptionDTO extends GenericDTO {
 
     private String code;
     private String description;
-
 }

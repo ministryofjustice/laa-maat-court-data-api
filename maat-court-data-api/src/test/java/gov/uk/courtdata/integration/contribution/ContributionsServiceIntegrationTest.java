@@ -14,14 +14,16 @@ import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
+
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
-import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
@@ -37,8 +39,7 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
     @BeforeEach
     public void setUp() {
 
-        RepOrderEntity repOrderEntity = repos.repOrder.saveAndFlush(
-            TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrderEntity = repos.repOrder.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
         REP_ID = repOrderEntity.getId();
 
         ContributionsEntity contributions = TestEntityDataBuilder.getContributionsEntity();
@@ -78,10 +79,11 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenInValidData_WhenCreateIsInvoked_thenCorrectResponseIsReturned() {
         assertThatThrownBy(() -> {
-            CreateContributionRequest createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
-            createContributions.setRepId(INVALID_REP_ID);
-            contributionsService.create(createContributions);
-        }).isInstanceOf(DataAccessException.class);
+                    CreateContributionRequest createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
+                    createContributions.setRepId(INVALID_REP_ID);
+                    contributionsService.create(createContributions);
+                })
+                .isInstanceOf(DataAccessException.class);
     }
 
     @Test
@@ -100,5 +102,4 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("No contribution entries found for repId");
     }
-
 }

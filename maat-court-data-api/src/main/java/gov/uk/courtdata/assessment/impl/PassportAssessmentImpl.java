@@ -6,9 +6,10 @@ import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -27,7 +28,8 @@ public class PassportAssessmentImpl {
     }
 
     public PassportAssessmentEntity update(PassportAssessmentDTO passportAssessmentDTO) {
-        PassportAssessmentEntity existingPassportAssessment = passportAssessmentRepository.getReferenceById(passportAssessmentDTO.getId());
+        PassportAssessmentEntity existingPassportAssessment =
+                passportAssessmentRepository.getReferenceById(passportAssessmentDTO.getId());
         existingPassportAssessment.setNworCode(passportAssessmentDTO.getNworCode());
         existingPassportAssessment.setCmuId(passportAssessmentDTO.getCmuId());
         existingPassportAssessment.setAssessmentDate(passportAssessmentDTO.getAssessmentDate());
@@ -54,7 +56,10 @@ public class PassportAssessmentImpl {
         existingPassportAssessment.setWhoDWPChecked(passportAssessmentDTO.getWhoDWPChecked());
         existingPassportAssessment.setDateCompleted(passportAssessmentDTO.getDateCompleted());
         existingPassportAssessment.setUserModified(passportAssessmentDTO.getUserModified());
-        existingPassportAssessment.setDateModified(passportAssessmentDTO.getDateModified() != null ? passportAssessmentDTO.getDateModified() : LocalDateTime.now());
+        existingPassportAssessment.setDateModified(
+                passportAssessmentDTO.getDateModified() != null
+                        ? passportAssessmentDTO.getDateModified()
+                        : LocalDateTime.now());
         return passportAssessmentRepository.save(existingPassportAssessment);
     }
 
@@ -63,8 +68,8 @@ public class PassportAssessmentImpl {
     }
 
     public PassportAssessmentEntity create(PassportAssessmentDTO passportAssessmentDTO) {
-        PassportAssessmentEntity passportAssessmentEntity = assessmentMapper.passportAssessmentDtoToPassportAssessmentEntity(passportAssessmentDTO);
+        PassportAssessmentEntity passportAssessmentEntity =
+                assessmentMapper.passportAssessmentDtoToPassportAssessmentEntity(passportAssessmentDTO);
         return passportAssessmentRepository.save(passportAssessmentEntity);
     }
-
 }

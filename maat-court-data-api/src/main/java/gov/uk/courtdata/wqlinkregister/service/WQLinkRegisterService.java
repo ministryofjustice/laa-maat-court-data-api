@@ -5,10 +5,11 @@ import gov.uk.courtdata.wqlinkregister.impl.WQLinkRegisterImpl;
 import gov.uk.courtdata.wqlinkregister.mapper.WQLinkRegisterMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service

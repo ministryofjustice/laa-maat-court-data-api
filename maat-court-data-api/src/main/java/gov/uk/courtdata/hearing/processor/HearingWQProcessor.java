@@ -1,9 +1,9 @@
 package gov.uk.courtdata.hearing.processor;
 
-
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 @Slf4j

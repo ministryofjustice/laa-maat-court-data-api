@@ -1,12 +1,9 @@
 package gov.uk.courtdata.hearing.dto;
 
-import gov.uk.courtdata.enums.VerdictCategoryType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @Builder

@@ -46,8 +46,10 @@ public class PassportAssessmentDTO {
     private LocalDateTime lastSignOnDate;
     private String esa;
     private String pastStatus;
+
     @Builder.Default
     private String replaced = "N";
+
     private LocalDateTime passportEvidenceDueDate;
     private LocalDateTime allPassportEvidenceReceivedDate;
     private Integer passportUpliftPercentage;
@@ -62,6 +64,7 @@ public class PassportAssessmentDTO {
     private String whoDWPChecked;
     private String rtCode;
     private UserDTO userCreatedEntity;
+
     @Builder.Default
     private List<PassportAssessmentEvidenceDTO> passportAssessmentEvidences = new ArrayList<>();
 }

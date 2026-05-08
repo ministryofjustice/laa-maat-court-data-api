@@ -2,9 +2,10 @@ package gov.uk.courtdata.wqhearing.mapper;
 
 import gov.uk.courtdata.dto.WQHearingDTO;
 import gov.uk.courtdata.entity.WQHearingEntity;
-import org.mapstruct.*;
 
 import java.util.List;
+
+import org.mapstruct.*;
 
 @Mapper(
         componentModel = "spring",

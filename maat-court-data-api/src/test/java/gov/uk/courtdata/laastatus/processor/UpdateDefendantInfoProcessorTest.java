@@ -1,31 +1,35 @@
 package gov.uk.courtdata.laastatus.processor;
 
-import com.google.gson.Gson;
+import static gov.uk.courtdata.constants.CourtDataConstants.SAVE_MLR;
+import static gov.uk.courtdata.constants.CourtDataConstants.SEARCH_TYPE_0;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantEntity;
 import gov.uk.courtdata.repository.DefendantRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.SAVE_MLR;
-import static gov.uk.courtdata.constants.CourtDataConstants.SEARCH_TYPE_0;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
+import com.google.gson.Gson;
 
 @ExtendWith(MockitoExtension.class)
 public class UpdateDefendantInfoProcessorTest {
 
     @InjectMocks
     private UpdateDefendantInfoProcessor defendantInfoProcessor;
+
     @Spy
     private DefendantRepository defendantRepository;
 
     private TestModelDataBuilder testModelDataBuilder;
+
     @Captor
     private ArgumentCaptor<DefendantEntity> defendantCaptor;
 
@@ -40,9 +44,8 @@ public class UpdateDefendantInfoProcessorTest {
         // given
         CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
 
-        //when
+        // when
         defendantInfoProcessor.process(courtDataDTO);
-
 
         // then
         verify(defendantRepository).save(defendantCaptor.capture());

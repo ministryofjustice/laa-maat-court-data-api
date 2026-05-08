@@ -17,5 +17,4 @@ public class AssessmentStatusDTO extends GenericDTO {
 
     private String status;
     private String description;
-
 }

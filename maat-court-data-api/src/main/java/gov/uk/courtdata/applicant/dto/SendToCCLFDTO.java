@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,8 +13,10 @@ import java.time.LocalDate;
 public class SendToCCLFDTO {
     @NotNull
     private Integer repId;
+
     @NotNull
     private Integer applId;
+
     @NotNull
     private Integer applHistoryId;
 }

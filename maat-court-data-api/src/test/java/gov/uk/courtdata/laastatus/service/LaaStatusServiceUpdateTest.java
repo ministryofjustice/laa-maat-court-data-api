@@ -1,19 +1,21 @@
 package gov.uk.courtdata.laastatus.service;
 
-import com.google.gson.Gson;
+import static org.mockito.Mockito.*;
+
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.laastatus.builder.CourtDataDTOBuilder;
 import gov.uk.courtdata.model.CaseDetails;
+
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.UUID;
-
-import static org.mockito.Mockito.*;
+import com.google.gson.Gson;
 
 @ExtendWith(MockitoExtension.class)
 public class LaaStatusServiceUpdateTest {
@@ -36,7 +38,7 @@ public class LaaStatusServiceUpdateTest {
     @Test
     public void givenACaseDetail_whenRestCallReceived_thenUpdateMlaAndCDA() {
 
-        //given
+        // given
         CaseDetails caseDetails = CaseDetails.builder()
                 .laaTransactionId(UUID.randomUUID())
                 .onlyForCDAService(true)
@@ -44,16 +46,15 @@ public class LaaStatusServiceUpdateTest {
                 .build();
 
         when(courtDataDTOBuilder.build(caseDetails))
-                .thenReturn(
-                        CourtDataDTO.builder()
-                                .caseId(111)
-                                .libraId("2222")
-                                .caseDetails(CaseDetails.builder().onlyForCDAService(false).build())
-                                .build()
-                );
+                .thenReturn(CourtDataDTO.builder()
+                        .caseId(111)
+                        .libraId("2222")
+                        .caseDetails(
+                                CaseDetails.builder().onlyForCDAService(false).build())
+                        .build());
         laaStatusServiceUpdate.updateMlaAndCDA(caseDetails);
 
-        //then
+        // then
         verify(laaStatusPostCDAService, times(1)).process(any());
         verify(laaStatusService, times(1)).execute(any());
     }
@@ -61,7 +62,7 @@ public class LaaStatusServiceUpdateTest {
     @Test
     public void givenACaseDetail_whenRestCallReceived_thenUpdateCDA() {
 
-        //given
+        // given
         CaseDetails caseDetails = CaseDetails.builder()
                 .laaTransactionId(UUID.randomUUID())
                 .onlyForCDAService(true)
@@ -69,19 +70,19 @@ public class LaaStatusServiceUpdateTest {
                 .build();
 
         when(courtDataDTOBuilder.build(caseDetails))
-                .thenReturn(
-                        CourtDataDTO.builder()
-                                .caseId(111)
-                                .libraId("2222")
-                                .proceedingId(111)
-                                .defendantMAATDataEntity(DefendantMAATDataEntity.builder().build())
-                                .caseDetails(CaseDetails.builder().onlyForCDAService(true).build())
-                                .build()
-                );
+                .thenReturn(CourtDataDTO.builder()
+                        .caseId(111)
+                        .libraId("2222")
+                        .proceedingId(111)
+                        .defendantMAATDataEntity(
+                                DefendantMAATDataEntity.builder().build())
+                        .caseDetails(
+                                CaseDetails.builder().onlyForCDAService(true).build())
+                        .build());
 
         laaStatusServiceUpdate.updateMlaAndCDA(caseDetails);
 
-        //then
+        // then
         verify(laaStatusPostCDAService, times(1)).process(any());
         verify(laaStatusService, times(0)).execute(any());
     }

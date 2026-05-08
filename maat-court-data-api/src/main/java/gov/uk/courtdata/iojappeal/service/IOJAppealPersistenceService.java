@@ -6,6 +6,7 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.IOJAppealRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -16,8 +17,10 @@ public class IOJAppealPersistenceService {
     private final IOJAppealRepository iojAppealRepository;
 
     public IOJAppealEntity find(Integer iojAppealId) {
-        return iojAppealRepository.findById(iojAppealId)
-            .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("No IoJ Appeal found for ID: %s", iojAppealId)));
+        return iojAppealRepository
+                .findById(iojAppealId)
+                .orElseThrow(() -> new RequestedObjectNotFoundException(
+                        String.format("No IoJ Appeal found for ID: %s", iojAppealId)));
     }
 
     public IOJAppealEntity findByRepId(int repId) {
@@ -33,21 +36,23 @@ public class IOJAppealPersistenceService {
     }
 
     public IOJAppealEntity update(IOJAppealDTO iojAppealDTO) {
-        var existingIOJAppealEntity = iojAppealRepository.findById(iojAppealDTO.getId())
-                .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("No IoJ Appeal found for ID: %s", iojAppealDTO.getId())));
+        var existingIOJAppealEntity = iojAppealRepository
+                .findById(iojAppealDTO.getId())
+                .orElseThrow(() -> new RequestedObjectNotFoundException(
+                        String.format("No IoJ Appeal found for ID: %s", iojAppealDTO.getId())));
 
-            existingIOJAppealEntity.setAppealSetupDate(iojAppealDTO.getAppealSetupDate());
-            existingIOJAppealEntity.setNworCode(iojAppealDTO.getNworCode());
-            existingIOJAppealEntity.setCmuId(iojAppealDTO.getCmuId());
-            existingIOJAppealEntity.setIapsStatus(iojAppealDTO.getIapsStatus());
-            existingIOJAppealEntity.setAppealSetupResult(iojAppealDTO.getAppealSetupResult());
-            existingIOJAppealEntity.setDecisionDate(iojAppealDTO.getDecisionDate());
-            existingIOJAppealEntity.setDecisionResult(iojAppealDTO.getDecisionResult());
-            existingIOJAppealEntity.setIderCode(iojAppealDTO.getIderCode());
-            existingIOJAppealEntity.setNotes(iojAppealDTO.getNotes());
-            existingIOJAppealEntity.setUserModified(iojAppealDTO.getUserModified());
+        existingIOJAppealEntity.setAppealSetupDate(iojAppealDTO.getAppealSetupDate());
+        existingIOJAppealEntity.setNworCode(iojAppealDTO.getNworCode());
+        existingIOJAppealEntity.setCmuId(iojAppealDTO.getCmuId());
+        existingIOJAppealEntity.setIapsStatus(iojAppealDTO.getIapsStatus());
+        existingIOJAppealEntity.setAppealSetupResult(iojAppealDTO.getAppealSetupResult());
+        existingIOJAppealEntity.setDecisionDate(iojAppealDTO.getDecisionDate());
+        existingIOJAppealEntity.setDecisionResult(iojAppealDTO.getDecisionResult());
+        existingIOJAppealEntity.setIderCode(iojAppealDTO.getIderCode());
+        existingIOJAppealEntity.setNotes(iojAppealDTO.getNotes());
+        existingIOJAppealEntity.setUserModified(iojAppealDTO.getUserModified());
 
-            return iojAppealRepository.save(existingIOJAppealEntity);
+        return iojAppealRepository.save(existingIOJAppealEntity);
     }
 
     public IOJAppealEntity findCurrentPassedByRepId(int repId) {

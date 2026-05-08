@@ -1,36 +1,41 @@
 package gov.uk.courtdata.applicant.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
+
 import gov.uk.courtdata.applicant.dto.SendToCCLFDTO;
 import gov.uk.courtdata.applicant.repository.ApplicantRepository;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.reporder.service.RepOrderService;
+
+import java.util.HashMap;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
-import java.util.HashMap;
-import java.util.Optional;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(ApplicantService.class)
 public class ApplicantServiceTest {
 
     private static final int ID = 1;
+
     @MockitoBean
     private ApplicantRepository applicantRepository;
+
     private ApplicantService applicantService;
+
     @MockitoBean
     private RepOrderService repOrderService;
+
     @MockitoBean
     private ApplicantHistoryService applicantHistoryService;
 
@@ -41,27 +46,29 @@ public class ApplicantServiceTest {
 
     @Test
     void givenAValidInput_whenFindIsInvoked_thenShouldReturnApplicantDTO() {
-        when(applicantRepository.findById(anyInt())).thenReturn(Optional.of(Applicant.builder().id(ID).build()));
+        when(applicantRepository.findById(anyInt()))
+                .thenReturn(Optional.of(Applicant.builder().id(ID).build()));
         applicantService.find(ID);
         verify(applicantRepository, atLeastOnce()).findById(ID);
     }
 
     @Test
     void givenApplicantNotFound_whenFindIsInvoked_thenExceptionIsRaised() {
-        assertThatThrownBy(() -> applicantService.find(ID)).isInstanceOf(RequestedObjectNotFoundException.class)
+        assertThatThrownBy(() -> applicantService.find(ID))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant not found for id ");
     }
 
     @Test
     void givenAValidInput_whenUpdateIsInvoked_thenUpdateIsSuccess() {
-        when(applicantRepository.findById(anyInt())).thenReturn(Optional.of(Applicant.builder().id(ID).build()));
+        when(applicantRepository.findById(anyInt()))
+                .thenReturn(Optional.of(Applicant.builder().id(ID).build()));
         HashMap<String, Object> inputMap = new HashMap<>();
         inputMap.put("email", "test@test.co");
         applicantService.update(ID, inputMap);
         verify(applicantRepository, atLeastOnce()).findById(any());
         verify(applicantRepository, atLeastOnce()).save(any());
     }
-
 
     @Test
     void givenAValidInput_whenCreateIsInvoked_thenCreateIsSuccess() {
@@ -79,8 +86,10 @@ public class ApplicantServiceTest {
     void givenAValidInput_whenUpdateSendToCCLFIsInvoked_thenUpdateIsSuccess() {
         when(repOrderService.update(any(), any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
         doNothing().when(applicantHistoryService).update(any(), any());
-        when(applicantRepository.findById(anyInt())).thenReturn(Optional.of(Applicant.builder().id(ID).build()));
-        SendToCCLFDTO sendToCCLFDTO = SendToCCLFDTO.builder().applId(ID).repId(ID).applHistoryId(ID).build();
+        when(applicantRepository.findById(anyInt()))
+                .thenReturn(Optional.of(Applicant.builder().id(ID).build()));
+        SendToCCLFDTO sendToCCLFDTO =
+                SendToCCLFDTO.builder().applId(ID).repId(ID).applHistoryId(ID).build();
         applicantService.updateSendToCCLF(sendToCCLFDTO);
         verify(repOrderService, atLeastOnce()).update(any(), any());
         verify(applicantHistoryService, atLeastOnce()).update(any(), any());

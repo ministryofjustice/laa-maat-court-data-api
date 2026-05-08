@@ -1,5 +1,8 @@
 package gov.uk.courtdata.unlink.impl;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.*;
+
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
@@ -7,16 +10,14 @@ import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
 import gov.uk.courtdata.repository.*;
+
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UnLinkImplTest {
@@ -26,17 +27,19 @@ public class UnLinkImplTest {
 
     @Spy
     private WqLinkRegisterRepository wqLinkRegisterRepository;
+
     @Captor
     private ArgumentCaptor<WqLinkRegisterEntity> wqLinkRegisterEntityArgumentCaptor;
 
     @Spy
     private WqCoreRepository wqCoreRepository;
+
     @Captor
     private ArgumentCaptor<WqCoreEntity> wqCoreEntityArgumentCaptor;
 
-
     @Spy
     private UnlinkReasonRepository unlinkReasonRepository;
+
     @Captor
     private ArgumentCaptor<UnlinkEntity> unlinkEntityArgumentCaptor;
 
@@ -46,10 +49,8 @@ public class UnLinkImplTest {
     @Mock
     private RepOrderCPDataRepository repOrderCPDataRepository;
 
-
     @BeforeEach
-    public void setUp() {
-    }
+    public void setUp() {}
 
     @Test
     public void givenCaseDetail_whenExecuteIsInvoked_thenCaseInUnlinked() {
@@ -87,10 +88,12 @@ public class UnLinkImplTest {
         verify(wqLinkRegisterRepository).save(wqLinkRegisterEntityArgumentCaptor.capture());
         assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getCaseId()).isEqualTo(5566);
         assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getCaseUrn()).isEqualTo("case565");
-        assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getRemovedUserId()).isEqualTo("1234");
+        assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getRemovedUserId())
+                .isEqualTo("1234");
         assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getLibraId()).isEqualTo("libraid1");
         assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getMaatId()).isEqualTo(43534543);
-        assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getCjsAreaCode()).isEqualTo("LFD3");
+        assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getCjsAreaCode())
+                .isEqualTo("LFD3");
     }
 
     @Test
@@ -107,7 +110,6 @@ public class UnLinkImplTest {
         assertThat(unlinkEntityArgumentCaptor.getValue().getOtherReason()).isEqualTo("some reason text");
     }
 
-
     private UnlinkModel getUnlinkModel() {
 
         Unlink unlink = Unlink.builder()
@@ -117,20 +119,17 @@ public class UnLinkImplTest {
                 .reasonId(8877)
                 .build();
 
-        WqLinkRegisterEntity wqLinkRegisterEntity =
-                WqLinkRegisterEntity.builder()
-                        .caseId(5566)
-                        .caseUrn("case565")
-                        .libraId("libraid1")
-                        .maatId(43534543)
-                        .cjsAreaCode("LFD3")
-                        .removedDate(LocalDateTime.now())
-                        .build();
+        WqLinkRegisterEntity wqLinkRegisterEntity = WqLinkRegisterEntity.builder()
+                .caseId(5566)
+                .caseUrn("case565")
+                .libraId("libraid1")
+                .maatId(43534543)
+                .cjsAreaCode("LFD3")
+                .removedDate(LocalDateTime.now())
+                .build();
 
         RepOrderCPDataEntity repOrderCPDataEntity =
-                RepOrderCPDataEntity.builder()
-                        .caseUrn("case565")
-                        .build();
+                RepOrderCPDataEntity.builder().caseUrn("case565").build();
 
         return UnlinkModel.builder()
                 .unlink(unlink)

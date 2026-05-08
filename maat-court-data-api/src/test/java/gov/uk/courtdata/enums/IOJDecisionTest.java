@@ -1,9 +1,8 @@
 package gov.uk.courtdata.enums;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class IOJDecisionTest {
 
@@ -13,12 +12,14 @@ public class IOJDecisionTest {
         boolean result = IOJDecision.isFailedDecision(0);
         assertThat(result).isTrue();
     }
+
     @Test
     public void givenPendingIOJDecision_failResultIsReturned() {
 
         boolean result = IOJDecision.isFailedDecision(2);
         assertThat(result).isTrue();
     }
+
     @Test
     public void givenGrantedIOJDecision_grantedResultIsReturned() {
 

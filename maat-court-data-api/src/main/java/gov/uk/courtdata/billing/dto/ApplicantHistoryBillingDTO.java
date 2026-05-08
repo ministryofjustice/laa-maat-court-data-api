@@ -6,7 +6,6 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,6 +13,7 @@ import java.time.LocalDateTime;
 public class ApplicantHistoryBillingDTO {
     @NotNull
     private Integer id;
+
     private LocalDate asAtDate;
     private Integer applId;
     private String firstName;
@@ -23,10 +23,13 @@ public class ApplicantHistoryBillingDTO {
     private String gender;
     private String niNumber;
     private String foreignId;
+
     @NotNull
     private LocalDateTime dateCreated;
+
     @NotNull
     private String userCreated;
+
     private LocalDateTime dateModified;
     private String userModified;
 }

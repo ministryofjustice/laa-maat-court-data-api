@@ -9,10 +9,11 @@ import gov.uk.courtdata.repository.WQHearingRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -43,19 +44,15 @@ public class WQHearingProcessor {
                 .build();
 
         wQHearingRepository.save(wqHearingEntity);
-
     }
 
     private String flattenResults(final HearingResulted hearingResulted) {
-        List<String> results = hearingResulted
-                .getDefendant()
-                .getOffences()
-                .stream()
+        List<String> results = hearingResulted.getDefendant().getOffences().stream()
                 .flatMap(offence -> offence.getResults().stream())
                 .map(Result::getResultCode)
                 .distinct()
                 .collect(Collectors.toList());
 
-        return String.join(",",results);
+        return String.join(",", results);
     }
 }

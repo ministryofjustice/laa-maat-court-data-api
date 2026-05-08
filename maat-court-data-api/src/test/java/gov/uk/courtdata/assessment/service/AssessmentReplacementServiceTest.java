@@ -1,30 +1,33 @@
 package gov.uk.courtdata.assessment.service;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
-import gov.uk.courtdata.entity.FinancialAssessmentEntity;
-import gov.uk.courtdata.entity.PassportAssessmentEntity;
-import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.HardshipReviewRepository;
-import gov.uk.courtdata.repository.PassportAssessmentRepository;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.TEST_ID;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import gov.uk.courtdata.repository.HardshipReviewRepository;
+import gov.uk.courtdata.repository.PassportAssessmentRepository;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 @ExtendWith(MockitoExtension.class)
 class AssessmentReplacementServiceTest {
 
     @Mock
     private HardshipReviewRepository hardshipReviewRepository;
+
     @Mock
     private PassportAssessmentRepository passportAssessmentRepository;
+
     @Mock
     private FinancialAssessmentRepository financialAssessmentRepository;
 
@@ -43,10 +46,7 @@ class AssessmentReplacementServiceTest {
         verify(hardshipReviewRepository).replaceAllByRepIdExcludingFinancialAssessment(REP_ID, TEST_ID);
         verify(passportAssessmentRepository).replaceAllByRepId(REP_ID);
 
-        verifyNoMoreInteractions(
-                financialAssessmentRepository,
-                hardshipReviewRepository,
-                passportAssessmentRepository);
+        verifyNoMoreInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
     }
 
     @Test
@@ -86,10 +86,7 @@ class AssessmentReplacementServiceTest {
         verify(hardshipReviewRepository).replaceAllByRepId(REP_ID);
         verify(passportAssessmentRepository).replaceAllByRepIdExcludingPassportedAssessment(REP_ID, TEST_ID);
 
-        verifyNoMoreInteractions(
-                financialAssessmentRepository,
-                hardshipReviewRepository,
-                passportAssessmentRepository);
+        verifyNoMoreInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
     }
 
     @Test
@@ -118,4 +115,3 @@ class AssessmentReplacementServiceTest {
         verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);
     }
 }
-

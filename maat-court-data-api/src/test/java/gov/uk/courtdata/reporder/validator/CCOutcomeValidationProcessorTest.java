@@ -1,9 +1,14 @@
 package gov.uk.courtdata.reporder.validator;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.RepOrderCCOutcome;
 import gov.uk.courtdata.validator.MaatIdValidator;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,21 +16,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class CCOutcomeValidationProcessorTest {
 
     private static final Integer INVALID_REP_ID = -1;
     RepOrderCCOutcome repOrderCCOutcome;
+
     @Mock
     private MaatIdValidator maatIdValidator;
+
     @Mock
     private CreateCCOutcomeValidator createCCOutComeValidator;
+
     @InjectMocks
     private CCOutComeValidationProcessor CCOutComeValidationProcessor;
 
@@ -74,5 +76,4 @@ class CCOutcomeValidationProcessorTest {
                 .isInstanceOf(ValidationException.class);
         verify(maatIdValidator, atLeastOnce()).validate(any());
     }
-
 }

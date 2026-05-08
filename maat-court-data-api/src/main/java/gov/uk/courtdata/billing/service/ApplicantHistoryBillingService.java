@@ -8,11 +8,12 @@ import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -25,14 +26,14 @@ public class ApplicantHistoryBillingService {
     public List<ApplicantHistoryBillingDTO> extractApplicantHistory() {
         List<ApplicantHistoryBillingDTO> applicantHistoryDTOs = new ArrayList<>();
 
-        List<ApplicantHistoryBillingEntity> applicantHistoryEntities = applicantHistoryBillingRepository.extractApplicantHistoryBilling();
+        List<ApplicantHistoryBillingEntity> applicantHistoryEntities =
+                applicantHistoryBillingRepository.extractApplicantHistoryBilling();
         log.info("Application histories successfully extracted for billing data.");
 
         if (!applicantHistoryEntities.isEmpty()) {
-            applicantHistoryDTOs = applicantHistoryEntities
-                .stream()
-                .map(applicantHistoryBillingMapper::mapEntityToDTO)
-                .toList();
+            applicantHistoryDTOs = applicantHistoryEntities.stream()
+                    .map(applicantHistoryBillingMapper::mapEntityToDTO)
+                    .toList();
         }
 
         return applicantHistoryDTOs;
@@ -42,14 +43,14 @@ public class ApplicantHistoryBillingService {
     public void resetApplicantHistory(UpdateBillingRequest request) {
         List<Integer> ids = request.getIds();
 
-        int updatedRows = applicantHistoryBillingRepository.resetApplicantHistoryBilling(
-            request.getUserModified(), ids);
+        int updatedRows =
+                applicantHistoryBillingRepository.resetApplicantHistoryBilling(request.getUserModified(), ids);
         log.info("Send to CCLF flag has been reset for extracted applicant histories.");
 
         if (updatedRows != ids.size()) {
             String errorMsg = String.format(
-                "Number of applicant histories reset: %d, does not equal those supplied in request: %d.",
-                updatedRows, ids.size());
+                    "Number of applicant histories reset: %d, does not equal those supplied in request: %d.",
+                    updatedRows, ids.size());
             log.error(errorMsg);
             throw new MAATCourtDataException(errorMsg);
         }

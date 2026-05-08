@@ -1,32 +1,33 @@
 package gov.uk.courtdata.users.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.helper.ReservationsRepositoryHelper;
-import gov.uk.courtdata.repository.FeatureToggleRepository;
 import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleDataItemsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
 import gov.uk.courtdata.repository.UserRepository;
 import gov.uk.courtdata.service.FeatureToggleService;
 import gov.uk.courtdata.users.mapper.UserSummaryMapper;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
 class UserSummaryServiceTest {
@@ -36,16 +37,22 @@ class UserSummaryServiceTest {
 
     @Mock
     private RoleActionsRepository roleActionsRepository;
+
     @Mock
     private RoleWorkReasonsRepository roleWorkReasonsRepository;
+
     @Mock
     private UserSummaryMapper userSummaryMapper;
+
     @Mock
     private ReservationsRepositoryHelper reservationsRepositoryHelper;
+
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private RoleDataItemsRepository roleDataItemsRepository;
+
     @Mock
     private FeatureToggleService featureToggleService;
 
@@ -90,11 +97,10 @@ class UserSummaryServiceTest {
     @Test
     void givenValidUser_whenPatchUserIsInvoked_thenUserIsUpdated() throws JsonProcessingException {
         String userName = "TEST_USER";
-        UserEntity userEntity = UserEntity.builder()
-                .username(userName)
-                .loggedIn("N")
-                .build();
-        String requestJson = """
+        UserEntity userEntity =
+                UserEntity.builder().username(userName).loggedIn("N").build();
+        String requestJson =
+                """
                 {
                   "loggedIn" : "Y",
                   "currentSession" : null
@@ -109,10 +115,8 @@ class UserSummaryServiceTest {
     @Test
     void givenValidUser_whenUpdateUserIsInvoked_thenUserIsUpdated() {
         String userName = "TEST_USER";
-        UserEntity userEntity = UserEntity.builder()
-                .username(userName)
-                .loggedIn("N")
-                .build();
+        UserEntity userEntity =
+                UserEntity.builder().username(userName).loggedIn("N").build();
 
         UserEntity updateFields = UserEntity.builder()
                 .username(userName)
@@ -123,5 +127,4 @@ class UserSummaryServiceTest {
         userSummaryService.updateUser(updateFields);
         verify(userRepository).save(userEntity);
     }
-
 }

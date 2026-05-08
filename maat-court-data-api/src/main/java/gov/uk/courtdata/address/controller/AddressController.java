@@ -8,6 +8,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +30,6 @@ import java.util.Map;
 public class AddressController {
 
     private final AddressService addressService;
-
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve an Address record")
@@ -64,5 +64,4 @@ public class AddressController {
         log.info("Create Address Request Received");
         return ResponseEntity.ok(addressService.create(address));
     }
-
 }

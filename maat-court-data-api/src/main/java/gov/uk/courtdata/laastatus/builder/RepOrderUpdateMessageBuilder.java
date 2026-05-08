@@ -1,5 +1,7 @@
 package gov.uk.courtdata.laastatus.builder;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
+
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
@@ -8,23 +10,19 @@ import gov.uk.courtdata.model.laastatus.*;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.SolicitorMAATDataRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
-
+import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
 public class RepOrderUpdateMessageBuilder {
 
-
     private final RepOrderCPDataRepository repOrderCPDataRepository;
 
     private final SolicitorMAATDataRepository solicitorMAATDataRepository;
-
 
     /**
      * Build representation order(aka laa status update) message to post to CDA.
@@ -33,13 +31,13 @@ public class RepOrderUpdateMessageBuilder {
      */
     public LaaStatusUpdate build(final CaseDetails caseDetails) {
 
-        return LaaStatusUpdate.builder().data(
-                RepOrderData.builder()
+        return LaaStatusUpdate.builder()
+                .data(RepOrderData.builder()
                         .type("representation_order")
                         .attributes(buildAttributes(caseDetails))
-                        .relationships(mapRelationships(caseDetails)).build())
+                        .relationships(mapRelationships(caseDetails))
+                        .build())
                 .build();
-
     }
 
     /**
@@ -55,19 +53,17 @@ public class RepOrderUpdateMessageBuilder {
         return headers;
     }
 
-
     private Attributes buildAttributes(CaseDetails caseDetails) {
 
-        List<Offence> offences =
-                caseDetails.getDefendant().getOffences().stream()
-                        .map(this::mapOffence).collect(Collectors.toList());
+        List<Offence> offences = caseDetails.getDefendant().getOffences().stream()
+                .map(this::mapOffence)
+                .collect(Collectors.toList());
         return Attributes.builder()
                 .maatReference(caseDetails.getMaatId())
                 .defenceOrganisation(mapDefenceOrganisation(caseDetails))
                 .offences(offences)
                 .build();
     }
-
 
     /**
      * <p>Build defence organisation</p>
@@ -77,16 +73,17 @@ public class RepOrderUpdateMessageBuilder {
      */
     private DefenceOrganisation mapDefenceOrganisation(CaseDetails caseDetails) {
 
-        final Optional<SolicitorMAATDataEntity> optSolicitor = solicitorMAATDataRepository.findBymaatId(caseDetails.getMaatId());
+        final Optional<SolicitorMAATDataEntity> optSolicitor =
+                solicitorMAATDataRepository.findBymaatId(caseDetails.getMaatId());
 
-        SolicitorMAATDataEntity solicitorDetails = optSolicitor.orElse(SolicitorMAATDataEntity.builder().build());
+        SolicitorMAATDataEntity solicitorDetails =
+                optSolicitor.orElse(SolicitorMAATDataEntity.builder().build());
 
         return DefenceOrganisation.builder()
                 .laaContractNumber(solicitorDetails.getAccountCode())
                 .organisation(findSolicitorDetails(solicitorDetails))
                 .build();
     }
-
 
     /**
      * <p>Lookup solicitor details.</p>
@@ -111,7 +108,8 @@ public class RepOrderUpdateMessageBuilder {
      */
     private Address mapAddress(SolicitorMAATDataEntity solicitorDetails) {
 
-        return Address.builder().address1(solicitorDetails.getLine1())
+        return Address.builder()
+                .address1(solicitorDetails.getLine1())
                 .address2(solicitorDetails.getLine2())
                 .address3(solicitorDetails.getLine3())
                 .address4(solicitorDetails.getCity())
@@ -132,9 +130,7 @@ public class RepOrderUpdateMessageBuilder {
                 .primaryEmail(solicitorDetails.getAdminEmail())
                 .secondaryEmail(solicitorDetails.getEmail())
                 .build();
-
     }
-
 
     /**
      * <p>Map offence details.</p>
@@ -146,13 +142,12 @@ public class RepOrderUpdateMessageBuilder {
 
         return Offence.builder()
                 .offenceId(offence.getOffenceId())
-
                 .statusCode(offence.getLegalAidStatus())
                 .statusDate(offence.getLegalAidStatusDate())
                 .effectiveStartDate(offence.getLegalAidStatusDate())
-                .effectiveEndDate(offence.getLegalAidStatusDate()).build();
+                .effectiveEndDate(offence.getLegalAidStatusDate())
+                .build();
     }
-
 
     /**
      * <p> Map Relationship details.</p>
@@ -175,12 +170,13 @@ public class RepOrderUpdateMessageBuilder {
      */
     private Defendant mapDefendant(final Integer maatId) {
 
-        return Defendant.builder().data(DefendantData.builder()
-                .id(findDefendantId(maatId))
-                .type("defendants").build())
+        return Defendant.builder()
+                .data(DefendantData.builder()
+                        .id(findDefendantId(maatId))
+                        .type("defendants")
+                        .build())
                 .build();
     }
-
 
     /**
      * <p>Find defendant Id.</p>
@@ -189,11 +185,8 @@ public class RepOrderUpdateMessageBuilder {
      * @return
      */
     private String findDefendantId(final Integer maatId) {
-        Optional<RepOrderCPDataEntity> repOrderCPData
-                = repOrderCPDataRepository.findByrepOrderId(maatId);
+        Optional<RepOrderCPDataEntity> repOrderCPData = repOrderCPDataRepository.findByrepOrderId(maatId);
 
         return repOrderCPData.map(RepOrderCPDataEntity::getDefendantId).orElse(null);
     }
-
-
 }

@@ -21,5 +21,4 @@ public class NoteDTO extends GenericDTO {
     private String userCreated;
     private Date dateCreated;
     private String note;
-
 }

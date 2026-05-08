@@ -1,8 +1,7 @@
 /**
- * 
+ *
  */
 package gov.uk.courtdata.dto.application;
-
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,19 +12,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class TransferTypesDTO extends GenericDTO implements Comparable<TransferTypesDTO> 
-{
+public class TransferTypesDTO extends GenericDTO implements Comparable<TransferTypesDTO> {
 
-	
-	private	String				type;
-	private	String				description;
-	private int					seq;
-	
+    private String type;
+    private String description;
+    private int seq;
 
-	public int compareTo(TransferTypesDTO dto) {
+    public int compareTo(TransferTypesDTO dto) {
 
-		return type.compareTo(dto.getType() );
-	}
-
-
+        return type.compareTo(dto.getType());
+    }
 }

@@ -7,11 +7,9 @@ import lombok.Getter;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-
 @AllArgsConstructor
 @Getter
 public enum CrownCourtTrialOutcome {
-
     CONVICTED("CONVICTED"),
     PART_CONVICTED("PART CONVICTED"),
     AQUITTED("AQUITTED");
@@ -24,7 +22,6 @@ public enum CrownCourtTrialOutcome {
                 .anyMatch(trOut -> trOut.getValue().equalsIgnoreCase(notEmpty(outcome)));
     }
 
-
     public static boolean isTrial(String outcome) {
 
         return Stream.of(CrownCourtTrialOutcome.values())
@@ -33,8 +30,7 @@ public enum CrownCourtTrialOutcome {
 
     private static String notEmpty(String outcome) {
 
-        return Optional.ofNullable(outcome).orElseThrow(
-                () -> new ValidationException("Crown Court trial outcome can't be empty."));
+        return Optional.ofNullable(outcome)
+                .orElseThrow(() -> new ValidationException("Crown Court trial outcome can't be empty."));
     }
-
 }

@@ -15,8 +15,10 @@ import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.repository.IOJAppealRepository;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -44,18 +46,20 @@ class IOJAppealPersistenceServiceTest {
 
     @Test
     void whenFindIsInvoked_thenAssessmentIsRetrieved() {
-        when(iojAppealRepository.findById(any())).thenReturn(
-            Optional.ofNullable(IOJAppealEntity.builder().id(IOJ_APPEAL_ID).build()));
+        when(iojAppealRepository.findById(any()))
+                .thenReturn(Optional.ofNullable(
+                        IOJAppealEntity.builder().id(IOJ_APPEAL_ID).build()));
         var iojAppeal = iojAppealPersistenceService.find(IOJ_APPEAL_ID);
         assertEquals(IOJ_APPEAL_ID, iojAppeal.getId());
     }
 
     @Test
     void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
-        when(iojAppealRepository.findByRepId(IOJ_REP_ID)).thenReturn(IOJAppealEntity
-                .builder()
-                .id(IOJ_APPEAL_ID)
-                .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(IOJ_REP_ID)).build());
+        when(iojAppealRepository.findByRepId(IOJ_REP_ID))
+                .thenReturn(IOJAppealEntity.builder()
+                        .id(IOJ_APPEAL_ID)
+                        .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(IOJ_REP_ID))
+                        .build());
         var iojAppeal = iojAppealPersistenceService.findByRepId(IOJ_REP_ID);
         assertEquals(IOJ_APPEAL_ID, iojAppeal.getId());
         assertEquals(IOJ_REP_ID, iojAppeal.getRepOrder().getId());
@@ -66,8 +70,8 @@ class IOJAppealPersistenceServiceTest {
         when(iojAppealRepository.findById(IOJ_APPEAL_ID)).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
-            .isThrownBy(() -> iojAppealPersistenceService.find(IOJ_APPEAL_ID))
-            .withMessageContaining(String.format("No IoJ Appeal found for ID: %d", IOJ_APPEAL_ID));
+                .isThrownBy(() -> iojAppealPersistenceService.find(IOJ_APPEAL_ID))
+                .withMessageContaining(String.format("No IoJ Appeal found for ID: %d", IOJ_APPEAL_ID));
     }
 
     @Test
@@ -96,8 +100,7 @@ class IOJAppealPersistenceServiceTest {
         var dateModified = LocalDateTime.of(2022, 1, 1, 10, 0);
         var updatedIOJAppealEntity = TestEntityDataBuilder.getIOJAppealEntity(dateModified);
 
-        when(iojAppealRepository.findById(any())).thenReturn(
-            Optional.ofNullable(updatedIOJAppealEntity));
+        when(iojAppealRepository.findById(any())).thenReturn(Optional.ofNullable(updatedIOJAppealEntity));
 
         iojAppealPersistenceService.update(iojAppealDTO);
 

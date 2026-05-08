@@ -1,12 +1,14 @@
 package gov.uk.courtdata.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Builder
 @NoArgsConstructor
@@ -19,7 +21,11 @@ import java.time.LocalDateTime;
 public class ChildWeightingsEntity {
 
     @Id
-    @SequenceGenerator(name = "fin_ass_child_weighting_seq", sequenceName = "S_FIN_ASS_CHILD_WEIGHTING_ID", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "fin_ass_child_weighting_seq",
+            sequenceName = "S_FIN_ASS_CHILD_WEIGHTING_ID",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_child_weighting_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;

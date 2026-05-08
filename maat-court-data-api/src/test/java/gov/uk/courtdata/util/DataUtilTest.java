@@ -1,18 +1,16 @@
 package gov.uk.courtdata.util;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 @ExtendWith(MockitoExtension.class)
 public class DataUtilTest {
-
 
     @Test
     public void givenStringFormatDate_whenGetDateIsInvoked_thenLocalDateIsReturned() {
@@ -26,4 +24,3 @@ public class DataUtilTest {
         assertNull(DateUtil.parse(null));
     }
 }
-

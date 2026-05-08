@@ -18,7 +18,9 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.iojappeal.mapper.IOJAppealMapper;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
+
 import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,13 +50,16 @@ class IOJAppealV1ServiceTest {
 
     @Test
     void whenFindByRepIdIsInvoked_thenIOJAppealIsRetrieved() {
-        IOJAppealEntity iojAppealEntity = IOJAppealEntity
-                .builder()
+        IOJAppealEntity iojAppealEntity = IOJAppealEntity.builder()
                 .id(IOJ_APPEAL_ID)
-                .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID)).build();
+                .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID))
+                .build();
         when(iojAppealPersistenceService.findByRepId(IOJ_REP_ID)).thenReturn(iojAppealEntity);
         when(iojAppealMapper.toIOJAppealDTO(iojAppealEntity))
-                .thenReturn(IOJAppealDTO.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build());
+                .thenReturn(IOJAppealDTO.builder()
+                        .id(IOJ_APPEAL_ID)
+                        .repId(IOJ_REP_ID)
+                        .build());
 
         IOJAppealDTO returnedIOJAppeal = iojAppealService.findByRepId(IOJ_REP_ID);
 
@@ -75,13 +80,16 @@ class IOJAppealV1ServiceTest {
 
     @Test
     void whenFindCurrentPassedAppealByRepIdIsInvoked_thenIOJAppealIsRetrieved() {
-        IOJAppealEntity iojAppealEntity = IOJAppealEntity
-                .builder()
+        IOJAppealEntity iojAppealEntity = IOJAppealEntity.builder()
                 .id(IOJ_APPEAL_ID)
-                .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID)).build();
+                .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID))
+                .build();
         when(iojAppealPersistenceService.findCurrentPassedByRepId(IOJ_REP_ID)).thenReturn(iojAppealEntity);
         when(iojAppealMapper.toIOJAppealDTO(iojAppealEntity))
-                .thenReturn(IOJAppealDTO.builder().id(IOJ_APPEAL_ID).repId(IOJ_REP_ID).build());
+                .thenReturn(IOJAppealDTO.builder()
+                        .id(IOJ_APPEAL_ID)
+                        .repId(IOJ_REP_ID)
+                        .build());
 
         IOJAppealDTO returnedIOJAppeal = iojAppealService.findCurrentPassedAppealByRepId(IOJ_REP_ID);
 
@@ -121,7 +129,7 @@ class IOJAppealV1ServiceTest {
 
     @Test
     void whenUpdateIsInvoked_thenIOJAppealIsUpdated() {
-        //given
+        // given
         var updateIOJAppeal = TestModelDataBuilder.getUpdateIOJAppealObject();
         var matchingDateModified = LocalDateTime.of(2022, 1, 1, 10, 0);
         var updatedIOJAppealDTO = TestModelDataBuilder.getIOJAppealDTO(matchingDateModified);

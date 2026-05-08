@@ -34,12 +34,16 @@ public class CapitalEquityDTO extends GenericDTO {
 
     @Builder.Default
     private Collection<EquityDTO> equityObjects = new ArrayList<>();
+
     @Builder.Default
     private Collection<CapitalPropertyDTO> capitalProperties = new ArrayList<>();
+
     @Builder.Default
     private Collection<CapitalOtherDTO> capitalOther = new ArrayList<>();
+
     @Builder.Default
     private CapitalEvidenceSummaryDTO capitalEvidenceSummary = new CapitalEvidenceSummaryDTO();
+
     @Builder.Default
     private MotorVehicleOwnerDTO motorVehicleOwnerDTO = new MotorVehicleOwnerDTO();
 }

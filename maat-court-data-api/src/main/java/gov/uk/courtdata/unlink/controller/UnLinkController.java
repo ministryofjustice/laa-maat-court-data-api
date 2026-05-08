@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,15 +32,34 @@ public class UnLinkController {
 
     @PostMapping("/validate")
     @Operation(description = "Validate unlinking case details.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class))),
-            @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDTO.class)))
-    })
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "200", content = @Content),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request.",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDTO.class))),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Server Error.",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDTO.class)))
+            })
     public ResponseEntity<Object> validate(
             @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId,
-            @Parameter(description = "Case details data", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Unlink.class))) @RequestBody Unlink unlink) {
+            @Parameter(
+                            description = "Case details data",
+                            content =
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = Unlink.class)))
+                    @RequestBody
+                    Unlink unlink) {
         LoggingData.MAAT_ID.putInMDC(unlink.getMaatId());
 
         log.info("LAA Status Update Request received");
@@ -48,4 +68,3 @@ public class UnLinkController {
         return ResponseEntity.ok().build();
     }
 }
-

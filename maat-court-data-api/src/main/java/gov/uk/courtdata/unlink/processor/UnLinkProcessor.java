@@ -10,16 +10,16 @@ import gov.uk.courtdata.unlink.impl.UnLinkImpl;
 import gov.uk.courtdata.unlink.validator.UnLinkValidationProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class UnLinkProcessor {
-
 
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
     private final RepOrderCPDataRepository repOrderCPDataRepository;
@@ -38,8 +38,7 @@ public class UnLinkProcessor {
 
     private void mapWqLinkRegister(UnlinkModel unlinkModel) {
         Integer maatId = unlinkModel.getUnlink().getMaatId();
-        List<WqLinkRegisterEntity> wqLinkRegisterEntityList = wqLinkRegisterRepository
-                .findBymaatId(maatId);
+        List<WqLinkRegisterEntity> wqLinkRegisterEntityList = wqLinkRegisterRepository.findBymaatId(maatId);
 
         unlinkValidator.validateWQLinkRegister(wqLinkRegisterEntityList, maatId);
 
@@ -51,6 +50,5 @@ public class UnLinkProcessor {
         Optional<RepOrderCPDataEntity> repOrderCPDataEntity =
                 repOrderCPDataRepository.findByrepOrderId(unlink.getMaatId());
         unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity.orElse(null));
-
     }
 }

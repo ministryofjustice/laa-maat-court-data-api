@@ -11,9 +11,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class ThirdPartyTypeDTO extends GenericDTO {
 
-
-	private String			code;		
-	private String			description;
-
+    private String code;
+    private String description;
 }
-

@@ -26,6 +26,7 @@ public class CorrespondenceDTO extends GenericDTO {
 
     @Builder.Default
     private Collection<PrintDateDTO> printDateDTOs = new ArrayList<>();
+
     @Builder.Default
     private CorrespondenceTypeDTO correspondenceType = new CorrespondenceTypeDTO();
 }

@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 public class ConcorContributionResponse {
     private Integer concorContributionId;
+
     @ToString.Exclude
     private String xmlContent;
 }

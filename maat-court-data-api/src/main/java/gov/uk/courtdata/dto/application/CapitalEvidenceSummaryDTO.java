@@ -13,13 +13,12 @@ import java.util.Date;
 @NoArgsConstructor
 public class CapitalEvidenceSummaryDTO extends GenericDTO {
 
-	private Date	evidenceDueDate;
-	private Date	evidenceReceivedDate;
-	private Date	capitalAllowWithheldDate;
-	private Date	capitalAllowReinstatedDate;
-	private Date	firstReminderDate;
-	private Date	secondReminderDate;
-	private Double	capitalAllowance;
-	private String	capitalNote;
-
+    private Date evidenceDueDate;
+    private Date evidenceReceivedDate;
+    private Date capitalAllowWithheldDate;
+    private Date capitalAllowReinstatedDate;
+    private Date firstReminderDate;
+    private Date secondReminderDate;
+    private Double capitalAllowance;
+    private String capitalNote;
 }

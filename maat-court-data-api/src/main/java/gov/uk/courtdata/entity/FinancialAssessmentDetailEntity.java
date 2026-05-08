@@ -1,17 +1,19 @@
 package gov.uk.courtdata.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import gov.uk.courtdata.enums.Frequency;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Getter
 @Setter
@@ -24,7 +26,11 @@ import java.util.Objects;
 public class FinancialAssessmentDetailEntity {
 
     @Id
-    @SequenceGenerator(name = "fin_ass_det_seq", sequenceName = "S_FIN_ASS_DET_ID", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "fin_ass_det_seq",
+            sequenceName = "S_FIN_ASS_DET_ID",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fin_ass_det_seq")
     @Column(name = "ID")
     private Integer id;
@@ -73,11 +79,11 @@ public class FinancialAssessmentDetailEntity {
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         FinancialAssessmentDetailEntity that = (FinancialAssessmentDetailEntity) o;
 
-        return Objects.equals(getCriteriaDetailId(), that.getCriteriaDetailId()) &&
-                Objects.equals(getApplicantAmount(), that.getApplicantAmount()) &&
-                Objects.equals(getApplicantFrequency(), that.getApplicantFrequency()) &&
-                Objects.equals(getPartnerAmount(), that.getPartnerAmount()) &&
-                Objects.equals(getPartnerFrequency(), that.getPartnerFrequency());
+        return Objects.equals(getCriteriaDetailId(), that.getCriteriaDetailId())
+                && Objects.equals(getApplicantAmount(), that.getApplicantAmount())
+                && Objects.equals(getApplicantFrequency(), that.getApplicantFrequency())
+                && Objects.equals(getPartnerAmount(), that.getPartnerAmount())
+                && Objects.equals(getPartnerFrequency(), that.getPartnerFrequency());
     }
 
     @Override

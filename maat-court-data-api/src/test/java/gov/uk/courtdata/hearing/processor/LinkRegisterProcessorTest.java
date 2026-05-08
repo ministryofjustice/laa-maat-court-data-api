@@ -1,12 +1,19 @@
 package gov.uk.courtdata.hearing.processor;
 
-import com.google.gson.Gson;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
+
+import java.util.Arrays;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,12 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.google.gson.Gson;
 
 @ExtendWith(MockitoExtension.class)
 public class LinkRegisterProcessorTest {
@@ -35,7 +37,6 @@ public class LinkRegisterProcessorTest {
     @Captor
     ArgumentCaptor<WqLinkRegisterEntity> wqLinkRegisterEntityArgumentCaptor;
 
-
     @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -48,16 +49,13 @@ public class LinkRegisterProcessorTest {
         HearingDTO hearingDTO = testModelDataBuilder.getHearingDTOForCCOutcome();
 
         when(wqLinkRegisterRepository.findBymaatId(any()))
-                .thenReturn(Arrays
-                        .asList(WqLinkRegisterEntity.
-                                builder()
-                                .maatId(11211)
-                                .build()
-                        ));
+                .thenReturn(Arrays.asList(
+                        WqLinkRegisterEntity.builder().maatId(11211).build()));
 
         linkRegisterProcessor.process(hearingDTO);
         verify(wqLinkRegisterRepository).save(wqLinkRegisterEntityArgumentCaptor.capture());
-        assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getProsecutionConcluded()).isEqualTo("true");
+        assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getProsecutionConcluded())
+                .isEqualTo("true");
     }
 
     @Test
@@ -65,7 +63,7 @@ public class LinkRegisterProcessorTest {
         Assertions.assertThrows(MAATCourtDataException.class, () -> {
             HearingDTO hearingDTO = testModelDataBuilder.getHearingDTOForCCOutcome();
 
-            //when
+            // when
             linkRegisterProcessor.process(hearingDTO);
             verify(wqLinkRegisterRepository).save(wqLinkRegisterEntityArgumentCaptor.capture());
         });

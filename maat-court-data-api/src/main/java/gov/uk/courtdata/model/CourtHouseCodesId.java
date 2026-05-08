@@ -13,5 +13,4 @@ public class CourtHouseCodesId implements Serializable {
     private String code;
 
     private LocalDateTime effectiveDateFrom;
-
 }

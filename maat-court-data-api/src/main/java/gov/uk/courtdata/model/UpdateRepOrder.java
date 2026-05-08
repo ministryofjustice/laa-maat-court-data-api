@@ -16,8 +16,10 @@ import java.time.LocalDateTime;
 public class UpdateRepOrder {
 
     private Integer repId;
+
     @NotNull
     private String caseId;
+
     private String iojResult;
     private String catyCaseType;
     private String appealTypeCode;
@@ -44,10 +46,13 @@ public class UpdateRepOrder {
     private Integer preferredPaymentDay;
     private String sortCode;
     private Boolean isSendToCCLF;
+
     @NotNull
     private Integer areaId;
+
     @NotNull
     private Integer cmuId;
+
     private Boolean isCaseTransferred;
     private Boolean isBenchWarrantIssued;
     private LocalDate appealSentenceOrderChangedDate;
@@ -65,8 +70,10 @@ public class UpdateRepOrder {
     private String capitalNote;
     private Integer capitalAllowance;
     private Boolean isCourtCustody;
+
     @NotNull
     private LocalDate dateReceived;
+
     private LocalDate dateStatusDue;
     private LocalDate dateStatusSet;
     private LocalDate decisionDate;

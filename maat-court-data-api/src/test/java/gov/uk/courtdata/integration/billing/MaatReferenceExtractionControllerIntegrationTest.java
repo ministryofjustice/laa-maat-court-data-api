@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,22 +21,21 @@ public class MaatReferenceExtractionControllerIntegrationTest extends MockMvcInt
 
     @Autowired
     private TestEntityDataBuilder testEntityDataBuilder;
-    
+
     @Test
     void givenAValidRepOrder_whenPopulateMaatReferencesToExtract_thenSuccessResponseIsReturned() throws Exception {
         repos.repOrder.saveAndFlush(testEntityDataBuilder.getPopulatedRepOrderToSendToCclf());
-        
-        assertThat(runSuccessScenario(post(ENDPOINT_URL)).getResponse().getStatus()).isEqualTo(200);
+
+        assertThat(runSuccessScenario(post(ENDPOINT_URL)).getResponse().getStatus())
+                .isEqualTo(200);
         assertEquals(1, repos.maatReference.count());
     }
-    
+
     @Test
     void givenRecordsAlreadyExist_whenPopulateMaatReferencesToExtract_thenErrorResponseIsReturned() throws Exception {
         repos.maatReference.saveAndFlush(testEntityDataBuilder.getMaatReferenceEntity());
-        
-        assertTrue(
-            runServerErrorScenario("The MAAT_REFS_TO_EXTRACT table already has entries",
-                post(ENDPOINT_URL)));
+
+        assertTrue(runServerErrorScenario("The MAAT_REFS_TO_EXTRACT table already has entries", post(ENDPOINT_URL)));
     }
 
     @Test
@@ -43,8 +43,8 @@ public class MaatReferenceExtractionControllerIntegrationTest extends MockMvcInt
         repos.maatReference.saveAndFlush(testEntityDataBuilder.getMaatReferenceEntity());
 
         assertEquals(1, repos.maatReference.count());
-        assertThat(runSuccessScenario(delete(ENDPOINT_URL)).getResponse().getStatus()).isEqualTo(200);
+        assertThat(runSuccessScenario(delete(ENDPOINT_URL)).getResponse().getStatus())
+                .isEqualTo(200);
         assertEquals(0, repos.maatReference.count());
     }
-
 }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Maat Reference Extraction", description = "Rest API for extracting MAAT references to send to billing teams")
+@Tag(
+        name = "Maat Reference Extraction",
+        description = "Rest API for extracting MAAT references to send to billing teams")
 @RequestMapping("${api-endpoints.billing-domain}/maat-references")
 public class MaatReferenceExtractionController {
-    
+
     private final MaatReferenceService maatReferenceService;
-    
+
     @PostMapping
     @Operation(description = "Create MAAT reference records")
     @StandardApiResponseCodes

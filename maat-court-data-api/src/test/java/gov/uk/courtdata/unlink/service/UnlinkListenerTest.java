@@ -1,10 +1,14 @@
 package gov.uk.courtdata.unlink.service;
 
-import com.google.gson.Gson;
+import static org.mockito.Mockito.*;
+
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.service.QueueMessageLogService;
 import gov.uk.courtdata.unlink.processor.UnLinkProcessor;
+
+import java.util.HashMap;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,9 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.MessageHeaders;
 
-import java.util.HashMap;
-
-import static org.mockito.Mockito.*;
+import com.google.gson.Gson;
 
 @ExtendWith(MockitoExtension.class)
 public class UnlinkListenerTest {
@@ -35,14 +37,11 @@ public class UnlinkListenerTest {
     public void givenSqsIsReceived_whenUnlinkIsInvoked_thenUnlinkCase() {
 
         String message = "this is a SQS payload in JSON format";
-        Unlink unlink = Unlink.builder()
-                .maatId(1111111)
-                .build();
+        Unlink unlink = Unlink.builder().maatId(1111111).build();
         when(gson.fromJson(message, Unlink.class)).thenReturn(unlink);
         unlinkListener.receive(message, new MessageHeaders(new HashMap<>()));
 
         verify(unLinkProcessor).process(any());
         verify(queueMessageLogService).createLog(MessageType.UNLINK, message);
-
     }
 }

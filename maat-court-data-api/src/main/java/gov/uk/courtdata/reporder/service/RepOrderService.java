@@ -1,8 +1,8 @@
 package gov.uk.courtdata.reporder.service;
 
 import gov.uk.courtdata.dto.AssessorDetails;
-import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
@@ -17,15 +17,16 @@ import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import gov.uk.courtdata.repository.WqLinkRegisterRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,8 +68,8 @@ public class RepOrderService {
     @Transactional
     public RepOrderDTO updateDateCompleted(final UpdateAppDateCompleted updateAppDateCompleted) {
         log.info("update app date completed - Transaction Processing - Start");
-        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderImpl
-                .updateAppDateCompleted(updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted()));
+        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderImpl.updateAppDateCompleted(
+                updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted()));
     }
 
     @Transactional
@@ -92,16 +93,18 @@ public class RepOrderService {
     @Transactional
     public RepOrderDTO update(Integer repId, Map<String, Object> repOrder) {
         log.info("RepOrderService::update - Start");
-        RepOrderEntity currentRepOrder = repOrderRepository.findById(repId)
-            .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("Rep Order not found for id %d", repId)));
+        RepOrderEntity currentRepOrder = repOrderRepository
+                .findById(repId)
+                .orElseThrow(() ->
+                        new RequestedObjectNotFoundException(String.format("Rep Order not found for id %d", repId)));
 
         ReflectionHelper.updateEntityFromMap(currentRepOrder, repOrder);
         return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderRepository.save(currentRepOrder));
     }
 
     @Transactional(readOnly = true)
-    public boolean exists(Integer repId){
-        if(repId == null){
+    public boolean exists(Integer repId) {
+        if (repId == null) {
             return false;
         }
         log.info("Retrieve rep Order count for repId: {}", repId);
@@ -125,11 +128,11 @@ public class RepOrderService {
         return repOrderMapper.createIOJAssessorDetails(repOrderOptional.get());
     }
 
-    public Set<Integer> findEligibleForFdcDelayedPickup(int delayPeriod, LocalDate dateReceived, int numRecords){
+    public Set<Integer> findEligibleForFdcDelayedPickup(int delayPeriod, LocalDate dateReceived, int numRecords) {
         return repOrderImpl.findEligibleForFdcDelayedPickup(delayPeriod, dateReceived, numRecords);
     }
 
-    public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
+    public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords) {
         return repOrderImpl.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
     }
 

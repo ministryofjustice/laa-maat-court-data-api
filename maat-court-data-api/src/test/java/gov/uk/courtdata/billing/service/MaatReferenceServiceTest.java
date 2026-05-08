@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.billing.repository.MaatReferenceRepository;
 import gov.uk.courtdata.exception.RecordsAlreadyExistException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,9 +20,9 @@ class MaatReferenceServiceTest {
 
     @Mock
     private MaatReferenceRepository maatReferenceRepository;
-    
+
     private MaatReferenceService maatReferenceService;
-    
+
     @BeforeEach
     void setUp() {
         maatReferenceService = new MaatReferenceService(maatReferenceRepository);
@@ -33,15 +34,14 @@ class MaatReferenceServiceTest {
         verify(maatReferenceRepository, atLeastOnce()).count();
         verify(maatReferenceRepository, atLeastOnce()).populateMaatReferences();
     }
-    
+
     @Test
     void givenEntriesAlreadyExist_whenPopulateTableInvoked_thenThrowAnException() {
         when(maatReferenceRepository.count()).thenReturn(10L);
 
-        assertThrows(RecordsAlreadyExistException.class,
-            () -> maatReferenceService.populateTable());
+        assertThrows(RecordsAlreadyExistException.class, () -> maatReferenceService.populateTable());
     }
-    
+
     @Test
     void givenNoInput_whenDeleteMaatReferencesInvoked_thenDeleteIsSuccessful() {
         maatReferenceService.deleteMaatReferences();
@@ -51,7 +51,7 @@ class MaatReferenceServiceTest {
     @Test
     void givenARepositoryException_whenDeleteMaatReferencesInvoked_thenThrowAnException() {
         doThrow(new RuntimeException()).when(maatReferenceRepository).deleteMaatReferences();
-        
+
         assertThrows(RuntimeException.class, () -> {
             maatReferenceService.deleteMaatReferences();
         });

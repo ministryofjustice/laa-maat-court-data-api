@@ -1,27 +1,28 @@
 package gov.uk.courtdata.dces.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.CollectionAssert.assertThatCollection;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapperImpl;
 import gov.uk.courtdata.model.id.ContributionFileErrorsId;
 import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.CollectionAssert.assertThatCollection;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ContributionFileServiceTest {
@@ -75,7 +76,8 @@ class ContributionFileServiceTest {
     @Test
     void givenIncorrectArguments_whenGetAllContributionFileErrorIsInvoked_thenReturnIsEmpty() {
         final int incorrectFileId = 666;
-        when(contributionFileErrorRepository.findByContributionFileId(incorrectFileId)).thenReturn(Collections.emptyList());
+        when(contributionFileErrorRepository.findByContributionFileId(incorrectFileId))
+                .thenReturn(Collections.emptyList());
 
         final var list = contributionFileService.getAllContributionFileError(incorrectFileId);
         verify(contributionFileErrorRepository).findByContributionFileId(incorrectFileId);
@@ -104,7 +106,8 @@ class ContributionFileServiceTest {
         final var compositeId = new ContributionFileErrorsId(incorrectFileId, incorrectContribtutionId);
         when(contributionFileErrorRepository.findById(eq(compositeId))).thenReturn(Optional.empty());
 
-        final var optional = contributionFileService.getContributionFileError(incorrectFileId, incorrectContribtutionId);
+        final var optional =
+                contributionFileService.getContributionFileError(incorrectFileId, incorrectContribtutionId);
         verify(contributionFileErrorRepository).findById(eq(compositeId));
         assertThat(optional).isEmpty();
     }

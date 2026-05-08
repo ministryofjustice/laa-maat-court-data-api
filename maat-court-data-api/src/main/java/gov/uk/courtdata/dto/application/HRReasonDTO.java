@@ -12,5 +12,4 @@ public class HRReasonDTO {
     private Long id;
     private String reason;
     private Boolean accepted;
-
 }

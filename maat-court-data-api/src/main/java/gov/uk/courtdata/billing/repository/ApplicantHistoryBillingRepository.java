@@ -1,6 +1,9 @@
 package gov.uk.courtdata.billing.repository;
 
 import gov.uk.courtdata.billing.entity.ApplicantHistoryBillingEntity;
+
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -8,12 +11,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Repository
 public interface ApplicantHistoryBillingRepository extends JpaRepository<ApplicantHistoryBillingEntity, Integer> {
-    @Query(value = """
-                        SELECT 
+    @Query(
+            value =
+                    """
+                        SELECT
                             A1.ID,
                             A1.APPL_ID,
                             A1.AS_AT_DATE,
@@ -32,7 +35,7 @@ public interface ApplicantHistoryBillingRepository extends JpaRepository<Applica
                         INNER JOIN TOGDATA.MAAT_REFS_TO_EXTRACT M
                         ON A1.ID = M.APHI_ID
                         UNION
-                        SELECT 
+                        SELECT
                             A2.ID,
                             A2.APPL_ID,
                             A2.AS_AT_DATE,
@@ -49,20 +52,24 @@ public interface ApplicantHistoryBillingRepository extends JpaRepository<Applica
                             A2.USER_MODIFIED
                         FROM TOGDATA.APPLICANT_HISTORY A2
                         WHERE A2.SEND_TO_CCLF = 'Y'
-                        """, nativeQuery = true)
+                        """,
+            nativeQuery = true)
     List<ApplicantHistoryBillingEntity> extractApplicantHistoryBilling();
 
     @Modifying
     @Transactional
-    @Query(value = """
+    @Query(
+            value =
+                    """
                         UPDATE
-                            TOGDATA.APPLICANT_HISTORY 
-                        SET 
-                            SEND_TO_CCLF = null, 
-                            DATE_MODIFIED = CURRENT_DATE, 
+                            TOGDATA.APPLICANT_HISTORY
+                        SET
+                            SEND_TO_CCLF = null,
+                            DATE_MODIFIED = CURRENT_DATE,
                             USER_MODIFIED = :userModified
-                        WHERE 
+                        WHERE
                             ID IN :ids
-                        """, nativeQuery = true)
+                        """,
+            nativeQuery = true)
     int resetApplicantHistoryBilling(@Param("userModified") String userModified, @Param("ids") List<Integer> ids);
 }

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.dto.application;
 
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,5 +14,4 @@ import java.util.Date;
 public class JobSeekerDTO extends GenericDTO {
     private Boolean isJobSeeker;
     private Date lastSignedOn;
-
 }

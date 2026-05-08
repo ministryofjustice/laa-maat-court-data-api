@@ -1,6 +1,10 @@
 package gov.uk.courtdata.reporder.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
 import gov.uk.courtdata.exception.ValidationException;
@@ -8,6 +12,10 @@ import gov.uk.courtdata.model.RepOrderCCOutcome;
 import gov.uk.courtdata.reporder.service.CCOutcomeService;
 import gov.uk.courtdata.reporder.validator.CCOutComeValidationProcessor;
 import gov.uk.courtdata.util.ApiHeaders;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +26,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(CCOutcomeController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -44,9 +46,7 @@ class CCOutcomeControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     private static final Integer INVALID_REP_ID = -1;
-
 
     @Test
     void givenIncorrectParameters_whenCreateIsInvoked_thenErrorIsThrown() throws Exception {
@@ -59,7 +59,8 @@ class CCOutcomeControllerTest {
     void givenAValidParameters_whenCreateIsInvoked_thenCreateIsSuccess() throws Exception {
         when(validator.validate(any(RepOrderCCOutcome.class))).thenReturn(Optional.empty());
         when(service.create(any())).thenReturn(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
-        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL).content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutcome()))
+        mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutcome()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -77,7 +78,8 @@ class CCOutcomeControllerTest {
     void givenACorrectParameters_whenUpdateIsInvoked_thenShouldSuccess() throws Exception {
         when(validator.validate(any(RepOrderCCOutcome.class))).thenReturn(Optional.empty());
         when(service.update(any())).thenReturn(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1));
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutcome()))
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderCCOutcome()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -88,7 +90,8 @@ class CCOutcomeControllerTest {
     void givenIncorrectParameters_whenFindByRepIdIsInvoked_thenErrorIsThrown() throws Exception {
         when(validator.validate(anyInt())).thenThrow(new ValidationException());
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format("%s/reporder/%d", ENDPOINT_URL, INVALID_REP_ID))).andExpect(status().is4xxClientError());
+        mvc.perform(MockMvcRequestBuilders.get(String.format("%s/reporder/%d", ENDPOINT_URL, INVALID_REP_ID)))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -131,7 +134,6 @@ class CCOutcomeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(1));
     }
-
 
     @Test
     void testDeleteCrownCourtOutcomeWhenRepIdIsNull() throws Exception {

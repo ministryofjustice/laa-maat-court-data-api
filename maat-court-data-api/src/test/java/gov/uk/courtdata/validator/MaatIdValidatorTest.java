@@ -9,7 +9,9 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import gov.uk.courtdata.repository.RepOrderRepository;
+
 import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,25 +31,23 @@ public class MaatIdValidatorTest {
 
     @Test
     public void testWhenMaatIdIsNull_throwsException() {
-        ValidationException validationException = assertThrows(ValidationException.class,
-                () -> maatIdValidator.validate(null));
-        assertThat(validationException.getMessage()).isEqualTo(
-            "MAAT/REP ID is required, found [null]");
+        ValidationException validationException =
+                assertThrows(ValidationException.class, () -> maatIdValidator.validate(null));
+        assertThat(validationException.getMessage()).isEqualTo("MAAT/REP ID is required, found [null]");
     }
 
     @Test
     public void testWhenMaatIdIsMissingFromPayload_throwsException() {
-        ValidationException validationException = assertThrows(ValidationException.class,
-                () -> maatIdValidator.validate(0));
-        assertThat(validationException.getMessage()).isEqualTo(
-            "MAAT/REP ID is required, found [0]");
+        ValidationException validationException =
+                assertThrows(ValidationException.class, () -> maatIdValidator.validate(0));
+        assertThat(validationException.getMessage()).isEqualTo("MAAT/REP ID is required, found [0]");
     }
 
     @Test
     public void testWhenMaatIsNotNullButNotOnRepOrder_validationPasses() {
         when(repOrderRepository.findById(1000)).thenReturn(Optional.empty());
-        ValidationException validationException = assertThrows(ValidationException.class,
-                () -> maatIdValidator.validate(1000));
+        ValidationException validationException =
+                assertThrows(ValidationException.class, () -> maatIdValidator.validate(1000));
         assertThat(validationException.getMessage()).isEqualTo("MAAT/REP ID [1000] is invalid");
     }
 
@@ -58,5 +58,4 @@ public class MaatIdValidatorTest {
         Optional<Void> result = maatIdValidator.validate(1000);
         assertThat(result).isNotPresent();
     }
-
 }

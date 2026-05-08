@@ -1,20 +1,21 @@
 package gov.uk.courtdata.assessment.validator;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.*;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessment;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class FinancialAssessmentValidationProcessorTest {
@@ -37,7 +38,8 @@ public class FinancialAssessmentValidationProcessorTest {
 
     @Test
     public void testFinancialAssessmentValidationProcessor_whenAssessmentIsNull_thenThrowsException() {
-        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
+        ValidationException validationException = Assertions.assertThrows(
+                ValidationException.class,
                 () -> financialAssessmentValidationProcessor.validate((FinancialAssessment) null));
         assertThat(validationException.getMessage()).isEqualTo("Financial Assessment Request is empty");
     }
@@ -46,8 +48,8 @@ public class FinancialAssessmentValidationProcessorTest {
     public void testFinancialAssessmentValidationProcessor_whenRepIdIsNull_thenThrowsException() {
         FinancialAssessment assessment = TestModelDataBuilder.getCreateFinancialAssessment();
         assessment.setRepId(null);
-        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
-                () -> financialAssessmentValidationProcessor.validate(assessment));
+        ValidationException validationException = Assertions.assertThrows(
+                ValidationException.class, () -> financialAssessmentValidationProcessor.validate(assessment));
         assertThat(validationException.getMessage()).isEqualTo("Rep Order ID is required");
     }
 
@@ -55,8 +57,8 @@ public class FinancialAssessmentValidationProcessorTest {
     public void testFinancialAssessmentValidationProcessor_whenInitialAscrIdIsNull_thenThrowsException() {
         FinancialAssessment assessment = TestModelDataBuilder.getCreateFinancialAssessment();
         assessment.setInitialAscrId(null);
-        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
-                () -> financialAssessmentValidationProcessor.validate(assessment));
+        ValidationException validationException = Assertions.assertThrows(
+                ValidationException.class, () -> financialAssessmentValidationProcessor.validate(assessment));
         assertThat(validationException.getMessage()).isEqualTo("Assessment Criteria ID is required");
     }
 
@@ -64,15 +66,16 @@ public class FinancialAssessmentValidationProcessorTest {
     public void testFinancialAssessmentValidationProcessor_whenCmuIdIsNull_thenThrowsException() {
         FinancialAssessment assessment = TestModelDataBuilder.getCreateFinancialAssessment();
         assessment.setCmuId(null);
-        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
-                () -> financialAssessmentValidationProcessor.validate(assessment));
+        ValidationException validationException = Assertions.assertThrows(
+                ValidationException.class, () -> financialAssessmentValidationProcessor.validate(assessment));
         assertThat(validationException.getMessage()).isEqualTo("Case management unit ID is required");
     }
 
     @Test
     public void testFinancialAssessmentValidationProcessor_whenRequiredFieldsPresent_thenValidationPasses() {
         FinancialAssessment assessment = TestModelDataBuilder.getCreateFinancialAssessment();
-        when(createAssessmentValidator.validate(any(CreateFinancialAssessment.class))).thenReturn(Optional.empty());
+        when(createAssessmentValidator.validate(any(CreateFinancialAssessment.class)))
+                .thenReturn(Optional.empty());
         assertThat(financialAssessmentValidationProcessor.validate(assessment)).isEqualTo(Optional.empty());
     }
 }

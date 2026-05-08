@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,9 +46,8 @@ public class FdcItemsController {
     @DeleteMapping(value = "/fdc-items/fdc-id/{fdcId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Deletes the fdc items associated with the fdc id.")
     public ResponseEntity<Long> deleteFdcItems(@NotNull @PathVariable final Integer fdcId) {
-            log.info("Delete FdcItems {}", fdcId);
-            long count = fdcContributionsService.deleteFdcItems(fdcId);
-            return ResponseEntity.ok(count);
+        log.info("Delete FdcItems {}", fdcId);
+        long count = fdcContributionsService.deleteFdcItems(fdcId);
+        return ResponseEntity.ok(count);
     }
-
 }

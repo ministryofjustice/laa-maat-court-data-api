@@ -9,12 +9,8 @@ import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-
 
 /**
  * This class is the core of any type conversion for dao being moved between oracleTypes and
@@ -29,7 +25,6 @@ import java.util.Date;
  * @author SWAN-D
  */
 public class ConvertorHelper {
-
 
     /**
      * Converts a String from the oracleType to the java type.
@@ -64,9 +59,9 @@ public class ConvertorHelper {
      * <br>
      * @param booleanString
      * @return public  boolean toBoolean( String booleanString )
-    {
-    return ( booleanString != null )?  booleanString.equalsIgnoreCase( "Y" ) : false;
-    }
+     * {
+     * return ( booleanString != null )?  booleanString.equalsIgnoreCase( "Y" ) : false;
+     * }
      */
 
     /**
@@ -154,7 +149,7 @@ public class ConvertorHelper {
      */
     public Integer toInteger(BigDecimal number) {
 
-        return (number != null) ?  number.intValue() : null;
+        return (number != null) ? number.intValue() : null;
     }
 
     /**
@@ -195,7 +190,7 @@ public class ConvertorHelper {
         // BigDecimal value of  0.1000000000000000055511151231257827021181583404541015625
         // However when the String based constructor is used:
         // BigDecimal value of  0.1
-        //return (number != null)?  new BigDecimal( number ) : null;
+        // return (number != null)?  new BigDecimal( number ) : null;
         // Gjl ... sir150954... investigation.
 
         return (number != null) ? new BigDecimal(number.toString()) : null;
@@ -211,7 +206,6 @@ public class ConvertorHelper {
 
     public Currency toCurrency(BigDecimal number) {
         return number != null ? new Currency(number.toString()) : null;
-
     }
 
     public Timestamp toTimestamp(ZonedDateTime localDateTime) {
@@ -235,9 +229,10 @@ public class ConvertorHelper {
     }
 
     public Timestamp toSysGenDate(SysGenDate date) {
-        return (date != null && date.getValue() != null) ? new Timestamp(date.getValue().getTime()) : null;
+        return (date != null && date.getValue() != null)
+                ? new Timestamp(date.getValue().getTime())
+                : null;
     }
-
 
     public java.sql.Date toSqlDate(Date date) {
         return (date != null) ? new java.sql.Date(date.getTime()) : null;
@@ -246,7 +241,6 @@ public class ConvertorHelper {
     public String toString(BigDecimal number) {
         return (number != null) ? number.toString() : null;
     }
-
 
     public String clobToString(Clob clob) throws SQLException {
         final int length = (int) clob.length();

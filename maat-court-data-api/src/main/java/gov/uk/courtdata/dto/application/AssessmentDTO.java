@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 public class AssessmentDTO {
     @Builder.Default
     private IOJAppealDTO iojAppeal = new IOJAppealDTO();
+
     @Builder.Default
     private FinancialAssessmentDTO financialAssessmentDTO = new FinancialAssessmentDTO();
 }

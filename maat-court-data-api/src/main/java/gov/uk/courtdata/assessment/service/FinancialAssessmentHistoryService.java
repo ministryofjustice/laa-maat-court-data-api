@@ -9,6 +9,7 @@ import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,8 @@ public class FinancialAssessmentHistoryService {
     @Transactional
     public void createAssessmentHistory(final int financialAssessmentId, final boolean fullAvailable) {
         log.info("Create Assessment History - Transaction Processing - Start");
-        FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.find(financialAssessmentId).get();
+        FinancialAssessmentEntity assessmentEntity =
+                financialAssessmentImpl.find(financialAssessmentId).get();
 
         FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO =
                 buildFinancialAssessmentHistoryDTO(assessmentEntity, fullAvailable);
@@ -34,8 +36,8 @@ public class FinancialAssessmentHistoryService {
         log.info("Create Assessment History - Transaction Processing - End");
     }
 
-    private FinancialAssessmentsHistoryDTO buildFinancialAssessmentHistoryDTO(final FinancialAssessmentEntity assessmentEntity,
-                                                                              final boolean fullAvailable) {
+    private FinancialAssessmentsHistoryDTO buildFinancialAssessmentHistoryDTO(
+            final FinancialAssessmentEntity assessmentEntity, final boolean fullAvailable) {
         log.info("Building financialAssessmentsHistoryDTO with financialAssessmentId: {}", assessmentEntity.getId());
         FinancialAssessmentsHistoryDTO financialAssessmentsHistoryDTO =
                 assessmentHistoryMapper.financialAssessmentEntityToFinancialAssessmentsHistoryDTO(assessmentEntity);

@@ -11,9 +11,9 @@ import gov.uk.courtdata.link.processor.SessionInfoProcessor;
 import gov.uk.courtdata.link.processor.SolicitorInfoProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Slf4j
 @Service
@@ -28,11 +28,10 @@ public class LaaStatusUpdateImpl {
     private final SessionInfoProcessor sessionInfoProcessor;
     private final UpdateOffenceInfoProcessor updateOffenceInfoProcessor;
 
-
     @Transactional(rollbackFor = MAATCourtDataException.class)
     public void execute(CourtDataDTO courtDataDTO) {
 
-        log.info("LAA Status Update - Transaction Processing - Start" );
+        log.info("LAA Status Update - Transaction Processing - Start");
         caseInfoProcessor.process(courtDataDTO);
         log.info("LAA Status Update - Case Details are processed");
         updateWqCoreInfoProcessor.process(courtDataDTO);
@@ -49,7 +48,4 @@ public class LaaStatusUpdateImpl {
         log.info("LAA Status Update - Offence Details are processed");
         log.info("LAA Status Update -  Transaction Processing - End");
     }
-
-
-
 }

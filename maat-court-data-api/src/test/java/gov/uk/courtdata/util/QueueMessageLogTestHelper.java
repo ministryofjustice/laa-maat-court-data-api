@@ -1,13 +1,14 @@
 package gov.uk.courtdata.util;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import org.assertj.core.api.SoftAssertions;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.assertj.core.api.SoftAssertions;
+import org.springframework.stereotype.Component;
 
 @Component
 public class QueueMessageLogTestHelper {
@@ -30,5 +31,4 @@ public class QueueMessageLogTestHelper {
             assertThat(messageLog.getMaatId()).isEqualTo(maatId);
         });
     }
-
 }

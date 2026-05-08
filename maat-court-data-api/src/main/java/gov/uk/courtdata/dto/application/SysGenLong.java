@@ -13,8 +13,7 @@ public class SysGenLong implements Comparable<SysGenLong>, Serializable {
     private static final long serialVersionUID = 9197249140954462724L;
     private Long value;
 
-    public SysGenLong() {
-    }
+    public SysGenLong() {}
 
     public SysGenLong(Long value) {
         setValue(value);
@@ -23,7 +22,7 @@ public class SysGenLong implements Comparable<SysGenLong>, Serializable {
     public boolean isEmpty() {
         return (value != null && value > 0) ? false : true;
     }
-    
+
     public Long getValue() {
         return value;
     }
@@ -38,12 +37,12 @@ public class SysGenLong implements Comparable<SysGenLong>, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         SysGenLong that = (SysGenLong) o;
 
-        if(value != null ? !value.equals(that.value) : that.value != null) return false;
+        if (value != null ? !value.equals(that.value) : that.value != null) return false;
 
         return true;
     }

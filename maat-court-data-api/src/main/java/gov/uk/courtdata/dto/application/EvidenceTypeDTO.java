@@ -11,7 +11,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class EvidenceTypeDTO extends GenericDTO {
 
-    private String evidence;        // key field
+    private String evidence; // key field
     private String description;
-
 }

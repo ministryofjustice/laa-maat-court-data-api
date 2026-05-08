@@ -13,5 +13,4 @@ public class UnlinkModel {
     private Integer txId;
     private WqLinkRegisterEntity wqLinkRegisterEntity;
     private RepOrderCPDataEntity repOrderCPDataEntity;
-
 }

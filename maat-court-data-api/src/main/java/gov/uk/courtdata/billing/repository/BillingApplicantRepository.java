@@ -1,15 +1,19 @@
 package gov.uk.courtdata.billing.repository;
 
-import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
 import gov.uk.courtdata.billing.entity.BillingApplicantEntity;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BillingApplicantRepository extends JpaRepository<BillingApplicantEntity, Integer> {
 
-    @Query(value = """
+    @Query(
+            value =
+                    """
             SELECT a1.id, a1.first_name, a1.last_name, a1.other_names, a1.dob, a1.gender,
             a1.ni_number, a1.foreign_id, a1.date_created, a1.user_created,
             a1.date_modified, a1.user_modified
@@ -25,4 +29,3 @@ public interface BillingApplicantRepository extends JpaRepository<BillingApplica
             nativeQuery = true)
     List<BillingApplicantEntity> findAllApplicantsForBilling();
 }
-

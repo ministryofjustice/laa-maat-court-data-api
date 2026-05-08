@@ -1,21 +1,22 @@
 package gov.uk.courtdata.reporder.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.entity.RepOrderEquityEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.reporder.repository.RepOrderEquityRepository;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
-import java.util.Optional;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(RepOrderEquityService.class)
@@ -25,10 +26,8 @@ public class RepOrderEquityServiceTest {
     private static final int NON_EXISTENT_ID = 888;
     private static final int REP_ID = 777;
 
-    private static final RepOrderEquityEntity REP_ORDER_EQUITY_ENTITY = RepOrderEquityEntity
-            .builder()
-            .id(ID)
-            .build();
+    private static final RepOrderEquityEntity REP_ORDER_EQUITY_ENTITY =
+            RepOrderEquityEntity.builder().id(ID).build();
 
     @MockitoBean
     private RepOrderEquityRepository mockRepOrderEquityRepository;
@@ -42,8 +41,7 @@ public class RepOrderEquityServiceTest {
 
     @Test
     void givenID_whenRetrieveCalled_thenReturnRepOrderEquity() {
-        Mockito.when(mockRepOrderEquityRepository.findById(ID))
-                .thenReturn(Optional.of(REP_ORDER_EQUITY_ENTITY));
+        Mockito.when(mockRepOrderEquityRepository.findById(ID)).thenReturn(Optional.of(REP_ORDER_EQUITY_ENTITY));
 
         RepOrderEquityEntity repOrderEquity = repOrderEquityService.retrieve(REP_ORDER_EQUITY_ENTITY.getId());
 
@@ -52,9 +50,8 @@ public class RepOrderEquityServiceTest {
 
     @Test
     void givenNonExistentID_whenRetrieveCalled_thenThrowException() {
-        assertThatThrownBy(
-                () -> repOrderEquityService.retrieve(NON_EXISTENT_ID)
-        ).isInstanceOf(RequestedObjectNotFoundException.class)
+        assertThatThrownBy(() -> repOrderEquityService.retrieve(NON_EXISTENT_ID))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessage("No Rep Order Equity found with ID: " + NON_EXISTENT_ID);
     }
 

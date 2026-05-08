@@ -18,5 +18,4 @@ public class PrintDateDTO extends GenericDTO {
     private Long id;
     private Long corrId;
     private Date printDate;
-
 }

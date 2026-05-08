@@ -16,5 +16,4 @@ public class AssessmentCriteriaChildWeightingDTO extends GenericDTO {
     private Integer lowerAge;
     private Integer upperAge;
     private Double weightingFactor;
-
 }

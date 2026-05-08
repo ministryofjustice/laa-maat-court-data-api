@@ -20,5 +20,4 @@ public class AppealDTO extends GenericDTO {
 
     @Builder.Default
     private AppealTypeDTO appealTypeDTO = new AppealTypeDTO();
-
 }

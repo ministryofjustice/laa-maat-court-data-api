@@ -1,6 +1,6 @@
 /*
  * MAATSystemException.java
- * 
+ *
  * ---------------------------------------------------------------------------------------------------------------------------------------------------------------------<p>
  * Version History<p>
  * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------<p>
@@ -11,19 +11,18 @@
  */
 package gov.uk.courtdata.validator;
 
-
 /**
  * Represents a system exception that requires the intervention of a system
  * administrator.
  */
 public class MAATSystemException extends SystemException {
 
- 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	/**
+    /**
      * Constructs an instance of <code>MAATApplicationException</code>.
      */
     public MAATSystemException() {
@@ -57,5 +56,4 @@ public class MAATSystemException extends SystemException {
     public MAATSystemException(String message, Throwable rootCause) {
         super(message, rootCause);
     }
-
 }

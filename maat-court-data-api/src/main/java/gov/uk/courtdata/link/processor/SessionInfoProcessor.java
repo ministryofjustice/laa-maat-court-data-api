@@ -1,18 +1,19 @@
 package gov.uk.courtdata.link.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.DEFAULT_HEARING_CUS_STATUS;
+import static gov.uk.courtdata.util.DateUtil.parse;
+
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.SessionEntity;
 import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.repository.SessionRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.DEFAULT_HEARING_CUS_STATUS;
-import static gov.uk.courtdata.util.DateUtil.parse;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -23,9 +24,8 @@ public class SessionInfoProcessor implements Process {
     @Override
     public void process(CourtDataDTO courtDataDTO) {
 
-        List<SessionEntity> sessionEntityList = courtDataDTO.getCaseDetails().getSessions()
-                .stream()
-                .filter(session  -> session.getDateOfHearing() != null)
+        List<SessionEntity> sessionEntityList = courtDataDTO.getCaseDetails().getSessions().stream()
+                .filter(session -> session.getDateOfHearing() != null)
                 .map(s -> buildSession(s, courtDataDTO))
                 .collect(Collectors.toList());
         sessionRepository.saveAll(sessionEntityList);
@@ -37,7 +37,10 @@ public class SessionInfoProcessor implements Process {
                 .txId(saveAndLinkModel.getTxId())
                 .dateOfHearing(LocalDate.parse(session.getDateOfHearing()))
                 .courtLocation(session.getCourtLocation())
-                .postHearingCustody(session.getPostHearingCustody() != null ? session.getPostHearingCustody() : DEFAULT_HEARING_CUS_STATUS)
+                .postHearingCustody(
+                        session.getPostHearingCustody() != null
+                                ? session.getPostHearingCustody()
+                                : DEFAULT_HEARING_CUS_STATUS)
                 .sessionValidateDate(parse(session.getSessionValidateDate()))
                 .build();
     }

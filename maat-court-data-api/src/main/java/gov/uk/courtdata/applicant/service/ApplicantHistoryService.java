@@ -8,10 +8,11 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.helper.ReflectionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -25,8 +26,7 @@ public class ApplicantHistoryService {
     public ApplicantHistoryDTO find(Integer id) {
         log.info("ApplicantHistoryService::find - Start");
         ApplicantHistoryEntity applicantHistoryEntity = getApplicantHistoryEntity(id);
-        return applicantHistoryMapper.
-                mapEntityToDTO(applicantHistoryEntity);
+        return applicantHistoryMapper.mapEntityToDTO(applicantHistoryEntity);
     }
 
     @Transactional
@@ -34,12 +34,14 @@ public class ApplicantHistoryService {
         log.info("ApplicantHistoryService::update - Start");
         Integer id = applicantHistoryDTO.getId();
         ApplicantHistoryEntity applicantHistoryEntity = getApplicantHistoryEntity(id);
-        applicantHistoryMapper.updateApplicantHistoryDTOToApplicantHistoryEntity(applicantHistoryDTO, applicantHistoryEntity);
+        applicantHistoryMapper.updateApplicantHistoryDTOToApplicantHistoryEntity(
+                applicantHistoryDTO, applicantHistoryEntity);
         return applicantHistoryMapper.mapEntityToDTO(applicantHistoryRepository.saveAndFlush(applicantHistoryEntity));
     }
 
     private ApplicantHistoryEntity getApplicantHistoryEntity(Integer id) {
-        ApplicantHistoryEntity applicantHistoryEntity = applicantHistoryRepository.findById(id).orElse(null);
+        ApplicantHistoryEntity applicantHistoryEntity =
+                applicantHistoryRepository.findById(id).orElse(null);
         if (applicantHistoryEntity == null) {
             throw new RequestedObjectNotFoundException(String.format("Applicant History not found for id %d", id));
         }
@@ -58,8 +60,10 @@ public class ApplicantHistoryService {
 
     public void update(Integer id, Map<String, Object> applicantHistory) {
         log.info("ApplicantHistoryService::update - Start");
-        ApplicantHistoryEntity currentApplicantHistory = applicantHistoryRepository.findById(id)
-                .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("Applicant History not found for id %d", id)));
+        ApplicantHistoryEntity currentApplicantHistory = applicantHistoryRepository
+                .findById(id)
+                .orElseThrow(() -> new RequestedObjectNotFoundException(
+                        String.format("Applicant History not found for id %d", id)));
 
         ReflectionHelper.updateEntityFromMap(currentApplicantHistory, applicantHistory);
         applicantHistoryRepository.save(currentApplicantHistory);

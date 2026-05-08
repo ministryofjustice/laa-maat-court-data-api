@@ -22,5 +22,4 @@ public class ContributionSummaryDTO extends GenericDTO {
     private String fileName;
     private Date dateFileSent;
     private Date dateFileReceived;
-
 }

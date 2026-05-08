@@ -1,9 +1,10 @@
 package gov.uk.courtdata.hardship.validator;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor

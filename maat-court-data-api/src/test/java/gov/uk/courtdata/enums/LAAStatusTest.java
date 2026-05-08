@@ -1,12 +1,10 @@
 package gov.uk.courtdata.enums;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 public class LAAStatusTest {
-
 
     @Test
     public void givenFBLAAStatus_failResultIsReturned() {
@@ -14,7 +12,6 @@ public class LAAStatusTest {
         boolean result = LAAStatus.isFailedLAAStatus("FB");
         assertThat(result).isTrue();
     }
-
 
     @Test
     public void givenFJLAAStatus_grantedResultIsReturned() {

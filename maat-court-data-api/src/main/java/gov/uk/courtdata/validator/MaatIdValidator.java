@@ -3,9 +3,11 @@ package gov.uk.courtdata.validator;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.RepOrderRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 @Slf4j

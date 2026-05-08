@@ -1,19 +1,21 @@
 package gov.uk.courtdata.hearing.processor;
 
-import com.google.gson.Gson;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WQDefendant;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQDefendantRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
+import com.google.gson.Gson;
 
 @ExtendWith(MockitoExtension.class)
 public class WQDefendantProcessorTest {
@@ -36,13 +38,13 @@ public class WQDefendantProcessorTest {
 
     @Test
     public void givenDefendantProcessor_whenProcessIsInvoke_thenSaveDefendant() {
-        //given
-        HearingDTO hearingDTO =  testModelDataBuilder.getHearingDTO();
+        // given
+        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
 
-        //when
+        // when
         wqDefendantProcessor.process(hearingDTO);
 
-        //then
+        // then
         verify(defendantRepository).save(wqDefendantArgumentCaptor.capture());
         assertThat(wqDefendantArgumentCaptor.getValue().getSurname()).isEqualTo("Smith");
         assertThat(wqDefendantArgumentCaptor.getValue().getPostCode()).isEqualTo("LU3 111");

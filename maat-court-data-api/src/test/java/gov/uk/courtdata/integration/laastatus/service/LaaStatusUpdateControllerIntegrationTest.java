@@ -11,11 +11,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.entity.CaseEntity;
@@ -47,11 +42,13 @@ import gov.uk.courtdata.model.laastatus.Organisation;
 import gov.uk.courtdata.model.laastatus.Relationships;
 import gov.uk.courtdata.model.laastatus.RepOrderData;
 import gov.uk.courtdata.util.QueueMessageLogTestHelper;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,6 +56,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
@@ -83,29 +86,28 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
     @Test
     public void givenNullMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
-        String testPayload = objectMapper
-                .writeValueAsString(CaseDetails.builder().laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID)).build());
-        assertTrue(
-            runServerErrorScenario("MAAT API Call failed - MAAT/REP ID is required, found [null]",
-                getPostRequest(testPayload)));
+        String testPayload = objectMapper.writeValueAsString(CaseDetails.builder()
+                .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
+                .build());
+        assertTrue(runServerErrorScenario(
+                "MAAT API Call failed - MAAT/REP ID is required, found [null]", getPostRequest(testPayload)));
     }
 
     @Test
-    public void givenAMissingMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
+    public void givenAMissingMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
+            throws Exception {
         String payloadMissingMaatId = String.format("{\"laaTransactionId\":\"%s\"}", LAA_TRANSACTION_ID);
-        assertTrue(
-            runServerErrorScenario("MAAT API Call failed - MAAT/REP ID is required, found [null]",
-                getPostRequest(payloadMissingMaatId)));
+        assertTrue(runServerErrorScenario(
+                "MAAT API Call failed - MAAT/REP ID is required, found [null]", getPostRequest(payloadMissingMaatId)));
     }
 
     @Test
-    public void givenAnInvalidMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
-        runValidationFailureScenario(
-            String.format("MAAT API Call failed - MAAT/REP ID [%d] is invalid", TEST_MAAT_ID));
+    public void givenAnInvalidMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
+            throws Exception {
+        runValidationFailureScenario(String.format("MAAT API Call failed - MAAT/REP ID [%d] is invalid", TEST_MAAT_ID));
         assertThat(wireMock().getAllServeEvents().isEmpty()).isTrue();
         verify(exactly(0), postRequestedFor(urlEqualTo("/oauth2/token")));
         verify(exactly(0), postRequestedFor(urlEqualTo("/api/internal/v1/representation_orders")));
-
     }
 
     @Test
@@ -116,33 +118,41 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     }
 
     @Test
-    public void givenAMaatIdWithMultipleLinks_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
+    public void givenAMaatIdWithMultipleLinks_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
+            throws Exception {
         createTestRepoOrder();
         createTestLinkData(2);
-        runValidationFailureScenario(String.format("MAAT API Call failed - Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
+        runValidationFailureScenario(
+                String.format("MAAT API Call failed - Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
         assertThat(wireMock().getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test
-    public void givenAMaatIdNoLinkedSolicitor_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
+    public void givenAMaatIdNoLinkedSolicitor_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
+            throws Exception {
         createTestRepoOrder();
         createTestLinkData(1);
-        runValidationFailureScenario(String.format("MAAT API Call failed - Solicitor not found for maatId %s", TEST_MAAT_ID));
+        runValidationFailureScenario(
+                String.format("MAAT API Call failed - Solicitor not found for maatId %s", TEST_MAAT_ID));
         assertThat(wireMock().getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test
-    public void givenAMaatIdWhereTheLinkedSolicitorHasNoAccountCode_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
+    public void
+            givenAMaatIdWhereTheLinkedSolicitorHasNoAccountCode_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
+                    throws Exception {
         createTestRepoOrder();
         createTestLinkData(1);
         createSolicitorData("");
         createDefendantData();
-        runValidationFailureScenario(String.format("MAAT API Call failed - Solicitor account code not available for maatId %s.", TEST_MAAT_ID));
+        runValidationFailureScenario(String.format(
+                "MAAT API Call failed - Solicitor account code not available for maatId %s.", TEST_MAAT_ID));
         assertThat(wireMock().getAllServeEvents().isEmpty()).isTrue();
     }
 
     @Test
-    public void givenAMaatIdWithNoLinkedDefendant_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
+    public void givenAMaatIdWithNoLinkedDefendant_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
+            throws Exception {
         createTestRepoOrder();
         createTestLinkData(1);
         createSolicitorData("test-account-code");
@@ -151,7 +161,9 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     }
 
     @Test
-    public void givenCaseDetailsWithOffencesContainingInvalidLaaStatuses_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
+    public void
+            givenCaseDetailsWithOffencesContainingInvalidLaaStatuses_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
+                    throws Exception {
         createTestRepoOrder();
         createTestLinkData(1);
         createSolicitorData("test-account-code");
@@ -159,26 +171,41 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
         List<String> expectedErrorMessages = new ArrayList<>();
 
-        Offence offenceOne = Offence.builder().asnSeq(TEST_ASN_SEQ).iojDecision(0).legalAidStatus("GR").build();
-        expectedErrorMessages.add(String.format("Cannot Grant Legal Aid on a Failed or Pending IOJ - See offence %s", offenceOne.getAsnSeq()));
+        Offence offenceOne = Offence.builder()
+                .asnSeq(TEST_ASN_SEQ)
+                .iojDecision(0)
+                .legalAidStatus("GR")
+                .build();
+        expectedErrorMessages.add(String.format(
+                "Cannot Grant Legal Aid on a Failed or Pending IOJ - See offence %s", offenceOne.getAsnSeq()));
 
-        Offence offenceTwo = Offence.builder().asnSeq(TEST_ASN_SEQ).iojDecision(1).legalAidStatus("FJ").build();
-        expectedErrorMessages.add(String.format("Cannot Pass IOJ and Fail Legal Aid on IOJ - See offence %s", offenceTwo.getAsnSeq()));
+        Offence offenceTwo = Offence.builder()
+                .asnSeq(TEST_ASN_SEQ)
+                .iojDecision(1)
+                .legalAidStatus("FJ")
+                .build();
+        expectedErrorMessages.add(
+                String.format("Cannot Pass IOJ and Fail Legal Aid on IOJ - See offence %s", offenceTwo.getAsnSeq()));
 
-        Offence offenceThree = Offence.builder().asnSeq(TEST_ASN_SEQ).iojDecision(3).legalAidStatus("GR").build();
-        expectedErrorMessages.add(String.format("Cannot Grant Legal Aid on a n/a IOJ - See offence %s", offenceThree.getAsnSeq()));
+        Offence offenceThree = Offence.builder()
+                .asnSeq(TEST_ASN_SEQ)
+                .iojDecision(3)
+                .legalAidStatus("GR")
+                .build();
+        expectedErrorMessages.add(
+                String.format("Cannot Grant Legal Aid on a n/a IOJ - See offence %s", offenceThree.getAsnSeq()));
 
-        Defendant defendantWithInvalidLaaStatuses = Defendant.builder().offences(List.of(offenceOne, offenceTwo, offenceThree)).build();
-        String testPayload = generateCaseDetailsJsonPayload(
-                CaseDetails.builder()
-                        .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
-                        .maatId(TEST_MAAT_ID)
-                        .defendant(defendantWithInvalidLaaStatuses)
-                        .build());
+        Defendant defendantWithInvalidLaaStatuses = Defendant.builder()
+                .offences(List.of(offenceOne, offenceTwo, offenceThree))
+                .build();
+        String testPayload = generateCaseDetailsJsonPayload(CaseDetails.builder()
+                .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
+                .maatId(TEST_MAAT_ID)
+                .defendant(defendantWithInvalidLaaStatuses)
+                .build());
 
         runSuccessScenario(
-                MessageCollection.builder().messages(expectedErrorMessages).build(),
-                getPostRequest(testPayload));
+                MessageCollection.builder().messages(expectedErrorMessages).build(), getPostRequest(testPayload));
 
         queueMessageLogTestHelper.assertQueueMessageLogged(testPayload, 1, LAA_TRANSACTION_ID, TEST_MAAT_ID);
     }
@@ -189,7 +216,8 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     }
 
     @Test
-    public void givenValidCaseDetailsWithCdaOnlySet_whenUpdateLAAStatusIsInvoked_onlyCdaUpdatesArePerformed() throws Exception {
+    public void givenValidCaseDetailsWithCdaOnlySet_whenUpdateLAAStatusIsInvoked_onlyCdaUpdatesArePerformed()
+            throws Exception {
         runValidCaseDetailsScenario(true);
     }
 
@@ -200,14 +228,24 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         DefendantMAATDataEntity defendantMAATDataEntity = createDefendantData();
         RepOrderCPDataEntity repOrderCPDataEntity = createRepOrderCPData();
 
-        Offence validOffence = Offence.builder().asnSeq(TEST_ASN_SEQ).iojDecision(1).legalAidStatus("AP").offenceCode("TH68001").build();
-        Defendant validDefendant = Defendant.builder().offences(List.of(validOffence)).forename("first-name").surname("last-name").build();
+        Offence validOffence = Offence.builder()
+                .asnSeq(TEST_ASN_SEQ)
+                .iojDecision(1)
+                .legalAidStatus("AP")
+                .offenceCode("TH68001")
+                .build();
+        Defendant validDefendant = Defendant.builder()
+                .offences(List.of(validOffence))
+                .forename("first-name")
+                .surname("last-name")
+                .build();
 
         List<Session> sessions = List.of(
                 Session.builder()
                         .courtLocation("Location 1")
                         .dateOfHearing(LocalDate.of(1, 1, 1).toString())
-                        .postHearingCustody("A").build(),
+                        .postHearingCustody("A")
+                        .build(),
                 Session.builder().courtLocation("Location 2").build());
 
         OffenceEntity offenceEntity = createOffenceData(
@@ -230,20 +268,22 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
         String testPayload = generateCaseDetailsJsonPayload(inputCaseDetails);
 
         runSuccessScenario(
-                MessageCollection.builder().messages(new ArrayList<>()).build(),
-                getPostRequest(testPayload));
+                MessageCollection.builder().messages(new ArrayList<>()).build(), getPostRequest(testPayload));
 
         queueMessageLogTestHelper.assertQueueMessageLogged(testPayload, 2, LAA_TRANSACTION_ID, TEST_MAAT_ID);
         assertCdaCalledCorrectly(inputCaseDetails, offenceEntity, solicitorMAATDataEntity, repOrderCPDataEntity);
 
         if (cdaOnly) assertMlaUpdatesNotPerformed(linkEntities.get(0));
         else
-            assertMlaUpdatesPerformedCorrectly(inputCaseDetails, linkEntities.get(0), solicitorMAATDataEntity, defendantMAATDataEntity);
+            assertMlaUpdatesPerformedCorrectly(
+                    inputCaseDetails, linkEntities.get(0), solicitorMAATDataEntity, defendantMAATDataEntity);
     }
 
     private void runValidationFailureScenario(String expectedErrorMessage) throws Exception {
-        String testPayload = generateCaseDetailsJsonPayload(
-                CaseDetails.builder().laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID)).maatId(TEST_MAAT_ID).build());
+        String testPayload = generateCaseDetailsJsonPayload(CaseDetails.builder()
+                .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
+                .maatId(TEST_MAAT_ID)
+                .build());
         assertTrue(runServerErrorScenario(expectedErrorMessage, getPostRequest(testPayload)));
         queueMessageLogTestHelper.assertQueueMessageLogged(testPayload, 1, LAA_TRANSACTION_ID, TEST_MAAT_ID);
     }
@@ -257,14 +297,16 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
         List<CaseEntity> createdCaseEntities = repos.caseRepository.findAll();
         List<WqCoreEntity> createdWqCoreEntities = repos.wqCore.findAll();
-        List<WqLinkRegisterEntity> wqLinkRegisterEntities = repos.wqLinkRegister.findBymaatId(
-            inputCaseDetails.getMaatId());
+        List<WqLinkRegisterEntity> wqLinkRegisterEntities =
+                repos.wqLinkRegister.findBymaatId(inputCaseDetails.getMaatId());
         List<SolicitorEntity> createdSolicitorEntities = repos.solicitor.findAll();
         List<DefendantEntity> createdDefendantEntities = repos.defendant.findAll();
         List<SessionEntity> createdSessionEntities = repos.session.findAll();
         Offence inputOffence = inputCaseDetails.getDefendant().getOffences().get(0);
         OffenceEntity offenceEntity = repos.offence.findAll().stream()
-                .filter(item -> item.getTxId() == expectedTxId).collect(Collectors.toList()).get(0);
+                .filter(item -> item.getTxId() == expectedTxId)
+                .collect(Collectors.toList())
+                .get(0);
 
         SoftAssertions.assertSoftly(softly -> {
             // Check case data.
@@ -276,7 +318,8 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
             assertThat(caseEntity.getInactive()).isEqualTo(inputCaseDetails.isActive() ? "N" : "Y");
             assertThat(caseEntity.getLibraCreationDate()).isNotNull();
             assertThat(caseEntity.getDocLanguage()).isEqualTo(inputCaseDetails.getDocLanguage());
-            assertThat(caseEntity.getProceedingId()).isEqualTo(wqLinkRegisterEntity.getProceedingId().intValue());
+            assertThat(caseEntity.getProceedingId())
+                    .isEqualTo(wqLinkRegisterEntity.getProceedingId().intValue());
             // Check work queue core data.
             assertThat(createdWqCoreEntities.size()).isEqualTo(1);
             WqCoreEntity wqCoreEntity = createdWqCoreEntities.get(0);
@@ -304,8 +347,10 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
             DefendantEntity defendantEntity = createdDefendantEntities.get(0);
             assertThat(defendantEntity.getTxId().intValue()).isEqualTo(expectedTxId);
             assertThat(defendantEntity.getCaseId()).isEqualTo(TEST_CASE_ID);
-            assertThat(defendantEntity.getForename()).isEqualTo(inputCaseDetails.getDefendant().getForename());
-            assertThat(defendantEntity.getSurname()).isEqualTo(inputCaseDetails.getDefendant().getSurname());
+            assertThat(defendantEntity.getForename())
+                    .isEqualTo(inputCaseDetails.getDefendant().getForename());
+            assertThat(defendantEntity.getSurname())
+                    .isEqualTo(inputCaseDetails.getDefendant().getSurname());
             assertThat(defendantEntity.getUseSol()).isEqualTo(defendantMAATDataEntity.getUseSol());
             // Check session data
             assertThat(createdSessionEntities.size()).isEqualTo(1);
@@ -313,7 +358,8 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
             assertThat(sessionEntity.getTxId().intValue()).isEqualTo(expectedTxId);
             assertThat(sessionEntity.getCaseId()).isEqualTo(TEST_CASE_ID);
             assertThat(sessionEntity.getDateOfHearing()).isNotNull();
-            assertThat(sessionEntity.getCourtLocation()).isEqualTo(inputCaseDetails.getSessions().get(0).getCourtLocation());
+            assertThat(sessionEntity.getCourtLocation())
+                    .isEqualTo(inputCaseDetails.getSessions().get(0).getCourtLocation());
             // Check offence data
             assertThat(offenceEntity.getTxId().intValue()).isEqualTo(expectedTxId);
             assertThat(offenceEntity.getCaseId()).isEqualTo(TEST_CASE_ID);
@@ -325,28 +371,26 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
     private void assertMlaUpdatesNotPerformed(WqLinkRegisterEntity initialWqLinkRegisterEntity) {
         SoftAssertions.assertSoftly(softly -> {
-            assertThat(repos.caseRepository.findAll().size())
-                    .isEqualTo(0);
-            assertThat(repos.wqCore.findAll().size())
-                    .isEqualTo(0);
-            assertThat(repos.solicitor.findAll().size())
-                    .isEqualTo(0);
-            assertThat(repos.defendant.findAll().size())
-                    .isEqualTo(0);
-            assertThat(repos.session.findAll().size())
-                    .isEqualTo(0);
-            assertThat(repos.offence.findAll().size())
-                    .isEqualTo(1);
-            assertThat(repos.wqLinkRegister.findBymaatId(
-                    initialWqLinkRegisterEntity.getMaatId()).get(0).getMlrCat()
-            ).isEqualTo(initialWqLinkRegisterEntity.getMlrCat());
+            assertThat(repos.caseRepository.findAll().size()).isEqualTo(0);
+            assertThat(repos.wqCore.findAll().size()).isEqualTo(0);
+            assertThat(repos.solicitor.findAll().size()).isEqualTo(0);
+            assertThat(repos.defendant.findAll().size()).isEqualTo(0);
+            assertThat(repos.session.findAll().size()).isEqualTo(0);
+            assertThat(repos.offence.findAll().size()).isEqualTo(1);
+            assertThat(repos.wqLinkRegister
+                            .findBymaatId(initialWqLinkRegisterEntity.getMaatId())
+                            .get(0)
+                            .getMlrCat())
+                    .isEqualTo(initialWqLinkRegisterEntity.getMlrCat());
         });
     }
 
-    private void assertCdaCalledCorrectly(CaseDetails inputCaseDetails,
-                                          OffenceEntity offence,
-                                          SolicitorMAATDataEntity solicitor,
-                                          RepOrderCPDataEntity repOrderCPDataEntity) throws JsonProcessingException {
+    private void assertCdaCalledCorrectly(
+            CaseDetails inputCaseDetails,
+            OffenceEntity offence,
+            SolicitorMAATDataEntity solicitor,
+            RepOrderCPDataEntity repOrderCPDataEntity)
+            throws JsonProcessingException {
 
         verify(exactly(1), postRequestedFor(urlEqualTo("/oauth2/token")));
         verify(exactly(1), postRequestedFor(urlEqualTo("/api/internal/v1/representation_orders")));
@@ -365,22 +409,31 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
     private DefendantMAATDataEntity createDefendantData() {
         DefendantMAATDataEntity defendantMAATDataEntity = DefendantMAATDataEntity.builder()
-                .maatId(TEST_MAAT_ID).useSol("use-sol").build();
+                .maatId(TEST_MAAT_ID)
+                .useSol("use-sol")
+                .build();
         repos.defendantMAATData.save(defendantMAATDataEntity);
         return defendantMAATDataEntity;
     }
 
     private RepOrderCPDataEntity createRepOrderCPData() {
-        RepOrderCPDataEntity repOrderCPDataEntity = RepOrderCPDataEntity.builder().repOrderId(TEST_MAAT_ID).defendantId("defendant-id").build();
+        RepOrderCPDataEntity repOrderCPDataEntity = RepOrderCPDataEntity.builder()
+                .repOrderId(TEST_MAAT_ID)
+                .defendantId("defendant-id")
+                .build();
         repos.repOrderCPData.save(repOrderCPDataEntity);
         return repOrderCPDataEntity;
     }
 
     private OffenceEntity createOffenceData(Integer caseId, String offenceCode, String laaStatus) {
-        OffenceEntity offenceEntity =
-                OffenceEntity.builder()
-                        .txId(1).caseId(caseId).offenceId("offence-id").offenceCode(offenceCode).asnSeq(TEST_ASN_SEQ).legalAidStatus(laaStatus)
-                        .build();
+        OffenceEntity offenceEntity = OffenceEntity.builder()
+                .txId(1)
+                .caseId(caseId)
+                .offenceId("offence-id")
+                .offenceCode(offenceCode)
+                .asnSeq(TEST_ASN_SEQ)
+                .legalAidStatus(laaStatus)
+                .build();
         repos.offence.save(offenceEntity);
         return offenceEntity;
     }
@@ -394,7 +447,10 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
 
     private SolicitorMAATDataEntity createSolicitorData(String accountCode) {
         SolicitorMAATDataEntity solicitor = SolicitorMAATDataEntity.builder()
-                .maatId(TEST_MAAT_ID).solicitorName("test-solicitor").accountCode(accountCode).accountName("test-account")
+                .maatId(TEST_MAAT_ID)
+                .solicitorName("test-solicitor")
+                .accountCode(accountCode)
+                .accountName("test-account")
                 .build();
         repos.solicitorMAATData.save(solicitor);
         return solicitor;
@@ -403,26 +459,24 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
     private List<WqLinkRegisterEntity> createTestLinkData(Integer numberOfLinks) {
         List<WqLinkRegisterEntity> linkItems = new ArrayList<>();
         for (int i = 0; i < numberOfLinks; i++)
-            linkItems.add(
-                    WqLinkRegisterEntity.builder()
-                            .createdTxId(i)
-                            .maatId(TEST_MAAT_ID)
-                            .libraId(String.format("CP%d", i))
-                            .proceedingId(i)
-                            .caseId(TEST_CASE_ID)
-                            .mlrCat(3)
-                            .build());
+            linkItems.add(WqLinkRegisterEntity.builder()
+                    .createdTxId(i)
+                    .maatId(TEST_MAAT_ID)
+                    .libraId(String.format("CP%d", i))
+                    .proceedingId(i)
+                    .caseId(TEST_CASE_ID)
+                    .mlrCat(3)
+                    .build());
         repos.wqLinkRegister.saveAll(linkItems);
         return linkItems;
     }
 
     private void setupCdaWebServer() {
-        wireMock().stubFor(WireMock
-                .post(urlEqualTo("/api/internal/v1/representation_orders"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))));
-
+        wireMock()
+                .stubFor(WireMock.post(urlEqualTo("/api/internal/v1/representation_orders"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))));
     }
 
     private LaaStatusUpdate generateExpectedLaaStatusObject(
@@ -431,20 +485,18 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
             SolicitorMAATDataEntity solicitor,
             RepOrderCPDataEntity repOrderCPDataEntity) {
 
-        gov.uk.courtdata.model.laastatus.Offence mappedOffence =
-                gov.uk.courtdata.model.laastatus.Offence.builder()
-                        .offenceId(offence.getOffenceId())
-                        .statusCode(offence.getLegalAidStatus())
-                        .build();
+        gov.uk.courtdata.model.laastatus.Offence mappedOffence = gov.uk.courtdata.model.laastatus.Offence.builder()
+                .offenceId(offence.getOffenceId())
+                .statusCode(offence.getLegalAidStatus())
+                .build();
 
         DefenceOrganisation defenceOrganisation = DefenceOrganisation.builder()
                 .laaContractNumber(solicitor.getAccountCode())
-                .organisation(
-                        Organisation.builder()
-                                .address(Address.builder().build())
-                                .contact(Contact.builder().build())
-                                .name(solicitor.getAccountName())
-                                .build())
+                .organisation(Organisation.builder()
+                        .address(Address.builder().build())
+                        .contact(Contact.builder().build())
+                        .name(solicitor.getAccountName())
+                        .build())
                 .build();
 
         Organisation.builder()
@@ -454,26 +506,25 @@ public class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegration
                 .build();
 
         Relationships relationships = Relationships.builder()
-                .defendant(gov.uk.courtdata.model.laastatus.Defendant.builder().data(
-                                DefendantData.builder()
-                                        .id(repOrderCPDataEntity.getDefendantId())
-                                        .type("defendants").build())
+                .defendant(gov.uk.courtdata.model.laastatus.Defendant.builder()
+                        .data(DefendantData.builder()
+                                .id(repOrderCPDataEntity.getDefendantId())
+                                .type("defendants")
+                                .build())
                         .build())
                 .build();
 
         return LaaStatusUpdate.builder()
-                .data(
-                        RepOrderData.builder()
-                                .type("representation_order")
-                                .attributes(
-                                        Attributes.builder()
-                                                .maatReference(inputCaseDetails.getMaatId())
-                                                .defenceOrganisation(defenceOrganisation)
-                                                .offences(List.of(mappedOffence))
-                                                .build())
-                                .relationships(relationships)
-                                .build()
-                ).build();
+                .data(RepOrderData.builder()
+                        .type("representation_order")
+                        .attributes(Attributes.builder()
+                                .maatReference(inputCaseDetails.getMaatId())
+                                .defenceOrganisation(defenceOrganisation)
+                                .offences(List.of(mappedOffence))
+                                .build())
+                        .relationships(relationships)
+                        .build())
+                .build();
     }
 
     private MockHttpServletRequestBuilder getPostRequest(String payload) {

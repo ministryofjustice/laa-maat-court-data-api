@@ -1,20 +1,23 @@
 package gov.uk.courtdata.hearing.processor;
 
-import com.google.gson.Gson;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WQCaseEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQCaseRepository;
+
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
+import com.google.gson.Gson;
 
 @ExtendWith(MockitoExtension.class)
 public class WQCaseProcessorTest {
@@ -39,13 +42,13 @@ public class WQCaseProcessorTest {
     @Test
     public void givenCaseProcessor_whenProcessIsInvoke_thenSaveCase() {
 
-        //given
+        // given
         HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
 
-        //when
+        // when
         wqCaseProcessor.process(hearingDTO);
 
-        //then
+        // then
         verify(wqCaseRepository).save(wqCaseEntityArgumentCaptor.capture());
         assertThat(wqCaseEntityArgumentCaptor.getValue().getCaseId()).isEqualTo(1234);
         assertThat(wqCaseEntityArgumentCaptor.getValue().getDocLanguage()).isEqualTo("en");
@@ -56,14 +59,14 @@ public class WQCaseProcessorTest {
     @Test
     public void givenCaseProcessor_whenNullCJSCodeIsPassedIN_thenSaveNullCJSCode() {
 
-        //given
+        // given
         HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
         hearingDTO.setCjsAreaCode(null);
 
-        //when
+        // when
         wqCaseProcessor.process(hearingDTO);
 
-        //then
+        // then
         verify(wqCaseRepository).save(wqCaseEntityArgumentCaptor.capture());
         assertThat(wqCaseEntityArgumentCaptor.getValue().getCjsAreaCode()).isNull();
         assertThat(wqCaseEntityArgumentCaptor.getValue().getTxId()).isEqualTo(123456);
@@ -74,14 +77,14 @@ public class WQCaseProcessorTest {
     @Test
     public void givenCaseProcessor_whenCreationDateAvailable_thenSaveCase() {
 
-        //given
+        // given
         HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
         hearingDTO.setCaseCreationDate("2020-05-20");
 
-        //when
+        // when
         wqCaseProcessor.process(hearingDTO);
 
-        //then
+        // then
         verify(wqCaseRepository).save(wqCaseEntityArgumentCaptor.capture());
         assertThat(wqCaseEntityArgumentCaptor.getValue().getCaseId()).isEqualTo(1234);
         assertThat(wqCaseEntityArgumentCaptor.getValue().getDocLanguage()).isEqualTo("en");

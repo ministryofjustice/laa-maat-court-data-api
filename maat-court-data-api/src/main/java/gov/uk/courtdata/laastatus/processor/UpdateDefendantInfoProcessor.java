@@ -1,10 +1,11 @@
 package gov.uk.courtdata.laastatus.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.SAVE_MLR;
+
 import gov.uk.courtdata.link.processor.DefendantInfoProcessor;
 import gov.uk.courtdata.repository.DefendantRepository;
-import org.springframework.stereotype.Component;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.SAVE_MLR;
+import org.springframework.stereotype.Component;
 
 @Component
 public class UpdateDefendantInfoProcessor extends DefendantInfoProcessor {

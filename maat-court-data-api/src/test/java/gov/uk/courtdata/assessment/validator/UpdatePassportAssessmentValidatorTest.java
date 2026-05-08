@@ -1,8 +1,15 @@
 package gov.uk.courtdata.assessment.validator;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
 import gov.uk.courtdata.validator.PassportAssessmentIdValidator;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,12 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UpdatePassportAssessmentValidatorTest {
@@ -35,8 +36,8 @@ public class UpdatePassportAssessmentValidatorTest {
     public void testUpdateAssessmentValidator_whenUserModifiedIsBlank_thenThrowsException() {
         UpdatePassportAssessment mockPassportAssessment =
                 UpdatePassportAssessment.builder().userModified("").build();
-        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
-                () -> updatePassportAssessmentValidator.validate(mockPassportAssessment));
+        ValidationException validationException = Assertions.assertThrows(
+                ValidationException.class, () -> updatePassportAssessmentValidator.validate(mockPassportAssessment));
         assertThat(validationException.getMessage()).isEqualTo("Username is required");
     }
 
@@ -44,8 +45,8 @@ public class UpdatePassportAssessmentValidatorTest {
     public void testUpdateAssessmentValidator_whenUserModifiedIsNull_thenThrowsException() {
         UpdatePassportAssessment mockPassportAssessment =
                 UpdatePassportAssessment.builder().userModified(null).build();
-        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
-                () -> updatePassportAssessmentValidator.validate(mockPassportAssessment));
+        ValidationException validationException = Assertions.assertThrows(
+                ValidationException.class, () -> updatePassportAssessmentValidator.validate(mockPassportAssessment));
         assertThat(validationException.getMessage()).isEqualTo("Username is required");
     }
 

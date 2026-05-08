@@ -1,6 +1,11 @@
 package gov.uk.courtdata.link.processor;
 
-import com.google.gson.Gson;
+import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
@@ -9,27 +14,24 @@ import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.processor.ResultCodeRefDataProcessor;
 import gov.uk.courtdata.repository.ResultRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import com.google.gson.Gson;
 
 @ExtendWith(MockitoExtension.class)
 public class ResultsInfoProcessorTest {
 
-
     @InjectMocks
     private ResultsInfoProcessor resultsInfoProcessor;
+
     @Spy
     private ResultRepository resultRepository;
 
@@ -52,7 +54,8 @@ public class ResultsInfoProcessorTest {
         // given
         CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
         CaseDetails caseDetails = courtDataDTO.getCaseDetails();
-        Result result = caseDetails.getDefendant().getOffences().get(0).getResults().get(0);
+        Result result =
+                caseDetails.getDefendant().getOffences().get(0).getResults().get(0);
 
         // when
         resultsInfoProcessor.process(courtDataDTO);
@@ -63,8 +66,6 @@ public class ResultsInfoProcessorTest {
         assertThat(resultsCaptor.getValue().get(0).getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(resultsCaptor.getValue().get(0).getResultShortTitle()).isEqualTo(result.getResultShortTitle());
         assertThat(resultsCaptor.getValue().get(0).getWqResult()).isEqualTo(G_NO);
-
-
     }
 
     @Test
@@ -79,8 +80,6 @@ public class ResultsInfoProcessorTest {
 
         // then
         verify(resultRepository, times(0)).saveAll(anyCollection());
-
-
     }
 
     @Test
@@ -96,7 +95,5 @@ public class ResultsInfoProcessorTest {
 
         // then
         verify(resultRepository, times(0)).saveAll(anyCollection());
-
-
     }
 }

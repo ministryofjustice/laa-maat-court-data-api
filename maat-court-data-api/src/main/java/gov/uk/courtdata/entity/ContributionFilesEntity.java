@@ -6,69 +6,73 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 @Data
-@Builder(toBuilder=true)
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "CONTRIBUTION_FILES", schema = "TOGDATA")
 @XmlType
-    public class ContributionFilesEntity {
+public class ContributionFilesEntity {
 
-        @Id
-        @SequenceGenerator(name = "contributions_files_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
-        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contributions_files_gen_seq")
-        @Column(name = "ID", nullable = false)
-        private Integer fileId;
+    @Id
+    @SequenceGenerator(
+            name = "contributions_files_gen_seq",
+            sequenceName = "S_GENERAL_SEQUENCE",
+            allocationSize = 1,
+            schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contributions_files_gen_seq")
+    @Column(name = "ID", nullable = false)
+    private Integer fileId;
 
-        @Column(name = "FILE_NAME", length = 100, nullable = false)
-        private String fileName;
+    @Column(name = "FILE_NAME", length = 100, nullable = false)
+    private String fileName;
 
-        @Column(name = "RECORDS_SENT")
-        private Integer recordsSent;
+    @Column(name = "RECORDS_SENT")
+    private Integer recordsSent;
 
-        @Column(name = "RECORDS_RECEIVED")
-        private Integer recordsReceived;
+    @Column(name = "RECORDS_RECEIVED")
+    private Integer recordsReceived;
 
-        @CreationTimestamp
-        @Column(name = "DATE_CREATED")
-        private LocalDate dateCreated;
+    @CreationTimestamp
+    @Column(name = "DATE_CREATED")
+    private LocalDate dateCreated;
 
-        @Builder.Default
-        @Column(name = "USER_CREATED")
-        private String userCreated = "DCES";
+    @Builder.Default
+    @Column(name = "USER_CREATED")
+    private String userCreated = "DCES";
 
-        @Column(name = "DATE_MODIFIED")
-        private LocalDate dateModified;
+    @Column(name = "DATE_MODIFIED")
+    private LocalDate dateModified;
 
-        @Column(name = "USER_MODIFIED", length = 225)
-        private String userModified;
+    @Column(name = "USER_MODIFIED", length = 225)
+    private String userModified;
 
-        @Column(name = "XML_CONTENT")
-        private String xmlContent;
+    @Column(name = "XML_CONTENT")
+    private String xmlContent;
 
-        @UpdateTimestamp
-        @Column(name = "DATE_SENT")
-        private LocalDate dateSent;
+    @UpdateTimestamp
+    @Column(name = "DATE_SENT")
+    private LocalDate dateSent;
 
-        @Column(name = "DATE_RECEIVED")
-        private LocalDate dateReceived;
+    @Column(name = "DATE_RECEIVED")
+    private LocalDate dateReceived;
 
-        @Column(name = "ACK_XML_CONTENT")
-        private String ackXmlContent;
+    @Column(name = "ACK_XML_CONTENT")
+    private String ackXmlContent;
 
-    public void incrementReceivedCount(){
-            if (Objects.isNull(this.recordsReceived)){
-                this.recordsReceived=1;
-            }
-            else{
-                this.recordsReceived++;
-            }
+    public void incrementReceivedCount() {
+        if (Objects.isNull(this.recordsReceived)) {
+            this.recordsReceived = 1;
+        } else {
+            this.recordsReceived++;
         }
     }
+}

@@ -9,15 +9,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Maat Billing Applicants Extraction", description = "Rest API for extracting applicants for billing from MAAT")
+@Tag(
+        name = "Maat Billing Applicants Extraction",
+        description = "Rest API for extracting applicants for billing from MAAT")
 @RequestMapping("${api-endpoints.billing-domain}/applicants")
 public class BillingApplicantController {
 
@@ -30,20 +33,19 @@ public class BillingApplicantController {
         log.info("Get the applicants from MAAT for billing request received");
         List<BillingApplicantEntity> billingApplicantEntities = billingApplicantService.findAllApplicantsForBilling();
         log.info("Get the applicants from MAAT for billing request completed successfully");
-        return ResponseEntity
-                .ok()
-                .body(billingApplicantEntities);
+        return ResponseEntity.ok().body(billingApplicantEntities);
     }
 
     @PatchMapping
     @Operation(description = "Reset SEND_TO_CCLF flag for applicants by IDs and username")
     @StandardApiResponseCodes
     public ResponseEntity<Void> resetApplicantBilling(@Valid @RequestBody UpdateBillingRequest request) {
-        log.info("Reset Applicant CCLF flag Request received for applicantIds: {} by user: {}",
-                request.getIds(), request.getUserModified());
+        log.info(
+                "Reset Applicant CCLF flag Request received for applicantIds: {} by user: {}",
+                request.getIds(),
+                request.getUserModified());
         billingApplicantService.resetApplicantBilling(request);
         log.info("Reset Applicant CCLF flag Request completed successfully");
         return ResponseEntity.ok().build();
     }
-
 }

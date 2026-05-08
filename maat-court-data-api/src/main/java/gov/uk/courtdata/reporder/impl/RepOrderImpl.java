@@ -1,17 +1,18 @@
 package gov.uk.courtdata.reporder.impl;
 
+import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasId;
+import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasSentenceOrderDate;
+
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasId;
-import static gov.uk.courtdata.reporder.specification.RepOrderSpecification.hasSentenceOrderDate;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -25,7 +26,9 @@ public class RepOrderImpl {
     }
 
     public RepOrderEntity findWithSentenceOrderDate(Integer repId) {
-        return repOrderRepository.findOne(hasId(repId).and(hasSentenceOrderDate())).orElse(null);
+        return repOrderRepository
+                .findOne(hasId(repId).and(hasSentenceOrderDate()))
+                .orElse(null);
     }
 
     public RepOrderEntity updateAppDateCompleted(final Integer repId, final LocalDateTime assessmentDateCompleted) {
@@ -46,11 +49,11 @@ public class RepOrderImpl {
         repOrderRepository.deleteById(repId);
     }
 
-    public Set<Integer> findEligibleForFdcDelayedPickup(int delayPeriod, LocalDate dateReceived, int numRecords){
+    public Set<Integer> findEligibleForFdcDelayedPickup(int delayPeriod, LocalDate dateReceived, int numRecords) {
         return repOrderRepository.findEligibleForFdcDelayedPickup(delayPeriod, dateReceived, numRecords);
     }
 
-    public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
+    public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords) {
         return repOrderRepository.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
     }
 

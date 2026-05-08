@@ -1,15 +1,16 @@
 package gov.uk.courtdata.hearing.processor;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import gov.uk.courtdata.entity.WQSessionEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQSessionRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -32,7 +33,6 @@ public class WQSessionProcessor {
                 .build();
 
         wqSessionRepository.save(wqSessionEntity);
-
     }
 
     /**
@@ -42,8 +42,6 @@ public class WQSessionProcessor {
      * @return
      */
     private LocalDate getSessionDate(final String sessionDate) {
-        return
-                isNotEmpty(sessionDate) ? DateUtil.parse(sessionDate) : LocalDate.now();
+        return isNotEmpty(sessionDate) ? DateUtil.parse(sessionDate) : LocalDate.now();
     }
-
 }

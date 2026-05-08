@@ -1,8 +1,6 @@
 package gov.uk.courtdata.helper;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ReservationsRepositoryHelperTest {
+class ReservationsRepositoryHelperTest {
 
     @InjectMocks
     private ReservationsRepositoryHelper reservationsRepositoryHelper;
@@ -28,7 +26,7 @@ public class ReservationsRepositoryHelperTest {
     private ReservationsRepository reservationsRepository;
 
     @Test
-    public void testWhenMaatIsNotLocked_thenReturnTrue() {
+    void testWhenMaatIsNotLocked_thenReturnTrue() {
 
         Optional<ReservationsEntity> reservationsEntity =
                 Optional.of(ReservationsEntity.builder().build());
@@ -38,11 +36,11 @@ public class ReservationsRepositoryHelperTest {
 
         verify(reservationsRepository).findById(anyInt());
 
-        assertAll("Imprisoned", () -> assertNotNull(status), () -> assertEquals(true, status));
+        assertThat(status).isNotNull().isTrue();
     }
 
     @Test
-    public void testWhenMaatIsLocked_thenReturnFalse() {
+    void testWhenMaatIsLocked_thenReturnFalse() {
 
         Optional<ReservationsEntity> reservationsEntity = Optional.empty();
         when(reservationsRepository.findById(anyInt())).thenReturn(reservationsEntity);
@@ -51,6 +49,6 @@ public class ReservationsRepositoryHelperTest {
 
         verify(reservationsRepository).findById(anyInt());
 
-        assertAll("Imprisoned", () -> assertNotNull(status), () -> assertEquals(false, status));
+        assertThat(status).isNotNull().isFalse();
     }
 }

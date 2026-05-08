@@ -1,6 +1,6 @@
 package gov.uk.courtdata.enums;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Stream;
 
@@ -8,7 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class PleaTrialOutcomeTest {
+class PleaTrialOutcomeTest {
 
     private static Stream<Arguments> testData() {
         return Stream.of(
@@ -30,15 +30,15 @@ public class PleaTrialOutcomeTest {
 
     @ParameterizedTest
     @MethodSource("testData")
-    public void givenAPleaValue_theCorrectIsConvictedBooleanIsReturned(
+    void givenAPleaValue_theCorrectIsConvictedBooleanIsReturned(
             String pleaValue, String outcome, Boolean isConvicted) {
-        assertEquals(isConvicted, PleaTrialOutcome.isConvicted(pleaValue));
+        assertThat(PleaTrialOutcome.isConvicted(pleaValue)).isEqualTo(isConvicted);
     }
 
     @ParameterizedTest
     @MethodSource("testData")
-    public void givenAPleaValue_theCorrectTrialOutcomeIsReturned(
+    void givenAPleaValue_theCorrectTrialOutcomeIsReturned(
             String pleaValue, String outcome, Boolean isConvicted) {
-        assertEquals(outcome, PleaTrialOutcome.getTrialOutcome(pleaValue));
+        assertThat(PleaTrialOutcome.getTrialOutcome(pleaValue)).isEqualTo(outcome);
     }
 }

@@ -1,13 +1,10 @@
 package gov.uk.courtdata.builder;
 
 import com.google.gson.Gson;
-import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
 import gov.uk.courtdata.address.entity.Address;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
-import gov.uk.courtdata.billing.dto.ApplicantHistoryBillingDTO;
-import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
@@ -228,45 +225,6 @@ public class TestModelDataBuilder {
                 .sendToCclf(sendToCclf)
                 .userCreated("TEST")
                 .build();
-    }
-
-    public static ApplicantHistoryBillingDTO getApplicantHistoryBillingDTO() {
-        return ApplicantHistoryBillingDTO.builder()
-                .id(1)
-                .asAtDate(LocalDate.parse("2006-10-06"))
-                .applId(716)
-                .firstName("test_first")
-                .lastName("test_last")
-                .otherNames("test")
-                .dob(LocalDate.parse("1981-10-14"))
-                .gender("Male")
-                .niNumber("JM933396A")
-                .foreignId(null)
-                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated("TEST")
-                .dateModified(null)
-                .userModified(null)
-                .build();
-    }
-
-    public static UpdateBillingRequest getUpdateBillingRequest() {
-        return UpdateBillingRequest.builder()
-                .userModified("joe-bloggs")
-                .ids(List.of(1003456, 1003457))
-                .build();
-    }
-
-    public static Stream<UpdateBillingRequest> getUpdateBillingRequests() {
-        return Stream.of(
-                UpdateBillingRequest.builder()
-                        .userModified("")
-                        .ids(List.of(1003456, 1003457))
-                        .build(),
-                UpdateBillingRequest.builder()
-                        .userModified("joe-bloggs")
-                        .ids(List.of())
-                        .build()
-        );
     }
 
     public static FinancialAssessmentDTO getFinancialAssessmentWithChildWeightings() {
@@ -1033,33 +991,6 @@ public class TestModelDataBuilder {
                 .crownRepOrderDecision("cc-rep-doc")
                 .crownRepOrderType("cc-rep-type")
                 .build();
-    }
-
-    public static RepOrderBillingDTO getRepOrderBillingDTO(Integer id) {
-        return RepOrderBillingDTO.builder()
-            .id(id)
-            .applicantId(123)
-            .arrestSummonsNo("ARREST-5678")
-            .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
-            .supplierAccountCode("AB123C")
-            .magsCourtId(34)
-            .magsCourtOutcome(MagCourtOutcome.COMMITTED.getOutcome())
-            .dateReceived(LocalDate.of(2025, 6, 10))
-            .crownCourtRepOrderDate(LocalDate.of(2025, 6, 12))
-            .offenceType("BURGLARY")
-            .crownCourtWithdrawalDate(LocalDate.of(2025, 6, 30))
-            .applicantHistoryId(96)
-            .caseId("CASE-123-C")
-            .committalDate(LocalDate.of(2025, 6, 11))
-            .repOrderStatus("CURR")
-            .appealTypeCode(AppealType.ACN.getCode())
-            .crownCourtOutcome(CrownCourtTrialOutcome.CONVICTED.getValue())
-            .dateCreated(LocalDate.of(2025, 6, 20))
-            .userCreated("joe-bloggs")
-            .dateModified(LocalDate.of(2025, 6, 21).atStartOfDay())
-            .userModified("alice-smith")
-            .caseType(CrownCourtCaseType.EITHER_WAY.getValue())
-            .build();
     }
 
     public static List<RepOrderMvoRegDTO> getRepOrderMvoRegDTOList() {

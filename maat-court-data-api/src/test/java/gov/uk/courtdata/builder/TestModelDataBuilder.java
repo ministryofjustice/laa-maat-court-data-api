@@ -270,44 +270,6 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static ApplicantHistoryBillingDTO getApplicantHistoryBillingDTO() {
-        return ApplicantHistoryBillingDTO.builder()
-                .id(1)
-                .asAtDate(LocalDate.parse("2006-10-06"))
-                .applId(716)
-                .firstName("test_first")
-                .lastName("test_last")
-                .otherNames("test")
-                .dob(LocalDate.parse("1981-10-14"))
-                .gender("Male")
-                .niNumber("JM933396A")
-                .foreignId(null)
-                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated("TEST")
-                .dateModified(null)
-                .userModified(null)
-                .build();
-    }
-
-    public static UpdateBillingRequest getUpdateBillingRequest() {
-        return UpdateBillingRequest.builder()
-                .userModified("joe-bloggs")
-                .ids(List.of(1003456, 1003457))
-                .build();
-    }
-
-    public static Stream<UpdateBillingRequest> getUpdateBillingRequests() {
-        return Stream.of(
-                UpdateBillingRequest.builder()
-                        .userModified("")
-                        .ids(List.of(1003456, 1003457))
-                        .build(),
-                UpdateBillingRequest.builder()
-                        .userModified("joe-bloggs")
-                        .ids(List.of())
-                        .build());
-    }
-
     public static FinancialAssessmentDTO getFinancialAssessmentWithChildWeightings() {
         FinancialAssessmentDTO financialAssessment = getFinancialAssessmentDTO();
         financialAssessment.setChildWeightings(List.of(getChildWeightings()));
@@ -1055,33 +1017,6 @@ public class TestModelDataBuilder {
                 .decisionReasonCode("rder-code")
                 .crownRepOrderDecision("cc-rep-doc")
                 .crownRepOrderType("cc-rep-type")
-                .build();
-    }
-
-    public static RepOrderBillingDTO getRepOrderBillingDTO(Integer id) {
-        return RepOrderBillingDTO.builder()
-                .id(id)
-                .applicantId(123)
-                .arrestSummonsNo("ARREST-5678")
-                .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
-                .supplierAccountCode("AB123C")
-                .magsCourtId(34)
-                .magsCourtOutcome(MagCourtOutcome.COMMITTED.getOutcome())
-                .dateReceived(LocalDate.of(2025, 6, 10))
-                .crownCourtRepOrderDate(LocalDate.of(2025, 6, 12))
-                .offenceType("BURGLARY")
-                .crownCourtWithdrawalDate(LocalDate.of(2025, 6, 30))
-                .applicantHistoryId(96)
-                .caseId("CASE-123-C")
-                .committalDate(LocalDate.of(2025, 6, 11))
-                .repOrderStatus("CURR")
-                .appealTypeCode(AppealType.ACN.getCode())
-                .crownCourtOutcome(CrownCourtTrialOutcome.CONVICTED.getValue())
-                .dateCreated(LocalDate.of(2025, 6, 20))
-                .userCreated("joe-bloggs")
-                .dateModified(LocalDate.of(2025, 6, 21).atStartOfDay())
-                .userModified("alice-smith")
-                .caseType(CrownCourtCaseType.EITHER_WAY.getValue())
                 .build();
     }
 

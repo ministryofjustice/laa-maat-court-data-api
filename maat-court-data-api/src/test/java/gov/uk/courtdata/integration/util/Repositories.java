@@ -4,7 +4,6 @@ import gov.uk.courtdata.applicant.repository.ApplicantDisabilitiesRepository;
 import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
 import gov.uk.courtdata.applicant.repository.ApplicantRepository;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
-import gov.uk.courtdata.billing.repository.MaatReferenceRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.entity.UserEntity;
@@ -273,9 +272,6 @@ public class Repositories {
     public XLATResultRepository xlatResult;
 
     @Autowired
-    public MaatReferenceRepository maatReference;
-
-    @Autowired
     private RepositoryUtil repositoryUtil;
 
     @Autowired
@@ -349,7 +345,6 @@ public class Repositories {
             xlatOffence,
             fdcItemsRepository,
             xlatResult,
-            maatReference,
             wqLinkRegisterRepository
         };
     }

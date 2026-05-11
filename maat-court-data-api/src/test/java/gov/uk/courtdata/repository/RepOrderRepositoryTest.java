@@ -31,6 +31,7 @@ class RepOrderRepositoryTest {
                 .lastName("Smith")
                 .dob(LocalDate.of(1990, 1, 1))
                 .niNumber("AB123456C")
+                .userCreated("create-user")
                 .build();
         entityManager.persist(applicant);
 

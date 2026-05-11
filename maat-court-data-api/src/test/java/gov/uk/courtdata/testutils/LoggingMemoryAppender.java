@@ -1,6 +1,6 @@
 package gov.uk.courtdata.testutils;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -32,7 +32,9 @@ public class LoggingMemoryAppender extends ListAppender<ILoggingEvent> {
                 .filter(event -> message.matches(event.getFormattedMessage()))
                 .findFirst();
 
-        assertTrue(matchingLoggingEvent.isPresent(), createFailureMessage(message, level));
+        assertThat(matchingLoggingEvent)
+                .withFailMessage(createFailureMessage(message, level))
+                .isPresent();
     }
 
     private String createFailureMessage(String message, Level level) {
@@ -52,14 +54,14 @@ public class LoggingMemoryAppender extends ListAppender<ILoggingEvent> {
     public List<ILoggingEvent> search(String string) {
         return this.list.stream()
                 .filter(event -> event.toString().contains(string))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<ILoggingEvent> search(String string, Level level) {
         return this.list.stream()
                 .filter(event ->
                         event.toString().contains(string) && event.getLevel().equals(level))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public int getSize() {
@@ -72,7 +74,7 @@ public class LoggingMemoryAppender extends ListAppender<ILoggingEvent> {
 
     public void addAppenderTo(Class<?> clazz) {
         ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(clazz);
-        logger.setLevel(Level.ALL);
+        logger.setLevel(Level.TRACE);
         logger.addAppender(this);
         setContext((LoggerContext) LoggerFactory.getILoggerFactory());
     }

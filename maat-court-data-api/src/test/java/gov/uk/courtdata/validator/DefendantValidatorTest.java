@@ -1,7 +1,7 @@
 package gov.uk.courtdata.validator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
 import gov.uk.courtdata.exception.ValidationException;
@@ -9,7 +9,6 @@ import gov.uk.courtdata.repository.DefendantMAATDataRepository;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class DefendantValidatorTest {
+class DefendantValidatorTest {
     @Mock
     private DefendantMAATDataRepository maatDataRepository;
 
@@ -26,18 +25,18 @@ public class DefendantValidatorTest {
     private DefendantValidator defendantValidator;
 
     @Test
-    public void testWhenDefendantDetailsExists_returnsEntity() {
+    void testWhenDefendantDetailsExists_returnsEntity() {
         Integer testId = 1000;
         Mockito.when(maatDataRepository.findBymaatId(testId))
                 .thenReturn(Optional.of(
                         DefendantMAATDataEntity.builder().maatId(testId).build()));
         Optional<DefendantMAATDataEntity> defendantEntity = defendantValidator.validate(testId);
-        assertTrue(defendantEntity.isPresent());
-        assertEquals(testId, defendantEntity.get().getMaatId());
+        assertThat(defendantEntity).isPresent();
+        assertThat(defendantEntity.get().getMaatId()).isEqualTo(testId);
     }
 
     @Test
-    public void testWhenDefendantDetailsNotFound_throwsException() {
-        Assertions.assertThrows(ValidationException.class, () -> defendantValidator.validate(Mockito.anyInt()));
+    void testWhenDefendantDetailsNotFound_throwsException() {
+        assertThatThrownBy(() -> defendantValidator.validate(Mockito.anyInt())).isInstanceOf(ValidationException.class);
     }
 }

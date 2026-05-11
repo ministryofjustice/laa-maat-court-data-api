@@ -1,6 +1,6 @@
 package gov.uk.courtdata.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ class VersionMetadataTest {
 
         String actualSemanticVersion = versionMetadata.getSemanticVersion();
 
-        assertEquals(semanticVersion, actualSemanticVersion);
+        assertThat(actualSemanticVersion).isEqualTo(semanticVersion);
     }
 
     @Test
@@ -42,6 +42,6 @@ class VersionMetadataTest {
 
         String actualGitPropertyValue = versionMetadata.getGitPropertyValue(GitProperty.GIT_COMMIT_ID);
 
-        assertEquals(gitCommitIdValue, actualGitPropertyValue);
+        assertThat(actualGitPropertyValue).isEqualTo(gitCommitIdValue);
     }
 }

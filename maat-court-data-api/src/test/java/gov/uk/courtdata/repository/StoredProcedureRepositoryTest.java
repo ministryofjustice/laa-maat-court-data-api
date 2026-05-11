@@ -1,8 +1,7 @@
 package gov.uk.courtdata.repository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,7 +40,7 @@ class StoredProcedureRepositoryTest {
         CallableStatement result = repo.getDbProcedureStatement(connection, request);
 
         // Assert
-        assertNotNull(result);
+        assertThat(result).isNotNull();
         verify(connection).prepareCall(expectedSql);
     }
 
@@ -56,10 +55,9 @@ class StoredProcedureRepositoryTest {
         StoredProcedureRepository repo = new StoredProcedureRepository();
 
         // Act & Assert
-        MAATApplicationException ex = assertThrows(MAATApplicationException.class, () -> {
-            repo.getDbProcedureStatement(connection, request);
-        });
-        assertEquals("The package name has not been set", ex.getMessage());
+        assertThatThrownBy(() -> repo.getDbProcedureStatement(connection, request))
+                .isInstanceOf(MAATApplicationException.class)
+                .hasMessage("The package name has not been set");
     }
 
     @Test
@@ -73,10 +71,9 @@ class StoredProcedureRepositoryTest {
         StoredProcedureRepository repo = new StoredProcedureRepository();
 
         // Act & Assert
-        MAATApplicationException ex = assertThrows(MAATApplicationException.class, () -> {
-            repo.getDbProcedureStatement(connection, request);
-        });
-        assertEquals("The procedure name has not been set", ex.getMessage());
+        assertThatThrownBy(() -> repo.getDbProcedureStatement(connection, request))
+                .isInstanceOf(MAATApplicationException.class)
+                .hasMessage("The procedure name has not been set");
     }
 
     @Test
@@ -91,10 +88,9 @@ class StoredProcedureRepositoryTest {
         StoredProcedureRepository repo = new StoredProcedureRepository();
 
         // Act & Assert
-        MAATApplicationException ex = assertThrows(MAATApplicationException.class, () -> {
-            repo.getDbProcedureStatement(connection, request);
-        });
-        assertEquals("Invalid package name", ex.getMessage());
+        assertThatThrownBy(() -> repo.getDbProcedureStatement(connection, request))
+                .isInstanceOf(MAATApplicationException.class)
+                .hasMessage("Invalid package name");
     }
 
     @Test
@@ -109,9 +105,8 @@ class StoredProcedureRepositoryTest {
         StoredProcedureRepository repo = new StoredProcedureRepository();
 
         // Act & Assert
-        MAATApplicationException ex = assertThrows(MAATApplicationException.class, () -> {
-            repo.getDbProcedureStatement(connection, request);
-        });
-        assertEquals("Invalid procedure name", ex.getMessage());
+        assertThatThrownBy(() -> repo.getDbProcedureStatement(connection, request))
+                .isInstanceOf(MAATApplicationException.class)
+                .hasMessage("Invalid procedure name");
     }
 }

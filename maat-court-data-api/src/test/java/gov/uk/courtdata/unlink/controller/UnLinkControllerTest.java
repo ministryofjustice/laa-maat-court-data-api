@@ -1,7 +1,6 @@
 package gov.uk.courtdata.unlink.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.verify;
 
 import gov.uk.courtdata.model.Unlink;
@@ -37,6 +36,6 @@ class UnLinkControllerTest {
         verify(unLinkValidationProcessor).validate(unlink);
 
         assertThat(responseEntity).isEqualTo(ResponseEntity.ok().build());
-        assertNull(responseEntity.getBody());
+        assertThat(responseEntity.getBody()).isNull();
     }
 }

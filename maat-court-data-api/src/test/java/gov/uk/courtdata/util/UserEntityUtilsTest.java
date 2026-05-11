@@ -1,6 +1,6 @@
 package gov.uk.courtdata.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.entity.UserEntity;
@@ -15,6 +15,6 @@ class UserEntityUtilsTest {
 
         String actualFullName = UserEntityUtils.extractFullName(userEntity);
 
-        assertEquals("Karen Greaves", actualFullName);
+        assertThat(actualFullName).isEqualTo("Karen Greaves");
     }
 }

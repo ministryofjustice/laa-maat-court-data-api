@@ -1,7 +1,6 @@
 package gov.uk.courtdata.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,20 +40,22 @@ class GitPropertiesFileTest {
 
         String actualGitCommitIdValue = gitPropertiesFile.getValueOf(GitProperty.GIT_COMMIT_ID);
 
-        assertEquals("4ddf8ddc55a6348fefea65554bf8316dd4ffdb20", actualGitCommitIdValue);
+        assertThat(actualGitCommitIdValue).isEqualTo("4ddf8ddc55a6348fefea65554bf8316dd4ffdb20");
     }
 
     @Test
     void shouldHandleIOExceptionGracefully() throws IOException {
         Files.createFile(this.tempFile.toPath());
-        assertTrue(this.tempFile.setReadable(false), "Failed precondition");
+        assertThat(this.tempFile.setReadable(false))
+                .withFailMessage("Failed precondition")
+                .isTrue();
         Resource resource = new FileSystemResource(this.tempFile);
 
         GitPropertiesFile gitPropertiesFile = createGitPropertiesFileWith(resource);
 
         String actualGitCommitIdValue = gitPropertiesFile.getValueOf(GitProperty.GIT_COMMIT_ID);
 
-        assertEquals(StringUtils.EMPTY, actualGitCommitIdValue);
+        assertThat(actualGitCommitIdValue).isEqualTo(StringUtils.EMPTY);
     }
 
     @Test
@@ -67,7 +68,7 @@ class GitPropertiesFileTest {
 
         String actualGitCommitIdValue = gitPropertiesFile.getValueOf(GitProperty.GIT_COMMIT_ID);
 
-        assertEquals(StringUtils.EMPTY, actualGitCommitIdValue);
+        assertThat(actualGitCommitIdValue).isEqualTo(StringUtils.EMPTY);
     }
 
     @Test
@@ -77,7 +78,7 @@ class GitPropertiesFileTest {
 
         String actualGitCommitIdValue = gitPropertiesFile.getValueOf(GitProperty.GIT_COMMIT_ID);
 
-        assertEquals(StringUtils.EMPTY, actualGitCommitIdValue);
+        assertThat(actualGitCommitIdValue).isEqualTo(StringUtils.EMPTY);
     }
 
     private GitPropertiesFile createGitPropertiesFileWith(Resource resource) {

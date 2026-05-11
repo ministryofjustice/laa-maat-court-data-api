@@ -1,6 +1,6 @@
 package gov.uk.courtdata.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
@@ -49,15 +49,16 @@ class SentryAlertEnricherTest {
 
         SentryEvent actualSentryEvent = sentryAlertEnricher.process(new SentryEvent(), new Hint());
 
-        assertEquals(semanticVersion, actualSentryEvent.getRelease());
-        assertEquals(testLoggingValue, actualSentryEvent.getTransaction());
+        assertThat(actualSentryEvent.getRelease()).isEqualTo(semanticVersion);
+        assertThat(actualSentryEvent.getTransaction()).isEqualTo(testLoggingValue);
 
         for (GitProperty gitProperty : GitProperty.values()) {
-            assertEquals(testGitPropertyValue, actualSentryEvent.getTag(gitProperty.getGitPropertyKey()));
+            assertThat(actualSentryEvent.getTag(gitProperty.getGitPropertyKey()))
+                    .isEqualTo(testGitPropertyValue);
         }
 
         for (LoggingData loggingData : LoggingData.values()) {
-            assertEquals(testLoggingValue, actualSentryEvent.getTag(loggingData.getKey()));
+            assertThat(actualSentryEvent.getTag(loggingData.getKey())).isEqualTo(testLoggingValue);
         }
     }
 }

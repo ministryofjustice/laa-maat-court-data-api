@@ -1,7 +1,6 @@
 package gov.uk.courtdata.aspect;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 
@@ -15,6 +14,7 @@ import gov.uk.courtdata.testutils.LoggingMemoryAppender;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,13 +86,14 @@ class SqsGlobalLoggingTest {
                 RuntimeException.class, () -> hearingResultedListenerProxy.receive(message, headers));
 
         // then
-        assertAll(
-                () -> assertThat(actualRuntimeException.getMessage()).isEqualTo("Error processing message"),
-                () -> loggingMemoryAppender.assertContains("Received JSON payload from the queue", Level.INFO),
-                () -> loggingMemoryAppender.assertContains(
-                        "Exception thrown when processing message: Error processing message", Level.ERROR),
-                () -> loggingMemoryAppender.assertContains("Message processing completed", Level.INFO),
-                () -> loggingMemoryAppender.assertContains("About to clear down the MDC", Level.DEBUG));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(actualRuntimeException.getMessage()).isEqualTo("Error processing message");
+            loggingMemoryAppender.assertContains("Received JSON payload from the queue", Level.INFO);
+            loggingMemoryAppender.assertContains(
+                    "Exception thrown when processing message: Error processing message", Level.ERROR);
+            loggingMemoryAppender.assertContains("Message processing completed", Level.INFO);
+            loggingMemoryAppender.assertContains("About to clear down the MDC", Level.DEBUG);
+        });
     }
 
     @Test
@@ -126,18 +127,17 @@ class SqsGlobalLoggingTest {
                 RuntimeException.class, () -> hearingResultedListenerProxy.receive(message, headers));
 
         // then
-        assertAll(
-                () -> assertThat(actualRuntimeException.getMessage()).isEqualTo("Error processing message"),
-
-                // Assert that the MDC has been cleared
-                () -> loggingMemoryAppender.assertContains("About to clear down the MDC", Level.DEBUG),
-                () -> assertThat(MDC.getCopyOfContextMap()).isNull(),
-
-                // Assert that the MDC was previously populated
-                () -> assertThat(actualMdcContextMap)
-                        .containsEntry("laaTransactionId", "c77c96ff-7cad-44cc-9e12-5bc80f5f2d9e"),
-                () -> assertThat(actualMdcContextMap).containsEntry("caseUrn", "CASNUM-ABC123"),
-                () -> assertThat(actualMdcContextMap).containsEntry("requestType", "HEARING"),
-                () -> assertThat(actualMdcContextMap).containsEntry("maatId", "6184652"));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(actualRuntimeException.getMessage()).isEqualTo("Error processing message");
+            // Assert that the MDC has been cleared
+            loggingMemoryAppender.assertContains("About to clear down the MDC", Level.DEBUG);
+            assertThat(MDC.getCopyOfContextMap()).isNull();
+            // Assert that the MDC was previously populated
+            assertThat(actualMdcContextMap)
+                    .containsEntry("laaTransactionId", "c77c96ff-7cad-44cc-9e12-5bc80f5f2d9e")
+                    .containsEntry("caseUrn", "CASNUM-ABC123")
+                    .containsEntry("requestType", "HEARING")
+                    .containsEntry("maatId", "6184652");
+        });
     }
 }

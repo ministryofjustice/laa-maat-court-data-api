@@ -1,7 +1,6 @@
 package gov.uk.courtdata.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,27 +36,29 @@ class SemanticVersionTest {
                 1.2.0""";
         FileUtils.writeStringToFile(versionFile, fileContent, Charset.defaultCharset());
 
-        assertEquals("1.0.0|1.1.0|1.2.0", createSemanticVersion().asText());
+        assertThat(createSemanticVersion().asText()).isEqualTo("1.0.0|1.1.0|1.2.0");
     }
 
     @Test
     void shouldHandleMissingFileGracefully() {
-        assertEquals(StringUtils.EMPTY, createSemanticVersion().asText());
+        assertThat(createSemanticVersion().asText()).isEmpty();
     }
 
     @Test
     void shouldHandleEmptyFileGracefully() throws IOException {
         Files.createFile(versionFile.toPath());
 
-        assertEquals(StringUtils.EMPTY, createSemanticVersion().asText());
+        assertThat(createSemanticVersion().asText()).isEmpty();
     }
 
     @Test
     void shouldHandleUnreadableFileGracefully() throws IOException {
         Files.createFile(versionFile.toPath());
-        assertTrue(versionFile.setReadable(false), "failed precondition");
+        assertThat(versionFile.setReadable(false))
+                .withFailMessage("failed precondition")
+                .isTrue();
 
-        assertEquals(StringUtils.EMPTY, createSemanticVersion().asText());
+        assertThat(createSemanticVersion().asText()).isEmpty();
     }
 
     private @NotNull SemanticVersion createSemanticVersion() {

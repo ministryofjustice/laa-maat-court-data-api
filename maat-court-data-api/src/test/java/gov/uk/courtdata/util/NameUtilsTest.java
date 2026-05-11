@@ -1,6 +1,6 @@
 package gov.uk.courtdata.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Stream;
 
@@ -25,10 +25,10 @@ class NameUtilsTest {
 
     @ParameterizedTest
     @MethodSource("namesTestData")
-    public void givenAFirstAndLastName_theCorrectlyFormattedFullNameIsReturned(
+    void givenAFirstAndLastName_theCorrectlyFormattedFullNameIsReturned(
             String firstName, String lastName, String expectedFullName) {
         String actualFullName = NameUtils.toCapitalisedFullName(firstName, lastName);
 
-        assertEquals(expectedFullName, actualFullName);
+        assertThat(actualFullName).isEqualTo(expectedFullName);
     }
 }

@@ -1,7 +1,6 @@
 package gov.uk.courtdata.dces.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -13,6 +12,7 @@ import gov.uk.courtdata.dces.response.ContributionFileResponse;
 import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
 import gov.uk.courtdata.entity.ContributionFilesEntity;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -50,21 +50,22 @@ class ContributionFileMapperTest {
     }
 
     private static void assertValidMappedObject(ContributionFilesEntity mapped, CreateFileRequest request) {
-        assertAll(
-                () -> assertThat(mapped.getXmlContent()).isEqualTo(request.getXmlContent()),
-                () -> assertThat(mapped.getAckXmlContent()).isEqualTo(request.getAckXmlContent()),
-                () -> assertThat(mapped.getRecordsSent()).isEqualTo(request.getRecordsSent()),
-                () -> assertThat(mapped.getFileName()).isEqualTo(request.getXmlFileName()),
-                // validate non-map-related fields are unset. No stray mappings
-                () -> assertNonMappedAreNull(mapped.getFileId()),
-                () -> assertNonMappedAreNull(mapped.getRecordsReceived()),
-                () -> assertNonMappedAreNull(mapped.getDateCreated()),
-                () -> assertNonMappedAreNull(mapped.getDateModified()),
-                () -> assertNonMappedAreNull(mapped.getUserModified()),
-                () -> assertNonMappedAreNull(mapped.getDateSent()),
-                () -> assertNonMappedAreNull(mapped.getDateReceived()),
-                // should have a default of DCES for the created
-                () -> assertThat(mapped.getUserCreated()).isEqualTo("DCES"));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(mapped.getXmlContent()).isEqualTo(request.getXmlContent());
+            assertThat(mapped.getAckXmlContent()).isEqualTo(request.getAckXmlContent());
+            assertThat(mapped.getRecordsSent()).isEqualTo(request.getRecordsSent());
+            assertThat(mapped.getFileName()).isEqualTo(request.getXmlFileName());
+            // validate non-map-related fields are unset. No stray mappings
+            assertNonMappedAreNull(mapped.getFileId());
+            assertNonMappedAreNull(mapped.getRecordsReceived());
+            assertNonMappedAreNull(mapped.getDateCreated());
+            assertNonMappedAreNull(mapped.getDateModified());
+            assertNonMappedAreNull(mapped.getUserModified());
+            assertNonMappedAreNull(mapped.getDateSent());
+            assertNonMappedAreNull(mapped.getDateReceived());
+            // should have a default of DCES for the created
+            assertThat(mapped.getUserCreated()).isEqualTo("DCES");
+        });
     }
 
     private static void assertNonMappedAreNull(Object fieldInMappedObject) {
@@ -72,31 +73,33 @@ class ContributionFileMapperTest {
     }
 
     private static void assertValidMappedObject(ContributionFileResponse mapped, ContributionFilesEntity entity) {
-        assertAll(
-                () -> assertThat(mapped.getId()).isEqualTo(entity.getFileId()),
-                () -> assertThat(mapped.getXmlFileName()).isEqualTo(entity.getFileName()),
-                () -> assertThat(mapped.getRecordsSent()).isEqualTo(entity.getRecordsSent()),
-                () -> assertThat(mapped.getRecordsReceived()).isEqualTo(entity.getRecordsReceived()),
-                () -> assertThat(mapped.getDateCreated()).isEqualTo(entity.getDateCreated()),
-                () -> assertThat(mapped.getUserCreated()).isEqualTo(entity.getUserCreated()),
-                () -> assertThat(mapped.getDateModified()).isEqualTo(entity.getDateModified()),
-                () -> assertThat(mapped.getUserModified()).isEqualTo(entity.getUserModified()),
-                () -> assertThat(mapped.getXmlContent()).isEqualTo(entity.getXmlContent()),
-                () -> assertThat(mapped.getDateSent()).isEqualTo(entity.getDateSent()),
-                () -> assertThat(mapped.getDateReceived()).isEqualTo(entity.getDateReceived()),
-                () -> assertThat(mapped.getAckXmlContent()).isEqualTo(entity.getAckXmlContent()));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(mapped.getId()).isEqualTo(entity.getFileId());
+            assertThat(mapped.getXmlFileName()).isEqualTo(entity.getFileName());
+            assertThat(mapped.getRecordsSent()).isEqualTo(entity.getRecordsSent());
+            assertThat(mapped.getRecordsReceived()).isEqualTo(entity.getRecordsReceived());
+            assertThat(mapped.getDateCreated()).isEqualTo(entity.getDateCreated());
+            assertThat(mapped.getUserCreated()).isEqualTo(entity.getUserCreated());
+            assertThat(mapped.getDateModified()).isEqualTo(entity.getDateModified());
+            assertThat(mapped.getUserModified()).isEqualTo(entity.getUserModified());
+            assertThat(mapped.getXmlContent()).isEqualTo(entity.getXmlContent());
+            assertThat(mapped.getDateSent()).isEqualTo(entity.getDateSent());
+            assertThat(mapped.getDateReceived()).isEqualTo(entity.getDateReceived());
+            assertThat(mapped.getAckXmlContent()).isEqualTo(entity.getAckXmlContent());
+        });
     }
 
     private static void assertValidMappedObject(
             ContributionFileErrorResponse mapped, ContributionFileErrorsEntity entity) {
-        assertAll(
-                () -> assertThat(mapped.getContributionFileId()).isEqualTo(entity.getContributionFileId()),
-                () -> assertThat(mapped.getContributionId()).isEqualTo(entity.getContributionId()),
-                () -> assertThat(mapped.getRepId()).isEqualTo(entity.getRepId()),
-                () -> assertThat(mapped.getErrorText()).isEqualTo(entity.getErrorText()),
-                () -> assertThat(mapped.getFixAction()).isEqualTo(entity.getFixAction()),
-                () -> assertThat(mapped.getFdcContributionId()).isEqualTo(entity.getFdcContributionId()),
-                () -> assertThat(mapped.getConcorContributionId()).isEqualTo(entity.getConcorContributionId()),
-                () -> assertThat(mapped.getDateCreated()).isEqualTo(entity.getDateCreated()));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(mapped.getContributionFileId()).isEqualTo(entity.getContributionFileId());
+            assertThat(mapped.getContributionId()).isEqualTo(entity.getContributionId());
+            assertThat(mapped.getRepId()).isEqualTo(entity.getRepId());
+            assertThat(mapped.getErrorText()).isEqualTo(entity.getErrorText());
+            assertThat(mapped.getFixAction()).isEqualTo(entity.getFixAction());
+            assertThat(mapped.getFdcContributionId()).isEqualTo(entity.getFdcContributionId());
+            assertThat(mapped.getConcorContributionId()).isEqualTo(entity.getConcorContributionId());
+            assertThat(mapped.getDateCreated()).isEqualTo(entity.getDateCreated());
+        });
     }
 }

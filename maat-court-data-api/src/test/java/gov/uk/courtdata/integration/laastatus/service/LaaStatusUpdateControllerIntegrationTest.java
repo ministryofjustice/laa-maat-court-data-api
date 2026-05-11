@@ -88,22 +88,21 @@ class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
                 .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
                 .build());
         assertThat(runServerErrorScenario(
-                "MAAT API Call failed - MAAT/REP ID is required, found [null]", getPostRequest(testPayload)))
+                        "MAAT API Call failed - MAAT/REP ID is required, found [null]", getPostRequest(testPayload)))
                 .isTrue();
     }
 
     @Test
-    void givenAMissingMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
-            throws Exception {
+    void givenAMissingMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         String payloadMissingMaatId = String.format("{\"laaTransactionId\":\"%s\"}", LAA_TRANSACTION_ID);
         assertThat(runServerErrorScenario(
-                "MAAT API Call failed - MAAT/REP ID is required, found [null]", getPostRequest(payloadMissingMaatId)))
+                        "MAAT API Call failed - MAAT/REP ID is required, found [null]",
+                        getPostRequest(payloadMissingMaatId)))
                 .isTrue();
     }
 
     @Test
-    void givenAnInvalidMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
-            throws Exception {
+    void givenAnInvalidMaatIdInCaseDetails_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         runValidationFailureScenario(String.format("MAAT API Call failed - MAAT/REP ID [%d] is invalid", testMaatId));
         assertThat(wireMock().getAllServeEvents()).isEmpty();
         verify(exactly(0), postRequestedFor(urlEqualTo("/oauth2/token")));
@@ -118,8 +117,7 @@ class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenAMaatIdWithMultipleLinks_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
-            throws Exception {
+    void givenAMaatIdWithMultipleLinks_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         createTestLinkData(2);
         runValidationFailureScenario(
@@ -128,8 +126,7 @@ class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenAMaatIdNoLinkedSolicitor_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
-            throws Exception {
+    void givenAMaatIdNoLinkedSolicitor_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         createTestLinkData(1);
         runValidationFailureScenario(
@@ -138,9 +135,8 @@ class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void
-            givenAMaatIdWhereTheLinkedSolicitorHasNoAccountCode_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
-                    throws Exception {
+    void givenAMaatIdWhereTheLinkedSolicitorHasNoAccountCode_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
+            throws Exception {
         createTestRepoOrder();
         createTestLinkData(1);
         createSolicitorData("");
@@ -151,8 +147,7 @@ class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenAMaatIdWithNoLinkedDefendant_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned()
-            throws Exception {
+    void givenAMaatIdWithNoLinkedDefendant_whenUpdateLAAStatusIsInvoked_theCorrectErrorIsReturned() throws Exception {
         createTestRepoOrder();
         createTestLinkData(1);
         createSolicitorData("test-account-code");
@@ -284,7 +279,8 @@ class LaaStatusUpdateControllerIntegrationTest extends MockMvcIntegrationTest {
                 .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
                 .maatId(testMaatId)
                 .build());
-        assertThat(runServerErrorScenario(expectedErrorMessage, getPostRequest(testPayload))).isTrue();
+        assertThat(runServerErrorScenario(expectedErrorMessage, getPostRequest(testPayload)))
+                .isTrue();
         queueMessageLogTestHelper.assertQueueMessageLogged(testPayload, 1, LAA_TRANSACTION_ID, testMaatId);
     }
 

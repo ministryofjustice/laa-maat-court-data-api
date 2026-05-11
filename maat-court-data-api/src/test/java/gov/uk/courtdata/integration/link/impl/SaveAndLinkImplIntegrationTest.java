@@ -127,7 +127,8 @@ class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
         assertThat(found.getTxId()).isEqualTo(courtDataDTO.getTxId());
         assertThat(found.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(found.getPostHearingCustody())
-                .isEqualTo(courtDataDTO.getCaseDetails().getSessions().getFirst().getPostHearingCustody());
+                .isEqualTo(
+                        courtDataDTO.getCaseDetails().getSessions().getFirst().getPostHearingCustody());
     }
 
     private void verifyDefendant(CourtDataDTO courtDataDTO) {

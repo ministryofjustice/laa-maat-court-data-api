@@ -39,8 +39,8 @@ class OffenceControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenAValidCaseId_whenFindOffenceByCaseIdIsInvoked_thenOffenceIsReturned() throws Exception {
         List<OffenceDTO> offenceDTOList = List.of(TestModelDataBuilder.getOffenceDTO(8064716));
-        assertThat(
-                runSuccessScenario(offenceDTOList, get(ENDPOINT_URL + "/case/" + TestEntityDataBuilder.TEST_CASE_ID)))
+        assertThat(runSuccessScenario(
+                        offenceDTOList, get(ENDPOINT_URL + "/case/" + TestEntityDataBuilder.TEST_CASE_ID)))
                 .isTrue();
     }
 

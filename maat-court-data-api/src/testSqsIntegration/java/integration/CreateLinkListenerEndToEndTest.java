@@ -2,10 +2,9 @@ package integration;
 
 import static java.util.List.of;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SQS;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
@@ -36,8 +35,6 @@ import com.amazonaws.services.sqs.model.GetQueueAttributesResult;
 @AutoConfigureWireMock(port = 9999)
 @Disabled
 class CreateLinkListenerEndToEndTest {
-
-    private static final int ONCE = 1;
 
     @MockitoBean
     private CreateLinkService createLinkService;
@@ -86,12 +83,12 @@ class CreateLinkListenerEndToEndTest {
                 .await()
                 .atMost(60, SECONDS)
                 .untilAsserted(() -> {
-                    assertThat(numberOfMessagesInLinkQueue()).isEqualTo(0);
-                    assertThat(numberOfMessagesNotVisibleInLinkQueue()).isEqualTo(0);
+                    assertThat(numberOfMessagesInLinkQueue()).isZero();
+                    assertThat(numberOfMessagesNotVisibleInLinkQueue()).isZero();
 
                     // verify behaviour as expected
-                    verify(createLinkService, times(ONCE)).saveAndLink(any());
-                    verify(queueMessageLogService, times(ONCE)).createLog(any(), anyString());
+                    verify(createLinkService).saveAndLink(any());
+                    verify(queueMessageLogService).createLog(any(), anyString());
                 });
     }
 

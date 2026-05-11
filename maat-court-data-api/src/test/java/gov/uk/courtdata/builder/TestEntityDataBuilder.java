@@ -965,7 +965,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public RepOrderCPDataEntity getRepOrderEntity() {
+    public static RepOrderCPDataEntity getRepOrderEntity() {
         return getRepOrderEntity(REP_ID);
     }
 

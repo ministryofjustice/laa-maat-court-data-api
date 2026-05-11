@@ -6,8 +6,7 @@ import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.PENDING_IOJ_DECISION;
 import static gov.uk.courtdata.constants.CourtDataConstants.SEARCH_TYPE_0;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_CREATION_EVENT;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -40,23 +39,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
+class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
 
     @Autowired
     private SaveAndLinkImpl saveAndLinkImp;
 
-    @Autowired
-    private TestModelDataBuilder testModelDataBuilder;
-
-    @Autowired
-    private TestEntityDataBuilder testEntityDataBuilder;
-
     @Test
-    public void givenSaveAndLinkModel_whenSaveAndImplIsInvoked_thenLinkEstablished() {
+    void givenSaveAndLinkModel_whenSaveAndImplIsInvoked_thenLinkEstablished() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getSaveAndLinkModelRaw();
-        repos.repOrderCPData.save(testEntityDataBuilder.getRepOrderEntity());
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getSaveAndLinkModelRaw();
+        repos.repOrderCPData.save(TestEntityDataBuilder.getRepOrderEntity());
         repos.repOrder.save(TestEntityDataBuilder.getRepOrder());
 
         // when
@@ -81,7 +74,7 @@ public class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
         Optional<RepOrderCPDataEntity> retrievedRepOrderEntity =
                 repos.repOrderCPData.findByrepOrderId(caseDetails.getMaatId());
         RepOrderCPDataEntity found = retrievedRepOrderEntity.orElse(null);
-        assertNotNull(found);
+        assertThat(found).isNotNull();
         assertThat(found.getCaseUrn()).isEqualTo(caseDetails.getCaseUrn());
         assertThat(found.getRepOrderId()).isEqualTo(caseDetails.getMaatId());
         assertThat(found.getDefendantId()).isEqualTo(caseDetails.getDefendant().getDefendantId());
@@ -92,14 +85,14 @@ public class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
         AsnSeqTxnCaseId asnSeqTxnCaseId = new AsnSeqTxnCaseId(courtDataDTO.getTxId(), courtDataDTO.getCaseId(), "001");
         Optional<ResultEntity> retrievedResultEntity = repos.result.findById(asnSeqTxnCaseId);
         ResultEntity found = retrievedResultEntity.orElse(null);
-        assertNotNull(found);
+        assertThat(found).isNotNull();
         final Result result = courtDataDTO
                 .getCaseDetails()
                 .getDefendant()
                 .getOffences()
-                .get(0)
+                .getFirst()
                 .getResults()
-                .get(0);
+                .getFirst();
         assertThat(found.getResultCode()).isEqualTo(result.getResultCode());
         assertThat(found.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(found.getResultShortTitle()).isEqualTo(result.getResultShortTitle());
@@ -111,7 +104,7 @@ public class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
         AsnSeqTxnCaseId asnSeqTxnCaseId = new AsnSeqTxnCaseId(courtDataDTO.getTxId(), courtDataDTO.getCaseId(), "001");
         Optional<OffenceEntity> retrievedOffenceEntity = repos.offence.findById(asnSeqTxnCaseId);
         OffenceEntity offenceEntity = retrievedOffenceEntity.orElse(null);
-        assertNotNull(offenceEntity);
+        assertThat(offenceEntity).isNotNull();
         assertThat(offenceEntity.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(offenceEntity.getTxId()).isEqualTo(courtDataDTO.getTxId());
         assertThat(offenceEntity.getOffenceWording())
@@ -119,7 +112,7 @@ public class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
                         .getCaseDetails()
                         .getDefendant()
                         .getOffences()
-                        .get(0)
+                        .getFirst()
                         .getOffenceWording());
         assertThat(offenceEntity.getIojDecision()).isEqualTo(PENDING_IOJ_DECISION);
         assertThat(offenceEntity.getWqOffence()).isEqualTo(G_NO);
@@ -130,11 +123,11 @@ public class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
         CaseTxnId caseTxnId = new CaseTxnId(courtDataDTO.getTxId(), courtDataDTO.getCaseId());
         Optional<SessionEntity> retrievedSessionEntity = repos.session.findById(caseTxnId);
         SessionEntity found = retrievedSessionEntity.orElse(null);
-        assertNotNull(found);
+        assertThat(found).isNotNull();
         assertThat(found.getTxId()).isEqualTo(courtDataDTO.getTxId());
         assertThat(found.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(found.getPostHearingCustody())
-                .isEqualTo(courtDataDTO.getCaseDetails().getSessions().get(0).getPostHearingCustody());
+                .isEqualTo(courtDataDTO.getCaseDetails().getSessions().getFirst().getPostHearingCustody());
     }
 
     private void verifyDefendant(CourtDataDTO courtDataDTO) {
@@ -142,7 +135,7 @@ public class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
         CaseTxnId caseTxnId = new CaseTxnId(courtDataDTO.getTxId(), courtDataDTO.getCaseId());
         Optional<DefendantEntity> retrievedDefendantEntity = repos.defendant.findById(caseTxnId);
         DefendantEntity defendantEntity = retrievedDefendantEntity.orElse(null);
-        assertNotNull(defendantEntity);
+        assertThat(defendantEntity).isNotNull();
         assertThat(defendantEntity.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(defendantEntity.getTxId()).isEqualTo(courtDataDTO.getTxId());
         assertThat(defendantEntity.getDateOfBirth())
@@ -157,7 +150,7 @@ public class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
                 new ProceedingMaatId(courtDataDTO.getCaseDetails().getMaatId(), courtDataDTO.getProceedingId());
         Optional<ProceedingEntity> retrievedProceedingEntity = repos.proceeding.findById(proceedingMaatId);
         ProceedingEntity foundProceeding = retrievedProceedingEntity.orElse(null);
-        assertNotNull(foundProceeding);
+        assertThat(foundProceeding).isNotNull();
         assertThat(foundProceeding.getCreatedTxid()).isEqualTo(courtDataDTO.getTxId());
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         assertThat(foundProceeding.getMaatId()).isEqualTo(caseDetails.getMaatId());
@@ -170,7 +163,7 @@ public class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
         CaseTxnId caseTxnId = new CaseTxnId(courtDataDTO.getTxId(), courtDataDTO.getCaseId());
         Optional<SolicitorEntity> retrievedSolicitorEntity = repos.solicitor.findById(caseTxnId);
         SolicitorEntity found = retrievedSolicitorEntity.orElse(null);
-        assertNotNull(found);
+        assertThat(found).isNotNull();
         assertThat(found.getTxId()).isEqualTo(courtDataDTO.getTxId());
         assertThat(found.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         final SolicitorMAATDataEntity solicitorMAATDataEntity = courtDataDTO.getSolicitorMAATDataEntity();
@@ -183,7 +176,7 @@ public class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
         Optional<WqLinkRegisterEntity> retrievedWqLinkRegisterEntity =
                 repos.wqLinkRegister.findById(courtDataDTO.getTxId());
         WqLinkRegisterEntity wqLinkRegisterEntity = retrievedWqLinkRegisterEntity.orElse(null);
-        assertNotNull(wqLinkRegisterEntity);
+        assertThat(wqLinkRegisterEntity).isNotNull();
         assertThat(wqLinkRegisterEntity.getCreatedTxId()).isEqualTo(courtDataDTO.getTxId());
         assertThat(wqLinkRegisterEntity.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(wqLinkRegisterEntity.getMaatCat())
@@ -199,7 +192,7 @@ public class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
         // Verify WQCore Record is created
         Optional<WqCoreEntity> retrievedWqCoreEntity = repos.wqCore.findById(courtDataDTO.getTxId());
         WqCoreEntity wqCoreEntity = retrievedWqCoreEntity.orElse(null);
-        assertNotNull(wqCoreEntity);
+        assertThat(wqCoreEntity).isNotNull();
         assertThat(wqCoreEntity.getTxId()).isEqualTo(courtDataDTO.getTxId());
         assertThat(wqCoreEntity.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(wqCoreEntity.getWqStatus()).isEqualTo(WQStatus.WAITING.value());
@@ -211,7 +204,7 @@ public class SaveAndLinkImplIntegrationTest extends MockMvcIntegrationTest {
         CaseTxnId caseTxnId = new CaseTxnId(courtDataDTO.getTxId(), courtDataDTO.getCaseId());
         Optional<CaseEntity> retrievedCaseEntity = repos.caseRepository.findById(caseTxnId);
         CaseEntity caseEntity = retrievedCaseEntity.orElse(null);
-        assertNotNull(caseEntity);
+        assertThat(caseEntity).isNotNull();
 
         assertThat(caseEntity.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
         assertThat(caseEntity.getTxId()).isEqualTo(courtDataDTO.getTxId());

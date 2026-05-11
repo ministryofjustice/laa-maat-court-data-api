@@ -1632,7 +1632,7 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public CourtDataDTO getSaveAndLinkModelRaw() {
+    public static CourtDataDTO getSaveAndLinkModelRaw() {
         return CourtDataDTO.builder()
                 .caseDetails(getCaseDetails(REP_ID))
                 .defendantMAATDataEntity(TestEntityDataBuilder.getDefendantMAATDataEntity())
@@ -1640,7 +1640,7 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public CourtDataDTO getSaveAndLinkModelRaw(Integer repId) {
+    public static CourtDataDTO getSaveAndLinkModelRaw(Integer repId) {
         return CourtDataDTO.builder()
                 .caseDetails(getCaseDetails(repId))
                 .defendantMAATDataEntity(TestEntityDataBuilder.getDefendantMAATDataEntity(repId))

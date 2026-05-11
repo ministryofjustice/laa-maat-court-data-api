@@ -1,7 +1,6 @@
 package gov.uk.courtdata.integration.repOrder;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -67,11 +66,12 @@ class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
         RepOrderCCOutcome repOrderCCOutCome = TestModelDataBuilder.getRepOrderCCOutcome();
         repOrderCCOutCome.setUserCreated(null);
         repOrderCCOutCome.setId(null);
-        assertTrue(runBadRequestErrorScenario(
+        assertThat(runBadRequestErrorScenario(
                 "User created is required",
                 post(ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(repOrderCCOutCome))));
+                        .content(objectMapper.writeValueAsString(repOrderCCOutCome))))
+                .isTrue();
     }
 
     @Test
@@ -93,11 +93,12 @@ class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
         RepOrderCCOutcome repOrderCCOutcome =
                 TestModelDataBuilder.getUpdateRepOrderCCOutcome(INVALID_OUTCOME_ID, repID);
         repOrderCCOutcome.setRepId(repID);
-        assertTrue(runNotFoundErrorScenario(
+        assertThat(runNotFoundErrorScenario(
                 "No CC Outcome found for ID: -1",
                 MockMvcRequestBuilders.put(ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(repOrderCCOutcome))));
+                        .content(objectMapper.writeValueAsString(repOrderCCOutcome))))
+                .isTrue();
     }
 
     @Test
@@ -115,18 +116,19 @@ class CCOutcomeControllerIntegrationTest extends MockMvcIntegrationTest {
         softly.assertThat("430").isEqualTo(ccOutCome.getCrownCourtCode());
         softly.assertThat(TestModelDataBuilder.TEST_USER).isEqualTo(ccOutCome.getUserModified());
         softly.assertThat(ccOutCome.getDateModified()).isNotNull();
+        softly.assertAll();
     }
 
     @Test
     void givenAInvalidRepId_whenFindIsInvoked_thenReturnValidationException() throws Exception {
-        runBadRequestErrorScenario(
+        assertThat(runBadRequestErrorScenario(
                 "MAAT/REP ID [999999] is invalid",
-                MockMvcRequestBuilders.get(ENDPOINT_URL + "/reporder/" + INVALID_REP_ID));
+                MockMvcRequestBuilders.get(ENDPOINT_URL + "/reporder/" + INVALID_REP_ID))).isTrue();
     }
 
     @Test
     void givenARepIdNotFoundInOutcome_whenFindIsInvoked_thenReturnEmpty() throws Exception {
-        runSuccessScenario(List.of(), MockMvcRequestBuilders.get(ENDPOINT_URL + "/reporder/" + repID));
+        assertThat(runSuccessScenario(List.of(), MockMvcRequestBuilders.get(ENDPOINT_URL + "/reporder/" + repID))).isTrue();
     }
 
     @Test

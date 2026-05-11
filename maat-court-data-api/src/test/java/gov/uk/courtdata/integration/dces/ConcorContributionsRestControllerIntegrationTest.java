@@ -2,10 +2,7 @@ package gov.uk.courtdata.integration.dces;
 
 import static gov.uk.courtdata.enums.ConcorContributionStatus.ACTIVE;
 import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,7 +58,7 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
     private static int file2Id;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         file1Id = repos.contributionFiles
                 .save(TestEntityDataBuilder.getContributionFilesEntity(FILE_ONE_NAME, 10, 0, false))
                 .getFileId();
@@ -148,20 +145,20 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // verify the content of the saved entity.
         List<ContributionFilesEntity> savedFileEntities = repos.contributionFiles.findAll();
-        assertEquals(expectedFileListSize, savedFileEntities.size());
+        assertThat(savedFileEntities).hasSize(expectedFileListSize);
         ContributionFilesEntity savedFileEntity = savedFileEntities.get(expectedFileListSize - 1); // get last element
-        assertNotNull(savedFileEntity);
-        assertNotNull(savedFileEntity.getFileId());
-        assertEquals(expectedRecordsSent, savedFileEntity.getRecordsSent());
-        assertNull(savedFileEntity.getXmlContent());
-        assertNull(savedFileEntity.getAckXmlContent());
-        assertEquals(expectedFilename, savedFileEntity.getFileName());
+        assertThat(savedFileEntity).isNotNull();
+        assertThat(savedFileEntity.getFileId()).isNotNull();
+        assertThat(savedFileEntity.getRecordsSent()).isEqualTo(expectedRecordsSent);
+        assertThat(savedFileEntity.getXmlContent()).isNull();
+        assertThat(savedFileEntity.getAckXmlContent()).isNull();
+        assertThat(savedFileEntity.getFileName()).isEqualTo(expectedFilename);
         // assert the file id has been set on the contribution
         Optional<ConcorContributionsEntity> updatedConcor = repos.concorContributions.findById(savedEntityId3);
-        assertTrue(updatedConcor.isPresent());
+        assertThat(updatedConcor).isPresent();
         ConcorContributionsEntity fdcContributionsEntity = updatedConcor.get();
-        assertEquals(savedFileEntity.getFileId(), fdcContributionsEntity.getContribFileId());
-        assertEquals(ConcorContributionStatus.SENT, fdcContributionsEntity.getStatus());
+        assertThat(fdcContributionsEntity.getContribFileId()).isEqualTo(savedFileEntity.getFileId());
+        assertThat(fdcContributionsEntity.getStatus()).isEqualTo(ConcorContributionStatus.SENT);
     }
 
     @Test
@@ -175,11 +172,11 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check we've updated the received count.
         Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file2Id);
-        assertTrue(fileEntity.isPresent());
-        assertEquals(1, fileEntity.get().getRecordsReceived());
+        assertThat(fileEntity).isPresent();
+        assertThat(fileEntity.get().getRecordsReceived()).isOne();
 
         // check no values in errors
-        assertEquals(0, repos.contributionFileErrors.count());
+        assertThat(repos.contributionFileErrors.count()).isZero();
     }
 
     @Test
@@ -195,21 +192,21 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check we've updated the received count.
         Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file2Id);
-        assertTrue(fileEntity.isPresent());
-        assertEquals(0, fileEntity.get().getRecordsReceived());
+        assertThat(fileEntity).isPresent();
+        assertThat(fileEntity.get().getRecordsReceived()).isZero();
 
         // check no values in errors
-        assertEquals(1, repos.contributionFileErrors.count());
+        assertThat(repos.contributionFileErrors.count()).isOne();
         ContributionFileErrorsEntity errorEntity =
-                repos.contributionFileErrors.findAll().get(0);
-        assertEquals(savedEntityId4, errorEntity.getConcorContributionId());
-        assertEquals(savedEntityId4, errorEntity.getContributionId());
-        assertEquals(errorText, errorEntity.getErrorText());
-        assertEquals(file2Id, errorEntity.getContributionFileId());
+                repos.contributionFileErrors.findAll().getFirst();
+        assertThat(errorEntity.getConcorContributionId()).isEqualTo(savedEntityId4);
+        assertThat(errorEntity.getContributionId()).isEqualTo(savedEntityId4);
+        assertThat(errorEntity.getErrorText()).isEqualTo(errorText);
+        assertThat(errorEntity.getContributionFileId()).isEqualTo(file2Id);
 
-        assertEquals(dateTimeCheck.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
-        assertEquals(dateTimeCheck.getMonth(), errorEntity.getDateCreated().getMonth());
-        assertEquals(dateTimeCheck.getYear(), errorEntity.getDateCreated().getYear());
+        assertThat(errorEntity.getDateCreated().getDayOfMonth()).isEqualTo(dateTimeCheck.getDayOfMonth());
+        assertThat(errorEntity.getDateCreated().getMonth()).isEqualTo(dateTimeCheck.getMonth());
+        assertThat(errorEntity.getDateCreated().getYear()).isEqualTo(dateTimeCheck.getYear());
     }
 
     @Test
@@ -222,6 +219,6 @@ class ConcorContributionsRestControllerIntegrationTest extends MockMvcIntegratio
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check no values in errors
-        assertEquals(0, repos.contributionFileErrors.count());
+        assertThat(repos.contributionFileErrors.count()).isZero();
     }
 }

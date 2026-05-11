@@ -1,9 +1,6 @@
 package gov.uk.courtdata.integration.dces;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,7 +68,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     DebtCollectionRepository debtCollectionRepositorySpy;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         int file1Id = saveContributionFile(FILE_ONE, false);
         file2Id = saveContributionFile(FILE_TWO, true);
 
@@ -161,21 +158,21 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // verify the content of the saved entity.
         List<ContributionFilesEntity> savedFileEntities = repos.contributionFiles.findAll();
-        assertEquals(expectedFileListSize, savedFileEntities.size());
+        assertThat(savedFileEntities).hasSize(expectedFileListSize);
         ContributionFilesEntity savedFileEntity = savedFileEntities.get(expectedFileListSize - 1);
-        assertNotNull(savedFileEntity);
-        assertNotNull(savedFileEntity.getFileId());
-        assertEquals(expectedRecordsSent, savedFileEntity.getRecordsSent());
-        assertNull(
-                savedFileEntity.getXmlContent()); // unfortunately, cannot test due to aforementioned XMLTYPE() issue.
-        assertNull(savedFileEntity.getAckXmlContent());
-        assertEquals(expectedFilename, savedFileEntity.getFileName());
+        assertThat(savedFileEntity).isNotNull();
+        assertThat(savedFileEntity.getFileId()).isNotNull();
+        assertThat(savedFileEntity.getRecordsSent()).isEqualTo(expectedRecordsSent);
+        assertThat(savedFileEntity.getXmlContent())
+                .isNull(); // unfortunately, cannot test due to aforementioned XMLTYPE() issue.
+        assertThat(savedFileEntity.getAckXmlContent()).isNull();
+        assertThat(savedFileEntity.getFileName()).isEqualTo(expectedFilename);
         // assert the file id has been set on the fdc
         Optional<FdcContributionsEntity> updatedFdc = repos.fdcContributions.findById(expectedId4);
-        assertTrue(updatedFdc.isPresent());
+        assertThat(updatedFdc).isPresent();
         FdcContributionsEntity fdcContributionsEntity = updatedFdc.get();
-        assertEquals(savedFileEntity.getFileId(), fdcContributionsEntity.getContFileId());
-        assertEquals(FdcContributionsStatus.SENT, fdcContributionsEntity.getStatus());
+        assertThat(fdcContributionsEntity.getContFileId()).isEqualTo(savedFileEntity.getFileId());
+        assertThat(fdcContributionsEntity.getStatus()).isEqualTo(FdcContributionsStatus.SENT);
     }
 
     @Test
@@ -189,11 +186,11 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check we've updated the received count.
         Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file2Id);
-        assertTrue(fileEntity.isPresent());
-        assertEquals(1, fileEntity.get().getRecordsReceived());
+        assertThat(fileEntity).isPresent().hasValueSatisfying(entity -> assertThat(entity.getRecordsReceived())
+                .isOne());
 
         // check no values in errors
-        assertEquals(0, repos.contributionFileErrors.count());
+        assertThat(repos.contributionFileErrors.count()).isZero();
     }
 
     @Test
@@ -209,21 +206,21 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check we've updated the received count.
         Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file2Id);
-        assertTrue(fileEntity.isPresent());
-        assertEquals(0, fileEntity.get().getRecordsReceived());
+        assertThat(fileEntity).isPresent();
+        assertThat(fileEntity.get().getRecordsReceived()).isZero();
 
         // check no values in errors
-        assertEquals(1, repos.contributionFileErrors.count());
+        assertThat(repos.contributionFileErrors.count()).isOne();
         ContributionFileErrorsEntity errorEntity =
-                repos.contributionFileErrors.findAll().get(0);
-        assertEquals(expectedId4, errorEntity.getFdcContributionId());
-        assertEquals(expectedId4, errorEntity.getContributionId());
-        assertEquals(errorText, errorEntity.getErrorText());
-        assertEquals(file2Id, errorEntity.getContributionFileId());
+                repos.contributionFileErrors.findAll().getFirst();
+        assertThat(errorEntity.getFdcContributionId()).isEqualTo(expectedId4);
+        assertThat(errorEntity.getContributionId()).isEqualTo(expectedId4);
+        assertThat(errorEntity.getErrorText()).isEqualTo(errorText);
+        assertThat(errorEntity.getContributionFileId()).isEqualTo(file2Id);
 
-        assertEquals(dateTimeCheck.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
-        assertEquals(dateTimeCheck.getMonth(), errorEntity.getDateCreated().getMonth());
-        assertEquals(dateTimeCheck.getYear(), errorEntity.getDateCreated().getYear());
+        assertThat(errorEntity.getDateCreated().getDayOfMonth()).isEqualTo(dateTimeCheck.getDayOfMonth());
+        assertThat(errorEntity.getDateCreated().getMonth()).isEqualTo(dateTimeCheck.getMonth());
+        assertThat(errorEntity.getDateCreated().getYear()).isEqualTo(dateTimeCheck.getYear());
     }
 
     @Test
@@ -236,7 +233,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check no values in errors
-        assertEquals(0, repos.contributionFileErrors.count());
+        assertThat(repos.contributionFileErrors.count()).isZero();
     }
 
     @Test
@@ -249,7 +246,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check no values in errors
-        assertEquals(0, repos.contributionFileErrors.count());
+        assertThat(repos.contributionFileErrors.count()).isZero();
     }
 
     @Test
@@ -264,13 +261,13 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check no values in errors
-        assertEquals(0, repos.contributionFileErrors.count());
+        assertThat(repos.contributionFileErrors.count()).isZero();
 
         FdcContributionsEntity originalFile =
                 repos.fdcContributions.findById(fdcId).get();
-        ContributionFilesEntity filesEntity =
-                repos.contributionFiles.findById(originalFile.getContFileId()).get();
-        assertEquals(0, filesEntity.getRecordsReceived()); // ensure the increment is rolled back.
+        Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(originalFile.getContFileId());
+        assertThat(fileEntity).isPresent().hasValueSatisfying(entity -> assertThat(entity.getRecordsReceived())
+                .isZero()); // ensure the increment is rolled back.
     }
 
     @Test
@@ -331,7 +328,7 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        assertEquals(originalFdcItemCount - 1, repos.fdcItemsRepository.count());
+        assertThat(repos.fdcItemsRepository.count()).isEqualTo(originalFdcItemCount - 1);
     }
 
     @Test
@@ -352,18 +349,18 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        assertEquals(originalFdcItemCount + 1, repos.fdcItemsRepository.count());
+        assertThat(repos.fdcItemsRepository.count()).isEqualTo(originalFdcItemCount + 1);
         Optional<FdcItemsEntity> optionalItem = repos.fdcItemsRepository.findAll().stream()
                 .filter(item -> item.getFdcId().equals(expectedId2))
                 .findFirst();
-        assertTrue(optionalItem.isPresent());
+        assertThat(optionalItem).isPresent();
         FdcItemsEntity savedEntity = optionalItem.get();
-        assertEquals(itemType, savedEntity.getItemType());
+        assertThat(savedEntity.getItemType()).isEqualTo(itemType);
         // check basic values.
-        assertEquals(LocalDate.now(), savedEntity.getDateCreated());
-        assertEquals(LocalDate.now(), savedEntity.getDateModified());
-        assertEquals("DCES", savedEntity.getUserCreated());
-        assertEquals("DCES", savedEntity.getUserModified());
+        assertThat(savedEntity.getDateCreated()).isEqualTo(LocalDate.now());
+        assertThat(savedEntity.getDateModified()).isEqualTo(LocalDate.now());
+        assertThat(savedEntity.getUserCreated()).isEqualTo("DCES");
+        assertThat(savedEntity.getUserModified()).isEqualTo("DCES");
     }
 
     @Test
@@ -395,21 +392,21 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        assertEquals(originalFdcItemCount + 1, repos.fdcItemsRepository.count());
+        assertThat(repos.fdcItemsRepository.count()).isEqualTo(originalFdcItemCount + 1);
         Optional<FdcItemsEntity> optionalItem = repos.fdcItemsRepository.findAll().stream()
                 .filter(item -> item.getFdcId().equals(expectedId4))
                 .findFirst();
-        assertTrue(optionalItem.isPresent());
+        assertThat(optionalItem).isPresent();
         FdcItemsEntity savedEntity = optionalItem.get();
-        assertEquals(itemType, savedEntity.getItemType());
+        assertThat(savedEntity.getItemType()).isEqualTo(itemType);
         // check basic values. Dates are auto-populated, so should ignore set values.
-        assertEquals(LocalDate.now(), savedEntity.getDateCreated());
-        assertEquals(LocalDate.now(), savedEntity.getDateModified());
-        assertEquals(expectedUser, savedEntity.getUserCreated());
-        assertEquals(expectedUser, savedEntity.getUserModified());
-        assertEquals(expectedCostInd, savedEntity.getLatestCostInd());
-        assertEquals(expectedPaidAsClaimed, savedEntity.getPaidAsClaimed());
-        assertEquals(expectedAdjustReason, savedEntity.getAdjustmentReason());
+        assertThat(savedEntity.getDateCreated()).isEqualTo(LocalDate.now());
+        assertThat(savedEntity.getDateModified()).isEqualTo(LocalDate.now());
+        assertThat(savedEntity.getUserCreated()).isEqualTo(expectedUser);
+        assertThat(savedEntity.getUserModified()).isEqualTo(expectedUser);
+        assertThat(savedEntity.getLatestCostInd()).isEqualTo(expectedCostInd);
+        assertThat(savedEntity.getPaidAsClaimed()).isEqualTo(expectedPaidAsClaimed);
+        assertThat(savedEntity.getAdjustmentReason()).isEqualTo(expectedAdjustReason);
     }
 
     void validateFdcPresent(ResultActions result, Integer expectedFdcId) throws Exception {

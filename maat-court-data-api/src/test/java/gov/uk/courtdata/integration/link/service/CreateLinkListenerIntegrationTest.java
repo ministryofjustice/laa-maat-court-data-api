@@ -1,7 +1,6 @@
 package gov.uk.courtdata.integration.link.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -28,13 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.MessageHeaders;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class CreateLinkListenerIntegrationTest extends MockMvcIntegrationTest {
-
-    @Autowired
-    private TestModelDataBuilder testModelDataBuilder;
-
-    @Autowired
-    private TestEntityDataBuilder testEntityDataBuilder;
+class CreateLinkListenerIntegrationTest extends MockMvcIntegrationTest {
 
     @Autowired
     private CreateLinkListener createLinkListener;
@@ -43,11 +36,11 @@ public class CreateLinkListenerIntegrationTest extends MockMvcIntegrationTest {
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
     @Test
-    public void givenSaveAndLinkModel_whenSaveAndImplIsInvoked_thenLinkEstablished() {
+    void givenSaveAndLinkModel_whenSaveAndImplIsInvoked_thenLinkEstablished() {
 
         // given
         RepOrderEntity repOrderEntity = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
-        RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderEntity();
+        RepOrderCPDataEntity repOrderCPDataEntity = TestEntityDataBuilder.getRepOrderEntity();
         repOrderCPDataEntity.setRepOrderId(repOrderEntity.getId());
         repos.repOrderCPData.save(repOrderCPDataEntity);
 
@@ -55,10 +48,10 @@ public class CreateLinkListenerIntegrationTest extends MockMvcIntegrationTest {
                 .code("B16BG")
                 .effectiveDateFrom(LocalDateTime.now())
                 .build());
-        repos.solicitorMAATData.save(testEntityDataBuilder.getSolicitorMAATDataEntity(repOrderEntity.getId()));
-        repos.defendantMAATData.save(testEntityDataBuilder.getDefendantMAATDataEntity(repOrderEntity.getId()));
+        repos.solicitorMAATData.save(TestEntityDataBuilder.getSolicitorMAATDataEntity(repOrderEntity.getId()));
+        repos.defendantMAATData.save(TestEntityDataBuilder.getDefendantMAATDataEntity(repOrderEntity.getId()));
 
-        String saveAndLinkMessage = testModelDataBuilder.getSaveAndLinkString(repOrderEntity.getId());
+        String saveAndLinkMessage = TestModelDataBuilder.getSaveAndLinkString(repOrderEntity.getId());
 
         // when
         Map<String, Object> header = new HashMap<>();
@@ -68,7 +61,7 @@ public class CreateLinkListenerIntegrationTest extends MockMvcIntegrationTest {
         createLinkListener.receive(saveAndLinkMessage, headers);
 
         // then
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getSaveAndLinkModelRaw(repOrderEntity.getId());
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getSaveAndLinkModelRaw(repOrderEntity.getId());
 
         verifyWqLinkRegister(courtDataDTO);
         verifyRepOrder(courtDataDTO);
@@ -78,7 +71,7 @@ public class CreateLinkListenerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    public void givenNewMessageInSqs_whenMaatIsNull_thenThrowException() {
+    void givenNewMessageInSqs_whenMaatIsNull_thenThrowException() {
 
         String saveAndLinkMessage = getSaveAndLinkString();
 
@@ -89,7 +82,7 @@ public class CreateLinkListenerIntegrationTest extends MockMvcIntegrationTest {
         // when
         createLinkListener.receive(saveAndLinkMessage, headers);
         // then
-        assertThat(repos.wqLinkRegister.findAll().size()).isEqualTo(0);
+        assertThat(repos.wqLinkRegister.findAll()).isEmpty();
     }
 
     private void verifyRepOrder(CourtDataDTO courtDataDTO) {
@@ -99,7 +92,7 @@ public class CreateLinkListenerIntegrationTest extends MockMvcIntegrationTest {
                 repos.repOrderCPData.findByrepOrderId(caseDetails.getMaatId());
         RepOrderCPDataEntity found = retrievedRepOrderEntity.orElse(null);
 
-        assertNotNull(found);
+        assertThat(found).isNotNull();
         assertThat(found.getCaseUrn()).isEqualTo(caseDetails.getCaseUrn());
         assertThat(found.getRepOrderId()).isEqualTo(caseDetails.getMaatId());
         assertThat(found.getDefendantId()).isEqualTo(caseDetails.getDefendant().getDefendantId());
@@ -109,9 +102,9 @@ public class CreateLinkListenerIntegrationTest extends MockMvcIntegrationTest {
         // Verify WQCore Link register Record is created
         List<WqLinkRegisterEntity> retrievedWqLinkRegisterEntity =
                 repos.wqLinkRegister.findBymaatId(courtDataDTO.getCaseDetails().getMaatId());
-        WqLinkRegisterEntity wqLinkRegisterEntity = retrievedWqLinkRegisterEntity.get(0);
+        WqLinkRegisterEntity wqLinkRegisterEntity = retrievedWqLinkRegisterEntity.getFirst();
 
-        assertNotNull(wqLinkRegisterEntity);
+        assertThat(wqLinkRegisterEntity).isNotNull();
         assertThat(wqLinkRegisterEntity.getMaatId())
                 .isEqualTo(courtDataDTO.getCaseDetails().getMaatId());
     }

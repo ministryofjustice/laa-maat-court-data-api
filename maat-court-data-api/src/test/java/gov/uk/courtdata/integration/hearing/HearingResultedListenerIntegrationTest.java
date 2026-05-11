@@ -13,9 +13,11 @@ import static gov.uk.courtdata.constants.CourtDataConstants.UNKNOWN_OFFENCE;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static gov.uk.courtdata.enums.WQStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -58,7 +60,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -69,14 +70,14 @@ import org.springframework.messaging.MessageHeaders;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTest {
+class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTest {
 
-    private final String LAA_TRANSACTION_ID = "b27b97e4-0514-42c4-8e09-fcc2c693e11f";
-    private final Integer TEST_CASE_ID = 1;
-    private final String TEST_USER = "test-user";
-    private final LocalDate TEST_CREATED_DATE = LocalDate.of(2022, 1, 1);
-    private final Integer TEST_APPLICATION_FLAG = 1;
-    private Integer TEST_MAAT_ID = 1234;
+    private static final String LAA_TRANSACTION_ID = "b27b97e4-0514-42c4-8e09-fcc2c693e11f";
+    private static final Integer TEST_CASE_ID = 1;
+    private static final String TEST_USER = "test-user";
+    private static final LocalDate TEST_CREATED_DATE = LocalDate.of(2022, 1, 1);
+    private static final Integer TEST_APPLICATION_FLAG = 1;
+    private Integer testMaatId = 1234;
 
     @Mock
     private WqLinkRegisterRepository wqLinkRegisterRepository1;
@@ -87,13 +88,13 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     private QueueMessageLogTestHelper queueMessageLogTestHelper;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         setupTestData();
         queueMessageLogTestHelper = new QueueMessageLogTestHelper(repos.queueMessageLog);
     }
 
     @Test
-    public void givenAHearingMessageWithNoMaatId_whenMessageIsReceived_thenErrorIsReturned() {
+    void givenAHearingMessageWithNoMaatId_whenMessageIsReceived_thenErrorIsReturned() {
         String payloadMissingMaatId = String.format("{\"laaTransactionId\":\"%s\"}", LAA_TRANSACTION_ID);
         hearingResultedListener.receive(payloadMissingMaatId, new MessageHeaders(new HashMap<>()));
         verify(wqLinkRegisterRepository1, times(0)).findBymaatId(anyInt());
@@ -101,7 +102,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    public void givenAHearingMessageWithAZeroMaatId_whenMessageIsReceived_thenErrorIsReturned()
+    void givenAHearingMessageWithAZeroMaatId_whenMessageIsReceived_thenErrorIsReturned()
             throws JsonProcessingException {
         HearingResulted testData = HearingResulted.builder()
                 .maatId(0)
@@ -113,7 +114,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    public void givenAHearingMessageWithAZeroMaatId_whenMessageIsReceived_thenErrorIsReturned1()
+    void givenAHearingMessageWithAZeroMaatId_whenMessageIsReceived_thenErrorIsReturned1()
             throws JsonProcessingException {
         HearingResulted testData = HearingResulted.builder()
                 .maatId(0)
@@ -126,7 +127,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    public void givenAHearingMessageWithAMaatIdThatDoesNotExist_whenMessageIsReceived_thenErrorIsReturned()
+    void givenAHearingMessageWithAMaatIdThatDoesNotExist_whenMessageIsReceived_thenErrorIsReturned()
             throws JsonProcessingException {
         Integer invalidMaatId = 999;
         HearingResulted testData = HearingResulted.builder()
@@ -139,52 +140,52 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    public void givenAValidHearingMessageWhereTheMaatIdIsNotLinked_whenMessageIsReceived_thenErrorIsReturned()
+    void givenAValidHearingMessageWhereTheMaatIdIsNotLinked_whenMessageIsReceived_thenErrorIsReturned()
             throws JsonProcessingException {
         HearingResulted testData = HearingResulted.builder()
-                .maatId(TEST_MAAT_ID)
+                .maatId(testMaatId)
                 .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
                 .jurisdictionType(JurisdictionType.CROWN)
                 .build();
 
-        runValidationErrorScenario(testData, String.format("MAAT Id : %s not linked.", TEST_MAAT_ID));
+        runValidationErrorScenario(testData, String.format("MAAT Id : %s not linked.", testMaatId));
     }
 
     @Test
-    public void givenAHearingMessageWhereTheMaatIdHasMultipleLinks_whenMessageIsReceived_thenErrorIsReturned()
+    void givenAHearingMessageWhereTheMaatIdHasMultipleLinks_whenMessageIsReceived_thenErrorIsReturned()
             throws JsonProcessingException {
         repos.wqLinkRegister.saveAll(List.of(
                 WqLinkRegisterEntity.builder()
                         .createdTxId(1)
-                        .maatId(TEST_MAAT_ID)
+                        .maatId(testMaatId)
                         .caseId(1)
                         .build(),
                 WqLinkRegisterEntity.builder()
                         .createdTxId(2)
-                        .maatId(TEST_MAAT_ID)
+                        .maatId(testMaatId)
                         .caseId(2)
                         .build()));
 
         HearingResulted testData = HearingResulted.builder()
-                .maatId(TEST_MAAT_ID)
+                .maatId(testMaatId)
                 .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
                 .jurisdictionType(JurisdictionType.CROWN)
                 .build();
 
-        runValidationErrorScenario(testData, String.format("Multiple Links found for  MAAT Id : %s", TEST_MAAT_ID));
+        runValidationErrorScenario(testData, String.format("Multiple Links found for  MAAT Id : %s", testMaatId));
     }
 
     @Test
-    public void givenAHearingMessageWhereTheOffenceCodeIsNull_whenMessageIsReceived_thenErrorIsReturned()
+    void givenAHearingMessageWhereTheOffenceCodeIsNull_whenMessageIsReceived_thenErrorIsReturned()
             throws JsonProcessingException {
         repos.wqLinkRegister.save(WqLinkRegisterEntity.builder()
                 .createdTxId(1)
-                .maatId(TEST_MAAT_ID)
+                .maatId(testMaatId)
                 .caseId(1)
                 .build());
 
         List<Offence> testOffences = getTestOffences();
-        testOffences.get(0).setOffenceCode(null);
+        testOffences.getFirst().setOffenceCode(null);
 
         HearingResulted testData = getTemplateResultedHearingData();
         testData.getDefendant().setOffences(testOffences);
@@ -193,10 +194,10 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    public void givenAHearingMessageContainingANullResultCode_whenMessageIsReceived_thenTheCorrectDataIsPersisted()
+    void givenAHearingMessageContainingANullResultCode_whenMessageIsReceived_thenTheCorrectDataIsPersisted()
             throws JsonProcessingException {
         List<Offence> testOffences = getTestOffences();
-        testOffences.get(0).getResults().get(0).setResultCode(null);
+        testOffences.getFirst().getResults().getFirst().setResultCode(null);
 
         HearingResulted testData = getTemplateResultedHearingData();
         testData.getDefendant().setOffences(testOffences);
@@ -205,9 +206,8 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    public void
-            givenAHearingMessageWithExistingResultAndOffenceCodes_whenMessageIsReceived_thenTheCorrectDataIsPersisted()
-                    throws JsonProcessingException {
+    void givenAHearingMessageWithExistingResultAndOffenceCodes_whenMessageIsReceived_thenTheCorrectDataIsPersisted()
+            throws JsonProcessingException {
 
         HearingResulted testData = getTemplateResultedHearingData();
 
@@ -220,9 +220,8 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    public void
-            givenAValidHearingMessageOfTypeOffenceWithNoWqProcessing_whenMessageIsReceived_thenTheCorrectDataIsPersisted()
-                    throws JsonProcessingException {
+    void givenAValidHearingMessageOfTypeOffenceWithNoWqProcessing_whenMessageIsReceived_thenTheCorrectDataIsPersisted()
+            throws JsonProcessingException {
 
         HearingResulted testData = getTemplateResultedHearingData();
         testData.setJurisdictionType(JurisdictionType.CROWN);
@@ -241,7 +240,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    public void givenAValidHearingRequiringCourtPreProcessing_whenMessageIsReceived_thenTheCorrectDataIsPersisted()
+    void givenAValidHearingRequiringCourtPreProcessing_whenMessageIsReceived_thenTheCorrectDataIsPersisted()
             throws JsonProcessingException {
 
         HearingResulted testData = getTemplateResultedHearingData();
@@ -262,7 +261,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    public void
+    void
             givenAValidHearingRequiringCourtPreProcessingWithNoExistingApplication_whenMessageIsReceived_thenTheCorrectDataIsPersisted()
                     throws JsonProcessingException {
 
@@ -278,13 +277,13 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     @Test
-    public void givenAValidHearingRequiringTextTruncation_whenMessageIsReceived_thenTheCorrectDataIsPersisted()
+    void givenAValidHearingRequiringTextTruncation_whenMessageIsReceived_thenTheCorrectDataIsPersisted()
             throws JsonProcessingException {
         String stringRequiringTruncation = "a".repeat(ORACLE_VARCHAR_MAX + 10);
         HearingResulted testData = getTemplateResultedHearingData();
-        Offence testOffence = testData.getDefendant().getOffences().get(0);
+        Offence testOffence = testData.getDefendant().getOffences().getFirst();
         testOffence.setOffenceWording(stringRequiringTruncation);
-        Result testResult = testOffence.getResults().get(0);
+        Result testResult = testOffence.getResults().getFirst();
         testResult.setResultText(stringRequiringTruncation);
 
         runSuccessScenario(testData, true, true, true);
@@ -296,7 +295,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
 
     private HearingResulted getTemplateResultedHearingData() {
         return HearingResulted.builder()
-                .maatId(TEST_MAAT_ID)
+                .maatId(testMaatId)
                 .laaTransactionId(UUID.fromString(LAA_TRANSACTION_ID))
                 .hearingId(UUID.randomUUID())
                 .functionType(FunctionType.OFFENCE)
@@ -318,7 +317,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
             throws JsonProcessingException {
         WqLinkRegisterEntity linkRegisterEntity = repos.wqLinkRegister.save(WqLinkRegisterEntity.builder()
                 .createdTxId(1)
-                .maatId(TEST_MAAT_ID)
+                .maatId(testMaatId)
                 .caseId(TEST_CASE_ID)
                 .proceedingId(1)
                 .build());
@@ -526,8 +525,8 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
 
         WQCaseEntity wqCaseEntity = repos.wqCase.findAll().stream()
                 .filter(item -> item.getCaseId() == linkRegisterEntity.getCaseId() && item.getTxId() == expectedTxId)
-                .collect(Collectors.toList())
-                .get(0);
+                .toList()
+                .getFirst();
 
         assertThat(wqCaseEntity).isNotNull();
         assertThat(wqCaseEntity.getAsn()).isEqualTo(hearingResultedData.getAsn());
@@ -543,13 +542,13 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
     }
 
     private List<Offence> getTestOffences() {
-        String TEST_OFFENCE_CLASSIFICATION = "CC";
+        String testOffenceClassification = "CC";
         return List.of(
                 Offence.builder()
                         .offenceId("1")
                         .offenceCode("TOC1")
                         .legalAidStatus("AP")
-                        .offenceClassification(TEST_OFFENCE_CLASSIFICATION)
+                        .offenceClassification(testOffenceClassification)
                         .legalAidStatusDate(LocalDate.now().toString())
                         .offenceDate(LocalDate.now().toString())
                         .asnSeq("1")
@@ -563,7 +562,7 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
                 Offence.builder()
                         .offenceId("2")
                         .offenceCode("TOC2")
-                        .offenceClassification(TEST_OFFENCE_CLASSIFICATION)
+                        .offenceClassification(testOffenceClassification)
                         .offenceDate(LocalDate.now().toString())
                         .legalAidStatus("AP")
                         .legalAidStatusDate(LocalDate.now().toString())
@@ -592,10 +591,10 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
         List<WQHearingEntity> matchingWqHearingEntities = repos.wqHearing.findByMaatIdAndHearingUUID(
                 testPayload.getMaatId(), testPayload.getHearingId().toString());
         WqLinkRegisterEntity linkEntity =
-                repos.wqLinkRegister.findBymaatId(testPayload.getMaatId()).get(0);
+                repos.wqLinkRegister.findBymaatId(testPayload.getMaatId()).getFirst();
 
         assertThat(matchingWqHearingEntities).hasSize(1);
-        WQHearingEntity createWqHearingEntity = matchingWqHearingEntities.get(0);
+        WQHearingEntity createWqHearingEntity = matchingWqHearingEntities.getFirst();
 
         assertThat(createWqHearingEntity.getMaatId()).isEqualTo(testPayload.getMaatId());
         assertThat(createWqHearingEntity.getHearingUUID())
@@ -664,10 +663,9 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
             Class<T> exceptionClass, HearingResulted testPayload, String expectedErrorMessage)
             throws JsonProcessingException {
         String messageBlob = objectMapper.writeValueAsString(testPayload);
-        T error = Assertions.assertThrows(
-                exceptionClass,
-                () -> hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>())));
-        Assertions.assertEquals(error.getMessage(), expectedErrorMessage);
+        assertThatThrownBy(() -> hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>())))
+                .isInstanceOf(exceptionClass)
+                .hasMessage(expectedErrorMessage);
         queueMessageLogTestHelper.assertQueueMessageLogged(
                 messageBlob, 1, testPayload.getLaaTransactionId().toString(), testPayload.getMaatId());
     }
@@ -677,14 +675,14 @@ public class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTe
             throws JsonProcessingException {
         String messageBlob = objectMapper.writeValueAsString(testPayload);
         hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>()));
-        verify(wqLinkRegisterRepository1, times(0)).findBymaatId(testPayload.getMaatId());
+        verifyNoInteractions(wqLinkRegisterRepository1);
         queueMessageLogTestHelper.assertQueueMessageLogged(
                 messageBlob, 1, testPayload.getLaaTransactionId().toString(), testPayload.getMaatId());
     }
 
     private void setupTestData() {
         RepOrderEntity repOrderEntity = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
-        TEST_MAAT_ID = repOrderEntity.getId();
+        testMaatId = repOrderEntity.getId();
     }
 
     private void createXlatResultData(List<Result> results) {

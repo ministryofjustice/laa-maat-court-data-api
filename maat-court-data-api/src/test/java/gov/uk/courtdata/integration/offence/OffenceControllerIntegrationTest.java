@@ -1,7 +1,6 @@
 package gov.uk.courtdata.integration.offence;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import gov.uk.MAATCourtDataApplication;
@@ -33,14 +32,16 @@ class OffenceControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAInvalidCaseId_whenFindOffenceByCaseIdIsInvoked_thenEmptyIsReturned() throws Exception {
-        assertTrue(runSuccessScenario(List.of(), get(ENDPOINT_URL + "/case/" + INVALID_CASE_ID)));
+        assertThat(runSuccessScenario(List.of(), get(ENDPOINT_URL + "/case/" + INVALID_CASE_ID)))
+                .isTrue();
     }
 
     @Test
     void givenAValidCaseId_whenFindOffenceByCaseIdIsInvoked_thenOffenceIsReturned() throws Exception {
         List<OffenceDTO> offenceDTOList = List.of(TestModelDataBuilder.getOffenceDTO(8064716));
-        assertTrue(
-                runSuccessScenario(offenceDTOList, get(ENDPOINT_URL + "/case/" + TestEntityDataBuilder.TEST_CASE_ID)));
+        assertThat(
+                runSuccessScenario(offenceDTOList, get(ENDPOINT_URL + "/case/" + TestEntityDataBuilder.TEST_CASE_ID)))
+                .isTrue();
     }
 
     @Test

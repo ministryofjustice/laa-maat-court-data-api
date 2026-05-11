@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.impl;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,7 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class SaveAndLinkImplTest {
+class SaveAndLinkImplTest {
 
     @InjectMocks
     private SaveAndLinkImpl saveAndLink;
@@ -68,7 +68,7 @@ public class SaveAndLinkImplTest {
     private RepOrderInfoProcessor repOrderInfoProcessor;
 
     @Test
-    public void givenCaseDetails_whenExecuteIsInvoked_thenCaseIsLinked() {
+    void givenCaseDetails_whenExecuteIsInvoked_thenCaseIsLinked() {
 
         // given
         CourtDataDTO courtDataDTO = CourtDataDTO.builder().build();

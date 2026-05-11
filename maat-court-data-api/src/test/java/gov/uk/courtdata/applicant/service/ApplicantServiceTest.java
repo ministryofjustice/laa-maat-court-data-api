@@ -1,6 +1,6 @@
 package gov.uk.courtdata.applicant.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.atLeastOnce;
@@ -27,7 +27,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(ApplicantService.class)
-public class ApplicantServiceTest {
+class ApplicantServiceTest {
 
     private static final int ID = 1;
 

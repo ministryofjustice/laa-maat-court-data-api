@@ -1,6 +1,6 @@
 package gov.uk.courtdata.assessment.validator;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,7 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class FinancialAssessmentValidationProcessorTest {
+class FinancialAssessmentValidationProcessorTest {
 
     @InjectMocks
     private FinancialAssessmentValidationProcessor financialAssessmentValidationProcessor;
@@ -33,14 +33,14 @@ public class FinancialAssessmentValidationProcessorTest {
     private FinancialAssessmentIdValidator financialAssessmentIdValidator;
 
     @Test
-    public void testFinancialAssessmentValidationProcessor_whenIdIsPassed_thenCallsIdValidator() {
+    void testFinancialAssessmentValidationProcessor_whenIdIsPassed_thenCallsIdValidator() {
         when(financialAssessmentIdValidator.validate(any(Integer.class))).thenReturn(Optional.empty());
         financialAssessmentValidationProcessor.validate(1000);
         verify(financialAssessmentIdValidator, times(1)).validate(1000);
     }
 
     @Test
-    public void testFinancialAssessmentValidationProcessor_whenAssessmentIsNull_thenThrowsException() {
+    void testFinancialAssessmentValidationProcessor_whenAssessmentIsNull_thenThrowsException() {
         ValidationException validationException = Assertions.assertThrows(
                 ValidationException.class,
                 () -> financialAssessmentValidationProcessor.validate((FinancialAssessment) null));
@@ -48,7 +48,7 @@ public class FinancialAssessmentValidationProcessorTest {
     }
 
     @Test
-    public void testFinancialAssessmentValidationProcessor_whenRepIdIsNull_thenThrowsException() {
+    void testFinancialAssessmentValidationProcessor_whenRepIdIsNull_thenThrowsException() {
         FinancialAssessment assessment = TestModelDataBuilder.getCreateFinancialAssessment();
         assessment.setRepId(null);
         ValidationException validationException = Assertions.assertThrows(
@@ -57,7 +57,7 @@ public class FinancialAssessmentValidationProcessorTest {
     }
 
     @Test
-    public void testFinancialAssessmentValidationProcessor_whenInitialAscrIdIsNull_thenThrowsException() {
+    void testFinancialAssessmentValidationProcessor_whenInitialAscrIdIsNull_thenThrowsException() {
         FinancialAssessment assessment = TestModelDataBuilder.getCreateFinancialAssessment();
         assessment.setInitialAscrId(null);
         ValidationException validationException = Assertions.assertThrows(
@@ -66,7 +66,7 @@ public class FinancialAssessmentValidationProcessorTest {
     }
 
     @Test
-    public void testFinancialAssessmentValidationProcessor_whenCmuIdIsNull_thenThrowsException() {
+    void testFinancialAssessmentValidationProcessor_whenCmuIdIsNull_thenThrowsException() {
         FinancialAssessment assessment = TestModelDataBuilder.getCreateFinancialAssessment();
         assessment.setCmuId(null);
         ValidationException validationException = Assertions.assertThrows(
@@ -75,10 +75,10 @@ public class FinancialAssessmentValidationProcessorTest {
     }
 
     @Test
-    public void testFinancialAssessmentValidationProcessor_whenRequiredFieldsPresent_thenValidationPasses() {
+    void testFinancialAssessmentValidationProcessor_whenRequiredFieldsPresent_thenValidationPasses() {
         FinancialAssessment assessment = TestModelDataBuilder.getCreateFinancialAssessment();
         when(createAssessmentValidator.validate(any(CreateFinancialAssessment.class)))
                 .thenReturn(Optional.empty());
-        assertThat(financialAssessmentValidationProcessor.validate(assessment)).isEqualTo(Optional.empty());
+        assertThat(financialAssessmentValidationProcessor.validate(assessment)).isNotPresent();
     }
 }

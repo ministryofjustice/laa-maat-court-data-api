@@ -1,7 +1,7 @@
 package gov.uk.courtdata.reporder.validator;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;
@@ -22,8 +22,8 @@ class CreateCCOutcomeValidatorTest {
 
     @Test
     void givenAUserCreatedIsBlank_whenValidateIsInvoked_thenThrowsException() {
-        assertThatThrownBy(() -> createCCOutComeValidator.validate(
-                        RepOrderCCOutcome.builder().build()))
+        var outcome = RepOrderCCOutcome.builder().build();
+        assertThatThrownBy(() -> createCCOutComeValidator.validate(outcome))
                 .isInstanceOf(ValidationException.class)
                 .hasMessage("User created is required");
     }
@@ -33,6 +33,6 @@ class CreateCCOutcomeValidatorTest {
         Optional<Void> result = createCCOutComeValidator.validate(RepOrderCCOutcome.builder()
                 .userCreated(TestModelDataBuilder.TEST_USER)
                 .build());
-        assertThat(result).isEqualTo(Optional.empty());
+        assertThat(result).isNotPresent();
     }
 }

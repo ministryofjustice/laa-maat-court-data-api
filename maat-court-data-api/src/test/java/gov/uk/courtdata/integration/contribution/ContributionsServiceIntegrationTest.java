@@ -1,7 +1,7 @@
 package gov.uk.courtdata.integration.contribution;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -29,7 +29,7 @@ import org.springframework.dao.DataAccessException;
 class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
 
     private static final Integer INVALID_REP_ID = 9999;
-    public Integer REP_ID = 1234;
+    public Integer repId = 1234;
 
     @Autowired
     private ContributionsService contributionsService;
@@ -37,10 +37,10 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
     private ContributionsEntity contributionsEntity;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         RepOrderEntity repOrderEntity = repos.repOrder.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
-        REP_ID = repOrderEntity.getId();
+        repId = repOrderEntity.getId();
 
         ContributionsEntity contributions = TestEntityDataBuilder.getContributionsEntity();
         contributions.setRepOrder(repOrderEntity);
@@ -54,10 +54,10 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenValidRepId_WhenFindIsInvoked_thenCorrectResponseIsReturned() {
-        List<ContributionsDTO> result = contributionsService.find(REP_ID, true);
-        assertThat(result.isEmpty()).isFalse();
-        assertThat(result.get(0).getId()).isGreaterThan(0);
-        assertThat(result.get(0).getRepId()).isEqualTo(REP_ID);
+        List<ContributionsDTO> result = contributionsService.find(repId, true);
+        assertThat(result).isNotEmpty();
+        assertThat(result.getFirst().getId()).isGreaterThan(0);
+        assertThat(result.getFirst().getRepId()).isEqualTo(repId);
     }
 
     @Test
@@ -69,7 +69,7 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenValidData_WhenCreateIsInvoked_thenCorrectResponseIsReturned() {
-        CreateContributionRequest createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
+        CreateContributionRequest createContributions = TestModelDataBuilder.getCreateContributions(repId);
         ContributionsDTO result = contributionsService.create(createContributions);
         assertThat(result).isNotNull();
         assertThat(result.getId()).isGreaterThan(0);
@@ -78,11 +78,9 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenInValidData_WhenCreateIsInvoked_thenCorrectResponseIsReturned() {
-        assertThatThrownBy(() -> {
-                    CreateContributionRequest createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
-                    createContributions.setRepId(INVALID_REP_ID);
-                    contributionsService.create(createContributions);
-                })
+        CreateContributionRequest createContributions = TestModelDataBuilder.getCreateContributions(repId);
+        createContributions.setRepId(INVALID_REP_ID);
+        assertThatThrownBy(() -> contributionsService.create(createContributions))
                 .isInstanceOf(DataAccessException.class);
     }
 
@@ -92,8 +90,8 @@ class ContributionsServiceIntegrationTest extends MockMvcIntegrationTest {
         ContributionFilesEntity contributionFilesEntity = TestEntityDataBuilder.getContributionFilesEntity();
         contributionFilesEntity.setFileId(contributionsEntity.getContributionFileId());
         repos.contributionFiles.saveAndFlush(contributionFilesEntity);
-        List<ContributionsSummaryDTO> contributionsSummary = contributionsService.getContributionsSummary(REP_ID);
-        assertThat(contributionsSummary.isEmpty()).isFalse();
+        List<ContributionsSummaryDTO> contributionsSummary = contributionsService.getContributionsSummary(repId);
+        assertThat(contributionsSummary).isNotEmpty();
     }
 
     @Test

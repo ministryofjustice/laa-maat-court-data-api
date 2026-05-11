@@ -2,7 +2,7 @@ package gov.uk.courtdata.link.processor;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_CREATION_EVENT;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;

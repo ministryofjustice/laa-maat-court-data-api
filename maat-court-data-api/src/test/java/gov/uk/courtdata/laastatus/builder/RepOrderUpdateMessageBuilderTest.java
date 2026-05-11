@@ -1,7 +1,7 @@
 package gov.uk.courtdata.laastatus.builder;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,7 +36,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class RepOrderUpdateMessageBuilderTest {
+class RepOrderUpdateMessageBuilderTest {
 
     @Mock
     private RepOrderCPDataRepository repOrderCPDataRepository;
@@ -48,7 +48,7 @@ public class RepOrderUpdateMessageBuilderTest {
     private RepOrderUpdateMessageBuilder repOrderUpdateMessageBuilder;
 
     @Test
-    public void givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenReturnedLaaStatusUpdate() {
+    void givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenReturnedLaaStatusUpdate() {
 
         CaseDetails caseDetails = CaseDetails.builder()
                 .maatId(1234567)
@@ -71,12 +71,8 @@ public class RepOrderUpdateMessageBuilderTest {
 
         assertThat(laaStatusUpdate.getData().getAttributes().getMaatReference()).isEqualTo(1234567);
 
-        gov.uk.courtdata.model.laastatus.Offence offence = laaStatusUpdate
-                .getData()
-                .getAttributes()
-                .getOffences()
-                .iterator()
-                .next();
+        gov.uk.courtdata.model.laastatus.Offence offence =
+                laaStatusUpdate.getData().getAttributes().getOffences().getFirst();
 
         assertAll(
                 "VerifyOffence",
@@ -102,7 +98,7 @@ public class RepOrderUpdateMessageBuilderTest {
     }
 
     @Test
-    public void testSolicitor_whenIsRepOrderUpdateMessageBuilderInvoked_thenReturnedLaaStatusUpdate() {
+    void testSolicitor_whenIsRepOrderUpdateMessageBuilderInvoked_thenReturnedLaaStatusUpdate() {
 
         CaseDetails caseDetails = CaseDetails.builder()
                 .maatId(1234567)
@@ -137,7 +133,7 @@ public class RepOrderUpdateMessageBuilderTest {
     }
 
     @Test
-    public void testSolicitorAddress_IsAvailableOnLaaStatusRequest() {
+    void testSolicitorAddress_IsAvailableOnLaaStatusRequest() {
 
         CaseDetails caseDetails = buildSampleCase();
 
@@ -170,7 +166,7 @@ public class RepOrderUpdateMessageBuilderTest {
     }
 
     @Test
-    public void testSolicitorContact_isAvailableOnLaaStatusUpdate_Request() {
+    void testSolicitorContact_isAvailableOnLaaStatusUpdate_Request() {
 
         CaseDetails caseDetails = buildSampleCase();
 
@@ -200,7 +196,7 @@ public class RepOrderUpdateMessageBuilderTest {
     }
 
     @Test
-    public void givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenHeaderDetailsAreReturned() {
+    void givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenHeaderDetailsAreReturned() {
 
         // given
         CaseDetails caseDetails = CaseDetails.builder()
@@ -220,7 +216,7 @@ public class RepOrderUpdateMessageBuilderTest {
     }
 
     @Test
-    public void
+    void
             givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenHeaderDetailsAreReturnedWithMullTxnID() {
 
         // given

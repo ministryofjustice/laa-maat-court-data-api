@@ -1,7 +1,7 @@
 package gov.uk.courtdata.applicant.service;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.anyList;
@@ -53,9 +53,7 @@ public class RepOrderApplicantLinksServiceTest {
     @Test
     void givenRepOrderApplicantLinksNotFound_whenFindIsInvoked_thenExceptionIsRaised() {
         when(repOrderApplicantLinksRepository.findAllByRepId(anyInt())).thenReturn(List.of());
-        assertThatThrownBy(() -> {
-                    repOrderApplicantLinksService.find(REP_ID);
-                })
+        assertThatThrownBy(() -> repOrderApplicantLinksService.find(REP_ID))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Rep Order Applicant Links not found for repId");
     }
@@ -76,9 +74,8 @@ public class RepOrderApplicantLinksServiceTest {
     @Test
     void givenRepOrderApplicantLinksNotFound_whenUpdateIsInvoked_thenExceptionIsRaised() {
         when(repOrderApplicantLinksRepository.findById(anyInt())).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> {
-                    repOrderApplicantLinksService.update(TestModelDataBuilder.getRepOrderApplicantLinksDTO(ID));
-                })
+        var repOrderApplicantLinks = TestModelDataBuilder.getRepOrderApplicantLinksDTO(ID);
+        assertThatThrownBy(() -> repOrderApplicantLinksService.update(repOrderApplicantLinks))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Rep Order Applicant Link not found for id");
     }

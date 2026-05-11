@@ -1,6 +1,6 @@
 package gov.uk.courtdata.reporder.validator;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -32,7 +32,7 @@ class CCOutcomeValidationProcessorTest {
     private CreateCCOutcomeValidator createCCOutComeValidator;
 
     @InjectMocks
-    private CCOutComeValidationProcessor CCOutComeValidationProcessor;
+    private CCOutComeValidationProcessor ccOutcomeValidationProcessor;
 
     @BeforeEach
     void setUp() {
@@ -42,7 +42,7 @@ class CCOutcomeValidationProcessorTest {
     @Test
     void givenACCOutcomeIdAsNull_whenValidateIsInvoked_thenAllTheValidationIsSuccess() {
         repOrderCCOutcome.setId(null);
-        CCOutComeValidationProcessor.validate(repOrderCCOutcome);
+        ccOutcomeValidationProcessor.validate(repOrderCCOutcome);
         verify(createCCOutComeValidator, atLeastOnce()).validate(any());
         verify(maatIdValidator, atLeastOnce()).validate(any());
     }
@@ -50,7 +50,7 @@ class CCOutcomeValidationProcessorTest {
     @Test
     void givenACCOutcomeIdAsZero_whenValidateIsInvoked_thenAllTheValidationIsSuccess() {
         repOrderCCOutcome.setId(0);
-        CCOutComeValidationProcessor.validate(repOrderCCOutcome);
+        ccOutcomeValidationProcessor.validate(repOrderCCOutcome);
         verify(createCCOutComeValidator, atLeastOnce()).validate(any());
         verify(maatIdValidator, atLeastOnce()).validate(any());
     }
@@ -60,7 +60,7 @@ class CCOutcomeValidationProcessorTest {
         repOrderCCOutcome.setId(0);
         repOrderCCOutcome.setUserCreated("");
         when(createCCOutComeValidator.validate(any())).thenThrow(new ValidationException());
-        assertThatThrownBy(() -> CCOutComeValidationProcessor.validate(repOrderCCOutcome))
+        assertThatThrownBy(() -> ccOutcomeValidationProcessor.validate(repOrderCCOutcome))
                 .isInstanceOf(ValidationException.class);
         verify(createCCOutComeValidator, atLeastOnce()).validate(any());
         verify(maatIdValidator, never()).validate(any());
@@ -68,14 +68,14 @@ class CCOutcomeValidationProcessorTest {
 
     @Test
     void givenAValidRepId_whenValidateIsInvoked_thenRepIdValidationIsSuccess() {
-        CCOutComeValidationProcessor.validate(TestModelDataBuilder.REP_ID);
+        ccOutcomeValidationProcessor.validate(TestModelDataBuilder.REP_ID);
         verify(maatIdValidator, atLeastOnce()).validate(any());
     }
 
     @Test
     void givenAInvalidValidRepId_whenValidateIsInvoked_thenReturnValidationException() {
         when(maatIdValidator.validate(any())).thenThrow(new ValidationException());
-        assertThatThrownBy(() -> CCOutComeValidationProcessor.validate(INVALID_REP_ID))
+        assertThatThrownBy(() -> ccOutcomeValidationProcessor.validate(INVALID_REP_ID))
                 .isInstanceOf(ValidationException.class);
         verify(maatIdValidator, atLeastOnce()).validate(any());
     }

@@ -1,6 +1,6 @@
 package gov.uk.courtdata.courtdataadapter.client;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyMap;
 import static org.mockito.Mockito.anyString;
@@ -69,7 +69,7 @@ class CourtDataAdapterClientTest {
     }
 
     @Test
-    public void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_thenTheRequestIsSentCorrectly() {
+    void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_thenTheRequestIsSentCorrectly() {
         when(gsonBuilder.create()).thenReturn(new GsonBuilder().create());
         Map<String, String> headers = Map.of("test-header", "test-header-value");
         LaaStatusUpdate testStatusObject = getTestLaaStatusObject();

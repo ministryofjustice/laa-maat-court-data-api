@@ -3,7 +3,7 @@ package gov.uk.courtdata.integration.unlink.impl;
 import static gov.uk.courtdata.constants.CourtDataConstants.SYSTEM_UNLINKED;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UNLINK_EVENT;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import gov.uk.MAATCourtDataApplication;

@@ -1,6 +1,6 @@
 package gov.uk.courtdata.unlink.impl;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 
@@ -29,7 +29,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class UnLinkImplTest {
+class UnLinkImplTest {
 
     @InjectMocks
     private UnLinkImpl unLink;
@@ -59,10 +59,10 @@ public class UnLinkImplTest {
     private RepOrderCPDataRepository repOrderCPDataRepository;
 
     @BeforeEach
-    public void setUp() {}
+    void setUp() {}
 
     @Test
-    public void givenCaseDetail_whenExecuteIsInvoked_thenCaseInUnlinked() {
+    void givenCaseDetail_whenExecuteIsInvoked_thenCaseInUnlinked() {
 
         UnlinkModel unlinkModel = getUnlinkModel();
         unLink.execute(unlinkModel);
@@ -74,7 +74,7 @@ public class UnLinkImplTest {
     }
 
     @Test
-    public void givenCaseDetail_whenExecuteIsInvoked_thenSaveWqCoreEntity() {
+    void givenCaseDetail_whenExecuteIsInvoked_thenSaveWqCoreEntity() {
 
         UnlinkModel unlinkModel = getUnlinkModel();
 
@@ -88,7 +88,7 @@ public class UnLinkImplTest {
     }
 
     @Test
-    public void givenCaseDetail_whenExecuteIsInvoked_thenSaveWqLinkRegisterEntity() {
+    void givenCaseDetail_whenExecuteIsInvoked_thenSaveWqLinkRegisterEntity() {
 
         UnlinkModel unlinkModel = getUnlinkModel();
 
@@ -106,7 +106,7 @@ public class UnLinkImplTest {
     }
 
     @Test
-    public void givenCaseDetail_whenExecuteIsInvoked_thenSaveUnlinkEntity() {
+    void givenCaseDetail_whenExecuteIsInvoked_thenSaveUnlinkEntity() {
 
         UnlinkModel unlinkModel = getUnlinkModel();
 

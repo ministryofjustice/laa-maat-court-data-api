@@ -1,7 +1,7 @@
 package gov.uk.courtdata.applicant.validator;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ValidationProcessorTest {
+class ValidationProcessorTest {
 
     @Mock
     private MaatIdValidator maatIdValidator;

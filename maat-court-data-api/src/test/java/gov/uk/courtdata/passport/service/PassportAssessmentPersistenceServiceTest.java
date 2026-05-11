@@ -1,7 +1,7 @@
 package gov.uk.courtdata.passport.service;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.PASSPORT_ASSESSMENT_ID;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

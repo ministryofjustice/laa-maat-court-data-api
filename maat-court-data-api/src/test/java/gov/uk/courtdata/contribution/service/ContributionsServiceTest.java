@@ -1,7 +1,7 @@
 package gov.uk.courtdata.contribution.service;
 
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyList;

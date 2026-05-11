@@ -2,8 +2,8 @@ package gov.uk.courtdata.integration.applicant;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.SEND_TO_CCLF;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
+class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
 
     private static final int ID = 1;
 
@@ -38,16 +38,14 @@ public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
         repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
         repos.repOrderApplicantLinks.saveAndFlush(TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
         List<RepOrderApplicantLinksDTO> result = repOrderApplicantLinksService.find(REP_ID);
-        assertThat(result.isEmpty()).isFalse();
-        assertThat(result.get(0).getId()).isGreaterThan(0);
-        assertThat(result.get(0).getRepId()).isEqualTo(REP_ID);
+        assertThat(result).isNotEmpty();
+        assertThat(result.getFirst().getId()).isGreaterThan(0);
+        assertThat(result.getFirst().getRepId()).isEqualTo(REP_ID);
     }
 
     @Test
     void givenInValidRepId_WhenGetRepOrderApplicantLinksIsInvoked_thenExceptionIsRaised() {
-        assertThatThrownBy(() -> {
-                    repOrderApplicantLinksService.find(REP_ID);
-                })
+        assertThatThrownBy(() -> repOrderApplicantLinksService.find(REP_ID))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Rep Order Applicant Links not found for repId");
     }
@@ -56,7 +54,7 @@ public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
     void givenAValidInput_whenUpdateRepOrderApplicantLinksIsInvoked_thenUpdateIsSuccess() {
         repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(REP_ID));
         repos.repOrderApplicantLinks.saveAndFlush(TestEntityDataBuilder.getRepOrderApplicantLinksEntity());
-        Integer id = repos.repOrderApplicantLinks.findAll().get(0).getId();
+        Integer id = repos.repOrderApplicantLinks.findAll().getFirst().getId();
         RepOrderApplicantLinksDTO recordToUpdate = TestModelDataBuilder.getRepOrderApplicantLinksDTO(id);
         RepOrderApplicantLinksDTO repOrderApplicantLinksDTO = repOrderApplicantLinksService.update(recordToUpdate);
         assertThat(repOrderApplicantLinksDTO.getId()).isEqualTo(id);
@@ -66,9 +64,8 @@ public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAInValidInput_whenUpdateRepOrderApplicantLinksIsInvoked_thenExceptionIsRaised() {
-        assertThatThrownBy(() -> {
-                    repOrderApplicantLinksService.update(TestModelDataBuilder.getRepOrderApplicantLinksDTO(ID));
-                })
+        var request = TestModelDataBuilder.getRepOrderApplicantLinksDTO(ID);
+        assertThatThrownBy(() -> repOrderApplicantLinksService.update(request))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Rep Order Applicant Link not found for id");
     }
@@ -77,7 +74,7 @@ public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
     void givenValidId_whenGetApplicantHistoryIsInvoked_thenCorrectResponseIsReturned() {
         ApplicantHistoryEntity testRecord = TestEntityDataBuilder.getApplicantHistoryEntity("N");
         repos.applicantHistory.saveAndFlush(testRecord);
-        Integer id = repos.applicantHistory.findAll().get(0).getId();
+        Integer id = repos.applicantHistory.findAll().getFirst().getId();
         ApplicantHistoryDTO result = applicantHistoryService.find(id);
         assertThat(result).isNotNull();
         assertThat(result.getId()).isGreaterThan(0);
@@ -86,9 +83,7 @@ public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenInValidId_whenGetApplicantHistoryIsInvoked_thenExceptionIsRaised() {
-        assertThatThrownBy(() -> {
-                    applicantHistoryService.find(ID);
-                })
+        assertThatThrownBy(() -> applicantHistoryService.find(ID))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant History not found for id");
     }
@@ -96,7 +91,7 @@ public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenAValidInput_whenUpdateApplicantHistoryIsInvoked_thenUpdateIsSuccess() {
         repos.applicantHistory.saveAndFlush(TestEntityDataBuilder.getApplicantHistoryEntity("N"));
-        Integer id = repos.applicantHistory.findAll().get(0).getId();
+        Integer id = repos.applicantHistory.findAll().getFirst().getId();
         ApplicantHistoryDTO applicantHistoryDTO =
                 applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(id, SEND_TO_CCLF));
         assertThat(applicantHistoryDTO.getId()).isEqualTo(id);
@@ -105,9 +100,8 @@ public class ApplicantServiceIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAInValidInput_whenUpdateApplicantHistoryIsInvoked_thenExceptionIsRaised() {
-        assertThatThrownBy(() -> {
-                    applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(ID, "N"));
-                })
+        var request = TestModelDataBuilder.getApplicantHistoryDTO(ID, "N");
+        assertThatThrownBy(() -> applicantHistoryService.update(request))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant History not found for id");
     }

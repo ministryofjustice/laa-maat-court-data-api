@@ -1,6 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
 import gov.uk.courtdata.entity.OffenceEntity;
@@ -29,7 +29,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class CourtApplicationsPreProcessorTest {
+class CourtApplicationsPreProcessorTest {
 
     @InjectMocks
     private CourtApplicationsPreProcessor courtApplicationsPreProcessor;
@@ -44,7 +44,7 @@ public class CourtApplicationsPreProcessorTest {
     private OffenceRepository offenceRepository;
 
     @Test
-    public void testApplicationFlagAndASNSeqForNewApplication() {
+    void testApplicationFlagAndASNSeqForNewApplication() {
 
         // given
         HearingResulted laaHearingDetails = HearingResulted.builder()
@@ -68,14 +68,14 @@ public class CourtApplicationsPreProcessorTest {
         courtApplicationsPreProcessor.process(laaHearingDetails);
 
         // then
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq())
+        assertThat(laaHearingDetails.getDefendant().getOffences().getFirst().getAsnSeq())
                 .isEqualTo("1000");
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getApplicationFlag())
+        assertThat(laaHearingDetails.getDefendant().getOffences().getFirst().getApplicationFlag())
                 .isEqualTo(1);
     }
 
     @Test
-    public void testApplicationFlagAndASNSeqForExistingApplication() {
+    void testApplicationFlagAndASNSeqForExistingApplication() {
 
         // given
         HearingResulted laaHearingDetails = HearingResulted.builder()
@@ -105,14 +105,14 @@ public class CourtApplicationsPreProcessorTest {
         courtApplicationsPreProcessor.process(laaHearingDetails);
 
         // then
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq())
+        assertThat(laaHearingDetails.getDefendant().getOffences().getFirst().getAsnSeq())
                 .isEqualTo("1006");
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getApplicationFlag())
+        assertThat(laaHearingDetails.getDefendant().getOffences().getFirst().getApplicationFlag())
                 .isEqualTo(1);
     }
 
     @Test
-    public void testApplicationFuncWhenNoMAATId() {
+    void testApplicationFuncWhenNoMAATId() {
 
         // given
         HearingResulted laaHearingDetails = HearingResulted.builder()
@@ -131,12 +131,12 @@ public class CourtApplicationsPreProcessorTest {
         courtApplicationsPreProcessor.process(laaHearingDetails);
 
         // then
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq())
+        assertThat(laaHearingDetails.getDefendant().getOffences().getFirst().getAsnSeq())
                 .isNull();
     }
 
     @Test
-    public void testAppFuncWhenNoOffenceCode() {
+    void testAppFuncWhenNoOffenceCode() {
 
         // given
         HearingResulted laaHearingDetails = HearingResulted.builder()
@@ -144,7 +144,7 @@ public class CourtApplicationsPreProcessorTest {
                 .jurisdictionType(JurisdictionType.CROWN)
                 .defendant(getDefendant())
                 .build();
-        laaHearingDetails.getDefendant().getOffences().get(0).setOffenceCode(null);
+        laaHearingDetails.getDefendant().getOffences().getFirst().setOffenceCode(null);
 
         // when
 
@@ -153,12 +153,12 @@ public class CourtApplicationsPreProcessorTest {
         courtApplicationsPreProcessor.process(laaHearingDetails);
 
         // then
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getApplicationFlag())
+        assertThat(laaHearingDetails.getDefendant().getOffences().getFirst().getApplicationFlag())
                 .isNull();
     }
 
     @Test
-    public void testApplicationFlagAndASNSeqForENewAndExistingApplication() {
+    void testApplicationFlagAndASNSeqForENewAndExistingApplication() {
 
         Offence off = Offence.builder()
                 .legalAidStatus("AP")
@@ -189,17 +189,14 @@ public class CourtApplicationsPreProcessorTest {
                 .thenReturn(Optional.of(
                         XLATOffenceEntity.builder().applicationFlag(1).build()));
 
-        //  Mockito.when(offenceRepository.findApplicationByOffenceCode(565, "23224",
-        // 1)).thenReturn(Optional.of(OffenceEntity.builder().applicationFlag(1).asnSeq("1006").build()));
-
         courtApplicationsPreProcessor.process(laaHearingDetails);
 
         // then
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getAsnSeq())
+        assertThat(laaHearingDetails.getDefendant().getOffences().getFirst().getAsnSeq())
                 .isNotNull();
         assertThat(laaHearingDetails.getDefendant().getOffences().get(1).getAsnSeq())
                 .isNotNull();
-        assertThat(laaHearingDetails.getDefendant().getOffences().get(0).getApplicationFlag())
+        assertThat(laaHearingDetails.getDefendant().getOffences().getFirst().getApplicationFlag())
                 .isEqualTo(1);
     }
 

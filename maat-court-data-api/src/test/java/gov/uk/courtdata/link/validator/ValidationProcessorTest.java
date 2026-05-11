@@ -1,6 +1,6 @@
 package gov.uk.courtdata.link.validator;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ValidationProcessorTest {
+class ValidationProcessorTest {
 
     @Mock
     private MaatIdValidator maatIdValidator;
@@ -46,13 +46,13 @@ public class ValidationProcessorTest {
     private ReferenceDataValidator referenceDataValidator;
 
     @Mock
-    private CPDataValidator CPDataValidator;
+    private CPDataValidator cpDataValidator;
 
     @InjectMocks
     private ValidationProcessor validationProcessor;
 
     @Test
-    public void testWhenAnyValidatorFails_throwsValidationException() {
+    void testWhenAnyValidatorFails_throwsValidationException() {
 
         final int testMaatId = 1000;
 
@@ -65,7 +65,7 @@ public class ValidationProcessorTest {
     }
 
     @Test
-    public void testWhenAllValidatorsSuccess_validationPasses() {
+    void testWhenAllValidatorsSuccess_validationPasses() {
 
         // given
         final int testMaatId = 1000;
@@ -83,7 +83,7 @@ public class ValidationProcessorTest {
         when(solicitorValidator.validate(testMaatId)).thenReturn(Optional.of(solicitorMAATDataEntity));
         when(courtValidator.validate(caseDetails)).thenReturn(Optional.empty());
         when(referenceDataValidator.validate(caseDetails)).thenReturn(Optional.empty());
-        when(CPDataValidator.validate(caseDetails)).thenReturn(Optional.empty());
+        when(cpDataValidator.validate(caseDetails)).thenReturn(Optional.empty());
 
         CourtDataDTO response = validationProcessor.validate(caseDetails);
 
@@ -94,7 +94,7 @@ public class ValidationProcessorTest {
         verify(solicitorValidator, times(1)).validate(testMaatId);
         verify(courtValidator, times(1)).validate(caseDetails);
         verify(referenceDataValidator, times(1)).validate(caseDetails);
-        verify(CPDataValidator, times(1)).validate(caseDetails);
+        verify(cpDataValidator, times(1)).validate(caseDetails);
 
         CourtDataDTO actual = CourtDataDTO.builder()
                 .caseDetails(caseDetails)

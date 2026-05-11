@@ -1,6 +1,6 @@
 package gov.uk.courtdata.hearing.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.uk.courtdata.hearing.dto.DefendantDTO;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
@@ -22,12 +22,12 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class HearingDTOMapperTest {
+class HearingDTOMapperTest {
 
     private final HearingDTOMapper hearingDTOMapper = Mappers.getMapper(HearingDTOMapper.class);
 
     @Test
-    public void givenDefendant_whenMapperIsInvoke_thenCompareData() {
+    void givenDefendant_whenMapperIsInvoke_thenCompareData() {
 
         // given
         Defendant defendant =
@@ -41,7 +41,7 @@ public class HearingDTOMapperTest {
     }
 
     @Test
-    public void givenResult_whenMapperIsInvoke_thenCompareData() {
+    void givenResult_whenMapperIsInvoke_thenCompareData() {
 
         // given
         Result result = Result.builder().resultCode("1").build();
@@ -54,7 +54,7 @@ public class HearingDTOMapperTest {
     }
 
     @Test
-    public void giventoSession_whenMapperIsInvoke_thenCompareData() {
+    void giventoSession_whenMapperIsInvoke_thenCompareData() {
 
         // given
         Session session = Session.builder().courtLocation("London").build();
@@ -67,7 +67,7 @@ public class HearingDTOMapperTest {
     }
 
     @Test
-    public void giventoDefendant_whenMapperIsInvoke_thenCompareData() {
+    void giventoDefendant_whenMapperIsInvoke_thenCompareData() {
 
         // given
         Offence offence = Offence.builder().asnSeq("as12").build();
@@ -80,26 +80,24 @@ public class HearingDTOMapperTest {
     }
 
     @Test
-    public void giventoHearing_whenMapperIsInvoke_thenCompareData() {
+    void giventoHearing_whenMapperIsInvoke_thenCompareData() {
 
         // given
         HearingResulted hearingResulted =
                 HearingResulted.builder().caseUrn("caseurl").build();
         Result result = Result.builder().resultCode("1").build();
         Offence offence = Offence.builder().asnSeq("as12").build();
-        Plea plea = Plea.builder().offenceId("off1").build();
-        Verdict verdict = Verdict.builder().category("Cat").build();
 
         // when
         HearingDTO hearingDTO = hearingDTOMapper.toHearingDTO(hearingResulted, 12, 34, 56, offence, result);
 
         // then
-        //        assertThat(hearingDTO.getOffence().getAsnSeq()).isEqualTo("as12");
+        assertThat(hearingDTO.getOffence().getAsnSeq()).isEqualTo("as12");
         assertThat(hearingDTO.getResult().getResultCode()).isEqualTo(1);
     }
 
     @Test
-    public void givenToPlea_whenMapperIsInvoke_thenCompareData() {
+    void givenToPlea_whenMapperIsInvoke_thenCompareData() {
 
         // given
         HearingResulted hearingResulted =
@@ -124,7 +122,7 @@ public class HearingDTOMapperTest {
     }
 
     @Test
-    public void givenToNullPlea_whenMapperIsInvoke_thenCompareData() {
+    void givenToNullPlea_whenMapperIsInvoke_thenCompareData() {
 
         // given
         HearingResulted hearingResulted =
@@ -141,7 +139,7 @@ public class HearingDTOMapperTest {
     }
 
     @Test
-    public void givenToVerdict_whenMapperIsInvoke_thenCompareData() {
+    void givenToVerdict_whenMapperIsInvoke_thenCompareData() {
 
         // given
         HearingResulted hearingResulted =
@@ -172,7 +170,7 @@ public class HearingDTOMapperTest {
     }
 
     @Test
-    public void givenToNullVerdict_whenMapperIsInvoke_thenCompareData() {
+    void givenToNullVerdict_whenMapperIsInvoke_thenCompareData() {
 
         // given
         HearingResulted hearingResulted =

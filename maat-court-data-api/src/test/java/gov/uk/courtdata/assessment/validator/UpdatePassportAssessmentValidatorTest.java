@@ -1,6 +1,6 @@
 package gov.uk.courtdata.assessment.validator;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class UpdatePassportAssessmentValidatorTest {
+class UpdatePassportAssessmentValidatorTest {
 
     @InjectMocks
     private UpdatePassportAssessmentValidator updatePassportAssessmentValidator;
@@ -28,12 +28,12 @@ public class UpdatePassportAssessmentValidatorTest {
     private PassportAssessmentIdValidator passportAssessmentIdValidator;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         when(passportAssessmentIdValidator.validate(any())).thenReturn(Optional.empty());
     }
 
     @Test
-    public void testUpdateAssessmentValidator_whenUserModifiedIsBlank_thenThrowsException() {
+    void testUpdateAssessmentValidator_whenUserModifiedIsBlank_thenThrowsException() {
         UpdatePassportAssessment mockPassportAssessment =
                 UpdatePassportAssessment.builder().userModified("").build();
         ValidationException validationException = Assertions.assertThrows(
@@ -42,7 +42,7 @@ public class UpdatePassportAssessmentValidatorTest {
     }
 
     @Test
-    public void testUpdateAssessmentValidator_whenUserModifiedIsNull_thenThrowsException() {
+    void testUpdateAssessmentValidator_whenUserModifiedIsNull_thenThrowsException() {
         UpdatePassportAssessment mockPassportAssessment =
                 UpdatePassportAssessment.builder().userModified(null).build();
         ValidationException validationException = Assertions.assertThrows(
@@ -51,10 +51,10 @@ public class UpdatePassportAssessmentValidatorTest {
     }
 
     @Test
-    public void testUpdateAssessmentValidator_whenUserModifiedIsFilled_thenValidationPasses() {
+    void testUpdateAssessmentValidator_whenUserModifiedIsFilled_thenValidationPasses() {
         UpdatePassportAssessment mockPassportAssessment =
                 UpdatePassportAssessment.builder().userModified("test-f").build();
         Optional<Void> result = updatePassportAssessmentValidator.validate(mockPassportAssessment);
-        assertThat(result).isEqualTo(Optional.empty());
+        assertThat(result).isNotPresent();
     }
 }

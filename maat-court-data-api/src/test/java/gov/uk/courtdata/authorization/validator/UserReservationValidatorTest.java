@@ -1,7 +1,7 @@
 package gov.uk.courtdata.authorization.validator;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -22,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class UserReservationValidatorTest {
+class UserReservationValidatorTest {
 
     @InjectMocks
     private UserReservationValidator userReservationValidator;
@@ -31,7 +31,7 @@ public class UserReservationValidatorTest {
     private UserRepository userRepository;
 
     @Test
-    public void givenCorrectParameters_whenValidateIsInvoked_thenValidationPasses() {
+    void givenCorrectParameters_whenValidateIsInvoked_thenValidationPasses() {
         UserReservation userReservation = TestModelDataBuilder.getUserReservation();
         when(userRepository.findById(any()))
                 .thenReturn(Optional.of(UserEntity.builder()
@@ -41,30 +41,30 @@ public class UserReservationValidatorTest {
     }
 
     @Test
-    public void givenSpecialUsername_whenValidateIsInvoked_thenValidationPasses() {
+    void givenSpecialUsername_whenValidateIsInvoked_thenValidationPasses() {
         UserReservation userReservation = TestModelDataBuilder.getUserReservation();
         UserSession fakeUserSession = userReservation.getSession();
 
-        fakeUserSession.setUsername(CourtDataConstants.RESERVATION_SPECIAL_USERNAMES.get(0));
+        fakeUserSession.setUsername(CourtDataConstants.RESERVATION_SPECIAL_USERNAMES.getFirst());
 
         when(userRepository.findById(any()))
                 .thenReturn(Optional.of(
                         UserEntity.builder().currentSession("FAKE-SESSION-ID").build()));
-        assertThat(userReservationValidator.validate(userReservation)).isEqualTo(Optional.empty());
+        assertThat(userReservationValidator.validate(userReservation)).isNotPresent();
 
         fakeUserSession.setUsername(CourtDataConstants.RESERVATION_SPECIAL_USERNAMES.get(1));
-        assertThat(userReservationValidator.validate(userReservation)).isEqualTo(Optional.empty());
+        assertThat(userReservationValidator.validate(userReservation)).isNotPresent();
     }
 
     @Test
-    public void givenUserReservationIsNull_whenValidateIsInvoked_thenExceptionIsThrown() {
+    void givenUserReservationIsNull_whenValidateIsInvoked_thenExceptionIsThrown() {
         assertThatThrownBy(() -> userReservationValidator.validate(null))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("User reservation is required");
     }
 
     @Test
-    public void givenSessionIdIsMissing_whenValidateIsInvoked_thenExceptionIsThrown() {
+    void givenSessionIdIsMissing_whenValidateIsInvoked_thenExceptionIsThrown() {
         UserReservation userReservation = TestModelDataBuilder.getUserReservation();
         UserSession fakeUserSession = UserSession.builder().build();
 
@@ -83,7 +83,7 @@ public class UserReservationValidatorTest {
     }
 
     @Test
-    public void givenUsernameIsMissing_whenValidateIsInvoked_thenExceptionIsThrown() {
+    void givenUsernameIsMissing_whenValidateIsInvoked_thenExceptionIsThrown() {
         UserReservation userReservation = TestModelDataBuilder.getUserReservation();
         UserSession fakeUserSession = UserSession.builder().build();
 
@@ -102,7 +102,7 @@ public class UserReservationValidatorTest {
     }
 
     @Test
-    public void givenReservationIdIsMissing_whenValidateIsInvoked_thenExceptionIsThrown() {
+    void givenReservationIdIsMissing_whenValidateIsInvoked_thenExceptionIsThrown() {
         UserReservation userReservation = TestModelDataBuilder.getUserReservation();
         userReservation.setReservationId(null);
 
@@ -112,7 +112,7 @@ public class UserReservationValidatorTest {
     }
 
     @Test
-    public void givenNoExistingSession_whenValidateIsInvoked_thenExceptionIsThrown() {
+    void givenNoExistingSession_whenValidateIsInvoked_thenExceptionIsThrown() {
         UserReservation userReservation = TestModelDataBuilder.getUserReservation();
         when(userRepository.findById(any())).thenReturn(Optional.empty());
         assertThatThrownBy(() -> userReservationValidator.validate(userReservation))
@@ -121,7 +121,7 @@ public class UserReservationValidatorTest {
     }
 
     @Test
-    public void givenExistingMismatchedSession_whenValidateIsInvoked_thenExceptionIsThrown() {
+    void givenExistingMismatchedSession_whenValidateIsInvoked_thenExceptionIsThrown() {
         UserReservation userReservation = TestModelDataBuilder.getUserReservation();
         when(userRepository.findById(any()))
                 .thenReturn(Optional.of(

@@ -1,6 +1,6 @@
 package gov.uk.courtdata.reporder.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.atLeastOnce;
@@ -56,8 +56,8 @@ class CCOutcomeServiceTest {
     @Test
     void givenAInvalidOutcomeId_whenUpdateIsInvoked_thenReturnException() {
         when(repOrderCCOutcomeImpl.find(anyInt())).thenThrow(new RequestedObjectNotFoundException(""));
-        assertThatThrownBy(() -> service.update(TestModelDataBuilder.getRepOrderCCOutcome()))
-                .isInstanceOf(RequestedObjectNotFoundException.class);
+        var request = TestModelDataBuilder.getRepOrderCCOutcome();
+        assertThatThrownBy(() -> service.update(request)).isInstanceOf(RequestedObjectNotFoundException.class);
     }
 
     @Test

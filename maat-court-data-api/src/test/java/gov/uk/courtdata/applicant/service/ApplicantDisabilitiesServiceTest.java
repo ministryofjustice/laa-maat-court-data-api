@@ -1,6 +1,6 @@
 package gov.uk.courtdata.applicant.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.atLeastOnce;
@@ -68,8 +68,8 @@ public class ApplicantDisabilitiesServiceTest {
     @Test
     void givenApplicantDisabilitiesNotFound_whenUpdateIsInvoked_thenExceptionIsRaised() {
         when(applicantDisabilitiesRepository.findById(any())).thenReturn(Optional.empty());
-        assertThatThrownBy(
-                        () -> applicantDisabilitiesService.update(TestModelDataBuilder.getApplicantDisabilitiesDTO()))
+        var request = TestModelDataBuilder.getApplicantDisabilitiesDTO();
+        assertThatThrownBy(() -> applicantDisabilitiesService.update(request))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant Disability details not found for id");
     }

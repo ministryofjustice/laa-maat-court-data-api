@@ -1,6 +1,6 @@
 package gov.uk.courtdata.util;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
@@ -24,8 +24,8 @@ public class QueueMessageLogTestHelper {
         byte[] messageBlobBytes = expectedMessageBlob.getBytes();
         List<QueueMessageLogEntity> loggedMessages = queueMessageLogRepository.findAll();
         SoftAssertions.assertSoftly(softly -> {
-            assertThat(loggedMessages.size()).isEqualTo(expectedNumberOfMessages);
-            QueueMessageLogEntity messageLog = loggedMessages.get(0);
+            assertThat(loggedMessages).hasSize(expectedNumberOfMessages);
+            QueueMessageLogEntity messageLog = loggedMessages.getFirst();
             assertThat(messageLog.getMessage()).isEqualTo(messageBlobBytes);
             assertThat(messageLog.getLaaTransactionId()).isEqualTo(laaTransactionId);
             assertThat(messageLog.getMaatId()).isEqualTo(maatId);

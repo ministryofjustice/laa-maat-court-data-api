@@ -1,7 +1,7 @@
 package gov.uk.courtdata.hardship.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -135,7 +135,7 @@ class HardshipReviewServiceTest {
         List<HardshipReviewDetail> hardshipReviewDetailList =
                 hardshipReviewService.findDetails(MOCK_DETAIL_TYPE, MOCK_REP_ID);
 
-        assertThat(hardshipReviewDetailList.get(0).getId()).isEqualTo(MOCK_HARDSHIP_ID);
+        assertThat(hardshipReviewDetailList.getFirst().getId()).isEqualTo(MOCK_HARDSHIP_ID);
     }
 
     @Test

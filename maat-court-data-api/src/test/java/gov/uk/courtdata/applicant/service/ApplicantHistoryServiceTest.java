@@ -1,6 +1,6 @@
 package gov.uk.courtdata.applicant.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.atLeastOnce;
@@ -47,9 +47,7 @@ public class ApplicantHistoryServiceTest {
 
     @Test
     void givenApplicantHistoryNotFound_whenFindIsInvoked_thenExceptionIsRaised() {
-        assertThatThrownBy(() -> {
-                    applicantHistoryService.find(ID);
-                })
+        assertThatThrownBy(() -> applicantHistoryService.find(ID))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant History not found for id ");
     }
@@ -67,9 +65,8 @@ public class ApplicantHistoryServiceTest {
     @Test
     void givenApplicantHistoryNotFound_whenUpdateIsInvoked_thenExceptionIsRaised() {
         when(applicantHistoryRepository.findById(anyInt())).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> {
-                    applicantHistoryService.update(TestModelDataBuilder.getApplicantHistoryDTO(ID, "N"));
-                })
+        var request = TestModelDataBuilder.getApplicantHistoryDTO(ID, "N");
+        assertThatThrownBy(() -> applicantHistoryService.update(request))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant History not found for id");
     }

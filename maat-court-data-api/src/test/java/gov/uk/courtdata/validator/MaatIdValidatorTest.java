@@ -1,6 +1,6 @@
 package gov.uk.courtdata.validator;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class MaatIdValidatorTest {
+class MaatIdValidatorTest {
     @InjectMocks
     private MaatIdValidator maatIdValidator;
 
@@ -30,21 +30,21 @@ public class MaatIdValidatorTest {
     private RepOrderService repOrderService;
 
     @Test
-    public void testWhenMaatIdIsNull_throwsException() {
+    void testWhenMaatIdIsNull_throwsException() {
         ValidationException validationException =
                 assertThrows(ValidationException.class, () -> maatIdValidator.validate(null));
         assertThat(validationException.getMessage()).isEqualTo("MAAT/REP ID is required, found [null]");
     }
 
     @Test
-    public void testWhenMaatIdIsMissingFromPayload_throwsException() {
+    void testWhenMaatIdIsMissingFromPayload_throwsException() {
         ValidationException validationException =
                 assertThrows(ValidationException.class, () -> maatIdValidator.validate(0));
         assertThat(validationException.getMessage()).isEqualTo("MAAT/REP ID is required, found [0]");
     }
 
     @Test
-    public void testWhenMaatIsNotNullButNotOnRepOrder_validationPasses() {
+    void testWhenMaatIsNotNullButNotOnRepOrder_validationPasses() {
         when(repOrderRepository.findById(1000)).thenReturn(Optional.empty());
         ValidationException validationException =
                 assertThrows(ValidationException.class, () -> maatIdValidator.validate(1000));
@@ -52,7 +52,7 @@ public class MaatIdValidatorTest {
     }
 
     @Test
-    public void testWhenMaatIsNotNullButExistOnRepOrder_validationPasses() {
+    void testWhenMaatIsNotNullButExistOnRepOrder_validationPasses() {
         final RepOrderEntity repOrderEntity = RepOrderEntity.builder().id(1000).build();
         when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrderEntity));
         Optional<Void> result = maatIdValidator.validate(1000);

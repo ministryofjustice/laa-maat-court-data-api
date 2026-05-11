@@ -1,6 +1,6 @@
 package gov.uk.courtdata.assessment.validator;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class UpdateAssessmentValidatorTest {
+class UpdateAssessmentValidatorTest {
 
     @InjectMocks
     private UpdateAssessmentValidator updateAssessmentValidator;
@@ -27,12 +27,12 @@ public class UpdateAssessmentValidatorTest {
     private FinancialAssessmentIdValidator financialAssessmentIdValidator;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         when(financialAssessmentIdValidator.validate(any())).thenReturn(Optional.empty());
     }
 
     @Test
-    public void testUpdateAssessmentValidator_whenUserModifiedIsBlank_thenThrowsException() {
+    void testUpdateAssessmentValidator_whenUserModifiedIsBlank_thenThrowsException() {
         UpdateFinancialAssessment mockFinancialAssessment =
                 UpdateFinancialAssessment.builder().userModified("").build();
         ValidationException validationException = Assertions.assertThrows(
@@ -41,7 +41,7 @@ public class UpdateAssessmentValidatorTest {
     }
 
     @Test
-    public void testUpdateAssessmentValidator_whenUserModifiedIsNull_thenThrowsException() {
+    void testUpdateAssessmentValidator_whenUserModifiedIsNull_thenThrowsException() {
         UpdateFinancialAssessment mockFinancialAssessment =
                 UpdateFinancialAssessment.builder().userModified(null).build();
         ValidationException validationException = Assertions.assertThrows(
@@ -50,10 +50,10 @@ public class UpdateAssessmentValidatorTest {
     }
 
     @Test
-    public void testUpdateAssessmentValidator_whenUserModifiedIsFilled_thenValidationPasses() {
+    void testUpdateAssessmentValidator_whenUserModifiedIsFilled_thenValidationPasses() {
         UpdateFinancialAssessment mockFinancialAssessment =
                 UpdateFinancialAssessment.builder().userModified("test-f").build();
         Optional<Void> result = updateAssessmentValidator.validate(mockFinancialAssessment);
-        assertThat(result).isEqualTo(Optional.empty());
+        assertThat(result).isNotPresent();
     }
 }

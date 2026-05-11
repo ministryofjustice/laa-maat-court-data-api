@@ -1,7 +1,7 @@
 package gov.uk.courtdata.authorization.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,7 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthorizationServiceTest {
+class AuthorizationServiceTest {
 
     @InjectMocks
     private AuthorizationService authorizationService;
@@ -39,14 +39,14 @@ public class AuthorizationServiceTest {
     private ReservationsRepository reservationsRepository;
 
     @Test
-    public void givenInvalidAction_whenIsRoleActionAuthorizedIsInvoked_thenResultIsFalse() {
+    void givenInvalidAction_whenIsRoleActionAuthorizedIsInvoked_thenResultIsFalse() {
         when(roleActionsRepository.getRoleAction(any(), any())).thenReturn(Optional.empty());
         assertThat(authorizationService.isRoleActionAuthorized("test-f", "FAKE_ACTION"))
                 .isEqualTo(Boolean.FALSE);
     }
 
     @Test
-    public void givenValidAction_whenIsRoleActionAuthorizedIsInvoked_thenResultIsTrue() {
+    void givenValidAction_whenIsRoleActionAuthorizedIsInvoked_thenResultIsTrue() {
         when(roleActionsRepository.getRoleAction(any(), any()))
                 .thenReturn(Optional.of(
                         RoleActionEntity.builder().action("CREATE_ASSESSMENT").build()));
@@ -55,7 +55,7 @@ public class AuthorizationServiceTest {
     }
 
     @Test
-    public void givenMissingParameters_whenIsRoleActionAuthorizedIsInvoked_thenValidationExceptionIsThrown() {
+    void givenMissingParameters_whenIsRoleActionAuthorizedIsInvoked_thenValidationExceptionIsThrown() {
         assertThatThrownBy(() -> authorizationService.isRoleActionAuthorized("FAKE_USERNAME", null))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Username and action are required");
@@ -66,14 +66,14 @@ public class AuthorizationServiceTest {
     }
 
     @Test
-    public void getInvalidWorkReason_whenIsNewWorkReasonAuthorizedIsInvoked_thenResultIsFalse() {
+    void getInvalidWorkReason_whenIsNewWorkReasonAuthorizedIsInvoked_thenResultIsFalse() {
         when(roleWorkReasonsRepository.getNewWorkReason(any(), any())).thenReturn(Optional.empty());
         assertThat(authorizationService.isNewWorkReasonAuthorized("test-f", "FAKE_WORK_REASON"))
                 .isEqualTo(Boolean.FALSE);
     }
 
     @Test
-    public void givenValidWorkReason_whenIsNewWorkReasonAuthorizedIsInvoked_thenResultIsTrue() {
+    void givenValidWorkReason_whenIsNewWorkReasonAuthorizedIsInvoked_thenResultIsTrue() {
         when(roleWorkReasonsRepository.getNewWorkReason(any(), any()))
                 .thenReturn(Optional.of(
                         RoleWorkReasonEntity.builder().nworCode("FMA").build()));
@@ -82,7 +82,7 @@ public class AuthorizationServiceTest {
     }
 
     @Test
-    public void givenMissingParameters_whenIsNewWorkReasonAuthorizedIsInvoked_thenValidationExceptionIsThrown() {
+    void givenMissingParameters_whenIsNewWorkReasonAuthorizedIsInvoked_thenValidationExceptionIsThrown() {
         assertThatThrownBy(() -> authorizationService.isNewWorkReasonAuthorized("FAKE_USERNAME", null))
                 .isInstanceOf(ValidationException.class)
                 .hasMessageContaining("Username and new work reason are required");
@@ -93,7 +93,7 @@ public class AuthorizationServiceTest {
     }
 
     @Test
-    public void givenIncorrectParameters_whenIsReservedIsInvoked_thenResultIsFalse() {
+    void givenIncorrectParameters_whenIsReservedIsInvoked_thenResultIsFalse() {
         when(reservationsRepository.findReservationByUserSession(any(), any(), any(), any()))
                 .thenReturn(Optional.empty());
         assertThat(authorizationService.isReserved(TestModelDataBuilder.getUserReservation()))
@@ -101,7 +101,7 @@ public class AuthorizationServiceTest {
     }
 
     @Test
-    public void givenCorrectParameters_whenIsReservedIsInvoked_thenResultIsTrue() {
+    void givenCorrectParameters_whenIsReservedIsInvoked_thenResultIsTrue() {
         when(reservationsRepository.findReservationByUserSession(any(), any(), any(), any()))
                 .thenReturn(Optional.of(ReservationsEntity.builder().build()));
         assertThat(authorizationService.isReserved(TestModelDataBuilder.getUserReservation()))
@@ -109,7 +109,7 @@ public class AuthorizationServiceTest {
     }
 
     @Test
-    public void givenCorrectParameters_whenIsReservedIsInvoked_thenExpiryDateIsUpdated() {
+    void givenCorrectParameters_whenIsReservedIsInvoked_thenExpiryDateIsUpdated() {
         when(reservationsRepository.findReservationByUserSession(any(), any(), any(), any()))
                 .thenReturn(Optional.of(ReservationsEntity.builder().build()));
         authorizationService.isReserved(TestModelDataBuilder.getUserReservation());

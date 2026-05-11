@@ -2,7 +2,7 @@ package gov.uk.courtdata.laastatus.processor;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.SAVE_MLR;
 import static gov.uk.courtdata.constants.CourtDataConstants.SEARCH_TYPE_0;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;

@@ -2,7 +2,7 @@ package gov.uk.courtdata.link.processor;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.PENDING_IOJ_DECISION;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;

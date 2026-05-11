@@ -1,6 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;

@@ -1,6 +1,6 @@
 package gov.uk.courtdata.hearing.processor;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,7 +31,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class WQHearingProcessorTest {
+class WQHearingProcessorTest {
 
     @InjectMocks
     private WQHearingProcessor wqHearingProcessor;
@@ -49,7 +49,7 @@ public class WQHearingProcessorTest {
     private ArgumentCaptor<WQHearingEntity> wqHearingEntityArgumentCaptor;
 
     @Test
-    public void givenWQHearingProcessor_whenProcessIsInvoke_thenSaveWQHearingEntity() {
+    void givenWQHearingProcessor_whenProcessIsInvoke_thenSaveWQHearingEntity() {
 
         when(wqLinkRegisterRepository.findBymaatId(anyInt()))
                 .thenReturn(Collections.singletonList(

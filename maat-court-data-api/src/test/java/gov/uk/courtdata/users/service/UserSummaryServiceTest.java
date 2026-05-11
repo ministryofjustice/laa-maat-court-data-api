@@ -1,6 +1,7 @@
 package gov.uk.courtdata.users.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,9 +77,9 @@ class UserSummaryServiceTest {
 
     @Test
     void givenValidUser_whenGetUserIsInvoked_thenUserEntityIsReturned() {
-        when(userRepository.findById(TestModelDataBuilder.TEST_USER))
-                .thenReturn(Optional.of(UserEntity.builder().build()));
-        userSummaryService.getUser(TestModelDataBuilder.TEST_USER);
+        var expected = UserEntity.builder().build();
+        when(userRepository.findById(TestModelDataBuilder.TEST_USER)).thenReturn(Optional.of(expected));
+        assertThat(userSummaryService.getUser(TestModelDataBuilder.TEST_USER)).isEqualTo(expected);
     }
 
     @Test

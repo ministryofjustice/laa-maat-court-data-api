@@ -1,6 +1,6 @@
 package gov.uk.courtdata.laastatus.builder;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -33,7 +33,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class CourtDataDTOBuilderTest {
+class CourtDataDTOBuilderTest {
 
     @InjectMocks
     private CourtDataDTOBuilder courtDataDTOBuilder;
@@ -51,7 +51,7 @@ public class CourtDataDTOBuilderTest {
     private OffenceRepository offenceRepository;
 
     @Test
-    public void givenCaseDetailsIsReceived_whenCourtDataDTOBuilderIsInvoked_thenReturnedCaseDetailsDTO() {
+    void givenCaseDetailsIsReceived_whenCourtDataDTOBuilderIsInvoked_thenReturnedCaseDetailsDTO() {
 
         CaseDetails caseDetails = CaseDetails.builder()
                 .maatId(12)
@@ -107,7 +107,7 @@ public class CourtDataDTOBuilderTest {
     }
 
     @Test
-    public void givenCaseDetails_whenCourtDataDTOBuild_thenIncludesOffenceDetails() {
+    void givenCaseDetails_whenCourtDataDTOBuild_thenIncludesOffenceDetails() {
 
         CaseDetails caseDetails = CaseDetails.builder()
                 .maatId(12)
@@ -156,19 +156,15 @@ public class CourtDataDTOBuilderTest {
         verify(defendantMAATDataRepository).findBymaatId(anyInt());
         verify(offenceRepository).findByMaxTxId(anyInt(), anyString(), anyString());
 
-        Offence offence = courtDataDTO
-                .getCaseDetails()
-                .getDefendant()
-                .getOffences()
-                .iterator()
-                .next();
+        Offence offence =
+                courtDataDTO.getCaseDetails().getDefendant().getOffences().getFirst();
 
-        assertThat(offence.getOffenceCode().equals("A603060"));
-        assertThat(offence.getOffenceId().equals("ad691bec-8d87-4a5b-969a-66002b6a6da9"));
+        assertThat(offence.getOffenceCode()).isEqualTo("A603060");
+        assertThat(offence.getOffenceId()).isEqualTo("ad691bec-8d87-4a5b-969a-66002b6a6da9");
     }
 
     @Test
-    public void givenCaseDetails_whenLegalAidStatusIsPending_thenIncludesOffenceDetails() {
+    void givenCaseDetails_whenLegalAidStatusIsPending_thenIncludesOffenceDetails() {
 
         CaseDetails caseDetails = CaseDetails.builder()
                 .maatId(12)
@@ -216,19 +212,15 @@ public class CourtDataDTOBuilderTest {
         verify(defendantMAATDataRepository).findBymaatId(anyInt());
         verify(offenceRepository).findByMaxTxId(anyInt(), anyString(), anyString());
 
-        Offence offence = courtDataDTO
-                .getCaseDetails()
-                .getDefendant()
-                .getOffences()
-                .iterator()
-                .next();
+        Offence offence =
+                courtDataDTO.getCaseDetails().getDefendant().getOffences().getFirst();
 
-        assertThat(offence.getOffenceCode().equals("A603060"));
-        assertThat(offence.getOffenceId().equals("ad691bec-8d87-4a5b-969a-66002b6a6da9"));
+        assertThat(offence.getOffenceCode()).isEqualTo("A603060");
+        assertThat(offence.getOffenceId()).isEqualTo("ad691bec-8d87-4a5b-969a-66002b6a6da9");
     }
 
     @Test
-    public void givenCaseDetailsIsReceived_whenCourtDataDTOBuilderIsInvoked_thenThrowException() {
+    void givenCaseDetailsIsReceived_whenCourtDataDTOBuilderIsInvoked_thenThrowException() {
 
         CaseDetails caseDetails = CaseDetails.builder().build();
         Assertions.assertThrows(NoSuchElementException.class, () -> {

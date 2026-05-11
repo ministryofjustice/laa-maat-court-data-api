@@ -3,7 +3,8 @@ package gov.uk.courtdata.processor;
 import static gov.uk.courtdata.constants.CourtDataConstants.AUTO_USER;
 import static gov.uk.courtdata.constants.CourtDataConstants.RESULT_CODE_DESCRIPTION;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -14,7 +15,6 @@ import gov.uk.courtdata.repository.XLATResultRepository;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -25,7 +25,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ResultCodeRefDataProcessorTest {
+class ResultCodeRefDataProcessorTest {
 
     @InjectMocks
     private ResultCodeRefDataProcessor resultCodeRefDataProcessor;
@@ -37,7 +37,7 @@ public class ResultCodeRefDataProcessorTest {
     private ArgumentCaptor<XLATResultEntity> xlatResultArgumentCaptor;
 
     @Test
-    public void testProcessResultCode_whenNewResultIsPassedIn_thenResultIsSaved() {
+    void testProcessResultCode_whenNewResultIsPassedIn_thenResultIsSaved() {
 
         // given
         Integer resultCode = 5555;
@@ -58,7 +58,7 @@ public class ResultCodeRefDataProcessorTest {
     }
 
     @Test
-    public void testProcessResultCode_whenOffenceExists_thenOffenceNotSaved() {
+    void testProcessResultCode_whenOffenceExists_thenOffenceNotSaved() {
 
         // given
         Integer resultCode = 3333;
@@ -75,13 +75,10 @@ public class ResultCodeRefDataProcessorTest {
     }
 
     @Test
-    public void testProcessResultCode_whenNullCodeIsPassedIn_thenThrowsMaatCourtDataException() {
+    void testProcessResultCode_whenNullCodeIsPassedIn_thenThrowsMaatCourtDataException() {
 
-        Assertions.assertThrows(
-                MAATCourtDataException.class,
-                () -> {
-                    resultCodeRefDataProcessor.processResultCode(null);
-                },
-                "A Null Result Code is passed in");
+        assertThatThrownBy(() -> resultCodeRefDataProcessor.processResultCode(null))
+                .isInstanceOf(MAATCourtDataException.class)
+                .hasMessage("A Null Result Code is passed in");
     }
 }

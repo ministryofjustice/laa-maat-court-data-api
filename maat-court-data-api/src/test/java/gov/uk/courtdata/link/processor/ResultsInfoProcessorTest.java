@@ -1,7 +1,7 @@
 package gov.uk.courtdata.link.processor;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

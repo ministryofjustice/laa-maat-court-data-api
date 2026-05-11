@@ -1,6 +1,6 @@
 package gov.uk.courtdata.reporder.validator;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 
@@ -29,15 +29,15 @@ class UpdateAppDateCompletedValidatorTest {
     private MaatIdValidator maatIdValidator;
 
     @Test
-    public void givenValidParameters_whenValidateIsInvoked_thenValidationPasses() {
+    void givenValidParameters_whenValidateIsInvoked_thenValidationPasses() {
         Optional<Void> result =
                 updateAppDateCompletedValidator.validate(TestModelDataBuilder.getUpdateAppDateCompleted());
         verify(maatIdValidator).validate(anyInt());
-        assertThat(result).isEqualTo(Optional.empty());
+        assertThat(result).isNotPresent();
     }
 
     @Test
-    public void givenMissingRepId_whenValidateIsInvoked_thenValidationExceptionIsThrown() {
+    void givenMissingRepId_whenValidateIsInvoked_thenValidationExceptionIsThrown() {
         ValidationException validationException = Assertions.assertThrows(
                 ValidationException.class,
                 () -> updateAppDateCompletedValidator.validate(UpdateAppDateCompleted.builder()
@@ -47,12 +47,12 @@ class UpdateAppDateCompletedValidatorTest {
     }
 
     @Test
-    public void givenMissingAssessmentDate_whenValidateIsInvoked_thenValidationExceptionIsThrown() {
+    void givenMissingAssessmentDate_whenValidateIsInvoked_thenValidationExceptionIsThrown() {
+        var updateRequest = UpdateAppDateCompleted.builder()
+                .repId(TestModelDataBuilder.REP_ID)
+                .build();
         ValidationException validationException = Assertions.assertThrows(
-                ValidationException.class,
-                () -> updateAppDateCompletedValidator.validate(UpdateAppDateCompleted.builder()
-                        .repId(TestModelDataBuilder.REP_ID)
-                        .build()));
+                ValidationException.class, () -> updateAppDateCompletedValidator.validate(updateRequest));
         assertThat(validationException.getMessage())
                 .isEqualTo("Assessment Date completed is missing from request and is required");
     }

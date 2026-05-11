@@ -1,6 +1,6 @@
 package gov.uk.courtdata.integration.hardship;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -41,10 +41,10 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
         classes = {MAATCourtDataApplication.class})
 class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
 
-    private final String TEST_USER = "test-s";
-    private final String BASE_URL = "/api/internal/v1/assessment/hardship";
-    private final String HARDSHIP_URL = BASE_URL + "/{hardshipId}";
-    private final String HARDSHIP_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
+    private static final String TEST_USER = "test-s";
+    private static final String BASE_URL = "/api/internal/v1/assessment/hardship";
+    private static final String HARDSHIP_URL = BASE_URL + "/{hardshipId}";
+    private static final String HARDSHIP_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
 
     private HardshipReviewEntity existingHardshipReview;
     private FinancialAssessmentEntity existingFinancialAssessment;
@@ -61,31 +61,37 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenAHardshipReviewIdThatDoesNotExist_whenGetHardshipIsInvoked_theCorrectErrorIsReturned() throws Exception {
         int invalidHardshipId = 9999;
-        assertTrue(runBadRequestErrorScenario(
-                String.format("%d is invalid", invalidHardshipId), get(HARDSHIP_URL, invalidHardshipId)));
+        assertThat(runBadRequestErrorScenario(
+                        String.format("%d is invalid", invalidHardshipId), get(HARDSHIP_URL, invalidHardshipId)))
+                .isTrue();
     }
 
     @Test
     void givenAZeroHardshipReviewId_whenGetHardshipIsInvoked_theCorrectErrorIsReturned() throws Exception {
-        assertTrue(runBadRequestErrorScenario("Hardship review id is required", get(HARDSHIP_URL, 0)));
+        assertThat(runBadRequestErrorScenario("Hardship review id is required", get(HARDSHIP_URL, 0)))
+                .isTrue();
     }
 
     @Test
     void givenAValidHardshipReviewId_whenGetHardshipIsInvoked_theCorrectDataIsReturned() throws Exception {
-        assertTrue(runSuccessScenario(getTestHardshipReviewDTO(), get(HARDSHIP_URL, existingHardshipReview.getId())));
+        assertThat(runSuccessScenario(getTestHardshipReviewDTO(), get(HARDSHIP_URL, existingHardshipReview.getId())))
+                .isTrue();
     }
 
     @Test
     void givenAnInvalidRepId_whenGetHardshipByRepIdIsInvoked_theCorrectErrorIsReturned() throws Exception {
         Integer repId = 9999;
-        assertTrue(runNotFoundErrorScenario(
-                String.format("No Hardship Review found for REP ID: %s", repId), get(HARDSHIP_BY_REP_ID_URL, repId)));
+        assertThat(runNotFoundErrorScenario(
+                        String.format("No Hardship Review found for REP ID: %s", repId),
+                        get(HARDSHIP_BY_REP_ID_URL, repId)))
+                .isTrue();
     }
 
     @Test
     void givenAValidRepID_whenGetHardshipByRepIdIsInvoked_theCorrectDataIsReturned() throws Exception {
-        assertTrue(runSuccessScenario(
-                getTestHardshipReviewDTO(), get(HARDSHIP_BY_REP_ID_URL, existingHardshipReview.getRepId())));
+        assertThat(runSuccessScenario(
+                        getTestHardshipReviewDTO(), get(HARDSHIP_BY_REP_ID_URL, existingHardshipReview.getRepId())))
+                .isTrue();
     }
 
     @Test
@@ -127,7 +133,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     void givenAValidHardshipReview_whenUpdateHardshipIsInvoked_theCorrectDataIsPersisted() throws Exception {
 
         HardshipReviewDetailEntity existingReviewDetails =
-                existingHardshipReview.getReviewDetails().get(0);
+                existingHardshipReview.getReviewDetails().getFirst();
         HardshipReviewDetail updatedReviewDetails = getTestHardshipReviewDetail(
                 existingReviewDetails.getId(),
                 existingReviewDetails.getDateCreated(),
@@ -201,7 +207,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
         hardshipReviewDTO.setStatus(HardshipReviewStatus.IN_PROGRESS);
 
         HardshipReviewDetailEntity existingReviewDetails =
-                existingHardshipReview.getReviewDetails().get(0);
+                existingHardshipReview.getReviewDetails().getFirst();
 
         hardshipReviewDTO.setReviewDetails(List.of(getTestHardshipReviewDetail(
                 existingReviewDetails.getId(),

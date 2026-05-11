@@ -1,7 +1,7 @@
 package gov.uk.courtdata.validator;
 
 import static java.lang.String.format;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class SolicitorValidatorTest {
+class SolicitorValidatorTest {
 
     @Mock
     private SolicitorMAATDataRepository solicitorMAATDataRepository;
@@ -27,7 +27,7 @@ public class SolicitorValidatorTest {
     private SolicitorValidator solicitorValidator;
 
     @Test
-    public void testWhenSolicitorDetailsNotFound_throwsException() {
+    void testWhenSolicitorDetailsNotFound_throwsException() {
         int testMaatId = 1000;
         when(solicitorMAATDataRepository.findBymaatId(testMaatId)).thenReturn(Optional.empty());
         ValidationException validationException =
@@ -36,7 +36,7 @@ public class SolicitorValidatorTest {
     }
 
     @Test
-    public void testWhenSolicitorAccountCodeNotAvailable_throwsException() {
+    void testWhenSolicitorAccountCodeNotAvailable_throwsException() {
         int testMaatId = 1000;
         when(solicitorMAATDataRepository.findBymaatId(testMaatId))
                 .thenReturn(Optional.of(SolicitorMAATDataEntity.builder()
@@ -50,7 +50,7 @@ public class SolicitorValidatorTest {
     }
 
     @Test
-    public void testWhenSolicitorDetailsExists_validationPasses() {
+    void testWhenSolicitorDetailsExists_validationPasses() {
         int testMaatId = 1000;
         when(solicitorMAATDataRepository.findBymaatId(testMaatId))
                 .thenReturn(Optional.of(SolicitorMAATDataEntity.builder()

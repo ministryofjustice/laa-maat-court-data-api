@@ -1,6 +1,6 @@
 package gov.uk.courtdata.unlink.controller;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.verify;
 
@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
-public class UnLinkControllerTest {
+class UnLinkControllerTest {
 
     @InjectMocks
     private UnLinkController unLinkController;
@@ -24,7 +24,7 @@ public class UnLinkControllerTest {
     private UnLinkValidationProcessor unLinkValidationProcessor;
 
     @Test
-    public void givenUnLink_WhenUnLinkValidationIsInvoked_thenValidateMAATID() {
+    void givenUnLink_WhenUnLinkValidationIsInvoked_thenValidateMAATID() {
 
         Unlink unlink = Unlink.builder()
                 .maatId(121211)

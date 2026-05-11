@@ -1,6 +1,6 @@
 package gov.uk.courtdata.unlink.processor;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.verify;
@@ -26,7 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class UnLinkProcessorTest {
+class UnLinkProcessorTest {
 
     @InjectMocks
     private UnLinkProcessor unLinkProcessor;
@@ -44,11 +44,10 @@ public class UnLinkProcessorTest {
     private UnLinkImpl unlinkImpl;
 
     @Test
-    public void process() {
+    void process() {
 
         // given unlink...
         Unlink unlink = getUnlink();
-        UnlinkModel unlinkModel = UnlinkModel.builder().unlink(unlink).build();
 
         List<WqLinkRegisterEntity> wqLinkRegisterEntityList = Collections.singletonList(
                 WqLinkRegisterEntity.builder().caseUrn("casedfd").build());

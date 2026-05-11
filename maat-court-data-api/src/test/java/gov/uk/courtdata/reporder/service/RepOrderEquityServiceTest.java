@@ -1,6 +1,6 @@
 package gov.uk.courtdata.reporder.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -20,7 +20,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(RepOrderEquityService.class)
-public class RepOrderEquityServiceTest {
+class RepOrderEquityServiceTest {
 
     private static final int ID = 123;
     private static final int NON_EXISTENT_ID = 888;

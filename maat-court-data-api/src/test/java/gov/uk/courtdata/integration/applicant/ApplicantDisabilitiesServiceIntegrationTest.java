@@ -1,7 +1,7 @@
 package gov.uk.courtdata.integration.applicant;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
@@ -22,7 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @Slf4j
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrationTest {
+class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrationTest {
     private static final Integer INVALID_ID = 2345;
 
     @Autowired
@@ -31,7 +31,7 @@ public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrat
     @Test
     void givenValidId_WhenGetApplicantDisabilitiesIsInvoked_thenCorrectResponseIsReturned() {
         createApplicantDisabilities();
-        Integer id = repos.applicantDisabilities.findAll().get(0).getId();
+        Integer id = repos.applicantDisabilities.findAll().getFirst().getId();
         ApplicantDisabilitiesDTO applicantDisabilitiesDTO = applicantDisabilitiesService.find(id);
         assertThat(applicantDisabilitiesDTO.getDisaDisability()).isNotBlank();
     }
@@ -55,7 +55,7 @@ public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrat
     @Test
     void givenAValidInput_whenUpdateApplicantDisabilitiesIsInvoked_thenUpdateIsSuccess() {
         createApplicantDisabilities();
-        Integer id = repos.applicantDisabilities.findAll().get(0).getId();
+        Integer id = repos.applicantDisabilities.findAll().getFirst().getId();
         ApplicantDisabilitiesDTO recordToUpdate = TestModelDataBuilder.getApplicantDisabilitiesDTO(id);
         ApplicantDisabilitiesDTO applicantDisabilitiesDTO = applicantDisabilitiesService.update(recordToUpdate);
         assertThat(applicantDisabilitiesDTO.getId()).isEqualTo(recordToUpdate.getId());
@@ -65,8 +65,8 @@ public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrat
 
     @Test
     void givenAInValidInput_whenUpdateApplicantDisabilitiesIsInvoked_thenExceptionIsRaised() {
-        assertThatThrownBy(() -> applicantDisabilitiesService.update(
-                        TestModelDataBuilder.getApplicantDisabilitiesDTO(INVALID_ID)))
+        var request = TestModelDataBuilder.getApplicantDisabilitiesDTO(INVALID_ID);
+        assertThatThrownBy(() -> applicantDisabilitiesService.update(request))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessageContaining("Applicant Disability details not found for id");
     }
@@ -74,10 +74,10 @@ public class ApplicantDisabilitiesServiceIntegrationTest extends MockMvcIntegrat
     @Test
     void givenAValidInput_whenDeleteApplicantDisabilitiesIsInvoked_thenDeleteIsSuccess() {
         createApplicantDisabilities();
-        Integer id = repos.applicantDisabilities.findAll().get(0).getId();
+        Integer id = repos.applicantDisabilities.findAll().getFirst().getId();
         applicantDisabilitiesService.delete(id);
-        Optional<ApplicantDisabilitiesEntity> record = repos.applicantDisabilities.findById(id);
-        assertThatThrownBy(record::get)
+        Optional<ApplicantDisabilitiesEntity> foundRecord = repos.applicantDisabilities.findById(id);
+        assertThatThrownBy(foundRecord::get)
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessageContaining("No value present");
     }

@@ -1,7 +1,6 @@
 package gov.uk.courtdata.integration.unlink.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -83,7 +82,7 @@ class UnlinkListenerTest extends MockMvcIntegrationTest {
 
         List<WqLinkRegisterEntity> wqUnLinkRegisterEntity = repos.wqLinkRegister.findAll();
         WqLinkRegisterEntity unLinkRegister = wqUnLinkRegisterEntity.getFirst();
-        assertNotNull(unLinkRegister);
+        assertThat(unLinkRegister).isNotNull();
         Unlink unlink = unlinkModel.getUnlink();
         assertThat(unLinkRegister.getMaatId()).isEqualTo(repId);
         assertThat(unLinkRegister.getRemovedUserId()).isEqualTo(unlink.getUserId());

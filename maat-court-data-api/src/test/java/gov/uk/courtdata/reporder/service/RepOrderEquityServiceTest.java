@@ -1,7 +1,7 @@
 package gov.uk.courtdata.reporder.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.entity.RepOrderEquityEntity;
@@ -45,7 +45,7 @@ class RepOrderEquityServiceTest {
 
         RepOrderEquityEntity repOrderEquity = repOrderEquityService.retrieve(REP_ORDER_EQUITY_ENTITY.getId());
 
-        assertEquals(REP_ORDER_EQUITY_ENTITY, repOrderEquity);
+        assertThat(repOrderEquity).isEqualTo(REP_ORDER_EQUITY_ENTITY);
     }
 
     @Test
@@ -59,7 +59,7 @@ class RepOrderEquityServiceTest {
     void givenValidRepOrderEquity_whenCreateCalled_thenSuccessfullyCreateRepOrderEquity() {
         repOrderEquityService.create(REP_ORDER_EQUITY_ENTITY);
 
-        Mockito.verify(mockRepOrderEquityRepository, Mockito.times(1)).save(REP_ORDER_EQUITY_ENTITY);
+        Mockito.verify(mockRepOrderEquityRepository).save(REP_ORDER_EQUITY_ENTITY);
     }
 
     @Test
@@ -73,14 +73,14 @@ class RepOrderEquityServiceTest {
         when(mockRepOrderEquityRepository.findById(ID)).thenReturn(Optional.ofNullable(updatedRepOrderEquityEntity));
         repOrderEquityService.update(ID, updatedRepOrderEquityEntity);
 
-        Mockito.verify(mockRepOrderEquityRepository, Mockito.times(1)).findById(ID);
-        Mockito.verify(mockRepOrderEquityRepository, Mockito.times(1)).save(updatedRepOrderEquityEntity);
+        Mockito.verify(mockRepOrderEquityRepository).findById(ID);
+        Mockito.verify(mockRepOrderEquityRepository).save(updatedRepOrderEquityEntity);
     }
 
     @Test
     void givenID_whenDeleteCalled_thenDeleteRepOrderEquity() {
         repOrderEquityService.delete(ID);
 
-        Mockito.verify(mockRepOrderEquityRepository, Mockito.times(1)).deleteById(ID);
+        Mockito.verify(mockRepOrderEquityRepository).deleteById(ID);
     }
 }

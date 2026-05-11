@@ -5,7 +5,6 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,7 +44,7 @@ class IOJAppealV1ServiceTest {
         when(iojAppealPersistenceService.find(any())).thenReturn(TestEntityDataBuilder.getIOJAppealEntity());
         when(iojAppealMapper.toIOJAppealDTO(any(IOJAppealEntity.class))).thenReturn(iojAppealDTO);
         var returnedIOJAppeal = iojAppealService.find(IOJ_APPEAL_ID);
-        assertEquals(IOJ_APPEAL_ID, returnedIOJAppeal.getId());
+        assertThat(returnedIOJAppeal.getId()).isEqualTo(IOJ_APPEAL_ID);
     }
 
     @Test
@@ -122,7 +121,7 @@ class IOJAppealV1ServiceTest {
 
         var newlyCreatedIOJAppealDTO = iojAppealService.create(createIOJAppeal);
 
-        assertEquals(IOJ_APPEAL_ID, newlyCreatedIOJAppealDTO.getId());
+        assertThat(newlyCreatedIOJAppealDTO.getId()).isEqualTo(IOJ_APPEAL_ID);
 
         verify(iojAppealPersistenceService).setOldIOJAppealsReplaced(IOJ_REP_ID, IOJ_APPEAL_ID);
     }
@@ -141,6 +140,6 @@ class IOJAppealV1ServiceTest {
 
         var newlyUpdatedIOJAppealDTO = iojAppealService.update(updateIOJAppeal);
 
-        assertEquals(newlyUpdatedIOJAppealDTO.getDateModified(), matchingDateModified);
+        assertThat(newlyUpdatedIOJAppealDTO.getDateModified()).isEqualTo(matchingDateModified);
     }
 }

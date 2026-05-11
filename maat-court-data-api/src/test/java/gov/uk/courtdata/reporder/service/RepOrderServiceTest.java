@@ -3,9 +3,6 @@ package gov.uk.courtdata.reporder.service;
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.atLeastOnce;
@@ -39,6 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -134,10 +132,10 @@ class RepOrderServiceTest {
 
         AssessorDetails actualIOJAssessorDetails = repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID);
 
-        assertAll(
-                "verify actual AssessorDetails",
-                () -> assertEquals("Karen Greaves", actualIOJAssessorDetails.getFullName()),
-                () -> assertEquals("grea-k", actualIOJAssessorDetails.getUserName()));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(actualIOJAssessorDetails.getFullName()).isEqualTo("Karen Greaves");
+            assertThat(actualIOJAssessorDetails.getUserName()).isEqualTo("grea-k");
+        });
     }
 
     @Test
@@ -151,10 +149,10 @@ class RepOrderServiceTest {
 
         AssessorDetails actualIOJAssessorDetails = repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID);
 
-        assertAll(
-                "verify actual AssessorDetails",
-                () -> assertEquals(StringUtils.EMPTY, actualIOJAssessorDetails.getFullName()),
-                () -> assertEquals("grea-k", actualIOJAssessorDetails.getUserName()));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(actualIOJAssessorDetails.getFullName()).isEqualTo(StringUtils.EMPTY);
+            assertThat(actualIOJAssessorDetails.getUserName()).isEqualTo("grea-k");
+        });
     }
 
     @Test
@@ -162,10 +160,9 @@ class RepOrderServiceTest {
         when(repOrderRepository.findById(1245))
                 .thenThrow(new RequestedObjectNotFoundException("Unable to find AssessorDetails for repId: [1245]"));
 
-        RequestedObjectNotFoundException expectedException = assertThrows(
-                RequestedObjectNotFoundException.class, () -> repOrderService.findIOJAssessorDetails(1245));
-
-        assertEquals("Unable to find AssessorDetails for repId: [1245]", expectedException.getMessage());
+        assertThatThrownBy(() -> repOrderService.findIOJAssessorDetails(1245))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
+                .hasMessage("Unable to find AssessorDetails for repId: [1245]");
     }
 
     @Test
@@ -179,20 +176,19 @@ class RepOrderServiceTest {
         RepOrderDTO repOrderDTO = repOrderService.update(TestModelDataBuilder.REP_ID, inputMap);
         verify(repOrderRepository, atLeastOnce()).findById(any());
         verify(repOrderRepository, atLeastOnce()).save(any());
-        assertEquals(TestModelDataBuilder.REP_ID, repOrderDTO.getId());
-        assertEquals(inputMap.get("iojResult"), repOrderDTO.getIojResult());
-        assertEquals(
-                inputMap.get("dateModified").toString(),
-                repOrderDTO.getDateModified().toString());
+        assertThat(repOrderDTO.getId()).isEqualTo(TestModelDataBuilder.REP_ID);
+        assertThat(repOrderDTO.getIojResult()).isEqualTo(inputMap.get("iojResult"));
+        assertThat(repOrderDTO.getDateModified())
+                .hasToString(inputMap.get("dateModified").toString());
     }
 
     @Test
     void givenAInvalidRequest_whenSearchMaatApplicationIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
         var request = TestModelDataBuilder.getMaatSearchRequest();
         when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(Collections.emptySet());
-        RequestedObjectNotFoundException expectedException = assertThrows(
-                RequestedObjectNotFoundException.class, () -> repOrderService.searchMaatApplication(request));
-        assertEquals("Representation order not found", expectedException.getMessage());
+        assertThatThrownBy(() -> repOrderService.searchMaatApplication(request))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
+                .hasMessage("Representation order not found");
     }
 
     @Test
@@ -200,9 +196,9 @@ class RepOrderServiceTest {
             givenAInvalidRequestAndMissingRepOrder_whenSearchMaatApplicationIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
         var request = TestModelDataBuilder.getMaatSearchRequest();
         when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(null);
-        RequestedObjectNotFoundException expectedException = assertThrows(
-                RequestedObjectNotFoundException.class, () -> repOrderService.searchMaatApplication(request));
-        assertEquals("Representation order not found", expectedException.getMessage());
+        assertThatThrownBy(() -> repOrderService.searchMaatApplication(request))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
+                .hasMessage("Representation order not found");
     }
 
     @Test
@@ -228,7 +224,7 @@ class RepOrderServiceTest {
                 repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest());
         verify(repOrderRepository).findRepId(any(MaatSearchRequest.class));
         verify(wqLinkRegisterRepository, times(2)).findBymaatId(anyInt());
-        assertEquals(2, maatSearchResponseList.size());
+        assertThat(maatSearchResponseList).hasSize(2);
     }
 
     @Test
@@ -243,8 +239,8 @@ class RepOrderServiceTest {
         List<MaatSearchResponse> maatSearchResponseList =
                 repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest());
 
-        assertEquals(1, maatSearchResponseList.size());
+        assertThat(maatSearchResponseList).hasSize(1);
         MaatSearchResponse response = maatSearchResponseList.getFirst();
-        assertEquals(repOrder.getCaseUrn(), response.getLinkingDetail().getCaseUrn());
+        assertThat(response.getLinkingDetail().getCaseUrn()).isEqualTo(repOrder.getCaseUrn());
     }
 }

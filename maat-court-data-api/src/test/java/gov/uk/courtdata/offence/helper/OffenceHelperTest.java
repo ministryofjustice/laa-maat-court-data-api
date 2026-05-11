@@ -1,6 +1,6 @@
 package gov.uk.courtdata.offence.helper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeast;
@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class OffenceHelperTest {
+class OffenceHelperTest {
 
     @InjectMocks
     private OffenceHelper offenceHelper;
@@ -52,7 +52,7 @@ public class OffenceHelperTest {
     private WqLinkRegisterRepository wqLinkRegisterRepository;
 
     @Test
-    public void testWhenOffenceResultIsCommittal_thenReturnTrue() {
+    void testWhenOffenceResultIsCommittal_thenReturnTrue() {
 
         when(offenceRepository.findByCaseId(anyInt())).thenReturn(getOffenceEntity());
         when(wqLinkRegisterRepository.findBymaatId(anyInt()))
@@ -71,14 +71,13 @@ public class OffenceHelperTest {
 
         verify(offenceRepository).findByCaseId(anyInt());
         verify(xlatResultRepository, atLeast(2)).findResultsByWQType(anyInt(), anyInt());
-        assertEquals(1, offenceSummaryList.size());
-        assertEquals(
-                UUID.fromString("e2540d98-995f-43f2-97e4-f712b8a5d6a6"),
-                offenceSummaryList.get(0).getOffenceId());
+        assertThat(offenceSummaryList).hasSize(1);
+        assertThat(offenceSummaryList.getFirst().getOffenceId())
+                .isEqualTo(UUID.fromString("e2540d98-995f-43f2-97e4-f712b8a5d6a6"));
     }
 
     @Test
-    public void testWhenOffenceResultIsNotCommittal_thenReturnFalse() {
+    void testWhenOffenceResultIsNotCommittal_thenReturnFalse() {
 
         when(offenceRepository.findByCaseId(anyInt())).thenReturn(getOffenceEntity());
         when(wqLinkRegisterRepository.findBymaatId(anyInt()))
@@ -97,7 +96,7 @@ public class OffenceHelperTest {
 
         verify(offenceRepository).findByCaseId(anyInt());
         verify(xlatResultRepository, atLeast(2)).findResultsByWQType(anyInt(), anyInt());
-        assertEquals(0, offenceSummaryList.size());
+        assertThat(offenceSummaryList).isEmpty();
     }
 
     private List<OffenceEntity> getOffenceEntity() {

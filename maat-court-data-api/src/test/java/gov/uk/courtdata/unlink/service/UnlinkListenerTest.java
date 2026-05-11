@@ -21,7 +21,7 @@ import org.springframework.messaging.MessageHeaders;
 import com.google.gson.Gson;
 
 @ExtendWith(MockitoExtension.class)
-public class UnlinkListenerTest {
+class UnlinkListenerTest {
 
     @Mock
     private Gson gson;
@@ -36,7 +36,7 @@ public class UnlinkListenerTest {
     private QueueMessageLogService queueMessageLogService;
 
     @Test
-    public void givenSqsIsReceived_whenUnlinkIsInvoked_thenUnlinkCase() {
+    void givenSqsIsReceived_whenUnlinkIsInvoked_thenUnlinkCase() {
 
         String message = "this is a SQS payload in JSON format";
         Unlink unlink = Unlink.builder().maatId(1111111).build();

@@ -1,12 +1,14 @@
 package gov.uk.courtdata.link.validator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class LinkExistsValidatorTest {
+class LinkExistsValidatorTest {
 
     @Mock
     private WqLinkRegisterRepository wqLinkRegisterRepository;
@@ -24,22 +26,20 @@ public class LinkExistsValidatorTest {
     private LinkExistsValidator linkExistsValidator;
 
     @Test
-    public void testWhenLinkNotExists_validationPasses() {
+    void testWhenLinkNotExists_validationPasses() {
 
         Integer testId = 1000;
         Mockito.when(wqLinkRegisterRepository.getCountByMaatId(testId)).thenReturn(BigDecimal.ZERO.intValue());
         Optional result = linkExistsValidator.validate(testId);
-        Assertions.assertFalse(result.isPresent());
+        assertThat(result).isNotPresent();
     }
 
     @Test
-    public void testWhenLinkAlreadyExists_throwsException() {
+    void testWhenLinkAlreadyExists_throwsException() {
         Mockito.when(wqLinkRegisterRepository.getCountByMaatId(Mockito.anyInt()))
                 .thenReturn(BigDecimal.ONE.intValue());
-
-        Assertions.assertThrows(
-                ValidationException.class,
-                () -> linkExistsValidator.validate(Mockito.anyInt()),
-                "0 is already linked to a case.");
+        assertThatThrownBy(() -> linkExistsValidator.validate(Mockito.anyInt()))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("0 is already linked to a case.");
     }
 }

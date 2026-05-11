@@ -4,7 +4,6 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,7 +49,7 @@ class IOJAppealPersistenceServiceTest {
                 .thenReturn(Optional.ofNullable(
                         IOJAppealEntity.builder().id(IOJ_APPEAL_ID).build()));
         var iojAppeal = iojAppealPersistenceService.find(IOJ_APPEAL_ID);
-        assertEquals(IOJ_APPEAL_ID, iojAppeal.getId());
+        assertThat(iojAppeal.getId()).isEqualTo(IOJ_APPEAL_ID);
     }
 
     @Test
@@ -61,8 +60,8 @@ class IOJAppealPersistenceServiceTest {
                         .repOrder(TestEntityDataBuilder.getPopulatedRepOrder(IOJ_REP_ID))
                         .build());
         var iojAppeal = iojAppealPersistenceService.findByRepId(IOJ_REP_ID);
-        assertEquals(IOJ_APPEAL_ID, iojAppeal.getId());
-        assertEquals(IOJ_REP_ID, iojAppeal.getRepOrder().getId());
+        assertThat(iojAppeal.getId()).isEqualTo(IOJ_APPEAL_ID);
+        assertThat(iojAppeal.getRepOrder().getId()).isEqualTo(IOJ_REP_ID);
     }
 
     @Test

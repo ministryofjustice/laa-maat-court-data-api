@@ -4,7 +4,6 @@ import static gov.uk.courtdata.builder.TestEntityDataBuilder.APPLICANT_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_PASSPORT_ASSESSMENT_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -70,7 +69,7 @@ class PassportAssessmentServiceV2Test {
         when(passportAssessmentMapper.toApiGetPassportedAssessmentResponse(any(PassportAssessmentEntity.class), any()))
                 .thenReturn(apiGetPassportedAssessmentResponse);
         var returnedPassportedAssessment = passportAssessmentService.find(LEGACY_PASSPORT_ASSESSMENT_ID);
-        assertEquals(LEGACY_PASSPORT_ASSESSMENT_ID, returnedPassportedAssessment.getLegacyAssessmentId());
+        assertThat(returnedPassportedAssessment.getLegacyAssessmentId()).isEqualTo(LEGACY_PASSPORT_ASSESSMENT_ID);
     }
 
     @Test

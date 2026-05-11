@@ -2,10 +2,6 @@ package gov.uk.courtdata.laastatus.builder;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.CDA_TRANSACTION_ID_HEADER;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -74,24 +71,19 @@ class RepOrderUpdateMessageBuilderTest {
         gov.uk.courtdata.model.laastatus.Offence offence =
                 laaStatusUpdate.getData().getAttributes().getOffences().getFirst();
 
-        assertAll(
-                "VerifyOffence",
-                () -> assertNotNull(offence.getOffenceId()),
-                () -> assertNotNull(offence.getStatusCode()),
-                () -> assertNotNull(offence.getEffectiveEndDate()),
-                () -> assertEquals("987", offence.getOffenceId()),
-                () -> assertEquals("OK", offence.getStatusCode()),
-                () -> assertEquals("2010-10-10", offence.getEffectiveEndDate()));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(offence.getOffenceId()).isNotNull().isEqualTo("987");
+            assertThat(offence.getStatusCode()).isNotNull().isEqualTo("OK");
+            assertThat(offence.getEffectiveEndDate()).isNotNull().isEqualTo("2010-10-10");
+        });
 
         DefendantData defData =
                 laaStatusUpdate.getData().getRelationships().getDefendant().getData();
 
-        assertAll(
-                "VerifyDefendant",
-                () -> assertNotNull(defData.getId()),
-                () -> assertNotNull(defData.getType()),
-                () -> assertEquals("555666", defData.getId()),
-                () -> assertEquals("defendants", defData.getType()));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(defData.getId()).isNotNull().isEqualTo("555666");
+            assertThat(defData.getType()).isNotNull().isEqualTo("defendants");
+        });
 
         verify(repOrderCPDataRepository).findByrepOrderId(anyInt());
         verify(solicitorMAATDataRepository).findBymaatId(anyInt());
@@ -123,13 +115,10 @@ class RepOrderUpdateMessageBuilderTest {
 
         DefenceOrganisation defOrg = laaStatusUpdate.getData().getAttributes().getDefenceOrganisation();
 
-        assertAll(
-                "VerifyDefenceOrganisation",
-                () -> assertNotNull(defOrg.getLaaContractNumber()),
-                () -> assertNotNull(defOrg.getOrganisation().getName()),
-                () -> assertEquals(
-                        "Solicitor Name Ltd", defOrg.getOrganisation().getName()),
-                () -> assertEquals("456", defOrg.getLaaContractNumber()));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(defOrg.getLaaContractNumber()).isNotNull().isEqualTo("456");
+            assertThat(defOrg.getOrganisation().getName()).isNotNull().isEqualTo("Solicitor Name Ltd");
+        });
     }
 
     @Test
@@ -150,19 +139,24 @@ class RepOrderUpdateMessageBuilderTest {
                 .getOrganisation()
                 .getAddress();
 
-        assertAll(
-                "VerifyAddress",
-                () -> assertNotNull(address),
-                () -> assertNotNull(address.getAddress1()),
-                () -> assertNotNull(address.getAddress2()),
-                () -> assertNotNull(address.getAddress3()),
-                () -> assertNotNull(address.getAddress4()),
-                () -> assertNotNull(address.getPostcode()),
-                () -> assertEquals(address.getAddress1(), optSolicitor.get().getLine1()),
-                () -> assertEquals(address.getAddress2(), optSolicitor.get().getLine2()),
-                () -> assertEquals(address.getAddress3(), optSolicitor.get().getLine3()),
-                () -> assertEquals(address.getAddress4(), optSolicitor.get().getCity()),
-                () -> assertEquals(address.getPostcode(), optSolicitor.get().getPostcode()));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(address).isNotNull();
+            assertThat(address.getAddress1())
+                    .isNotNull()
+                    .isEqualTo(optSolicitor.get().getLine1());
+            assertThat(address.getAddress2())
+                    .isNotNull()
+                    .isEqualTo(optSolicitor.get().getLine2());
+            assertThat(address.getAddress3())
+                    .isNotNull()
+                    .isEqualTo(optSolicitor.get().getLine3());
+            assertThat(address.getAddress4())
+                    .isNotNull()
+                    .isEqualTo(optSolicitor.get().getCity());
+            assertThat(address.getPostcode())
+                    .isNotNull()
+                    .isEqualTo(optSolicitor.get().getPostcode());
+        });
     }
 
     @Test
@@ -183,16 +177,18 @@ class RepOrderUpdateMessageBuilderTest {
                 .getOrganisation()
                 .getContact();
 
-        assertAll(
-                "VerifyContact",
-                () -> assertNotNull(contact),
-                () -> assertNotNull(contact.getWork()),
-                () -> assertNotNull(contact.getPrimaryEmail()),
-                () -> assertNotNull(contact.getSecondaryEmail()),
-                () -> assertEquals(contact.getWork(), optSolicitor.get().getPhone()),
-                () -> assertEquals(contact.getPrimaryEmail(), optSolicitor.get().getAdminEmail()),
-                () -> assertEquals(
-                        contact.getSecondaryEmail(), optSolicitor.get().getEmail()));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(contact).isNotNull();
+            assertThat(contact.getWork())
+                    .isNotNull()
+                    .isEqualTo(optSolicitor.get().getPhone());
+            assertThat(contact.getPrimaryEmail())
+                    .isNotNull()
+                    .isEqualTo(optSolicitor.get().getAdminEmail());
+            assertThat(contact.getSecondaryEmail())
+                    .isNotNull()
+                    .isEqualTo(optSolicitor.get().getEmail());
+        });
     }
 
     @Test
@@ -208,16 +204,16 @@ class RepOrderUpdateMessageBuilderTest {
         // when
         Map<String, String> headers = repOrderUpdateMessageBuilder.buildHeaders(courtDataDTO);
 
-        // then
-        assertAll(
-                "VerifyHeaders",
-                () -> assertEquals("6f5b34ea-e038-4f1c-bfe5-d6bf622444f0", headers.get(CDA_TRANSACTION_ID_HEADER)),
-                () -> assertEquals("123456", headers.get("Laa-Status-Transaction-Id")));
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(headers)
+                    .containsEntry(CDA_TRANSACTION_ID_HEADER, "6f5b34ea-e038-4f1c-bfe5-d6bf622444f0")
+                    .containsEntry("Laa-Status-Transaction-Id", "123456");
+        });
     }
 
     @Test
     void
-            givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenHeaderDetailsAreReturnedWithMullTxnID() {
+            givenCaseDetailsIsReceived_whenIsRepOrderUpdateMessageBuilderInvoked_thenHeaderDetailsAreReturnedWithNullTxnID() {
 
         // given
         CaseDetails caseDetails = CaseDetails.builder().build();
@@ -228,10 +224,9 @@ class RepOrderUpdateMessageBuilderTest {
         Map<String, String> headers = repOrderUpdateMessageBuilder.buildHeaders(courtDataDTO);
 
         // then
-        assertAll(
-                "VerifyHeaders",
-                () -> assertNull(headers.get(CDA_TRANSACTION_ID_HEADER)),
-                () -> assertEquals("123456", headers.get("Laa-Status-Transaction-Id")));
+        SoftAssertions.assertSoftly(s -> assertThat(headers)
+                .containsEntry(CDA_TRANSACTION_ID_HEADER, null)
+                .containsEntry("Laa-Status-Transaction-Id", "123456"));
     }
 
     private Optional<SolicitorMAATDataEntity> buildCompleteSolicitorDetails() {

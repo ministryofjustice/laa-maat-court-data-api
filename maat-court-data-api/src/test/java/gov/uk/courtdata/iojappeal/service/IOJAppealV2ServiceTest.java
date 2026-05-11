@@ -4,7 +4,6 @@ import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_IOJ_APPEAL_ID;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,7 +39,7 @@ class IOJAppealV2ServiceTest {
         when(iojAppealMapper.toApiGetIojAppealResponse(any(IOJAppealEntity.class)))
                 .thenReturn(apiGetIojAppealResponse);
         var returnedIOJAppeal = iojAppealService.find(LEGACY_IOJ_APPEAL_ID);
-        assertEquals(LEGACY_IOJ_APPEAL_ID, returnedIOJAppeal.getLegacyAppealId());
+        assertThat(returnedIOJAppeal.getLegacyAppealId()).isEqualTo(LEGACY_IOJ_APPEAL_ID);
     }
 
     @Test
@@ -56,7 +55,7 @@ class IOJAppealV2ServiceTest {
 
         var apiCreateIojResponse = iojAppealService.create(apiCreateIojRequest);
 
-        assertEquals(LEGACY_IOJ_APPEAL_ID, apiCreateIojResponse.getLegacyAppealId());
+        assertThat(apiCreateIojResponse.getLegacyAppealId()).isEqualTo(LEGACY_IOJ_APPEAL_ID);
 
         verify(iojAppealPersistenceService).setOldIOJAppealsReplaced(IOJ_REP_ID, IOJ_APPEAL_ID);
     }

@@ -134,10 +134,13 @@ class CourtDataDTOBuilderTest {
         Optional<DefendantMAATDataEntity> optionalDefendantMAATDataEntity =
                 Optional.of(DefendantMAATDataEntity.builder().maatId(12).build());
 
+        String offenceCode = "A603060";
+        String offenceId = "90";
+
         Optional<OffenceEntity> offenceEntity = Optional.of(OffenceEntity.builder()
                 .caseId(88999)
-                .offenceId("90")
-                .offenceCode("A603060")
+                .offenceId(offenceId)
+                .offenceCode(offenceCode)
                 .legalAidStatusDate(LocalDate.now())
                 .build());
 
@@ -159,8 +162,8 @@ class CourtDataDTOBuilderTest {
         Offence offence =
                 courtDataDTO.getCaseDetails().getDefendant().getOffences().getFirst();
 
-        assertThat(offence.getOffenceCode()).isEqualTo("A603060");
-        assertThat(offence.getOffenceId()).isEqualTo("ad691bec-8d87-4a5b-969a-66002b6a6da9");
+        assertThat(offence.getOffenceId()).isEqualTo(offenceId);
+        assertThat(offence.getOffenceCode()).isEqualTo(offenceCode);
     }
 
     @Test
@@ -191,10 +194,13 @@ class CourtDataDTOBuilderTest {
         Optional<DefendantMAATDataEntity> optionalDefendantMAATDataEntity =
                 Optional.of(DefendantMAATDataEntity.builder().maatId(12).build());
 
+        String offenceCode = "A603060";
+        String offenceId = "91";
+
         Optional<OffenceEntity> offenceEntity = Optional.of(OffenceEntity.builder()
                 .caseId(8999)
-                .offenceId("91")
-                .offenceCode("A603060")
+                .offenceId(offenceId)
+                .offenceCode(offenceCode)
                 .build());
 
         // when
@@ -215,8 +221,8 @@ class CourtDataDTOBuilderTest {
         Offence offence =
                 courtDataDTO.getCaseDetails().getDefendant().getOffences().getFirst();
 
-        assertThat(offence.getOffenceCode()).isEqualTo("A603060");
-        assertThat(offence.getOffenceId()).isEqualTo("ad691bec-8d87-4a5b-969a-66002b6a6da9");
+        assertThat(offence.getOffenceId()).isEqualTo(offenceId);
+        assertThat(offence.getOffenceCode()).isEqualTo(offenceCode);
     }
 
     @Test

@@ -4,7 +4,6 @@ import static gov.uk.courtdata.constants.CourtDataConstants.SYSTEM_UNLINKED;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
 import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UNLINK_EVENT;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -79,7 +78,7 @@ class UnLinkImplIntegrationTest extends MockMvcIntegrationTest {
         Optional<WqLinkRegisterEntity> wqUnLinkRegisterEntity = repos.wqLinkRegister.findById(
                 unlinkModel.getWqLinkRegisterEntity().getCreatedTxId());
         WqLinkRegisterEntity unLinkRegister = wqUnLinkRegisterEntity.orElse(null);
-        assertNotNull(unLinkRegister);
+        assertThat(unLinkRegister).isNotNull();
         Unlink unlink = unlinkModel.getUnlink();
         assertThat(unLinkRegister.getMaatId()).isEqualTo(unlink.getMaatId());
         assertThat(unLinkRegister.getRemovedUserId()).isEqualTo(unlink.getUserId());
@@ -89,7 +88,7 @@ class UnLinkImplIntegrationTest extends MockMvcIntegrationTest {
 
         Optional<WqCoreEntity> wqCoreEntity = repos.wqCore.findById(unlinkModel.getTxId());
         WqCoreEntity unLinkCore = wqCoreEntity.orElse(null);
-        assertNotNull(unLinkCore);
+        assertThat(unLinkCore).isNotNull();
         assertThat(unLinkCore.getCaseId())
                 .isEqualTo(unlinkModel.getWqLinkRegisterEntity().getCaseId());
         assertThat(unLinkCore.getTxId()).isEqualTo(unlinkModel.getTxId());
@@ -102,7 +101,7 @@ class UnLinkImplIntegrationTest extends MockMvcIntegrationTest {
     private void assertUnLinkReason(UnlinkModel unlinkModel) {
         Optional<UnlinkEntity> unlinkEntity = repos.unlinkReason.findById(unlinkModel.getTxId());
         UnlinkEntity unLinkReason = unlinkEntity.orElse(null);
-        assertNotNull(unLinkReason);
+        assertThat(unLinkReason).isNotNull();
 
         assertThat(unLinkReason.getTxId()).isEqualTo(unlinkModel.getTxId());
         assertThat(unLinkReason.getCaseId())
@@ -114,7 +113,7 @@ class UnLinkImplIntegrationTest extends MockMvcIntegrationTest {
     private void assertUnLinkOtherReason(UnlinkModel unlinkModel) {
         Optional<UnlinkEntity> unlinkEntity = repos.unlinkReason.findById(unlinkModel.getTxId());
         UnlinkEntity unLinkReason = unlinkEntity.orElse(null);
-        assertNotNull(unLinkReason);
+        assertThat(unLinkReason).isNotNull();
 
         assertThat(unLinkReason.getTxId()).isEqualTo(unlinkModel.getTxId());
         assertThat(unLinkReason.getCaseId())

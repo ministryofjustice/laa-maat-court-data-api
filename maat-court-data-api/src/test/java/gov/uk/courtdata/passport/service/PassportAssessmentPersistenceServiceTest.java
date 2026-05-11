@@ -1,8 +1,8 @@
 package gov.uk.courtdata.passport.service;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.PASSPORT_ASSESSMENT_ID;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -34,13 +34,12 @@ class PassportAssessmentPersistenceServiceTest {
 
         when(passportAssessmentRepository.findById(any())).thenReturn(Optional.ofNullable(passportAssessmentEntity));
         var passportAssessment = passportAssessmentPersistenceService.find(PASSPORT_ASSESSMENT_ID);
-        assertEquals(PASSPORT_ASSESSMENT_ID, passportAssessment.getId());
+        assertThat(passportAssessment.getId()).isEqualTo(PASSPORT_ASSESSMENT_ID);
     }
 
     @Test
     void givenAnInvalidPassportAssessmentId_whenFindIsInvoked_thenExceptionIsThrown() {
         when(passportAssessmentRepository.findById(any())).thenReturn(Optional.empty());
-
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
                 .isThrownBy(() -> passportAssessmentPersistenceService.find(PASSPORT_ASSESSMENT_ID))
                 .withMessageContaining(

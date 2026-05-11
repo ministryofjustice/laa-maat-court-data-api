@@ -3,14 +3,12 @@ package gov.uk.courtdata.link.processor;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.SolicitorEntity;
 import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
 import gov.uk.courtdata.repository.SolicitorRepository;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -19,10 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class SolicitorInfoProcessorTest {
+class SolicitorInfoProcessorTest {
 
     @InjectMocks
     private SolicitorInfoProcessor solicitorInfoProcessor;
@@ -30,21 +26,14 @@ public class SolicitorInfoProcessorTest {
     @Spy
     private SolicitorRepository solicitorRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
     @Captor
     private ArgumentCaptor<SolicitorEntity> solicitorCaptor;
 
-    @BeforeEach
-    public void setUp() {
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
-    }
-
     @Test
-    public void givenSaveAndLinkModel_whenProcessIsInvoked_thenSolicitorRecordIsCreated() {
+    void givenSaveAndLinkModel_whenProcessIsInvoked_thenSolicitorRecordIsCreated() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         SolicitorMAATDataEntity solicitorMAATDataEntity = courtDataDTO.getSolicitorMAATDataEntity();
 
         // when

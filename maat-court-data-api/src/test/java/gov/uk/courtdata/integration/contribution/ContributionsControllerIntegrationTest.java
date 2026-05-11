@@ -1,6 +1,6 @@
 package gov.uk.courtdata.integration.contribution;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -35,7 +35,7 @@ class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
 
     private static final Integer INVALID_REP_ID = 9999;
     private static final String ENDPOINT_URL = "/api/internal/v1/assessment/contributions";
-    public Integer REP_ID = 1234;
+    private Integer repId = 1234;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -43,14 +43,14 @@ class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
     private ContributionsEntity contributionsEntity;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         RepOrderEntity repOrderEntity = repos.repOrder.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
-        REP_ID = repOrderEntity.getId();
+        repId = repOrderEntity.getId();
 
         ContributionFilesEntity contributionFilesEntity =
                 repos.contributionFiles.saveAndFlush(TestEntityDataBuilder.getContributionFilesEntity());
         CorrespondenceEntity correspondence = TestEntityDataBuilder.getCorrespondenceEntity(1);
-        correspondence.setRepId(REP_ID);
+        correspondence.setRepId(repId);
         CorrespondenceEntity correspondenceEntity = repos.correspondence.saveAndFlush(correspondence);
 
         ContributionsEntity contributions = TestEntityDataBuilder.getContributionsEntity();
@@ -60,13 +60,13 @@ class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
         contributionsEntity = repos.contributions.saveAndFlush(contributions);
 
         RepOrderEntity repOrder = repos.repOrder.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
-        ContributionsEntity contributionsEntity = TestEntityDataBuilder.getContributionsEntity();
-        contributionsEntity.setRepOrder(repOrder);
-        repos.contributions.saveAndFlush(contributionsEntity);
+        ContributionsEntity contribution = TestEntityDataBuilder.getContributionsEntity();
+        contribution.setRepOrder(repOrder);
+        repos.contributions.saveAndFlush(contribution);
     }
 
     @AfterEach
-    public void clearUp() {
+    void clearUp() {
         contributionsEntity = null;
     }
 
@@ -78,53 +78,55 @@ class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAInvalidRepId_whenCreateIsInvoked_theCorrectErrorResponseIsReturned() throws Exception {
-        CreateContributionRequest createContributions = TestModelDataBuilder.getCreateContributions(REP_ID);
+        CreateContributionRequest createContributions = TestModelDataBuilder.getCreateContributions(repId);
         createContributions.setRepId(INVALID_REP_ID);
-        assertTrue(runBadRequestErrorScenario(
-                "MAAT/REP ID [" + INVALID_REP_ID + "] is invalid",
-                post(ENDPOINT_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createContributions))));
+        assertThat(runBadRequestErrorScenario(
+                        "MAAT/REP ID [" + INVALID_REP_ID + "] is invalid",
+                        post(ENDPOINT_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(createContributions))))
+                .isTrue();
     }
 
     @Test
     void givenAValidContent_whenCreateIsInvoked_theCorrectResponseIsReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
-                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getCreateContributions(REP_ID)))
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getCreateContributions(repId)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.repId").value(REP_ID));
+                .andExpect(jsonPath("$.repId").value(repId));
     }
 
     @Test
     void givenAInvalidContributionId_whenFindIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        assertTrue(runNotFoundErrorScenario(
-                "Contributions entry not found for repId " + INVALID_REP_ID,
-                get(ENDPOINT_URL + "/" + INVALID_REP_ID).contentType(MediaType.APPLICATION_JSON)));
+        assertThat(runNotFoundErrorScenario(
+                        "Contributions entry not found for repId " + INVALID_REP_ID,
+                        get(ENDPOINT_URL + "/" + INVALID_REP_ID).contentType(MediaType.APPLICATION_JSON)))
+                .isTrue();
     }
 
     @Test
     void givenAValidParameter_whenFindIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + REP_ID))
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + repId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].repId").value(REP_ID));
+                .andExpect(jsonPath("$[0].repId").value(repId));
     }
 
     @Test
     void givenAValidRepIdAndLatestContributionAsTrue_whenFindIsInvoked_theCorrectResponseIsReturned() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + REP_ID + "?findLatestContribution=true")
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + repId + "?findLatestContribution=true")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].repId").value(REP_ID));
+                .andExpect(jsonPath("$[0].repId").value(repId));
     }
 
     @Test
     void givenValidRepId_whenGetContributionsSummaryIsInvoked_thenCorrectResponseIsReturned() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + REP_ID + "/summary")
+        mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + repId + "/summary")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -136,8 +138,9 @@ class ContributionsControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenRepIdWithNoContributions_whenGetContributionsSummaryIsInvoked_thenNotFoundResponseIsReturned()
             throws Exception {
-        assertTrue(runNotFoundErrorScenario(
-                String.format("No contribution entries found for repId: %d", INVALID_REP_ID),
-                get(ENDPOINT_URL + "/" + INVALID_REP_ID + "/summary").contentType(MediaType.APPLICATION_JSON)));
+        assertThat(runNotFoundErrorScenario(
+                        String.format("No contribution entries found for repId: %d", INVALID_REP_ID),
+                        get(ENDPOINT_URL + "/" + INVALID_REP_ID + "/summary").contentType(MediaType.APPLICATION_JSON)))
+                .isTrue();
     }
 }

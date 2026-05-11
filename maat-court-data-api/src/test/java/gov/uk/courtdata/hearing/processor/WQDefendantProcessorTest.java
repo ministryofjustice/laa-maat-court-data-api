@@ -3,13 +3,11 @@ package gov.uk.courtdata.hearing.processor;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WQDefendant;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQDefendantRepository;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -18,10 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class WQDefendantProcessorTest {
+class WQDefendantProcessorTest {
 
     @InjectMocks
     private WQDefendantProcessor wqDefendantProcessor;
@@ -29,20 +25,13 @@ public class WQDefendantProcessorTest {
     @Spy
     private WQDefendantRepository defendantRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
     @Captor
     private ArgumentCaptor<WQDefendant> wqDefendantArgumentCaptor;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
-    }
-
     @Test
-    public void givenDefendantProcessor_whenProcessIsInvoke_thenSaveDefendant() {
+    void givenDefendantProcessor_whenProcessIsInvoke_thenSaveDefendant() {
         // given
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
 
         // when
         wqDefendantProcessor.process(hearingDTO);

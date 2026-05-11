@@ -3,7 +3,6 @@ package gov.uk.courtdata.hearing.processor;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.WQResultEntity;
@@ -20,10 +19,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class WQResultProcessorTest {
+class WQResultProcessorTest {
 
     @InjectMocks
     private WQResultProcessor wqResultProcessor;
@@ -31,21 +28,18 @@ public class WQResultProcessorTest {
     @Spy
     private WQResultRepository wqResultRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
     @Captor
     ArgumentCaptor<WQResultEntity> wqResultEntityArgumentCaptor;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 
     @Test
-    public void givenCaseProcessor_whenProcessIsInvoke_thenSaveCase() {
+    void givenCaseProcessor_whenProcessIsInvoke_thenSaveCase() {
         // given
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
 
         // when
         wqResultProcessor.process(hearingDTO);
@@ -64,11 +58,11 @@ public class WQResultProcessorTest {
     }
 
     @Test
-    public void
+    void
             givenInputWhereResultTextIsGreaterThan4000Characters_whenProcessIsInvoke_thenSaveCaseWithTruncatedResultText() {
         // given
         String expectedResultText = "a".repeat(CourtDataConstants.ORACLE_VARCHAR_MAX);
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
         hearingDTO.getResult().setResultText("a".repeat(CourtDataConstants.ORACLE_VARCHAR_MAX + 1));
 
         // when

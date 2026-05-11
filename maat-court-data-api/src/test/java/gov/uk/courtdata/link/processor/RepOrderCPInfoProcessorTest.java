@@ -4,7 +4,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
@@ -14,7 +13,6 @@ import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -24,10 +22,8 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class RepOrderCPInfoProcessorTest {
+class RepOrderCPInfoProcessorTest {
 
     @Captor
     ArgumentCaptor<RepOrderCPDataEntity> repOrderCaptor;
@@ -38,18 +34,11 @@ public class RepOrderCPInfoProcessorTest {
     @Spy
     private RepOrderCPDataRepository repOrderDataRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
-    @BeforeEach
-    public void setUp() {
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
-    }
-
     @Test
-    public void givenRepOrderData_whenProcessIsInvoked_thenRepOrderRecordIsUpdatedWithDefendantId() {
+    void givenRepOrderData_whenProcessIsInvoked_thenRepOrderRecordIsUpdatedWithDefendantId() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         Defendant defendant = courtDataDTO.getCaseDetails().getDefendant();
         // when
         when(repOrderDataRepository.findByrepOrderId(Mockito.anyInt()))

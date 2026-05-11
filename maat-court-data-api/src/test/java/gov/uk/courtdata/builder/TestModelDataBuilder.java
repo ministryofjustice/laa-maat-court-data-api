@@ -184,13 +184,7 @@ public class TestModelDataBuilder {
     public static final String ASN_NUMBER = "ASN123456";
     public static final String NI_NUMBER = "TEST_NINO";
 
-    TestEntityDataBuilder testEntityDataBuilder;
-    Gson gson;
-
-    public TestModelDataBuilder(TestEntityDataBuilder testEntityDataBuilder, Gson gson) {
-        this.gson = gson;
-        this.testEntityDataBuilder = testEntityDataBuilder;
-    }
+    private static final Gson GSON = new Gson();
 
     public static FinancialAssessmentDTO getFinancialAssessmentDTO() {
         return FinancialAssessmentDTO.builder()
@@ -1641,37 +1635,37 @@ public class TestModelDataBuilder {
     public CourtDataDTO getSaveAndLinkModelRaw() {
         return CourtDataDTO.builder()
                 .caseDetails(getCaseDetails(REP_ID))
-                .defendantMAATDataEntity(testEntityDataBuilder.getDefendantMAATDataEntity())
-                .solicitorMAATDataEntity(testEntityDataBuilder.getSolicitorMAATDataEntity())
+                .defendantMAATDataEntity(TestEntityDataBuilder.getDefendantMAATDataEntity())
+                .solicitorMAATDataEntity(TestEntityDataBuilder.getSolicitorMAATDataEntity())
                 .build();
     }
 
     public CourtDataDTO getSaveAndLinkModelRaw(Integer repId) {
         return CourtDataDTO.builder()
                 .caseDetails(getCaseDetails(repId))
-                .defendantMAATDataEntity(testEntityDataBuilder.getDefendantMAATDataEntity(repId))
-                .solicitorMAATDataEntity(testEntityDataBuilder.getSolicitorMAATDataEntity(repId))
+                .defendantMAATDataEntity(TestEntityDataBuilder.getDefendantMAATDataEntity(repId))
+                .solicitorMAATDataEntity(TestEntityDataBuilder.getSolicitorMAATDataEntity(repId))
                 .build();
     }
 
-    public CourtDataDTO getCourtDataDTO() {
+    public static CourtDataDTO getCourtDataDTO() {
         return CourtDataDTO.builder()
                 .caseId(123456)
                 .libraId("CP25467")
                 .proceedingId(12123231)
                 .txId(123456)
                 .caseDetails(getCaseDetails(REP_ID))
-                .defendantMAATDataEntity(testEntityDataBuilder.getDefendantMAATDataEntity())
-                .solicitorMAATDataEntity(testEntityDataBuilder.getSolicitorMAATDataEntity())
+                .defendantMAATDataEntity(TestEntityDataBuilder.getDefendantMAATDataEntity())
+                .solicitorMAATDataEntity(TestEntityDataBuilder.getSolicitorMAATDataEntity())
                 .build();
     }
 
-    public CaseDetails getCaseDetails(Integer repId) {
+    public static CaseDetails getCaseDetails(Integer repId) {
         String jsonString = getSaveAndLinkString(repId);
-        return gson.fromJson(jsonString, CaseDetails.class);
+        return GSON.fromJson(jsonString, CaseDetails.class);
     }
 
-    public String getSaveAndLinkString(Integer repId) {
+    public static String getSaveAndLinkString(Integer repId) {
         return "{\n" + "  \"maatId\": "
                 + repId + ",\n" + "  \"category\": 12,\n"
                 + "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n"
@@ -1745,7 +1739,7 @@ public class TestModelDataBuilder {
                 + "}";
     }
 
-    public String getUnLinkString() {
+    public static String getUnLinkString() {
         return """
                 {
                  "maatId": 1234,
@@ -1756,7 +1750,7 @@ public class TestModelDataBuilder {
                 }""";
     }
 
-    public String getUnLinkString(Integer repId) {
+    public static String getUnLinkString(Integer repId) {
         return "{\n" + " \"maatId\":"
                 + repId + ",\n" + "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n"
                 + "  \"userId\": \"testUser\",\n"
@@ -1765,7 +1759,7 @@ public class TestModelDataBuilder {
                 + "}";
     }
 
-    public String getUnLinkWithOtherReasonString() {
+    public static String getUnLinkWithOtherReasonString() {
         return """
                 {
                  "maatId": 1234,
@@ -1776,7 +1770,7 @@ public class TestModelDataBuilder {
                 }""";
     }
 
-    public HearingDTO getHearingDTO() {
+    public static HearingDTO getHearingDTO() {
         return HearingDTO.builder()
                 .hearingId(HEARING_ID)
                 .maatId(REP_ID)
@@ -1802,7 +1796,7 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public SessionDTO getSessionDTO() {
+    public static SessionDTO getSessionDTO() {
         return SessionDTO.builder()
                 .dateOfHearing("2020-08-16")
                 .courtLocation(COURT_LOCATION)
@@ -1810,7 +1804,7 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public ResultDTO getResultDTO() {
+    public static ResultDTO getResultDTO() {
         return ResultDTO.builder()
                 .resultCode(6666)
                 .resultText("This is a some result text for hearing")
@@ -1820,7 +1814,7 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public HearingDTO getHearingDTOForCCOutcome() {
+    public static HearingDTO getHearingDTOForCCOutcome() {
 
         return HearingDTO.builder()
                 .maatId(789034)

@@ -4,7 +4,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.XLATResultEntity;
@@ -26,10 +25,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class WQCoreProcessorTest {
+class WQCoreProcessorTest {
 
     @InjectMocks
     private WQCoreProcessor wqCoreProcessor;
@@ -43,21 +40,18 @@ public class WQCoreProcessorTest {
     @Spy
     private OffenceRepository offenceRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
     @Captor
     ArgumentCaptor<WqCoreEntity> argumentCaptor;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 
     @Test
-    public void givenCaseProcessor_whenProcessIsInvoke_thenSaveCase() {
+    void givenCaseProcessor_whenProcessIsInvoke_thenSaveCase() {
         // given
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
 
         // when
         when(offenceRepository.getOffenceCountForAsnSeq(Mockito.anyInt(), Mockito.anyString()))

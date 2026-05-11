@@ -1,123 +1,86 @@
 package gov.uk.courtdata.laastatus.validator;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static gov.uk.courtdata.enums.IOJDecision.FAIL;
+import static gov.uk.courtdata.enums.IOJDecision.NOT_APPLICABLE;
+import static gov.uk.courtdata.enums.IOJDecision.PASS;
+import static gov.uk.courtdata.enums.LAAStatus.FAILED_BOTH_IOJ_AND_MEANS;
+import static gov.uk.courtdata.enums.LAAStatus.FAILED_ON_IOJ;
+import static gov.uk.courtdata.enums.LAAStatus.GRANTED;
+import static gov.uk.courtdata.enums.LAAStatus.GRANTED_FOR_TWO_ADVOCATES;
+import static gov.uk.courtdata.enums.LAAStatus.GRANTED_WITH_QC;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.enums.IOJDecision;
+import gov.uk.courtdata.enums.LAAStatus;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
 import gov.uk.courtdata.model.Offence;
 
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class LaaStatusValidatorTest {
+class LaaStatusValidatorTest {
 
     private LaaStatusValidator laaStatusValidator;
     private CaseDetails caseDetails;
 
     @BeforeEach
-    public void build() {
-        TestModelDataBuilder testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
+    void build() {
         laaStatusValidator = new LaaStatusValidator();
-        caseDetails = testModelDataBuilder.getCaseDetails(TestModelDataBuilder.REP_ID);
+        caseDetails = TestModelDataBuilder.getCaseDetails(TestModelDataBuilder.REP_ID);
     }
 
-    @Test
-    public void givenFailIOJDecisionAndGrantedLAAStatus_whenLaaStatusValidatorIsInvoked_thenValidationFailed() {
+    private static Stream<Arguments> validationFailureData() {
+        return Stream.of(
+                Arguments.of(FAIL, GRANTED, "Cannot Grant Legal Aid on a Failed or Pending IOJ - See offence 001"),
+                Arguments.of(
+                        PASS, FAILED_BOTH_IOJ_AND_MEANS, "Cannot Pass IOJ and Fail Legal Aid on IOJ - See offence 001"),
+                Arguments.of(NOT_APPLICABLE, GRANTED_WITH_QC, "Cannot Grant Legal Aid on a n/a IOJ - See offence 001"));
+    }
 
+    @MethodSource(value = "validationFailureData")
+    @ParameterizedTest
+    void givenInvalidStates_whenLaaStatusValidatorIsInvoked_thenValidationFailed(
+            IOJDecision iojDecision, LAAStatus status, String expectedErrorMessage) {
         // given
-        Offence offence = caseDetails.getDefendant().getOffences().get(0);
-        offence.setIojDecision(0);
-        offence.setLegalAidStatus("GR");
+        Offence offence = caseDetails.getDefendant().getOffences().getFirst();
+        offence.setIojDecision(iojDecision.value());
+        offence.setLegalAidStatus(status.getValue());
 
         // when
         MessageCollection messageCollection = laaStatusValidator.validate(caseDetails);
 
         // then
-        assertThat(messageCollection.getMessages().get(0))
-                .isEqualTo("Cannot Grant Legal Aid on a Failed or Pending IOJ - See offence 001");
+        assertThat(messageCollection.getMessages().getFirst()).isEqualTo(expectedErrorMessage);
     }
 
-    @Test
-    public void givenPassIOJDecisionAndFailLAAStatus_whenLaaStatusValidatorIsInvoked_thenValidationFailed() {
+    private static Stream<Arguments> validationPassData() {
+        return Stream.of(
+                Arguments.of(PASS, GRANTED_FOR_TWO_ADVOCATES),
+                Arguments.of(FAIL, FAILED_ON_IOJ),
+                Arguments.of(NOT_APPLICABLE, FAILED_BOTH_IOJ_AND_MEANS));
+    }
 
+    @MethodSource(value = "validationPassData")
+    @ParameterizedTest
+    void givenValidStates_whenLaaStatusValidatorIsInvoked_thenValidationPassed(IOJDecision decision, LAAStatus status) {
         // given
-        Offence offence = caseDetails.getDefendant().getOffences().get(0);
-        offence.setIojDecision(1);
-        offence.setLegalAidStatus("FB");
+        Offence offence = caseDetails.getDefendant().getOffences().getFirst();
+        offence.setIojDecision(decision.value());
+        offence.setLegalAidStatus(status.name());
 
         // when
         MessageCollection messageCollection = laaStatusValidator.validate(caseDetails);
 
         // then
-        assertThat(messageCollection.getMessages().get(0))
-                .isEqualTo("Cannot Pass IOJ and Fail Legal Aid on IOJ - See offence 001");
-    }
-
-    @Test
-    public void givenNAIOJDecisionAndGrantedLAAStatus_whenLaaStatusValidatorIsInvoked_thenValidationFailed() {
-
-        // given
-        Offence offence = caseDetails.getDefendant().getOffences().get(0);
-        offence.setIojDecision(3);
-        offence.setLegalAidStatus("GQ");
-
-        // when
-        MessageCollection messageCollection = laaStatusValidator.validate(caseDetails);
-
-        // then
-        assertThat(messageCollection.getMessages().get(0))
-                .isEqualTo("Cannot Grant Legal Aid on a n/a IOJ - See offence 001");
-    }
-
-    @Test
-    public void givenPassIOJDecisionAndGrantedLAAStatus_whenLaaStatusValidatorIsInvoked_thenValidationPassed() {
-
-        // given
-        Offence offence = caseDetails.getDefendant().getOffences().get(0);
-        offence.setIojDecision(1);
-        offence.setLegalAidStatus("G2");
-
-        // when
-        MessageCollection messageCollection = laaStatusValidator.validate(caseDetails);
-
-        // then
-        assertThat(messageCollection.getMessages().isEmpty()).isTrue();
-    }
-
-    @Test
-    public void givenFailIOJDecisionAndFailLAAStatus_whenLaaStatusValidatorIsInvoked_thenValidationPassed() {
-
-        // given
-        Offence offence = caseDetails.getDefendant().getOffences().get(0);
-        offence.setIojDecision(0);
-        offence.setLegalAidStatus("FJ");
-
-        // when
-        MessageCollection messageCollection = laaStatusValidator.validate(caseDetails);
-
-        // then
-        assertThat(messageCollection.getMessages().isEmpty()).isTrue();
-    }
-
-    @Test
-    public void givenNOTAPPLICABLEIOJDecisionAndGRANTLAAStatus_whenLaaStatusValidatorIsInvoked_thenValidationPassed() {
-
-        // given
-        Offence offence = caseDetails.getDefendant().getOffences().get(0);
-        offence.setIojDecision(3);
-        offence.setLegalAidStatus("FB");
-
-        // when
-        MessageCollection messageCollection = laaStatusValidator.validate(caseDetails);
-
-        // then
-        assertThat(messageCollection.getMessages().isEmpty()).isTrue();
+        assertThat(messageCollection.getMessages()).isEmpty();
     }
 }

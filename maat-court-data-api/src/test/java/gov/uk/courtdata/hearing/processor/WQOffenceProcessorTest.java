@@ -3,7 +3,6 @@ package gov.uk.courtdata.hearing.processor;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.WQOffenceEntity;
@@ -21,10 +20,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class WQOffenceProcessorTest {
+class WQOffenceProcessorTest {
 
     @InjectMocks
     private WQOffenceProcessor wqOffenceProcessor;
@@ -32,22 +29,19 @@ public class WQOffenceProcessorTest {
     @Spy
     private WQOffenceRepository wqOffenceRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
     @Captor
     private ArgumentCaptor<WQOffenceEntity> wqOffenceEntityArgumentCaptor;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 
     @Test
-    public void givenOffenceProcessor_whenProcessIsInvoke_thenSaveOffence1() {
+    void givenOffenceProcessor_whenProcessIsInvoke_thenSaveOffence1() {
 
         // given
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
         hearingDTO.getOffence().setOffenceWording("This is a short title");
         // when
         wqOffenceProcessor.process(hearingDTO);
@@ -63,10 +57,10 @@ public class WQOffenceProcessorTest {
     }
 
     @Test
-    public void givenOffenceProcessor_whenLAAStatusIsNull_thenSaveOffence() {
+    void givenOffenceProcessor_whenLAAStatusIsNull_thenSaveOffence() {
 
         // given
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
         hearingDTO.setOffence(
                 HearingOffenceDTO.builder().legalAidStatus(null).asnSeq("1").build());
 
@@ -79,10 +73,10 @@ public class WQOffenceProcessorTest {
     }
 
     @Test
-    public void givenOffenceProcessor_whenLAAStatusIsRE_thenSaveOffence() {
+    void givenOffenceProcessor_whenLAAStatusIsRE_thenSaveOffence() {
 
         // given
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
         hearingDTO.setOffence(
                 HearingOffenceDTO.builder().legalAidStatus("RE").asnSeq("1").build());
 
@@ -95,10 +89,10 @@ public class WQOffenceProcessorTest {
     }
 
     @Test
-    public void givenOffenceProcessor_whenLAAStatusIsVA_thenSaveOffence() {
+    void givenOffenceProcessor_whenLAAStatusIsVA_thenSaveOffence() {
 
         // given
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
         hearingDTO.setOffence(
                 HearingOffenceDTO.builder().legalAidStatus("VA").asnSeq("1").build());
 
@@ -111,10 +105,10 @@ public class WQOffenceProcessorTest {
     }
 
     @Test
-    public void givenOffenceProcessor_whenLAAStatusIsWI_thenSaveOffence() {
+    void givenOffenceProcessor_whenLAAStatusIsWI_thenSaveOffence() {
 
         // given
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
         hearingDTO.setOffence(HearingOffenceDTO.builder()
                 .legalAidStatus("WI")
                 .applicationFlag(1)
@@ -132,11 +126,11 @@ public class WQOffenceProcessorTest {
     }
 
     @Test
-    public void
+    void
             givenOffenceWordingIsGreaterThan4000Characters_whenProcessIsInvoked_thenSaveOffenceWithTruncatedOffenceWording() {
         // given
         String expectedOffenceWording = "a".repeat(CourtDataConstants.ORACLE_VARCHAR_MAX);
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
         hearingDTO.getOffence().setOffenceWording("a".repeat(CourtDataConstants.ORACLE_VARCHAR_MAX + 1));
 
         // when

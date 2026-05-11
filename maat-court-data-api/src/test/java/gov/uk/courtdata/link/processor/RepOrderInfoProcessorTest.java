@@ -4,18 +4,15 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.repository.RepOrderRepository;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -25,10 +22,8 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class RepOrderInfoProcessorTest {
+class RepOrderInfoProcessorTest {
 
     @InjectMocks
     private RepOrderInfoProcessor repOrderInfoProcessor;
@@ -36,22 +31,14 @@ public class RepOrderInfoProcessorTest {
     @Spy
     private RepOrderRepository repOrderRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
     @Captor
     ArgumentCaptor<RepOrderEntity> repOrderCaptor;
 
-    @BeforeEach
-    public void setUp() {
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
-    }
-
     @Test
-    public void givenRepOrderData_whenProcessIsInvoked_thenRepOrderRecordIsUpdatedWitASNId() {
+    void givenRepOrderData_whenProcessIsInvoked_thenRepOrderRecordIsUpdatedWitASNId() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
-        Defendant defendant = courtDataDTO.getCaseDetails().getDefendant();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         // when
         when(repOrderRepository.findById(Mockito.anyInt()))
                 .thenReturn(Optional.of(

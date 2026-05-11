@@ -1,5 +1,8 @@
 package gov.uk.courtdata.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum LAAStatus {
     GRANTED("GR"),
     GRANTED_FOR_TWO_ADVOCATES("G2"),

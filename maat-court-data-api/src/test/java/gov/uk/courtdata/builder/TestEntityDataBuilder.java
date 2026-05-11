@@ -979,7 +979,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public WqLinkRegisterEntity getWqLinkRegisterEntity() {
+    public static WqLinkRegisterEntity getWqLinkRegisterEntity() {
         return WqLinkRegisterEntity.builder()
                 .caseId(345)
                 .createdTxId(123)
@@ -991,7 +991,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public WqLinkRegisterEntity getWqLinkRegisterEntity(Integer repId) {
+    public static WqLinkRegisterEntity getWqLinkRegisterEntity(Integer repId) {
         return WqLinkRegisterEntity.builder()
                 .caseId(345)
                 .createdTxId(123)
@@ -1003,7 +1003,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public DefendantMAATDataEntity getDefendantMAATDataEntity() {
+    public static DefendantMAATDataEntity getDefendantMAATDataEntity() {
         return DefendantMAATDataEntity.builder()
                 .maatId(REP_ID)
                 .firstName("T First Name")
@@ -1013,7 +1013,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public DefendantMAATDataEntity getDefendantMAATDataEntity(Integer repId) {
+    public static DefendantMAATDataEntity getDefendantMAATDataEntity(Integer repId) {
         return DefendantMAATDataEntity.builder()
                 .maatId(repId)
                 .firstName("T First Name")
@@ -1023,7 +1023,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public SolicitorMAATDataEntity getSolicitorMAATDataEntity() {
+    public static SolicitorMAATDataEntity getSolicitorMAATDataEntity() {
         return SolicitorMAATDataEntity.builder()
                 .maatId(REP_ID)
                 .accountCode("Acc")
@@ -1032,7 +1032,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public SolicitorMAATDataEntity getSolicitorMAATDataEntity(Integer repId) {
+    public static SolicitorMAATDataEntity getSolicitorMAATDataEntity(Integer repId) {
         return SolicitorMAATDataEntity.builder()
                 .maatId(repId)
                 .accountCode("Acc")
@@ -1041,7 +1041,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public RepOrderCPDataEntity getRepOrderCPDataEntity() {
+    public static RepOrderCPDataEntity getRepOrderCPDataEntity() {
         return RepOrderCPDataEntity.builder()
                 .repOrderId(REP_ID)
                 .defendantId("556677")
@@ -1049,7 +1049,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public RepOrderCPDataEntity getRepOrderCPDataEntity(Integer repId) {
+    public static RepOrderCPDataEntity getRepOrderCPDataEntity(Integer repId) {
         return RepOrderCPDataEntity.builder()
                 .repOrderId(repId)
                 .defendantId("556677")
@@ -1057,7 +1057,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public MaatReferenceEntity getMaatReferenceEntity() {
+    public static MaatReferenceEntity getMaatReferenceEntity() {
         return MaatReferenceEntity.builder()
                 .maatId(REP_ID)
                 .applicantId(APPLICANT_ID)

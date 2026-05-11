@@ -27,7 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.google.gson.Gson;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
-public class UnLinkImplIntegrationTest extends MockMvcIntegrationTest {
+class UnLinkImplIntegrationTest extends MockMvcIntegrationTest {
 
     @Autowired
     private UnLinkImpl unLinkImpl;
@@ -35,21 +35,15 @@ public class UnLinkImplIntegrationTest extends MockMvcIntegrationTest {
     @Autowired
     private Gson gson;
 
-    @Autowired
-    private TestModelDataBuilder testModelDataBuilder;
-
-    @Autowired
-    private TestEntityDataBuilder testEntityDataBuilder;
-
     @Test
-    public void givenUnlinkLinkModel_whenUnlinkImplIsInvoked_thenCaseIsUnlinked() {
+    void givenUnlinkLinkModel_whenUnlinkImplIsInvoked_thenCaseIsUnlinked() {
 
         // given
-        Unlink unlink = gson.fromJson(testModelDataBuilder.getUnLinkString(), Unlink.class);
+        Unlink unlink = gson.fromJson(TestModelDataBuilder.getUnLinkString(), Unlink.class);
         UnlinkModel unlinkModel = UnlinkModel.builder().unlink(unlink).build();
-        WqLinkRegisterEntity wqLinkRegisterEntity = testEntityDataBuilder.getWqLinkRegisterEntity();
+        WqLinkRegisterEntity wqLinkRegisterEntity = TestEntityDataBuilder.getWqLinkRegisterEntity();
         unlinkModel.setWqLinkRegisterEntity(wqLinkRegisterEntity);
-        RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderCPDataEntity();
+        RepOrderCPDataEntity repOrderCPDataEntity = TestEntityDataBuilder.getRepOrderCPDataEntity();
         unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity);
         repos.wqLinkRegister.save(wqLinkRegisterEntity);
 
@@ -63,13 +57,13 @@ public class UnLinkImplIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    public void givenUnlinkReasonIsOther_whenUnlinked_ThenOtherReasonTextIs() {
+    void givenUnlinkReasonIsOther_whenUnlinked_ThenOtherReasonTextIs() {
 
-        Unlink unlink = gson.fromJson(testModelDataBuilder.getUnLinkWithOtherReasonString(), Unlink.class);
+        Unlink unlink = gson.fromJson(TestModelDataBuilder.getUnLinkWithOtherReasonString(), Unlink.class);
         UnlinkModel unlinkModel = UnlinkModel.builder().unlink(unlink).build();
-        WqLinkRegisterEntity wqLinkRegisterEntity = testEntityDataBuilder.getWqLinkRegisterEntity();
+        WqLinkRegisterEntity wqLinkRegisterEntity = TestEntityDataBuilder.getWqLinkRegisterEntity();
         unlinkModel.setWqLinkRegisterEntity(wqLinkRegisterEntity);
-        RepOrderCPDataEntity repOrderCPDataEntity = testEntityDataBuilder.getRepOrderCPDataEntity();
+        RepOrderCPDataEntity repOrderCPDataEntity = TestEntityDataBuilder.getRepOrderCPDataEntity();
         unlinkModel.setRepOrderCPDataEntity(repOrderCPDataEntity);
         repos.wqLinkRegister.save(wqLinkRegisterEntity);
 

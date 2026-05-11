@@ -1,17 +1,16 @@
 package gov.uk.courtdata.hearing.processor;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.PleaEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.PleaRepository;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,10 +21,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class PleaProcessorTest {
+class PleaProcessorTest {
 
     @InjectMocks
     private PleaProcessor pleaProcessor;
@@ -33,36 +30,32 @@ public class PleaProcessorTest {
     @Spy
     private PleaRepository pleaRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
     @Captor
     ArgumentCaptor<PleaEntity> pleaEntityArgumentCaptor;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 
     @Test
-    public void givenCaseProcessor_whenProcessIsInvoke_thenSavePlea() {
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTOForCCOutcome();
+    void givenCaseProcessor_whenProcessIsInvoke_thenSavePlea() {
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTOForCCOutcome();
 
         // when
         pleaProcessor.process(hearingDTO);
         verify(pleaRepository).save(pleaEntityArgumentCaptor.capture());
-        assertThat(pleaEntityArgumentCaptor.getValue().getPleaValue()).isEqualTo("NOT_GUILTY");
-        assertThat(pleaEntityArgumentCaptor.getValue().getPleaDate()).isEqualTo("2020-10-12");
-        assertThat(pleaEntityArgumentCaptor.getValue().getOffenceId()).isEqualTo("123456");
-        assertThat(pleaEntityArgumentCaptor.getValue().getMaatId()).isEqualTo(789034);
+        PleaEntity entity = pleaEntityArgumentCaptor.getValue();
+        assertThat(entity.getPleaValue()).isEqualTo("NOT_GUILTY");
+        assertThat(entity.getPleaDate()).isEqualTo("2020-10-12");
+        assertThat(entity.getOffenceId()).isEqualTo("123456");
+        assertThat(entity.getMaatId()).isEqualTo(789034);
     }
 
     @Test
-    public void givenCaseProcessor_whenPleaIsNull_thenSavePlea() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            // when
-            pleaProcessor.process(HearingDTO.builder().build());
-            verify(pleaRepository, times(10)).save(any());
-        });
+    void givenCaseProcessor_whenPleaIsNull_thenSavePlea() {
+        HearingDTO hearingDto = HearingDTO.builder().build();
+        assertThatThrownBy(() -> pleaProcessor.process(hearingDto)).isInstanceOf(NullPointerException.class);
+        verify(pleaRepository, never()).save(any());
     }
 }

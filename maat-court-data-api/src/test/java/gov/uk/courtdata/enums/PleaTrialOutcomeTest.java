@@ -30,15 +30,13 @@ class PleaTrialOutcomeTest {
 
     @ParameterizedTest
     @MethodSource("testData")
-    void givenAPleaValue_theCorrectIsConvictedBooleanIsReturned(
-            String pleaValue, String outcome, Boolean isConvicted) {
+    void givenAPleaValue_theCorrectIsConvictedBooleanIsReturned(String pleaValue, String outcome, Boolean isConvicted) {
         assertThat(PleaTrialOutcome.isConvicted(pleaValue)).isEqualTo(isConvicted);
     }
 
     @ParameterizedTest
     @MethodSource("testData")
-    void givenAPleaValue_theCorrectTrialOutcomeIsReturned(
-            String pleaValue, String outcome, Boolean isConvicted) {
+    void givenAPleaValue_theCorrectTrialOutcomeIsReturned(String pleaValue, String outcome, Boolean isConvicted) {
         assertThat(PleaTrialOutcome.getTrialOutcome(pleaValue)).isEqualTo(outcome);
     }
 }

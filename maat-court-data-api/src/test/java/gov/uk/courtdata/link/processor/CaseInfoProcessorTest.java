@@ -3,14 +3,12 @@ package gov.uk.courtdata.link.processor;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.CaseEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.CaseRepository;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -19,10 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class CaseInfoProcessorTest {
+class CaseInfoProcessorTest {
 
     @InjectMocks
     private CaseInfoProcessor caseInfoProcessor;
@@ -30,21 +26,14 @@ public class CaseInfoProcessorTest {
     @Spy
     private CaseRepository caseRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
     @Captor
     private ArgumentCaptor<CaseEntity> caseInfoCaptor;
 
-    @BeforeEach
-    public void setUp() {
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
-    }
-
     @Test
-    public void givenCaseDetails_whenProcessIsInvoked_theCaseRecordIsCreated() {
+    void givenCaseDetails_whenProcessIsInvoked_theCaseRecordIsCreated() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
 
         // when
@@ -60,10 +49,10 @@ public class CaseInfoProcessorTest {
     }
 
     @Test
-    public void givenCaseDetailsWithINActiveANDNullDate_whenProcessIsInvoked_theCaseRecordIsCreated() {
+    void givenCaseDetailsWithINActiveANDNullDate_whenProcessIsInvoked_theCaseRecordIsCreated() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         caseDetails.setCaseCreationDate(null);
         caseDetails.setActive(false);
@@ -78,10 +67,10 @@ public class CaseInfoProcessorTest {
     }
 
     @Test
-    public void givenCaseDetailsWithSingleDigitCJSCode_whenProcessIsInvoked_thenTwoDigitCJSCodeISProcessed() {
+    void givenCaseDetailsWithSingleDigitCJSCode_whenProcessIsInvoked_thenTwoDigitCJSCodeISProcessed() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         caseDetails.setCaseCreationDate(null);
         caseDetails.setActive(false);
@@ -98,10 +87,10 @@ public class CaseInfoProcessorTest {
     }
 
     @Test
-    public void givenCaseDetailsWithTowDigitCJSCode_whenProcessIsInvoked_thenTwoDigitCJSCodeISProcessed() {
+    void givenCaseDetailsWithTowDigitCJSCode_whenProcessIsInvoked_thenTwoDigitCJSCodeISProcessed() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         caseDetails.setCjsAreaCode("16");
 

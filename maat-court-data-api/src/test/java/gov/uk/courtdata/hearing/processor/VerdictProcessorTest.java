@@ -3,7 +3,6 @@ package gov.uk.courtdata.hearing.processor;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.VerdictEntity;
 import gov.uk.courtdata.enums.VerdictCategoryType;
@@ -20,10 +19,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class VerdictProcessorTest {
+class VerdictProcessorTest {
 
     @InjectMocks
     private VerdictProcessor verdictProcessor;
@@ -31,20 +28,17 @@ public class VerdictProcessorTest {
     @Spy
     private VerdictRepository verdictRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
     @Captor
     ArgumentCaptor<VerdictEntity> verdictEntityArgumentCaptor;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 
     @Test
-    public void givenCaseProcessor_whenProcessIsInvoke_thenVerdict() {
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTOForCCOutcome();
+    void givenCaseProcessor_whenProcessIsInvoke_thenVerdict() {
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTOForCCOutcome();
 
         // when
         verdictProcessor.process(hearingDTO);

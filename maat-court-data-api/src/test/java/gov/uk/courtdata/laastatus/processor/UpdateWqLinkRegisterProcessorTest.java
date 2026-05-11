@@ -4,7 +4,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
@@ -14,7 +13,6 @@ import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -23,10 +21,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class UpdateWqLinkRegisterProcessorTest {
+class UpdateWqLinkRegisterProcessorTest {
 
     @InjectMocks
     private UpdateWqLinkRegisterProcessor wqLinkRegisterProcessor;
@@ -34,21 +30,14 @@ public class UpdateWqLinkRegisterProcessorTest {
     @Spy
     private WqLinkRegisterRepository wqLinkRegisterRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
     @Captor
     private ArgumentCaptor<WqLinkRegisterEntity> wqLinkRegisterCaptor;
 
-    @BeforeEach
-    public void setUp() {
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
-    }
-
     @Test
-    public void givenWQLinkRegisterModel_whenProcessIsInvoked_thenWQLinkRecordIsUpdated() {
+    void givenWQLinkRegisterModel_whenProcessIsInvoked_thenWQLinkRecordIsUpdated() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         List<WqLinkRegisterEntity> wqLinkRegisterEntityList = new ArrayList<>();
         wqLinkRegisterEntityList.add(

@@ -3,7 +3,6 @@ package gov.uk.courtdata.hearing.processor;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
 
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.WQSessionEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
@@ -19,10 +18,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.gson.Gson;
-
 @ExtendWith(MockitoExtension.class)
-public class WQSessionProcessorTest {
+class WQSessionProcessorTest {
 
     @InjectMocks
     private WQSessionProcessor wqSessionProcessor;
@@ -30,21 +27,18 @@ public class WQSessionProcessorTest {
     @Spy
     private WQSessionRepository wqSessionRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
     @Captor
     ArgumentCaptor<WQSessionEntity> wqSessionEntityArgumentCaptor;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 
     @Test
-    public void givenCaseProcessor_whenProcessIsInvoke_thenSaveCase() {
+    void givenCaseProcessor_whenProcessIsInvoke_thenSaveCase() {
         // given
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
 
         // when
         wqSessionProcessor.process(hearingDTO);

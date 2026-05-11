@@ -204,13 +204,11 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
     }
 
     private void buildEntities() {
-        Applicant applicantEntity = repos.applicantRepository.saveAndFlush(Applicant.builder()
-                .userCreated("create-user")
-            .build());
+        Applicant applicantEntity = repos.applicantRepository.saveAndFlush(
+                Applicant.builder().userCreated("create-user").build());
 
-        Applicant partnerEntity = repos.applicantRepository.saveAndFlush(Applicant.builder()
-            .userCreated("create-user")
-            .build());
+        Applicant partnerEntity = repos.applicantRepository.saveAndFlush(
+                Applicant.builder().userCreated("create-user").build());
 
         RepOrderEntity repOrderEntity = TestEntityDataBuilder.getPopulatedRepOrder();
         repOrderEntity.setApplicationId(applicantEntity.getId());

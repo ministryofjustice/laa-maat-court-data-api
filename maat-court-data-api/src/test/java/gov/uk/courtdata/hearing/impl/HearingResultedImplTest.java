@@ -32,7 +32,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class HearingResultedImplTest {
+class HearingResultedImplTest {
 
     @InjectMocks
     private HearingResultedImpl hearingResultedImpl;
@@ -62,7 +62,7 @@ public class HearingResultedImplTest {
     private OffenceHelper offenceHelper;
 
     @Test
-    public void givenACaseDetail_whenHearingResultedImplIsInvoked_thenProcessingImplIsInvoked() {
+    void givenACaseDetail_whenHearingResultedImplIsInvoked_thenProcessingImplIsInvoked() {
 
         // given
         HearingResulted laaHearingDetails = HearingResulted.builder()
@@ -98,7 +98,7 @@ public class HearingResultedImplTest {
     }
 
     @Test
-    public void givenACaseDetail_whenHearingResultedImplForMag_thenProcessingImplIsInvoked() {
+    void givenACaseDetail_whenHearingResultedImplForMag_thenProcessingImplIsInvoked() {
 
         // given
         HearingResulted laaHearingDetails = HearingResulted.builder()
@@ -133,8 +133,7 @@ public class HearingResultedImplTest {
     }
 
     @Test
-    public void givenACaseDetail_whenHearingResultedWitConclusionResults_thenProcessorIsNotInvoked() {
-
+    void givenACaseDetail_whenHearingResultedWitConclusionResults_thenProcessorIsNotInvoked() {
         // given
         HearingResulted laaHearingDetails = HearingResulted.builder()
                 .maatId(12345)
@@ -149,12 +148,7 @@ public class HearingResultedImplTest {
                 .maatId(12345)
                 .build());
         Mockito.when(wqLinkRegisterRepository.findBymaatId(12345)).thenReturn(wqLinkRegisterEntities);
-
         Mockito.when(wqCoreProcessor.findWQType(any())).thenReturn(7);
-
-        HearingDTO hearingDTO = HearingDTO.builder()
-                .result(ResultDTO.builder().resultCode(3026).build())
-                .build();
 
         hearingResultedImpl.execute(laaHearingDetails);
 
@@ -162,12 +156,10 @@ public class HearingResultedImplTest {
         verify(resultCodeRefDataProcessor).processResultCode(3026);
         verify(wqLinkRegisterRepository).findBymaatId(12345);
         verify(offenceCodeRefDataProcessor).processOffenceCode("23224");
-
         verify(hearingWQProcessor, never()).process(any());
     }
 
     private Defendant getDefendant() {
-
         return Defendant.builder()
                 .offences(Collections.singletonList(Offence.builder()
                         .legalAidStatus("AP")

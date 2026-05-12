@@ -39,7 +39,6 @@ import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.enums.ModeOfTrial;
 import gov.uk.courtdata.enums.WQType;
 import gov.uk.courtdata.exception.MAATCourtDataException;
-import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.hearing.service.HearingResultedListener;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.model.Defendant;
@@ -110,7 +109,7 @@ class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTest {
                 .jurisdictionType(JurisdictionType.CROWN)
                 .build();
 
-        runValidationErrorScenario(testData, "MAAT ID is required.");
+        runValidationErrorScenario(testData);
     }
 
     @Test
@@ -123,7 +122,7 @@ class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTest {
                 .jurisdictionType(JurisdictionType.CROWN)
                 .build();
 
-        runValidationErrorScenario(testData, "MAAT ID is required.");
+        runValidationErrorScenario(testData);
     }
 
     @Test
@@ -136,7 +135,7 @@ class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTest {
                 .jurisdictionType(JurisdictionType.CROWN)
                 .build();
 
-        runValidationErrorScenario(testData, String.format("MAAT/REP ID: %d is invalid.", invalidMaatId));
+        runValidationErrorScenario(testData);
     }
 
     @Test
@@ -148,7 +147,7 @@ class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTest {
                 .jurisdictionType(JurisdictionType.CROWN)
                 .build();
 
-        runValidationErrorScenario(testData, String.format("MAAT Id : %s not linked.", testMaatId));
+        runValidationErrorScenario(testData);
     }
 
     @Test
@@ -172,7 +171,7 @@ class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTest {
                 .jurisdictionType(JurisdictionType.CROWN)
                 .build();
 
-        runValidationErrorScenario(testData, String.format("Multiple Links found for  MAAT Id : %s", testMaatId));
+        runValidationErrorScenario(testData);
     }
 
     @Test
@@ -577,11 +576,6 @@ class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTest {
                         .build());
     }
 
-    private void runValidationErrorScenario(HearingResulted testPayload, String expectedErrorMessage)
-            throws JsonProcessingException {
-        runValidationErrorScenario(ValidationException.class, testPayload, expectedErrorMessage);
-    }
-
     private void runMaatErrorScenario(HearingResulted testPayload, String expectedErrorMessage)
             throws JsonProcessingException {
         runErrorScenario(MAATCourtDataException.class, testPayload, expectedErrorMessage);
@@ -670,9 +664,7 @@ class HearingResultedListenerIntegrationTest extends MockMvcIntegrationTest {
                 messageBlob, 1, testPayload.getLaaTransactionId().toString(), testPayload.getMaatId());
     }
 
-    private <T extends Exception> void runValidationErrorScenario(
-            Class<T> exceptionClass, HearingResulted testPayload, String expectedErrorMessage)
-            throws JsonProcessingException {
+    private void runValidationErrorScenario(HearingResulted testPayload) throws JsonProcessingException {
         String messageBlob = objectMapper.writeValueAsString(testPayload);
         hearingResultedListener.receive(messageBlob, new MessageHeaders(new HashMap<>()));
         verifyNoInteractions(wqLinkRegisterRepository1);

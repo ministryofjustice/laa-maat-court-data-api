@@ -18,7 +18,6 @@ import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 
 import java.time.LocalDateTime;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -58,12 +57,8 @@ class UnLinkImplTest {
     @Mock
     private RepOrderCPDataRepository repOrderCPDataRepository;
 
-    @BeforeEach
-    void setUp() {}
-
     @Test
     void givenCaseDetail_whenExecuteIsInvoked_thenCaseInUnlinked() {
-
         UnlinkModel unlinkModel = getUnlinkModel();
         unLink.execute(unlinkModel);
 
@@ -75,7 +70,6 @@ class UnLinkImplTest {
 
     @Test
     void givenCaseDetail_whenExecuteIsInvoked_thenSaveWqCoreEntity() {
-
         UnlinkModel unlinkModel = getUnlinkModel();
 
         unLink.execute(unlinkModel);
@@ -120,7 +114,6 @@ class UnLinkImplTest {
     }
 
     private UnlinkModel getUnlinkModel() {
-
         Unlink unlink = Unlink.builder()
                 .userId("1234")
                 .maatId(5555666)

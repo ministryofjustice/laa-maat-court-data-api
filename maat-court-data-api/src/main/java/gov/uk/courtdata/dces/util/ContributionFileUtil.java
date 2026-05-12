@@ -11,8 +11,6 @@ import gov.uk.courtdata.entity.ContributionFilesEntity;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.sql.Clob;
 import java.sql.Date;
@@ -24,13 +22,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+
 @Slf4j
 @UtilityClass
 public class ContributionFileUtil {
 
     private static final String CONTRIBUTIONS_PREFIX = "CONTRIBUTIONS_";
     private static final String FDC_PREFIX = "FDC_";
-
 
     // FIELD NAMES
     private static final String ID = "ID";
@@ -49,20 +49,19 @@ public class ContributionFileUtil {
     private static final String SQL_PARAMETER = "?";
     private static final String SQL_XMLTYPE = "XMLType(?)";
 
-
-
-    public void assessFilename(CreateFdcFileRequest fdcFileRequest){
+    public void assessFilename(CreateFdcFileRequest fdcFileRequest) {
         fdcFileRequest.setXmlFileName(getOrDefaultFileName(fdcFileRequest.getXmlFileName(), FDC_PREFIX));
     }
-    public void assessFilename(CreateContributionFileRequest contributionFileRequest){
-        contributionFileRequest.setXmlFileName(getOrDefaultFileName(contributionFileRequest.getXmlFileName(), CONTRIBUTIONS_PREFIX));
+
+    public void assessFilename(CreateContributionFileRequest contributionFileRequest) {
+        contributionFileRequest.setXmlFileName(
+                getOrDefaultFileName(contributionFileRequest.getXmlFileName(), CONTRIBUTIONS_PREFIX));
     }
 
-    private String getOrDefaultFileName(String filename, String typePrefix){
-        if(!StringUtils.isEmpty(filename)){
+    private String getOrDefaultFileName(String filename, String typePrefix) {
+        if (!StringUtils.isEmpty(filename)) {
             return filename;
-        }
-        else{
+        } else {
             return generateFilename(typePrefix);
         }
     }
@@ -78,25 +77,28 @@ public class ContributionFileUtil {
         return stringBuilder.toString();
     }
 
-    public ContributionFileErrorsEntity buildContributionFileError(LogContributionProcessedRequest request, ConcorContributionsEntity concorEntity){
-        ContributionFileErrorsEntity errorEntity = buildBaseErrorEntity(request, concorEntity.getRepId(), concorEntity.getContribFileId());
+    public ContributionFileErrorsEntity buildContributionFileError(
+            LogContributionProcessedRequest request, ConcorContributionsEntity concorEntity) {
+        ContributionFileErrorsEntity errorEntity =
+                buildBaseErrorEntity(request, concorEntity.getRepId(), concorEntity.getContribFileId());
         Integer concorId = request.getConcorId();
         errorEntity.setContributionId(concorId);
         errorEntity.setConcorContributionId(concorId);
         return errorEntity;
     }
 
-    public ContributionFileErrorsEntity buildContributionFileError(LogFdcProcessedRequest request, FdcContributionsEntity fdcEntity){
-        ContributionFileErrorsEntity errorEntity = buildBaseErrorEntity(request, fdcEntity.getRepOrderEntity().getId(), fdcEntity.getContFileId());
+    public ContributionFileErrorsEntity buildContributionFileError(
+            LogFdcProcessedRequest request, FdcContributionsEntity fdcEntity) {
+        ContributionFileErrorsEntity errorEntity =
+                buildBaseErrorEntity(request, fdcEntity.getRepOrderEntity().getId(), fdcEntity.getContFileId());
         Integer fdcId = request.getFdcId();
         errorEntity.setContributionId(fdcId);
         errorEntity.setFdcContributionId(fdcId);
         return errorEntity;
     }
 
-
-
-    private ContributionFileErrorsEntity buildBaseErrorEntity(LogProcessedRequest request, Integer repId, Integer fileId){
+    private ContributionFileErrorsEntity buildBaseErrorEntity(
+            LogProcessedRequest request, Integer repId, Integer fileId) {
         return ContributionFileErrorsEntity.builder()
                 .errorText(request.getErrorText())
                 .repId(repId)
@@ -105,19 +107,29 @@ public class ContributionFileUtil {
                 .build();
     }
 
-    public void setPreparedStatementParameters(PreparedStatement ps, Map<String,String> fieldValueMap, ContributionFilesEntity contributionFilesEntity, Clob xmlContent, Clob ackXmlContent, boolean isUpdate) throws SQLException {
+    public void setPreparedStatementParameters(
+            PreparedStatement ps,
+            Map<String, String> fieldValueMap,
+            ContributionFilesEntity contributionFilesEntity,
+            Clob xmlContent,
+            Clob ackXmlContent,
+            boolean isUpdate)
+            throws SQLException {
         int parameterIndex = 1;
-        for(Map.Entry<String,String> currEntry: fieldValueMap.entrySet()){
+        for (Map.Entry<String, String> currEntry : fieldValueMap.entrySet()) {
             switch (currEntry.getKey()) {
                 case FILE_NAME -> ps.setString(parameterIndex++, contributionFilesEntity.getFileName());
                 case RECORDS_SENT -> ps.setInt(parameterIndex++, contributionFilesEntity.getRecordsSent());
                 case RECORDS_RECEIVED -> ps.setInt(parameterIndex++, contributionFilesEntity.getRecordsReceived());
                 case USER_CREATED -> ps.setString(parameterIndex++, contributionFilesEntity.getUserCreated());
-                case DATE_CREATED -> ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateCreated()));
+                case DATE_CREATED ->
+                    ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateCreated()));
                 case USER_MODIFIED -> ps.setString(parameterIndex++, contributionFilesEntity.getUserModified());
-                case DATE_MODIFIED -> ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateModified()));
+                case DATE_MODIFIED ->
+                    ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateModified()));
                 case DATE_SENT -> ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateSent()));
-                case DATE_RECEIVED -> ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateReceived()));
+                case DATE_RECEIVED ->
+                    ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateReceived()));
 
                 case XML_CONTENT -> {
                     xmlContent.setString(1, contributionFilesEntity.getXmlContent());
@@ -130,15 +142,16 @@ public class ContributionFileUtil {
                 default -> log.debug("Unknown entry found in the CONTRIBUTION_FILES map");
             }
         }
-        if(isUpdate) {
+        if (isUpdate) {
             ps.setInt(parameterIndex, contributionFilesEntity.getFileId());
         }
     }
 
-    public Map<String, String> generateSqlFieldValueMap(ContributionFilesEntity contributionFilesEntity, boolean isUpdate){
-        Map<String,String> fieldMap = new LinkedHashMap<>();
+    public Map<String, String> generateSqlFieldValueMap(
+            ContributionFilesEntity contributionFilesEntity, boolean isUpdate) {
+        Map<String, String> fieldMap = new LinkedHashMap<>();
 
-        if(!isUpdate){
+        if (!isUpdate) {
             fieldMap.put(ID, "TOGDATA.S_GENERAL_SEQUENCE.NEXTVAL");
         }
         addToFieldMap(fieldMap, FILE_NAME, contributionFilesEntity.getFileName(), SQL_PARAMETER);
@@ -157,11 +170,9 @@ public class ContributionFileUtil {
         return fieldMap;
     }
 
-    private void addToFieldMap(Map<String, String> fieldMap, String columnName, Object field, String sql){
-        if(Objects.nonNull(field)){
-            fieldMap.put(columnName,sql);
+    private void addToFieldMap(Map<String, String> fieldMap, String columnName, Object field, String sql) {
+        if (Objects.nonNull(field)) {
+            fieldMap.put(columnName, sql);
         }
     }
-
-
 }

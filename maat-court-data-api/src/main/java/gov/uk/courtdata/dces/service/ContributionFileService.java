@@ -9,11 +9,12 @@ import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -24,21 +25,30 @@ public class ContributionFileService {
     private final ContributionFileMapper contributionFileMapper;
 
     public Optional<ContributionFileResponse> getContributionFile(int contributionFileId) {
-        return contributionFileRepository.findById(contributionFileId).map(contributionFileMapper::toContributionFileResponse);
+        return contributionFileRepository
+                .findById(contributionFileId)
+                .map(contributionFileMapper::toContributionFileResponse);
     }
 
-    public List<String> getContributionFilesNamedLikeBetweenDate(String fileName, LocalDate fromDate, LocalDate toDate){
-        List<ContributionFilesEntity> entityList = contributionFileRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId(fileName, fromDate, toDate);
+    public List<String> getContributionFilesNamedLikeBetweenDate(
+            String fileName, LocalDate fromDate, LocalDate toDate) {
+        List<ContributionFilesEntity> entityList =
+                contributionFileRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId(
+                        fileName, fromDate, toDate);
         return entityList.stream().map(ContributionFilesEntity::getXmlContent).toList();
     }
 
     public List<ContributionFileErrorResponse> getAllContributionFileError(int contributionFileId) {
         return contributionFileErrorRepository.findByContributionFileId(contributionFileId).stream()
-                .map(contributionFileMapper::toContributionFileErrorResponse).toList();
+                .map(contributionFileMapper::toContributionFileErrorResponse)
+                .toList();
     }
 
-    public Optional<ContributionFileErrorResponse> getContributionFileError(int contributionId, int contributionFileId) {
+    public Optional<ContributionFileErrorResponse> getContributionFileError(
+            int contributionId, int contributionFileId) {
         var primaryKey = new ContributionFileErrorsId(contributionId, contributionFileId);
-        return contributionFileErrorRepository.findById(primaryKey).map(contributionFileMapper::toContributionFileErrorResponse);
+        return contributionFileErrorRepository
+                .findById(primaryKey)
+                .map(contributionFileMapper::toContributionFileErrorResponse);
     }
 }

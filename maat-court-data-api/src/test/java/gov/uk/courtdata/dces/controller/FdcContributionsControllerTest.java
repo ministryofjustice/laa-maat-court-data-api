@@ -1,6 +1,11 @@
 package gov.uk.courtdata.dces.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dces.request.CreateFdcContributionRequest;
 import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
@@ -11,8 +16,13 @@ import gov.uk.courtdata.dces.service.FdcContributionsService;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.exception.MAATCourtDataException;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,15 +32,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(FdcContributionsController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -48,19 +50,28 @@ class FdcContributionsControllerTest {
 
     @Test
     void givenRequestedStatus_whenGetFdcContributions_thenReturnListOfContributions() throws Exception {
-        BigDecimal expectedCost1= new BigDecimal("100.1");
-        BigDecimal expectedCost2= new BigDecimal("444.44");
-        BigDecimal expectedCost3= new BigDecimal("999.99");
+        BigDecimal expectedCost1 = new BigDecimal("100.1");
+        BigDecimal expectedCost2 = new BigDecimal("444.44");
+        BigDecimal expectedCost3 = new BigDecimal("999.99");
 
         when(fdcContributionsService.getFdcContributions(FdcContributionsStatus.REQUESTED))
                 .thenReturn(FdcContributionsResponse.builder()
                         .fdcContributions(List.of(
-                                FdcContributionEntry.builder().id(1).finalCost(expectedCost1).build(),
-                                FdcContributionEntry.builder().id(2).finalCost(expectedCost2).build(),
-                                FdcContributionEntry.builder().id(3).finalCost(expectedCost3).build()))
+                                FdcContributionEntry.builder()
+                                        .id(1)
+                                        .finalCost(expectedCost1)
+                                        .build(),
+                                FdcContributionEntry.builder()
+                                        .id(2)
+                                        .finalCost(expectedCost2)
+                                        .build(),
+                                FdcContributionEntry.builder()
+                                        .id(3)
+                                        .finalCost(expectedCost3)
+                                        .build()))
                         .build());
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/fdc-contribution-files"))
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + "/fdc-contribution-files"))
                         .queryParam("status", FdcContributionsStatus.REQUESTED.name())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -77,9 +88,11 @@ class FdcContributionsControllerTest {
     void givenRequestedStatusAndNoActiveFiles_whenGetFdcContributions_thenReturnEmptyList() throws Exception {
 
         when(fdcContributionsService.getFdcContributions(FdcContributionsStatus.REQUESTED))
-                .thenReturn(FdcContributionsResponse.builder().fdcContributions(List.of()).build());
+                .thenReturn(FdcContributionsResponse.builder()
+                        .fdcContributions(List.of())
+                        .build());
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/fdc-contribution-files"))
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + "/fdc-contribution-files"))
                         .queryParam("status", FdcContributionsStatus.REQUESTED.name())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -88,7 +101,7 @@ class FdcContributionsControllerTest {
 
     @Test
     void givenNoStatusQueryParam_whenGetFdcContributions_thenBadRequestError() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  +"/fdc-contribution-files"))
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + "/fdc-contribution-files"))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.detail").value("Required parameter 'status' is not present."))
                 .andExpect(status().isBadRequest());
@@ -96,10 +109,13 @@ class FdcContributionsControllerTest {
 
     @Test
     void givenValidRequest_whenCreateFdcContribution_thenReturnCreatedContribution() throws Exception {
-        CreateFdcContributionRequest request = CreateFdcContributionRequest.builder().build();
-        FdcContributionsEntity fdcEntity = FdcContributionsEntity.builder().id(34545).build();
+        CreateFdcContributionRequest request =
+                CreateFdcContributionRequest.builder().build();
+        FdcContributionsEntity fdcEntity =
+                FdcContributionsEntity.builder().id(34545).build();
 
-        when(fdcContributionsService.createFdcContribution(any(CreateFdcContributionRequest.class))).thenReturn(fdcEntity);
+        when(fdcContributionsService.createFdcContribution(any(CreateFdcContributionRequest.class)))
+                .thenReturn(fdcEntity);
 
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/fdc-contribution")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -115,11 +131,12 @@ class FdcContributionsControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-
     @Test
     void givenValidRequest_whenUpdateFdcContribution_thenReturnUpdatedCount() throws Exception {
-        UpdateFdcContributionRequest request = UpdateFdcContributionRequest.builder().build();
-        when(fdcContributionsService.updateFdcContribution(any(UpdateFdcContributionRequest.class))).thenReturn(2);
+        UpdateFdcContributionRequest request =
+                UpdateFdcContributionRequest.builder().build();
+        when(fdcContributionsService.updateFdcContribution(any(UpdateFdcContributionRequest.class)))
+                .thenReturn(2);
 
         mvc.perform(MockMvcRequestBuilders.patch(ENDPOINT_URL + "/fdc-contribution")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -138,7 +155,8 @@ class FdcContributionsControllerTest {
     @Test
     void givenValidId_whenGetFdcContribution_thenReturnContribution() throws Exception {
         int fdcContributionId = 1;
-        FdcContributionEntry expectedEntry = FdcContributionEntry.builder().id(fdcContributionId)
+        FdcContributionEntry expectedEntry = FdcContributionEntry.builder()
+                .id(fdcContributionId)
                 .status(FdcContributionsStatus.REQUESTED)
                 .finalCost(new BigDecimal("100.1"))
                 .build();
@@ -150,19 +168,17 @@ class FdcContributionsControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(fdcContributionId))
                 .andExpect(jsonPath("$.status").value(FdcContributionsStatus.REQUESTED.name()))
-                .andExpect(jsonPath("$.finalCost").value(expectedEntry.getFinalCost().doubleValue()));
+                .andExpect(jsonPath("$.finalCost")
+                        .value(expectedEntry.getFinalCost().doubleValue()));
     }
 
     @Test
     void givenValidRequest_whenLogDrcProcessed_thenReturnSuccess() throws Exception {
         int id = 1234;
         String errorText = "";
-        LogFdcProcessedRequest request = LogFdcProcessedRequest.builder()
-                .fdcId(id)
-                .errorText(errorText)
-                .build();
-        when(fdcContributionsService.logFdcProcessed(request))
-                .thenReturn(1111);
+        LogFdcProcessedRequest request =
+                LogFdcProcessedRequest.builder().fdcId(id).errorText(errorText).build();
+        when(fdcContributionsService.logFdcProcessed(request)).thenReturn(1111);
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
                         .content(TestModelDataBuilder.getFdcDrcUpdateJson(id, errorText))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -174,12 +190,9 @@ class FdcContributionsControllerTest {
     void givenServiceError_whenLogDrcProcessed_thenServerError() throws Exception {
         int id = 1234;
         String errorText = "";
-        LogFdcProcessedRequest request = LogFdcProcessedRequest.builder()
-                .fdcId(id)
-                .errorText(errorText)
-                .build();
-        when(fdcContributionsService.logFdcProcessed(request))
-                .thenThrow(new MAATCourtDataException("Test Error"));
+        LogFdcProcessedRequest request =
+                LogFdcProcessedRequest.builder().fdcId(id).errorText(errorText).build();
+        when(fdcContributionsService.logFdcProcessed(request)).thenThrow(new MAATCourtDataException("Test Error"));
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
                         .content(TestModelDataBuilder.getFdcDrcUpdateJson(id, errorText))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -191,10 +204,8 @@ class FdcContributionsControllerTest {
     void givenNoContributionFile_whenLogDrcProcessed_thenBadRequestError() throws Exception {
         int id = 1234;
         String errorText = "";
-        LogFdcProcessedRequest request = LogFdcProcessedRequest.builder()
-                .fdcId(id)
-                .errorText(errorText)
-                .build();
+        LogFdcProcessedRequest request =
+                LogFdcProcessedRequest.builder().fdcId(id).errorText(errorText).build();
         when(fdcContributionsService.logFdcProcessed(request))
                 .thenThrow(new NoSuchElementException("contribution_file not found"));
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
@@ -207,42 +218,41 @@ class FdcContributionsControllerTest {
     @Test
     void givenEmptyListOfIds_whenFdcContributionsAreRequested_thenBadRequestError() throws Exception {
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + FDC_CONTRIBUTIONS_URL))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content("[]"))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("ID List Empty"));
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + FDC_CONTRIBUTIONS_URL))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("[]"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("ID List Empty"));
     }
 
     @Test
     void givenLongListOfIds_whenFdcContributionsAreRequested_thenBadRequestError() throws Exception {
-        String longList = IntStream.rangeClosed(1, 1001)
-            .mapToObj(Integer::toString)
-            .collect(Collectors.joining(","));
+        String longList =
+                IntStream.rangeClosed(1, 1001).mapToObj(Integer::toString).collect(Collectors.joining(","));
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + FDC_CONTRIBUTIONS_URL))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content("["+longList+"]"))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("Too many IDs provided, max is 1000"));
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + FDC_CONTRIBUTIONS_URL))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("[" + longList + "]"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Too many IDs provided, max is 1000"));
     }
 
     @Test
     void givenValidListOfIds_whenFdcContributionsAreRequested_thenValidResponse() throws Exception {
 
-        when(fdcContributionsService.getFdcContributions(anyList())).
-            thenReturn(FdcContributionsResponse.builder()
+        when(fdcContributionsService.getFdcContributions(anyList()))
+                .thenReturn(FdcContributionsResponse.builder()
                         .fdcContributions(List.of(FdcContributionEntry.builder()
                                 .id(1)
                                 .accelerate("True")
-                        .build()))
-                .build());
+                                .build()))
+                        .build());
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + FDC_CONTRIBUTIONS_URL))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content("[110, 120]"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.fdcContributions.[0].id").value("1"))
-            .andExpect(jsonPath("$.fdcContributions.[0].accelerate").value("True"));
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + FDC_CONTRIBUTIONS_URL))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("[110, 120]"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fdcContributions.[0].id").value("1"))
+                .andExpect(jsonPath("$.fdcContributions.[0].accelerate").value("True"));
     }
 }

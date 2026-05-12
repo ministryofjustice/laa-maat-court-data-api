@@ -1,7 +1,5 @@
 package gov.uk.courtdata.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +8,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 @Data
 @Builder
@@ -24,6 +25,7 @@ public class ApplicantDTO implements Serializable {
 
     @JsonValue
     private Integer id;
+
     private String firstName;
     private String lastName;
     private String otherNames;

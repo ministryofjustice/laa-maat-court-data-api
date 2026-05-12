@@ -1,12 +1,12 @@
 package gov.uk.courtdata.util;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class NameUtilsTest {
 
@@ -20,17 +20,15 @@ class NameUtilsTest {
                 Arguments.of("lynne", "Lee-Robinson", "Lynne Lee-Robinson"),
                 Arguments.of(null, null, ""),
                 Arguments.of("", null, ""),
-                Arguments.of(null, "", "")
-        );
+                Arguments.of(null, "", ""));
     }
 
     @ParameterizedTest
     @MethodSource("namesTestData")
-    public void givenAFirstAndLastName_theCorrectlyFormattedFullNameIsReturned(String firstName,
-                                                                               String lastName,
-                                                                               String expectedFullName) {
+    void givenAFirstAndLastName_theCorrectlyFormattedFullNameIsReturned(
+            String firstName, String lastName, String expectedFullName) {
         String actualFullName = NameUtils.toCapitalisedFullName(firstName, lastName);
 
-        assertEquals(expectedFullName, actualFullName);
+        assertThat(actualFullName).isEqualTo(expectedFullName);
     }
 }

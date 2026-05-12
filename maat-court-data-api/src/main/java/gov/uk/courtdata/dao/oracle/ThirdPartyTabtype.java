@@ -2,99 +2,87 @@ package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
 import oracle.jpub.runtime.MutableArray;
-import oracle.sql.*;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ThirdPartyTabtype implements ORAData, ORADataFactory
-{
-  public static final String _SQL_NAME = "TOGDATA.THIRD_PARTY_TABTYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
+public class ThirdPartyTabtype implements ORAData, ORADataFactory {
+    public static final String _SQL_NAME = "TOGDATA.THIRD_PARTY_TABTYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
 
-  MutableArray _array;
+    MutableArray _array;
 
-private static final ThirdPartyTabtype _ThirdPartyTabtypeFactory = new ThirdPartyTabtype();
+    private static final ThirdPartyTabtype _ThirdPartyTabtypeFactory = new ThirdPartyTabtype();
 
-  public static ORADataFactory getORADataFactory()
-  { return _ThirdPartyTabtypeFactory; }
-  /* constructors */
-  public ThirdPartyTabtype()
-  {
-    this((ThirdPartyType[])null);
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _ThirdPartyTabtypeFactory;
+    }
 
-  public ThirdPartyTabtype(ThirdPartyType[] a)
-  {
-    _array = new MutableArray(2002, a, ThirdPartyType.getORADataFactory());
-  }
+    /* constructors */
+    public ThirdPartyTabtype() {
+        this((ThirdPartyType[]) null);
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _array.toDatum(c, _SQL_NAME);
-  }
+    public ThirdPartyTabtype(ThirdPartyType[] a) {
+        _array = new MutableArray(2002, a, ThirdPartyType.getORADataFactory());
+    }
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    ThirdPartyTabtype a = new ThirdPartyTabtype();
-    a._array = new MutableArray(2002, (ARRAY) d, ThirdPartyType.getORADataFactory());
-    return a;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _array.toDatum(c, _SQL_NAME);
+    }
 
-  public int length() throws SQLException
-  {
-    return _array.length();
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        ThirdPartyTabtype a = new ThirdPartyTabtype();
+        a._array = new MutableArray(2002, (ARRAY) d, ThirdPartyType.getORADataFactory());
+        return a;
+    }
 
-  public int getBaseType() throws SQLException
-  {
-    return _array.getBaseType();
-  }
+    public int length() throws SQLException {
+        return _array.length();
+    }
 
-  public String getBaseTypeName() throws SQLException
-  {
-    return _array.getBaseTypeName();
-  }
+    public int getBaseType() throws SQLException {
+        return _array.getBaseType();
+    }
 
-  public ArrayDescriptor getDescriptor() throws SQLException
-  {
-    return _array.getDescriptor();
-  }
+    public String getBaseTypeName() throws SQLException {
+        return _array.getBaseTypeName();
+    }
 
-  /* array accessor methods */
-  public ThirdPartyType[] getArray() throws SQLException
-  {
-    return (ThirdPartyType[]) _array.getObjectArray(
-      new ThirdPartyType[_array.length()]);
-  }
+    public ArrayDescriptor getDescriptor() throws SQLException {
+        return _array.getDescriptor();
+    }
 
-  public ThirdPartyType[] getArray(long index, int count) throws SQLException
-  {
-    return (ThirdPartyType[]) _array.getObjectArray(index,
-      new ThirdPartyType[_array.sliceLength(index, count)]);
-  }
+    /* array accessor methods */
+    public ThirdPartyType[] getArray() throws SQLException {
+        return (ThirdPartyType[]) _array.getObjectArray(new ThirdPartyType[_array.length()]);
+    }
 
-  public void setArray(ThirdPartyType[] a) throws SQLException
-  {
-    _array.setObjectArray(a);
-  }
+    public ThirdPartyType[] getArray(long index, int count) throws SQLException {
+        return (ThirdPartyType[]) _array.getObjectArray(index, new ThirdPartyType[_array.sliceLength(index, count)]);
+    }
 
-  public void setArray(ThirdPartyType[] a, long index) throws SQLException
-  {
-    _array.setObjectArray(a, index);
-  }
+    public void setArray(ThirdPartyType[] a) throws SQLException {
+        _array.setObjectArray(a);
+    }
 
-  public ThirdPartyType getElement(long index) throws SQLException
-  {
-    return (ThirdPartyType) _array.getObjectElement(index);
-  }
+    public void setArray(ThirdPartyType[] a, long index) throws SQLException {
+        _array.setObjectArray(a, index);
+    }
 
-  public void setElement(ThirdPartyType a, long index) throws SQLException
-  {
-    _array.setObjectElement(a, index);
-  }
+    public ThirdPartyType getElement(long index) throws SQLException {
+        return (ThirdPartyType) _array.getObjectElement(index);
+    }
 
+    public void setElement(ThirdPartyType a, long index) throws SQLException {
+        _array.setObjectElement(a, index);
+    }
 }

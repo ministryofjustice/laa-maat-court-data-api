@@ -6,6 +6,7 @@ import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -17,11 +18,10 @@ public class LinkRegisterProcessor {
 
     public void process(HearingDTO hearingDTO) {
 
-        WqLinkRegisterEntity wqLinkRegisterEntity = wqLinkRegisterRepository
-                .findBymaatId(hearingDTO.getMaatId())
-                .stream()
-                .findFirst()
-                .orElse(null);
+        WqLinkRegisterEntity wqLinkRegisterEntity =
+                wqLinkRegisterRepository.findBymaatId(hearingDTO.getMaatId()).stream()
+                        .findFirst()
+                        .orElse(null);
 
         if (wqLinkRegisterEntity != null) {
             wqLinkRegisterEntity.setProsecutionConcluded(String.valueOf(hearingDTO.isProsecutionConcluded()));

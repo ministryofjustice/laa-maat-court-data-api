@@ -13,6 +13,6 @@ import java.util.Set;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateFdcFileRequest extends CreateFileRequest{
+public class CreateFdcFileRequest extends CreateFileRequest {
     private Set<Integer> fdcIds;
 }

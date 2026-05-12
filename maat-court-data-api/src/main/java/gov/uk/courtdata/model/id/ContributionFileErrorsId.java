@@ -12,5 +12,4 @@ import java.io.Serializable;
 public class ContributionFileErrorsId implements Serializable {
     private int contributionId;
     private int contributionFileId;
-
 }

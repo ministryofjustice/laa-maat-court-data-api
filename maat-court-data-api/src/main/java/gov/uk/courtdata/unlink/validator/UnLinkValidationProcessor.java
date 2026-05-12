@@ -7,9 +7,10 @@ import gov.uk.courtdata.validator.LinkRegisterValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -21,9 +22,9 @@ public class UnLinkValidationProcessor {
     private final ReasonValidator reasonValidator;
     private final UserIdValidator userIdValidator;
 
-
     /**
      * Validate the Unlink request.
+     *
      * @param unlink
      */
     public void validate(Unlink unlink) {
@@ -40,6 +41,7 @@ public class UnLinkValidationProcessor {
 
     /**
      * Check if maat-id has any active link.
+     *
      * @param linkRegisterEntities
      * @param maatId
      */
@@ -52,5 +54,4 @@ public class UnLinkValidationProcessor {
             throw new ValidationException("There are multiple links found for  MAAT ID : " + maatId);
         }
     }
-
 }

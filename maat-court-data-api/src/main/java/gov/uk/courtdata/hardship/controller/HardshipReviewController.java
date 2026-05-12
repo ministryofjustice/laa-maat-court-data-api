@@ -14,10 +14,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,14 +44,14 @@ public class HardshipReviewController {
     @GetMapping(value = "/{hardshipId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a hardship review record")
     @StandardApiResponseCodes
-    @ApiResponse(responseCode = "404",
+    @ApiResponse(
+            responseCode = "404",
             description = "Not Found.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    public ResponseEntity<HardshipReviewDTO> getHardship(
-            @PathVariable int hardshipId) {
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<HardshipReviewDTO> getHardship(@PathVariable int hardshipId) {
         log.info("Get Hardship Review Request Received for hardship id: {}", hardshipId);
         validationProcessor.validate(hardshipId);
         return ResponseEntity.ok(hardshipReviewService.find(hardshipId));
@@ -58,15 +60,15 @@ public class HardshipReviewController {
     @GetMapping(value = "repId/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a hardship review record by repId")
     @StandardApiResponseCodes
-    @ApiResponse(responseCode = "404",
+    @ApiResponse(
+            responseCode = "404",
             description = "Not Found.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    public ResponseEntity<HardshipReviewDTO> getHardshipByRepId(
-            @PathVariable int repId) {
-      LoggingData.MAAT_ID.putInMDC(repId);
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<HardshipReviewDTO> getHardshipByRepId(@PathVariable int repId) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Get Hardship Review by repId = {}", repId);
         return ResponseEntity.ok(hardshipReviewService.findByRepId(repId));
     }
@@ -74,16 +76,16 @@ public class HardshipReviewController {
     @GetMapping(value = "repId/{repId}/detailType/{detailType}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a hardship review record by repId and detail type")
     @StandardApiResponseCodes
-    @ApiResponse(responseCode = "404",
+    @ApiResponse(
+            responseCode = "404",
             description = "Not Found.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<HardshipReviewDetail>> getHardshipByDetailType(
-            @PathVariable int repId,
-            @PathVariable String detailType) {
-      LoggingData.MAAT_ID.putInMDC(repId);
+            @PathVariable int repId, @PathVariable String detailType) {
+        LoggingData.MAAT_ID.putInMDC(repId);
         log.info("Get Hardship Review by detail type = {} and repId = {}", detailType, repId);
         return ResponseEntity.ok(hardshipReviewService.findDetails(detailType, repId));
     }
@@ -92,13 +94,15 @@ public class HardshipReviewController {
     @Operation(description = "Create a hardship review record")
     @StandardApiResponseCodes
     public ResponseEntity<HardshipReviewDTO> createHardship(
-            @Parameter(description = "Hardship review data",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = CreateHardshipReview.class)
-                    )
-            )
-            @RequestBody CreateHardshipReview hardshipReview) {
-      LoggingData.MAAT_ID.putInMDC(hardshipReview.getRepId());
+            @Parameter(
+                            description = "Hardship review data",
+                            content =
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = CreateHardshipReview.class)))
+                    @RequestBody
+                    CreateHardshipReview hardshipReview) {
+        LoggingData.MAAT_ID.putInMDC(hardshipReview.getRepId());
         log.info("Create Hardship Review Request Received");
         return ResponseEntity.ok(hardshipReviewService.create(hardshipReview));
     }
@@ -107,24 +111,28 @@ public class HardshipReviewController {
     @Operation(description = "Update a hardship review record")
     @StandardApiResponseCodes
     public ResponseEntity<HardshipReviewDTO> updateHardship(
-            @Parameter(description = "Hardship review data",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = UpdateHardshipReview.class)
-                    )
-            )
-            @RequestBody UpdateHardshipReview hardshipReview) {
+            @Parameter(
+                            description = "Hardship review data",
+                            content =
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = UpdateHardshipReview.class)))
+                    @RequestBody
+                    UpdateHardshipReview hardshipReview) {
         log.info("Update Hardship Review Request Received");
         return ResponseEntity.ok(hardshipReviewService.update(hardshipReview));
     }
 
-    @PatchMapping(value=  "/{hardshipReviewId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/{hardshipReviewId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update a subset of hardship review record")
     @StandardApiResponseCodes
-    public ResponseEntity<Void> updateHardship(@PathVariable int hardshipReviewId,
-            @Parameter(description = "Hardship review data",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-            )
-            @RequestBody Map<String, Object> updateFields) {
+    public ResponseEntity<Void> updateHardship(
+            @PathVariable int hardshipReviewId,
+            @Parameter(
+                            description = "Hardship review data",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+                    @RequestBody
+                    Map<String, Object> updateFields) {
         log.info("Received request to update Hardship Review with id: [{}]", hardshipReviewId);
         hardshipReviewService.patch(hardshipReviewId, updateFields);
         return ResponseEntity.ok().build();

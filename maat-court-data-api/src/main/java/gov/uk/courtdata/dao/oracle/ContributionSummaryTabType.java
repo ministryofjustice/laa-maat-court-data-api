@@ -2,99 +2,89 @@ package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
 import oracle.jpub.runtime.MutableArray;
-import oracle.sql.*;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ContributionSummaryTabType implements ORAData, ORADataFactory
-{
-  public static final String _SQL_NAME = "TOGDATA.CONTRIBUTION_SUMMARY_TABTYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
+public class ContributionSummaryTabType implements ORAData, ORADataFactory {
+    public static final String _SQL_NAME = "TOGDATA.CONTRIBUTION_SUMMARY_TABTYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
 
-  MutableArray _array;
+    MutableArray _array;
 
-private static final ContributionSummaryTabType _ContributionSummaryTabTypeFactory = new ContributionSummaryTabType();
+    private static final ContributionSummaryTabType _ContributionSummaryTabTypeFactory =
+            new ContributionSummaryTabType();
 
-  public static ORADataFactory getORADataFactory()
-  { return _ContributionSummaryTabTypeFactory; }
-  /* constructors */
-  public ContributionSummaryTabType()
-  {
-    this((ContributionSummaryType[])null);
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _ContributionSummaryTabTypeFactory;
+    }
 
-  public ContributionSummaryTabType(ContributionSummaryType[] a)
-  {
-    _array = new MutableArray(2002, a, ContributionSummaryType.getORADataFactory());
-  }
+    /* constructors */
+    public ContributionSummaryTabType() {
+        this((ContributionSummaryType[]) null);
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _array.toDatum(c, _SQL_NAME);
-  }
+    public ContributionSummaryTabType(ContributionSummaryType[] a) {
+        _array = new MutableArray(2002, a, ContributionSummaryType.getORADataFactory());
+    }
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    ContributionSummaryTabType a = new ContributionSummaryTabType();
-    a._array = new MutableArray(2002, (ARRAY) d, ContributionSummaryType.getORADataFactory());
-    return a;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _array.toDatum(c, _SQL_NAME);
+    }
 
-  public int length() throws SQLException
-  {
-    return _array.length();
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        ContributionSummaryTabType a = new ContributionSummaryTabType();
+        a._array = new MutableArray(2002, (ARRAY) d, ContributionSummaryType.getORADataFactory());
+        return a;
+    }
 
-  public int getBaseType() throws SQLException
-  {
-    return _array.getBaseType();
-  }
+    public int length() throws SQLException {
+        return _array.length();
+    }
 
-  public String getBaseTypeName() throws SQLException
-  {
-    return _array.getBaseTypeName();
-  }
+    public int getBaseType() throws SQLException {
+        return _array.getBaseType();
+    }
 
-  public ArrayDescriptor getDescriptor() throws SQLException
-  {
-    return _array.getDescriptor();
-  }
+    public String getBaseTypeName() throws SQLException {
+        return _array.getBaseTypeName();
+    }
 
-  /* array accessor methods */
-  public ContributionSummaryType[] getArray() throws SQLException
-  {
-    return (ContributionSummaryType[]) _array.getObjectArray(
-      new ContributionSummaryType[_array.length()]);
-  }
+    public ArrayDescriptor getDescriptor() throws SQLException {
+        return _array.getDescriptor();
+    }
 
-  public ContributionSummaryType[] getArray(long index, int count) throws SQLException
-  {
-    return (ContributionSummaryType[]) _array.getObjectArray(index,
-      new ContributionSummaryType[_array.sliceLength(index, count)]);
-  }
+    /* array accessor methods */
+    public ContributionSummaryType[] getArray() throws SQLException {
+        return (ContributionSummaryType[]) _array.getObjectArray(new ContributionSummaryType[_array.length()]);
+    }
 
-  public void setArray(ContributionSummaryType[] a) throws SQLException
-  {
-    _array.setObjectArray(a);
-  }
+    public ContributionSummaryType[] getArray(long index, int count) throws SQLException {
+        return (ContributionSummaryType[])
+                _array.getObjectArray(index, new ContributionSummaryType[_array.sliceLength(index, count)]);
+    }
 
-  public void setArray(ContributionSummaryType[] a, long index) throws SQLException
-  {
-    _array.setObjectArray(a, index);
-  }
+    public void setArray(ContributionSummaryType[] a) throws SQLException {
+        _array.setObjectArray(a);
+    }
 
-  public ContributionSummaryType getElement(long index) throws SQLException
-  {
-    return (ContributionSummaryType) _array.getObjectElement(index);
-  }
+    public void setArray(ContributionSummaryType[] a, long index) throws SQLException {
+        _array.setObjectArray(a, index);
+    }
 
-  public void setElement(ContributionSummaryType a, long index) throws SQLException
-  {
-    _array.setObjectElement(a, index);
-  }
+    public ContributionSummaryType getElement(long index) throws SQLException {
+        return (ContributionSummaryType) _array.getObjectElement(index);
+    }
 
+    public void setElement(ContributionSummaryType a, long index) throws SQLException {
+        _array.setObjectElement(a, index);
+    }
 }

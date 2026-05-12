@@ -1,27 +1,34 @@
 package gov.uk.courtdata.offence.service;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.offence.impl.OffenceImpl;
 import gov.uk.courtdata.offence.mapper.OffenceMapper;
+
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class OffenceServiceTest {
 
     @Mock
     private OffenceImpl offenceImpl;
+
     @Mock
     private OffenceMapper offenceMapper;
+
     @InjectMocks
     private OffenceService offenceService;
 

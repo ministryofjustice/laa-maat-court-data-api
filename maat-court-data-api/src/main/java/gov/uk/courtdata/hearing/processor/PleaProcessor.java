@@ -7,9 +7,10 @@ import gov.uk.courtdata.repository.PleaRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -20,11 +21,10 @@ public class PleaProcessor {
 
     public void process(final HearingDTO hearingDTO) {
 
-        if (hearingDTO.getOffence().getPlea()!=null) {
+        if (hearingDTO.getOffence().getPlea() != null) {
 
             PleaDTO plea = hearingDTO.getOffence().getPlea();
-            PleaEntity pleaEntity = PleaEntity
-                    .builder()
+            PleaEntity pleaEntity = PleaEntity.builder()
                     .txId(hearingDTO.getTxId())
                     .caseId(hearingDTO.getCaseId())
                     .maatId(hearingDTO.getMaatId())

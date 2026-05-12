@@ -11,6 +11,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class TransferStatusDTO extends GenericDTO {
 
-	private String status;
-	private String description;
+    private String status;
+    private String description;
 }

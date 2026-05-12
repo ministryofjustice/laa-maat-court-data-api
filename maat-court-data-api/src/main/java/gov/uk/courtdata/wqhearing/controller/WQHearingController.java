@@ -9,9 +9,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,22 +32,23 @@ public class WQHearingController {
 
     @GetMapping(value = "{hearingUUID}/maatId/{maatId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve WQ Hearing record")
-    @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-    )
-    @ApiResponse(responseCode = "400",
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(
+            responseCode = "400",
             description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "500",
             description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    public ResponseEntity<List<WQHearingDTO>> findByMaatIdAndHearingUUID(@PathVariable int maatId, @PathVariable String hearingUUID) {
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<List<WQHearingDTO>> findByMaatIdAndHearingUUID(
+            @PathVariable int maatId, @PathVariable String hearingUUID) {
         LoggingData.MAAT_ID.putInMDC(maatId);
         log.info("Find WQ hearing  Request Received");
         return ResponseEntity.ok(wqHearingService.findByMaatIdAndHearingUUID(maatId, hearingUUID));

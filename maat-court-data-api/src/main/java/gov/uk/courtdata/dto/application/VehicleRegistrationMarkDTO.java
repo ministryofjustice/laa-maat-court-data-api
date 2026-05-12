@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.uk.courtdata.dto.application;
 
@@ -11,10 +11,9 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class VehicleRegistrationMarkDTO extends GenericDTO {
 
-	
-	private Long movId;
-	private String VehicleRegistrationMark;
+    private Long movId;
+    private String VehicleRegistrationMark;
 }

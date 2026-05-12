@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.uk.courtdata.dto.application;
 
@@ -12,26 +12,20 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class ContraryInterestDTO extends GenericDTO implements Comparable<ContraryInterestDTO> 
-{
-	// Specific ref. dao code Constants...
-	public static final String NO_CONTRARY_INTEREST = "NOCON";
-	
-	
-	private	String				code;
-	private	String				description;
-	
-	
+public class ContraryInterestDTO extends GenericDTO implements Comparable<ContraryInterestDTO> {
+    // Specific ref. dao code Constants...
+    public static final String NO_CONTRARY_INTEREST = "NOCON";
 
+    private String code;
+    private String description;
 
-	/**
-	 * @param arg0
-	 * @return
-	 * @see String#compareTo(String)
-	 */
-	public int compareTo(ContraryInterestDTO dto) {
-		
-		return code.compareTo(dto.getCode() );
-	}
+    /**
+     * @param arg0
+     * @return
+     * @see String#compareTo(String)
+     */
+    public int compareTo(ContraryInterestDTO dto) {
 
+        return code.compareTo(dto.getCode());
+    }
 }

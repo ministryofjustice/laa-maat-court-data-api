@@ -7,10 +7,11 @@ import gov.uk.courtdata.reporder.mapper.RepOrderMvoRegMapper;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -22,11 +23,11 @@ public class RepOrderMvoRegService {
 
     @Transactional(readOnly = true)
     public List<RepOrderMvoRegDTO> findByCurrentMvoRegistration(Integer mvoId) {
-        List<RepOrderMvoRegEntityInfo> repOrderMvoRegEntityInfo = repOrderMvoRegImpl.findByCurrentMvoRegistration(mvoId);
+        List<RepOrderMvoRegEntityInfo> repOrderMvoRegEntityInfo =
+                repOrderMvoRegImpl.findByCurrentMvoRegistration(mvoId);
         if (repOrderMvoRegEntityInfo == null || repOrderMvoRegEntityInfo.isEmpty()) {
             throw new RequestedObjectNotFoundException(String.format("No Rep Order MVO Reg found for ID: %s", mvoId));
         }
         return repOrderMvoRegMapper.repOrderMvoRegEntityInfoToRepOrderMvoRegDTO(repOrderMvoRegEntityInfo);
     }
-
 }

@@ -1,16 +1,17 @@
 package gov.uk.courtdata.hearing.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import gov.uk.courtdata.entity.WQCaseEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQCaseRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -23,13 +24,17 @@ public class WQCaseProcessor {
      */
     public void process(final HearingDTO magsCourtDTO) {
 
-        WQCaseEntity wqCaseEntity = WQCaseEntity.builder().caseId(magsCourtDTO.getCaseId())
+        WQCaseEntity wqCaseEntity = WQCaseEntity.builder()
+                .caseId(magsCourtDTO.getCaseId())
                 .txId(magsCourtDTO.getTxId())
                 .asn(magsCourtDTO.getAsn())
                 .docLanguage(magsCourtDTO.getDocLanguage())
                 .inactive(magsCourtDTO.getInActive())
                 .libraCreationDate(getCreationDate(magsCourtDTO.getCaseCreationDate()))
-                .cjsAreaCode(magsCourtDTO.getCjsAreaCode() != null ? String.format(LEADING_ZERO_2, Integer.parseInt(magsCourtDTO.getCjsAreaCode())) : null)
+                .cjsAreaCode(
+                        magsCourtDTO.getCjsAreaCode() != null
+                                ? String.format(LEADING_ZERO_2, Integer.parseInt(magsCourtDTO.getCjsAreaCode()))
+                                : null)
                 .proceedingId(magsCourtDTO.getProceedingId())
                 .build();
         wqCaseRepository.save(wqCaseEntity);

@@ -2,15 +2,30 @@ package gov.uk.courtdata.repository;
 
 import gov.uk.courtdata.dao.convertor.ApplicationConvertor;
 import gov.uk.courtdata.dao.convertor.UserSessionConvertor;
-import gov.uk.courtdata.dao.oracle.*;
+import gov.uk.courtdata.dao.oracle.AddressType;
+import gov.uk.courtdata.dao.oracle.ApplicantDetailsType;
+import gov.uk.courtdata.dao.oracle.ApplicationType;
+import gov.uk.courtdata.dao.oracle.AreaTransferType;
+import gov.uk.courtdata.dao.oracle.AssessmentSummaryTabType;
+import gov.uk.courtdata.dao.oracle.AssessmentType;
+import gov.uk.courtdata.dao.oracle.CapitalEquityType;
+import gov.uk.courtdata.dao.oracle.CaseTypeType;
+import gov.uk.courtdata.dao.oracle.CrownCourtOverviewType;
+import gov.uk.courtdata.dao.oracle.HardshipOverviewType;
+import gov.uk.courtdata.dao.oracle.LSCTransferType;
+import gov.uk.courtdata.dao.oracle.MagsCourtType;
+import gov.uk.courtdata.dao.oracle.OutcomeType;
+import gov.uk.courtdata.dao.oracle.PropertyType;
+import gov.uk.courtdata.dao.oracle.RepStatusType;
+import gov.uk.courtdata.dao.oracle.SupplierType;
+import gov.uk.courtdata.dao.oracle.UserRoleTabType;
+import gov.uk.courtdata.dao.oracle.UserRoleType;
+import gov.uk.courtdata.dao.oracle.UserSessionType;
 import gov.uk.courtdata.dto.application.ApplicationDTO;
 import gov.uk.courtdata.dto.application.UserDTO;
 import gov.uk.courtdata.model.StoredProcedureRequest;
 import gov.uk.courtdata.validator.MAATApplicationException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -19,14 +34,20 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+
 @Slf4j
 @Repository
 public class StoredProcedureRepository {
 
     @Value("${spring.datasource.url}")
     private String dbUrl;
+
     @Value("${spring.togdata.username}")
     private String dbUsername;
+
     @Value("${spring.togdata.password}")
     private String dbPassword;
 
@@ -36,13 +57,11 @@ public class StoredProcedureRepository {
     private static final int MAX_SQL_ERROR_CODE = 21999;
     private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("^[A-Za-z0-9_]+$");
 
-
-    public ApplicationDTO executeStoredProcedure(StoredProcedureRequest storedProcedure) throws
-            MAATApplicationException, SQLException {
+    public ApplicationDTO executeStoredProcedure(StoredProcedureRequest storedProcedure)
+            throws MAATApplicationException, SQLException {
 
         Connection conn = null;
         ApplicationDTO result = null;
-
 
         try {
             conn = getConnectionFromDriverManager();
@@ -106,7 +125,6 @@ public class StoredProcedureRepository {
             typeDTOMap.put(UserRoleTabType._SQL_NAME, UserRoleTabType.class);
             connection.setTypeMap(typeDTOMap);
 
-
             try (CallableStatement statement = connection.prepareCall("{call user_admin.set_user_session( ? )}")) {
                 statement.setObject(1, userSessionType);
                 statement.registerOutParameter(1, UserSessionType._SQL_TYPECODE, UserSessionType._SQL_NAME);
@@ -115,7 +133,6 @@ public class StoredProcedureRepository {
         } catch (Exception exception) {
             throw new MAATApplicationException(exception);
         }
-
     }
 
     protected CallableStatement getDbProcedureStatement(Connection connection, StoredProcedureRequest request)
@@ -145,7 +162,6 @@ public class StoredProcedureRepository {
 
         return connection.prepareCall(sql);
     }
-
 
     private Connection getConnectionFromDriverManager() throws MAATApplicationException {
         Connection wantedConnection;
@@ -207,7 +223,7 @@ public class StoredProcedureRepository {
             int errorCode = sqlException.getErrorCode();
             if ((errorCode >= MIN_SQL_ERROR_CODE) && (errorCode <= MAX_SQL_ERROR_CODE)) {
                 String errorMessage = sqlException.getMessage();
-                //remove stack trace codes from exception
+                // remove stack trace codes from exception
                 int start = errorMessage.indexOf(':');
                 int end = errorMessage.indexOf('\n');
                 if (start > 0 && end > 0) {
@@ -217,5 +233,4 @@ public class StoredProcedureRepository {
             }
         }
     }
-
 }

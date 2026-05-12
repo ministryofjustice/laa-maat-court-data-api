@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class PaymentMethodTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.PAYMENT_METHOD_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class PaymentMethodTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.PAYMENT_METHOD_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final PaymentMethodTypeRef _PaymentMethodTypeRefFactory = new PaymentMethodTypeRef();
+    private static final PaymentMethodTypeRef _PaymentMethodTypeRefFactory = new PaymentMethodTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _PaymentMethodTypeRefFactory; }
-  /* constructor */
-  public PaymentMethodTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _PaymentMethodTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public PaymentMethodTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    PaymentMethodTypeRef r = new PaymentMethodTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static PaymentMethodTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (PaymentMethodTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to PaymentMethodTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        PaymentMethodTypeRef r = new PaymentMethodTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public PaymentMethodType getValue() throws SQLException
-  {
-     return (PaymentMethodType) PaymentMethodType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static PaymentMethodTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (PaymentMethodTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to PaymentMethodTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(PaymentMethodType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public PaymentMethodType getValue() throws SQLException {
+        return (PaymentMethodType) PaymentMethodType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(PaymentMethodType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

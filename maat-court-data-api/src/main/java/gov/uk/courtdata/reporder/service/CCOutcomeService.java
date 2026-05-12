@@ -8,10 +8,11 @@ import gov.uk.courtdata.reporder.impl.CCOutcomeImpl;
 import gov.uk.courtdata.reporder.mapper.CCOutcomeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -24,7 +25,8 @@ public class CCOutcomeService {
     @Transactional
     public RepOrderCCOutcomeDTO create(RepOrderCCOutcome repOrderCCOutCome) {
         log.info("Create repOrder CC OutCome  - Transaction Processing -Start");
-        RepOrderCCOutComeEntity savedEntity = ccOutComeImpl.create(mapper.repOrderCCOutcomeToRepOrderCCOutcomeEntity(repOrderCCOutCome));
+        RepOrderCCOutComeEntity savedEntity =
+                ccOutComeImpl.create(mapper.repOrderCCOutcomeToRepOrderCCOutcomeEntity(repOrderCCOutCome));
         return mapper.repOrderCCOutComeEntityToRepOrderCCOutcomeDTO(savedEntity);
     }
 
@@ -33,7 +35,8 @@ public class CCOutcomeService {
         log.info("Update repOrder CC OutCome  - Transaction Processing - Start");
         RepOrderCCOutComeEntity repOrderCCOutComeEntity = ccOutComeImpl.find(repOrderCCOutCome.getId());
         if (repOrderCCOutComeEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No CC Outcome found for ID: %s", repOrderCCOutCome.getId()));
+            throw new RequestedObjectNotFoundException(
+                    String.format("No CC Outcome found for ID: %s", repOrderCCOutCome.getId()));
         }
         mapper.repOrderCCOutComeMappedToRepOrderCCOutcomeEntity(repOrderCCOutCome, repOrderCCOutComeEntity);
         log.info("update repOrder CC OutCome  - Transaction Processing - End");
@@ -54,5 +57,4 @@ public class CCOutcomeService {
 
         return deletedCount;
     }
-
 }

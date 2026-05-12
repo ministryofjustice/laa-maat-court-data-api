@@ -1,13 +1,11 @@
 package gov.uk.courtdata.integration.link.controller;
 
-
 import static java.lang.String.format;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
@@ -16,6 +14,7 @@ import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import gov.uk.courtdata.link.controller.LinkController;
 import gov.uk.courtdata.model.CaseDetailsValidate;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 @WebAppConfiguration
@@ -37,8 +38,10 @@ class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Autowired
     private LinkController linkController;
+
     @Autowired
     private WebApplicationContext wac;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -50,19 +53,19 @@ class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void testWhenMaatIdMissing_Returns400ClientError() throws Exception {
 
-        //Request
+        // Request
         final CaseDetailsValidate caseDetailsValidate =
                 CaseDetailsValidate.builder().build();
 
         String json = objectMapper.writeValueAsString(caseDetailsValidate);
 
-        //Assert response
-        this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        // Assert response
+        this.mockMvc
+                .perform(post(LINK_VALIDATE_URI).content(json).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.message").value("MAAT/REP ID is required, found [null]"));
     }
-
 
     @Test
     void testWhenMaatIdInvalid_Returns400ClientError() throws Exception {
@@ -71,12 +74,11 @@ class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
 
         String json = objectMapper.writeValueAsString(caseDetailsValidate);
 
-        this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        this.mockMvc
+                .perform(post(LINK_VALIDATE_URI).content(json).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(
-                        jsonPath("$.message").value(
-                                format("MAAT/REP ID [%d] is invalid", TEST_MAAT_ID)));
+                .andExpect(jsonPath("$.message").value(format("MAAT/REP ID [%d] is invalid", TEST_MAAT_ID)));
     }
 
     @Test
@@ -88,12 +90,13 @@ class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
 
         String json = objectMapper.writeValueAsString(caseDetailsValidate);
 
-        this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        this.mockMvc
+                .perform(post(LINK_VALIDATE_URI).content(json).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value(
-                        format("%d has no common platform data created against Maat application.",
-                                TEST_MAAT_ID)));
+                .andExpect(jsonPath("$.message")
+                        .value(format(
+                                "%d has no common platform data created against Maat application.", TEST_MAAT_ID)));
     }
 
     @Test
@@ -106,20 +109,21 @@ class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
 
         String json = objectMapper.writeValueAsString(caseDetailsValidate);
 
-        this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        this.mockMvc
+                .perform(post(LINK_VALIDATE_URI).content(json).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(
-                        jsonPath("$.message").value("CaseURN can't be null or empty on request."));
+                .andExpect(jsonPath("$.message").value("CaseURN can't be null or empty on request."));
     }
-
 
     @Test
     void testWhenMaatIdIsAlreadyLinked_Returns400ClientError() throws Exception {
 
         createRepOrderEntity();
-        repos.wqLinkRegister.save(
-                WqLinkRegisterEntity.builder().createdTxId(0).maatId(TEST_MAAT_ID).build());
+        repos.wqLinkRegister.save(WqLinkRegisterEntity.builder()
+                .createdTxId(0)
+                .maatId(TEST_MAAT_ID)
+                .build());
         repos.repOrderCPData.save(createRepOrderCPDataEntity(TEST_MAAT_ID, TEST_CASE_URN));
 
         final CaseDetailsValidate caseDetailsValidate = getTestCaseDetailsValidate();
@@ -127,11 +131,11 @@ class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
         String json = objectMapper.writeValueAsString(caseDetailsValidate);
 
         // Assert Http Response.
-        this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        this.mockMvc
+                .perform(post(LINK_VALIDATE_URI).content(json).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value(
-                        format("%s is already linked to a case.", TEST_MAAT_ID)));
+                .andExpect(jsonPath("$.message").value(format("%s is already linked to a case.", TEST_MAAT_ID)));
     }
 
     @Test
@@ -146,19 +150,18 @@ class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
         String json = objectMapper.writeValueAsString(caseDetailsValidate);
 
         // Assert Http Response.
-        this.mockMvc.perform(post(LINK_VALIDATE_URI).content(json)
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        this.mockMvc
+                .perform(post(LINK_VALIDATE_URI).content(json).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }
 
-    public RepOrderCPDataEntity createRepOrderCPDataEntity(final Integer maatId,
-            final String caseUrn) {
+    public RepOrderCPDataEntity createRepOrderCPDataEntity(final Integer maatId, final String caseUrn) {
         return RepOrderCPDataEntity.builder()
                 .repOrderId(maatId)
                 .caseUrn(caseUrn)
                 .build();
     }
-
 
     public void createRepOrderEntity() {
         RepOrderEntity repOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
@@ -166,7 +169,9 @@ class LinkControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     private CaseDetailsValidate getTestCaseDetailsValidate() {
-        return CaseDetailsValidate.builder().maatId(TEST_MAAT_ID).caseUrn(TEST_CASE_URN).build();
+        return CaseDetailsValidate.builder()
+                .maatId(TEST_MAAT_ID)
+                .caseUrn(TEST_CASE_URN)
+                .build();
     }
-
 }

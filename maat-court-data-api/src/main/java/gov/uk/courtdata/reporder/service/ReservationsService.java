@@ -5,6 +5,7 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.repository.ReservationsRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +16,10 @@ public class ReservationsService {
 
     @Transactional(readOnly = true)
     public ReservationsEntity retrieve(Integer id) {
-        return reservationsRepository.findById(id)
-                .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("No Reservations found with Id: %d", id)));
+        return reservationsRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new RequestedObjectNotFoundException(String.format("No Reservations found with Id: %d", id)));
     }
 
     @Transactional
@@ -26,8 +29,10 @@ public class ReservationsService {
 
     @Transactional
     public void update(Integer id, ReservationsEntity reservationsEntity) {
-        ReservationsEntity existingReservationEntity = reservationsRepository.findById(id)
-            .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("No Reservation found with ID: %d", id)));
+        ReservationsEntity existingReservationEntity = reservationsRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new RequestedObjectNotFoundException(String.format("No Reservation found with ID: %d", id)));
 
         ReflectionHelper.updateEntityFromObject(existingReservationEntity, reservationsEntity);
         reservationsRepository.save(existingReservationEntity);

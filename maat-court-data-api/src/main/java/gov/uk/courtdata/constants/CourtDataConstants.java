@@ -4,9 +4,7 @@ import java.util.List;
 
 public final class CourtDataConstants {
 
-    private CourtDataConstants() {
-
-    }
+    private CourtDataConstants() {}
 
     public static final Integer WQ_CREATION_EVENT = 20;
     public static final Integer WQ_UPDATE_CASE_EVENT = 22;
@@ -23,7 +21,6 @@ public final class CourtDataConstants {
     public static final Integer WQ_UNLINK_EVENT = 24;
     public static final String LEADING_ZERO_3 = "%03d";
     public static final String LEADING_ZERO_2 = "%02d";
-
 
     public static final String MAGS_PROCESSING_SYSTEM_USER = "System-CP";
     public static final String AUTO_USER = "AUTO";
@@ -42,5 +39,4 @@ public final class CourtDataConstants {
     public static final String LAA_TRANSACTION_ID = "Laa-Transaction-Id";
     public static final String CDA_TRANSACTION_ID_HEADER = "X-Request-ID";
     public static final int ORACLE_VARCHAR_MAX = 4000;
-
 }

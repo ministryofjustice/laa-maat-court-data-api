@@ -5,10 +5,11 @@ import gov.uk.courtdata.offence.impl.OffenceImpl;
 import gov.uk.courtdata.offence.mapper.OffenceMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -29,5 +30,4 @@ public class OffenceService {
         log.info("OffenceService - getNewOffenceCount - Start");
         return offenceImpl.getNewOffenceCount(caseId, offenceId);
     }
-
 }

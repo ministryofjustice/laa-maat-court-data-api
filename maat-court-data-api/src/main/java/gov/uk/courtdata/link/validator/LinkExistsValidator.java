@@ -1,15 +1,16 @@
 package gov.uk.courtdata.link.validator;
 
+import static java.lang.String.format;
+
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.validator.IValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static java.lang.String.format;
+import org.springframework.stereotype.Component;
 
 /**
  * <code>LinkExistsValidator</code> validate maatid has no link established.
@@ -20,7 +21,6 @@ import static java.lang.String.format;
 public class LinkExistsValidator implements IValidator<Void, Integer> {
 
     private final WqLinkRegisterRepository wqLinkRegisterRepository;
-
 
     /**
      * Validate
@@ -34,8 +34,7 @@ public class LinkExistsValidator implements IValidator<Void, Integer> {
 
         final int linkCount = wqLinkRegisterRepository.getCountByMaatId(maatId);
 
-        if (linkCount > 0)
-            throw new ValidationException(format("%s is already linked to a case.", maatId));
+        if (linkCount > 0) throw new ValidationException(format("%s is already linked to a case.", maatId));
 
         return Optional.empty();
     }

@@ -1,18 +1,18 @@
 package gov.uk.courtdata.wqoffence.impl;
 
-import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.repository.WQOffenceRepository;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
+import gov.uk.courtdata.builder.TestModelDataBuilder;
+import gov.uk.courtdata.repository.WQOffenceRepository;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class WQOffenceImplTest {
@@ -28,5 +28,4 @@ class WQOffenceImplTest {
         wqOffenceImpl.getNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
         verify(wqOffenceRepository, atLeastOnce()).getNewOffenceCount(anyInt(), anyString());
     }
-
 }

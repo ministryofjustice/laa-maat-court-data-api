@@ -6,8 +6,10 @@ import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+
 import java.util.Optional;
+
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Getter
@@ -17,13 +19,13 @@ public class RepOrderCPDataHelper {
 
     private final RepOrderCPDataRepository repOrderCPDataRepository;
 
-    public Integer getMaatIdByDefendantId(String defendantId){
+    public Integer getMaatIdByDefendantId(String defendantId) {
 
         Optional<RepOrderCPDataEntity> repOrderCPDataEntity = repOrderCPDataRepository.findByDefendantId(defendantId);
 
-            if (repOrderCPDataEntity.isPresent() ) {
-                 return repOrderCPDataEntity.get().getRepOrderId();
-            }
+        if (repOrderCPDataEntity.isPresent()) {
+            return repOrderCPDataEntity.get().getRepOrderId();
+        }
 
         throw new ValidationException(defendantId + " defendantId is invalid and No MAAT-Id associated with this.");
     }

@@ -1,21 +1,21 @@
 package gov.uk.courtdata.assessment.impl;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentHistoryMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentsHistoryEntity;
 import gov.uk.courtdata.repository.FinancialAssessmentsHistoryRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.InjectMocks;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 
 @ExtendWith(MockitoExtension.class)
 class FinancialAssessmentHistoryImplTest {
@@ -41,14 +41,16 @@ class FinancialAssessmentHistoryImplTest {
     }
 
     @Test
-    void givenFinancialAssessmentsHistoryDTOAndFinancialAssessmentId_whenBuildAndSaveIsInvoked_thenFinancialAssessmentsHistoryEntityIsPersisted() {
-        when(assessmentHistoryMapper.financialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(financialAssessmentsHistoryDTO))
+    void
+            givenFinancialAssessmentsHistoryDTOAndFinancialAssessmentId_whenBuildAndSaveIsInvoked_thenFinancialAssessmentsHistoryEntityIsPersisted() {
+        when(assessmentHistoryMapper.financialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(
+                        financialAssessmentsHistoryDTO))
                 .thenReturn(financialAssessmentsHistoryEntity);
 
         financialAssessmentHistoryImpl.buildAndSave(financialAssessmentsHistoryDTO, MOCK_FINANCIAL_ASSESSMENT_ID);
 
-        verify(assessmentHistoryMapper).financialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(financialAssessmentsHistoryDTO);
+        verify(assessmentHistoryMapper)
+                .financialAssessmentsHistoryDTOToFinancialAssessmentsHistoryEntity(financialAssessmentsHistoryDTO);
         verify(financialAssessmentsHistoryRepository).save(financialAssessmentsHistoryEntity);
     }
-
 }

@@ -29,10 +29,13 @@ public class CrownCourtSummaryDTO extends GenericDTO {
 
     @Builder.Default
     private OutcomeDTO ccOutcome = new OutcomeDTO();
+
     @Builder.Default
     private OutcomeDTO ccAppealOutcome = new OutcomeDTO();
+
     @Builder.Default
     private EvidenceFeeDTO evidenceProvisionFee = new EvidenceFeeDTO();
+
     @Builder.Default
     private Collection<OutcomeDTO> outcomeDTOs = new ArrayList<>();
 }

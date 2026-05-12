@@ -1,11 +1,10 @@
 package gov.uk.courtdata.model.hardship;
 
-import lombok.Builder;
-import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,5 +30,4 @@ public class HardshipReview {
     private List<HardshipReviewDetail> reviewDetails;
     private List<HardshipReviewProgress> reviewProgressItems;
     private String valid;
-
 }

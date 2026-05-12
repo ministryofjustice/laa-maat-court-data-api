@@ -4,6 +4,7 @@ import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.repository.RepOrderMvoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -16,5 +17,4 @@ public class RepOrderMvoImpl {
     public RepOrderMvoEntityInfo findRepOrderMvoByRepIdAndVehicleOwner(Integer id, String vehicleOwner) {
         return repOrderMvoRepository.findByRepIdAndVehicleOwner(id, vehicleOwner, RepOrderMvoEntityInfo.class);
     }
-
 }

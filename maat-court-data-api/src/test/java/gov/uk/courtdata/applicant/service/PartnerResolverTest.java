@@ -2,14 +2,16 @@ package gov.uk.courtdata.applicant.service;
 
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.APPLICANT_ID;
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
+
 import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,16 +20,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class PartnerResolverTest {
-    
+
     @Mock
     private RepOrderApplicantLinksRepository repOrderApplicantLinksRepository;
-    
+
     @InjectMocks
     private PartnerResolver partnerResolver;
-    
+
     @Test
     void givenNoApplicantLinks_whenGetPartnerLegacyIdIsCalled_thenNoLegacyPartnerIdIsReturned() {
-        when(repOrderApplicantLinksRepository.findFirstByRepIdAndLinkDateIsNotNullAndUnlinkDateIsNull(anyInt())).thenReturn(Optional.empty());
+        when(repOrderApplicantLinksRepository.findFirstByRepIdAndLinkDateIsNotNullAndUnlinkDateIsNull(anyInt()))
+                .thenReturn(Optional.empty());
 
         Integer partnerLegacyId = partnerResolver.getPartnerLegacyId(REP_ID);
 
@@ -38,8 +41,8 @@ class PartnerResolverTest {
     void givenSingleApplicantLinks_whenGetPartnerLegacyIdIsCalled_thenLegacyPartnerIdIsReturned() {
         var applicantLinksEntity = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
 
-        when(repOrderApplicantLinksRepository.findFirstByRepIdAndLinkDateIsNotNullAndUnlinkDateIsNull(anyInt())).thenReturn(
-            Optional.of(applicantLinksEntity));
+        when(repOrderApplicantLinksRepository.findFirstByRepIdAndLinkDateIsNotNullAndUnlinkDateIsNull(anyInt()))
+                .thenReturn(Optional.of(applicantLinksEntity));
 
         Integer partnerLegacyId = partnerResolver.getPartnerLegacyId(REP_ID);
 
@@ -48,7 +51,9 @@ class PartnerResolverTest {
 
     @Test
     void givenApplicantLinks_whenHasLinkedPartnerIsCalled_thenTrueReturned() {
-        when(repOrderApplicantLinksRepository.existsByRepIdAndPartnerApplIdAndLinkDateIsNotNullAndUnlinkDateIsNull(REP_ID, APPLICANT_ID)).thenReturn(true);
+        when(repOrderApplicantLinksRepository.existsByRepIdAndPartnerApplIdAndLinkDateIsNotNullAndUnlinkDateIsNull(
+                        REP_ID, APPLICANT_ID))
+                .thenReturn(true);
 
         boolean hasPartner = partnerResolver.hasLinkedPartner(REP_ID, APPLICANT_ID);
 
@@ -57,7 +62,9 @@ class PartnerResolverTest {
 
     @Test
     void givenNoApplicantLinks_whenHasLinkedPartnerIsCalled_thenFalseReturned() {
-        when(repOrderApplicantLinksRepository.existsByRepIdAndPartnerApplIdAndLinkDateIsNotNullAndUnlinkDateIsNull(REP_ID, APPLICANT_ID)).thenReturn(false);
+        when(repOrderApplicantLinksRepository.existsByRepIdAndPartnerApplIdAndLinkDateIsNotNullAndUnlinkDateIsNull(
+                        REP_ID, APPLICANT_ID))
+                .thenReturn(false);
 
         boolean hasPartner = partnerResolver.hasLinkedPartner(REP_ID, APPLICANT_ID);
 
@@ -79,5 +86,4 @@ class PartnerResolverTest {
         assertThat(hasPartner).isFalse();
         verifyNoInteractions(repOrderApplicantLinksRepository);
     }
-
 }

@@ -2,99 +2,87 @@ package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
 import oracle.jpub.runtime.MutableArray;
-import oracle.sql.*;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DisabilitiesTabtype implements ORAData, ORADataFactory
-{
-  public static final String _SQL_NAME = "TOGDATA.DISABILITIES_TABTYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
+public class DisabilitiesTabtype implements ORAData, ORADataFactory {
+    public static final String _SQL_NAME = "TOGDATA.DISABILITIES_TABTYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
 
-  MutableArray _array;
+    MutableArray _array;
 
-private static final DisabilitiesTabtype _DisabilitiesTabtypeFactory = new DisabilitiesTabtype();
+    private static final DisabilitiesTabtype _DisabilitiesTabtypeFactory = new DisabilitiesTabtype();
 
-  public static ORADataFactory getORADataFactory()
-  { return _DisabilitiesTabtypeFactory; }
-  /* constructors */
-  public DisabilitiesTabtype()
-  {
-    this((DisabilityType[])null);
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _DisabilitiesTabtypeFactory;
+    }
 
-  public DisabilitiesTabtype(DisabilityType[] a)
-  {
-    _array = new MutableArray(2002, a, DisabilityType.getORADataFactory());
-  }
+    /* constructors */
+    public DisabilitiesTabtype() {
+        this((DisabilityType[]) null);
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _array.toDatum(c, _SQL_NAME);
-  }
+    public DisabilitiesTabtype(DisabilityType[] a) {
+        _array = new MutableArray(2002, a, DisabilityType.getORADataFactory());
+    }
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    DisabilitiesTabtype a = new DisabilitiesTabtype();
-    a._array = new MutableArray(2002, (ARRAY) d, DisabilityType.getORADataFactory());
-    return a;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _array.toDatum(c, _SQL_NAME);
+    }
 
-  public int length() throws SQLException
-  {
-    return _array.length();
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        DisabilitiesTabtype a = new DisabilitiesTabtype();
+        a._array = new MutableArray(2002, (ARRAY) d, DisabilityType.getORADataFactory());
+        return a;
+    }
 
-  public int getBaseType() throws SQLException
-  {
-    return _array.getBaseType();
-  }
+    public int length() throws SQLException {
+        return _array.length();
+    }
 
-  public String getBaseTypeName() throws SQLException
-  {
-    return _array.getBaseTypeName();
-  }
+    public int getBaseType() throws SQLException {
+        return _array.getBaseType();
+    }
 
-  public ArrayDescriptor getDescriptor() throws SQLException
-  {
-    return _array.getDescriptor();
-  }
+    public String getBaseTypeName() throws SQLException {
+        return _array.getBaseTypeName();
+    }
 
-  /* array accessor methods */
-  public DisabilityType[] getArray() throws SQLException
-  {
-    return (DisabilityType[]) _array.getObjectArray(
-      new DisabilityType[_array.length()]);
-  }
+    public ArrayDescriptor getDescriptor() throws SQLException {
+        return _array.getDescriptor();
+    }
 
-  public DisabilityType[] getArray(long index, int count) throws SQLException
-  {
-    return (DisabilityType[]) _array.getObjectArray(index,
-      new DisabilityType[_array.sliceLength(index, count)]);
-  }
+    /* array accessor methods */
+    public DisabilityType[] getArray() throws SQLException {
+        return (DisabilityType[]) _array.getObjectArray(new DisabilityType[_array.length()]);
+    }
 
-  public void setArray(DisabilityType[] a) throws SQLException
-  {
-    _array.setObjectArray(a);
-  }
+    public DisabilityType[] getArray(long index, int count) throws SQLException {
+        return (DisabilityType[]) _array.getObjectArray(index, new DisabilityType[_array.sliceLength(index, count)]);
+    }
 
-  public void setArray(DisabilityType[] a, long index) throws SQLException
-  {
-    _array.setObjectArray(a, index);
-  }
+    public void setArray(DisabilityType[] a) throws SQLException {
+        _array.setObjectArray(a);
+    }
 
-  public DisabilityType getElement(long index) throws SQLException
-  {
-    return (DisabilityType) _array.getObjectElement(index);
-  }
+    public void setArray(DisabilityType[] a, long index) throws SQLException {
+        _array.setObjectArray(a, index);
+    }
 
-  public void setElement(DisabilityType a, long index) throws SQLException
-  {
-    _array.setObjectElement(a, index);
-  }
+    public DisabilityType getElement(long index) throws SQLException {
+        return (DisabilityType) _array.getObjectElement(index);
+    }
 
+    public void setElement(DisabilityType a, long index) throws SQLException {
+        _array.setObjectElement(a, index);
+    }
 }

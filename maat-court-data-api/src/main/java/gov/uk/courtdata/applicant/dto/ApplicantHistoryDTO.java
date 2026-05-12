@@ -17,6 +17,7 @@ import java.util.Set;
 public class ApplicantHistoryDTO {
     @NotNull
     private Integer id;
+
     private Integer applId;
     private LocalDate asAtDate;
     private String firstName;
@@ -45,5 +46,4 @@ public class ApplicantHistoryDTO {
     private LocalDate specialInvestigation;
     private String phoneWork;
     private Set<ApplicantHistoryDisability> applicantHistoryDisabilities;
-
 }

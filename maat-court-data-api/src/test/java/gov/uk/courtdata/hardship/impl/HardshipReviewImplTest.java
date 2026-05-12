@@ -1,5 +1,10 @@
 package gov.uk.courtdata.hardship.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
@@ -9,22 +14,22 @@ import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
+
+import java.util.Optional;
+
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
@@ -49,41 +54,32 @@ class HardshipReviewImplTest {
     private ArgumentCaptor<HardshipReviewEntity> hardshipReviewEntityArgumentCaptor;
 
     @AfterEach
-    void assertAll(){
+    void assertAll() {
         softly.assertAll();
     }
 
     @Test
     void givenExistingHardshipId_whenFindIsInvoked_thenHardshipIsRetrieved() {
-        HardshipReviewEntity mockHardship = HardshipReviewEntity.builder()
-                .id(MOCK_HARDSHIP_ID)
-                .build();
+        HardshipReviewEntity mockHardship =
+                HardshipReviewEntity.builder().id(MOCK_HARDSHIP_ID).build();
 
-        when(hardshipReviewRepository.getReferenceById(any(Integer.class)))
-                .thenReturn(mockHardship);
+        when(hardshipReviewRepository.getReferenceById(any(Integer.class))).thenReturn(mockHardship);
 
-        assertThat(hardshipReviewImpl.find(MOCK_HARDSHIP_ID))
-                .isEqualTo(mockHardship);
+        assertThat(hardshipReviewImpl.find(MOCK_HARDSHIP_ID)).isEqualTo(mockHardship);
     }
 
     @Test
     void givenExistingRepId_whenFindByRepIdIsInvoked_thenHardshipIsRetrieved() {
         when(hardshipReviewRepository.findOne(ArgumentMatchers.<Specification<HardshipReviewEntity>>any()))
-                .thenReturn(
-                        Optional.of(
-                                HardshipReviewEntity.builder()
-                                        .id(MOCK_HARDSHIP_ID)
-                                        .repId(MOCK_REP_ID)
-                                        .build()
-                        )
-                );
+                .thenReturn(Optional.of(HardshipReviewEntity.builder()
+                        .id(MOCK_HARDSHIP_ID)
+                        .repId(MOCK_REP_ID)
+                        .build()));
 
         HardshipReviewEntity returnedEntity = hardshipReviewImpl.findByRepId(MOCK_REP_ID);
 
-        softly.assertThat(returnedEntity.getId())
-                .isEqualTo(MOCK_HARDSHIP_ID);
-        softly.assertThat(returnedEntity.getRepId())
-                .isEqualTo(MOCK_REP_ID);
+        softly.assertThat(returnedEntity.getId()).isEqualTo(MOCK_HARDSHIP_ID);
+        softly.assertThat(returnedEntity.getRepId()).isEqualTo(MOCK_REP_ID);
     }
 
     @Test
@@ -94,25 +90,22 @@ class HardshipReviewImplTest {
 
         hardshipReviewImpl.create(hardshipReviewDTO);
         verify(hardshipReviewRepository).saveAndFlush(hardshipReviewEntityArgumentCaptor.capture());
-        verify(hardshipReviewRepository).replaceAllByRepIdAndCourtType(
-                TestEntityDataBuilder.REP_ID, hardshipReviewDTO.getCourtType()
-        );
-        assertThat(hardshipReviewEntityArgumentCaptor.getValue().getId())
-                .isEqualTo(hardshipReviewDTO.getId());
+        verify(hardshipReviewRepository)
+                .replaceAllByRepIdAndCourtType(TestEntityDataBuilder.REP_ID, hardshipReviewDTO.getCourtType());
+        assertThat(hardshipReviewEntityArgumentCaptor.getValue().getId()).isEqualTo(hardshipReviewDTO.getId());
     }
 
     @Test
     void givenHardshipDTO_whenUpdateIsInvoked_thenHardshipIsUpdated() {
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
         HardshipReviewEntity mockHardshipEntity = TestEntityDataBuilder.getHardshipReviewEntityWithRelationships();
-        when(hardshipReviewRepository.getReferenceById(any(Integer.class)))
-                .thenReturn(mockHardshipEntity);
+        when(hardshipReviewRepository.getReferenceById(any(Integer.class))).thenReturn(mockHardshipEntity);
 
         when(hardshipReviewMapper.hardshipReviewDetailToHardshipReviewDetailEntity(any(HardshipReviewDetail.class)))
                 .thenReturn(TestEntityDataBuilder.getHardshipReviewDetailsEntity());
 
         when(hardshipReviewMapper.hardshipReviewProgressToHardshipReviewProgressEntity(
-                any(HardshipReviewProgress.class)))
+                        any(HardshipReviewProgress.class)))
                 .thenReturn(TestEntityDataBuilder.getHardshipReviewProgressEntity());
 
         when(hardshipReviewMapper.newWorkReasonToNewWorkReasonEntity(any(NewWorkReason.class)))
@@ -122,8 +115,7 @@ class HardshipReviewImplTest {
 
         verify(hardshipReviewRepository).saveAndFlush(hardshipReviewEntityArgumentCaptor.capture());
 
-        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getId())
-                .isEqualTo(hardshipReviewDTO.getId());
+        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getId()).isEqualTo(hardshipReviewDTO.getId());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getCmuId())
                 .isEqualTo(hardshipReviewDTO.getCmuId());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getReviewResult())
@@ -152,7 +144,10 @@ class HardshipReviewImplTest {
                 .isEqualTo(hardshipReviewDTO.getStatus().getStatus());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getUserModified())
                 .isEqualTo(hardshipReviewDTO.getUserModified());
-        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getNewWorkReason().getCode())
+        softly.assertThat(hardshipReviewEntityArgumentCaptor
+                        .getValue()
+                        .getNewWorkReason()
+                        .getCode())
                 .isEqualTo(hardshipReviewDTO.getNewWorkReason().getCode());
     }
 
@@ -161,14 +156,13 @@ class HardshipReviewImplTest {
         HardshipReviewDTO hardshipReviewDTO = TestModelDataBuilder.getHardshipReviewDTOWithRelationships();
         hardshipReviewDTO.setSolicitorCosts(null);
         HardshipReviewEntity mockHardshipEntity = TestEntityDataBuilder.getHardshipReviewEntityWithRelationships();
-        when(hardshipReviewRepository.getReferenceById(any(Integer.class)))
-                .thenReturn(mockHardshipEntity);
+        when(hardshipReviewRepository.getReferenceById(any(Integer.class))).thenReturn(mockHardshipEntity);
 
         when(hardshipReviewMapper.hardshipReviewDetailToHardshipReviewDetailEntity(any(HardshipReviewDetail.class)))
                 .thenReturn(TestEntityDataBuilder.getHardshipReviewDetailsEntity());
 
         when(hardshipReviewMapper.hardshipReviewProgressToHardshipReviewProgressEntity(
-                any(HardshipReviewProgress.class)))
+                        any(HardshipReviewProgress.class)))
                 .thenReturn(TestEntityDataBuilder.getHardshipReviewProgressEntity());
 
         when(hardshipReviewMapper.newWorkReasonToNewWorkReasonEntity(any(NewWorkReason.class)))
@@ -178,8 +172,7 @@ class HardshipReviewImplTest {
 
         verify(hardshipReviewRepository).saveAndFlush(hardshipReviewEntityArgumentCaptor.capture());
 
-        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getId())
-                .isEqualTo(hardshipReviewDTO.getId());
+        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getId()).isEqualTo(hardshipReviewDTO.getId());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getCmuId())
                 .isEqualTo(hardshipReviewDTO.getCmuId());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getReviewResult())
@@ -190,11 +183,16 @@ class HardshipReviewImplTest {
                 .isEqualTo(hardshipReviewDTO.getNotes());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getDecisionNotes())
                 .isEqualTo(hardshipReviewDTO.getDecisionNotes());
-        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorRate()).isNull();
-        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorHours()).isNull();
-        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorVat()).isNull();
-        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorDisb()).isNull();
-        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorEstTotalCost()).isNull();
+        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorRate())
+                .isNull();
+        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorHours())
+                .isNull();
+        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorVat())
+                .isNull();
+        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorDisb())
+                .isNull();
+        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getSolicitorEstTotalCost())
+                .isNull();
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getDisposableIncome())
                 .isEqualTo(hardshipReviewDTO.getDisposableIncome());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getDisposableIncomeAfterHardship())
@@ -203,7 +201,10 @@ class HardshipReviewImplTest {
                 .isEqualTo(hardshipReviewDTO.getStatus().getStatus());
         softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getUserModified())
                 .isEqualTo(hardshipReviewDTO.getUserModified());
-        softly.assertThat(hardshipReviewEntityArgumentCaptor.getValue().getNewWorkReason().getCode())
+        softly.assertThat(hardshipReviewEntityArgumentCaptor
+                        .getValue()
+                        .getNewWorkReason()
+                        .getCode())
                 .isEqualTo(hardshipReviewDTO.getNewWorkReason().getCode());
     }
 }

@@ -25,14 +25,19 @@ public class ApplicationHardshipReviewDTO extends GenericDTO {
     private String test;
     private BigDecimal disposableIncome;
     private BigDecimal disposableIncomeAfterHardship;
+
     @Builder.Default
     private SupplierDTO supplier = new SupplierDTO();
+
     @Builder.Default
     private NewWorkReasonDTO newWorkReason = new NewWorkReasonDTO();
+
     @Builder.Default
     private HRSolicitorsCostsDTO solictorsCosts = new HRSolicitorsCostsDTO();
+
     @Builder.Default
     private Collection<HRSectionDTO> section = new ArrayList<>();
+
     @Builder.Default
     private AssessmentStatusDTO asessmentStatus = new AssessmentStatusDTO();
 }

@@ -3,10 +3,11 @@ package gov.uk.courtdata.contribution.validator;
 import gov.uk.courtdata.validator.IValidator;
 import gov.uk.courtdata.validator.MaatIdValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
 
 import java.util.Optional;
+
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor

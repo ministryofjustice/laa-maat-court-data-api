@@ -2,99 +2,88 @@ package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
 import oracle.jpub.runtime.MutableArray;
-import oracle.sql.*;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ExtraEvidenceTabtype implements ORAData, ORADataFactory
-{
-  public static final String _SQL_NAME = "TOGDATA.EXTRA_EVIDENCE_TABTYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
+public class ExtraEvidenceTabtype implements ORAData, ORADataFactory {
+    public static final String _SQL_NAME = "TOGDATA.EXTRA_EVIDENCE_TABTYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
 
-  MutableArray _array;
+    MutableArray _array;
 
-private static final ExtraEvidenceTabtype _ExtraEvidenceTabtypeFactory = new ExtraEvidenceTabtype();
+    private static final ExtraEvidenceTabtype _ExtraEvidenceTabtypeFactory = new ExtraEvidenceTabtype();
 
-  public static ORADataFactory getORADataFactory()
-  { return _ExtraEvidenceTabtypeFactory; }
-  /* constructors */
-  public ExtraEvidenceTabtype()
-  {
-    this((ExtraEvidenceType[])null);
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _ExtraEvidenceTabtypeFactory;
+    }
 
-  public ExtraEvidenceTabtype(ExtraEvidenceType[] a)
-  {
-    _array = new MutableArray(2002, a, ExtraEvidenceType.getORADataFactory());
-  }
+    /* constructors */
+    public ExtraEvidenceTabtype() {
+        this((ExtraEvidenceType[]) null);
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _array.toDatum(c, _SQL_NAME);
-  }
+    public ExtraEvidenceTabtype(ExtraEvidenceType[] a) {
+        _array = new MutableArray(2002, a, ExtraEvidenceType.getORADataFactory());
+    }
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    ExtraEvidenceTabtype a = new ExtraEvidenceTabtype();
-    a._array = new MutableArray(2002, (ARRAY) d, ExtraEvidenceType.getORADataFactory());
-    return a;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _array.toDatum(c, _SQL_NAME);
+    }
 
-  public int length() throws SQLException
-  {
-    return _array.length();
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        ExtraEvidenceTabtype a = new ExtraEvidenceTabtype();
+        a._array = new MutableArray(2002, (ARRAY) d, ExtraEvidenceType.getORADataFactory());
+        return a;
+    }
 
-  public int getBaseType() throws SQLException
-  {
-    return _array.getBaseType();
-  }
+    public int length() throws SQLException {
+        return _array.length();
+    }
 
-  public String getBaseTypeName() throws SQLException
-  {
-    return _array.getBaseTypeName();
-  }
+    public int getBaseType() throws SQLException {
+        return _array.getBaseType();
+    }
 
-  public ArrayDescriptor getDescriptor() throws SQLException
-  {
-    return _array.getDescriptor();
-  }
+    public String getBaseTypeName() throws SQLException {
+        return _array.getBaseTypeName();
+    }
 
-  /* array accessor methods */
-  public ExtraEvidenceType[] getArray() throws SQLException
-  {
-    return (ExtraEvidenceType[]) _array.getObjectArray(
-      new ExtraEvidenceType[_array.length()]);
-  }
+    public ArrayDescriptor getDescriptor() throws SQLException {
+        return _array.getDescriptor();
+    }
 
-  public ExtraEvidenceType[] getArray(long index, int count) throws SQLException
-  {
-    return (ExtraEvidenceType[]) _array.getObjectArray(index,
-      new ExtraEvidenceType[_array.sliceLength(index, count)]);
-  }
+    /* array accessor methods */
+    public ExtraEvidenceType[] getArray() throws SQLException {
+        return (ExtraEvidenceType[]) _array.getObjectArray(new ExtraEvidenceType[_array.length()]);
+    }
 
-  public void setArray(ExtraEvidenceType[] a) throws SQLException
-  {
-    _array.setObjectArray(a);
-  }
+    public ExtraEvidenceType[] getArray(long index, int count) throws SQLException {
+        return (ExtraEvidenceType[])
+                _array.getObjectArray(index, new ExtraEvidenceType[_array.sliceLength(index, count)]);
+    }
 
-  public void setArray(ExtraEvidenceType[] a, long index) throws SQLException
-  {
-    _array.setObjectArray(a, index);
-  }
+    public void setArray(ExtraEvidenceType[] a) throws SQLException {
+        _array.setObjectArray(a);
+    }
 
-  public ExtraEvidenceType getElement(long index) throws SQLException
-  {
-    return (ExtraEvidenceType) _array.getObjectElement(index);
-  }
+    public void setArray(ExtraEvidenceType[] a, long index) throws SQLException {
+        _array.setObjectArray(a, index);
+    }
 
-  public void setElement(ExtraEvidenceType a, long index) throws SQLException
-  {
-    _array.setObjectElement(a, index);
-  }
+    public ExtraEvidenceType getElement(long index) throws SQLException {
+        return (ExtraEvidenceType) _array.getObjectElement(index);
+    }
 
+    public void setElement(ExtraEvidenceType a, long index) throws SQLException {
+        _array.setObjectElement(a, index);
+    }
 }

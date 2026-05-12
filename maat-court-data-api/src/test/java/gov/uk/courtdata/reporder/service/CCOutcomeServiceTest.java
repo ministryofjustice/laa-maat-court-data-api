@@ -1,5 +1,12 @@
 package gov.uk.courtdata.reporder.service;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.RepOrderCCOutComeEntity;
@@ -7,14 +14,12 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.reporder.impl.CCOutcomeImpl;
 import gov.uk.courtdata.reporder.mapper.CCOutcomeMapper;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CCOutcomeServiceTest {
@@ -28,18 +33,22 @@ class CCOutcomeServiceTest {
     @InjectMocks
     private CCOutcomeService service;
 
-
     @Test
     void givenAValidInput_whenCreateIsInvoked_thenCreateOutcomeIsSuccess() {
         when(repOrderCCOutcomeImpl.create(any()))
-                .thenReturn(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(1, RepOrderEntity.builder().id(TestEntityDataBuilder.REP_ID).build()));
+                .thenReturn(TestEntityDataBuilder.getRepOrderCCOutcomeEntity(
+                        1,
+                        RepOrderEntity.builder()
+                                .id(TestEntityDataBuilder.REP_ID)
+                                .build()));
         service.create(TestModelDataBuilder.getRepOrderCCOutcome());
         verify(repOrderCCOutcomeImpl, atLeastOnce()).create(any());
     }
 
     @Test
     void givenAValidInput_whenUpdateIsInvoked_thenUpdatedCCOutComeIsSuccess() {
-        when(repOrderCCOutcomeImpl.find(anyInt())).thenReturn(RepOrderCCOutComeEntity.builder().build());
+        when(repOrderCCOutcomeImpl.find(anyInt()))
+                .thenReturn(RepOrderCCOutComeEntity.builder().build());
         service.update(TestModelDataBuilder.getRepOrderCCOutcome());
         verify(repOrderCCOutcomeImpl, atLeastOnce()).update(any());
     }
@@ -47,8 +56,8 @@ class CCOutcomeServiceTest {
     @Test
     void givenAInvalidOutcomeId_whenUpdateIsInvoked_thenReturnException() {
         when(repOrderCCOutcomeImpl.find(anyInt())).thenThrow(new RequestedObjectNotFoundException(""));
-        assertThatThrownBy(() -> service.update(TestModelDataBuilder.getRepOrderCCOutcome()))
-                .isInstanceOf(RequestedObjectNotFoundException.class);
+        var request = TestModelDataBuilder.getRepOrderCCOutcome();
+        assertThatThrownBy(() -> service.update(request)).isInstanceOf(RequestedObjectNotFoundException.class);
     }
 
     @Test

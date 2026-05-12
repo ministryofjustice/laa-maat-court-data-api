@@ -1,47 +1,42 @@
 package gov.uk.courtdata.link.processor;
 
-import com.google.gson.Gson;
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.CaseEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.CaseRepository;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.verify;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 @ExtendWith(MockitoExtension.class)
-public class CaseInfoProcessorTest {
-
+class CaseInfoProcessorTest {
 
     @InjectMocks
     private CaseInfoProcessor caseInfoProcessor;
 
     @Spy
     private CaseRepository caseRepository;
-    private TestModelDataBuilder testModelDataBuilder;
+
     @Captor
     private ArgumentCaptor<CaseEntity> caseInfoCaptor;
 
-    @BeforeEach
-    public void setUp() {
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
-    }
-
     @Test
-    public void givenCaseDetails_whenProcessIsInvoked_theCaseRecordIsCreated() {
+    void givenCaseDetails_whenProcessIsInvoked_theCaseRecordIsCreated() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
 
-        //when
+        // when
         caseInfoProcessor.process(courtDataDTO);
 
         // then
@@ -54,35 +49,34 @@ public class CaseInfoProcessorTest {
     }
 
     @Test
-    public void givenCaseDetailsWithINActiveANDNullDate_whenProcessIsInvoked_theCaseRecordIsCreated() {
+    void givenCaseDetailsWithINActiveANDNullDate_whenProcessIsInvoked_theCaseRecordIsCreated() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         caseDetails.setCaseCreationDate(null);
         caseDetails.setActive(false);
 
-        //when
+        // when
         caseInfoProcessor.process(courtDataDTO);
 
         // then
         verify(caseRepository).save(caseInfoCaptor.capture());
 
         assertThat(caseInfoCaptor.getValue().getInactive()).isEqualTo("Y");
-
     }
 
     @Test
-    public void givenCaseDetailsWithSingleDigitCJSCode_whenProcessIsInvoked_thenTwoDigitCJSCodeISProcessed() {
+    void givenCaseDetailsWithSingleDigitCJSCode_whenProcessIsInvoked_thenTwoDigitCJSCodeISProcessed() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         caseDetails.setCaseCreationDate(null);
         caseDetails.setActive(false);
         caseDetails.setCjsAreaCode("5");
 
-        //when
+        // when
         caseInfoProcessor.process(courtDataDTO);
 
         // then
@@ -90,22 +84,21 @@ public class CaseInfoProcessorTest {
 
         assertThat(caseInfoCaptor.getValue().getInactive()).isEqualTo("Y");
         assertThat(caseInfoCaptor.getValue().getCjsAreaCode()).isEqualTo("05");
-
     }
+
     @Test
-    public void givenCaseDetailsWithTowDigitCJSCode_whenProcessIsInvoked_thenTwoDigitCJSCodeISProcessed() {
+    void givenCaseDetailsWithTowDigitCJSCode_whenProcessIsInvoked_thenTwoDigitCJSCodeISProcessed() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
         caseDetails.setCjsAreaCode("16");
 
-        //when
+        // when
         caseInfoProcessor.process(courtDataDTO);
 
         // then
         verify(caseRepository).save(caseInfoCaptor.capture());
         assertThat(caseInfoCaptor.getValue().getCjsAreaCode()).isEqualTo("16");
-
     }
 }

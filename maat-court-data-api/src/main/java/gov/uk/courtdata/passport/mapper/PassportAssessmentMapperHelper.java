@@ -1,25 +1,5 @@
 package gov.uk.courtdata.passport.mapper;
 
-import gov.uk.courtdata.entity.PassportAssessmentEntity;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Set;
-
-import gov.uk.courtdata.entity.RepOrderEntity;
-import lombok.RequiredArgsConstructor;
-import org.mapstruct.Context;
-import org.mapstruct.Condition;
-import org.mapstruct.ConditionStrategy;
-import org.mapstruct.Named;
-import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
-import uk.gov.justice.laa.crime.enums.BenefitRecipient;
-import uk.gov.justice.laa.crime.enums.BenefitType;
-import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
-import uk.gov.justice.laa.crime.enums.PassportAssessmentDecision;
-import uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason;
-
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static uk.gov.justice.laa.crime.enums.BenefitRecipient.PARTNER;
@@ -32,6 +12,27 @@ import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.DO
 import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.DWP_CHECK;
 import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.DWP_CHECK_UNAVAILABLE;
 import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.IN_CUSTODY;
+
+import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import lombok.RequiredArgsConstructor;
+import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
+import uk.gov.justice.laa.crime.enums.BenefitRecipient;
+import uk.gov.justice.laa.crime.enums.BenefitType;
+import uk.gov.justice.laa.crime.enums.PassportAssessmentDecision;
+import uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason;
+import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Set;
+
+import org.mapstruct.Condition;
+import org.mapstruct.ConditionStrategy;
+import org.mapstruct.Context;
+import org.mapstruct.Named;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -46,9 +47,8 @@ public class PassportAssessmentMapperHelper {
     }
 
     @Named("mapPartnerBenefitClaimed")
-    public String mapPartnerBenefitClaimed(DeclaredBenefit declaredBenefit){
-        return (declaredBenefit != null && PARTNER.equals(declaredBenefit.getBenefitRecipient())
-                ? YES : NO);
+    public String mapPartnerBenefitClaimed(DeclaredBenefit declaredBenefit) {
+        return (declaredBenefit != null && PARTNER.equals(declaredBenefit.getBenefitRecipient()) ? YES : NO);
     }
 
     @Named("under18Mapper")
@@ -64,27 +64,26 @@ public class PassportAssessmentMapperHelper {
     }
 
     @Named("assessmentDecisionMapper")
-    PassportAssessmentDecision mapAssessmentDecision(
-            PassportAssessmentEntity passportAssessmentEntity) {
+    PassportAssessmentDecision mapAssessmentDecision(PassportAssessmentEntity passportAssessmentEntity) {
         return PassportAssessmentDecision.getFrom(passportAssessmentEntity.getResult());
     }
 
     @Named("decisionReasonMapper")
-    public PassportAssessmentDecisionReason mapDecisionReason(
-            PassportAssessmentEntity passportAssessmentEntity) {
-        final Map<PassportAssessmentDecision, Set<PassportAssessmentDecisionReason>> decisionReasonCombinations = Map.of(
-                PASS, Set.of(APPLICANT_AGE, DWP_CHECK, DOCUMENTATION_SUPPLIED),
-                TEMP_PASS, Set.of(DWP_CHECK_UNAVAILABLE, IN_CUSTODY),
-                FAIL_BYPASS, Set.of(DWP_CHECK),
-                FAIL, Set.of()
-        );
+    public PassportAssessmentDecisionReason mapDecisionReason(PassportAssessmentEntity passportAssessmentEntity) {
+        final Map<PassportAssessmentDecision, Set<PassportAssessmentDecisionReason>> decisionReasonCombinations =
+                Map.of(
+                        PASS, Set.of(APPLICANT_AGE, DWP_CHECK, DOCUMENTATION_SUPPLIED),
+                        TEMP_PASS, Set.of(DWP_CHECK_UNAVAILABLE, IN_CUSTODY),
+                        FAIL_BYPASS, Set.of(DWP_CHECK),
+                        FAIL, Set.of());
 
         String pcobConfirmation = passportAssessmentEntity.getPcobConfirmation();
         Set<PassportAssessmentDecisionReason> allowedReasons = decisionReasonCombinations.get(
                 PassportAssessmentDecision.getFrom(passportAssessmentEntity.getResult()));
 
-        if (allowedReasons != null && (allowedReasons.isEmpty() || allowedReasons.contains(
-                PassportAssessmentDecisionReason.getFrom(pcobConfirmation)))) {
+        if (allowedReasons != null
+                && (allowedReasons.isEmpty()
+                        || allowedReasons.contains(PassportAssessmentDecisionReason.getFrom(pcobConfirmation)))) {
             return PassportAssessmentDecisionReason.getFrom(pcobConfirmation);
         } else {
             return null;
@@ -92,8 +91,8 @@ public class PassportAssessmentMapperHelper {
     }
 
     @Named("declaredBenefitMapper")
-    public DeclaredBenefit mapDeclaredBenefit(PassportAssessmentEntity passportAssessmentEntity,
-        @Context Integer partnerLegacyId) {
+    public DeclaredBenefit mapDeclaredBenefit(
+            PassportAssessmentEntity passportAssessmentEntity, @Context Integer partnerLegacyId) {
         DeclaredBenefit declaredBenefit = new DeclaredBenefit();
 
         declaredBenefit.setBenefitType(mapBenefitType(passportAssessmentEntity));
@@ -106,8 +105,7 @@ public class PassportAssessmentMapperHelper {
 
     @Named("mapLastSignOnDate")
     public LocalDateTime mapLastSignOnDate(DeclaredBenefit declaredBenefit) {
-        if(declaredBenefit != null
-                && BenefitType.JSA.equals(declaredBenefit.getBenefitType())){
+        if (declaredBenefit != null && BenefitType.JSA.equals(declaredBenefit.getBenefitType())) {
             return declaredBenefit.getLastSignOnDate();
         }
         return null;
@@ -115,25 +113,24 @@ public class PassportAssessmentMapperHelper {
 
     BenefitType mapBenefitType(PassportAssessmentEntity passportAssessmentEntity) {
         if (passportAssessmentEntity.getIncomeSupport() != null
-            && passportAssessmentEntity.getIncomeSupport().equals(YES)) {
+                && passportAssessmentEntity.getIncomeSupport().equals(YES)) {
             return BenefitType.INCOME_SUPPORT;
         } else if (passportAssessmentEntity.getJobSeekers() != null
-            && passportAssessmentEntity.getJobSeekers().equals(YES)) {
+                && passportAssessmentEntity.getJobSeekers().equals(YES)) {
             return BenefitType.JSA;
         } else if (passportAssessmentEntity.getEsa() != null
-            && passportAssessmentEntity.getEsa().equals(YES)) {
+                && passportAssessmentEntity.getEsa().equals(YES)) {
             return BenefitType.ESA;
         } else if (passportAssessmentEntity.getStatePensionCredit() != null
-            && passportAssessmentEntity.getStatePensionCredit().equals(YES)) {
+                && passportAssessmentEntity.getStatePensionCredit().equals(YES)) {
             return BenefitType.GSPC;
-        } else if (passportAssessmentEntity.getUniversalCredit() != null &&
-            passportAssessmentEntity.getUniversalCredit().equals(YES)) {
+        } else if (passportAssessmentEntity.getUniversalCredit() != null
+                && passportAssessmentEntity.getUniversalCredit().equals(YES)) {
             return BenefitType.UC;
         }
 
         return null;
     }
-
 
     @Named("mapEvidenceDateReceived")
     public LocalDate mapEvidenceDateReceived(LocalDateTime dateReceived) {
@@ -149,11 +146,11 @@ public class PassportAssessmentMapperHelper {
     public IncomeEvidenceType mapEvidenceType(String evidenceType) {
         return IncomeEvidenceType.getFrom(evidenceType);
     }
-    
+
     BenefitRecipient mapBenefitRecipient(PassportAssessmentEntity passportAssessmentEntity) {
         return passportAssessmentEntity.getPartnerBenefitClaimed() != null
-            && passportAssessmentEntity.getPartnerBenefitClaimed().equals(YES)
-            ? PARTNER : BenefitRecipient.APPLICANT;
+                        && passportAssessmentEntity.getPartnerBenefitClaimed().equals(YES)
+                ? PARTNER
+                : BenefitRecipient.APPLICANT;
     }
-
 }

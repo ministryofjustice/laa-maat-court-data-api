@@ -4,6 +4,7 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.RepOrderEntity_;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
 import org.springframework.data.jpa.domain.Specification;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -14,6 +15,7 @@ public class RepOrderSpecification {
     }
 
     public static Specification<RepOrderEntity> hasSentenceOrderDate() {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.isNotNull(root.get(RepOrderEntity_.SENTENCE_ORDER_DATE));
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.isNotNull(root.get(RepOrderEntity_.SENTENCE_ORDER_DATE));
     }
 }

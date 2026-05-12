@@ -1,7 +1,9 @@
 package gov.uk.courtdata.passport.service;
 
-import gov.uk.courtdata.applicant.service.PartnerResolver;
+import static uk.gov.justice.laa.crime.enums.BenefitRecipient.PARTNER;
+
 import gov.uk.courtdata.applicant.service.ApplicantService;
+import gov.uk.courtdata.applicant.service.PartnerResolver;
 import gov.uk.courtdata.assessment.service.AssessmentReplacementService;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
@@ -9,15 +11,14 @@ import gov.uk.courtdata.passport.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.passport.validator.CreatePassportAssessmentV2Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentRequest;
 import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentResponse;
 import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
 import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
 import uk.gov.justice.laa.crime.common.model.passported.PassportedAssessment;
 
-import static uk.gov.justice.laa.crime.enums.BenefitRecipient.PARTNER;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -34,13 +35,13 @@ public class PassportAssessmentServiceV2 {
 
     @Transactional(readOnly = true)
     public ApiGetPassportedAssessmentResponse find(int passportAssessmentId) {
-        PassportAssessmentEntity passportAssessmentEntity = passportAssessmentPersistenceService.find(passportAssessmentId);
+        PassportAssessmentEntity passportAssessmentEntity =
+                passportAssessmentPersistenceService.find(passportAssessmentId);
 
-        Integer partnerLegacyId =
-            partnerResolver.getPartnerLegacyId(passportAssessmentEntity.getRepOrder().getId());
+        Integer partnerLegacyId = partnerResolver.getPartnerLegacyId(
+                passportAssessmentEntity.getRepOrder().getId());
 
-        return passportAssessmentMapper.toApiGetPassportedAssessmentResponse(passportAssessmentEntity,
-            partnerLegacyId);
+        return passportAssessmentMapper.toApiGetPassportedAssessmentResponse(passportAssessmentEntity, partnerLegacyId);
     }
 
     @Transactional
@@ -64,16 +65,17 @@ public class PassportAssessmentServiceV2 {
      *     <li>has a partner id</li>
      * </ul>
      * Otherwise will leave fields unpopulated.
+     *
      * @param request Create request sent that is being mapped and saved.
-     * @param entity PassportAssessmentEntity that will have fields populated.
+     * @param entity  PassportAssessmentEntity that will have fields populated.
      */
-    private void populatePartnerDetails(ApiCreatePassportedAssessmentRequest request, PassportAssessmentEntity entity){
+    private void populatePartnerDetails(ApiCreatePassportedAssessmentRequest request, PassportAssessmentEntity entity) {
         PassportedAssessment assessment = request.getPassportedAssessment();
         DeclaredBenefit declaredBenefit = request.getPassportedAssessment().getDeclaredBenefit();
         // check if should populate
-        if(Boolean.FALSE.equals(assessment.getDeclaredUnder18())
+        if (Boolean.FALSE.equals(assessment.getDeclaredUnder18())
                 && declaredBenefit != null
-                && PARTNER.equals(declaredBenefit.getBenefitRecipient())){
+                && PARTNER.equals(declaredBenefit.getBenefitRecipient())) {
             Applicant partner = applicantService.find(declaredBenefit.getLegacyPartnerId());
             entity.setPartnerDob(partner.getDob().atStartOfDay());
             entity.setPartnerFirstName(partner.getFirstName());

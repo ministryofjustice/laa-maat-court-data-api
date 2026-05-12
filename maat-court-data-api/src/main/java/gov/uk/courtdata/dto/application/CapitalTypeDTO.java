@@ -9,10 +9,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class CapitalTypeDTO extends GenericDTO 
-{
+public class CapitalTypeDTO extends GenericDTO {
 
-	private String			capitalType;		// key field
-	private String			description;
-
+    private String capitalType; // key field
+    private String description;
 }

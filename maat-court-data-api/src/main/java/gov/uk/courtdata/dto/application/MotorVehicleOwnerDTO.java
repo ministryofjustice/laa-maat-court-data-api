@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.uk.courtdata.dto.application;
 
@@ -15,13 +15,13 @@ import java.util.Collection;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class MotorVehicleOwnerDTO extends GenericDTO {
-	private Long 		id;
-	private Long 		repId;
-	private Boolean 	noVehicleDeclared;
-	private Boolean		available;
+    private Long id;
+    private Long repId;
+    private Boolean noVehicleDeclared;
+    private Boolean available;
 
-	@Builder.Default
-	private Collection<VehicleRegistrationMarkDTO>  vehicleRegistrationMarkDTOs = new ArrayList<>();
+    @Builder.Default
+    private Collection<VehicleRegistrationMarkDTO> vehicleRegistrationMarkDTOs = new ArrayList<>();
 }

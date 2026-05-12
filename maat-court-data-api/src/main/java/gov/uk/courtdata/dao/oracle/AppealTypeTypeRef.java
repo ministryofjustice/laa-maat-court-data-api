@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class AppealTypeTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.APPEAL_TYPE_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class AppealTypeTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.APPEAL_TYPE_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final AppealTypeTypeRef _AppealTypeTypeRefFactory = new AppealTypeTypeRef();
+    private static final AppealTypeTypeRef _AppealTypeTypeRefFactory = new AppealTypeTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _AppealTypeTypeRefFactory; }
-  /* constructor */
-  public AppealTypeTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _AppealTypeTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public AppealTypeTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    AppealTypeTypeRef r = new AppealTypeTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static AppealTypeTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (AppealTypeTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to AppealTypeTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        AppealTypeTypeRef r = new AppealTypeTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public AppealTypeType getValue() throws SQLException
-  {
-     return (AppealTypeType) AppealTypeType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static AppealTypeTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (AppealTypeTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to AppealTypeTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(AppealTypeType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public AppealTypeType getValue() throws SQLException {
+        return (AppealTypeType) AppealTypeType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(AppealTypeType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

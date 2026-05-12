@@ -1,6 +1,8 @@
 package gov.uk.courtdata.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -13,5 +15,4 @@ public class CourtHouseCodesId implements Serializable {
     private String code;
 
     private LocalDateTime effectiveDateFrom;
-
 }

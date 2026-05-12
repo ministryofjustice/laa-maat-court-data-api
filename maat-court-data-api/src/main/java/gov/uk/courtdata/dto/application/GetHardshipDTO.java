@@ -7,7 +7,6 @@ import lombok.Value;
 @Builder
 public class GetHardshipDTO {
 
-    private UserDTO userDTO;
-    private Integer hardshipAssessmentId;
-
+    UserDTO userDTO;
+    Integer hardshipAssessmentId;
 }

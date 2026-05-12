@@ -5,6 +5,7 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.reporder.repository.RepOrderEquityRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +17,10 @@ public class RepOrderEquityService {
 
     @Transactional(readOnly = true)
     public RepOrderEquityEntity retrieve(Integer repOrderEquityId) {
-        return repOrderEquityRepository.findById(repOrderEquityId)
-            .orElseThrow(() -> new RequestedObjectNotFoundException(
-                String.format("No Rep Order Equity found with ID: %s", repOrderEquityId)));
+        return repOrderEquityRepository
+                .findById(repOrderEquityId)
+                .orElseThrow(() -> new RequestedObjectNotFoundException(
+                        String.format("No Rep Order Equity found with ID: %s", repOrderEquityId)));
     }
 
     @Transactional()
@@ -28,8 +30,10 @@ public class RepOrderEquityService {
 
     @Transactional()
     public void update(Integer id, RepOrderEquityEntity repOrderEquityEntity) {
-        RepOrderEquityEntity existingRepOrderEquity = repOrderEquityRepository.findById(id)
-            .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("No Rep Order Equity found with ID: %s", id)));
+        RepOrderEquityEntity existingRepOrderEquity = repOrderEquityRepository
+                .findById(id)
+                .orElseThrow(() -> new RequestedObjectNotFoundException(
+                        String.format("No Rep Order Equity found with ID: %s", id)));
 
         ReflectionHelper.updateEntityFromObject(existingRepOrderEquity, repOrderEquityEntity);
         repOrderEquityRepository.save(existingRepOrderEquity);

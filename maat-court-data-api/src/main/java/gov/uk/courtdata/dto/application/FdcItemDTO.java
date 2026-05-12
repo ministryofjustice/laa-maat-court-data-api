@@ -29,5 +29,4 @@ public class FdcItemDTO extends GenericDTO {
 
     public static final String LGFS_COST_TYPE = "LGFS";
     public static final String AGFS_COST_TYPE = "AGFS";
-
 }

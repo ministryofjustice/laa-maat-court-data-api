@@ -1,8 +1,8 @@
 /*
  * Mark Whitaker  - 30/03/2017
- * 
+ *
  * Introduced as part of the Future Initiatives Project (FIP) to support interface
- * between application and database for digitised Means Assessments. Implements a 
+ * between application and database for digitised Means Assessments. Implements a
  * DTO design pattern to transport relevant dao.
  *
  */
@@ -20,12 +20,10 @@ import java.util.Date;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class DigitisedMeansAssessmentDTO extends GenericDTO{
+public class DigitisedMeansAssessmentDTO extends GenericDTO {
 
-	private Long					id;
-	private Long					maatId;
-	private Date					dateCreated;
-	private Date					originalEmailDate;
-
-	
+    private Long id;
+    private Long maatId;
+    private Date dateCreated;
+    private Date originalEmailDate;
 }

@@ -3,14 +3,14 @@ package gov.uk.courtdata.unlink.validator;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.validator.IValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class ReasonValidator implements IValidator<Void, Integer> {
-
 
     /**
      * Validate the passed in json.
@@ -27,6 +27,5 @@ public class ReasonValidator implements IValidator<Void, Integer> {
         } else {
             throw new ValidationException("Reason id is missing.");
         }
-
     }
 }

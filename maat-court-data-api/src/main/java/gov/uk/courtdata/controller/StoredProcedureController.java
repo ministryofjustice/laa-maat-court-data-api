@@ -13,9 +13,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -30,12 +34,29 @@ public class StoredProcedureController {
     @Operation(description = "Execute store procedure ")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @NotFoundApiResponse
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request.",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "500",
+            description = "Server Error.",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<ApplicationDTO> executeStoredProcedure(
-            @Parameter(description = "Execute store procedure", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = StoredProcedureRequest.class)))
-            @RequestBody StoredProcedureRequest callStoredProcedure) {
+            @Parameter(
+                            description = "Execute store procedure",
+                            content =
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = StoredProcedureRequest.class)))
+                    @RequestBody
+                    StoredProcedureRequest callStoredProcedure) {
         log.debug("Execute store procedure : {}", callStoredProcedure.getProcedureName());
         return ResponseEntity.ok(service.executeStoredProcedure(callStoredProcedure));
     }

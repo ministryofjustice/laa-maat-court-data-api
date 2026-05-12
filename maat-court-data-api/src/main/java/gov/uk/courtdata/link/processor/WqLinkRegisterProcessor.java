@@ -1,15 +1,16 @@
 package gov.uk.courtdata.link.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
+
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -37,8 +38,6 @@ public class WqLinkRegisterProcessor implements Process {
                 .caseUrn(caseDetails.getCaseUrn())
                 .build();
         wqLinkRegisterRepository.save(wqLinkRegisterEntity);
-
-
     }
 
     protected Integer geCategory(CourtDataDTO courtDataDTO) {

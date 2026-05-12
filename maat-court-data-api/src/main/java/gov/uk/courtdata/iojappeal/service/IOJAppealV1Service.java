@@ -8,6 +8,7 @@ import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +47,8 @@ public class IOJAppealV1Service {
 
         log.info("Update previous IoJ Appeal records and set them to replaced");
 
-        iojAppealPersistenceService.setOldIOJAppealsReplaced(iojAppealEntity.getRepOrder().getId(), iojAppealEntity.getId());
+        iojAppealPersistenceService.setOldIOJAppealsReplaced(
+                iojAppealEntity.getRepOrder().getId(), iojAppealEntity.getId());
 
         log.info("Create IoJ Appeal - Transaction Processing - end");
         return iojAppealMapper.toIOJAppealDTO(iojAppealEntity);

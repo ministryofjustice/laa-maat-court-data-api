@@ -1,15 +1,22 @@
 package gov.uk.courtdata.applicant.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Builder
 @AllArgsConstructor
@@ -21,7 +28,11 @@ public class RepOrderApplicantLinksEntity {
 
     @Id
     @Column(name = "ID")
-    @SequenceGenerator(name = "rep_order_applicant_links_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "rep_order_applicant_links_gen_seq",
+            sequenceName = "S_GENERAL_SEQUENCE",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rep_order_applicant_links_gen_seq")
     private Integer id;
 
@@ -53,5 +64,4 @@ public class RepOrderApplicantLinksEntity {
 
     @Column(name = "PARTNER_APHI_ID")
     private Integer partnerAphiId;
-
 }

@@ -3,7 +3,6 @@
  */
 package gov.uk.courtdata.dto.application;
 
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,14 +25,19 @@ public class AreaTransferDetailsDTO extends GenericDTO {
 
     @Builder.Default
     private AreaDTO areaFrom = new AreaDTO();
+
     @Builder.Default
     private AreaDTO areaTo = new AreaDTO();
+
     @Builder.Default
     private CaseManagementUnitDTO cmuFrom = new CaseManagementUnitDTO();
+
     @Builder.Default
     private CaseManagementUnitDTO cmuTo = new CaseManagementUnitDTO();
+
     @Builder.Default
     private TransferStatusDTO transferStatus = new TransferStatusDTO();
+
     @Builder.Default
     private TransferTypeDTO transferType = new TransferTypeDTO();
 }

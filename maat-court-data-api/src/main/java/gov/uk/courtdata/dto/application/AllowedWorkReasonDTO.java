@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.uk.courtdata.dto.application;
 
@@ -16,17 +16,22 @@ import java.util.Collection;
 @SuperBuilder
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class AllowedWorkReasonDTO extends GenericDTO  {
-	@Builder.Default
-	private Collection<NewWorkReasonDTO> iojAppealWorkReason = new ArrayList<>();
-	@Builder.Default
-	private Collection<NewWorkReasonDTO> magsCourtHardshipWorkReason = new ArrayList<>();
-	@Builder.Default
-	private Collection<NewWorkReasonDTO> passportWorkReason = new ArrayList<>();
-	@Builder.Default
-	private Collection<NewWorkReasonDTO> meansAssessmentWorkReason = new ArrayList<>();
-	@Builder.Default
-	private Collection<NewWorkReasonDTO> crownCourtHardshipWorkReason = new ArrayList<>();
-	@Builder.Default
-	private Collection<NewWorkReasonDTO> eligibilityWorkReason = new ArrayList<>();
+public class AllowedWorkReasonDTO extends GenericDTO {
+    @Builder.Default
+    private Collection<NewWorkReasonDTO> iojAppealWorkReason = new ArrayList<>();
+
+    @Builder.Default
+    private Collection<NewWorkReasonDTO> magsCourtHardshipWorkReason = new ArrayList<>();
+
+    @Builder.Default
+    private Collection<NewWorkReasonDTO> passportWorkReason = new ArrayList<>();
+
+    @Builder.Default
+    private Collection<NewWorkReasonDTO> meansAssessmentWorkReason = new ArrayList<>();
+
+    @Builder.Default
+    private Collection<NewWorkReasonDTO> crownCourtHardshipWorkReason = new ArrayList<>();
+
+    @Builder.Default
+    private Collection<NewWorkReasonDTO> eligibilityWorkReason = new ArrayList<>();
 }

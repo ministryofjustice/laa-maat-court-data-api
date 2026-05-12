@@ -1,17 +1,29 @@
 package gov.uk.courtdata.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Builder
 @AllArgsConstructor
@@ -19,12 +31,22 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "PASSPORT_ASS_EVIDENCE", schema = "TOGDATA", indexes = {
-        @Index(name = "PAAS_UK", columnList = "PAAS_ID, INEV_EVIDENCE, REMOVED_DATE, APPL_ID, OTHER_TEXT", unique = true)
-})
+@Table(
+        name = "PASSPORT_ASS_EVIDENCE",
+        schema = "TOGDATA",
+        indexes = {
+            @Index(
+                    name = "PAAS_UK",
+                    columnList = "PAAS_ID, INEV_EVIDENCE, REMOVED_DATE, APPL_ID, OTHER_TEXT",
+                    unique = true)
+        })
 public class PassportAssessmentEvidenceEntity {
     @Id
-    @SequenceGenerator(name = "passport_ass_income_evidence_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "passport_ass_income_evidence_gen_seq",
+            sequenceName = "S_GENERAL_SEQUENCE",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "passport_ass_income_evidence_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
@@ -74,5 +96,4 @@ public class PassportAssessmentEvidenceEntity {
     @JoinColumn(name = "APPL_ID", updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Applicant applicant;
-
 }

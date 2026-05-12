@@ -13,5 +13,4 @@ public class RepOrderDecisionDTO extends GenericDTO {
 
     private String code;
     private SysGenString description;
-
 }

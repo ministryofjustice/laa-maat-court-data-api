@@ -6,8 +6,15 @@ import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+import uk.gov.justice.laa.crime.error.ErrorExtension;
+import uk.gov.justice.laa.crime.error.ErrorMessage;
+import uk.gov.justice.laa.crime.error.ProblemDetailError;
+import uk.gov.justice.laa.crime.tracing.TraceIdHandler;
+import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
+
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
@@ -22,11 +29,6 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import uk.gov.justice.laa.crime.error.ErrorExtension;
-import uk.gov.justice.laa.crime.error.ErrorMessage;
-import uk.gov.justice.laa.crime.error.ProblemDetailError;
-import uk.gov.justice.laa.crime.tracing.TraceIdHandler;
-import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
 
 class ProblemDetailExceptionHandlerTest {
 
@@ -37,8 +39,7 @@ class ProblemDetailExceptionHandlerTest {
     @SuppressWarnings("unchecked")
     private final ObjectProvider<TraceIdHandler> traceIdHandlerProvider = mock(ObjectProvider.class);
 
-    private final ProblemDetailExceptionHandler handler =
-            new ProblemDetailExceptionHandler(traceIdHandlerProvider);
+    private final ProblemDetailExceptionHandler handler = new ProblemDetailExceptionHandler(traceIdHandlerProvider);
 
     @BeforeEach
     void setUp() {
@@ -48,8 +49,7 @@ class ProblemDetailExceptionHandlerTest {
 
     @Test
     void handleNotFound_returns404AndUsesExceptionMessageAsDetail() {
-        RequestedObjectNotFoundException ex =
-                new RequestedObjectNotFoundException("IOJ appeal not found");
+        RequestedObjectNotFoundException ex = new RequestedObjectNotFoundException("IOJ appeal not found");
 
         var response = handler.handleNotFound(ex);
 
@@ -58,8 +58,7 @@ class ProblemDetailExceptionHandlerTest {
                 HttpStatus.NOT_FOUND,
                 "IOJ appeal not found",
                 ProblemDetailError.OBJECT_NOT_FOUND.code(),
-                List.of()
-        );
+                List.of());
     }
 
     @Test
@@ -74,14 +73,12 @@ class ProblemDetailExceptionHandlerTest {
                 HttpStatus.BAD_REQUEST,
                 ProblemDetailError.BAD_REQUEST.defaultDetail(),
                 ProblemDetailError.BAD_REQUEST.code(),
-                List.of()
-        );
+                List.of());
     }
 
     @Test
     void handleBadRequest_forHttpMessageNotReadable_returns400() {
-        HttpMessageNotReadableException ex =
-                new HttpMessageNotReadableException("Malformed JSON");
+        HttpMessageNotReadableException ex = new HttpMessageNotReadableException("Malformed JSON");
 
         var response = handler.handleBadRequest(ex);
 
@@ -90,14 +87,12 @@ class ProblemDetailExceptionHandlerTest {
                 HttpStatus.BAD_REQUEST,
                 ProblemDetailError.BAD_REQUEST.defaultDetail(),
                 ProblemDetailError.BAD_REQUEST.code(),
-                List.of()
-        );
+                List.of());
     }
 
     @Test
     void handleDataIntegrityViolation_returns400() {
-        DataIntegrityViolationException ex =
-                new DataIntegrityViolationException("Constraint violation");
+        DataIntegrityViolationException ex = new DataIntegrityViolationException("Constraint violation");
 
         var response = handler.handleDataIntegrityViolation(ex);
 
@@ -106,20 +101,14 @@ class ProblemDetailExceptionHandlerTest {
                 HttpStatus.BAD_REQUEST,
                 ProblemDetailError.DB_ERROR.defaultDetail(),
                 ProblemDetailError.DB_ERROR.code(),
-                List.of()
-        );
+                List.of());
     }
 
     @Test
     void handleMethodArgumentNotValidException_returns400AndValidationFailureDetail() {
-        FieldError fieldError = new FieldError(
-                "request",
-                "iojReason",
-                "Cannot be null.");
+        FieldError fieldError = new FieldError("request", "iojReason", "Cannot be null.");
 
-        List<ErrorMessage> expectedErrors = List.of(
-                new ErrorMessage("iojReason", "Cannot be null.")
-        );
+        List<ErrorMessage> expectedErrors = List.of(new ErrorMessage("iojReason", "Cannot be null."));
 
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.getFieldErrors()).thenReturn(List.of(fieldError));
@@ -135,16 +124,14 @@ class ProblemDetailExceptionHandlerTest {
                 HttpStatus.BAD_REQUEST,
                 ProblemDetailError.VALIDATION_FAILURE.defaultDetail(),
                 ProblemDetailError.VALIDATION_FAILURE.code(),
-                expectedErrors
-        );
+                expectedErrors);
     }
 
     @Test
     void handleValidationFailure_returns400AndValidationFailureDetail() {
         List<ErrorMessage> expectedErrors = List.of(
                 new ErrorMessage("iojReason", "Appeal Reason is invalid."),
-                new ErrorMessage("reasonForAppeal", "reasonForAppeal is missing.")
-        );
+                new ErrorMessage("reasonForAppeal", "reasonForAppeal is missing."));
 
         CrimeValidationException ex = new CrimeValidationException(expectedErrors);
 
@@ -155,8 +142,7 @@ class ProblemDetailExceptionHandlerTest {
                 HttpStatus.BAD_REQUEST,
                 ProblemDetailError.VALIDATION_FAILURE.defaultDetail(),
                 ProblemDetailError.VALIDATION_FAILURE.code(),
-                expectedErrors
-        );
+                expectedErrors);
     }
 
     @Test
@@ -170,8 +156,7 @@ class ProblemDetailExceptionHandlerTest {
                 HttpStatus.METHOD_NOT_ALLOWED,
                 ProblemDetailError.METHOD_NOT_ALLOWED.defaultDetail(),
                 ProblemDetailError.METHOD_NOT_ALLOWED.code(),
-                List.of()
-        );
+                List.of());
     }
 
     @Test
@@ -185,8 +170,7 @@ class ProblemDetailExceptionHandlerTest {
                 HttpStatus.UNSUPPORTED_MEDIA_TYPE,
                 ProblemDetailError.UNSUPPORTED_MEDIA_TYPE.defaultDetail(),
                 ProblemDetailError.UNSUPPORTED_MEDIA_TYPE.code(),
-                List.of()
-        );
+                List.of());
     }
 
     @Test
@@ -200,8 +184,7 @@ class ProblemDetailExceptionHandlerTest {
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 ProblemDetailError.APPLICATION_ERROR.defaultDetail(),
                 ProblemDetailError.APPLICATION_ERROR.code(),
-                List.of()
-        );
+                List.of());
     }
 
     private void assertProblemDetail(

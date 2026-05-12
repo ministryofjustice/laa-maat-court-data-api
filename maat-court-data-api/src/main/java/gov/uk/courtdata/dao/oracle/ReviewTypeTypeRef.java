@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ReviewTypeTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.REVIEW_TYPE_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class ReviewTypeTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.REVIEW_TYPE_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final ReviewTypeTypeRef _ReviewTypeTypeRefFactory = new ReviewTypeTypeRef();
+    private static final ReviewTypeTypeRef _ReviewTypeTypeRefFactory = new ReviewTypeTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _ReviewTypeTypeRefFactory; }
-  /* constructor */
-  public ReviewTypeTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _ReviewTypeTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public ReviewTypeTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    ReviewTypeTypeRef r = new ReviewTypeTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static ReviewTypeTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (ReviewTypeTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to ReviewTypeTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        ReviewTypeTypeRef r = new ReviewTypeTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public ReviewTypeType getValue() throws SQLException
-  {
-     return (ReviewTypeType) ReviewTypeType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static ReviewTypeTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (ReviewTypeTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to ReviewTypeTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(ReviewTypeType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public ReviewTypeType getValue() throws SQLException {
+        return (ReviewTypeType) ReviewTypeType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(ReviewTypeType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

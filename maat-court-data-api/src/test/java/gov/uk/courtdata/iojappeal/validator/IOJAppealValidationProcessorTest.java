@@ -1,21 +1,22 @@
 package gov.uk.courtdata.iojappeal.validator;
 
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.IOJAppealRepository;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class IOJAppealValidationProcessorTest {
@@ -28,7 +29,7 @@ class IOJAppealValidationProcessorTest {
 
     @Test
     void givenAnIOJUpdateWithExistingEntityInDBAndNullModifiedDate_ThenDoNothing() {
-        //given
+        // given
         var updateIOJAppealObject = TestModelDataBuilder.getUpdateIOJAppealObject();
         var dbEntity = TestEntityDataBuilder.getIOJAppealEntity("IN PROGRESS");
 
@@ -39,7 +40,7 @@ class IOJAppealValidationProcessorTest {
 
     @Test
     void givenAnIOJUpdateWithExistingEntityInDBAndHasMatchingModifiedDate_ThenDoNothing() {
-        //given
+        // given
         var matchingDateModified = LocalDateTime.of(2023, 1, 1, 10, 0);
         var updateIOJAppealObject = TestModelDataBuilder.getUpdateIOJAppealObject(matchingDateModified);
         var dbEntity = TestEntityDataBuilder.getIoJAppealEntity(matchingDateModified, "IN PROGRESS");
@@ -60,7 +61,9 @@ class IOJAppealValidationProcessorTest {
     @Test
     void givenAnIOJUpdateWithDifferentModifiedDateAsOnDB_ThenThrowValidationException() {
         var mismatchedDateModified = LocalDateTime.of(2023, 1, 1, 10, 0);
-        when(iojAppealRepository.findById(any())).thenReturn(Optional.of(TestEntityDataBuilder.getIoJAppealEntity(mismatchedDateModified, "IN PROGRESS")));
+        when(iojAppealRepository.findById(any()))
+                .thenReturn(
+                        Optional.of(TestEntityDataBuilder.getIoJAppealEntity(mismatchedDateModified, "IN PROGRESS")));
         Assertions.assertThrows(ValidationException.class, () -> {
             iojAppealValidationProcessor.validate(TestModelDataBuilder.getUpdateIOJAppealObject());
         });
@@ -68,7 +71,7 @@ class IOJAppealValidationProcessorTest {
 
     @Test
     void givenAnIOJUpdateWithNullModifiedDate_andDBEntityWithModifiedDate_ThenThrowValidationException() {
-        //given
+        // given
         var dbEntityDateModified = LocalDateTime.of(2023, 1, 1, 10, 0);
         var updateIOJAppealObject = TestModelDataBuilder.getUpdateIOJAppealObject(null);
         var dbEntity = TestEntityDataBuilder.getIoJAppealEntity(dbEntityDateModified, "IN PROGRESS");
@@ -81,7 +84,7 @@ class IOJAppealValidationProcessorTest {
 
     @Test
     void givenAnIOJUpdateWithModifiedDate_andDBEntityWithNullModifiedDate_ThenThrowValidationException() {
-        //given
+        // given
         var updateEntityDateModified = LocalDateTime.of(2023, 1, 1, 10, 0);
         var updateIOJAppealObject = TestModelDataBuilder.getUpdateIOJAppealObject(updateEntityDateModified);
         var dbEntity = TestEntityDataBuilder.getIoJAppealEntity(null, "IN PROGRESS");
@@ -95,7 +98,8 @@ class IOJAppealValidationProcessorTest {
     @Test
     void givenAnIOJUpdateWithStatusCompleteInDB_ThenThrowValidationException() {
 
-        when(iojAppealRepository.findById(any())).thenReturn(Optional.of(TestEntityDataBuilder.getIOJAppealEntity("COMPLETE")));
+        when(iojAppealRepository.findById(any()))
+                .thenReturn(Optional.of(TestEntityDataBuilder.getIOJAppealEntity("COMPLETE")));
         Assertions.assertThrows(ValidationException.class, () -> {
             iojAppealValidationProcessor.validate(TestModelDataBuilder.getUpdateIOJAppealObject());
         });

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.dto;
 
-
 import lombok.Builder;
 import lombok.Value;
 

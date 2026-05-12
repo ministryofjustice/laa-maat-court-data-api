@@ -2,22 +2,23 @@ package gov.uk.courtdata.hardship.service;
 
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
-import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.hardship.impl.HardshipReviewImpl;
 import gov.uk.courtdata.hardship.mapper.HardshipReviewMapper;
+import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -32,7 +33,8 @@ public class HardshipReviewService {
     public HardshipReviewDTO find(final Integer hardshipReviewId) {
         HardshipReviewEntity hardshipReview = hardshipReviewImpl.find(hardshipReviewId);
         if (hardshipReview == null) {
-            throw new RequestedObjectNotFoundException(String.format("No Hardship Review found for ID: %s", hardshipReviewId));
+            throw new RequestedObjectNotFoundException(
+                    String.format("No Hardship Review found for ID: %s", hardshipReviewId));
         }
         return hardshipReviewMapper.hardshipReviewEntityToHardshipReviewDTO(hardshipReview);
     }
@@ -78,8 +80,10 @@ public class HardshipReviewService {
 
     @Transactional
     public void patch(int hardshipReviewId, Map<String, Object> updateFields) {
-        HardshipReviewEntity hardshipReviewEntity = hardshipReviewRepository.findById(hardshipReviewId)
-            .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("No Hardship Review found for ID: %s", hardshipReviewId)));
+        HardshipReviewEntity hardshipReviewEntity = hardshipReviewRepository
+                .findById(hardshipReviewId)
+                .orElseThrow(() -> new RequestedObjectNotFoundException(
+                        String.format("No Hardship Review found for ID: %s", hardshipReviewId)));
 
         ReflectionHelper.updateEntityFromMap(hardshipReviewEntity, updateFields);
         hardshipReviewRepository.save(hardshipReviewEntity);

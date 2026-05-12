@@ -9,9 +9,9 @@ import gov.uk.courtdata.entity.RoleDataItemEntity;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.helper.ReflectionHelper;
+import gov.uk.courtdata.helper.ReservationsRepositoryHelper;
 import gov.uk.courtdata.mapper.ReservationsMapper;
 import gov.uk.courtdata.mapper.RoleDataItemsMapper;
-import gov.uk.courtdata.helper.ReservationsRepositoryHelper;
 import gov.uk.courtdata.repository.RoleActionsRepository;
 import gov.uk.courtdata.repository.RoleDataItemsRepository;
 import gov.uk.courtdata.repository.RoleWorkReasonsRepository;
@@ -20,11 +20,12 @@ import gov.uk.courtdata.service.FeatureToggleService;
 import gov.uk.courtdata.users.mapper.UserSummaryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -48,18 +49,31 @@ public class UserSummaryService {
         Optional<List<String>> newWorkReason = roleWorkReasonsRepository.getNewWorkReasonForUser(username);
         List<String> newWorkReasonForUser = newWorkReason.isEmpty() ? null : newWorkReason.get();
 
-        Optional<List<RoleDataItemEntity>> roleDataItemEntities = roleDataItemsRepository.getRoleDataItemsForUser(username);
-        List<RoleDataItemEntity> roleDataItemEntityList = roleDataItemEntities.isEmpty() ? null : roleDataItemEntities.get();
-        List<RoleDataItemDTO> roleDataItemDTOList = (roleDataItemEntityList != null) ? roleDataItemsMapper.roleDataItemEntitytoDTO(roleDataItemEntityList) : null;
+        Optional<List<RoleDataItemEntity>> roleDataItemEntities =
+                roleDataItemsRepository.getRoleDataItemsForUser(username);
+        List<RoleDataItemEntity> roleDataItemEntityList =
+                roleDataItemEntities.isEmpty() ? null : roleDataItemEntities.get();
+        List<RoleDataItemDTO> roleDataItemDTOList = (roleDataItemEntityList != null)
+                ? roleDataItemsMapper.roleDataItemEntitytoDTO(roleDataItemEntityList)
+                : null;
 
         Optional<ReservationsEntity> reservations = reservationsRepositoryHelper.getReservationByUserName(username);
-        ReservationsDTO reservationsDTO = reservations.isEmpty() ? null : reservationsMapper.reservationsEntitytoDTO(reservations.get());
+        ReservationsDTO reservationsDTO =
+                reservations.isEmpty() ? null : reservationsMapper.reservationsEntitytoDTO(reservations.get());
 
         List<FeatureToggleDTO> featureToggleDtos = featureToggleService.getFeatureTogglesForUser(username);
 
         Optional<UserEntity> userEntity = userRepository.findById(username);
-        String currentUserSession = userEntity.isEmpty() ? null : userEntity.get().getCurrentSession();
-        return userSummaryMapper.userToUserSummaryDTO(username, newWorkReasonForUser, userRoleActions, reservationsDTO, currentUserSession, roleDataItemDTOList, featureToggleDtos);
+        String currentUserSession =
+                userEntity.isEmpty() ? null : userEntity.get().getCurrentSession();
+        return userSummaryMapper.userToUserSummaryDTO(
+                username,
+                newWorkReasonForUser,
+                userRoleActions,
+                reservationsDTO,
+                currentUserSession,
+                roleDataItemDTOList,
+                featureToggleDtos);
     }
 
     public UserEntity getUser(String username) {

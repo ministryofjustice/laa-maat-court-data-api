@@ -1,5 +1,10 @@
 package gov.uk.courtdata.unlink.impl;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.SYSTEM_UNLINKED;
+import static gov.uk.courtdata.constants.CourtDataConstants.WQ_SUCCESS_STATUS;
+import static gov.uk.courtdata.constants.CourtDataConstants.WQ_UNLINK_EVENT;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
@@ -8,16 +13,17 @@ import gov.uk.courtdata.enums.InCommonPlatformFlag;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
-import gov.uk.courtdata.repository.*;
+import gov.uk.courtdata.repository.IdentifierRepository;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
+import gov.uk.courtdata.repository.UnlinkReasonRepository;
+import gov.uk.courtdata.repository.WqCoreRepository;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -56,8 +62,8 @@ public class UnLinkImpl {
     private void processUnlinkReason(UnlinkModel unlinkModel) {
         Unlink unlink = unlinkModel.getUnlink();
 
-        final String otherReasonText = isBlank(unlink.getOtherReasonText()) ? SYSTEM_UNLINKED :
-                unlink.getOtherReasonText();
+        final String otherReasonText =
+                isBlank(unlink.getOtherReasonText()) ? SYSTEM_UNLINKED : unlink.getOtherReasonText();
 
         UnlinkEntity unlinkEntity = UnlinkEntity.builder()
                 .caseId(unlinkModel.getWqLinkRegisterEntity().getCaseId())

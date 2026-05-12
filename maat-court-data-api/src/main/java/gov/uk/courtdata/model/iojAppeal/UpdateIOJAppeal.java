@@ -1,12 +1,12 @@
 package gov.uk.courtdata.model.iojAppeal;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,11 +14,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class UpdateIOJAppeal extends IOJAppeal{
+public class UpdateIOJAppeal extends IOJAppeal {
     @NotNull
     private Integer id;
 
     private LocalDateTime dateModified;
+
     @NotNull
     private String userModified;
-    }
+}

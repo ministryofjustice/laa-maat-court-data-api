@@ -1,151 +1,151 @@
 package gov.uk.courtdata.hearing.service;
 
-import gov.uk.courtdata.hearing.dto.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import gov.uk.courtdata.hearing.dto.DefendantDTO;
+import gov.uk.courtdata.hearing.dto.HearingDTO;
+import gov.uk.courtdata.hearing.dto.HearingOffenceDTO;
+import gov.uk.courtdata.hearing.dto.ResultDTO;
+import gov.uk.courtdata.hearing.dto.SessionDTO;
 import gov.uk.courtdata.hearing.mapper.HearingDTOMapper;
-import gov.uk.courtdata.model.*;
+import gov.uk.courtdata.model.Defendant;
+import gov.uk.courtdata.model.Offence;
+import gov.uk.courtdata.model.Plea;
+import gov.uk.courtdata.model.Result;
+import gov.uk.courtdata.model.Session;
+import gov.uk.courtdata.model.Verdict;
 import gov.uk.courtdata.model.hearing.HearingResulted;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 @ExtendWith(MockitoExtension.class)
-public class HearingDTOMapperTest {
+class HearingDTOMapperTest {
 
     private final HearingDTOMapper hearingDTOMapper = Mappers.getMapper(HearingDTOMapper.class);
 
     @Test
-    public void givenDefendant_whenMapperIsInvoke_thenCompareData() {
+    void givenDefendant_whenMapperIsInvoke_thenCompareData() {
 
-        //given
-        Defendant defendant = Defendant.builder().defendantId("1").surname("Smith").build();
+        // given
+        Defendant defendant =
+                Defendant.builder().defendantId("1").surname("Smith").build();
 
-        //when
+        // when
         DefendantDTO defendantDTO = hearingDTOMapper.toDefendantDTO(defendant);
 
-        //then
+        // then
         assertThat(defendantDTO.getSurname()).isEqualTo("Smith");
-
     }
 
     @Test
-    public void givenResult_whenMapperIsInvoke_thenCompareData() {
+    void givenResult_whenMapperIsInvoke_thenCompareData() {
 
-        //given
+        // given
         Result result = Result.builder().resultCode("1").build();
 
-        //when
+        // when
         ResultDTO resultDTO = hearingDTOMapper.toResultDTO(result);
 
-        //then
+        // then
         assertThat(resultDTO.getResultCode()).isEqualTo(1);
     }
 
     @Test
-    public void giventoSession_whenMapperIsInvoke_thenCompareData() {
+    void giventoSession_whenMapperIsInvoke_thenCompareData() {
 
-        //given
+        // given
         Session session = Session.builder().courtLocation("London").build();
 
-        //when
+        // when
         SessionDTO sessionDTO = hearingDTOMapper.toSessionDTO(session);
 
-        //then
+        // then
         assertThat(sessionDTO.getCourtLocation()).isEqualTo("London");
     }
 
     @Test
-    public void giventoDefendant_whenMapperIsInvoke_thenCompareData() {
+    void giventoDefendant_whenMapperIsInvoke_thenCompareData() {
 
-        //given
+        // given
         Offence offence = Offence.builder().asnSeq("as12").build();
 
-        //when
+        // when
         HearingOffenceDTO hearingOffenceDTO = hearingDTOMapper.toOffenceDTO(offence);
 
-        //then
+        // then
         assertThat(hearingOffenceDTO.getAsnSeq()).isEqualTo("as12");
     }
 
     @Test
-    public void giventoHearing_whenMapperIsInvoke_thenCompareData() {
+    void giventoHearing_whenMapperIsInvoke_thenCompareData() {
 
-        //given
-        HearingResulted hearingResulted = HearingResulted.builder().caseUrn("caseurl").build();
+        // given
+        HearingResulted hearingResulted =
+                HearingResulted.builder().caseUrn("caseurl").build();
         Result result = Result.builder().resultCode("1").build();
         Offence offence = Offence.builder().asnSeq("as12").build();
-        Plea plea = Plea.builder().offenceId("off1").build();
-        Verdict verdict = Verdict.builder().category("Cat").build();
 
-
-        //when
+        // when
         HearingDTO hearingDTO = hearingDTOMapper.toHearingDTO(hearingResulted, 12, 34, 56, offence, result);
 
-        //then
-//        assertThat(hearingDTO.getOffence().getAsnSeq()).isEqualTo("as12");
+        // then
+        assertThat(hearingDTO.getOffence().getAsnSeq()).isEqualTo("as12");
         assertThat(hearingDTO.getResult().getResultCode()).isEqualTo(1);
     }
 
     @Test
-    public void givenToPlea_whenMapperIsInvoke_thenCompareData() {
+    void givenToPlea_whenMapperIsInvoke_thenCompareData() {
 
-        //given
-        HearingResulted hearingResulted = HearingResulted.builder().caseUrn("caseurl").build();
+        // given
+        HearingResulted hearingResulted =
+                HearingResulted.builder().caseUrn("caseurl").build();
         Result result = Result.builder().resultCode("1").build();
-        Plea plea = Plea
-                .builder()
+        Plea plea = Plea.builder()
                 .pleaValue("NOT_GUILTY")
                 .offenceId("8072")
                 .pleaDate("2018-10-25")
                 .build();
 
-        Offence offence = Offence
-                .builder()
-                .asnSeq("as12")
-                .plea(plea)
-                .build();
+        Offence offence = Offence.builder().asnSeq("as12").plea(plea).build();
 
-        //when
+        // when
         HearingDTO hearingDTO = hearingDTOMapper.toHearingDTO(hearingResulted, 12, 34, 56, offence, result);
 
-        //then
+        // then
         assertThat(hearingDTO.getOffence().getPlea()).isNotNull();
         assertThat(hearingDTO.getOffence().getPlea().getPleaValue()).isEqualTo("NOT_GUILTY");
         assertThat(hearingDTO.getOffence().getPlea().getOffenceId()).isEqualTo("8072");
         assertThat(hearingDTO.getOffence().getPlea().getPleaDate()).isEqualTo("2018-10-25");
-
     }
 
     @Test
-    public void givenToNullPlea_whenMapperIsInvoke_thenCompareData() {
+    void givenToNullPlea_whenMapperIsInvoke_thenCompareData() {
 
-        //given
-        HearingResulted hearingResulted = HearingResulted.builder().caseUrn("caseurl").build();
+        // given
+        HearingResulted hearingResulted =
+                HearingResulted.builder().caseUrn("caseurl").build();
         Result result = Result.builder().resultCode("1").build();
 
-        Offence offence = Offence
-                .builder()
-                .asnSeq("as12")
-                .plea(null)
-                .build();
+        Offence offence = Offence.builder().asnSeq("as12").plea(null).build();
 
-        //when
+        // when
         HearingDTO hearingDTO = hearingDTOMapper.toHearingDTO(hearingResulted, 12, 34, 56, offence, result);
 
-        //then
+        // then
         assertThat(hearingDTO.getOffence().getPlea()).isNull();
     }
 
     @Test
-    public void givenToVerdict_whenMapperIsInvoke_thenCompareData() {
+    void givenToVerdict_whenMapperIsInvoke_thenCompareData() {
 
-        //given
-        HearingResulted hearingResulted = HearingResulted.builder().caseUrn("caseurl").build();
+        // given
+        HearingResulted hearingResulted =
+                HearingResulted.builder().caseUrn("caseurl").build();
         Result result = Result.builder().resultCode("1").build();
-        Verdict verdict = Verdict
-                .builder()
+        Verdict verdict = Verdict.builder()
                 .offenceId("12345")
                 .verdictDate("2018-12-25")
                 .category("Verdict Category")
@@ -154,16 +154,12 @@ public class HearingDTOMapperTest {
                 .verdictCode("MK1212")
                 .build();
 
-        Offence offence = Offence
-                .builder()
-                .asnSeq("as12")
-                .verdict(verdict)
-                .build();
+        Offence offence = Offence.builder().asnSeq("as12").verdict(verdict).build();
 
-        //when
+        // when
         HearingDTO hearingDTO = hearingDTOMapper.toHearingDTO(hearingResulted, 12, 34, 56, offence, result);
 
-        //then
+        // then
         assertThat(hearingDTO.getOffence().getVerdict()).isNotNull();
         assertThat(hearingDTO.getOffence().getVerdict().getOffenceId()).isEqualTo("12345");
         assertThat(hearingDTO.getOffence().getVerdict().getVerdictDate()).isEqualTo("2018-12-25");
@@ -174,21 +170,18 @@ public class HearingDTOMapperTest {
     }
 
     @Test
-    public void givenToNullVerdict_whenMapperIsInvoke_thenCompareData() {
+    void givenToNullVerdict_whenMapperIsInvoke_thenCompareData() {
 
-        //given
-        HearingResulted hearingResulted = HearingResulted.builder().caseUrn("caseurl").build();
+        // given
+        HearingResulted hearingResulted =
+                HearingResulted.builder().caseUrn("caseurl").build();
         Result result = Result.builder().resultCode("1").build();
-        Offence offence = Offence
-                .builder()
-                .asnSeq("as12")
-                .verdict(null)
-                .build();
+        Offence offence = Offence.builder().asnSeq("as12").verdict(null).build();
 
-        //when
+        // when
         HearingDTO hearingDTO = hearingDTOMapper.toHearingDTO(hearingResulted, 12, 34, 56, offence, result);
 
-        //then
+        // then
         assertThat(hearingDTO.getOffence().getVerdict()).isNull();
     }
 }

@@ -1,7 +1,6 @@
 package gov.uk.courtdata.model.assessment;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -49,5 +48,4 @@ public class PassportAssessment {
     private String valid;
     private LocalDateTime dateCompleted;
     private String whoDWPChecked;
-
 }

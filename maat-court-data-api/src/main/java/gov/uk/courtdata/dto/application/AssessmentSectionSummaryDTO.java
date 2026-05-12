@@ -18,5 +18,4 @@ public class AssessmentSectionSummaryDTO extends GenericDTO {
     private Double partnerAnnualTotal;
     private Double annualTotal;
     private Collection<AssessmentDetailDTO> assessmentDetail;
-
 }

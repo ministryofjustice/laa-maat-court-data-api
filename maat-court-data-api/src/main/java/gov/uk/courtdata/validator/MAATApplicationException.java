@@ -1,6 +1,6 @@
 /*
  * MAATApplicationException.java
- * 
+ *
  * ---------------------------------------------------------------------------------------------------------------------------------------------------------------------<p>
  * Version History<p>
  * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------<p>
@@ -17,11 +17,11 @@ package gov.uk.courtdata.validator;
 public class MAATApplicationException extends ApplicationException {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	/**
+    /**
      * Constructs an instance of <code>MAATSystemException</code>.
      */
     public MAATApplicationException() {
@@ -31,6 +31,7 @@ public class MAATApplicationException extends ApplicationException {
     /**
      * Constructs an instance of <code>MAATApplicationException</code> with
      * the specified detail message.
+     *
      * @param message The detail message.
      */
     public MAATApplicationException(String message) {
@@ -40,6 +41,7 @@ public class MAATApplicationException extends ApplicationException {
     /**
      * Constructs an instance of <code>MAATApplicationException</code> with
      * the specified root cause.
+     *
      * @param rootCause The root cause of this exception
      */
     public MAATApplicationException(Throwable rootCause) {
@@ -49,11 +51,11 @@ public class MAATApplicationException extends ApplicationException {
     /**
      * Constructs an instance of <code>MAATApplicationException</code> with
      * the specified root cause and detail message.
-     * @param message The detail message.
+     *
+     * @param message   The detail message.
      * @param rootCause The root cause of this exception
      */
     public MAATApplicationException(String message, Throwable rootCause) {
         super(message, rootCause);
     }
-
 }

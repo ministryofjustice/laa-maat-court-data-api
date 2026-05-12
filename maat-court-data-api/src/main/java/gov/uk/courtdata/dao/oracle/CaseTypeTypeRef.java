@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class CaseTypeTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.CASE_TYPE_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class CaseTypeTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.CASE_TYPE_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final CaseTypeTypeRef _CaseTypeTypeRefFactory = new CaseTypeTypeRef();
+    private static final CaseTypeTypeRef _CaseTypeTypeRefFactory = new CaseTypeTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _CaseTypeTypeRefFactory; }
-  /* constructor */
-  public CaseTypeTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _CaseTypeTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public CaseTypeTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    CaseTypeTypeRef r = new CaseTypeTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static CaseTypeTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (CaseTypeTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to CaseTypeTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        CaseTypeTypeRef r = new CaseTypeTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public CaseTypeType getValue() throws SQLException
-  {
-     return (CaseTypeType) CaseTypeType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static CaseTypeTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (CaseTypeTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to CaseTypeTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(CaseTypeType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public CaseTypeType getValue() throws SQLException {
+        return (CaseTypeType) CaseTypeType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(CaseTypeType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

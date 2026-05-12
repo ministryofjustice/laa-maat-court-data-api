@@ -3,14 +3,15 @@ package gov.uk.courtdata.dces.mapper;
 import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Objects;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.jdbc.core.RowMapper;
 
 /**
  * Mapper to map the basic needed fields for FDC processing.
@@ -32,7 +33,7 @@ public class FdcMapper implements RowMapper<FdcContributionsEntity> {
         // create basic RepOrderEntity
         RepOrderEntity repOrderEntity = new RepOrderEntity();
         repOrderEntity.setId(rs.getInt("REP_ID"));
-        repOrderEntity.setSentenceOrderDate( getDateField(rs, "SENTENCE_ORDER_DATE"));
+        repOrderEntity.setSentenceOrderDate(getDateField(rs, "SENTENCE_ORDER_DATE"));
 
         fdcEntity.setRepOrderEntity(repOrderEntity);
         return fdcEntity;
@@ -40,7 +41,6 @@ public class FdcMapper implements RowMapper<FdcContributionsEntity> {
 
     private LocalDate getDateField(ResultSet rs, String fieldName) throws SQLException {
         Date date = rs.getDate(fieldName);
-        return Objects.nonNull(date)? date.toLocalDate() : null;
+        return Objects.nonNull(date) ? date.toLocalDate() : null;
     }
-
 }

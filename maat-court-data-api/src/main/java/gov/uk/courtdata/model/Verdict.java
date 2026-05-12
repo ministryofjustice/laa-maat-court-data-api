@@ -1,12 +1,8 @@
 package gov.uk.courtdata.model;
 
-
-import gov.uk.courtdata.enums.VerdictCategoryType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.Date;
 
 @Data
 @Builder

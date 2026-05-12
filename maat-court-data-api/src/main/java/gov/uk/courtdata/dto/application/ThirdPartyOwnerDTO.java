@@ -10,12 +10,12 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class ThirdPartyOwnerDTO extends GenericDTO {
-	
-	private Long	id;
-	private Long	ropdId;
-	private String ownerName;
-	private String ownerRelation;
-	private String otherRelation;
-		
-	private ThirdPartyTypeDTO thirdPartyType;
+
+    private Long id;
+    private Long ropdId;
+    private String ownerName;
+    private String ownerRelation;
+    private String otherRelation;
+
+    private ThirdPartyTypeDTO thirdPartyType;
 }

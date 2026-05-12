@@ -1,16 +1,18 @@
 package gov.uk.courtdata.link.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_2;
+import static gov.uk.courtdata.constants.CourtDataConstants.NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.YES;
+
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.CaseEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.CaseRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
-
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -36,7 +38,7 @@ public class CaseInfoProcessor implements Process {
         caseRepository.save(caseEntity);
     }
 
-    protected LocalDate getCaseCreationDate(String  caseCreationDate) {
+    protected LocalDate getCaseCreationDate(String caseCreationDate) {
         return caseCreationDate != null ? LocalDate.parse(caseCreationDate) : null;
     }
 }

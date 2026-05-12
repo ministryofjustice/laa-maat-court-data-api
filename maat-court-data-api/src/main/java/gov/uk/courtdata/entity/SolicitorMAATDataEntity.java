@@ -4,8 +4,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -17,34 +19,46 @@ public class SolicitorMAATDataEntity {
     @Id
     @Column(name = "MAAT_ID")
     private Integer maatId;
+
     @Column(name = "LIBRA_CODE")
     private String libraCode;
+
     @Column(name = "CMU_ID")
     private Integer cmuId;
+
     @Column(name = "SOLICITOR_NAME")
     private String solicitorName;
+
     @Column(name = "ACCOUNT_CODE")
     private String accountCode;
+
     @Column(name = "ACCOUNT_NAME")
     private String accountName;
+
     @Column(name = "LINE1")
     private String line1;
+
     @Column(name = "LINE2")
     private String line2;
+
     @Column(name = "LINE3")
     private String line3;
+
     @Column(name = "COUNTY")
     private String county;
+
     @Column(name = "CITY")
     private String city;
+
     @Column(name = "POSTCODE")
     private String postcode;
+
     @Column(name = "PHONE")
     private String phone;
+
     @Column(name = "EMAIL")
     private String email;
+
     @Column(name = "ADMIN_EMAIL")
     private String adminEmail;
-
-
 }

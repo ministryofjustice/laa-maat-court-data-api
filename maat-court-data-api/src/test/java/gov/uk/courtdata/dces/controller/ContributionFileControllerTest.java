@@ -1,9 +1,22 @@
 package gov.uk.courtdata.dces.controller;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapper;
 import gov.uk.courtdata.dces.mapper.ContributionFileMapperImpl;
 import gov.uk.courtdata.dces.service.ContributionFileService;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,18 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ContributionFileController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -41,7 +42,8 @@ class ContributionFileControllerTest {
     @Test
     void givenCorrectParameters_whenGetContributionFileInvoked_thenResponseIsReturned() throws Exception {
         final int fileId = 99;
-        final var response = mapper.toContributionFileResponse(TestEntityDataBuilder.getPopulatedContributionFilesEntity(fileId));
+        final var response =
+                mapper.toContributionFileResponse(TestEntityDataBuilder.getPopulatedContributionFilesEntity(fileId));
         when(contributionFileService.getContributionFile(fileId)).thenReturn(Optional.of(response));
 
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}", fileId))
@@ -74,7 +76,8 @@ class ContributionFileControllerTest {
     void givenCorrectParameters_whenGetAllContributionFileErrorInvoked_thenResponseIsReturned() throws Exception {
         final int fileId = 99;
         final int contributionId = 888;
-        final var item = mapper.toContributionFileErrorResponse(TestEntityDataBuilder.getContributionFileErrorsEntity(fileId, contributionId));
+        final var item = mapper.toContributionFileErrorResponse(
+                TestEntityDataBuilder.getContributionFileErrorsEntity(fileId, contributionId));
         when(contributionFileService.getAllContributionFileError(fileId)).thenReturn(List.of(item));
 
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error", fileId))
@@ -87,7 +90,8 @@ class ContributionFileControllerTest {
     @Test
     void givenIncorrectParameters_whenGetAllContributionFileErrorInvoked_thenResponseIsEmpty() throws Exception {
         final int incorrectFileId = 666;
-        when(contributionFileService.getAllContributionFileError(incorrectFileId)).thenReturn(Collections.emptyList());
+        when(contributionFileService.getAllContributionFileError(incorrectFileId))
+                .thenReturn(Collections.emptyList());
 
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error", incorrectFileId))
                 .andExpect(status().isOk())
@@ -109,10 +113,13 @@ class ContributionFileControllerTest {
     void givenCorrectParameters_whenGetContributionFileErrorInvoked_thenResponseIsReturned() throws Exception {
         final int fileId = 99;
         final int contributionId = 888;
-        final var response = mapper.toContributionFileErrorResponse(TestEntityDataBuilder.getContributionFileErrorsEntity(fileId, contributionId));
-        when(contributionFileService.getContributionFileError(contributionId, fileId)).thenReturn(Optional.of(response));
+        final var response = mapper.toContributionFileErrorResponse(
+                TestEntityDataBuilder.getContributionFileErrorsEntity(fileId, contributionId));
+        when(contributionFileService.getContributionFileError(contributionId, fileId))
+                .thenReturn(Optional.of(response));
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error/{contributionId}", fileId, contributionId))
+        mockMvc.perform(MockMvcRequestBuilders.get(
+                        BASE_URL + "/{fileId}/error/{contributionId}", fileId, contributionId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.contributionFileId").value(fileId))
@@ -124,9 +131,11 @@ class ContributionFileControllerTest {
     void givenIncorrectParameters_whenGetContributionFileErrorInvoked_thenNotFound() throws Exception {
         final int incorrectFileId = 666;
         final int incorrectContributionId = 777;
-        when(contributionFileService.getContributionFileError(incorrectContributionId, incorrectFileId)).thenReturn(Optional.empty());
+        when(contributionFileService.getContributionFileError(incorrectContributionId, incorrectFileId))
+                .thenReturn(Optional.empty());
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error/{contributionId}", incorrectFileId, incorrectContributionId))
+        mockMvc.perform(MockMvcRequestBuilders.get(
+                        BASE_URL + "/{fileId}/error/{contributionId}", incorrectFileId, incorrectContributionId))
                 .andExpect(status().isNotFound());
         verify(contributionFileService).getContributionFileError(incorrectContributionId, incorrectFileId);
     }
@@ -136,7 +145,8 @@ class ContributionFileControllerTest {
         final String invalidFiledId = "muffin";
         final String invalidContributionId = "crumpet";
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{fileId}/error/{contributionId}", invalidFiledId, invalidContributionId))
+        mockMvc.perform(MockMvcRequestBuilders.get(
+                        BASE_URL + "/{fileId}/error/{contributionId}", invalidFiledId, invalidContributionId))
                 .andExpect(status().isBadRequest());
         verify(contributionFileService, never()).getContributionFileError(anyInt(), anyInt());
     }

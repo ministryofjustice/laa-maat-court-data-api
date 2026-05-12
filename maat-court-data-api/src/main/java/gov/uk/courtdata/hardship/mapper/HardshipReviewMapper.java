@@ -10,17 +10,24 @@ import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.UpdateHardshipReview;
-import org.mapstruct.*;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
+
+import org.mapstruct.Builder;
+import org.mapstruct.CollectionMappingStrategy;
+import org.mapstruct.InheritInverseConfiguration;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
-        builder = @Builder(disableBuilder = true)
-)
+        builder = @Builder(disableBuilder = true))
 public interface HardshipReviewMapper {
 
     @Mapping(target = "solicitorCosts.rate", source = "solicitorRate")
@@ -35,22 +42,25 @@ public interface HardshipReviewMapper {
     @Mapping(source = "status", target = "status", qualifiedByName = "mapHardshipReviewStatusEnumToStatus")
     HardshipReviewEntity hardshipReviewDTOToHardshipReviewEntity(final HardshipReviewDTO hardshipReviewDTO);
 
-    @Mapping(source = "detailType", target = "detailType", qualifiedByName = "mapDetailTypeToHardshipReviewDetailTypeEnum")
+    @Mapping(
+            source = "detailType",
+            target = "detailType",
+            qualifiedByName = "mapDetailTypeToHardshipReviewDetailTypeEnum")
     HardshipReviewDetail hardshipReviewDetailEntityToHardshipReviewDetail(
-            final HardshipReviewDetailEntity reviewDetailEntity
-    );
+            final HardshipReviewDetailEntity reviewDetailEntity);
 
-    @Mapping(source = "detailType", target = "detailType", qualifiedByName = "mapHardshipReviewDetailTypeEnumToDetailType")
+    @Mapping(
+            source = "detailType",
+            target = "detailType",
+            qualifiedByName = "mapHardshipReviewDetailTypeEnumToDetailType")
     HardshipReviewDetailEntity hardshipReviewDetailToHardshipReviewDetailEntity(
             final HardshipReviewDetail reviewDetail);
 
     HardshipReviewProgress hardshipReviewProgressEntityToHardshipReviewProgress(
-            final HardshipReviewProgressEntity reviewProgressEntity
-    );
+            final HardshipReviewProgressEntity reviewProgressEntity);
 
     HardshipReviewProgressEntity hardshipReviewProgressToHardshipReviewProgressEntity(
-            final HardshipReviewProgress reviewProgress
-    );
+            final HardshipReviewProgress reviewProgress);
 
     NewWorkReason newWorkReasonEntityToNewWorkReason(final NewWorkReasonEntity newWorkReason);
 
@@ -90,7 +100,7 @@ public interface HardshipReviewMapper {
 
     @Named("mapHardshipReviewDetailTypeEnumToDetailType")
     default String mapHardshipReviewDetailTypeEnumToDetailType(HardshipReviewDetailType detailType) {
-        if (detailType !=  null) {
+        if (detailType != null) {
             return detailType.getType();
         }
         return null;

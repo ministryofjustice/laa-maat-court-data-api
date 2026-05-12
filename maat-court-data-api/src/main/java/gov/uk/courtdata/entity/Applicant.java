@@ -7,11 +7,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 @Builder
 @AllArgsConstructor
@@ -22,7 +27,11 @@ import java.time.LocalDateTime;
 @Table(name = "APPLICANTS", schema = "TOGDATA")
 public class Applicant {
     @Id
-    @SequenceGenerator(name = "applicants_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "applicants_gen_seq",
+            sequenceName = "S_GENERAL_SEQUENCE",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicants_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
@@ -108,5 +117,4 @@ public class Applicant {
 
     @Column(name = "PAME_PAYMENT_METHOD")
     private String pamePaymentMethod;
-
 }

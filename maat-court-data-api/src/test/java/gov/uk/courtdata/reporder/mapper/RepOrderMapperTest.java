@@ -1,18 +1,26 @@
 package gov.uk.courtdata.reporder.mapper;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.dto.RepOrderStateDTO;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.IOJAppealEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.UserEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.reporder.MaatSearchResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class RepOrderMapperTest {
 
@@ -94,7 +102,8 @@ class RepOrderMapperTest {
                 .dateCreated(DATE_MEANS_CREATED)
                 .userCreatedEntity(userEntity)
                 .rtCode(MEANS_REVIEW_TYPE)
-                .newWorkReason(NewWorkReasonEntity.builder().code(MEANS_WORK_REASON).build())
+                .newWorkReason(
+                        NewWorkReasonEntity.builder().code(MEANS_WORK_REASON).build())
                 .build();
 
         financialAssessmentInitialFail = FinancialAssessmentEntity.builder()
@@ -117,16 +126,16 @@ class RepOrderMapperTest {
 
         // Mocking IoJ Appeals
         iojAppealPass = IOJAppealEntity.builder()
-            .decisionResult(IOJ_APPEAL_RESULT_PASS)
-            .userCreated(IOJ_APPEAL_ASSESSOR_NAME)
-            .decisionDate(IOJ_APPEAL_DATE)
-            .build();
+                .decisionResult(IOJ_APPEAL_RESULT_PASS)
+                .userCreated(IOJ_APPEAL_ASSESSOR_NAME)
+                .decisionDate(IOJ_APPEAL_DATE)
+                .build();
 
         iojAppealFail = IOJAppealEntity.builder()
-            .decisionResult(IOJ_APPEAL_RESULT_FAIL)
-            .userCreated(IOJ_APPEAL_ASSESSOR_NAME)
-            .decisionDate(IOJ_APPEAL_DATE)
-            .build();
+                .decisionResult(IOJ_APPEAL_RESULT_FAIL)
+                .userCreated(IOJ_APPEAL_ASSESSOR_NAME)
+                .decisionDate(IOJ_APPEAL_DATE)
+                .build();
 
         // Mocking the RepOrderEntity
         repOrderEntity = RepOrderEntity.builder()
@@ -153,38 +162,39 @@ class RepOrderMapperTest {
         RepOrderStateDTO repOrderState = repOrderMapper.mapRepOrderState(repOrderEntity);
 
         // Asserting the values
-        assertAll("Assert actual RepOrderState",
-                () -> assertEquals(USN, repOrderState.getUsn()),
-                () -> assertEquals(MAAT_REF, repOrderState.getMaatRef()),
-                () -> assertEquals(CASE_ID, repOrderState.getCaseId()),
-                () -> assertEquals(CASE_TYPE, repOrderState.getCaseType()),
-                () -> assertEquals(IOJ_RESULT_PASS, repOrderState.getIojResult()),
-                () -> assertNotNull(repOrderState.getIojAssessorName()),
-                () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getIojAssessorName()),
-                () -> assertEquals(DATE_APP_CREATED, repOrderState.getDateAppCreated()),
-                () -> assertNull(repOrderState.getIojReason()),
-                () -> assertNull(repOrderState.getMeansInitResult()),
-                () -> assertNull(repOrderState.getMeansInitStatus()),
-                () -> assertNull(repOrderState.getMeansFullResult()),
-                () -> assertNull(repOrderState.getMeansFullStatus()),
-                () -> assertNull(repOrderState.getMeansAssessorName()),
-                () -> assertNull(repOrderState.getDateMeansCreated()),
-                () -> assertEquals(PASSPORT_RESULT_PASS, repOrderState.getPassportResult()),
-                () -> assertEquals(PASSPORT_STATUS, repOrderState.getPassportStatus()),
-                () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getPassportAssessorName()),
-                () -> assertEquals(DATE_PASSPORT_CREATED, repOrderState.getDatePassportCreated()),
-                () -> assertNull(repOrderState.getIojAppealResult()),
-                () -> assertNull(repOrderState.getIojAppealAssessorName()),
-                () -> assertNull(repOrderState.getIojAppealDate()),
-                () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
-                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision()),
-                () -> assertEquals(PASSPORT_REVIEW_TYPE, repOrderState.getPassportReviewType()),
-                () -> assertEquals(PASSPORT_WORK_REASON, repOrderState.getPassportWorkReason())
-        );
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(repOrderState.getUsn()).isEqualTo(USN);
+            assertThat(repOrderState.getMaatRef()).isEqualTo(MAAT_REF);
+            assertThat(repOrderState.getCaseId()).isEqualTo(CASE_ID);
+            assertThat(repOrderState.getCaseType()).isEqualTo(CASE_TYPE);
+            assertThat(repOrderState.getIojResult()).isEqualTo(IOJ_RESULT_PASS);
+            assertThat(repOrderState.getIojAssessorName()).isNotNull();
+            assertThat(repOrderState.getIojAssessorName()).isEqualTo(IOJ_ASSESSOR_FULL_NAME);
+            assertThat(repOrderState.getDateAppCreated()).isEqualTo(DATE_APP_CREATED);
+            assertThat(repOrderState.getIojReason()).isNull();
+            assertThat(repOrderState.getMeansInitResult()).isNull();
+            assertThat(repOrderState.getMeansInitStatus()).isNull();
+            assertThat(repOrderState.getMeansFullResult()).isNull();
+            assertThat(repOrderState.getMeansFullStatus()).isNull();
+            assertThat(repOrderState.getMeansAssessorName()).isNull();
+            assertThat(repOrderState.getDateMeansCreated()).isNull();
+            assertThat(repOrderState.getPassportResult()).isEqualTo(PASSPORT_RESULT_PASS);
+            assertThat(repOrderState.getPassportStatus()).isEqualTo(PASSPORT_STATUS);
+            assertThat(repOrderState.getPassportAssessorName()).isEqualTo(IOJ_ASSESSOR_FULL_NAME);
+            assertThat(repOrderState.getDatePassportCreated()).isEqualTo(DATE_PASSPORT_CREATED);
+            assertThat(repOrderState.getIojAppealResult()).isNull();
+            assertThat(repOrderState.getIojAppealAssessorName()).isNull();
+            assertThat(repOrderState.getIojAppealDate()).isNull();
+            assertThat(repOrderState.getFundingDecision()).isEqualTo(FUNDING_DECISION);
+            assertThat(repOrderState.getCcRepDecision()).isEqualTo(CC_REP_DECISION);
+            assertThat(repOrderState.getPassportReviewType()).isEqualTo(PASSPORT_REVIEW_TYPE);
+            assertThat(repOrderState.getPassportWorkReason()).isEqualTo(PASSPORT_WORK_REASON);
+        });
     }
 
     @Test
-    void givenValidRepOrderEntityWithPassportFailAndInitialAssessmentPass_whenMapRepOrderStateIsCalled_thenRepOrderStateIsReturned() {
+    void
+            givenValidRepOrderEntityWithPassportFailAndInitialAssessmentPass_whenMapRepOrderStateIsCalled_thenRepOrderStateIsReturned() {
         repOrderEntity.getPassportAssessments().add(passportAssessmentFail);
         repOrderEntity.getFinancialAssessments().add(financialAssessmentInitialPass);
 
@@ -192,35 +202,38 @@ class RepOrderMapperTest {
         RepOrderStateDTO repOrderState = repOrderMapper.mapRepOrderState(repOrderEntity);
 
         // Asserting the values
-        assertAll("Assert actual RepOrderState",
-                () -> assertEquals(USN, repOrderState.getUsn()),
-                () -> assertEquals(MAAT_REF, repOrderState.getMaatRef()),
-                () -> assertEquals(CASE_ID, repOrderState.getCaseId()),
-                () -> assertEquals(CASE_TYPE, repOrderState.getCaseType()),
-                () -> assertEquals(IOJ_RESULT_PASS, repOrderState.getIojResult()),
-                () -> assertNotNull(repOrderState.getIojAssessorName()),
-                () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getIojAssessorName()),
-                () -> assertEquals(DATE_APP_CREATED, repOrderState.getDateAppCreated()),
-                () -> assertNull(repOrderState.getIojReason()),
-                () -> assertEquals(MEANS_INIT_RESULT_PASS, repOrderState.getMeansInitResult()),
-                () -> assertEquals(MEANS_STATUS, repOrderState.getMeansInitStatus()),
-                () -> assertNull(repOrderState.getMeansFullResult()),
-                () -> assertNull(repOrderState.getMeansFullStatus()),
-                () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getMeansAssessorName()),
-                () -> assertEquals(DATE_MEANS_CREATED, repOrderState.getDateMeansCreated()),
-                () -> assertEquals(PASSPORT_RESULT_FAIL, repOrderState.getPassportResult()),
-                () -> assertEquals(PASSPORT_STATUS, repOrderState.getPassportStatus()),
-                () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getPassportAssessorName()),
-                () -> assertEquals(DATE_PASSPORT_CREATED, repOrderState.getDatePassportCreated()),
-                () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
-                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision()),
-                () -> assertEquals(MEANS_REVIEW_TYPE, repOrderState.getMeansReviewType()),
-                () -> assertEquals(MEANS_WORK_REASON, repOrderState.getMeansWorkReason())
-        );
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(repOrderState.getUsn()).isEqualTo(USN);
+            assertThat(repOrderState.getMaatRef()).isEqualTo(MAAT_REF);
+            assertThat(repOrderState.getCaseId()).isEqualTo(CASE_ID);
+            assertThat(repOrderState.getCaseType()).isEqualTo(CASE_TYPE);
+            assertThat(repOrderState.getIojResult()).isEqualTo(IOJ_RESULT_PASS);
+            assertThat(repOrderState.getIojAssessorName()).isNotNull().isEqualTo(IOJ_ASSESSOR_FULL_NAME);
+            assertThat(repOrderState.getDateAppCreated()).isEqualTo(DATE_APP_CREATED);
+            assertThat(repOrderState.getIojReason()).isNull();
+            assertThat(repOrderState.getMeansInitResult()).isEqualTo(MEANS_INIT_RESULT_PASS);
+            assertThat(repOrderState.getMeansInitStatus()).isEqualTo(MEANS_STATUS);
+            assertThat(repOrderState.getMeansFullResult()).isNull();
+            assertThat(repOrderState.getMeansFullStatus()).isNull();
+            assertThat(repOrderState.getMeansAssessorName()).isEqualTo(IOJ_ASSESSOR_FULL_NAME);
+            assertThat(repOrderState.getDateMeansCreated()).isEqualTo(DATE_MEANS_CREATED);
+            assertThat(repOrderState.getPassportResult()).isEqualTo(PASSPORT_RESULT_FAIL);
+            assertThat(repOrderState.getPassportStatus()).isEqualTo(PASSPORT_STATUS);
+            assertThat(repOrderState.getPassportAssessorName()).isEqualTo(IOJ_ASSESSOR_FULL_NAME);
+            assertThat(repOrderState.getDatePassportCreated()).isEqualTo(DATE_PASSPORT_CREATED);
+            assertThat(repOrderState.getIojAppealResult()).isNull();
+            assertThat(repOrderState.getIojAppealAssessorName()).isNull();
+            assertThat(repOrderState.getIojAppealDate()).isNull();
+            assertThat(repOrderState.getFundingDecision()).isEqualTo(FUNDING_DECISION);
+            assertThat(repOrderState.getCcRepDecision()).isEqualTo(CC_REP_DECISION);
+            assertThat(repOrderState.getMeansReviewType()).isEqualTo(MEANS_REVIEW_TYPE);
+            assertThat(repOrderState.getMeansWorkReason()).isEqualTo(MEANS_WORK_REASON);
+        });
     }
 
     @Test
-    void givenValidRepOrderEntityWithPassportFailAndInitialAssessmentFailAndFullAssessmentPass_whenMapRepOrderStateIsCalled_thenRepOrderStateIsReturned() {
+    void
+            givenValidRepOrderEntityWithPassportFailAndInitialAssessmentFailAndFullAssessmentPass_whenMapRepOrderStateIsCalled_thenRepOrderStateIsReturned() {
         repOrderEntity.getPassportAssessments().add(passportAssessmentFail);
         repOrderEntity.getFinancialAssessments().add(financialAssessmentInitialFail);
         repOrderEntity.getFinancialAssessments().add(financialAssessmentFullPass);
@@ -229,29 +242,28 @@ class RepOrderMapperTest {
         RepOrderStateDTO repOrderState = repOrderMapper.mapRepOrderState(repOrderEntity);
 
         // Asserting the values
-        assertAll("Assert actual RepOrderState",
-                () -> assertEquals(USN, repOrderState.getUsn()),
-                () -> assertEquals(MAAT_REF, repOrderState.getMaatRef()),
-                () -> assertEquals(CASE_ID, repOrderState.getCaseId()),
-                () -> assertEquals(CASE_TYPE, repOrderState.getCaseType()),
-                () -> assertEquals(IOJ_RESULT_PASS, repOrderState.getIojResult()),
-                () -> assertNotNull(repOrderState.getIojAssessorName()),
-                () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getIojAssessorName()),
-                () -> assertEquals(DATE_APP_CREATED, repOrderState.getDateAppCreated()),
-                () -> assertNull(repOrderState.getIojReason()),
-                () -> assertEquals(MEANS_INIT_RESULT_FAIL, repOrderState.getMeansInitResult()),
-                () -> assertEquals(MEANS_STATUS, repOrderState.getMeansInitStatus()),
-                () -> assertEquals(MEANS_FULL_RESULT_PASS, repOrderState.getMeansFullResult()),
-                () -> assertEquals(MEANS_STATUS, repOrderState.getMeansFullStatus()),
-                () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getMeansAssessorName()),
-                () -> assertEquals(DATE_MEANS_CREATED, repOrderState.getDateMeansCreated()),
-                () -> assertEquals(PASSPORT_RESULT_FAIL, repOrderState.getPassportResult()),
-                () -> assertEquals(PASSPORT_STATUS, repOrderState.getPassportStatus()),
-                () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getPassportAssessorName()),
-                () -> assertEquals(DATE_PASSPORT_CREATED, repOrderState.getDatePassportCreated()),
-                () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
-                () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision())
-        );
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(repOrderState.getUsn()).isEqualTo(USN);
+            assertThat(repOrderState.getMaatRef()).isEqualTo(MAAT_REF);
+            assertThat(repOrderState.getCaseId()).isEqualTo(CASE_ID);
+            assertThat(repOrderState.getCaseType()).isEqualTo(CASE_TYPE);
+            assertThat(repOrderState.getIojResult()).isEqualTo(IOJ_RESULT_PASS);
+            assertThat(repOrderState.getIojAssessorName()).isNotNull().isEqualTo(IOJ_ASSESSOR_FULL_NAME);
+            assertThat(repOrderState.getDateAppCreated()).isEqualTo(DATE_APP_CREATED);
+            assertThat(repOrderState.getIojReason()).isNull();
+            assertThat(repOrderState.getMeansInitResult()).isEqualTo(MEANS_INIT_RESULT_FAIL);
+            assertThat(repOrderState.getMeansInitStatus()).isEqualTo(MEANS_STATUS);
+            assertThat(repOrderState.getMeansFullResult()).isEqualTo(MEANS_FULL_RESULT_PASS);
+            assertThat(repOrderState.getMeansFullStatus()).isEqualTo(MEANS_STATUS);
+            assertThat(repOrderState.getMeansAssessorName()).isEqualTo(IOJ_ASSESSOR_FULL_NAME);
+            assertThat(repOrderState.getDateMeansCreated()).isEqualTo(DATE_MEANS_CREATED);
+            assertThat(repOrderState.getPassportResult()).isEqualTo(PASSPORT_RESULT_FAIL);
+            assertThat(repOrderState.getPassportStatus()).isEqualTo(PASSPORT_STATUS);
+            assertThat(repOrderState.getPassportAssessorName()).isEqualTo(IOJ_ASSESSOR_FULL_NAME);
+            assertThat(repOrderState.getDatePassportCreated()).isEqualTo(DATE_PASSPORT_CREATED);
+            assertThat(repOrderState.getFundingDecision()).isEqualTo(FUNDING_DECISION);
+            assertThat(repOrderState.getCcRepDecision()).isEqualTo(CC_REP_DECISION);
+        });
     }
 
     @Test
@@ -263,34 +275,32 @@ class RepOrderMapperTest {
         RepOrderStateDTO repOrderState = repOrderMapper.mapRepOrderState(repOrderEntity);
 
         // Asserting the values
-        assertAll("Assert actual RepOrderState",
-            () -> assertEquals(USN, repOrderState.getUsn()),
-            () -> assertEquals(MAAT_REF, repOrderState.getMaatRef()),
-            () -> assertEquals(CASE_ID, repOrderState.getCaseId()),
-            () -> assertEquals(CASE_TYPE, repOrderState.getCaseType()),
-            () -> assertEquals(IOJ_RESULT_FAIL, repOrderState.getIojResult()),
-            () -> assertNotNull(repOrderState.getIojAssessorName()),
-            () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getIojAssessorName()),
-            () -> assertEquals(DATE_APP_CREATED, repOrderState.getDateAppCreated()),
-            () -> assertNull(repOrderState.getIojReason()),
-            () -> assertNull(repOrderState.getMeansInitResult()),
-            () -> assertNull(repOrderState.getMeansInitStatus()),
-            () -> assertNull(repOrderState.getMeansFullResult()),
-            () -> assertNull(repOrderState.getMeansFullStatus()),
-            () -> assertNull(repOrderState.getMeansAssessorName()),
-            () -> assertNull(repOrderState.getDateMeansCreated()),
-            () -> assertNull(repOrderState.getPassportResult()),
-            () -> assertNull(repOrderState.getPassportStatus()),
-            () -> assertNull(repOrderState.getPassportAssessorName()),
-            () -> assertNull(repOrderState.getDatePassportCreated()),
-            () -> assertEquals(IOJ_APPEAL_RESULT_PASS, repOrderState.getIojAppealResult()),
-            () -> assertEquals(IOJ_APPEAL_ASSESSOR_NAME, repOrderState.getIojAppealAssessorName()),
-            () -> assertEquals(IOJ_APPEAL_DATE, repOrderState.getIojAppealDate()),
-            () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
-            () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision())
-        );
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(repOrderState.getUsn()).isEqualTo(USN);
+            assertThat(repOrderState.getMaatRef()).isEqualTo(MAAT_REF);
+            assertThat(repOrderState.getCaseId()).isEqualTo(CASE_ID);
+            assertThat(repOrderState.getCaseType()).isEqualTo(CASE_TYPE);
+            assertThat(repOrderState.getIojResult()).isEqualTo(IOJ_RESULT_FAIL);
+            assertThat(repOrderState.getIojAssessorName()).isNotNull().isEqualTo(IOJ_ASSESSOR_FULL_NAME);
+            assertThat(repOrderState.getDateAppCreated()).isEqualTo(DATE_APP_CREATED);
+            assertThat(repOrderState.getIojReason()).isNull();
+            assertThat(repOrderState.getMeansInitResult()).isNull();
+            assertThat(repOrderState.getMeansInitStatus()).isNull();
+            assertThat(repOrderState.getMeansFullResult()).isNull();
+            assertThat(repOrderState.getMeansFullStatus()).isNull();
+            assertThat(repOrderState.getMeansAssessorName()).isNull();
+            assertThat(repOrderState.getDateMeansCreated()).isNull();
+            assertThat(repOrderState.getPassportResult()).isNull();
+            assertThat(repOrderState.getPassportStatus()).isNull();
+            assertThat(repOrderState.getPassportAssessorName()).isNull();
+            assertThat(repOrderState.getDatePassportCreated()).isNull();
+            assertThat(repOrderState.getIojAppealResult()).isEqualTo(IOJ_APPEAL_RESULT_PASS);
+            assertThat(repOrderState.getIojAppealAssessorName()).isEqualTo(IOJ_APPEAL_ASSESSOR_NAME);
+            assertThat(repOrderState.getIojAppealDate()).isEqualTo(IOJ_APPEAL_DATE);
+            assertThat(repOrderState.getFundingDecision()).isEqualTo(FUNDING_DECISION);
+            assertThat(repOrderState.getCcRepDecision()).isEqualTo(CC_REP_DECISION);
+        });
     }
-
 
     @Test
     void givenValidRepOrderEntityWithIojAppealFail_whenMapRepOrderStateIsCalled_thenRepOrderStateIsReturned() {
@@ -301,58 +311,60 @@ class RepOrderMapperTest {
         RepOrderStateDTO repOrderState = repOrderMapper.mapRepOrderState(repOrderEntity);
 
         // Asserting the values
-        assertAll("Assert actual RepOrderState",
-            () -> assertEquals(USN, repOrderState.getUsn()),
-            () -> assertEquals(MAAT_REF, repOrderState.getMaatRef()),
-            () -> assertEquals(CASE_ID, repOrderState.getCaseId()),
-            () -> assertEquals(CASE_TYPE, repOrderState.getCaseType()),
-            () -> assertEquals(IOJ_RESULT_FAIL, repOrderState.getIojResult()),
-            () -> assertNotNull(repOrderState.getIojAssessorName()),
-            () -> assertEquals(IOJ_ASSESSOR_FULL_NAME, repOrderState.getIojAssessorName()),
-            () -> assertEquals(DATE_APP_CREATED, repOrderState.getDateAppCreated()),
-            () -> assertNull(repOrderState.getIojReason()),
-            () -> assertNull(repOrderState.getMeansInitResult()),
-            () -> assertNull(repOrderState.getMeansInitStatus()),
-            () -> assertNull(repOrderState.getMeansFullResult()),
-            () -> assertNull(repOrderState.getMeansFullStatus()),
-            () -> assertNull(repOrderState.getMeansAssessorName()),
-            () -> assertNull(repOrderState.getDateMeansCreated()),
-            () -> assertNull(repOrderState.getPassportResult()),
-            () -> assertNull(repOrderState.getPassportStatus()),
-            () -> assertNull(repOrderState.getPassportAssessorName()),
-            () -> assertNull(repOrderState.getDatePassportCreated()),
-            () -> assertEquals(IOJ_APPEAL_RESULT_FAIL, repOrderState.getIojAppealResult()),
-            () -> assertEquals(IOJ_APPEAL_ASSESSOR_NAME, repOrderState.getIojAppealAssessorName()),
-            () -> assertEquals(IOJ_APPEAL_DATE, repOrderState.getIojAppealDate()),
-            () -> assertEquals(FUNDING_DECISION, repOrderState.getFundingDecision()),
-            () -> assertEquals(CC_REP_DECISION, repOrderState.getCcRepDecision())
-        );
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(repOrderState.getUsn()).isEqualTo(USN);
+            assertThat(repOrderState.getMaatRef()).isEqualTo(MAAT_REF);
+            assertThat(repOrderState.getCaseId()).isEqualTo(CASE_ID);
+            assertThat(repOrderState.getCaseType()).isEqualTo(CASE_TYPE);
+            assertThat(repOrderState.getIojResult()).isEqualTo(IOJ_RESULT_FAIL);
+            assertThat(repOrderState.getIojAssessorName()).isNotNull().isEqualTo(IOJ_ASSESSOR_FULL_NAME);
+            assertThat(repOrderState.getDateAppCreated()).isEqualTo(DATE_APP_CREATED);
+            assertThat(repOrderState.getIojReason()).isNull();
+            assertThat(repOrderState.getMeansInitResult()).isNull();
+            assertThat(repOrderState.getMeansInitStatus()).isNull();
+            assertThat(repOrderState.getMeansFullResult()).isNull();
+            assertThat(repOrderState.getMeansFullStatus()).isNull();
+            assertThat(repOrderState.getMeansAssessorName()).isNull();
+            assertThat(repOrderState.getDateMeansCreated()).isNull();
+            assertThat(repOrderState.getPassportResult()).isNull();
+            assertThat(repOrderState.getPassportStatus()).isNull();
+            assertThat(repOrderState.getPassportAssessorName()).isNull();
+            assertThat(repOrderState.getDatePassportCreated()).isNull();
+            assertThat(repOrderState.getIojAppealResult()).isEqualTo(IOJ_APPEAL_RESULT_FAIL);
+            assertThat(repOrderState.getIojAppealAssessorName()).isEqualTo(IOJ_APPEAL_ASSESSOR_NAME);
+            assertThat(repOrderState.getIojAppealDate()).isEqualTo(IOJ_APPEAL_DATE);
+            assertThat(repOrderState.getFundingDecision()).isEqualTo(FUNDING_DECISION);
+            assertThat(repOrderState.getCcRepDecision()).isEqualTo(CC_REP_DECISION);
+        });
     }
 
     @Test
     void givenAValidRequestAndNullLinking_whenMapMaatSearchResponseIsInvoked_thenCorrectResponseShouldReturn() {
         MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, null, null);
-        assertEquals(TestEntityDataBuilder.REP_ID, response.getMaatId());
-        assertFalse(response.isLinked());
+        assertThat(response.getMaatId()).isEqualTo(TestEntityDataBuilder.REP_ID);
+        assertThat(response.isLinked()).isFalse();
     }
 
     @Test
     void givenAValidRequestAndEmptyLinking_whenMapMaatSearchResponseIsInvoked_thenCorrectResponseShouldReturn() {
-        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, Collections.emptyList(), null);
-        assertEquals(TestEntityDataBuilder.REP_ID, response.getMaatId());
-        assertFalse(response.isLinked());
-    }
-    @Test
-    void givenAValidRequest_whenMapMaatSearchResponseIsInvoked_thenCorrectResponseShouldReturn() {
-        List<WqLinkRegisterEntity> wqLinkRegisterEntities = List.of(TestEntityDataBuilder.getWQLinkRegisterEntity(1235));
-        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, wqLinkRegisterEntities, TestEntityDataBuilder.CASE_URN);
-        assertEquals(TestEntityDataBuilder.REP_ID, response.getMaatId());
-        assertTrue(response.isLinked());
-        assertEquals(TestEntityDataBuilder.LIBRA_ID, response.getLinkingDetail().getLibraId());
-        assertEquals(TestEntityDataBuilder.CASE_URN, response.getLinkingDetail().getCaseUrn());
-        assertEquals(TestEntityDataBuilder.TEST_CASE_ID, response.getLinkingDetail().getCaseId());
-        assertEquals("16", response.getLinkingDetail().getCjsAreaCode());
-        assertEquals("B16BG", response.getLinkingDetail().getCjsLocation());
+        MaatSearchResponse response =
+                repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, Collections.emptyList(), null);
+        assertThat(response.getMaatId()).isEqualTo(TestEntityDataBuilder.REP_ID);
+        assertThat(response.isLinked()).isFalse();
     }
 
+    @Test
+    void givenAValidRequest_whenMapMaatSearchResponseIsInvoked_thenCorrectResponseShouldReturn() {
+        List<WqLinkRegisterEntity> wqLinkRegisterEntities =
+                List.of(TestEntityDataBuilder.getWQLinkRegisterEntity(1235));
+        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(
+                TestEntityDataBuilder.REP_ID, wqLinkRegisterEntities, TestEntityDataBuilder.CASE_URN);
+        assertThat(response.getMaatId()).isEqualTo(TestEntityDataBuilder.REP_ID);
+        assertThat(response.isLinked()).isTrue();
+        assertThat(response.getLinkingDetail().getLibraId()).isEqualTo(TestEntityDataBuilder.LIBRA_ID);
+        assertThat(response.getLinkingDetail().getCaseUrn()).isEqualTo(TestEntityDataBuilder.CASE_URN);
+        assertThat(response.getLinkingDetail().getCaseId()).isEqualTo(TestEntityDataBuilder.TEST_CASE_ID);
+        assertThat(response.getLinkingDetail().getCjsAreaCode()).isEqualTo("16");
+        assertThat(response.getLinkingDetail().getCjsLocation()).isEqualTo("B16BG");
+    }
 }

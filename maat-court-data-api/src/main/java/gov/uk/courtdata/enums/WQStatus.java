@@ -4,7 +4,6 @@ package gov.uk.courtdata.enums;
  * <code>WQStatus</code> is list of work queue statuses.
  */
 public enum WQStatus {
-
     SUCCESS(0),
     FAIL(1),
     WAITING(2),
@@ -22,5 +21,4 @@ public enum WQStatus {
     public int value() {
         return this.value;
     }
-
 }

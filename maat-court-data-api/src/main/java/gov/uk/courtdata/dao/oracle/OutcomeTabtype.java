@@ -2,99 +2,87 @@ package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
 import oracle.jpub.runtime.MutableArray;
-import oracle.sql.*;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class OutcomeTabtype implements ORAData, ORADataFactory
-{
-  public static final String _SQL_NAME = "TOGDATA.OUTCOME_TABTYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
+public class OutcomeTabtype implements ORAData, ORADataFactory {
+    public static final String _SQL_NAME = "TOGDATA.OUTCOME_TABTYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
 
-  MutableArray _array;
+    MutableArray _array;
 
-private static final OutcomeTabtype _OutcomeTabtypeFactory = new OutcomeTabtype();
+    private static final OutcomeTabtype _OutcomeTabtypeFactory = new OutcomeTabtype();
 
-  public static ORADataFactory getORADataFactory()
-  { return _OutcomeTabtypeFactory; }
-  /* constructors */
-  public OutcomeTabtype()
-  {
-    this((OutcomeType[])null);
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _OutcomeTabtypeFactory;
+    }
 
-  public OutcomeTabtype(OutcomeType[] a)
-  {
-    _array = new MutableArray(2002, a, OutcomeType.getORADataFactory());
-  }
+    /* constructors */
+    public OutcomeTabtype() {
+        this((OutcomeType[]) null);
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _array.toDatum(c, _SQL_NAME);
-  }
+    public OutcomeTabtype(OutcomeType[] a) {
+        _array = new MutableArray(2002, a, OutcomeType.getORADataFactory());
+    }
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    OutcomeTabtype a = new OutcomeTabtype();
-    a._array = new MutableArray(2002, (ARRAY) d, OutcomeType.getORADataFactory());
-    return a;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _array.toDatum(c, _SQL_NAME);
+    }
 
-  public int length() throws SQLException
-  {
-    return _array.length();
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        OutcomeTabtype a = new OutcomeTabtype();
+        a._array = new MutableArray(2002, (ARRAY) d, OutcomeType.getORADataFactory());
+        return a;
+    }
 
-  public int getBaseType() throws SQLException
-  {
-    return _array.getBaseType();
-  }
+    public int length() throws SQLException {
+        return _array.length();
+    }
 
-  public String getBaseTypeName() throws SQLException
-  {
-    return _array.getBaseTypeName();
-  }
+    public int getBaseType() throws SQLException {
+        return _array.getBaseType();
+    }
 
-  public ArrayDescriptor getDescriptor() throws SQLException
-  {
-    return _array.getDescriptor();
-  }
+    public String getBaseTypeName() throws SQLException {
+        return _array.getBaseTypeName();
+    }
 
-  /* array accessor methods */
-  public OutcomeType[] getArray() throws SQLException
-  {
-    return (OutcomeType[]) _array.getObjectArray(
-      new OutcomeType[_array.length()]);
-  }
+    public ArrayDescriptor getDescriptor() throws SQLException {
+        return _array.getDescriptor();
+    }
 
-  public OutcomeType[] getArray(long index, int count) throws SQLException
-  {
-    return (OutcomeType[]) _array.getObjectArray(index,
-      new OutcomeType[_array.sliceLength(index, count)]);
-  }
+    /* array accessor methods */
+    public OutcomeType[] getArray() throws SQLException {
+        return (OutcomeType[]) _array.getObjectArray(new OutcomeType[_array.length()]);
+    }
 
-  public void setArray(OutcomeType[] a) throws SQLException
-  {
-    _array.setObjectArray(a);
-  }
+    public OutcomeType[] getArray(long index, int count) throws SQLException {
+        return (OutcomeType[]) _array.getObjectArray(index, new OutcomeType[_array.sliceLength(index, count)]);
+    }
 
-  public void setArray(OutcomeType[] a, long index) throws SQLException
-  {
-    _array.setObjectArray(a, index);
-  }
+    public void setArray(OutcomeType[] a) throws SQLException {
+        _array.setObjectArray(a);
+    }
 
-  public OutcomeType getElement(long index) throws SQLException
-  {
-    return (OutcomeType) _array.getObjectElement(index);
-  }
+    public void setArray(OutcomeType[] a, long index) throws SQLException {
+        _array.setObjectArray(a, index);
+    }
 
-  public void setElement(OutcomeType a, long index) throws SQLException
-  {
-    _array.setObjectElement(a, index);
-  }
+    public OutcomeType getElement(long index) throws SQLException {
+        return (OutcomeType) _array.getObjectElement(index);
+    }
 
+    public void setElement(OutcomeType a, long index) throws SQLException {
+        _array.setObjectElement(a, index);
+    }
 }

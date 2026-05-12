@@ -1,58 +1,59 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class AssessmentSummaryTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.ASSESSMENT_SUMMARY_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class AssessmentSummaryTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.ASSESSMENT_SUMMARY_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final AssessmentSummaryTypeRef _AssessmentSummaryTypeRefFactory = new AssessmentSummaryTypeRef();
+    private static final AssessmentSummaryTypeRef _AssessmentSummaryTypeRefFactory = new AssessmentSummaryTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _AssessmentSummaryTypeRefFactory; }
-  /* constructor */
-  public AssessmentSummaryTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _AssessmentSummaryTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public AssessmentSummaryTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    AssessmentSummaryTypeRef r = new AssessmentSummaryTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static AssessmentSummaryTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (AssessmentSummaryTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to AssessmentSummaryTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        AssessmentSummaryTypeRef r = new AssessmentSummaryTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public AssessmentSummaryType getValue() throws SQLException
-  {
-     return (AssessmentSummaryType) AssessmentSummaryType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static AssessmentSummaryTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (AssessmentSummaryTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to AssessmentSummaryTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(AssessmentSummaryType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public AssessmentSummaryType getValue() throws SQLException {
+        return (AssessmentSummaryType)
+                AssessmentSummaryType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(AssessmentSummaryType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

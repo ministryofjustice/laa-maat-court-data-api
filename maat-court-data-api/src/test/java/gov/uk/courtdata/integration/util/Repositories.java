@@ -67,6 +67,7 @@ import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.repository.XLATOffenceRepository;
 import gov.uk.courtdata.repository.XLATResultRepository;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -75,284 +76,287 @@ import org.springframework.stereotype.Component;
 @Component
 public class Repositories {
 
-  @Autowired
-  public AppealTypeRepository appealType;
+    @Autowired
+    public AppealTypeRepository appealType;
 
-  @Autowired
-  public ApplicantRepository applicantRepository;
+    @Autowired
+    public ApplicantRepository applicantRepository;
 
-  @Autowired
-  public ApplicantDisabilitiesRepository applicantDisabilities;
+    @Autowired
+    public ApplicantDisabilitiesRepository applicantDisabilities;
 
-  @Autowired
-  public ApplicantHistoryRepository applicantHistory;
+    @Autowired
+    public ApplicantHistoryRepository applicantHistory;
 
-  @Autowired
-  public CaseRepository caseRepository;
+    @Autowired
+    public CaseRepository caseRepository;
 
-  @Autowired
-  public ChildWeightHistoryRepository childWeightHistory;
+    @Autowired
+    public ChildWeightHistoryRepository childWeightHistory;
 
-  @Autowired
-  public ChildWeightingsRepository childWeightings;
+    @Autowired
+    public ChildWeightingsRepository childWeightings;
 
-  @Autowired
-  public ConcorContributionsRepository concorContributions;
+    @Autowired
+    public ConcorContributionsRepository concorContributions;
 
-  @Autowired
-  public ContribCalcParametersRepository contribCalcParameters;
+    @Autowired
+    public ContribCalcParametersRepository contribCalcParameters;
 
-  @Autowired
-  public ContributionFilesRepository contributionFiles;
+    @Autowired
+    public ContributionFilesRepository contributionFiles;
 
-  @Autowired
-  public ContributionFileErrorsRepository contributionFileErrors;
+    @Autowired
+    public ContributionFileErrorsRepository contributionFileErrors;
 
-  @Autowired
-  public ContributionsRepository contributions;
+    @Autowired
+    public ContributionsRepository contributions;
 
-  @Autowired
-  public CorrespondenceRepository correspondence;
+    @Autowired
+    public CorrespondenceRepository correspondence;
 
-  @Autowired
-  public CourtHouseCodesRepository courtHouseCodes;
+    @Autowired
+    public CourtHouseCodesRepository courtHouseCodes;
 
-  @Autowired
-  public CrownCourtCodeRepository crownCourtCode;
+    @Autowired
+    public CrownCourtCodeRepository crownCourtCode;
 
-  @Autowired
-  public CrownCourtOutcomeRepository crownCourtOutcome;
+    @Autowired
+    public CrownCourtOutcomeRepository crownCourtOutcome;
 
-  @Autowired
-  public CrownCourtProcessingRepository crownCourtProcessing;
+    @Autowired
+    public CrownCourtProcessingRepository crownCourtProcessing;
 
-  @Autowired
-  public DefendantMAATDataRepository defendantMAATData;
+    @Autowired
+    public DefendantMAATDataRepository defendantMAATData;
 
-  @Autowired
-  public DefendantRepository defendant;
+    @Autowired
+    public DefendantRepository defendant;
 
-  @Autowired
-  public FdcContributionsRepository fdcContributions;
+    @Autowired
+    public FdcContributionsRepository fdcContributions;
 
-  @Autowired
-  public FdcItemsRepository fdcItemsRepository;
+    @Autowired
+    public FdcItemsRepository fdcItemsRepository;
 
-  @Autowired
-  public FeatureToggleRepository featureToggleRepository;
+    @Autowired
+    public FeatureToggleRepository featureToggleRepository;
 
-  @Autowired
-  public FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistory;
+    @Autowired
+    public FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistory;
 
-  @Autowired
-  public FinancialAssessmentDetailsRepository financialAssessmentDetails;
+    @Autowired
+    public FinancialAssessmentDetailsRepository financialAssessmentDetails;
 
-  @Autowired
-  public FinancialAssessmentRepository financialAssessment;
+    @Autowired
+    public FinancialAssessmentRepository financialAssessment;
 
-  @Autowired
-  public FinancialAssessmentsHistoryRepository financialAssessmentsHistory;
+    @Autowired
+    public FinancialAssessmentsHistoryRepository financialAssessmentsHistory;
 
-  @Autowired
-  public HardshipReviewDetailRepository hardshipReviewDetail;
+    @Autowired
+    public HardshipReviewDetailRepository hardshipReviewDetail;
 
-  @Autowired
-  public HardshipReviewProgressRepository hardshipReviewProgress;
+    @Autowired
+    public HardshipReviewProgressRepository hardshipReviewProgress;
 
-  @Autowired
-  public HardshipReviewRepository hardshipReview;
+    @Autowired
+    public HardshipReviewRepository hardshipReview;
 
-  @Autowired
-  public IdentifierRepository identifier;
+    @Autowired
+    public IdentifierRepository identifier;
 
-  @Autowired
-  public IOJAppealRepository iojAppeal;
+    @Autowired
+    public IOJAppealRepository iojAppeal;
 
-  @Autowired
-  public MockNewWorkReasonRepository mockNewWorkReason;
+    @Autowired
+    public MockNewWorkReasonRepository mockNewWorkReason;
 
-  @Autowired
-  public OffenceRepository offence;
+    @Autowired
+    public OffenceRepository offence;
 
-  @Autowired
-  public PassportAssessmentRepository passportAssessment;
+    @Autowired
+    public PassportAssessmentRepository passportAssessment;
 
-  @Autowired
-  public PleaRepository plea;
+    @Autowired
+    public PleaRepository plea;
 
-  @Autowired
-  public ProceedingRepository proceeding;
+    @Autowired
+    public ProceedingRepository proceeding;
 
-  @Autowired
-  public QueueMessageLogRepository queueMessageLog;
+    @Autowired
+    public QueueMessageLogRepository queueMessageLog;
 
-  @Autowired
-  public RepOrderApplicantLinksRepository repOrderApplicantLinks;
+    @Autowired
+    public RepOrderApplicantLinksRepository repOrderApplicantLinks;
 
-  @Autowired
-  public RepOrderCapitalRepository repOrderCapital;
+    @Autowired
+    public RepOrderCapitalRepository repOrderCapital;
 
-  @Autowired
-  public RepOrderCPDataRepository repOrderCPData;
+    @Autowired
+    public RepOrderCPDataRepository repOrderCPData;
 
-  @Autowired
-  public RepOrderMvoRegRepository repOrderMvoReg;
+    @Autowired
+    public RepOrderMvoRegRepository repOrderMvoReg;
 
-  @Autowired
-  public RepOrderMvoRepository repOrderMvo;
+    @Autowired
+    public RepOrderMvoRepository repOrderMvo;
 
-  @Autowired
-  public RepOrderRepository repOrder;
+    @Autowired
+    public RepOrderRepository repOrder;
 
-  @Autowired
-  public ReservationsRepository reservations;
+    @Autowired
+    public ReservationsRepository reservations;
 
-  @Autowired
-  public ResultRepository result;
+    @Autowired
+    public ResultRepository result;
 
-  @Autowired
-  public RoleActionsRepository roleActions;
+    @Autowired
+    public RoleActionsRepository roleActions;
 
-  @Autowired
-  public RoleDataItemsRepository roleDataItems;
+    @Autowired
+    public RoleDataItemsRepository roleDataItems;
 
-  @Autowired
-  public RoleWorkReasonsRepository roleWorkReasons;
+    @Autowired
+    public RoleWorkReasonsRepository roleWorkReasons;
 
-  @Autowired
-  public SessionRepository session;
+    @Autowired
+    public SessionRepository session;
 
-  @Autowired
-  public SolicitorMAATDataRepository solicitorMAATData;
+    @Autowired
+    public SolicitorMAATDataRepository solicitorMAATData;
 
-  @Autowired
-  public SolicitorRepository solicitor;
+    @Autowired
+    public SolicitorRepository solicitor;
 
-  @Autowired
-  public UnlinkReasonRepository unlinkReason;
+    @Autowired
+    public UnlinkReasonRepository unlinkReason;
 
-  @Autowired
-  public UserRepository user;
+    @Autowired
+    public UserRepository user;
 
-  @Autowired
-  public UserRolesRepository userRoles;
+    @Autowired
+    public UserRolesRepository userRoles;
 
-  @Autowired
-  public VerdictRepository verdict;
+    @Autowired
+    public VerdictRepository verdict;
 
-  @Autowired
-  public WQCaseRepository wqCase;
+    @Autowired
+    public WQCaseRepository wqCase;
 
-  @Autowired
-  public WqCoreRepository wqCore;
+    @Autowired
+    public WqCoreRepository wqCore;
 
-  @Autowired
-  public WQDefendantRepository wqDefendant;
+    @Autowired
+    public WQDefendantRepository wqDefendant;
 
-  @Autowired
-  public WQHearingRepository wqHearing;
+    @Autowired
+    public WQHearingRepository wqHearing;
 
-  @Autowired
-  public WqLinkRegisterRepository wqLinkRegister;
+    @Autowired
+    public WqLinkRegisterRepository wqLinkRegister;
 
-  @Autowired
-  public WQOffenceRepository wqOffence;
+    @Autowired
+    public WQOffenceRepository wqOffence;
 
-  @Autowired
-  public WQResultRepository wqResult;
+    @Autowired
+    public WQResultRepository wqResult;
 
-  @Autowired
-  public WQSessionRepository wqSession;
+    @Autowired
+    public WQSessionRepository wqSession;
 
-  @Autowired
-  public XLATOffenceRepository xlatOffence;
+    @Autowired
+    public XLATOffenceRepository xlatOffence;
 
-  @Autowired
-  public XLATResultRepository xlatResult;
-  
-  @Autowired
-  private RepositoryUtil repositoryUtil;
+    @Autowired
+    public XLATResultRepository xlatResult;
 
-  @Autowired
-  private WqLinkRegisterRepository wqLinkRegisterRepository;
+    @Autowired
+    private RepositoryUtil repositoryUtil;
 
+    @Autowired
+    private WqLinkRegisterRepository wqLinkRegisterRepository;
 
-  @NotNull
-  private JpaRepository[] allRepositories() {
-    return new JpaRepository[]{appealType,
+    @NotNull
+    private JpaRepository[] allRepositories() {
+        return new JpaRepository[] {
+            appealType,
             applicantRepository,
-        applicantDisabilities,
-        applicantHistory,
-        caseRepository,
-        childWeightHistory,
-        childWeightings,
-        concorContributions,
-        contribCalcParameters,
-        contributionFiles,
-        contributionFileErrors,
-        contributions,
-        correspondence,
-        courtHouseCodes,
-        crownCourtCode,
-        crownCourtOutcome,
-        crownCourtProcessing,
-        defendantMAATData,
-        defendant,
-        fdcContributions,
-        featureToggleRepository,
-        financialAssessmentDetailsHistory,
-        financialAssessmentDetails,
-        financialAssessment,
-        financialAssessmentsHistory,
-        hardshipReviewDetail,
-        hardshipReviewProgress,
-        hardshipReview,
-        identifier,
-        iojAppeal,
-        mockNewWorkReason,
-        offence,
-        passportAssessment,
-        plea,
-        proceeding,
-        queueMessageLog,
-        repOrderApplicantLinks,
-        repOrderCapital,
-        repOrderCPData,
-        repOrderMvoReg,
-        repOrderMvo,
-        repOrder,
-        reservations,
-        result,
-        roleActions,
-        roleDataItems,
-        roleWorkReasons,
-        session,
-        solicitorMAATData,
-        solicitor,
-        unlinkReason,
-        user,
-        userRoles,
-        verdict,
-        wqCase,
-        wqCore,
-        wqDefendant,
-        wqHearing,
-        wqLinkRegister,
-        wqOffence,
-        wqResult,
-        wqSession,
-        xlatOffence,
-        fdcItemsRepository,
-        xlatResult,
-            wqLinkRegisterRepository};
-  }
+            applicantDisabilities,
+            applicantHistory,
+            caseRepository,
+            childWeightHistory,
+            childWeightings,
+            concorContributions,
+            contribCalcParameters,
+            contributionFiles,
+            contributionFileErrors,
+            contributions,
+            correspondence,
+            courtHouseCodes,
+            crownCourtCode,
+            crownCourtOutcome,
+            crownCourtProcessing,
+            defendantMAATData,
+            defendant,
+            fdcContributions,
+            featureToggleRepository,
+            financialAssessmentDetailsHistory,
+            financialAssessmentDetails,
+            financialAssessment,
+            financialAssessmentsHistory,
+            hardshipReviewDetail,
+            hardshipReviewProgress,
+            hardshipReview,
+            identifier,
+            iojAppeal,
+            mockNewWorkReason,
+            offence,
+            passportAssessment,
+            plea,
+            proceeding,
+            queueMessageLog,
+            repOrderApplicantLinks,
+            repOrderCapital,
+            repOrderCPData,
+            repOrderMvoReg,
+            repOrderMvo,
+            repOrder,
+            reservations,
+            result,
+            roleActions,
+            roleDataItems,
+            roleWorkReasons,
+            session,
+            solicitorMAATData,
+            solicitor,
+            unlinkReason,
+            user,
+            userRoles,
+            verdict,
+            wqCase,
+            wqCore,
+            wqDefendant,
+            wqHearing,
+            wqLinkRegister,
+            wqOffence,
+            wqResult,
+            wqSession,
+            xlatOffence,
+            fdcItemsRepository,
+            xlatResult,
+            wqLinkRegisterRepository
+        };
+    }
 
-  public void insertCommonTestData() {
-    user.save(UserEntity.builder().username(TestEntityDataBuilder.TEST_USER).build());
-    user.save(UserEntity.builder().username(TestEntityDataBuilder.USER_CREATED_TEST_S).build());
-  }
+    public void insertCommonTestData() {
+        user.save(UserEntity.builder().username(TestEntityDataBuilder.TEST_USER).build());
+        user.save(UserEntity.builder()
+                .username(TestEntityDataBuilder.USER_CREATED_TEST_S)
+                .build());
+    }
 
-  public void clearAll() {
-    repositoryUtil.clearUp(allRepositories());
-  }
+    public void clearAll() {
+        repositoryUtil.clearUp(allRepositories());
+    }
 }

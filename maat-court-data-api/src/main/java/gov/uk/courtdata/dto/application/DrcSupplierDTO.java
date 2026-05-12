@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.uk.courtdata.dto.application;
 
@@ -14,11 +14,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class DrcSupplierDTO extends GenericDTO {
 
-	private static final long serialVersionUID = 214057823559905340L;
+    private static final long serialVersionUID = 214057823559905340L;
 
-	private long						id;
-	private String						name;
-	private String						status;
-	private AddressDTO					address;
-
+    private long id;
+    private String name;
+    private String status;
+    private AddressDTO address;
 }

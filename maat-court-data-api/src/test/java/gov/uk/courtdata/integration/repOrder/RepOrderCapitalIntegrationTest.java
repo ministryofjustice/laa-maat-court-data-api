@@ -8,7 +8,9 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.entity.RepOrderCapitalEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+
 import java.util.List;
+
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,25 +29,21 @@ class RepOrderCapitalIntegrationTest extends MockMvcIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        RepOrderEntity repOrderEntity = repos.repOrder.saveAndFlush(
-                TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrderEntity = repos.repOrder.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
         repId = repOrderEntity.getId();
-        RepOrderEntity repOrder = repos.repOrder.saveAndFlush(
-                TestEntityDataBuilder.getPopulatedRepOrder());
+        RepOrderEntity repOrder = repos.repOrder.saveAndFlush(TestEntityDataBuilder.getPopulatedRepOrder());
         mockRepId = repOrder.getId();
 
         List<RepOrderCapitalEntity> repOrderCapitalList = List.of(
                 TestEntityDataBuilder.getRepOrderCapitalEntity(1, repId, "SAVINGS"),
-                TestEntityDataBuilder.getRepOrderCapitalEntity(2, mockRepId, "PROPERTY")
-        );
+                TestEntityDataBuilder.getRepOrderCapitalEntity(2, mockRepId, "PROPERTY"));
         repos.repOrderCapital.saveAllAndFlush(repOrderCapitalList);
-
     }
 
     @Test
     void givenAInvalidRepId_whenGetCapitalAssetCountIsInvoked_thenErrorReturn() throws Exception {
-        runBadRequestErrorScenario("MAAT/REP ID is required, found [-1]",
-                get(BASE_URL + INVALID_REP_ID + CAPITAL_ASSETS_COUNT_URL));
+        runBadRequestErrorScenario(
+                "MAAT/REP ID is required, found [-1]", get(BASE_URL + INVALID_REP_ID + CAPITAL_ASSETS_COUNT_URL));
     }
 
     @Test
@@ -55,8 +53,7 @@ class RepOrderCapitalIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void givenAValidRepIdAndPropertyCapitalAsset_whenGetCapitalAssetCountInvoked_thenZeroIsReturned()
-            throws Exception {
+    void givenAValidRepIdAndPropertyCapitalAsset_whenGetCapitalAssetCountInvoked_thenZeroIsReturned() throws Exception {
         var response = runSuccessScenario(get(BASE_URL + mockRepId + CAPITAL_ASSETS_COUNT_URL));
         assertThat(response.getResponse().getContentAsString()).isEqualTo("0");
     }

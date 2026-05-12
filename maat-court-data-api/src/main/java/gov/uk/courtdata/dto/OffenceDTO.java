@@ -35,5 +35,4 @@ public class OffenceDTO {
     private String attribute5;
     private String offenceId;
     private String isCCNewOffence;
-
 }

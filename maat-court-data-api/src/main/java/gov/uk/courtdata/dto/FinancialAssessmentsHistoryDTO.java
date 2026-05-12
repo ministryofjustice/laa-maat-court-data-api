@@ -64,7 +64,7 @@ public class FinancialAssessmentsHistoryDTO {
     private String rtCode;
     private List<FinancialAssessmentDetailsHistoryDTO> assessmentDetails;
     private List<ChildWeightHistoryDTO> childWeightings;
-    //repOrder
+    // repOrder
     private String caseType;
     private String magsOutcome;
     private String magsOutcomeDate;
@@ -74,4 +74,3 @@ public class FinancialAssessmentsHistoryDTO {
     private String ccRepDec;
     private String ccRepType;
 }
-

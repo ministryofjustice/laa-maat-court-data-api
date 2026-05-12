@@ -1,58 +1,59 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class PassportAssessmentTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.PASSPORT_ASSESSMENTTYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class PassportAssessmentTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.PASSPORT_ASSESSMENTTYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final PassportAssessmentTypeRef _PassportAssessmentTypeRefFactory = new PassportAssessmentTypeRef();
+    private static final PassportAssessmentTypeRef _PassportAssessmentTypeRefFactory = new PassportAssessmentTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _PassportAssessmentTypeRefFactory; }
-  /* constructor */
-  public PassportAssessmentTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _PassportAssessmentTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public PassportAssessmentTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    PassportAssessmentTypeRef r = new PassportAssessmentTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static PassportAssessmentTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (PassportAssessmentTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to PassportAssessmentTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        PassportAssessmentTypeRef r = new PassportAssessmentTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public PassportAssessmentType getValue() throws SQLException
-  {
-     return (PassportAssessmentType) PassportAssessmentType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static PassportAssessmentTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (PassportAssessmentTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to PassportAssessmentTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(PassportAssessmentType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public PassportAssessmentType getValue() throws SQLException {
+        return (PassportAssessmentType)
+                PassportAssessmentType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(PassportAssessmentType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

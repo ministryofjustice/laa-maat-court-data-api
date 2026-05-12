@@ -10,6 +10,7 @@ import gov.uk.courtdata.processor.OffenceCodeRefDataProcessor;
 import gov.uk.courtdata.processor.ResultCodeRefDataProcessor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,17 +40,14 @@ public class CreateLinkService {
         saveAndLinkImpl.execute(courtDataDTO);
     }
 
-
     private void processStaticRefData(CourtDataDTO courtDataDTO) {
-        courtDataDTO.getCaseDetails().getDefendant().getOffences()
-                .forEach(offence -> {
-                    offenceCodeRefDataProcessor.processOffenceCode(offence.getOffenceCode());
-                    if (offence.getResults() != null && !offence.getResults().isEmpty()) {
-                        offence.getResults()
-                                .forEach(result ->
-                                        resultCodeRefDataProcessor.processResultCode(Integer.parseInt(result.getResultCode())));
-                    }
-                });
+        courtDataDTO.getCaseDetails().getDefendant().getOffences().forEach(offence -> {
+            offenceCodeRefDataProcessor.processOffenceCode(offence.getOffenceCode());
+            if (offence.getResults() != null && !offence.getResults().isEmpty()) {
+                offence.getResults()
+                        .forEach(result ->
+                                resultCodeRefDataProcessor.processResultCode(Integer.parseInt(result.getResultCode())));
+            }
+        });
     }
-
 }

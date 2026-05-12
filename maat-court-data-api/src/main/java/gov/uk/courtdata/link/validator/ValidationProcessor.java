@@ -10,9 +10,10 @@ import gov.uk.courtdata.validator.ReferenceDataValidator;
 import gov.uk.courtdata.validator.SolicitorValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+
+import org.springframework.stereotype.Component;
 
 /**
  * <code>ValidationProcessor</code> chain of validations on the create link process.
@@ -21,7 +22,6 @@ import java.util.Optional;
 @Component
 @AllArgsConstructor
 public class ValidationProcessor {
-
 
     private final MaatIdValidator maatIdValidator;
 
@@ -37,12 +37,10 @@ public class ValidationProcessor {
 
     private final ReferenceDataValidator referenceDataValidator;
 
-
     /**
      * @param caseDetails
      */
     public CourtDataDTO validate(CaseDetails caseDetails) {
-
 
         final Integer maatId = caseDetails.getMaatId();
         maatIdValidator.validate(maatId);
@@ -51,19 +49,17 @@ public class ValidationProcessor {
         courtValidator.validate(caseDetails);
         referenceDataValidator.validate(caseDetails);
 
-        final Optional<SolicitorMAATDataEntity> optSolicitorMAATDataEntity
-                = solicitorValidator.validate(maatId);
+        final Optional<SolicitorMAATDataEntity> optSolicitorMAATDataEntity = solicitorValidator.validate(maatId);
         SolicitorMAATDataEntity solicitorMAATDataEntity = optSolicitorMAATDataEntity.orElse(null);
 
-        final Optional<DefendantMAATDataEntity> optDefendantMAATDataEntity
-                = defendantValidator.validate(maatId);
+        final Optional<DefendantMAATDataEntity> optDefendantMAATDataEntity = defendantValidator.validate(maatId);
 
         DefendantMAATDataEntity defendantMAATDataEntity = optDefendantMAATDataEntity.orElse(null);
 
-
-        return CourtDataDTO.builder().caseDetails(caseDetails)
+        return CourtDataDTO.builder()
+                .caseDetails(caseDetails)
                 .solicitorMAATDataEntity(solicitorMAATDataEntity)
-                .defendantMAATDataEntity(defendantMAATDataEntity).build();
+                .defendantMAATDataEntity(defendantMAATDataEntity)
+                .build();
     }
-
 }

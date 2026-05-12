@@ -1,5 +1,8 @@
 package gov.uk.courtdata.hearing.service;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.enums.FunctionType;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.hearing.impl.HearingResultedImpl;
@@ -7,13 +10,12 @@ import gov.uk.courtdata.hearing.processor.CourtApplicationsPreProcessor;
 import gov.uk.courtdata.hearing.processor.WQHearingProcessor;
 import gov.uk.courtdata.hearing.validator.HearingValidationProcessor;
 import gov.uk.courtdata.model.hearing.HearingResulted;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class HearingResultedServiceTest {
@@ -36,14 +38,17 @@ public class HearingResultedServiceTest {
     @Test
     public void givenAMagCourtNotification_whenMaatNotLocked_thenMagsCourtProcessingInvoked() {
 
-        //given
-        HearingResulted hearingDetails = HearingResulted.builder().maatId(34).jurisdictionType(JurisdictionType.MAGISTRATES).build();
+        // given
+        HearingResulted hearingDetails = HearingResulted.builder()
+                .maatId(34)
+                .jurisdictionType(JurisdictionType.MAGISTRATES)
+                .build();
 
-        //when
+        // when
         doNothing().when(hearingResultedImpl).execute(hearingDetails);
 
         hearingResultedService.execute(hearingDetails);
-        //then
+        // then
         verify(hearingValidationProcessor).validate(hearingDetails);
         verify(hearingResultedImpl).execute(hearingDetails);
         verify(wqHearingProcessor).process(hearingDetails);
@@ -52,18 +57,18 @@ public class HearingResultedServiceTest {
     @Test
     public void givenApplicationNotification_whenApplicationType_thenApplicationPreProcessingInvoked() {
 
-        //given
+        // given
         HearingResulted hearingDetails = HearingResulted.builder()
                 .maatId(34)
                 .functionType(FunctionType.APPLICATION)
                 .jurisdictionType(JurisdictionType.MAGISTRATES)
                 .build();
 
-        //when
+        // when
         doNothing().when(courtApplicationsPreProcessor).process(hearingDetails);
 
         hearingResultedService.execute(hearingDetails);
-        //then
+        // then
         verify(courtApplicationsPreProcessor).process(hearingDetails);
         verify(hearingValidationProcessor).validate(hearingDetails);
         verify(hearingResultedImpl).execute(hearingDetails);

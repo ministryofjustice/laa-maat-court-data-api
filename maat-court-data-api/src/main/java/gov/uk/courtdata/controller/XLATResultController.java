@@ -10,9 +10,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,11 +36,24 @@ public class XLATResultController {
     @Operation(description = "Retrieve list of XLAT ResultCodes for CC Imprisonment")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @NotFoundApiResponse
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request.",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "500",
+            description = "Server Error.",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<Integer>> getResultCodesForCCImprisonment(
             @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
+                    @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false)
+                    String laaTransactionId) {
         log.info("Get XLAT Result Codes for CC Imprisonment");
         return ResponseEntity.ok(resultService.findXLATResultCodesForCCImprisonment());
     }
@@ -47,11 +62,24 @@ public class XLATResultController {
     @Operation(description = "Retrieve list of XLAT ResultCodes for CC Bench Warrant")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @NotFoundApiResponse
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request.",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "500",
+            description = "Server Error.",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<Integer>> getResultCodesForCCBenchWarrant(
             @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
+                    @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false)
+                    String laaTransactionId) {
         log.info("Get XLAT Result Codes for CC Bench Warrant");
         return ResponseEntity.ok(resultService.findXLATResultCodesForCCBenchWarrant());
     }
@@ -60,15 +88,27 @@ public class XLATResultController {
     @Operation(description = "Retrieve list of WQ ResultCodes for given caseId and asnSeq")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @NotFoundApiResponse
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request.",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "500",
+            description = "Server Error.",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<Integer>> getResultCodesByWqTypeAndSubType(
             @PathVariable int wqType,
             @PathVariable int subType,
             @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
+                    @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false)
+                    String laaTransactionId) {
         log.info(String.format("Get XLAT Result Codes by WqType - %d and SubType: %s {}", wqType, subType));
         return ResponseEntity.ok(resultService.findXLATResultCodesByWQTypeAndSubTypeCode(wqType, subType));
     }
-
 }

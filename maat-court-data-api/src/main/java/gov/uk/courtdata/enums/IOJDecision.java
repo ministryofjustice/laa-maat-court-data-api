@@ -1,7 +1,6 @@
 package gov.uk.courtdata.enums;
 
 public enum IOJDecision {
-
     FAIL(0),
     PASS(1),
     PENDING(2),
@@ -19,8 +18,7 @@ public enum IOJDecision {
 
     public static boolean isFailedDecision(int decision) {
         boolean myReturn = false;
-        if (FAIL.value == decision
-                || PENDING.value == decision) {
+        if (FAIL.value == decision || PENDING.value == decision) {
             myReturn = true;
         }
         return myReturn;

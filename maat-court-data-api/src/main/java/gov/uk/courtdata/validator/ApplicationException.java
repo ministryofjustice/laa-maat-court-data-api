@@ -1,8 +1,7 @@
 package gov.uk.courtdata.validator;
 
 public class ApplicationException extends Exception {
-    public ApplicationException() {
-    }
+    public ApplicationException() {}
 
     public ApplicationException(String message) {
         super(message);

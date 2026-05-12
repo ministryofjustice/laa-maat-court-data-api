@@ -1,26 +1,32 @@
 package gov.uk.courtdata.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import gov.uk.courtdata.entity.QueueMessageLogEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
 import gov.uk.courtdata.enums.MessageType;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
+
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class QueueMessageLogServiceTest {
 
     @InjectMocks
     public QueueMessageLogService queueMessageLogService;
+
     @Spy
     public QueueMessageLogRepository queueMessageLogRepository;
+
     @Captor
     private ArgumentCaptor<QueueMessageLogEntity> queueMessageCaptor;
 
@@ -35,17 +41,14 @@ class QueueMessageLogServiceTest {
 
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
-        assertAll("linkMessage",
-                  () -> assertNotNull(savedQueueMsg),
-                  () -> assertNotNull(savedQueueMsg.getMaatId()),
-                  () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
-                  () -> assertNotNull(savedQueueMsg.getType()),
-                  () -> assertNotNull(savedQueueMsg.getMessage()),
-                  () -> assertNotNull(savedQueueMsg.getCreatedTime()),
-                  () -> assertEquals(savedQueueMsg.getMaatId(), maatId),
-                  () -> assertEquals(savedQueueMsg.getType(), MessageType.LINK.name())
-
-        );
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(savedQueueMsg).isNotNull();
+            assertThat(savedQueueMsg.getMaatId()).isNotNull().isEqualTo(maatId);
+            assertThat(savedQueueMsg.getTransactionUUID()).isNotNull();
+            assertThat(savedQueueMsg.getType()).isNotNull().isEqualTo(MessageType.LINK.name());
+            assertThat(savedQueueMsg.getMessage()).isNotNull();
+            assertThat(savedQueueMsg.getCreatedTime()).isNotNull();
+        });
     }
 
     @Test
@@ -59,17 +62,14 @@ class QueueMessageLogServiceTest {
 
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
-        assertAll("unLinkMessage",
-                  () -> assertNotNull(savedQueueMsg),
-                  () -> assertNotNull(savedQueueMsg.getMaatId()),
-                  () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
-                  () -> assertNotNull(savedQueueMsg.getType()),
-                  () -> assertNotNull(savedQueueMsg.getMessage()),
-                  () -> assertNotNull(savedQueueMsg.getCreatedTime()),
-                  () -> assertEquals(savedQueueMsg.getMaatId(), maatId),
-                  () -> assertEquals(savedQueueMsg.getType(), MessageType.UNLINK.name())
-
-        );
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(savedQueueMsg).isNotNull();
+            assertThat(savedQueueMsg.getMaatId()).isNotNull().isEqualTo(maatId);
+            assertThat(savedQueueMsg.getTransactionUUID()).isNotNull();
+            assertThat(savedQueueMsg.getType()).isNotNull().isEqualTo(MessageType.UNLINK.name());
+            assertThat(savedQueueMsg.getMessage()).isNotNull();
+            assertThat(savedQueueMsg.getCreatedTime()).isNotNull();
+        });
     }
 
     @Test
@@ -77,26 +77,21 @@ class QueueMessageLogServiceTest {
 
         final Integer maatId = 1000;
 
-        queueMessageLogService.createLog(MessageType.HEARING,
-                                         newHearingQueueMessage(maatId, JurisdictionType.MAGISTRATES)
-        );
+        queueMessageLogService.createLog(
+                MessageType.HEARING, newHearingQueueMessage(maatId, JurisdictionType.MAGISTRATES));
 
         verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
 
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
-        assertAll("hearingMagsCourtMessage",
-                  () -> assertNotNull(savedQueueMsg),
-                  () -> assertNotNull(savedQueueMsg.getMaatId()),
-                  () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
-                  () -> assertNotNull(savedQueueMsg.getType()),
-                  () -> assertNotNull(savedQueueMsg.getMessage()),
-                  () -> assertNotNull(savedQueueMsg.getCreatedTime()),
-                  () -> assertEquals(savedQueueMsg.getMaatId(), maatId),
-                  () -> assertEquals(savedQueueMsg.getType(), expectedType(JurisdictionType.MAGISTRATES)
-                  )
-
-        );
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(savedQueueMsg).isNotNull();
+            assertThat(savedQueueMsg.getMaatId()).isNotNull().isEqualTo(maatId);
+            assertThat(savedQueueMsg.getTransactionUUID()).isNotNull();
+            assertThat(savedQueueMsg.getType()).isNotNull().isEqualTo(expectedType(JurisdictionType.MAGISTRATES));
+            assertThat(savedQueueMsg.getMessage()).isNotNull();
+            assertThat(savedQueueMsg.getCreatedTime()).isNotNull();
+        });
     }
 
     @Test
@@ -104,27 +99,21 @@ class QueueMessageLogServiceTest {
 
         final Integer maatId = 1000;
 
-        queueMessageLogService.createLog(MessageType.HEARING,
-                                         newHearingQueueMessage(maatId, JurisdictionType.CROWN)
-        );
+        queueMessageLogService.createLog(MessageType.HEARING, newHearingQueueMessage(maatId, JurisdictionType.CROWN));
 
         verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
 
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
-        assertAll("hearingCrownCourtMessage",
-                  () -> assertNotNull(savedQueueMsg),
-                  () -> assertNotNull(savedQueueMsg.getMaatId()),
-                  () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
-                  () -> assertNotNull(savedQueueMsg.getType()),
-                  () -> assertNotNull(savedQueueMsg.getMessage()),
-                  () -> assertNotNull(savedQueueMsg.getCreatedTime()),
-                  () -> assertEquals(savedQueueMsg.getMaatId(), maatId),
-                  () -> assertEquals(savedQueueMsg.getType(), expectedType(JurisdictionType.CROWN))
-
-        );
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(savedQueueMsg).isNotNull();
+            assertThat(savedQueueMsg.getMaatId()).isNotNull().isEqualTo(maatId);
+            assertThat(savedQueueMsg.getTransactionUUID()).isNotNull();
+            assertThat(savedQueueMsg.getType()).isNotNull().isEqualTo(expectedType(JurisdictionType.CROWN));
+            assertThat(savedQueueMsg.getMessage()).isNotNull();
+            assertThat(savedQueueMsg.getCreatedTime()).isNotNull();
+        });
     }
-
 
     @Test
     void whenLaaStatusMessage_CheckLogEntryCreated() {
@@ -137,19 +126,17 @@ class QueueMessageLogServiceTest {
 
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
-        assertAll("linkMessage",
-                  () -> assertNotNull(savedQueueMsg),
-                  () -> assertNotNull(savedQueueMsg.getMaatId()),
-                  () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
-                  () -> assertNotNull(savedQueueMsg.getLaaTransactionId()),
-                  () -> assertNotNull(savedQueueMsg.getType()),
-                  () -> assertNotNull(savedQueueMsg.getMessage()),
-                  () -> assertNotNull(savedQueueMsg.getCreatedTime()),
-                  () -> assertEquals(savedQueueMsg.getMaatId(), maatId),
-                  () -> assertEquals("8720c683-39ef-4168-a8cc-058668a2dcca", savedQueueMsg.getLaaTransactionId()),
-                  () -> assertEquals(savedQueueMsg.getType(), MessageType.LAA_STATUS.name())
-
-        );
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(savedQueueMsg).isNotNull();
+            assertThat(savedQueueMsg.getMaatId()).isNotNull().isEqualTo(maatId);
+            assertThat(savedQueueMsg.getTransactionUUID()).isNotNull();
+            assertThat(savedQueueMsg.getLaaTransactionId())
+                    .isNotNull()
+                    .isEqualTo("8720c683-39ef-4168-a8cc-058668a2dcca");
+            assertThat(savedQueueMsg.getType()).isNotNull().isEqualTo(MessageType.LAA_STATUS.name());
+            assertThat(savedQueueMsg.getMessage()).isNotNull();
+            assertThat(savedQueueMsg.getCreatedTime()).isNotNull();
+        });
     }
 
     @Test
@@ -172,15 +159,16 @@ class QueueMessageLogServiceTest {
     @Test
     void testWhenMessageTypeIsLaaStatusUpdate_thenProcessAsExpected() {
 
-        String payload = """
-                {
-                    "data": {
-                        "attributes": {
-                            "maat_reference": 324334
+        String payload =
+                """
+                        {
+                            "data": {
+                                "attributes": {
+                                    "maat_reference": 324334
+                                }
+                            }
                         }
-                    }
-                }
-                """;
+                        """;
 
         queueMessageLogService.createLog(MessageType.LAA_STATUS_UPDATE, payload);
 
@@ -188,13 +176,12 @@ class QueueMessageLogServiceTest {
 
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
-        assertAll("SQSMessage",
-                  () -> assertNotNull(savedQueueMsg),
-                  () -> assertNotNull(savedQueueMsg.getMaatId()),
-                  () -> assertNull(savedQueueMsg.getLaaTransactionId()),
-                  () -> assertNotNull(savedQueueMsg.getType()),
-                  () -> assertEquals(324334, savedQueueMsg.getMaatId())
-        );
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(savedQueueMsg).isNotNull();
+            assertThat(savedQueueMsg.getMaatId()).isNotNull().isEqualTo(324334);
+            assertThat(savedQueueMsg.getLaaTransactionId()).isNull();
+            assertThat(savedQueueMsg.getType()).isNotNull();
+        });
     }
 
     private void assertNullLaaTransactionIdIsHandled(Integer maatId) {
@@ -202,15 +189,14 @@ class QueueMessageLogServiceTest {
 
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
-        assertAll("SQSMessage",
-                  () -> assertNotNull(savedQueueMsg),
-                  () -> assertNotNull(savedQueueMsg.getMaatId()),
-                  () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
-                  () -> assertNull(savedQueueMsg.getLaaTransactionId()),
-                  () -> assertNotNull(savedQueueMsg.getType()),
-                  () -> assertNotNull(savedQueueMsg.getMessage()),
-                  () -> assertEquals(savedQueueMsg.getMaatId(), maatId)
-        );
+        SoftAssertions.assertSoftly(s -> {
+            assertThat(savedQueueMsg).isNotNull();
+            assertThat(savedQueueMsg.getMaatId()).isNotNull().isEqualTo(maatId);
+            assertThat(savedQueueMsg.getTransactionUUID()).isNotNull();
+            assertThat(savedQueueMsg.getLaaTransactionId()).isNull();
+            assertThat(savedQueueMsg.getType()).isNotNull();
+            assertThat(savedQueueMsg.getMessage()).isNotNull();
+        });
     }
 
     private String newQueueMessage(Integer maatId) {
@@ -224,21 +210,17 @@ class QueueMessageLogServiceTest {
 
     private String newQueueMessageWithoutMetaData(Integer maatId) {
 
-        return "{" +
-                "    \"maatId\": " + maatId + "\n" +
-                "}";
+        return "{" + "    \"maatId\": " + maatId + "\n" + "}";
     }
 
     private String getQueueMessage(Integer maatId, JurisdictionType jurisdictionType, String laaTransactionId) {
 
-        return "{" +
-                "    \"maatId\": " + maatId + ",\n" +
-                "    \"jurisdictionType\": " + jurisdictionType.name() + ",\n" +
-                "    \"metadata\": {\n" +
-                "        \"laaTransactionId\": " + laaTransactionId + "\n" +
-                "    }\n" +
-                "}";
-
+        return "{" + "    \"maatId\": "
+                + maatId + ",\n" + "    \"jurisdictionType\": "
+                + jurisdictionType.name() + ",\n" + "    \"metadata\": {\n"
+                + "        \"laaTransactionId\": "
+                + laaTransactionId + "\n" + "    }\n"
+                + "}";
     }
 
     private String newHearingQueueMessage(Integer maatId, JurisdictionType jurisdictionType) {
@@ -255,12 +237,10 @@ class QueueMessageLogServiceTest {
     }
 
     private String expectedType(JurisdictionType jurisdictionType) {
-        return
-                new StringBuilder()
-                        .append(MessageType.HEARING.name())
-                        .append("-")
-                        .append(jurisdictionType.name())
-                        .toString();
-
+        return new StringBuilder()
+                .append(MessageType.HEARING.name())
+                .append("-")
+                .append(jurisdictionType.name())
+                .toString();
     }
 }

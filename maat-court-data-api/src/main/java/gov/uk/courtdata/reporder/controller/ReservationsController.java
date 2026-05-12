@@ -5,8 +5,8 @@ import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.enums.LoggingData;
-import gov.uk.courtdata.model.authorization.AuthorizationResponse;
 import gov.uk.courtdata.helper.ReservationsRepositoryHelper;
+import gov.uk.courtdata.model.authorization.AuthorizationResponse;
 import gov.uk.courtdata.reporder.service.ReservationsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,9 +14,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.justice.laa.crime.commons.common.Constants;
+
+import java.util.Optional;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.justice.laa.crime.commons.common.Constants;
 
 @Slf4j
 @RestController
@@ -48,36 +50,55 @@ public class ReservationsController {
     public ResponseEntity<Boolean> isMaatRecordLocked(
             @PathVariable int maatId,
             @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
+                    @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false)
+                    String laaTransactionId) {
         LoggingData.MAAT_ID.putInMDC(maatId);
         log.info(String.format("Check if maatId is locked - %d {}", maatId));
         return ResponseEntity.ok(reservationsRepositoryHelper.isMaatRecordLocked(maatId));
     }
 
-    @GetMapping(value = "/assessment/reservations/recordname/{recordName}/recordid/{recordId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(
+            value = "/assessment/reservations/recordname/{recordName}/recordid/{recordId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Get the reservation status object of a record")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AuthorizationResponse.class)))
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = AuthorizationResponse.class)))
     @StandardApiResponse
     public ResponseEntity<ReservationsEntity> getReservationByRecordNameAndRecordId(
-            @PathVariable String recordName, @PathVariable Integer recordId,
+            @PathVariable String recordName,
+            @PathVariable Integer recordId,
             @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = Constants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
+                    @RequestHeader(value = Constants.LAA_TRANSACTION_ID, required = false)
+                    String laaTransactionId) {
         log.info("Check reservation status - request received");
-        Optional<ReservationsEntity> reservationsEntity = reservationsRepositoryHelper.getReservationByRecordNameAndRecordId(recordName,recordId);
-        return reservationsEntity.map(c -> ResponseEntity.ok().body(c))
+        Optional<ReservationsEntity> reservationsEntity =
+                reservationsRepositoryHelper.getReservationByRecordNameAndRecordId(recordName, recordId);
+        return reservationsEntity
+                .map(c -> ResponseEntity.ok().body(c))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping(value = "/assessment/reservations/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Get the reservation status object of a record")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AuthorizationResponse.class)))
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = AuthorizationResponse.class)))
     @StandardApiResponse
     public ResponseEntity<ReservationsEntity> getReservationByUsername(
             @PathVariable String username,
             @RequestHeader(value = Constants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
         log.info("Check reservation status - request received");
-        Optional<ReservationsEntity> reservationsEntity = reservationsRepositoryHelper.getReservationByUserName(username);
-        return reservationsEntity.map(c -> ResponseEntity.ok().body(c))
+        Optional<ReservationsEntity> reservationsEntity =
+                reservationsRepositoryHelper.getReservationByUserName(username);
+        return reservationsEntity
+                .map(c -> ResponseEntity.ok().body(c))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -104,7 +125,8 @@ public class ReservationsController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @StandardApiResponse
     @NotFoundApiResponse
-    public ResponseEntity<Void> updateReservation(@PathVariable Integer id, @RequestBody ReservationsEntity reservationsEntity) {
+    public ResponseEntity<Void> updateReservation(
+            @PathVariable Integer id, @RequestBody ReservationsEntity reservationsEntity) {
         reservationsService.update(id, reservationsEntity);
         return ResponseEntity.ok().build();
     }

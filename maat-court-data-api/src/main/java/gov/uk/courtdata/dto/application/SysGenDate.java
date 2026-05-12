@@ -1,27 +1,23 @@
 package gov.uk.courtdata.dto.application;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@Getter
+@Setter
 public class SysGenDate implements Comparable<SysGenDate>, Serializable {
 
     private static final long serialVersionUID = -126667557340875129L;
 
     private Date value;
 
-    public SysGenDate() {
-    }
+    public SysGenDate() {}
 
     public SysGenDate(Date value) {
         setValue(value);
-    }
-
-    public Date getValue() {
-        return value;
-    }
-
-    public void setValue(Date value) {
-        this.value = value;
     }
 
     public int compareTo(SysGenDate o) {

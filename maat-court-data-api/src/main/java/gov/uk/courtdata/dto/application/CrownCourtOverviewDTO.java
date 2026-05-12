@@ -18,15 +18,19 @@ public class CrownCourtOverviewDTO extends GenericDTO {
 
     @Builder.Default
     private AppealDTO appealDTO = new AppealDTO();
+
     @Builder.Default
     private ContributionsDTO contribution = new ContributionsDTO();
+
     @Builder.Default
     private CrownCourtSummaryDTO crownCourtSummaryDTO = new CrownCourtSummaryDTO();
+
     @Builder.Default
     private Collection<ContributionSummaryDTO> contributionSummary = new ArrayList<>();
+
     @Builder.Default
     private ApplicantPaymentDetailsDTO applicantPaymentDetailsDTO = new ApplicantPaymentDetailsDTO();
+
     @Builder.Default
     private Collection<CorrespondenceDTO> correspondence = new ArrayList<>();
-
 }

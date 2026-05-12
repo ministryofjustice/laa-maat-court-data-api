@@ -1,18 +1,18 @@
 package gov.uk.courtdata.link.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.WQ_CREATION_EVENT;
+
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.enums.WQStatus;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.WQ_CREATION_EVENT;
-
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -22,7 +22,6 @@ public class WqCoreInfoProcessor implements Process {
 
     @Value("${feature.postMvpEnabled}")
     private String isPostMVPEnabled;
-
 
     @Override
     public void process(CourtDataDTO courtDataDTO) {
@@ -35,7 +34,10 @@ public class WqCoreInfoProcessor implements Process {
                 .processedTime(LocalDateTime.now())
                 .createdUserId(caseDetails.getCreatedUser())
                 .wqType(getWQEvent())
-                .wqStatus(Boolean.TRUE.toString().equalsIgnoreCase(isPostMVPEnabled) ? WQStatus.WAITING.value() : WQStatus.SUCCESS.value())
+                .wqStatus(
+                        Boolean.TRUE.toString().equalsIgnoreCase(isPostMVPEnabled)
+                                ? WQStatus.WAITING.value()
+                                : WQStatus.SUCCESS.value())
                 .build();
         wqCoreRepository.save(wqCoreEntity);
     }

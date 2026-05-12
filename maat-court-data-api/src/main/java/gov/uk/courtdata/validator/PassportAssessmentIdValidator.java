@@ -4,9 +4,10 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component

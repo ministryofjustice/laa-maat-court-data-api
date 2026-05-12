@@ -15,5 +15,4 @@ public class UserRoleDTO extends GenericDTO {
 
     private String roleName;
     private boolean enabled;
-
 }

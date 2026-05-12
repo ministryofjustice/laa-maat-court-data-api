@@ -3,7 +3,6 @@ package gov.uk.courtdata.converter;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
-
 @Converter(autoApply = true)
 public class BooleanConverter implements AttributeConverter<Boolean, String> {
 
@@ -28,5 +27,4 @@ public class BooleanConverter implements AttributeConverter<Boolean, String> {
         }
         return false;
     }
-
 }

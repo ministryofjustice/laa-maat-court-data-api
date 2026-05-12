@@ -3,8 +3,6 @@ package gov.uk.courtdata.enums;
 import java.util.HashMap;
 
 public enum ApplicationClassification {
-
-
     CO("CO", "CO Criminal Related"),
     CR("CR", "CR CR"),
     EF("EF", "EF Fines"),
@@ -15,17 +13,15 @@ public enum ApplicationClassification {
     CC("CC", "CC Crown Court"),
     VA("VA", "VA Misc. Applications");
 
-
     private final String code;
     private final String description;
 
     ApplicationClassification(String code, String description) {
         this.code = code;
         this.description = description;
-
     }
 
-    private static final HashMap<String,String> MAP = new HashMap<>();
+    private static final HashMap<String, String> MAP = new HashMap<>();
 
     static {
         for (ApplicationClassification s : ApplicationClassification.values()) {
@@ -37,9 +33,7 @@ public enum ApplicationClassification {
         return code;
     }
 
-
     public static String getDescriptionByCode(String code) {
         return MAP.get(code);
     }
-
 }

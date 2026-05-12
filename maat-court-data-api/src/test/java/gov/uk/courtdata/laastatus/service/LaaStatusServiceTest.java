@@ -1,15 +1,16 @@
 package gov.uk.courtdata.laastatus.service;
 
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.laastatus.impl.LaaStatusUpdateImpl;
 import gov.uk.courtdata.repository.IdentifierRepository;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class LaaStatusServiceTest {
@@ -26,14 +27,12 @@ public class LaaStatusServiceTest {
     @Test
     public void givenCourtDataDataDTO_whenLaaStatusCalled_thenVerifyServicesCalled() {
 
-        CourtDataDTO courtDataDTO = CourtDataDTO.builder()
-                .txId(11111)
-                .build();
+        CourtDataDTO courtDataDTO = CourtDataDTO.builder().txId(11111).build();
 
-        //when
+        // when
         laaStatusService.execute(courtDataDTO);
 
-        //then
+        // then
         verify(laaStatusUpdateImpl).execute(courtDataDTO);
         verify(identifierRepository).getTxnID();
     }

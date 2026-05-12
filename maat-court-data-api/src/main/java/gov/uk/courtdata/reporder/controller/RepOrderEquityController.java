@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,7 +35,13 @@ public class RepOrderEquityController {
     @Operation(description = "Retrieve a RepOrderEquity")
     @StandardApiResponse
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "404",
+            description = "Not Found.",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
     public RepOrderEquityEntity getRepOrderEquity(@PathVariable Integer repOrderEquityId) {
         return repOrderEquityService.retrieve(repOrderEquityId);
     }
@@ -54,9 +61,15 @@ public class RepOrderEquityController {
     @Operation(description = "Update a RepOrderEquity")
     @StandardApiResponse
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "404", description = "Not Found.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Void> createRepOrderEquity(@PathVariable Integer repOrderEquityId,
-        @RequestBody RepOrderEquityEntity repOrderEquityEntity) {
+    @ApiResponse(
+            responseCode = "404",
+            description = "Not Found.",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<Void> createRepOrderEquity(
+            @PathVariable Integer repOrderEquityId, @RequestBody RepOrderEquityEntity repOrderEquityEntity) {
         LoggingData.MAAT_ID.putInMDC(repOrderEquityEntity.getRepId());
         repOrderEquityService.update(repOrderEquityId, repOrderEquityEntity);
 

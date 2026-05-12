@@ -8,6 +8,9 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.validator.MAATApplicationException;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.NoSuchElementException;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -20,8 +23,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.NoSuchElementException;
-
 /**
  * <code>RestControllerAdviser</code> centralizes all rest controller exceptions.
  */
@@ -29,13 +30,14 @@ import java.util.NoSuchElementException;
 @ControllerAdvice
 public class RestControllerAdviser extends ResponseEntityExceptionHandler {
 
-    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                            HttpHeaders headers, HttpStatus status, WebRequest request) {
+    public ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         log.error(ex.getMessage());
-        return ResponseEntity.badRequest().body(ErrorDTO.builder()
-                .code(HttpStatus.BAD_REQUEST.name())
-                .message(ex.getMessage())
-                .build());
+        return ResponseEntity.badRequest()
+                .body(ErrorDTO.builder()
+                        .code(HttpStatus.BAD_REQUEST.name())
+                        .message(ex.getMessage())
+                        .build());
     }
 
     /**
@@ -47,11 +49,12 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
     @ExceptionHandler({MAATCourtDataException.class})
     public ResponseEntity<Object> handleRuntimeException(RuntimeException ex, WebRequest request) {
         log.error("Error when handling request. Error: {}", ex);
-        return handleExceptionInternal(ex,
-                ErrorDTO.builder()
-                        .message(ex.getMessage())
-                        .build(),
-                new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        return handleExceptionInternal(
+                ex,
+                ErrorDTO.builder().message(ex.getMessage()).build(),
+                new HttpHeaders(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                request);
     }
 
     /**
@@ -63,10 +66,11 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorDTO> handleValidationError(ValidationException ex) {
         log.warn(ex.getMessage());
-        return ResponseEntity.badRequest().body(ErrorDTO.builder()
-                .code(HttpStatus.BAD_REQUEST.name())
-                .message(ex.getMessage())
-                .build());
+        return ResponseEntity.badRequest()
+                .body(ErrorDTO.builder()
+                        .code(HttpStatus.BAD_REQUEST.name())
+                        .message(ex.getMessage())
+                        .build());
     }
 
     /**
@@ -78,28 +82,31 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ErrorDTO> handleNoSuchElementException(NoSuchElementException ex) {
         log.error("Unable to find element for given input. Error: {}", ex);
-        return ResponseEntity.badRequest().body(ErrorDTO.builder()
-                .code(ErrorCodes.OBJECT_NOT_FOUND)
-                .message(ex.getMessage())
-                .build());
+        return ResponseEntity.badRequest()
+                .body(ErrorDTO.builder()
+                        .code(ErrorCodes.OBJECT_NOT_FOUND)
+                        .message(ex.getMessage())
+                        .build());
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorDTO> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         log.error("Data integrity violation. Error: {}", ex.getMessage());
-        return ResponseEntity.badRequest().body(ErrorDTO.builder()
-                .code(ErrorCodes.DB_ERROR)
-                .message(ex.getMessage())
-                .build());
+        return ResponseEntity.badRequest()
+                .body(ErrorDTO.builder()
+                        .code(ErrorCodes.DB_ERROR)
+                        .message(ex.getMessage())
+                        .build());
     }
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorDTO> handleDataAccessException(DataAccessException ex) {
         log.error("Problem accessing the database. Error: {}", ex.getMessage());
-        return ResponseEntity.internalServerError().body(ErrorDTO.builder()
-                .code(ErrorCodes.DB_ERROR)
-                .message(ex.getMessage())
-                .build());
+        return ResponseEntity.internalServerError()
+                .body(ErrorDTO.builder()
+                        .code(ErrorCodes.DB_ERROR)
+                        .message(ex.getMessage())
+                        .build());
     }
 
     /**
@@ -108,10 +115,11 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
     @ExceptionHandler(RequestedObjectNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleRequestedObjectNotFoundException(RequestedObjectNotFoundException ex) {
         log.warn(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorDTO.builder()
-                .code(HttpStatus.NOT_FOUND.name())
-                .message(ex.getMessage())
-                .build());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ErrorDTO.builder()
+                        .code(HttpStatus.NOT_FOUND.name())
+                        .message(ex.getMessage())
+                        .build());
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -119,10 +127,11 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
         String errorMessage = String.format(
                 "The provided value '%s' is the incorrect type for the '%s' parameter.", ex.getValue(), ex.getName());
         log.warn(errorMessage);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder()
-                .code(HttpStatus.BAD_REQUEST.name())
-                .message(errorMessage)
-                .build());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorDTO.builder()
+                        .code(HttpStatus.BAD_REQUEST.name())
+                        .message(errorMessage)
+                        .build());
     }
 
     @ExceptionHandler(MAATApplicationException.class)
@@ -130,10 +139,11 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
         String errorMessage = ex.getMessage();
         log.error(errorMessage);
 
-        return ResponseEntity.internalServerError().body(ErrorDTO.builder()
-                .code(ErrorCodes.APPLICATION_ERROR)
-                .message(errorMessage)
-                .build());
+        return ResponseEntity.internalServerError()
+                .body(ErrorDTO.builder()
+                        .code(ErrorCodes.APPLICATION_ERROR)
+                        .message(errorMessage)
+                        .build());
     }
 
     @ExceptionHandler(RecordsAlreadyExistException.class)
@@ -141,8 +151,7 @@ public class RestControllerAdviser extends ResponseEntityExceptionHandler {
         String errorMessage = ex.getMessage();
         log.error(errorMessage);
 
-        return ResponseEntity.internalServerError().body(ErrorDTO.builder()
-            .message(errorMessage)
-            .build());
+        return ResponseEntity.internalServerError()
+                .body(ErrorDTO.builder().message(errorMessage).build());
     }
 }

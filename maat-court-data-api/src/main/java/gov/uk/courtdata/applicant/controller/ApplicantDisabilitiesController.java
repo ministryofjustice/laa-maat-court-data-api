@@ -8,9 +8,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -24,8 +32,7 @@ public class ApplicantDisabilitiesController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve applicant disabilities")
     @StandardApiResponseCodes
-    public ResponseEntity<ApplicantDisabilitiesDTO> getApplicantDisabilities(
-            @PathVariable int id) {
+    public ResponseEntity<ApplicantDisabilitiesDTO> getApplicantDisabilities(@PathVariable int id) {
         log.info("Get Applicant Disabilities Request Received for id {}", id);
         return ResponseEntity.ok(applicantDisabilitiesService.find(id));
     }
@@ -33,7 +40,8 @@ public class ApplicantDisabilitiesController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create applicant disabilities")
     @StandardApiResponseCodes
-    public ResponseEntity<ApplicantDisabilitiesDTO> createApplicantDisabilities(@RequestBody @Valid ApplicantDisabilitiesDTO applicantDisabilitiesDTO) {
+    public ResponseEntity<ApplicantDisabilitiesDTO> createApplicantDisabilities(
+            @RequestBody @Valid ApplicantDisabilitiesDTO applicantDisabilitiesDTO) {
         log.info("Create Applicant Disabilities Request Received");
         return ResponseEntity.ok(applicantDisabilitiesService.create(applicantDisabilitiesDTO));
     }
@@ -41,8 +49,9 @@ public class ApplicantDisabilitiesController {
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update applicant disabilities")
     @StandardApiResponseCodes
-    public ResponseEntity<ApplicantDisabilitiesDTO> updateApplicantDisabilities(@RequestBody @Valid ApplicantDisabilitiesDTO applicantDisabilitiesDTO) {
-        log.info("Update Applicant Disabilities Request Received for id {}"+applicantDisabilitiesDTO.getId());
+    public ResponseEntity<ApplicantDisabilitiesDTO> updateApplicantDisabilities(
+            @RequestBody @Valid ApplicantDisabilitiesDTO applicantDisabilitiesDTO) {
+        log.info("Update Applicant Disabilities Request Received for id {}" + applicantDisabilitiesDTO.getId());
         return ResponseEntity.ok(applicantDisabilitiesService.update(applicantDisabilitiesDTO));
     }
 

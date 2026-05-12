@@ -6,6 +6,7 @@ plugins {
     id "com.javiersc.semver.project" version "$semverVersion"
     id "com.gorylenko.gradle-git-properties" version "$gitPropertiesVersion"
     id "info.solidsoft.pitest" version "$pitestVersion"
+    id "com.diffplug.spotless" version "$spotlessVersion"
 }
 
 group = "gov.uk"
@@ -153,6 +154,32 @@ tasks.register('testSqsIntegration', Test) {
 }
 
 check.dependsOn testSqsIntegration
+
+spotless {
+    java {
+        target 'src/*/java/**/*.java'
+        targetExclude '**/generated/**', '**/build/**', '**/util/MockMvcIntegrationTest.java'
+
+        formatAnnotations()
+        palantirJavaFormat()
+        importOrder('', 'java', 'javax', 'org', 'com')
+
+        endWithNewline()
+        trimTrailingWhitespace()
+        removeUnusedImports()
+        forbidWildcardImports()
+
+        // Custom rule: Disallow JUnit assertions
+        custom("Refuse JUnit assertions", { text ->
+            if (text =~ /\bassert(?:Equals|True|False|Null|NotNull|Same|NotSame|ArrayEquals)\b/) {
+                throw new IllegalStateException(
+                        "Use AssertJ (assertThat(...)) instead of JUnit assertions."
+                )
+            }
+            text
+        } as Closure<String>)
+    }
+}
 
 pitest {
     targetClasses = ['gov.uk.courtdata.link.*', 'gov.uk.courtdata.unlink.*', 'gov.uk.courtdata.laastatus.*', 'gov.uk.courtdata.hearing.*', 'gov.uk.courtdata.dao.*']

@@ -1,61 +1,57 @@
 package gov.uk.courtdata.link.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.PENDING_IOJ_DECISION;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
-import com.google.gson.Gson;
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.repository.OffenceRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
-import static gov.uk.courtdata.constants.CourtDataConstants.PENDING_IOJ_DECISION;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class OffenceInfoProcessorTest {
+class OffenceInfoProcessorTest {
 
     @InjectMocks
     private OffenceInfoProcessor offenceInfoProcessor;
+
     @Spy
     private OffenceRepository offenceRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
     @Captor
-    private ArgumentCaptor<List<OffenceEntity>> OffenceCaptor;
-
-    @BeforeEach
-    public void setUp() {
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
-    }
+    private ArgumentCaptor<List<OffenceEntity>> offenceCaptor;
 
     @Test
-    public void givenOffenceDetails_whenProcessIsInvoked_thenOffenceRecordIsCreated() {
+    void givenOffenceDetails_whenProcessIsInvoked_thenOffenceRecordIsCreated() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
-        Offence offence = courtDataDTO.getCaseDetails().getDefendant().getOffences().get(0);
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
+        Offence offence =
+                courtDataDTO.getCaseDetails().getDefendant().getOffences().getFirst();
 
-        //when
+        // when
         offenceInfoProcessor.process(courtDataDTO);
 
         // then
-        verify(offenceRepository).saveAll(OffenceCaptor.capture());
-        assertThat(OffenceCaptor.getValue().get(0).getCaseId()).isEqualTo(courtDataDTO.getCaseId());
-        assertThat(OffenceCaptor.getValue().get(0).getTxId()).isEqualTo(courtDataDTO.getTxId());
-        assertThat(OffenceCaptor.getValue().get(0).getAsnSeq()).isEqualTo(offence.getAsnSeq());
-        assertThat(OffenceCaptor.getValue().get(0).getOffenceWording()).isEqualTo(offence.getOffenceWording());
-        assertThat(OffenceCaptor.getValue().get(0).getIojDecision()).isEqualTo(PENDING_IOJ_DECISION);
-        assertThat(OffenceCaptor.getValue().get(0).getWqOffence()).isEqualTo(G_NO);
-
+        verify(offenceRepository).saveAll(offenceCaptor.capture());
+        OffenceEntity entity = offenceCaptor.getValue().getFirst();
+        assertThat(entity.getCaseId()).isEqualTo(courtDataDTO.getCaseId());
+        assertThat(entity.getTxId()).isEqualTo(courtDataDTO.getTxId());
+        assertThat(entity.getAsnSeq()).isEqualTo(offence.getAsnSeq());
+        assertThat(entity.getOffenceWording()).isEqualTo(offence.getOffenceWording());
+        assertThat(entity.getIojDecision()).isEqualTo(PENDING_IOJ_DECISION);
+        assertThat(entity.getWqOffence()).isEqualTo(G_NO);
     }
 }

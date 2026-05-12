@@ -13,5 +13,4 @@ public class FdcAdjustmentReasonDTO extends GenericDTO {
 
     private String code;
     private String description;
-
 }

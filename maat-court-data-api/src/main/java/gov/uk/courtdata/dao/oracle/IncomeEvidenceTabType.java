@@ -2,99 +2,88 @@ package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
 import oracle.jpub.runtime.MutableArray;
-import oracle.sql.*;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class IncomeEvidenceTabType implements ORAData, ORADataFactory
-{
-  public static final String _SQL_NAME = "TOGDATA.INCOME_EVIDENCE_TABTYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
+public class IncomeEvidenceTabType implements ORAData, ORADataFactory {
+    public static final String _SQL_NAME = "TOGDATA.INCOME_EVIDENCE_TABTYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
 
-  MutableArray _array;
+    MutableArray _array;
 
-private static final IncomeEvidenceTabType _IncomeEvidenceTabTypeFactory = new IncomeEvidenceTabType();
+    private static final IncomeEvidenceTabType _IncomeEvidenceTabTypeFactory = new IncomeEvidenceTabType();
 
-  public static ORADataFactory getORADataFactory()
-  { return _IncomeEvidenceTabTypeFactory; }
-  /* constructors */
-  public IncomeEvidenceTabType()
-  {
-    this((IncomeEvidenceType[])null);
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _IncomeEvidenceTabTypeFactory;
+    }
 
-  public IncomeEvidenceTabType(IncomeEvidenceType[] a)
-  {
-    _array = new MutableArray(2002, a, IncomeEvidenceType.getORADataFactory());
-  }
+    /* constructors */
+    public IncomeEvidenceTabType() {
+        this((IncomeEvidenceType[]) null);
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _array.toDatum(c, _SQL_NAME);
-  }
+    public IncomeEvidenceTabType(IncomeEvidenceType[] a) {
+        _array = new MutableArray(2002, a, IncomeEvidenceType.getORADataFactory());
+    }
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    IncomeEvidenceTabType a = new IncomeEvidenceTabType();
-    a._array = new MutableArray(2002, (ARRAY) d, IncomeEvidenceType.getORADataFactory());
-    return a;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _array.toDatum(c, _SQL_NAME);
+    }
 
-  public int length() throws SQLException
-  {
-    return _array.length();
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        IncomeEvidenceTabType a = new IncomeEvidenceTabType();
+        a._array = new MutableArray(2002, (ARRAY) d, IncomeEvidenceType.getORADataFactory());
+        return a;
+    }
 
-  public int getBaseType() throws SQLException
-  {
-    return _array.getBaseType();
-  }
+    public int length() throws SQLException {
+        return _array.length();
+    }
 
-  public String getBaseTypeName() throws SQLException
-  {
-    return _array.getBaseTypeName();
-  }
+    public int getBaseType() throws SQLException {
+        return _array.getBaseType();
+    }
 
-  public ArrayDescriptor getDescriptor() throws SQLException
-  {
-    return _array.getDescriptor();
-  }
+    public String getBaseTypeName() throws SQLException {
+        return _array.getBaseTypeName();
+    }
 
-  /* array accessor methods */
-  public IncomeEvidenceType[] getArray() throws SQLException
-  {
-    return (IncomeEvidenceType[]) _array.getObjectArray(
-      new IncomeEvidenceType[_array.length()]);
-  }
+    public ArrayDescriptor getDescriptor() throws SQLException {
+        return _array.getDescriptor();
+    }
 
-  public IncomeEvidenceType[] getArray(long index, int count) throws SQLException
-  {
-    return (IncomeEvidenceType[]) _array.getObjectArray(index,
-      new IncomeEvidenceType[_array.sliceLength(index, count)]);
-  }
+    /* array accessor methods */
+    public IncomeEvidenceType[] getArray() throws SQLException {
+        return (IncomeEvidenceType[]) _array.getObjectArray(new IncomeEvidenceType[_array.length()]);
+    }
 
-  public void setArray(IncomeEvidenceType[] a) throws SQLException
-  {
-    _array.setObjectArray(a);
-  }
+    public IncomeEvidenceType[] getArray(long index, int count) throws SQLException {
+        return (IncomeEvidenceType[])
+                _array.getObjectArray(index, new IncomeEvidenceType[_array.sliceLength(index, count)]);
+    }
 
-  public void setArray(IncomeEvidenceType[] a, long index) throws SQLException
-  {
-    _array.setObjectArray(a, index);
-  }
+    public void setArray(IncomeEvidenceType[] a) throws SQLException {
+        _array.setObjectArray(a);
+    }
 
-  public IncomeEvidenceType getElement(long index) throws SQLException
-  {
-    return (IncomeEvidenceType) _array.getObjectElement(index);
-  }
+    public void setArray(IncomeEvidenceType[] a, long index) throws SQLException {
+        _array.setObjectArray(a, index);
+    }
 
-  public void setElement(IncomeEvidenceType a, long index) throws SQLException
-  {
-    _array.setObjectElement(a, index);
-  }
+    public IncomeEvidenceType getElement(long index) throws SQLException {
+        return (IncomeEvidenceType) _array.getObjectElement(index);
+    }
 
+    public void setElement(IncomeEvidenceType a, long index) throws SQLException {
+        _array.setObjectElement(a, index);
+    }
 }

@@ -2,12 +2,11 @@ package gov.uk.courtdata.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+
 import org.hibernate.Session;
 import org.hibernate.procedure.ProcedureCall;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-
 
 @Repository
 public class CrownCourtStoredProcedureRepository {
@@ -16,20 +15,20 @@ public class CrownCourtStoredProcedureRepository {
     private EntityManager entityManager;
 
     @Transactional
-    public void updateCrownCourtOutcome(Integer repId,
-                                        String ccOutcome,
-                                        String benchWarrantIssued,
-                                        String appealType,
-                                        String imprisoned,
-                                        String caseNumber,
-                                        String crownCourtCode) {
-
+    public void updateCrownCourtOutcome(
+            Integer repId,
+            String ccOutcome,
+            String benchWarrantIssued,
+            String appealType,
+            String imprisoned,
+            String caseNumber,
+            String crownCourtCode) {
 
         final Session session = entityManager.unwrap(Session.class);
 
         final ProcedureCall ccOutcomeProcedure = session.getNamedProcedureCall("update_cc_outcome");
 
-        //enablePassingNulls is Deprecated since v5.3. Hibernate determines it implicitly
+        // enablePassingNulls is Deprecated since v5.3. Hibernate determines it implicitly
         ccOutcomeProcedure.getParameterRegistration("p_imprisoned");
         ccOutcomeProcedure.getParameterRegistration("p_bench_warrant_issued");
         ccOutcomeProcedure.getParameterRegistration("p_appeal_type");
@@ -43,6 +42,5 @@ public class CrownCourtStoredProcedureRepository {
         ccOutcomeProcedure.setParameter("p_crown_court_code", crownCourtCode);
 
         ccOutcomeProcedure.execute();
-
     }
 }

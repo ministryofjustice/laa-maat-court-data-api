@@ -7,6 +7,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentRequest;
+import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentResponse;
+import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentRequest;
-import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentResponse;
-import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
 
 @Slf4j
 @RestController
@@ -27,7 +28,7 @@ import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessme
 public class PassportAssessmentControllerV2 {
 
     private final PassportAssessmentServiceV2 passportAssessmentService;
-    
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a passport assessment")
     @StandardProblemDetailErrorResponse
@@ -37,7 +38,8 @@ public class PassportAssessmentControllerV2 {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiCreatePassportedAssessmentResponse> create(@Valid @RequestBody ApiCreatePassportedAssessmentRequest request) {
+    public ResponseEntity<ApiCreatePassportedAssessmentResponse> create(
+            @Valid @RequestBody ApiCreatePassportedAssessmentRequest request) {
         log.info("Create Passported Assessment Request Received");
         return ResponseEntity.ok(passportAssessmentService.create(request));
     }

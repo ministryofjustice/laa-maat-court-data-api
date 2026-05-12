@@ -13,6 +13,5 @@ public class ExtraEvidenceDTO extends EvidenceDTO {
 
     private String otherText;
     private Boolean mandatory;
-    private String adhoc;        // valuesnull, A for applicant P for partner
-
+    private String adhoc; // valuesnull, A for applicant P for partner
 }

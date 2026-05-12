@@ -1,18 +1,21 @@
 package gov.uk.courtdata.link.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
+import static gov.uk.courtdata.constants.CourtDataConstants.PENDING_IOJ_DECISION;
+import static gov.uk.courtdata.util.DateUtil.parse;
+
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.OffenceEntity;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.repository.OffenceRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
-import static gov.uk.courtdata.util.DateUtil.parse;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -23,8 +26,7 @@ public class OffenceInfoProcessor implements Process {
     @Override
     public void process(CourtDataDTO courtDataDTO) {
 
-        List<OffenceEntity> offenceEntityList = courtDataDTO.getCaseDetails().getDefendant().getOffences()
-                .stream()
+        List<OffenceEntity> offenceEntityList = courtDataDTO.getCaseDetails().getDefendant().getOffences().stream()
                 .map(offence -> buildOffences(offence, courtDataDTO))
                 .collect(Collectors.toList());
         offenceRepository.saveAll(offenceEntityList);
@@ -50,6 +52,4 @@ public class OffenceInfoProcessor implements Process {
                 .offenceId(offence.getOffenceId())
                 .build();
     }
-
-
 }

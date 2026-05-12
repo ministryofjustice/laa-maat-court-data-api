@@ -1,10 +1,15 @@
 package gov.uk.courtdata.entity;
 
-
 import gov.uk.courtdata.model.id.ProceedingMaatId;
-import lombok.*;
-
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -18,15 +23,20 @@ public class ProceedingEntity {
     @Id
     @Column(name = "MAAT_ID")
     private Integer maatId;
+
     @Id
     @Column(name = "PROCEEDING_ID")
     private Integer proceedingId;
+
     @Column(name = "CREATED_TXID")
     private Integer createdTxid;
+
     @Column(name = "CREATED_USER")
     private String createdUser;
+
     @Column(name = "REMOVED_TXID")
     private Integer removedTxid;
+
     @Column(name = "REMOVED_USER")
     private String removedUser;
 }

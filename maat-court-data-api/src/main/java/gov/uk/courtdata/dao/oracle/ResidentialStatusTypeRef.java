@@ -1,58 +1,59 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ResidentialStatusTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.RESIDENTIAL_STATUS_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class ResidentialStatusTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.RESIDENTIAL_STATUS_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final ResidentialStatusTypeRef _ResidentialStatusTypeRefFactory = new ResidentialStatusTypeRef();
+    private static final ResidentialStatusTypeRef _ResidentialStatusTypeRefFactory = new ResidentialStatusTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _ResidentialStatusTypeRefFactory; }
-  /* constructor */
-  public ResidentialStatusTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _ResidentialStatusTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public ResidentialStatusTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    ResidentialStatusTypeRef r = new ResidentialStatusTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static ResidentialStatusTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (ResidentialStatusTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to ResidentialStatusTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        ResidentialStatusTypeRef r = new ResidentialStatusTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public ResidentialStatusType getValue() throws SQLException
-  {
-     return (ResidentialStatusType) ResidentialStatusType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static ResidentialStatusTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (ResidentialStatusTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to ResidentialStatusTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(ResidentialStatusType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public ResidentialStatusType getValue() throws SQLException {
+        return (ResidentialStatusType)
+                ResidentialStatusType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(ResidentialStatusType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

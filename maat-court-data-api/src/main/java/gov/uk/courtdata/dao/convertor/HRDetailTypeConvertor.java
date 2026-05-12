@@ -10,95 +10,75 @@ import java.sql.SQLException;
 
 public class HRDetailTypeConvertor extends Convertor {
 
-	@Override
-	public HRDetailTypeDTO getDTO()
-	{
-		return (HRDetailTypeDTO)getDto();
-	}
+    @Override
+    public HRDetailTypeDTO getDTO() {
+        return (HRDetailTypeDTO) getDto();
+    }
 
-	/* (non-Javadoc)
-	 * @see uk.gov.lsc.maat.bus.dao.dao.convertor.Convertor#getOracleType()
-	 */
-	@Override
-	public HrDetailTypeType getOracleType() throws MAATApplicationException,
-			MAATSystemException
-	{
-		if ( getDbType() == null )
-		{
-			setType( new HrDetailTypeType() );
-		}
-		
-		if ( getDbType() instanceof HrDetailTypeType )
-		{
-			return (HrDetailTypeType)getDbType();
-		}
-		else
-		{
-			return null;
-		}
-	}
-	/**
-	 * sets the local instance of the dto
-	 * @see Convertor#setDTO(Object)
-	 */
-	@Override
-	public void setDTO(Object dto) throws MAATApplicationException
-	{
-		if ( dto instanceof HRDetailTypeDTO  )
-			this.setDto(dto);
-		else
-			throw new MAATApplicationException( " Invalid DTO type for conversion got " 
-												+ dto.getClass().getName() 
-												+ " instead of " 
-												+ HRDetailTypeDTO.class.getName());
-	}
+    /* (non-Javadoc)
+     * @see uk.gov.lsc.maat.bus.dao.dao.convertor.Convertor#getOracleType()
+     */
+    @Override
+    public HrDetailTypeType getOracleType() throws MAATApplicationException, MAATSystemException {
+        if (getDbType() == null) {
+            setType(new HrDetailTypeType());
+        }
 
-	@Override
-	public void setDTOFromType(Object oracleType)
-			throws MAATApplicationException, MAATSystemException {
-		// save it
-		this.setType( oracleType );
-		this.setDto( new HRDetailTypeDTO() );	// create the new DTO
+        if (getDbType() instanceof HrDetailTypeType) {
+            return (HrDetailTypeType) getDbType();
+        } else {
+            return null;
+        }
+    }
 
-		try
-		{
-			ConvertorHelper convertorHelper = new ConvertorHelper();
-			getDTO().setType( 	convertorHelper.toString(	getOracleType().getType()));
-			getDTO().setDescription(convertorHelper.toString(	getOracleType().getDescription()));
+    /**
+     * sets the local instance of the dto
+     *
+     * @see Convertor#setDTO(Object)
+     */
+    @Override
+    public void setDTO(Object dto) throws MAATApplicationException {
+        if (dto instanceof HRDetailTypeDTO) this.setDto(dto);
+        else
+            throw new MAATApplicationException(" Invalid DTO type for conversion got "
+                    + dto.getClass().getName()
+                    + " instead of "
+                    + HRDetailTypeDTO.class.getName());
+    }
 
-		}
-		catch (NullPointerException nex)
-		{
-			throw new MAATApplicationException( this.getClass().getName() + " - the embedded dto is null");
-		}
-		catch (SQLException ex )
-		{
-			throw new MAATSystemException( ex );
-		}		
-	}
+    @Override
+    public void setDTOFromType(Object oracleType) throws MAATApplicationException, MAATSystemException {
+        // save it
+        this.setType(oracleType);
+        this.setDto(new HRDetailTypeDTO()); // create the new DTO
 
-	@Override
-	public void setTypeFromDTO(Object dto) throws MAATApplicationException,
-			MAATSystemException {
-		/*
-		 * update the oracle type object converting all of the dto attributes to oracleType attributes
-		 */
-		try
-		{
-			setType( null );	// force new type to be instantiated 
-			setDTO( dto );	// if the dto class type is not right for this conversion an exception is thrown
-			ConvertorHelper convertorHelper = new ConvertorHelper();
-			getOracleType().setType(	convertorHelper.toString(getDTO().getType()));
-			getOracleType().setDescription(	convertorHelper.toString(getDTO().getDescription()));
-		}		
-		catch (NullPointerException nex)
-		{
-			throw new MAATApplicationException( this.getClass().getName() + " - the embedded dto is null");
-		}
-		catch (SQLException ex )
-		{
-			throw new MAATSystemException( ex );
-		}
-	}
+        try {
+            ConvertorHelper convertorHelper = new ConvertorHelper();
+            getDTO().setType(convertorHelper.toString(getOracleType().getType()));
+            getDTO().setDescription(convertorHelper.toString(getOracleType().getDescription()));
 
+        } catch (NullPointerException nex) {
+            throw new MAATApplicationException(this.getClass().getName() + " - the embedded dto is null");
+        } catch (SQLException ex) {
+            throw new MAATSystemException(ex);
+        }
+    }
+
+    @Override
+    public void setTypeFromDTO(Object dto) throws MAATApplicationException, MAATSystemException {
+        /*
+         * update the oracle type object converting all of the dto attributes to oracleType attributes
+         */
+        try {
+            setType(null); // force new type to be instantiated
+            setDTO(dto); // if the dto class type is not right for this conversion an exception is thrown
+            ConvertorHelper convertorHelper = new ConvertorHelper();
+            getOracleType().setType(convertorHelper.toString(getDTO().getType()));
+            getOracleType().setDescription(convertorHelper.toString(getDTO().getDescription()));
+        } catch (NullPointerException nex) {
+            throw new MAATApplicationException(this.getClass().getName() + " - the embedded dto is null");
+        } catch (SQLException ex) {
+            throw new MAATSystemException(ex);
+        }
+    }
 }

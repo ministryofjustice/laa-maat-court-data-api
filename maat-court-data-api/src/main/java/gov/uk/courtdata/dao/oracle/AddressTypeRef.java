@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class AddressTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.ADDRESS_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class AddressTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.ADDRESS_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final AddressTypeRef _AddressTypeRefFactory = new AddressTypeRef();
+    private static final AddressTypeRef _AddressTypeRefFactory = new AddressTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _AddressTypeRefFactory; }
-  /* constructor */
-  public AddressTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _AddressTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public AddressTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    AddressTypeRef r = new AddressTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static AddressTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (AddressTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to AddressTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        AddressTypeRef r = new AddressTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public AddressType getValue() throws SQLException
-  {
-     return (AddressType) AddressType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static AddressTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (AddressTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to AddressTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(AddressType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public AddressType getValue() throws SQLException {
+        return (AddressType) AddressType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(AddressType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

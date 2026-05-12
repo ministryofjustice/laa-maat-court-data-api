@@ -2,7 +2,13 @@ package gov.uk.courtdata.applicant.mapper;
 
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
-import org.mapstruct.*;
+
+import org.mapstruct.Builder;
+import org.mapstruct.CollectionMappingStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         componentModel = "spring",
@@ -12,7 +18,10 @@ import org.mapstruct.*;
         builder = @Builder(disableBuilder = true))
 public interface ApplicantDisabilitiesMapper {
     ApplicantDisabilitiesDTO mapEntityToDTO(ApplicantDisabilitiesEntity applicantDisabilitiesEntity);
+
     ApplicantDisabilitiesEntity mapDTOToApplicantDisabilitiesEntity(ApplicantDisabilitiesDTO applicantDisabilitiesDTO);
-    void updateApplicantDisabilitiesDTOToApplicantDisabilitiesEntity(ApplicantDisabilitiesDTO applicantHistoryDTO,
-                                                                     @MappingTarget ApplicantDisabilitiesEntity applicantDisabilitiesEntity);
+
+    void updateApplicantDisabilitiesDTOToApplicantDisabilitiesEntity(
+            ApplicantDisabilitiesDTO applicantHistoryDTO,
+            @MappingTarget ApplicantDisabilitiesEntity applicantDisabilitiesEntity);
 }

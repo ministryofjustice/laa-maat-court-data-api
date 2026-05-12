@@ -18,5 +18,4 @@ public class EvidenceDTO extends GenericDTO {
     private EvidenceTypeDTO evidenceTypeDTO;
     private String otherDescription;
     private Date dateReceived;
-
 }

@@ -1,23 +1,26 @@
 package gov.uk.courtdata.hearing.processor;
 
-import com.google.gson.Gson;
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.WQResultEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQResultRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
-
 @ExtendWith(MockitoExtension.class)
-public class WQResultProcessorTest {
+class WQResultProcessorTest {
 
     @InjectMocks
     private WQResultProcessor wqResultProcessor;
@@ -25,47 +28,47 @@ public class WQResultProcessorTest {
     @Spy
     private WQResultRepository wqResultRepository;
 
-    private TestModelDataBuilder testModelDataBuilder;
-
     @Captor
     ArgumentCaptor<WQResultEntity> wqResultEntityArgumentCaptor;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
     }
 
     @Test
-    public void givenCaseProcessor_whenProcessIsInvoke_thenSaveCase() {
-        //given
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+    void givenCaseProcessor_whenProcessIsInvoke_thenSaveCase() {
+        // given
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
 
-        //when
+        // when
         wqResultProcessor.process(hearingDTO);
 
-        //then
+        // then
         verify(wqResultRepository).save(wqResultEntityArgumentCaptor.capture());
         assertThat(wqResultEntityArgumentCaptor.getValue().getCaseId()).isEqualTo(1234);
         assertThat(wqResultEntityArgumentCaptor.getValue().getResultCode()).isEqualTo(6666);
-        assertThat(wqResultEntityArgumentCaptor.getValue().getResultText()).isEqualTo("This is a some result text for hearing");
-        assertThat(wqResultEntityArgumentCaptor.getValue().getNextHearingLocation()).isEqualTo("London");
+        assertThat(wqResultEntityArgumentCaptor.getValue().getResultText())
+                .isEqualTo("This is a some result text for hearing");
+        assertThat(wqResultEntityArgumentCaptor.getValue().getNextHearingLocation())
+                .isEqualTo("London");
         assertThat(wqResultEntityArgumentCaptor.getValue().getFirmName()).isEqualTo("Bristol Law Service");
-        assertThat(wqResultEntityArgumentCaptor.getValue().getResultShortTitle()).isEqualTo("Next call");
-
+        assertThat(wqResultEntityArgumentCaptor.getValue().getResultShortTitle())
+                .isEqualTo("Next call");
     }
 
     @Test
-    public void givenInputWhereResultTextIsGreaterThan4000Characters_whenProcessIsInvoke_thenSaveCaseWithTruncatedResultText() {
-        //given
+    void
+            givenInputWhereResultTextIsGreaterThan4000Characters_whenProcessIsInvoke_thenSaveCaseWithTruncatedResultText() {
+        // given
         String expectedResultText = "a".repeat(CourtDataConstants.ORACLE_VARCHAR_MAX);
-        HearingDTO hearingDTO = testModelDataBuilder.getHearingDTO();
+        HearingDTO hearingDTO = TestModelDataBuilder.getHearingDTO();
         hearingDTO.getResult().setResultText("a".repeat(CourtDataConstants.ORACLE_VARCHAR_MAX + 1));
 
-        //when
+        // when
         wqResultProcessor.process(hearingDTO);
 
-        //then
+        // then
         verify(wqResultRepository).save(wqResultEntityArgumentCaptor.capture());
         assertThat(wqResultEntityArgumentCaptor.getValue().getResultText()).isEqualTo(expectedResultText);
     }

@@ -4,5 +4,5 @@ import gov.uk.courtdata.dto.CourtDataDTO;
 
 public interface Process {
 
-      void process(CourtDataDTO saveAndLinkModel);
+    void process(CourtDataDTO saveAndLinkModel);
 }

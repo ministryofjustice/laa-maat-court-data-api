@@ -10,9 +10,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,15 +36,27 @@ public class WQResultController {
     @Operation(description = "Retrieve list of WQ ResultCodes for given caseId and asnSeq")
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @NotFoundApiResponse
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request.",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "500",
+            description = "Server Error.",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<Integer>> getResultCodeByCaseIdAndAsnSeq(
             @PathVariable int caseId,
             @PathVariable String asnSeq,
             @Parameter(description = "Used for tracing calls")
-            @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false) String laaTransactionId) {
+                    @RequestHeader(value = CourtDataConstants.LAA_TRANSACTION_ID, required = false)
+                    String laaTransactionId) {
         log.info(String.format("Get WQ Result Codes by CaseId - %d and AsnSeq: %s {}", caseId, asnSeq));
         return ResponseEntity.ok(resultService.findWQResultCodesByCaseIdAndAsnSeq(caseId, asnSeq));
     }
-
 }

@@ -1,14 +1,34 @@
 package gov.uk.courtdata.entity;
 
 import gov.uk.courtdata.reporderhistory.entity.RepOrderHistoryEntity;
-import lombok.*;
-import org.hibernate.annotations.UpdateTimestamp;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedStoredProcedureQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.ParameterMode;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.StoredProcedureParameter;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Getter
 @Setter
@@ -21,15 +41,14 @@ import java.util.List;
         name = "update_cc_outcome",
         procedureName = "togdata.application.update_cc_outcome",
         parameters = {
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class, name = "p_rep_id"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_cc_outcome"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_bench_warrant_issued"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_appeal_type"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_imprisoned"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_case_number"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_crown_court_code")
-        }
-)
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class, name = "p_rep_id"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_cc_outcome"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_bench_warrant_issued"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_appeal_type"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_imprisoned"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_case_number"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "p_crown_court_code")
+        })
 public class RepOrderEntity {
 
     @ToString.Exclude
@@ -58,8 +77,7 @@ public class RepOrderEntity {
 
     @ToString.Exclude
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME",
-            insertable = false, updatable = false)
+    @JoinColumn(name = "USER_CREATED", referencedColumnName = "USER_NAME", insertable = false, updatable = false)
     private UserEntity userCreatedEntity;
 
     @Id
@@ -281,5 +299,4 @@ public class RepOrderEntity {
 
     @Column(name = "HEARING_DATE")
     private LocalDate hearingDate;
-
 }

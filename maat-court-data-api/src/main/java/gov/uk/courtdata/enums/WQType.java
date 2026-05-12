@@ -4,7 +4,6 @@ package gov.uk.courtdata.enums;
  * <Code>WQType</Code> list of work queue types.
  */
 public enum WQType {
-
     COMMITTAL_QUEUE(1),
     INDICTABLE_QUEUE(2),
     CONCLUSION_QUEUE(7),
@@ -25,8 +24,7 @@ public enum WQType {
 
     public static boolean isActionableQueue(int wqNumber) {
         boolean isActionable = false;
-        if (INDICTABLE_QUEUE.value == wqNumber
-                || CONCLUSION_QUEUE.value == wqNumber) {
+        if (INDICTABLE_QUEUE.value == wqNumber || CONCLUSION_QUEUE.value == wqNumber) {
             isActionable = true;
         }
         return isActionable;

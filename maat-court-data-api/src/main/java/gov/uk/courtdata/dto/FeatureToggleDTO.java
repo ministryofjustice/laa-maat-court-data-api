@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FeatureToggleDTO {
 
-  private Integer id;
-  private String username;
-  private String featureName;
-  private String action;
-  private String isEnabled;
+    private Integer id;
+    private String username;
+    private String featureName;
+    private String action;
+    private String isEnabled;
 }

@@ -1,6 +1,11 @@
 package gov.uk.courtdata.dces.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
@@ -12,8 +17,13 @@ import gov.uk.courtdata.enums.ConcorContributionStatus;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.exception.ValidationException;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,15 +33,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
-import static gov.uk.courtdata.enums.ConcorContributionStatus.SENT;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ConcorContributionsRestController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -54,79 +56,124 @@ class ConcorContributionsRestControllerTest {
     private ConcorContributionsService concorContributionsService;
 
     @Test
-    void givenActiveStatusAndValidConcorContributionIdAndNumberOfRecords_whenGetConcorContributionFiles_thenReturnListOfContributions() throws Exception {
+    void
+            givenActiveStatusAndValidConcorContributionIdAndNumberOfRecords_whenGetConcorContributionFiles_thenReturnListOfContributions()
+                    throws Exception {
 
         when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, 3, 121))
                 .thenReturn(List.of(
-                        ConcorContributionResponse.builder().concorContributionId(1).xmlContent("FirstXMLFile").build(),
-                        ConcorContributionResponse.builder().concorContributionId(2).xmlContent("SecondXMLFile").build(),
-                        ConcorContributionResponse.builder().concorContributionId(3).xmlContent("ThirdXMLFile").build()));
+                        ConcorContributionResponse.builder()
+                                .concorContributionId(1)
+                                .xmlContent("FirstXMLFile")
+                                .build(),
+                        ConcorContributionResponse.builder()
+                                .concorContributionId(2)
+                                .xmlContent("SecondXMLFile")
+                                .build(),
+                        ConcorContributionResponse.builder()
+                                .concorContributionId(3)
+                                .xmlContent("ThirdXMLFile")
+                                .build()));
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_FILES_URL))
                         .queryParam("status", ConcorContributionStatus.ACTIVE.name())
                         .queryParam("concorContributionId", String.valueOf(121))
                         .queryParam("numberOfRecords", String.valueOf(3))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").exists())
-                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==2)].concorContributionId").exists())
-                .andExpect(jsonPath("$.[?(@.concorContributionId==2)].xmlContent").value("SecondXMLFile"))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId").exists())
-                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].xmlContent").value("ThirdXMLFile"));
+                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId")
+                        .exists())
+                .andExpect(
+                        jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==2)].concorContributionId")
+                        .exists())
+                .andExpect(
+                        jsonPath("$.[?(@.concorContributionId==2)].xmlContent").value("SecondXMLFile"))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId")
+                        .exists())
+                .andExpect(
+                        jsonPath("$.[?(@.concorContributionId==3)].xmlContent").value("ThirdXMLFile"));
     }
 
     @Test
-    void givenActiveStatusAndNullConcorContributionId_whenGetConcorContributionFiles_thenReturnListOfContributions() throws Exception {
+    void givenActiveStatusAndNullConcorContributionId_whenGetConcorContributionFiles_thenReturnListOfContributions()
+            throws Exception {
 
         when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, 3, null))
                 .thenReturn(List.of(
-                        ConcorContributionResponse.builder().concorContributionId(1).xmlContent("FirstXMLFile").build(),
-                        ConcorContributionResponse.builder().concorContributionId(2).xmlContent("SecondXMLFile").build(),
-                        ConcorContributionResponse.builder().concorContributionId(3).xmlContent("ThirdXMLFile").build()));
+                        ConcorContributionResponse.builder()
+                                .concorContributionId(1)
+                                .xmlContent("FirstXMLFile")
+                                .build(),
+                        ConcorContributionResponse.builder()
+                                .concorContributionId(2)
+                                .xmlContent("SecondXMLFile")
+                                .build(),
+                        ConcorContributionResponse.builder()
+                                .concorContributionId(3)
+                                .xmlContent("ThirdXMLFile")
+                                .build()));
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_FILES_URL))
                         .queryParam("status", ConcorContributionStatus.ACTIVE.name())
                         .queryParam("numberOfRecords", String.valueOf(3))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").exists())
-                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==2)].concorContributionId").exists())
-                .andExpect(jsonPath("$.[?(@.concorContributionId==2)].xmlContent").value("SecondXMLFile"))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId").exists())
-                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].xmlContent").value("ThirdXMLFile"));
+                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId")
+                        .exists())
+                .andExpect(
+                        jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==2)].concorContributionId")
+                        .exists())
+                .andExpect(
+                        jsonPath("$.[?(@.concorContributionId==2)].xmlContent").value("SecondXMLFile"))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId")
+                        .exists())
+                .andExpect(
+                        jsonPath("$.[?(@.concorContributionId==3)].xmlContent").value("ThirdXMLFile"));
     }
 
     @Test
-    void givenActiveStatusAndNullNumberOfRecords_whenGetConcorContributionFiles_thenReturnListOfContributions() throws Exception {
+    void givenActiveStatusAndNullNumberOfRecords_whenGetConcorContributionFiles_thenReturnListOfContributions()
+            throws Exception {
 
         when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, null, null))
                 .thenReturn(List.of(
-                        ConcorContributionResponse.builder().concorContributionId(1).xmlContent("FirstXMLFile").build(),
-                        ConcorContributionResponse.builder().concorContributionId(3).xmlContent("ThirdXMLFile").build()));
+                        ConcorContributionResponse.builder()
+                                .concorContributionId(1)
+                                .xmlContent("FirstXMLFile")
+                                .build(),
+                        ConcorContributionResponse.builder()
+                                .concorContributionId(3)
+                                .xmlContent("ThirdXMLFile")
+                                .build()));
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_FILES_URL))
                         .queryParam("status", ConcorContributionStatus.ACTIVE.name())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId").exists())
-                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
-                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId").exists())
-                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].xmlContent").value("ThirdXMLFile"));
-
+                .andExpect(jsonPath("$.[?(@.concorContributionId==1)].concorContributionId")
+                        .exists())
+                .andExpect(
+                        jsonPath("$.[?(@.concorContributionId==1)].xmlContent").value("FirstXMLFile"))
+                .andExpect(jsonPath("$.[?(@.concorContributionId==3)].concorContributionId")
+                        .exists())
+                .andExpect(
+                        jsonPath("$.[?(@.concorContributionId==3)].xmlContent").value("ThirdXMLFile"));
     }
 
     @Test
     void givenActiveStatusAndNoActiveFiles_whenGetConcorContributionFiles_thenReturnEmptyList() throws Exception {
 
         Integer numberOfRecords = 3;
-        when(concorContributionsService.getConcorContributionFiles(ConcorContributionStatus.ACTIVE, numberOfRecords, null)).thenReturn(List.of());
+        when(concorContributionsService.getConcorContributionFiles(
+                        ConcorContributionStatus.ACTIVE, numberOfRecords, null))
+                .thenReturn(List.of());
 
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_FILES_URL))
                         .queryParam("status", ConcorContributionStatus.ACTIVE.name())
                         .queryParam("numberOfRecords", String.valueOf(numberOfRecords))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -136,43 +183,46 @@ class ConcorContributionsRestControllerTest {
 
     @Test
     void givenNoQueryParams_whenGetConcorContributionFiles_thenBadRequestError() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILES_URL))
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_FILES_URL))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void givenNoPathVariable_whenFindConcorContributionFile_thenNotFoundError() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILE_URL))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isNotFound());
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_FILE_URL))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void givenInvalidPathVariable_whenFindConcorContributionFile_thenBadRequestError() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILE_URL + "/0dewe"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isBadRequest());
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_FILE_URL + "/0dewe"))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void givenNonExistentConcorContributionId_whenFindConcorContributionFile_thenNotFoundError() throws Exception {
         when(concorContributionsService.getConcorContributionFile(0))
-            .thenThrow(new RequestedObjectNotFoundException("Concor Contribution ID 0 not found"));
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILE_URL + "/0"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isNotFound());
+                .thenThrow(new RequestedObjectNotFoundException("Concor Contribution ID 0 not found"));
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_FILE_URL + "/0"))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void givenValidConcorContributionId_whenFindConcorContributionFile_thenReturnContributionFile() throws Exception {
         when(concorContributionsService.getConcorContributionFile(110))
-            .thenReturn(ConcorContributionResponse.builder().concorContributionId(110).xmlContent("XMLFileContent").build());
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_FILE_URL + "/110"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.concorContributionId").value(110))
-            .andExpect(jsonPath("$.xmlContent").value("XMLFileContent"));
+                .thenReturn(ConcorContributionResponse.builder()
+                        .concorContributionId(110)
+                        .xmlContent("XMLFileContent")
+                        .build());
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_FILE_URL + "/110"))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.concorContributionId").value(110))
+                .andExpect(jsonPath("$.xmlContent").value("XMLFileContent"));
     }
 
     @Test
@@ -182,12 +232,13 @@ class ConcorContributionsRestControllerTest {
                 .xmlContent("XMLFileContent")
                 .concorContributionIds(Set.of())
                 .build();
-        when(concorContributionsService.createContributionAndUpdateConcorStatus(createContributionFileRequest)).thenReturn(1111);
+        when(concorContributionsService.createContributionAndUpdateConcorStatus(createContributionFileRequest))
+                .thenReturn(1111);
 
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(createContributionFileRequest);
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CREATE_CONTRIBUTION_FILE_URL))
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + CREATE_CONTRIBUTION_FILE_URL))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -207,7 +258,7 @@ class ConcorContributionsRestControllerTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(createContributionFileRequest);
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CREATE_CONTRIBUTION_FILE_URL))
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + CREATE_CONTRIBUTION_FILE_URL))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is5xxServerError());
@@ -226,7 +277,7 @@ class ConcorContributionsRestControllerTest {
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(createContributionFileRequest);
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CREATE_CONTRIBUTION_FILE_URL))
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + CREATE_CONTRIBUTION_FILE_URL))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is4xxClientError())
@@ -242,11 +293,10 @@ class ConcorContributionsRestControllerTest {
                 .concorId(id)
                 .errorText(errorText)
                 .build();
-        when(concorContributionsService.logContributionProcessed(request))
-                .thenReturn(1111);
+        when(concorContributionsService.logContributionProcessed(request)).thenReturn(1111);
         mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + DRC_UPDATE_URL))
-                .content(TestModelDataBuilder.getConcorDrcUpdateJson(id, errorText))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .content(TestModelDataBuilder.getConcorDrcUpdateJson(id, errorText))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value("1111"));
     }
@@ -288,14 +338,15 @@ class ConcorContributionsRestControllerTest {
     @Test
     void givenValidRequest_whenUpdateContributionStatus_thenReturnUpdatedIds() throws Exception {
 
-        UpdateConcorContributionStatusRequest request = UpdateConcorContributionStatusRequest.builder().build();
+        UpdateConcorContributionStatusRequest request =
+                UpdateConcorContributionStatusRequest.builder().build();
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(request);
 
         when(concorContributionsService.updateConcorContributionStatusAndResetContribFile(request))
-                .thenReturn(List.of(111,222, 333));
+                .thenReturn(List.of(111, 222, 333));
 
-        mvc.perform(MockMvcRequestBuilders.put(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_STATUS_URL))
+        mvc.perform(MockMvcRequestBuilders.put(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_STATUS_URL))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -308,31 +359,30 @@ class ConcorContributionsRestControllerTest {
     @Test
     void givenNoUpdatedIds_whenUpdateContributionStatus_thenReturnEmptyList() throws Exception {
 
-        UpdateConcorContributionStatusRequest request = UpdateConcorContributionStatusRequest.builder().build();
+        UpdateConcorContributionStatusRequest request =
+                UpdateConcorContributionStatusRequest.builder().build();
         final ObjectMapper objectMapper = new ObjectMapper();
         final String requestBody = objectMapper.writeValueAsString(request);
 
-        when(concorContributionsService.updateConcorContributionStatusAndResetContribFile(request)).thenReturn(List.of());
+        when(concorContributionsService.updateConcorContributionStatusAndResetContribFile(request))
+                .thenReturn(List.of());
 
-        mvc.perform(MockMvcRequestBuilders.put(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_STATUS_URL))
+        mvc.perform(MockMvcRequestBuilders.put(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_STATUS_URL))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }
 
-
     @Test
     void givenValidId_whenGetContribution_thenReturnContribution() throws Exception {
 
         Integer id = 100;
-        ConcorContributionResponseDTO responseDTO = ConcorContributionResponseDTO.builder()
-                .id(id)
-                .status(SENT)
-                .build();
+        ConcorContributionResponseDTO responseDTO =
+                ConcorContributionResponseDTO.builder().id(id).status(SENT).build();
 
         when(concorContributionsService.getConcorContribution(id)).thenReturn(responseDTO);
-        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_URL+"/100"))
+        mvc.perform(MockMvcRequestBuilders.get(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_URL + "/100"))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
@@ -342,52 +392,49 @@ class ConcorContributionsRestControllerTest {
     @Test
     void givenEmptyListOfIds_whenXmlIsRequested_thenBadRequestError() throws Exception {
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content("[]"))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("ID List Empty"));
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_XML_URL))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("[]"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("ID List Empty"));
     }
 
     @Test
     void givenEmptyRequestBody_whenXmlIsRequested_thenBadRequestError() throws Exception {
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(""))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.detail").value("Failed to read request"));
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_XML_URL))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(""))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Failed to read request"));
     }
-
 
     @Test
     void givenLongListOfIds_whenXmlIsRequested_thenBadRequestError() throws Exception {
-        String longList = IntStream.rangeClosed(1, 351)
-            .mapToObj(Integer::toString)
-            .collect(Collectors.joining(","));
+        String longList =
+                IntStream.rangeClosed(1, 351).mapToObj(Integer::toString).collect(Collectors.joining(","));
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content("["+longList+"]"))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("Too many IDs provided, max is 350"));
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_XML_URL))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("[" + longList + "]"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Too many IDs provided, max is 350"));
     }
 
     @Test
     void givenValidListOfIds_whenXmlIsRequested_thenValidResponse() throws Exception {
 
-        when(concorContributionsService.getConcorContributionXml(any())).
-            thenReturn(List.of(ConcorContributionResponse.builder()
-                .concorContributionId(1)
-                .xmlContent("FirstXMLFile")
-                .build()));
+        when(concorContributionsService.getConcorContributionXml(any()))
+                .thenReturn(List.of(ConcorContributionResponse.builder()
+                        .concorContributionId(1)
+                        .xmlContent("FirstXMLFile")
+                        .build()));
 
-        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL  + CONCOR_CONTRIBUTION_XML_URL))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content("[110, 120]"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.[0].concorContributionId").value("1"))
-            .andExpect(jsonPath("$.[0].xmlContent").value("FirstXMLFile"));
+        mvc.perform(MockMvcRequestBuilders.post(String.format(ENDPOINT_URL + CONCOR_CONTRIBUTION_XML_URL))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("[110, 120]"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[0].concorContributionId").value("1"))
+                .andExpect(jsonPath("$.[0].xmlContent").value("FirstXMLFile"));
     }
-
 }

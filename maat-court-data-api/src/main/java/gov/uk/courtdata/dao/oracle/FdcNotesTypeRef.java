@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class FdcNotesTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.FDC_NOTES_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class FdcNotesTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.FDC_NOTES_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final FdcNotesTypeRef _FdcNotesTypeRefFactory = new FdcNotesTypeRef();
+    private static final FdcNotesTypeRef _FdcNotesTypeRefFactory = new FdcNotesTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _FdcNotesTypeRefFactory; }
-  /* constructor */
-  public FdcNotesTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _FdcNotesTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public FdcNotesTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    FdcNotesTypeRef r = new FdcNotesTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static FdcNotesTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (FdcNotesTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to FdcNotesTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        FdcNotesTypeRef r = new FdcNotesTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public FdcNotesType getValue() throws SQLException
-  {
-     return (FdcNotesType) FdcNotesType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static FdcNotesTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (FdcNotesTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to FdcNotesTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(FdcNotesType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public FdcNotesType getValue() throws SQLException {
+        return (FdcNotesType) FdcNotesType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(FdcNotesType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

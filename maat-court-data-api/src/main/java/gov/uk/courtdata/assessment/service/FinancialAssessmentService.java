@@ -13,12 +13,13 @@ import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.Optional;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -28,6 +29,7 @@ public class FinancialAssessmentService {
     private final FinancialAssessmentImpl financialAssessmentImpl;
     private final FinancialAssessmentMapper assessmentMapper;
     private final FinancialAssessmentRepository financialAssessmentRepository;
+    private final AssessmentReplacementService assessmentReplacementService;
 
     @Transactional(readOnly = true)
     public FinancialAssessmentDTO find(int financialAssessmentId) {
@@ -58,7 +60,7 @@ public class FinancialAssessmentService {
                 assessmentMapper.createFinancialAssessmentToFinancialAssessmentDTO(financialAssessment);
         log.info("Creating new financial assessment record");
         FinancialAssessmentEntity assessmentEntity = financialAssessmentImpl.create(assessmentDTO);
-        financialAssessmentImpl.setOldAssessmentReplaced(assessmentEntity);
+        assessmentReplacementService.replacePreviousAssessments(assessmentEntity);
         log.info("Create Financial Assessment - Transaction Processing - End");
         return assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
     }
@@ -77,7 +79,8 @@ public class FinancialAssessmentService {
     private FinancialAssessmentEntity findFinancialAssessmentEntity(int financialAssessmentId) {
         Optional<FinancialAssessmentEntity> assessmentEntity = financialAssessmentImpl.find(financialAssessmentId);
         if (assessmentEntity.isEmpty()) {
-            String message = String.format("No Financial Assessment found for financial assessment Id: [%s]", financialAssessmentId);
+            String message = String.format(
+                    "No Financial Assessment found for financial assessment Id: [%s]", financialAssessmentId);
             throw new RequestedObjectNotFoundException(message);
         }
         return assessmentEntity.get();

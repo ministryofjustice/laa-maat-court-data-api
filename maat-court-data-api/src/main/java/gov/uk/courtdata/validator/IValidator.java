@@ -7,11 +7,10 @@ import java.util.Optional;
 /**
  * Interface for validator.
  *
- * @param <V>  object to validate.
+ * @param <V> object to validate.
  * @param <T> return type.
  */
 public interface IValidator<T, V> {
-
 
     /**
      * Validate the passed in json.
@@ -21,5 +20,4 @@ public interface IValidator<T, V> {
      * @throws ValidationException
      */
     Optional<T> validate(final V value);
-
 }

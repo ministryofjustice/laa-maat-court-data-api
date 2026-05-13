@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 @Getter
 public enum CrownCourtAppealOutcome {
-
     SUCCESSFUL("SUCCESSFUL"),
     UNSUCCESSFUL("UNSUCCESSFUL"),
     PART_SUCCESS("PART SUCCESS");
@@ -23,10 +22,9 @@ public enum CrownCourtAppealOutcome {
                 .anyMatch(appOut -> appOut.getValue().equalsIgnoreCase(notEmpty(outcome)));
     }
 
-
     private static String notEmpty(String outcome) {
 
-        return Optional.ofNullable(outcome).orElseThrow(
-                () -> new ValidationException("Crown Court appeal outcome can't be empty."));
+        return Optional.ofNullable(outcome)
+                .orElseThrow(() -> new ValidationException("Crown Court appeal outcome can't be empty."));
     }
 }

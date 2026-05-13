@@ -1,32 +1,34 @@
 package gov.uk.courtdata.enums;
 
- import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.junit.jupiter.api.Test;
 
-public class WQTypeTest {
+class WQTypeTest {
 
     @Test
-    public void givenCommittalWQ_actionableResultIsReturned() {
+    void givenCommittalWQ_actionableResultIsReturned() {
 
         boolean result = WQType.isActionableQueue(1);
         assertThat(result).isFalse();
     }
+
     @Test
-    public void givenIndictableWQ_actionableResultIsReturned() {
+    void givenIndictableWQ_actionableResultIsReturned() {
 
         boolean result = WQType.isActionableQueue(2);
         assertThat(result).isTrue();
     }
+
     @Test
-    public void givenConclusionsWQ_actionableResultIsReturned() {
+    void givenConclusionsWQ_actionableResultIsReturned() {
 
         boolean result = WQType.isActionableQueue(7);
         assertThat(result).isTrue();
     }
 
     @Test
-    public void givenNonActionableWQ_NonActionableResultIsReturned() {
+    void givenNonActionableWQ_NonActionableResultIsReturned() {
 
         boolean result = WQType.isActionableQueue(5);
         assertThat(result).isFalse();

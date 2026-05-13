@@ -1,13 +1,14 @@
 package gov.uk.courtdata.validator;
 
+import static java.lang.String.format;
+
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static java.lang.String.format;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor

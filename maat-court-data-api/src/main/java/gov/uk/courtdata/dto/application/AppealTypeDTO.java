@@ -11,6 +11,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class AppealTypeDTO extends GenericDTO {
 
-    private String code;        // key field
+    private String code; // key field
     private String description;
 }

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.dto.application;
 
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,20 +37,28 @@ public class ApplicantDTO extends GenericDTO {
 
     @Builder.Default
     private DisabilityStatementDTO disabilityStatementDTO = new DisabilityStatementDTO();
+
     @Builder.Default
     private EmploymentStatusDTO employmentStatusDTO = new EmploymentStatusDTO();
+
     @Builder.Default
     private EthnicityDTO ethnicity = new EthnicityDTO();
+
     @Builder.Default
     private AddressDTO homeAddressDTO = new AddressDTO();
+
     @Builder.Default
     private AddressDTO postalAddressDTO = new AddressDTO();
+
     @Builder.Default
     private Boolean noFixedAbode = false;
+
     @Builder.Default
     private Boolean useHomeAddress = false;
+
     @Builder.Default
     private Boolean hasPartner = false;
+
     @Builder.Default
     private Boolean contraryInterest = false;
 }

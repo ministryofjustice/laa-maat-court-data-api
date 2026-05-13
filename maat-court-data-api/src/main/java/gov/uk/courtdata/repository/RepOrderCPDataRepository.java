@@ -1,10 +1,11 @@
 package gov.uk.courtdata.repository;
 
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RepOrderCPDataRepository extends JpaRepository<RepOrderCPDataEntity, Integer> {
@@ -12,5 +13,4 @@ public interface RepOrderCPDataRepository extends JpaRepository<RepOrderCPDataEn
     Optional<RepOrderCPDataEntity> findByrepOrderId(Integer repOrderId);
 
     Optional<RepOrderCPDataEntity> findByDefendantId(String defendantId);
-
 }

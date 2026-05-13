@@ -32,5 +32,4 @@ public class FdcContributionDTO extends GenericDTO {
     private Double agfsCost;
     private Double vat;
     private Collection<NoteDTO> notes;
-
 }

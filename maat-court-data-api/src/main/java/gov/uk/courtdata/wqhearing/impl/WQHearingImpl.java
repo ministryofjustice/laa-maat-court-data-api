@@ -4,9 +4,10 @@ import gov.uk.courtdata.entity.WQHearingEntity;
 import gov.uk.courtdata.repository.WQHearingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -18,6 +19,4 @@ public class WQHearingImpl {
     public List<WQHearingEntity> findByMaatIdAndHearingUUID(Integer maatId, String hearingUUID) {
         return wqHearingRepository.findByMaatIdAndHearingUUID(maatId, hearingUUID);
     }
-
-
 }

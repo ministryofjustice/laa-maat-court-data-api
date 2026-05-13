@@ -17,5 +17,4 @@ public class ChildWeightingDTO extends GenericDTO {
     private Integer upperAgeRange;
     private Double weightingFactor;
     private Integer noOfChildren;
-
 }

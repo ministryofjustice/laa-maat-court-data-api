@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.http.MediaType;
@@ -30,7 +31,6 @@ public class RepOrderGQLController implements GraphQLQueryResolver {
         return repOrderService.find(repId, false);
     }
 
-
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @QueryMapping
     public RepOrderDTO findByRepOrderFilter(@Argument("filter") RepOrderFilter filter) {
@@ -38,10 +38,8 @@ public class RepOrderGQLController implements GraphQLQueryResolver {
         LoggingData.MAAT_ID.putInMDC(repId);
         RepOrderDTO repOrderDTO = null;
         if (repId > 0) {
-            repOrderDTO = repOrderService.find(repId,
-                Boolean.valueOf(filter.getSentenceOrderDate()));
+            repOrderDTO = repOrderService.find(repId, Boolean.valueOf(filter.getSentenceOrderDate()));
         }
         return repOrderDTO;
     }
-
 }

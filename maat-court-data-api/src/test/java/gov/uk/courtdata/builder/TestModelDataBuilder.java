@@ -1,13 +1,11 @@
 package gov.uk.courtdata.builder;
 
-import com.google.gson.Gson;
-import gov.uk.courtdata.billing.dto.RepOrderBillingDTO;
+import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
+
 import gov.uk.courtdata.address.entity.Address;
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.dto.ApplicantHistoryDTO;
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
-import gov.uk.courtdata.billing.dto.ApplicantHistoryBillingDTO;
-import gov.uk.courtdata.billing.request.UpdateBillingRequest;
 import gov.uk.courtdata.contribution.dto.ContributionCalcParametersDTO;
 import gov.uk.courtdata.contribution.projection.ContributionsSummaryView;
 import gov.uk.courtdata.dces.request.CreateContributionFileRequest;
@@ -16,13 +14,58 @@ import gov.uk.courtdata.dces.request.CreateFdcFileRequest;
 import gov.uk.courtdata.dces.request.LogContributionProcessedRequest;
 import gov.uk.courtdata.dces.request.LogFdcProcessedRequest;
 import gov.uk.courtdata.dces.request.UpdateFdcContributionRequest;
-import gov.uk.courtdata.dto.*;
+import gov.uk.courtdata.dto.AssessorDetails;
+import gov.uk.courtdata.dto.ChildWeightHistoryDTO;
+import gov.uk.courtdata.dto.ContributionsDTO;
+import gov.uk.courtdata.dto.CourtDataDTO;
+import gov.uk.courtdata.dto.FinAssIncomeEvidenceDTO;
+import gov.uk.courtdata.dto.FinancialAssessmentDTO;
+import gov.uk.courtdata.dto.FinancialAssessmentDetailsHistoryDTO;
+import gov.uk.courtdata.dto.FinancialAssessmentsHistoryDTO;
+import gov.uk.courtdata.dto.HardshipReviewDTO;
+import gov.uk.courtdata.dto.IOJAppealDTO;
+import gov.uk.courtdata.dto.OffenceDTO;
+import gov.uk.courtdata.dto.PassportAssessmentDTO;
+import gov.uk.courtdata.dto.RepOrderCCOutcomeDTO;
+import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.dto.RepOrderMvoDTO;
+import gov.uk.courtdata.dto.RepOrderMvoRegDTO;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
+import gov.uk.courtdata.dto.ReservationsDTO;
+import gov.uk.courtdata.dto.UserSummaryDTO;
+import gov.uk.courtdata.dto.WQHearingDTO;
+import gov.uk.courtdata.dto.WQLinkRegisterDTO;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.ReservationsEntity;
-import gov.uk.courtdata.enums.*;
-import gov.uk.courtdata.hearing.dto.*;
-import gov.uk.courtdata.model.*;
-import gov.uk.courtdata.model.assessment.*;
+import gov.uk.courtdata.enums.CrownCourtCaseType;
+import gov.uk.courtdata.enums.FdcContributionsStatus;
+import gov.uk.courtdata.enums.Frequency;
+import gov.uk.courtdata.enums.HardshipReviewDetailReason;
+import gov.uk.courtdata.enums.HardshipReviewProgressAction;
+import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
+import gov.uk.courtdata.enums.JurisdictionType;
+import gov.uk.courtdata.hearing.dto.DefendantDTO;
+import gov.uk.courtdata.hearing.dto.HearingDTO;
+import gov.uk.courtdata.hearing.dto.HearingOffenceDTO;
+import gov.uk.courtdata.hearing.dto.PleaDTO;
+import gov.uk.courtdata.hearing.dto.ResultDTO;
+import gov.uk.courtdata.hearing.dto.SessionDTO;
+import gov.uk.courtdata.hearing.dto.VerdictDTO;
+import gov.uk.courtdata.model.CaseDetails;
+import gov.uk.courtdata.model.CreateRepOrder;
+import gov.uk.courtdata.model.NewWorkReason;
+import gov.uk.courtdata.model.RepOrderCCOutcome;
+import gov.uk.courtdata.model.UpdateCCOutcome;
+import gov.uk.courtdata.model.UpdateRepOrder;
+import gov.uk.courtdata.model.UpdateSentenceOrder;
+import gov.uk.courtdata.model.assessment.ChildWeightings;
+import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
+import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
+import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
+import gov.uk.courtdata.model.assessment.FinancialAssessmentIncomeEvidence;
+import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
+import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
@@ -30,29 +73,35 @@ import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
 import gov.uk.courtdata.model.iojAppeal.CreateIOJAppeal;
 import gov.uk.courtdata.model.iojAppeal.UpdateIOJAppeal;
-import org.springframework.stereotype.Component;
+import gov.uk.courtdata.model.reporder.MaatSearchRequest;
+import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiGetPassportEvidenceResponse;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiIncomeEvidence;
+import uk.gov.justice.laa.crime.common.model.evidence.ApiPassportEvidenceMetadata;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
 import uk.gov.justice.laa.crime.common.model.ioj.IojAppeal;
 import uk.gov.justice.laa.crime.common.model.ioj.IojAppealMetadata;
+import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentRequest;
+import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentResponse;
 import uk.gov.justice.laa.crime.common.model.passported.ApiGetPassportedAssessmentResponse;
 import uk.gov.justice.laa.crime.common.model.passported.DeclaredBenefit;
-import uk.gov.justice.laa.crime.enums.AppealType;
+import uk.gov.justice.laa.crime.common.model.passported.PassportedAssessment;
+import uk.gov.justice.laa.crime.common.model.passported.PassportedAssessmentMetadata;
 import uk.gov.justice.laa.crime.enums.BenefitRecipient;
 import uk.gov.justice.laa.crime.enums.BenefitType;
-import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
-import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
 import uk.gov.justice.laa.crime.enums.IojAppealDecisionReason;
-import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.enums.PassportAssessmentDecision;
 import uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason;
 import uk.gov.justice.laa.crime.enums.ReviewType;
 import uk.gov.justice.laa.crime.enums.contribution.TransferStatus;
+import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -60,9 +109,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Stream;
 
-import static gov.uk.courtdata.enums.FdcContributionsStatus.REQUESTED;
+import org.springframework.stereotype.Component;
+
+import com.google.gson.Gson;
 
 @Component
 public class TestModelDataBuilder {
@@ -123,14 +173,10 @@ public class TestModelDataBuilder {
     private static final String DATE_PASSPORT_CREATED_VALUE = "2015-01-09T11:16:29";
     private static final String FUNDING_DECISION_VALUE = "GRANTED";
     private static final Integer APPLICANT_ID = 2345;
+    public static final String ASN_NUMBER = "ASN123456";
+    public static final String NI_NUMBER = "TEST_NINO";
 
-    TestEntityDataBuilder testEntityDataBuilder;
-    Gson gson;
-
-    public TestModelDataBuilder(TestEntityDataBuilder testEntityDataBuilder, Gson gson) {
-        this.gson = gson;
-        this.testEntityDataBuilder = testEntityDataBuilder;
-    }
+    private static final Gson GSON = new Gson();
 
     public static FinancialAssessmentDTO getFinancialAssessmentDTO() {
         return FinancialAssessmentDTO.builder()
@@ -152,15 +198,13 @@ public class TestModelDataBuilder {
 
     public static FinancialAssessmentDTO getFinancialAssessmentDTOWithDetails() {
         FinancialAssessmentDTO financialAssessment = getFinancialAssessmentDTO();
-        financialAssessment.setAssessmentDetails(List.of(
-                FinancialAssessmentDetails.builder()
-                        .criteriaDetailId(40)
-                        .applicantAmount(BigDecimal.valueOf(1650.00))
-                        .applicantFrequency(Frequency.MONTHLY)
-                        .partnerAmount(BigDecimal.valueOf(1650.00))
-                        .partnerFrequency(Frequency.TWO_WEEKLY)
-                        .build()
-        ));
+        financialAssessment.setAssessmentDetails(List.of(FinancialAssessmentDetails.builder()
+                .criteriaDetailId(40)
+                .applicantAmount(BigDecimal.valueOf(1650.00))
+                .applicantFrequency(Frequency.MONTHLY)
+                .partnerAmount(BigDecimal.valueOf(1650.00))
+                .partnerFrequency(Frequency.TWO_WEEKLY)
+                .build()));
         return financialAssessment;
     }
 
@@ -218,45 +262,6 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static ApplicantHistoryBillingDTO getApplicantHistoryBillingDTO() {
-        return ApplicantHistoryBillingDTO.builder()
-                .id(1)
-                .asAtDate(LocalDate.parse("2006-10-06"))
-                .applId(716)
-                .firstName("test_first")
-                .lastName("test_last")
-                .otherNames("test")
-                .dob(LocalDate.parse("1981-10-14"))
-                .gender("Male")
-                .niNumber("JM933396A")
-                .foreignId(null)
-                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated("TEST")
-                .dateModified(null)
-                .userModified(null)
-                .build();
-    }
-
-    public static UpdateBillingRequest getUpdateBillingRequest() {
-        return UpdateBillingRequest.builder()
-                .userModified("joe-bloggs")
-                .ids(List.of(1003456, 1003457))
-                .build();
-    }
-
-    public static Stream<UpdateBillingRequest> getUpdateBillingRequests() {
-        return Stream.of(
-                UpdateBillingRequest.builder()
-                        .userModified("")
-                        .ids(List.of(1003456, 1003457))
-                        .build(),
-                UpdateBillingRequest.builder()
-                        .userModified("joe-bloggs")
-                        .ids(List.of())
-                        .build()
-        );
-    }
-
     public static FinancialAssessmentDTO getFinancialAssessmentWithChildWeightings() {
         FinancialAssessmentDTO financialAssessment = getFinancialAssessmentDTO();
         financialAssessment.setChildWeightings(List.of(getChildWeightings()));
@@ -270,7 +275,7 @@ public class TestModelDataBuilder {
         return financialAssessment;
     }
 
-    public static FinAssIncomeEvidenceDTO getFinAssIncomeEvidenceDTO(){
+    public static FinAssIncomeEvidenceDTO getFinAssIncomeEvidenceDTO() {
         return FinAssIncomeEvidenceDTO.builder()
                 .dateReceived(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
@@ -280,7 +285,6 @@ public class TestModelDataBuilder {
                 .incomeEvidence("INE")
                 .build();
     }
-
 
     public static FinancialAssessmentIncomeEvidence getFinancialAssessmentIncomeEvidence() {
         return FinancialAssessmentIncomeEvidence.builder()
@@ -302,19 +306,13 @@ public class TestModelDataBuilder {
     }
 
     public static NewWorkReason getNewWorkReason() {
-        return NewWorkReason.builder()
-                .code("FMA")
-                .build();
+        return NewWorkReason.builder().code("FMA").build();
     }
 
     public static CreateFinancialAssessment getCreateFinancialAssessmentWithRelationships() {
         CreateFinancialAssessment financialAssessment = getCreateFinancialAssessment();
-        financialAssessment.setAssessmentDetails(
-                List.of(getFinancialAssessmentDetails())
-        );
-        financialAssessment.setChildWeightings(
-                List.of(getChildWeightings())
-        );
+        financialAssessment.setAssessmentDetails(List.of(getFinancialAssessmentDetails()));
+        financialAssessment.setChildWeightings(List.of(getChildWeightings()));
         return financialAssessment;
     }
 
@@ -535,39 +533,36 @@ public class TestModelDataBuilder {
 
     public static ApiGetIojAppealResponse getApiGetIojAppealResponse() {
         return new ApiGetIojAppealResponse()
-            .withLegacyAppealId(LEGACY_IOJ_APPEAL_ID)
-            .withReceivedDate(getIOJTestDate().toLocalDate())
-            .withAppealReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
-            .withAppealAssessor(IojAppealAssessor.JUDGE)
-            .withAppealSuccessful(true)
-            .withDecisionReason(IojAppealDecisionReason.LOSS_OF_LIBERTY)
-            .withNotes("Test notes")
-            .withDecisionDate(getIOJTestDate().toLocalDate());
+                .withLegacyAppealId(LEGACY_IOJ_APPEAL_ID)
+                .withReceivedDate(getIOJTestDate().toLocalDate())
+                .withAppealReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
+                .withAppealAssessor(IojAppealAssessor.JUDGE)
+                .withAppealSuccessful(true)
+                .withDecisionReason(IojAppealDecisionReason.LOSS_OF_LIBERTY)
+                .withNotes("Test notes")
+                .withDecisionDate(getIOJTestDate().toLocalDate());
     }
 
     public static ApiCreateIojAppealRequest getApiCreateIojAppealRequest(Integer repId) {
         IojAppeal iojAppeal = new IojAppeal()
-            .withReceivedDate(getIOJTestDate().toLocalDate())
-            .withAppealReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
-            .withAppealAssessor(IojAppealAssessor.CASEWORKER)
-            .withAppealSuccessful(true)
-            .withDecisionReason(IojAppealDecisionReason.LOSS_OF_LIBERTY)
-            .withNotes("Test notes")
-            .withDecisionDate(getIOJTestDate().toLocalDate());
+                .withReceivedDate(getIOJTestDate().toLocalDate())
+                .withAppealReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
+                .withAppealAssessor(IojAppealAssessor.CASEWORKER)
+                .withAppealSuccessful(true)
+                .withDecisionReason(IojAppealDecisionReason.LOSS_OF_LIBERTY)
+                .withNotes("Test notes")
+                .withDecisionDate(getIOJTestDate().toLocalDate());
 
-        ApiUserSession apiUserSession = new ApiUserSession()
-            .withUserName("test-s")
-            .withSessionId("test-f6E3E618A32AC870D07A65CD7AB9131AD");
+        ApiUserSession apiUserSession =
+                new ApiUserSession().withUserName("test-s").withSessionId("test-f6E3E618A32AC870D07A65CD7AB9131AD");
 
         IojAppealMetadata iojAppealMetadata = new IojAppealMetadata()
-            .withLegacyApplicationId(repId)
-            .withApplicationReceivedDate(getIOJTestDate().toLocalDate())
-            .withCaseManagementUnitId(253)
-            .withUserSession(apiUserSession);
+                .withLegacyApplicationId(repId)
+                .withApplicationReceivedDate(getIOJTestDate().toLocalDate())
+                .withCaseManagementUnitId(253)
+                .withUserSession(apiUserSession);
 
-        return new ApiCreateIojAppealRequest()
-            .withIojAppeal(iojAppeal)
-            .withIojAppealMetadata(iojAppealMetadata);
+        return new ApiCreateIojAppealRequest().withIojAppeal(iojAppeal).withIojAppealMetadata(iojAppealMetadata);
     }
 
     public static ApiCreateIojAppealRequest getApiCreateIojAppealRequest() {
@@ -575,8 +570,7 @@ public class TestModelDataBuilder {
     }
 
     public static ApiCreateIojAppealResponse getApiCreateIojAppealResponse() {
-        return new ApiCreateIojAppealResponse()
-            .withLegacyAppealId(LEGACY_IOJ_APPEAL_ID);
+        return new ApiCreateIojAppealResponse().withLegacyAppealId(LEGACY_IOJ_APPEAL_ID);
     }
 
     private static LocalDateTime getIOJTestDate() {
@@ -587,32 +581,61 @@ public class TestModelDataBuilder {
         return UserReservation.builder()
                 .reservationId(1000000)
                 .session(UserSession.builder()
-                                 .id("test-f6E3E618A32AC870D07A65CD7AB9131AD")
-                                 .username("test-f")
-                                 .build()
-                ).build();
+                        .id("test-f6E3E618A32AC870D07A65CD7AB9131AD")
+                        .username("test-f")
+                        .build())
+                .build();
     }
 
     public static ApiGetPassportedAssessmentResponse getApiGetPassportedAssessmentResponse() {
-        
+
         DeclaredBenefit declaredBenefit = new DeclaredBenefit()
-            .withBenefitType(BenefitType.UC)
-            .withLastSignOnDate(LocalDateTime.now().minusDays(15))
-            .withBenefitRecipient(BenefitRecipient.APPLICANT)
-            .withLegacyPartnerId(null);
-        
+                .withBenefitType(BenefitType.UC)
+                .withLastSignOnDate(LocalDateTime.now().minusDays(15))
+                .withBenefitRecipient(BenefitRecipient.APPLICANT)
+                .withLegacyPartnerId(null);
+
         return new ApiGetPassportedAssessmentResponse()
-            .withAssessmentId(PASSPORT_ASSESSMENT_ID.toString())
-            .withLegacyAssessmentId(LEGACY_PASSPORT_ASSESSMENT_ID)
-            .withUsn(USN_VALUE)
-            .withAssessmentDate(LocalDateTime.now().minusDays(1))
-            .withAssessmentReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
-            .withReviewType(ReviewType.EM)
-            .withDeclaredUnder18(false)
-            .withDeclaredBenefit(declaredBenefit)
-            .withAssessmentDecision(PassportAssessmentDecision.PASS)
-            .withDecisionReason(PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED)
-            .withNotes("Test notes");
+                .withAssessmentId(PASSPORT_ASSESSMENT_ID.toString())
+                .withLegacyAssessmentId(LEGACY_PASSPORT_ASSESSMENT_ID)
+                .withUsn(USN_VALUE)
+                .withAssessmentDate(LocalDateTime.now().minusDays(1))
+                .withAssessmentReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
+                .withReviewType(ReviewType.EM)
+                .withDeclaredUnder18(false)
+                .withDeclaredBenefit(declaredBenefit)
+                .withAssessmentDecision(PassportAssessmentDecision.PASS)
+                .withDecisionReason(PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED)
+                .withNotes("Test notes");
+    }
+
+    public static ApiGetPassportEvidenceResponse getApiGetPassportedEvidenceResponse() {
+        return new ApiGetPassportEvidenceResponse()
+                .withPassportEvidenceMetadata(getApiPassportEvidenceMetadata())
+                .withApplicantEvidenceItems(List.of(getApiIncomeEvidence()))
+                .withPartnerEvidenceItems(List.of(getApiIncomeEvidence()));
+    }
+
+    public static ApiPassportEvidenceMetadata getApiPassportEvidenceMetadata() {
+        LocalDate date = LocalDate.now();
+
+        return new ApiPassportEvidenceMetadata()
+                .withEvidenceDueDate(date)
+                .withEvidenceReceivedDate(date)
+                .withIncomeEvidenceNotes("Notes here")
+                .withFirstReminderDate(date)
+                .withSecondReminderDate(date)
+                .withUpliftAppliedDate(date)
+                .withUpliftRemovedDate(date);
+    }
+
+    public static ApiIncomeEvidence getApiIncomeEvidence() {
+        return new ApiIncomeEvidence()
+                .withId(1)
+                .withDescription("Description here")
+                .withEvidenceType(IncomeEvidenceType.CDS15)
+                .withDateReceived(LocalDate.now())
+                .withMandatory(true);
     }
 
     public static String getCreatePassportAssessmentJson() {
@@ -653,6 +676,64 @@ public class TestModelDataBuilder {
                 "whoDWPChecked": "ABC",
                 "rtCode": "DEF"
                 }""";
+    }
+
+    public static ApiCreatePassportedAssessmentRequest buildValidPopulatedCreatePassportedAssessmentRequest(
+            boolean isUnder18) {
+        return buildValidPopulatedCreatePassportedAssessmentRequest(REP_ID, 456, isUnder18, true);
+    }
+
+    public static ApiCreatePassportedAssessmentRequest buildValidPopulatedCreatePassportedAssessmentRequest(
+            Integer repId, Integer partnerId, boolean isUnder18, boolean hasDeclaredBenefits) {
+        ApiCreatePassportedAssessmentRequest request = new ApiCreatePassportedAssessmentRequest();
+
+        PassportedAssessment assessment = new PassportedAssessment()
+                .withAssessmentDate(LocalDateTime.now())
+                .withNotes("Test Notes")
+                .withDecisionReason(PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED)
+                .withAssessmentDecision(PassportAssessmentDecision.PASS)
+                .withAssessmentReason(uk.gov.justice.laa.crime.enums.NewWorkReason.NEW)
+                .withDeclaredUnder18(isUnder18)
+                .withReviewType(ReviewType.NAFI);
+
+        if (hasDeclaredBenefits) {
+            assessment.setDeclaredBenefit(buildDeclaredBenefit(partnerId));
+        }
+
+        request.setPassportedAssessment(assessment);
+
+        PassportedAssessmentMetadata metadata = new PassportedAssessmentMetadata()
+                .withApplicationId(123)
+                .withLegacyApplicationId(repId)
+                .withUserSession(new ApiUserSession("test-user", "1234567890abfcdef"))
+                .withCaseManagementUnitId(CMU_ID)
+                .withUsn(USN_VALUE);
+
+        request.setPassportedAssessmentMetadata(metadata);
+
+        return request;
+    }
+
+    public static ApiCreatePassportedAssessmentResponse buildValidCreatePassportedAssessmentResponse() {
+        return new ApiCreatePassportedAssessmentResponse()
+                .withAssessmentId(PASSPORT_ASSESSMENT_ID.toString())
+                .withLegacyAssessmentId(LEGACY_PASSPORT_ASSESSMENT_ID);
+    }
+
+    public static DeclaredBenefit buildDeclaredBenefit(Integer partnerId) {
+        return new DeclaredBenefit()
+                .withBenefitType(BenefitType.ESA)
+                .withBenefitRecipient(BenefitRecipient.APPLICANT)
+                .withLastSignOnDate(LocalDateTime.now())
+                .withLegacyPartnerId(partnerId);
+    }
+
+    public static DeclaredBenefit buildDeclaredBenefit(BenefitRecipient benefitRecipient) {
+        return new DeclaredBenefit()
+                .withBenefitType(BenefitType.ESA)
+                .withBenefitRecipient(benefitRecipient)
+                .withLastSignOnDate(LocalDateTime.now())
+                .withLegacyPartnerId(null);
     }
 
     public static String getUpdatePassportAssessmentJson() {
@@ -800,24 +881,20 @@ public class TestModelDataBuilder {
         return HardshipReviewDTO.builder()
                 .id(1000)
                 .repId(621580)
-                .newWorkReason(
-                        NewWorkReason.builder()
-                                .code("NEW")
-                                .type("HARDIOJ")
-                                .description("New")
-                                .build()
-                )
+                .newWorkReason(NewWorkReason.builder()
+                        .code("NEW")
+                        .type("HARDIOJ")
+                        .description("New")
+                        .build())
                 .cmuId(253)
                 .reviewResult("FAIL")
-                .solicitorCosts(
-                        SolicitorCosts.builder()
-                                .rate(DataBuilderUtil.createScaledBigDecimal(183.00))
-                                .hours(DataBuilderUtil.createScaledBigDecimal(12.00))
-                                .vat(DataBuilderUtil.createScaledBigDecimal(384.25))
-                                .disbursements(DataBuilderUtil.createScaledBigDecimal(0.00))
-                                .estimatedTotal(DataBuilderUtil.createScaledBigDecimal(2580.25))
-                                .build()
-                )
+                .solicitorCosts(SolicitorCosts.builder()
+                        .rate(DataBuilderUtil.createScaledBigDecimal(183.00))
+                        .hours(DataBuilderUtil.createScaledBigDecimal(12.00))
+                        .vat(DataBuilderUtil.createScaledBigDecimal(384.25))
+                        .disbursements(DataBuilderUtil.createScaledBigDecimal(0.00))
+                        .estimatedTotal(DataBuilderUtil.createScaledBigDecimal(2580.25))
+                        .build())
                 .disposableIncome(DataBuilderUtil.createScaledBigDecimal(4215.46))
                 .disposableIncomeAfterHardship(DataBuilderUtil.createScaledBigDecimal(2921.38))
                 .status(HardshipReviewStatus.COMPLETE)
@@ -857,18 +934,17 @@ public class TestModelDataBuilder {
                         """;
 
         if (withRelationships) {
-            json = json +
-                    ",\"reviewDetails\": [{\n" +
-                    "   \"frequency\": \"MONTHLY\",\n" +
-                    "   \"amount\": 107.84,\n" +
-                    "   \"accepted\": \"Y\",\n" +
-                    "   \"type\": \"EXPENDITURE\",\n" +
-                    "   \"detailReason\": \"Evidence Supplied\"\n" +
-                    "}],\n" +
-                    "\"reviewProgressItems\": [{\n" +
-                    "   \"progressAction\": \"ADDITIONAL EVIDENCE\",\n" +
-                    "   \"progressResponse\": \"FURTHER RECEIVED\"\n" +
-                    "}]\n";
+            json = json + ",\"reviewDetails\": [{\n"
+                    + "   \"frequency\": \"MONTHLY\",\n"
+                    + "   \"amount\": 107.84,\n"
+                    + "   \"accepted\": \"Y\",\n"
+                    + "   \"type\": \"EXPENDITURE\",\n"
+                    + "   \"detailReason\": \"Evidence Supplied\"\n"
+                    + "}],\n"
+                    + "\"reviewProgressItems\": [{\n"
+                    + "   \"progressAction\": \"ADDITIONAL EVIDENCE\",\n"
+                    + "   \"progressResponse\": \"FURTHER RECEIVED\"\n"
+                    + "}]\n";
         }
 
         return json + "}";
@@ -902,18 +978,17 @@ public class TestModelDataBuilder {
                         """;
 
         if (withRelationships) {
-            json = json +
-                    ",\"reviewDetails\": [{\n" +
-                    "   \"frequency\": \"MONTHLY\",\n" +
-                    "   \"amount\": 107.84,\n" +
-                    "   \"accepted\": \"Y\",\n" +
-                    "   \"type\": \"EXPENDITURE\",\n" +
-                    "   \"detailReason\": \"Evidence Supplied\"\n" +
-                    "}],\n" +
-                    "\"reviewProgressItems\": [{\n" +
-                    "   \"progressAction\": \"ADDITIONAL EVIDENCE\",\n" +
-                    "   \"progressResponse\": \"FURTHER RECEIVED\"\n" +
-                    "}]\n";
+            json = json + ",\"reviewDetails\": [{\n"
+                    + "   \"frequency\": \"MONTHLY\",\n"
+                    + "   \"amount\": 107.84,\n"
+                    + "   \"accepted\": \"Y\",\n"
+                    + "   \"type\": \"EXPENDITURE\",\n"
+                    + "   \"detailReason\": \"Evidence Supplied\"\n"
+                    + "}],\n"
+                    + "\"reviewProgressItems\": [{\n"
+                    + "   \"progressAction\": \"ADDITIONAL EVIDENCE\",\n"
+                    + "   \"progressResponse\": \"FURTHER RECEIVED\"\n"
+                    + "}]\n";
         }
 
         return json + "}";
@@ -937,33 +1012,6 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static RepOrderBillingDTO getRepOrderBillingDTO(Integer id) {
-        return RepOrderBillingDTO.builder()
-            .id(id)
-            .applicantId(123)
-            .arrestSummonsNo("ARREST-5678")
-            .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
-            .supplierAccountCode("AB123C")
-            .magsCourtId(34)
-            .magsCourtOutcome(MagCourtOutcome.COMMITTED.getOutcome())
-            .dateReceived(LocalDate.of(2025, 6, 10))
-            .crownCourtRepOrderDate(LocalDate.of(2025, 6, 12))
-            .offenceType("BURGLARY")
-            .crownCourtWithdrawalDate(LocalDate.of(2025, 6, 30))
-            .applicantHistoryId(96)
-            .caseId("CASE-123-C")
-            .committalDate(LocalDate.of(2025, 6, 11))
-            .repOrderStatus("CURR")
-            .appealTypeCode(AppealType.ACN.getCode())
-            .crownCourtOutcome(CrownCourtTrialOutcome.CONVICTED.getValue())
-            .dateCreated(LocalDate.of(2025, 6, 20))
-            .userCreated("joe-bloggs")
-            .dateModified(LocalDate.of(2025, 6, 21).atStartOfDay())
-            .userModified("alice-smith")
-            .caseType(CrownCourtCaseType.EITHER_WAY.getValue())
-            .build();
-    }
-
     public static List<RepOrderMvoRegDTO> getRepOrderMvoRegDTOList() {
         return List.of(getRepOrderMvoRegDTO(TestModelDataBuilder.REP_ID));
     }
@@ -973,10 +1021,7 @@ public class TestModelDataBuilder {
     }
 
     public static RepOrderMvoRegDTO getRepOrderMvoRegDTO(Integer id) {
-        return RepOrderMvoRegDTO.builder()
-                .id(id)
-                .registration(REGISTRATION)
-                .build();
+        return RepOrderMvoRegDTO.builder().id(id).registration(REGISTRATION).build();
     }
 
     public static RepOrderMvoDTO getRepOrderMvoDTO() {
@@ -986,9 +1031,7 @@ public class TestModelDataBuilder {
     public static RepOrderMvoDTO getRepOrderMvoDTO(Integer id) {
         return RepOrderMvoDTO.builder()
                 .id(id)
-                .rep(RepOrderDTO.builder()
-                             .id(REP_ID)
-                             .build())
+                .rep(RepOrderDTO.builder().id(REP_ID).build())
                 .vehicleOwner("Y")
                 .build();
     }
@@ -996,13 +1039,10 @@ public class TestModelDataBuilder {
     public static RepOrderMvoDTO getRepOrderMvoDTO(Integer id, Integer repId) {
         return RepOrderMvoDTO.builder()
                 .id(id)
-                .rep(RepOrderDTO.builder()
-                             .id(repId)
-                             .build())
+                .rep(RepOrderDTO.builder().id(repId).build())
                 .vehicleOwner("Y")
                 .build();
     }
-
 
     public static HardshipReviewDTO getHardshipReviewDTOWithRelationships() {
         HardshipReviewDTO hardship = getHardshipReviewDTO();
@@ -1037,10 +1077,7 @@ public class TestModelDataBuilder {
     }
 
     public static ChildWeightings getChildWeightings() {
-        return ChildWeightings.builder()
-                .childWeightingId(12)
-                .noOfChildren(1)
-                .build();
+        return ChildWeightings.builder().childWeightingId(12).noOfChildren(1).build();
     }
 
     public static FinancialAssessmentsHistoryDTO getFinancialAssessmentsHistoryDTO() {
@@ -1087,22 +1124,19 @@ public class TestModelDataBuilder {
     }
 
     public static String getUpdateAppDateCompletedJson(Integer repId) {
-        return "{\n" +
-                " \"repId\": " + repId + " ,\n" +
-                "  \"assessmentDateCompleted\":\"" + APP_DATE_COMPLETED + "\"\n" +
-                "}";
+        return "{\n" + " \"repId\": "
+                + repId + " ,\n" + "  \"assessmentDateCompleted\":\""
+                + APP_DATE_COMPLETED + "\"\n" + "}";
     }
 
     public static String getCreateRepOrderJson() {
-        return "{\n" +
-                " \"repId\": " + REP_ID + " ,\n" +
-                " \"caseId\": " + CASE_ID + " ,\n" +
-                " \"cmuId\": " + CMU_ID + " ,\n" +
-                " \"areaId\": " + AREA_ID + " ,\n" +
-                " \"dateReceived\": \"" + DATE_RECEIVED + "\" ,\n" +
-                "  \"userCreated\": \"" + TEST_USER + "\"\n" +
-                "}";
-
+        return "{\n" + " \"repId\": "
+                + REP_ID + " ,\n" + " \"caseId\": "
+                + CASE_ID + " ,\n" + " \"cmuId\": "
+                + CMU_ID + " ,\n" + " \"areaId\": "
+                + AREA_ID + " ,\n" + " \"dateReceived\": \""
+                + DATE_RECEIVED + "\" ,\n" + "  \"userCreated\": \""
+                + TEST_USER + "\"\n" + "}";
     }
 
     public static CreateRepOrder getCreateRepOrder() {
@@ -1247,11 +1281,10 @@ public class TestModelDataBuilder {
     }
 
     public static String getUpdateRepOrderJson() {
-        return "{\n" +
-                " \"repId\": " + REP_ID + " ,\n" +
-                "\"sentenceOrderDate\": \"" + APP_DATE_COMPLETED + "\",\n" +
-                "  \"userModified\": \"" + TEST_USER + "\"\n" +
-                "}";
+        return "{\n" + " \"repId\": "
+                + REP_ID + " ,\n" + "\"sentenceOrderDate\": \""
+                + APP_DATE_COMPLETED + "\",\n" + "  \"userModified\": \""
+                + TEST_USER + "\"\n" + "}";
     }
 
     public static OffenceDTO getOffenceDTO(Integer offenceTxId) {
@@ -1353,7 +1386,6 @@ public class TestModelDataBuilder {
                 .userCreated(TEST_USER)
                 .id(outcomeId)
                 .build();
-
     }
 
     public static CreateContributionRequest getCreateContributions(Integer repId) {
@@ -1491,26 +1523,26 @@ public class TestModelDataBuilder {
 
     public static RepOrderStateDTO getPopulatedRepOrderStateDTO() {
         return RepOrderStateDTO.builder()
-            .usn(USN_VALUE)
-            .maatRef(MAAT_REF_VALUE)
-            .caseId(CASE_ID_VALUE)
-            .caseType(CASE_TYPE_VALUE)
-            .iojResult(IOJ_RESULT_VALUE)
-            .iojAssessorName(IOJ_ASSESSOR_FULL_NAME)
-            .dateAppCreated(LocalDate.parse(DATE_APP_CREATED_VALUE))
-            .iojReason(null)
-            .meansInitResult(MEANS_INIT_RESULT_VALUE)
-            .meansInitStatus(MEANS_INIT_STATUS_VALUE)
-            .meansFullResult(null)
-            .meansFullStatus(null)
-            .meansAssessorName(MEANS_ASSESSOR_NAME_VALUE)
-            .dateMeansCreated(LocalDateTime.parse(DATE_MEANS_CREATED_VALUE))
-            .passportResult(PASSPORT_RESULT_VALUE)
-            .passportStatus(PASSPORT_STATUS_VALUE)
-            .passportAssessorName(PASSPORT_ASSESSOR_NAME_VALUE)
-            .datePassportCreated(LocalDateTime.parse(DATE_PASSPORT_CREATED_VALUE))
-            .fundingDecision(FUNDING_DECISION_VALUE)
-            .build();
+                .usn(USN_VALUE)
+                .maatRef(MAAT_REF_VALUE)
+                .caseId(CASE_ID_VALUE)
+                .caseType(CASE_TYPE_VALUE)
+                .iojResult(IOJ_RESULT_VALUE)
+                .iojAssessorName(IOJ_ASSESSOR_FULL_NAME)
+                .dateAppCreated(LocalDate.parse(DATE_APP_CREATED_VALUE))
+                .iojReason(null)
+                .meansInitResult(MEANS_INIT_RESULT_VALUE)
+                .meansInitStatus(MEANS_INIT_STATUS_VALUE)
+                .meansFullResult(null)
+                .meansFullStatus(null)
+                .meansAssessorName(MEANS_ASSESSOR_NAME_VALUE)
+                .dateMeansCreated(LocalDateTime.parse(DATE_MEANS_CREATED_VALUE))
+                .passportResult(PASSPORT_RESULT_VALUE)
+                .passportStatus(PASSPORT_STATUS_VALUE)
+                .passportAssessorName(PASSPORT_ASSESSOR_NAME_VALUE)
+                .datePassportCreated(LocalDateTime.parse(DATE_PASSPORT_CREATED_VALUE))
+                .fundingDecision(FUNDING_DECISION_VALUE)
+                .build();
     }
 
     public static Address getAddress(int id) {
@@ -1527,117 +1559,114 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public CourtDataDTO getSaveAndLinkModelRaw() {
+    public static CourtDataDTO getSaveAndLinkModelRaw() {
         return CourtDataDTO.builder()
-
                 .caseDetails(getCaseDetails(REP_ID))
-                .defendantMAATDataEntity(testEntityDataBuilder.getDefendantMAATDataEntity())
-                .solicitorMAATDataEntity(testEntityDataBuilder.getSolicitorMAATDataEntity())
+                .defendantMAATDataEntity(TestEntityDataBuilder.getDefendantMAATDataEntity())
+                .solicitorMAATDataEntity(TestEntityDataBuilder.getSolicitorMAATDataEntity())
                 .build();
     }
 
-    public CourtDataDTO getSaveAndLinkModelRaw(Integer repId) {
+    public static CourtDataDTO getSaveAndLinkModelRaw(Integer repId) {
         return CourtDataDTO.builder()
-
                 .caseDetails(getCaseDetails(repId))
-                .defendantMAATDataEntity(testEntityDataBuilder.getDefendantMAATDataEntity(repId))
-                .solicitorMAATDataEntity(testEntityDataBuilder.getSolicitorMAATDataEntity(repId))
+                .defendantMAATDataEntity(TestEntityDataBuilder.getDefendantMAATDataEntity(repId))
+                .solicitorMAATDataEntity(TestEntityDataBuilder.getSolicitorMAATDataEntity(repId))
                 .build();
     }
 
-    public CourtDataDTO getCourtDataDTO() {
+    public static CourtDataDTO getCourtDataDTO() {
         return CourtDataDTO.builder()
                 .caseId(123456)
                 .libraId("CP25467")
                 .proceedingId(12123231)
                 .txId(123456)
                 .caseDetails(getCaseDetails(REP_ID))
-                .defendantMAATDataEntity(testEntityDataBuilder.getDefendantMAATDataEntity())
-                .solicitorMAATDataEntity(testEntityDataBuilder.getSolicitorMAATDataEntity())
+                .defendantMAATDataEntity(TestEntityDataBuilder.getDefendantMAATDataEntity())
+                .solicitorMAATDataEntity(TestEntityDataBuilder.getSolicitorMAATDataEntity())
                 .build();
     }
 
-    public CaseDetails getCaseDetails(Integer repId) {
+    public static CaseDetails getCaseDetails(Integer repId) {
         String jsonString = getSaveAndLinkString(repId);
-        return gson.fromJson(jsonString, CaseDetails.class);
+        return GSON.fromJson(jsonString, CaseDetails.class);
     }
 
-    public String getSaveAndLinkString(Integer repId) {
-        return "{\n" +
-                "  \"maatId\": " + repId + ",\n" +
-                "  \"category\": 12,\n" +
-                "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
-                "  \"caseUrn\":\"caseurn1\",\n" +
-                "  \"asn\": \"123456754\",\n" +
-                "  \"docLanguage\": \"EN\",\n" +
-                "  \"caseCreationDate\": \"2019-08-16\",\n" +
-                "  \"cjsAreaCode\": \"16\",\n" +
-                "  \"createdUser\": \"testUser\",\n" +
-                "  \"cjsLocation\": \"B16BG\",\n" +
-                "  \"isActive\" : true,\n" +
-                "  \"defendant\": {\n" +
-                "    \"defendantId\" : \"Dummy Def ID\",\n" +
-                "    \"forename\": \"Test FName\",\n" +
-                "    \"surname\": \"Test LName\",\n" +
-                "    \"organization\": null,\n" +
-                "    \"dateOfBirth\": \"1980-08-16\",\n" +
-                "    \"address_line1\": null,\n" +
-                "    \"address_line2\": null,\n" +
-                "    \"address_line3\": null,\n" +
-                "    \"address_line4\": null,\n" +
-                "    \"address_line5\": null,\n" +
-                "    \"postcode\": \"UB83HW\",\n" +
-                "    \"nino\": \"ABCNINUM\",\n" +
-                "    \"telephoneHome\": null,\n" +
-                "    \"telephoneWork\": null,\n" +
-                "    \"telephoneMobile\": null,\n" +
-                "    \"email1\": null,\n" +
-                "    \"email2\": null,\n" +
-                "    \"offences\": [\n" +
-                "      {\n" +
-                "        \"offenceCode\": \"OffenceCode\",\n" +
-                "        \"asnSeq\": \"001\",\n" +
-                "        \"offenceShortTitle\": null,\n" +
-                "        \"offenceClassification\": null,\n" +
-                "        \"offenceDate\": null,\n" +
-                "        \"offenceWording\": null,\n" +
-                "        \"modeOfTrail\": null,\n" +
-                "        \"legalAidStatus\": null,\n" +
-                "        \"legalAidStatusDate\": null,\n" +
-                "        \"legalAidReason\": null,\n" +
-                "        \"results\": [\n" +
-                "          {\n" +
-                "            \"resultCode\": 3026,\n" +
-                "            \"asnSeq\" : \"001\",\n" +
-                "            \"resultShortTitle\": null,\n" +
-                "            \"resultText\": null,\n" +
-                "            \"resultCodeQualifiers\": null,\n" +
-                "            \"nextHearingDate\": null,\n" +
-                "            \"nextHearingLocation\": null,\n" +
-                "            \"firstName\": null,\n" +
-                "            \"contactName\": null,\n" +
-                "            \"laaOfficeAccount\": null,\n" +
-                "            \"legalAidWithdrawalDate\": null,\n" +
-                "            \"dateOfHearing\": null,\n" +
-                "            \"courtLocation\": null,\n" +
-                "            \"sessionValidateDate\": null\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      }\n" +
-                "    ]\n" +
-                "  },\n" +
-                "  \"sessions\": [\n" +
-                "    {\n" +
-                "      \"courtLocation\": \"B16BG\",\n" +
-                "      \"dateOfHearing\": \"2020-08-16\",\n" +
-                "      \"postHearingCustody\" :  \"R\",\n" +
-                "      \"sessionvalidateddate\": null\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}";
+    public static String getSaveAndLinkString(Integer repId) {
+        return "{\n" + "  \"maatId\": "
+                + repId + ",\n" + "  \"category\": 12,\n"
+                + "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n"
+                + "  \"caseUrn\":\"caseurn1\",\n"
+                + "  \"asn\": \"123456754\",\n"
+                + "  \"docLanguage\": \"EN\",\n"
+                + "  \"caseCreationDate\": \"2019-08-16\",\n"
+                + "  \"cjsAreaCode\": \"16\",\n"
+                + "  \"createdUser\": \"testUser\",\n"
+                + "  \"cjsLocation\": \"B16BG\",\n"
+                + "  \"isActive\" : true,\n"
+                + "  \"defendant\": {\n"
+                + "    \"defendantId\" : \"Dummy Def ID\",\n"
+                + "    \"forename\": \"Test FName\",\n"
+                + "    \"surname\": \"Test LName\",\n"
+                + "    \"organization\": null,\n"
+                + "    \"dateOfBirth\": \"1980-08-16\",\n"
+                + "    \"address_line1\": null,\n"
+                + "    \"address_line2\": null,\n"
+                + "    \"address_line3\": null,\n"
+                + "    \"address_line4\": null,\n"
+                + "    \"address_line5\": null,\n"
+                + "    \"postcode\": \"UB83HW\",\n"
+                + "    \"nino\": \"ABCNINUM\",\n"
+                + "    \"telephoneHome\": null,\n"
+                + "    \"telephoneWork\": null,\n"
+                + "    \"telephoneMobile\": null,\n"
+                + "    \"email1\": null,\n"
+                + "    \"email2\": null,\n"
+                + "    \"offences\": [\n"
+                + "      {\n"
+                + "        \"offenceCode\": \"OffenceCode\",\n"
+                + "        \"asnSeq\": \"001\",\n"
+                + "        \"offenceShortTitle\": null,\n"
+                + "        \"offenceClassification\": null,\n"
+                + "        \"offenceDate\": null,\n"
+                + "        \"offenceWording\": null,\n"
+                + "        \"modeOfTrail\": null,\n"
+                + "        \"legalAidStatus\": null,\n"
+                + "        \"legalAidStatusDate\": null,\n"
+                + "        \"legalAidReason\": null,\n"
+                + "        \"results\": [\n"
+                + "          {\n"
+                + "            \"resultCode\": 3026,\n"
+                + "            \"asnSeq\" : \"001\",\n"
+                + "            \"resultShortTitle\": null,\n"
+                + "            \"resultText\": null,\n"
+                + "            \"resultCodeQualifiers\": null,\n"
+                + "            \"nextHearingDate\": null,\n"
+                + "            \"nextHearingLocation\": null,\n"
+                + "            \"firstName\": null,\n"
+                + "            \"contactName\": null,\n"
+                + "            \"laaOfficeAccount\": null,\n"
+                + "            \"legalAidWithdrawalDate\": null,\n"
+                + "            \"dateOfHearing\": null,\n"
+                + "            \"courtLocation\": null,\n"
+                + "            \"sessionValidateDate\": null\n"
+                + "          }\n"
+                + "        ]\n"
+                + "      }\n"
+                + "    ]\n"
+                + "  },\n"
+                + "  \"sessions\": [\n"
+                + "    {\n"
+                + "      \"courtLocation\": \"B16BG\",\n"
+                + "      \"dateOfHearing\": \"2020-08-16\",\n"
+                + "      \"postHearingCustody\" :  \"R\",\n"
+                + "      \"sessionvalidateddate\": null\n"
+                + "    }\n"
+                + "  ]\n"
+                + "}";
     }
 
-    public String getUnLinkString() {
+    public static String getUnLinkString() {
         return """
                 {
                  "maatId": 1234,
@@ -1648,17 +1677,16 @@ public class TestModelDataBuilder {
                 }""";
     }
 
-    public String getUnLinkString(Integer repId) {
-        return "{\n" +
-                " \"maatId\":" + repId + ",\n" +
-                "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n" +
-                "  \"userId\": \"testUser\",\n" +
-                "  \"reasonId\": 1,\n" +
-                "  \"otherReasonText\" : \"\"\n" +
-                "}";
+    public static String getUnLinkString(Integer repId) {
+        return "{\n" + " \"maatId\":"
+                + repId + ",\n" + "  \"laaTransactionId\":\"e439dfc8-664e-4c8e-a999-d756dcf112c2\",\n"
+                + "  \"userId\": \"testUser\",\n"
+                + "  \"reasonId\": 1,\n"
+                + "  \"otherReasonText\" : \"\"\n"
+                + "}";
     }
 
-    public String getUnLinkWithOtherReasonString() {
+    public static String getUnLinkWithOtherReasonString() {
         return """
                 {
                  "maatId": 1234,
@@ -1669,7 +1697,7 @@ public class TestModelDataBuilder {
                 }""";
     }
 
-    public HearingDTO getHearingDTO() {
+    public static HearingDTO getHearingDTO() {
         return HearingDTO.builder()
                 .hearingId(HEARING_ID)
                 .maatId(REP_ID)
@@ -1680,15 +1708,22 @@ public class TestModelDataBuilder {
                 .txId(123456)
                 .caseUrn("caseurn")
                 .docLanguage("en")
-                .defendant(DefendantDTO.builder().surname("Smith").postcode("LU3 111").build())
-                .offence(HearingOffenceDTO.builder().legalAidStatus("AP").asnSeq("0").asnSeq("1")
-                                 .legalAidReason("some aid reason").build())
+                .defendant(DefendantDTO.builder()
+                        .surname("Smith")
+                        .postcode("LU3 111")
+                        .build())
+                .offence(HearingOffenceDTO.builder()
+                        .legalAidStatus("AP")
+                        .asnSeq("0")
+                        .asnSeq("1")
+                        .legalAidReason("some aid reason")
+                        .build())
                 .result(getResultDTO())
                 .session(getSessionDTO())
                 .build();
     }
 
-    public SessionDTO getSessionDTO() {
+    public static SessionDTO getSessionDTO() {
         return SessionDTO.builder()
                 .dateOfHearing("2020-08-16")
                 .courtLocation(COURT_LOCATION)
@@ -1696,7 +1731,7 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public ResultDTO getResultDTO() {
+    public static ResultDTO getResultDTO() {
         return ResultDTO.builder()
                 .resultCode(6666)
                 .resultText("This is a some result text for hearing")
@@ -1706,33 +1741,25 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public HearingDTO getHearingDTOForCCOutcome() {
+    public static HearingDTO getHearingDTOForCCOutcome() {
 
-        return HearingDTO
-                .builder()
+        return HearingDTO.builder()
                 .maatId(789034)
                 .prosecutionConcluded(true)
-                .offence(HearingOffenceDTO
-                                 .builder()
-                                 .plea(PleaDTO
-                                               .builder()
-                                               .offenceId("123456")
-                                               .pleaValue("NOT_GUILTY")
-                                               .pleaDate("2020-10-12")
-                                               .build()
-                                 )
-                                 .verdict(VerdictDTO
-                                                  .builder()
-                                                  .verdictCode("CD234")
-                                                  .verdictDate("2020-10-21")
-                                                  .category("Verdict_Category")
-                                                  .categoryType("GUILTY_CONVICTED")
-                                                  .cjsVerdictCode("88999")
-                                                  .build()
-                                 )
-                                 .build()
-                )
-
+                .offence(HearingOffenceDTO.builder()
+                        .plea(PleaDTO.builder()
+                                .offenceId("123456")
+                                .pleaValue("NOT_GUILTY")
+                                .pleaDate("2020-10-12")
+                                .build())
+                        .verdict(VerdictDTO.builder()
+                                .verdictCode("CD234")
+                                .verdictDate("2020-10-21")
+                                .category("Verdict_Category")
+                                .categoryType("GUILTY_CONVICTED")
+                                .cjsVerdictCode("88999")
+                                .build())
+                        .build())
                 .build();
     }
 
@@ -1744,12 +1771,8 @@ public class TestModelDataBuilder {
     }
 
     public static LogFdcProcessedRequest getLogFdcProcessedRequest(int id, String errorText) {
-        return LogFdcProcessedRequest.builder()
-                .fdcId(id)
-                .errorText(errorText)
-                .build();
+        return LogFdcProcessedRequest.builder().fdcId(id).errorText(errorText).build();
     }
-
 
     public static CreateContributionFileRequest getContributionRequest() {
         return CreateContributionFileRequest.builder()
@@ -1771,24 +1794,25 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static String getFdcDrcUpdateJson(int fdcId, String errorText){
+    public static String getFdcDrcUpdateJson(int fdcId, String errorText) {
         return """
                 {
                     "fdcId" : %s,
                     "errorText" : "%s"
                 }
-                """.formatted(fdcId, errorText);
+                """
+                .formatted(fdcId, errorText);
     }
 
-    public static String getConcorDrcUpdateJson(int concorId, String errorText){
+    public static String getConcorDrcUpdateJson(int concorId, String errorText) {
         return """
                 {
                     "concorId" : %s,
                     "errorText" : "%s"
                 }
-                """.formatted(concorId, errorText);
+                """
+                .formatted(concorId, errorText);
     }
-
 
     public static UpdateFdcContributionRequest getUpdateFdcContributionRequest() {
         return UpdateFdcContributionRequest.builder()
@@ -1807,4 +1831,55 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+    public static MaatSearchResponse getMaatSearchResponse() {
+        return MaatSearchResponse.builder().maatId(REP_ID).build();
+    }
+
+    public static String getMaatSearchRequestJson(String firstName) {
+        return """
+                {
+                  "firstName": "%s",
+                  "lastName": "LastName",
+                  "dob": "%s",
+                  "asn": "%s",
+                  "committalDate": "%s",
+                  "niNumber": "%s",
+                  "caseType": "%s"
+                }
+                """
+                .formatted(
+                        firstName,
+                        TEST_DATE.toLocalDate(),
+                        ASN_NUMBER,
+                        TEST_DATE.toLocalDate(),
+                        NI_NUMBER,
+                        CASE_TYPE_VALUE);
+    }
+
+    public static String getMaatSearchRequestJsonWithNullDob() {
+        return """
+                {
+                  "firstName": "firstName",
+                  "lastName": "LastName",
+                  "dob": null,
+                  "asn": "%s",
+                  "committalDate": "%s",
+                  "niNumber": "%s",
+                  "caseType": "%s"
+                }
+                """
+                .formatted(ASN_NUMBER, TEST_DATE.toLocalDate(), NI_NUMBER, CASE_TYPE_VALUE);
+    }
+
+    public static MaatSearchRequest getMaatSearchRequest() {
+        return MaatSearchRequest.builder()
+                .firstName("FirstName")
+                .lastName("LastName")
+                .dob(TEST_DATE.toLocalDate())
+                .committalDate(TEST_DATE.toLocalDate())
+                .asn(ASN_NUMBER)
+                .niNumber(NI_NUMBER)
+                .caseType(CASE_TYPE_VALUE)
+                .build();
+    }
 }

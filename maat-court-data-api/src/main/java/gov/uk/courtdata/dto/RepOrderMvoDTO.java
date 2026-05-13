@@ -7,9 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 /**
@@ -21,17 +19,23 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RepOrderMvoDTO implements Serializable {
     private Integer id;
+
     @NotNull
     private RepOrderDTO rep;
+
     @Size(max = 1)
     @NotNull
     private String vehicleOwner;
+
     @NotNull
     private LocalDateTime dateCreated;
+
     @Size(max = 100)
     @NotNull
     private String userCreated;
+
     private LocalDateTime dateModified;
+
     @Size(max = 100)
     private String userModified;
 }

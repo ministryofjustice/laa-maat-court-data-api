@@ -1,17 +1,16 @@
 package gov.uk.courtdata.reporder.impl;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.repository.RepOrderMvoRegRepository;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 
 @ExtendWith(MockitoExtension.class)
 class RepOrderMvoRegImplTest {
@@ -23,7 +22,8 @@ class RepOrderMvoRegImplTest {
     private RepOrderMvoRegRepository repOrderMvoRegRepository;
 
     @Test
-    public void givenMvoIdAndVehicleOwner_whenFindRepOrderMvoByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoEntityInfoIsRetrieved() {
+    public void
+            givenMvoIdAndVehicleOwner_whenFindRepOrderMvoByRepIdAndVehicleOwnerIsInvoked_thenRepOrderMvoEntityInfoIsRetrieved() {
         repOrderMvoRegImpl.findByCurrentMvoRegistration(TestModelDataBuilder.MVO_ID);
         verify(repOrderMvoRegRepository, times(1)).findByMvoIdAndAndDateDeletedIsNull(TestModelDataBuilder.MVO_ID);
     }

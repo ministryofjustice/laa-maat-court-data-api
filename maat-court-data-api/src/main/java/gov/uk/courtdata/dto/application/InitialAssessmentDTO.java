@@ -32,5 +32,4 @@ public class InitialAssessmentDTO extends GenericDTO {
     private SupplierDTO supplierDTO;
     private Collection<AssessmentSectionSummaryDTO> sectionSummaries;
     private Collection<ChildWeightingDTO> childWeightings;
-
 }

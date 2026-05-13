@@ -6,6 +6,7 @@ import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQResultRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,6 @@ public class WQResultProcessor {
      * @param magsCourtDTO
      */
     public void process(final HearingDTO magsCourtDTO) {
-
 
         WQResultEntity wqResultEntity = WQResultEntity.builder()
                 .caseId(magsCourtDTO.getCaseId())
@@ -45,6 +45,4 @@ public class WQResultProcessor {
 
         wqResultRepository.save(wqResultEntity);
     }
-
-
 }

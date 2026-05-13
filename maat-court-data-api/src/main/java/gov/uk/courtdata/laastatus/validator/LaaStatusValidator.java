@@ -5,21 +5,19 @@ import gov.uk.courtdata.enums.LAAStatus;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.MessageCollection;
 import gov.uk.courtdata.model.Offence;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
 
 @Component
 public class LaaStatusValidator {
 
-
     public MessageCollection validate(CaseDetails caseDetails) {
 
-        List<String> validationMessages = caseDetails.getDefendant().getOffences()
-                .stream()
+        List<String> validationMessages = caseDetails.getDefendant().getOffences().stream()
                 .map(this::validateLAAStatus)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -42,5 +40,4 @@ public class LaaStatusValidator {
         }
         return myReturn;
     }
-
 }

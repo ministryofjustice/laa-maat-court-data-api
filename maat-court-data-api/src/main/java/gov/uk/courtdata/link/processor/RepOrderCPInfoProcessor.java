@@ -6,10 +6,11 @@ import gov.uk.courtdata.enums.InCommonPlatformFlag;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -21,7 +22,8 @@ public class RepOrderCPInfoProcessor implements Process {
     public void process(CourtDataDTO courtDataDTO) {
 
         final CaseDetails caseDetails = courtDataDTO.getCaseDetails();
-        Optional<RepOrderCPDataEntity> repOrderEntity = repOrderDataRepository.findByrepOrderId(caseDetails.getMaatId());
+        Optional<RepOrderCPDataEntity> repOrderEntity =
+                repOrderDataRepository.findByrepOrderId(caseDetails.getMaatId());
         if (repOrderEntity.isPresent()) {
             RepOrderCPDataEntity repOrder = repOrderEntity.get();
             repOrder.setCaseUrn(caseDetails.getCaseUrn());

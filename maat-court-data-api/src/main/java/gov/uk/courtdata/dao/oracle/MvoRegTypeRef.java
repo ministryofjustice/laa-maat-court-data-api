@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class MvoRegTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.MVO_REG_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class MvoRegTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.MVO_REG_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final MvoRegTypeRef _MvoRegTypeRefFactory = new MvoRegTypeRef();
+    private static final MvoRegTypeRef _MvoRegTypeRefFactory = new MvoRegTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _MvoRegTypeRefFactory; }
-  /* constructor */
-  public MvoRegTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _MvoRegTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public MvoRegTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    MvoRegTypeRef r = new MvoRegTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static MvoRegTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (MvoRegTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to MvoRegTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        MvoRegTypeRef r = new MvoRegTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public MvoRegType getValue() throws SQLException
-  {
-     return (MvoRegType) MvoRegType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static MvoRegTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (MvoRegTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to MvoRegTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(MvoRegType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public MvoRegType getValue() throws SQLException {
+        return (MvoRegType) MvoRegType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(MvoRegType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

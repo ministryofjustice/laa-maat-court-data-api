@@ -1,14 +1,27 @@
 package gov.uk.courtdata.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Builder
 @AllArgsConstructor
@@ -19,32 +32,44 @@ import java.time.LocalDateTime;
 public class RepOrderCCOutComeEntity {
 
     @Id
-    @SequenceGenerator(name = "rep_order_cc_outcomes_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "rep_order_cc_outcomes_gen_seq",
+            sequenceName = "S_GENERAL_SEQUENCE",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rep_order_cc_outcomes_gen_seq")
     @Column(name = "ID")
     private int id;
+
     @ToString.Exclude
     @JsonBackReference
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "REP_ID", nullable = false, updatable = false)
     private RepOrderEntity repOrder;
+
     @Column(name = "CCOO_OUTCOME")
     private String outcome;
+
     @Column(name = "CC_OUTCOME_DATE")
     private LocalDateTime outcomeDate;
+
     @Column(name = "USER_CREATED")
     private String userCreated;
+
     @Column(name = "DATE_CREATED")
     @CreationTimestamp
     private LocalDateTime dateCreated;
+
     @Column(name = "CASE_NUMBER")
     private String caseNumber;
+
     @Column(name = "CROWN_COURT_CODE")
     private String crownCourtCode;
+
     @Column(name = "USER_MODIFIED")
     private String userModified;
+
     @Column(name = "DATE_MODIFIED")
     @UpdateTimestamp
     private LocalDateTime dateModified;
-
 }

@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class NewWorkReasonTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.NEW_WORK_REASON_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class NewWorkReasonTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.NEW_WORK_REASON_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final NewWorkReasonTypeRef _NewWorkReasonTypeRefFactory = new NewWorkReasonTypeRef();
+    private static final NewWorkReasonTypeRef _NewWorkReasonTypeRefFactory = new NewWorkReasonTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _NewWorkReasonTypeRefFactory; }
-  /* constructor */
-  public NewWorkReasonTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _NewWorkReasonTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public NewWorkReasonTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    NewWorkReasonTypeRef r = new NewWorkReasonTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static NewWorkReasonTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (NewWorkReasonTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to NewWorkReasonTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        NewWorkReasonTypeRef r = new NewWorkReasonTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public NewWorkReasonType getValue() throws SQLException
-  {
-     return (NewWorkReasonType) NewWorkReasonType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static NewWorkReasonTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (NewWorkReasonTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to NewWorkReasonTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(NewWorkReasonType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public NewWorkReasonType getValue() throws SQLException {
+        return (NewWorkReasonType) NewWorkReasonType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(NewWorkReasonType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

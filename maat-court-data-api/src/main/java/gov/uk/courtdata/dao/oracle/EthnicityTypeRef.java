@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class EthnicityTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.ETHNICITY_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class EthnicityTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.ETHNICITY_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final EthnicityTypeRef _EthnicityTypeRefFactory = new EthnicityTypeRef();
+    private static final EthnicityTypeRef _EthnicityTypeRefFactory = new EthnicityTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _EthnicityTypeRefFactory; }
-  /* constructor */
-  public EthnicityTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _EthnicityTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public EthnicityTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    EthnicityTypeRef r = new EthnicityTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static EthnicityTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (EthnicityTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to EthnicityTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        EthnicityTypeRef r = new EthnicityTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public EthnicityType getValue() throws SQLException
-  {
-     return (EthnicityType) EthnicityType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static EthnicityTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (EthnicityTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to EthnicityTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(EthnicityType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public EthnicityType getValue() throws SQLException {
+        return (EthnicityType) EthnicityType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(EthnicityType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

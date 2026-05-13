@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 public class HardshipOverviewDTO extends GenericDTO {
     @Builder.Default
     private ApplicationHardshipReviewDTO magCourtHardship = new ApplicationHardshipReviewDTO();
+
     @Builder.Default
     private ApplicationHardshipReviewDTO crownCourtHardship = new ApplicationHardshipReviewDTO();
 }

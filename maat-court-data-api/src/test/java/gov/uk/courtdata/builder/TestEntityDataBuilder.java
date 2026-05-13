@@ -1,15 +1,48 @@
 package gov.uk.courtdata.builder;
 
+import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.REGISTRATION;
+import static gov.uk.courtdata.builder.TestModelDataBuilder.USER_NAME;
+
 import gov.uk.courtdata.applicant.entity.ApplicantDisabilitiesEntity;
 import gov.uk.courtdata.applicant.entity.ApplicantHistoryEntity;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
-import gov.uk.courtdata.billing.entity.ApplicantHistoryBillingEntity;
-import gov.uk.courtdata.billing.entity.MaatReferenceEntity;
-import gov.uk.courtdata.billing.entity.RepOrderBillingEntity;
-import gov.uk.courtdata.entity.*;
+import gov.uk.courtdata.entity.Applicant;
+import gov.uk.courtdata.entity.ChildWeightHistoryEntity;
+import gov.uk.courtdata.entity.ChildWeightingsEntity;
+import gov.uk.courtdata.entity.ConcorContributionsEntity;
+import gov.uk.courtdata.entity.ContributionFileErrorsEntity;
+import gov.uk.courtdata.entity.ContributionFilesEntity;
+import gov.uk.courtdata.entity.ContributionsEntity;
+import gov.uk.courtdata.entity.CorrespondenceEntity;
+import gov.uk.courtdata.entity.DefendantMAATDataEntity;
+import gov.uk.courtdata.entity.FdcContributionsEntity;
+import gov.uk.courtdata.entity.FinAssIncomeEvidenceEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentDetailsHistoryEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentEntity;
+import gov.uk.courtdata.entity.FinancialAssessmentsHistoryEntity;
+import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
+import gov.uk.courtdata.entity.HardshipReviewEntity;
+import gov.uk.courtdata.entity.HardshipReviewProgressEntity;
+import gov.uk.courtdata.entity.IOJAppealEntity;
+import gov.uk.courtdata.entity.NewWorkReasonEntity;
+import gov.uk.courtdata.entity.OffenceEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEvidenceEntity;
+import gov.uk.courtdata.entity.RepOrderCCOutComeEntity;
+import gov.uk.courtdata.entity.RepOrderCPDataEntity;
+import gov.uk.courtdata.entity.RepOrderCapitalEntity;
+import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.RepOrderMvoEntity;
+import gov.uk.courtdata.entity.RepOrderMvoRegEntity;
+import gov.uk.courtdata.entity.SolicitorMAATDataEntity;
+import gov.uk.courtdata.entity.UserEntity;
+import gov.uk.courtdata.entity.WQHearingEntity;
+import gov.uk.courtdata.entity.WQOffenceEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.enums.ConcorContributionStatus;
-import gov.uk.courtdata.enums.CrownCourtCaseType;
-import gov.uk.courtdata.enums.CrownCourtTrialOutcome;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
@@ -18,11 +51,6 @@ import gov.uk.courtdata.enums.HardshipReviewProgressResponse;
 import gov.uk.courtdata.reporder.projection.RepOrderEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoRegEntityInfo;
-import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.enums.AppealType;
-import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.enums.HardshipReviewDetailType;
 import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
@@ -30,16 +58,15 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
+import java.util.Objects;
 
-import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_APPEAL_ID;
-import static gov.uk.courtdata.builder.TestModelDataBuilder.IOJ_REP_ID;
-import static gov.uk.courtdata.builder.TestModelDataBuilder.REGISTRATION;
-import static gov.uk.courtdata.builder.TestModelDataBuilder.USER_NAME;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 @Component
 public class TestEntityDataBuilder {
 
+    public static final Integer TEST_ID = 1000;
     public static final Integer REP_ID = 1234;
     public static final Integer MVO_ID = 5678;
     public static final String TEST_REGISTRATION = "SD51ZDW";
@@ -54,6 +81,10 @@ public class TestEntityDataBuilder {
     public static final Integer APPLICATION_ID = 7852;
     public static final Integer APPLICANT_ID = 2345;
     public static final Integer APPLICANT_HISTORY_ID = 9876;
+    public static final String CASE_URN = "52SB0067421";
+    public static final String LIBRA_ID = "CP665371";
+    public static final String ASN_NUMBER = "ASN123456";
+    public static final String NI_NUMBER = "TEST_NINO";
 
     public static RepOrderEntity getRepOrder() {
         return RepOrderEntity.builder().id(REP_ID).build();
@@ -105,46 +136,19 @@ public class TestEntityDataBuilder {
 
     public static RepOrderEntity getPopulatedRepOrderToSendToCclf() {
         return RepOrderEntity.builder()
-            .catyCaseType("case-type")
-            .magsOutcome("outcome")
-            .magsOutcomeDate(TEST_DATE.toString())
-            .magsOutcomeDateSet(TEST_DATE)
-            .committalDate(TEST_DATE.toLocalDate())
-            .decisionReasonCode("rder-code")
-            .crownRepOrderDecision("cc-rep-doc")
-            .crownRepOrderType("cc-rep-type")
-            .sentenceOrderDate(TEST_DATE.toLocalDate())
-            .applicationId(APPLICATION_ID)
-            .applicantHistoryId(APPLICANT_HISTORY_ID)
-            .isSendToCCLF(true)
-            .build();
-    }
-
-    public static RepOrderBillingEntity getPopulatedRepOrderForBilling(Integer id) {
-        return RepOrderBillingEntity.builder()
-            .id(id)
-            .applicantId(123)
-            .arrestSummonsNo("ARREST-5678")
-            .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
-            .supplierAccountCode("AB123C")
-            .magsCourtId("34")
-            .magsCourtOutcome(MagCourtOutcome.COMMITTED.getOutcome())
-            .dateReceived(LocalDate.of(2025, 6, 10))
-            .crownCourtRepOrderDate(LocalDate.of(2025, 6, 12))
-            .offenceType("BURGLARY")
-            .crownCourtWithdrawalDate(LocalDate.of(2025, 6, 30))
-            .applicantHistoryId(96)
-            .caseId("CASE-123-C")
-            .committalDate(LocalDate.of(2025, 6, 11))
-            .repOrderStatus("CURR")
-            .appealTypeCode(AppealType.ACN.getCode())
-            .crownCourtOutcome(CrownCourtTrialOutcome.CONVICTED.getValue())
-            .dateCreated(LocalDate.of(2025, 6, 20))
-            .userCreated("joe-bloggs")
-            .dateModified(LocalDate.of(2025, 6, 21).atStartOfDay())
-            .userModified("alice-smith")
-            .caseType(CrownCourtCaseType.EITHER_WAY.getValue())
-            .build();
+                .catyCaseType("case-type")
+                .magsOutcome("outcome")
+                .magsOutcomeDate(TEST_DATE.toString())
+                .magsOutcomeDateSet(TEST_DATE)
+                .committalDate(TEST_DATE.toLocalDate())
+                .decisionReasonCode("rder-code")
+                .crownRepOrderDecision("cc-rep-doc")
+                .crownRepOrderType("cc-rep-type")
+                .sentenceOrderDate(TEST_DATE.toLocalDate())
+                .applicationId(APPLICATION_ID)
+                .applicantHistoryId(APPLICANT_HISTORY_ID)
+                .isSendToCCLF(true)
+                .build();
     }
 
     public static ApplicantDisabilitiesEntity getApplicantDisabilitiesEntity() {
@@ -169,7 +173,6 @@ public class TestEntityDataBuilder {
                 .userModified(TEST_USER)
                 .build();
     }
-
 
     public static RepOrderMvoRegEntity getRepOrderMvoRegEntity(Integer id, RepOrderEntity repOrder) {
         return RepOrderMvoRegEntity.builder()
@@ -196,10 +199,8 @@ public class TestEntityDataBuilder {
             public RepOrderEntityInfo getRep() {
                 return getRepOrderEntityInfo();
             }
-
         };
     }
-
 
     public static RepOrderEntityInfo getRepOrderEntityInfo() {
         return new RepOrderEntityInfo() {
@@ -212,7 +213,6 @@ public class TestEntityDataBuilder {
             }
         };
     }
-
 
     public static List<RepOrderMvoRegEntityInfo> getRepOrderMvoRegEntityInfo() {
         return List.of(new RepOrderMvoRegEntityInfo() {
@@ -227,22 +227,16 @@ public class TestEntityDataBuilder {
             public String getRegistration() {
                 return REGISTRATION;
             }
-
         });
     }
 
-
     public static FinancialAssessmentEntity getFinancialAssessmentEntity() {
         return FinancialAssessmentEntity.builder()
-                .id(1000)
+                .id(TEST_ID)
                 .repOrder(getPopulatedRepOrder(REP_ID))
                 .assessmentType(ASSESSMENT_TYPE)
                 .initialAscrId(1)
-                .newWorkReason(
-                        NewWorkReasonEntity.builder()
-                                .code("FMA")
-                                .build()
-                )
+                .newWorkReason(NewWorkReasonEntity.builder().code("FMA").build())
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated(TEST_USER)
                 .cmuId(30)
@@ -259,9 +253,8 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(int repId,
-                                                                               String assessmentStatus,
-                                                                               NewWorkReasonEntity newWorkReason) {
+    public static FinancialAssessmentEntity getCustomFinancialAssessmentEntity(
+            int repId, String assessmentStatus, NewWorkReasonEntity newWorkReason) {
         FinancialAssessmentEntity financialAssessmentEntity = FinancialAssessmentEntity.builder()
                 .repOrder(getPopulatedRepOrder(repId))
                 .assessmentType(ASSESSMENT_TYPE)
@@ -301,8 +294,8 @@ public class TestEntityDataBuilder {
         return financialAssessment;
     }
 
-    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithRelationships(Integer repId,
-                                                                                          NewWorkReasonEntity newWorkReason) {
+    public static FinancialAssessmentEntity getFinancialAssessmentEntityWithRelationships(
+            Integer repId, NewWorkReasonEntity newWorkReason) {
         FinancialAssessmentEntity financialAssessment = getFinancialAssessmentEntity();
         financialAssessment.setId(null);
         financialAssessment.getRepOrder().setId(repId);
@@ -317,7 +310,8 @@ public class TestEntityDataBuilder {
 
     public static FinancialAssessmentDetailEntity getFinancialAssessmentDetailsEntity() {
         return FinancialAssessmentDetailEntity.builder()
-                .id(23456).criteriaDetailId(40)
+                .id(23456)
+                .criteriaDetailId(40)
                 .applicantAmount(BigDecimal.valueOf(1650.00).setScale(2))
                 .applicantFrequency(Frequency.MONTHLY)
                 .partnerAmount(BigDecimal.valueOf(1650.00).setScale(2))
@@ -368,11 +362,12 @@ public class TestEntityDataBuilder {
 
     public static PassportAssessmentEntity getPassportAssessmentEntity() {
         return PassportAssessmentEntity.builder()
-                .id(1000)
+                .id(TEST_ID)
                 .repOrder(getPopulatedRepOrder(REP_ID))
                 .nworCode("FMA")
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated(TEST_USER).cmuId(30)
+                .userCreated(TEST_USER)
+                .cmuId(30)
                 .assessmentDate(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .partnerBenefitClaimed("Y")
                 .partnerFirstName("Test")
@@ -404,6 +399,27 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
+    public static PassportAssessmentEvidenceEntity getPassportAssessmentEvidenceEntity(
+            PassportAssessmentEntity passportAssessmentEntity, Applicant applicant, LocalDateTime date) {
+
+        return PassportAssessmentEvidenceEntity.builder()
+                .id(5678)
+                .passportAssessment(passportAssessmentEntity)
+                .dateReceived(date)
+                .dateCreated(date)
+                .userCreated(passportAssessmentEntity.getUserCreated())
+                .dateModified(date)
+                .userModified(passportAssessmentEntity.getUserCreated())
+                .active("Y")
+                .removedDate(null)
+                .mandatory("Y")
+                .otherText("Applicant NINO")
+                .adhoc(null)
+                .incomeEvidence("NINO")
+                .applicant(applicant)
+                .build();
+    }
+
     public static HardshipReviewEntity getHardshipReviewEntityWithRelationships() {
         HardshipReviewEntity hardshipReview = getHardshipReviewEntity();
         hardshipReview.addReviewDetail(getHardshipReviewDetailsEntity());
@@ -413,15 +429,13 @@ public class TestEntityDataBuilder {
 
     public static HardshipReviewEntity getHardshipReviewEntity() {
         return HardshipReviewEntity.builder()
-                .id(1000)
+                .id(TEST_ID)
                 .repId(REP_ID)
-                .newWorkReason(
-                        NewWorkReasonEntity.builder()
-                                .code("NEW")
-                                .type("HARDIOJ")
-                                .description("New")
-                                .build()
-                )
+                .newWorkReason(NewWorkReasonEntity.builder()
+                        .code("NEW")
+                        .type("HARDIOJ")
+                        .description("New")
+                        .build())
                 .cmuId(253)
                 .reviewResult("FAIL")
                 .solicitorRate(BigDecimal.valueOf(183.0))
@@ -489,12 +503,17 @@ public class TestEntityDataBuilder {
     }
 
     public static RepOrderApplicantLinksEntity getRepOrderApplicantLinksEntity() {
+        return getRepOrderApplicantLinksEntity(REP_ID, 11553844, LocalDate.parse("2021-10-21"));
+    }
+
+    public static RepOrderApplicantLinksEntity getRepOrderApplicantLinksEntity(
+            Integer repId, Integer partnerId, LocalDate unlinkDate) {
         return RepOrderApplicantLinksEntity.builder()
-                .repId(REP_ID)
+                .repId(repId)
                 .partnerAphiId(11553872)
-                .partnerApplId(11553844)
+                .partnerApplId(partnerId)
                 .linkDate(LocalDate.parse("2021-10-09"))
-                .unlinkDate(LocalDate.parse("2021-10-21"))
+                .unlinkDate(unlinkDate)
                 .userCreated("test-u")
                 .userModified(TEST_USER)
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
@@ -517,25 +536,6 @@ public class TestEntityDataBuilder {
                 .sendToCclf(sendToCclf)
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated("TEST")
-                .build();
-    }
-
-    public static ApplicantHistoryBillingEntity getApplicantHistoryBillingEntity() {
-        return ApplicantHistoryBillingEntity.builder()
-                .id(666)
-                .applId(666)
-                .asAtDate(LocalDate.parse("2006-10-06"))
-                .firstName("test_first")
-                .lastName("test_last")
-                .otherNames("test")
-                .dob(LocalDate.parse("1981-10-14"))
-                .gender("Male")
-                .niNumber("JM933396A")
-                .foreignId("T35T")
-                .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
-                .userCreated("TEST")
-                .dateModified(null)
-                .userModified(null)
                 .build();
     }
 
@@ -625,8 +625,23 @@ public class TestEntityDataBuilder {
                 .maatCat(253)
                 .createdUserId(TEST_USER)
                 .mlrCat(253)
-                .caseUrn("52SB0067421")
-                .libraId("CP665371")
+                .caseUrn(CASE_URN)
+                .libraId(LIBRA_ID)
+                .build();
+    }
+
+    public static WqLinkRegisterEntity getWQLinkRegisterEntityWithoutCaseUrn() {
+
+        return WqLinkRegisterEntity.builder()
+                .createdTxId(1234)
+                .caseId(TEST_CASE_ID)
+                .maatId(REP_ID)
+                .cjsAreaCode("16")
+                .cjsLocation("B16BG")
+                .maatCat(253)
+                .createdUserId(TEST_USER)
+                .mlrCat(253)
+                .libraId(LIBRA_ID)
                 .build();
     }
 
@@ -707,7 +722,8 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static ContributionFilesEntity getContributionFilesEntity(String fileName, Integer recordsSent, Integer recordsReceived, boolean isBlankXml) {
+    public static ContributionFilesEntity getContributionFilesEntity(
+            String fileName, Integer recordsSent, Integer recordsReceived, boolean isBlankXml) {
         ContributionFilesEntity entity = ContributionFilesEntity.builder()
                 .fileName(fileName)
                 .recordsSent(recordsSent)
@@ -715,9 +731,9 @@ public class TestEntityDataBuilder {
                 .dateCreated(TEST_DATE.toLocalDate())
                 .userCreated(TEST_USER)
                 .build();
-        if (!isBlankXml){
-            entity.setXmlContent("<xml>"+fileName+"</xml>");
-            entity.setAckXmlContent("<ackXml>"+fileName+"</ackXml>");
+        if (!isBlankXml) {
+            entity.setXmlContent("<xml>" + fileName + "</xml>");
+            entity.setAckXmlContent("<ackXml>" + fileName + "</ackXml>");
         }
         return entity;
     }
@@ -730,7 +746,8 @@ public class TestEntityDataBuilder {
         return getPopulatedContributionFilesEntity(fileId, fileName, "<xml>content</xml>");
     }
 
-    public static ContributionFilesEntity getPopulatedContributionFilesEntity(Integer fileId, String fileName, String xmlContent){
+    public static ContributionFilesEntity getPopulatedContributionFilesEntity(
+            Integer fileId, String fileName, String xmlContent) {
         return ContributionFilesEntity.builder()
                 .fileId(fileId)
                 .fileName(fileName)
@@ -760,7 +777,8 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static ConcorContributionsEntity getConcorContributionsEntity(Integer repId, ConcorContributionStatus status) {
+    public static ConcorContributionsEntity getConcorContributionsEntity(
+            Integer repId, ConcorContributionStatus status) {
         return ConcorContributionsEntity.builder()
                 .status(status)
                 .repId(repId)
@@ -769,7 +787,8 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static ConcorContributionsEntity getConcorContributionsEntity(Integer repId, ConcorContributionStatus status, Integer fileId, String currentXml) {
+    public static ConcorContributionsEntity getConcorContributionsEntity(
+            Integer repId, ConcorContributionStatus status, Integer fileId, String currentXml) {
         return ConcorContributionsEntity.builder()
                 .status(status)
                 .repId(repId)
@@ -800,7 +819,7 @@ public class TestEntityDataBuilder {
         return entity;
     }
 
-    public static FdcContributionsEntity getPopulatedFdcContributionsEntity(Integer id){
+    public static FdcContributionsEntity getPopulatedFdcContributionsEntity(Integer id) {
         return FdcContributionsEntity.builder()
                 .id(id)
                 .status(FdcContributionsStatus.REQUESTED)
@@ -813,7 +832,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static FdcContributionsEntity getPopulatedFdcContributionsEntity(Integer id, Integer repId, Integer fileId){
+    public static FdcContributionsEntity getPopulatedFdcContributionsEntity(Integer id, Integer repId, Integer fileId) {
         return FdcContributionsEntity.builder()
                 .id(id)
                 .status(FdcContributionsStatus.REQUESTED)
@@ -826,7 +845,8 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static FdcContributionsEntity getFdcContibutionsEntity(FdcContributionsStatus status, String finalCost, Integer fileId, RepOrderEntity repOrder) {
+    public static FdcContributionsEntity getFdcContibutionsEntity(
+            FdcContributionsStatus status, String finalCost, Integer fileId, RepOrderEntity repOrder) {
         BigDecimal finalCostBigDecimal = new BigDecimal(finalCost);
         return FdcContributionsEntity.builder()
                 .status(status)
@@ -839,7 +859,8 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity(Integer repOderOutComeId, RepOrderEntity repOrder) {
+    public static RepOrderCCOutComeEntity getRepOrderCCOutcomeEntity(
+            Integer repOderOutComeId, RepOrderEntity repOrder) {
         return RepOrderCCOutComeEntity.builder()
                 .repOrder(repOrder)
                 .outcome("CONVICTED")
@@ -875,28 +896,36 @@ public class TestEntityDataBuilder {
     }
 
     public static UserEntity getUserEntity() {
-        return UserEntity.builder().firstName("Karen")
+        return UserEntity.builder()
+                .firstName("Karen")
                 .surname("Greaves")
-                .username(ASSESSOR_USER_NAME).build();
+                .username(ASSESSOR_USER_NAME)
+                .build();
     }
 
     public static UserEntity getUserEntity(String username) {
-        return UserEntity.builder().firstName("First name of [" + username + "]")
+        return UserEntity.builder()
+                .firstName("First name of [" + username + "]")
                 .surname("Surname of [" + username + "]")
-                .username(username).build();
+                .username(username)
+                .build();
     }
 
-    public RepOrderCPDataEntity getRepOrderEntity() {
+    public static RepOrderCPDataEntity getRepOrderEntity() {
+        return getRepOrderEntity(REP_ID);
+    }
+
+    public static RepOrderCPDataEntity getRepOrderEntity(Integer repId) {
         return RepOrderCPDataEntity.builder()
-                .repOrderId(REP_ID)
-                .caseUrn("caseurn1")
+                .repOrderId(repId)
+                .caseUrn(CASE_URN)
                 .dateCreated(LocalDateTime.now())
                 .userCreated("user")
                 .dateModified(LocalDateTime.now())
                 .build();
     }
 
-    public WqLinkRegisterEntity getWqLinkRegisterEntity() {
+    public static WqLinkRegisterEntity getWqLinkRegisterEntity() {
         return WqLinkRegisterEntity.builder()
                 .caseId(345)
                 .createdTxId(123)
@@ -908,7 +937,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public WqLinkRegisterEntity getWqLinkRegisterEntity(Integer repId) {
+    public static WqLinkRegisterEntity getWqLinkRegisterEntity(Integer repId) {
         return WqLinkRegisterEntity.builder()
                 .caseId(345)
                 .createdTxId(123)
@@ -920,7 +949,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public DefendantMAATDataEntity getDefendantMAATDataEntity() {
+    public static DefendantMAATDataEntity getDefendantMAATDataEntity() {
         return DefendantMAATDataEntity.builder()
                 .maatId(REP_ID)
                 .firstName("T First Name")
@@ -930,7 +959,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public DefendantMAATDataEntity getDefendantMAATDataEntity(Integer repId) {
+    public static DefendantMAATDataEntity getDefendantMAATDataEntity(Integer repId) {
         return DefendantMAATDataEntity.builder()
                 .maatId(repId)
                 .firstName("T First Name")
@@ -940,7 +969,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public SolicitorMAATDataEntity getSolicitorMAATDataEntity() {
+    public static SolicitorMAATDataEntity getSolicitorMAATDataEntity() {
         return SolicitorMAATDataEntity.builder()
                 .maatId(REP_ID)
                 .accountCode("Acc")
@@ -949,7 +978,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public SolicitorMAATDataEntity getSolicitorMAATDataEntity(Integer repId) {
+    public static SolicitorMAATDataEntity getSolicitorMAATDataEntity(Integer repId) {
         return SolicitorMAATDataEntity.builder()
                 .maatId(repId)
                 .accountCode("Acc")
@@ -958,7 +987,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public RepOrderCPDataEntity getRepOrderCPDataEntity() {
+    public static RepOrderCPDataEntity getRepOrderCPDataEntity() {
         return RepOrderCPDataEntity.builder()
                 .repOrderId(REP_ID)
                 .defendantId("556677")
@@ -966,7 +995,7 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public RepOrderCPDataEntity getRepOrderCPDataEntity(Integer repId) {
+    public static RepOrderCPDataEntity getRepOrderCPDataEntity(Integer repId) {
         return RepOrderCPDataEntity.builder()
                 .repOrderId(repId)
                 .defendantId("556677")
@@ -974,12 +1003,17 @@ public class TestEntityDataBuilder {
                 .build();
     }
 
-    public MaatReferenceEntity getMaatReferenceEntity() {
-        return MaatReferenceEntity.builder()
-            .maatId(REP_ID)
-            .applicantId(APPLICANT_ID)
-            .applicantHistoryId(APPLICANT_HISTORY_ID)
-            .build();
+    public static Applicant getApplicant(Integer applicantId) {
+        return Applicant.builder()
+                .id(applicantId)
+                .firstName("FirstName")
+                .lastName("LastName")
+                .userCreated("TEST-S")
+                .userModified("TEST-M")
+                .niNumber(NI_NUMBER)
+                .dob(TEST_DATE.toLocalDate())
+                .dateCreated(TEST_DATE)
+                .dateModified(TEST_DATE)
+                .build();
     }
-
 }

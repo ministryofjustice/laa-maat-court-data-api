@@ -18,5 +18,4 @@ public class OutcomeDTO extends GenericDTO {
     private Date dateSet;
 
     public static final String COMPLETE = "COMPLETE";
-
 }

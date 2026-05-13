@@ -1,16 +1,22 @@
 package gov.uk.courtdata.iojappeal.controller;
 
+import gov.uk.courtdata.annotation.StandardProblemDetailErrorResponse;
 import gov.uk.courtdata.enums.LoggingData;
-
 import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.iojappeal.service.IOJAppealV2Service;
 import gov.uk.courtdata.iojappeal.validator.ApiCreateIojAppealRequestValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
+import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
+import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
+import uk.gov.justice.laa.crime.error.ErrorMessage;
+
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +26,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealRequest;
-import uk.gov.justice.laa.crime.common.model.ioj.ApiCreateIojAppealResponse;
-import uk.gov.justice.laa.crime.common.model.ioj.ApiGetIojAppealResponse;
-import uk.gov.justice.laa.crime.error.ErrorMessage;
 
 @Slf4j
 @RestController
@@ -35,12 +37,14 @@ public class IOJAppealControllerV2 implements IOJAppealApi {
     private final IOJAppealV2Service iojAppealService;
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @StandardProblemDetailErrorResponse
     public ResponseEntity<ApiGetIojAppealResponse> find(@PathVariable int id) {
         log.info("Get IOJ Appeal Received: id: {}", id);
         return ResponseEntity.ok(iojAppealService.find(id));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @StandardProblemDetailErrorResponse
     public ResponseEntity<ApiCreateIojAppealResponse> create(@Valid @RequestBody ApiCreateIojAppealRequest iojAppeal) {
         LoggingData.MAAT_ID.putInMDC(iojAppeal.getIojAppealMetadata().getLegacyApplicationId());
         log.info("Create IOJ Appeal Request Received");
@@ -57,7 +61,7 @@ public class IOJAppealControllerV2 implements IOJAppealApi {
 
     @PatchMapping("/rollback/{iojAppealId}")
     @Operation(description = "Rollback an existing Interest of Justice appeal record")
-    @StandardApiResponseCodes
+    @StandardProblemDetailErrorResponse
     public ResponseEntity<Void> rollbackIOJAppeal(@PathVariable Integer iojAppealId) {
         log.info("Rollback IoJ Appeal request received with id: {}", iojAppealId);
         iojAppealService.rollback(iojAppealId);

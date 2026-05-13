@@ -7,12 +7,13 @@ import gov.uk.courtdata.repository.ContributionFileErrorsRepository;
 import gov.uk.courtdata.repository.ContributionFilesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -25,14 +26,22 @@ public class DebtCollectionService {
 
     public List<String> getContributionFiles(LocalDate fromDate, LocalDate toDate) {
         log.info("date range -> {} {}", fromDate, toDate);
-        List<ContributionFilesEntity> contributionFilesList = contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId("CONTRIBUTIONS%", fromDate, toDate);
-        return contributionFilesList.stream().map(ContributionFilesEntity::getXmlContent).toList();
+        List<ContributionFilesEntity> contributionFilesList =
+                contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId(
+                        "CONTRIBUTIONS%", fromDate, toDate);
+        return contributionFilesList.stream()
+                .map(ContributionFilesEntity::getXmlContent)
+                .toList();
     }
 
     public List<String> getFdcFiles(LocalDate fromDate, LocalDate toDate) {
         log.info("date range -> {} {}", fromDate, toDate);
-        List<ContributionFilesEntity> contributionFilesList = contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId("FDC%", fromDate, toDate);
-        return contributionFilesList.stream().map(ContributionFilesEntity::getXmlContent).toList();
+        List<ContributionFilesEntity> contributionFilesList =
+                contributionFilesRepository.getByFileNameLikeAndDateCreatedBetweenOrderByFileId(
+                        "FDC%", fromDate, toDate);
+        return contributionFilesList.stream()
+                .map(ContributionFilesEntity::getXmlContent)
+                .toList();
     }
 
     public void saveError(ContributionFileErrorsEntity entity) {
@@ -47,7 +56,8 @@ public class DebtCollectionService {
         int rowsUpdated = contributionFilesRepository.incrementRecordsReceived(fileId, USER_AUDIT);
         log.info("update contribution_file ID {} records received: {} row(s) updated", fileId, rowsUpdated);
         if (rowsUpdated != 1) {
-            throw new MAATCourtDataException("update contribution_file ID " + fileId + " records received: " + rowsUpdated + " row(s) updated");
+            throw new MAATCourtDataException(
+                    "update contribution_file ID " + fileId + " records received: " + rowsUpdated + " row(s) updated");
         }
         return true;
     }

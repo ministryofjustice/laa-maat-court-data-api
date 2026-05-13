@@ -6,6 +6,7 @@ import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQDefendantRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -39,7 +40,5 @@ public class WQDefendantProcessor {
                 .build();
 
         defendantRepository.save(defendantEntity);
-
     }
-
 }

@@ -1,24 +1,31 @@
 package gov.uk.courtdata.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.AUTO_USER;
+import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.UNKNOWN_OFFENCE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.entity.XLATOffenceEntity;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.repository.XLATOffenceRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class OffenceCodeRefDataProcessorTest {
+class OffenceCodeRefDataProcessorTest {
 
     @InjectMocks
     private OffenceCodeRefDataProcessor offenceCodeRefDataProcessor;
@@ -29,74 +36,67 @@ public class OffenceCodeRefDataProcessorTest {
     @Captor
     private ArgumentCaptor<XLATOffenceEntity> offenceCodeCaptor;
 
-
     @Test
-    public void testProcessOffenceCode_whenNewOffenceIsPassedIn_thenOffenceIsSaved() {
+    void testProcessOffenceCode_whenNewOffenceIsPassedIn_thenOffenceIsSaved() {
 
-        //given
+        // given
         String offenceCode = "ABCDEF";
 
-        //when
-        Mockito.when(xlatOffenceRepository.findById(offenceCode))
-                .thenReturn(Optional.empty());
+        // when
+        Mockito.when(xlatOffenceRepository.findById(offenceCode)).thenReturn(Optional.empty());
 
         offenceCodeRefDataProcessor.processOffenceCode(offenceCode);
 
-        //then
+        // then
         verify(xlatOffenceRepository).save(offenceCodeCaptor.capture());
-        assertThat(offenceCodeCaptor.getValue().getOffenceCode()).isEqualTo(offenceCode);
-        assertThat(offenceCodeCaptor.getValue().getParentCode()).isEqualTo("ABCD");
-        assertThat(offenceCodeCaptor.getValue().getCreatedDate()).isEqualTo(LocalDate.now());
-        assertThat(offenceCodeCaptor.getValue().getApplicationFlag()).isEqualTo(G_NO);
-        assertThat(offenceCodeCaptor.getValue().getCodeMeaning()).isEqualTo(UNKNOWN_OFFENCE);
-        assertThat(offenceCodeCaptor.getValue().getCreatedUser()).isEqualTo(AUTO_USER);
-        assertThat(offenceCodeCaptor.getValue().getCodeStart()).isEqualTo(LocalDate.now());
-
+        XLATOffenceEntity entity = offenceCodeCaptor.getValue();
+        assertThat(entity.getOffenceCode()).isEqualTo(offenceCode);
+        assertThat(entity.getParentCode()).isEqualTo("ABCD");
+        assertThat(entity.getCreatedDate()).isEqualTo(LocalDate.now());
+        assertThat(entity.getApplicationFlag()).isEqualTo(G_NO);
+        assertThat(entity.getCodeMeaning()).isEqualTo(UNKNOWN_OFFENCE);
+        assertThat(entity.getCreatedUser()).isEqualTo(AUTO_USER);
+        assertThat(entity.getCodeStart()).isEqualTo(LocalDate.now());
     }
 
-
     @Test
-    public void testProcessOffenceCode_whenNewOffenceIsPassedInWithLessThan4Digit_thenOffenceIsSaved() {
+    void testProcessOffenceCode_whenNewOffenceIsPassedInWithLessThan4Digit_thenOffenceIsSaved() {
 
-        //given
+        // given
         String offenceCode = "ABC";
 
-        //when
-        Mockito.when(xlatOffenceRepository.findById(offenceCode))
-                .thenReturn(Optional.empty());
+        // when
+        Mockito.when(xlatOffenceRepository.findById(offenceCode)).thenReturn(Optional.empty());
 
         offenceCodeRefDataProcessor.processOffenceCode(offenceCode);
 
-        //then
+        // then
         verify(xlatOffenceRepository).save(offenceCodeCaptor.capture());
         assertThat(offenceCodeCaptor.getValue().getParentCode()).isEqualTo("ABC");
-
-
     }
 
     @Test
-    public void testProcessOffenceCode_whenOffenceExists_thenOffenceNotSaved() {
+    void testProcessOffenceCode_whenOffenceExists_thenOffenceNotSaved() {
 
-        //given
+        // given
         String offenceCode = "ABCD";
-        final XLATOffenceEntity xlatOffenceEntity = XLATOffenceEntity.builder().offenceCode(offenceCode).build();
+        final XLATOffenceEntity xlatOffenceEntity =
+                XLATOffenceEntity.builder().offenceCode(offenceCode).build();
 
-        //when
-        Mockito.when(xlatOffenceRepository.findById(offenceCode))
-                .thenReturn(Optional.of(xlatOffenceEntity));
+        // when
+        Mockito.when(xlatOffenceRepository.findById(offenceCode)).thenReturn(Optional.of(xlatOffenceEntity));
 
         offenceCodeRefDataProcessor.processOffenceCode(offenceCode);
 
-        //then
-        verify(xlatOffenceRepository, times(0)).save(xlatOffenceEntity);
+        // then
+        verify(xlatOffenceRepository, never()).save(xlatOffenceEntity);
     }
 
     @Test
-    public void testProcessOffenceCode_whenNullCodeIsPassedIn_thenThrowsMaatCourtDataException() {
+    void testProcessOffenceCode_whenNullCodeIsPassedIn_thenThrowsMaatCourtDataException() {
 
-        Assertions.assertThrows(MAATCourtDataException.class,()->{
-            offenceCodeRefDataProcessor.processOffenceCode(null);
-        },"A Null Offence Code is passed in");
-
+        assertThatThrownBy(() -> offenceCodeRefDataProcessor.processOffenceCode(null))
+                .isInstanceOf(MAATCourtDataException.class)
+                .hasMessage("A Null Offence Code is passed in");
     }
 }

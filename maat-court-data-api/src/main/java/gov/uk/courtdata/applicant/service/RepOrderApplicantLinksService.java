@@ -7,10 +7,11 @@ import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -23,31 +24,37 @@ public class RepOrderApplicantLinksService {
     @Transactional(readOnly = true)
     public List<RepOrderApplicantLinksDTO> find(Integer repId) {
         log.info("RepOrderApplicantLinksService::find - Start");
-        List<RepOrderApplicantLinksEntity> repOrderApplicantLinksEntities = repOrderApplicantLinksRepository.findAllByRepId(repId);
+        List<RepOrderApplicantLinksEntity> repOrderApplicantLinksEntities =
+                repOrderApplicantLinksRepository.findAllByRepId(repId);
         if (repOrderApplicantLinksEntities.isEmpty()) {
-            throw new RequestedObjectNotFoundException(String.format("Rep Order Applicant Links not found for repId: %d", repId));
+            throw new RequestedObjectNotFoundException(
+                    String.format("Rep Order Applicant Links not found for repId: %d", repId));
         }
-        return repOrderApplicantLinksMapper.
-                mapEntityToDTO(repOrderApplicantLinksEntities);
+        return repOrderApplicantLinksMapper.mapEntityToDTO(repOrderApplicantLinksEntities);
     }
 
     @Transactional
     public RepOrderApplicantLinksDTO update(RepOrderApplicantLinksDTO repOrderApplicantLinksDTO) {
         log.info("RepOrderApplicantLinksService::update - Start");
         Integer id = repOrderApplicantLinksDTO.getId();
-        RepOrderApplicantLinksEntity repOrderApplicantLinksEntity = repOrderApplicantLinksRepository.findById(id).orElse(null);
+        RepOrderApplicantLinksEntity repOrderApplicantLinksEntity =
+                repOrderApplicantLinksRepository.findById(id).orElse(null);
         if (repOrderApplicantLinksEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("Rep Order Applicant Link not found for id %d", id));
+            throw new RequestedObjectNotFoundException(
+                    String.format("Rep Order Applicant Link not found for id %d", id));
         }
-        repOrderApplicantLinksMapper.updateRepOrderApplicantLinksDTOToRepOrderApplicantLinksEntity(repOrderApplicantLinksDTO, repOrderApplicantLinksEntity);
-        return repOrderApplicantLinksMapper.mapEntityToDTO(repOrderApplicantLinksRepository.saveAndFlush(repOrderApplicantLinksEntity));
+        repOrderApplicantLinksMapper.updateRepOrderApplicantLinksDTOToRepOrderApplicantLinksEntity(
+                repOrderApplicantLinksDTO, repOrderApplicantLinksEntity);
+        return repOrderApplicantLinksMapper.mapEntityToDTO(
+                repOrderApplicantLinksRepository.saveAndFlush(repOrderApplicantLinksEntity));
     }
 
     @Transactional
     public RepOrderApplicantLinksDTO create(RepOrderApplicantLinksDTO repOrderApplicantLinksDTO) {
         log.info("RepOrderApplicantLinksService::create - Start");
-        RepOrderApplicantLinksEntity repOrderApplicantLinksEntity = repOrderApplicantLinksMapper.mapDTOToEntity(repOrderApplicantLinksDTO);
-        return repOrderApplicantLinksMapper.mapEntityToDTO(repOrderApplicantLinksRepository.saveAndFlush(repOrderApplicantLinksEntity));
+        RepOrderApplicantLinksEntity repOrderApplicantLinksEntity =
+                repOrderApplicantLinksMapper.mapDTOToEntity(repOrderApplicantLinksDTO);
+        return repOrderApplicantLinksMapper.mapEntityToDTO(
+                repOrderApplicantLinksRepository.saveAndFlush(repOrderApplicantLinksEntity));
     }
-
 }

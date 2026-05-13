@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.uk.courtdata.dto.application;
 
@@ -12,10 +12,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class TransferTypeDTO extends GenericDTO 
-{
-	private	String						type;
-	private	String						description;
-
-
+public class TransferTypeDTO extends GenericDTO {
+    private String type;
+    private String description;
 }

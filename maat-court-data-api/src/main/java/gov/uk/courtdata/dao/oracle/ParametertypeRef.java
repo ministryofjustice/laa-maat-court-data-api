@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ParametertypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "EMI_DATA.PARAMETERTYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class ParametertypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "EMI_DATA.PARAMETERTYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final ParametertypeRef _ParametertypeRefFactory = new ParametertypeRef();
+    private static final ParametertypeRef _ParametertypeRefFactory = new ParametertypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _ParametertypeRefFactory; }
-  /* constructor */
-  public ParametertypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _ParametertypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public ParametertypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    ParametertypeRef r = new ParametertypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static ParametertypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (ParametertypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to ParametertypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        ParametertypeRef r = new ParametertypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public Parametertype getValue() throws SQLException
-  {
-     return (Parametertype) Parametertype.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static ParametertypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (ParametertypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to ParametertypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(Parametertype c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public Parametertype getValue() throws SQLException {
+        return (Parametertype) Parametertype.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(Parametertype c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

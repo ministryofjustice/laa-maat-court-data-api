@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 
 @AllArgsConstructor
 public enum PleaTrialOutcome {
-
     GUILTY_LESSER_OFFENCE_NAMELY("GUILTY_LESSER_OFFENCE_NAMELY", CrownCourtTrialOutcome.CONVICTED),
     GUILTY("GUILTY", CrownCourtTrialOutcome.CONVICTED),
     GUILTY_TO_ALTERNATIVE_OFFENCE("GUILTY_TO_ALTERNATIVE_OFFENCE", CrownCourtTrialOutcome.CONVICTED),
@@ -26,20 +25,19 @@ public enum PleaTrialOutcome {
     private final CrownCourtTrialOutcome crownCourtTrialOutcome;
 
     public static boolean isConvicted(String pleaValue) {
-        return
-                Stream
-                .of(PleaTrialOutcome.values())
+        return Stream.of(PleaTrialOutcome.values())
                 .filter(f -> f.crownCourtTrialOutcome.equals(CrownCourtTrialOutcome.CONVICTED))
                 .anyMatch(v -> v.pleaValue.equalsIgnoreCase(pleaValue));
     }
 
     public static String getTrialOutcome(String pleaValue) {
 
-        Optional<PleaTrialOutcome> trialOutcomeOptional = Stream
-                .of(PleaTrialOutcome.values())
+        Optional<PleaTrialOutcome> trialOutcomeOptional = Stream.of(PleaTrialOutcome.values())
                 .filter(pl -> pl.pleaValue.equalsIgnoreCase(pleaValue))
                 .findFirst();
 
-        return trialOutcomeOptional.isPresent() ? trialOutcomeOptional.get().crownCourtTrialOutcome.getValue() : CrownCourtTrialOutcome.AQUITTED.getValue();
+        return trialOutcomeOptional.isPresent()
+                ? trialOutcomeOptional.get().crownCourtTrialOutcome.getValue()
+                : CrownCourtTrialOutcome.AQUITTED.getValue();
     }
 }

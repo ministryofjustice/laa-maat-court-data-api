@@ -1,20 +1,23 @@
 package gov.uk.courtdata.applicant.validator;
 
+import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.validator.MaatIdValidator;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static gov.uk.courtdata.builder.TestModelDataBuilder.REP_ID;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
-public class ValidationProcessorTest {
+class ValidationProcessorTest {
 
     @Mock
     private MaatIdValidator maatIdValidator;
@@ -35,5 +38,4 @@ public class ValidationProcessorTest {
                 .isInstanceOf(ValidationException.class);
         verify(maatIdValidator, atLeastOnce()).validate(any());
     }
-
 }

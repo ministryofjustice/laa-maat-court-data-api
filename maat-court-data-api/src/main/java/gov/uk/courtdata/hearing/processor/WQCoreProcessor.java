@@ -1,5 +1,9 @@
 package gov.uk.courtdata.hearing.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
+import static gov.uk.courtdata.constants.CourtDataConstants.MAGS_PROCESSING_SYSTEM_USER;
+import static gov.uk.courtdata.enums.WQStatus.WAITING;
+
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.XLATResultEntity;
 import gov.uk.courtdata.hearing.dto.HearingDTO;
@@ -7,14 +11,11 @@ import gov.uk.courtdata.repository.OffenceRepository;
 import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.XLATResultRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
-import static gov.uk.courtdata.constants.CourtDataConstants.MAGS_PROCESSING_SYSTEM_USER;
-import static gov.uk.courtdata.enums.WQStatus.WAITING;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -24,9 +25,7 @@ public class WQCoreProcessor {
     private final XLATResultRepository xlatResultRepository;
     private final OffenceRepository offenceRepository;
 
-
     public void process(final HearingDTO magsCourtDTO) {
-
 
         WqCoreEntity wqCoreEntity = WqCoreEntity.builder()
                 .txId(magsCourtDTO.getTxId())
@@ -40,9 +39,7 @@ public class WQCoreProcessor {
                 .jurisdictionType(magsCourtDTO.getJurisdictionType().name())
                 .build();
         wqCoreRepository.save(wqCoreEntity);
-
     }
-
 
     /**
      * Check if there is an offence for the case and seq no, if not then a new offence
@@ -54,10 +51,11 @@ public class WQCoreProcessor {
      */
     private int processIfNewOffence(final HearingDTO magsCourtDTO) {
 
-        Integer offenceCount =
-                offenceRepository.getOffenceCountForAsnSeq(
-                        magsCourtDTO.getCaseId(),
-                        String.format(LEADING_ZERO_3, Integer.parseInt(magsCourtDTO.getOffence().getAsnSeq())));
+        Integer offenceCount = offenceRepository.getOffenceCountForAsnSeq(
+                magsCourtDTO.getCaseId(),
+                String.format(
+                        LEADING_ZERO_3,
+                        Integer.parseInt(magsCourtDTO.getOffence().getAsnSeq())));
 
         return offenceCount == 0 ? 0 : 99;
     }
@@ -70,15 +68,10 @@ public class WQCoreProcessor {
      */
     public int findWQType(final Integer resultCode) {
 
-        Optional<XLATResultEntity> xlatResult =
-                xlatResultRepository.findById(resultCode);
+        Optional<XLATResultEntity> xlatResult = xlatResultRepository.findById(resultCode);
         XLATResultEntity xlatResultEntity = xlatResult.orElse(null);
 
         assert xlatResultEntity != null;
         return xlatResultEntity.getWqType();
-
-
     }
-
-
 }

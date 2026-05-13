@@ -1,58 +1,59 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class AssSectionSummaryTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.ASS_SECTION_SUMMARY_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class AssSectionSummaryTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.ASS_SECTION_SUMMARY_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final AssSectionSummaryTypeRef _AssSectionSummaryTypeRefFactory = new AssSectionSummaryTypeRef();
+    private static final AssSectionSummaryTypeRef _AssSectionSummaryTypeRefFactory = new AssSectionSummaryTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _AssSectionSummaryTypeRefFactory; }
-  /* constructor */
-  public AssSectionSummaryTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _AssSectionSummaryTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public AssSectionSummaryTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    AssSectionSummaryTypeRef r = new AssSectionSummaryTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static AssSectionSummaryTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (AssSectionSummaryTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to AssSectionSummaryTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        AssSectionSummaryTypeRef r = new AssSectionSummaryTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public AssSectionSummaryType getValue() throws SQLException
-  {
-     return (AssSectionSummaryType) AssSectionSummaryType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static AssSectionSummaryTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (AssSectionSummaryTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to AssSectionSummaryTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(AssSectionSummaryType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public AssSectionSummaryType getValue() throws SQLException {
+        return (AssSectionSummaryType)
+                AssSectionSummaryType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(AssSectionSummaryType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

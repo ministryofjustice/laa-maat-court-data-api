@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ExtraEvidenceTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.EXTRA_EVIDENCE_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class ExtraEvidenceTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.EXTRA_EVIDENCE_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final ExtraEvidenceTypeRef _ExtraEvidenceTypeRefFactory = new ExtraEvidenceTypeRef();
+    private static final ExtraEvidenceTypeRef _ExtraEvidenceTypeRefFactory = new ExtraEvidenceTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _ExtraEvidenceTypeRefFactory; }
-  /* constructor */
-  public ExtraEvidenceTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _ExtraEvidenceTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public ExtraEvidenceTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    ExtraEvidenceTypeRef r = new ExtraEvidenceTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static ExtraEvidenceTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (ExtraEvidenceTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to ExtraEvidenceTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        ExtraEvidenceTypeRef r = new ExtraEvidenceTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public ExtraEvidenceType getValue() throws SQLException
-  {
-     return (ExtraEvidenceType) ExtraEvidenceType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static ExtraEvidenceTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (ExtraEvidenceTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to ExtraEvidenceTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(ExtraEvidenceType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public ExtraEvidenceType getValue() throws SQLException {
+        return (ExtraEvidenceType) ExtraEvidenceType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(ExtraEvidenceType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class HrSectionTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.HR_SECTION_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class HrSectionTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.HR_SECTION_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final HrSectionTypeRef _HrSectionTypeRefFactory = new HrSectionTypeRef();
+    private static final HrSectionTypeRef _HrSectionTypeRefFactory = new HrSectionTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _HrSectionTypeRefFactory; }
-  /* constructor */
-  public HrSectionTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _HrSectionTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public HrSectionTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    HrSectionTypeRef r = new HrSectionTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static HrSectionTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (HrSectionTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to HrSectionTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        HrSectionTypeRef r = new HrSectionTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public HrSectionType getValue() throws SQLException
-  {
-     return (HrSectionType) HrSectionType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static HrSectionTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (HrSectionTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to HrSectionTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(HrSectionType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public HrSectionType getValue() throws SQLException {
+        return (HrSectionType) HrSectionType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(HrSectionType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

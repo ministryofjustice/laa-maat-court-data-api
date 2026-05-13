@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.uk.courtdata.dto.application;
 
@@ -14,11 +14,9 @@ import java.util.Date;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class LscTransferDTO extends AreaTransferDetailsDTO
-{
-	private Date                        dateLscReceived ;
-	private Date                        dateLscReturned ;
-	private UserDTO                      lscReceivedBy  ;
-	private UserDTO                      lscReturnedBy  ;
-
+public class LscTransferDTO extends AreaTransferDetailsDTO {
+    private Date dateLscReceived;
+    private Date dateLscReturned;
+    private UserDTO lscReceivedBy;
+    private UserDTO lscReturnedBy;
 }

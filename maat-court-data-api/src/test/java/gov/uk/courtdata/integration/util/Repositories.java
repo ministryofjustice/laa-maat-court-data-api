@@ -2,8 +2,8 @@ package gov.uk.courtdata.integration.util;
 
 import gov.uk.courtdata.applicant.repository.ApplicantDisabilitiesRepository;
 import gov.uk.courtdata.applicant.repository.ApplicantHistoryRepository;
+import gov.uk.courtdata.applicant.repository.ApplicantRepository;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
-import gov.uk.courtdata.billing.repository.MaatReferenceRepository;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.contribution.repository.ContributionsRepository;
 import gov.uk.courtdata.entity.UserEntity;
@@ -67,6 +67,7 @@ import gov.uk.courtdata.repository.WqCoreRepository;
 import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import gov.uk.courtdata.repository.XLATOffenceRepository;
 import gov.uk.courtdata.repository.XLATResultRepository;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -75,280 +76,287 @@ import org.springframework.stereotype.Component;
 @Component
 public class Repositories {
 
-  @Autowired
-  public AppealTypeRepository appealType;
+    @Autowired
+    public AppealTypeRepository appealType;
 
-  @Autowired
-  public ApplicantDisabilitiesRepository applicantDisabilities;
+    @Autowired
+    public ApplicantRepository applicantRepository;
 
-  @Autowired
-  public ApplicantHistoryRepository applicantHistory;
+    @Autowired
+    public ApplicantDisabilitiesRepository applicantDisabilities;
 
-  @Autowired
-  public CaseRepository caseRepository;
+    @Autowired
+    public ApplicantHistoryRepository applicantHistory;
 
-  @Autowired
-  public ChildWeightHistoryRepository childWeightHistory;
+    @Autowired
+    public CaseRepository caseRepository;
 
-  @Autowired
-  public ChildWeightingsRepository childWeightings;
+    @Autowired
+    public ChildWeightHistoryRepository childWeightHistory;
 
-  @Autowired
-  public ConcorContributionsRepository concorContributions;
+    @Autowired
+    public ChildWeightingsRepository childWeightings;
 
-  @Autowired
-  public ContribCalcParametersRepository contribCalcParameters;
+    @Autowired
+    public ConcorContributionsRepository concorContributions;
 
-  @Autowired
-  public ContributionFilesRepository contributionFiles;
+    @Autowired
+    public ContribCalcParametersRepository contribCalcParameters;
 
-  @Autowired
-  public ContributionFileErrorsRepository contributionFileErrors;
+    @Autowired
+    public ContributionFilesRepository contributionFiles;
 
-  @Autowired
-  public ContributionsRepository contributions;
+    @Autowired
+    public ContributionFileErrorsRepository contributionFileErrors;
 
-  @Autowired
-  public CorrespondenceRepository correspondence;
+    @Autowired
+    public ContributionsRepository contributions;
 
-  @Autowired
-  public CourtHouseCodesRepository courtHouseCodes;
+    @Autowired
+    public CorrespondenceRepository correspondence;
 
-  @Autowired
-  public CrownCourtCodeRepository crownCourtCode;
+    @Autowired
+    public CourtHouseCodesRepository courtHouseCodes;
 
-  @Autowired
-  public CrownCourtOutcomeRepository crownCourtOutcome;
+    @Autowired
+    public CrownCourtCodeRepository crownCourtCode;
 
-  @Autowired
-  public CrownCourtProcessingRepository crownCourtProcessing;
+    @Autowired
+    public CrownCourtOutcomeRepository crownCourtOutcome;
 
-  @Autowired
-  public DefendantMAATDataRepository defendantMAATData;
+    @Autowired
+    public CrownCourtProcessingRepository crownCourtProcessing;
 
-  @Autowired
-  public DefendantRepository defendant;
+    @Autowired
+    public DefendantMAATDataRepository defendantMAATData;
 
-  @Autowired
-  public FdcContributionsRepository fdcContributions;
+    @Autowired
+    public DefendantRepository defendant;
 
-  @Autowired
-  public FdcItemsRepository fdcItemsRepository;
+    @Autowired
+    public FdcContributionsRepository fdcContributions;
 
-  @Autowired
-  public FeatureToggleRepository featureToggleRepository;
+    @Autowired
+    public FdcItemsRepository fdcItemsRepository;
 
-  @Autowired
-  public FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistory;
+    @Autowired
+    public FeatureToggleRepository featureToggleRepository;
 
-  @Autowired
-  public FinancialAssessmentDetailsRepository financialAssessmentDetails;
+    @Autowired
+    public FinancialAssessmentDetailsHistoryRepository financialAssessmentDetailsHistory;
 
-  @Autowired
-  public FinancialAssessmentRepository financialAssessment;
+    @Autowired
+    public FinancialAssessmentDetailsRepository financialAssessmentDetails;
 
-  @Autowired
-  public FinancialAssessmentsHistoryRepository financialAssessmentsHistory;
+    @Autowired
+    public FinancialAssessmentRepository financialAssessment;
 
-  @Autowired
-  public HardshipReviewDetailRepository hardshipReviewDetail;
+    @Autowired
+    public FinancialAssessmentsHistoryRepository financialAssessmentsHistory;
 
-  @Autowired
-  public HardshipReviewProgressRepository hardshipReviewProgress;
+    @Autowired
+    public HardshipReviewDetailRepository hardshipReviewDetail;
 
-  @Autowired
-  public HardshipReviewRepository hardshipReview;
+    @Autowired
+    public HardshipReviewProgressRepository hardshipReviewProgress;
 
-  @Autowired
-  public IdentifierRepository identifier;
+    @Autowired
+    public HardshipReviewRepository hardshipReview;
 
-  @Autowired
-  public IOJAppealRepository iojAppeal;
+    @Autowired
+    public IdentifierRepository identifier;
 
-  @Autowired
-  public MockNewWorkReasonRepository mockNewWorkReason;
+    @Autowired
+    public IOJAppealRepository iojAppeal;
 
-  @Autowired
-  public OffenceRepository offence;
+    @Autowired
+    public MockNewWorkReasonRepository mockNewWorkReason;
 
-  @Autowired
-  public PassportAssessmentRepository passportAssessment;
+    @Autowired
+    public OffenceRepository offence;
 
-  @Autowired
-  public PleaRepository plea;
+    @Autowired
+    public PassportAssessmentRepository passportAssessment;
 
-  @Autowired
-  public ProceedingRepository proceeding;
+    @Autowired
+    public PleaRepository plea;
 
-  @Autowired
-  public QueueMessageLogRepository queueMessageLog;
+    @Autowired
+    public ProceedingRepository proceeding;
 
-  @Autowired
-  public RepOrderApplicantLinksRepository repOrderApplicantLinks;
+    @Autowired
+    public QueueMessageLogRepository queueMessageLog;
 
-  @Autowired
-  public RepOrderCapitalRepository repOrderCapital;
+    @Autowired
+    public RepOrderApplicantLinksRepository repOrderApplicantLinks;
 
-  @Autowired
-  public RepOrderCPDataRepository repOrderCPData;
+    @Autowired
+    public RepOrderCapitalRepository repOrderCapital;
 
-  @Autowired
-  public RepOrderMvoRegRepository repOrderMvoReg;
+    @Autowired
+    public RepOrderCPDataRepository repOrderCPData;
 
-  @Autowired
-  public RepOrderMvoRepository repOrderMvo;
+    @Autowired
+    public RepOrderMvoRegRepository repOrderMvoReg;
 
-  @Autowired
-  public RepOrderRepository repOrder;
+    @Autowired
+    public RepOrderMvoRepository repOrderMvo;
 
-  @Autowired
-  public ReservationsRepository reservations;
+    @Autowired
+    public RepOrderRepository repOrder;
 
-  @Autowired
-  public ResultRepository result;
-
-  @Autowired
-  public RoleActionsRepository roleActions;
-
-  @Autowired
-  public RoleDataItemsRepository roleDataItems;
-
-  @Autowired
-  public RoleWorkReasonsRepository roleWorkReasons;
-
-  @Autowired
-  public SessionRepository session;
-
-  @Autowired
-  public SolicitorMAATDataRepository solicitorMAATData;
-
-  @Autowired
-  public SolicitorRepository solicitor;
-
-  @Autowired
-  public UnlinkReasonRepository unlinkReason;
-
-  @Autowired
-  public UserRepository user;
-
-  @Autowired
-  public UserRolesRepository userRoles;
-
-  @Autowired
-  public VerdictRepository verdict;
-
-  @Autowired
-  public WQCaseRepository wqCase;
-
-  @Autowired
-  public WqCoreRepository wqCore;
-
-  @Autowired
-  public WQDefendantRepository wqDefendant;
-
-  @Autowired
-  public WQHearingRepository wqHearing;
-
-  @Autowired
-  public WqLinkRegisterRepository wqLinkRegister;
-
-  @Autowired
-  public WQOffenceRepository wqOffence;
-
-  @Autowired
-  public WQResultRepository wqResult;
-
-  @Autowired
-  public WQSessionRepository wqSession;
-
-  @Autowired
-  public XLATOffenceRepository xlatOffence;
-
-  @Autowired
-  public XLATResultRepository xlatResult;
-  
-  @Autowired
-  public MaatReferenceRepository maatReference;
-  
-  @Autowired
-  private RepositoryUtil repositoryUtil;
-
-
-  @NotNull
-  private JpaRepository[] allRepositories() {
-    return new JpaRepository[]{appealType,
-        applicantDisabilities,
-        applicantHistory,
-        caseRepository,
-        childWeightHistory,
-        childWeightings,
-        concorContributions,
-        contribCalcParameters,
-        contributionFiles,
-        contributionFileErrors,
-        contributions,
-        correspondence,
-        courtHouseCodes,
-        crownCourtCode,
-        crownCourtOutcome,
-        crownCourtProcessing,
-        defendantMAATData,
-        defendant,
-        fdcContributions,
-        featureToggleRepository,
-        financialAssessmentDetailsHistory,
-        financialAssessmentDetails,
-        financialAssessment,
-        financialAssessmentsHistory,
-        hardshipReviewDetail,
-        hardshipReviewProgress,
-        hardshipReview,
-        identifier,
-        iojAppeal,
-        mockNewWorkReason,
-        offence,
-        passportAssessment,
-        plea,
-        proceeding,
-        queueMessageLog,
-        repOrderApplicantLinks,
-        repOrderCapital,
-        repOrderCPData,
-        repOrderMvoReg,
-        repOrderMvo,
-        repOrder,
-        reservations,
-        result,
-        roleActions,
-        roleDataItems,
-        roleWorkReasons,
-        session,
-        solicitorMAATData,
-        solicitor,
-        unlinkReason,
-        user,
-        userRoles,
-        verdict,
-        wqCase,
-        wqCore,
-        wqDefendant,
-        wqHearing,
-        wqLinkRegister,
-        wqOffence,
-        wqResult,
-        wqSession,
-        xlatOffence,
-        fdcItemsRepository,
-        xlatResult,
-        maatReference};
-  }
-
-  public void insertCommonTestData() {
-    user.save(UserEntity.builder().username(TestEntityDataBuilder.TEST_USER).build());
-    user.save(UserEntity.builder().username(TestEntityDataBuilder.USER_CREATED_TEST_S).build());
-  }
-
-  public void clearAll() {
-    repositoryUtil.clearUp(allRepositories());
-  }
+    @Autowired
+    public ReservationsRepository reservations;
+
+    @Autowired
+    public ResultRepository result;
+
+    @Autowired
+    public RoleActionsRepository roleActions;
+
+    @Autowired
+    public RoleDataItemsRepository roleDataItems;
+
+    @Autowired
+    public RoleWorkReasonsRepository roleWorkReasons;
+
+    @Autowired
+    public SessionRepository session;
+
+    @Autowired
+    public SolicitorMAATDataRepository solicitorMAATData;
+
+    @Autowired
+    public SolicitorRepository solicitor;
+
+    @Autowired
+    public UnlinkReasonRepository unlinkReason;
+
+    @Autowired
+    public UserRepository user;
+
+    @Autowired
+    public UserRolesRepository userRoles;
+
+    @Autowired
+    public VerdictRepository verdict;
+
+    @Autowired
+    public WQCaseRepository wqCase;
+
+    @Autowired
+    public WqCoreRepository wqCore;
+
+    @Autowired
+    public WQDefendantRepository wqDefendant;
+
+    @Autowired
+    public WQHearingRepository wqHearing;
+
+    @Autowired
+    public WqLinkRegisterRepository wqLinkRegister;
+
+    @Autowired
+    public WQOffenceRepository wqOffence;
+
+    @Autowired
+    public WQResultRepository wqResult;
+
+    @Autowired
+    public WQSessionRepository wqSession;
+
+    @Autowired
+    public XLATOffenceRepository xlatOffence;
+
+    @Autowired
+    public XLATResultRepository xlatResult;
+
+    @Autowired
+    private RepositoryUtil repositoryUtil;
+
+    @Autowired
+    private WqLinkRegisterRepository wqLinkRegisterRepository;
+
+    @NotNull
+    private JpaRepository[] allRepositories() {
+        return new JpaRepository[] {
+            appealType,
+            applicantRepository,
+            applicantDisabilities,
+            applicantHistory,
+            caseRepository,
+            childWeightHistory,
+            childWeightings,
+            concorContributions,
+            contribCalcParameters,
+            contributionFiles,
+            contributionFileErrors,
+            contributions,
+            correspondence,
+            courtHouseCodes,
+            crownCourtCode,
+            crownCourtOutcome,
+            crownCourtProcessing,
+            defendantMAATData,
+            defendant,
+            fdcContributions,
+            featureToggleRepository,
+            financialAssessmentDetailsHistory,
+            financialAssessmentDetails,
+            financialAssessment,
+            financialAssessmentsHistory,
+            hardshipReviewDetail,
+            hardshipReviewProgress,
+            hardshipReview,
+            identifier,
+            iojAppeal,
+            mockNewWorkReason,
+            offence,
+            passportAssessment,
+            plea,
+            proceeding,
+            queueMessageLog,
+            repOrderApplicantLinks,
+            repOrderCapital,
+            repOrderCPData,
+            repOrderMvoReg,
+            repOrderMvo,
+            repOrder,
+            reservations,
+            result,
+            roleActions,
+            roleDataItems,
+            roleWorkReasons,
+            session,
+            solicitorMAATData,
+            solicitor,
+            unlinkReason,
+            user,
+            userRoles,
+            verdict,
+            wqCase,
+            wqCore,
+            wqDefendant,
+            wqHearing,
+            wqLinkRegister,
+            wqOffence,
+            wqResult,
+            wqSession,
+            xlatOffence,
+            fdcItemsRepository,
+            xlatResult,
+            wqLinkRegisterRepository
+        };
+    }
+
+    public void insertCommonTestData() {
+        user.save(UserEntity.builder().username(TestEntityDataBuilder.TEST_USER).build());
+        user.save(UserEntity.builder()
+                .username(TestEntityDataBuilder.USER_CREATED_TEST_S)
+                .build());
+    }
+
+    public void clearAll() {
+        repositoryUtil.clearUp(allRepositories());
+    }
 }

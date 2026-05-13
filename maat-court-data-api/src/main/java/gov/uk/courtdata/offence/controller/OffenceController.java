@@ -8,9 +8,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,21 +31,21 @@ public class OffenceController {
 
     @GetMapping(value = "/case/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve list of offence record")
-    @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-    )
-    @ApiResponse(responseCode = "400",
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(
+            responseCode = "400",
             description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "500",
             description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<List<OffenceDTO>> findOffenceByCaseId(@PathVariable int caseId) {
         log.info("Find offence by case id Request Received");
         return ResponseEntity.ok(offenceService.findByCaseId(caseId));
@@ -51,23 +53,22 @@ public class OffenceController {
 
     @GetMapping(value = "/{offenceId}/case/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve new offence count")
-    @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-    )
-    @ApiResponse(responseCode = "400",
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(
+            responseCode = "400",
             description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(
+            responseCode = "500",
             description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    public ResponseEntity<Object> getNewOffenceCount(@PathVariable String offenceId,
-            @PathVariable int caseId) {
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<Object> getNewOffenceCount(@PathVariable String offenceId, @PathVariable int caseId) {
         log.info("Get new offence count");
         return ResponseEntity.ok(offenceService.getNewOffenceCount(caseId, offenceId));
     }

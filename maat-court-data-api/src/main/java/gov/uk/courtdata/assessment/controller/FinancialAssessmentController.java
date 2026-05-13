@@ -5,9 +5,9 @@ import gov.uk.courtdata.annotation.StandardApiResponse;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentHistoryService;
 import gov.uk.courtdata.assessment.service.FinancialAssessmentService;
 import gov.uk.courtdata.assessment.validator.FinancialAssessmentValidationProcessor;
+import gov.uk.courtdata.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.dto.AssessorDetails;
 import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
-import gov.uk.courtdata.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
@@ -17,9 +17,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,8 +58,14 @@ public class FinancialAssessmentController {
     @Operation(description = "Update a financial assessment record")
     @StandardApiResponseCodes
     public ResponseEntity<Object> updateAssessment(
-            @Parameter(description = "Financial assessment data", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = UpdateFinancialAssessment.class))) @RequestBody UpdateFinancialAssessment financialAssessment) {
+            @Parameter(
+                            description = "Financial assessment data",
+                            content =
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = UpdateFinancialAssessment.class)))
+                    @RequestBody
+                    UpdateFinancialAssessment financialAssessment) {
         log.info("Update Financial Assessment Request Received");
         financialAssessmentValidationProcessor.validate(financialAssessment);
         return ResponseEntity.ok(financialAssessmentService.update(financialAssessment));
@@ -75,8 +83,15 @@ public class FinancialAssessmentController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create a new financial assessment record")
     @StandardApiResponseCodes
-    public ResponseEntity<Object> createAssessment(@Parameter(description = "Financial assessment data", content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = CreateFinancialAssessment.class))) @RequestBody CreateFinancialAssessment financialAssessment) {
+    public ResponseEntity<Object> createAssessment(
+            @Parameter(
+                            description = "Financial assessment data",
+                            content =
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = CreateFinancialAssessment.class)))
+                    @RequestBody
+                    CreateFinancialAssessment financialAssessment) {
         LoggingData.USN.putInMDC(financialAssessment.getUsn());
         log.info("Create Financial Assessment Request Received");
         financialAssessmentValidationProcessor.validate(financialAssessment);
@@ -85,7 +100,12 @@ public class FinancialAssessmentController {
 
     @GetMapping(value = "/check-outstanding/{repId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Check if there are outstanding assessments for a given repId")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = OutstandingAssessmentResultDTO.class)))
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = OutstandingAssessmentResultDTO.class)))
     @StandardApiResponse
     public ResponseEntity<OutstandingAssessmentResultDTO> checkForOutstandingAssessments(@PathVariable Integer repId) {
         LoggingData.MAAT_ID.putInMDC(repId);
@@ -94,10 +114,13 @@ public class FinancialAssessmentController {
         return ResponseEntity.ok(resultDTO);
     }
 
-    @PostMapping(value = "/history/{financialAssessmentId}/fullAvailable/{fullAvailable}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(
+            value = "/history/{financialAssessmentId}/fullAvailable/{fullAvailable}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create financial assessment, details and child weight history record")
     @StandardApiResponseCodes
-    public ResponseEntity<Object> createAssessmentHistory(@PathVariable int financialAssessmentId, @PathVariable boolean fullAvailable) {
+    public ResponseEntity<Object> createAssessmentHistory(
+            @PathVariable int financialAssessmentId, @PathVariable boolean fullAvailable) {
         log.info("Create Assessment History Request Received");
         financialAssessmentHistoryService.createAssessmentHistory(financialAssessmentId, fullAvailable);
         return ResponseEntity.ok().build();
@@ -109,15 +132,16 @@ public class FinancialAssessmentController {
     @StandardApiResponse
     @NotFoundApiResponse
     public ResponseEntity<AssessorDetails> findMeansAssessorDetails(@PathVariable int financialAssessmentId) {
-        AssessorDetails meansAssessorDetails = financialAssessmentService.findMeansAssessorDetails(financialAssessmentId);
+        AssessorDetails meansAssessorDetails =
+                financialAssessmentService.findMeansAssessorDetails(financialAssessmentId);
         return ResponseEntity.ok(meansAssessorDetails);
     }
 
     @PatchMapping("/rollback/{financialAssessmentId}")
     @Operation(description = "Update financial assessments Status and Results")
     @StandardApiResponseCodes
-    public ResponseEntity<Void> rollbackAssessment(@PathVariable int financialAssessmentId,
-                                                   @RequestBody Map<String, Object> updateFields) {
+    public ResponseEntity<Void> rollbackAssessment(
+            @PathVariable int financialAssessmentId, @RequestBody Map<String, Object> updateFields) {
         log.info("Rollback Financial Assessment with Id: {}", financialAssessmentId);
         financialAssessmentService.patchFinancialAssessment(financialAssessmentId, updateFields);
         return ResponseEntity.ok().build();

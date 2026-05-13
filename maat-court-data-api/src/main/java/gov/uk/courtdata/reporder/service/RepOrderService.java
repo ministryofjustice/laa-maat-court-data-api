@@ -1,24 +1,32 @@
 package gov.uk.courtdata.reporder.service;
 
 import gov.uk.courtdata.dto.AssessorDetails;
-import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
+import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.helper.ReflectionHelper;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.model.reporder.MaatSearchRequest;
+import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
 import gov.uk.courtdata.reporder.mapper.RepOrderMapper;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +38,8 @@ public class RepOrderService {
     private final RepOrderImpl repOrderImpl;
     private final RepOrderMapper repOrderMapper;
     private final RepOrderRepository repOrderRepository;
+    private final WqLinkRegisterRepository linkRegisterRepository;
+    private final RepOrderCPDataRepository repOrderCPDataRepository;
 
     public RepOrderEntity findByRepId(Integer repId) {
         RepOrderEntity repOrder;
@@ -58,8 +68,8 @@ public class RepOrderService {
     @Transactional
     public RepOrderDTO updateDateCompleted(final UpdateAppDateCompleted updateAppDateCompleted) {
         log.info("update app date completed - Transaction Processing - Start");
-        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderImpl
-                .updateAppDateCompleted(updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted()));
+        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderImpl.updateAppDateCompleted(
+                updateAppDateCompleted.getRepId(), updateAppDateCompleted.getAssessmentDateCompleted()));
     }
 
     @Transactional
@@ -81,23 +91,24 @@ public class RepOrderService {
     }
 
     @Transactional
-    public void update(Integer repId, Map<String, Object> repOrder) {
+    public RepOrderDTO update(Integer repId, Map<String, Object> repOrder) {
         log.info("RepOrderService::update - Start");
-        RepOrderEntity currentRepOrder = repOrderRepository.findById(repId)
-            .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("Rep Order not found for id %d", repId)));
+        RepOrderEntity currentRepOrder = repOrderRepository
+                .findById(repId)
+                .orElseThrow(() ->
+                        new RequestedObjectNotFoundException(String.format("Rep Order not found for id %d", repId)));
 
         ReflectionHelper.updateEntityFromMap(currentRepOrder, repOrder);
-        repOrderRepository.save(currentRepOrder);
+        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderRepository.save(currentRepOrder));
     }
 
-    @Transactional
-    public boolean exists(Integer repId, boolean hasSentenceOrderDate) {
-        if (!hasSentenceOrderDate) {
-            log.info("Retrieve rep Order count for repId: {}", repId);
-            return repOrderImpl.countById(repId) > 0;
+    @Transactional(readOnly = true)
+    public boolean exists(Integer repId) {
+        if (repId == null) {
+            return false;
         }
-        log.info("Retrieve rep Order Count for repId: {} With Sentence Order Date", repId);
-        return repOrderImpl.countWithSentenceOrderDate(repId) > 0;
+        log.info("Retrieve rep Order count for repId: {}", repId);
+        return repOrderImpl.exists(repId);
     }
 
     @Transactional
@@ -117,11 +128,11 @@ public class RepOrderService {
         return repOrderMapper.createIOJAssessorDetails(repOrderOptional.get());
     }
 
-    public Set<Integer> findEligibleForFdcDelayedPickup(int delayPeriod, LocalDate dateReceived, int numRecords){
+    public Set<Integer> findEligibleForFdcDelayedPickup(int delayPeriod, LocalDate dateReceived, int numRecords) {
         return repOrderImpl.findEligibleForFdcDelayedPickup(delayPeriod, dateReceived, numRecords);
     }
 
-    public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords){
+    public Set<Integer> findEligibleForFdcFastTracking(int delayPeriod, LocalDate dateReceived, int numRecords) {
         return repOrderImpl.findEligibleForFdcFastTracking(delayPeriod, dateReceived, numRecords);
     }
 
@@ -138,5 +149,27 @@ public class RepOrderService {
     public RepOrderStateDTO findRepOrderStateByRepId(Integer repId) {
         RepOrderEntity repOrderEntity = repOrderImpl.find(repId);
         return repOrderMapper.mapRepOrderState(repOrderEntity);
+    }
+
+    public List<MaatSearchResponse> searchMaatApplication(MaatSearchRequest request) {
+
+        Set<Integer> repIdSet = repOrderRepository.findRepId(request);
+
+        if (repIdSet == null || repIdSet.isEmpty()) {
+            throw new RequestedObjectNotFoundException("Representation order not found");
+        }
+
+        return repIdSet.stream()
+                .map(repId -> {
+                    List<WqLinkRegisterEntity> linkRegisterList = linkRegisterRepository.findBymaatId(repId);
+                    String caseUrn = getCaseUrn(repId);
+                    return repOrderMapper.mapMaatSearchResponse(repId, linkRegisterList, caseUrn);
+                })
+                .toList();
+    }
+
+    private String getCaseUrn(Integer repId) {
+        Optional<RepOrderCPDataEntity> repOrder = repOrderCPDataRepository.findByrepOrderId(repId);
+        return repOrder.map(RepOrderCPDataEntity::getCaseUrn).orElse(null);
     }
 }

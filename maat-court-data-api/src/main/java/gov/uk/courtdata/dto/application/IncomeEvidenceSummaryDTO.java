@@ -26,11 +26,13 @@ public class IncomeEvidenceSummaryDTO extends GenericDTO {
 
     @Builder.Default
     private Boolean enabled = false;
+
     @Builder.Default
     private Collection<ExtraEvidenceDTO> extraEvidenceList = new ArrayList<>();
+
     @Builder.Default
     private Collection<EvidenceDTO> applicantIncomeEvidenceList = new ArrayList<>();
+
     @Builder.Default
     private Collection<EvidenceDTO> partnerIncomeEvidenceList = new ArrayList<>();
 }
-

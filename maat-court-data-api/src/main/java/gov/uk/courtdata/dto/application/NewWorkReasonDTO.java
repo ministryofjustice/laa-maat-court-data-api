@@ -14,5 +14,4 @@ public class NewWorkReasonDTO extends GenericDTO {
     private String code;
     private String description;
     private String type;
-
 }

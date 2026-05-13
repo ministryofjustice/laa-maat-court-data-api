@@ -17,5 +17,4 @@ public class DrcFileRefDTO extends GenericDTO {
     private Date dateSent;
     private Date dateAcknowledged;
     private String acknowledgeCode;
-
 }

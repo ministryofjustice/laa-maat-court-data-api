@@ -7,6 +7,7 @@ import gov.uk.courtdata.reporder.mapper.RepOrderMvoMapper;
 import gov.uk.courtdata.reporder.projection.RepOrderMvoEntityInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +22,11 @@ public class RepOrderMvoService {
 
     @Transactional(readOnly = true)
     public RepOrderMvoDTO findRepOrderMvoByRepIdAndVehicleOwner(Integer repId, String vehicleOwner) {
-        RepOrderMvoEntityInfo repOrderMvoEntityInfo = repOrderMvoImpl.findRepOrderMvoByRepIdAndVehicleOwner(repId, vehicleOwner);
+        RepOrderMvoEntityInfo repOrderMvoEntityInfo =
+                repOrderMvoImpl.findRepOrderMvoByRepIdAndVehicleOwner(repId, vehicleOwner);
         if (repOrderMvoEntityInfo == null) {
             throw new RequestedObjectNotFoundException(String.format("No Rep Order MVO found for ID: %s", repId));
         }
         return repOrderMvoMapper.repOrderMvoEntityInfoToRepOrderMvoDTO(repOrderMvoEntityInfo);
     }
-
 }

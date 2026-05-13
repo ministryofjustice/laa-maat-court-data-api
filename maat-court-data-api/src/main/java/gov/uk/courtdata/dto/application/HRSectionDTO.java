@@ -18,5 +18,4 @@ public class HRSectionDTO extends GenericDTO {
     private Currency applicantAnnualTotal;
     private Currency partnerAnnualTotal;
     private Currency annualTotal;
-
 }

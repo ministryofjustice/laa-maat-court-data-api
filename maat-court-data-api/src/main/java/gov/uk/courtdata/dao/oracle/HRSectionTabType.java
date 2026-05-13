@@ -2,99 +2,87 @@ package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
 import oracle.jpub.runtime.MutableArray;
-import oracle.sql.*;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class HRSectionTabType implements ORAData, ORADataFactory
-{
-  public static final String _SQL_NAME = "TOGDATA.HR_SECTION_TABTYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
+public class HRSectionTabType implements ORAData, ORADataFactory {
+    public static final String _SQL_NAME = "TOGDATA.HR_SECTION_TABTYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
 
-  MutableArray _array;
+    MutableArray _array;
 
-private static final HRSectionTabType _HRSectionTabTypeFactory = new HRSectionTabType();
+    private static final HRSectionTabType _HRSectionTabTypeFactory = new HRSectionTabType();
 
-  public static ORADataFactory getORADataFactory()
-  { return _HRSectionTabTypeFactory; }
-  /* constructors */
-  public HRSectionTabType()
-  {
-    this((HrSectionType[])null);
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _HRSectionTabTypeFactory;
+    }
 
-  public HRSectionTabType(HrSectionType[] a)
-  {
-    _array = new MutableArray(2002, a, HrSectionType.getORADataFactory());
-  }
+    /* constructors */
+    public HRSectionTabType() {
+        this((HrSectionType[]) null);
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _array.toDatum(c, _SQL_NAME);
-  }
+    public HRSectionTabType(HrSectionType[] a) {
+        _array = new MutableArray(2002, a, HrSectionType.getORADataFactory());
+    }
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    HRSectionTabType a = new HRSectionTabType();
-    a._array = new MutableArray(2002, (ARRAY) d, HrSectionType.getORADataFactory());
-    return a;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _array.toDatum(c, _SQL_NAME);
+    }
 
-  public int length() throws SQLException
-  {
-    return _array.length();
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        HRSectionTabType a = new HRSectionTabType();
+        a._array = new MutableArray(2002, (ARRAY) d, HrSectionType.getORADataFactory());
+        return a;
+    }
 
-  public int getBaseType() throws SQLException
-  {
-    return _array.getBaseType();
-  }
+    public int length() throws SQLException {
+        return _array.length();
+    }
 
-  public String getBaseTypeName() throws SQLException
-  {
-    return _array.getBaseTypeName();
-  }
+    public int getBaseType() throws SQLException {
+        return _array.getBaseType();
+    }
 
-  public ArrayDescriptor getDescriptor() throws SQLException
-  {
-    return _array.getDescriptor();
-  }
+    public String getBaseTypeName() throws SQLException {
+        return _array.getBaseTypeName();
+    }
 
-  /* array accessor methods */
-  public HrSectionType[] getArray() throws SQLException
-  {
-    return (HrSectionType[]) _array.getObjectArray(
-      new HrSectionType[_array.length()]);
-  }
+    public ArrayDescriptor getDescriptor() throws SQLException {
+        return _array.getDescriptor();
+    }
 
-  public HrSectionType[] getArray(long index, int count) throws SQLException
-  {
-    return (HrSectionType[]) _array.getObjectArray(index,
-      new HrSectionType[_array.sliceLength(index, count)]);
-  }
+    /* array accessor methods */
+    public HrSectionType[] getArray() throws SQLException {
+        return (HrSectionType[]) _array.getObjectArray(new HrSectionType[_array.length()]);
+    }
 
-  public void setArray(HrSectionType[] a) throws SQLException
-  {
-    _array.setObjectArray(a);
-  }
+    public HrSectionType[] getArray(long index, int count) throws SQLException {
+        return (HrSectionType[]) _array.getObjectArray(index, new HrSectionType[_array.sliceLength(index, count)]);
+    }
 
-  public void setArray(HrSectionType[] a, long index) throws SQLException
-  {
-    _array.setObjectArray(a, index);
-  }
+    public void setArray(HrSectionType[] a) throws SQLException {
+        _array.setObjectArray(a);
+    }
 
-  public HrSectionType getElement(long index) throws SQLException
-  {
-    return (HrSectionType) _array.getObjectElement(index);
-  }
+    public void setArray(HrSectionType[] a, long index) throws SQLException {
+        _array.setObjectArray(a, index);
+    }
 
-  public void setElement(HrSectionType a, long index) throws SQLException
-  {
-    _array.setObjectElement(a, index);
-  }
+    public HrSectionType getElement(long index) throws SQLException {
+        return (HrSectionType) _array.getObjectElement(index);
+    }
 
+    public void setElement(HrSectionType a, long index) throws SQLException {
+        _array.setObjectElement(a, index);
+    }
 }

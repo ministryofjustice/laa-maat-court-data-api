@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AssessorDetails {
 
-        private String fullName;
-        private String userName;
+    private String fullName;
+    private String userName;
 }

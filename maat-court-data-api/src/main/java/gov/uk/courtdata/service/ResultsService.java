@@ -7,11 +7,12 @@ import gov.uk.courtdata.repository.WQResultRepository;
 import gov.uk.courtdata.repository.XLATResultRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -26,7 +27,8 @@ public class ResultsService {
     public List<Integer> findWQResultCodesByCaseIdAndAsnSeq(Integer caseId, String asnSeq) {
         List<Integer> resultCodes = wqResultRepository.findResultCodeByCaseIdAndAsnSeq(caseId, asnSeq);
         if (resultCodes == null) {
-            throw new RequestedObjectNotFoundException(String.format("No WQ Result Codes found for CaseId: %d and Asn Seq: %s", caseId, asnSeq));
+            throw new RequestedObjectNotFoundException(
+                    String.format("No WQ Result Codes found for CaseId: %d and Asn Seq: %s", caseId, asnSeq));
         }
         return resultCodes;
     }
@@ -35,7 +37,8 @@ public class ResultsService {
     public List<Integer> findResultCodesByCaseIdAndAsnSeq(Integer caseId, String asnSeq) {
         List<Integer> resultCodes = resultRepository.findResultCodeByCaseIdAndAsnSeq(caseId, asnSeq);
         if (resultCodes == null) {
-            throw new RequestedObjectNotFoundException(String.format("No Result Codes found for CaseId: %d and Asn Seq: %s", caseId, asnSeq));
+            throw new RequestedObjectNotFoundException(
+                    String.format("No Result Codes found for CaseId: %d and Asn Seq: %s", caseId, asnSeq));
         }
         return resultCodes;
     }
@@ -46,10 +49,7 @@ public class ResultsService {
         if (resultCodes == null) {
             throw new RequestedObjectNotFoundException("No XLAT Result Codes found for CC Imprisonment");
         }
-        return resultCodes
-                .stream()
-                .map(XLATResultEntity::getCjsResultCode)
-                .collect(Collectors.toList());
+        return resultCodes.stream().map(XLATResultEntity::getCjsResultCode).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -58,17 +58,15 @@ public class ResultsService {
         if (resultCodes == null) {
             throw new RequestedObjectNotFoundException("No XLAT Result Codes found for CC Bench Warrant");
         }
-        return resultCodes
-                .stream()
-                .map(XLATResultEntity::getCjsResultCode)
-                .collect(Collectors.toList());
+        return resultCodes.stream().map(XLATResultEntity::getCjsResultCode).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<Integer> findXLATResultCodesByWQTypeAndSubTypeCode(Integer wqType, Integer subType) {
         List<Integer> resultCodes = xlatResultRepository.findResultsByWQType(wqType, subType);
         if (resultCodes == null) {
-            throw new RequestedObjectNotFoundException(String.format("No XLAT Result Codes found for WQType: %d and SubType: %d", wqType, subType));
+            throw new RequestedObjectNotFoundException(
+                    String.format("No XLAT Result Codes found for WQType: %d and SubType: %d", wqType, subType));
         }
         return resultCodes;
     }

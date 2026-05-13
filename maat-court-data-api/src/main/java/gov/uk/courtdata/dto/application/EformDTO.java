@@ -11,14 +11,12 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class EformDTO extends GenericDTO {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7973253236109193131L;
-	
-	private Long maatRef;
-	private Long usn;
-	private String xmlDoc;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -7973253236109193131L;
 
-
+    private Long maatRef;
+    private Long usn;
+    private String xmlDoc;
 }

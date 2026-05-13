@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class RoleTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.ROLETYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class RoleTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.ROLETYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final RoleTypeRef _RoleTypeRefFactory = new RoleTypeRef();
+    private static final RoleTypeRef _RoleTypeRefFactory = new RoleTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _RoleTypeRefFactory; }
-  /* constructor */
-  public RoleTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _RoleTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public RoleTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    RoleTypeRef r = new RoleTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static RoleTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (RoleTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to RoleTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        RoleTypeRef r = new RoleTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public RoleType getValue() throws SQLException
-  {
-     return (RoleType) RoleType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static RoleTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (RoleTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to RoleTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(RoleType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public RoleType getValue() throws SQLException {
+        return (RoleType) RoleType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(RoleType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

@@ -2,99 +2,88 @@ package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
 import oracle.jpub.runtime.MutableArray;
-import oracle.sql.*;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class AssessmentDetailTabType implements ORAData, ORADataFactory
-{
-  public static final String _SQL_NAME = "TOGDATA.ASSESSMENT_DETAIL_TABTYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
+public class AssessmentDetailTabType implements ORAData, ORADataFactory {
+    public static final String _SQL_NAME = "TOGDATA.ASSESSMENT_DETAIL_TABTYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
 
-  MutableArray _array;
+    MutableArray _array;
 
-private static final AssessmentDetailTabType _AssessmentDetailTabTypeFactory = new AssessmentDetailTabType();
+    private static final AssessmentDetailTabType _AssessmentDetailTabTypeFactory = new AssessmentDetailTabType();
 
-  public static ORADataFactory getORADataFactory()
-  { return _AssessmentDetailTabTypeFactory; }
-  /* constructors */
-  public AssessmentDetailTabType()
-  {
-    this((AssessmentDetailType[])null);
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _AssessmentDetailTabTypeFactory;
+    }
 
-  public AssessmentDetailTabType(AssessmentDetailType[] a)
-  {
-    _array = new MutableArray(2002, a, AssessmentDetailType.getORADataFactory());
-  }
+    /* constructors */
+    public AssessmentDetailTabType() {
+        this((AssessmentDetailType[]) null);
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _array.toDatum(c, _SQL_NAME);
-  }
+    public AssessmentDetailTabType(AssessmentDetailType[] a) {
+        _array = new MutableArray(2002, a, AssessmentDetailType.getORADataFactory());
+    }
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    AssessmentDetailTabType a = new AssessmentDetailTabType();
-    a._array = new MutableArray(2002, (ARRAY) d, AssessmentDetailType.getORADataFactory());
-    return a;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _array.toDatum(c, _SQL_NAME);
+    }
 
-  public int length() throws SQLException
-  {
-    return _array.length();
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        AssessmentDetailTabType a = new AssessmentDetailTabType();
+        a._array = new MutableArray(2002, (ARRAY) d, AssessmentDetailType.getORADataFactory());
+        return a;
+    }
 
-  public int getBaseType() throws SQLException
-  {
-    return _array.getBaseType();
-  }
+    public int length() throws SQLException {
+        return _array.length();
+    }
 
-  public String getBaseTypeName() throws SQLException
-  {
-    return _array.getBaseTypeName();
-  }
+    public int getBaseType() throws SQLException {
+        return _array.getBaseType();
+    }
 
-  public ArrayDescriptor getDescriptor() throws SQLException
-  {
-    return _array.getDescriptor();
-  }
+    public String getBaseTypeName() throws SQLException {
+        return _array.getBaseTypeName();
+    }
 
-  /* array accessor methods */
-  public AssessmentDetailType[] getArray() throws SQLException
-  {
-    return (AssessmentDetailType[]) _array.getObjectArray(
-      new AssessmentDetailType[_array.length()]);
-  }
+    public ArrayDescriptor getDescriptor() throws SQLException {
+        return _array.getDescriptor();
+    }
 
-  public AssessmentDetailType[] getArray(long index, int count) throws SQLException
-  {
-    return (AssessmentDetailType[]) _array.getObjectArray(index,
-      new AssessmentDetailType[_array.sliceLength(index, count)]);
-  }
+    /* array accessor methods */
+    public AssessmentDetailType[] getArray() throws SQLException {
+        return (AssessmentDetailType[]) _array.getObjectArray(new AssessmentDetailType[_array.length()]);
+    }
 
-  public void setArray(AssessmentDetailType[] a) throws SQLException
-  {
-    _array.setObjectArray(a);
-  }
+    public AssessmentDetailType[] getArray(long index, int count) throws SQLException {
+        return (AssessmentDetailType[])
+                _array.getObjectArray(index, new AssessmentDetailType[_array.sliceLength(index, count)]);
+    }
 
-  public void setArray(AssessmentDetailType[] a, long index) throws SQLException
-  {
-    _array.setObjectArray(a, index);
-  }
+    public void setArray(AssessmentDetailType[] a) throws SQLException {
+        _array.setObjectArray(a);
+    }
 
-  public AssessmentDetailType getElement(long index) throws SQLException
-  {
-    return (AssessmentDetailType) _array.getObjectElement(index);
-  }
+    public void setArray(AssessmentDetailType[] a, long index) throws SQLException {
+        _array.setObjectArray(a, index);
+    }
 
-  public void setElement(AssessmentDetailType a, long index) throws SQLException
-  {
-    _array.setObjectElement(a, index);
-  }
+    public AssessmentDetailType getElement(long index) throws SQLException {
+        return (AssessmentDetailType) _array.getObjectElement(index);
+    }
 
+    public void setElement(AssessmentDetailType a, long index) throws SQLException {
+        _array.setObjectElement(a, index);
+    }
 }

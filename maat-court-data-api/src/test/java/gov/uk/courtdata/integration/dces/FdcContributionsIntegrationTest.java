@@ -1,6 +1,10 @@
 package gov.uk.courtdata.integration.dces;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
@@ -12,6 +16,12 @@ import gov.uk.courtdata.entity.FdcContributionsEntity;
 import gov.uk.courtdata.entity.FdcItemsEntity;
 import gov.uk.courtdata.enums.FdcContributionsStatus;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -22,25 +32,18 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
-    private static final String FDC_CONTRIBUTION_FILES_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/fdc-contribution-files";
-    private static final String FDC_CONTRIBUTION_FIND_BY_ID_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/fdc-contributions";
-    private static final String GLOBAL_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/prepare-fdc-contributions-files";
-    private static final String ATOMIC_UPDATE_ENDPOINT_URL = "/api/internal/v1/debt-collection-enforcement/create-fdc-file";
+    private static final String FDC_CONTRIBUTION_FILES_ENDPOINT_URL =
+            "/api/internal/v1/debt-collection-enforcement/fdc-contribution-files";
+    private static final String FDC_CONTRIBUTION_FIND_BY_ID_ENDPOINT_URL =
+            "/api/internal/v1/debt-collection-enforcement/fdc-contributions";
+    private static final String GLOBAL_UPDATE_ENDPOINT_URL =
+            "/api/internal/v1/debt-collection-enforcement/prepare-fdc-contributions-files";
+    private static final String ATOMIC_UPDATE_ENDPOINT_URL =
+            "/api/internal/v1/debt-collection-enforcement/create-fdc-file";
     private static final String DRC_UPDATE_URL = "/api/internal/v1/debt-collection-enforcement/log-fdc-response";
     private static final String FDC_ITEMS_URL = "/api/internal/v1/debt-collection-enforcement/fdc-items";
 
@@ -65,27 +68,27 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     DebtCollectionRepository debtCollectionRepositorySpy;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         int file1Id = saveContributionFile(FILE_ONE, false);
         file2Id = saveContributionFile(FILE_TWO, true);
 
         expectedId1 = saveFdcContribution(EXPECTED_STATUS_1, EXPECTED_FINAL_COST_1, file1Id);
-        repos.fdcItemsRepository.save(FdcItemsEntity.builder().fdcId(expectedId1).build());
+        repos.fdcItemsRepository.save(
+                FdcItemsEntity.builder().fdcId(expectedId1).build());
 
         expectedId2 = saveFdcContribution(EXPECTED_STATUS_2, EXPECTED_FINAL_COST_2, 99999999);
         expectedId3 = saveFdcContribution(EXPECTED_STATUS_3, EXPECTED_FINAL_COST_3, null);
         expectedId4 = saveFdcContribution(EXPECTED_STATUS_4, EXPECTED_FINAL_COST_4, file2Id);
-
     }
 
-    private int saveFdcContribution(FdcContributionsStatus status, String finalCost, Integer fileId){
+    private int saveFdcContribution(FdcContributionsStatus status, String finalCost, Integer fileId) {
         var repOrderEntity = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
         var fdcEntity = TestEntityDataBuilder.getFdcContibutionsEntity(status, finalCost, fileId, repOrderEntity);
         repos.fdcContributions.save(fdcEntity);
         return fdcEntity.getId();
     }
 
-    private int saveContributionFile(String fileName, boolean isBlankXml){
+    private int saveContributionFile(String fileName, boolean isBlankXml) {
         var fileEntity = TestEntityDataBuilder.getContributionFilesEntity(fileName, 10, 0, isBlankXml);
         repos.contributionFiles.save(fileEntity);
         return fileEntity.getFileId();
@@ -99,8 +102,8 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.fdcContributions.length()").value(2));
-        validateFdcPresent(result,  expectedId1);
-        validateFdcPresent(result,  expectedId2);
+        validateFdcPresent(result, expectedId1);
+        validateFdcPresent(result, expectedId2);
     }
 
     @Test
@@ -112,11 +115,12 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         validateFdcPresent(result, expectedId3);
     }
-    @Disabled("Disabled as testing this requires an immense amount of setup, and the underlying database for the test has issues with the sql grammar. It generates bad sql when running. Has been manually tested on the MAAT database, with the sql proven via that way.")
+
+    @Disabled(
+            "Disabled as testing this requires an immense amount of setup, and the underlying database for the test has issues with the sql grammar. It generates bad sql when running. Has been manually tested on the MAAT database, with the sql proven via that way.")
     @Test
     void testGlobalUpdate() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post(GLOBAL_UPDATE_ENDPOINT_URL)
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.post(GLOBAL_UPDATE_ENDPOINT_URL).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -128,21 +132,24 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("code").value("BAD_REQUEST"))
-                .andExpect(jsonPath("message").value("The provided value 'RUBBISH_VALUE' is the incorrect type for the 'status' parameter."));
+                .andExpect(jsonPath("message")
+                        .value("The provided value 'RUBBISH_VALUE' is the incorrect type for the 'status' parameter."));
     }
 
     @Test
     void givenAListOfIds_whenAtomicUpdate_theStatusIsUpdated() throws Exception {
-        // removed the xml values as it cannot be tested due to xmlType. The double refuses to handle XMLTYPE(?) as that is oracle specific.
+        // removed the xml values as it cannot be tested due to xmlType. The double refuses to handle XMLTYPE(?) as that
+        // is oracle specific.
         String expectedFilename = "TestFilename.xml";
-        int expectedFileListSize = repos.contributionFiles.findAll().size()+1;
+        int expectedFileListSize = repos.contributionFiles.findAll().size() + 1;
         int expectedRecordsSent = 2;
-        String s = """
-                                {
-                                    "recordsSent": %s,
-                                    "fdcIds": [%s],
-                                    "xmlFileName" : "%s"
-                                }""";
+        String s =
+                """
+                        {
+                            "recordsSent": %s,
+                            "fdcIds": [%s],
+                            "xmlFileName" : "%s"
+                        }""";
         s = s.formatted(expectedRecordsSent, expectedId4, expectedFilename);
         mockMvc.perform(MockMvcRequestBuilders.post(ATOMIC_UPDATE_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -151,25 +158,26 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // verify the content of the saved entity.
         List<ContributionFilesEntity> savedFileEntities = repos.contributionFiles.findAll();
-        assertEquals(expectedFileListSize, savedFileEntities.size());
-        ContributionFilesEntity savedFileEntity = savedFileEntities.get(expectedFileListSize-1);
-        assertNotNull(savedFileEntity);
-        assertNotNull(savedFileEntity.getFileId());
-        assertEquals(expectedRecordsSent, savedFileEntity.getRecordsSent());
-        assertNull(savedFileEntity.getXmlContent()); // unfortunately, cannot test due to aforementioned XMLTYPE() issue.
-        assertNull(savedFileEntity.getAckXmlContent());
-        assertEquals(expectedFilename, savedFileEntity.getFileName());
+        assertThat(savedFileEntities).hasSize(expectedFileListSize);
+        ContributionFilesEntity savedFileEntity = savedFileEntities.get(expectedFileListSize - 1);
+        assertThat(savedFileEntity).isNotNull();
+        assertThat(savedFileEntity.getFileId()).isNotNull();
+        assertThat(savedFileEntity.getRecordsSent()).isEqualTo(expectedRecordsSent);
+        assertThat(savedFileEntity.getXmlContent())
+                .isNull(); // unfortunately, cannot test due to aforementioned XMLTYPE() issue.
+        assertThat(savedFileEntity.getAckXmlContent()).isNull();
+        assertThat(savedFileEntity.getFileName()).isEqualTo(expectedFilename);
         // assert the file id has been set on the fdc
         Optional<FdcContributionsEntity> updatedFdc = repos.fdcContributions.findById(expectedId4);
-        assertTrue(updatedFdc.isPresent());
+        assertThat(updatedFdc).isPresent();
         FdcContributionsEntity fdcContributionsEntity = updatedFdc.get();
-        assertEquals(savedFileEntity.getFileId(), fdcContributionsEntity.getContFileId());
-        assertEquals(FdcContributionsStatus.SENT, fdcContributionsEntity.getStatus());
+        assertThat(fdcContributionsEntity.getContFileId()).isEqualTo(savedFileEntity.getFileId());
+        assertThat(fdcContributionsEntity.getStatus()).isEqualTo(FdcContributionsStatus.SENT);
     }
 
     @Test
     void givenSuccessfulDRCResponse_whenLogDrcProcessedIsCalled_thenLoggedCorrectly() throws Exception {
-        String s = TestModelDataBuilder.getFdcDrcUpdateJson(expectedId4,"");
+        String s = TestModelDataBuilder.getFdcDrcUpdateJson(expectedId4, "");
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -178,17 +186,17 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check we've updated the received count.
         Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file2Id);
-        assertTrue(fileEntity.isPresent());
-        assertEquals(1,fileEntity.get().getRecordsReceived());
+        assertThat(fileEntity).isPresent().hasValueSatisfying(entity -> assertThat(entity.getRecordsReceived())
+                .isOne());
 
         // check no values in errors
-        assertEquals(0, repos.contributionFileErrors.count());
+        assertThat(repos.contributionFileErrors.count()).isZero();
     }
 
     @Test
     void givenDRCResponseWithError_whenLogDrcProcessedIsCalled_thenLoggedCorrectly() throws Exception {
         String errorText = "ErrorText";
-        String s = TestModelDataBuilder.getFdcDrcUpdateJson(expectedId4,errorText);
+        String s = TestModelDataBuilder.getFdcDrcUpdateJson(expectedId4, errorText);
         LocalDateTime dateTimeCheck = LocalDateTime.now();
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
@@ -198,25 +206,26 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check we've updated the received count.
         Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(file2Id);
-        assertTrue(fileEntity.isPresent());
-        assertEquals(0, fileEntity.get().getRecordsReceived());
+        assertThat(fileEntity).isPresent();
+        assertThat(fileEntity.get().getRecordsReceived()).isZero();
 
         // check no values in errors
-        assertEquals(1, repos.contributionFileErrors.count());
-        ContributionFileErrorsEntity errorEntity = repos.contributionFileErrors.findAll().get(0);
-        assertEquals(expectedId4, errorEntity.getFdcContributionId());
-        assertEquals(expectedId4, errorEntity.getContributionId());
-        assertEquals(errorText, errorEntity.getErrorText());
-        assertEquals(file2Id, errorEntity.getContributionFileId());
+        assertThat(repos.contributionFileErrors.count()).isOne();
+        ContributionFileErrorsEntity errorEntity =
+                repos.contributionFileErrors.findAll().getFirst();
+        assertThat(errorEntity.getFdcContributionId()).isEqualTo(expectedId4);
+        assertThat(errorEntity.getContributionId()).isEqualTo(expectedId4);
+        assertThat(errorEntity.getErrorText()).isEqualTo(errorText);
+        assertThat(errorEntity.getContributionFileId()).isEqualTo(file2Id);
 
-        assertEquals(dateTimeCheck.getDayOfMonth(), errorEntity.getDateCreated().getDayOfMonth());
-        assertEquals(dateTimeCheck.getMonth(), errorEntity.getDateCreated().getMonth());
-        assertEquals(dateTimeCheck.getYear(), errorEntity.getDateCreated().getYear());
+        assertThat(errorEntity.getDateCreated().getDayOfMonth()).isEqualTo(dateTimeCheck.getDayOfMonth());
+        assertThat(errorEntity.getDateCreated().getMonth()).isEqualTo(dateTimeCheck.getMonth());
+        assertThat(errorEntity.getDateCreated().getYear()).isEqualTo(dateTimeCheck.getYear());
     }
 
     @Test
     void givenNullAssociatedFile_whenLogDrcProcessedIsCalled_thenUnsuccessfulAndNotLogged() throws Exception {
-        String s = TestModelDataBuilder.getFdcDrcUpdateJson(expectedId3,"");
+        String s = TestModelDataBuilder.getFdcDrcUpdateJson(expectedId3, "");
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -224,13 +233,12 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check no values in errors
-        assertEquals(0, repos.contributionFileErrors.count());
+        assertThat(repos.contributionFileErrors.count()).isZero();
     }
-
 
     @Test
     void givenMissingAssociatedFile_whenLogDrcProcessedIsCalled_thenUnsuccessfulAndNotLogged() throws Exception {
-        String s = TestModelDataBuilder.getFdcDrcUpdateJson(expectedId2,"");
+        String s = TestModelDataBuilder.getFdcDrcUpdateJson(expectedId2, "");
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -238,14 +246,14 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check no values in errors
-        assertEquals(0, repos.contributionFileErrors.count());
+        assertThat(repos.contributionFileErrors.count()).isZero();
     }
 
     @Test
     void givenErrorInSave_whenLogDrcProcessedIsCalled_thenFileCounterIsNotChanged() throws Exception {
         int fdcId = expectedId4;
         String errorString = StringUtils.repeat("*", 5000);
-        String s = TestModelDataBuilder.getFdcDrcUpdateJson(fdcId,errorString);
+        String s = TestModelDataBuilder.getFdcDrcUpdateJson(fdcId, errorString);
 
         mockMvc.perform(MockMvcRequestBuilders.post(DRC_UPDATE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -253,11 +261,13 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // check no values in errors
-        assertEquals(0, repos.contributionFileErrors.count());
+        assertThat(repos.contributionFileErrors.count()).isZero();
 
-        FdcContributionsEntity originalFile = repos.fdcContributions.findById(fdcId).get();
-        ContributionFilesEntity filesEntity = repos.contributionFiles.findById(originalFile.getContFileId()).get();
-        assertEquals(0, filesEntity.getRecordsReceived()); // ensure the increment is rolled back.
+        FdcContributionsEntity originalFile =
+                repos.fdcContributions.findById(fdcId).get();
+        Optional<ContributionFilesEntity> fileEntity = repos.contributionFiles.findById(originalFile.getContFileId());
+        assertThat(fileEntity).isPresent().hasValueSatisfying(entity -> assertThat(entity.getRecordsReceived())
+                .isZero()); // ensure the increment is rolled back.
     }
 
     @Test
@@ -271,13 +281,13 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.fdcContributions.length()").value(2));
 
-                validateFdcPresent(result, expectedId1);
-                validateFdcPresent(result, expectedId4);
+        validateFdcPresent(result, expectedId1);
+        validateFdcPresent(result, expectedId4);
     }
 
     @Test
     void givenIdsAsStrings_whenFindFdcByIdIsCalled_thenSuccessfulWithResults() throws Exception {
-        String s = String.format("[%s,%s]", expectedId1,expectedId3);
+        String s = String.format("[%s,%s]", expectedId1, expectedId3);
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post(FDC_CONTRIBUTION_FIND_BY_ID_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(s))
@@ -314,11 +324,11 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
     void givenAnFdcItemId_whenDeleteFdcItemCalled_thenIsDeleted() throws Exception {
         long originalFdcItemCount = repos.fdcItemsRepository.count();
         String parameter = "/fdc-id/{fdc-id}";
-        mockMvc.perform(MockMvcRequestBuilders.delete(FDC_ITEMS_URL+parameter, expectedId1))
+        mockMvc.perform(MockMvcRequestBuilders.delete(FDC_ITEMS_URL + parameter, expectedId1))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        assertEquals(originalFdcItemCount-1, repos.fdcItemsRepository.count());
+        assertThat(repos.fdcItemsRepository.count()).isEqualTo(originalFdcItemCount - 1);
     }
 
     @Test
@@ -334,27 +344,30 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
         String s = om.writeValueAsString(request);
 
         mockMvc.perform(MockMvcRequestBuilders.post(FDC_ITEMS_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(s))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(s))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        assertEquals(originalFdcItemCount+1, repos.fdcItemsRepository.count());
-        Optional<FdcItemsEntity> optionalItem = repos.fdcItemsRepository.findAll().stream().filter(item-> item.getFdcId().equals(expectedId2)).findFirst();
-        assertTrue(optionalItem.isPresent());
+        assertThat(repos.fdcItemsRepository.count()).isEqualTo(originalFdcItemCount + 1);
+        Optional<FdcItemsEntity> optionalItem = repos.fdcItemsRepository.findAll().stream()
+                .filter(item -> item.getFdcId().equals(expectedId2))
+                .findFirst();
+        assertThat(optionalItem).isPresent();
         FdcItemsEntity savedEntity = optionalItem.get();
-        assertEquals(itemType, savedEntity.getItemType());
+        assertThat(savedEntity.getItemType()).isEqualTo(itemType);
         // check basic values.
-        assertEquals(LocalDate.now(), savedEntity.getDateCreated());
-        assertEquals(LocalDate.now(), savedEntity.getDateModified());
-        assertEquals("DCES", savedEntity.getUserCreated());
-        assertEquals("DCES", savedEntity.getUserModified());
+        assertThat(savedEntity.getDateCreated()).isEqualTo(LocalDate.now());
+        assertThat(savedEntity.getDateModified()).isEqualTo(LocalDate.now());
+        assertThat(savedEntity.getUserCreated()).isEqualTo("DCES");
+        assertThat(savedEntity.getUserModified()).isEqualTo("DCES");
     }
+
     @Test
     void givenExplicitValues_whenCreateFdcItemIsCalled_thenValuesAreCorrect() throws Exception {
         long originalFdcItemCount = repos.fdcItemsRepository.count();
         String itemType = "Test";
-        LocalDate expectedDate = LocalDate.of(2000,1,1);
+        LocalDate expectedDate = LocalDate.of(2000, 1, 1);
         String expectedUser = "Test User";
         String expectedCostInd = "A";
         String expectedPaidAsClaimed = "B";
@@ -379,32 +392,44 @@ class FdcContributionsIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        assertEquals(originalFdcItemCount+1, repos.fdcItemsRepository.count());
-        Optional<FdcItemsEntity> optionalItem = repos.fdcItemsRepository.findAll().stream().filter(item-> item.getFdcId().equals(expectedId4)).findFirst();
-        assertTrue(optionalItem.isPresent());
+        assertThat(repos.fdcItemsRepository.count()).isEqualTo(originalFdcItemCount + 1);
+        Optional<FdcItemsEntity> optionalItem = repos.fdcItemsRepository.findAll().stream()
+                .filter(item -> item.getFdcId().equals(expectedId4))
+                .findFirst();
+        assertThat(optionalItem).isPresent();
         FdcItemsEntity savedEntity = optionalItem.get();
-        assertEquals(itemType, savedEntity.getItemType());
+        assertThat(savedEntity.getItemType()).isEqualTo(itemType);
         // check basic values. Dates are auto-populated, so should ignore set values.
-        assertEquals(LocalDate.now(), savedEntity.getDateCreated());
-        assertEquals(LocalDate.now(), savedEntity.getDateModified());
-        assertEquals(expectedUser, savedEntity.getUserCreated());
-        assertEquals(expectedUser, savedEntity.getUserModified());
-        assertEquals(expectedCostInd, savedEntity.getLatestCostInd());
-        assertEquals(expectedPaidAsClaimed, savedEntity.getPaidAsClaimed());
-        assertEquals(expectedAdjustReason, savedEntity.getAdjustmentReason());
+        assertThat(savedEntity.getDateCreated()).isEqualTo(LocalDate.now());
+        assertThat(savedEntity.getDateModified()).isEqualTo(LocalDate.now());
+        assertThat(savedEntity.getUserCreated()).isEqualTo(expectedUser);
+        assertThat(savedEntity.getUserModified()).isEqualTo(expectedUser);
+        assertThat(savedEntity.getLatestCostInd()).isEqualTo(expectedCostInd);
+        assertThat(savedEntity.getPaidAsClaimed()).isEqualTo(expectedPaidAsClaimed);
+        assertThat(savedEntity.getAdjustmentReason()).isEqualTo(expectedAdjustReason);
     }
 
-
     void validateFdcPresent(ResultActions result, Integer expectedFdcId) throws Exception {
-        FdcContributionsEntity expectedEntity = repos.fdcContributions.findById(expectedFdcId).get();
-        result.
-                andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].id").exists())
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].maatId").value(expectedEntity.getRepOrderEntity().getId()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].sentenceOrderDate").value(expectedEntity.getRepOrderEntity().getSentenceOrderDate().toString()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].finalCost").value(expectedEntity.getFinalCost().doubleValue()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].lgfsCost").value(expectedEntity.getLgfsCost().doubleValue()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].agfsCost").value(expectedEntity.getAgfsCost().doubleValue()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].dateCalculated").value(expectedEntity.getDateCalculated().toString()))
-                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].status").value(expectedEntity.getStatus().toString()));
+        FdcContributionsEntity expectedEntity =
+                repos.fdcContributions.findById(expectedFdcId).get();
+        result.andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].id")
+                        .exists())
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].maatId")
+                        .value(expectedEntity.getRepOrderEntity().getId()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].sentenceOrderDate")
+                        .value(expectedEntity
+                                .getRepOrderEntity()
+                                .getSentenceOrderDate()
+                                .toString()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].finalCost")
+                        .value(expectedEntity.getFinalCost().doubleValue()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].lgfsCost")
+                        .value(expectedEntity.getLgfsCost().doubleValue()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].agfsCost")
+                        .value(expectedEntity.getAgfsCost().doubleValue()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].dateCalculated")
+                        .value(expectedEntity.getDateCalculated().toString()))
+                .andExpect(jsonPath("$.fdcContributions.[?(@.id==" + expectedFdcId + ")].status")
+                        .value(expectedEntity.getStatus().toString()));
     }
 }

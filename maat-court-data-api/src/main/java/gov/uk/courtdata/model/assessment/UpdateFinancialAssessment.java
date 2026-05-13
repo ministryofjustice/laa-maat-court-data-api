@@ -31,6 +31,7 @@ public class UpdateFinancialAssessment extends FinancialAssessment {
     private Integer fullAscrId;
     private LocalDateTime dateCompleted;
     private String userModified;
+
     @Builder.Default
     private List<FinancialAssessmentIncomeEvidence> finAssIncomeEvidences = new ArrayList<>();
 }

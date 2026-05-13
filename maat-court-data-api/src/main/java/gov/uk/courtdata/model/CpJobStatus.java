@@ -1,6 +1,5 @@
 package gov.uk.courtdata.model;
 
-
 import gov.uk.courtdata.enums.JobStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +18,4 @@ public class CpJobStatus {
     private UUID laaTransactionId;
     private JobStatus jobStatus;
     private Integer maatId;
-
-
 }

@@ -1,20 +1,21 @@
 package gov.uk.courtdata.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.uk.courtdata.model.NewWorkReason;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
-import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.justice.laa.crime.enums.HardshipReviewStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @Builder
@@ -36,25 +37,34 @@ public class HardshipReviewDTO {
 
     @JsonIgnore
     private LocalDateTime dateCreated;
+
     @JsonIgnore
     private Integer repId;
+
     @JsonIgnore
     private String userCreated;
+
     @JsonIgnore
     private LocalDateTime updated;
+
     @JsonIgnore
     private String userModified;
+
     @JsonIgnore
     private LocalDateTime resultDate;
+
     @JsonIgnore
     private String courtType;
+
     @JsonIgnore
     private Integer financialAssessmentId;
+
     @JsonIgnore
     private String valid;
 
     @Builder.Default
     private List<HardshipReviewDetail> reviewDetails = new ArrayList<>();
+
     @Builder.Default
     private List<HardshipReviewProgress> reviewProgressItems = new ArrayList<>();
 

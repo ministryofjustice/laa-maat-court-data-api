@@ -1,5 +1,9 @@
 package gov.uk.courtdata.link.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.CREATE_LINK;
+import static gov.uk.courtdata.constants.CourtDataConstants.SEARCH_TYPE_0;
+import static gov.uk.courtdata.util.DateUtil.parse;
+
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.DefendantEntity;
 import gov.uk.courtdata.entity.DefendantMAATDataEntity;
@@ -7,12 +11,8 @@ import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Defendant;
 import gov.uk.courtdata.repository.DefendantRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
-
-import static gov.uk.courtdata.constants.CourtDataConstants.CREATE_LINK;
-import static gov.uk.courtdata.constants.CourtDataConstants.SEARCH_TYPE_0;
-import static gov.uk.courtdata.util.DateUtil.parse;
-
 
 @Component
 @RequiredArgsConstructor
@@ -58,8 +58,6 @@ public class DefendantInfoProcessor implements Process {
                 .datasource(getDataSource())
                 .build();
         defendantRepository.save(defendantEntity);
-
-
     }
 
     protected String getDataSource() {

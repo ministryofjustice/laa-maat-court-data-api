@@ -14,10 +14,11 @@ import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.util.UserEntityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -27,12 +28,14 @@ public class PassportAssessmentService {
     private final PassportAssessmentImpl passportAssessmentImpl;
     private final PassportAssessmentMapper passportAssessmentMapper;
     private final PassportAssessmentRepository passportAssessmentRepository;
+    private final AssessmentReplacementService assessmentReplacementService;
 
     @Transactional(readOnly = true)
     public PassportAssessmentDTO find(Integer passportAssessmentId) {
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.find(passportAssessmentId);
         if (passportAssessmentEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No Passport Assessment found for ID: %s", passportAssessmentId));
+            throw new RequestedObjectNotFoundException(
+                    String.format("No Passport Assessment found for ID: %s", passportAssessmentId));
         }
         return buildPassportAssessmentDTO(passportAssessmentEntity);
     }
@@ -41,7 +44,8 @@ public class PassportAssessmentService {
     public PassportAssessmentDTO findByRepId(int repId) {
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.findByRepId(repId);
         if (passportAssessmentEntity == null) {
-            throw new RequestedObjectNotFoundException(String.format("No Passport Assessment found for REP ID: %s", repId));
+            throw new RequestedObjectNotFoundException(
+                    String.format("No Passport Assessment found for REP ID: %s", repId));
         }
         return buildPassportAssessmentDTO(passportAssessmentEntity);
     }
@@ -52,7 +56,8 @@ public class PassportAssessmentService {
         PassportAssessmentDTO passportAssessmentDTO =
                 passportAssessmentMapper.updatePassportAssessmentToPassportAssessmentDTO(updatePassportAssessment);
         log.info("Updating existing passport assessment record");
-        PassportAssessmentEntity existingPassportAssessmentEntity = passportAssessmentImpl.find(passportAssessmentDTO.getId());
+        PassportAssessmentEntity existingPassportAssessmentEntity =
+                passportAssessmentImpl.find(passportAssessmentDTO.getId());
         if (existingPassportAssessmentEntity.getPastStatus().equals(STATUS_COMPLETE)) {
             throw new ValidationException("User cannot modify a completed assessment");
         }
@@ -73,9 +78,7 @@ public class PassportAssessmentService {
         log.info("Creating new passport assessment record");
         PassportAssessmentEntity assessmentEntity = passportAssessmentImpl.create(passportAssessmentDTO);
         log.info("Setting outdated records as replaced");
-        passportAssessmentImpl.setOldPassportAssessmentAsReplaced(
-                assessmentEntity, createPassportAssessment.getFinancialAssessmentId()
-        );
+        assessmentReplacementService.replacePreviousAssessments(assessmentEntity);
         log.info("Create Passport Assessment - Transaction Processing - End");
         return buildPassportAssessmentDTO(assessmentEntity);
     }
@@ -87,7 +90,8 @@ public class PassportAssessmentService {
     public AssessorDetails findPassportAssessorDetails(int passportAssessmentId) {
         PassportAssessmentEntity passportAssessmentEntity = passportAssessmentImpl.find(passportAssessmentId);
         if (passportAssessmentEntity == null) {
-            String message = String.format("No Passport Assessment found for passport assessment Id: [%s]", passportAssessmentId);
+            String message = String.format(
+                    "No Passport Assessment found for passport assessment Id: [%s]", passportAssessmentId);
             throw new RequestedObjectNotFoundException(message);
         }
 
@@ -98,8 +102,10 @@ public class PassportAssessmentService {
     }
 
     public void patch(int passportAssessmentId, Map<String, Object> updateFields) {
-        PassportAssessmentEntity passportAssessmentEntity = passportAssessmentRepository.findById(passportAssessmentId)
-            .orElseThrow(() -> new RequestedObjectNotFoundException(String.format("No Passport Assessment found for passport assessment Id: [%s]", passportAssessmentId)));
+        PassportAssessmentEntity passportAssessmentEntity = passportAssessmentRepository
+                .findById(passportAssessmentId)
+                .orElseThrow(() -> new RequestedObjectNotFoundException(String.format(
+                        "No Passport Assessment found for passport assessment Id: [%s]", passportAssessmentId)));
 
         ReflectionHelper.updateEntityFromMap(passportAssessmentEntity, updateFields);
         passportAssessmentRepository.save(passportAssessmentEntity);

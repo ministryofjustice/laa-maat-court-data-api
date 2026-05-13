@@ -2,99 +2,88 @@ package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
 import oracle.jpub.runtime.MutableArray;
-import oracle.sql.*;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class NewWorkReasonTabtype implements ORAData, ORADataFactory
-{
-  public static final String _SQL_NAME = "TOGDATA.NEW_WORK_REASON_TABTYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
+public class NewWorkReasonTabtype implements ORAData, ORADataFactory {
+    public static final String _SQL_NAME = "TOGDATA.NEW_WORK_REASON_TABTYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
 
-  MutableArray _array;
+    MutableArray _array;
 
-private static final NewWorkReasonTabtype _NewWorkReasonTabtypeFactory = new NewWorkReasonTabtype();
+    private static final NewWorkReasonTabtype _NewWorkReasonTabtypeFactory = new NewWorkReasonTabtype();
 
-  public static ORADataFactory getORADataFactory()
-  { return _NewWorkReasonTabtypeFactory; }
-  /* constructors */
-  public NewWorkReasonTabtype()
-  {
-    this((NewWorkReasonType[])null);
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _NewWorkReasonTabtypeFactory;
+    }
 
-  public NewWorkReasonTabtype(NewWorkReasonType[] a)
-  {
-    _array = new MutableArray(2002, a, NewWorkReasonType.getORADataFactory());
-  }
+    /* constructors */
+    public NewWorkReasonTabtype() {
+        this((NewWorkReasonType[]) null);
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _array.toDatum(c, _SQL_NAME);
-  }
+    public NewWorkReasonTabtype(NewWorkReasonType[] a) {
+        _array = new MutableArray(2002, a, NewWorkReasonType.getORADataFactory());
+    }
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    NewWorkReasonTabtype a = new NewWorkReasonTabtype();
-    a._array = new MutableArray(2002, (ARRAY) d, NewWorkReasonType.getORADataFactory());
-    return a;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _array.toDatum(c, _SQL_NAME);
+    }
 
-  public int length() throws SQLException
-  {
-    return _array.length();
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        NewWorkReasonTabtype a = new NewWorkReasonTabtype();
+        a._array = new MutableArray(2002, (ARRAY) d, NewWorkReasonType.getORADataFactory());
+        return a;
+    }
 
-  public int getBaseType() throws SQLException
-  {
-    return _array.getBaseType();
-  }
+    public int length() throws SQLException {
+        return _array.length();
+    }
 
-  public String getBaseTypeName() throws SQLException
-  {
-    return _array.getBaseTypeName();
-  }
+    public int getBaseType() throws SQLException {
+        return _array.getBaseType();
+    }
 
-  public ArrayDescriptor getDescriptor() throws SQLException
-  {
-    return _array.getDescriptor();
-  }
+    public String getBaseTypeName() throws SQLException {
+        return _array.getBaseTypeName();
+    }
 
-  /* array accessor methods */
-  public NewWorkReasonType[] getArray() throws SQLException
-  {
-    return (NewWorkReasonType[]) _array.getObjectArray(
-      new NewWorkReasonType[_array.length()]);
-  }
+    public ArrayDescriptor getDescriptor() throws SQLException {
+        return _array.getDescriptor();
+    }
 
-  public NewWorkReasonType[] getArray(long index, int count) throws SQLException
-  {
-    return (NewWorkReasonType[]) _array.getObjectArray(index,
-      new NewWorkReasonType[_array.sliceLength(index, count)]);
-  }
+    /* array accessor methods */
+    public NewWorkReasonType[] getArray() throws SQLException {
+        return (NewWorkReasonType[]) _array.getObjectArray(new NewWorkReasonType[_array.length()]);
+    }
 
-  public void setArray(NewWorkReasonType[] a) throws SQLException
-  {
-    _array.setObjectArray(a);
-  }
+    public NewWorkReasonType[] getArray(long index, int count) throws SQLException {
+        return (NewWorkReasonType[])
+                _array.getObjectArray(index, new NewWorkReasonType[_array.sliceLength(index, count)]);
+    }
 
-  public void setArray(NewWorkReasonType[] a, long index) throws SQLException
-  {
-    _array.setObjectArray(a, index);
-  }
+    public void setArray(NewWorkReasonType[] a) throws SQLException {
+        _array.setObjectArray(a);
+    }
 
-  public NewWorkReasonType getElement(long index) throws SQLException
-  {
-    return (NewWorkReasonType) _array.getObjectElement(index);
-  }
+    public void setArray(NewWorkReasonType[] a, long index) throws SQLException {
+        _array.setObjectArray(a, index);
+    }
 
-  public void setElement(NewWorkReasonType a, long index) throws SQLException
-  {
-    _array.setObjectElement(a, index);
-  }
+    public NewWorkReasonType getElement(long index) throws SQLException {
+        return (NewWorkReasonType) _array.getObjectElement(index);
+    }
 
+    public void setElement(NewWorkReasonType a, long index) throws SQLException {
+        _array.setObjectElement(a, index);
+    }
 }

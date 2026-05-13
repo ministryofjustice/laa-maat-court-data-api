@@ -10,64 +10,73 @@ import oracle.sql.STRUCT;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class HardshipOverviewType implements ORAData, ORADataFactory
-{
-  public static final String _SQL_NAME = "TOGDATA.HARDSHIP_OVERVIEW_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.STRUCT;
+public class HardshipOverviewType implements ORAData, ORADataFactory {
+    public static final String _SQL_NAME = "TOGDATA.HARDSHIP_OVERVIEW_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.STRUCT;
 
-  protected MutableStruct _struct;
+    protected MutableStruct _struct;
 
-  protected static int[] _sqlType =  { 2002,2002 };
-  protected static ORADataFactory[] _factory = new ORADataFactory[2];
-  static
-  {
-    _factory[0] = HardshipReviewType.getORADataFactory();
-    _factory[1] = HardshipReviewType.getORADataFactory();
-  }
-  protected static final HardshipOverviewType _HardshipOverviewTypeFactory = new HardshipOverviewType();
+    protected static int[] _sqlType = {2002, 2002};
+    protected static ORADataFactory[] _factory = new ORADataFactory[2];
 
-  public static ORADataFactory getORADataFactory()
-  { return _HardshipOverviewTypeFactory; }
-  /* constructors */
-  protected void _init_struct(boolean init)
-  { if (init) _struct = new MutableStruct(new Object[2], _sqlType, _factory); }
-  public HardshipOverviewType()
-  { _init_struct(true); }
-  public HardshipOverviewType(HardshipReviewType magsHardshipObject, HardshipReviewType crownHardshipObject) throws SQLException
-  { _init_struct(true);
-    setMagsHardshipObject(magsHardshipObject);
-    setCrownHardshipObject(crownHardshipObject);
-  }
+    static {
+        _factory[0] = HardshipReviewType.getORADataFactory();
+        _factory[1] = HardshipReviewType.getORADataFactory();
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _struct.toDatum(c, _SQL_NAME);
-  }
+    protected static final HardshipOverviewType _HardshipOverviewTypeFactory = new HardshipOverviewType();
 
+    public static ORADataFactory getORADataFactory() {
+        return _HardshipOverviewTypeFactory;
+    }
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  { return create(null, d, sqlType); }
-  protected ORAData create(HardshipOverviewType o, Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    if (o == null) o = new HardshipOverviewType();
-    o._struct = new MutableStruct((STRUCT) d, _sqlType, _factory);
-    return o;
-  }
-  /* accessor methods */
-  public HardshipReviewType getMagsHardshipObject() throws SQLException
-  { return (HardshipReviewType) _struct.getAttribute(0); }
+    /* constructors */
+    protected void _init_struct(boolean init) {
+        if (init) _struct = new MutableStruct(new Object[2], _sqlType, _factory);
+    }
 
-  public void setMagsHardshipObject(HardshipReviewType magsHardshipObject) throws SQLException
-  { _struct.setAttribute(0, magsHardshipObject); }
+    public HardshipOverviewType() {
+        _init_struct(true);
+    }
 
+    public HardshipOverviewType(HardshipReviewType magsHardshipObject, HardshipReviewType crownHardshipObject)
+            throws SQLException {
+        _init_struct(true);
+        setMagsHardshipObject(magsHardshipObject);
+        setCrownHardshipObject(crownHardshipObject);
+    }
 
-  public HardshipReviewType getCrownHardshipObject() throws SQLException
-  { return (HardshipReviewType) _struct.getAttribute(1); }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _struct.toDatum(c, _SQL_NAME);
+    }
 
-  public void setCrownHardshipObject(HardshipReviewType crownHardshipObject) throws SQLException
-  { _struct.setAttribute(1, crownHardshipObject); }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        return create(null, d, sqlType);
+    }
 
+    protected ORAData create(HardshipOverviewType o, Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        if (o == null) o = new HardshipOverviewType();
+        o._struct = new MutableStruct((STRUCT) d, _sqlType, _factory);
+        return o;
+    }
+
+    /* accessor methods */
+    public HardshipReviewType getMagsHardshipObject() throws SQLException {
+        return (HardshipReviewType) _struct.getAttribute(0);
+    }
+
+    public void setMagsHardshipObject(HardshipReviewType magsHardshipObject) throws SQLException {
+        _struct.setAttribute(0, magsHardshipObject);
+    }
+
+    public HardshipReviewType getCrownHardshipObject() throws SQLException {
+        return (HardshipReviewType) _struct.getAttribute(1);
+    }
+
+    public void setCrownHardshipObject(HardshipReviewType crownHardshipObject) throws SQLException {
+        _struct.setAttribute(1, crownHardshipObject);
+    }
 }

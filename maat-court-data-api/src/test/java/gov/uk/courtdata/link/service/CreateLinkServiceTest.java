@@ -1,5 +1,9 @@
 package gov.uk.courtdata.link.service;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.link.validator.ValidationProcessor;
@@ -9,16 +13,15 @@ import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.Result;
 import gov.uk.courtdata.processor.OffenceCodeRefDataProcessor;
 import gov.uk.courtdata.processor.ResultCodeRefDataProcessor;
+
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CreateLinkServiceTest {
@@ -28,33 +31,37 @@ public class CreateLinkServiceTest {
 
     @Mock
     private SaveAndLinkImpl saveAndLinkImpl;
+
     @Mock
     private ValidationProcessor validationProcessor;
+
     @Mock
     private OffenceCodeRefDataProcessor offenceCodeRefDataProcessor;
+
     @Mock
     private ResultCodeRefDataProcessor resultCodeRefDataProcessor;
 
     @Test
     public void givenJSONMessageIsReceived_whenCreateLinkServiceIsInvoked_thenSaveAndImplIsCalled() {
 
-        //given
+        // given
         Result result = Result.builder().resultCode("1234").build();
         List<Result> resultList = Collections.singletonList(result);
-        Offence offence = Offence.builder().offenceCode("Code").results(resultList).build();
+        Offence offence =
+                Offence.builder().offenceCode("Code").results(resultList).build();
         List<Offence> offenceList = Collections.singletonList(offence);
         Defendant defendant = Defendant.builder().offences(offenceList).build();
         CaseDetails caseDetails = CaseDetails.builder().defendant(defendant).build();
-        CourtDataDTO courtDataDTO = CourtDataDTO.builder().caseDetails(caseDetails).build();
+        CourtDataDTO courtDataDTO =
+                CourtDataDTO.builder().caseDetails(caseDetails).build();
 
-        //when
+        // when
         when(validationProcessor.validate(caseDetails)).thenReturn(courtDataDTO);
         createLinkService.saveAndLink(caseDetails);
 
-        //then
+        // then
         verify(saveAndLinkImpl, times(1)).execute(courtDataDTO);
         verify(offenceCodeRefDataProcessor, times(1)).processOffenceCode("Code");
         verify(resultCodeRefDataProcessor, times(1)).processResultCode(1234);
-
     }
 }

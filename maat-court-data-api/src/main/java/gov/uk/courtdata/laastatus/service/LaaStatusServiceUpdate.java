@@ -5,6 +5,7 @@ import gov.uk.courtdata.laastatus.builder.CourtDataDTOBuilder;
 import gov.uk.courtdata.model.CaseDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 @Slf4j

@@ -1,44 +1,43 @@
 package gov.uk.courtdata.link.processor;
 
-import com.google.gson.Gson;
-import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import static gov.uk.courtdata.constants.CourtDataConstants.DEFAULT_HEARING_CUS_STATUS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.entity.SessionEntity;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Session;
 import gov.uk.courtdata.repository.SessionRepository;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.DEFAULT_HEARING_CUS_STATUS;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class SessionInfoProcessorTest {
+class SessionInfoProcessorTest {
 
     @InjectMocks
     private SessionInfoProcessor sessionInfoProcessor;
+
     @Spy
     private SessionRepository sessionRepository;
-
-    private TestModelDataBuilder testModelDataBuilder;
 
     @Captor
     private ArgumentCaptor<List<SessionEntity>> sessionsCaptor;
 
     @Test
-    public void givenSessionModel_whenProcessIsInvoked_thenSessionRecordIsCreated() {
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
+    void givenSessionModel_whenProcessIsInvoked_thenSessionRecordIsCreated() {
 
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         CaseDetails caseDetails = courtDataDTO.getCaseDetails();
 
         // when
@@ -46,53 +45,58 @@ public class SessionInfoProcessorTest {
 
         // then
         verify(sessionRepository).saveAll(sessionsCaptor.capture());
-        assertThat(sessionsCaptor.getValue().get(0).getTxId()).isEqualTo(courtDataDTO.getTxId());
-        assertThat(sessionsCaptor.getValue().get(0).getCaseId()).isEqualTo(courtDataDTO.getCaseId());
-        assertThat(sessionsCaptor.getValue().get(0).getPostHearingCustody()).isEqualTo(caseDetails.getSessions().get(0).getPostHearingCustody());
-
-
+        assertThat(sessionsCaptor.getValue().getFirst().getTxId()).isEqualTo(courtDataDTO.getTxId());
+        assertThat(sessionsCaptor.getValue().getFirst().getCaseId()).isEqualTo(courtDataDTO.getCaseId());
+        assertThat(sessionsCaptor.getValue().getFirst().getPostHearingCustody())
+                .isEqualTo(caseDetails.getSessions().getFirst().getPostHearingCustody());
     }
 
     @Test
-    public void givenSessionModelWithNullPostHearingCustody_whenProcessIsInvoked_thenSessionRecordIsCreated() {
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
-
+    void givenSessionModelWithNullPostHearingCustody_whenProcessIsInvoked_thenSessionRecordIsCreated() {
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         CaseDetails caseDetails = courtDataDTO.getCaseDetails();
-        caseDetails.getSessions().get(0).setPostHearingCustody(null);
+        caseDetails.getSessions().getFirst().setPostHearingCustody(null);
 
         // when
         sessionInfoProcessor.process(courtDataDTO);
 
         // then
         verify(sessionRepository).saveAll(sessionsCaptor.capture());
-        assertThat(sessionsCaptor.getValue().get(0).getTxId()).isEqualTo(courtDataDTO.getTxId());
-        assertThat(sessionsCaptor.getValue().get(0).getCaseId()).isEqualTo(courtDataDTO.getCaseId());
-        assertThat(sessionsCaptor.getValue().get(0).getPostHearingCustody()).isEqualTo(DEFAULT_HEARING_CUS_STATUS);
-
-
+        assertThat(sessionsCaptor.getValue().getFirst().getTxId()).isEqualTo(courtDataDTO.getTxId());
+        assertThat(sessionsCaptor.getValue().getFirst().getCaseId()).isEqualTo(courtDataDTO.getCaseId());
+        assertThat(sessionsCaptor.getValue().getFirst().getPostHearingCustody()).isEqualTo(DEFAULT_HEARING_CUS_STATUS);
     }
 
     @Test
-    public void givenSessionModelWithNullHearingDate_whenProcessIsInvoked_thenSessionRecordIsNullFiltered() {
-        testModelDataBuilder = new TestModelDataBuilder(new TestEntityDataBuilder(), new Gson());
-
+    void givenSessionModelWithNullHearingDate_whenProcessIsInvoked_thenSessionRecordIsNullFiltered() {
         // given
-        CourtDataDTO courtDataDTO = testModelDataBuilder.getCourtDataDTO();
+        CourtDataDTO courtDataDTO = TestModelDataBuilder.getCourtDataDTO();
         CaseDetails caseDetails = courtDataDTO.getCaseDetails();
-        caseDetails.getSessions().get(0).setPostHearingCustody(null);
+        caseDetails.getSessions().getFirst().setPostHearingCustody(null);
 
         courtDataDTO.getCaseDetails().getSessions().add(Session.builder().build());
-        courtDataDTO.getCaseDetails().getSessions().add(Session.builder().courtLocation("B30PG").dateOfHearing(null).build());
-        courtDataDTO.getCaseDetails().getSessions().add(Session.builder().courtLocation("B30PG").dateOfHearing("2021-04-30").build());
+        courtDataDTO
+                .getCaseDetails()
+                .getSessions()
+                .add(Session.builder()
+                        .courtLocation("B30PG")
+                        .dateOfHearing(null)
+                        .build());
+        courtDataDTO
+                .getCaseDetails()
+                .getSessions()
+                .add(Session.builder()
+                        .courtLocation("B30PG")
+                        .dateOfHearing("2021-04-30")
+                        .build());
 
         // when
         sessionInfoProcessor.process(courtDataDTO);
 
         // then
         verify(sessionRepository).saveAll(sessionsCaptor.capture());
-        assertThat(sessionsCaptor.getValue().get(0).getCourtLocation()).isEqualTo("B16BG");
-        assertThat(sessionsCaptor.getValue().size()).isEqualTo(2);
+        assertThat(sessionsCaptor.getValue().getFirst().getCourtLocation()).isEqualTo("B16BG");
+        assertThat(sessionsCaptor.getValue()).hasSize(2);
     }
 }

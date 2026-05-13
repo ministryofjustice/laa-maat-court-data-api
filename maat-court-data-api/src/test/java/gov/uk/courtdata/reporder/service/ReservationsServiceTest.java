@@ -1,23 +1,24 @@
 package gov.uk.courtdata.reporder.service;
 
+import static gov.uk.courtdata.builder.TestModelDataBuilder.RESERVATION_ID;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.repository.ReservationsRepository;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
-import java.util.Optional;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-
-import static gov.uk.courtdata.builder.TestModelDataBuilder.RESERVATION_ID;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(ReservationsService.class)
@@ -36,17 +37,15 @@ class ReservationsServiceTest {
     @Test
     void givenValidId_whenRetrieveIsCalled_thenReservationIsReturned() {
         ReservationsEntity reservationsEntity = TestModelDataBuilder.getReservationsEntity();
-        Mockito.when(reservationsRepository.findById(RESERVATION_ID))
-                .thenReturn(Optional.of(reservationsEntity));
+        Mockito.when(reservationsRepository.findById(RESERVATION_ID)).thenReturn(Optional.of(reservationsEntity));
 
         assertThat(reservationsService.retrieve(RESERVATION_ID)).isEqualTo(reservationsEntity);
     }
 
     @Test
     void givenNonExistentId_whenRetrieveIsCalled_thenExceptionIsThrown() {
-        assertThatThrownBy(
-                () -> reservationsService.retrieve(1234)
-        ).isInstanceOf(RequestedObjectNotFoundException.class)
+        assertThatThrownBy(() -> reservationsService.retrieve(1234))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
                 .hasMessage("No Reservations found with Id: " + 1234);
     }
 

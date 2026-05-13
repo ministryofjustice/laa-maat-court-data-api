@@ -1,8 +1,9 @@
 package gov.uk.courtdata.hearing.dto;
 
-
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -14,5 +15,4 @@ public class SessionDTO {
     private String dateOfHearing;
     private String postHearingCustody;
     private String sessionValidatedDate;
-
 }

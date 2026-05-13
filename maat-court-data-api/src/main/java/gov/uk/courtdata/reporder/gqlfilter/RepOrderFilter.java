@@ -1,10 +1,11 @@
 package gov.uk.courtdata.reporder.gqlfilter;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @Builder
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class RepOrderFilter {
     @JsonProperty("id")
     private Integer id;
+
     @JsonProperty("sentenceOrderDate")
     private String sentenceOrderDate;
 }

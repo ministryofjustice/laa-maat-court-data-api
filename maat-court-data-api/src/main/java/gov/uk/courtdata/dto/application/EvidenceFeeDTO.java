@@ -12,5 +12,4 @@ import lombok.experimental.SuperBuilder;
 public class EvidenceFeeDTO extends GenericDTO {
     private String feeLevel;
     private SysGenString description;
-
 }

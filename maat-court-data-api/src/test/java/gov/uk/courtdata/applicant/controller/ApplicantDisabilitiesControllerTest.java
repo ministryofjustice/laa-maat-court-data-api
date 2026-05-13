@@ -1,11 +1,18 @@
 package gov.uk.courtdata.applicant.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.courtdata.applicant.dto.ApplicantDisabilitiesDTO;
 import gov.uk.courtdata.applicant.service.ApplicantDisabilitiesService;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.constants.ErrorCodes;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,10 +23,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ApplicantDisabilitiesController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -40,8 +44,7 @@ public class ApplicantDisabilitiesControllerTest {
     @Test
     void givenValidId_whenGetApplicantDisabilitiesIsInvoked_thenResponseIsReturned() throws Exception {
         ApplicantDisabilitiesDTO response = TestModelDataBuilder.getApplicantDisabilitiesDTO();
-        when(applicantDisabilitiesService.find(ID))
-                .thenReturn(response);
+        when(applicantDisabilitiesService.find(ID)).thenReturn(response);
         mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/" + ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -51,25 +54,24 @@ public class ApplicantDisabilitiesControllerTest {
     @Test
     void givenValidRequest_whenUpdateApplicantDisabilitiesIsInvoked_thenUpdateIsSuccess() throws Exception {
         ApplicantDisabilitiesDTO applicantDisabilitiesDTO = TestModelDataBuilder.getApplicantDisabilitiesDTO();
-        when(applicantDisabilitiesService.update(any()))
-                .thenReturn(applicantDisabilitiesDTO);
+        when(applicantDisabilitiesService.update(any())).thenReturn(applicantDisabilitiesDTO);
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(applicantDisabilitiesService).update(applicantDisabilitiesDTO);
-
     }
 
     @Test
-    void givenAEmptyContent_whenUpdateApplicantDisabilitiesIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
-                        .contentType(MediaType.APPLICATION_JSON))
+    void givenAEmptyContent_whenUpdateApplicantDisabilitiesIsInvoked_thenCorrectErrorResponseIsReturned()
+            throws Exception {
+        mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void givenInValidRequest_whenUpdateApplicantDisabilitiesIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
+    void givenInValidRequest_whenUpdateApplicantDisabilitiesIsInvoked_thenCorrectErrorResponseIsReturned()
+            throws Exception {
         when(applicantDisabilitiesService.update(any()))
                 .thenThrow(new RequestedObjectNotFoundException("Applicant Disabilities details not found"));
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
@@ -79,9 +81,9 @@ public class ApplicantDisabilitiesControllerTest {
     }
 
     @Test
-    void givenInternalServerError_whenUpdateApplicantDisabilitiesIsInvoked_thenCorrectErrorResponseIsReturned() throws Exception {
-        when(applicantDisabilitiesService.update(any()))
-                .thenThrow(EmptyResultDataAccessException.class);
+    void givenInternalServerError_whenUpdateApplicantDisabilitiesIsInvoked_thenCorrectErrorResponseIsReturned()
+            throws Exception {
+        when(applicantDisabilitiesService.update(any())).thenThrow(EmptyResultDataAccessException.class);
         mvc.perform(MockMvcRequestBuilders.put(ENDPOINT_URL)
                         .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO()))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -93,20 +95,17 @@ public class ApplicantDisabilitiesControllerTest {
     @Test
     void givenValidRequest_whenCreateApplicantDisabilitiesIsInvoked_thenCreateIsSuccess() throws Exception {
         ApplicantDisabilitiesDTO applicantDisabilitiesDTO = TestModelDataBuilder.getApplicantDisabilitiesDTO();
-        when(applicantDisabilitiesService.create(any()))
-                .thenReturn(applicantDisabilitiesDTO);
+        when(applicantDisabilitiesService.create(any())).thenReturn(applicantDisabilitiesDTO);
         mvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL)
-                .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(TestModelDataBuilder.getApplicantDisabilitiesDTO()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(applicantDisabilitiesService).create(applicantDisabilitiesDTO);
-
     }
 
     @Test
     void givenValidRequest_whenDeleteApplicantDisabilitiesIsInvoked_thenDeleteIsSuccess() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/" + ID))
-                .andExpect(status().isOk());
+        mvc.perform(MockMvcRequestBuilders.delete(ENDPOINT_URL + "/" + ID)).andExpect(status().isOk());
         verify(applicantDisabilitiesService).delete(ID);
     }
 }

@@ -1,19 +1,17 @@
 package gov.uk.courtdata.enums;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonValue;
 import gov.uk.courtdata.converter.AbstractEnumConverter;
+import jakarta.persistence.Converter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import jakarta.persistence.Converter;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 @Getter
 @AllArgsConstructor
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum HardshipReviewProgressAction implements PersistableEnum<String> {
-
     FURTHER_INFO("FURTHER INFO", "Further Information requested"),
     ORIG_APP_REQUESTED("ORIG APP REQUESTED", "Original Application Requested"),
     ORIG_APP_RETURNED("ORIG APP RETURNED", "Original Application returned to HMCTS"),
@@ -24,6 +22,7 @@ public enum HardshipReviewProgressAction implements PersistableEnum<String> {
 
     @JsonValue
     private final String action;
+
     private final String description;
 
     @Override
@@ -32,7 +31,8 @@ public enum HardshipReviewProgressAction implements PersistableEnum<String> {
     }
 
     @Converter(autoApply = true)
-    private static class HardshipReviewProgressActionConverter extends AbstractEnumConverter<HardshipReviewProgressAction, String> {
+    private static class HardshipReviewProgressActionConverter
+            extends AbstractEnumConverter<HardshipReviewProgressAction, String> {
         protected HardshipReviewProgressActionConverter() {
             super(HardshipReviewProgressAction.class);
         }

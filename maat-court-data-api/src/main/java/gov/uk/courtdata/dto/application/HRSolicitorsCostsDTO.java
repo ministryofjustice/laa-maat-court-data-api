@@ -16,5 +16,4 @@ public class HRSolicitorsCostsDTO extends GenericDTO {
     private Currency solicitorVat;
     private Currency solicitorDisb;
     private Currency solicitorEstimatedTotalCost;
-
 }

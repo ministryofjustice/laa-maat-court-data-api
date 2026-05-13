@@ -19,5 +19,4 @@ public class AssessmentDetailDTO extends GenericDTO {
     private FrequenciesDTO partnerFrequency;
     private String description;
     private String detailCode;
-
 }

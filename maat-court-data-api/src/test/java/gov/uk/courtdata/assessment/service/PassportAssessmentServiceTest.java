@@ -1,7 +1,13 @@
 package gov.uk.courtdata.assessment.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static gov.uk.courtdata.assessment.service.PassportAssessmentService.STATUS_COMPLETE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import gov.uk.courtdata.assessment.impl.PassportAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -14,6 +20,11 @@ import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,19 +34,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static gov.uk.courtdata.assessment.service.PassportAssessmentService.STATUS_COMPLETE;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class PassportAssessmentServiceTest {
+class PassportAssessmentServiceTest {
 
     private static final Integer MOCK_ASSESSMENT_ID = 1000;
     private static final int MOCK_REP_ID = TestEntityDataBuilder.REP_ID;
@@ -46,18 +50,24 @@ public class PassportAssessmentServiceTest {
     @Mock
     private PassportAssessmentMapper passportAssessmentMapper;
 
-    @InjectMocks
-    private PassportAssessmentService passportAssessmentService;
-
     @Mock
     private PassportAssessmentRepository passportAssessmentRepository;
 
+    @Mock
+    private AssessmentReplacementService assessmentReplacementService;
+
+    @InjectMocks
+    private PassportAssessmentService passportAssessmentService;
+
     @Test
-    public void whenFindIsInvoked_thenAssessmentIsRetrieved() {
-        when(passportAssessmentService.buildPassportAssessmentDTO(any())).thenReturn(
-                PassportAssessmentDTO.builder().id(MOCK_ASSESSMENT_ID).build());
-        when(passportAssessmentImpl.find(any())).thenReturn(
-                PassportAssessmentEntity.builder().id(MOCK_ASSESSMENT_ID).build());
+    void whenFindIsInvoked_thenAssessmentIsRetrieved() {
+        when(passportAssessmentService.buildPassportAssessmentDTO(any()))
+                .thenReturn(
+                        PassportAssessmentDTO.builder().id(MOCK_ASSESSMENT_ID).build());
+        when(passportAssessmentImpl.find(any()))
+                .thenReturn(PassportAssessmentEntity.builder()
+                        .id(MOCK_ASSESSMENT_ID)
+                        .build());
 
         PassportAssessmentDTO returnedAssessment = passportAssessmentService.find(MOCK_ASSESSMENT_ID);
 
@@ -66,7 +76,7 @@ public class PassportAssessmentServiceTest {
     }
 
     @Test
-    public void whenFindIsInvokedWithInvalidId_thenNotFoundExceptionIsThrown() {
+    void whenFindIsInvokedWithInvalidId_thenNotFoundExceptionIsThrown() {
         when(passportAssessmentImpl.find(MOCK_REP_ID)).thenReturn(null);
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
@@ -75,14 +85,17 @@ public class PassportAssessmentServiceTest {
     }
 
     @Test
-    public void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
+    void whenFindByRepIdIsInvoked_thenAssessmentIsRetrieved() {
         PassportAssessmentEntity passportAssessmentEntity = PassportAssessmentEntity.builder()
                 .id(MOCK_ASSESSMENT_ID)
                 .repOrder(TestEntityDataBuilder.getRepOrder())
                 .build();
         when(passportAssessmentImpl.findByRepId(MOCK_REP_ID)).thenReturn(passportAssessmentEntity);
         when(passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(passportAssessmentEntity))
-                .thenReturn(PassportAssessmentDTO.builder().id(MOCK_ASSESSMENT_ID).repId(MOCK_REP_ID).build());
+                .thenReturn(PassportAssessmentDTO.builder()
+                        .id(MOCK_ASSESSMENT_ID)
+                        .repId(MOCK_REP_ID)
+                        .build());
 
         PassportAssessmentDTO returnedAssessment = passportAssessmentService.findByRepId(MOCK_REP_ID);
 
@@ -93,7 +106,7 @@ public class PassportAssessmentServiceTest {
     }
 
     @Test
-    public void whenFindByRepIdIsInvokedWithInvalidRepId_thenNotFoundExceptionIsThrown() {
+    void whenFindByRepIdIsInvokedWithInvalidRepId_thenNotFoundExceptionIsThrown() {
         when(passportAssessmentImpl.findByRepId(MOCK_REP_ID)).thenReturn(null);
 
         assertThatExceptionOfType(RequestedObjectNotFoundException.class)
@@ -102,43 +115,52 @@ public class PassportAssessmentServiceTest {
     }
 
     @Test
-    public void whenDeleteIsInvoked_thenAssessmentIsDeleted() {
+    void whenDeleteIsInvoked_thenAssessmentIsDeleted() {
         passportAssessmentService.delete(MOCK_ASSESSMENT_ID);
         verify(passportAssessmentImpl).delete(any(Integer.class));
     }
 
     @Test
-    public void whenCreateIsInvoked_thenAssessmentIsCreated() {
+    void whenCreateIsInvoked_thenAssessmentIsCreated() {
         PassportAssessmentDTO passportAssessmentDTO = TestModelDataBuilder.getPassportAssessmentDTO();
         CreatePassportAssessment passportAssessment = TestModelDataBuilder.getCreatePassportAssessment();
 
-        when(passportAssessmentMapper.createPassportAssessmentToPassportAssessmentDTO(any())).thenReturn(passportAssessmentDTO);
-        when(passportAssessmentImpl.create(any())).thenReturn(
-                PassportAssessmentEntity.builder().id(MOCK_ASSESSMENT_ID).build());
-        when(passportAssessmentService.buildPassportAssessmentDTO(any())).thenReturn(
-                PassportAssessmentDTO.builder().id(MOCK_ASSESSMENT_ID).build());
+        when(passportAssessmentMapper.createPassportAssessmentToPassportAssessmentDTO(any()))
+                .thenReturn(passportAssessmentDTO);
+        when(passportAssessmentImpl.create(any()))
+                .thenReturn(PassportAssessmentEntity.builder()
+                        .id(MOCK_ASSESSMENT_ID)
+                        .build());
+        when(passportAssessmentService.buildPassportAssessmentDTO(any()))
+                .thenReturn(
+                        PassportAssessmentDTO.builder().id(MOCK_ASSESSMENT_ID).build());
 
         PassportAssessmentDTO returnedAssessment = passportAssessmentService.create(passportAssessment);
 
         verify(passportAssessmentImpl).create(any(PassportAssessmentDTO.class));
-        verify(passportAssessmentImpl).setOldPassportAssessmentAsReplaced(any(PassportAssessmentEntity.class), anyInt());
+        verify(assessmentReplacementService).replacePreviousAssessments(any(PassportAssessmentEntity.class));
 
         assertThat(returnedAssessment.getId()).isEqualTo(MOCK_ASSESSMENT_ID);
     }
 
     @Test
-    public void whenUpdateIsInvoked_thenAssessmentIsUpdated() {
+    void whenUpdateIsInvoked_thenAssessmentIsUpdated() {
         PassportAssessmentDTO passportAssessmentDTO = TestModelDataBuilder.getPassportAssessmentDTO();
         passportAssessmentDTO.setId(MOCK_ASSESSMENT_ID);
         UpdatePassportAssessment passportAssessment = TestModelDataBuilder.getUpdatePassportAssessment();
         PassportAssessmentEntity existingPassportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         existingPassportAssessmentEntity.setPastStatus("NEW");
-        when(passportAssessmentMapper.updatePassportAssessmentToPassportAssessmentDTO(any(UpdatePassportAssessment.class))).thenReturn(passportAssessmentDTO);
+        when(passportAssessmentMapper.updatePassportAssessmentToPassportAssessmentDTO(
+                        any(UpdatePassportAssessment.class)))
+                .thenReturn(passportAssessmentDTO);
         when(passportAssessmentImpl.find(any(Integer.class))).thenReturn(existingPassportAssessmentEntity);
-        when(passportAssessmentImpl.update(any())).thenReturn(
-                PassportAssessmentEntity.builder().id(MOCK_ASSESSMENT_ID).build());
-        when(passportAssessmentService.buildPassportAssessmentDTO(any())).thenReturn(
-                PassportAssessmentDTO.builder().id(MOCK_ASSESSMENT_ID).build());
+        when(passportAssessmentImpl.update(any()))
+                .thenReturn(PassportAssessmentEntity.builder()
+                        .id(MOCK_ASSESSMENT_ID)
+                        .build());
+        when(passportAssessmentService.buildPassportAssessmentDTO(any()))
+                .thenReturn(
+                        PassportAssessmentDTO.builder().id(MOCK_ASSESSMENT_ID).build());
 
         PassportAssessmentDTO returnedAssessment = passportAssessmentService.update(passportAssessment);
 
@@ -147,59 +169,55 @@ public class PassportAssessmentServiceTest {
     }
 
     @Test
-    public void whenUpdateIsInvokedOnCompletedPassportAssessment_thenValidationExceptionIsThrown() {
+    void whenUpdateIsInvokedOnCompletedPassportAssessment_thenValidationExceptionIsThrown() {
         PassportAssessmentDTO passportAssessmentDTO = TestModelDataBuilder.getPassportAssessmentDTO();
         passportAssessmentDTO.setId(MOCK_ASSESSMENT_ID);
         passportAssessmentDTO.setPastStatus(STATUS_COMPLETE);
         UpdatePassportAssessment passportAssessment = TestModelDataBuilder.getUpdatePassportAssessment();
         PassportAssessmentEntity existingPassportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
-        when(passportAssessmentMapper.updatePassportAssessmentToPassportAssessmentDTO(any(UpdatePassportAssessment.class))).thenReturn(passportAssessmentDTO);
+        when(passportAssessmentMapper.updatePassportAssessmentToPassportAssessmentDTO(
+                        any(UpdatePassportAssessment.class)))
+                .thenReturn(passportAssessmentDTO);
         when(passportAssessmentImpl.find(any(Integer.class))).thenReturn(existingPassportAssessmentEntity);
-        when(passportAssessmentService.buildPassportAssessmentDTO(any())).thenReturn(
-                PassportAssessmentDTO.builder().id(MOCK_ASSESSMENT_ID).build());
+        when(passportAssessmentService.buildPassportAssessmentDTO(any()))
+                .thenReturn(
+                        PassportAssessmentDTO.builder().id(MOCK_ASSESSMENT_ID).build());
 
-        ValidationException validationException = Assertions.assertThrows(ValidationException.class,
-                () -> passportAssessmentService.update(passportAssessment));
+        ValidationException validationException = Assertions.assertThrows(
+                ValidationException.class, () -> passportAssessmentService.update(passportAssessment));
         assertThat(validationException.getMessage()).isEqualTo("User cannot modify a completed assessment");
     }
 
     @Test
-    public void whenBuildPassportAssessmentDTOIsInvoked_thenDTOIsReturned() {
+    void whenBuildPassportAssessmentDTOIsInvoked_thenDTOIsReturned() {
         PassportAssessmentEntity passportAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
-        when(passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(any())).thenReturn(TestModelDataBuilder.getPassportAssessmentDTO());
+        when(passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(any()))
+                .thenReturn(TestModelDataBuilder.getPassportAssessmentDTO());
         PassportAssessmentDTO expectedDTO = TestModelDataBuilder.getPassportAssessmentDTO();
         PassportAssessmentDTO actualDTO = passportAssessmentService.buildPassportAssessmentDTO(passportAssessment);
         assertThat(actualDTO).isEqualTo(expectedDTO);
     }
 
     @Test
-    public void whenBuildPassportAssessmentDTOIsInvokedWithNoAssessmentDetails_thenDTOWithNoDetailsIsReturned() {
-        PassportAssessmentEntity passportAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
-        when(passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(any())).thenReturn(TestModelDataBuilder.getPassportAssessmentDTO());
-        PassportAssessmentDTO expectedDTO = TestModelDataBuilder.getPassportAssessmentDTO();
-        PassportAssessmentDTO actualDTO = passportAssessmentService.buildPassportAssessmentDTO(passportAssessment);
-        assertThat(actualDTO).isEqualTo(expectedDTO);
-    }
-
-    @Test
-    public void givenValidPassportAssessmentId_whenFindPassportAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() {
+    void
+            givenValidPassportAssessmentId_whenFindPassportAssessorDetailsIsInvoked_thenPopulatedAssessorDetailsAreReturned() {
         int passportAssessmentId = 1234;
         final String username = TestEntityDataBuilder.ASSESSOR_USER_NAME;
         PassportAssessmentEntity passportAssessment = PassportAssessmentEntity.builder()
                 .userCreated(username)
                 .userCreatedEntity(TestEntityDataBuilder.getUserEntity())
                 .build();
-        when(passportAssessmentImpl.find(passportAssessmentId))
-                .thenReturn(passportAssessment);
+        when(passportAssessmentImpl.find(passportAssessmentId)).thenReturn(passportAssessment);
 
-        AssessorDetails passportAssessorDetails = passportAssessmentService.findPassportAssessorDetails(passportAssessmentId);
+        AssessorDetails passportAssessorDetails =
+                passportAssessmentService.findPassportAssessorDetails(passportAssessmentId);
 
-        assertEquals("Karen Greaves", passportAssessorDetails.getFullName());
-        assertEquals(username, passportAssessorDetails.getUserName());
+        assertThat(passportAssessorDetails.getFullName()).isEqualTo("Karen Greaves");
+        assertThat(passportAssessorDetails.getUserName()).isEqualTo(username);
     }
 
     @Test
-    public void givenValidPassportAssessment_whenPatchIsInvoked_thenAssessmentIsUpdated() throws JsonProcessingException {
+    void givenValidPassportAssessment_whenPatchIsInvoked_thenAssessmentIsUpdated() throws JsonProcessingException {
         PassportAssessmentEntity passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         String requestJson = "{\"replaced\":\"Y\"}";
         Map<String, Object> updateFields = new ObjectMapper().readValue(requestJson, HashMap.class);

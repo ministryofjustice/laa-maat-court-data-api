@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class PropertyTypeTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.PROPERTY_TYPE_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class PropertyTypeTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.PROPERTY_TYPE_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final PropertyTypeTypeRef _PropertyTypeTypeRefFactory = new PropertyTypeTypeRef();
+    private static final PropertyTypeTypeRef _PropertyTypeTypeRefFactory = new PropertyTypeTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _PropertyTypeTypeRefFactory; }
-  /* constructor */
-  public PropertyTypeTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _PropertyTypeTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public PropertyTypeTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    PropertyTypeTypeRef r = new PropertyTypeTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static PropertyTypeTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (PropertyTypeTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to PropertyTypeTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        PropertyTypeTypeRef r = new PropertyTypeTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public PropertyTypeType getValue() throws SQLException
-  {
-     return (PropertyTypeType) PropertyTypeType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static PropertyTypeTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (PropertyTypeTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to PropertyTypeTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(PropertyTypeType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public PropertyTypeType getValue() throws SQLException {
+        return (PropertyTypeType) PropertyTypeType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(PropertyTypeType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

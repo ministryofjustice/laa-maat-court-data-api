@@ -3,14 +3,13 @@ package gov.uk.courtdata.assessment.impl;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
-import gov.uk.courtdata.repository.FinancialAssessmentRepository;
-import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -19,8 +18,6 @@ public class PassportAssessmentImpl {
 
     private final PassportAssessmentMapper assessmentMapper;
     private final PassportAssessmentRepository passportAssessmentRepository;
-    private final FinancialAssessmentRepository financialAssessmentRepository;
-    private final HardshipReviewRepository hardshipReviewRepository;
 
     public PassportAssessmentEntity find(Integer passportAssessmentId) {
         return passportAssessmentRepository.getReferenceById(passportAssessmentId);
@@ -31,7 +28,8 @@ public class PassportAssessmentImpl {
     }
 
     public PassportAssessmentEntity update(PassportAssessmentDTO passportAssessmentDTO) {
-        PassportAssessmentEntity existingPassportAssessment = passportAssessmentRepository.getReferenceById(passportAssessmentDTO.getId());
+        PassportAssessmentEntity existingPassportAssessment =
+                passportAssessmentRepository.getReferenceById(passportAssessmentDTO.getId());
         existingPassportAssessment.setNworCode(passportAssessmentDTO.getNworCode());
         existingPassportAssessment.setCmuId(passportAssessmentDTO.getCmuId());
         existingPassportAssessment.setAssessmentDate(passportAssessmentDTO.getAssessmentDate());
@@ -58,7 +56,10 @@ public class PassportAssessmentImpl {
         existingPassportAssessment.setWhoDWPChecked(passportAssessmentDTO.getWhoDWPChecked());
         existingPassportAssessment.setDateCompleted(passportAssessmentDTO.getDateCompleted());
         existingPassportAssessment.setUserModified(passportAssessmentDTO.getUserModified());
-        existingPassportAssessment.setDateModified(passportAssessmentDTO.getDateModified() != null ? passportAssessmentDTO.getDateModified() : LocalDateTime.now());
+        existingPassportAssessment.setDateModified(
+                passportAssessmentDTO.getDateModified() != null
+                        ? passportAssessmentDTO.getDateModified()
+                        : LocalDateTime.now());
         return passportAssessmentRepository.save(existingPassportAssessment);
     }
 
@@ -67,19 +68,8 @@ public class PassportAssessmentImpl {
     }
 
     public PassportAssessmentEntity create(PassportAssessmentDTO passportAssessmentDTO) {
-        PassportAssessmentEntity passportAssessmentEntity = assessmentMapper.passportAssessmentDtoToPassportAssessmentEntity(passportAssessmentDTO);
+        PassportAssessmentEntity passportAssessmentEntity =
+                assessmentMapper.passportAssessmentDtoToPassportAssessmentEntity(passportAssessmentDTO);
         return passportAssessmentRepository.save(passportAssessmentEntity);
-    }
-
-    public void setOldPassportAssessmentAsReplaced(PassportAssessmentEntity passportAssessment, Integer financialAssessmentId) {
-        passportAssessmentRepository.updatePreviousPassportAssessmentsAsReplaced(
-                passportAssessment.getRepOrder().getId(), passportAssessment.getId()
-        );
-        financialAssessmentRepository.updateAllPreviousFinancialAssessmentsAsReplaced(
-                passportAssessment.getRepOrder().getId()
-        );
-        hardshipReviewRepository.replaceOldHardshipReviews(
-                passportAssessment.getRepOrder().getId(), financialAssessmentId
-        );
     }
 }

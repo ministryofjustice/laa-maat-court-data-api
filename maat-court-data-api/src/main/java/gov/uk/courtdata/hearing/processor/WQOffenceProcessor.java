@@ -1,5 +1,11 @@
 package gov.uk.courtdata.hearing.processor;
 
+import static gov.uk.courtdata.constants.CourtDataConstants.G_NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.LEADING_ZERO_3;
+import static gov.uk.courtdata.constants.CourtDataConstants.NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.YES;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.WQOffenceEntity;
 import gov.uk.courtdata.enums.JurisdictionType;
@@ -9,11 +15,9 @@ import gov.uk.courtdata.offence.helper.OffenceHelper;
 import gov.uk.courtdata.repository.WQOffenceRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-
-import static gov.uk.courtdata.constants.CourtDataConstants.*;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +27,6 @@ public class WQOffenceProcessor {
     private final OffenceHelper offenceHelper;
 
     public void process(final HearingDTO magsCourtDTO) {
-
 
         final HearingOffenceDTO offence = magsCourtDTO.getOffence();
 
@@ -39,7 +42,8 @@ public class WQOffenceProcessor {
                 .offenceDate(DateUtil.parse(offence.getOffenceDate()))
                 .offenceShortTitle(offence.getOffenceShortTitle())
                 .modeOfTrial(offence.getModeOfTrial())
-                .offenceWording(StringUtils.truncate(offence.getOffenceWording(), CourtDataConstants.ORACLE_VARCHAR_MAX))
+                .offenceWording(
+                        StringUtils.truncate(offence.getOffenceWording(), CourtDataConstants.ORACLE_VARCHAR_MAX))
                 .wqOffence(null)
                 .applicationFlag(offence.getApplicationFlag() != null ? offence.getApplicationFlag() : G_NO)
                 .offenceId(offence.getOffenceId())
@@ -52,13 +56,13 @@ public class WQOffenceProcessor {
     private String isCCNewOffence(HearingDTO magsCourtDTO) {
         String isCCNewOffence = NO;
         if (JurisdictionType.CROWN == magsCourtDTO.getJurisdictionType()
-                && offenceHelper.isNewOffence(magsCourtDTO.getCaseId(), magsCourtDTO.getOffence().getAsnSeq())) {
+                && offenceHelper.isNewOffence(
+                        magsCourtDTO.getCaseId(), magsCourtDTO.getOffence().getAsnSeq())) {
             isCCNewOffence = YES;
         }
 
         return isCCNewOffence;
     }
-
 
     /**
      * Map legacy codes as in stored proc.
@@ -68,11 +72,9 @@ public class WQOffenceProcessor {
      */
     private String mapLegalAidStatus(String legalAidStatus) {
 
-        if (isEmpty(legalAidStatus))
-            return "AP";
+        if (isEmpty(legalAidStatus)) return "AP";
 
         switch (legalAidStatus) {
-
             case "RE":
                 return "FB";
             case "VA":
@@ -82,8 +84,5 @@ public class WQOffenceProcessor {
             default:
                 return legalAidStatus;
         }
-
     }
-
-
 }

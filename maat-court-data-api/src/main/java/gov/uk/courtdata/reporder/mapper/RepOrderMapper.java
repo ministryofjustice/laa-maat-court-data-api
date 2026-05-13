@@ -1,16 +1,24 @@
 package gov.uk.courtdata.reporder.mapper;
 
 import gov.uk.courtdata.dto.AssessorDetails;
-import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
+import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.IOJAppealEntity;
-import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.NewWorkReasonEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
+import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.CreateRepOrder;
 import gov.uk.courtdata.model.UpdateRepOrder;
+import gov.uk.courtdata.model.reporder.LinkingDetail;
+import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import gov.uk.courtdata.util.UserEntityUtils;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
 import org.mapstruct.Builder;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
@@ -18,10 +26,8 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.Comparator;
-import java.util.Optional;
-
-@Mapper(componentModel = "spring",
+@Mapper(
+        componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
@@ -48,12 +54,14 @@ public interface RepOrderMapper {
             return RepOrderStateDTO.builder().build();
         }
 
-        Optional<FinancialAssessmentEntity> maxIdFinancialAssessmentEntity = repOrderEntity.getFinancialAssessments().stream()
-                .max(Comparator.comparingInt(FinancialAssessmentEntity::getId));
-        Optional<PassportAssessmentEntity> maxIdPassportAssessmentEntity = repOrderEntity.getPassportAssessments().stream()
-                .max(Comparator.comparingInt(PassportAssessmentEntity::getId));
-        Optional<IOJAppealEntity> maxIdIOJAppealEntity = repOrderEntity.getIojAppeal().stream()
-            .max(Comparator.comparingInt(IOJAppealEntity::getId));
+        Optional<FinancialAssessmentEntity> maxIdFinancialAssessmentEntity =
+                repOrderEntity.getFinancialAssessments().stream()
+                        .max(Comparator.comparingInt(FinancialAssessmentEntity::getId));
+        Optional<PassportAssessmentEntity> maxIdPassportAssessmentEntity =
+                repOrderEntity.getPassportAssessments().stream()
+                        .max(Comparator.comparingInt(PassportAssessmentEntity::getId));
+        Optional<IOJAppealEntity> maxIdIOJAppealEntity =
+                repOrderEntity.getIojAppeal().stream().max(Comparator.comparingInt(IOJAppealEntity::getId));
 
         return RepOrderStateDTO.builder()
                 .usn(repOrderEntity.getUsn())
@@ -64,24 +72,56 @@ public interface RepOrderMapper {
                 .iojAssessorName(UserEntityUtils.extractFullName(repOrderEntity.getUserCreatedEntity()))
                 .dateAppCreated(repOrderEntity.getDateCreated())
                 .iojReason(repOrderEntity.getIojResultNote())
-                .meansInitResult(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getInitResult).orElse(null))
-                .meansInitStatus(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getFassInitStatus).orElse(null))
-                .meansFullResult(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getFullResult).orElse(null))
-                .meansFullStatus(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getFassFullStatus).orElse(null))
-                .meansAssessorName(maxIdFinancialAssessmentEntity.map(fae -> UserEntityUtils.extractFullName(fae.getUserCreatedEntity())).orElse(null))
-                .dateMeansCreated(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getDateCreated).orElse(null))
-                .passportResult(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getResult).orElse(null))
-                .passportStatus(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getPastStatus).orElse(null))
-                .passportAssessorName(maxIdPassportAssessmentEntity.map(pae -> UserEntityUtils.extractFullName(pae.getUserCreatedEntity())).orElse(null))
-                .datePassportCreated(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getDateCreated).orElse(null))
+                .meansInitResult(maxIdFinancialAssessmentEntity
+                        .map(FinancialAssessmentEntity::getInitResult)
+                        .orElse(null))
+                .meansInitStatus(maxIdFinancialAssessmentEntity
+                        .map(FinancialAssessmentEntity::getFassInitStatus)
+                        .orElse(null))
+                .meansFullResult(maxIdFinancialAssessmentEntity
+                        .map(FinancialAssessmentEntity::getFullResult)
+                        .orElse(null))
+                .meansFullStatus(maxIdFinancialAssessmentEntity
+                        .map(FinancialAssessmentEntity::getFassFullStatus)
+                        .orElse(null))
+                .meansAssessorName(maxIdFinancialAssessmentEntity
+                        .map(fae -> UserEntityUtils.extractFullName(fae.getUserCreatedEntity()))
+                        .orElse(null))
+                .dateMeansCreated(maxIdFinancialAssessmentEntity
+                        .map(FinancialAssessmentEntity::getDateCreated)
+                        .orElse(null))
+                .passportResult(maxIdPassportAssessmentEntity
+                        .map(PassportAssessmentEntity::getResult)
+                        .orElse(null))
+                .passportStatus(maxIdPassportAssessmentEntity
+                        .map(PassportAssessmentEntity::getPastStatus)
+                        .orElse(null))
+                .passportAssessorName(maxIdPassportAssessmentEntity
+                        .map(pae -> UserEntityUtils.extractFullName(pae.getUserCreatedEntity()))
+                        .orElse(null))
+                .datePassportCreated(maxIdPassportAssessmentEntity
+                        .map(PassportAssessmentEntity::getDateCreated)
+                        .orElse(null))
                 .fundingDecision(repOrderEntity.getDecisionReasonCode())
                 .ccRepDecision(repOrderEntity.getCrownRepOrderDecision())
-                .iojAppealResult(maxIdIOJAppealEntity.map(IOJAppealEntity::getDecisionResult).orElse(null))
-                .iojAppealAssessorName(maxIdIOJAppealEntity.map(IOJAppealEntity::getUserCreated).orElse(null))
-                .iojAppealDate(maxIdIOJAppealEntity.map(IOJAppealEntity::getDecisionDate).orElse(null))
-                .meansReviewType(maxIdFinancialAssessmentEntity.map(FinancialAssessmentEntity::getRtCode).orElse(null))
-                .passportReviewType(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getRtCode).orElse(null))
-                .passportWorkReason(maxIdPassportAssessmentEntity.map(PassportAssessmentEntity::getNworCode).orElse(null))
+                .iojAppealResult(maxIdIOJAppealEntity
+                        .map(IOJAppealEntity::getDecisionResult)
+                        .orElse(null))
+                .iojAppealAssessorName(maxIdIOJAppealEntity
+                        .map(IOJAppealEntity::getUserCreated)
+                        .orElse(null))
+                .iojAppealDate(maxIdIOJAppealEntity
+                        .map(IOJAppealEntity::getDecisionDate)
+                        .orElse(null))
+                .meansReviewType(maxIdFinancialAssessmentEntity
+                        .map(FinancialAssessmentEntity::getRtCode)
+                        .orElse(null))
+                .passportReviewType(maxIdPassportAssessmentEntity
+                        .map(PassportAssessmentEntity::getRtCode)
+                        .orElse(null))
+                .passportWorkReason(maxIdPassportAssessmentEntity
+                        .map(PassportAssessmentEntity::getNworCode)
+                        .orElse(null))
                 .meansWorkReason(maxIdFinancialAssessmentEntity
                         .map(FinancialAssessmentEntity::getNewWorkReason)
                         .map(NewWorkReasonEntity::getCode)
@@ -89,5 +129,24 @@ public interface RepOrderMapper {
                 .build();
     }
 
-}
+    default MaatSearchResponse mapMaatSearchResponse(
+            Integer maatId, List<WqLinkRegisterEntity> wqList, String caseUrn) {
+        if (wqList == null || wqList.isEmpty()) {
+            return MaatSearchResponse.builder().maatId(maatId).isLinked(false).build();
+        }
 
+        WqLinkRegisterEntity link = wqList.get(0);
+
+        return MaatSearchResponse.builder()
+                .maatId(maatId)
+                .isLinked(true)
+                .linkingDetail(LinkingDetail.builder()
+                        .libraId(link.getLibraId())
+                        .caseUrn(caseUrn)
+                        .cjsAreaCode(link.getCjsAreaCode())
+                        .cjsLocation(link.getCjsLocation())
+                        .caseId(link.getCaseId())
+                        .build())
+                .build();
+    }
+}

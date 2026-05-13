@@ -25,9 +25,10 @@ public class FullAssessmentDTO extends GenericDTO {
     private Double threshold;
     private String result;
     private String resultReason;
+
     @Builder.Default
     private AssessmentStatusDTO assessmnentStatusDTO = new AssessmentStatusDTO();
+
     @Builder.Default
     private Collection<AssessmentSectionSummaryDTO> sectionSummaries = new ArrayList<>();
-
 }

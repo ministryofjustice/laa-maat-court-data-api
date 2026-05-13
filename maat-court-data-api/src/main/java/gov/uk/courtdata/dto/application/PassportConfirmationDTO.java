@@ -13,6 +13,4 @@ public class PassportConfirmationDTO extends GenericDTO {
 
     private String confirmation;
     private String description;
-
-
 }

@@ -18,5 +18,4 @@ public class ReviewTypeDTO extends GenericDTO {
 
     private String code;
     private String description;
-
 }

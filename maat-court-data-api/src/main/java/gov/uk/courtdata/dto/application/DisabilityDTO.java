@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.uk.courtdata.dto.application;
 
@@ -14,11 +14,9 @@ import java.util.Date;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class DisabilityDTO extends GenericDTO
-{
-	private String				disability;
-	private String				description;
-	private Date				dateFrom;
-	private Date				dateTo;
-
+public class DisabilityDTO extends GenericDTO {
+    private String disability;
+    private String description;
+    private Date dateFrom;
+    private Date dateTo;
 }

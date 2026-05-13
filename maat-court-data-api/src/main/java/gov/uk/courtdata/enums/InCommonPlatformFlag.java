@@ -1,7 +1,6 @@
 package gov.uk.courtdata.enums;
 
 public enum InCommonPlatformFlag {
-
     YES("Y"),
     NO("N");
 

@@ -4,6 +4,7 @@ import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity_;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
 import org.springframework.data.jpa.domain.Specification;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

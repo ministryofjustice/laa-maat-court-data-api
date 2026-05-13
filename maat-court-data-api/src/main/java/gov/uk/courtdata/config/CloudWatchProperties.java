@@ -1,13 +1,13 @@
 package gov.uk.courtdata.config;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.Duration;
+
 import org.springframework.boot.actuate.autoconfigure.metrics.export.properties.StepRegistryProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-
-import java.time.Duration;
 
 @Getter
 @Setter

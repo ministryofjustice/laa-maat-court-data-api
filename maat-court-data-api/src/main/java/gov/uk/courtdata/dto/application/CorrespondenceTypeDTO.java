@@ -13,5 +13,4 @@ public class CorrespondenceTypeDTO extends GenericDTO {
 
     private String correspondenceType;
     private String description;
-
 }

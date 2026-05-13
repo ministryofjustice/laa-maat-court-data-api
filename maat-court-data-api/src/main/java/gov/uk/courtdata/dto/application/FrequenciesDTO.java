@@ -15,5 +15,4 @@ public class FrequenciesDTO extends GenericDTO {
     private String code;
     private String description;
     private Long annualWeighting;
-
 }

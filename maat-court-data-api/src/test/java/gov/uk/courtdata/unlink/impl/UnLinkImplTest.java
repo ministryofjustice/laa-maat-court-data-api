@@ -1,42 +1,53 @@
 package gov.uk.courtdata.unlink.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+
 import gov.uk.courtdata.entity.RepOrderCPDataEntity;
 import gov.uk.courtdata.entity.UnlinkEntity;
 import gov.uk.courtdata.entity.WqCoreEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.model.Unlink;
 import gov.uk.courtdata.model.UnlinkModel;
-import gov.uk.courtdata.repository.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
+import gov.uk.courtdata.repository.IdentifierRepository;
+import gov.uk.courtdata.repository.RepOrderCPDataRepository;
+import gov.uk.courtdata.repository.UnlinkReasonRepository;
+import gov.uk.courtdata.repository.WqCoreRepository;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class UnLinkImplTest {
+class UnLinkImplTest {
 
     @InjectMocks
     private UnLinkImpl unLink;
 
     @Spy
     private WqLinkRegisterRepository wqLinkRegisterRepository;
+
     @Captor
     private ArgumentCaptor<WqLinkRegisterEntity> wqLinkRegisterEntityArgumentCaptor;
 
     @Spy
     private WqCoreRepository wqCoreRepository;
+
     @Captor
     private ArgumentCaptor<WqCoreEntity> wqCoreEntityArgumentCaptor;
 
-
     @Spy
     private UnlinkReasonRepository unlinkReasonRepository;
+
     @Captor
     private ArgumentCaptor<UnlinkEntity> unlinkEntityArgumentCaptor;
 
@@ -46,14 +57,8 @@ public class UnLinkImplTest {
     @Mock
     private RepOrderCPDataRepository repOrderCPDataRepository;
 
-
-    @BeforeEach
-    public void setUp() {
-    }
-
     @Test
-    public void givenCaseDetail_whenExecuteIsInvoked_thenCaseInUnlinked() {
-
+    void givenCaseDetail_whenExecuteIsInvoked_thenCaseInUnlinked() {
         UnlinkModel unlinkModel = getUnlinkModel();
         unLink.execute(unlinkModel);
 
@@ -64,8 +69,7 @@ public class UnLinkImplTest {
     }
 
     @Test
-    public void givenCaseDetail_whenExecuteIsInvoked_thenSaveWqCoreEntity() {
-
+    void givenCaseDetail_whenExecuteIsInvoked_thenSaveWqCoreEntity() {
         UnlinkModel unlinkModel = getUnlinkModel();
 
         unLink.execute(unlinkModel);
@@ -78,7 +82,7 @@ public class UnLinkImplTest {
     }
 
     @Test
-    public void givenCaseDetail_whenExecuteIsInvoked_thenSaveWqLinkRegisterEntity() {
+    void givenCaseDetail_whenExecuteIsInvoked_thenSaveWqLinkRegisterEntity() {
 
         UnlinkModel unlinkModel = getUnlinkModel();
 
@@ -87,14 +91,16 @@ public class UnLinkImplTest {
         verify(wqLinkRegisterRepository).save(wqLinkRegisterEntityArgumentCaptor.capture());
         assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getCaseId()).isEqualTo(5566);
         assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getCaseUrn()).isEqualTo("case565");
-        assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getRemovedUserId()).isEqualTo("1234");
+        assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getRemovedUserId())
+                .isEqualTo("1234");
         assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getLibraId()).isEqualTo("libraid1");
         assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getMaatId()).isEqualTo(43534543);
-        assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getCjsAreaCode()).isEqualTo("LFD3");
+        assertThat(wqLinkRegisterEntityArgumentCaptor.getValue().getCjsAreaCode())
+                .isEqualTo("LFD3");
     }
 
     @Test
-    public void givenCaseDetail_whenExecuteIsInvoked_thenSaveUnlinkEntity() {
+    void givenCaseDetail_whenExecuteIsInvoked_thenSaveUnlinkEntity() {
 
         UnlinkModel unlinkModel = getUnlinkModel();
 
@@ -107,9 +113,7 @@ public class UnLinkImplTest {
         assertThat(unlinkEntityArgumentCaptor.getValue().getOtherReason()).isEqualTo("some reason text");
     }
 
-
     private UnlinkModel getUnlinkModel() {
-
         Unlink unlink = Unlink.builder()
                 .userId("1234")
                 .maatId(5555666)
@@ -117,20 +121,17 @@ public class UnLinkImplTest {
                 .reasonId(8877)
                 .build();
 
-        WqLinkRegisterEntity wqLinkRegisterEntity =
-                WqLinkRegisterEntity.builder()
-                        .caseId(5566)
-                        .caseUrn("case565")
-                        .libraId("libraid1")
-                        .maatId(43534543)
-                        .cjsAreaCode("LFD3")
-                        .removedDate(LocalDateTime.now())
-                        .build();
+        WqLinkRegisterEntity wqLinkRegisterEntity = WqLinkRegisterEntity.builder()
+                .caseId(5566)
+                .caseUrn("case565")
+                .libraId("libraid1")
+                .maatId(43534543)
+                .cjsAreaCode("LFD3")
+                .removedDate(LocalDateTime.now())
+                .build();
 
         RepOrderCPDataEntity repOrderCPDataEntity =
-                RepOrderCPDataEntity.builder()
-                        .caseUrn("case565")
-                        .build();
+                RepOrderCPDataEntity.builder().caseUrn("case565").build();
 
         return UnlinkModel.builder()
                 .unlink(unlink)

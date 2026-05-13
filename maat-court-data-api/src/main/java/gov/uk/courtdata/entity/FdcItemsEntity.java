@@ -12,11 +12,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Data
 @Builder
@@ -28,12 +29,16 @@ import java.time.LocalDate;
 public class FdcItemsEntity {
 
     @Id
-    @SequenceGenerator(name = "fdc_contributions_gen_seq", sequenceName = "S_GENERAL_SEQUENCE", allocationSize = 1, schema = "TOGDATA")
+    @SequenceGenerator(
+            name = "fdc_contributions_gen_seq",
+            sequenceName = "S_GENERAL_SEQUENCE",
+            allocationSize = 1,
+            schema = "TOGDATA")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fdc_contributions_gen_seq")
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-    @Column(name= "FDC_ID")
+    @Column(name = "FDC_ID")
     private Integer fdcId;
 
     @Column(name = "CASE_NUMBER", length = 50)
@@ -79,5 +84,4 @@ public class FdcItemsEntity {
 
     @Column(name = "LATEST_COST_IND", length = 20)
     private String latestCostInd;
-
 }

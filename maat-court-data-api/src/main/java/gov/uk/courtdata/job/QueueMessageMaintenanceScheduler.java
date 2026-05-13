@@ -1,19 +1,19 @@
 package gov.uk.courtdata.job;
 
-
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.repository.QueueMessageLogRepository;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @Slf4j
 @Getter
@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 @EnableScheduling
 @RequiredArgsConstructor
 public class QueueMessageMaintenanceScheduler {
-
 
     private final QueueMessageLogRepository queueMessageLogRepository;
 

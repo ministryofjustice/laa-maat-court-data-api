@@ -1,19 +1,20 @@
 package gov.uk.courtdata.enums;
 
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.fasterxml.jackson.annotation.JsonValue;
 import gov.uk.courtdata.converter.AbstractEnumConverter;
 import jakarta.persistence.Converter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 @Getter
 @AllArgsConstructor
 public enum HardshipReviewDetailReason implements PersistableEnum<Integer> {
-
     EVIDENCE_SUPPLIED("Evidence Supplied", 7),
     ALLOWABLE_EXPENSE("Allowable Expense", 8),
     ESSENTIAL_NEED_FOR_WORK("Essential - need for work", 9),
@@ -29,6 +30,7 @@ public enum HardshipReviewDetailReason implements PersistableEnum<Integer> {
     @JsonValue
     @JsonPropertyDescription("Hardship review detail reasons")
     private final String reason;
+
     private final int id;
 
     public static HardshipReviewDetailReason getFrom(String reason) {
@@ -49,7 +51,8 @@ public enum HardshipReviewDetailReason implements PersistableEnum<Integer> {
     }
 
     @Converter(autoApply = true)
-    private static class HardshipReviewDetailReasonConverter extends AbstractEnumConverter<HardshipReviewDetailReason, Integer> {
+    private static class HardshipReviewDetailReasonConverter
+            extends AbstractEnumConverter<HardshipReviewDetailReason, Integer> {
         protected HardshipReviewDetailReasonConverter() {
             super(HardshipReviewDetailReason.class);
         }

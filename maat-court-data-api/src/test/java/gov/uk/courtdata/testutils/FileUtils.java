@@ -1,11 +1,11 @@
 package gov.uk.courtdata.testutils;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import org.jetbrains.annotations.NotNull;
 
 public class FileUtils {
 

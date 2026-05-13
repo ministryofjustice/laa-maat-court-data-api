@@ -1,11 +1,23 @@
 package gov.uk.courtdata.reporder.controller;
 
+import static gov.uk.courtdata.builder.TestModelDataBuilder.RESERVATION_ID;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.constants.CourtDataConstants;
 import gov.uk.courtdata.entity.ReservationsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.helper.ReservationsRepositoryHelper;
 import gov.uk.courtdata.reporder.service.ReservationsService;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,17 +27,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import static gov.uk.courtdata.builder.TestModelDataBuilder.RESERVATION_ID;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
 @WebMvcTest(ReservationsController.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class ReservationsControllerTest {
@@ -33,25 +34,23 @@ public class ReservationsControllerTest {
     private static final String BASE_END_POINT_URL = "/api/internal/v1/rep-orders/reservations";
     private static final String END_POINT_URL = BASE_END_POINT_URL + "/{id}";
     private static final int NON_EXISTENT_ID = 1234;
-    private static final ReservationsEntity RESERVATIONS_ENTITY = ReservationsEntity.builder()
-            .recordId(RESERVATION_ID)
-            .build();
+    private static final ReservationsEntity RESERVATIONS_ENTITY =
+            ReservationsEntity.builder().recordId(RESERVATION_ID).build();
 
     @MockitoBean
     private ReservationsRepositoryHelper reservationsRepositoryHelper;
 
     @MockitoBean
     ReservationsService reservationsService;
+
     @Autowired
     private MockMvc mvc;
 
     @Test
     void givenValidId_whenGetReservationsIsCalled_thenReservationsEntityIsReturned() throws Exception {
-        when(reservationsService.retrieve(RESERVATION_ID))
-                .thenReturn(RESERVATIONS_ENTITY);
+        when(reservationsService.retrieve(RESERVATION_ID)).thenReturn(RESERVATIONS_ENTITY);
 
-        mvc.perform(MockMvcRequestBuilders.get(END_POINT_URL, RESERVATION_ID)
-                        .contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.get(END_POINT_URL, RESERVATION_ID).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"recordId\":" + RESERVATION_ID + "}"));
     }
@@ -61,10 +60,11 @@ public class ReservationsControllerTest {
         when(reservationsService.retrieve(NON_EXISTENT_ID))
                 .thenThrow(new RequestedObjectNotFoundException("No Reservations found with Id: " + NON_EXISTENT_ID));
 
-        mvc.perform(MockMvcRequestBuilders.get(END_POINT_URL, NON_EXISTENT_ID)
-                        .contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.get(END_POINT_URL, NON_EXISTENT_ID).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(content().json("{\"code\":\"NOT_FOUND\",\"message\":\"No Reservations found with Id: " + NON_EXISTENT_ID + "\"}"));
+                .andExpect(content()
+                        .json("{\"code\":\"NOT_FOUND\",\"message\":\"No Reservations found with Id: " + NON_EXISTENT_ID
+                                + "\"}"));
     }
 
     @Test
@@ -112,7 +112,8 @@ public class ReservationsControllerTest {
                   "userName": "mock-user",
                   "userSession": "mock-session"
                 }
-                """.formatted(RESERVATION_ID);
+                """
+                .formatted(RESERVATION_ID);
     }
 
     @Test
@@ -132,8 +133,10 @@ public class ReservationsControllerTest {
     }
 
     @Test
-    void givenAValidParameters_whenGetReservationByRecordNameAndRecordIdIsInvoked_thenReturnReservationsEntity() throws Exception {
-        when(reservationsRepositoryHelper.getReservationByRecordNameAndRecordId(CourtDataConstants.RESERVATION_RECORD_NAME, TestModelDataBuilder.REP_ID))
+    void givenAValidParameters_whenGetReservationByRecordNameAndRecordIdIsInvoked_thenReturnReservationsEntity()
+            throws Exception {
+        when(reservationsRepositoryHelper.getReservationByRecordNameAndRecordId(
+                        CourtDataConstants.RESERVATION_RECORD_NAME, TestModelDataBuilder.REP_ID))
                 .thenReturn(Optional.ofNullable(ReservationsEntity.builder()
                         .recordName(TestModelDataBuilder.RESERVATION_RECORD_NAME)
                         .recordId(TestModelDataBuilder.REP_ID)
@@ -141,17 +144,20 @@ public class ReservationsControllerTest {
                         .userName(TestModelDataBuilder.USER_NAME)
                         .reservationDate(LocalDateTime.now())
                         .expiryDate(LocalDateTime.now())
-                        .build()
-                ));
-        mvc.perform(MockMvcRequestBuilders.get( ENDPOINT_URL + "/recordname/" + CourtDataConstants.RESERVATION_RECORD_NAME + "/recordid/" + TestModelDataBuilder.REP_ID))
+                        .build()));
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/recordname/"
+                        + CourtDataConstants.RESERVATION_RECORD_NAME + "/recordid/" + TestModelDataBuilder.REP_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.recordId").value(TestModelDataBuilder.REP_ID));
     }
 
     @Test
-    void givenIncorrectParameters_whenGetReservationByRecordNameAndRecordIdIsInvoked_thenErrorIsThrown() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/recordname/" + CourtDataConstants.RESERVATION_RECORD_NAME + "/recordid/").contentType(MediaType.APPLICATION_JSON))
+    void givenIncorrectParameters_whenGetReservationByRecordNameAndRecordIdIsInvoked_thenErrorIsThrown()
+            throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/recordname/"
+                                + CourtDataConstants.RESERVATION_RECORD_NAME + "/recordid/")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -165,9 +171,8 @@ public class ReservationsControllerTest {
                         .userName(TestModelDataBuilder.USER_NAME)
                         .reservationDate(LocalDateTime.now())
                         .expiryDate(LocalDateTime.now())
-                        .build()
-                ));
-        mvc.perform(MockMvcRequestBuilders.get( ENDPOINT_URL + "/username/" + TestModelDataBuilder.USER_NAME))
+                        .build()));
+        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/username/" + TestModelDataBuilder.USER_NAME))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.recordId").value(TestModelDataBuilder.REP_ID));

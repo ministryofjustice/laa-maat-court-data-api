@@ -13,6 +13,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class CreateContributionFileRequest extends CreateFileRequest{
+public class CreateContributionFileRequest extends CreateFileRequest {
     private Set<Integer> concorContributionIds;
 }

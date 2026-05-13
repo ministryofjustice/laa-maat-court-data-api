@@ -9,12 +9,13 @@ import gov.uk.courtdata.entity.ContributionsEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import uk.gov.justice.laa.crime.common.model.contribution.maat_api.CreateContributionRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -37,7 +38,8 @@ public class ContributionsService {
             contributionsEntityList = contributionsRepository.findAllByRepOrder_Id(repId);
         }
         if (contributionsEntityList.isEmpty()) {
-            throw new RequestedObjectNotFoundException(String.format("Contributions entry not found for repId %d", repId));
+            throw new RequestedObjectNotFoundException(
+                    String.format("Contributions entry not found for repId %d", repId));
         }
 
         return contributionsMapper.mapEntityToDTO(contributionsEntityList);
@@ -46,25 +48,28 @@ public class ContributionsService {
     @Transactional
     public ContributionsDTO create(CreateContributionRequest createContributions) {
         Integer repId = createContributions.getRepId();
-        ContributionsEntity existingContributionsEntity = contributionsRepository.findByRepOrder_IdAndLatestIsTrue(repId);
+        ContributionsEntity existingContributionsEntity =
+                contributionsRepository.findByRepOrder_IdAndLatestIsTrue(repId);
 
         if (existingContributionsEntity != null) {
             contributionsRepository.updateExistingContributionToInactive(repId, createContributions.getEffectiveDate());
             contributionsRepository.updateExistingContributionToPrior(repId);
         }
-        ContributionsEntity newContributionsEntity = contributionsMapper.createContributionsToContributionsEntity(createContributions);
+        ContributionsEntity newContributionsEntity =
+                contributionsMapper.createContributionsToContributionsEntity(createContributions);
         newContributionsEntity.setLatest(true);
         newContributionsEntity.setActive("Y");
         return contributionsMapper.mapEntityToDTO(contributionsRepository.saveAndFlush(newContributionsEntity));
     }
 
     public List<ContributionsSummaryDTO> getContributionsSummary(int repId) {
-        List<ContributionsSummaryView> contributionsSummaryViewEntities = contributionsRepository.getContributionsSummary(repId);
+        List<ContributionsSummaryView> contributionsSummaryViewEntities =
+                contributionsRepository.getContributionsSummary(repId);
 
         if (contributionsSummaryViewEntities.isEmpty()) {
-            throw new RequestedObjectNotFoundException(String.format("No contribution entries found for repId: %d", repId));
+            throw new RequestedObjectNotFoundException(
+                    String.format("No contribution entries found for repId: %d", repId));
         }
         return contributionsMapper.contributionsSummaryToContributionsSummaryDTO(contributionsSummaryViewEntities);
     }
-
 }

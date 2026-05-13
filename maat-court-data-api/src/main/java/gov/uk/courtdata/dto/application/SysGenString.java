@@ -1,26 +1,22 @@
 package gov.uk.courtdata.dto.application;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
+@Getter
+@Setter
 public class SysGenString implements Comparable<SysGenString>, Serializable {
 
     private static final long serialVersionUID = 9184684438673245028L;
 
     private String value;
 
-    public SysGenString() {
-    }
+    public SysGenString() {}
 
     public SysGenString(String value) {
         setValue(value);
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     public int compareTo(SysGenString o) {

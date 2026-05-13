@@ -20,21 +20,25 @@ import lombok.NoArgsConstructor;
 @Table(name = "FEATURE_TOGGLE", schema = "TOGDATA")
 public class FeatureToggleEntity {
 
-  @Id
-  @SequenceGenerator(name = "feature_toggle_seq", sequenceName = "ISEQ$$_316195", allocationSize = 1, schema = "TOGDATA")
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "feature_toggle_seq")
-  @Column(name = "ID", nullable = false)
-  private Integer id;
+    @Id
+    @SequenceGenerator(
+            name = "feature_toggle_seq",
+            sequenceName = "ISEQ$$_316195",
+            allocationSize = 1,
+            schema = "TOGDATA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "feature_toggle_seq")
+    @Column(name = "ID", nullable = false)
+    private Integer id;
 
-  @Column(name = "USER_NAME")
-  private String username;
+    @Column(name = "USER_NAME")
+    private String username;
 
-  @Column(name = "FEATURE")
-  private String featureName;
+    @Column(name = "FEATURE")
+    private String featureName;
 
-  @Column(name = "ACTION")
-  private String action;
+    @Column(name = "ACTION")
+    private String action;
 
-  @Column(name = "IS_ENABLED")
-  private String isEnabled;
+    @Column(name = "IS_ENABLED")
+    private String isEnabled;
 }

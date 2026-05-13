@@ -34,16 +34,22 @@ public class PassportedDTO extends GenericDTO {
 
     @Builder.Default
     private PartnerDTO partnerDetails = new PartnerDTO();
+
     @Builder.Default
     private JobSeekerDTO benefitJobSeeker = new JobSeekerDTO();
+
     @Builder.Default
     private AssessmentStatusDTO assessementStatusDTO = new AssessmentStatusDTO();
+
     @Builder.Default
     private PassportConfirmationDTO passportConfirmationDTO = new PassportConfirmationDTO();
+
     @Builder.Default
     private NewWorkReasonDTO newWorkReason = new NewWorkReasonDTO();
+
     @Builder.Default
     private ReviewTypeDTO reviewType = new ReviewTypeDTO();
+
     @Builder.Default
     private IncomeEvidenceSummaryDTO passportSummaryEvidenceDTO = new IncomeEvidenceSummaryDTO();
 }

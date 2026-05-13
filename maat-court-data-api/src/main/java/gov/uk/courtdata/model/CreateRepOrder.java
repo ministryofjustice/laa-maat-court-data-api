@@ -17,13 +17,16 @@ public class CreateRepOrder {
 
     @NotNull
     private String caseId;
+
     private String iojResult;
     private String catyCaseType;
     private String appealTypeCode;
     private String arrestSummonsNo;
     private String userModified;
+
     @NotNull
     private String userCreated;
+
     private String magsOutcome;
     private String magsOutcomeDate;
     private LocalDateTime magsOutcomeDateSet;
@@ -45,10 +48,13 @@ public class CreateRepOrder {
     private Integer preferredPaymentDay;
     private String sortCode;
     private Boolean isSendToCCLF;
+
     @NotNull
     private Integer areaId;
+
     @NotNull
     private Integer cmuId;
+
     private Boolean isCaseTransferred;
     private Boolean isBenchWarrantIssued;
     private LocalDate appealSentenceOrderChangedDate;
@@ -66,8 +72,10 @@ public class CreateRepOrder {
     private String capitalNote;
     private Integer capitalAllowance;
     private Boolean isCourtCustody;
+
     @NotNull
     private LocalDate dateReceived;
+
     private LocalDate dateStatusDue;
     private LocalDate dateStatusSet;
     private LocalDate decisionDate;

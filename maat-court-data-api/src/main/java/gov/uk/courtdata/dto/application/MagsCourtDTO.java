@@ -14,5 +14,4 @@ public class MagsCourtDTO extends GenericDTO {
     private String court;
     private String description;
     private Boolean wales;
-
 }

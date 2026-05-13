@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.uk.courtdata.dto.application;
 
@@ -14,13 +14,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class ReservationDTO extends GenericDTO {
 
-	/*
-	 * attributes
-	 */
-	
-	private Long	recordId;
-	private String	recordName;
-	
+    /*
+     * attributes
+     */
 
-
+    private Long recordId;
+    private String recordName;
 }

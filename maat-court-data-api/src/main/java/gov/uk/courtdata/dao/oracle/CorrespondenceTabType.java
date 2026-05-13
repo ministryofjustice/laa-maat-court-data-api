@@ -2,99 +2,88 @@ package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
 import oracle.jpub.runtime.MutableArray;
-import oracle.sql.*;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class CorrespondenceTabType implements ORAData, ORADataFactory
-{
-  public static final String _SQL_NAME = "TOGDATA.CORRESPONDENCE_TABTYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
+public class CorrespondenceTabType implements ORAData, ORADataFactory {
+    public static final String _SQL_NAME = "TOGDATA.CORRESPONDENCE_TABTYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.ARRAY;
 
-  MutableArray _array;
+    MutableArray _array;
 
-private static final CorrespondenceTabType _CorrespondenceTabTypeFactory = new CorrespondenceTabType();
+    private static final CorrespondenceTabType _CorrespondenceTabTypeFactory = new CorrespondenceTabType();
 
-  public static ORADataFactory getORADataFactory()
-  { return _CorrespondenceTabTypeFactory; }
-  /* constructors */
-  public CorrespondenceTabType()
-  {
-    this((CorrespondenceType[])null);
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _CorrespondenceTabTypeFactory;
+    }
 
-  public CorrespondenceTabType(CorrespondenceType[] a)
-  {
-    _array = new MutableArray(2002, a, CorrespondenceType.getORADataFactory());
-  }
+    /* constructors */
+    public CorrespondenceTabType() {
+        this((CorrespondenceType[]) null);
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _array.toDatum(c, _SQL_NAME);
-  }
+    public CorrespondenceTabType(CorrespondenceType[] a) {
+        _array = new MutableArray(2002, a, CorrespondenceType.getORADataFactory());
+    }
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    CorrespondenceTabType a = new CorrespondenceTabType();
-    a._array = new MutableArray(2002, (ARRAY) d, CorrespondenceType.getORADataFactory());
-    return a;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _array.toDatum(c, _SQL_NAME);
+    }
 
-  public int length() throws SQLException
-  {
-    return _array.length();
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        CorrespondenceTabType a = new CorrespondenceTabType();
+        a._array = new MutableArray(2002, (ARRAY) d, CorrespondenceType.getORADataFactory());
+        return a;
+    }
 
-  public int getBaseType() throws SQLException
-  {
-    return _array.getBaseType();
-  }
+    public int length() throws SQLException {
+        return _array.length();
+    }
 
-  public String getBaseTypeName() throws SQLException
-  {
-    return _array.getBaseTypeName();
-  }
+    public int getBaseType() throws SQLException {
+        return _array.getBaseType();
+    }
 
-  public ArrayDescriptor getDescriptor() throws SQLException
-  {
-    return _array.getDescriptor();
-  }
+    public String getBaseTypeName() throws SQLException {
+        return _array.getBaseTypeName();
+    }
 
-  /* array accessor methods */
-  public CorrespondenceType[] getArray() throws SQLException
-  {
-    return (CorrespondenceType[]) _array.getObjectArray(
-      new CorrespondenceType[_array.length()]);
-  }
+    public ArrayDescriptor getDescriptor() throws SQLException {
+        return _array.getDescriptor();
+    }
 
-  public CorrespondenceType[] getArray(long index, int count) throws SQLException
-  {
-    return (CorrespondenceType[]) _array.getObjectArray(index,
-      new CorrespondenceType[_array.sliceLength(index, count)]);
-  }
+    /* array accessor methods */
+    public CorrespondenceType[] getArray() throws SQLException {
+        return (CorrespondenceType[]) _array.getObjectArray(new CorrespondenceType[_array.length()]);
+    }
 
-  public void setArray(CorrespondenceType[] a) throws SQLException
-  {
-    _array.setObjectArray(a);
-  }
+    public CorrespondenceType[] getArray(long index, int count) throws SQLException {
+        return (CorrespondenceType[])
+                _array.getObjectArray(index, new CorrespondenceType[_array.sliceLength(index, count)]);
+    }
 
-  public void setArray(CorrespondenceType[] a, long index) throws SQLException
-  {
-    _array.setObjectArray(a, index);
-  }
+    public void setArray(CorrespondenceType[] a) throws SQLException {
+        _array.setObjectArray(a);
+    }
 
-  public CorrespondenceType getElement(long index) throws SQLException
-  {
-    return (CorrespondenceType) _array.getObjectElement(index);
-  }
+    public void setArray(CorrespondenceType[] a, long index) throws SQLException {
+        _array.setObjectArray(a, index);
+    }
 
-  public void setElement(CorrespondenceType a, long index) throws SQLException
-  {
-    _array.setObjectElement(a, index);
-  }
+    public CorrespondenceType getElement(long index) throws SQLException {
+        return (CorrespondenceType) _array.getObjectElement(index);
+    }
 
+    public void setElement(CorrespondenceType a, long index) throws SQLException {
+        _array.setObjectElement(a, index);
+    }
 }

@@ -14,6 +14,7 @@ import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessmentDetails;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.util.UserEntityUtils;
+
 import org.mapstruct.Builder;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
@@ -26,8 +27,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
-        builder = @Builder(disableBuilder = true)
-)
+        builder = @Builder(disableBuilder = true))
 public interface FinancialAssessmentMapper {
 
     NewWorkReason newWorkReasonEntityToNewWorkReason(final NewWorkReasonEntity newWorkReason);
@@ -35,30 +35,38 @@ public interface FinancialAssessmentMapper {
     NewWorkReasonEntity newWorkReasonToNewWorkReasonEntity(final NewWorkReason newWorkReason);
 
     @Mapping(target = "repId", source = "repOrder.id")
-    FinancialAssessmentDTO financialAssessmentEntityToFinancialAssessmentDTO(final FinancialAssessmentEntity financialAssessment);
+    FinancialAssessmentDTO financialAssessmentEntityToFinancialAssessmentDTO(
+            final FinancialAssessmentEntity financialAssessment);
 
     @Mapping(target = "valid", source = "valid", defaultValue = "Y")
-    FinancialAssessmentDTO updateFinancialAssessmentToFinancialAssessmentDTO(final UpdateFinancialAssessment assessment);
+    FinancialAssessmentDTO updateFinancialAssessmentToFinancialAssessmentDTO(
+            final UpdateFinancialAssessment assessment);
 
     @Mapping(target = "newWorkReason.code", source = "nworCode")
     @Mapping(target = "valid", source = "valid", defaultValue = "Y")
-    FinancialAssessmentDTO createFinancialAssessmentToFinancialAssessmentDTO(final CreateFinancialAssessment assessment);
+    FinancialAssessmentDTO createFinancialAssessmentToFinancialAssessmentDTO(
+            final CreateFinancialAssessment assessment);
 
-    FinancialAssessmentDetails financialAssessmentDetailsEntityToFinancialAssessmentDetails(final FinancialAssessmentDetailEntity detailsEntity);
+    FinancialAssessmentDetails financialAssessmentDetailsEntityToFinancialAssessmentDetails(
+            final FinancialAssessmentDetailEntity detailsEntity);
 
     @Mapping(target = "repOrder.id", source = "repId")
-    FinancialAssessmentEntity financialAssessmentDtoToFinancialAssessmentEntity(final FinancialAssessmentDTO financialAssessment);
+    FinancialAssessmentEntity financialAssessmentDtoToFinancialAssessmentEntity(
+            final FinancialAssessmentDTO financialAssessment);
 
-    FinancialAssessmentDetailEntity financialAssessmentDetailsToFinancialAssessmentDetailsEntity(final FinancialAssessmentDetails details);
+    FinancialAssessmentDetailEntity financialAssessmentDetailsToFinancialAssessmentDetailsEntity(
+            final FinancialAssessmentDetails details);
 
     ChildWeightingsEntity childWeightingsToChildWeightingsEntity(final ChildWeightings childWeightings);
 
     ChildWeightings childWeightingsEntityToChildWeightings(final ChildWeightingsEntity childWeightingsEntity);
 
     @Mapping(target = "active", defaultValue = "Y")
-    FinAssIncomeEvidenceEntity finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(final FinAssIncomeEvidenceDTO finAssIncomeEvidenceDTO);
+    FinAssIncomeEvidenceEntity finAssIncomeEvidenceDTOToFinAssIncomeEvidenceEntity(
+            final FinAssIncomeEvidenceDTO finAssIncomeEvidenceDTO);
 
-    FinAssIncomeEvidenceDTO finAssIncomeEvidenceEntityToFinAssIncomeEvidenceDTO(final FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity);
+    FinAssIncomeEvidenceDTO finAssIncomeEvidenceEntityToFinAssIncomeEvidenceDTO(
+            final FinAssIncomeEvidenceEntity finAssIncomeEvidenceEntity);
 
     default AssessorDetails createMeansAssessorDetails(FinancialAssessmentEntity financialAssessment) {
         String fullName = UserEntityUtils.extractFullName(financialAssessment.getUserCreatedEntity());

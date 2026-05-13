@@ -1,7 +1,6 @@
 package gov.uk.courtdata.enums;
 
 public enum ModeOfTrial {
-
     NO_MODE_OF_TRAIL(7);
 
     private final int value;
@@ -13,5 +12,4 @@ public enum ModeOfTrial {
     public int value() {
         return this.value;
     }
-
-    }
+}

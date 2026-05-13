@@ -35,5 +35,4 @@ public class FdcContributionEntry {
     private String agfsComplete;
     private BigDecimal vat;
     private BigDecimal lgfsVat;
-
 }

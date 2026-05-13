@@ -1,11 +1,12 @@
 package gov.uk.courtdata.iojappeal.mapper;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.crime.enums.IojAppealAssessor;
+
+import org.junit.jupiter.api.Test;
 
 class IOJAppealMapperTest {
     IOJAppealMapper iojAppealMapper = new IOJAppealMapperImpl();
@@ -16,21 +17,25 @@ class IOJAppealMapperTest {
         var entity = iojAppealMapper.toIojAppealEntity(request);
 
         assertThat(entity)
-            .isNotNull()
-            .hasNoNullFieldsOrPropertiesExcept(
-                "id", "dateCreated", "incomplete", "dateModified", "userModified");
-        assertThat(entity.getAppealSetupResult())
-            .isEqualTo("GRANT");
+                .isNotNull()
+                .hasNoNullFieldsOrPropertiesExcept("id", "dateCreated", "incomplete", "dateModified", "userModified");
+        assertThat(entity.getAppealSetupResult()).isEqualTo("GRANT");
         assertThat(entity.getNotes()).isEqualTo(request.getIojAppeal().getNotes());
         assertThat(entity.getIapsStatus()).isEqualTo("COMPLETE");
-        assertThat(entity.getDecisionDate().toLocalDate()).isEqualTo(request.getIojAppeal().getDecisionDate());
-        assertThat(entity.getIderCode()).isEqualTo(request.getIojAppeal().getDecisionReason().getCode());
-        assertThat(entity.getUserCreated()).isEqualTo(request.getIojAppealMetadata().getUserSession().getUserName());
+        assertThat(entity.getDecisionDate().toLocalDate())
+                .isEqualTo(request.getIojAppeal().getDecisionDate());
+        assertThat(entity.getIderCode())
+                .isEqualTo(request.getIojAppeal().getDecisionReason().getCode());
+        assertThat(entity.getUserCreated())
+                .isEqualTo(request.getIojAppealMetadata().getUserSession().getUserName());
         assertThat(entity.getCmuId()).isEqualTo(request.getIojAppealMetadata().getCaseManagementUnitId());
-        assertThat(entity.getAppealSetupDate().toLocalDate()).isEqualTo(request.getIojAppeal().getReceivedDate());
+        assertThat(entity.getAppealSetupDate().toLocalDate())
+                .isEqualTo(request.getIojAppeal().getReceivedDate());
         assertThat(entity.getDecisionResult()).isEqualTo("PASS");
-        assertThat(entity.getNworCode()).isEqualTo(request.getIojAppeal().getAppealReason().getCode());
-        assertThat(entity.getRepOrder().getId()).isEqualTo(request.getIojAppealMetadata().getLegacyApplicationId());
+        assertThat(entity.getNworCode())
+                .isEqualTo(request.getIojAppeal().getAppealReason().getCode());
+        assertThat(entity.getRepOrder().getId())
+                .isEqualTo(request.getIojAppealMetadata().getLegacyApplicationId());
     }
 
     @Test
@@ -51,8 +56,10 @@ class IOJAppealMapperTest {
 
         assertThat(response.getLegacyAppealId()).isEqualTo(entity.getId());
         assertThat(response.getAppealReason().getCode()).isEqualTo(entity.getNworCode());
-        assertThat(response.getDecisionDate()).isEqualTo(entity.getDecisionDate().toLocalDate());
-        assertThat(response.getReceivedDate()).isEqualTo(entity.getAppealSetupDate().toLocalDate());
+        assertThat(response.getDecisionDate())
+                .isEqualTo(entity.getDecisionDate().toLocalDate());
+        assertThat(response.getReceivedDate())
+                .isEqualTo(entity.getAppealSetupDate().toLocalDate());
         assertThat(response.getCaseManagementUnitId()).isEqualTo(entity.getCmuId());
         assertThat(response.getAppealAssessor()).isEqualTo(IojAppealAssessor.CASEWORKER);
         assertThat(response.getAppealSuccessful()).isTrue();

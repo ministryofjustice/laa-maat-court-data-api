@@ -1,58 +1,58 @@
 package gov.uk.courtdata.dao.oracle;
 
 import oracle.jdbc.OracleTypes;
-import oracle.sql.*;
+import oracle.sql.Datum;
+import oracle.sql.ORAData;
+import oracle.sql.ORADataFactory;
+import oracle.sql.REF;
+import oracle.sql.STRUCT;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class TransferTypeTypeRef implements ORAData, ORADataFactory
-{
-  public static final String _SQL_BASETYPE = "TOGDATA.TRANSFER_TYPE_TYPE";
-  public static final int _SQL_TYPECODE = OracleTypes.REF;
+public class TransferTypeTypeRef implements ORAData, ORADataFactory {
+    public static final String _SQL_BASETYPE = "TOGDATA.TRANSFER_TYPE_TYPE";
+    public static final int _SQL_TYPECODE = OracleTypes.REF;
 
-  REF _ref;
+    REF _ref;
 
-private static final TransferTypeTypeRef _TransferTypeTypeRefFactory = new TransferTypeTypeRef();
+    private static final TransferTypeTypeRef _TransferTypeTypeRefFactory = new TransferTypeTypeRef();
 
-  public static ORADataFactory getORADataFactory()
-  { return _TransferTypeTypeRefFactory; }
-  /* constructor */
-  public TransferTypeTypeRef()
-  {
-  }
+    public static ORADataFactory getORADataFactory() {
+        return _TransferTypeTypeRefFactory;
+    }
 
-  /* ORAData interface */
-  public Datum toDatum(Connection c) throws SQLException
-  {
-    return _ref;
-  }
+    /* constructor */
+    public TransferTypeTypeRef() {}
 
-  /* ORADataFactory interface */
-  public ORAData create(Datum d, int sqlType) throws SQLException
-  {
-    if (d == null) return null; 
-    TransferTypeTypeRef r = new TransferTypeTypeRef();
-    r._ref = (REF) d;
-    return r;
-  }
+    /* ORAData interface */
+    public Datum toDatum(Connection c) throws SQLException {
+        return _ref;
+    }
 
-  public static TransferTypeTypeRef cast(ORAData o) throws SQLException
-  {
-     if (o == null) return null;
-     try { return (TransferTypeTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF); }
-     catch (Exception exn)
-     { throw new SQLException("Unable to convert "+o.getClass().getName()+" to TransferTypeTypeRef: "+exn.toString()); }
-  }
+    /* ORADataFactory interface */
+    public ORAData create(Datum d, int sqlType) throws SQLException {
+        if (d == null) return null;
+        TransferTypeTypeRef r = new TransferTypeTypeRef();
+        r._ref = (REF) d;
+        return r;
+    }
 
-  public TransferTypeType getValue() throws SQLException
-  {
-     return (TransferTypeType) TransferTypeType.getORADataFactory().create(
-       _ref.getSTRUCT(), OracleTypes.REF);
-  }
+    public static TransferTypeTypeRef cast(ORAData o) throws SQLException {
+        if (o == null) return null;
+        try {
+            return (TransferTypeTypeRef) getORADataFactory().create(o.toDatum(null), OracleTypes.REF);
+        } catch (Exception exn) {
+            throw new SQLException(
+                    "Unable to convert " + o.getClass().getName() + " to TransferTypeTypeRef: " + exn.toString());
+        }
+    }
 
-  public void setValue(TransferTypeType c) throws SQLException
-  {
-    _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
-  }
+    public TransferTypeType getValue() throws SQLException {
+        return (TransferTypeType) TransferTypeType.getORADataFactory().create(_ref.getSTRUCT(), OracleTypes.REF);
+    }
+
+    public void setValue(TransferTypeType c) throws SQLException {
+        _ref.setValue((STRUCT) c.toDatum(_ref.getJavaSqlConnection()));
+    }
 }

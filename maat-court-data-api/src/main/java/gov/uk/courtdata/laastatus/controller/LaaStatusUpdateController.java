@@ -1,6 +1,5 @@
 package gov.uk.courtdata.laastatus.controller;
 
-import com.google.gson.Gson;
 import gov.uk.courtdata.controller.StandardApiResponseCodes;
 import gov.uk.courtdata.enums.LoggingData;
 import gov.uk.courtdata.enums.MessageType;
@@ -18,16 +17,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
 
 @Slf4j
 @RestController
@@ -43,18 +45,31 @@ public class LaaStatusUpdateController {
 
     @PostMapping("/laaStatus")
     @Operation(summary = "Process LAA Status updates.")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MessageCollection.class)))
-    })
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = MessageCollection.class)))
+            })
     @StandardApiResponseCodes
-    public MessageCollection updateLAAStatus(@RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId,
-                                             @Parameter(description = "Case details", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetails.class)))
-                                             @RequestBody String jsonPayload) {
-        UUID laaTransactionIdUUID = Optional.ofNullable(laaTransactionId).isPresent() ?
-            UUID.fromString(laaTransactionId) :
-            UUID.randomUUID();
+    public MessageCollection updateLAAStatus(
+            @RequestHeader(value = "Laa-Transaction-Id", required = false) String laaTransactionId,
+            @Parameter(
+                            description = "Case details",
+                            content =
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = CaseDetails.class)))
+                    @RequestBody
+                    String jsonPayload) {
+        UUID laaTransactionIdUUID = Optional.ofNullable(laaTransactionId).isPresent()
+                ? UUID.fromString(laaTransactionId)
+                : UUID.randomUUID();
 
-      setupMDC(jsonPayload);
+        setupMDC(jsonPayload);
         log.info("LAA Status Update Request received.");
 
         queueMessageLogService.createLog(MessageType.LAA_STATUS_REST_CALL, jsonPayload);
@@ -79,11 +94,10 @@ public class LaaStatusUpdateController {
         return messageCollection;
     }
 
-  private void setupMDC(String jsonPayload) {
-        LaaTransactionLogging laaTransactionLogging = gson.fromJson(jsonPayload,
-            LaaTransactionLogging.class);
+    private void setupMDC(String jsonPayload) {
+        LaaTransactionLogging laaTransactionLogging = gson.fromJson(jsonPayload, LaaTransactionLogging.class);
 
-    LoggingData.MAAT_ID.putInMDC(laaTransactionLogging.getMaatId());
+        LoggingData.MAAT_ID.putInMDC(laaTransactionLogging.getMaatId());
         LoggingData.CASE_URN.putInMDC(laaTransactionLogging.getCaseUrn());
     }
 }

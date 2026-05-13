@@ -1,18 +1,18 @@
 package gov.uk.courtdata.repository;
 
 import gov.uk.courtdata.entity.RepOrderCCOutComeEntity;
+import jakarta.transaction.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import jakarta.transaction.Transactional;
-import java.time.LocalDate;
-import java.util.List;
-
 @Repository
 public interface CrownCourtProcessingRepository extends JpaRepository<RepOrderCCOutComeEntity, Integer> {
-
 
     @Transactional
     @Procedure(procedureName = "togdata.application.update_appeal_sentence_ord_dt")
@@ -32,5 +32,4 @@ public interface CrownCourtProcessingRepository extends JpaRepository<RepOrderCC
     List<RepOrderCCOutComeEntity> findByRepOrder_Id(Integer id);
 
     Integer deleteByRepOrder_Id(Integer repId);
-
 }

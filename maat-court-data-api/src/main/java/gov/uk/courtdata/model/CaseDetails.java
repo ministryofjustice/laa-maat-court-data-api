@@ -28,4 +28,5 @@ public class CaseDetails {
     private Integer category;
     private UUID laaTransactionId;
     private boolean onlyForCDAService;
+    private boolean canUpdateLaaStatus;
 }

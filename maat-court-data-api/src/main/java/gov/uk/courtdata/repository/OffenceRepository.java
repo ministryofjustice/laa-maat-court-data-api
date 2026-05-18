@@ -43,4 +43,16 @@ public interface OffenceRepository extends JpaRepository<OffenceEntity, AsnSeqTx
                     "SELECT COUNT(*) FROM MLA.XXMLA_OFFENCE WHERE CASE_ID = ?1 AND OFFENCE_ID = ?2 AND CC_NEW_OFFENCE = 'Y' AND APPLICATION_FLAG = 0",
             nativeQuery = true)
     Integer getNewOffenceCount(Integer caseId, String offenceId);
+
+    @Query(
+            value =
+                    """
+                     SELECT * FROM MLA.XXMLA_OFFENCE
+                     WHERE CASE_ID = ?1
+                     AND OFFENCE_CODE =?2
+                     AND ROWNUM = 1
+                     order by ASN_SEQ,TX_ID desc
+                  """,
+            nativeQuery = true)
+    Optional<OffenceEntity> getOffenceDetail(Integer caseId, String offenceCode);
 }

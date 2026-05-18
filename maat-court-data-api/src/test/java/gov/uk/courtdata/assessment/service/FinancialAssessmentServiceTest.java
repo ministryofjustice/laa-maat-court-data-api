@@ -19,8 +19,11 @@ import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
+import uk.gov.justice.laa.crime.error.ErrorMessage;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -45,6 +48,9 @@ class FinancialAssessmentServiceTest {
 
     @Mock
     private FinancialAssessmentImpl financialAssessmentImpl;
+
+    @Mock
+    private OutstandingAssessmentService outstandingAssessmentService;
 
     @Mock
     private FinancialAssessmentMapper financialAssessmentMapper;
@@ -117,23 +123,20 @@ class FinancialAssessmentServiceTest {
 
     @Test
     void givenOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenResultIsReturned() {
-        when(financialAssessmentImpl.checkForOutstandingAssessments(any(Integer.class)))
-                .thenReturn(OutstandingAssessmentResultDTO.builder()
-                        .outstandingAssessments(true)
-                        .message(MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND)
-                        .build());
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any(Integer.class)))
+                .thenReturn(List.of(new ErrorMessage("", MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND)));
         OutstandingAssessmentResultDTO result = financialAssessmentService.checkForOutstandingAssessments(TEST_REP_ID);
-        verify(financialAssessmentImpl).checkForOutstandingAssessments(any());
+        verify(outstandingAssessmentService).checkForOutstandingAssessments(any());
         assertThat(result.isOutstandingAssessments()).isTrue();
         assertThat(result.getMessage()).isEqualTo(MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
     }
 
     @Test
     void givenNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenNotFoundResultIsReturned() {
-        when(financialAssessmentImpl.checkForOutstandingAssessments(TEST_REP_ID))
-                .thenReturn(OutstandingAssessmentResultDTO.builder().build());
+        when(outstandingAssessmentService.checkForOutstandingAssessments(TEST_REP_ID))
+                .thenReturn(Collections.emptyList());
         OutstandingAssessmentResultDTO result = financialAssessmentService.checkForOutstandingAssessments(TEST_REP_ID);
-        verify(financialAssessmentImpl).checkForOutstandingAssessments(TEST_REP_ID);
+        verify(outstandingAssessmentService).checkForOutstandingAssessments(TEST_REP_ID);
         assertThat(result.isOutstandingAssessments()).isFalse();
     }
 

@@ -13,7 +13,9 @@ import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.justice.laa.crime.error.ErrorMessage;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,6 +32,7 @@ public class FinancialAssessmentService {
     private final FinancialAssessmentMapper assessmentMapper;
     private final FinancialAssessmentRepository financialAssessmentRepository;
     private final AssessmentReplacementService assessmentReplacementService;
+    private final OutstandingAssessmentService outstandingAssessmentService;
 
     @Transactional(readOnly = true)
     public FinancialAssessmentDTO find(int financialAssessmentId) {
@@ -66,7 +69,12 @@ public class FinancialAssessmentService {
     }
 
     public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId) {
-        return financialAssessmentImpl.checkForOutstandingAssessments(repId);
+        List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repId);
+
+        if (!errorList.isEmpty()) {
+            return new OutstandingAssessmentResultDTO(true, errorList.getFirst().message());
+        }
+        return new OutstandingAssessmentResultDTO();
     }
 
     @Transactional(readOnly = true)

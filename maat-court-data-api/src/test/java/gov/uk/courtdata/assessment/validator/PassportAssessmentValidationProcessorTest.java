@@ -6,6 +6,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
@@ -33,6 +34,9 @@ class PassportAssessmentValidationProcessorTest {
 
     @Mock
     private PassportAssessmentIdValidator passportAssessmentIdValidator;
+
+    @Mock
+    private OutstandingAssessmentService outstandingAssessmentService;
 
     @Test
     void testPassportAssessmentValidationProcessor_whenIdIsPassed_thenCallsIdValidator() {

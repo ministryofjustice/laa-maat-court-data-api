@@ -46,5 +46,4 @@ public class FinancialAssessmentSpecification {
             return criteriaBuilder.or(isNull, isFalse);
         };
     }
-
 }

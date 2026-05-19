@@ -68,9 +68,15 @@ public class FinancialAssessmentService {
         return assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
     }
 
-    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId) {
+    /**
+     * Check that the associated rep order does not have any in-progress financial/passported/hardship assessments.
+     * @deprecated Will be removed once the associated calling services have been refactored.
+     * @param repId RepId of the rep order to be checked.
+     * @return OutstandingAssessmentResultDTO containing the first error encountered, or empty if none found.
+     */
+    @Deprecated()
+    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(Integer repId) {
         List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repId);
-
         if (!errorList.isEmpty()) {
             return new OutstandingAssessmentResultDTO(true, errorList.getFirst().message());
         }

@@ -2,6 +2,7 @@ package gov.uk.courtdata.assessment.validator;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
 import gov.uk.courtdata.model.assessment.PassportAssessment;
@@ -20,6 +21,7 @@ public class PassportAssessmentValidationProcessor {
     private final CreatePassportAssessmentValidator createPassportAssessmentValidator;
     private final UpdatePassportAssessmentValidator updatePassportAssessmentValidator;
     private final PassportAssessmentIdValidator passportAssessmentIdValidator;
+    private final OutstandingAssessmentService outstandingAssessmentService;
 
     public Optional<Void> validate(Integer passportAssessmentId) {
         return passportAssessmentIdValidator.validate(passportAssessmentId);
@@ -38,11 +40,12 @@ public class PassportAssessmentValidationProcessor {
         } else if (isBlank(passportAssessment.getPastStatus())) {
             throw new ValidationException("Past Status is required");
         }
-        if (passportAssessment instanceof CreatePassportAssessment) {
-            return createPassportAssessmentValidator.validate((CreatePassportAssessment) passportAssessment);
+        if (passportAssessment instanceof CreatePassportAssessment createPassport) {
+            createPassportAssessmentValidator.validate(createPassport);
+            outstandingAssessmentService.legacyCheckForOutstandingAssessments(passportAssessment.getRepId());
         }
-        if (passportAssessment instanceof UpdatePassportAssessment) {
-            return updatePassportAssessmentValidator.validate((UpdatePassportAssessment) passportAssessment);
+        if (passportAssessment instanceof UpdatePassportAssessment updatePassport) {
+            updatePassportAssessmentValidator.validate(updatePassport);
         }
         return Optional.empty();
     }

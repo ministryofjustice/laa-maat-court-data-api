@@ -4,6 +4,7 @@ import static uk.gov.justice.laa.crime.enums.BenefitRecipient.PARTNER;
 import static uk.gov.justice.laa.crime.enums.BenefitType.JSA;
 
 import gov.uk.courtdata.applicant.service.PartnerResolver;
+import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
 import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.reporder.service.RepOrderService;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import uk.gov.justice.laa.crime.error.ErrorMessage;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
@@ -29,12 +31,15 @@ public class CreatePassportAssessmentV2Validator {
     private static final String LAST_SIGN_ON_DATE_FIELD = "passportedAssessment.declaredBenefit.lastSignOnDate";
     private static final String LEGACY_PARTNER_ID_FIELD = "passportedAssessment.declaredBenefit.legacyPartnerId";
     private final PartnerResolver partnerResolver;
+    private final OutstandingAssessmentService outstandingAssessmentService;
 
     public void validateCreateRequest(ApiCreatePassportedAssessmentRequest request) {
         List<ErrorMessage> errorMessages = Stream.of(
                         validateLastSignOnDate(request), validateRepOrder(request), validatePartner(request))
                 .flatMap(Optional::stream)
-                .toList();
+                .collect(Collectors.toList());
+        errorMessages.addAll(outstandingAssessmentService.checkForOutstandingAssessments(
+                request.getPassportedAssessmentMetadata().getLegacyApplicationId()));
         if (!errorMessages.isEmpty()) {
             throw new CrimeValidationException(errorMessages);
         }

@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.applicant.service.PartnerResolver;
+import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.reporder.service.RepOrderService;
@@ -33,6 +34,9 @@ class CreatePassportAssessmentV2ValidatorTest {
 
     @Mock
     RepOrderService repOrderService;
+
+    @Mock
+    OutstandingAssessmentService outstandingAssessmentService;
 
     @Mock
     PartnerResolver partnerResolver;

@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
@@ -49,6 +50,9 @@ class HardshipReviewControllerTest {
 
     @MockitoBean
     private HardshipReviewValidationProcessor hardshipReviewValidationProcessor;
+
+    @MockitoBean
+    private OutstandingAssessmentService outstandingAssessmentService;
 
     @Test
     void givenCorrectParameters_whenGetHardshipIsInvoked_thenHardshipIsReturned() throws Exception {

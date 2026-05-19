@@ -37,7 +37,7 @@ public class PassportAssessmentSpecification {
     public static Specification<PassportAssessmentEntity> isValid() {
         return (root, query, criteriaBuilder) -> {
             Predicate isNull = criteriaBuilder.isNull(root.get(PassportAssessmentEntity_.VALID));
-            Predicate isFalse = criteriaBuilder.equal(root.get(PassportAssessmentEntity_.VALID), NO);
+            Predicate isFalse = criteriaBuilder.notEqual(root.get(PassportAssessmentEntity_.VALID), NO);
             return criteriaBuilder.or(isNull, isFalse);
         };
     }

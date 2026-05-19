@@ -88,6 +88,7 @@ public class OutstandingAssessmentService {
     private Optional<ErrorMessage> hasOutstandingHardshipAssessment(Integer repId) {
         if (hardshipReviewRepository.exists(HardshipSpecification.hasRepId(repId)
                 .and(HardshipSpecification.isCurrent())
+                .and(HardshipSpecification.isValid())
                 .and(HardshipSpecification.isInProgress()))) {
             return Optional.of(new ErrorMessage("", MSG_OUTSTANDING_HARDSHIP_ASSESSMENT_FOUND));
         }

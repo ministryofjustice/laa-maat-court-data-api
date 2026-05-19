@@ -42,7 +42,7 @@ public class FinancialAssessmentSpecification {
     public static Specification<FinancialAssessmentEntity> isValid() {
         return (root, query, criteriaBuilder) -> {
             Predicate isNull = criteriaBuilder.isNull(root.get(FinancialAssessmentEntity_.VALID));
-            Predicate isFalse = criteriaBuilder.equal(root.get(FinancialAssessmentEntity_.VALID), NO);
+            Predicate isFalse = criteriaBuilder.notEqual(root.get(FinancialAssessmentEntity_.VALID), NO);
             return criteriaBuilder.or(isNull, isFalse);
         };
     }

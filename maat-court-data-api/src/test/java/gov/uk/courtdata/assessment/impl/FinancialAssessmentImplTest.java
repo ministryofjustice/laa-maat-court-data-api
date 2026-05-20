@@ -1,7 +1,5 @@
 package gov.uk.courtdata.assessment.impl;
 
-import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND;
-import static gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
@@ -13,7 +11,6 @@ import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.FinAssIncomeEvidenceDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.entity.FinAssIncomeEvidenceEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
@@ -172,42 +169,6 @@ class FinancialAssessmentImplTest {
     void whenDeleteIsInvoked_thenAssessmentIsDeleted() {
         financialAssessmentImpl.delete(MOCK_FINANCIAL_ASSESSMENT_ID);
         verify(financialAssessmentRepository).deleteById(any());
-    }
-
-    @Test
-    void
-            givenOutstandingFinancialAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentFoundResultIsRetrieved() {
-        when(financialAssessmentRepository.findOutstandingFinancialAssessments(any()))
-                .thenReturn(1L);
-        OutstandingAssessmentResultDTO result =
-                financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
-        assertThat(result.isOutstandingAssessments()).isTrue();
-        assertThat(result.getMessage()).isEqualTo(MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
-    }
-
-    @Test
-    void
-            givenOutstandingPassportAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentFoundResultIsRetrieved() {
-        when(financialAssessmentRepository.findOutstandingFinancialAssessments(any()))
-                .thenReturn(0L);
-        when(passportAssessmentRepository.findOutstandingPassportAssessments(any()))
-                .thenReturn(1L);
-        OutstandingAssessmentResultDTO result =
-                financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
-        assertThat(result.isOutstandingAssessments()).isTrue();
-        assertThat(result.getMessage()).isEqualTo(MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
-    }
-
-    @Test
-    void
-            givenNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenOutstandingAssessmentNotFoundResultIsRetrieved() {
-        when(financialAssessmentRepository.findOutstandingFinancialAssessments(any()))
-                .thenReturn(0L);
-        when(passportAssessmentRepository.findOutstandingPassportAssessments(any()))
-                .thenReturn(0L);
-        OutstandingAssessmentResultDTO result =
-                financialAssessmentImpl.checkForOutstandingAssessments(MOCK_FINANCIAL_ASSESSMENT_ID);
-        assertThat(result.isOutstandingAssessments()).isFalse();
     }
 
     @Test

@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import gov.uk.MAATCourtDataApplication;
-import gov.uk.courtdata.assessment.impl.FinancialAssessmentImpl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
+import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.AssessorDetails;
@@ -175,7 +175,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
                     throws Exception {
         OutstandingAssessmentResultDTO expectedResponse = OutstandingAssessmentResultDTO.builder()
                 .outstandingAssessments(true)
-                .message(FinancialAssessmentImpl.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND)
+                .message(OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND)
                 .build();
         assertThat(runSuccessScenario(expectedResponse, get(CHECK_OUTSTANDING_URL, repIdWithOutstandingAssessments)))
                 .isTrue();
@@ -187,7 +187,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
                     throws Exception {
         OutstandingAssessmentResultDTO expectedResponse = OutstandingAssessmentResultDTO.builder()
                 .outstandingAssessments(true)
-                .message(FinancialAssessmentImpl.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND)
+                .message(OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND)
                 .build();
         assertThat(runSuccessScenario(
                         expectedResponse, get(CHECK_OUTSTANDING_URL, repIdWithOutstandingPassportAssessments)))

@@ -1,6 +1,5 @@
 package gov.uk.courtdata.integration.hardship;
 
-import static gov.uk.courtdata.dto.application.AssessmentStatusDTO.INCOMPLETE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -15,7 +14,6 @@ import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.HardshipReviewDetailEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.entity.NewWorkReasonEntity;
-import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.enums.Frequency;
 import gov.uk.courtdata.enums.HardshipReviewDetailReason;
@@ -51,7 +49,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     private HardshipReviewEntity existingHardshipReview;
     private FinancialAssessmentEntity existingFinancialAssessment;
     private FinancialAssessmentEntity existingUnlinkedFinancialAssessment;
-    private PassportAssessmentEntity passportAssessmentEntity;
     private NewWorkReasonEntity existingNewWorkReason;
 
     @BeforeEach
@@ -116,94 +113,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
     }
 
     @Test
-    void
-            givenAValidHardshipReviewWithOutstandingFullMeansAssessment_whenCreateHardshipIsInvoked_theCorrectBadRequestIsReturned()
-                    throws Exception {
-        CreateHardshipReview request = TestModelDataBuilder.createHardshipReview(
-                existingUnlinkedFinancialAssessment.getId(),
-                existingUnlinkedFinancialAssessment.getRepOrder().getId(),
-                existingNewWorkReason.getCode(),
-                existingUnlinkedFinancialAssessment.getCmuId());
-
-        existingUnlinkedFinancialAssessment.setFassFullStatus(INCOMPLETE);
-        repos.financialAssessment.save(existingUnlinkedFinancialAssessment);
-
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message")
-                        .value("An incomplete means assessment is associated with the current application"))
-                .andExpect(jsonPath("$.code").value("BAD_REQUEST"));
-    }
-
-    @Test
-    void
-            givenAValidHardshipReviewWithOutstandingInitialMeansAssessment_whenCreateHardshipIsInvoked_theCorrectBadRequestIsReturned()
-                    throws Exception {
-        CreateHardshipReview request = TestModelDataBuilder.createHardshipReview(
-                existingUnlinkedFinancialAssessment.getId(),
-                existingUnlinkedFinancialAssessment.getRepOrder().getId(),
-                existingNewWorkReason.getCode(),
-                existingUnlinkedFinancialAssessment.getCmuId());
-
-        existingUnlinkedFinancialAssessment.setFassInitStatus(INCOMPLETE);
-        repos.financialAssessment.save(existingUnlinkedFinancialAssessment);
-
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message")
-                        .value("An incomplete means assessment is associated with the current application"))
-                .andExpect(jsonPath("$.code").value("BAD_REQUEST"));
-    }
-
-    @Test
-    void
-            givenAValidHardshipReviewWithOutstandingHardshipAssessment_whenCreateHardshipIsInvoked_theCorrectBadRequestIsReturned()
-                    throws Exception {
-        CreateHardshipReview request = TestModelDataBuilder.createHardshipReview(
-                existingFinancialAssessment.getId(),
-                existingFinancialAssessment.getRepOrder().getId(),
-                existingNewWorkReason.getCode(),
-                existingFinancialAssessment.getCmuId());
-
-        existingHardshipReview.setStatus(INCOMPLETE);
-        repos.hardshipReview.save(existingHardshipReview);
-
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message")
-                        .value("An incomplete hardship assessment is associated with the current application"))
-                .andExpect(jsonPath("$.code").value("BAD_REQUEST"));
-    }
-
-    @Test
-    void
-            givenAValidHardshipReviewWithOutstandingPassportAssessment_whenCreateHardshipIsInvoked_theCorrectBadRequestIsReturned()
-                    throws Exception {
-        CreateHardshipReview request = TestModelDataBuilder.createHardshipReview(
-                existingUnlinkedFinancialAssessment.getId(),
-                existingUnlinkedFinancialAssessment.getRepOrder().getId(),
-                existingNewWorkReason.getCode(),
-                existingUnlinkedFinancialAssessment.getCmuId());
-
-        passportAssessmentEntity.setPastStatus(INCOMPLETE);
-        repos.passportAssessment.save(passportAssessmentEntity);
-
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message")
-                        .value("An incomplete passport assessment is associated with the current application"))
-                .andExpect(jsonPath("$.code").value("BAD_REQUEST"));
-    }
-
-    @Test
     void givenAValidHardshipReview_whenUpdateHardshipIsInvoked_theCorrectDataIsPersisted() throws Exception {
 
         HardshipReviewDetailEntity existingReviewDetails =
@@ -257,10 +166,6 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
                 repos.financialAssessment.save(getTestFinancialAssessment(repOrderForUnlink));
         existingHardshipReview = repos.hardshipReview.save(getTestHardshipReview(
                 existingFinancialAssessment.getRepOrder().getId(), existingFinancialAssessment.getId()));
-
-        passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
-        passportAssessmentEntity.setRepOrder(repOrderForUnlink);
-        repos.passportAssessment.save(passportAssessmentEntity);
     }
 
     private HardshipReviewEntity getTestHardshipReview(Integer repId, Integer supportingAssessmentId) {

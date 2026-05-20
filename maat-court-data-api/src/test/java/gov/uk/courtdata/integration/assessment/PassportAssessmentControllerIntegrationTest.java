@@ -22,6 +22,7 @@ import static uk.gov.justice.laa.crime.error.ProblemDetailError.VALIDATION_FAILU
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
+import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
@@ -355,7 +356,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         repos.passportAssessment.save(existingPassportAssessmentEntity);
 
         runCreatePassportAssessmentErrorScenario(
-                "An incomplete passport assessment is associated with the current application", body);
+                OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND, body);
     }
 
     @Test
@@ -370,7 +371,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         repos.financialAssessment.save(existingFinancialAssessmentEntity);
 
         runCreatePassportAssessmentErrorScenario(
-                "An incomplete means assessment is associated with the current application", body);
+                OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND, body);
     }
 
     @Test
@@ -384,7 +385,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         repos.financialAssessment.save(existingFinancialAssessmentEntity);
 
         runCreatePassportAssessmentErrorScenario(
-                "An incomplete means assessment is associated with the current application", body);
+                OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND, body);
     }
 
     @Test
@@ -398,7 +399,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         repos.hardshipReview.save(hardshipReviewEntity);
 
         runCreatePassportAssessmentErrorScenario(
-                "An incomplete hardship assessment is associated with the current application", body);
+                OutstandingAssessmentService.MSG_OUTSTANDING_HARDSHIP_ASSESSMENT_FOUND, body);
     }
 
     /**
@@ -507,7 +508,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         existingPassportAssessmentEntity.setPastStatus("IN PROGRESS");
         repos.passportAssessment.save(existingPassportAssessmentEntity);
         ErrorMessage expectedErrorMessage =
-                new ErrorMessage("", "An incomplete passport assessment is associated with the current application");
+                new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
 
         runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
     }
@@ -524,7 +525,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         repos.financialAssessment.save(existingFinancialAssessmentEntity);
 
         ErrorMessage expectedErrorMessage =
-                new ErrorMessage("", "An incomplete means assessment is associated with the current application");
+                new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
 
         runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
     }
@@ -539,7 +540,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         existingFinancialAssessmentEntity.setFassFullStatus("IN PROGRESS");
         repos.financialAssessment.save(existingFinancialAssessmentEntity);
         ErrorMessage expectedErrorMessage =
-                new ErrorMessage("", "An incomplete means assessment is associated with the current application");
+                new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
 
         runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
     }
@@ -554,7 +555,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         hardshipReviewEntity.setStatus("IN PROGRESS");
         repos.hardshipReview.save(hardshipReviewEntity);
         ErrorMessage expectedErrorMessage =
-                new ErrorMessage("", "An incomplete hardship assessment is associated with the current application");
+                new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_HARDSHIP_ASSESSMENT_FOUND);
 
         runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
     }

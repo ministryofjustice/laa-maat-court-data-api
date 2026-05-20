@@ -1,6 +1,5 @@
 package gov.uk.courtdata.hardship.controller;
 
-import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
 import gov.uk.courtdata.dto.ErrorDTO;
 import gov.uk.courtdata.dto.HardshipReviewDTO;
 import gov.uk.courtdata.enums.LoggingData;
@@ -41,7 +40,6 @@ public class HardshipReviewController {
 
     private final HardshipReviewService hardshipReviewService;
     private final HardshipReviewValidationProcessor validationProcessor;
-    private final OutstandingAssessmentService outstandingAssessmentService;
 
     @GetMapping(value = "/{hardshipId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve a hardship review record")
@@ -106,7 +104,6 @@ public class HardshipReviewController {
                     CreateHardshipReview hardshipReview) {
         LoggingData.MAAT_ID.putInMDC(hardshipReview.getRepId());
         log.info("Create Hardship Review Request Received");
-        outstandingAssessmentService.legacyCheckForOutstandingAssessments(hardshipReview.getRepId());
         return ResponseEntity.ok(hardshipReviewService.create(hardshipReview));
     }
 

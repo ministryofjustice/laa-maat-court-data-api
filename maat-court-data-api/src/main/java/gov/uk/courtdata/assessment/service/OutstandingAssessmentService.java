@@ -52,7 +52,7 @@ public class OutstandingAssessmentService {
      * <br>Will generally be used for v1 endpoints.
      * @param repId Id of the RepOrder to check. Will not check if null.
      */
-    public void legacyCheckForOutstandingAssessments(Integer repId) {
+    public void legacyCheckForOutstandingAssessments(Integer repId) throws ValidationException {
         if (repId != null) {
             hasOutstandingFinancialAssessments(repId).ifPresent(this::throwValidationException);
             hasOutstandingPassportedAssessment(repId).ifPresent(this::throwValidationException);

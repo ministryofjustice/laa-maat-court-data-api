@@ -19,7 +19,7 @@ public class PassportAssessmentSpecification {
 
     public static Specification<PassportAssessmentEntity> hasRepId(int repId) {
         return (root, query, criteriaBuilder) -> {
-            Join<RepOrderEntity, PassportAssessmentEntity> repOrder = root.join(PassportAssessmentEntity_.REP_ORDER);
+            Join<PassportAssessmentEntity, RepOrderEntity> repOrder = root.join(PassportAssessmentEntity_.REP_ORDER);
             return criteriaBuilder.equal(repOrder.get(RepOrderEntity_.ID), repId);
         };
     }

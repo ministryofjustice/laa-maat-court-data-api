@@ -24,7 +24,7 @@ public class FinancialAssessmentSpecification {
 
     public static Specification<FinancialAssessmentEntity> hasRepId(int repId) {
         return (root, query, criteriaBuilder) -> {
-            Join<RepOrderEntity, FinancialAssessmentEntity> repOrder = root.join("repOrder");
+            Join<FinancialAssessmentEntity, RepOrderEntity> repOrder = root.join(FinancialAssessmentEntity_.REP_ORDER);
             return criteriaBuilder.equal(repOrder.get(RepOrderEntity_.ID), repId);
         };
     }

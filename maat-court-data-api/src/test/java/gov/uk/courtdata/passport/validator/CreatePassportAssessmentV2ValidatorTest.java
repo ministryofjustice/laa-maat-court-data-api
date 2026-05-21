@@ -5,6 +5,7 @@ import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.applicant.service.PartnerResolver;
@@ -17,6 +18,7 @@ import uk.gov.justice.laa.crime.enums.BenefitType;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
@@ -48,6 +50,7 @@ class CreatePassportAssessmentV2ValidatorTest {
     void givenValidRequest_whenValidateIsInvoked_thenShouldSucceed() {
         when(repOrderService.exists(REP_ID)).thenReturn(true);
         when(partnerResolver.hasLinkedPartner(REP_ID, APPLICANT_ID)).thenReturn(true);
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Collections.emptyList());
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
@@ -56,13 +59,15 @@ class CreatePassportAssessmentV2ValidatorTest {
 
     @Test
     void givenRequestWithJsaNoSignOn_whenValidateIsInvoked_thenShouldError() {
+        when(repOrderService.exists(REP_ID)).thenReturn(true);
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Collections.emptyList());
+
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
         request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(null);
         var expectedErrorMessage =
                 new ErrorMessage(LAST_SIGN_ON_DATE_FIELD, "last sign on date cannot be null for job seekers");
-        when(repOrderService.exists(REP_ID)).thenReturn(true);
 
         CrimeValidationException e = assertThrows(
                 CrimeValidationException.class,
@@ -75,23 +80,27 @@ class CreatePassportAssessmentV2ValidatorTest {
 
     @Test
     void givenRequestWithJsaWithSignOn_whenValidateIsInvoked_thenShouldError() {
+        when(repOrderService.exists(REP_ID)).thenReturn(true);
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Collections.emptyList());
+
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
         request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(LocalDateTime.now());
-        when(repOrderService.exists(REP_ID)).thenReturn(true);
 
         assertDoesNotThrow(() -> createPassportAssessmentV2Validator.validateCreateRequest(request));
     }
 
     @Test
     void givenRequestWithInvalidRepOrderId_whenValidateIsInvoked_thenShouldError() {
+        when(repOrderService.exists(REP_ID)).thenReturn(false);
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Collections.emptyList());
+
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
         request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(LocalDateTime.now());
         var expectedErrorMessage = new ErrorMessage(LEGACY_APPLICATION_ID_FIELD, "RepOrder does not exist");
-        when(repOrderService.exists(REP_ID)).thenReturn(false);
 
         CrimeValidationException e = assertThrows(
                 CrimeValidationException.class,
@@ -105,6 +114,8 @@ class CreatePassportAssessmentV2ValidatorTest {
     @Test
     void givenRequestWithPartnerRecipientNoId_whenValidateIsInvoked_thenShouldError() {
         when(repOrderService.exists(REP_ID)).thenReturn(true);
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Collections.emptyList());
+
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
@@ -126,6 +137,8 @@ class CreatePassportAssessmentV2ValidatorTest {
     void givenRequestWithPartnerRecipientDoesNotExist_whenValidateIsInvoked_thenShouldError() {
         when(repOrderService.exists(REP_ID)).thenReturn(true);
         when(partnerResolver.hasLinkedPartner(REP_ID, APPLICANT_ID)).thenReturn(false);
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Collections.emptyList());
+
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);

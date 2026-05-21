@@ -44,6 +44,12 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
         repos.repOrder.save(repOrder);
         repos.mockNewWorkReason.save(TestEntityDataBuilder.getNewWorkReasonEntity());
         repos.mockNewWorkReason.save(TestEntityDataBuilder.getFmaNewWorkReasonEntity());
+
+        // setup unrelated data.
+        var existingRepOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(null));
+        saveTestFullMeansAssessment(existingRepOrder, NO, YES, IN_PROGRESS);
+        saveTestHardshipAssessment(existingRepOrder, NO, YES, IN_PROGRESS);
+        saveTestPassportedAssessment(existingRepOrder, NO, YES, IN_PROGRESS);
     }
 
     // replaced / valid / status
@@ -57,7 +63,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
             String replaced, String valid, CurrentStatus status) {
         ErrorMessage expectedError =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
-        saveTestInitMeansAssessment(repOrder, replaced, valid, status.getStatus());
+        saveTestInitMeansAssessment(repOrder, replaced, valid, status);
         List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
         assertThat(errorList).hasSize(1).containsOnly(expectedError);
@@ -69,7 +75,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
             String replaced, String valid, CurrentStatus status) {
         ErrorMessage expectedError =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
-        saveTestFullMeansAssessment(repOrder, replaced, valid, status.getStatus());
+        saveTestFullMeansAssessment(repOrder, replaced, valid, status);
         List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
         assertThat(errorList).hasSize(1).containsOnly(expectedError);
@@ -81,7 +87,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
             String replaced, String valid, CurrentStatus status) {
         ErrorMessage expectedError =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
-        saveTestPassportedAssessment(repOrder, replaced, valid, status.getStatus());
+        saveTestPassportedAssessment(repOrder, replaced, valid, status);
         List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
         assertThat(errorList).hasSize(1).containsOnly(expectedError);
@@ -93,7 +99,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
             String replaced, String valid, CurrentStatus status) {
         ErrorMessage expectedError =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_HARDSHIP_ASSESSMENT_FOUND);
-        saveTestHardshipAssessment(repOrder, replaced, valid, status.getStatus());
+        saveTestHardshipAssessment(repOrder, replaced, valid, status);
         List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
         assertThat(errorList).hasSize(1).containsOnly(expectedError);
@@ -115,7 +121,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     @MethodSource(value = "nonOutstandingAssessmentData")
     void givenNonOutstandingInitMeans_whenCheckForOutstandingAssessmentsIsCalled_thenErrorListEmpty(
             String replaced, String valid, CurrentStatus status) {
-        saveTestInitMeansAssessment(repOrder, replaced, valid, status.getStatus());
+        saveTestInitMeansAssessment(repOrder, replaced, valid, status);
         List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
         assertThat(errorList).isEmpty();
@@ -125,7 +131,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     @MethodSource(value = "nonOutstandingAssessmentData")
     void givenNonOutstandingFullMeans_whenCheckForOutstandingAssessmentsIsCalled_thenErrorListEmpty(
             String replaced, String valid, CurrentStatus status) {
-        saveTestFullMeansAssessment(repOrder, replaced, valid, status.getStatus());
+        saveTestFullMeansAssessment(repOrder, replaced, valid, status);
         List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
         assertThat(errorList).isEmpty();
@@ -135,7 +141,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     @MethodSource(value = "nonOutstandingAssessmentData")
     void givenNonOutstandingPassport_whenCheckForOutstandingAssessmentsIsCalled_thenErrorListEmpty(
             String replaced, String valid, CurrentStatus status) {
-        saveTestPassportedAssessment(repOrder, replaced, valid, status.getStatus());
+        saveTestPassportedAssessment(repOrder, replaced, valid, status);
         List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
         assertThat(errorList).isEmpty();
@@ -145,7 +151,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     @MethodSource(value = "nonOutstandingAssessmentData")
     void givenNonOutstandingHardship_whenCheckForOutstandingAssessmentsIsCalled_thenErrorListEmpty(
             String replaced, String valid, CurrentStatus status) {
-        saveTestHardshipAssessment(repOrder, replaced, valid, status.getStatus());
+        saveTestHardshipAssessment(repOrder, replaced, valid, status);
         List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
         assertThat(errorList).isEmpty();
@@ -157,9 +163,9 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND),
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_HARDSHIP_ASSESSMENT_FOUND),
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND));
-        saveTestPassportedAssessment(repOrder, NO, YES, IN_PROGRESS.getStatus());
-        saveTestHardshipAssessment(repOrder, NO, YES, IN_PROGRESS.getStatus());
-        saveTestFullMeansAssessment(repOrder, NO, YES, IN_PROGRESS.getStatus());
+        saveTestPassportedAssessment(repOrder, NO, YES, IN_PROGRESS);
+        saveTestHardshipAssessment(repOrder, NO, YES, IN_PROGRESS);
+        saveTestFullMeansAssessment(repOrder, NO, YES, IN_PROGRESS);
         List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
         assertThat(errorList).hasSize(3).containsExactlyInAnyOrderElementsOf(expectedErrorList);
@@ -168,7 +174,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     @Test
     void givenOutstandingMeans_whenLegacyCheckForOutstandingAssessmentsIsCalled_thenExceptionThrown() {
         var repId = repOrder.getId();
-        saveTestFullMeansAssessment(repOrder, NO, YES, IN_PROGRESS.getStatus());
+        saveTestFullMeansAssessment(repOrder, NO, YES, IN_PROGRESS);
         assertThatThrownBy(() -> outstandingAssessmentService.legacyCheckForOutstandingAssessments(repId))
                 .isInstanceOf(ValidationException.class)
                 .hasMessage(OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
@@ -177,7 +183,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     @Test
     void givenOutstandingPassport_whenLegacyCheckForOutstandingAssessmentsIsCalled_thenExceptionThrown() {
         var repId = repOrder.getId();
-        saveTestPassportedAssessment(repOrder, NO, YES, IN_PROGRESS.getStatus());
+        saveTestPassportedAssessment(repOrder, NO, YES, IN_PROGRESS);
         assertThatThrownBy(() -> outstandingAssessmentService.legacyCheckForOutstandingAssessments(repId))
                 .isInstanceOf(ValidationException.class)
                 .hasMessage(OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
@@ -186,7 +192,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     @Test
     void givenOutstandingHardship_whenLegacyCheckForOutstandingAssessmentsIsCalled_thenExceptionThrown() {
         var repId = repOrder.getId();
-        saveTestHardshipAssessment(repOrder, NO, YES, IN_PROGRESS.getStatus());
+        saveTestHardshipAssessment(repOrder, NO, YES, IN_PROGRESS);
         assertThatThrownBy(() -> outstandingAssessmentService.legacyCheckForOutstandingAssessments(repId))
                 .isInstanceOf(ValidationException.class)
                 .hasMessage(OutstandingAssessmentService.MSG_OUTSTANDING_HARDSHIP_ASSESSMENT_FOUND);
@@ -195,50 +201,51 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     @Test
     void givenMultipleOutstanding_whenLegacyCheckForOutstandingAssessmentsIsCalled_thenOnlyOneMessage() {
         var repId = repOrder.getId();
-        saveTestPassportedAssessment(repOrder, NO, YES, IN_PROGRESS.getStatus());
-        saveTestHardshipAssessment(repOrder, NO, YES, IN_PROGRESS.getStatus());
-        saveTestFullMeansAssessment(repOrder, NO, YES, IN_PROGRESS.getStatus());
+        saveTestPassportedAssessment(repOrder, NO, YES, IN_PROGRESS);
+        saveTestHardshipAssessment(repOrder, NO, YES, IN_PROGRESS);
+        saveTestFullMeansAssessment(repOrder, NO, YES, IN_PROGRESS);
         assertThatThrownBy(() -> outstandingAssessmentService.legacyCheckForOutstandingAssessments(repId))
                 .isInstanceOf(ValidationException.class)
                 .hasMessage(OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
     }
 
-    private void saveTestInitMeansAssessment(RepOrderEntity repOrder, String replaced, String valid, String status) {
+    private void saveTestInitMeansAssessment(
+            RepOrderEntity repOrder, String replaced, String valid, CurrentStatus status) {
         FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
         financialAssessment.setRepOrder(repOrder);
         financialAssessment.setReplaced(replaced);
         financialAssessment.setValid(valid);
-        financialAssessment.setFassInitStatus(status);
+        financialAssessment.setFassInitStatus(status.getStatus());
         repos.financialAssessment.save(financialAssessment);
     }
 
     private void saveTestFullMeansAssessment(
-            RepOrderEntity repOrderEntity, String replaced, String valid, String status) {
+            RepOrderEntity repOrderEntity, String replaced, String valid, CurrentStatus status) {
         FinancialAssessmentEntity financialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
         financialAssessment.setRepOrder(repOrderEntity);
         financialAssessment.setReplaced(replaced);
         financialAssessment.setValid(valid);
-        financialAssessment.setFassFullStatus(status);
+        financialAssessment.setFassFullStatus(status.getStatus());
         repos.financialAssessment.save(financialAssessment);
     }
 
     private void saveTestPassportedAssessment(
-            RepOrderEntity repOrderEntity, String replaced, String valid, String status) {
+            RepOrderEntity repOrderEntity, String replaced, String valid, CurrentStatus status) {
         PassportAssessmentEntity passportAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
         passportAssessment.setRepOrder(repOrderEntity);
         passportAssessment.setReplaced(replaced);
         passportAssessment.setValid(valid);
-        passportAssessment.setPastStatus(status);
+        passportAssessment.setPastStatus(status.getStatus());
         repos.passportAssessment.save(passportAssessment);
     }
 
     private void saveTestHardshipAssessment(
-            RepOrderEntity repOrderEntity, String replaced, String valid, String status) {
+            RepOrderEntity repOrderEntity, String replaced, String valid, CurrentStatus status) {
         HardshipReviewEntity hardshipAssessment = TestEntityDataBuilder.getHardshipReviewEntity();
         hardshipAssessment.setRepId(repOrderEntity.getId());
         hardshipAssessment.setReplaced(replaced);
         hardshipAssessment.setValid(valid);
-        hardshipAssessment.setStatus(status);
+        hardshipAssessment.setStatus(status.getStatus());
         repos.hardshipReview.save(hardshipAssessment);
     }
 }

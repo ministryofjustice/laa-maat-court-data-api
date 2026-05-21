@@ -3,6 +3,8 @@ package gov.uk.courtdata.integration.assessment;
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.APPLICANT_ID;
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
+import static gov.uk.courtdata.dto.application.AssessmentStatusDTO.COMPLETE;
+import static gov.uk.courtdata.dto.application.AssessmentStatusDTO.INCOMPLETE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -128,7 +130,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .pcobConfirmation(APPLICANT_AGE.getConfirmation())
                 .assessmentDate(testCreationDate)
                 .userCreated(testUser)
-                .pastStatus("IN_PROGRESS")
+                .pastStatus(COMPLETE)
                 .replaced(NO)
                 .build());
 
@@ -139,7 +141,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .pcobConfirmation(APPLICANT_AGE.getConfirmation())
                 .userCreated(testUser)
                 .replaced(NO)
-                .pastStatus("COMPLETE")
+                .pastStatus(COMPLETE)
                 .build());
 
         FinancialAssessmentEntity testFinancialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
@@ -352,7 +354,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         CreatePassportAssessment body = TestModelDataBuilder.getCreatePassportAssessment();
         body.setRepId(repId);
         body.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
-        existingPassportAssessmentEntity.setPastStatus("IN PROGRESS");
+        existingPassportAssessmentEntity.setPastStatus(INCOMPLETE);
         repos.passportAssessment.save(existingPassportAssessmentEntity);
 
         runCreatePassportAssessmentErrorScenario(
@@ -367,7 +369,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         CreatePassportAssessment body = TestModelDataBuilder.getCreatePassportAssessment();
         body.setRepId(repId);
         body.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
-        existingFinancialAssessmentEntity.setFassInitStatus("IN PROGRESS");
+        existingFinancialAssessmentEntity.setFassInitStatus(INCOMPLETE);
         repos.financialAssessment.save(existingFinancialAssessmentEntity);
 
         runCreatePassportAssessmentErrorScenario(
@@ -381,7 +383,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         CreatePassportAssessment body = TestModelDataBuilder.getCreatePassportAssessment();
         body.setRepId(repId);
         body.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
-        existingFinancialAssessmentEntity.setFassFullStatus("IN PROGRESS");
+        existingFinancialAssessmentEntity.setFassFullStatus(INCOMPLETE);
         repos.financialAssessment.save(existingFinancialAssessmentEntity);
 
         runCreatePassportAssessmentErrorScenario(
@@ -395,7 +397,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         CreatePassportAssessment body = TestModelDataBuilder.getCreatePassportAssessment();
         body.setRepId(repId);
         body.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
-        hardshipReviewEntity.setStatus("IN PROGRESS");
+        hardshipReviewEntity.setStatus(INCOMPLETE);
         repos.hardshipReview.save(hardshipReviewEntity);
 
         runCreatePassportAssessmentErrorScenario(
@@ -505,7 +507,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
         var request =
                 TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, false, true);
-        existingPassportAssessmentEntity.setPastStatus("IN PROGRESS");
+        existingPassportAssessmentEntity.setPastStatus(INCOMPLETE);
         repos.passportAssessment.save(existingPassportAssessmentEntity);
         ErrorMessage expectedErrorMessage =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
@@ -521,7 +523,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         var request =
                 TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, false, true);
 
-        existingFinancialAssessmentEntity.setFassInitStatus("IN PROGRESS");
+        existingFinancialAssessmentEntity.setFassInitStatus(INCOMPLETE);
         repos.financialAssessment.save(existingFinancialAssessmentEntity);
 
         ErrorMessage expectedErrorMessage =
@@ -537,7 +539,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         var request =
                 TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, false, true);
 
-        existingFinancialAssessmentEntity.setFassFullStatus("IN PROGRESS");
+        existingFinancialAssessmentEntity.setFassFullStatus(INCOMPLETE);
         repos.financialAssessment.save(existingFinancialAssessmentEntity);
         ErrorMessage expectedErrorMessage =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
@@ -552,7 +554,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         var request =
                 TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, false, true);
 
-        hardshipReviewEntity.setStatus("IN PROGRESS");
+        hardshipReviewEntity.setStatus(INCOMPLETE);
         repos.hardshipReview.save(hardshipReviewEntity);
         ErrorMessage expectedErrorMessage =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_HARDSHIP_ASSESSMENT_FOUND);

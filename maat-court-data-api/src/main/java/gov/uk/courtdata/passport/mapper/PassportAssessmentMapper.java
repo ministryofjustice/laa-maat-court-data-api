@@ -76,6 +76,7 @@ public interface PassportAssessmentMapper {
             target = "repOrder",
             source = "passportedAssessmentMetadata.legacyApplicationId",
             qualifiedByName = "mapRepOrder")
+    @Mapping(target = "userCreated", source = "passportedAssessmentMetadata.userSession.userName")
     PassportAssessmentEntity toPassportAssessmentEntity(ApiCreatePassportedAssessmentRequest request);
 
     /**

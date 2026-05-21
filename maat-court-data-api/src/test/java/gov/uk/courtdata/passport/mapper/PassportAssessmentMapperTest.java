@@ -476,6 +476,10 @@ class PassportAssessmentMapperTest {
                 .isEqualTo(request.getPassportedAssessment()
                         .getAssessmentDecision()
                         .getCode());
+        assertThat(entity.getUserCreated())
+                .isEqualTo(request.getPassportedAssessmentMetadata()
+                        .getUserSession()
+                        .getUserName());
         // TODO: LCAM-2073 - Under 18 court asserts.
         //
         // assertThat(entity.getUnder18HeardInMagsCourt()).isEqualTo(request.getPassportedAssessment().getDecisionReason().getConfirmation());

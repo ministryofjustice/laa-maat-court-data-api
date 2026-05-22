@@ -21,9 +21,7 @@ import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -124,7 +122,7 @@ class FinancialAssessmentServiceTest {
     @Test
     void givenOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenResultIsReturned() {
         when(outstandingAssessmentService.checkForOutstandingAssessments(any(Integer.class)))
-                .thenReturn(List.of(new ErrorMessage("", MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND)));
+                .thenReturn(Optional.of(new ErrorMessage("", MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND)));
         OutstandingAssessmentResultDTO result = financialAssessmentService.checkForOutstandingAssessments(TEST_REP_ID);
         verify(outstandingAssessmentService).checkForOutstandingAssessments(any());
         assertThat(result.isOutstandingAssessments()).isTrue();
@@ -134,7 +132,7 @@ class FinancialAssessmentServiceTest {
     @Test
     void givenNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_thenNotFoundResultIsReturned() {
         when(outstandingAssessmentService.checkForOutstandingAssessments(TEST_REP_ID))
-                .thenReturn(Collections.emptyList());
+                .thenReturn(Optional.empty());
         OutstandingAssessmentResultDTO result = financialAssessmentService.checkForOutstandingAssessments(TEST_REP_ID);
         verify(outstandingAssessmentService).checkForOutstandingAssessments(TEST_REP_ID);
         assertThat(result.isOutstandingAssessments()).isFalse();

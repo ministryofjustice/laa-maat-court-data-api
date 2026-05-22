@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -76,11 +75,10 @@ public class FinancialAssessmentService {
      */
     @Deprecated()
     public OutstandingAssessmentResultDTO checkForOutstandingAssessments(Integer repId) {
-        List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repId);
-        if (!errorList.isEmpty()) {
-            return new OutstandingAssessmentResultDTO(true, errorList.getFirst().message());
-        }
-        return new OutstandingAssessmentResultDTO();
+        Optional<ErrorMessage> errorMessage = outstandingAssessmentService.checkForOutstandingAssessments(repId);
+        return errorMessage
+                .map(message -> new OutstandingAssessmentResultDTO(true, message.message()))
+                .orElseGet(OutstandingAssessmentResultDTO::new);
     }
 
     @Transactional(readOnly = true)

@@ -18,7 +18,7 @@ import uk.gov.justice.laa.crime.enums.BenefitType;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.Optional;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
@@ -50,7 +50,7 @@ class CreatePassportAssessmentV2ValidatorTest {
     void givenValidRequest_whenValidateIsInvoked_thenShouldSucceed() {
         when(repOrderService.exists(REP_ID)).thenReturn(true);
         when(partnerResolver.hasLinkedPartner(REP_ID, APPLICANT_ID)).thenReturn(true);
-        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Collections.emptyList());
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.empty());
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
@@ -60,7 +60,7 @@ class CreatePassportAssessmentV2ValidatorTest {
     @Test
     void givenRequestWithJsaNoSignOn_whenValidateIsInvoked_thenShouldError() {
         when(repOrderService.exists(REP_ID)).thenReturn(true);
-        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Collections.emptyList());
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.empty());
 
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
@@ -81,7 +81,7 @@ class CreatePassportAssessmentV2ValidatorTest {
     @Test
     void givenRequestWithJsaWithSignOn_whenValidateIsInvoked_thenShouldError() {
         when(repOrderService.exists(REP_ID)).thenReturn(true);
-        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Collections.emptyList());
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.empty());
 
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
@@ -94,7 +94,7 @@ class CreatePassportAssessmentV2ValidatorTest {
     @Test
     void givenRequestWithInvalidRepOrderId_whenValidateIsInvoked_thenShouldError() {
         when(repOrderService.exists(REP_ID)).thenReturn(false);
-        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Collections.emptyList());
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.empty());
 
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
@@ -114,7 +114,7 @@ class CreatePassportAssessmentV2ValidatorTest {
     @Test
     void givenRequestWithPartnerRecipientNoId_whenValidateIsInvoked_thenShouldError() {
         when(repOrderService.exists(REP_ID)).thenReturn(true);
-        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Collections.emptyList());
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.empty());
 
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
@@ -137,7 +137,7 @@ class CreatePassportAssessmentV2ValidatorTest {
     void givenRequestWithPartnerRecipientDoesNotExist_whenValidateIsInvoked_thenShouldError() {
         when(repOrderService.exists(REP_ID)).thenReturn(true);
         when(partnerResolver.hasLinkedPartner(REP_ID, APPLICANT_ID)).thenReturn(false);
-        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Collections.emptyList());
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.empty());
 
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);

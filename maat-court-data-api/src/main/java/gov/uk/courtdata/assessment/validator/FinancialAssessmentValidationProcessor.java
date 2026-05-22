@@ -39,7 +39,11 @@ public class FinancialAssessmentValidationProcessor {
 
         if (financialAssessment instanceof CreateFinancialAssessment createAssessment) {
             createAssessmentValidator.validate(createAssessment);
-            outstandingAssessmentService.legacyCheckForOutstandingAssessments(createAssessment.getRepId());
+            outstandingAssessmentService
+                    .checkForOutstandingAssessments(createAssessment.getRepId())
+                    .ifPresent(message -> {
+                        throw new ValidationException(message.message());
+                    });
         }
         if (financialAssessment instanceof UpdateFinancialAssessment updateAssessment) {
             updateAssessmentValidator.validate(updateAssessment);

@@ -102,13 +102,13 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAZeroAssessmentId_whenGetAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAZeroAssessmentId_whenGetAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         assertThat(runBadRequestErrorScenario("Financial Assessment id is required", get(ASSESSMENT_URL, 0)))
                 .isTrue();
     }
 
     @Test
-    void givenAnInvalidAssessmentId_whenGetAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAnInvalidAssessmentId_whenGetAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         Integer invalidAssessmentId = 999;
         assertThat(runBadRequestErrorScenario(
                         String.format("%d is invalid", invalidAssessmentId), get(ASSESSMENT_URL, invalidAssessmentId)))
@@ -116,7 +116,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAValidAssessmentId_whenGetAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAValidAssessmentId_whenGetAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         var testAssessment = existingAssessmentEntities.getFirst();
         assertThat(runSuccessScenario(
                         assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(testAssessment),
@@ -125,8 +125,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAValidAssessmentId_whenGetAssessmentIsInvoked_theCorrectRelationshipsResponseIsReturned()
-            throws Exception {
+    void givenAValidAssessmentId_whenGetAssessmentIsInvoked_thenCorrectRelationshipsResponse() throws Exception {
         var testAssessment = existingAssessmentEntities.get(3);
         assertThat(runSuccessScenario(
                         assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(testAssessment),
@@ -135,13 +134,13 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAZeroAssessmentId_whenDeleteAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAZeroAssessmentId_whenDeleteAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         assertThat(runBadRequestErrorScenario("Financial Assessment id is required", delete(ASSESSMENT_URL, 0)))
                 .isTrue();
     }
 
     @Test
-    void givenAnInvalidAssessmentId_whenDeleteAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAnInvalidAssessmentId_whenDeleteAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         Integer invalidAssessmentId = 999;
         assertThat(runBadRequestErrorScenario(
                         String.format("%d is invalid", invalidAssessmentId),
@@ -150,7 +149,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAValidAssessmentId_whenDeleteAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAValidAssessmentId_whenDeleteAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         assertThat(runSuccessScenario(delete(
                                 ASSESSMENT_URL,
                                 existingAssessmentEntities.getFirst().getId()))
@@ -160,9 +159,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void
-            givenARepIdWithNoOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_theCorrectResponseIsReturned()
-                    throws Exception {
+    void givenNoOutstanding_whenCheckForOutstandingAssessmentsIsInvoked_thenNoMessagesReturned() throws Exception {
         OutstandingAssessmentResultDTO expectedResponse =
                 OutstandingAssessmentResultDTO.builder().build();
         assertThat(runSuccessScenario(expectedResponse, get(CHECK_OUTSTANDING_URL, repIdWithNoOutstandingAssessments)))
@@ -170,9 +167,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void
-            givenARepIdWithOutstandingAssessments_whenCheckForOutstandingAssessmentsIsInvoked_theCorrectResponseIsReturned()
-                    throws Exception {
+    void givenOutstandingMeans_whenCheckForOutstandingAssessmentsIsInvoked_thenShouldReturnMessage() throws Exception {
         OutstandingAssessmentResultDTO expectedResponse = OutstandingAssessmentResultDTO.builder()
                 .outstandingAssessments(true)
                 .message(OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND)
@@ -182,9 +177,8 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void
-            givenARepIdWithOutstandingPassportAssessments_whenCheckForOutstandingAssessmentsIsInvoked_theCorrectResponseIsReturned()
-                    throws Exception {
+    void givenOutstandingPassport_whenCheckForOutstandingAssessmentsIsInvoked_thenShouldReturnMessage()
+            throws Exception {
         OutstandingAssessmentResultDTO expectedResponse = OutstandingAssessmentResultDTO.builder()
                 .outstandingAssessments(true)
                 .message(OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND)
@@ -195,7 +189,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAnAssessmentWithNoRepId_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAnAssessmentWithNoRepId_whenCreateAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         assertThat(runCreateAssessmentErrorScenario(
                         "Rep Order ID is required",
                         CreateFinancialAssessment.builder().build()))
@@ -203,8 +197,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAnAssessmentWithNoCriteriaId_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
+    void givenAnAssessmentWithNoCriteriaId_whenCreateAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         assertThat(runCreateAssessmentErrorScenario(
                         "Assessment Criteria ID is required",
                         CreateFinancialAssessment.builder().repId(1).build()))
@@ -212,7 +205,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAnAssessmentWithNoCmuId_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAnAssessmentWithNoCmuId_whenCreateAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         assertThat(runCreateAssessmentErrorScenario(
                         "Case management unit ID is required",
                         CreateFinancialAssessment.builder()
@@ -223,8 +216,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAnAssessmentWithNoNewWorkReason_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
+    void givenAnAssessmentWithNoNewWorkReason_whenCreateAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         assertThat(runCreateAssessmentErrorScenario(
                         "New work reason code is required",
                         CreateFinancialAssessment.builder()
@@ -236,7 +228,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAnAssessmentWithNoUser_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAnAssessmentWithNoUser_whenCreateAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         assertThat(runCreateAssessmentErrorScenario(
                         "Username is required",
                         CreateFinancialAssessment.builder()
@@ -249,7 +241,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAValidAssessmentBody_whenCreateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAValidAssessmentBody_whenCreateAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         CreateFinancialAssessment body = TestModelDataBuilder.getCreateFinancialAssessmentWithRelationships();
         body.setRepId(repIdWithNoOutstandingAssessments);
 
@@ -304,7 +296,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAnAssessmentWithNoRepId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAnAssessmentWithNoRepId_whenUpdateAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         assertThat(runUpdateAssessmentErrorScenario(
                         "Rep Order ID is required",
                         UpdateFinancialAssessment.builder().build()))
@@ -312,8 +304,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAnAssessmentWithNoCriteriaId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
+    void givenAnAssessmentWithNoCriteriaId_whenUpdateAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         assertThat(runUpdateAssessmentErrorScenario(
                         "Assessment Criteria ID is required",
                         UpdateFinancialAssessment.builder().repId(1).build()))
@@ -321,7 +312,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAnAssessmentWithNoCmuId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAnAssessmentWithNoCmuId_whenUpdateAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         assertThat(runUpdateAssessmentErrorScenario(
                         "Case management unit ID is required",
                         UpdateFinancialAssessment.builder()
@@ -332,8 +323,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAnAssessmentWithAnInvalidId_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
+    void givenAnAssessmentWithAnInvalidId_whenUpdateAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         Integer assessmentId = 0;
         assertThat(runUpdateAssessmentErrorScenario(
                         "Financial Assessment id is required",
@@ -347,7 +337,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAnAssessmentWithAnIdThatDoesNotExist_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned()
+    void givenAnAssessmentWithAnIdThatDoesNotExist_whenUpdateAssessmentIsInvoked_thenCorrectResponse()
             throws Exception {
         Integer assessmentId = 999;
         assertThat(runUpdateAssessmentErrorScenario(
@@ -362,8 +352,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAnAssessmentWithNoUserModifiedSet_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
+    void givenAnAssessmentWithNoUserModifiedSet_whenUpdateAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         assertThat(runUpdateAssessmentErrorScenario(
                         "Username is required",
                         UpdateFinancialAssessment.builder()
@@ -439,7 +428,7 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void givenAValidAssessmentBody_whenUpdateAssessmentIsInvoked_theCorrectResponseIsReturned() throws Exception {
+    void givenAssessmentBody_whenUpdateAssessmentIsInvoked_thenCorrectResponse() throws Exception {
         FinancialAssessmentEntity assessmentToUpdate = existingAssessmentEntities.stream()
                 .filter(item -> item.getRepOrder().getId().equals(repIdWithNoOutstandingAssessments))
                 .findFirst()
@@ -503,9 +492,8 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void
-            givenAValidAssessmentIdWithoutAFullAssessmentAvailable_whenCreateAssessmentHistoryIsInvoked_theCorrectResponseIsReturned()
-                    throws Exception {
+    void givenAssessmentWithNoFullAssessment_whenCreateAssessmentHistoryIsInvoked_thenCorrectResponse()
+            throws Exception {
         boolean fullAvailable = false;
         FinancialAssessmentEntity assessmentEntity = existingAssessmentEntities.stream()
                 .filter(item -> item.getRepOrder().getId().equals(existingRepOrder.getId()))
@@ -523,9 +511,8 @@ class FinancialAssessmentControllerIntegrationTest extends MockMvcIntegrationTes
     }
 
     @Test
-    void
-            givenAValidAssessmentIdWithAFullAssessmentAvailable_whenCreateAssessmentHistoryIsInvoked_theCorrectResponseIsReturned()
-                    throws Exception {
+    void givenAssessmentWithAFullAssessment_whenCreateAssessmentHistoryIsInvoked_thenCorrectResponse()
+            throws Exception {
         boolean fullAvailable = true;
         FinancialAssessmentEntity assessmentEntity = existingAssessmentEntities.stream()
                 .filter(item -> item.getRepOrder().getId().equals(existingRepOrder.getId()))

@@ -42,7 +42,11 @@ public class PassportAssessmentValidationProcessor {
         }
         if (passportAssessment instanceof CreatePassportAssessment createPassport) {
             createPassportAssessmentValidator.validate(createPassport);
-            outstandingAssessmentService.legacyCheckForOutstandingAssessments(passportAssessment.getRepId());
+            outstandingAssessmentService
+                    .checkForOutstandingAssessments(passportAssessment.getRepId())
+                    .ifPresent(message -> {
+                        throw new ValidationException(message.message());
+                    });
         }
         if (passportAssessment instanceof UpdatePassportAssessment updatePassport) {
             updatePassportAssessmentValidator.validate(updatePassport);

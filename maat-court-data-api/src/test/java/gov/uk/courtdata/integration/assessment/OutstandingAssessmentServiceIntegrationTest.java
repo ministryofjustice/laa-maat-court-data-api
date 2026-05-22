@@ -3,7 +3,6 @@ package gov.uk.courtdata.integration.assessment;
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static uk.gov.justice.laa.crime.enums.CurrentStatus.COMPLETE;
 import static uk.gov.justice.laa.crime.enums.CurrentStatus.IN_PROGRESS;
 
@@ -14,12 +13,11 @@ import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
-import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
 import uk.gov.justice.laa.crime.enums.CurrentStatus;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -64,9 +62,10 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
         ErrorMessage expectedError =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
         saveTestInitMeansAssessment(repOrder, replaced, valid, status);
-        List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
+        Optional<ErrorMessage> errorMessage =
+                outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
-        assertThat(errorList).hasSize(1).containsOnly(expectedError);
+        assertThat(errorMessage).isPresent().hasValue(expectedError);
     }
 
     @ParameterizedTest
@@ -76,9 +75,10 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
         ErrorMessage expectedError =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
         saveTestFullMeansAssessment(repOrder, replaced, valid, status);
-        List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
+        Optional<ErrorMessage> errorMessage =
+                outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
-        assertThat(errorList).hasSize(1).containsOnly(expectedError);
+        assertThat(errorMessage).isPresent().hasValue(expectedError);
     }
 
     @ParameterizedTest
@@ -88,9 +88,10 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
         ErrorMessage expectedError =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
         saveTestPassportedAssessment(repOrder, replaced, valid, status);
-        List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
+        Optional<ErrorMessage> errorMessage =
+                outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
-        assertThat(errorList).hasSize(1).containsOnly(expectedError);
+        assertThat(errorMessage).isPresent().hasValue(expectedError);
     }
 
     @ParameterizedTest
@@ -100,9 +101,10 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
         ErrorMessage expectedError =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_HARDSHIP_ASSESSMENT_FOUND);
         saveTestHardshipAssessment(repOrder, replaced, valid, status);
-        List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
+        Optional<ErrorMessage> errorMessage =
+                outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
-        assertThat(errorList).hasSize(1).containsOnly(expectedError);
+        assertThat(errorMessage).isPresent().hasValue(expectedError);
     }
 
     // replaced / valid / status
@@ -122,9 +124,10 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     void givenNonOutstandingInitMeans_whenCheckForOutstandingAssessmentsIsCalled_thenErrorListEmpty(
             String replaced, String valid, CurrentStatus status) {
         saveTestInitMeansAssessment(repOrder, replaced, valid, status);
-        List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
+        Optional<ErrorMessage> errorMessage =
+                outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
-        assertThat(errorList).isEmpty();
+        assertThat(errorMessage).isNotPresent();
     }
 
     @ParameterizedTest
@@ -132,9 +135,10 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     void givenNonOutstandingFullMeans_whenCheckForOutstandingAssessmentsIsCalled_thenErrorListEmpty(
             String replaced, String valid, CurrentStatus status) {
         saveTestFullMeansAssessment(repOrder, replaced, valid, status);
-        List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
+        Optional<ErrorMessage> errorMessage =
+                outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
-        assertThat(errorList).isEmpty();
+        assertThat(errorMessage).isNotPresent();
     }
 
     @ParameterizedTest
@@ -142,9 +146,10 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     void givenNonOutstandingPassport_whenCheckForOutstandingAssessmentsIsCalled_thenErrorListEmpty(
             String replaced, String valid, CurrentStatus status) {
         saveTestPassportedAssessment(repOrder, replaced, valid, status);
-        List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
+        Optional<ErrorMessage> errorMessage =
+                outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
-        assertThat(errorList).isEmpty();
+        assertThat(errorMessage).isNotPresent();
     }
 
     @ParameterizedTest
@@ -152,61 +157,24 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     void givenNonOutstandingHardship_whenCheckForOutstandingAssessmentsIsCalled_thenErrorListEmpty(
             String replaced, String valid, CurrentStatus status) {
         saveTestHardshipAssessment(repOrder, replaced, valid, status);
-        List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
+        Optional<ErrorMessage> errorMessage =
+                outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
-        assertThat(errorList).isEmpty();
+        assertThat(errorMessage).isNotPresent();
     }
 
     @Test
-    void givenAllThreeOutstandingAssessments_whenCheckForOutstandingAssessmentsIsCalled_thenErrorListHasThreeErrors() {
-        List<ErrorMessage> expectedErrorList = List.of(
-                new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND),
-                new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_HARDSHIP_ASSESSMENT_FOUND),
-                new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND));
+    void givenAllThreeOutstandingAssessments_whenCheckForOutstandingAssessmentsIsCalled_thenErrorPresent() {
+
+        ErrorMessage expectedError =
+                new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
         saveTestPassportedAssessment(repOrder, NO, YES, IN_PROGRESS);
         saveTestHardshipAssessment(repOrder, NO, YES, IN_PROGRESS);
         saveTestFullMeansAssessment(repOrder, NO, YES, IN_PROGRESS);
-        List<ErrorMessage> errorList = outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
+        Optional<ErrorMessage> errorMessage =
+                outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
 
-        assertThat(errorList).hasSize(3).containsExactlyInAnyOrderElementsOf(expectedErrorList);
-    }
-
-    @Test
-    void givenOutstandingMeans_whenLegacyCheckForOutstandingAssessmentsIsCalled_thenExceptionThrown() {
-        var repId = repOrder.getId();
-        saveTestFullMeansAssessment(repOrder, NO, YES, IN_PROGRESS);
-        assertThatThrownBy(() -> outstandingAssessmentService.legacyCheckForOutstandingAssessments(repId))
-                .isInstanceOf(ValidationException.class)
-                .hasMessage(OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
-    }
-
-    @Test
-    void givenOutstandingPassport_whenLegacyCheckForOutstandingAssessmentsIsCalled_thenExceptionThrown() {
-        var repId = repOrder.getId();
-        saveTestPassportedAssessment(repOrder, NO, YES, IN_PROGRESS);
-        assertThatThrownBy(() -> outstandingAssessmentService.legacyCheckForOutstandingAssessments(repId))
-                .isInstanceOf(ValidationException.class)
-                .hasMessage(OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
-    }
-
-    @Test
-    void givenOutstandingHardship_whenLegacyCheckForOutstandingAssessmentsIsCalled_thenExceptionThrown() {
-        var repId = repOrder.getId();
-        saveTestHardshipAssessment(repOrder, NO, YES, IN_PROGRESS);
-        assertThatThrownBy(() -> outstandingAssessmentService.legacyCheckForOutstandingAssessments(repId))
-                .isInstanceOf(ValidationException.class)
-                .hasMessage(OutstandingAssessmentService.MSG_OUTSTANDING_HARDSHIP_ASSESSMENT_FOUND);
-    }
-
-    @Test
-    void givenMultipleOutstanding_whenLegacyCheckForOutstandingAssessmentsIsCalled_thenOnlyOneMessage() {
-        var repId = repOrder.getId();
-        saveTestPassportedAssessment(repOrder, NO, YES, IN_PROGRESS);
-        saveTestHardshipAssessment(repOrder, NO, YES, IN_PROGRESS);
-        saveTestFullMeansAssessment(repOrder, NO, YES, IN_PROGRESS);
-        assertThatThrownBy(() -> outstandingAssessmentService.legacyCheckForOutstandingAssessments(repId))
-                .isInstanceOf(ValidationException.class)
-                .hasMessage(OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
+        assertThat(errorMessage).isPresent().hasValue(expectedError);
     }
 
     private void saveTestInitMeansAssessment(

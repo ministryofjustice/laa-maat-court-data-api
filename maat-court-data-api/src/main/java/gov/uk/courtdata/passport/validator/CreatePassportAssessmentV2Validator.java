@@ -38,8 +38,10 @@ public class CreatePassportAssessmentV2Validator {
                         validateLastSignOnDate(request), validateRepOrder(request), validatePartner(request))
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
-        errorMessages.addAll(outstandingAssessmentService.checkForOutstandingAssessments(
-                request.getPassportedAssessmentMetadata().getLegacyApplicationId()));
+        outstandingAssessmentService
+                .checkForOutstandingAssessments(
+                        request.getPassportedAssessmentMetadata().getLegacyApplicationId())
+                .ifPresent(errorMessages::add);
         if (!errorMessages.isEmpty()) {
             throw new CrimeValidationException(errorMessages);
         }

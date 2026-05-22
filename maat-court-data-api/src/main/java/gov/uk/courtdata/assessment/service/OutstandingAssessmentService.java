@@ -2,7 +2,6 @@ package gov.uk.courtdata.assessment.service;
 
 import gov.uk.courtdata.assessment.specification.FinancialAssessmentSpecification;
 import gov.uk.courtdata.assessment.specification.PassportAssessmentSpecification;
-import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.hardship.specification.HardshipSpecification;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
@@ -10,9 +9,8 @@ import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -32,40 +30,23 @@ public class OutstandingAssessmentService {
 
     /**
      * Checks that the RepOrder with repId has no outstanding assessments which will stop creation of a new Assessment.
-     * If any blocking assessments are present, will return a list containing the messages.
+     * Will return an Optional containing the error message if a blocking assessment is found.
      * @param repId Id of the RepOrder to check. Will not check if null.
-     * @return List of ErrorMessage.
+     * @return Optional containing either the error message, or empty is no validation fails.
      */
-    public List<ErrorMessage> checkForOutstandingAssessments(Integer repId) {
-        var errorList = new ArrayList<ErrorMessage>();
-        if (repId != null) {
-            hasOutstandingFinancialAssessments(repId).ifPresent(errorList::add);
-            hasOutstandingPassportedAssessment(repId).ifPresent(errorList::add);
-            hasOutstandingHardshipAssessment(repId).ifPresent(errorList::add);
+    public Optional<ErrorMessage> checkForOutstandingAssessments(Integer repId) {
+        if (repId == null) {
+            return Optional.empty();
         }
-        return errorList;
+        return Stream.of(
+                        validateNoOutstandingFinancialAssessments(repId),
+                        validateNoOutstandingPassportedAssessments(repId),
+                        validateNoOutstandingHardshipAssessments(repId))
+                .flatMap(Optional::stream)
+                .findFirst();
     }
 
-    /**
-     * Legacy mechanism for checking that the RepOrder with repId has no outstanding assessments which will stop creation of a new Assessment.
-     * Is used for processes which cannot handle a list of errors, and expects the validator to exception instead.
-     * <br>Will generally be used for v1 endpoints.
-     * @param repId Id of the RepOrder to check. Will not check if null.
-     */
-    public void legacyCheckForOutstandingAssessments(Integer repId) throws ValidationException {
-        if (repId != null) {
-            hasOutstandingFinancialAssessments(repId).ifPresent(this::throwValidationException);
-            hasOutstandingPassportedAssessment(repId).ifPresent(this::throwValidationException);
-            hasOutstandingHardshipAssessment(repId).ifPresent(this::throwValidationException);
-        }
-    }
-
-    /** Helper method to throw Validation Exception for the passed in ErrorMessage */
-    private void throwValidationException(ErrorMessage message) {
-        throw new ValidationException(message.message());
-    }
-
-    private Optional<ErrorMessage> hasOutstandingFinancialAssessments(Integer repId) {
+    private Optional<ErrorMessage> validateNoOutstandingFinancialAssessments(Integer repId) {
         if (financialAssessmentRepository.exists(FinancialAssessmentSpecification.hasRepId(repId)
                 .and(FinancialAssessmentSpecification.isCurrent())
                 .and(FinancialAssessmentSpecification.isValid())
@@ -75,7 +56,7 @@ public class OutstandingAssessmentService {
         return Optional.empty();
     }
 
-    private Optional<ErrorMessage> hasOutstandingPassportedAssessment(Integer repId) {
+    private Optional<ErrorMessage> validateNoOutstandingPassportedAssessments(Integer repId) {
         if (passportAssessmentRepository.exists(PassportAssessmentSpecification.hasRepId(repId)
                 .and(PassportAssessmentSpecification.isCurrent())
                 .and(PassportAssessmentSpecification.isValid())
@@ -85,7 +66,7 @@ public class OutstandingAssessmentService {
         return Optional.empty();
     }
 
-    private Optional<ErrorMessage> hasOutstandingHardshipAssessment(Integer repId) {
+    private Optional<ErrorMessage> validateNoOutstandingHardshipAssessments(Integer repId) {
         if (hardshipReviewRepository.exists(HardshipSpecification.hasRepId(repId)
                 .and(HardshipSpecification.isCurrent())
                 .and(HardshipSpecification.isValid())

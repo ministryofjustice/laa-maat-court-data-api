@@ -112,7 +112,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .assessmentDate(testCreationDate)
                 .userCreated(testUser)
                 .pastStatus("IN PROGRESS")
-                .replaced(NO)
+                .replaced(false)
                 .build());
 
         completePassportAssessmentEntity = repos.passportAssessment.save(PassportAssessmentEntity.builder()
@@ -121,7 +121,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .result(PASS.getCode())
                 .pcobConfirmation(APPLICANT_AGE.getConfirmation())
                 .userCreated(testUser)
-                .replaced(NO)
+                .replaced(false)
                 .pastStatus("COMPLETE")
                 .build());
 
@@ -231,14 +231,14 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
         // check we've set all old passported assessments to replaced.
         assertThat(passportAssessments.stream()
-                        .filter(a -> YES.equals(a.getReplaced()))
+                        .filter(a -> Boolean.TRUE.equals(a.getReplaced()))
                         .map(PassportAssessmentEntity::getId)
                         .toList())
                 .hasSize(1)
                 .doesNotContain(createdPassportedAssessmentId);
         // check the id is correct and saved and not replaced.
         assertThat(passportAssessments.stream()
-                        .filter(x -> NO.equals(x.getReplaced()))
+                        .filter(x -> Boolean.FALSE.equals(x.getReplaced()))
                         .map(PassportAssessmentEntity::getId)
                         .toList())
                 .hasSize(1)
@@ -483,12 +483,12 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
         // check we've set not set any old passported assessments to replaced.
         assertThat(passportAssessments.stream()
-                        .filter(x -> YES.equals(x.getReplaced()))
+                        .filter(x -> Boolean.TRUE.equals(x.getReplaced()))
                         .map(PassportAssessmentEntity::getId))
                 .isEmpty();
         // check there is still only one value. The other should have been rolled back.
         assertThat(passportAssessments.stream()
-                        .filter(x -> NO.equals(x.getReplaced()))
+                        .filter(x -> Boolean.FALSE.equals(x.getReplaced()))
                         .map(PassportAssessmentEntity::getId)
                         .toList())
                 .hasSize(1);

@@ -31,8 +31,8 @@ public class HardshipSpecification {
     public static Specification<HardshipReviewEntity> isValid() {
         return (root, query, criteriaBuilder) -> {
             Predicate isNull = criteriaBuilder.isNull(root.get(HardshipReviewEntity_.VALID));
-            Predicate isFalse = criteriaBuilder.notEqual(root.get(HardshipReviewEntity_.VALID), NO);
-            return criteriaBuilder.or(isNull, isFalse);
+            Predicate isYes = criteriaBuilder.equal(root.get(HardshipReviewEntity_.VALID), YES);
+            return criteriaBuilder.or(isNull, isYes);
         };
     }
 

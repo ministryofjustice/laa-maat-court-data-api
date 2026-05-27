@@ -1,6 +1,7 @@
 package gov.uk.courtdata.assessment.specification;
 
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
+import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static gov.uk.courtdata.dto.application.AssessmentStatusDTO.INCOMPLETE;
 
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
@@ -37,8 +38,8 @@ public class PassportAssessmentSpecification {
     public static Specification<PassportAssessmentEntity> isValid() {
         return (root, query, criteriaBuilder) -> {
             Predicate isNull = criteriaBuilder.isNull(root.get(PassportAssessmentEntity_.VALID));
-            Predicate isFalse = criteriaBuilder.notEqual(root.get(PassportAssessmentEntity_.VALID), NO);
-            return criteriaBuilder.or(isNull, isFalse);
+            Predicate isYes = criteriaBuilder.equal(root.get(PassportAssessmentEntity_.VALID), YES);
+            return criteriaBuilder.or(isNull, isYes);
         };
     }
 }

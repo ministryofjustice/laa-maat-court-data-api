@@ -109,9 +109,8 @@ public class PassportAssessmentMapperHelper {
         return null;
     }
 
-    BenefitType mapBenefitType(PassportAssessmentEntity passportAssessmentEntity) {
-        if (passportAssessmentEntity.getIncomeSupport() != null
-                && Boolean.TRUE.equals(passportAssessmentEntity.getIncomeSupport())) {
+    public BenefitType mapBenefitType(PassportAssessmentEntity passportAssessmentEntity) {
+        if (Boolean.TRUE.equals(passportAssessmentEntity.getIncomeSupport())) {
             return BenefitType.INCOME_SUPPORT;
         } else if (passportAssessmentEntity.getJobSeekers() != null
                 && Boolean.TRUE.equals(passportAssessmentEntity.getJobSeekers())) {
@@ -146,8 +145,7 @@ public class PassportAssessmentMapperHelper {
     }
 
     BenefitRecipient mapBenefitRecipient(PassportAssessmentEntity passportAssessmentEntity) {
-        return passportAssessmentEntity.getPartnerBenefitClaimed() != null
-                        && Boolean.TRUE.equals(passportAssessmentEntity.getPartnerBenefitClaimed())
+        return Boolean.TRUE.equals(passportAssessmentEntity.getPartnerBenefitClaimed())
                 ? PARTNER
                 : BenefitRecipient.APPLICANT;
     }

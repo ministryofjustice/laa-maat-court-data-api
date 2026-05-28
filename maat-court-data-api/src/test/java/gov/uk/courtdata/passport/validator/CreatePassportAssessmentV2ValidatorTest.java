@@ -155,8 +155,8 @@ class CreatePassportAssessmentV2ValidatorTest {
     }
 
     @Test
-    void givenOutstandingAssessment_whenValidateIsInvoked_outstandingAssessmentErrorShouldPresent(){
-        ErrorMessage expectedError = new ErrorMessage("test","test error should be present.");
+    void givenOutstandingAssessment_whenValidateIsInvoked_outstandingAssessmentErrorShouldPresent() {
+        ErrorMessage expectedError = new ErrorMessage("test", "test error should be present.");
         when(repOrderService.exists(REP_ID)).thenReturn(true);
         when(partnerResolver.hasLinkedPartner(REP_ID, APPLICANT_ID)).thenReturn(true);
         when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.of(expectedError));

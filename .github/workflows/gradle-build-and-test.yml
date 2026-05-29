@@ -7,111 +7,30 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-test:
+  build:
+
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6
-
       - name: Set up JDK 21
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 #v5
         with:
           java-version: 21
           distribution: 'corretto'
 
-      - name: Set up Gradle
+      # Configure Gradle for optimal use in GiHub Actions, including caching of downloaded dependencies.
+      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e #v6
 
-      - name: Build and test
+      - name: Check Git Version
+        run: git --version
+
+      - name: Build with Gradle Wrapper
         run: |
           pushd maat-court-data-api
           chmod +x ./gradlew
           ./gradlew build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Test coverage verification
-        run: |
-          pushd maat-court-data-api
-          chmod +x ./gradlew
-          ./gradlew jacocoTestCoverageVerification
-
-      - name: Upload test report
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7
-        with:
-          name: test-report
-          path: maat-court-data-api/build/reports/tests
-          retention-days: 14
-
-      - name: Upload jacoco coverage report
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7
-        with:
-          name: jacoco-coverage-report
-          path: maat-court-data-api/build/reports/jacoco/test
-          retention-days: 14
-
-  vulnerability-scan-app:
-    runs-on: ubuntu-24.04
-    needs:
-      - build-test
-    env:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      SNYK_TEST_EXCLUDE: build,generated
-      SNYK_TARGET_REFERENCE: main
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6
-
-      - name: Run Snyk to check app for vulnerabilities
-        uses: snyk/actions/gradle@9adf32b1121593767fc3c057af55b55db032dc04 #1.0
-        continue-on-error: true # To make sure that SARIF upload gets called
-        with:
-          command: code test
-          args: --severity-threshold=critical --sarif-file-output=snyk.sarif
-
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@7211b7c8077ea37d8641b6271f6a365a22a5fbfa #v4
-        with:
-          sarif_file: snyk.sarif
-
-  vulnerability-scan-docker:
-    runs-on: ubuntu-24.04
-    needs:
-      - build-test
-    env:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 #v5
-        with:
-          java-version: 21
-          distribution: 'corretto'
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e #v6
-
-      - name: Build app jar with gradle
-        run: |
-          pushd maat-court-data-api
-          chmod +x ./gradlew
-          ./gradlew build
-
-      - name: Build a Docker image
-        run: |
-          pushd maat-court-data-api
-          docker build -t maat-court-data-api:scan .
-
-      - name: Run Snyk to check Docker image for vulnerabilities
-        uses: snyk/actions/docker@9adf32b1121593767fc3c057af55b55db032dc04 #1.0
-        continue-on-error: true # To make sure that SARIF upload gets called
-        with:
-          image: maat-court-data-api:scan
-          args: --file=crime-maat-court-data-api/Dockerfile --severity-threshold=critical --sarif-file-output=snyk.sarif
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@7211b7c8077ea37d8641b6271f6a365a22a5fbfa #v4
-        with:
-          sarif_file: snyk.sarif

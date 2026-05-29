@@ -14,18 +14,18 @@ jobs:
 
   application-image-build:
     name: application-image-build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 #v4
-      - uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 #v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 #v5
         with:
           distribution: 'corretto'
           java-version: '21'
-      - uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a #v4
+      - uses: aws-actions/configure-aws-credentials@acca2b1b2070338fb9fd1ca27ecee81d687e58e5 #v6
         with:
           role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.ECR_REGION }}
-      - uses: aws-actions/amazon-ecr-login@183a1442edf41672e66566b7fc560e297a290896 #v2
+      - uses: aws-actions/amazon-ecr-login@fa648b43de3d4d023bcb3f89ed6940096949c419 #v2
         id: login-ecr
       - name: Pre-build
         id: tag-image
@@ -55,13 +55,13 @@ jobs:
   deploy-to-development:
     name: deploy-to-development
     needs: [application-image-build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: development
     env:
       KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 #v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6
       - name: Authenticating to the Kubernetes cluster
         id: authenticate-k8s-cluster
         run: |
@@ -87,13 +87,13 @@ jobs:
   deploy-to-test:
     name: deploy-to-test
     needs: [application-image-build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: test
     env:
       KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 #v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6
       - name: Authenticating to the Kubernetes cluster
         id: authenticate-k8s-cluster
         run: |
@@ -119,13 +119,13 @@ jobs:
   deploy-to-uat:
     name: deploy-to-uat
     needs: [application-image-build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: uat
     env:
       KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 #v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6
       - name: Authenticating to the Kubernetes cluster
         id: authenticate-k8s-cluster
         run: |

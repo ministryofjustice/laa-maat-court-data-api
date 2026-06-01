@@ -5,9 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
@@ -19,6 +20,7 @@ import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.model.assessment.UpdateAppDateCompleted;
+import gov.uk.courtdata.model.reporder.LinkingDetail;
 import gov.uk.courtdata.model.reporder.MaatSearchRequest;
 import gov.uk.courtdata.model.reporder.MaatSearchResponse;
 import gov.uk.courtdata.reporder.impl.RepOrderImpl;
@@ -30,17 +32,15 @@ import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -53,8 +53,8 @@ class RepOrderServiceTest {
     @Mock
     private RepOrderRepository repOrderRepository;
 
+    @Mock
     private RepOrderMapper repOrderMapper;
-    private RepOrderService repOrderService;
 
     @Mock
     private WqLinkRegisterRepository wqLinkRegisterRepository;
@@ -62,9 +62,10 @@ class RepOrderServiceTest {
     @Mock
     private RepOrderCPDataRepository repOrderCPDataRepository;
 
+    private RepOrderService repOrderService;
+
     @BeforeEach
     void setup() {
-        repOrderMapper = Mappers.getMapper(RepOrderMapper.class);
         repOrderService = new RepOrderService(
                 repOrderImpl, repOrderMapper, repOrderRepository, wqLinkRegisterRepository, repOrderCPDataRepository);
     }
@@ -75,6 +76,59 @@ class RepOrderServiceTest {
 
         repOrderService.find(TestModelDataBuilder.REP_ID, false);
         verify(repOrderImpl).find(anyInt());
+    }
+
+    @Test
+    void givenExistingRepOrder_whenUpdateIsInvoked_thenEntityIsUpdatedAndFlushed() {
+        Integer repId = 123;
+        LocalDateTime dateModified = LocalDateTime.now();
+        Map<String, Object> updates = Map.of("dateModified", dateModified, "iojResult", "PASS");
+
+        RepOrderEntity existingRepOrder = new RepOrderEntity();
+        existingRepOrder.setId(repId);
+
+        RepOrderEntity savedRepOrder = new RepOrderEntity();
+        savedRepOrder.setId(repId);
+
+        RepOrderDTO expectedResponse = new RepOrderDTO();
+        expectedResponse.setId(repId);
+
+        when(repOrderRepository.findById(repId)).thenReturn(Optional.of(existingRepOrder));
+        when(repOrderRepository.saveAndFlush(any(RepOrderEntity.class))).thenReturn(savedRepOrder);
+        when(repOrderMapper.repOrderEntityToRepOrderDTO(any(RepOrderEntity.class)))
+                .thenReturn(expectedResponse);
+
+        ArgumentCaptor<RepOrderEntity> captor = ArgumentCaptor.forClass(RepOrderEntity.class);
+        RepOrderDTO result = repOrderService.update(repId, updates);
+
+        assertThat(result).isEqualTo(expectedResponse);
+
+        verify(repOrderRepository).findById(repId);
+        verify(repOrderRepository).saveAndFlush(captor.capture());
+        verify(repOrderMapper).repOrderEntityToRepOrderDTO(savedRepOrder);
+        verify(repOrderRepository, never()).save(any());
+
+        RepOrderEntity capturedRepOrder = captor.getValue();
+
+        assertThat(capturedRepOrder).isSameAs(existingRepOrder);
+        assertThat(capturedRepOrder.getIojResult()).isEqualTo("PASS");
+        assertThat(capturedRepOrder.getDateModified()).isEqualTo(dateModified);
+    }
+
+    @Test
+    void givenRepOrderDoesNotExist_whenUpdateIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
+        Integer repId = 123;
+        Map<String, Object> updates = Map.of("dateModified", LocalDateTime.now());
+
+        when(repOrderRepository.findById(repId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> repOrderService.update(repId, updates))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
+                .hasMessage("Rep Order not found for id 123");
+
+        verifyNoInteractions(repOrderMapper);
+        verify(repOrderRepository).findById(repId);
+        verify(repOrderRepository, never()).saveAndFlush(any());
     }
 
     @Test
@@ -123,63 +177,34 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenValidRepId_whenFindIOJAssessorDetailsIsInvoked_thenIOJAssessorDetailsAreReturnedWithFullName() {
+    void givenValidRepId_whenFindIOJAssessorDetailsIsInvoked_thenIOJAssessorDetailsAreReturned() {
         RepOrderEntity repOrder = TestEntityDataBuilder.getPopulatedRepOrder(TestModelDataBuilder.REP_ID);
-        repOrder.setUserCreated("grea-k");
-        repOrder.setUserCreatedEntity(TestEntityDataBuilder.getUserEntity());
+        AssessorDetails expectedDetails = AssessorDetails.builder()
+                .fullName("Karen Greaves")
+                .userName("grea-k")
+                .build();
 
         when(repOrderRepository.findById(TestModelDataBuilder.REP_ID)).thenReturn(Optional.of(repOrder));
+        when(repOrderMapper.createIOJAssessorDetails(any(RepOrderEntity.class))).thenReturn(expectedDetails);
 
-        AssessorDetails actualIOJAssessorDetails = repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID);
+        AssessorDetails actualAssessorDetails = repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID);
 
-        SoftAssertions.assertSoftly(s -> {
-            assertThat(actualIOJAssessorDetails.getFullName()).isEqualTo("Karen Greaves");
-            assertThat(actualIOJAssessorDetails.getUserName()).isEqualTo("grea-k");
-        });
+        assertThat(actualAssessorDetails).isEqualTo(expectedDetails);
+
+        verify(repOrderMapper).createIOJAssessorDetails(repOrder);
+        verify(repOrderRepository).findById(TestModelDataBuilder.REP_ID);
     }
 
     @Test
-    void
-            givenValidRepId_whenFindIOJAssessorDetailsIsInvokedWithNullUserCreatedEntity_thenIOJAssessorDetailsAreReturnedWithoutFullName() {
-        RepOrderEntity repOrder = TestEntityDataBuilder.getPopulatedRepOrder(TestModelDataBuilder.REP_ID);
-        repOrder.setUserCreated("grea-k");
-        repOrder.setUserCreatedEntity(null);
-
-        when(repOrderRepository.findById(TestModelDataBuilder.REP_ID)).thenReturn(Optional.of(repOrder));
-
-        AssessorDetails actualIOJAssessorDetails = repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID);
-
-        SoftAssertions.assertSoftly(s -> {
-            assertThat(actualIOJAssessorDetails.getFullName()).isEqualTo(StringUtils.EMPTY);
-            assertThat(actualIOJAssessorDetails.getUserName()).isEqualTo("grea-k");
-        });
-    }
-
-    @Test
-    void givenUnknownRepId_whenFindIOJAssessorDetailsIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
-        when(repOrderRepository.findById(1245))
-                .thenThrow(new RequestedObjectNotFoundException("Unable to find AssessorDetails for repId: [1245]"));
-
-        assertThatThrownBy(() -> repOrderService.findIOJAssessorDetails(1245))
+    void givenRepOrderDoesNotExist_whenFindIOJAssessorDetailsIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
+        when(repOrderRepository.findById(TestModelDataBuilder.REP_ID)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> repOrderService.findIOJAssessorDetails(TestModelDataBuilder.REP_ID))
                 .isInstanceOf(RequestedObjectNotFoundException.class)
-                .hasMessage("Unable to find AssessorDetails for repId: [1245]");
-    }
+                .hasMessageContaining(
+                        String.format("Unable to find AssessorDetails for repId: [%s]", TestModelDataBuilder.REP_ID));
 
-    @Test
-    void givenAValidInput_whenUpdateIsInvoked_thenUpdateIsSuccess() {
-        RepOrderEntity repOrder = TestEntityDataBuilder.getPopulatedRepOrder(TestModelDataBuilder.REP_ID);
-        HashMap<String, Object> inputMap = new HashMap<>();
-        inputMap.put("iojResult", "PASS");
-        inputMap.put("dateModified", LocalDateTime.now().toString());
-        when(repOrderRepository.findById(anyInt())).thenReturn(Optional.of(repOrder));
-        when(repOrderRepository.save(repOrder)).thenReturn(repOrder);
-        RepOrderDTO repOrderDTO = repOrderService.update(TestModelDataBuilder.REP_ID, inputMap);
-        verify(repOrderRepository, atLeastOnce()).findById(any());
-        verify(repOrderRepository, atLeastOnce()).save(any());
-        assertThat(repOrderDTO.getId()).isEqualTo(TestModelDataBuilder.REP_ID);
-        assertThat(repOrderDTO.getIojResult()).isEqualTo(inputMap.get("iojResult"));
-        assertThat(repOrderDTO.getDateModified())
-                .hasToString(inputMap.get("dateModified").toString());
+        verifyNoInteractions(repOrderMapper);
+        verify(repOrderRepository).findById(TestModelDataBuilder.REP_ID);
     }
 
     @Test
@@ -235,6 +260,12 @@ class RepOrderServiceTest {
         when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(Set.of(REP_ID));
         when(wqLinkRegisterRepository.findBymaatId(REP_ID)).thenReturn(List.of(linkWithoutCaseUrn));
         when(repOrderCPDataRepository.findByrepOrderId(REP_ID)).thenReturn(Optional.of(repOrder));
+        when(repOrderMapper.mapMaatSearchResponse(REP_ID, List.of(linkWithoutCaseUrn), repOrder.getCaseUrn()))
+                .thenReturn(MaatSearchResponse.builder()
+                        .linkingDetail(LinkingDetail.builder()
+                                .caseUrn(repOrder.getCaseUrn())
+                                .build())
+                        .build());
 
         List<MaatSearchResponse> maatSearchResponseList =
                 repOrderService.searchMaatApplication(TestModelDataBuilder.getMaatSearchRequest());
@@ -242,5 +273,25 @@ class RepOrderServiceTest {
         assertThat(maatSearchResponseList).hasSize(1);
         MaatSearchResponse response = maatSearchResponseList.getFirst();
         assertThat(response.getLinkingDetail().getCaseUrn()).isEqualTo(repOrder.getCaseUrn());
+
+        verify(repOrderRepository).findRepId(any(MaatSearchRequest.class));
+        verify(wqLinkRegisterRepository).findBymaatId(REP_ID);
+        verify(repOrderCPDataRepository).findByrepOrderId(REP_ID);
+        verify(repOrderMapper).mapMaatSearchResponse(REP_ID, List.of(linkWithoutCaseUrn), repOrder.getCaseUrn());
+    }
+
+    @Test
+    void givenRepOrderDoesNotExist_whenSearchMaatApplicationIsInvoked_thenRequestedObjectNotFoundExceptionIsThrown() {
+        when(repOrderRepository.findRepId(any(MaatSearchRequest.class))).thenReturn(Set.of());
+
+        MaatSearchRequest searchRequest = MaatSearchRequest.builder().build();
+        assertThatThrownBy(() -> repOrderService.searchMaatApplication(searchRequest))
+                .isInstanceOf(RequestedObjectNotFoundException.class)
+                .hasMessage("Representation order not found");
+
+        verify(repOrderRepository).findRepId(any(MaatSearchRequest.class));
+        verifyNoInteractions(wqLinkRegisterRepository);
+        verifyNoInteractions(repOrderCPDataRepository);
+        verifyNoInteractions(repOrderMapper);
     }
 }

@@ -91,6 +91,9 @@ public class LaaStatusServiceUpdate {
                     log.info("No linking records found for repId: {}", repId);
                     continue;
                 }
+
+                log.info("Previous status is found status {}, IOJ {} and date {}", previousLaaStatusUpdate.getLegalAidStatus(),
+                        previousLaaStatusUpdate.getIojDecision(), previousLaaStatusUpdate.getLegalAidStatusDate());
                 WqLinkRegisterEntity linked = linkedList.get(0);
 
                 Optional<OffenceEntity> linkedOffences =
@@ -104,6 +107,7 @@ public class LaaStatusServiceUpdate {
                 }
                 log.info("Updating previous status {}", previousLaaStatusUpdate);
                 updateLinkedEntities(linked, linkedOffences.get(), linkedCases.get(), previousLaaStatusUpdate);
+                processLaaStatusServiceForCDA(courtDataDTO);
             } catch (Exception e) {
                 log.error(
                         "Error processing auto LAA status update for repId: {}, offenceCode: {}. Error: {}",
@@ -113,7 +117,6 @@ public class LaaStatusServiceUpdate {
                         e);
             }
         }
-        processLaaStatusServiceForCDA(courtDataDTO);
         log.info("Ends - Auto LAA status update");
     }
 

@@ -47,11 +47,12 @@ public interface OffenceRepository extends JpaRepository<OffenceEntity, AsnSeqTx
     @Query(
             value =
                     """
+                     SELECT * FROM (
                      SELECT * FROM MLA.XXMLA_OFFENCE
                      WHERE CASE_ID = ?1
                      AND OFFENCE_CODE =?2
-                     AND ROWNUM = 1
-                     order by ASN_SEQ,TX_ID desc
+                     order by ASN_SEQ,TX_ID desc)
+                     WHERE ROWNUM = 1
                   """,
             nativeQuery = true)
     Optional<OffenceEntity> getOffenceDetail(Integer caseId, String offenceCode);

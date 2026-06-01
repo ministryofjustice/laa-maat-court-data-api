@@ -92,8 +92,11 @@ public class LaaStatusServiceUpdate {
                     continue;
                 }
 
-                log.info("Previous status is found status {}, IOJ {} and date {}", previousLaaStatusUpdate.getLegalAidStatus(),
-                        previousLaaStatusUpdate.getIojDecision(), previousLaaStatusUpdate.getLegalAidStatusDate());
+                log.info(
+                        "Previous status is found status {}, IOJ {} and date {}",
+                        previousLaaStatusUpdate.getLegalAidStatus(),
+                        previousLaaStatusUpdate.getIojDecision(),
+                        previousLaaStatusUpdate.getLegalAidStatusDate());
                 WqLinkRegisterEntity linked = linkedList.get(0);
 
                 Optional<OffenceEntity> linkedOffences =
@@ -107,7 +110,10 @@ public class LaaStatusServiceUpdate {
                 }
                 log.info("Updating previous status {}", previousLaaStatusUpdate);
                 updateLinkedEntities(linked, linkedOffences.get(), linkedCases.get(), previousLaaStatusUpdate);
-                processLaaStatusServiceForCDA(courtDataDTO);
+                if (previousLaaStatusUpdate.getLegalAidStatus() != null
+                        && previousLaaStatusUpdate.getLegalAidStatus().equals("AP")) {
+                    processLaaStatusServiceForCDA(courtDataDTO);
+                }
             } catch (Exception e) {
                 log.error(
                         "Error processing auto LAA status update for repId: {}, offenceCode: {}. Error: {}",
@@ -122,9 +128,10 @@ public class LaaStatusServiceUpdate {
 
     private void mapAutoLaaStatusToOffence(Offence offence, AutoLaaStatusUpdate previousLaaStatusUpdate) {
         offence.setLegalAidStatus(previousLaaStatusUpdate.getLegalAidStatus());
-        offence.setLegalAidStatusDate(
-                previousLaaStatusUpdate.getLegalAidStatusDate().toString());
         offence.setIojDecision(previousLaaStatusUpdate.getIojDecision());
+        Optional.ofNullable(previousLaaStatusUpdate.getLegalAidStatusDate())
+                .map(Object::toString)
+                .ifPresent(offence::setLegalAidStatusDate);
     }
 
     private void updateLinkedEntities(

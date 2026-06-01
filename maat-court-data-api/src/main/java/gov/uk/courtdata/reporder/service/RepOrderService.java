@@ -99,7 +99,7 @@ public class RepOrderService {
                         new RequestedObjectNotFoundException(String.format("Rep Order not found for id %d", repId)));
 
         ReflectionHelper.updateEntityFromMap(currentRepOrder, repOrder);
-        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderRepository.save(currentRepOrder));
+        return repOrderMapper.repOrderEntityToRepOrderDTO(repOrderRepository.saveAndFlush(currentRepOrder));
     }
 
     @Transactional(readOnly = true)

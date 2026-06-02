@@ -111,7 +111,7 @@ public class LaaStatusServiceUpdate {
                 log.info("Updating previous status {}", previousLaaStatusUpdate);
                 updateLinkedEntities(linked, linkedOffences.get(), linkedCases.get(), previousLaaStatusUpdate);
                 if (previousLaaStatusUpdate.getLegalAidStatus() != null
-                        && previousLaaStatusUpdate.getLegalAidStatus().equals("AP")) {
+                        && !previousLaaStatusUpdate.getLegalAidStatus().equals("AP")) {
                     processLaaStatusServiceForCDA(courtDataDTO);
                 }
             } catch (Exception e) {

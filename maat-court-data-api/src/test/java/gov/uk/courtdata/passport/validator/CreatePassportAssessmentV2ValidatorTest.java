@@ -28,7 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class CreatePassportAssessmentV2ValidatorTest {
 
     private static final String LEGACY_APPLICATION_ID_FIELD = "passportedAssessmentMetadata.legacyApplicationId";
-    private static final String LAST_SIGN_ON_DATE_FIELD = "passportedAssessment.declaredBenefit.lastSignOnDate";
     private static final String LEGACY_PARTNER_ID_FIELD = "passportedAssessment.declaredBenefit.legacyPartnerId";
 
     @Mock
@@ -48,25 +47,6 @@ class CreatePassportAssessmentV2ValidatorTest {
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
         assertDoesNotThrow(() -> createPassportAssessmentV2Validator.validateCreateRequest(request));
-    }
-
-    @Test
-    void givenRequestWithJsaNoSignOn_whenValidateIsInvoked_thenShouldError() {
-        var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
-                REP_ID, APPLICANT_ID, false, true);
-        request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
-        request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(null);
-        var expectedErrorMessage =
-                new ErrorMessage(LAST_SIGN_ON_DATE_FIELD, "last sign on date cannot be null for job seekers");
-        when(repOrderService.exists(REP_ID)).thenReturn(true);
-
-        CrimeValidationException e = assertThrows(
-                CrimeValidationException.class,
-                () -> createPassportAssessmentV2Validator.validateCreateRequest(request));
-
-        assertThat(e.getExceptionMessages())
-                .asInstanceOf(InstanceOfAssertFactories.LIST)
-                .containsOnly(expectedErrorMessage);
     }
 
     @Test

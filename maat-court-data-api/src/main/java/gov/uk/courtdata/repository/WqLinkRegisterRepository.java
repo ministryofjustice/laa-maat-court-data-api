@@ -29,11 +29,12 @@ public interface WqLinkRegisterRepository extends JpaRepository<WqLinkRegisterEn
     @Query(
             value =
                     """
+                     SELECT * FROM (
                      SELECT * from MLA.XXMLA_WQ_LINK_REGISTER wl
                      WHERE wl.MAAT_ID =?1
                      AND REMOVED_TX_ID  IS NOT NULL
-                     AND ROWNUM = 1
                      ORDER BY CREATED_TX_ID DESC
+                     ) WHERE ROWNUM = 1
                  """,
             nativeQuery = true)
     Optional<WqLinkRegisterEntity> findUnlinkByMaat(Integer maatID);

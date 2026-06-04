@@ -412,7 +412,7 @@ public class TestEntityDataBuilder {
                 .userModified(passportAssessmentEntity.getUserCreated())
                 .active("Y")
                 .removedDate(null)
-                .mandatory("Y")
+                .mandatory(true)
                 .otherText("Applicant NINO")
                 .adhoc(null)
                 .incomeEvidence("NINO")

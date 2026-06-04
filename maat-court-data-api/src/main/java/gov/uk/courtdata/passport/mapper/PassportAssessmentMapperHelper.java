@@ -134,11 +134,6 @@ public class PassportAssessmentMapperHelper {
         return dateReceived != null ? dateReceived.toLocalDate() : null;
     }
 
-    @Named("mapEvidenceMandatory")
-    public boolean mapEvidenceMandatory(String mandatory) {
-        return "Y".equals(mandatory);
-    }
-
     @Named("mapEvidenceType")
     public IncomeEvidenceType mapEvidenceType(String evidenceType) {
         return IncomeEvidenceType.getFrom(evidenceType);

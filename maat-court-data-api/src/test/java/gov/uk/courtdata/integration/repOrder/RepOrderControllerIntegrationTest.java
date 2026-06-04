@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
@@ -462,5 +463,63 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(jsonPath("$[0].linkingDetail.caseUrn").value(TestEntityDataBuilder.CASE_URN))
                 .andExpect(jsonPath("$[0].linkingDetail.libraId").value(TestEntityDataBuilder.LIBRA_ID))
                 .andExpect(jsonPath("$[0].linkingDetail.caseId").value(TestEntityDataBuilder.TEST_CASE_ID));
+    }
+
+    @Test
+    void givenDateModifiedInPatchRequest_whenRepOrderUpdated_thenResponseContainsGeneratedDateModified()
+            throws Exception {
+        // given
+        LocalDateTime staleDateModified = LocalDateTime.now().minusDays(1);
+
+        Map<String, Object> request =
+                Map.of("dateModified", staleDateModified.toString(), "arrestSummonsNo", "UPDATED_ASN");
+
+        // when
+        String response = mockMvc.perform(MockMvcRequestBuilders.patch(BASE_URL + SLASH + repId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.arrestSummonsNo").value("UPDATED_ASN"))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        RepOrderDTO repOrderResponse = objectMapper.readValue(response, RepOrderDTO.class);
+
+        // then
+        RepOrderEntity persistedRepOrder = repos.repOrder.findById(repId).orElseThrow();
+
+        softly.assertThat(repOrderResponse.getDateModified()).isEqualTo(persistedRepOrder.getDateModified());
+
+        softly.assertThat(repOrderResponse.getDateModified()).isNotEqualTo(staleDateModified);
+    }
+
+    @Test
+    void givenRepOrderPatchRequest_whenRepOrderUpdated_thenResponseContainsLatestPersistedDateModified()
+            throws Exception {
+        // given
+        RepOrderEntity originalRepOrder = repos.repOrder.findById(repId).orElseThrow();
+        LocalDateTime originalDateModified = originalRepOrder.getDateModified();
+
+        Map<String, Object> request = Map.of("arrestSummonsNo", "UPDATED_ASN");
+
+        // when
+        String response = mockMvc.perform(MockMvcRequestBuilders.patch(BASE_URL + SLASH + repId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.arrestSummonsNo").value("UPDATED_ASN"))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        RepOrderDTO repOrderResponse = objectMapper.readValue(response, RepOrderDTO.class);
+
+        // then
+        RepOrderEntity persistedRepOrder = repos.repOrder.findById(repId).orElseThrow();
+
+        softly.assertThat(repOrderResponse.getDateModified()).isEqualTo(persistedRepOrder.getDateModified());
+
+        softly.assertThat(repOrderResponse.getDateModified()).isAfter(originalDateModified);
     }
 }

@@ -12,6 +12,10 @@ public interface YesNoConvertor {
     }
 
     default Boolean yesNoToBoolean(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
         return YesNoConverter.INSTANCE.toDomainValue(value.charAt(0));
     }
 }

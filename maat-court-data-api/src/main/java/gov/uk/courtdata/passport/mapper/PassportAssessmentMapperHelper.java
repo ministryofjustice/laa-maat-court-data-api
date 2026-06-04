@@ -112,17 +112,13 @@ public class PassportAssessmentMapperHelper {
     public BenefitType mapBenefitType(PassportAssessmentEntity passportAssessmentEntity) {
         if (Boolean.TRUE.equals(passportAssessmentEntity.getIncomeSupport())) {
             return BenefitType.INCOME_SUPPORT;
-        } else if (passportAssessmentEntity.getJobSeekers() != null
-                && Boolean.TRUE.equals(passportAssessmentEntity.getJobSeekers())) {
+        } else if (Boolean.TRUE.equals(passportAssessmentEntity.getJobSeekers())) {
             return BenefitType.JSA;
-        } else if (passportAssessmentEntity.getEsa() != null
-                && Boolean.TRUE.equals(passportAssessmentEntity.getEsa())) {
+        } else if (Boolean.TRUE.equals(passportAssessmentEntity.getEsa())) {
             return BenefitType.ESA;
-        } else if (passportAssessmentEntity.getStatePensionCredit() != null
-                && Boolean.TRUE.equals(passportAssessmentEntity.getStatePensionCredit())) {
+        } else if (Boolean.TRUE.equals(passportAssessmentEntity.getStatePensionCredit())) {
             return BenefitType.GSPC;
-        } else if (passportAssessmentEntity.getUniversalCredit() != null
-                && Boolean.TRUE.equals(passportAssessmentEntity.getUniversalCredit())) {
+        } else if (Boolean.TRUE.equals(passportAssessmentEntity.getUniversalCredit())) {
             return BenefitType.UC;
         }
 

@@ -3,25 +3,40 @@ package gov.uk.courtdata.reporder.mapper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
+import gov.uk.courtdata.dto.PassportAssessmentDTO;
+import gov.uk.courtdata.dto.RepOrderDTO;
 import gov.uk.courtdata.dto.RepOrderStateDTO;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.IOJAppealEntity;
 import gov.uk.courtdata.entity.NewWorkReasonEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
+import gov.uk.courtdata.entity.PassportAssessmentEvidenceEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
+import gov.uk.courtdata.mapper.YesNoConvertorImpl;
 import gov.uk.courtdata.model.reporder.MaatSearchResponse;
+import uk.gov.justice.laa.crime.dto.maat.UserDTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {RepOrderMapperImpl.class, YesNoConvertorImpl.class})
 class RepOrderMapperTest {
 
     private static final int USN = 810529;
@@ -54,7 +69,8 @@ class RepOrderMapperTest {
     private static final String MEANS_WORK_REASON = "HR";
     private static final String PASSPORT_WORK_REASON = "FMA";
 
-    private final RepOrderMapper repOrderMapper = new RepOrderMapperImpl(); // Assuming an implementation exists
+    @Autowired
+    private RepOrderMapper repOrderMapper; // Assuming an implementation exists
 
     private UserEntity userEntity;
     private PassportAssessmentEntity passportAssessmentPass;
@@ -151,6 +167,92 @@ class RepOrderMapperTest {
                 .decisionReasonCode(FUNDING_DECISION)
                 .crownRepOrderDecision(CC_REP_DECISION)
                 .build();
+    }
+
+    @ParameterizedTest
+    @MethodSource("booleanToYesNoArguments")
+    void givenPassportAssessmentBooleanFields_whenMapRepOrder_thenMapsToLegacyYesNoFields(
+            Boolean sourceValue, String expectedValue) {
+
+        PassportAssessmentEntity passportAssessment = new PassportAssessmentEntity();
+        passportAssessment.setPartnerBenefitClaimed(sourceValue);
+        passportAssessment.setIncomeSupport(sourceValue);
+        passportAssessment.setJobSeekers(sourceValue);
+        passportAssessment.setStatePensionCredit(sourceValue);
+        passportAssessment.setUnder18FullEducation(sourceValue);
+        passportAssessment.setUnder16(sourceValue);
+        passportAssessment.setBetween16And17(sourceValue);
+        passportAssessment.setUnder18HeardInYouthCourt(sourceValue);
+        passportAssessment.setUnder18HeardInMagsCourt(sourceValue);
+        passportAssessment.setEsa(sourceValue);
+        passportAssessment.setReplaced(sourceValue);
+        passportAssessment.setValid(sourceValue);
+
+        PassportAssessmentEvidenceEntity evidenceEntity = PassportAssessmentEvidenceEntity.builder()
+                .mandatory(sourceValue)
+                .build();
+
+        passportAssessment.getPassportAssessmentEvidences().add(evidenceEntity);
+
+        RepOrderEntity repOrder = new RepOrderEntity();
+        repOrder.getPassportAssessments().add(passportAssessment);
+
+        RepOrderDTO result = repOrderMapper.repOrderEntityToRepOrderDTO(repOrder);
+
+        PassportAssessmentDTO passportResult = result.getPassportAssessments().getFirst();
+
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(passportResult.getPartnerBenefitClaimed()).isEqualTo(expectedValue);
+            softly.assertThat(passportResult.getIncomeSupport()).isEqualTo(expectedValue);
+            softly.assertThat(passportResult.getJobSeekers()).isEqualTo(expectedValue);
+            softly.assertThat(passportResult.getStatePensionCredit()).isEqualTo(expectedValue);
+            softly.assertThat(passportResult.getUnder18FullEducation()).isEqualTo(expectedValue);
+            softly.assertThat(passportResult.getUnder16()).isEqualTo(expectedValue);
+            softly.assertThat(passportResult.getBetween16And17()).isEqualTo(expectedValue);
+            softly.assertThat(passportResult.getUnder18HeardInYouthCourt()).isEqualTo(expectedValue);
+            softly.assertThat(passportResult.getUnder18HeardInMagsCourt()).isEqualTo(expectedValue);
+            softly.assertThat(passportResult.getEsa()).isEqualTo(expectedValue);
+            softly.assertThat(passportResult.getReplaced()).isEqualTo(expectedValue);
+            softly.assertThat(passportResult.getValid()).isEqualTo(expectedValue);
+            softly.assertThat(passportResult.getPassportAssessmentEvidences().size())
+                    .isEqualTo(1);
+            softly.assertThat(passportResult
+                            .getPassportAssessmentEvidences()
+                            .getFirst()
+                            .getMandatory())
+                    .isEqualTo(expectedValue);
+        });
+    }
+
+    private static Stream<Arguments> booleanToYesNoArguments() {
+        return Stream.of(Arguments.of(true, "Y"), Arguments.of(false, "N"), Arguments.of(null, null));
+    }
+
+    @ParameterizedTest
+    @MethodSource("yesNoToBooleanArguments")
+    void givenUserEntityYesNoFields_whenMapRepOrder_thenMapsToBooleanFields(String sourceValue, Boolean expectedValue) {
+
+        UserEntity user = new UserEntity();
+        user.setEnabled(sourceValue);
+        user.setLoggedIn(sourceValue);
+        user.setLocked(sourceValue);
+
+        RepOrderEntity repOrder = new RepOrderEntity();
+        repOrder.setUserCreatedEntity(user);
+
+        RepOrderDTO result = repOrderMapper.repOrderEntityToRepOrderDTO(repOrder);
+
+        UserDTO userResult = result.getUserCreatedEntity();
+
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(userResult.isEnabled()).isEqualTo(expectedValue);
+            softly.assertThat(userResult.isLoggedIn()).isEqualTo(expectedValue);
+            softly.assertThat(userResult.isLocked()).isEqualTo(expectedValue);
+        });
+    }
+
+    private static Stream<Arguments> yesNoToBooleanArguments() {
+        return Stream.of(Arguments.of("Y", true), Arguments.of("N", false));
     }
 
     // test passport

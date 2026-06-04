@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Named.named;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
-import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.applicant.mapper.RepOrderApplicantLinksMapper;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.applicant.service.ApplicantService;
@@ -62,18 +61,6 @@ class PassportAssessmentMapperTest {
     @Autowired
     private PassportAssessmentMapper passportAssessmentMapper;
 
-    private RepOrderApplicantLinksDTO getRepOrderApplicantLinksDto(
-            PassportAssessmentEntity passportAssessmentEntity,
-            RepOrderApplicantLinksEntity repOrderApplicantLinksEntity,
-            LocalDate unlinkDate) {
-        return RepOrderApplicantLinksDTO.builder()
-                .repId(passportAssessmentEntity.getRepOrder().getId())
-                .partnerApplId(repOrderApplicantLinksEntity.getPartnerApplId())
-                .unlinkDate(unlinkDate)
-                .linkDate(LocalDate.now())
-                .build();
-    }
-
     @Test
     void givenPassportAssessmentEntity_whenMapToApiGetPassportedAssessmentResponse_thenAllFieldsMapped() {
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
@@ -84,8 +71,12 @@ class PassportAssessmentMapperTest {
         // This is how we get the partner ID
         var applicantLinksEntity = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
 
-        RepOrderApplicantLinksDTO repOrderApplicantLinksDto =
-                getRepOrderApplicantLinksDto(entity, applicantLinksEntity, null);
+        RepOrderApplicantLinksDTO repOrderApplicantLinksDto = RepOrderApplicantLinksDTO.builder()
+                .repId(entity.getRepOrder().getId())
+                .partnerApplId(applicantLinksEntity.getPartnerApplId())
+                .unlinkDate(null)
+                .linkDate(LocalDate.now())
+                .build();
 
         when(repOrderApplicantLinksMapper.mapEntityToDTO(List.of(applicantLinksEntity)))
                 .thenReturn(List.of(repOrderApplicantLinksDto));
@@ -444,6 +435,6 @@ class PassportAssessmentMapperTest {
     }
 
     private Boolean isBenefitType(BenefitType actualType, BenefitType expected) {
-        return expected.equals(actualType) ? true : false;
+        return expected.equals(actualType);
     }
 }

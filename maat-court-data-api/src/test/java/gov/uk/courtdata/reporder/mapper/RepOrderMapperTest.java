@@ -193,8 +193,7 @@ class RepOrderMapperTest {
     }
 
     @Test
-    void
-            givenValidRepOrderEntityWithPassportFailAndInitialAssessmentPass_whenMapRepOrderStateIsCalled_thenRepOrderStateIsReturned() {
+    void givenPassportFailAndInitialPass_whenMapRepOrderStateIsInvoked_thenMapsAssessmentResults() {
         repOrderEntity.getPassportAssessments().add(passportAssessmentFail);
         repOrderEntity.getFinancialAssessments().add(financialAssessmentInitialPass);
 
@@ -232,8 +231,7 @@ class RepOrderMapperTest {
     }
 
     @Test
-    void
-            givenValidRepOrderEntityWithPassportFailAndInitialAssessmentFailAndFullAssessmentPass_whenMapRepOrderStateIsCalled_thenRepOrderStateIsReturned() {
+    void givenPassportFailInitialFailAndFullPass_whenMapRepOrderStateIsInvoked_thenMapsAssessmentResults() {
         repOrderEntity.getPassportAssessments().add(passportAssessmentFail);
         repOrderEntity.getFinancialAssessments().add(financialAssessmentInitialFail);
         repOrderEntity.getFinancialAssessments().add(financialAssessmentFullPass);

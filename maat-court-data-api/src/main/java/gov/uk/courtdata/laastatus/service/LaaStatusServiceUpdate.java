@@ -51,6 +51,7 @@ public class LaaStatusServiceUpdate {
     }
 
     public void autoLAAStatusUpdate(CourtDataDTO courtDataDTO) {
+        boolean canPostLaaStatus = false;
         log.info("Start - Auto LAA status update");
         Integer repId = Optional.ofNullable(courtDataDTO)
                 .map(CourtDataDTO::getCaseDetails)
@@ -112,7 +113,7 @@ public class LaaStatusServiceUpdate {
                 updateLinkedEntities(linked, linkedOffences.get(), linkedCases.get(), previousLaaStatusUpdate);
                 if (previousLaaStatusUpdate.getLegalAidStatus() != null
                         && !previousLaaStatusUpdate.getLegalAidStatus().equals("AP")) {
-                    processLaaStatusServiceForCDA(courtDataDTO);
+                    canPostLaaStatus = true;
                 }
             } catch (Exception e) {
                 log.error(
@@ -122,6 +123,9 @@ public class LaaStatusServiceUpdate {
                         e.getMessage(),
                         e);
             }
+        }
+        if (canPostLaaStatus) {
+            processLaaStatusServiceForCDA(courtDataDTO);
         }
         log.info("Ends - Auto LAA status update");
     }

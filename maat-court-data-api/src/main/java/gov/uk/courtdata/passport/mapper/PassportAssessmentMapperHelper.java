@@ -137,7 +137,7 @@ public class PassportAssessmentMapperHelper {
 
     BenefitRecipient mapBenefitRecipient(PassportAssessmentEntity passportAssessmentEntity) {
         return Boolean.TRUE.equals(passportAssessmentEntity.getPartnerBenefitClaimed())
-                ? PARTNER
+                ? BenefitRecipient.PARTNER
                 : BenefitRecipient.APPLICANT;
     }
 }

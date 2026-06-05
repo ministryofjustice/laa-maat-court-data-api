@@ -249,19 +249,23 @@ class RepOrderMapperTest {
         });
     }
 
-    @Test
-    void givenAValidRequestAndNullLinking_whenMapMaatSearchResponseIsInvoked_thenCorrectResponseShouldReturn() {
-        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, null, null);
-        assertThat(response.getMaatId()).isEqualTo(TestEntityDataBuilder.REP_ID);
+    @ParameterizedTest
+    @MethodSource("unlinkedWqLinkRegisterArguments")
+    void givenNoLinking_whenMapMaatSearchResponse_thenReturnsUnlinkedResponse(
+            List<WqLinkRegisterEntity> links) {
+
+        MaatSearchResponse response =
+                repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, links, null);
+
         assertThat(response.isLinked()).isFalse();
+        assertThat(response.getMaatId()).isEqualTo(TestEntityDataBuilder.REP_ID);
     }
 
-    @Test
-    void givenAValidRequestAndEmptyLinking_whenMapMaatSearchResponseIsInvoked_thenCorrectResponseShouldReturn() {
-        MaatSearchResponse response =
-                repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, Collections.emptyList(), null);
-        assertThat(response.getMaatId()).isEqualTo(TestEntityDataBuilder.REP_ID);
-        assertThat(response.isLinked()).isFalse();
+    private static Stream<Arguments> unlinkedWqLinkRegisterArguments() {
+        return Stream.of(
+                Arguments.of((List<WqLinkRegisterEntity>) null),
+                Arguments.of(Collections.emptyList())
+        );
     }
 
     @Test

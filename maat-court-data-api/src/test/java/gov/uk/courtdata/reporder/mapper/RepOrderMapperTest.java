@@ -1,5 +1,7 @@
 package gov.uk.courtdata.reporder.mapper;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.dto.RepOrderDTO;
@@ -14,15 +16,6 @@ import gov.uk.courtdata.entity.UserEntity;
 import gov.uk.courtdata.entity.WqLinkRegisterEntity;
 import gov.uk.courtdata.mapper.YesNoConvertorImpl;
 import gov.uk.courtdata.model.reporder.MaatSearchResponse;
-import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.justice.laa.crime.dto.maat.UserDTO;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.enums.CurrentStatus;
@@ -40,7 +33,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {RepOrderMapperImpl.class, YesNoConvertorImpl.class})
@@ -90,7 +91,8 @@ class RepOrderMapperTest {
     void givenPassportAssessmentBooleanFields_whenMapRepOrder_thenMapsToLegacyYesNoFields(
             Boolean sourceValue, String expectedValue) {
 
-        PassportAssessmentEntity passportAssessment = PassportAssessmentEntity.builder().build();
+        PassportAssessmentEntity passportAssessment =
+                PassportAssessmentEntity.builder().build();
 
         passportAssessment.setPartnerBenefitClaimed(sourceValue);
         passportAssessment.setIncomeSupport(sourceValue);
@@ -105,10 +107,9 @@ class RepOrderMapperTest {
         passportAssessment.setReplaced(sourceValue);
         passportAssessment.setValid(sourceValue);
 
-        PassportAssessmentEvidenceEntity evidenceEntity =
-                PassportAssessmentEvidenceEntity.builder()
-                        .mandatory(sourceValue)
-                        .build();
+        PassportAssessmentEvidenceEntity evidenceEntity = PassportAssessmentEvidenceEntity.builder()
+                .mandatory(sourceValue)
+                .build();
 
         passportAssessment.getPassportAssessmentEvidences().add(evidenceEntity);
 
@@ -149,13 +150,14 @@ class RepOrderMapperTest {
     @MethodSource("yesNoToBooleanArguments")
     void givenUserEntityYesNoFields_whenMapRepOrder_thenMapsToBooleanFields(String sourceValue, Boolean expectedValue) {
 
-        UserEntity user = new UserEntity();
-        user.setEnabled(sourceValue);
-        user.setLoggedIn(sourceValue);
-        user.setLocked(sourceValue);
+        UserEntity user = UserEntity.builder()
+                .enabled(sourceValue)
+                .locked(sourceValue)
+                .loggedIn(sourceValue)
+                .build();
 
-        RepOrderEntity repOrder = new RepOrderEntity();
-        repOrder.setUserCreatedEntity(user);
+        RepOrderEntity repOrder =
+                RepOrderEntity.builder().userCreatedEntity(user).build();
 
         RepOrderDTO result = repOrderMapper.repOrderEntityToRepOrderDTO(repOrder);
 
@@ -177,40 +179,39 @@ class RepOrderMapperTest {
         RepOrderEntity repOrderEntity = baseRepOrder();
         repOrderEntity.setIojResult(ReviewResult.FAIL.getResult());
 
-        PassportAssessmentEntity passportAssessment =
-                PassportAssessmentEntity.builder()
-                        .id(1)
-                        .result(PassportAssessmentResult.FAIL.getResult())
-                        .pastStatus(CurrentStatus.COMPLETE.getStatus())
-                        .dateCreated(DATE_PASSPORT_CREATED)
-                        .rtCode(ReviewType.ER.getCode())
-                        .userCreatedEntity(assessor())
-                        .nworCode(NewWorkReason.FMA.getCode())
-                        .build();
+        PassportAssessmentEntity passportAssessment = PassportAssessmentEntity.builder()
+                .id(1)
+                .result(PassportAssessmentResult.FAIL.getResult())
+                .pastStatus(CurrentStatus.COMPLETE.getStatus())
+                .dateCreated(DATE_PASSPORT_CREATED)
+                .rtCode(ReviewType.ER.getCode())
+                .userCreatedEntity(assessor())
+                .nworCode(NewWorkReason.FMA.getCode())
+                .build();
 
         repOrderEntity.getPassportAssessments().add(passportAssessment);
 
-        FinancialAssessmentEntity financialAssessment =
-                FinancialAssessmentEntity.builder()
-                        .id(1)
-                        .initResult(InitAssessmentResult.FULL.getResult())
-                        .fassInitStatus(CurrentStatus.COMPLETE.getStatus())
-                        .fullResult(FullAssessmentResult.PASS.getResult())
-                        .fassFullStatus(CurrentStatus.COMPLETE.getStatus())
-                        .dateCreated(DATE_MEANS_CREATED)
-                        .userCreatedEntity(assessor())
-                        .rtCode(ReviewType.ER.getCode())
-                        .newWorkReason(NewWorkReasonEntity.builder().code(NewWorkReason.FMA.getCode()).build())
-                        .build();
+        FinancialAssessmentEntity financialAssessment = FinancialAssessmentEntity.builder()
+                .id(1)
+                .initResult(InitAssessmentResult.FULL.getResult())
+                .fassInitStatus(CurrentStatus.COMPLETE.getStatus())
+                .fullResult(FullAssessmentResult.PASS.getResult())
+                .fassFullStatus(CurrentStatus.COMPLETE.getStatus())
+                .dateCreated(DATE_MEANS_CREATED)
+                .userCreatedEntity(assessor())
+                .rtCode(ReviewType.ER.getCode())
+                .newWorkReason(NewWorkReasonEntity.builder()
+                        .code(NewWorkReason.FMA.getCode())
+                        .build())
+                .build();
 
         repOrderEntity.getFinancialAssessments().add(financialAssessment);
 
-        IOJAppealEntity iojAppeal =
-                IOJAppealEntity.builder()
-                        .decisionResult(ReviewResult.PASS.getResult())
-                        .userCreated(ASSESSOR_USERNAME)
-                        .decisionDate(IOJ_APPEAL_DATE)
-                        .build();
+        IOJAppealEntity iojAppeal = IOJAppealEntity.builder()
+                .decisionResult(ReviewResult.PASS.getResult())
+                .userCreated(ASSESSOR_USERNAME)
+                .decisionDate(IOJ_APPEAL_DATE)
+                .build();
 
         repOrderEntity.getIojAppeal().add(iojAppeal);
 
@@ -251,21 +252,16 @@ class RepOrderMapperTest {
 
     @ParameterizedTest
     @MethodSource("unlinkedWqLinkRegisterArguments")
-    void givenNoLinking_whenMapMaatSearchResponse_thenReturnsUnlinkedResponse(
-            List<WqLinkRegisterEntity> links) {
+    void givenNoLinking_whenMapMaatSearchResponse_thenReturnsUnlinkedResponse(List<WqLinkRegisterEntity> links) {
 
-        MaatSearchResponse response =
-                repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, links, null);
+        MaatSearchResponse response = repOrderMapper.mapMaatSearchResponse(TestEntityDataBuilder.REP_ID, links, null);
 
         assertThat(response.isLinked()).isFalse();
         assertThat(response.getMaatId()).isEqualTo(TestEntityDataBuilder.REP_ID);
     }
 
     private static Stream<Arguments> unlinkedWqLinkRegisterArguments() {
-        return Stream.of(
-                Arguments.of((List<WqLinkRegisterEntity>) null),
-                Arguments.of(Collections.emptyList())
-        );
+        return Stream.of(Arguments.of((List<WqLinkRegisterEntity>) null), Arguments.of(Collections.emptyList()));
     }
 
     @Test

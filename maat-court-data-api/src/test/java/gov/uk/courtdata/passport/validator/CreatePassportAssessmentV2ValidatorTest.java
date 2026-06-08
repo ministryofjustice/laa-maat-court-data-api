@@ -4,7 +4,7 @@ import static gov.uk.courtdata.builder.TestEntityDataBuilder.APPLICANT_ID;
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.AssertionsForClassTypes.catchThrowableOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -69,10 +69,9 @@ class CreatePassportAssessmentV2ValidatorTest {
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
         request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(null);
 
-        CrimeValidationException exception = catchThrowableOfType(
-                CrimeValidationException.class,
-                () -> createPassportAssessmentV2Validator.validateCreateRequest(request));
-        assertThat(exception.getExceptionMessages()).containsOnly(expectedErrorMessage);
+        assertThatThrownBy(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
+                .isInstanceOfSatisfying(CrimeValidationException.class, e -> assertThat(e.getExceptionMessages())
+                        .containsOnly(expectedErrorMessage));
     }
 
     @Test
@@ -100,10 +99,9 @@ class CreatePassportAssessmentV2ValidatorTest {
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
         request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(LocalDateTime.now());
 
-        CrimeValidationException exception = catchThrowableOfType(
-                CrimeValidationException.class,
-                () -> createPassportAssessmentV2Validator.validateCreateRequest(request));
-        assertThat(exception.getExceptionMessages()).containsOnly(expectedErrorMessage);
+        assertThatThrownBy(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
+                .isInstanceOfSatisfying(CrimeValidationException.class, e -> assertThat(e.getExceptionMessages())
+                        .containsOnly(expectedErrorMessage));
     }
 
     @Test
@@ -118,10 +116,9 @@ class CreatePassportAssessmentV2ValidatorTest {
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
         request.getPassportedAssessment().getDeclaredBenefit().setLegacyPartnerId(null);
 
-        CrimeValidationException exception = catchThrowableOfType(
-                CrimeValidationException.class,
-                () -> createPassportAssessmentV2Validator.validateCreateRequest(request));
-        assertThat(exception.getExceptionMessages()).containsOnly(expectedErrorMessage);
+        assertThatThrownBy(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
+                .isInstanceOfSatisfying(CrimeValidationException.class, e -> assertThat(e.getExceptionMessages())
+                        .containsOnly(expectedErrorMessage));
     }
 
     @Test
@@ -135,10 +132,9 @@ class CreatePassportAssessmentV2ValidatorTest {
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
 
-        CrimeValidationException exception = catchThrowableOfType(
-                CrimeValidationException.class,
-                () -> createPassportAssessmentV2Validator.validateCreateRequest(request));
-        assertThat(exception.getExceptionMessages()).containsOnly(expectedErrorMessage);
+        assertThatThrownBy(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
+                .isInstanceOfSatisfying(CrimeValidationException.class, e -> assertThat(e.getExceptionMessages())
+                        .containsOnly(expectedErrorMessage));
     }
 
     @Test
@@ -153,9 +149,8 @@ class CreatePassportAssessmentV2ValidatorTest {
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
 
-        CrimeValidationException exception = catchThrowableOfType(
-                CrimeValidationException.class,
-                () -> createPassportAssessmentV2Validator.validateCreateRequest(request));
-        assertThat(exception.getExceptionMessages()).containsOnly(expectedErrorMessage);
+        assertThatThrownBy(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
+                .isInstanceOfSatisfying(CrimeValidationException.class, e -> assertThat(e.getExceptionMessages())
+                        .containsOnly(expectedErrorMessage));
     }
 }

@@ -43,7 +43,6 @@ import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
 import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentRequest;
 import uk.gov.justice.laa.crime.enums.BenefitRecipient;
-import uk.gov.justice.laa.crime.enums.BenefitType;
 import uk.gov.justice.laa.crime.error.ErrorExtension;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
@@ -82,7 +81,6 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
     private static final Integer INVALID_ASSESSMENT_ID = 999;
     private static final String LEGACY_APPLICATION_ID_FIELD = "passportedAssessmentMetadata.legacyApplicationId";
     private static final String LEGACY_PARTNER_ID_FIELD = "passportedAssessment.declaredBenefit.legacyPartnerId";
-    private static final String LAST_SIGN_ON_DATE_FIELD = "passportedAssessment.declaredBenefit.lastSignOnDate";
 
     @Autowired
     private PassportAssessmentMapper passportAssessmentMapper;
@@ -568,20 +566,6 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         var request =
                 TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, true, true);
         var expectedErrorMessage = new ErrorMessage(LEGACY_APPLICATION_ID_FIELD, "RepOrder does not exist");
-
-        runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
-    }
-
-    @Test
-    void givenJobSeekersNoSignOnDate_whenCreateAssessmentV2IsInvoked_theValidationResponseIsReturned()
-            throws Exception {
-        Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
-        var request =
-                TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, false, true);
-        request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(null);
-        request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
-        var expectedErrorMessage =
-                new ErrorMessage(LAST_SIGN_ON_DATE_FIELD, "last sign on date cannot be null for job seekers");
 
         runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
     }

@@ -30,7 +30,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class CreatePassportAssessmentV2ValidatorTest {
 
     private static final String LEGACY_APPLICATION_ID_FIELD = "passportedAssessmentMetadata.legacyApplicationId";
-    private static final String LAST_SIGN_ON_DATE_FIELD = "passportedAssessment.declaredBenefit.lastSignOnDate";
     private static final String LEGACY_PARTNER_ID_FIELD = "passportedAssessment.declaredBenefit.legacyPartnerId";
 
     @Mock
@@ -58,27 +57,7 @@ class CreatePassportAssessmentV2ValidatorTest {
     }
 
     @Test
-    void givenRequestWithJsaNoSignOn_whenValidateIsInvoked_thenShouldError() {
-        var expectedErrorMessage =
-                new ErrorMessage(LAST_SIGN_ON_DATE_FIELD, "last sign on date cannot be null for job seekers");
-        when(repOrderService.exists(REP_ID)).thenReturn(true);
-        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.empty());
-
-        var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
-                REP_ID, APPLICANT_ID, false, true);
-        request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
-        request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(null);
-
-        assertThatThrownBy(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
-                .isInstanceOfSatisfying(CrimeValidationException.class, e -> assertThat(e.getExceptionMessages())
-                        .containsOnly(expectedErrorMessage));
-    }
-
-    @Test
-    void givenRequestWithJsaWithSignOn_whenValidateIsInvoked_thenShouldSucceed() {
-        when(repOrderService.exists(REP_ID)).thenReturn(true);
-        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.empty());
-
+    void givenRequestWithJsaWithSignOn_whenValidateIsInvoked_thenShouldError() {
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);

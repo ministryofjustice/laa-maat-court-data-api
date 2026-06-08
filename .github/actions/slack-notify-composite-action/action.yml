@@ -22,7 +22,7 @@ runs:
     - name: Notify success to Slack
       id: slack-success
       if: ${{ success() }}
-      uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 #v3
+      uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c #v3
       with:
         webhook: ${{ inputs.webhook-url }}
         webhook-type: incoming-webhook
@@ -62,7 +62,7 @@ runs:
 
     - name: Notify failure to Slack
       if: ${{ failure() }}
-      uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95
+      uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c
       with:
         webhook: ${{ inputs.webhook-url }}
         webhook-type: incoming-webhook

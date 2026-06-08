@@ -1,7 +1,6 @@
 package gov.uk.courtdata.passport.validator;
 
 import static uk.gov.justice.laa.crime.enums.BenefitRecipient.PARTNER;
-import static uk.gov.justice.laa.crime.enums.BenefitType.JSA;
 
 import gov.uk.courtdata.applicant.service.PartnerResolver;
 import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
@@ -28,14 +27,12 @@ public class CreatePassportAssessmentV2Validator {
 
     private final RepOrderService repOrderService;
     private static final String LEGACY_APPLICATION_ID_FIELD = "passportedAssessmentMetadata.legacyApplicationId";
-    private static final String LAST_SIGN_ON_DATE_FIELD = "passportedAssessment.declaredBenefit.lastSignOnDate";
     private static final String LEGACY_PARTNER_ID_FIELD = "passportedAssessment.declaredBenefit.legacyPartnerId";
     private final PartnerResolver partnerResolver;
     private final OutstandingAssessmentService outstandingAssessmentService;
 
     public void validateCreateRequest(ApiCreatePassportedAssessmentRequest request) {
-        List<ErrorMessage> errorMessages = Stream.of(
-                        validateLastSignOnDate(request), validateRepOrder(request), validatePartner(request))
+        List<ErrorMessage> errorMessages = Stream.of(validateRepOrder(request), validatePartner(request))
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
         outstandingAssessmentService
@@ -45,17 +42,6 @@ public class CreatePassportAssessmentV2Validator {
         if (!errorMessages.isEmpty()) {
             throw new CrimeValidationException(errorMessages);
         }
-    }
-
-    private Optional<ErrorMessage> validateLastSignOnDate(ApiCreatePassportedAssessmentRequest request) {
-        DeclaredBenefit declaredBenefit = request.getPassportedAssessment().getDeclaredBenefit();
-        if (declaredBenefit != null
-                && JSA.equals(declaredBenefit.getBenefitType())
-                && declaredBenefit.getLastSignOnDate() == null) {
-            return Optional.of(
-                    new ErrorMessage(LAST_SIGN_ON_DATE_FIELD, "last sign on date cannot be null for job seekers"));
-        }
-        return Optional.empty();
     }
 
     private Optional<ErrorMessage> validateRepOrder(ApiCreatePassportedAssessmentRequest request) {

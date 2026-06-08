@@ -3,6 +3,8 @@ package gov.uk.courtdata.integration.assessment;
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.APPLICANT_ID;
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
+import static gov.uk.courtdata.dto.application.AssessmentStatusDTO.COMPLETE;
+import static gov.uk.courtdata.dto.application.AssessmentStatusDTO.INCOMPLETE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -22,6 +24,7 @@ import static uk.gov.justice.laa.crime.error.ProblemDetailError.VALIDATION_FAILU
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
+import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.dto.PassportAssessmentDTO;
@@ -38,6 +41,7 @@ import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
 import gov.uk.courtdata.repository.RepOrderRepository;
+import uk.gov.justice.laa.crime.common.model.passported.ApiCreatePassportedAssessmentRequest;
 import uk.gov.justice.laa.crime.enums.BenefitRecipient;
 import uk.gov.justice.laa.crime.error.ErrorExtension;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
@@ -99,6 +103,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
     private PassportAssessmentEntity existingPassportAssessmentEntity;
     private FinancialAssessmentEntity existingFinancialAssessmentEntity;
     private PassportAssessmentEntity completePassportAssessmentEntity;
+    private HardshipReviewEntity hardshipReviewEntity;
 
     @BeforeEach
     void setUp() {
@@ -123,7 +128,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .pcobConfirmation(APPLICANT_AGE.getConfirmation())
                 .assessmentDate(testCreationDate)
                 .userCreated(testUser)
-                .pastStatus("IN PROGRESS")
+                .pastStatus(COMPLETE)
                 .replaced(NO)
                 .build());
 
@@ -134,7 +139,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .pcobConfirmation(APPLICANT_AGE.getConfirmation())
                 .userCreated(testUser)
                 .replaced(NO)
-                .pastStatus("COMPLETE")
+                .pastStatus(COMPLETE)
                 .build());
 
         FinancialAssessmentEntity testFinancialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
@@ -142,14 +147,14 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
         existingFinancialAssessmentEntity = repos.financialAssessment.save(testFinancialAssessment);
 
-        HardshipReviewEntity hardshipReview = TestEntityDataBuilder.getHardshipReviewEntity();
-        hardshipReview.setId(null);
-        hardshipReview.setRepId(repIdWithNoOutstandingAssessments);
-        hardshipReview.setReplaced(NO);
-        hardshipReview.setNewWorkReason(existingNewWorkReason);
-        hardshipReview.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
+        hardshipReviewEntity = TestEntityDataBuilder.getHardshipReviewEntity();
+        hardshipReviewEntity.setId(null);
+        hardshipReviewEntity.setRepId(repIdWithNoOutstandingAssessments);
+        hardshipReviewEntity.setReplaced(NO);
+        hardshipReviewEntity.setNewWorkReason(existingNewWorkReason);
+        hardshipReviewEntity.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
 
-        repos.hardshipReview.save(hardshipReview);
+        repos.hardshipReview.save(hardshipReviewEntity);
     }
 
     @Test
@@ -340,6 +345,63 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .isEqualTo(result.getResponse().getContentAsString());
     }
 
+    @Test
+    void givenAValidRequestButHasInProgressPassport_whenCreateAssessmentV1IsInvoked_thenCorrect400ErrorReturned()
+            throws Exception {
+        Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
+        CreatePassportAssessment body = TestModelDataBuilder.getCreatePassportAssessment();
+        body.setRepId(repId);
+        body.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
+        existingPassportAssessmentEntity.setPastStatus(INCOMPLETE);
+        repos.passportAssessment.save(existingPassportAssessmentEntity);
+
+        runCreatePassportAssessmentErrorScenario(
+                OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND, body);
+    }
+
+    @Test
+    void
+            givenAValidRequestButHasInitialInProgressFinancial_whenCreateAssessmentV1IsInvoked_thenCorrect400ErrorReturned()
+                    throws Exception {
+        Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
+        CreatePassportAssessment body = TestModelDataBuilder.getCreatePassportAssessment();
+        body.setRepId(repId);
+        body.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
+        existingFinancialAssessmentEntity.setFassInitStatus(INCOMPLETE);
+        repos.financialAssessment.save(existingFinancialAssessmentEntity);
+
+        runCreatePassportAssessmentErrorScenario(
+                OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND, body);
+    }
+
+    @Test
+    void givenAValidRequestButHasFullInProgressFinancial_whenCreateAssessmentV1IsInvoked_thenCorrect400ErrorReturned()
+            throws Exception {
+        Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
+        CreatePassportAssessment body = TestModelDataBuilder.getCreatePassportAssessment();
+        body.setRepId(repId);
+        body.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
+        existingFinancialAssessmentEntity.setFassFullStatus(INCOMPLETE);
+        repos.financialAssessment.save(existingFinancialAssessmentEntity);
+
+        runCreatePassportAssessmentErrorScenario(
+                OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND, body);
+    }
+
+    @Test
+    void givenAValidRequestButHasInProgressHardship_whenCreateAssessmentV1IsInvoked_thenCorrect400ErrorReturned()
+            throws Exception {
+        Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
+        CreatePassportAssessment body = TestModelDataBuilder.getCreatePassportAssessment();
+        body.setRepId(repId);
+        body.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
+        hardshipReviewEntity.setStatus(INCOMPLETE);
+        repos.hardshipReview.save(hardshipReviewEntity);
+
+        runCreatePassportAssessmentErrorScenario(
+                OutstandingAssessmentService.MSG_OUTSTANDING_HARDSHIP_ASSESSMENT_FOUND, body);
+    }
+
     /**
      * Simple 3 boolean truth table
      */
@@ -438,33 +500,74 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
     }
 
     @Test
+    void givenAValidRequestButHasInProgressPassport_whenCreateAssessmentV2IsInvoked_thenCorrect400ErrorReturned()
+            throws Exception {
+        Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
+        var request =
+                TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, false, true);
+        existingPassportAssessmentEntity.setPastStatus(INCOMPLETE);
+        repos.passportAssessment.save(existingPassportAssessmentEntity);
+        ErrorMessage expectedErrorMessage =
+                new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
+
+        runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
+    }
+
+    @Test
+    void
+            givenAValidRequestButHasInitialInProgressFinancial_whenCreateAssessmentV2IsInvoked_thenCorrect400ErrorReturned()
+                    throws Exception {
+        Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
+        var request =
+                TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, false, true);
+
+        existingFinancialAssessmentEntity.setFassInitStatus(INCOMPLETE);
+        repos.financialAssessment.save(existingFinancialAssessmentEntity);
+
+        ErrorMessage expectedErrorMessage =
+                new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
+
+        runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
+    }
+
+    @Test
+    void givenAValidRequestButHasFullInProgressFinancial_whenCreateAssessmentV2IsInvoked_thenCorrect400ErrorReturned()
+            throws Exception {
+        Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
+        var request =
+                TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, false, true);
+
+        existingFinancialAssessmentEntity.setFassFullStatus(INCOMPLETE);
+        repos.financialAssessment.save(existingFinancialAssessmentEntity);
+        ErrorMessage expectedErrorMessage =
+                new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
+
+        runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
+    }
+
+    @Test
+    void givenAValidRequestButHasInProgressHardship_whenCreateAssessmentV2IsInvoked_thenCorrect400ErrorReturned()
+            throws Exception {
+        Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
+        var request =
+                TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, false, true);
+
+        hardshipReviewEntity.setStatus(INCOMPLETE);
+        repos.hardshipReview.save(hardshipReviewEntity);
+        ErrorMessage expectedErrorMessage =
+                new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_HARDSHIP_ASSESSMENT_FOUND);
+
+        runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
+    }
+
+    @Test
     void givenRepOrderInvalid_whenCreateAssessmentV2IsInvoked_theValidationResponseIsReturned() throws Exception {
         Integer repId = 0;
-
         var request =
                 TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, null, true, true);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andReturn();
-
-        ProblemDetail problemDetail =
-                ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
-        assertThat(problemDetail)
-                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
-                .hasFieldOrPropertyWithValue("status", 400)
-                .hasFieldOrPropertyWithValue("title", "Bad Request")
-                .hasFieldOrPropertyWithValue("detail", VALIDATION_FAILURE.defaultDetail())
-                .hasFieldOrPropertyWithValue("instance", URI.create(BASE_V2_URL));
-        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
-        assertThat(extension).isPresent().get().hasFieldOrPropertyWithValue("code", VALIDATION_FAILURE.code());
-
         var expectedErrorMessage = new ErrorMessage(LEGACY_APPLICATION_ID_FIELD, "RepOrder does not exist");
-        List<ErrorMessage> errors = extension.get().errors();
-        assertThat(errors).containsOnly(expectedErrorMessage);
+
+        runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
     }
 
     @Test
@@ -473,28 +576,9 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, 0, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andReturn();
-
-        ProblemDetail problemDetail =
-                ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
-        assertThat(problemDetail)
-                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
-                .hasFieldOrPropertyWithValue("status", 400)
-                .hasFieldOrPropertyWithValue("title", "Bad Request")
-                .hasFieldOrPropertyWithValue("detail", VALIDATION_FAILURE.defaultDetail())
-                .hasFieldOrPropertyWithValue("instance", URI.create(BASE_V2_URL));
-        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
-        assertThat(extension).isPresent().get().hasFieldOrPropertyWithValue("code", VALIDATION_FAILURE.code());
-
         var expectedErrorMessage = new ErrorMessage(LEGACY_PARTNER_ID_FIELD, "Partner is not linked to Rep Order");
-        List<ErrorMessage> errors = extension.get().errors();
-        assertThat(errors).containsOnly(expectedErrorMessage);
+
+        runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
     }
 
     @Test
@@ -505,28 +589,9 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 TestEntityDataBuilder.getRepOrderApplicantLinksEntity(repId, APPLICANT_ID, null));
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(repId, 0, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andReturn();
-
-        ProblemDetail problemDetail =
-                ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
-        assertThat(problemDetail)
-                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
-                .hasFieldOrPropertyWithValue("status", 400)
-                .hasFieldOrPropertyWithValue("title", "Bad Request")
-                .hasFieldOrPropertyWithValue("detail", VALIDATION_FAILURE.defaultDetail())
-                .hasFieldOrPropertyWithValue("instance", URI.create(BASE_V2_URL));
-        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
-        assertThat(extension).isPresent().get().hasFieldOrPropertyWithValue("code", VALIDATION_FAILURE.code());
-
         var expectedErrorMessage = new ErrorMessage(LEGACY_PARTNER_ID_FIELD, "Partner is not linked to Rep Order");
-        List<ErrorMessage> errors = extension.get().errors();
-        assertThat(errors).containsOnly(expectedErrorMessage);
+
+        runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
     }
 
     @Test
@@ -542,28 +607,9 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 repId, partnerId, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andReturn();
-
-        ProblemDetail problemDetail =
-                ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
-        assertThat(problemDetail)
-                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
-                .hasFieldOrPropertyWithValue("status", 400)
-                .hasFieldOrPropertyWithValue("title", "Bad Request")
-                .hasFieldOrPropertyWithValue("detail", VALIDATION_FAILURE.defaultDetail())
-                .hasFieldOrPropertyWithValue("instance", URI.create(BASE_V2_URL));
-        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
-        assertThat(extension).isPresent().get().hasFieldOrPropertyWithValue("code", VALIDATION_FAILURE.code());
-
         var expectedErrorMessage = new ErrorMessage(LEGACY_PARTNER_ID_FIELD, "Partner is not linked to Rep Order");
-        List<ErrorMessage> errors = extension.get().errors();
-        assertThat(errors).containsOnly(expectedErrorMessage);
+
+        runBadRequestScenarioForCreateV2WithExpectedError(request, expectedErrorMessage);
     }
 
     @Test
@@ -591,6 +637,28 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .when(passportAssessmentRepository)
                 .replaceAllByRepIdExcludingPassportedAssessment(any(), any());
         runAndValidateDatabaseFailureOnCreatePassportedV2();
+    }
+
+    private void runBadRequestScenarioForCreateV2WithExpectedError(
+            ApiCreatePassportedAssessmentRequest createRequest, ErrorMessage expectedErrorMessage) throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_V2_URL)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(createRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andReturn();
+
+        ProblemDetail problemDetail =
+                ProblemDetailUtil.parseProblemDetailJson(result.getResponse().getContentAsString());
+        assertThat(problemDetail)
+                .hasFieldOrPropertyWithValue("type", URI.create("about:blank"))
+                .hasFieldOrPropertyWithValue("status", 400)
+                .hasFieldOrPropertyWithValue("title", "Bad Request")
+                .hasFieldOrPropertyWithValue("detail", VALIDATION_FAILURE.defaultDetail())
+                .hasFieldOrPropertyWithValue("instance", URI.create(BASE_V2_URL));
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        assertThat(extension).isPresent().get().hasFieldOrPropertyWithValue("code", VALIDATION_FAILURE.code());
+        assertThat(ProblemDetailUtil.getErrorMessages(problemDetail)).hasSize(1).contains(expectedErrorMessage);
     }
 
     private void runAndValidateDatabaseFailureOnCreatePassportedV2() throws Exception {

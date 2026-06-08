@@ -3,7 +3,6 @@ package gov.uk.courtdata.assessment.impl;
 import gov.uk.courtdata.assessment.mapper.FinancialAssessmentMapper;
 import gov.uk.courtdata.dto.FinAssIncomeEvidenceDTO;
 import gov.uk.courtdata.dto.FinancialAssessmentDTO;
-import gov.uk.courtdata.dto.OutstandingAssessmentResultDTO;
 import gov.uk.courtdata.entity.ChildWeightingsEntity;
 import gov.uk.courtdata.entity.FinAssIncomeEvidenceEntity;
 import gov.uk.courtdata.entity.FinancialAssessmentDetailEntity;
@@ -186,19 +185,5 @@ public class FinancialAssessmentImpl {
                 assessmentMapper.financialAssessmentDtoToFinancialAssessmentEntity(financialAssessment);
         assessmentEntity.setAssessmentType(FinancialAssessmentType.INIT.getValue());
         return financialAssessmentRepository.saveAndFlush(assessmentEntity);
-    }
-
-    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId) {
-
-        Long outstandingFinancialAssessments = financialAssessmentRepository.findOutstandingFinancialAssessments(repId);
-        if (outstandingFinancialAssessments != null && outstandingFinancialAssessments > 0L) {
-            return new OutstandingAssessmentResultDTO(true, MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
-        }
-
-        Long outstandingPassportAssessments = passportAssessmentRepository.findOutstandingPassportAssessments(repId);
-        if (outstandingPassportAssessments != null && outstandingPassportAssessments > 0L) {
-            return new OutstandingAssessmentResultDTO(true, MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
-        }
-        return new OutstandingAssessmentResultDTO();
     }
 }

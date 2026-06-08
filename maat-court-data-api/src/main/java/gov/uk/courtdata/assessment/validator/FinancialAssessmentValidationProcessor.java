@@ -1,5 +1,6 @@
 package gov.uk.courtdata.assessment.validator;
 
+import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.FinancialAssessment;
@@ -18,6 +19,7 @@ public class FinancialAssessmentValidationProcessor {
     private final CreateAssessmentValidator createAssessmentValidator;
     private final UpdateAssessmentValidator updateAssessmentValidator;
     private final FinancialAssessmentIdValidator financialAssessmentIdValidator;
+    private final OutstandingAssessmentService outstandingAssessmentService;
 
     public Optional<Void> validate(Integer financialAssessmentId) {
         return financialAssessmentIdValidator.validate(financialAssessmentId);
@@ -35,13 +37,17 @@ public class FinancialAssessmentValidationProcessor {
             throw new ValidationException("Case management unit ID is required");
         }
 
-        if (financialAssessment instanceof CreateFinancialAssessment) {
-            return createAssessmentValidator.validate((CreateFinancialAssessment) financialAssessment);
+        if (financialAssessment instanceof CreateFinancialAssessment createAssessment) {
+            createAssessmentValidator.validate(createAssessment);
+            outstandingAssessmentService
+                    .checkForOutstandingAssessments(createAssessment.getRepId())
+                    .ifPresent(message -> {
+                        throw new ValidationException(message.message());
+                    });
         }
-        if (financialAssessment instanceof UpdateFinancialAssessment) {
-            return updateAssessmentValidator.validate((UpdateFinancialAssessment) financialAssessment);
+        if (financialAssessment instanceof UpdateFinancialAssessment updateAssessment) {
+            updateAssessmentValidator.validate(updateAssessment);
         }
-
         return Optional.empty();
     }
 }

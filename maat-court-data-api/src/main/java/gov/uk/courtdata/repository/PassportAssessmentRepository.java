@@ -5,13 +5,15 @@ import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PassportAssessmentRepository extends JpaRepository<PassportAssessmentEntity, Integer> {
+public interface PassportAssessmentRepository
+        extends JpaRepository<PassportAssessmentEntity, Integer>, JpaSpecificationExecutor<PassportAssessmentEntity> {
 
     @Modifying
     @Query(

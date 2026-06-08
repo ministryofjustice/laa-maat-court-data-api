@@ -3,11 +3,13 @@ package gov.uk.courtdata.passport.validator;
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.APPLICANT_ID;
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.applicant.service.PartnerResolver;
+import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.CrimeValidationException;
 import gov.uk.courtdata.reporder.service.RepOrderService;
@@ -16,8 +18,8 @@ import uk.gov.justice.laa.crime.enums.BenefitType;
 import uk.gov.justice.laa.crime.error.ErrorMessage;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
-import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,6 +36,9 @@ class CreatePassportAssessmentV2ValidatorTest {
     RepOrderService repOrderService;
 
     @Mock
+    OutstandingAssessmentService outstandingAssessmentService;
+
+    @Mock
     PartnerResolver partnerResolver;
 
     @InjectMocks
@@ -43,10 +48,12 @@ class CreatePassportAssessmentV2ValidatorTest {
     void givenValidRequest_whenValidateIsInvoked_thenShouldSucceed() {
         when(repOrderService.exists(REP_ID)).thenReturn(true);
         when(partnerResolver.hasLinkedPartner(REP_ID, APPLICANT_ID)).thenReturn(true);
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.empty());
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
-        assertDoesNotThrow(() -> createPassportAssessmentV2Validator.validateCreateRequest(request));
+        assertThatCode(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
+                .doesNotThrowAnyException();
     }
 
     @Test
@@ -55,65 +62,74 @@ class CreatePassportAssessmentV2ValidatorTest {
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
         request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(LocalDateTime.now());
-        when(repOrderService.exists(REP_ID)).thenReturn(true);
 
-        assertDoesNotThrow(() -> createPassportAssessmentV2Validator.validateCreateRequest(request));
+        assertThatCode(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
+                .doesNotThrowAnyException();
     }
 
     @Test
     void givenRequestWithInvalidRepOrderId_whenValidateIsInvoked_thenShouldError() {
+        var expectedErrorMessage = new ErrorMessage(LEGACY_APPLICATION_ID_FIELD, "RepOrder does not exist");
+        when(repOrderService.exists(REP_ID)).thenReturn(false);
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.empty());
+
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
         request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(LocalDateTime.now());
-        var expectedErrorMessage = new ErrorMessage(LEGACY_APPLICATION_ID_FIELD, "RepOrder does not exist");
-        when(repOrderService.exists(REP_ID)).thenReturn(false);
 
-        CrimeValidationException e = assertThrows(
-                CrimeValidationException.class,
-                () -> createPassportAssessmentV2Validator.validateCreateRequest(request));
-
-        assertThat(e.getExceptionMessages())
-                .asInstanceOf(InstanceOfAssertFactories.LIST)
-                .containsOnly(expectedErrorMessage);
+        assertThatThrownBy(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
+                .isInstanceOfSatisfying(CrimeValidationException.class, e -> assertThat(e.getExceptionMessages())
+                        .containsOnly(expectedErrorMessage));
     }
 
     @Test
     void givenRequestWithPartnerRecipientNoId_whenValidateIsInvoked_thenShouldError() {
+        var expectedErrorMessage =
+                new ErrorMessage(LEGACY_PARTNER_ID_FIELD, "Partner Id must be populated if partner receiving benefit");
         when(repOrderService.exists(REP_ID)).thenReturn(true);
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.empty());
+
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
         request.getPassportedAssessment().getDeclaredBenefit().setLegacyPartnerId(null);
 
-        var expectedErrorMessage =
-                new ErrorMessage(LEGACY_PARTNER_ID_FIELD, "Partner Id must be populated if partner receiving benefit");
-
-        CrimeValidationException e = assertThrows(
-                CrimeValidationException.class,
-                () -> createPassportAssessmentV2Validator.validateCreateRequest(request));
-
-        assertThat(e.getExceptionMessages())
-                .asInstanceOf(InstanceOfAssertFactories.LIST)
-                .containsOnly(expectedErrorMessage);
+        assertThatThrownBy(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
+                .isInstanceOfSatisfying(CrimeValidationException.class, e -> assertThat(e.getExceptionMessages())
+                        .containsOnly(expectedErrorMessage));
     }
 
     @Test
     void givenRequestWithPartnerRecipientDoesNotExist_whenValidateIsInvoked_thenShouldError() {
+        var expectedErrorMessage = new ErrorMessage(LEGACY_PARTNER_ID_FIELD, "Partner is not linked to Rep Order");
         when(repOrderService.exists(REP_ID)).thenReturn(true);
         when(partnerResolver.hasLinkedPartner(REP_ID, APPLICANT_ID)).thenReturn(false);
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any())).thenReturn(Optional.empty());
+
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
 
-        var expectedErrorMessage = new ErrorMessage(LEGACY_PARTNER_ID_FIELD, "Partner is not linked to Rep Order");
+        assertThatThrownBy(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
+                .isInstanceOfSatisfying(CrimeValidationException.class, e -> assertThat(e.getExceptionMessages())
+                        .containsOnly(expectedErrorMessage));
+    }
 
-        CrimeValidationException e = assertThrows(
-                CrimeValidationException.class,
-                () -> createPassportAssessmentV2Validator.validateCreateRequest(request));
+    @Test
+    void givenOutstandingAssessment_whenValidateIsInvoked_outstandingAssessmentErrorShouldPresent() {
+        ErrorMessage expectedErrorMessage = new ErrorMessage("test", "test error should be present.");
+        when(repOrderService.exists(REP_ID)).thenReturn(true);
+        when(partnerResolver.hasLinkedPartner(REP_ID, APPLICANT_ID)).thenReturn(true);
+        when(outstandingAssessmentService.checkForOutstandingAssessments(any()))
+                .thenReturn(Optional.of(expectedErrorMessage));
 
-        assertThat(e.getExceptionMessages())
-                .asInstanceOf(InstanceOfAssertFactories.LIST)
-                .containsOnly(expectedErrorMessage);
+        var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
+                REP_ID, APPLICANT_ID, false, true);
+        request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
+
+        assertThatThrownBy(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
+                .isInstanceOfSatisfying(CrimeValidationException.class, e -> assertThat(e.getExceptionMessages())
+                        .containsOnly(expectedErrorMessage));
     }
 }

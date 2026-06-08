@@ -53,7 +53,7 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         setupTestData();
     }
@@ -96,28 +96,11 @@ class HardshipControllerIntegrationTest extends MockMvcIntegrationTest {
 
     @Test
     void givenAValidHardshipReview_whenCreateHardshipIsInvoked_theCorrectDataIsPersisted() throws Exception {
-        CreateHardshipReview request = CreateHardshipReview.builder()
-                .financialAssessmentId(existingUnlinkedFinancialAssessment.getId())
-                .repId(existingUnlinkedFinancialAssessment.getRepOrder().getId())
-                .nworCode(existingNewWorkReason.getCode())
-                .cmuId(existingUnlinkedFinancialAssessment.getCmuId())
-                .reviewResult("FAIL")
-                .reviewDate(LocalDateTime.now())
-                .resultDate(LocalDateTime.now())
-                .solicitorCosts(SolicitorCosts.builder()
-                        .rate(DataBuilderUtil.createScaledBigDecimal(1.23))
-                        .hours(DataBuilderUtil.createScaledBigDecimal(12.00))
-                        .vat(DataBuilderUtil.createScaledBigDecimal(123.45))
-                        .disbursements(DataBuilderUtil.createScaledBigDecimal(0.00))
-                        .estimatedTotal(DataBuilderUtil.createScaledBigDecimal(345.67))
-                        .build())
-                .disposableIncome(DataBuilderUtil.createScaledBigDecimal(13000.00))
-                .disposableIncomeAfterHardship(DataBuilderUtil.createScaledBigDecimal(3000.00))
-                .status(HardshipReviewStatus.COMPLETE)
-                .userCreated(TEST_USER)
-                .courtType("MAGISTRATE")
-                .reviewDetails(List.of(getTestHardshipReviewDetail(null, null, getTestHardshipReviewDetailReason())))
-                .build();
+        CreateHardshipReview request = TestModelDataBuilder.createHardshipReview(
+                existingUnlinkedFinancialAssessment.getId(),
+                existingUnlinkedFinancialAssessment.getRepOrder().getId(),
+                existingNewWorkReason.getCode(),
+                existingUnlinkedFinancialAssessment.getCmuId());
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
